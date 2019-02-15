@@ -2,7 +2,7 @@ SELECT
   submission_date,
   CURRENT_DATETIME() AS generated_time,
   COUNT(*) AS mau,
-  SUM(CAST(last_seen_date = submission_date AS INT64)) AS dau,
+  COUNTIF(last_seen_date = submission_date) AS dau,
   -- requested fields from bug 1525689
   source,
   medium,

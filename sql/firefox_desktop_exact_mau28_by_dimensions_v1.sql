@@ -4,7 +4,10 @@ SELECT
   COUNT(*) AS mau,
   COUNTIF(last_seen_date = submission_date) AS dau,
   -- requested fields from bug 1525689
-  attribution.*,
+  attribution.source,
+  attribution.medium,
+  attribution.campaign,
+  attribution.content,
   country,
   distribution_id
 FROM

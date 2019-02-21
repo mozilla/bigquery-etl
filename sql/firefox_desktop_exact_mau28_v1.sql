@@ -1,10 +1,11 @@
 SELECT
-  @submission_date AS submission_date,
+  submission_date,
   CURRENT_DATETIME() AS generated_time,
-  COUNT(DISTINCT client_id) AS mau,
-  COUNTIF(submission_date_s3 = @submission_date) AS dau
+  SUM(mau) AS mau,
+  SUM(dau) AS dau
 FROM
-  clients_daily_v6
+  firefox_desktop_exact_mau28_by_dimensions_v1
 WHERE
-  submission_date_s3 <= @submission_date
-  AND submission_date_s3 > DATE_SUB(@submission_date, INTERVAL 28 DAY)
+  submission_date = @submission_date
+GROUP BY
+  submission_date

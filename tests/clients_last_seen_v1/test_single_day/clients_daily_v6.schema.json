@@ -1,0 +1,30 @@
+[
+  {
+    "name": "submission_date_s3",
+    "type": "DATE",
+    "mode": "REQUIRED",
+    "description": "time_partitioning_field"
+  },
+  {
+    "name": "active_hours_sum",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "attribution",
+    "type": "RECORD",
+    "mode": "REQUIRED",
+    "fields": [
+      {
+        "name": "source",
+        "type": "STRING",
+        "mode": "REQUIRED"
+      }
+    ]
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  }
+]

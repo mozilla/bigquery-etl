@@ -19,17 +19,8 @@ WITH current_sample AS (
     submission_date_s3 = @submission_date
 ), previous AS (
   SELECT
-    STRUCT (
-      IF(last_date.seen_in_tier1_country > DATE_SUB(@submission_date, INTERVAL 28 DAY),
-        last_date.seen_in_tier1_country,
-        NULL) AS seen_in_tier1_country,
-      IF(last_date.visited_5_or_more_uris > DATE_SUB(@submission_date, INTERVAL 28 DAY),
-        last_date.visited_5_or_more_uris,
-        NULL) AS visited_5_or_more_uris
-    ) AS last_date,
     * EXCEPT (submission_date,
-      generated_time,
-      last_date)
+      generated_time)
   FROM
     analysis.clients_last_seen_v1
   WHERE

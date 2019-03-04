@@ -8,7 +8,7 @@ WITH current_sample AS (
       IF(country IN ('US', 'FR', 'DE', 'UK', 'CA'),
         submission_date_s3,
         NULL) AS seen_in_tier1_country,
-      IF(scalar_parent_browser_engagement_total_uri_count_sum >= 5
+      IF(scalar_parent_browser_engagement_total_uri_count_sum >= 5,
         submission_date_s3,
         NULL) AS visited_5_or_more_uri) AS last_date,
     submission_date_s3 AS last_seen_date,

@@ -1,6 +1,5 @@
 WITH current_sample AS (
   SELECT
-
     -- This last_date struct is used to record the last date that a particular
     -- client met various criteria; we record a null date if the client does
     -- not meet a given criterion.
@@ -35,8 +34,7 @@ WITH current_sample AS (
 SELECT
   @submission_date AS submission_date,
   CURRENT_DATETIME() AS generated_time,
-  
-  -- merge last_date values
+  -- deep merge last_date
   STRUCT (
     COALESCE(
       current_sample.last_date.seen_in_tier1_country,
@@ -47,7 +45,6 @@ SELECT
       previous.last_date.visited_5_or_more_uris
     ) AS visited_5_or_more_uris
   ) AS last_date,
-  
   IF(current_sample.client_id IS NOT NULL,
     current_sample,
     previous).* EXCEPT (last_date)

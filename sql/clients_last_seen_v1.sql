@@ -4,16 +4,12 @@ WITH current_sample AS (
     -- client met various criteria; we record a null date if the client does
     -- not meet a given criterion.
     STRUCT (
-      IF(
-        country IN ('US', 'FR', 'DE', 'UK', 'CA'),
+      IF(country IN ('US', 'FR', 'DE', 'UK', 'CA'),
         submission_date_s3,
-        NULL
-      ) AS seen_in_tier1_country,
-      IF(
-        scalar_parent_browser_engagement_total_uri_count_sum >= 5
+        NULL) AS seen_in_tier1_country,
+      IF(scalar_parent_browser_engagement_total_uri_count_sum >= 5
         submission_date_s3,
-        NULL
-      ) AS visited_5_or_more_uris
+        NULL) AS visited_5_or_more_uris
     ) AS last_date,
     submission_date_s3 AS last_seen_date,
     * EXCEPT (submission_date_s3)
@@ -23,8 +19,17 @@ WITH current_sample AS (
     submission_date_s3 = @submission_date
 ), previous AS (
   SELECT
+    STRUCT (
+      IF(last_date.seen_in_tier1_country > DATE_SUB(@submission_date, INTERVAL 28 DAY),
+        last_date.seen_in_tier1_country,
+        NULL) AS seen_in_tier1_country,
+      IF(last_date.visited_5_or_more_uris > DATE_SUB(@submission_date, INTERVAL 28 DAY),
+        last_date.visited_5_or_more_uris,
+        NULL) AS visited_5_or_more_uris
+    ) AS last_date,
     * EXCEPT (submission_date,
-      generated_time)
+      generated_time,
+      last_date)
   FROM
     analysis.clients_last_seen_v1
   WHERE

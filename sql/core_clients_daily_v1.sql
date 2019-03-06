@@ -1,4 +1,18 @@
 WITH
+  numbered_duplicates AS (
+  SELECT
+    *,
+    ROW_NUMBER() OVER (PARTITION BY client_id, submission_date_s3, metadata.document_id ORDER BY metadata.timestamp DESC) AS n
+  FROM
+    telemetry_core_parquet_v3 ),
+  -- Deduplicating on document_id is necessary to get valid SUM values.
+  deduplicated AS (
+  SELECT
+    * EXCEPT (n)
+  FROM
+    numbered_duplicates
+  WHERE
+    n = 1 ),
   windowed AS (
   SELECT
     @submission_date AS submission_date,
@@ -40,7 +54,7 @@ WITH
     LAST_VALUE(metadata_app_version) OVER w1 AS metadata_app_version,
     LAST_VALUE(bug_1501329_affected) OVER w1 AS bug_1501329_affected
   FROM
-    telemetry_core_parquet_v3
+    deduplicated
   WHERE
     submission_date_s3 = @submission_date
     -- Bug 1501329: avoid the pathological "canary" client_id
@@ -51,7 +65,7 @@ WITH
       client_id,
       submission_date_s3
     ORDER BY
-      submission_date_s3) )
+      metadata.timestamp DESC) )
 SELECT
   * EXCEPT (n)
 FROM

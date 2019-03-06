@@ -30,10 +30,11 @@ WITH
     SAFE.DATE_FROM_UNIX_DATE(MIN(profile_date) OVER w1) AS profile_date,
     -- These integer fields are already sums over sessions since last upload,
     -- so we sum to represent all uploads in the given day;
-    -- we set some upper limits to avoid integer overflow on pathological input.
-    SUM(LEAST(sessions, 1000000)) OVER w1 AS sessions,
-    SUM(LEAST(durations, 1000000)) OVER w1 AS durations,
-    SUM(LEAST(flash_usage, 1000000)) OVER w1 AS flash_usage,
+    -- we set an upper limit of 100K which contains 99.9th percentile of durations
+    -- while avoiding integer overflow on pathological input.
+    SUM(IF(sessions BETWEEN 0 AND 100000, sessions, 0)) OVER w1 AS sessions,
+    SUM(IF(durations BETWEEN 0 AND 100000, durations, 0)) OVER w1 AS durations,
+    SUM(IF(flash_usage BETWEEN 0 AND 100000, flash_usage, 0)) OVER w1 AS flash_usage,
     -- For all other dimensions, we take the value from the ping with the latest
     -- timestamp within the day so that dimensions in core_clients_last_seen
     -- always represent the most recent observation of the client.

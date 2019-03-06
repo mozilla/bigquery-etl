@@ -1,11 +1,22 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, you can obtain one at http://mozilla.org/MPL/2.0/.
+"""Utilities."""
+
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from google.cloud import bigquery
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, Generator, List, Optional, Union
 
 import json
 import os.path
 import yaml
+
+QueryParameter = Union[
+    bigquery.ArrayQueryParameter,
+    bigquery.ScalarQueryParameter,
+    bigquery.StructQueryParameter,
+]
 
 table_extensions = {
     "ndjson": bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
@@ -18,67 +29,93 @@ table_extensions = {
 }
 
 
-@dataclass(frozen=True)
+@dataclass
 class Table:
+    """Define info needed to create a table for a generated test."""
+
     name: str
     source_format: str
     source_path: str
+    # post_init fields
+    schema: Optional[List[bigquery.SchemaField]] = None
 
-    def get_schema(self):
-        resource_dir, resource = os.path.split(self.source_path)
-        full_name, _ = resource.rsplit(".", 1)
-        try:
-            return [
-                bigquery.SchemaField.from_api_repr(field)
-                for field in load(resource_dir, f"{full_name}.schema")
-            ]
-        except FileNotFoundError:
-            return None
+    def __post_init__(self):
+        """Fill in calculated fields if not provided."""
+        if self.schema is None:
+            resource_dir, resource = os.path.split(self.source_path)
+            full_name, _ = resource.rsplit(".", 1)
+            try:
+                self.schema = [
+                    bigquery.SchemaField.from_api_repr(field)
+                    for field in load(resource_dir, f"{full_name}.schema")
+                ]
+            except FileNotFoundError:
+                pass
 
 
 @dataclass
 class GeneratedTest:
+    """Define the info needed to run a generated test."""
+
     expect: List[Dict[str, Any]]
     name: str
     query: str
     query_name: str
     query_params: List[Any]
     replace: Dict[str, str]
-    tables: Set[Table]
+    tables: Dict[str, Table]
+    # post_init fields
+    dataset_id: Optional[str] = None
+    modified_query: Optional[str] = None
 
-    def get_dataset_id(self):
-        return f"{self.query_name}_{self.name}"
-
-    def get_modified_query(self):
-        query = self.query
-        for old, new in self.replace.items():
-            query.replace(old, new)
-        return query
+    def __post_init__(self):
+        """Fill in calculated fields if not provided."""
+        if self.dataset_id is None:
+            self.dataset_id = f"{self.query_name}_{self.name}"
+        if self.modified_query is None:
+            self.modified_query = self.query
+            for old, new in self.replace.items():
+                self.modified_query = self.modified_query.replace(old, new)
 
 
 def read(*paths: str, decoder: Optional[Callable] = None, **kwargs):
+    """Read a file and apply decoder if provided."""
     with open(os.path.join(*paths), **kwargs) as f:
         return decoder(f) if decoder else f.read()
 
 
-def ndjson_load(file_obj):
+def ndjson_load(file_obj) -> List[Any]:
+    """Decode newline delimited json from file_obj."""
     return [json.loads(line) for line in file_obj]
 
 
-def load(resource_dir: str, basename: str, **search):
+def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> Any:
+    """Read the first matching file found in resource_dir.
+
+    Calls read on paths under resource_dir with a name sans extension in
+    basenames and an extension and decoder in search.
+
+    :param resource_dir: directory to check for files
+    :param basenames: file names to look for, without an extension
+    :param search: mapping of file extension to decoder
+    :return: first response from read() that doesn't raise FileNotFoundError
+    :raises FileNotFoundError: when all matching files raise FileNotFoundError
+    """
     search = search or {"yaml": yaml.load, "json": json.load, "ndjson": ndjson_load}
-    for ext, decoder in search.items():
-        try:
-            return read(resource_dir, f"{basename}.{ext}", decoder=decoder)
-        except FileNotFoundError:
-            pass
-    not_found = "', '".join(map(lambda ext: f"{basename}.{ext}", search))
-    raise FileNotFoundError(f"[Errno 2] No such file or directory: '{not_found}'")
+    not_found: List[str] = []
+    for basename in basenames:
+        for ext, decoder in search.items():
+            try:
+                return read(resource_dir, f"{basename}.{ext}", decoder=decoder)
+            except FileNotFoundError:
+                not_found.append(f"{basename}.{ext}")
+    raise FileNotFoundError(f"[Errno 2] No such files in '{resource_dir}': {not_found}")
 
 
-def get_query_params(resource_dir: str):
+def get_query_params(resource_dir: str) -> Generator[QueryParameter, None, None]:
+    """Attempt to load the first query params found in resource_dir."""
     try:
-        params = load(resource_dir, "query_params")
+        params = load(resource_dir, "query_params", "query_parameters")
     except FileNotFoundError:
         params = []
     for param in params:
@@ -98,7 +135,8 @@ def get_query_params(resource_dir: str):
                     yield bigquery.ScalarQueryParameter.from_api_repr(param)
 
 
-def generate_tests():
+def generate_tests() -> Generator[GeneratedTest, None, None]:
+    """Attempt to generate tests."""
     tests_dir = os.path.dirname(__file__)
     sql_dir = os.path.join(os.path.dirname(tests_dir), "sql")
 
@@ -115,8 +153,8 @@ def generate_tests():
         # generate a test for each directory in query_dir
         for test_name in next(os.walk(query_dir))[1]:
             resource_dir = os.path.join(query_dir, test_name)
-            query_params = get_query_params(resource_dir)
-            tables: Set[Table] = set()
+            query_params = list(get_query_params(resource_dir))
+            tables: Dict[str, Table] = {}
             replace: Dict[str, str] = {}
 
             # load expect or skip
@@ -127,11 +165,16 @@ def generate_tests():
 
             # generate tables for files with a supported table extension
             for resource in next(os.walk(resource_dir))[2]:
-                if resource in ("expect.ndjson", "query_params.ndjson"):
-                    continue  # expect and query_params are not tables
-                table_name, extension = resource, ""
-                if "." in resource:
-                    table_name, extension = resource.rsplit(".", 1)
+                if "." not in resource:
+                    continue  # tables require an extension
+                table_name, extension = resource.rsplit(".", 1)
+                if table_name.endswith(".schema") or table_name in (
+                    "expect",
+                    "query_params",
+                    "query_parameters",
+                ):
+                    continue  # not a table
+                print(table_name)
                 if extension in table_extensions:
                     source_format = table_extensions[extension]
                     source_path = os.path.join(resource_dir, resource)
@@ -140,7 +183,7 @@ def generate_tests():
                         replace[table_name] = table_name.rsplit(".", 1)[1]
                         # remove dataset from table_name
                         table_name = replace[table_name]
-                    tables.add(Table(table_name, source_format, source_path))
+                    tables[table_name] = Table(table_name, source_format, source_path)
 
             # yield a test
             yield GeneratedTest(
@@ -154,7 +197,13 @@ def generate_tests():
             )
 
 
-def coerce_result(*elements: Any):
+def coerce_result(*elements: Any) -> Generator[Any, None, None]:
+    """Recursively coerce elements to types available in json.
+
+    Coerce date and datetime to string using isoformat.
+    Coerce bigquery.Row to dict using comprehensions.
+    Omit dict keys named "generated_time".
+    """
     for element in elements:
         if isinstance(element, (dict, bigquery.Row)):
             yield {
@@ -165,7 +214,7 @@ def coerce_result(*elements: Any):
                 # drop generated_time column
                 if key not in ("generated_time",)
             }
-        elif isinstance(element, date):
-            yield element.strftime("%Y-%m-%d")
+        elif isinstance(element, (date, datetime)):
+            yield element.isoformat()
         else:
             yield element

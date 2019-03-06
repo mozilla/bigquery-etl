@@ -1,3 +1,23 @@
+CREATE TEMP FUNCTION udf_mode_last(x ANY TYPE) AS ((
+  SELECT
+    val
+  FROM (
+    SELECT
+      val,
+      COUNT(val) AS n,
+      MAX(offset) AS max_offset
+    FROM
+      UNNEST(x) AS val
+    WITH OFFSET AS offset
+    GROUP BY
+      val
+    ORDER BY
+      n DESC,
+      max_offset DESC
+  )
+  LIMIT 1
+));
+
 WITH
   numbered_duplicates AS (
   SELECT
@@ -35,27 +55,25 @@ WITH
     SUM(IF(sessions BETWEEN 0 AND 100000, sessions, 0)) OVER w1 AS sessions,
     SUM(IF(durations BETWEEN 0 AND 100000, durations, 0)) OVER w1 AS durations,
     SUM(IF(flash_usage BETWEEN 0 AND 100000, flash_usage, 0)) OVER w1 AS flash_usage,
-    -- For all other dimensions, we take the value from the ping with the latest
-    -- timestamp within the day so that dimensions in core_clients_last_seen
-    -- always represent the most recent observation of the client.
-    LAST_VALUE(app_name) OVER w1 AS app_name,
-    LAST_VALUE(os) OVER w1 AS os,
-    LAST_VALUE(metadata.geo_country) OVER w1 AS country,
-    LAST_VALUE(metadata.geo_city) OVER w1 AS city,
-    LAST_VALUE(metadata.app_build_id) OVER w1 AS app_build_id,
-    LAST_VALUE(metadata.normalized_channel) OVER w1 AS normalized_channel,
-    LAST_VALUE(locale) OVER w1 AS locale,
-    LAST_VALUE(osversion) OVER w1 AS osversion,
-    LAST_VALUE(device) OVER w1 AS device,
-    LAST_VALUE(arch) OVER w1 AS arch,
-    LAST_VALUE(default_search) OVER w1 AS default_search,
-    LAST_VALUE(distribution_id) OVER w1 AS distribution_id,
-    LAST_VALUE(campaign) OVER w1 AS campaign,
-    LAST_VALUE(campaign_id) OVER w1 AS campaign_id,
-    LAST_VALUE(default_browser) OVER w1 AS default_browser,
-    LAST_VALUE(show_tracker_stats_share) OVER w1 AS show_tracker_stats_share,
-    LAST_VALUE(metadata_app_version) OVER w1 AS metadata_app_version,
-    LAST_VALUE(bug_1501329_affected) OVER w1 AS bug_1501329_affected
+    -- For all other dimensions, we use the mode of observed values in the day.
+    udf_mode_last(ARRAY_AGG(app_name) OVER w1) AS app_name,
+    udf_mode_last(ARRAY_AGG(os) OVER w1) AS os,
+    udf_mode_last(ARRAY_AGG(metadata.geo_country) OVER w1) AS country,
+    udf_mode_last(ARRAY_AGG(metadata.geo_city) OVER w1) AS city,
+    udf_mode_last(ARRAY_AGG(metadata.app_build_id) OVER w1) AS app_build_id,
+    udf_mode_last(ARRAY_AGG(metadata.normalized_channel) OVER w1) AS normalized_channel,
+    udf_mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
+    udf_mode_last(ARRAY_AGG(osversion) OVER w1) AS osversion,
+    udf_mode_last(ARRAY_AGG(device) OVER w1) AS device,
+    udf_mode_last(ARRAY_AGG(arch) OVER w1) AS arch,
+    udf_mode_last(ARRAY_AGG(default_search) OVER w1) AS default_search,
+    udf_mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+    udf_mode_last(ARRAY_AGG(campaign) OVER w1) AS campaign,
+    udf_mode_last(ARRAY_AGG(campaign_id) OVER w1) AS campaign_id,
+    udf_mode_last(ARRAY_AGG(default_browser) OVER w1) AS default_browser,
+    udf_mode_last(ARRAY_AGG(show_tracker_stats_share) OVER w1) AS show_tracker_stats_share,
+    udf_mode_last(ARRAY_AGG(metadata_app_version) OVER w1) AS metadata_app_version,
+    udf_mode_last(ARRAY_AGG(bug_1501329_affected) OVER w1) AS bug_1501329_affected
   FROM
     deduplicated
   WHERE

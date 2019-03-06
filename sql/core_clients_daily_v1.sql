@@ -1,10 +1,12 @@
 WITH
   numbered_duplicates AS (
   SELECT
-    *,
+    * REPLACE(LOWER(client_id) AS client_id),
     ROW_NUMBER() OVER (PARTITION BY client_id, submission_date_s3, metadata.document_id ORDER BY metadata.timestamp DESC) AS n
   FROM
-    telemetry_core_parquet_v3 ),
+    telemetry_core_parquet_v3
+  WHERE
+    client_id IS NOT NULL ),
   -- Deduplicating on document_id is necessary to get valid SUM values.
   deduplicated AS (
   SELECT

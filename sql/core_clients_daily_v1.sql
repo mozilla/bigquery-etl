@@ -11,12 +11,16 @@ WITH
     --   searches
     --
     -- Take the min observed profile creation date.
-    DATE_FROM_UNIX_DATE(MIN(profile_date) OVER w1) AS profile_date,
+    SAFE.DATE_FROM_UNIX_DATE(MIN(profile_date) OVER w1) AS profile_date,
     -- These integer fields are already sums over sessions since last upload,
-    -- so we sum to represent all uploads in the given day.
-    SUM(durations) OVER w1 AS durations,
-    SUM(flash_usage) OVER w1 AS flash_usage,
-    -- For all other fields, we take the value in the most recently received ping.
+    -- so we sum to represent all uploads in the given day;
+    -- we set some upper limits to avoid integer overflow on pathological input.
+    SUM(LEAST(sessions, 1000000)) OVER w1 AS sessions,
+    SUM(LEAST(durations, 1000000)) OVER w1 AS durations,
+    SUM(LEAST(flash_usage, 1000000)) OVER w1 AS flash_usage,
+    -- For all other dimensions, we take the value from the ping with the latest
+    -- timestamp within the day so that dimensions in core_clients_last_seen
+    -- always represent the most recent observation of the client.
     LAST_VALUE(app_name) OVER w1 AS app_name,
     LAST_VALUE(os) OVER w1 AS os,
     LAST_VALUE(metadata.geo_country) OVER w1 AS country,
@@ -39,6 +43,8 @@ WITH
     telemetry_core_parquet_v3
   WHERE
     submission_date_s3 = @submission_date
+    -- Bug 1501329: avoid the pathological "canary" client_id
+    AND client_id != 'c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0'
   WINDOW
     w1 AS (
     PARTITION BY

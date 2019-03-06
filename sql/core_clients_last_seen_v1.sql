@@ -1,8 +1,9 @@
 WITH
   current_sample AS (
   SELECT
-    -- Include a dummy last_date struct to make schema match with `previous`.
-    STRUCT(DATE('2000-01-01'), DATE('2000-01-01')) AS last_date,
+    -- Include dummy dates for date_last_* fields to make schema match with `previous`.
+    DATE('2000-01-01') AS date_last_seen,
+    DATE('2000-01-01') AS date_last_seen_in_tier1_country,
     * EXCEPT (submission_date,
       generated_time)
   FROM
@@ -17,30 +18,27 @@ WITH
     core_clients_last_seen_v1
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND last_date.seen > DATE_SUB(@submission_date, INTERVAL 28 DAY) )
+    AND date_last_seen > DATE_SUB(@submission_date, INTERVAL 28 DAY) )
 SELECT
   @submission_date AS submission_date,
   CURRENT_DATETIME() AS generated_time,
-  -- This last_date struct is used to record the last date that a particular
-  -- client met various usage criteria.
-  STRUCT (
-    -- last_date.seen is the last date we recieved any core ping at all.
-    IF(current_sample.client_id IS NOT NULL,
-      @submission_date,
-      previous.last_date.seen) AS seen,
-    -- last_date.seen_in_tier1_country allows us to calculate a more inclusive
-    -- variant of country-segmented MAU where we can still count a client that
-    -- appeared in one of the target countries in the previous 28 days even if
-    -- the most recent "country" value is not in this set.
-    IF(current_sample.client_id IS NOT NULL
-      AND current_sample.country IN ('US', 'FR', 'DE', 'UK', 'CA'),
-      @submission_date,
-      IF(previous.last_date.seen_in_tier1_country > DATE_SUB(@submission_date, INTERVAL 28 DAY),
-        previous.last_date.seen_in_tier1_country,
-        NULL)) AS seen_in_tier1_country ) AS last_date,
+  -- Record the last day on which we recieved any core ping at all from this client.
+  IF(current_sample.client_id IS NOT NULL,
+    @submission_date,
+    previous.date_last_seen) AS date_last_seen,
+  -- Record the last day on which the client was in a "Tier 1" country;
+  -- this allows a variant of country-segmented MAU where we can still count
+  -- a client that appeared in one of the target countries in the previous
+  -- 28 days even if the most recent "country" value is not in this set.
+  IF(current_sample.client_id IS NOT NULL
+    AND current_sample.country IN ('US', 'FR', 'DE', 'UK', 'CA'),
+    @submission_date,
+    IF(previous.date_last_seen_in_tier1_country > DATE_SUB(@submission_date, INTERVAL 28 DAY),
+      previous.date_last_seen_in_tier1_country,
+      NULL)) AS date_last_seen_in_tier1_country,
   IF(current_sample.client_id IS NOT NULL,
     current_sample,
-    previous).* EXCEPT (last_date)
+    previous).* EXCEPT (date_last_seen, date_last_seen_in_tier1_country)
 FROM
   current_sample
 FULL JOIN

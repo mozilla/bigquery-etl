@@ -24,7 +24,7 @@ jobs:
         # See https://cloud.google.com/docs/authentication/production
         command: |
           echo "${GCLOUD_SERVICE_KEY:?}" > "$GOOGLE_APPLICATION_CREDENTIALS"
-          venv/bin/pytest --black --docstyle --flake8
+          venv/bin/pytest --black --docstyle --flake8 --mypy-ignore-missing-imports
         environment:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp.json
     - save_cache:

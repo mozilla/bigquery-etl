@@ -1,3 +1,8 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, you can obtain one at http://mozilla.org/MPL/2.0/.
+"""clients_daily and derived tables."""
+
 import datetime
 
 from airflow import models
@@ -39,7 +44,8 @@ with models.DAG(
     exact_mau_by_dimensions = BigQueryOperator(
         task_id="exact_mau_by_dimensions",
         bql="sql/firefox_desktop_exact_mau28_by_dimensions_v1.sql",
-        destination_dataset_table="analysis.firefox_desktop_exact_mau28_by_dimensions_v1${{ds_nodash}}",
+        destination_dataset_table="analysis."
+        "firefox_desktop_exact_mau28_by_dimensions_v1${{ds_nodash}}",
         write_disposition="WRITE_TRUNCATE",
         use_legacy_sql=False,
     )
@@ -49,7 +55,8 @@ with models.DAG(
     exact_mau = BigQueryOperator(
         task_id="exact_mau",
         bql="sql/firefox_desktop_exact_mau28_v1.sql",
-        destination_dataset_table="analysis.firefox_desktop_exact_mau28_v1${{ds_nodash}}",
+        destination_dataset_table="analysis."
+        "firefox_desktop_exact_mau28_v1${{ds_nodash}}",
         write_disposition="WRITE_TRUNCATE",
         use_legacy_sql=False,
     )

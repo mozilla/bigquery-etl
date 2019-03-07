@@ -39,8 +39,8 @@ WHERE
   app_name IN ('Fennec', 'Focus', 'Zerda', 'FirefoxForFireTV', 'FirefoxConnect')
   AND os IN ('Android', 'iOS')
   -- 2017-01-01 is the first populated day of telemetry_core_parquet, so start 28 days later.
-  AND submission_date >= '2017-01-28'
-  AND submission_date = @submission_date
+  AND @submission_date >= '2017-01-28'
+  AND @submission_date = submission_date
 GROUP BY
   submission_date,
   product,

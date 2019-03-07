@@ -14,16 +14,8 @@ SELECT
   COUNTIF(_inactive_days < 28) AS mau,
   COUNTIF(_inactive_days < 7) AS wau,
   COUNTIF(_inactive_days < 1) AS dau,
-  -- You can recover MAU for all clients in tier 1 countries via a WHERE clause
-  -- and summing mau, but this considers only the country associated with the
-  -- latest observation of the client; "Tier 1 grouped" MAU is an alternative
-  -- that includes all clients seen in a tier 1 country in the 28 day window,
-  -- even if their latest ping came from an excluded country.
-  COUNTIF(_inactive_days_tier1 < 28) AS tier1_grouped_mau,
-  COUNTIF(_inactive_days_tier1 < 7) AS tier1_grouped_wau,
-  COUNTIF(_inactive_days_tier1 < 1) AS tier1_grouped_dau,
-  -- We filter down to a specific set of applications considered for 2019 goals
-  -- and provide a single clean "product" name that includes OS where necessary.
+  -- Instead of app_name and os, we provide a single clean "product" name
+  -- that includes OS where necessary to disambiguate.
   CASE app_name
     WHEN 'Fennec' THEN CONCAT(app_name, ' ', os)
     WHEN 'Focus' THEN CONCAT(app_name, ' ', os)

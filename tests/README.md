@@ -60,8 +60,6 @@ Additional Guidelines and Options
 - Query parameters
   - Scalar query params should be defined as a dict with keys `name`, `type` or
     `type_`, and `value`
-    - Query params with other keys will be passed to `.from_api_repr` for
-      each available type and must be valid for one of them
   - `query_parameters.yaml` may be used instead of `query_params.yaml`, but
     they are mutually exclusive
   - File extensions `yaml`, `json` and `ndjson` are supported

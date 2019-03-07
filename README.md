@@ -6,11 +6,14 @@ Bigquery UDFs and SQL queries for building derived datasets.
 Recommended practices
 ===
 
-- Should name sql files like `sql/destination_table_with_version.sql` e.g.
+- Should name query files like `sql/destination_table_with_version.sql` e.g.
   `sql/clients_daily_v6.sql`
 - Should not specify a project or dataset in table names to simplify testing
 - Should use incremental queries
 - Should filter input tables on partition and clustering columns
+- Should name UDFs like `udf_function_name` e.g. `udf_mode_last`
+- Should name UDF files like `udfs/udf_function_name.{sql,js}` e.g.
+  `udfs/udf_mode_last.sql`
 - Should use UDF language `SQL` over `js` for performance
 - Should use UDFs for reusability
 - Should use query parameters over jinja templating
@@ -28,6 +31,7 @@ Incremental queries have these benefits:
 - Will have tooling to replace partitions atomically to prevent duplicate data
 - Will have tooling to generate an optimized "destination plus" view that
   calculates the most recent partition
+  - Note: UDFs are not allowed in views
 
 Incremental queries have these properties:
 
@@ -38,3 +42,8 @@ Incremental queries have these properties:
 - May depend on the previous partition
   - If using previous partition, must include a `.init.sql` query to init the
     first partition
+
+Tests
+===
+
+(see here)[tests/]

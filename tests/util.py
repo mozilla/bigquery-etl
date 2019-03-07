@@ -171,7 +171,6 @@ def generate_tests() -> Generator[GeneratedTest, None, None]:
                 if table_name.endswith(".schema") or table_name in (
                     "expect",
                     "query_params",
-                    "query_parameters",
                 ):
                     continue  # not a table
                 print(table_name)

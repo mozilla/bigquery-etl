@@ -36,7 +36,14 @@ SELECT
 FROM
   inactive_days
 WHERE
-  app_name IN ('Fennec', 'Focus', 'Zerda', 'FirefoxForFireTV', 'FirefoxConnect')
+  -- This list corresponds to the products considered for 2019 nondesktop KPIs.
+  app_name IN (
+    'Fennec', -- Firefox for Android and Firefox for iOS
+    'Focus',
+    'Zerda', -- Firefox Lite, previously called Rocket
+    'FirefoxForFireTV', -- Amazon Fire TV
+    'FirefoxConnect' -- Amazon Echo Show
+    )
   AND os IN ('Android', 'iOS')
   -- 2017-01-01 is the first populated day of telemetry_core_parquet, so start 28 days later.
   AND @submission_date >= '2017-01-28'

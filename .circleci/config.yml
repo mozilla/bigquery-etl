@@ -22,11 +22,11 @@ jobs:
         # Google's client libraries will check for GOOGLE_APPLICATION_CREDENTIALS
         # and use a file in that location for credentials if present;
         # See https://cloud.google.com/docs/authentication/production
+        environment:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp.json
         command: |
           echo "${GCLOUD_SERVICE_KEY:?}" > "$GOOGLE_APPLICATION_CREDENTIALS"
           venv/bin/pytest --black --docstyle --flake8 --mypy-ignore-missing-imports
-        environment:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp.json
     - save_cache:
         paths:
         - venv/

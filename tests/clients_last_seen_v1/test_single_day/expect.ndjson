@@ -1,0 +1,3 @@
+{"submission_date":"2019-01-02","active_hours_sum":0.0,"attribution":{"source":"prev"},"client_id":"a","last_seen_date":"2019-01-01"}
+{"submission_date":"2019-01-02","active_hours_sum":1.0,"attribution":{"source":"test"},"client_id":"b","last_seen_date":"2019-01-02"}
+{"submission_date":"2019-01-02","active_hours_sum":1.0,"attribution":{"source":"test"},"client_id":"c","last_seen_date":"2019-01-02"}

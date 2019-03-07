@@ -1,0 +1,5 @@
+*.pyc
+*.swp
+*.swo
+.mypy_cache/
+venv/

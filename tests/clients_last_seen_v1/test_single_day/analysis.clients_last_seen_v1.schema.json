@@ -1,0 +1,39 @@
+[
+  {
+    "name": "submission_date",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "generated_time",
+    "type": "DATETIME",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "last_seen_date",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "active_hours_sum",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "attribution",
+    "type": "RECORD",
+    "mode": "REQUIRED",
+    "fields": [
+      {
+        "name": "source",
+        "type": "STRING",
+        "mode": "REQUIRED"
+      }
+    ]
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  }
+]

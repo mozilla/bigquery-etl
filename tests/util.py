@@ -115,7 +115,7 @@ def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> An
 def get_query_params(resource_dir: str) -> Generator[QueryParameter, None, None]:
     """Attempt to load the first query params found in resource_dir."""
     try:
-        params = load(resource_dir, "query_params", "query_parameters")
+        params = load(resource_dir, "query_params")
     except FileNotFoundError:
         params = []
     for param in params:

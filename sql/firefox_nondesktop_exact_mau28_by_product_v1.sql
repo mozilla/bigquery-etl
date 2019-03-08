@@ -1,5 +1,6 @@
 SELECT
-  submission_date,
+  observation_date,
+  last_submission_date_in_window,
   CURRENT_DATETIME() AS generated_time,
   product,
   SUM(mau) AS mau,
@@ -13,5 +14,6 @@ FROM
 WHERE
   submission_date = @submission_date
 GROUP BY
-  submission_date,
+  observation_date,
+  last_submission_date_in_window,
   product

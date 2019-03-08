@@ -9,7 +9,10 @@ WITH
   )
 
 SELECT
-  submission_date,
+  -- 2019 goals define MAU for a given observation date based on a window of the
+  -- previous 28 days, not including the observation date.
+  DATE_ADD(submission_date, INTERVAL 1 DAY) AS observation_date,
+  submission_date AS last_submission_date_in_window,
   CURRENT_DATETIME() AS generated_time,
   COUNTIF(_inactive_days < 28) AS mau,
   COUNTIF(_inactive_days < 7) AS wau,

@@ -1,3 +1,5 @@
+[![CircleCI](https://img.shields.io/circleci/project/github/mozilla/bigquery-etl/master.svg)](https://circleci.com/gh/mozilla/bigquery-etl)
+
 BigQuery ETL
 ===
 
@@ -44,6 +46,6 @@ Incremental queries have these properties:
     first partition
 
 Tests
-===
+=====
 
-(see here)[tests/]
+[See the documentation in tests/](tests/README.md)

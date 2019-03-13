@@ -8,18 +8,19 @@ Bigquery UDFs and SQL queries for building derived datasets.
 Recommended practices
 ===
 
-- Should name query files like `sql/destination_table_with_version.sql` e.g.
-  `sql/clients_daily_v6.sql`
-- Should not specify a project or dataset in table names to simplify testing
-- Should use incremental queries
-- Should filter input tables on partition and clustering columns
-- Should name UDFs like `udf_function_name` e.g. `udf_mode_last`
-- Should name UDF files like `udfs/udf_function_name.{sql,js}` e.g.
-  `udfs/udf_mode_last.sql`
-- Should use UDF language `SQL` over `js` for performance
-- Should use UDFs for reusability
-- Should use query parameters over jinja templating
-  - Temporary issue: Airflow 1.10+ is required in order to use query parameters
+- Queries
+  - Should name files `sql/table_version.sql` e.g. `sql/clients_daily_v6.sql`
+  - Should not specify a project or dataset in table names to simplify testing
+  - Should be (incremental)[#incremental-queries]
+  - Should filter input tables on partition and clustering columns
+  - Should use `_` prefix in generated column names not meant for output
+  - Should not use jinja templating on the query file in Airflow
+- UDFs
+  - Should be used for reusability
+  - Should use lower snake case names with `udf_` prefix e.g. `udf_mode_last`
+  - Should name files `udfs/function.{sql,js}` e.g. `udfs/udf_mode_last.sql`
+  - Should use `SQL` over `js` for performance
+  - Must not be used for incremental queries with mostly materialized view
 
 Incremental Queries
 ===
@@ -31,9 +32,9 @@ Incremental queries have these benefits:
 - Requires less airflow configuration
 - Will have tooling to automate backfilling
 - Will have tooling to replace partitions atomically to prevent duplicate data
-- Will have tooling to generate an optimized "destination plus" view that
-  calculates the most recent partition
-  - Note: UDFs are not allowed in views
+- Will have tooling to generate an optimized mostly materialized view that
+  only calculates the most recent partition
+  - Note: incompatible with UDFs, which are not allowed in views
 
 Incremental queries have these properties:
 
@@ -43,7 +44,14 @@ Incremental queries have these properties:
   - Should produce identical results when run multiple times
 - May depend on the previous partition
   - If using previous partition, must include a `.init.sql` query to init the
-    first partition
+    table
+  - Should be impacted by values from a finite number of preceding partitions
+    - This allows for backfilling in chunks instead of serially for all time
+      and limiting backfills to a certain number of days following updated data
+    - For example `sql/nondesktop_clients_last_seen_v1.sql` can be run serially
+      on any 28 day period and the last day will be the same whether or not the
+      partition preceding the first day was missing because values are only
+      impacted by 27 preceding days
 
 Tests
 =====

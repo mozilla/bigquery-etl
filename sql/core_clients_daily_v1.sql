@@ -40,7 +40,7 @@ WITH
     @submission_date AS submission_date,
     CURRENT_DATETIME() AS generated_time,
     client_id,
-    ROW_NUMBER() OVER w1 AS n,
+    ROW_NUMBER() OVER w1_unframed AS n,
     -- For now, we're ignoring the following RECORD type fields:
     --   accessibility_services
     --   experiments
@@ -82,6 +82,13 @@ WITH
     AND client_id != 'c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0'
   WINDOW
     w1 AS (
+    PARTITION BY
+      client_id,
+      submission_date_s3
+    ORDER BY
+      metadata.timestamp DESC
+    ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING),
+    w1_unframed AS (
     PARTITION BY
       client_id,
       submission_date_s3

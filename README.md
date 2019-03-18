@@ -18,7 +18,7 @@ Recommended practices
 - UDFs
   - Should be used to avoid code duplication
   - Should use lower snake case names with `udf_` prefix e.g. `udf_mode_last`
-  - Should name files `udfs/function.{sql,js}` e.g. `udfs/udf_mode_last.sql`
+  - Should be defined in files named as `udfs/function.{sql,js}` e.g. `udfs/udf_mode_last.sql`
   - Should use `SQL` over `js` for performance
   - Must not be used for incremental queries with mostly materialized view
 

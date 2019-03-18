@@ -22,13 +22,17 @@ SELECT
     WHEN 'Zerda' THEN 'Firefox Lite'
     ELSE app_name
   END AS product,
+  normalized_channel,
   campaign,
   country,
   distribution_id
 FROM
   inactive_days
 WHERE
-  -- This list corresponds to the products considered for 2019 nondesktop KPIs.
+  -- This list corresponds to the products considered for 2019 nondesktop KPIs;
+  -- we apply this filter here rather than in the live view because this field
+  -- is not normalized and there are many single pings that come in with unique
+  -- nonsensical app_name values.
   app_name IN (
     'Fennec', -- Firefox for Android and Firefox for iOS
     'Focus',
@@ -36,14 +40,15 @@ WHERE
     'FirefoxForFireTV', -- Amazon Fire TV
     'FirefoxConnect' -- Amazon Echo Show
     )
+  -- There are also many strange nonsensical entries for os, so we filter here.
   AND os IN ('Android', 'iOS')
-  AND normalized_channel = 'release'
   -- 2017-01-01 is the first populated day of telemetry_core_parquet, so start 28 days later.
-  AND @submission_date >= '2017-01-28'
-  AND @submission_date = submission_date
+  AND submission_date >= DATE('2017-01-28')
+  AND submission_date = @submission_date
 GROUP BY
   submission_date,
   product,
+  normalized_channel,
   campaign,
   country,
   distribution_id

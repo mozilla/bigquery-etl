@@ -16,7 +16,7 @@ Recommended practices
   - Should use `_` prefix in generated column names not meant for output
   - Should not use jinja templating on the query file in Airflow
 - UDFs
-  - Should be used for reusability
+  - Should be used to avoid code duplication
   - Should use lower snake case names with `udf_` prefix e.g. `udf_mode_last`
   - Should name files `udfs/function.{sql,js}` e.g. `udfs/udf_mode_last.sql`
   - Should use `SQL` over `js` for performance

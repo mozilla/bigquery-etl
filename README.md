@@ -32,7 +32,7 @@ Incremental queries have these benefits:
 - Requires less airflow configuration
 - Will have tooling to automate backfilling
 - Will have tooling to replace partitions atomically to prevent duplicate data
-- Will have tooling to generate an optimized mostly materialized view that
+- Will have tooling to generate an optimized _mostly materialized view_ that
   only calculates the most recent partition
   - Note: incompatible with UDFs, which are not allowed in views
 

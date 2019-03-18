@@ -22,6 +22,7 @@ SELECT
     WHEN 'Zerda' THEN 'Firefox Lite'
     ELSE app_name
   END AS product,
+  normalized_channel,
   campaign,
   country,
   distribution_id
@@ -37,13 +38,13 @@ WHERE
     'FirefoxConnect' -- Amazon Echo Show
     )
   AND os IN ('Android', 'iOS')
-  AND normalized_channel = 'release'
   -- 2017-01-01 is the first populated day of telemetry_core_parquet, so start 28 days later.
   AND @submission_date >= '2017-01-28'
   AND @submission_date = submission_date
 GROUP BY
   submission_date,
   product,
+  normalized_channel,
   campaign,
   country,
   distribution_id

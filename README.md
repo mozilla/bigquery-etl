@@ -20,7 +20,7 @@ Recommended practices
   - Should use lower snake case names with `udf_` prefix e.g. `udf_mode_last`
   - Should be defined in files named as `udfs/function.{sql,js}` e.g. `udfs/udf_mode_last.sql`
   - Should use `SQL` over `js` for performance
-  - Must not be used for incremental queries with mostly materialized view
+  - Must not be used for incremental queries with a _mostly materialized view_ (defined below)
 
 Incremental Queries
 ===

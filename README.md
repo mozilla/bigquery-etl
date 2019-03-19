@@ -11,7 +11,7 @@ Recommended practices
 - Queries
   - Should be defined in files named as `sql/table_version.sql` e.g. `sql/clients_daily_v6.sql`
   - Should not specify a project or dataset in table names to simplify testing
-  - Should be (incremental)[#incremental-queries]
+  - Should be [incremental](#incremental-queries)
   - Should filter input tables on partition and clustering columns
   - Should use `_` prefix in generated column names not meant for output
   - Should not use jinja templating on the query file in Airflow

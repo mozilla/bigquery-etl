@@ -14,6 +14,10 @@ SELECT
   COUNTIF(_inactive_days < 28) AS mau,
   COUNTIF(_inactive_days < 7) AS wau,
   COUNTIF(_inactive_days < 1) AS dau,
+  -- We hash client_ids into 20 buckets to aid in computing
+  -- confidence intervals for mau/wau/dau sums; the particular hash
+  -- function and number of buckets is subject to change in the future.
+  MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
   -- Instead of app_name and os, we provide a single clean "product" name
   -- that includes OS where necessary to disambiguate.
   CASE app_name
@@ -47,6 +51,7 @@ WHERE
   AND submission_date = @submission_date
 GROUP BY
   submission_date,
+  id_bucket,
   product,
   normalized_channel,
   campaign,

@@ -87,7 +87,7 @@ WITH
       submission_date_s3
     ORDER BY
       metadata.timestamp DESC
-    ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING),
+    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
     w1_unframed AS (
     PARTITION BY
       client_id,

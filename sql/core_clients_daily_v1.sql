@@ -22,7 +22,7 @@ WITH
   numbered_duplicates AS (
   SELECT
     * REPLACE(LOWER(client_id) AS client_id),
-    ROW_NUMBER() OVER (PARTITION BY client_id, submission_date_s3, metadata.document_id ORDER BY metadata.timestamp DESC) AS n
+    ROW_NUMBER() OVER (PARTITION BY client_id, submission_date_s3, metadata.document_id ORDER BY metadata.timestamp DESC) AS _n
   FROM
     telemetry_core_parquet_v3
   WHERE
@@ -30,17 +30,17 @@ WITH
   -- Deduplicating on document_id is necessary to get valid SUM values.
   deduplicated AS (
   SELECT
-    * EXCEPT (n)
+    * EXCEPT (_n)
   FROM
     numbered_duplicates
   WHERE
-    n = 1 ),
+    _n = 1 ),
   windowed AS (
   SELECT
     @submission_date AS submission_date,
     CURRENT_DATETIME() AS generated_time,
     client_id,
-    ROW_NUMBER() OVER w1_unframed AS n,
+    ROW_NUMBER() OVER w1_unframed AS _n,
     -- For now, we're ignoring the following RECORD type fields:
     --   accessibility_services
     --   experiments
@@ -96,8 +96,8 @@ WITH
     ORDER BY
       metadata.timestamp DESC) )
 SELECT
-  * EXCEPT (n)
+  * EXCEPT (_n)
 FROM
   windowed
 WHERE
-  n = 1
+  _n = 1

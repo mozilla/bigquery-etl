@@ -2,8 +2,8 @@ WITH
   current_sample AS (
   SELECT
     -- Include dummy dates for date_last_* fields to make schema match with `previous`.
-    DATE('2000-01-01') AS date_last_seen,
-    DATE('2000-01-01') AS date_last_seen_in_tier1_country,
+    DATE '2000-01-01' AS date_last_seen,
+    DATE '2000-01-01' AS date_last_seen_in_tier1_country,
     * EXCEPT (submission_date,
       generated_time)
   FROM

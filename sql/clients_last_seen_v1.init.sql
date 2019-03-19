@@ -1,6 +1,6 @@
 WITH input AS (
   SELECT
-    ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date_s3 DESC) AS n,
+    ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date_s3 DESC) AS _n,
     *
   FROM
     clients_daily_v6
@@ -12,9 +12,9 @@ SELECT
   @submission_date AS submission_date,
   CURRENT_DATETIME() AS generated_time,
   submission_date_s3 AS last_seen_date,
-  * EXCEPT (n,
+  * EXCEPT (_n,
     submission_date_s3)
 FROM
   input
 WHERE
-  n = 1
+  _n = 1

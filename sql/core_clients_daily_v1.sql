@@ -88,6 +88,7 @@ WITH
     ORDER BY
       metadata.timestamp DESC
     ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
+    -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
     w1_unframed AS (
     PARTITION BY
       client_id,

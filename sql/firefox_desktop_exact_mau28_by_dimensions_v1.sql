@@ -27,7 +27,8 @@ SELECT
 FROM
   inactive_days
 WHERE
-  submission_date = @submission_date
+  client_id IS NOT NULL
+  AND submission_date = @submission_date
 GROUP BY
   submission_date,
   id_bucket,

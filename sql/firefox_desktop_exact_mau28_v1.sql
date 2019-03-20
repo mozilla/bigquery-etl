@@ -2,6 +2,7 @@ SELECT
   submission_date,
   CURRENT_DATETIME() AS generated_time,
   SUM(mau) AS mau,
+  SUM(wau) AS wau,
   SUM(dau) AS dau
 FROM
   firefox_desktop_exact_mau28_by_dimensions_v1

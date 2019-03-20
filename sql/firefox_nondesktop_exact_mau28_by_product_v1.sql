@@ -1,6 +1,5 @@
 SELECT
-  observation_date,
-  last_submission_date_in_window,
+  submission_date,
   product,
   SUM(mau) AS mau,
   SUM(wau) AS wau,
@@ -9,8 +8,10 @@ SELECT
   SUM(IF(country IN ('US', 'FR', 'DE', 'UK', 'CA'), wau, 0)) AS tier1_wau,
   SUM(IF(country IN ('US', 'FR', 'DE', 'UK', 'CA'), dau, 0)) AS tier1_dau
 FROM
-  firefox_nondesktop_exact_mau28_by_dimensions_v1
+  `moz-fx-data-derived-datasets.analysis.firefox_nondesktop_exact_mau28_by_dimensions_v1`
 GROUP BY
-  observation_date,
-  last_submission_date_in_window,
+  submission_date,
   product
+
+-- This is a "live view" and can be updated via bq:
+-- bq mk --project moz-fx-data-derived-datasets --use_legacy_sql=false --view "$(cat sql/firefox_nondesktop_exact_mau28_by_product_v1.sql)" analysis.firefox_nondesktop_exact_mau28_by_product_v1

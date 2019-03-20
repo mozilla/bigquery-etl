@@ -47,7 +47,7 @@ WHERE
   -- There are also many strange nonsensical entries for os, so we filter here.
   AND os IN ('Android', 'iOS')
   -- 2017-01-01 is the first populated day of telemetry_core_parquet, so start 28 days later.
-  AND submission_date >= DATE('2017-01-28')
+  AND submission_date >= DATE '2017-01-28'
   AND submission_date = @submission_date
 GROUP BY
   submission_date,

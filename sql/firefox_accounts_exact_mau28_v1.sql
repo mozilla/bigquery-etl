@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-derived-datasets.analysis.firefox_accounts_exact_mau28_v1`
+AS
 SELECT
   submission_date,
   SUM(mau) AS mau,
@@ -10,6 +13,3 @@ FROM
   `moz-fx-data-derived-datasets.analysis.firefox_accounts_exact_mau28_by_dimensions_v1`
 GROUP BY
   submission_date
-
--- This is a "live view" and can be updated via bq:
--- bq update --project moz-fx-data-derived-datasets --use_legacy_sql=false --view "$(cat sql/firefox_accounts_exact_mau28_v1.sql)" analysis.firefox_accounts_exact_mau28_v1

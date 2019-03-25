@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-derived-datasets.analysis.firefox_accounts_exact_mau28_by_dimensions_v1`
+AS
 SELECT
   * EXCEPT (generated_time, country),
   -- We normalize country to match the two-digit country codes that appear in
@@ -13,6 +16,3 @@ SELECT
   END AS country
 FROM
   `moz-fx-data-derived-datasets.analysis.firefox_accounts_exact_mau28_raw_v1`
-
--- This is a "live view" and can be updated via bq:
--- bq update --project moz-fx-data-derived-datasets --use_legacy_sql=false --view "$(cat sql/firefox_accounts_exact_mau28_by_dimensions_v1.sql)" analysis.firefox_accounts_exact_mau28_by_dimensions_v1

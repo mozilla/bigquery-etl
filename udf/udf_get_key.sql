@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION get_key(map ANY TYPE, k ANY TYPE) AS (
+CREATE TEMP FUNCTION udf_get_key(map ANY TYPE, k ANY TYPE) AS (
  (
    SELECT key_value.value
    FROM UNNEST(map.key_value) AS key_value

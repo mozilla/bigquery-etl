@@ -7,16 +7,12 @@ WITH
     -- this allows a variant of country-segmented MAU where we can still count
     -- a user that appeared in one of the target countries in the previous
     -- 28 days even if the most recent "country" value is not in this set.
-    IF(country IN (
-      'United States',
-      'France',
-      'Germany',
-      'United Kingdom',
-      'Canada'),
+    IF(seen_in_tier1_country,
       @submission_date,
       NULL) AS date_last_seen_in_tier1_country,
     * EXCEPT (submission_date,
-      generated_time)
+      generated_time,
+      seen_in_tier1_country)
   FROM
     fxa_users_daily_v1
   WHERE

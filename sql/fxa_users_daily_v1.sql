@@ -18,6 +18,20 @@ CREATE TEMP FUNCTION udf_mode_last(x ANY TYPE) AS ((
   LIMIT 1
 ));
 
+CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS ((
+  EXISTS(
+    SELECT
+      country
+    FROM
+      UNNEST(x) AS country
+    WHERE country IN (
+      'United States',
+      'France',
+      'Germany',
+      'United Kingdom',
+      'Canada')
+    )));
+
 WITH
   windowed AS (
   SELECT
@@ -25,7 +39,8 @@ WITH
     CURRENT_DATETIME() AS generated_time,
     user_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
-    udf_mode_last(ARRAY_AGG(country) OVER w1) AS country
+    udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
+    udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country
   FROM
     -- We've done a one-time import of historical FxA data into static.fxa_amplitude_export_event_date;
     -- this table contains events exported from Amplitude and ends on 2019-03-17;

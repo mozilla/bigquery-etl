@@ -32,7 +32,7 @@ FROM
 WHERE
   -- First data is on 2017-10-01, so we start 28 days later for first complete MAU value.
   submission_date >= DATE '2017-10-28'
-  --AND submission_date = @submission_date
+  AND submission_date = @submission_date
 GROUP BY
   submission_date,
   id_bucket,

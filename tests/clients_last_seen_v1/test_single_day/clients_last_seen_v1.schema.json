@@ -5,13 +5,8 @@
     "mode": "REQUIRED"
   },
   {
-    "name": "generated_time",
-    "type": "DATETIME",
-    "mode": "REQUIRED"
-  },
-  {
-    "name": "last_seen_date",
-    "type": "DATE",
+    "name": "client_id",
+    "type": "STRING",
     "mode": "REQUIRED"
   },
   {
@@ -32,8 +27,18 @@
     ]
   },
   {
-    "name": "client_id",
-    "type": "STRING",
+    "name": "scalar_parent_browser_engagement_total_uri_count_sum",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "days_since_seen",
+    "type": "INT64",
     "mode": "REQUIRED"
+  },
+  {
+    "name": "days_since_visited_5_uri",
+    "type": "INT64",
+    "mode": "NULLABLE"
   }
 ]

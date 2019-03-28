@@ -3,7 +3,7 @@ WITH
   SELECT
     * EXCEPT (submission_date_s3),
     0 AS days_since_seen,
-    -- For measuring Active MAU, where this is the day since this
+    -- For measuring Active MAU, where this is the days since this
     -- client_id was an Active User as defined by
     -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
     IF(scalar_parent_browser_engagement_total_uri_count_sum >= 5,

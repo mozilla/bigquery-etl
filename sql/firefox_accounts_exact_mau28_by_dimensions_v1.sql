@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-derived-datasets.analysis.firefox_accounts_exact_mau28_by_dimensions_v1`
+  `moz-fx-data-derived-datasets.telemetry.firefox_accounts_exact_mau28_by_dimensions_v1`
 AS
 SELECT
   * EXCEPT (generated_time, country),
@@ -15,4 +15,4 @@ SELECT
     ELSE 'Other'
   END AS country
 FROM
-  `moz-fx-data-derived-datasets.analysis.firefox_accounts_exact_mau28_raw_v1`
+  `moz-fx-data-derived-datasets.telemetry.firefox_accounts_exact_mau28_raw_v1`

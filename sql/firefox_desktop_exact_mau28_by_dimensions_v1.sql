@@ -1,18 +1,15 @@
-WITH
-  inactive_days AS (
-    SELECT
-      *,
-      DATE_DIFF(submission_date, last_seen_date, DAY) AS _inactive_days
-    FROM
-      clients_last_seen_v1
-  )
-
 SELECT
   submission_date,
-  CURRENT_DATETIME() AS generated_time,
-  COUNTIF(_inactive_days < 28) AS mau,
-  COUNTIF(_inactive_days < 7) AS wau,
-  COUNTIF(_inactive_days < 1) AS dau,
+  COUNTIF(days_since_seen < 28) AS mau,
+  COUNTIF(days_since_seen < 7) AS wau,
+  COUNTIF(days_since_seen < 1) AS dau,
+  -- Active MAU counts all Active Users on any day in the last 28 days not just
+  -- the most recent day making COUNTIF(_days_since_seen < 28 AND visited_5_uri)
+  -- incorrect. Instead we track days_since_visited_5_uri and use that.
+  -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
+  COUNTIF(days_since_visited_5_uri < 28) AS visited_5_uri_mau,
+  COUNTIF(days_since_visited_5_uri < 7) AS visited_5_uri_wau,
+  COUNTIF(days_since_visited_5_uri < 1) AS visited_5_uri_dau,
   -- We hash client_ids into 20 buckets to aid in computing
   -- confidence intervals for mau/wau/dau sums; the particular hash
   -- function and number of buckets is subject to change in the future.
@@ -25,7 +22,7 @@ SELECT
   country,
   distribution_id
 FROM
-  inactive_days
+  clients_last_seen_v1
 WHERE
   client_id IS NOT NULL
   AND submission_date = @submission_date

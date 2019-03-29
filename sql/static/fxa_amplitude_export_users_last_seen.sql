@@ -14,7 +14,7 @@ WITH
       generated_time,
       seen_in_tier1_country)
   FROM
-    fxa_users_daily_v1
+    fxa_amplitude_export_users_daily
   WHERE
     submission_date = @submission_date ),
   previous AS (
@@ -27,7 +27,7 @@ WITH
           date_last_seen_in_tier1_country,
           NULL) AS date_last_seen_in_tier1_country)
   FROM
-    fxa_users_last_seen_v1
+    fxa_amplitude_export_users_last_seen
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND date_last_seen > DATE_SUB(@submission_date, INTERVAL 28 DAY) )

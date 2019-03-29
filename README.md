@@ -9,7 +9,8 @@ Recommended practices
 ===
 
 - Queries
-  - Should be defined in files named as `sql/table_version.sql` e.g. `sql/clients_daily_v6.sql`
+  - Should be defined in files named as `sql/table_version.sql` e.g.
+    `sql/clients_daily_v6.sql`
   - Should not specify a project or dataset in table names to simplify testing
   - Should be [incremental](#incremental-queries)
   - Should filter input tables on partition and clustering columns
@@ -48,10 +49,10 @@ Incremental queries have these properties:
   - Should be impacted by values from a finite number of preceding partitions
     - This allows for backfilling in chunks instead of serially for all time
       and limiting backfills to a certain number of days following updated data
-    - For example `sql/nondesktop_clients_last_seen_v1.sql` can be run serially
-      on any 28 day period and the last day will be the same whether or not the
-      partition preceding the first day was missing because values are only
-      impacted by 27 preceding days
+    - For example `sql/clients_last_seen_v1.sql` can be run serially on any 28 day
+      period and the last day will be the same whether or not the partition
+      preceding the first day was missing because values are only impacted by
+      27 preceding days
 
 Tests
 =====

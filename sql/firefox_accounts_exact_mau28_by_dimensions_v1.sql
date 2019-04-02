@@ -3,6 +3,9 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * EXCEPT (generated_time, country)
+    -- We rename this column here to match the new standard of prefixing _mau
+    -- with the usage criterion; we can refactor to have the correct name in
+    -- the raw table the next time we need to make a change and backfill.
     REPLACE (mau_tier1_inclusive AS seen_in_tier1_country_mau),
   -- We normalize country to match the two-digit country codes that appear in
   -- telemetry data, so that this view is compatible with the exact_mau28 views

@@ -31,7 +31,7 @@ SELECT
   CURRENT_DATETIME AS generated_time,
   client_id,
   sample_id,
-  ARRAY_CONCAT(_previous.days, _current.days) AS days
+  ARRAY_CONCAT(_current.days, previous.days) AS days
 FROM
   _current
 FULL JOIN

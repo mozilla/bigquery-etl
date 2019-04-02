@@ -6,10 +6,8 @@ SELECT
   SUM(mau) AS mau,
   SUM(wau) AS wau,
   SUM(dau) AS dau,
-  SUM(seen_in_tier1_country_mau) AS tier1_mau,
-  SUM(seen_in_tier1_country_wau) AS tier1_wau,
-  SUM(seen_in_tier1_country_dau) AS tier1_dau
+  SUM(seen_in_tier1_country_mau) AS tier1_mau
 FROM
-  `moz-fx-data-derived-datasets.analysis.firefox_accounts_exact_mau28_by_dimensions_v1`
+  `moz-fx-data-derived-datasets.telemetry.firefox_accounts_exact_mau28_by_dimensions_v1`
 GROUP BY
   submission_date

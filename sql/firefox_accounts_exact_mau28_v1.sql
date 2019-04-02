@@ -6,9 +6,9 @@ SELECT
   SUM(mau) AS mau,
   SUM(wau) AS wau,
   SUM(dau) AS dau,
-  SUM(IF(country IN ('US', 'FR', 'DE', 'UK', 'CA'), mau, 0)) AS tier1_mau,
-  SUM(IF(country IN ('US', 'FR', 'DE', 'UK', 'CA'), wau, 0)) AS tier1_wau,
-  SUM(IF(country IN ('US', 'FR', 'DE', 'UK', 'CA'), dau, 0)) AS tier1_dau
+  SUM(seen_in_tier1_country_mau) AS tier1_mau,
+  SUM(seen_in_tier1_country_wau) AS tier1_wau,
+  SUM(seen_in_tier1_country_dau) AS tier1_dau
 FROM
   `moz-fx-data-derived-datasets.analysis.firefox_accounts_exact_mau28_by_dimensions_v1`
 GROUP BY

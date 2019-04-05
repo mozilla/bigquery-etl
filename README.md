@@ -51,7 +51,7 @@ Recommended practices
     [#65](https://github.com/mozilla/bigquery-etl/issues/65)
   - May use `UPDATE` instead of equivalent `SELECT` queries to improve speed
     - In one case adding a new column calculated from existing columns with
-      `DATE_DIFF` using `UPDATE` was twice as fast using `SELECT`
+      `DATE_DIFF` using `UPDATE` was twice as fast as using `SELECT`
 
 Incremental Queries
 ---

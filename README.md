@@ -38,11 +38,11 @@ Recommended practices
   - Should delay column deletes until the next other backfill
     - Should use `NULL` for new data and `EXCEPT` to exclude from views until
       dropped
-- Should use copy operations in append mode to change partition column, cluster
-  columns, and column order
-  - Copy operations do not currently allow column deletes, but using the
-    Storage API to delete columns for less than $5 per TiB is being
-    investigated in [#66](https://github.com/mozilla/bigquery-etl/issues/66)
+- Should use copy operations in append mode to change column order
+  - Copy operations do not allow changing partitioning, changing clustering, or
+    column deletes, but using the Storage API to do these things for less than
+    on-demand query pricing, $5 per TiB as of 2019-04-01, is being investigated
+    in [#66](https://github.com/mozilla/bigquery-etl/issues/66)
 - Should split backfilling into queries that finish in minutes not hours
   - May output to multiple tables that are combined using copy-append
     operations

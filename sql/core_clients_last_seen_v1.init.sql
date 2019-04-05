@@ -9,5 +9,5 @@ SELECT
 FROM
   core_clients_daily_v1
 WHERE
-  -- 2017-01-01 is the first date in telemetry_core_parquet_v3.
-  submission_date = DATE '2017-01-01'
+  -- Output empty table and read no input rows
+  FALSE

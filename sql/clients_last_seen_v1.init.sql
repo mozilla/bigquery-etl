@@ -1,20 +1,12 @@
-WITH input AS (
-  SELECT
-    ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date_s3 DESC) AS _n,
-    *
-  FROM
-    clients_daily_v6
-  WHERE
-    submission_date_s3 <= @submission_date
-    AND submission_date_s3 > DATE_SUB(@submission_date, INTERVAL 28 DAY)
-)
 SELECT
-  @submission_date AS submission_date,
+  DATE(NULL) AS submission_date,
   CURRENT_DATETIME() AS generated_time,
   submission_date_s3 AS last_seen_date,
-  * EXCEPT (_n,
-    submission_date_s3)
+  * EXCEPT (submission_date_s3),
+  0 AS days_since_seen,
+  NULL AS days_since_visited_5_uri
 FROM
-  input
+  clients_daily_v6
 WHERE
-  _n = 1
+  -- Output empty table and read no input rows
+  FALSE

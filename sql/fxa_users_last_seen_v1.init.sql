@@ -9,5 +9,5 @@ SELECT
 FROM
   fxa_users_daily_v1
 WHERE
-  -- Choose an arbitrary date that contains no records.
-  submission_date = DATE_FROM_UNIX_DATE(0)
+  -- Output empty table and read no input rows
+  FALSE

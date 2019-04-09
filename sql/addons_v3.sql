@@ -1,5 +1,5 @@
 SELECT
-  @submission_date AS submission_date,
+  submission_date_s3 AS submission_date,
   document_id,
   client_id,
   sample_id,

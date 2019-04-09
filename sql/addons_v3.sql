@@ -10,5 +10,5 @@ FROM
   telemetry.main_summary_v4,
   UNNEST(active_addons.list) AS _addon
 WHERE
-  submission_date_s3 = @submission_date
-  AND client_id IS NOT NULL
+  client_id IS NOT NULL
+  AND submission_date_s3 = @submission_date

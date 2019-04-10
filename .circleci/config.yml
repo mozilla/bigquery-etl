@@ -26,7 +26,7 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp.json
         command: |
           echo "${GCLOUD_SERVICE_KEY:?}" > "$GOOGLE_APPLICATION_CREDENTIALS"
-          venv/bin/pytest --black --docstyle --flake8 --mypy-ignore-missing-imports
+          venv/bin/pytest --black --docstyle --flake8 --mypy-ignore-missing-imports -n4
     - save_cache:
         paths:
         - venv/

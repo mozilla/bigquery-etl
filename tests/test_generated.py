@@ -78,4 +78,4 @@ def test_generated(bq, dataset, generated_test):
     result = list(coerce_result(*job.result()))
     result.sort(key=lambda row: json.dumps(row))
 
-    assert result == generated_test.expect
+    assert generated_test.expect == result

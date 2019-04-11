@@ -1,58 +1,12 @@
-WITH
-  _current AS (
-  SELECT
-    * EXCEPT (submission_date_s3),
-    0 AS days_since_seen,
-    -- For measuring Active MAU, where this is the days since this
-    -- client_id was an Active User as defined by
-    -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
-    IF(scalar_parent_browser_engagement_total_uri_count_sum >= 5,
-      0,
-      NULL) AS days_since_visited_5_uri,
-    IF(devtools_toolbox_opened_count_sum > 0,
-      0,
-      NULL) AS days_since_opened_dev_tools,
-    profile_age_in_days AS days_since_created_profile
-  FROM
-    telemetry.smoot_clients_daily_1percent_v1
-  WHERE
-    submission_date_s3 = @submission_date ),
-  --
-  _previous AS (
-  SELECT
-    * EXCEPT (submission_date, generated_time) REPLACE(
-      -- omit values outside 28 day window
-      IF(days_since_visited_5_uri < 27,
-        days_since_visited_5_uri,
-        NULL) AS days_since_visited_5_uri,
-      IF(days_since_opened_dev_tools < 27,
-        days_since_opened_dev_tools,
-        NULL) AS days_since_opened_dev_tools)
-  FROM
-    telemetry.smoot_clients_last_seen_1percent_v1 AS cls
-  WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND days_since_seen < 27 )
---
+CREATE OR REPLACE VIEW
+  smoot_clients_last_seen_1percent_v1 AS
 SELECT
-  @submission_date AS submission_date,
-  IF(_current.client_id IS NOT NULL,
-    _current,
-    _previous).* EXCEPT (days_since_seen,
-      days_since_visited_5_uri,
-      days_since_opened_dev_tools,
-      days_since_created_profile),
-  COALESCE(_current.days_since_seen,
-    _previous.days_since_seen + 1) AS days_since_seen,
-  COALESCE(_current.days_since_visited_5_uri,
-    _previous.days_since_visited_5_uri + 1) AS days_since_visited_5_uri,
-  COALESCE(_current.days_since_opened_dev_tools,
-    _previous.days_since_opened_dev_tools + 1) AS days_since_opened_dev_tools,
-  COALESCE(_current.days_since_created_profile,
-    _previous.days_since_created_profile + 1) AS days_since_created_profile
+  * EXCEPT (generated_time),
+  -- To get the integer value of the rightmost set bit, we take a bitwise AND
+  -- of the bit pattern and its complement, then we determine the position of
+  -- the bit via base-2 logarithm; see https://stackoverflow.com/a/42747608/1260237
+  CAST(LOG(days_seen_bits & -days_seen_bits, 2) AS INT64) AS days_since_seen,
+  CAST(LOG(days_visited_5_uri_bits & -days_visited_5_uri_bits, 2) AS INT64) AS days_since_visited_5_uri,
+  CAST(LOG(days_opened_dev_tools_bits & -days_opened_dev_tools_bits, 2) AS INT64) AS days_since_opened_dev_tools
 FROM
-  _current
-FULL JOIN
-  _previous
-USING
-  (client_id)
+  smoot_clients_last_seen_raw_v1

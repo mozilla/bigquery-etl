@@ -1,5 +1,5 @@
 CREATE TEMP FUNCTION bitmask_lowest_28() AS (0x0FFFFFFF);
-CREATE TEMP FUNCTION shift_one_day(x INT64) AS ((x << 1) & bitmask_lowest_28());
+CREATE TEMP FUNCTION shift_one_day(x INT64) AS (IFNULL((x << 1) & bitmask_lowest_28(), 0));
 
 WITH
   _current AS (

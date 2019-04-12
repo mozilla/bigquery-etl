@@ -41,4 +41,6 @@ FROM
 FULL JOIN
   _previous
 USING
-  (client_id)
+  -- Include sample_id to match the clustering of the tables, which may improve
+  -- join performance.
+  (sample_id, client_id)

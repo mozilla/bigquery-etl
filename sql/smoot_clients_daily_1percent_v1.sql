@@ -1,7 +1,10 @@
 CREATE TABLE
   smoot_clients_daily_1percent_v1
 PARTITION BY
-  submission_date_s3 AS
+  submission_date_s3
+CLUSTER BY
+  sample_id,
+  client_id AS
 SELECT
   *
 FROM

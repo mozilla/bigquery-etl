@@ -3,7 +3,10 @@ OR REPLACE
 TABLE
   smoot_clients_last_seen_1percent_raw_v1
 PARTITION BY
-  submission_date AS
+  submission_date
+CLUSTER BY
+  sample_id,
+  client_id AS
 SELECT
   DATE(NULL) AS submission_date,
   CURRENT_DATETIME() AS generated_time,

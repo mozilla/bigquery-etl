@@ -90,18 +90,20 @@ CREATE TEMP FUNCTION
       NULL) );
   --
 CREATE TEMP FUNCTION
-  udf_require_whole_geo(country STRING,
+  udf_geo_struct(country STRING,
     city STRING,
     geo_subdivision1 STRING,
-    geo_subdivision2 STRING) AS ( IF(country != '??',
+    geo_subdivision2 STRING) AS ( --
+    IF(country IS NULL
+      OR country = '??',
+      NULL,
       STRUCT(country,
         NULLIF(city,
           '??') AS city,
         NULLIF(geo_subdivision1,
           '??') AS geo_subdivision1,
         NULLIF(geo_subdivision2,
-          '??') AS geo_subdivision2),
-      NULL));
+          '??') AS geo_subdivision2)));
   --
 WITH
   -- normalize client_id and rank by document_id
@@ -183,7 +185,7 @@ WITH
     udf_aggregate_map_first(ARRAY_AGG(experiments) OVER w1) AS experiments,
     AVG(first_paint) OVER w1 AS first_paint_mean,
     FIRST_VALUE(flash_version IGNORE NULLS) OVER w1 AS flash_version,
-    FIRST_VALUE(udf_require_whole_geo(country, city, geo_subdivision1, geo_subdivision2) IGNORE NULLS) OVER w1.*,
+    FIRST_VALUE(udf_geo_struct(country, city, geo_subdivision1, geo_subdivision2) IGNORE NULLS) OVER w1.*,
     FIRST_VALUE(gfx_features_advanced_layers_status IGNORE NULLS) OVER w1 AS gfx_features_advanced_layers_status,
     FIRST_VALUE(gfx_features_d2d_status IGNORE NULLS) OVER w1 AS gfx_features_d2d_status,
     FIRST_VALUE(gfx_features_d3d11_status IGNORE NULLS) OVER w1 AS gfx_features_d3d11_status,

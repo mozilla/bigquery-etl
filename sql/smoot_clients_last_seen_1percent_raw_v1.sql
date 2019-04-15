@@ -1,5 +1,6 @@
 CREATE TEMP FUNCTION bitmask_lowest_28() AS (0x0FFFFFFF);
 CREATE TEMP FUNCTION shift_one_day(x INT64) AS (IFNULL((x << 1) & bitmask_lowest_28(), 0));
+CREATE TEMP FUNCTION combine_days(prev INT64, curr INT64) AS (IFNULL(shift_one_day(prev), 0) + IFNULL(curr, 0));
 
 WITH
   _current AS (
@@ -31,9 +32,9 @@ SELECT
   IF(_current.client_id IS NOT NULL,
     _current,
     _previous).* REPLACE (
-      shift_one_day(_previous.days_seen_bits) + _current.days_seen_bits AS days_seen_bits,
-      shift_one_day(_previous.days_visited_5_uri_bits) + _current.days_visited_5_uri_bits AS days_visited_5_uri_bits,
-      shift_one_day(_previous.days_opened_dev_tools_bits) + _current.days_opened_dev_tools_bits AS days_opened_dev_tools_bits,
+      combine_days(_previous.days_seen_bits, _current.days_seen_bits) AS days_seen_bits,
+      combine_days(_previous.days_visited_5_uri_bits, _current.days_visited_5_uri_bits) AS days_visited_5_uri_bits,
+      combine_days(_previous.days_opened_dev_tools_bits, _current.days_opened_dev_tools_bits) AS days_opened_dev_tools_bits,
       COALESCE(_current.days_since_created_profile,
         _previous.days_since_created_profile + 1) AS days_since_created_profile)
 FROM

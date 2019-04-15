@@ -15,6 +15,7 @@ WITH nested AS (
       STRUCT('Any Firefox Desktop Activity', 'WAU', COUNTIF(days_since_seen < 7)),
       STRUCT('Any Firefox Desktop Activity', 'DAU', COUNTIF(days_since_seen < 1)),
       STRUCT('Any Firefox Desktop Activity', 'Intensity', SAFE_DIVIDE(SUM(bitcount_lowest_7(days_seen_bits)), COUNTIF(days_since_seen < 7))),
+      STRUCT('Any Firefox Desktop Activity', 'Active Days In Week', SUM(bitcount_lowest_7(days_seen_bits)), COUNTIF(days_since_seen < 7)),
       STRUCT('Firefox Desktop Visited 5 URI', 'MAU', COUNTIF(days_since_visited_5_uri < 28)),
       STRUCT('Firefox Desktop Visited 5 URI', 'WAU', COUNTIF(days_since_visited_5_uri < 7)),
       STRUCT('Firefox Desktop Visited 5 URI', 'DAU', COUNTIF(days_since_visited_5_uri < 1)),

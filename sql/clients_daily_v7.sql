@@ -280,6 +280,8 @@ WITH
     SUM(ssl_handshake_result_failure) OVER w1 AS ssl_handshake_result_failure_sum,
     SUM(ssl_handshake_result_success) OVER w1 AS ssl_handshake_result_success_sum,
     FIRST_VALUE(sync_configured IGNORE NULLS) OVER w1 AS sync_configured,
+    AVG(sync_count_desktop) OVER w1 AS sync_count_desktop_mean,
+    AVG(sync_count_mobile) OVER w1 AS sync_count_mobile_mean,
     SUM(sync_count_desktop) OVER w1 AS sync_count_desktop_sum,
     SUM(sync_count_mobile) OVER w1 AS sync_count_mobile_sum,
     FIRST_VALUE(telemetry_enabled IGNORE NULLS) OVER w1 AS telemetry_enabled,

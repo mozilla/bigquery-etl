@@ -16,6 +16,7 @@ Recommended practices
 - Should be [incremental](#incremental-queries)
 - Should filter input tables on partition and clustering columns
 - Should use `_` prefix in generated column names not meant for output
+- Should not use `DATETIME` type, due to [incompatiblity](GoogleCloudPlatform/spark-bigquery-connector#5) with the [spark connector](GoogleCloudPlatform/spark-bigquery-connector)
 - Should not use jinja templating on the query file in Airflow
 
 ### UDFs

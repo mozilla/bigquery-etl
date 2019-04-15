@@ -11,7 +11,7 @@ WITH nested AS (
   SELECT
     DATE_SUB(submission_date, INTERVAL 7 DAY) AS date,
     [
-      STRUCT('New Firefox Desktop Profile Created' AS usage, 'Count' AS metric, CAST(COUNTIF(days_since_created_profile = 6) AS FLOAT64) AS value)
+      STRUCT('New Firefox Desktop Profile Created' AS usage, 'DAU' AS metric, CAST(COUNTIF(days_since_created_profile = 6) AS FLOAT64) AS value)
     ] AS metrics,
     -- We hash client_ids into 20 buckets to aid in computing
     -- confidence intervals for mau/wau/dau sums; the particular hash

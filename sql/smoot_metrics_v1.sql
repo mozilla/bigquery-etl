@@ -7,8 +7,6 @@ WITH unioned AS (
   FROM
     `moz-fx-data-derived-datasets.telemetry.smoot_usage_metrics_raw_v1`,
     UNNEST(metrics)
-  WHERE
-    metric IN ('MAU', 'WAU', 'DAU', 'Intensity')
   --
   UNION ALL
   --
@@ -17,8 +15,6 @@ WITH unioned AS (
   FROM
     `moz-fx-data-derived-datasets.telemetry.smoot_usage_1week_raw_v1`,
     UNNEST(metrics)
-  WHERE
-    metric IN ('Count')
 )
 --
 SELECT
@@ -29,3 +25,5 @@ SELECT
   * EXCEPT (metrics, date, usage, metric, value)
 FROM
   unioned
+WHERE
+  date >= '2018-01-01'

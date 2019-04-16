@@ -12,7 +12,7 @@ WITH
     -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
     CAST(scalar_parent_browser_engagement_total_uri_count_sum >= 5 AS INT64) AS days_visited_5_uri_bits,
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
-    profile_age_in_days AS days_since_created_profile
+    IF(profile_age_in_days BETWEEN 0 AND 27, profile_age_in_days, NULL) AS days_since_created_profile
   FROM
     telemetry.smoot_clients_daily_1percent_v1
   WHERE
@@ -21,6 +21,7 @@ WITH
   _previous AS (
   SELECT
     * EXCEPT (submission_date, generated_time)
+    REPLACE (IF(days_since_created_profile BETWEEN 0 AND 26, days_since_created_profile, NULL) AS days_since_created_profile)
   FROM
     telemetry.smoot_clients_last_seen_1percent_raw_v1 AS cls
   WHERE
@@ -35,8 +36,11 @@ SELECT
       combine_days(_previous.days_seen_bits, _current.days_seen_bits) AS days_seen_bits,
       combine_days(_previous.days_visited_5_uri_bits, _current.days_visited_5_uri_bits) AS days_visited_5_uri_bits,
       combine_days(_previous.days_opened_dev_tools_bits, _current.days_opened_dev_tools_bits) AS days_opened_dev_tools_bits,
-      COALESCE(_current.days_since_created_profile,
-        _previous.days_since_created_profile + 1) AS days_since_created_profile)
+      -- We want to base new profile creation date on the first profile_creation_date
+      -- value we observe, so we propagate a non-null previous value in preference
+      -- to a non-null value on today's observation.
+      COALESCE(_previous.days_since_created_profile + 1,
+        _current.days_since_created_profile) AS days_since_created_profile)
 FROM
   _current
 FULL JOIN

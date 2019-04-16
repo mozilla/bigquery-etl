@@ -5,10 +5,12 @@
 
 from dataclasses import dataclass
 from datetime import date, datetime
+from decimal import Decimal
 from google.cloud import bigquery
 from typing import Any, Callable, Dict, Generator, List, Optional, Union
 
 import json
+import os
 import os.path
 import yaml
 
@@ -72,6 +74,8 @@ class GeneratedTest:
         """Fill in calculated fields if not provided."""
         if self.dataset_id is None:
             self.dataset_id = f"{self.query_name}_{self.name}"
+        if "CIRCLE_BUILD_NUM" in os.environ:
+            self.dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
         if self.modified_query is None:
             self.modified_query = self.query
             for old, new in self.replace.items():
@@ -211,9 +215,11 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
                 else next(coerce_result(value))
                 for key, value in element.items()
                 # drop generated_time column
-                if key not in ("generated_time",)
+                if key not in ("generated_time",) and value is not None
             }
         elif isinstance(element, (date, datetime)):
             yield element.isoformat()
+        elif isinstance(element, Decimal):
+            yield str(element)
         else:
             yield element

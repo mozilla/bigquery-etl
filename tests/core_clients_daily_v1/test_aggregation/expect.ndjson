@@ -1,0 +1,7 @@
+{"submission_date":"2019-01-01","client_id":"","profile_date":"1970-01-01","sessions":0,"durations":0,"flash_usage":0,"country":"","city":"","app_build_id":"","normalized_channel":"","app_name":"","os":"","locale":"","osversion":"","device":"","arch":"","default_search":"","distribution_id":"","campaign":"","campaign_id":"","default_browser":false,"show_tracker_stats_share":false,"metadata_app_version":"","bug_1501329_affected":false}
+{"submission_date":"2019-01-01","client_id":"a","sessions":0,"durations":0,"flash_usage":0}
+{"submission_date":"2019-01-01","client_id":"b","profile_date":"1970-01-02","sessions":0,"durations":0,"flash_usage":0}
+{"submission_date":"2019-01-01","client_id":"c","sessions":4,"durations":4,"flash_usage":4}
+{"submission_date":"2019-01-01","client_id":"d","sessions":0,"durations":0,"flash_usage":0,"app_build_id":"","normalized_channel":"","app_name":"","os":"","locale":"","osversion":"","device":"","arch":"","default_search":"","distribution_id":"","campaign":"","campaign_id":"","default_browser":false,"show_tracker_stats_share":false,"metadata_app_version":"","bug_1501329_affected":false}
+{"submission_date":"2019-01-01","client_id":"e","sessions":0,"durations":0,"flash_usage":0,"country":"0","city":"0"}
+{"submission_date":"2019-01-01","client_id":"f","sessions":0,"durations":0,"flash_usage":0,"country":"0"}

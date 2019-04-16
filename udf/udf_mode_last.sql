@@ -1,22 +1,20 @@
-CREATE TEMP FUNCTION udf_mode_last(x ANY TYPE) AS ((
-  SELECT
-    val
-  FROM (
+CREATE TEMP FUNCTION
+  udf_mode_last(list ANY TYPE) AS ((
     SELECT
-      val,
-      COUNT(val) AS n,
-      MAX(offset) AS max_offset
+      _value
     FROM
-      UNNEST(x) AS val
-    WITH OFFSET AS offset
+      UNNEST(list) AS _value
+    WITH
+    OFFSET
+      AS
+    _offset
     GROUP BY
-      val
+      _value
     ORDER BY
-      n DESC,
-      max_offset DESC
-  )
-  LIMIT 1
-));
+      COUNT(_value) DESC,
+      MAX(_offset) DESC
+    LIMIT
+      1 ));
 
 /*
 

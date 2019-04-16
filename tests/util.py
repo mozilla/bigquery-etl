@@ -10,6 +10,7 @@ from google.cloud import bigquery
 from typing import Any, Callable, Dict, Generator, List, Optional, Union
 
 import json
+import os
 import os.path
 import yaml
 
@@ -73,6 +74,8 @@ class GeneratedTest:
         """Fill in calculated fields if not provided."""
         if self.dataset_id is None:
             self.dataset_id = f"{self.query_name}_{self.name}"
+        if "CIRCLE_BUILD_NUM" in os.environ:
+            self.dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
         if self.modified_query is None:
             self.modified_query = self.query
             for old, new in self.replace.items():

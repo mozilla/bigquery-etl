@@ -10,20 +10,25 @@ PARTITION BY
 WITH nested AS (
   SELECT
     submission_date AS date,
-    [
-      STRUCT('Any Firefox Desktop Activity' AS usage, 'MAU' AS metric, COUNTIF(days_since_seen < 28) AS value),
-      STRUCT('Any Firefox Desktop Activity', 'WAU', COUNTIF(days_since_seen < 7)),
-      STRUCT('Any Firefox Desktop Activity', 'DAU', COUNTIF(days_since_seen < 1)),
-      STRUCT('Any Firefox Desktop Activity', 'Intensity', SAFE_DIVIDE(SUM(bitcount_lowest_7(days_seen_bits)), COUNTIF(days_since_seen < 7))),
-      STRUCT('Any Firefox Desktop Activity', 'Active Days In Week', SUM(bitcount_lowest_7(days_seen_bits))),
-      STRUCT('Firefox Desktop Visited 5 URI', 'MAU', COUNTIF(days_since_visited_5_uri < 28)),
-      STRUCT('Firefox Desktop Visited 5 URI', 'WAU', COUNTIF(days_since_visited_5_uri < 7)),
-      STRUCT('Firefox Desktop Visited 5 URI', 'DAU', COUNTIF(days_since_visited_5_uri < 1)),
-      STRUCT('Firefox Desktop Visited 5 URI', 'Intensity', SAFE_DIVIDE(SUM(bitcount_lowest_7(days_visited_5_uri_bits)), COUNTIF(days_since_visited_5_uri < 7))),
-      STRUCT('Firefox Desktop Dev Tools Opened', 'MAU', COUNTIF(days_since_opened_dev_tools < 28)),
-      STRUCT('Firefox Desktop Dev Tools Opened', 'WAU', COUNTIF(days_since_opened_dev_tools < 7)),
-      STRUCT('Firefox Desktop Dev Tools Opened', 'DAU', COUNTIF(days_since_opened_dev_tools < 1)),
-      STRUCT('Firefox Desktop Dev Tools Opened', 'Intensity', SAFE_DIVIDE(SUM(bitcount_lowest_7(days_opened_dev_tools_bits)), COUNTIF(days_since_opened_dev_tools < 7)))
+    [ --
+      STRUCT('Any Firefox Desktop Activity' AS usage,
+        COUNTIF(days_since_seen < 1) AS dau,
+        COUNTIF(days_since_seen < 7) AS wau,
+        COUNTIF(days_since_seen < 28) AS mau,
+        SUM(bitcount_lowest_7(days_seen_bits)) AS active_days_in_week,
+        NULL AS retained_in_week_1),
+      STRUCT('Firefox Desktop Visited 5 URI' AS usage,
+        COUNTIF(days_since_visited_5_uri < 1) AS dau,
+        COUNTIF(days_since_visited_5_uri < 7) AS wau,
+        COUNTIF(days_since_visited_5_uri < 28) AS mau,
+        SUM(bitcount_lowest_7(days_visited_5_uri_bits)) AS active_days_in_week,
+        NULL AS retained_in_week_1),
+      STRUCT('Firefox Desktop Dev Tools Opened' AS usage,
+        COUNTIF(days_since_opened_dev_tools < 1) AS dau,
+        COUNTIF(days_since_opened_dev_tools < 7) AS wau,
+        COUNTIF(days_since_opened_dev_tools < 28) AS mau,
+        SUM(bitcount_lowest_7(days_opened_dev_tools_bits)) AS active_days_in_week,
+        NULL AS retained_in_week_1) --
     ] AS metrics,
     -- We hash client_ids into 20 buckets to aid in computing
     -- confidence intervals for mau/wau/dau sums; the particular hash
@@ -50,15 +55,15 @@ WITH nested AS (
     content,
     country,
     distribution_id ),
---
+  --
 nonzero AS (
   SELECT
     * EXCEPT (metrics),
-    ARRAY(SELECT AS STRUCT * FROM UNNEST(metrics) WHERE value != 0 AND value IS NOT NULL) AS metrics
+    ARRAY(SELECT AS STRUCT * FROM UNNEST(metrics) WHERE dau != 0) AS metrics
   FROM
     nested
 )
---
+  --
 SELECT
   *
 FROM

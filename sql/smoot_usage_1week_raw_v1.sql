@@ -10,8 +10,13 @@ PARTITION BY
 WITH nested AS (
   SELECT
     DATE_SUB(submission_date, INTERVAL 7 DAY) AS date,
-    [
-      STRUCT('New Firefox Desktop Profile Created' AS usage, 'DAU' AS metric, CAST(COUNTIF(days_since_created_profile = 7) AS FLOAT64) AS value)
+    [ --
+      STRUCT('New Firefox Desktop Profile Created' AS usage,
+        COUNTIF(days_since_created_profile = 7) AS dau,
+        NULL AS wau,
+        NULL AS mau,
+        NULL AS active_days_in_week,
+        NULL AS retained_in_week_1) --
     ] AS metrics,
     -- We hash client_ids into 20 buckets to aid in computing
     -- confidence intervals for mau/wau/dau sums; the particular hash
@@ -43,7 +48,7 @@ WITH nested AS (
 nonzero AS (
   SELECT
     * EXCEPT (metrics),
-    ARRAY(SELECT AS STRUCT * FROM UNNEST(metrics) WHERE value != 0 AND value IS NOT NULL) AS metrics
+    ARRAY(SELECT AS STRUCT * FROM UNNEST(metrics) WHERE dau != 0) AS metrics
   FROM
     nested
 )

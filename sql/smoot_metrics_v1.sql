@@ -3,26 +3,26 @@ CREATE OR REPLACE VIEW
 --
 WITH unioned AS (
   SELECT
-    *
+    date,
+    metrics.*,
+    raw.* EXCEPT (date, metrics)
   FROM
-    `moz-fx-data-derived-datasets.telemetry.smoot_usage_metrics_raw_v1`,
-    UNNEST(metrics)
+    `moz-fx-data-derived-datasets.telemetry.smoot_usage_metrics_raw_v1` AS raw,
+    UNNEST(metrics) AS metrics
   --
   UNION ALL
   --
   SELECT
-    *
+    date,
+    metrics.*,
+    raw.* EXCEPT (date, metrics)
   FROM
-    `moz-fx-data-derived-datasets.telemetry.smoot_usage_1week_raw_v1`,
-    UNNEST(metrics)
+    `moz-fx-data-derived-datasets.telemetry.smoot_usage_1week_raw_v1` AS raw,
+    UNNEST(metrics) AS metrics
 )
 --
 SELECT
-  date,
-  usage,
-  metric,
-  value,
-  * EXCEPT (metrics, date, usage, metric, value)
+  *
 FROM
   unioned
 WHERE

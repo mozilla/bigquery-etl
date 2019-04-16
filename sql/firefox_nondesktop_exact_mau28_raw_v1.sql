@@ -10,7 +10,6 @@ WITH
 
 SELECT
   submission_date,
-  CURRENT_DATETIME() AS generated_time,
   COUNTIF(_inactive_days < 28) AS mau,
   COUNTIF(_inactive_days < 7) AS wau,
   COUNTIF(_inactive_days < 1) AS dau,

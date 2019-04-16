@@ -69,7 +69,6 @@ WITH
   windowed AS (
   SELECT
     submission_date_s3 AS submission_date,
-    CURRENT_TIMESTAMP AS generated_time,
     client_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
     -- For now, we're ignoring the following RECORD type fields:

@@ -1,41 +1,39 @@
-CREATE TEMP FUNCTION udf_mode_last(x ANY TYPE) AS ((
-  SELECT
-    val
-  FROM (
-    SELECT
-      val,
-      COUNT(val) AS n,
-      MAX(offset) AS max_offset
-    FROM
-      UNNEST(x) AS val
-    WITH OFFSET AS offset
-    GROUP BY
-      val
-    ORDER BY
-      n DESC,
-      max_offset DESC
-  )
-  LIMIT 1
-));
-
--- This UDF is only applicable in the context of this query;
--- telemetry data accepts countries as two-digit codes, but FxA
--- data includes long-form country names. The logic here is specific
--- to the FxA data.
-CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS (
-  EXISTS(
+  -- This UDF is only applicable in the context of this query;
+  -- telemetry data accepts countries as two-digit codes, but FxA
+  -- data includes long-form country names. The logic here is specific
+  -- to the FxA data.
+CREATE TEMP FUNCTION
+  udf_contains_tier1_country(x ANY TYPE) AS ( --
+    EXISTS(
     SELECT
       country
     FROM
       UNNEST(x) AS country
-    WHERE country IN (
-      'United States',
-      'France',
-      'Germany',
-      'United Kingdom',
-      'Canada'))
-);
-
+    WHERE
+      country IN ( --
+        'United States',
+        'France',
+        'Germany',
+        'United Kingdom',
+        'Canada')) );
+  --
+CREATE TEMP FUNCTION
+  udf_mode_last(list ANY TYPE) AS ((
+    SELECT
+      _value
+    FROM
+      UNNEST(list) AS _value
+    WITH
+    OFFSET
+      AS _offset
+    GROUP BY
+      _value
+    ORDER BY
+      COUNT(_value) DESC,
+      MAX(_offset) DESC
+    LIMIT
+      1 ));
+  --
 WITH
   windowed AS (
   SELECT
@@ -49,26 +47,35 @@ WITH
     fxa_all_events_v1
   WHERE
     user_id IS NOT NULL
-    AND event_type NOT IN (
-      'fxa_email - bounced', 'fxa_email - click', 'fxa_email - sent',
-      'fxa_reg - password_blocked','fxa_reg - password_common', 'fxa_reg - password_enrolled',
-      'fxa_reg - password_missing','fxa_sms - sent', 'mktg - email_click',
-      'mktg - email_open','mktg - email_sent','sync - repair_success',
+    AND event_type NOT IN ( --
+      'fxa_email - bounced',
+      'fxa_email - click',
+      'fxa_email - sent',
+      'fxa_reg - password_blocked',
+      'fxa_reg - password_common',
+      'fxa_reg - password_enrolled',
+      'fxa_reg - password_missing',
+      'fxa_sms - sent',
+      'mktg - email_click',
+      'mktg - email_open',
+      'mktg - email_sent',
+      'sync - repair_success',
       'sync - repair_triggered')
     AND EXTRACT(DATE FROM submission_timestamp) = @submission_date
   WINDOW
     w1 AS (
-      PARTITION BY
+    PARTITION BY
       user_id
     ORDER BY
-      submission_timestamp DESC
-    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
+      submission_timestamp --
+      ROWS BETWEEN UNBOUNDED PRECEDING
+      AND UNBOUNDED FOLLOWING),
     -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
     w1_unframed AS (
     PARTITION BY
       user_id
     ORDER BY
-      submission_timestamp DESC) )
+      submission_timestamp) )
 SELECT
   * EXCEPT (_n)
 FROM

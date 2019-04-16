@@ -1,23 +1,54 @@
-CREATE TEMP FUNCTION udf_mode_last(x ANY TYPE) AS ((
-  SELECT
-    val
-  FROM (
+CREATE TEMP FUNCTION
+  udf_json_mode_last(list ANY TYPE) AS ((
     SELECT
-      val,
-      COUNT(val) AS n,
-      MAX(offset) AS max_offset
+      ANY_VALUE(_value)
     FROM
-      UNNEST(x) AS val
-    WITH OFFSET AS offset
+      UNNEST(list) AS _value
+    WITH
+    OFFSET
+      AS _offset
     GROUP BY
-      val
+      TO_JSON_STRING(_value)
     ORDER BY
-      n DESC,
-      max_offset DESC
-  )
-  LIMIT 1
-));
-
+      COUNT(_value) DESC,
+      MAX(_offset) DESC
+    LIMIT
+      1));
+  --
+CREATE TEMP FUNCTION
+  udf_mode_last(list ANY TYPE) AS ((
+    SELECT
+      _value
+    FROM
+      UNNEST(list) AS _value
+    WITH
+    OFFSET
+      AS
+    _offset
+    GROUP BY
+      _value
+    ORDER BY
+      COUNT(_value) DESC,
+      MAX(_offset) DESC
+    LIMIT
+      1 ));
+  --
+CREATE TEMP FUNCTION
+  udf_geo_struct(country STRING,
+    city STRING,
+    geo_subdivision1 STRING,
+    geo_subdivision2 STRING) AS ( --
+    IF(country IS NULL
+      OR country = '??',
+      NULL,
+      STRUCT(country,
+        NULLIF(city,
+          '??') AS city,
+        NULLIF(geo_subdivision1,
+          '??') AS geo_subdivision1,
+        NULLIF(geo_subdivision2,
+          '??') AS geo_subdivision2)));
+  --
 WITH
   numbered_duplicates AS (
   SELECT
@@ -37,8 +68,8 @@ WITH
     _n = 1 ),
   windowed AS (
   SELECT
-    @submission_date AS submission_date,
-    CURRENT_DATETIME() AS generated_time,
+    submission_date_s3 AS submission_date,
+    CURRENT_TIMESTAMP AS generated_time,
     client_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
     -- For now, we're ignoring the following RECORD type fields:
@@ -58,8 +89,7 @@ WITH
     -- For all other dimensions, we use the mode of observed values in the day.
     udf_mode_last(ARRAY_AGG(app_name) OVER w1) AS app_name,
     udf_mode_last(ARRAY_AGG(os) OVER w1) AS os,
-    udf_mode_last(ARRAY_AGG(metadata.geo_country) OVER w1) AS country,
-    udf_mode_last(ARRAY_AGG(metadata.geo_city) OVER w1) AS city,
+    udf_json_mode_last(ARRAY_AGG(udf_geo_struct(metadata.geo_country, metadata.geo_city, NULL, NULL)) OVER w1).* EXCEPT (geo_subdivision1, geo_subdivision2),
     udf_mode_last(ARRAY_AGG(metadata.app_build_id) OVER w1) AS app_build_id,
     udf_mode_last(ARRAY_AGG(metadata.normalized_channel) OVER w1) AS normalized_channel,
     udf_mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
@@ -77,16 +107,16 @@ WITH
   FROM
     deduplicated
   WHERE
-    submission_date_s3 = @submission_date
     -- Bug 1501329: avoid the pathological "canary" client_id
-    AND client_id != 'c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0'
+    client_id != 'c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0'
+    AND submission_date_s3 = @submission_date
   WINDOW
     w1 AS (
     PARTITION BY
       client_id,
       submission_date_s3
     ORDER BY
-      metadata.timestamp DESC
+      metadata.timestamp
     ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
     -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
     w1_unframed AS (
@@ -94,7 +124,7 @@ WITH
       client_id,
       submission_date_s3
     ORDER BY
-      metadata.timestamp DESC) )
+      metadata.timestamp) )
 SELECT
   * EXCEPT (_n)
 FROM

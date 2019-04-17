@@ -1,5 +1,6 @@
 CREATE TEMP FUNCTION bitmask_lowest_7() AS (0x7F);
 CREATE TEMP FUNCTION bitcount_lowest_7(x INT64) AS (BIT_COUNT(x & bitmask_lowest_7()));
+CREATE TEMP FUNCTION udf_active_in_week_0(x INT64) AS (bitcount_lowest_7(x) > 0);
 CREATE TEMP FUNCTION udf_active_in_week_1(x INT64) AS (bitcount_lowest_7(x >> 7) > 0);
 
 CREATE
@@ -11,13 +12,20 @@ PARTITION BY
 WITH nested AS (
   SELECT
     DATE_SUB(submission_date, INTERVAL 14 DAY) AS date,
+    COUNT(*) AS new_profiles,
     [ --
       STRUCT('Any Firefox Desktop Activity' AS usage,
-        COUNTIF(udf_active_in_week_1(days_seen_bits)) AS retained_in_week_1),
+        COUNTIF(udf_active_in_week_0(days_seen_bits)) AS active_in_week_0,
+        COUNTIF(udf_active_in_week_1(days_seen_bits)) AS active_in_week_1,
+        COUNTIF(udf_active_in_week_0(days_seen_bits) AND udf_active_in_week_1(days_seen_bits)) AS active_in_week_0_and_1),
       STRUCT('Firefox Desktop Visited 5 URI' AS usage,
-        COUNTIF(udf_active_in_week_1(days_visited_5_uri_bits)) AS retained_in_week_1),
+        COUNTIF(udf_active_in_week_0(days_visited_5_uri_bits)) AS active_in_week_0,
+        COUNTIF(udf_active_in_week_1(days_visited_5_uri_bits)) AS active_in_week_1,
+        COUNTIF(udf_active_in_week_0(days_visited_5_uri_bits) AND udf_active_in_week_1(days_visited_5_uri_bits)) AS active_in_week_0_and_1),
       STRUCT('Firefox Desktop Dev Tools Opened' AS usage,
-        COUNTIF(udf_active_in_week_1(days_opened_dev_tools_bits)) AS retained_in_week_1) --
+        COUNTIF(udf_active_in_week_0(days_opened_dev_tools_bits)) AS active_in_week_0,
+        COUNTIF(udf_active_in_week_1(days_opened_dev_tools_bits)) AS active_in_week_1,
+        COUNTIF(udf_active_in_week_0(days_opened_dev_tools_bits) AND udf_active_in_week_1(days_opened_dev_tools_bits)) AS active_in_week_0_and_1) --
     ] AS metrics,
     -- We hash client_ids into 20 buckets to aid in computing
     -- confidence intervals for mau/wau/dau sums; the particular hash
@@ -50,7 +58,7 @@ WITH nested AS (
 nonzero AS (
   SELECT
     * EXCEPT (metrics),
-    ARRAY(SELECT AS STRUCT * FROM UNNEST(metrics) WHERE retained_in_week_1 > 0) AS metrics
+    ARRAY(SELECT AS STRUCT * FROM UNNEST(metrics) WHERE new_profiles > 0) AS metrics
   FROM
     nested
 )

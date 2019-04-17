@@ -9,7 +9,10 @@ WITH unioned AS (
     metrics.wau,
     metrics.mau,
     metrics.active_days_in_week,
-    NULL AS retained_in_week_1,
+    NULL AS new_profiles,
+    NULL AS active_in_week_0,
+    NULL AS active_in_week_1,
+    NULL AS active_in_week_0_and_1,
     raw.* EXCEPT (date, metrics)
   FROM
     `moz-fx-data-derived-datasets.telemetry.smoot_usage_metrics_raw_v1` AS raw,
@@ -24,7 +27,10 @@ WITH unioned AS (
     NULL AS wau,
     NULL AS mau,
     NULL AS active_days_in_week,
-    NULL AS retained_in_week_1,
+    NULL AS new_profiles,
+    NULL AS active_in_week_0,
+    NULL AS active_in_week_1,
+    NULL AS active_in_week_0_and_1,
     raw.* EXCEPT (date, metrics)
   FROM
     `moz-fx-data-derived-datasets.telemetry.smoot_usage_1week_raw_v1` AS raw,
@@ -39,8 +45,11 @@ WITH unioned AS (
     NULL AS wau,
     NULL AS mau,
     NULL AS active_days_in_week,
-    metrics.retained_in_week_1,
-    raw.* EXCEPT (date, metrics)
+    new_profiles,
+    metrics.active_in_week_0,
+    metrics.active_in_week_1,
+    metrics.active_in_week_0_and_1,
+    raw.* EXCEPT (date, metrics, new_profiles)
   FROM
     `moz-fx-data-derived-datasets.telemetry.smoot_usage_2week_raw_v1` AS raw,
     UNNEST(metrics) AS metrics

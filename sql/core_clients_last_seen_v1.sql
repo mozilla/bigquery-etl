@@ -28,7 +28,7 @@ SELECT
   -- a client that appeared in one of the target countries in the previous
   -- 28 days even if the most recent "country" value is not in this set.
   IF(current_sample.client_id IS NOT NULL
-    AND current_sample.country IN ('US', 'FR', 'DE', 'UK', 'CA'),
+    AND current_sample.country IN ('US', 'FR', 'DE', 'GB', 'CA'),
     @submission_date,
     IF(previous.date_last_seen_in_tier1_country > DATE_SUB(@submission_date, INTERVAL 28 DAY),
       previous.date_last_seen_in_tier1_country,

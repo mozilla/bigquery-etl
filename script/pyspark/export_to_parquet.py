@@ -3,6 +3,7 @@
 """Read a table from the BigQuery Storage API and write it as parquet."""
 
 from argparse import ArgumentParser
+from textwrap import dedent
 import re
 
 
@@ -134,39 +135,27 @@ args.filter = " AND ".join(args.filter)
 
 if args.dry_run:
     print(
-        """
-(
-    SparkSession.builder.appName('export_to_parquet')
-    .getOrCreate()
-    .read.format('bigquery')
-    .option('dataset', %s)
-    .option('table', %s)
-    .option('filter', %s)
-    .load()
-    .where(%s)
-    .select(*%s)
-    .drop(*%s)
-    .write.mode(%s)
-    .partitionBy(*%s)
-    .parquet(%s)
-)
-        """.strip()
-        % tuple(
-            map(
-                lambda x: x.__repr__(),
-                (
-                    args.dataset,
-                    args.table,
-                    args.filter,
-                    args.where,
-                    args.select,
-                    args.drop,
-                    args.write_mode,
-                    args.partition_by,
-                    args.destination,
-                ),
+        dedent(
+            """
+            (
+                SparkSession.builder.appName('export_to_parquet')
+                .getOrCreate()
+                .read.format('bigquery')
+                .option('dataset', {dataset!r})
+                .option('table', {table!r})
+                .option('filter', {filter!r})
+                .load()
+                .where({where!r})
+                .select(*{select!r})
+                .drop(*{drop!r})
+                .write.mode({write_mode!r})
+                .partitionBy(*{partition_by!r})
+                .parquet({destination!r})
             )
+            """
         )
+        .strip()
+        .format(**vars(args))
     )
 else:
     # delay import to allow --dry-run without spark

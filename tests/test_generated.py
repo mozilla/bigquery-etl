@@ -39,17 +39,16 @@ def tables(bq, dataset, generated_test):
     # load tables into dataset
     for table in generated_test.tables.values():
         destination = f"{dataset.dataset_id}.{table.name}"
-        assert table.schema is not None
         job_config = bigquery.LoadJobConfig(
             default_dataset=dataset,
             source_format=table.source_format,
             write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            schema=table.schema,
         )
-        if job_config.schema is None:
+        if table.schema is None:
             # autodetect schema if not provided
             job_config.autodetect = True
         else:
+            job_config.schema = table.schema
             # look for time_partitioning_field in provided schema
             for field in job_config.schema:
                 if field.description == "time_partitioning_field":
@@ -78,4 +77,4 @@ def test_generated(bq, dataset, generated_test):
     result = list(coerce_result(*job.result()))
     result.sort(key=lambda row: json.dumps(row))
 
-    assert result == generated_test.expect
+    assert generated_test.expect == result

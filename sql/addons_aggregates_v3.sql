@@ -28,7 +28,7 @@ SELECT
       AND NOT element.addon_id LIKE '%cliqz%'
       AND NOT element.addon_id LIKE '%@unified-urlbar%' AS is_self_install
     FROM
-      UNNEST(active_addons.list)) AS _addon).*
+      UNNEST(active_addons.list))).*
 FROM
   clients_daily_v6
 WHERE

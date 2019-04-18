@@ -316,7 +316,6 @@ WITH
       `timestamp` ASC) )
 SELECT
   @submission_date AS submission_date,
-  CURRENT_DATETIME() AS generated_time,
   * EXCEPT(_n)
 FROM
   windowed

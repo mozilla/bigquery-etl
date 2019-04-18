@@ -11,7 +11,6 @@ WITH
       @submission_date,
       NULL) AS date_last_seen_in_tier1_country,
     * EXCEPT (submission_date,
-      generated_time,
       seen_in_tier1_country)
   FROM
     fxa_users_daily_v1
@@ -19,8 +18,7 @@ WITH
     submission_date = @submission_date ),
   previous AS (
   SELECT
-    * EXCEPT (submission_date,
-      generated_time)
+    * EXCEPT (submission_date)
       -- We use REPLACE to null out any last_seen observations older than 28 days;
       -- this ensures data never bleeds in from outside the target 28 day window.
       REPLACE (IF(date_last_seen_in_tier1_country > DATE_SUB(@submission_date, INTERVAL 28 DAY),
@@ -33,7 +31,6 @@ WITH
     AND date_last_seen > DATE_SUB(@submission_date, INTERVAL 28 DAY) )
 SELECT
   @submission_date AS submission_date,
-  CURRENT_DATETIME() AS generated_time,
   COALESCE(current_sample.date_last_seen,
     previous.date_last_seen) AS date_last_seen,
   COALESCE(current_sample.date_last_seen_in_tier1_country,

@@ -1,6 +1,5 @@
 SELECT
   DATE(NULL) AS submission_date,
-  CURRENT_DATETIME() AS generated_time,
   submission_date_s3 AS last_seen_date,
   * EXCEPT (submission_date_s3),
   0 AS days_since_seen,

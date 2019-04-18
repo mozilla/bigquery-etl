@@ -40,7 +40,6 @@ WITH
   windowed AS (
   SELECT
     @submission_date AS submission_date,
-    CURRENT_DATETIME() AS generated_time,
     user_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
     udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,

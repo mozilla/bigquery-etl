@@ -4,16 +4,14 @@ WITH
     -- Include dummy dates for date_last_* fields to make schema match with `previous`.
     DATE '2000-01-01' AS date_last_seen,
     DATE '2000-01-01' AS date_last_seen_in_tier1_country,
-    * EXCEPT (submission_date,
-      generated_time)
+    * EXCEPT (submission_date)
   FROM
     core_clients_daily_v1
   WHERE
     submission_date = @submission_date ),
   previous AS (
   SELECT
-    * EXCEPT (submission_date,
-      generated_time)
+    * EXCEPT (submission_date)
   FROM
     core_clients_last_seen_v1
   WHERE
@@ -21,7 +19,6 @@ WITH
     AND date_last_seen > DATE_SUB(@submission_date, INTERVAL 28 DAY) )
 SELECT
   @submission_date AS submission_date,
-  CURRENT_DATETIME() AS generated_time,
   -- Record the last day on which we recieved any core ping at all from this client.
   IF(current_sample.client_id IS NOT NULL,
     @submission_date,

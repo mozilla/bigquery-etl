@@ -105,7 +105,11 @@ def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> An
     :return: first response from read() that doesn't raise FileNotFoundError
     :raises FileNotFoundError: when all matching files raise FileNotFoundError
     """
-    search = search or {"yaml": yaml.load, "json": json.load, "ndjson": ndjson_load}
+    search = search or {
+        "yaml": yaml.full_load,
+        "json": json.load,
+        "ndjson": ndjson_load,
+    }
     not_found: List[str] = []
     for basename in basenames:
         for ext, decoder in search.items():

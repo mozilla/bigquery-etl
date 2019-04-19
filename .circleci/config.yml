@@ -24,7 +24,7 @@ jobs:
         paths:
         - venv/
         key: python-packages-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "constraints.txt" }}
-  release:
+  deploy:
     parameters:
       image:
         type: string

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+# Use credentials from environment
+if [ -n "$GCLOUD_SERVICE_KEY" ]; then
+    # Google's client libraries will check for GOOGLE_APPLICATION_CREDENTIALS
+    # and use a file in that location for credentials if present;
+    # See https://cloud.google.com/docs/authentication/production
+    export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/tmp/gcp.json}"
+    echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+fi
+
+if [ "$#" = 0 ]; then
+    # Default to 20 workers because most of the tests are io-bound
+    exec pytest --black --docstyle --flake8 --mypy-ignore-missing-imports --numprocesses 20
+elif [ "${1:0:1}" = - ]; then
+    # First argument is a flag, assume intended executable is pytest
+    exec pytest "$@"
+elif [ "$1" = "query" ]; then
+    # Alias
+    #     query [options] FILE
+    # to
+    #     bq query [options] < FILE
+    exec bq "${@:1:$#-1}" < "${@: -1}"
+else
+    exec "$@"
+fi

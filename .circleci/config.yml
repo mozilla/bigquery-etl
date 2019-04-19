@@ -37,7 +37,7 @@ jobs:
         docker_layer_caching: true
     - run:
         name: Determine docker image name
-        command: echo 'IMAGE="${CIRCLE_USERNAME+/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}:${CIRCLE_TAG:-latest}"' > $BASH_ENV
+        command: echo 'IMAGE="${CIRCLE_USERNAME+$CIRCLE_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}:${CIRCLE_TAG:-latest}"' > $BASH_ENV
     - run:
         name: Build docker image
         command: docker build . --tag "$IMAGE"

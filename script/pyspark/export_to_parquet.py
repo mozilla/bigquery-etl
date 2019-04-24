@@ -7,9 +7,7 @@ from textwrap import dedent
 import re
 
 
-parser = ArgumentParser(
-    description="Read a table from the BigQuery Storage API and write it as parquet."
-)
+parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "table",
     help='Passed to spark.read.format("bigquery").option("table", _). If this ends'

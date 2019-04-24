@@ -53,19 +53,11 @@ WITH nested AS (
     content,
     country,
     distribution_id
-  ),
---
-nonzero AS (
-  SELECT
-    * EXCEPT (metrics),
-    ARRAY(SELECT AS STRUCT * FROM UNNEST(metrics) WHERE new_profiles > 0) AS metrics
-  FROM
-    nested
-)
+  )
 --
 SELECT
   *
 FROM
-  nonzero
+  nested
 WHERE
   ARRAY_LENGTH(metrics) > 0

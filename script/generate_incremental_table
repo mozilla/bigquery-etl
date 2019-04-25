@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# propagate and exit on errors
+set -o pipefail -e
+
+# set UTC timezone by default
+export TZ="${TZ:-UTC}"
+
+COMMAND="'$(dirname "$0")/entrypoint' query --replace --destination_table=${DESTINATION_TABLE:-\$DESTINATION_TABLE}'$'"
+COMMAND+='${DATE//-/} --parameter=submission_date:DATE:$DATE --time_partitioning_field=submission_date --max_rows=0 --quiet "$@"'
+
+# define usage
+usage() {
+    cat >&2 << EOM
+$*
+
+Wrapper around \`script/entrypoint query\` for generating an incremental table
+
+USAGE: DESTINATION_TABLE=<table_ref> [START_DATE=<start_date>] [END_DATE=<end_date>] [MAX_PROCS=<max_procs>] $0 [--query_command_options] [query_args] <query_file>
+
+Execute an incremental query for a series of dates.
+
+The path to a query_file must be specified as the last argument.
+
+DESTINATION_TABLE must be set in the environment and must not include '$'.
+
+START_DATE and END_DATE will be parsed using \`date -d\`. END_DATE defaults to
+'-1day', START_DATE defaults to END_DATE, and TZ defaults to UTC.
+
+The following command will be executed for each DATE between START_DATE and
+END_DATE inclusive.
+
+    $COMMAND
+
+MAX_PROCS will be passed to \`xargs -P\` to control parallelism. MAX_PROCS
+defaults to 1. If query_file references DESTINATION_TABLE then MAX_PROCS should
+not be modified from its default.
+EOM
+exit 1
+}
+
+if [ -z "$DESTINATION_TABLE" ]; then
+    usage "Missing required environment variable DESTINATION_TABLE"
+elif echo "$DESTINATION_TABLE" | grep -q '[ %{}$]'; then
+    usage "DESTINATION_TABLE must not match [ %{}$] but got: $DESTINATION_TABLE"
+elif [ -z "$1" ]; then
+    usage "Missing required argument query_file"
+elif ! [ -f "${!#}" ]; then
+    usage "Expected query_file to be a path to a file, but got: ${!#}"
+fi
+
+END_DATE="${END_DATE:--1day}"
+START_DATE="${START_DATE:-$END_DATE}"
+
+seq $(date +%s -d "$START_DATE") $((24*60*60)) $(date +%s -d "$END_DATE") |
+    xargs -i date +%F -d @{} |
+    xargs -P "${MAX_PROCS:-1}" -i bash -c "DATE='{}'; (set -x; $COMMAND) | sed "'"s/^/$DATE: /"' -s "$@"

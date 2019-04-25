@@ -81,8 +81,8 @@ parser.add_argument(
     "--submission-date",
     dest="submission_date",
     help="Short for: --filter \"submission_date = DATE 'SUBMISSION_DATE'\""
-    ' --static-partitions submission_date=SUBMISSION_DATE --where "submission_date IS'
-    ' NOT NULL"',
+    " --where \"submission_date = DATE 'SUBMISSION_DATE'\""
+    " --static-partitions submission_date=SUBMISSION_DATE",
 )
 parser.add_argument(
     "--where",
@@ -104,11 +104,15 @@ args = parser.parse_args()
 # handle --submission-date
 if args.submission_date is not None:
     # --filter "submission_date = DATE 'SUBMISSION_DATE'"
-    args.filter.append("submission_date = DATE '" + args.submission_date + "'")
+    condition = "submission_date = DATE '" + args.submission_date + "'"
+    args.filter.append(condition)
     # --static-partitions submission_date=SUBMISSION_DATE
     args.static_partitions.append("submission_date=" + args.submission_date)
     # --where "submission_date IS NOT NULL"
-    args.where += " AND submission_date IS NOT NULL"
+    if args.where == "TRUE":
+        args.where = condition
+    else:
+        args.where = "(" + args.where + ") AND " + condition
 
 # append table and --static-partitions to destination
 args.destination = "/".join(

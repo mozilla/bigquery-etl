@@ -6,8 +6,8 @@ set -o pipefail -e
 # set UTC timezone by default
 export TZ="${TZ:-UTC}"
 
-COMMAND="'$(dirname "$0")/entrypoint' query --destination_table=${DESTINATION_TABLE:-\$DESTINATION_TABLE}'$'"
-COMMAND+='${DATE//-/} --parameter=submission_date:DATE:$DATE "$@"'
+COMMAND="'$(dirname "$0")/entrypoint' query --replace --destination_table=${DESTINATION_TABLE:-\$DESTINATION_TABLE}'$'"
+COMMAND+='${DATE//-/} --parameter=submission_date:DATE:$DATE --time_partitioning_field=submission_date --max_rows=0 --quiet "$@"'
 
 # define usage
 usage() {
@@ -33,8 +33,8 @@ END_DATE inclusive.
     $COMMAND
 
 MAX_PROCS will be passed to \`xargs -P\` to control parallelism. MAX_PROCS
-defaults to 1. If query_file references DESTINATION_TABLE then it should not be
-modified.
+defaults to 1. If query_file references DESTINATION_TABLE then MAX_PROCS should
+not be modified from its default.
 EOM
 exit 1
 }

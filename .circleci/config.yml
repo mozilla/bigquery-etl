@@ -40,7 +40,7 @@ jobs:
         command: echo 'IMAGE="${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}:${CIRCLE_TAG:-latest}"' > $BASH_ENV
     - run:
         name: Build docker image
-        command: docker build . --tag "$IMAGE"
+        command: docker build . --pull --tag "$IMAGE"
     - run:
         name: Test
         command: docker run --rm --tty --interactive --env CIRCLE_BUILD_NUM --env GCLOUD_SERVICE_KEY "$IMAGE"

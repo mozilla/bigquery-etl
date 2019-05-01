@@ -13,5 +13,6 @@ COPY --from=google/cloud-sdk:alpine /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=0 /usr/local /usr/local
 WORKDIR /app
+COPY .bigqueryrc /root/
 COPY . .
 ENTRYPOINT ["/app/script/entrypoint"]

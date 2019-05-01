@@ -1,0 +1,9 @@
+--dataset_id=telemetry
+[mk]
+--use_legacy_sql=false
+[query]
+--use_legacy_sql=false
+--replace=true
+--max_rows=0
+[update]
+--use_legacy_sql=false

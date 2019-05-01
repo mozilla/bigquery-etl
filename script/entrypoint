@@ -9,22 +9,12 @@ if [ -n "$GCLOUD_SERVICE_KEY" ]; then
     # See https://cloud.google.com/docs/authentication/production
     export GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS:-/tmp/gcp.json}"
     echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-    if which -s gcloud; then
-        gcloud --quiet auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
-        python -W ignore -c 'import google.auth; print("project = ", google.auth.default()[1])' >> ~/.config/gcloud/configurations/config_default
-        cat > ~/.bigqueryrc << EOF
---project_id=$(gcloud config get-value project)
---dataset_id=telemetry
-[mk]
---use_legacy_sql=false
-[query]
---use_legacy_sql=false
---replace=true
---max_rows=0
-[update]
---use_legacy_sql=false
-EOF
-    fi
+fi
+
+if [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ] && which gcloud > /dev/null; then
+    gcloud --quiet auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+    python -W ignore -c 'import google.auth; print("project = ", google.auth.default()[1])' >> ~/.config/gcloud/configurations/config_default
+    sed "1i--project_id=$(gcloud config get-value project)" -i ~/.bigqueryrc
 fi
 
 if [ "$#" = 0 ]; then

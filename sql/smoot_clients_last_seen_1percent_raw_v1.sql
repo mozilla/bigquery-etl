@@ -12,7 +12,7 @@ WITH
     -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
     CAST(scalar_parent_browser_engagement_total_uri_count_sum >= 5 AS INT64) AS days_visited_5_uri_bits,
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
-    IF(profile_age_in_days BETWEEN 0 AND 27, profile_age_in_days, NULL) AS days_since_created_profile
+    DATE_DIFF(submission_date_s3, SAFE_CAST(SUBSTR(profile_creation_date, 0, 10) AS DATE), DAY) AS days_since_created_profile
   FROM
     telemetry.smoot_clients_daily_1percent_v1
   WHERE

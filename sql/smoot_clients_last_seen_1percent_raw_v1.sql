@@ -12,7 +12,8 @@ WITH
     -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
     CAST(scalar_parent_browser_engagement_total_uri_count_sum >= 5 AS INT64) AS days_visited_5_uri_bits,
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
-    DATE_DIFF(submission_date_s3, SAFE_CAST(SUBSTR(profile_creation_date, 0, 10) AS DATE), DAY) AS days_since_created_profile
+    DATE_DIFF(submission_date_s3, SAFE_CAST(SUBSTR(profile_creation_date, 0, 10) AS DATE), DAY) AS days_since_created_profile,
+    CAST(NULL AS BOOLEAN) AS ping_seen_within_6_days_of_profile_creation
   FROM
     telemetry.smoot_clients_daily_1percent_v1
   WHERE
@@ -41,7 +42,9 @@ WITH
         -- value we observe, so we propagate a non-null previous value in preference
         -- to a non-null value on today's observation.
         COALESCE(_previous.days_since_created_profile + 1,
-          _current.days_since_created_profile) AS days_since_created_profile)
+          _current.days_since_created_profile) AS days_since_created_profile,
+        IF(COALESCE(_previous.days_since_created_profile + 1,
+        _current.days_since_created_profile) = 6, TRUE, _previous.ping_seen_within_6_days_of_profile_creation) AS ping_seen_within_6_days_of_profile_creation)
   FROM
     _current
   FULL JOIN

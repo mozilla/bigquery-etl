@@ -1,7 +1,7 @@
 CREATE TEMP FUNCTION bitmask_lowest_7() AS (0x7F);
 CREATE TEMP FUNCTION bitcount_lowest_7(x INT64) AS (BIT_COUNT(x & bitmask_lowest_7()));
-CREATE TEMP FUNCTION udf_active_in_week_0(x INT64) AS (bitcount_lowest_7(x) > 0);
-CREATE TEMP FUNCTION udf_active_in_week_1(x INT64) AS (bitcount_lowest_7(x >> 7) > 0);
+CREATE TEMP FUNCTION udf_active_in_week_1(x INT64) AS (bitcount_lowest_7(x) > 0);
+CREATE TEMP FUNCTION udf_active_in_week_0(x INT64) AS (bitcount_lowest_7(x >> 7) > 0);
 
 CREATE
   OR REPLACE
@@ -11,7 +11,7 @@ PARTITION BY
   date AS
 WITH nested AS (
   SELECT
-    DATE_SUB(submission_date, INTERVAL 14 DAY) AS date,
+    DATE_SUB(submission_date, INTERVAL 13 DAY) AS date,
     COUNT(*) AS new_profiles,
     [ --
       STRUCT('Any Firefox Desktop Activity' AS usage,
@@ -42,7 +42,7 @@ WITH nested AS (
     telemetry.smoot_clients_last_seen_1percent_v1
   WHERE
     client_id IS NOT NULL
-    AND days_since_created_profile = 14
+    AND days_since_created_profile = 13
     --AND submission_date = @submission_date
   GROUP BY
     submission_date,

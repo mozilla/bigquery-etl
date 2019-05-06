@@ -29,6 +29,8 @@ Recommended practices
 - Should use `_` prefix in generated column names not meant for output
 - Should not use `DATETIME` type, due to incompatiblity with
   [spark-bigquery-connector](https://github.com/GoogleCloudPlatform/spark-bigquery-connector/issues/5)
+- Should use the earliest row for each `document_id` by `submission_timestamp`
+  if filtering duplicates
 
 ### UDFs
 

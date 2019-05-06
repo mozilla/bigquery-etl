@@ -53,7 +53,7 @@ WITH
   numbered_duplicates AS (
   SELECT
     * REPLACE(LOWER(client_id) AS client_id),
-    ROW_NUMBER() OVER (PARTITION BY client_id, submission_date_s3, metadata.document_id ORDER BY metadata.timestamp DESC) AS _n
+    ROW_NUMBER() OVER (PARTITION BY client_id, submission_date_s3, metadata.document_id ORDER BY metadata.timestamp) AS _n
   FROM
     telemetry_core_parquet_v3
   WHERE

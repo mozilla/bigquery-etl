@@ -1,18 +1,8 @@
-WITH
-  inactive_days AS (
-    SELECT
-      *,
-      DATE_DIFF(submission_date, date_last_seen, DAY) AS _inactive_days,
-      DATE_DIFF(submission_date, date_last_seen_in_tier1_country, DAY) AS _inactive_days_tier1
-    FROM
-      core_clients_last_seen_v1
-  )
-
 SELECT
   submission_date,
-  COUNTIF(_inactive_days < 28) AS mau,
-  COUNTIF(_inactive_days < 7) AS wau,
-  COUNTIF(_inactive_days < 1) AS dau,
+  COUNTIF(days_since_seen < 28) AS mau,
+  COUNTIF(days_since_seen < 7) AS wau,
+  COUNTIF(days_since_seen < 1) AS dau,
   -- We hash client_ids into 20 buckets to aid in computing
   -- confidence intervals for mau/wau/dau sums; the particular hash
   -- function and number of buckets is subject to change in the future.
@@ -30,7 +20,7 @@ SELECT
   country,
   distribution_id
 FROM
-  inactive_days
+  core_clients_last_seen_v1
 WHERE
   -- This list corresponds to the products considered for 2019 nondesktop KPIs;
   -- we apply this filter here rather than in the live view because this field

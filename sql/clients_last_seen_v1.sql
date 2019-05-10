@@ -1,44 +1,10 @@
-WITH
-  _current AS (
-  SELECT
-    * EXCEPT (submission_date_s3, fxa_configured),
-    0 AS days_since_seen,
-    -- For measuring Active MAU, where this is the days since this
-    -- client_id was an Active User as defined by
-    -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
-    IF(scalar_parent_browser_engagement_total_uri_count_sum >= 5,
-      0,
-      NULL) AS days_since_visited_5_uri,
-    fxa_configured
-  FROM
-    clients_daily_v6
-  WHERE
-    submission_date_s3 = @submission_date ),
-  _previous AS (
-  SELECT
-    * EXCEPT (submission_date) REPLACE(
-      -- omit values outside 28 day window
-      IF(days_since_visited_5_uri < 27,
-        days_since_visited_5_uri,
-        NULL) AS days_since_visited_5_uri)
-  FROM
-    clients_last_seen_v1
-  WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    AND clients_last_seen_v1.days_since_seen < 27 )
+CREATE OR REPLACE VIEW
+  `moz-fx-data-derived-datasets.telemetry.clients_last_seen_v1` AS
 SELECT
-  @submission_date AS submission_date,
-  IF(_current.client_id IS NOT NULL,
-    _current,
-    _previous).* EXCEPT (days_since_seen,
-      days_since_visited_5_uri),
-  COALESCE(_current.days_since_seen,
-    _previous.days_since_seen + 1) AS days_since_seen,
-  COALESCE(_current.days_since_visited_5_uri,
-    _previous.days_since_visited_5_uri + 1) AS days_since_visited_5_uri
+  -- We cannot use UDFs in a view, so we paste the body of udf_bitpos(bits) literally here.
+  CAST(SAFE.LOG(days_seen_bits & -days_seen_bits, 2) AS INT64) AS days_since_seen,
+  CAST(SAFE.LOG(days_visited_5_uri_bits & -days_visited_5_uri_bits, 2) AS INT64) AS days_since_visited_5_uri,
+  CAST(SAFE.LOG(days_opened_dev_tools_bits & -days_opened_dev_tools_bits, 2) AS INT64) AS days_since_opened_dev_tools,
+  *
 FROM
-  _current
-FULL JOIN
-  _previous
-USING
-  (client_id)
+  `moz-fx-data-derived-datasets.telemetry.clients_last_seen_raw_v1`

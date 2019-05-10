@@ -27,6 +27,7 @@ Recommended practices
 - Should be [incremental](#incremental-queries)
 - Should filter input tables on partition and clustering columns
 - Should use `_` prefix in generated column names not meant for output
+- Should use `_bits` suffix for any integer column that represents a bit pattern
 - Should not use `DATETIME` type, due to incompatiblity with
   [spark-bigquery-connector](https://github.com/GoogleCloudPlatform/spark-bigquery-connector/issues/5)
 - Should use the earliest row for each `document_id` by `submission_timestamp`

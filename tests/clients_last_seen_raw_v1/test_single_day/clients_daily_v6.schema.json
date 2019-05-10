@@ -1,8 +1,9 @@
 [
   {
-    "name": "submission_date",
+    "name": "submission_date_s3",
     "type": "DATE",
-    "mode": "REQUIRED"
+    "mode": "REQUIRED",
+    "description": "time_partitioning_field"
   },
   {
     "name": "client_id",
@@ -10,9 +11,24 @@
     "mode": "REQUIRED"
   },
   {
+    "name": "sample_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
     "name": "active_hours_sum",
     "type": "FLOAT",
     "mode": "REQUIRED"
+  },
+  {
+    "name": "devtools_toolbox_opened_count_sum",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "profile_creation_date",
+    "type": "STRING",
+    "mode": "NULLABLE"
   },
   {
     "name": "attribution",
@@ -28,16 +44,6 @@
   },
   {
     "name": "scalar_parent_browser_engagement_total_uri_count_sum",
-    "type": "INT64",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "days_since_seen",
-    "type": "INT64",
-    "mode": "REQUIRED"
-  },
-  {
-    "name": "days_since_visited_5_uri",
     "type": "INT64",
     "mode": "NULLABLE"
   },

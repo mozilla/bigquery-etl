@@ -3,7 +3,7 @@
 # file, you can obtain one at http://mozilla.org/MPL/2.0/.
 """Automatically generated tests."""
 
-from google.api_core.exceptions import NotFound
+from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
 from .util import coerce_result, generate_tests
 
@@ -58,7 +58,11 @@ def tables(bq, dataset, generated_test):
                     break  # stop because there can only be one time partitioning field
         with open(table.source_path, "rb") as file_obj:
             job = bq.load_table_from_file(file_obj, destination, job_config=job_config)
-        job.result()
+        try:
+            job.result()
+        except BadRequest:
+            print(job.errors)
+            raise
     # clean up handled by default_dataset fixture
 
 
@@ -76,5 +80,6 @@ def test_generated(bq, dataset, generated_test):
     job = bq.query(generated_test.modified_query, job_config=job_config)
     result = list(coerce_result(*job.result()))
     result.sort(key=lambda row: json.dumps(row))
+    generated_test.expect.sort(key=lambda row: json.dumps(row))
 
     assert generated_test.expect == result

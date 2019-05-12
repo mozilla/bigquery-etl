@@ -31,5 +31,10 @@
     "name": "scalar_parent_browser_engagement_total_uri_count_sum",
     "type": "INT64",
     "mode": "NULLABLE"
+  },
+  {
+    "name": "fxa_configured",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
   }
 ]

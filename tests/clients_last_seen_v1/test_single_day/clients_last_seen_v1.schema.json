@@ -40,5 +40,10 @@
     "name": "days_since_visited_5_uri",
     "type": "INT64",
     "mode": "NULLABLE"
+  },
+  {
+    "name": "fxa_configured",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
   }
 ]

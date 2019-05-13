@@ -20,9 +20,13 @@ SELECT
   attribution.campaign,
   attribution.content,
   country,
+  COALESCE(cc.name, cls.country) AS country_name,
   distribution_id
 FROM
-  clients_last_seen_v1
+  clients_last_seen_v1 cls
+LEFT JOIN
+  static.country_codes_v1 cc
+  ON (cls.country = cc.code)
 WHERE
   client_id IS NOT NULL
   AND submission_date = @submission_date
@@ -34,4 +38,5 @@ GROUP BY
   campaign,
   content,
   country,
+  country_name,
   distribution_id

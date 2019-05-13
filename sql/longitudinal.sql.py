@@ -1,86 +1,105 @@
 #!/usr/bin/env python3
+"""Longitudinal query generator."""
 import argparse
 import datetime
 import sys
 import textwrap
 
+
 def parse_date(date_str):
+    """Read dates in YYYMMDD format."""
     return datetime.datetime.strptime(date_str, "%Y%m%d")
 
 
 def comma_separated(names):
-    return [x.strip() for x in names.split(',')]
+    """Parse a comma-separated list of names."""
+    return [x.strip() for x in names.split(",")]
 
 
 p = argparse.ArgumentParser()
-p.add_argument('--tablename', type=str, help='Table to pull data from', required=True)
-p.add_argument('--from', type=parse_date,
-               help='From submission date. Defaults to 6 months before `to`.')
-p.add_argument('--to', type=parse_date, help='To submission date', required=True)
+p.add_argument("--tablename", type=str, help="Table to pull data from", required=True)
 p.add_argument(
-    '--submission-date-col',
+    "--from",
+    type=parse_date,
+    help="From submission date. Defaults to 6 months before `to`.",
+)
+p.add_argument("--to", type=parse_date, help="To submission date", required=True)
+p.add_argument(
+    "--submission-date-col",
     type=str,
-    help='Name of the submission date column. Defaults to submission_date_s3',
-    default='submission_date_s3'
+    help="Name of the submission date column. Defaults to submission_date_s3",
+    default="submission_date_s3",
 )
 p.add_argument(
-    '--select',
+    "--select",
     type=str,
-    help='Select statement to retrieve data with; e.g. '
+    help="Select statement to retrieve data with; e.g. "
     '"substr(subsession_start_date, 0, 10) as activity_date". If none given, '
-    'defaults to all input columns',
-    default='*'
+    "defaults to all input columns",
+    default="*",
 )
 p.add_argument(
-    '--where',
+    "--where",
     type=str,
-    help='Where SQL clause, filtering input data. E.g. '
-    '"normalized_channel = \'nightly\'"'
+    help="Where SQL clause, filtering input data. E.g. "
+    "'normalized_channel = \"nightly\"'",
 )
 p.add_argument(
-    '--grouping-column',
+    "--grouping-column",
     type=str,
-    help='Column to group data by. Defaults to client_id',
-    default='client_id'
+    help="Column to group data by. Defaults to client_id",
+    default="client_id",
 )
 p.add_argument(
-    '--ordering-columns',
+    "--ordering-columns",
     type=comma_separated,
-    help='Columns to order the arrays by (comma separated). '
-    'Defaults to submission-date-col'
+    help="Columns to order the arrays by (comma separated). "
+    "Defaults to submission-date-col",
 )
 p.add_argument(
-    '--max-array-length',
+    "--max-array-length",
     type=int,
-    help='Max length of any groups history. Defaults to no limit. '
-    'Negatives are ignored'
+    help="Max length of any groups history. Defaults to no limit. "
+    "Negatives are ignored",
 )
 
 
-def generateSql(baseOpts):
-    opts = vars(baseOpts).copy()
-    opts.update({
-        'from': datetime.datetime.strftime(
-            opts['from'] or
-            opts['to'] - datetime.timedelta(days=180),
-        "'%Y-%m-%d'"),
-        'to': datetime.datetime.strftime(opts['to'], "'%Y-%m-%d'"),
-        'where': '\n{}AND {}'.format(' ' * 10, opts['where'])
-        if opts['where'] else '',
-        'ordering_columns': ', '.join(opts['ordering_columns'] or
-                                      [opts['submission_date_col']]),
-        'limit': '\n{}LIMIT\n{}{}'.format(
-            ' ' * 8,
-            ' ' * 10,
-            opts['max_array_length'])
-        if opts['max_array_length'] else ''
-    })
-    if opts['grouping_column'] in opts['ordering_columns']:
-        raise ValueError(
-            "{} can't be used as both a grouping and ordering column"
-            .format(opts['grouping_column'], opts['ordering_columns']))
+def six_months_before(d):
+    """Calculate a date six months before the given date."""
+    m = d.month - 6
+    y = d.year
+    if m < 0:
+        m += 12
+        y -= 1
+    return d.replace(month=m, year=y)
 
-    return textwrap.dedent("""
+
+def generate_sql(opts):
+    """Create a BigQuery SQL query for collecting a longitudinal dataset."""
+    opts.update(
+        {
+            "from": datetime.datetime.strftime(
+                opts["from"] or six_months_before(opts["to"]), "'%Y-%m-%d'"
+            ),
+            "to": datetime.datetime.strftime(opts["to"], "'%Y-%m-%d'"),
+            "where": "\n{}AND {}".format(" " * 10, opts["where"])
+            if opts["where"]
+            else "",
+            "ordering_columns": ", ".join(
+                opts["ordering_columns"] or [opts["submission_date_col"]]
+            ),
+            "limit": opts["max_array_length"] or "UNBOUNDED",
+        }
+    )
+    if opts["grouping_column"] in opts["ordering_columns"]:
+        raise ValueError(
+            "{!r} can't be used as both a grouping and ordering column".format(
+                opts["grouping_column"], opts["ordering_columns"]
+            )
+        )
+
+    return textwrap.dedent(
+        """
       WITH aggregated AS (
         SELECT
          ROW_NUMBER() OVER (PARTITION BY {grouping_column} ORDER BY {ordering_columns}) AS _n,
@@ -97,13 +116,17 @@ def generateSql(baseOpts):
         aggregated
       WHERE
         _n = 1
-    """.format(**opts))
+        """.format(  # noqa: E501
+            **opts
+        )
+    )
 
 
-def main(argv):
+def main(argv, out=print):
+    """Print a longitudinal query to stdout."""
     opts = p.parse_args(argv[1:])
-    print(generateSql(opts))
+    out(generate_sql(vars(opts)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(sys.argv)

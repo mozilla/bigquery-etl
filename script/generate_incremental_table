@@ -1,57 +1,117 @@
-#!/bin/bash
+#!/usr/bin/env python
 
-# propagate and exit on errors
-set -o pipefail -e
+from argparse import ArgumentParser
+from datetime import datetime, timedelta
+from functools import partial
+from multiprocessing import Pool
+import os.path
+import subprocess
+import sys
 
-# set UTC timezone by default
-export TZ="${TZ:-UTC}"
 
-COMMAND="'$(dirname "$0")/entrypoint' query --replace --destination_table=${DESTINATION_TABLE:-\$DESTINATION_TABLE}'$'"
-COMMAND+='${DATE//-/} --parameter=submission_date:DATE:$DATE --time_partitioning_field=submission_date --max_rows=0 --quiet "$@"'
+def fromisoformat(string):
+    """Construct a date from the output of date.isoformat()"""
+    return datetime.strptime(string, "%Y-%m-%d").date()
 
-# define usage
-usage() {
-    cat >&2 << EOM
-$*
 
-Wrapper around \`script/entrypoint query\` for generating an incremental table
+def path(string):
+    """Path to a file that must exist."""
+    if not os.path.exists(string):
+        raise ValueError()
+    return string
 
-USAGE: DESTINATION_TABLE=<table_ref> [START_DATE=<start_date>] [END_DATE=<end_date>] [MAX_PROCS=<max_procs>] $0 [--query_command_options] [query_args] <query_file>
 
-Execute an incremental query for a series of dates.
+parser = ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--destination_table",
+    required=True,
+    help="The destination table flag for `bq query` to which '$%Y%m%d' will be added",
+)
+parser.add_argument(
+    "--start",
+    type=fromisoformat,
+    help="The first date for which the query will be submitted,"
+    " defaults to today in utc",
+)
+parser.add_argument(
+    "--end",
+    type=fromisoformat,
+    help="The last date for which the query will be submitted,"
+    " defaults to today in utc",
+)
+parser.add_argument(
+    "--max_procs",
+    "-P",
+    type=int,
+    help="Maximum number of queries which may be submitted at once",
+)
+parser.add_argument(
+    "query_options",
+    nargs="*",
+    help="Arguments to pass directly to `script/entrypoint query`",
+)
+parser.add_argument(
+    "query_file", type=path, help="Path to the query file for `script/entrypoint query`"
+)
 
-The path to a query_file must be specified as the last argument.
 
-DESTINATION_TABLE must be set in the environment and must not include '$'.
+def date_range(start=None, end=None, step=1):
+    """Generate dates from START to END, in steps of STEP days."""
+    if isinstance(step, int):
+        step = timedelta(days=step)
+    if end is None:
+        end = datetime.utcnow().date()
+    if start is None:
+        day = end - step
+    else:
+        day = start
+    while day < end:
+        yield day
+        day = day + step
 
-START_DATE and END_DATE will be parsed using \`date -d\`. END_DATE defaults to
-'-1day', START_DATE defaults to END_DATE, and TZ defaults to UTC.
 
-The following command will be executed for each DATE between START_DATE and
-END_DATE inclusive.
+def query(day, entrypoint, destination_table, query_options, query_file):
+    proc = subprocess.Popen(
+        [
+            entrypoint,
+            "query",
+            "--replace",
+            "--destination_table=" + destination_table + day.strftime("$%Y%m%d"),
+            "--parameter=submission_date:DATE:" + day.isoformat(),
+            "--time_partitioning_field=submission_date",
+            "--max_rows=0",
+            "--quiet",
+        ]
+        + query_options
+        + [query_file],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    prefix = day.isoformat() + ": "
+    for data, dest in zip(proc.communicate(), (sys.stdout, sys.stderr)):
+        lines = data.split(b"\n")
+        if len(lines[-1]) == 0:
+            lines = lines[:-1]
+        for line in lines:
+            dest.write(prefix)
+            dest.write(line.decode())
+            dest.write("\n")
+        dest.flush()
+    return proc.returncode
 
-    $COMMAND
 
-MAX_PROCS will be passed to \`xargs -P\` to control parallelism. MAX_PROCS
-defaults to 1. If query_file references DESTINATION_TABLE then MAX_PROCS should
-not be modified from its default.
-EOM
-exit 1
-}
+def main():
+    args = parser.parse_args()
+    entrypoint = os.path.join(os.path.dirname(sys.argv[0]), "entrypoint")
+    target = partial(
+        query,
+        entrypoint=os.path.join(os.path.dirname(sys.argv[0]), "entrypoint"),
+        destination_table=args.destination_table,
+        query_options=args.query_options,
+        query_file=args.query_file,
+    )
+    Pool(processes=args.max_procs).map(target, date_range(args.start, args.end))
 
-if [ -z "$DESTINATION_TABLE" ]; then
-    usage "Missing required environment variable DESTINATION_TABLE"
-elif echo "$DESTINATION_TABLE" | grep -q '[ %{}$]'; then
-    usage "DESTINATION_TABLE must not match [ %{}$] but got: $DESTINATION_TABLE"
-elif [ -z "$1" ]; then
-    usage "Missing required argument query_file"
-elif ! [ -f "${!#}" ]; then
-    usage "Expected query_file to be a path to a file, but got: ${!#}"
-fi
 
-END_DATE="${END_DATE:--1day}"
-START_DATE="${START_DATE:-$END_DATE}"
-
-seq $(date +%s -d "$START_DATE") $((24*60*60)) $(date +%s -d "$END_DATE") |
-    xargs -i date +%F -d @{} |
-    xargs -P "${MAX_PROCS:-1}" -i bash -c "DATE='{}'; (set -x; $COMMAND) | sed "'"s/^/$DATE: /"' -s "$@"
+if __name__ == "__main__":
+    main()

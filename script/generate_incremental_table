@@ -43,6 +43,7 @@ parser.add_argument(
     "--max_procs",
     "-P",
     type=int,
+    default=1,
     help="Maximum number of queries which may be submitted at once",
 )
 parser.add_argument(
@@ -76,10 +77,11 @@ def query(day, entrypoint, destination_table, query_options, query_file):
             entrypoint,
             "query",
             "--replace",
+            "--dataset_id=telemetry",
             "--destination_table=" + destination_table + day.strftime("$%Y%m%d"),
             "--parameter=submission_date:DATE:" + day.isoformat(),
-            "--time_partitioning_field=submission_date",
             "--max_rows=0",
+            "--nouse_legacy_sql",
             "--quiet",
         ]
         + query_options
@@ -88,6 +90,7 @@ def query(day, entrypoint, destination_table, query_options, query_file):
         stderr=subprocess.PIPE,
     )
     prefix = day.isoformat() + ": "
+    sys.stderr.write(prefix + "processing\n")
     for data, dest in zip(proc.communicate(), (sys.stdout, sys.stderr)):
         lines = data.split(b"\n")
         if len(lines[-1]) == 0:
@@ -101,7 +104,9 @@ def query(day, entrypoint, destination_table, query_options, query_file):
 
 
 def main():
-    args = parser.parse_args()
+    args, unknown_args = parser.parse_known_args()
+    # Unknown args should be passed as query_options.
+    args.query_options.extend(unknown_args)
     entrypoint = os.path.join(os.path.dirname(sys.argv[0]), "entrypoint")
     target = partial(
         query,
@@ -110,7 +115,11 @@ def main():
         query_options=args.query_options,
         query_file=args.query_file,
     )
-    Pool(processes=args.max_procs).map(target, date_range(args.start, args.end))
+    if args.max_procs == 1:
+        for day in date_range(args.start, args.end):
+            target(day)
+    else:
+        Pool(processes=args.max_procs).map(target, date_range(args.start, args.end))
 
 
 if __name__ == "__main__":

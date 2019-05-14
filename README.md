@@ -1,4 +1,4 @@
-[![CircleCI](https://img.shields.io/circleci/project/github/mozilla/bigquery-etl/master.svg)](https://circleci.com/gh/mozilla/bigquery-etl)
+[![CircleCI](https://circleci.com/gh/mozilla/bigquery-etl.svg?style=svg)](https://circleci.com/gh/mozilla/bigquery-etl)
 
 BigQuery ETL
 ===

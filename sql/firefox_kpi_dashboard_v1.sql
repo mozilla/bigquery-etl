@@ -1,5 +1,5 @@
 CREATE TEMP FUNCTION
-  sum_buckets_with_ci(a ARRAY<INT64>)
+  udf_sum_buckets_with_ci(a ARRAY<INT64>)
   RETURNS STRUCT<total INT64,
   low INT64,
   high INT64,
@@ -190,7 +190,7 @@ WITH
     datasource,
     type,
     submission_date,
-    sum_buckets_with_ci(ARRAY_AGG(mau)).*
+    udf_sum_buckets_with_ci(ARRAY_AGG(mau)).*
   FROM
     per_bucket
   GROUP BY
@@ -202,7 +202,7 @@ WITH
   SELECT
     datasource,
     type,
-    submission_date AS date,
+    submission_date AS `date`,
     total AS mau,
     low AS mau_low,
     high AS mau_high
@@ -212,7 +212,7 @@ WITH
   SELECT
     datasource,
     type,
-    date,
+    `date`,
     mau,
     low90 AS mau_low,
     high90 AS mau_high
@@ -228,4 +228,4 @@ FROM
 ORDER BY
   datasource,
   type,
-  date
+  `date`

@@ -15,6 +15,25 @@
     "mode": "NULLABLE"
   },
   {
+    "name": "days_seen_in_experiment",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "experiment",
+        "type": "STRING"
+      },
+      {
+        "name": "branch",
+        "type": "STRING"
+      },
+      {
+        "name": "bits",
+        "type": "INTEGER"
+      }
+    ]
+  },
+  {
     "name": "days_since_created_profile",
     "type": "INT64",
     "mode": "NULLABLE"
@@ -70,6 +89,27 @@
     "name": "scalar_parent_browser_engagement_total_uri_count_sum",
     "type": "INT64",
     "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          }
+        ],
+        "mode": "REPEATED",
+        "name": "key_value",
+        "type": "RECORD"
+      }
+    ],
+    "name": "experiments",
+    "type": "RECORD"
   },
   {
     "name": "fxa_configured",

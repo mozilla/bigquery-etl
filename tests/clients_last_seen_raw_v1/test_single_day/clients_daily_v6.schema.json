@@ -48,6 +48,27 @@
     "mode": "NULLABLE"
   },
   {
+    "fields": [
+      {
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          }
+        ],
+        "mode": "REPEATED",
+        "name": "key_value",
+        "type": "RECORD"
+      }
+    ],
+    "name": "experiments",
+    "type": "RECORD"
+  },
+  {
     "name": "fxa_configured",
     "type": "BOOLEAN",
     "mode": "NULLABLE"

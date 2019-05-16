@@ -13,7 +13,7 @@ WITH
     jsonPayload.fields.user_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
-    timestamp,
+    `timestamp`,
     receiveTimestamp
   FROM
     `moz-fx-data-derived-datasets.telemetry.fxa_auth_events_v1`
@@ -30,7 +30,7 @@ WITH
     jsonPayload.fields.user_id,
     jsonPayload.fields.user_properties,
     jsonPayload.fields.event_properties,
-    timestamp,
+    `timestamp`,
     receiveTimestamp
   FROM
     `moz-fx-data-derived-datasets.telemetry.fxa_content_events_v1`

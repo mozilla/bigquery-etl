@@ -47,14 +47,4 @@ delete_partitions moz-fx-data-derived-datasets.search.search_clients_daily_v4
 # to ensure we haven't let data from the deleted period leak and continue
 # to be propagated forward.
 delete_partitions moz-fx-data-derived-datasets.clients_last_seen_v1
-
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190504' --parameter submission_date:DATE:2019-05-04 -n0 -q --replace < sql/clients_last_seen_v1.sql
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190505' --parameter submission_date:DATE:2019-05-05 -n0 -q --replace < sql/clients_last_seen_v1.sql
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190506' --parameter submission_date:DATE:2019-05-06 -n0 -q --replace < sql/clients_last_seen_v1.sql
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190507' --parameter submission_date:DATE:2019-05-07 -n0 -q --replace < sql/clients_last_seen_v1.sql
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190508' --parameter submission_date:DATE:2019-05-08 -n0 -q --replace < sql/clients_last_seen_v1.sql
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190509' --parameter submission_date:DATE:2019-05-09 -n0 -q --replace < sql/clients_last_seen_v1.sql
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190510' --parameter submission_date:DATE:2019-05-10 -n0 -q --replace < sql/clients_last_seen_v1.sql
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190511' --parameter submission_date:DATE:2019-05-11 -n0 -q --replace < sql/clients_last_seen_v1.sql
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190512' --parameter submission_date:DATE:2019-05-12 -n0 -q --replace < sql/clients_last_seen_v1.sql
-bq query --project moz-fx-data-derived-datasets --nouse_legacy_sql --dataset_id telemetry --destination_table 'clients_last_seen_v1$20190513' --parameter submission_date:DATE:2019-05-13 -n0 -q --replace < sql/clients_last_seen_v1.sql
+./script/generate_incremental_table --destination_table clients_last_seen_raw_v1 --start 2019-05-04 --end 2019-05-15 --dataset=telemetry sql/clients_last_seen_raw_raw_v1.sql

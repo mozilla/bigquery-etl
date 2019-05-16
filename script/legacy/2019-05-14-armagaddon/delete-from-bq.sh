@@ -21,24 +21,24 @@ delete_partitions moz-fx-data-shar-nonprod-efed.activity_stream.spoc_fills_v1
 
 ## Tables copied from Parquet
 # Matches first appendix from the Google Doc (which lists AWS derived datasets to delete)
-delete_partitions moz-fx-data-derived-datasets.events_v1
-delete_partitions moz-fx-data-derived-datasets.experiments_v1
-delete_partitions moz-fx-data-derived-datasets.crash_summary_v1
-delete_partitions moz-fx-data-derived-datasets.first_shutdown_summary_v4
+delete_partitions moz-fx-data-derived-datasets.telemetry.events_v1
+delete_partitions moz-fx-data-derived-datasets.telemetry.experiments_v1
+delete_partitions moz-fx-data-derived-datasets.telemetry.crash_summary_v1
+delete_partitions moz-fx-data-derived-datasets.telemetry.first_shutdown_summary_v4
 # No landfill sample in BQ
 # No longitudinal in BQ
-delete_partitions moz-fx-data-derived-datasets.main_summary_v3
-delete_partitions moz-fx-data-derived-datasets.main_summary_v4
-delete_partitions moz-fx-data-derived-datasets.addons_v2
-delete_partitions moz-fx-data-derived-datasets.addons_aggregates_v2
-# No main_events in BQ
+delete_partitions moz-fx-data-derived-datasets.telemetry.main_summary_v3
+delete_partitions moz-fx-data-derived-datasets.telemetry.main_summary_v4
+delete_partitions moz-fx-data-derived-datasets.telemetry.addons_v2
+delete_partitions moz-fx-data-derived-datasets.telemetry.addons_aggregates_v2
+# main_events is another name for events_v1, which is already handled above
 # No base sync table in BQ
-delete_partitions moz-fx-data-derived-datasets.sync_summary_v2
-delete_partitions moz-fx-data-derived-datasets.sync_flat_summary_v1
-delete_partitions moz-fx-data-derived-datasets.sync_events_v1
+delete_partitions moz-fx-data-derived-datasets.telemetry.sync_summary_v2
+delete_partitions moz-fx-data-derived-datasets.telemetry.sync_flat_summary_v1
+delete_partitions moz-fx-data-derived-datasets.telemetry.sync_events_v1
 # No clients_daily_v5 in BQ
 delete_partitions moz-fx-data-derived-datasets.telemetry.clients_daily_v6
-delete_partitions moz-fx-data-derived-datasets.search.search_clients_daily_v3
+# The dates in question are not present in search_clients_daily_v3
 delete_partitions moz-fx-data-derived-datasets.search.search_clients_daily_v4
 
 ## Make static copies of derived data without client_id that we want to keep.
@@ -49,5 +49,5 @@ bq cp moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_by_dime
 # we have to backfill from the first deleted day up to the present
 # to ensure we haven't let data from the deleted period leak and continue
 # to be propagated forward.
-delete_partitions moz-fx-data-derived-datasets.clients_last_seen_v1
+delete_partitions moz-fx-data-derived-datasets.telemetry.clients_last_seen_v1
 ./script/generate_incremental_table --destination_table clients_last_seen_raw_v1 --start 2019-05-04 --end 2019-05-15 --dataset=telemetry sql/clients_last_seen_raw_raw_v1.sql

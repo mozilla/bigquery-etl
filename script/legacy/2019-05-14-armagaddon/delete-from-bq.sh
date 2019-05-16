@@ -41,6 +41,9 @@ delete_partitions moz-fx-data-derived-datasets.telemetry.clients_daily_v6
 delete_partitions moz-fx-data-derived-datasets.search.search_clients_daily_v3
 delete_partitions moz-fx-data-derived-datasets.search.search_clients_daily_v4
 
+## Make static copies of derived data without client_id that we want to keep.
+bq cp moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_by_dimensions_v1 moz-fx-data-derived-datasets.static.archive_20190516_firefox_desktop_exact_mau28_by_dimensions_v1
+
 ## Derived tables specific to GCP
 # Because clients_last_seen copies client_level data from day to day,
 # we have to backfill from the first deleted day up to the present

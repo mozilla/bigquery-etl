@@ -23,14 +23,20 @@ delete_partitions moz-fx-data-shar-nonprod-efed.activity_stream.spoc_fills_v1
 # Matches first appendix from the Google Doc (which lists AWS derived datasets to delete)
 delete_partitions moz-fx-data-derived-datasets.events_v1
 delete_partitions moz-fx-data-derived-datasets.experiments_v1
+delete_partitions moz-fx-data-derived-datasets.crash_summary_v1
 delete_partitions moz-fx-data-derived-datasets.first_shutdown_summary_v4
+# No landfill sample in BQ
+# No longitudinal in BQ
 delete_partitions moz-fx-data-derived-datasets.main_summary_v3
 delete_partitions moz-fx-data-derived-datasets.main_summary_v4
 delete_partitions moz-fx-data-derived-datasets.addons_v2
 delete_partitions moz-fx-data-derived-datasets.addons_aggregates_v2
+# No main_events in BQ
+# No base sync table in BQ
 delete_partitions moz-fx-data-derived-datasets.sync_summary_v2
 delete_partitions moz-fx-data-derived-datasets.sync_flat_summary_v1
 delete_partitions moz-fx-data-derived-datasets.sync_events_v1
+# No clients_daily_v5 in BQ
 delete_partitions moz-fx-data-derived-datasets.telemetry.clients_daily_v6
 delete_partitions moz-fx-data-derived-datasets.search.search_clients_daily_v3
 delete_partitions moz-fx-data-derived-datasets.search.search_clients_daily_v4

@@ -11,6 +11,5 @@ FROM
 WHERE
   jsonPayload.type = 'amplitudeEvent'
   AND jsonPayload.fields.event_type IS NOT NULL
-  AND jsonPayload.fields.user_id IS NOT NULL
   AND _TABLE_SUFFIX = FORMAT_DATE('%g%m%d',
     @submission_date)

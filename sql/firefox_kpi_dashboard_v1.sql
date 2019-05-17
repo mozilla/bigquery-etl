@@ -78,11 +78,33 @@ return sum_buckets_with_ci(a);
 """;
   --
 WITH
+  forecast_base AS (
+  SELECT
+    *
+  FROM
+    `moz-fx-data-derived-datasets.analysis.growth_dashboard_forecasts_current` ),
+  --
+  desktop_min_forecast_date AS (
+  SELECT
+    AS VALUE MIN(`date`)
+  FROM
+    forecast_base
+  WHERE
+    datasource = 'desktop_global'
+    AND type = 'forecast' ),
+  --
   desktop_base AS (
   SELECT
     *
   FROM
-    `moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_by_dimensions_v1` ),
+    `moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_by_dimensions_v1`
+  WHERE
+    -- Temporarily freeze desktop data due to data deletion enacted on 2019-05-16.
+    submission_date < (
+    SELECT
+      *
+    FROM
+      desktop_min_forecast_date)),
   --
   nondesktop_base AS (
   SELECT
@@ -217,7 +239,7 @@ WITH
     low90 AS mau_low,
     high90 AS mau_high
   FROM
-    analysis.growth_dashboard_forecasts_current
+    forecast_base
   WHERE
     type != 'original')
   --

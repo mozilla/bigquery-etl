@@ -10,8 +10,23 @@ CREATE TEMP FUNCTION
       0));
   --
 CREATE TEMP FUNCTION
-  udf_combine_days(prev INT64,
+  udf_combine_adjacent_days_bits(prev INT64,
     curr INT64) AS (udf_shift_one_day(prev) + IFNULL(curr,
+    0));
+  --
+CREATE TEMP FUNCTION
+  udf_coalesce_adjacent_days_bits(prev INT64,
+    curr INT64) AS ( COALESCE( NULLIF(udf_shift_one_day(prev),
+        0),
+      curr,
+      0));
+  --
+CREATE TEMP FUNCTION
+  udf_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
+  IF
+    (days_since_created_profile BETWEEN 0
+      AND 6,
+      1 << days_since_created_profile,
       0));
   --
 CREATE TEMP FUNCTION
@@ -33,7 +48,7 @@ CREATE TEMP FUNCTION
       SELECT
         AS STRUCT experiment,
         branch,
-        udf_combine_days(prev.bits,
+        udf_combine_adjacent_days_bits(prev.bits,
           curr.bits) AS bits
       FROM
         UNNEST(prev) AS prev
@@ -43,7 +58,7 @@ CREATE TEMP FUNCTION
         (experiment,
           branch)
       WHERE
-        udf_combine_days(prev.bits,
+        udf_combine_adjacent_days_bits(prev.bits,
           curr.bits) > 0),
       -- Experiments present in curr only
       ARRAY(
@@ -75,9 +90,9 @@ WITH
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
     -- We only trust profile_date if it is within one week of the ping submission,
     -- so we ignore any value more than seven days old.
-    IFNULL(1 << DATE_DIFF(submission_date_s3, SAFE.PARSE_DATE("%F",
-          SUBSTR(profile_creation_date, 0, 10)), DAY),
-      0) & udf_bitmask_lowest_7() AS days_created_profile_bits,
+    udf_bits_from_days_since_created_profile(
+      DATE_DIFF(submission_date_s3, SAFE.PARSE_DATE("%F",
+        SUBSTR(profile_creation_date, 0, 10)), DAY)) AS days_created_profile_bits,
     -- Experiments are an array, so we keep track of a usage bit pattern per experiment.
     ARRAY(
     SELECT
@@ -109,18 +124,13 @@ IF
   (_current.client_id IS NOT NULL,
     _current,
     _previous).* REPLACE (
-      udf_combine_days(_previous.days_seen_bits,
+      udf_combine_adjacent_days_bits(_previous.days_seen_bits,
         _current.days_seen_bits) AS days_seen_bits,
-      udf_combine_days(_previous.days_visited_5_uri_bits,
+      udf_combine_adjacent_days_bits(_previous.days_visited_5_uri_bits,
         _current.days_visited_5_uri_bits) AS days_visited_5_uri_bits,
-      udf_combine_days(_previous.days_opened_dev_tools_bits,
+      udf_combine_adjacent_days_bits(_previous.days_opened_dev_tools_bits,
         _current.days_opened_dev_tools_bits) AS days_opened_dev_tools_bits,
-      -- We want to base new profile creation date on the first profile_creation_date
-      -- value we observe, so we propagate an existing non-null value in preference
-      -- to a non-null value on today's observation.
-      COALESCE( --
-        NULLIF(udf_shift_one_day(_previous.days_created_profile_bits),
-          0),
+      udf_coalesce_adjacent_days_bits(_previous.days_created_profile_bits,
         _current.days_created_profile_bits) AS days_created_profile_bits,
       udf_combine_experiment_days(_previous.days_seen_in_experiment,
         _current.days_seen_in_experiment) AS days_seen_in_experiment)

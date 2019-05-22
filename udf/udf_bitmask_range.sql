@@ -18,6 +18,8 @@ CREATE TEMP FUNCTION
     FROM
       UNNEST(GENERATE_ARRAY(start_ordinal, start_ordinal + _length - 1)) AS _n ));
 
+-- Tests
+
 SELECT
   assert_equals(1, udf_bitmask_range(1, 1)),
   assert_equals(30, udf_bitmask_range(2, 4)),

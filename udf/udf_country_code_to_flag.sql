@@ -24,6 +24,8 @@ CREATE TEMP FUNCTION
       FROM
         UNNEST(TO_CODE_POINTS(country_code)) c)));
 
+-- Tests
+
 SELECT
   -- The emoji below may not be visible in your code editor.
   assert_equals('🇫🇮', udf_country_code_to_flag('FI'));

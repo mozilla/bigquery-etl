@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/mozilla/bigquery-etl.svg?style=svg)](https://circleci.com/gh/mozilla/bigquery-etl)
+[![CircleCI](https://circleci.com/gh/mozilla/bigquery-etl.svg?style=shield&circle-token=742fb1108f7e6e5a28c11d43b21f62605037f5a4)](https://circleci.com/gh/mozilla/bigquery-etl)
 
 BigQuery ETL
 ===

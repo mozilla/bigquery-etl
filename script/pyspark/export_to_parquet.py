@@ -9,10 +9,7 @@ import re
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
-    "table",
-    help='Passed to spark.read.format("bigquery").option("table", _). If this ends'
-    " with a version by matching /_v[0-9]+$/ it will be converted to a directory in the"
-    " output.",
+    "table", help='Passed to spark.read.format("bigquery").option("table", _).'
 )
 parser.add_argument(
     "--dataset",
@@ -27,6 +24,13 @@ parser.add_argument(
     help="The path where parquet will be written. This will have table and"
     " --static-partitions appended as directories. If this starts with s3:// it will"
     " be replaced with s3a://.",
+)
+parser.add_argument(
+    "--destination-table",
+    default=None,
+    help="The name of the destination parquet table. Defaults to the source table name."
+    " If this ends with a version by matching /_v[0-9]+$/ it will be converted to"
+    " a directory in the output.",
 )
 parser.add_argument(
     "--drop",
@@ -66,8 +70,9 @@ parser.add_argument(
     default=["*"],
     dest="select",
     nargs="+",
-    help="A list of all fields to include in the output. Passed to df.select(*_) before"
-    " --drop is processed and after --where is processed.",
+    help="A list of all fields to include in the output."
+    " Passed to df.selectExpr(*_) before --drop is processed and after --where"
+    " is processed. Can include sql expressions",
 )
 parser.add_argument(
     "--static-partitions",
@@ -114,11 +119,15 @@ if args.submission_date is not None:
     else:
         args.where = "(" + args.where + ") AND " + condition
 
+# Set default --destination-table if it was not provided
+if args.destination_table is None:
+    args.destination_table = args.table
+
 # append table and --static-partitions to destination
 args.destination = "/".join(
     [
         re.sub("^s3://", "s3a://", args.destination).rstrip("/"),
-        re.sub("_(v[0-9]+)$", r"/\1", args.table.rsplit(".", 1).pop()),
+        re.sub("_(v[0-9]+)$", r"/\1", args.destination_table.rsplit(".", 1).pop()),
     ]
     + args.static_partitions
 )
@@ -148,7 +157,7 @@ if args.dry_run:
                 .option('filter', {filter!r})
                 .load()
                 .where({where!r})
-                .select(*{select!r})
+                .selectExpr(*{select!r})
                 .drop(*{drop!r})
                 .write.mode({write_mode!r})
                 .partitionBy(*{partition_by!r})
@@ -173,7 +182,7 @@ else:
         .option("filter", args.filter)
         .load()
         .where(args.where)
-        .select(*args.select)
+        .selectExpr(*args.select)
         .drop(*args.drop)
         .write.mode(args.write_mode)
         .partitionBy(*args.partition_by)

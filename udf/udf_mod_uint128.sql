@@ -1,4 +1,3 @@
--- requires udf_decode_int64
 CREATE TEMP FUNCTION
   udf_mod_uint128(dividend BYTES,
     divisor INT64) AS (

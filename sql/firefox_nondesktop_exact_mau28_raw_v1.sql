@@ -20,7 +20,7 @@ SELECT
   country,
   distribution_id
 FROM
-  inactive_days
+  core_clients_last_seen_v1
 WHERE
   -- This list corresponds to the products considered for 2019 nondesktop KPIs;
   -- we apply this filter here rather than in the live view because this field

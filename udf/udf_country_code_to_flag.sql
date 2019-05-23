@@ -1,14 +1,3 @@
-CREATE TEMP FUNCTION
-  udf_country_code_to_flag(country_code string) AS ( --
-    CODE_POINTS_TO_STRING(ARRAY(
-      SELECT
-        -- This constant offset transforms from ASCII characters A-Z to
-        -- the equivalent Unicode regional indicator symbols A-Z.
-        -- See https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
-        c + 127397
-      FROM
-        UNNEST(TO_CODE_POINTS(country_code)) c)));
-
 /*
 
 For a given two-letter ISO 3166-1 alpha-2 country code, returns a string
@@ -22,10 +11,21 @@ See:
 - https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 - https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
 
-Example:
-
-SELECT udf_country_code_to_flag('FI')
--- 🇫🇮
--- The above emoji may not be visible in a code editor.
-
 */
+
+CREATE TEMP FUNCTION
+  udf_country_code_to_flag(country_code string) AS ( --
+    CODE_POINTS_TO_STRING(ARRAY(
+      SELECT
+        -- This constant offset transforms from ASCII characters A-Z to
+        -- the equivalent Unicode regional indicator symbols A-Z.
+        -- See https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
+        c + 127397
+      FROM
+        UNNEST(TO_CODE_POINTS(country_code)) c)));
+
+-- Tests
+
+SELECT
+  -- The emoji below may not be visible in your code editor.
+  assert_equals('🇫🇮', udf_country_code_to_flag('FI'));

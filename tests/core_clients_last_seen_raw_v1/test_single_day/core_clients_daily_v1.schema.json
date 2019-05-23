@@ -1,0 +1,32 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "submission_date",
+    "type": "DATE"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "client_id",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "profile_date",
+    "type": "DATE"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "app_name",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "os",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "country",
+    "type": "STRING"
+  }
+]

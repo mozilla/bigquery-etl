@@ -11,9 +11,24 @@
     "mode": "REQUIRED"
   },
   {
+    "name": "sample_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED"
+  },
+  {
     "name": "active_hours_sum",
     "type": "FLOAT",
     "mode": "REQUIRED"
+  },
+  {
+    "name": "devtools_toolbox_opened_count_sum",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "profile_creation_date",
+    "type": "STRING",
+    "mode": "NULLABLE"
   },
   {
     "name": "attribution",
@@ -31,6 +46,27 @@
     "name": "scalar_parent_browser_engagement_total_uri_count_sum",
     "type": "INT64",
     "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          }
+        ],
+        "mode": "REPEATED",
+        "name": "key_value",
+        "type": "RECORD"
+      }
+    ],
+    "name": "experiments",
+    "type": "RECORD"
   },
   {
     "name": "fxa_configured",

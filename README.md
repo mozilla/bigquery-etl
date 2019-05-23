@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/mozilla/bigquery-etl.svg?style=svg)](https://circleci.com/gh/mozilla/bigquery-etl)
+[![CircleCI](https://circleci.com/gh/mozilla/bigquery-etl.svg?style=shield&circle-token=742fb1108f7e6e5a28c11d43b21f62605037f5a4)](https://circleci.com/gh/mozilla/bigquery-etl)
 
 BigQuery ETL
 ===
@@ -27,6 +27,7 @@ Recommended practices
 - Should be [incremental]
 - Should filter input tables on partition and clustering columns
 - Should use `_` prefix in generated column names not meant for output
+- Should use `_bits` suffix for any integer column that represents a bit pattern
 - Should not use `DATETIME` type, due to incompatiblity with
   [spark-bigquery-connector]
 - Should use the earliest row for each `document_id` by `submission_timestamp`

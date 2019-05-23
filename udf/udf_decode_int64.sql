@@ -12,3 +12,9 @@ CREATE TEMP FUNCTION
       -0x8000000000000000,
       -- else sign is already correct
       0) );
+
+-- Tests
+
+SELECT
+  assert_equals(1, udf_decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x01')),
+  assert_equals(16, udf_decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x10'));

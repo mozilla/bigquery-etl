@@ -1,11 +1,3 @@
-CREATE TEMP FUNCTION
-  udf_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
-  IF
-    (days_since_created_profile BETWEEN 0
-      AND 6,
-      1 << days_since_created_profile,
-      0));
-
 /*
 
 Takes in a difference between submission date and profile creation date
@@ -17,15 +9,22 @@ Analysis has shown that client-reported profile creation dates are much
 less reliable outside of this range and cannot be used as reliable indicators
 of new profile creation.
 
-Example:
+*/
+
+CREATE TEMP FUNCTION
+  udf_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
+  IF
+    (days_since_created_profile BETWEEN 0
+      AND 6,
+      1 << days_since_created_profile,
+      0));
+
+-- Tests
 
 SELECT
-  udf_bits_from_days_since_created_profile(0),
-  udf_bits_from_days_since_created_profile(1),
-  udf_bits_from_days_since_created_profile(6)
-  udf_bits_from_days_since_created_profile(-1),
-  udf_bits_from_days_since_created_profile(NULL),
-  udf_bits_from_days_since_created_profile(7);
-1, 2, 64, 0, 0, 0
-
-*/
+  assert_equals(2, udf_bits_from_days_since_created_profile(1)),
+  assert_equals(4, udf_bits_from_days_since_created_profile(2)),
+  assert_equals(64, udf_bits_from_days_since_created_profile(6)),
+  assert_equals(0, udf_bits_from_days_since_created_profile(7)),
+  assert_equals(0, udf_bits_from_days_since_created_profile(-1)),
+  assert_equals(0, udf_bits_from_days_since_created_profile(NULL));

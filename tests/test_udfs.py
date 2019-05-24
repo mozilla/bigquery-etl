@@ -13,6 +13,19 @@ CREATE TEMP FUNCTION
       TO_JSON_STRING(actual)))));
 
 CREATE TEMP FUNCTION
+  assert_true(actual ANY TYPE) AS (
+    IF(actual, TRUE, ERROR(CONCAT(
+      'Expected true, but got ',
+      TO_JSON_STRING(actual)))));
+
+CREATE TEMP FUNCTION
+  assert_false(actual ANY TYPE) AS (
+    IF(actual, ERROR(CONCAT(
+      'Expected false, but got ',
+      TO_JSON_STRING(actual))),
+      TRUE));
+
+CREATE TEMP FUNCTION
   assert_equals(expected ANY TYPE, actual ANY TYPE) AS (
     IF(expected = actual, TRUE, ERROR(CONCAT(
       'Expected ',

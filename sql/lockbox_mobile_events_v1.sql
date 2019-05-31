@@ -41,6 +41,7 @@ WITH
     `moz-fx-data-derived-datasets.telemetry.telemetry_focus_event_parquet_v1`, UNNEST(events.list) AS e
     WHERE metadata.app_name = 'Lockbox'
     AND os = 'iOS'
+    -- Filter out test data before the iOS launch date.
     AND submission_date_s3 >= '2018-07-09'
   )
   --

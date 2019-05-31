@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-`moz-fx-data-derived-datasets.telemetry.lockbox_mobile_events_v1` AS
+`moz-fx-data-derived-datasets.telemetry.lockwise_mobile_events_v1` AS
   --
 WITH
   android AS (
@@ -19,7 +19,7 @@ WITH
     FROM `moz-fx-data-derived-datasets.telemetry.telemetry_mobile_event_parquet_v2`, UNNEST(events.list) AS e
     WHERE metadata.app_name = 'Lockbox'
     AND os = 'Android'
-    -- Filter out test data before the Android launch date. 
+    -- Filter out test data before the Android launch date.
     AND submission_date_s3 >= '2019-03-25'
   ),
   --

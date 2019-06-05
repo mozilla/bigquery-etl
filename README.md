@@ -5,6 +5,37 @@ BigQuery ETL
 
 Bigquery UDFs and SQL queries for building derived datasets.
 
+Formatting SQL
+---
+
+SQL should be formatted using `script/format-sql`. This script requires `node`,
+with dependencies installed via `npm install`.
+
+On OSX you can install `node` (and `npm` with it) from homebew with the command
+`brew install node`, or from nodesource as explained in
+[this guide](https://nodesource.com/blog/installing-nodejs-tutorial-mac-os-x/).
+
+Paths to directories or files can be passed as arguments to `script/format-sql`,
+or if none are specified it will read `.` and ignore `.git` and `node_modules`
+directories.
+
+SQL can be formatted without modifying files by piping sql to the script and
+output will automatically go to stdout, e.g.:
+
+```bash
+echo 'SELECT 1,2,3' | script/format-sql
+```
+
+To turn off sql formatting for a block of SQL, wrap it in `format:off` and
+`format:on` comments, like this:
+
+```sql
+SELECT
+  -- format:off
+  submission_date, sample_id, client_id
+  -- format:on
+```
+
 Recommended practices
 ---
 

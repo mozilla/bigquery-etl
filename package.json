@@ -1,0 +1,24 @@
+{
+  "name": "bigquery-etl",
+  "description": "Mozilla BigQuery ETL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mozilla/bigquery-etl"
+  },
+  "scripts": {
+    "format-sql": "node script/format-sql",
+    "lint": "npm run lint:js && npm run lint:sql",
+    "lint:js": "eslint script/format-sql",
+    "lint:sql": "node script/format-sql"
+  },
+  "license": "MPL-2.0",
+  "dependencies": {
+    "sql-formatter": "2.3.2",
+    "klaw-sync": "6.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.17.3"
+  }
+}

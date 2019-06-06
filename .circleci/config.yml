@@ -18,6 +18,9 @@ jobs:
           python3.7 -m venv venv/
           venv/bin/pip install --upgrade -r requirements.txt
     - run:
+        name: Generate SQL queries with UDFs
+        command: python3.7 script/generate_sql.py
+    - run:
         name: PyTest with linters
         command: PATH="venv/bin:$PATH" script/entrypoint
     - save_cache:

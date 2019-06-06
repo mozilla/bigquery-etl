@@ -2,38 +2,6 @@
   -- telemetry data accepts countries as two-digit codes, but FxA
   -- data includes long-form country names. The logic here is specific
   -- to the FxA data.
-CREATE TEMP FUNCTION
-  udf_contains_tier1_country(x ANY TYPE) AS ( --
-    EXISTS(
-    SELECT
-      country
-    FROM
-      UNNEST(x) AS country
-    WHERE
-      country IN ( --
-        'United States',
-        'France',
-        'Germany',
-        'United Kingdom',
-        'Canada')) );
-  --
-CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
-    SELECT
-      _value
-    FROM
-      UNNEST(list) AS _value
-    WITH
-    OFFSET
-      AS _offset
-    GROUP BY
-      _value
-    ORDER BY
-      COUNT(_value) DESC,
-      MAX(_offset) DESC
-    LIMIT
-      1 ));
-  --
 WITH
   windowed AS (
   SELECT

@@ -41,6 +41,7 @@ Recommended practices
   resources for query planning - too many subqueries or query is too complex.`
 - Should be used to avoid code duplication
 - Should use lower snake case names e.g. `udf_mode_last`
+  - Should use a `udf_` prefix for naming temporary udfs
 - Should be defined in files named as `udfs/function.{sql,js}` e.g. `udfs/udf_mode_last.sql`
 - Should use `SQL` over `js` for performance
 - Must not be used for incremental queries with a _mostly materialized view_ (defined below)

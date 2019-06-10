@@ -3,3 +3,4 @@
 *.swo
 .mypy_cache/
 venv/
+target/

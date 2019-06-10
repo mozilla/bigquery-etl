@@ -19,10 +19,10 @@ fi
 
 if [ "$#" = 0 ]; then
     # Default to 20 workers because most of the tests are io-bound
-    make -f script/Makefile PYTESTFLAGS="--black --docstyle --flake8 --mypy-ignore-missing-imports --numprocesses 20"
+    exec pytest --black --docstyle --flake8 --mypy-ignore-missing-imports --numprocesses 20
 elif [ "${1:0:1}" = - ]; then
     # First argument is a flag, assume intended executable is pytest
-    make -f script/Makefile PYTESTFLAGS="$@"
+    exec pytest "$@"
 elif [ "$1" = "query" ]; then
     # Alias
     #     query [options] FILE

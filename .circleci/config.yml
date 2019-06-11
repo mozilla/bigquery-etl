@@ -21,9 +21,9 @@ jobs:
         name: PyTest with linters
         command: PATH="venv/bin:$PATH" script/entrypoint
     - persist_to_workspace:
-        root: /
+        root: .
         paths:
-          - target
+          - venv
     - save_cache:
         paths:
         - venv/
@@ -40,7 +40,7 @@ jobs:
     - setup_remote_docker:
         docker_layer_caching: true
     - attach_workspace:
-        at: /
+        at: .
     - run:
         name: Determine docker image name
         command: echo 'IMAGE="${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}:${CIRCLE_TAG:-latest}"' > $BASH_ENV

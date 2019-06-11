@@ -146,7 +146,7 @@ def get_query_params(resource_dir: str) -> Generator[QueryParameter, None, None]
 def generate_tests() -> Generator[GeneratedTest, None, None]:
     """Attempt to generate tests."""
     tests_dir = os.path.dirname(__file__)
-    sql_dir = os.path.join(os.path.dirname(tests_dir), "sql")
+    sql_dir = os.path.join(os.path.dirname(tests_dir), "target", "sql")
 
     # iterate over directories in tests_dir
     for query_name in next(os.walk(tests_dir))[1]:

@@ -12,7 +12,7 @@ import os, sys
 # and sibling directories. Also see:
 # https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from bigquery_etl.parse_udf import parse_udf_dir, udf_usages_in_file
+from bigquery_etl.parse_udf import read_udf_dir, udf_usages_in_file, accumulate_dependencies
 from textwrap import dedent
 import shutil
 import re
@@ -39,7 +39,7 @@ parser.add_argument(
 def main():
     args = parser.parse_args()
 
-    parsed_udfs = {x.name: x for x in parse_udf_dir(args.udf_dir)}
+    raw_udfs = {x.name: x for x in read_udf_dir(args.udf_dir)}
 
     # create output directory if not exists or remove existing files
     if os.path.exists(args.destination):
@@ -57,10 +57,23 @@ def main():
 
             with open(os.path.join(args.destination, filename), "a+") as output_file:
                 # write UDF declarations to file first
-                for udf_usage in udf_usages:
-                    if udf_usage in parsed_udfs:
-                        output_file.write(parsed_udfs[udf_usage].full_sql)
-                        output_file.write("\n--\n")
+
+                # for each UDF in the file we need to get all dependencies and make sure
+                # that UDFs are declared in the file only once
+                dependencies = []
+                for usage in udf_usages:
+                    # it is important that the order of dependencies is retained
+                    for dep in accumulate_dependencies([], raw_udfs, usage):
+                        if dep not in dependencies:
+                            dependencies.append(dep)
+
+                definitions = []
+                for dep in dependencies:
+                    definitions += raw_udfs[dep].definitions
+                full_sql = "\n".join(definitions)
+
+                output_file.write(full_sql)
+                output_file.write("\n--\n")
 
                 # write SQL of query to file
                 with open(os.path.join(root, filename)) as f:

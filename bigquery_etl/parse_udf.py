@@ -93,7 +93,7 @@ def accumulate_dependencies(deps, raw_udfs, udf_name):
 
 
 def udf_usages_in_file(filepath):
-    """Returns a list of UDF names used in the provided SQL file."""
+    """Return a list of UDF names used in the provided SQL file."""
     with open(filepath) as f:
         text = f.read()
     sql = sqlparse.format(text, strip_comments=True)

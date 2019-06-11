@@ -1,14 +1,15 @@
-import os, sys
+import os
+import sys
+
+from google.api_core.exceptions import BadRequest
+from google.cloud import bigquery
+import pytest
 
 # sys.path needs to be modified to enable package imports from parent
 # and sibling directories. Also see:
 # https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from bigquery_etl import parse_udf
-
-from google.api_core.exceptions import BadRequest
-from google.cloud import bigquery
-import pytest
+from bigquery_etl import parse_udf  # noqa: E402
 
 
 TEST_UDFS = """

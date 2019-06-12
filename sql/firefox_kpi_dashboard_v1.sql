@@ -84,27 +84,11 @@ WITH
   FROM
     `moz-fx-data-derived-datasets.analysis.growth_dashboard_forecasts_current` ),
   --
-  desktop_min_forecast_date AS (
-  SELECT
-    AS VALUE MIN(`date`)
-  FROM
-    forecast_base
-  WHERE
-    datasource = 'desktop_global'
-    AND type = 'forecast' ),
-  --
   desktop_base AS (
   SELECT
     *
   FROM
-    `moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_by_dimensions_v1`
-  WHERE
-    -- Temporarily freeze desktop data due to data deletion enacted on 2019-05-16.
-    submission_date < (
-    SELECT
-      *
-    FROM
-      desktop_min_forecast_date)),
+    `moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_by_dimensions_v1` ),
   --
   nondesktop_base AS (
   SELECT
@@ -117,6 +101,7 @@ WITH
     *
   FROM
     `moz-fx-data-derived-datasets.telemetry.firefox_accounts_exact_mau28_by_dimensions_v1` ),
+  --
   --
   per_bucket AS (
   SELECT
@@ -136,7 +121,9 @@ WITH
     'actual' AS type,
     submission_date AS date,
     id_bucket,
-    SUM(IF(country IN ('US',
+    SUM(
+    IF
+      (country IN ('US',
           'FR',
           'DE',
           'GB',
@@ -168,7 +155,9 @@ WITH
     'actual' AS type,
     submission_date AS date,
     id_bucket,
-    SUM(IF(country IN ('US',
+    SUM(
+    IF
+      (country IN ('US',
           'FR',
           'DE',
           'GB',
@@ -207,6 +196,7 @@ WITH
     id_bucket,
     submission_date ),
   --
+  --
   with_ci AS (
   SELECT
     datasource,
@@ -219,6 +209,7 @@ WITH
     datasource,
     type,
     submission_date ),
+  --
   --
   with_forecast AS (
   SELECT
@@ -241,12 +232,37 @@ WITH
   FROM
     forecast_base
   WHERE
-    type != 'original')
+    type != 'original'),
+  -- We use imputed values for the period after the Armag-add-on deletion event;
+  -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1552558
+  with_imputed AS (
+  SELECT
+    *
+  FROM
+    with_forecast
+  WHERE
+    NOT (`date` BETWEEN '2019-05-15'
+      AND '2019-06-08'
+      AND datasource IN ('desktop_global',
+        'desktop_tier1'))
+  UNION ALL
+  SELECT
+    datasource,
+    'actual' AS type,
+    `date`,
+    mau,
+    -- The confidence interval is chosen here somewhat arbitrarily as 1% of the
+    -- value; in any case, we should show a larger interval than we do for
+    -- non-imputed actuals.
+    mau - mau * 0.01 AS mau_low,
+    mau + mau * 0.01 AS mau_high
+  FROM
+    static.firefox_desktop_imputed_mau28_v1 )
   --
 SELECT
   *
 FROM
-  with_forecast
+  with_imputed
 ORDER BY
   datasource,
   type,

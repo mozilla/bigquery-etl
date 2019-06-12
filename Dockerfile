@@ -15,5 +15,6 @@ COPY --from=0 /usr/local /usr/local
 WORKDIR /app
 COPY .bigqueryrc /root/
 COPY . .
-COPY target/sql/ sql/
+RUN [ "python", "script/generate_sql" ]
+RUN mv target/sql/ sql/
 ENTRYPOINT ["/app/script/entrypoint"]

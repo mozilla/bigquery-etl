@@ -3,6 +3,8 @@
 """
 This script generates SQL files for each SQL file in `sql/` and 
 includes all the temporary UDF definitions used in the queries.
+
+This script can be called via exec() (eg. in conftest.py).
 """
 
 from argparse import ArgumentParser
@@ -43,7 +45,7 @@ def main():
 
     # create output directory if not exists or remove existing files
     if os.path.exists(args.destination):
-        shutil.rmtree(args.destination)
+        shutil.rmtree(args.destination, ignore_errors=True)
     os.makedirs(args.destination, exist_ok=True)
 
     for root, dirs, sql_files in os.walk(args.sql_dir):

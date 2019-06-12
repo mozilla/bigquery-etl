@@ -13,6 +13,8 @@ SELECT
   -- data. It helps to "remind" you when something first started appearing.
   MIN(`timestamp`/1000000000) AS min_timestamp,
   MAX(`timestamp`/1000000000) AS max_timestamp,
+  -- Create a column for each label on UPTAKE_REMOTE_CONTENT_RESULT_1 in
+  -- https://hg.mozilla.org/mozilla-central/file/tip/toolkit/components/telemetry/Histograms.json
   SUM(udf_get_key_from_map_entry(status,
       'up_to_date')) AS up_to_date,
   SUM(udf_get_key_from_map_entry(status,

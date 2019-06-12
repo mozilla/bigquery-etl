@@ -2,7 +2,7 @@
 
 Return the first value for a given key in a map.
 
-In BigQuery the schema for a map is STRUCT<key_value ARRAY<STRUCT<key ANY TYPE, value ANY TYPE>>>.
+The BigQuery type that results from loading a parquet map is STRUCT<key_value ARRAY<STRUCT<key ANY TYPE, value ANY TYPE>>>.
 
 */
 

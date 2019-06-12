@@ -2,7 +2,7 @@
 
 Return the value for map entry if entry key matches the given key, otherwise NULL.
 
-In BigQuery the schema for a map entry is STRUCT<key ANY TYPE, value ANY TYPE>.
+The BigQuery type for a map entry that results from loading a parquet map is STRUCT<key ANY TYPE, value ANY TYPE>.
 This is useful for aggregating a key from an unnested map column, as seen in the test.
 
 */

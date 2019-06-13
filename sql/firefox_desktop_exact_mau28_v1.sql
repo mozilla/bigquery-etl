@@ -45,13 +45,13 @@ SELECT
     base.tier1_mau) AS tier1_mau)
 FROM
   base
-LEFT JOIN
+FULL JOIN
   imputed_global
 USING
   (submission_date)
-LEFT JOIN
+FULL JOIN
   imputed_tier1
 USING
   (submission_date)
 ORDER BY
-  1
+  submission_date

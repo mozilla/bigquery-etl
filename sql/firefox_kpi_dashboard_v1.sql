@@ -251,11 +251,11 @@ WITH
     'actual' AS type,
     `date`,
     mau,
-    -- The confidence interval is chosen here somewhat arbitrarily as 1% of the
-    -- value; in any case, we should show a larger interval than we do for
+    -- The confidence interval is chosen here somewhat arbitrarily as 0.5% of
+    -- the value; in any case, we should show a larger interval than we do for
     -- non-imputed actuals.
-    mau - mau * 0.01 AS mau_low,
-    mau + mau * 0.01 AS mau_high
+    mau - mau * 0.005 AS mau_low,
+    mau + mau * 0.005 AS mau_high
   FROM
     static.firefox_desktop_imputed_mau28_v1 )
   --

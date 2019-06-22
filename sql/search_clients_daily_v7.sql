@@ -50,50 +50,49 @@ WITH
   ),
   augmented AS (
   SELECT
-    s.*,
-    sc.element.source AS source,
-    sc.element.engine AS engine,
-    sc.element.count AS count,
-    CASE
-      WHEN (sc.element.source IN ('searchbar', 'urlbar', 'abouthome', 'newtab', 'contextmenu', 'system', 'activitystream', 'webextension', 'alias') OR sc.element.source IS NULL) THEN 'sap'
-      WHEN STARTS_WITH(sc.element.source, 'in-content:sap:')
-    OR STARTS_WITH(sc.element.source, 'sap:') THEN 'tagged-sap'
-      WHEN STARTS_WITH(sc.element.source, 'in-content:sap-follow-on:') OR STARTS_WITH(sc.element.source,'follow-on:') THEN 'tagged-follow-on'
-      WHEN STARTS_WITH(sc.element.source, 'in-content:organic:') THEN 'organic'
-      WHEN STARTS_WITH(sc.element.source, 'ad-click:') THEN 'ad-click'
-      WHEN STARTS_WITH(sc.element.source, 'search-with-ads:') THEN 'search-with-ads'
-      ELSE 'unknown'
-    END AS type
-
+    *,
+    ARRAY_CONCAT(
+      ARRAY(
+        SELECT
+          element.source AS source,
+          element.engine AS engine,
+          element.count AS count,
+          CASE
+            WHEN (element.source IN ('searchbar',  'urlbar',  'abouthome',  'newtab',  'contextmenu',  'system',  'activitystream',  'webextension',  'alias') OR element.source IS NULL) THEN 'sap'
+            WHEN (STARTS_WITH(element.source, 'in-content:sap:')
+            OR STARTS_WITH(element.source, 'sap:')) THEN 'tagged-sap'
+            WHEN (STARTS_WITH(element.source, 'in-content:sap-follow-on:') OR STARTS_WITH(element.source,'follow-on:')) THEN 'tagged-follow-on'
+            WHEN STARTS_WITH(element.source, 'in-content:organic:') THEN 'organic'
+            WHEN STARTS_WITH(element.source, 'ad-click:') THEN 'ad-click'
+            WHEN STARTS_WITH(element.source, 'search-with-ads:') THEN 'search-with-ads'
+          ELSE
+          'unknown'
+        END
+          AS type
+        FROM
+          UNNEST(search_counts.list)
+      ),
+      ARRAY(
+        SELECT
+          "ad-click:" AS source,
+          key AS engine,
+          value AS count,
+          "ad-click" AS type
+        FROM
+          UNNEST(scalar_parent_browser_search_ad_clicks.key_value)
+      ),
+      ARRAY(
+        SELECT
+          "search-with-ads:" AS source,
+          key AS engine,
+          value AS count,
+          "search-with-ads" AS type
+        FROM
+          UNNEST(scalar_parent_browser_search_with_ads.key_value)
+      )
+    ) AS _searches
   FROM
-    summary_addon_version AS s,
-    UNNEST(search_counts.list) AS sc
-  WHERE
-    submission_date_s3 = @submission_date
-  UNION ALL
-  SELECT
-    s.*,
-    "ad-click:" as source,
-    ac.key as engine,
-    ac.value as count,
-    "ad-click" as type
-  FROM
-    summary_addon_version as s,
-    UNNEST(s.scalar_parent_browser_search_ad_clicks.key_value) as ac
-  WHERE
-    s.scalar_parent_browser_search_ad_clicks IS NOT NULL
-  UNION ALL
-  SELECT
-    s.*,
-    "search-with-ads:" as source,
-    ac.key as engine,
-    ac.value as count,
-    "search-with-ads" as type
-  FROM
-    summary_addon_version as s,
-    UNNEST(s.scalar_parent_browser_search_with_ads.key_value) as ac
-  WHERE
-    s.scalar_parent_browser_search_with_ads IS NOT NULL
+    summary_addon_version
   ),
   -- Aggregate by client_id using windows
   windowed AS (
@@ -133,7 +132,8 @@ WITH
     NULLIF(SUM(IF(type = 'unknown', count, 0)) OVER w1, 0) AS unknown
 
   FROM
-    augmented
+    augmented,
+    UNNEST(_searches)
   WHERE
     count < 10000
     AND engine IS NOT NULL

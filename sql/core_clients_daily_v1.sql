@@ -1,21 +1,4 @@
 CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
-    SELECT
-      _value
-    FROM
-      UNNEST(list) AS _value
-    WITH
-    OFFSET
-      AS
-    _offset
-    GROUP BY
-      _value
-    ORDER BY
-      COUNT(_value) DESC,
-      MAX(_offset) DESC
-    LIMIT
-      1 ));
-CREATE TEMP FUNCTION
   udf_geo_struct(country STRING,
     city STRING,
     geo_subdivision1 STRING,
@@ -45,6 +28,23 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1));
+CREATE TEMP FUNCTION
+  udf_mode_last(list ANY TYPE) AS ((
+    SELECT
+      _value
+    FROM
+      UNNEST(list) AS _value
+    WITH
+    OFFSET
+      AS
+    _offset
+    GROUP BY
+      _value
+    ORDER BY
+      COUNT(_value) DESC,
+      MAX(_offset) DESC
+    LIMIT
+      1 ));
 --
 WITH
   numbered_duplicates AS (

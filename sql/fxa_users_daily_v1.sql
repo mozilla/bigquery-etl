@@ -34,7 +34,7 @@ CREATE TEMP FUNCTION
         'Germany',
         'United Kingdom',
         'Canada')) );
-  --
+--
 WITH
   windowed AS (
   SELECT

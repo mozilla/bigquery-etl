@@ -39,7 +39,7 @@ WITH
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
-    AND udf_shift_one_day(days_seen_bits) > 0)
+    AND udf_shift_bits_one_day(days_seen_bits) > 0)
   --
 SELECT
   @submission_date AS submission_date,

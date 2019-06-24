@@ -101,4 +101,4 @@ def udf_usages_in_file(filepath):
         text = f.read()
     sql = sqlparse.format(text, strip_comments=True)
     udf_usages = re.findall(UDF_RE, sql)
-    return list(set(udf_usages))
+    return sorted(list(set(udf_usages)))

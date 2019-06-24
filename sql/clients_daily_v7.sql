@@ -1,4 +1,21 @@
 CREATE TEMP FUNCTION
+  udf_aggregate_active_addons(active_addons ANY TYPE) AS (STRUCT(ARRAY(
+      SELECT
+        AS STRUCT element
+      FROM (
+        SELECT
+          _n,
+          FIRST_VALUE(element IGNORE NULLS)  OVER (PARTITION BY element.addon_id ORDER BY _n ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS element
+        FROM (
+          SELECT
+            ROW_NUMBER() OVER (PARTITION BY element.addon_id) AS _n,
+            element
+          FROM
+            UNNEST(active_addons),
+            UNNEST(list)) )
+      WHERE
+        _n = 1 ) AS list));
+CREATE TEMP FUNCTION
   udf_aggregate_map_first(maps ANY TYPE) AS (STRUCT(ARRAY(
       SELECT
         AS STRUCT * EXCEPT (_n)
@@ -17,27 +34,6 @@ CREATE TEMP FUNCTION
       WHERE
         _n = 1 ) AS key_value));
 CREATE TEMP FUNCTION
-  udf_null_if_empty_list(list ANY TYPE) AS ( IF(ARRAY_LENGTH(list.list) > 0,
-      list,
-      NULL) );
-CREATE TEMP FUNCTION
-  udf_aggregate_active_addons(active_addons ANY TYPE) AS (STRUCT(ARRAY(
-      SELECT
-        AS STRUCT element
-      FROM (
-        SELECT
-          _n,
-          FIRST_VALUE(element IGNORE NULLS)  OVER (PARTITION BY element.addon_id ORDER BY _n ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS element
-        FROM (
-          SELECT
-            ROW_NUMBER() OVER (PARTITION BY element.addon_id) AS _n,
-            element
-          FROM
-            UNNEST(active_addons),
-            UNNEST(list)) )
-      WHERE
-        _n = 1 ) AS list));
-CREATE TEMP FUNCTION
   udf_aggregate_map_sum(maps ANY TYPE) AS (STRUCT(ARRAY(
       SELECT
         AS STRUCT key,
@@ -47,20 +43,6 @@ CREATE TEMP FUNCTION
         UNNEST(key_value)
       GROUP BY
         key) AS key_value));
-CREATE TEMP FUNCTION
-  udf_geo_struct(country STRING,
-    city STRING,
-    geo_subdivision1 STRING,
-    geo_subdivision2 STRING) AS ( IF(country IS NULL
-      OR country = '??',
-      NULL,
-      STRUCT(country,
-        NULLIF(city,
-          '??') AS city,
-        NULLIF(geo_subdivision1,
-          '??') AS geo_subdivision1,
-        NULLIF(geo_subdivision2,
-          '??') AS geo_subdivision2)));
 CREATE TEMP FUNCTION
   udf_aggregate_search_counts(search_counts ARRAY<STRUCT<list ARRAY<STRUCT<element STRUCT<engine STRING,
     source STRING,
@@ -95,6 +77,24 @@ CREATE TEMP FUNCTION
         "searchbar",
         "system",
         "urlbar")));
+CREATE TEMP FUNCTION
+  udf_geo_struct(country STRING,
+    city STRING,
+    geo_subdivision1 STRING,
+    geo_subdivision2 STRING) AS ( IF(country IS NULL
+      OR country = '??',
+      NULL,
+      STRUCT(country,
+        NULLIF(city,
+          '??') AS city,
+        NULLIF(geo_subdivision1,
+          '??') AS geo_subdivision1,
+        NULLIF(geo_subdivision2,
+          '??') AS geo_subdivision2)));
+CREATE TEMP FUNCTION
+  udf_null_if_empty_list(list ANY TYPE) AS ( IF(ARRAY_LENGTH(list.list) > 0,
+      list,
+      NULL) );
 --
 WITH
   -- normalize client_id and rank by document_id

@@ -24,6 +24,22 @@ jobs:
         paths:
         - venv/
         key: python-packages-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "constraints.txt" }}
+  verify-generated-sql:
+    docker:
+      - image: circleci/rust:1.32
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Verify that all of generated SQL is committed
+          command: |
+            sudo apt-get update
+            sudo apt-get -y install cmake jq
+            rm -rf sql/
+            python script/generate_sql
+            echo "Inconsistencies between templates and generated SQL:"
+            git ls-files --other --modified -x sql/*
+            test `git ls-files --other --modified -x sql/* | wc -l` = 0
   deploy:
     parameters:
       image:

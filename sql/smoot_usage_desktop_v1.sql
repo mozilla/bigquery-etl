@@ -1,3 +1,5 @@
+
+--
 CREATE OR REPLACE VIEW
   `moz-fx-data-derived-datasets.telemetry.smoot_usage_desktop_v1` AS
 WITH

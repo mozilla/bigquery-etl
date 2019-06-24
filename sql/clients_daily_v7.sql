@@ -1,3 +1,101 @@
+CREATE TEMP FUNCTION
+  udf_aggregate_map_first(maps ANY TYPE) AS (STRUCT(ARRAY(
+      SELECT
+        AS STRUCT * EXCEPT (_n)
+      FROM (
+        SELECT
+          * EXCEPT (value),
+          FIRST_VALUE(value IGNORE NULLS)  OVER (PARTITION BY key ORDER BY _n ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS value
+        FROM (
+          SELECT
+            ROW_NUMBER() OVER (PARTITION BY key) AS _n,
+            key,
+            value
+          FROM
+            UNNEST(maps),
+            UNNEST(key_value)) )
+      WHERE
+        _n = 1 ) AS key_value));
+CREATE TEMP FUNCTION
+  udf_null_if_empty_list(list ANY TYPE) AS ( IF(ARRAY_LENGTH(list.list) > 0,
+      list,
+      NULL) );
+CREATE TEMP FUNCTION
+  udf_aggregate_active_addons(active_addons ANY TYPE) AS (STRUCT(ARRAY(
+      SELECT
+        AS STRUCT element
+      FROM (
+        SELECT
+          _n,
+          FIRST_VALUE(element IGNORE NULLS)  OVER (PARTITION BY element.addon_id ORDER BY _n ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS element
+        FROM (
+          SELECT
+            ROW_NUMBER() OVER (PARTITION BY element.addon_id) AS _n,
+            element
+          FROM
+            UNNEST(active_addons),
+            UNNEST(list)) )
+      WHERE
+        _n = 1 ) AS list));
+CREATE TEMP FUNCTION
+  udf_aggregate_map_sum(maps ANY TYPE) AS (STRUCT(ARRAY(
+      SELECT
+        AS STRUCT key,
+        SUM(value) AS value
+      FROM
+        UNNEST(maps),
+        UNNEST(key_value)
+      GROUP BY
+        key) AS key_value));
+CREATE TEMP FUNCTION
+  udf_geo_struct(country STRING,
+    city STRING,
+    geo_subdivision1 STRING,
+    geo_subdivision2 STRING) AS ( IF(country IS NULL
+      OR country = '??',
+      NULL,
+      STRUCT(country,
+        NULLIF(city,
+          '??') AS city,
+        NULLIF(geo_subdivision1,
+          '??') AS geo_subdivision1,
+        NULLIF(geo_subdivision2,
+          '??') AS geo_subdivision2)));
+CREATE TEMP FUNCTION
+  udf_aggregate_search_counts(search_counts ARRAY<STRUCT<list ARRAY<STRUCT<element STRUCT<engine STRING,
+    source STRING,
+    count INT64>>>>>) AS ((
+    SELECT
+      AS STRUCT  SUM(element.count) AS search_count_all,
+      SUM(IF(element.source = "abouthome",
+          element.count,
+          0)) AS search_count_abouthome,
+      SUM(IF(element.source = "contextmenu",
+          element.count,
+          0)) AS search_count_contextmenu,
+      SUM(IF(element.source = "newtab",
+          element.count,
+          0)) AS search_count_newtab,
+      SUM(IF(element.source = "searchbar",
+          element.count,
+          0)) AS search_count_searchbar,
+      SUM(IF(element.source = "system",
+          element.count,
+          0)) AS search_count_system,
+      SUM(IF(element.source = "urlbar",
+          element.count,
+          0)) AS search_count_urlbar
+    FROM
+      UNNEST(search_counts),
+      UNNEST(list)
+    WHERE
+      element.source IN ("abouthome",
+        "contextmenu",
+        "newtab",
+        "searchbar",
+        "system",
+        "urlbar")));
+--
 WITH
   -- normalize client_id and rank by document_id
   numbered_duplicates AS (

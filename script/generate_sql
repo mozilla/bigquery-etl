@@ -23,7 +23,7 @@ import re
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--destination",
-    default="target/sql/",
+    default="sql/",
     help="The path where generated SQL files will be stored.",
 )
 parser.add_argument(
@@ -33,7 +33,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--sql-dir",
-    default="sql/",
+    default="templates/",
     help="The path where files with SQL queries are stored.",
 )
 

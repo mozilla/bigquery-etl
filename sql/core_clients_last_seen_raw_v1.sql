@@ -1,3 +1,29 @@
+CREATE TEMP FUNCTION
+  udf_bitmask_lowest_28() AS (0x0FFFFFFF);
+CREATE TEMP FUNCTION
+  udf_shift_one_day(x INT64) AS (IFNULL((x << 1) & udf_bitmask_lowest_28(),
+	0));
+CREATE TEMP FUNCTION
+  udf_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
+  IF
+    (days_since_created_profile BETWEEN 0
+      AND 6,
+      1 << days_since_created_profile,
+      0));
+CREATE TEMP FUNCTION
+  udf_shift_bits_one_day(x INT64) AS (IFNULL((x << 1) & udf_bitmask_lowest_28(),
+    0));
+CREATE TEMP FUNCTION
+  udf_combine_adjacent_days_bits(prev INT64,
+    curr INT64) AS (udf_shift_bits_one_day(prev) + IFNULL(curr,
+    0));
+CREATE TEMP FUNCTION
+  udf_coalesce_adjacent_days_bits(prev INT64,
+    curr INT64) AS ( COALESCE( NULLIF(udf_shift_bits_one_day(prev),
+        0),
+      curr,
+      0));
+--
   -- Equivalent to, but more efficient than, calling udf_bitmask_range(1, 28)
 WITH
   _current AS (

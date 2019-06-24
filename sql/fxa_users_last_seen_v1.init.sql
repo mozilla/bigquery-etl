@@ -1,3 +1,5 @@
+
+--
 SELECT
   submission_date,
   submission_date AS date_last_seen,

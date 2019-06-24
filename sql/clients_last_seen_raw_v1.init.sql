@@ -1,3 +1,5 @@
+
+--
 CREATE TABLE
   clients_last_seen_raw_v1
 PARTITION BY

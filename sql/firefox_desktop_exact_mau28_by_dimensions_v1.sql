@@ -1,3 +1,5 @@
+
+--
 SELECT
   submission_date,
   COUNTIF(days_since_seen < 28) AS mau,

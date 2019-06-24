@@ -1,3 +1,5 @@
+
+--
 CREATE OR REPLACE VIEW
   `moz-fx-data-derived-datasets.telemetry.core_clients_last_seen_v1` AS
 WITH

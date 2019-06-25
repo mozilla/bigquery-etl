@@ -15,4 +15,4 @@ CREATE TEMP FUNCTION
             UNNEST(active_addons),
             UNNEST(list)) )
       WHERE
-        _n = 1 ) AS list))
+        _n = 1 ) AS list));

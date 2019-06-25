@@ -17,7 +17,6 @@ function erfinv(x){
     } else {
         the_sign_of_x = -1;
     }
-
     if(0 != x) {
         var ln_1minus_x_sqrd = Math.log(1-x*x);
         var ln_1minusxx_by_a = ln_1minus_x_sqrd / a;
@@ -31,7 +30,6 @@ function erfinv(x){
     }
     return z;
 }
-
 function jackknife_resamples(arr) {
     output = [];
     for (var i = 0; i < arr.length; i++) {
@@ -41,17 +39,14 @@ function jackknife_resamples(arr) {
     }
     return output;
 }
-
 function array_sum(arr) {
     return arr.reduce(function (acc, x) {
         return acc + x;
     }, 0);
 }
-
 function array_avg(arr) {
     return array_sum(arr) / arr.length;
 }
-
 function sum_buckets_with_ci(counts_per_bucket) {
     counts_per_bucket = counts_per_bucket.map(x => parseInt(x));
     var n = counts_per_bucket.length;
@@ -73,10 +68,9 @@ function sum_buckets_with_ci(counts_per_bucket) {
         "nbuckets": n,
     };
 }
-
 return sum_buckets_with_ci(a);
 """;
-  --
+--
 WITH
   forecast_base AS (
   SELECT

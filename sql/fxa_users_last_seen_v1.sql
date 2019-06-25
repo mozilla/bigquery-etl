@@ -1,3 +1,5 @@
+
+--
 WITH
   current_sample AS (
   SELECT

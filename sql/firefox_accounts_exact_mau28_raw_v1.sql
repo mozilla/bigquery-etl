@@ -1,3 +1,5 @@
+
+--
 WITH
   -- We have a one-time backfill of FxA data extracted from Amplitude that
   -- runs through EOD 2019-03-27.

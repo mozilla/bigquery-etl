@@ -1,3 +1,5 @@
+
+--
 CREATE OR REPLACE VIEW
   `moz-fx-data-derived-datasets.telemetry.firefox_nondesktop_exact_mau28_by_product_v1`
 AS

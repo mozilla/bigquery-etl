@@ -2,7 +2,7 @@
 
 Returns a parsed struct from a JSON string representing a histogram.
 
-This implementation uses Javascript and is provided for performance comparison;
+This implementation uses JavaScript and is provided for performance comparison;
 see udf_json_extract_histogram for a pure SQL implementation that will likely
 be more usable in practice.
 
@@ -17,6 +17,9 @@ CREATE TEMP FUNCTION
   `values` ARRAY<STRUCT<key INT64,
   value INT64>> >
   LANGUAGE js AS """
+    if (input == null) {
+      return null;
+    }
     var result = JSON.parse(input);
     var valuesMap = result.values;
     var valuesArray = [];

@@ -123,7 +123,7 @@ WITH
     datasource,
     type,
     submission_date,
-    udf_sum_buckets_with_ci(ARRAY_AGG(mau)).*
+    udf_sum_buckets_with_ci_js(ARRAY_AGG(mau)).*
   FROM
     per_bucket
   GROUP BY

@@ -42,7 +42,9 @@ Recommended practices
 - Should be used to avoid code duplication
 - Should use lower snake case names e.g. `udf_mode_last`
   - Should use a `udf_` prefix for naming temporary udfs
-- Should be defined in files named as `udfs/function.{sql,js}` e.g. `udfs/udf_mode_last.sql`
+  - Should additionally use a `_js` suffix for naming temporary udfs implemented in JavaScript
+- Should be defined in files named as `udfs/function.sql` e.g. `udfs/udf_mode_last.sql`
+  or `udfs/udf_sum_buckets_with_ci_js.sql`
 - Should use `SQL` over `js` for performance
 - Must not be used for incremental queries with a _mostly materialized view_ (defined below)
 

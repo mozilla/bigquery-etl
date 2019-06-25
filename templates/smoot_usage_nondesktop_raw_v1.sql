@@ -12,9 +12,11 @@ WITH
       -- We apply this filter here rather than in the live view because this field
       -- is not normalized and there are many single pings that come in with unique
       -- nonsensical app_name values.
-      (STARTS_WITH(app_name, 'Firefox') OR app_name IN (
+      (STARTS_WITH(app_name, 'FirefoxReality') OR app_name IN (
         'Fennec', -- Firefox for Android and Firefox for iOS
         'Focus',
+        'FirefoxConnect', -- Amazon Echo
+        'FirefoxForFireTV',
         'Zerda')) -- Firefox Lite, previously called Rocket
       -- There are also many strange nonsensical entries for os, so we filter here.
       AND os IN ('Android', 'iOS'))

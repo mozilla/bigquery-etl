@@ -9,7 +9,7 @@ def test_basic():
     results = subprocess.check_output(
         [
             sys.executable,
-            "sql/longitudinal.sql.py",
+            "templates/longitudinal.sql.py",
             "--tablename",
             "foo",
             "--to",
@@ -44,7 +44,7 @@ def test_everything():
     results = subprocess.check_output(
         [
             sys.executable,
-            "sql/longitudinal.sql.py",
+            "templates/longitudinal.sql.py",
             "--tablename",
             "foo",
             "--to",
@@ -92,7 +92,7 @@ def test_column_conflict():
         subprocess.check_output(
             [
                 sys.executable,
-                "sql/longitudinal.sql.py",
+                "templates/longitudinal.sql.py",
                 "--tablename",
                 "foo",
                 "--to",

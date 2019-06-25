@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+
+"""
+This script generates SQL files for each SQL file in `sql/` and 
+includes all the temporary UDF definitions used in the queries.
+
+This script can be called via exec() (eg. in conftest.py).
+"""
+
+from argparse import ArgumentParser
+import os, sys
+
+# sys.path needs to be modified to enable package imports from parent
+# and sibling directories. Also see:
+# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from bigquery_etl.parse_udf import read_udf_dir, udf_usages_in_file, accumulate_dependencies
+from textwrap import dedent
+import shutil
+import re
+
+
+parser = ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--destination",
+    default="sql/",
+    help="The path where generated SQL files will be stored.",
+)
+parser.add_argument(
+    "--udf-dir",
+    default="udf/",
+    help="The directory where declarations of temporary UDFs are stored.",
+)
+parser.add_argument(
+    "--sql-dir",
+    default="templates/",
+    help="The path where files with SQL queries are stored.",
+)
+
+
+def main():
+    args = parser.parse_args()
+
+    raw_udfs = {x.name: x for x in read_udf_dir(args.udf_dir)}
+
+    # create output directory if not exists or remove existing files
+    if os.path.exists(args.destination):
+        shutil.rmtree(args.destination, ignore_errors=True)
+    os.makedirs(args.destination, exist_ok=True)
+
+    for root, dirs, sql_files in os.walk(args.sql_dir):
+        for filename in sql_files:
+            # make sure only SQL files are considered
+            if not filename.endswith(".sql"):
+                continue
+
+            # get names of the UDFs used in the SQL queries
+            udf_usages = udf_usages_in_file(os.path.join(root, filename))
+
+            with open(os.path.join(args.destination, filename), "a+") as output_file:
+                # write UDF declarations to file first
+
+                # for each UDF in the file we need to get all dependencies and make sure
+                # that UDFs are declared in the file only once
+                dependencies = []
+                for usage in udf_usages:
+                    # it is important that the order of dependencies is retained
+                    for dep in accumulate_dependencies([], raw_udfs, usage):
+                        if dep not in dependencies:
+                            dependencies.append(dep)
+
+                definitions = []
+                for dep in dependencies:
+                    definitions += raw_udfs[dep].definitions
+                full_sql = "\n".join(definitions)
+
+                output_file.write(full_sql)
+                output_file.write("\n--\n")
+
+                # write SQL of query to file
+                with open(os.path.join(root, filename)) as f:
+                    sql_text = f.read()
+
+                output_file.write(sql_text)
+
+
+if __name__ == "__main__":
+    main()

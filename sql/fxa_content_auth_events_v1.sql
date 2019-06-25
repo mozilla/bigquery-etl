@@ -1,3 +1,5 @@
+
+--
 CREATE OR REPLACE VIEW
   `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_events_v1` AS
   --

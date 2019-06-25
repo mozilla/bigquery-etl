@@ -1,4 +1,18 @@
 CREATE TEMP FUNCTION
+  udf_geo_struct(country STRING,
+    city STRING,
+    geo_subdivision1 STRING,
+    geo_subdivision2 STRING) AS ( IF(country IS NULL
+      OR country = '??',
+      NULL,
+      STRUCT(country,
+        NULLIF(city,
+          '??') AS city,
+        NULLIF(geo_subdivision1,
+          '??') AS geo_subdivision1,
+        NULLIF(geo_subdivision2,
+          '??') AS geo_subdivision2)));
+CREATE TEMP FUNCTION
   udf_json_mode_last(list ANY TYPE) AS ((
     SELECT
       ANY_VALUE(_value)
@@ -14,7 +28,6 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1));
-  --
 CREATE TEMP FUNCTION
   udf_mode_last(list ANY TYPE) AS ((
     SELECT
@@ -32,23 +45,7 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
-  --
-CREATE TEMP FUNCTION
-  udf_geo_struct(country STRING,
-    city STRING,
-    geo_subdivision1 STRING,
-    geo_subdivision2 STRING) AS ( --
-    IF(country IS NULL
-      OR country = '??',
-      NULL,
-      STRUCT(country,
-        NULLIF(city,
-          '??') AS city,
-        NULLIF(geo_subdivision1,
-          '??') AS geo_subdivision1,
-        NULLIF(geo_subdivision2,
-          '??') AS geo_subdivision2)));
-  --
+--
 WITH
   numbered_duplicates AS (
   SELECT

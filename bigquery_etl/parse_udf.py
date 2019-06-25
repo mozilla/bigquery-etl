@@ -83,6 +83,9 @@ def accumulate_dependencies(deps, raw_udfs, udf_name):
     Given a dict of raw_udfs and a udf_name string, recurse into the
     UDF's dependencies, adding the names to deps in depth-first order.
     """
+    if udf_name not in raw_udfs:
+        return deps
+
     raw_udf = raw_udfs[udf_name]
     for dep in raw_udf.dependencies:
         deps = accumulate_dependencies(deps, raw_udfs, dep)
@@ -90,3 +93,12 @@ def accumulate_dependencies(deps, raw_udfs, udf_name):
         return deps
     else:
         return deps + [udf_name]
+
+
+def udf_usages_in_file(filepath):
+    """Return a list of UDF names used in the provided SQL file."""
+    with open(filepath) as f:
+        text = f.read()
+    sql = sqlparse.format(text, strip_comments=True)
+    udf_usages = re.findall(UDF_RE, sql)
+    return sorted(list(set(udf_usages)))

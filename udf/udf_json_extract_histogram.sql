@@ -9,7 +9,7 @@ payload validation in the data pipeline should ensure that histograms are well
 formed, which gives us some flexibility here.
 
 The only "correct" way to fully parse JSON strings in BigQuery is via JS UDFs;
-we provide a JS implementation udf_js_json_extract_histogram for comparison,
+we provide a JS implementation udf_json_extract_histogram_js for comparison,
 but we expect that the overhead of the JS sandbox means that the pure SQL
 implementation here will have better performance.
 

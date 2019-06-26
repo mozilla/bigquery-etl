@@ -72,7 +72,8 @@ FROM
   joined
   --
 UNION ALL
-  -- Also present each app as its own usage criterion.
+  -- Also present each app as its own usage criterion. App names are documented in
+  -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
 SELECT
   * EXCEPT(app_name)
     REPLACE (

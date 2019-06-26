@@ -100,6 +100,23 @@ Incremental Queries
       preceding the first day was missing because values are only impacted by
       27 preceding days
 
+Contributing
+---
+
+When adding or modifying a query in this repository, make your changes in the
+`templates/` directory. Each time you run tests locally (see [Tests](#tests) below),
+the `sql/` directory will be regenerated, inserting definitions of any UDFs
+referenced by the query. To force recreation of the `sql/` directory without
+running tests, invoke:
+
+    ./script/generate_sql
+
+You are expected to commit the generated content in `sql/` along with your
+changes to the source in `templates/`, otherwise CI will fail. This matches
+the strategy used by [mozilla-pipeline-schemas] and ensures that the final
+queries being run by Airflow are directly available to reference via URL and
+to view via the GitHub UI.
+
 Tests
 ---
 
@@ -112,3 +129,4 @@ Tests
 [incremental]: #incremental-queries
 [spark-bigquery-connector]: https://github.com/GoogleCloudPlatform/spark-bigquery-connector/issues/5
 [reserved keywords]: https://cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved-keywords
+[mozilla-pipeline-schemas]: https://github.com/mozilla-services/mozilla-pipeline-schemas

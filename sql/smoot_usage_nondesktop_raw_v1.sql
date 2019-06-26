@@ -24,7 +24,8 @@ WITH
     WHERE
       -- We apply this filter here rather than in the live view because this field
       -- is not normalized and there are many single pings that come in with unique
-      -- nonsensical app_name values.
+      -- nonsensical app_name values. App names are documented in
+      -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
       (STARTS_WITH(app_name, 'FirefoxReality') OR app_name IN (
         'Fennec', -- Firefox for Android and Firefox for iOS
         'Focus',

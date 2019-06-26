@@ -129,4 +129,4 @@ Tests
 [incremental]: #incremental-queries
 [spark-bigquery-connector]: https://github.com/GoogleCloudPlatform/spark-bigquery-connector/issues/5
 [reserved keywords]: https://cloud.google.com/bigquery/docs/reference/standard-sql/lexical#reserved-keywords
-[mozilla-pipeline-schemas](https://github.com/mozilla-services/mozilla-pipeline-schemas)
+[mozilla-pipeline-schemas]: https://github.com/mozilla-services/mozilla-pipeline-schemas

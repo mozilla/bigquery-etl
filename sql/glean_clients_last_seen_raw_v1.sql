@@ -29,10 +29,10 @@ WITH
     -- rightmost bit represents whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
     udf_bits_from_days_since_created_profile(
-      DATE_DIFF(submission_date, profile_date, DAY)) AS days_created_profile_bits,
+      DATE_DIFF(submission_date, first_run_date, DAY)) AS days_created_profile_bits,
     * EXCEPT (submission_date)
   FROM
-    core_clients_daily_v1
+    glean_clients_daily_v1
   WHERE
     submission_date = @submission_date ),
   --
@@ -40,7 +40,7 @@ WITH
   SELECT
     * EXCEPT (submission_date)
   FROM
-    core_clients_last_seen_raw_v1 AS cls
+    glean_clients_last_seen_raw_v1 AS cls
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

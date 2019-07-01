@@ -1,5 +1,32 @@
 
 --
+WITH unioned AS (
+  SELECT
+    submission_date,
+    client_id,
+    days_since_seen,
+    app_name,
+    os,
+    normalized_channel,
+    campaign,
+    country,
+    distribution_id
+  FROM
+    core_clients_last_seen_v1
+  UNION ALL
+  SELECT
+    submission_date,
+    client_id,
+    days_since_seen,
+    app_name,
+    os,
+    normalized_channel,
+    NULL AS campaign,
+    country,
+    NULL AS distribution_id
+  FROM
+    glean_clients_last_seen_v1
+)
 SELECT
   submission_date,
   COUNTIF(days_since_seen < 28) AS mau,
@@ -22,7 +49,7 @@ SELECT
   country,
   distribution_id
 FROM
-  core_clients_last_seen_v1
+  unioned
 WHERE
   -- This list corresponds to the products considered for 2019 nondesktop KPIs;
   -- we apply this filter here rather than in the live view because this field
@@ -30,6 +57,7 @@ WHERE
   -- nonsensical app_name values. App names are documented in
   -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
   app_name IN (
+    'Fenix',
     'Fennec', -- Firefox for Android and Firefox for iOS
     'Focus',
     'Zerda', -- Firefox Lite, previously called Rocket

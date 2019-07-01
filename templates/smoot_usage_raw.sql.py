@@ -160,6 +160,7 @@ BASE_SELECT = {
       -- is not normalized and there are many single pings that come in with unique
       -- nonsensical app_name values.
       (STARTS_WITH(app_name, 'Firefox') OR app_name IN (
+        'Fenix',
         'Fennec', -- Firefox for Android and Firefox for iOS
         'Focus',
         'Zerda')) -- Firefox Lite, previously called Rocket

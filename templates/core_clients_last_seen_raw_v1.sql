@@ -1,4 +1,3 @@
-  -- Equivalent to, but more efficient than, calling udf_bitmask_range(1, 28)
 WITH
   _current AS (
   SELECT

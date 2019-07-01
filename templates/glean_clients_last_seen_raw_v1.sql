@@ -1,26 +1,3 @@
-CREATE TEMP FUNCTION
-  udf_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
-  IF
-    (days_since_created_profile BETWEEN 0
-      AND 6,
-      1 << days_since_created_profile,
-      0));
-CREATE TEMP FUNCTION
-  udf_bitmask_lowest_28() AS (0x0FFFFFFF);
-CREATE TEMP FUNCTION
-  udf_shift_bits_one_day(x INT64) AS (IFNULL((x << 1) & udf_bitmask_lowest_28(),
-    0));
-CREATE TEMP FUNCTION
-  udf_coalesce_adjacent_days_bits(prev INT64,
-    curr INT64) AS ( COALESCE( NULLIF(udf_shift_bits_one_day(prev),
-        0),
-      curr,
-      0));
-CREATE TEMP FUNCTION
-  udf_combine_adjacent_days_bits(prev INT64,
-    curr INT64) AS (udf_shift_bits_one_day(prev) + IFNULL(curr,
-    0));
---
 WITH
   _current AS (
   SELECT
@@ -29,10 +6,10 @@ WITH
     -- rightmost bit represents whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
     udf_bits_from_days_since_created_profile(
-      DATE_DIFF(submission_date, profile_date, DAY)) AS days_created_profile_bits,
+      DATE_DIFF(submission_date, first_run_date, DAY)) AS days_created_profile_bits,
     * EXCEPT (submission_date)
   FROM
-    core_clients_daily_v1
+    glean_clients_daily_v1
   WHERE
     submission_date = @submission_date ),
   --
@@ -40,7 +17,7 @@ WITH
   SELECT
     * EXCEPT (submission_date)
   FROM
-    core_clients_last_seen_raw_v1 AS cls
+    glean_clients_last_seen_raw_v1 AS cls
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

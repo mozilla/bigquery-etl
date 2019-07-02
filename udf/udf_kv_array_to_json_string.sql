@@ -2,7 +2,7 @@
 
 Returns a JSON string representing the input key-value array.
 
-Value type must be able to be represented as a string - this function wil cast to a string.
+Value type must be able to be represented as a string - this function will cast to a string.
 At Mozilla, the schema for a map is STRUCT<key_value ARRAY<STRUCT<key ANY TYPE, value ANY TYPE>>>.
 To use this with that representation, it should be as `udf_kv_array_to_json_string(struct.key_value)`.
 

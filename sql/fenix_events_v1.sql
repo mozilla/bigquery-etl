@@ -31,7 +31,7 @@ SELECT
       STRUCT(client_info.architecture AS arch)
     ) AS user_properties
 FROM
-    `moz-fx-data-shar-nonprod-efed.org_mozilla_reference_browser.events_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fenix.events_v1`
 CROSS JOIN
     UNNEST(events) AS event
 WHERE

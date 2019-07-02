@@ -10,7 +10,7 @@
 {"submission_timestamp":"2019-01-01 00:00:04.000000Z","user_id":"d","country":"","event_type":""}
 {"submission_timestamp":"2019-01-01 00:00:02.000000Z","user_id":"e","country":"","event_type":""}
 {"submission_timestamp":"2019-01-01 00:00:03.000000Z","user_id":"e","country":"France","event_type":""}
-{"submission_timestamp":"2019-01-01 00:00:04.000000Z","user_id":"e","country":"","event_type":""}
+{"submission_timestamp":"2019-01-01 00:00:04.000000Z","user_id":"e","country":"","event_type":"fxa_reg - complete"}
 {"submission_timestamp":"2019-01-01 00:00:01.000000Z","user_id":"f","country":"France","event_type":""}
 {"submission_timestamp":"2019-01-01 00:00:02.000000Z","user_id":"f","country":"Canada","event_type":""}
 {"submission_timestamp":"2019-01-01 00:00:03.000000Z","user_id":"f","country":"France","event_type":""}

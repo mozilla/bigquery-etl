@@ -14,3 +14,10 @@ SELECT
   *
 FROM
   `moz-fx-data-derived-datasets.telemetry.smoot_usage_nondesktop_v1`
+--
+UNION ALL
+--
+SELECT
+  *
+FROM
+  `moz-fx-data-derived-datasets.telemetry.smoot_usage_fxa_v1`

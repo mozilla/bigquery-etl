@@ -1,17 +1,7 @@
-CREATE TEMP FUNCTION
-  udf_kv_array_to_json_string(kv_arr ANY TYPE) AS ((
-  SELECT
-    CONCAT(
-        '{',
-        ARRAY_TO_STRING(
-            ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')),
-            ","),
-        '}'
-    )
-  FROM
-    unnest(kv_arr)
-));
+
 --
+CREATE OR REPLACE VIEW
+    `moz-fx-data-derived-datasets.telemetry.fenix_events_v1` AS
 SELECT
     client_info.client_id AS device_id,
     CONCAT(document_id, CAST(event.timestamp AS STRING)) AS insert_id,
@@ -26,7 +16,16 @@ SELECT
     metadata.geo.country AS country,
     metadata.geo.subdivision1 AS region,
     metadata.geo.city AS city,
-    udf_kv_array_to_json_string(event.extra) AS event_properties,
+    ( -- direct insert of `udf_kv_array_to_json_string`, for use in a view
+      SELECT CONCAT(
+        '{',
+        ARRAY_TO_STRING(
+            ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')),
+            ","),
+        '}')
+      FROM
+        UNNEST(event.extra)
+    ) AS event_properties,
     TO_JSON_STRING(
       STRUCT(client_info.architecture AS arch)
     ) AS user_properties

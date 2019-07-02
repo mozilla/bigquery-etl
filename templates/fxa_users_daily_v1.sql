@@ -16,15 +16,28 @@ CREATE TEMP FUNCTION
         'Germany',
         'United Kingdom',
         'Canada')) );
---
+  --
+  -- This UDF is also only applicable in the context of this query.
+CREATE TEMP FUNCTION
+  udf_contains_registration(x ANY TYPE) AS ( --
+    EXISTS(
+    SELECT
+      event_type
+    FROM
+      UNNEST(x) AS event_type
+    WHERE
+      event_type IN ( --
+        'fxa_reg - complete')) );
+  --
 WITH
   windowed AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(submission_timestamp) AS submission_date,
     user_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
     udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country
+    udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
+    udf_contains_registration(ARRAY_AGG(event_type) OVER w1) AS registered
   FROM
     fxa_all_events_v1
   WHERE
@@ -43,11 +56,12 @@ WITH
       'mktg - email_sent',
       'sync - repair_success',
       'sync - repair_triggered')
-    AND EXTRACT(DATE FROM submission_timestamp) = @submission_date
+    AND DATE(submission_timestamp) = @submission_date
   WINDOW
     w1 AS (
     PARTITION BY
-      user_id
+      user_id,
+      DATE(submission_timestamp)
     ORDER BY
       submission_timestamp --
       ROWS BETWEEN UNBOUNDED PRECEDING
@@ -55,7 +69,8 @@ WITH
     -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
     w1_unframed AS (
     PARTITION BY
-      user_id
+      user_id,
+      DATE(submission_timestamp)
     ORDER BY
       submission_timestamp) )
 SELECT

@@ -56,7 +56,7 @@ WITH
       'mktg - email_sent',
       'sync - repair_success',
       'sync - repair_triggered')
-    AND DATE(submission_timestamp) = @submission_date
+    AND udf_enforce_date_param(DATE(submission_timestamp), @submission_date)
   WINDOW
     w1 AS (
     PARTITION BY

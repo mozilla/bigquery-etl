@@ -1,4 +1,10 @@
 CREATE TEMP FUNCTION
+  udf_enforce_date_param(p1 DATE,
+    p2 DATE)
+  RETURNS BOOLEAN AS ( (p1 = p2)
+    OR (p1 = DATE('1111-11-11'))
+    OR (p2 = DATE('1111-11-11')) );
+CREATE TEMP FUNCTION
   udf_mode_last(list ANY TYPE) AS ((
     SELECT
       _value
@@ -74,7 +80,7 @@ WITH
       'mktg - email_sent',
       'sync - repair_success',
       'sync - repair_triggered')
-    AND DATE(submission_timestamp) = @submission_date
+    AND udf_enforce_date_param(DATE(submission_timestamp), @submission_date)
   WINDOW
     w1 AS (
     PARTITION BY

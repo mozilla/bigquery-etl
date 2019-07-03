@@ -1,0 +1,41 @@
+[
+  {
+    "type": "DATE",
+    "name": "submission_date_s3",
+    "mode": "REQUIRED"
+  },
+  {
+    "type": "STRING",
+    "name": "sample_id",
+    "mode": "REQUIRED"
+  },
+  {
+    "type": "STRING",
+    "name": "client_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_normandy_recipe_freshness",
+    "mode": "NULLABLE"
+  }
+]

@@ -33,5 +33,3 @@ FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix.events_v1`
 CROSS JOIN
     UNNEST(events) AS event
-WHERE
-    DATE(submission_timestamp) = @submission_date

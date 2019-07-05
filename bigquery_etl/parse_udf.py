@@ -61,7 +61,8 @@ def read_udf_dir(d):
     """Read contents of d into RawUdf instances."""
     for root, dirs, files in os.walk(d):
         for filename in files:
-            yield RawUdf.from_file(os.path.join(root, filename))
+            if not filename.startswith("."):
+                yield RawUdf.from_file(os.path.join(root, filename))
 
 
 def parse_udf_dir(d):

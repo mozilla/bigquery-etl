@@ -1,0 +1,61 @@
+[
+  {
+    "name": "submission_date_s3",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "sample_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "event_category",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "event_method",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "event_object",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "event_string_value",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "event_map_values",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "key_value",
+        "mode": "REPEATED",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING",
+            "mode": "REQUIRED"
+          },
+          {
+            "name": "value",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      }
+    ]
+  }
+]

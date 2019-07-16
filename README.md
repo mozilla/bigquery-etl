@@ -66,6 +66,10 @@ Recommended practices
 - Should split backfilling into queries that finish in minutes not hours
 - May use [script/generate_incremental_table] to automate backfilling incremental
   queries
+- May be performed in a single query for smaller tables that do not depend on history
+  - A useful pattern is to have the only reference to `@submission_date` be a
+    clause `WHERE (@submission_date IS NULL OR @submission_date = submission_date)`
+    which allows recreating all dates by passing `--parameter=submission_date:DATE:NULL`
 
 Incremental Queries
 ---

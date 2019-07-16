@@ -86,7 +86,8 @@ FROM
   base
 WHERE
   client_id IS NOT NULL
-  AND submission_date = @submission_date
+  -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
+  AND (@submission_date IS NULL OR @submission_date = submission_date)
 GROUP BY
   submission_date,
   id_bucket,

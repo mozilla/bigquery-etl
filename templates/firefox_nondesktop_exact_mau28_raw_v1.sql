@@ -66,7 +66,8 @@ WHERE
   AND os IN ('Android', 'iOS')
   -- 2017-01-01 is the first populated day of telemetry_core_parquet, so start 28 days later.
   AND submission_date >= DATE '2017-01-28'
-  AND submission_date = @submission_date
+  -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
+  AND (@submission_date IS NULL OR @submission_date = submission_date)
 GROUP BY
   submission_date,
   id_bucket,

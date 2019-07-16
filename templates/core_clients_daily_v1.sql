@@ -57,7 +57,8 @@ WITH
   WHERE
     -- Bug 1501329: avoid the pathological "canary" client_id
     client_id != 'c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0'
-    AND submission_date_s3 = @submission_date
+    -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
+    AND (@submission_date IS NULL OR @submission_date = submission_date_s3)
   WINDOW
     w1 AS (
     PARTITION BY

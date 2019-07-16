@@ -74,7 +74,8 @@ WITH
       'mktg - email_sent',
       'sync - repair_success',
       'sync - repair_triggered')
-    AND DATE(submission_timestamp) = @submission_date
+    -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
+    AND (@submission_date IS NULL OR @submission_date = DATE(submission_timestamp))
   WINDOW
     w1 AS (
     PARTITION BY

@@ -79,7 +79,7 @@ def test_generated(bq, dataset, generated_test):
     # run query
     job = bq.query(generated_test.modified_query, job_config=job_config)
     result = list(coerce_result(*job.result()))
-    result.sort(key=lambda row: json.dumps(row))
-    generated_test.expect.sort(key=lambda row: json.dumps(row))
+    result.sort(key=lambda row: json.dumps(row, sort_keys=True))
+    generated_test.expect.sort(key=lambda row: json.dumps(row, sort_keys=True))
 
     assert generated_test.expect == result

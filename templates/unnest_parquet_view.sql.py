@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 -W ignore
 
 """Generate view to unnest parquet-format list and map fields."""
 
 from argparse import ArgumentParser
+from google.cloud import bigquery
 from textwrap import dedent
 import json
-import subprocess
 import sys
 
 
@@ -23,41 +23,39 @@ def qualify(table, dataset, project):
 
 def replace(field, unnest_layer=0, *prefix):
     """Convert BigQuery field to a SQL expression for use in a REPLACE block."""
-    if field["type"] == "RECORD":
-        if len(field["fields"]) == 1:
+    if field.field_type == "RECORD":
+        if len(field.fields) == 1:
             # prevent naming collisions via `UNNEST(...) AS`
             unnest_as = f"_{unnest_layer}"
             # handle lists
             if (
-                field["fields"][0]["name"] == "list"
-                and field["fields"][0]["mode"] == "REPEATED"
-                and len(field["fields"][0]["fields"]) == 1
-                and field["fields"][0]["fields"][0]["name"] == "element"
+                field.fields[0].name == "list"
+                and field.fields[0].mode == "REPEATED"
+                and len(field.fields[0].fields) == 1
+                and field.fields[0].fields[0].name == "element"
             ):
-                unnest = ".".join(prefix + (field["name"], "list"))
-                nested = replace(
-                    field["fields"][0]["fields"][0], unnest_layer + 1, unnest_as
-                )
+                unnest = ".".join(prefix + (field.name, "list"))
+                nested = replace(field.fields[0].fields[0], unnest_layer + 1, unnest_as)
                 # handle simplest case without unnest_as
                 if nested == f"{unnest_as}.element":
-                    return f"ARRAY(SELECT * FROM UNNEST({unnest})) AS {field['name']}"
+                    return f"ARRAY(SELECT * FROM UNNEST({unnest})) AS {field.name}"
             # handle maps
             elif (
-                field["fields"][0]["name"] == "key_value"
-                and field["fields"][0]["mode"] == "REPEATED"
+                field.fields[0].name == "key_value"
+                and field.fields[0].mode == "REPEATED"
             ):
-                unnest = ".".join(prefix + (field["name"], "key_value"))
+                unnest = ".".join(prefix + (field.name, "key_value"))
                 nested = replace(
-                    {
-                        "fields": field["fields"][0]["fields"],
-                        "name": unnest_as,
-                        "type": "RECORD",
-                    },
+                    bigquery.SchemaField(
+                        field_type="RECORD",
+                        fields=field.fields[0].fields,
+                        name=unnest_as,
+                    ),
                     unnest_layer + 1,
                 )
                 # handle simplest case without array unnest_layer
                 if nested == unnest_as:
-                    return f"{unnest} AS {field['name']}"
+                    return f"{unnest} AS {field.name}"
             # shorten special case for nested struct
             special_prefix = f"(SELECT AS STRUCT {unnest_as}.* "
             if nested.startswith(special_prefix):
@@ -73,33 +71,31 @@ def replace(field, unnest_layer=0, *prefix):
             else:
                 select = f"SELECT {nested}"
             from_ = f"FROM UNNEST({unnest}) AS {unnest_as}"
-            return f"ARRAY({select} {from_}) AS {field['name']}"
+            return f"ARRAY({select} {from_}) AS {field.name}"
         # handle other structs with nested replacements
         replacements = []
-        for subfield in field["fields"]:
-            replacement = replace(subfield, unnest_layer, *prefix, field["name"])
+        for subfield in field.fields:
+            replacement = replace(subfield, unnest_layer, *prefix, field.name)
             if " AS " in replacement:
                 replacements += [replacement]
         if replacements:
-            select = f"SELECT AS STRUCT {'.'.join(prefix + (field['name'], '*'))}"
+            select = f"SELECT AS STRUCT {'.'.join(prefix + (field.name, '*'))}"
             replacements = ", ".join(replacements)
-            return f"({select} REPLACE ({replacements})) AS {field['name']}"
+            return f"({select} REPLACE ({replacements})) AS {field.name}"
     # no unnesting needed
-    return ".".join(prefix + (field["name"],))
+    return ".".join(prefix + (field.name,))
 
 
 def generate(table, view):
     """Generate a CREATE VIEW statement that unnests lists and maps."""
-    result = subprocess.check_output(
-        ["bq", "show", "--schema", table.replace(".", ":", 1)]
-    )
-    schema = json.loads(result)
+    schema = bigquery.Client().get_table(table).schema
     replacements = []
-    for field in schema:
+    for index, field in enumerate(schema):
         try:
             replacement = replace(field)
         except Exception:
-            print(f"problem with field: {json.dumps(field, indent=2)}")
+            json_field = json.dumps(field.to_api_repr(), indent=2)
+            print(f"problem with field {index}:\n{json_field}", file=sys.stderr)
             raise
         if " AS " in replacement:
             replacements += [replacement]

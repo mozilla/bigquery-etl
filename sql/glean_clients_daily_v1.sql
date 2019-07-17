@@ -143,7 +143,8 @@ WITH
   FROM
     deduplicated
   WHERE
-    submission_date = @submission_date
+    -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
+    (@submission_date IS NULL OR @submission_date = submission_date)
   WINDOW
     w1 AS (
     PARTITION BY

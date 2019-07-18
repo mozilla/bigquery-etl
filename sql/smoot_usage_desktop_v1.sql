@@ -39,7 +39,6 @@ WITH
   joined AS (
   SELECT
   * EXCEPT (submission_date,
-    app_name,
     metrics,
     metrics_daily,
     metrics_1_week_post_new_profile,

@@ -36,6 +36,10 @@ WITH
     user_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
     udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
+    udf_mode_last(ARRAY_AGG(language) OVER w1) AS language,
+    udf_mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
+    udf_mode_last(ARRAY_AGG(os_name) OVER w1) AS os_name,
+    udf_mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
     udf_contains_registration(ARRAY_AGG(event_type) OVER w1) AS registered
   FROM

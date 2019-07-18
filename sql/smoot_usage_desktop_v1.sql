@@ -55,7 +55,9 @@ WITH
       app_name,
       app_version,
       country,
+      locale,
       os,
+      os_version,
       channel)
   FULL JOIN
     new_profile_week2
@@ -66,7 +68,9 @@ WITH
       app_name,
       app_version,
       country,
+      locale,
       os,
+      os_version
       channel) )
   --
 SELECT

@@ -133,7 +133,7 @@ USAGE_CRITERIA = {
             "New Firefox Desktop Profile Created", "created_profile", dau_only=True
         ),
     ),
-    "core_clients_last_seen_v1": (
+    "nondesktop_clients_last_seen_v1": (
         UsageCriterion("Any Firefox Non-desktop Activity", "seen"),
         UsageCriterion(
             "New Firefox Non-desktop Profile Created", "created_profile", dau_only=True
@@ -152,46 +152,12 @@ BASE_SELECT = {
       * REPLACE(normalized_channel AS channel)
     FROM
       clients_last_seen_v1""",
-    "core_clients_last_seen_v1": """\
+    "nondesktop_clients_last_seen_v1": """\
     SELECT
       *,
       normalized_channel AS channel
-    FROM (
-      SELECT
-        submission_date,
-        client_id,
-        days_seen_bits,
-        days_since_seen,
-        days_since_created_profile,
-        app_name,
-        os,
-        osversion AS os_version,
-        normalized_channel,
-        campaign,
-        country,
-        locale,
-        distribution_id,
-        metadata_app_version AS app_version
-      FROM
-        core_clients_last_seen_v1
-      UNION ALL
-      SELECT
-        submission_date,
-        client_id,
-        days_seen_bits,
-        days_since_seen,
-        days_since_created_profile,
-        app_name,
-        os,
-        os_version,
-        normalized_channel,
-        NULL AS campaign,
-        country,
-        locale,
-        NULL AS distribution_id,
-        app_display_version AS app_version
-      FROM
-        glean_clients_last_seen_v1 )
+    FROM
+      nondesktop_clients_last_seen_v1
     WHERE
       -- We apply this filter here rather than in the live view because this field
       -- is not normalized and there are many single pings that come in with unique
@@ -212,6 +178,7 @@ BASE_SELECT = {
       user_id AS client_id,
       days_since_registered AS days_since_created_profile,
       language AS locale,
+      os_name AS os,
       NULL AS app_name,
       NULL AS channel
     FROM

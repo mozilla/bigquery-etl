@@ -80,7 +80,7 @@ WITH
       channel) )
   --
 SELECT
-  * EXCEPT(app_name)
+  *
 FROM
   joined
   --

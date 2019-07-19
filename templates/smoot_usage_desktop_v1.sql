@@ -67,7 +67,7 @@ WITH
       country,
       locale,
       os,
-      os_version
+      os_version,
       channel) )
   --
 SELECT

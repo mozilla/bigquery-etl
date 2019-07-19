@@ -20,8 +20,9 @@ WITH
       user_id AS client_id,
       days_since_registered AS days_since_created_profile,
       language AS locale,
-      NULL AS app_name,
-      NULL AS channel
+      os_name AS os,
+      CAST(NULL AS STRING) AS app_name,
+      CAST(NULL AS STRING) AS channel
     FROM
       fxa_users_last_seen_v1)
   --

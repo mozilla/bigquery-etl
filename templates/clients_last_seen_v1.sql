@@ -24,4 +24,4 @@ SELECT
     FROM
       UNNEST(days_seen_in_experiment)) AS days_seen_in_experiment)
 FROM
-  `moz-fx-data-derived-datasets.telemetry.clients_last_seen_raw_v1`
+  `moz-fx-data-derived-datasets.telemetry_raw.clients_last_seen_raw_v1`

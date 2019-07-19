@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+
+"""
+This script publishes all user-defined functions in udf/ as persistent UDFs in the udf dataset.
+
+The udf_ prefix will be stripped from names of published UDFs.
+"""
+
+from argparse import ArgumentParser
+import os
+import sys
+import re
+from google.cloud import bigquery
+
+# sys.path needs to be modified to enable package imports from parent
+# and sibling directories. Also see:
+# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from bigquery_etl.parse_udf import (
+    read_udf_dir,
+    udf_usages_in_file,
+    accumulate_dependencies,
+)
+
+
+UDF_RE = re.compile(r"udf_([a-zA-z0-9_]+)")
+
+
+parser = ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--dataset",
+    default="udf",
+    help="The names of the dataset the persistent UDFs will be stored in.",
+)
+parser.add_argument(
+    "--udf-dir",
+    default="udf/",
+    help="The directory where declarations of temporary UDFs are stored.",
+)
+
+
+def main():
+    args = parser.parse_args()
+    client = bigquery.Client()
+
+    raw_udfs = {x.name: x for x in read_udf_dir(args.udf_dir)}
+
+    for raw_udf in raw_udfs:
+        # get all dependencies for UDF and publish as persistent UDF
+        dependencies = []
+        for dep in accumulate_dependencies([], raw_udfs, raw_udf):
+            if dep not in dependencies:
+                dependencies.append(dep)
+                publish_persistent_udf(raw_udfs[dep], args.dataset)
+
+        publish_persistent_udf(raw_udfs[raw_udf], args.dataset)
+
+
+def publish_persistent_udf(raw_udf, dataset):
+    # transforms temporary UDF to persistent UDFs and publishes them
+    for definition in raw_udf.definitions:
+        query_with_renamed_udfs = re.sub(UDF_RE, dataset + "." + r"\1", definition)
+        query = query_with_renamed_udfs.replace(
+            "CREATE TEMP FUNCTION", "CREATE OR REPLACE FUNCTION"
+        )
+
+        client.query(query)
+
+
+if __name__ == "__main__":
+    main()

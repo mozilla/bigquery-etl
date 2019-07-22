@@ -39,7 +39,6 @@ WITH
   joined AS (
   SELECT
   * EXCEPT (submission_date,
-    app_name,
     metrics,
     metrics_daily,
     metrics_1_week_post_new_profile,
@@ -55,7 +54,9 @@ WITH
       app_name,
       app_version,
       country,
+      locale,
       os,
+      os_version,
       channel)
   FULL JOIN
     new_profile_week2
@@ -66,7 +67,9 @@ WITH
       app_name,
       app_version,
       country,
+      locale,
       os,
+      os_version,
       channel) )
   --
 SELECT

@@ -33,7 +33,7 @@ parser.add_argument(
 parser.add_argument(
     "--dataset",
     default="udf",
-    help="The names of the dataset the persistent UDFs will be stored in.",
+    help="The name of the dataset the persistent UDFs will be stored in.",
 )
 parser.add_argument(
     "--udf-dir",
@@ -54,6 +54,8 @@ def main():
             if dep not in dependencies:
                 dependencies.append(dep)
                 publish_persistent_udf(raw_udfs[dep], args.dataset, args.project_id)
+
+        publish_persistent_udf(raw_udfs[raw_udf], args.dataset, args.project_id)
 
 
 def publish_persistent_udf(raw_udf, dataset, project_id):

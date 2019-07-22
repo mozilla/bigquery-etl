@@ -28,6 +28,9 @@ UDF_RE = re.compile(r"udf_([a-zA-z0-9_]+)")
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
+    "--project-id", default="moz-fx-data-derived-datasets", help="The project ID."
+)
+parser.add_argument(
     "--dataset",
     default="udf",
     help="The names of the dataset the persistent UDFs will be stored in.",
@@ -41,7 +44,6 @@ parser.add_argument(
 
 def main():
     args = parser.parse_args()
-    client = bigquery.Client()
 
     raw_udfs = {x.name: x for x in read_udf_dir(args.udf_dir)}
 
@@ -51,15 +53,18 @@ def main():
         for dep in accumulate_dependencies([], raw_udfs, raw_udf):
             if dep not in dependencies:
                 dependencies.append(dep)
-                publish_persistent_udf(raw_udfs[dep], args.dataset)
-
-        publish_persistent_udf(raw_udfs[raw_udf], args.dataset)
+                publish_persistent_udf(raw_udfs[dep], args.dataset, args.project_id)
 
 
-def publish_persistent_udf(raw_udf, dataset):
+def publish_persistent_udf(raw_udf, dataset, project_id):
+    client = bigquery.Client()
+
     # transforms temporary UDF to persistent UDFs and publishes them
     for definition in raw_udf.definitions:
-        query_with_renamed_udfs = re.sub(UDF_RE, dataset + "." + r"\1", definition)
+        # Within a standard SQL function, references to other entities require explicit project IDs
+        query_with_renamed_udfs = UDF_RE.sub(
+            "`" + project_id + "`." + dataset + "." + r"\1", definition
+        )
         query = query_with_renamed_udfs.replace(
             "CREATE TEMP FUNCTION", "CREATE OR REPLACE FUNCTION"
         )

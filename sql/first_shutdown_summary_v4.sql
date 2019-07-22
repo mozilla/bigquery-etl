@@ -4,6 +4,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-derived-datasets.telemetry.first_shutdown_summary_v4` AS
 SELECT
+  submission_date AS submission_date_s3,
   * REPLACE (
     ARRAY(SELECT * FROM UNNEST(active_addons.list)) AS active_addons,
     ARRAY(SELECT * FROM UNNEST(antispyware.list)) AS antispyware,
@@ -244,7 +245,6 @@ SELECT
     ARRAY(SELECT AS STRUCT * REPLACE (_0.value.key_value AS value) FROM UNNEST(keyed_boolean_addon_scalars.key_value) AS _0) AS keyed_boolean_addon_scalars,
     ARRAY(SELECT AS STRUCT * REPLACE (_0.value.key_value AS value) FROM UNNEST(keyed_string_addon_scalars.key_value) AS _0) AS keyed_string_addon_scalars,
     ARRAY(SELECT AS STRUCT * REPLACE (_0.value.key_value AS value) FROM UNNEST(keyed_uint_addon_scalars.key_value) AS _0) AS keyed_uint_addon_scalars,
-    SAFE_CAST(sample_id AS INT64) AS sample_id,
     popup_notification_stats.key_value AS popup_notification_stats,
     scalar_content_dom_event_confluence_load_count.key_value AS scalar_content_dom_event_confluence_load_count,
     scalar_content_dom_event_office_online_load_count.key_value AS scalar_content_dom_event_office_online_load_count,
@@ -311,7 +311,6 @@ SELECT
     ARRAY(SELECT * FROM UNNEST(search_counts.list)) AS search_counts,
     ssl_handshake_result.key_value AS ssl_handshake_result,
     string_addon_scalars.key_value AS string_addon_scalars,
-    submission_date_s3 AS submission_date,
     uint_addon_scalars.key_value AS uint_addon_scalars
   )
 FROM

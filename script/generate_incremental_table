@@ -25,7 +25,7 @@ parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--destination_table",
     required=True,
-    help="The destination table flag for `bq query` to which '$%Y%m%d' will be added",
+    help="The destination table flag for `bq query` to which '$%%Y%%m%%d' will be added",
 )
 parser.add_argument(
     "--start",

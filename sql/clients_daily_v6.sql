@@ -4,7 +4,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-derived-datasets.telemetry.clients_daily_v6` AS
 SELECT
-  submission_date_s3 AS submission_date,
+  submission_date AS submission_date_s3,
   * REPLACE (
     ARRAY(SELECT * FROM UNNEST(active_addons.list)) AS active_addons,
     ARRAY(SELECT * FROM UNNEST(environment_settings_intl_accept_languages.list)) AS environment_settings_intl_accept_languages,
@@ -14,7 +14,6 @@ SELECT
     ARRAY(SELECT * FROM UNNEST(environment_settings_intl_requested_locales.list)) AS environment_settings_intl_requested_locales,
     ARRAY(SELECT * FROM UNNEST(environment_settings_intl_system_locales.list)) AS environment_settings_intl_system_locales,
     experiments.key_value AS experiments,
-    SAFE_CAST(sample_id AS INT64) AS sample_id,
     scalar_parent_devtools_accessibility_select_accessible_for_node_sum.key_value AS scalar_parent_devtools_accessibility_select_accessible_for_node_sum
   )
 FROM

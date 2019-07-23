@@ -46,16 +46,16 @@ def main():
     args = parser.parse_args()
 
     raw_udfs = {x.name: x for x in read_udf_dir(args.udf_dir)}
+    published_udfs = []
 
     for raw_udf in raw_udfs:
         # get all dependencies for UDF and publish as persistent UDF
-        dependencies = []
-        for dep in accumulate_dependencies([], raw_udfs, raw_udf):
-            if dep not in dependencies:
-                dependencies.append(dep)
+        udfs_to_publish = accumulate_dependencies([], raw_udfs, raw_udf)
+        udfs_to_publish.append(raw_udf)
+        for dep in udfs_to_publish:
+            if dep not in published_udfs:
                 publish_persistent_udf(raw_udfs[dep], args.dataset, args.project_id)
-
-        publish_persistent_udf(raw_udfs[raw_udf], args.dataset, args.project_id)
+                published_udfs.append(dep)
 
 
 def publish_persistent_udf(raw_udf, dataset, project_id):

@@ -31,6 +31,6 @@ SELECT
       STRUCT(client_info.architecture AS arch)
     ) AS user_properties
 FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix.events_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fenix_live.events_v1`
 CROSS JOIN
     UNNEST(events) AS event

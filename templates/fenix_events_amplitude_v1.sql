@@ -1,5 +1,5 @@
 SELECT
-  * EXCEPT (submission_date)
+  * EXCEPT (submission_timestamp)
 FROM
   fenix_events_v1
 WHERE

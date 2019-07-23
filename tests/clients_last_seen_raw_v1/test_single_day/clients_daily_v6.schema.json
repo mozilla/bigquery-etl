@@ -1,6 +1,6 @@
 [
   {
-    "name": "submission_date_s3",
+    "name": "submission_date",
     "type": "DATE",
     "mode": "REQUIRED",
     "description": "time_partitioning_field"

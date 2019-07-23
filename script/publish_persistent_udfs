@@ -23,7 +23,7 @@ from bigquery_etl.parse_udf import (
 )
 
 
-UDF_RE = re.compile(r"udf_([a-zA-z0-9_]+)")
+UDF_RE = re.compile(r"udf_(?:js_)?([a-zA-z0-9_]+)")
 
 
 parser = ArgumentParser(description=__doc__)

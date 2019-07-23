@@ -28,8 +28,9 @@ parser.add_argument(
 )
 parser.add_argument(
     "--udf-dir",
-    default="udf/",
-    help="The directory where declarations of temporary UDFs are stored.",
+    default=["udf/", "udf_js/"],
+    nargs='+',
+    help="Directories where declarations of temporary UDFs are stored.",
 )
 parser.add_argument(
     "--sql-dir",
@@ -41,7 +42,9 @@ parser.add_argument(
 def main():
     args = parser.parse_args()
 
-    raw_udfs = {x.name: x for x in read_udf_dir(args.udf_dir)}
+    raw_udfs = {}
+    for udf_dir in args.udf_dir:
+        raw_udfs.update({x.name: x for x in read_udf_dir(udf_dir)})
 
     # create output directory if not exists or remove existing files
     if os.path.exists(args.destination):

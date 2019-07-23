@@ -1,4 +1,6 @@
-  -- Equivalent to, but more efficient than, calling udf_bitmask_range(1, 28)
+-- Note that this query runs in the telemetry_raw dataset, so sees raw tables
+-- rather than the user-facing views (so key_value structs haven't been eliminated, etc.)
+
 WITH
   _current AS (
   SELECT

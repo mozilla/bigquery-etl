@@ -29,7 +29,8 @@ class RawUdf:
     @staticmethod
     def from_file(filepath):
         """Read in a RawUdf from a SQL file on disk."""
-        name = os.path.basename(filepath).replace(".sql", "")
+        dirpath, basename = os.path.split(filepath)
+        name = os.path.basename(dirpath) + "_" + basename.replace(".sql", "")
         with open(filepath) as f:
             text = f.read()
         sql = sqlparse.format(text, strip_comments=True)
@@ -41,6 +42,12 @@ class RawUdf:
             s for s in statements if not s.lower().startswith("create temp function")
         ]
         dependencies = re.findall(UDF_RE, "\n".join(definitions))
+        if name not in dependencies:
+            raise ValueError(
+                "Expected a temporary UDF named {} to be defined in {}".format(
+                    name, filepath
+                )
+            )
         dependencies.remove(name)
         return RawUdf(name, filepath, definitions, tests, set(dependencies))
 

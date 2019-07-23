@@ -40,14 +40,17 @@ Recommended practices
   in query operation: Resources exceeded during query execution: Not enough
   resources for query planning - too many subqueries or query is too complex.`
 - Should be used to avoid code duplication
-- Should use lower snake case names prefixed with `udf_` e.g. `udf_mode_last`
-- Should be defined as temporary UDFs
+- Must be named in files with lower snake case names ending in `.sql`
+  e.g. `mode_last.sql`
+  - Each file must define a single function using `CREATE TEMP FUNCTION` syntax
+  - SQL UDFs must be defined in the `udf/` directory and JS UDFs must be defined
+    in the `udf_js` directory
+  - The function must be named as `<dir_name>_<file_name_without_suffix>`
+    so `udf/mode_last.sql` must define a function `udf_mode_last`
+- Must be defined as temporary UDFs
   - We provide tooling in `scripts/publish_persistent_udfs` for converting
     these definitions to persistent UDFs (temporary UDF `udf_mode_last` is
     published as persistent UDF `udf.mode_last`)
-- Should be defined in files named as `udf/function.sql` e.g. `udf/udf_mode_last.sql`
-  for UDFs implemented in pure SQL and in files names as `udf_js/function.sql` for
-  UDFs implemented in JavaScript.
 - Should use `SQL` over `js` for performance
 
 ### Backfills

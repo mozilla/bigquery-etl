@@ -9,7 +9,7 @@ be more usable in practice.
 */
 
 CREATE TEMP FUNCTION
-  udf_json_extract_histogram (input STRING)
+  udf_js_json_extract_histogram (input STRING)
   RETURNS STRUCT<bucket_count INT64,
   histogram_type INT64,
   `sum` INT64,
@@ -39,7 +39,7 @@ WITH
   --
   extracted AS (
     SELECT
-      udf_json_extract_histogram(histogram).*
+      udf_js_json_extract_histogram(histogram).*
     FROM
       histogram )
   --

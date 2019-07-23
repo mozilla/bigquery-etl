@@ -2,10 +2,16 @@
 
 Returns an array of parsed structs from a JSON string representing a keyed histogram.
 
+This is likely only useful for histograms that weren't properly parsed to fields,
+so ended up embedded in an additional_properties JSON blob. Normally, keyed histograms
+will be modeled as a key/value struct where the values are JSON representations of
+single histograms. There is no pure SQL equivalent to this function, since BigQuery
+does not provide any functions for listing or iterating over keys in a JSON map.
+
 */
 
 CREATE TEMP FUNCTION
-  udf_json_extract_keyed_histogram_js (input STRING)
+  udf_json_extract_keyed_histogram (input STRING)
   RETURNS ARRAY<STRUCT<key STRING,
   bucket_count INT64,
   histogram_type INT64,
@@ -45,7 +51,7 @@ WITH
       histogram.*
     FROM
       keyed_histogram,
-      UNNEST(udf_json_extract_keyed_histogram_js(keyed_histogram)) AS histogram )
+      UNNEST(udf_json_extract_keyed_histogram(keyed_histogram)) AS histogram )
   --
 SELECT
   assert_equals('audio/mp4a-latm', `key`),

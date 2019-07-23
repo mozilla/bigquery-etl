@@ -3,13 +3,13 @@
 Returns a parsed struct from a JSON string representing a histogram.
 
 This implementation uses JavaScript and is provided for performance comparison;
-see udf_json_extract_histogram for a pure SQL implementation that will likely
+see udf/udf_json_extract_histogram for a pure SQL implementation that will likely
 be more usable in practice.
 
 */
 
 CREATE TEMP FUNCTION
-  udf_json_extract_histogram_js (input STRING)
+  udf_json_extract_histogram (input STRING)
   RETURNS STRUCT<bucket_count INT64,
   histogram_type INT64,
   `sum` INT64,
@@ -39,7 +39,7 @@ WITH
   --
   extracted AS (
     SELECT
-      udf_json_extract_histogram_js(histogram).*
+      udf_json_extract_histogram(histogram).*
     FROM
       histogram )
   --

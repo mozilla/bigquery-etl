@@ -4,7 +4,6 @@ CREATE OR REPLACE VIEW
     `moz-fx-data-derived-datasets.telemetry.fenix_events_v1` AS
 SELECT
     submission_timestamp,
-    DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS device_id,
     CONCAT(document_id, CAST(event.timestamp AS STRING)) AS insert_id,
     CONCAT(event.category, '.', event.name) AS event_type,

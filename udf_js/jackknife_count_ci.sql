@@ -1,5 +1,5 @@
 CREATE TEMP FUNCTION
-  udf_js_sum_buckets_with_ci(n_buckets INT64, counts_per_bucket ARRAY<INT64>)
+  udf_js_jackknife_count_ci(n_buckets INT64, counts_per_bucket ARRAY<INT64>)
   RETURNS STRUCT<total INT64,
   low INT64,
   high INT64,

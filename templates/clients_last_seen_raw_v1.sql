@@ -1,4 +1,6 @@
-  -- Equivalent to, but more efficient than, calling udf_bitmask_range(1, 28)
+-- Note that this query runs in the telemetry_raw dataset, so sees raw tables
+-- rather than the user-facing views (so key_value structs haven't been eliminated, etc.)
+
 WITH
   _current AS (
   SELECT
@@ -14,7 +16,7 @@ WITH
     -- We only trust profile_date if it is within one week of the ping submission,
     -- so we ignore any value more than seven days old.
     udf_bits_from_days_since_created_profile(
-      DATE_DIFF(submission_date_s3, SAFE.PARSE_DATE("%F",
+      DATE_DIFF(submission_date, SAFE.PARSE_DATE("%F",
         SUBSTR(profile_creation_date, 0, 10)), DAY)) AS days_created_profile_bits,
     -- Experiments are an array, so we keep track of a usage bit pattern per experiment.
     ARRAY(
@@ -25,11 +27,12 @@ WITH
       1 AS bits
     FROM
       UNNEST(experiments.key_value)) AS days_seen_in_experiment,
-    * EXCEPT (submission_date_s3)
+    * EXCEPT (submission_date)
+      REPLACE (CAST(sample_id AS STRING) AS sample_id)
   FROM
     clients_daily_v6
   WHERE
-    submission_date_s3 = @submission_date ),
+    submission_date = @submission_date ),
   --
   _previous AS (
   SELECT

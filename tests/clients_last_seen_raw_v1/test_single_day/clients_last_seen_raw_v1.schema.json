@@ -50,7 +50,7 @@
   },
   {
     "name": "sample_id",
-    "type": "INTEGER",
+    "type": "STRING",
     "mode": "REQUIRED"
   },
   {

@@ -123,7 +123,7 @@ WITH
     datasource,
     type,
     submission_date,
-    udf_js_jackknife_count_ci(20, ARRAY_AGG(mau)).*
+    udf_js_jackknife_sum_ci(20, ARRAY_AGG(mau)).*
   FROM
     per_bucket
   GROUP BY

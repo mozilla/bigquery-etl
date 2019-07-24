@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW
     `moz-fx-data-derived-datasets.telemetry.fenix_events_v1` AS
 SELECT
-    DATE(submission_timestamp) AS submission_date,
+    submission_timestamp,
     client_info.client_id AS device_id,
     CONCAT(document_id, CAST(event.timestamp AS STRING)) AS insert_id,
     CONCAT(event.category, '.', event.name) AS event_type,
@@ -29,6 +29,6 @@ SELECT
       STRUCT(client_info.architecture AS arch)
     ) AS user_properties
 FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix.events_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fenix_live.events_v1`
 CROSS JOIN
     UNNEST(events) AS event

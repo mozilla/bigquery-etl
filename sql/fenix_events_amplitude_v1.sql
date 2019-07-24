@@ -1,8 +1,8 @@
 
 --
 SELECT
-  * EXCEPT (submission_date)
+  * EXCEPT (submission_timestamp)
 FROM
   fenix_events_v1
 WHERE
-  submission_date = @submission_date
+  DATE(submission_timestamp) = @submission_date

@@ -73,7 +73,7 @@ WITH
     metrics AS baseline_metrics,
     NULL AS metrics
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix.baseline_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fenix_live.baseline_v1`
   UNION ALL
   SELECT
     submission_timestamp,
@@ -85,7 +85,7 @@ WITH
     NULL AS baseline_metrics,
     metrics
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix.metrics_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`
   ),
   --
   base AS (

@@ -2,6 +2,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-derived-datasets.telemetry.main_summary_v4` AS
 SELECT
+  submission_date AS submission_date_s3,
   * REPLACE (
     ARRAY(SELECT * FROM UNNEST(active_addons.list)) AS active_addons,
     ARRAY(SELECT * FROM UNNEST(antispyware.list)) AS antispyware,

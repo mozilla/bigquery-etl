@@ -43,6 +43,13 @@ WITH
     metrics_daily,
     metrics_1_week_post_new_profile,
     metrics_2_week_post_new_profile)
+    REPLACE (
+      CASE app_name
+        WHEN 'Fennec' THEN CONCAT(app_name, ' ', os)
+        WHEN 'Focus' THEN CONCAT(app_name, ' ', os)
+        WHEN 'Zerda' THEN 'Firefox Lite'
+        ELSE app_name
+      END AS app_name)
   FROM
     daily
   FULL JOIN
@@ -54,7 +61,9 @@ WITH
       app_name,
       app_version,
       country,
+      locale,
       os,
+      os_version,
       channel)
   FULL JOIN
     new_profile_week2
@@ -65,11 +74,13 @@ WITH
       app_name,
       app_version,
       country,
+      locale,
       os,
+      os_version,
       channel) )
   --
 SELECT
-  * EXCEPT(app_name)
+  *
 FROM
   joined
   --
@@ -77,15 +88,6 @@ UNION ALL
   -- Also present each app as its own usage criterion. App names are documented in
   -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
 SELECT
-  * EXCEPT(app_name)
-    REPLACE (
-    REPLACE(usage,
-      'Firefox Non-desktop',
-      CASE app_name
-        WHEN 'Fennec' THEN CONCAT(app_name, ' ', os)
-        WHEN 'Focus' THEN CONCAT(app_name, ' ', os)
-        WHEN 'Zerda' THEN 'Firefox Lite'
-        ELSE app_name
-      END) AS usage)
+  * REPLACE(REPLACE(usage, 'Firefox Non-desktop', app_name) AS usage)
 FROM
   joined

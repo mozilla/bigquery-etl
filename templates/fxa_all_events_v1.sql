@@ -6,9 +6,13 @@ WITH
   fxa_auth_events AS (
     SELECT
       timestamp AS submission_timestamp,
-      jsonPayload.fields.user_id AS user_id,
-      jsonPayload.fields.country AS country,
-      jsonPayload.fields.event_type AS event_type
+      jsonPayload.fields.user_id,
+      jsonPayload.fields.country,
+      jsonPayload.fields.language,
+      jsonPayload.fields.app_version,
+      jsonPayload.fields.os_name,
+      jsonPayload.fields.os_version,
+      jsonPayload.fields.event_type
     FROM
       `moz-fx-data-derived-datasets.telemetry.fxa_auth_events_v1`
   ),
@@ -18,9 +22,13 @@ WITH
   fxa_auth_bounce_events AS (
     SELECT
       timestamp AS submission_timestamp,
-      jsonPayload.fields.user_id AS user_id,
+      jsonPayload.fields.user_id,
       CAST(NULL AS STRING) AS country,  -- No country field in auth_bounces
-      jsonPayload.fields.event_type AS event_type
+      jsonPayload.fields.language,
+      jsonPayload.fields.app_version,
+      CAST(NULL AS STRING),
+      CAST(NULL AS STRING),
+      jsonPayload.fields.event_type
     FROM
       `moz-fx-data-derived-datasets.telemetry.fxa_auth_bounce_events_v1`
   ),
@@ -28,9 +36,13 @@ WITH
   fxa_content_events AS (
     SELECT
       timestamp AS submission_timestamp,
-      jsonPayload.fields.user_id AS user_id,
-      jsonPayload.fields.country AS country,
-      jsonPayload.fields.event_type AS event_type
+      jsonPayload.fields.user_id,
+      jsonPayload.fields.country,
+      jsonPayload.fields.language,
+      jsonPayload.fields.app_version,
+      jsonPayload.fields.os_name,
+      jsonPayload.fields.os_version,
+      jsonPayload.fields.event_type
     FROM
       `moz-fx-data-derived-datasets.telemetry.fxa_content_events_v1`
   )

@@ -24,26 +24,28 @@ def qualify(table, dataset, project):
 def replace(field, unnest_layer=0, *prefix):
     """Convert BigQuery field to a SQL expression for use in a REPLACE block."""
     if field.field_type == "RECORD":
-        if len(field.fields) == 1:
+        is_list = (
+            len(field.fields) == 1
+            and field.fields[0].name == "list"
+            and field.fields[0].mode == "REPEATED"
+            and len(field.fields[0].fields) == 1
+            and field.fields[0].fields[0].name == "element"
+        )
+        is_map = (
+            len(field.fields) == 1
+            and field.fields[0].name == "key_value"
+            and field.fields[0].mode == "REPEATED"
+        )
+        if is_list or is_map:
             # prevent naming collisions via `UNNEST(...) AS`
             unnest_as = f"_{unnest_layer}"
-            # handle lists
-            if (
-                field.fields[0].name == "list"
-                and field.fields[0].mode == "REPEATED"
-                and len(field.fields[0].fields) == 1
-                and field.fields[0].fields[0].name == "element"
-            ):
+            if is_list:
                 unnest = ".".join(prefix + (field.name, "list"))
                 nested = replace(field.fields[0].fields[0], unnest_layer + 1, unnest_as)
                 # handle simplest case without unnest_as
                 if nested == f"{unnest_as}.element":
                     return f"ARRAY(SELECT * FROM UNNEST({unnest})) AS {field.name}"
-            # handle maps
-            elif (
-                field.fields[0].name == "key_value"
-                and field.fields[0].mode == "REPEATED"
-            ):
+            elif is_map:
                 unnest = ".".join(prefix + (field.name, "key_value"))
                 nested = replace(
                     bigquery.SchemaField(

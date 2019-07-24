@@ -51,14 +51,26 @@ WITH
     (`date`,
       usage,
       id_bucket,
-      country)
+      app_name,
+      app_version,
+      country,
+      locale,
+      os,
+      os_version,
+      channel)
   FULL JOIN
     new_profile_week2
   USING
     (`date`,
       usage,
       id_bucket,
-      country) )
+      app_name,
+      app_version,
+      country,
+      locale,
+      os,
+      os_version,
+      channel) )
   --
 SELECT
   *

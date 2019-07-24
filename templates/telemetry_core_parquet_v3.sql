@@ -2,7 +2,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-derived-datasets.telemetry.telemetry_core_parquet_v3` AS
 SELECT
-  submission_date_s3 AS submission_date,
+  submission_date AS submission_date_s3,
   * REPLACE (
     ARRAY(SELECT * FROM UNNEST(accessibility_services.list)) AS accessibility_services,
     ARRAY(SELECT * FROM UNNEST(experiments.list)) AS experiments,

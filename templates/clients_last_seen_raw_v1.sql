@@ -28,6 +28,7 @@ WITH
     FROM
       UNNEST(experiments.key_value)) AS days_seen_in_experiment,
     * EXCEPT (submission_date)
+      REPLACE (CAST(sample_id AS STRING) AS sample_id)
   FROM
     clients_daily_v6
   WHERE

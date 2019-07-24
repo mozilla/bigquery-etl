@@ -7,7 +7,7 @@ CREATE TEMP FUNCTION
       NULL));
   --
 SELECT
-  submission_date_s3 AS submission_date,
+  submission_date,
   uptake.key AS `source`,
   -- These timestamps help us display a date range when we present the
   -- data. It helps to "remind" you when something first started appearing.
@@ -69,6 +69,7 @@ FROM
   UNNEST(uptake.value.key_value) AS status
 WHERE
   submission_date_s3 = @submission_date
+  AND sample_id = 42
 GROUP BY
   submission_date_s3,
   `source`

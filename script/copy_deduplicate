@@ -1,0 +1,131 @@
+#!/usr/bin/env python3
+
+"""
+Copy a day's data from live ping tables to stable ping tables,
+deduplicating on document_id.
+
+By default, the script will process all tables in datsets named
+like *_live, copying data into table of the same name in *_stable
+datasets. The script can be configured to exclude a list of tables
+or to process only a specific list of tables.
+"""
+
+from argparse import ArgumentParser
+from datetime import datetime
+
+from google.cloud import bigquery
+
+QUERY_TEMPLATE = """\
+WITH
+  numbered_duplicates AS (
+  SELECT
+    *,
+    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) AS _n
+  FROM
+    {source_table_spec}
+  WHERE
+    DATE(submission_timestamp) = @submission_date )
+  --
+SELECT
+  * EXCEPT (_n)
+FROM
+  numbered_duplicates
+WHERE
+  _n = 1
+"""
+
+parser = ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--project-id",
+    default="moz-fx-data-shar-nonprod-efed",
+    help="ID of the project in which to run query jobs",
+)
+parser.add_argument(
+    "--date",
+    required=True,
+    type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
+    help="Which day's data to copy, in format 2019-01-01",
+)
+parser.add_argument(
+    "--dry-run",
+    action="store_true",
+    help=("Do not run queries, but instead print the query job config "
+          "and bytes that would be processed"),
+)
+group = parser.add_mutually_exclusive_group()
+group.add_argument(
+    "--only",
+    nargs="+",
+    dest="only_tables",
+    help=("Process only the given tables; "
+          "pass names like 'telemetry_live.main_v4'"),
+)
+group.add_argument(
+    "--except",
+    nargs="+",
+    dest="except_tables",
+    help=("Process all tables in *_live datasets except for the given tables; "
+          "pass names like 'telemetry_live.main_v4'"),
+)
+
+
+def run_deduplication_query(
+    client, source_table_spec, destination_table_spec, date, dry_run
+):
+    sql = QUERY_TEMPLATE.format(source_table_spec=source_table_spec)
+    job_config = bigquery.job.QueryJobConfig(
+        destination=destination_table_spec,
+        query_parameters=[
+            bigquery.query.ScalarQueryParameter("submission_date", "DATE", date)
+        ],
+        use_legacy_sql=False,
+        write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
+        dry_run=dry_run,
+    )
+    query_job = client.query(sql, job_config)
+    if dry_run:
+        print(
+            "Would process {} bytes: {}".format(
+                query_job.total_bytes_processed, query_job.to_api_repr()
+            )
+        )
+    else:
+        query_job.result()
+        print(
+            "Processed {} bytes to populate {}".format(
+                query_job.total_bytes_processed, destination_table_spec
+            )
+        )
+
+
+def main():
+    args = parser.parse_args()
+
+    client = bigquery.Client(args.project_id)
+    live_datasets = [
+        d for d in client.list_datasets() if d.dataset_id.endswith("_live")
+    ]
+
+    for dataset in live_datasets:
+        destination_dataset_id = dataset.dataset_id[:-5] + "_stable"
+        tables = client.list_tables(dataset.dataset_id)
+        for table in tables:
+            source_table_spec = ".".join([dataset.dataset_id, table.table_id])
+            destination_table_spec = "{}.{}.{}${:%Y%m%d}".format(
+                args.project_id, destination_dataset_id, table.table_id, args.date
+            )
+            if args.only_tables and source_table_spec not in args.only_tables:
+                continue
+            if args.except_tables and source_table_spec in args.except_tables:
+                continue
+            run_deduplication_query(
+                client,
+                source_table_spec,
+                destination_table_spec,
+                args.date,
+                args.dry_run,
+            )
+
+
+if __name__ == "__main__":
+    main()

@@ -22,7 +22,7 @@ WITH
     *,
     ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) AS _n
   FROM
-    {source_table_spec}
+    `{source_table_spec}`
   WHERE
     DATE(submission_timestamp) = @submission_date )
   --
@@ -70,11 +70,15 @@ group.add_argument(
 
 
 def run_deduplication_query(
-    client, source_table_spec, destination_table_spec, date, dry_run
+    client, live_table, stable_table, date, dry_run
 ):
-    sql = QUERY_TEMPLATE.format(source_table_spec=source_table_spec)
+
+    sql = QUERY_TEMPLATE.format(source_table_spec=live_table.full_table_id.replace(':', '.'))
+    destination = '{}${:%Y%m%d}'.format(
+        stable_table.full_table_id.replace(':', '.'),
+        date)
     job_config = bigquery.job.QueryJobConfig(
-        destination=destination_table_spec,
+        destination=destination,
         query_parameters=[
             bigquery.query.ScalarQueryParameter("submission_date", "DATE", date)
         ],
@@ -101,27 +105,24 @@ def run_deduplication_query(
 def main():
     args = parser.parse_args()
 
-    client = bigquery.Client(args.project_id)
+    client = bigquery.Client()
     live_datasets = [
-        d for d in client.list_datasets() if d.dataset_id.endswith("_live")
+        d for d in client.list_datasets(args.project_id) if d.dataset_id.endswith("_live")
     ]
 
-    for dataset in live_datasets:
-        destination_dataset_id = dataset.dataset_id[:-5] + "_stable"
-        tables = client.list_tables(dataset.dataset_id)
-        for table in tables:
-            source_table_spec = ".".join([dataset.dataset_id, table.table_id])
-            destination_table_spec = "{}.{}.{}${:%Y%m%d}".format(
-                args.project_id, destination_dataset_id, table.table_id, args.date
-            )
-            if args.only_tables and source_table_spec not in args.only_tables:
+    for live_dataset in live_datasets:
+        stable_dataset_id = live_dataset.dataset_id[:-5] + "_stable"
+        for live_table in client.list_tables(live_dataset.reference):
+            live_table_spec = live_table.full_table_id.split(':')[-1]
+            stable_table = client.get_table('.'.join([args.project_id, stable_dataset_id, live_table.table_id]))
+            if args.only_tables and live_table_spec not in args.only_tables:
                 continue
-            if args.except_tables and source_table_spec in args.except_tables:
+            if args.except_tables and live_table_spec in args.except_tables:
                 continue
             run_deduplication_query(
                 client,
-                source_table_spec,
-                destination_table_spec,
+                live_table,
+                stable_table,
                 args.date,
                 args.dry_run,
             )

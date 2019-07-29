@@ -57,6 +57,7 @@ group.add_argument(
     "--only",
     nargs="+",
     dest="only_tables",
+    default=[],
     help=("Process only the given tables; "
           "pass names like 'telemetry_live.main_v4'"),
 )
@@ -64,26 +65,29 @@ group.add_argument(
     "--except",
     nargs="+",
     dest="except_tables",
+    default=[],
     help=("Process all tables in *_live datasets except for the given tables; "
           "pass names like 'telemetry_live.main_v4'"),
 )
+
+
+def sql_full_table_id(table):
+    return table.full_table_id.replace(":", ".")
 
 
 def run_deduplication_query(
     client, live_table, stable_table, date, dry_run
 ):
 
-    sql = QUERY_TEMPLATE.format(source_table_spec=live_table.full_table_id.replace(':', '.'))
-    destination = '{}${:%Y%m%d}'.format(
-        stable_table.full_table_id.replace(':', '.'),
-        date)
-    job_config = bigquery.job.QueryJobConfig(
+    sql = QUERY_TEMPLATE.format(source_table_spec=sql_full_table_id(live_table))
+    destination = f"{sql_full_table_id(stable_table)}${date:%Y%m%d}"
+    job_config = bigquery.QueryJobConfig(
         destination=destination,
         query_parameters=[
-            bigquery.query.ScalarQueryParameter("submission_date", "DATE", date)
+            bigquery.ScalarQueryParameter("submission_date", "DATE", date)
         ],
         use_legacy_sql=False,
-        write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         dry_run=dry_run,
     )
     query_job = client.query(sql, job_config)
@@ -113,11 +117,11 @@ def main():
     for live_dataset in live_datasets:
         stable_dataset_id = live_dataset.dataset_id[:-5] + "_stable"
         for live_table in client.list_tables(live_dataset.reference):
-            live_table_spec = live_table.full_table_id.split(':')[-1]
+            live_table_spec = f"{live_table.dataset_id}.{live_table.table_id}"
             stable_table = client.get_table('.'.join([args.project_id, stable_dataset_id, live_table.table_id]))
-            if args.only_tables and live_table_spec not in args.only_tables:
+            if live_table_spec not in args.only_tables:
                 continue
-            if args.except_tables and live_table_spec in args.except_tables:
+            if live_table_spec in args.except_tables:
                 continue
             run_deduplication_query(
                 client,

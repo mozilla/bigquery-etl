@@ -29,8 +29,6 @@ elif [ "$1" = "query" ]; then
     # to
     #     bq query [options] < FILE
     exec bq "${@:1:$#-1}" < "${@: -1}"
-elif [ "$1" = "copy_deduplicate" ]; then
-    exec "$(dirname $0)/copy_deduplicate" "${@:2}"
 else
     exec "$@"
 fi

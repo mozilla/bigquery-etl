@@ -1,45 +1,23 @@
-CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
-    SELECT
-      _value
-    FROM
-      UNNEST(list) AS _value
-    WITH
-    OFFSET
-      AS
-    _offset
-    GROUP BY
-      _value
-    ORDER BY
-      COUNT(_value) DESC,
-      MAX(_offset) DESC
-    LIMIT
-      1 ));
+
 --
-WITH total AS (
+CREATE OR REPLACE VIEW
+  `moz-fx-data-derived-datasets.telemetry.ssl_ratios_v1` AS
+WITH windowed AS (
+  SELECT
+    *,
+    SUM(ssl_loads) OVER w1 + SUM(non_ssl_loads) OVER w1 AS total_loads
+  FROM
+    `moz-fx-data-derived-datasets.telemetry.ssl_ratios_raw_v1`
+  WINDOW
+    w1 AS (ORDER BY submission_date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING))
 SELECT
-    SUM(histogram_parent_http_pageload_is_ssl[SAFE_OFFSET(0)].value + histogram_parent_http_pageload_is_ssl[SAFE_OFFSET(1)].value) AS loads
-FROM main_summary_v4
-WHERE
-    sample_id = 42
-    AND submission_date = @submission_date
-    AND normalized_channel = 'release'
-    AND os IN ('Windows_NT', 'Darwin', 'Linux')
-    AND app_name = 'Firefox'
-)
-SELECT
-    submission_date,
-    os,
-    country,
-    1.0 * COUNT(histogram_parent_http_pageload_is_ssl) / COUNT(submission_date_s3)  AS reporting_ratio, -- ratio of pings that have the probe
-    1.0 * SUM(histogram_parent_http_pageload_is_ssl[SAFE_OFFSET(0)].value + histogram_parent_http_pageload_is_ssl[SAFE_OFFSET(1)].value)  / udf_mode_last(array_agg(total.loads)) AS normalized_pageloads, -- normalized count of pageloads that went into this ratio
-    1.0 * SUM(histogram_parent_http_pageload_is_ssl[SAFE_OFFSET(1)].value)  / SUM(histogram_parent_http_pageload_is_ssl[SAFE_OFFSET(0)].value + histogram_parent_http_pageload_is_ssl[SAFE_OFFSET(1)].value) AS ratio
-FROM main_summary_v4, total
-WHERE
-    sample_id = 42
-    AND submission_date = @submission_date
-    AND normalized_channel = 'release'
-    AND os IN ('Windows_NT', 'Darwin', 'Linux')
-    AND app_name = 'Firefox'
-GROUP BY 1, 2, 3--, 4, 5, 6
-HAVING SUM(histogram_parent_http_pageload_is_ssl[SAFE_OFFSET(0)] + histogram_parent_http_pageload_is_ssl[SAFE_OFFSET(1)]) > 5000 -- you have to have loaded some amount.
+  submission_date,
+  os,
+  country,
+  -- ratio of pings that have the probe
+  reporting_ratio,
+  -- normalized count of pageloads that went into this ratio
+  (non_ssl_loads + ssl_loads) / total_loads AS normalized_pageloads,
+  ssl_loads / (non_ssl_loads + ssl_loads) AS ratio
+FROM
+  windowed

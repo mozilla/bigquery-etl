@@ -1,12 +1,3 @@
-CREATE TEMP FUNCTION udf_get_key(map ANY TYPE, k ANY TYPE) AS (
- (
-   SELECT key_value.value
-   FROM UNNEST(map) AS key_value
-   WHERE key_value.key = k
-   LIMIT 1
- )
-);
---
 SELECT
   submission_date,
   os,
@@ -16,7 +7,7 @@ SELECT
   -- ratio of pings that have the probe
   COUNT(histogram_parent_http_pageload_is_ssl) / COUNT(*) AS reporting_ratio
 FROM
-  main_summary_v4
+  telemetry.main_summary_v4
 WHERE
   sample_id = 42
   AND normalized_channel = 'release'

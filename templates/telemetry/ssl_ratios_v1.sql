@@ -1,5 +1,3 @@
-
---
 CREATE OR REPLACE VIEW
   `moz-fx-data-derived-datasets.telemetry.ssl_ratios_v1` AS
 WITH windowed AS (
@@ -21,3 +19,5 @@ SELECT
   ssl_loads / (non_ssl_loads + ssl_loads) AS ratio
 FROM
   windowed
+WHERE
+  non_ssl_loads + ssl_loads > 5000

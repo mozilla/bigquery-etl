@@ -29,5 +29,3 @@ GROUP BY
   submission_date,
   os,
   country
-HAVING
-  non_ssl_loads + ssl_loads > 5000

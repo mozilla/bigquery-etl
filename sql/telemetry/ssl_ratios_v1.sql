@@ -19,3 +19,5 @@ SELECT
   ssl_loads / (non_ssl_loads + ssl_loads) AS ratio
 FROM
   windowed
+WHERE
+  non_ssl_loads + ssl_loads > 5000

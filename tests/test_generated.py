@@ -10,15 +10,17 @@ from .util import coerce_result, generate_tests
 import json
 import pytest
 
+generated_tests = {test.path: test for test in generate_tests()}
+
 
 @pytest.fixture(scope="session")
 def bq():
     return bigquery.Client()
 
 
-@pytest.fixture(params=list(generate_tests()))
+@pytest.fixture(params=list(generated_tests.keys()))
 def generated_test(request):
-    return request.param
+    return generated_tests[request.param]
 
 
 @pytest.fixture

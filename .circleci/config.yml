@@ -41,6 +41,14 @@ jobs:
             echo "Inconsistencies between templates and generated SQL:"
             git ls-files --other --modified -x sql/*
             test `git ls-files --other --modified -x sql/* | wc -l` = 0
+  dry-run-sql:
+    docker:
+      - image: python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Verify that BigQuery validates each query
+          command: script/dryrun
   deploy:
     parameters:
       image:
@@ -73,6 +81,7 @@ workflows:
     jobs:
     - build
     - verify-generated-sql
+    - dry-run-sql
     - deploy:
         requires:
         # can't run in parallel because CIRCLE_BUILD_NUM is same

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-This script generates SQL files for each SQL file in `sql/` and 
+This script generates SQL files for each SQL file in `sql/` and
 includes all the temporary UDF definitions used in the queries.
 
 This script can be called via exec() (eg. in conftest.py).
@@ -51,16 +51,18 @@ def main():
         shutil.rmtree(args.destination, ignore_errors=True)
     os.makedirs(args.destination, exist_ok=True)
 
-    for root, dirs, sql_files in os.walk(args.sql_dir):
-        for filename in sql_files:
-            # make sure only SQL files are considered
-            if not filename.endswith(".sql"):
-                continue
+    for root, dirs, files in os.walk(args.sql_dir):
+        sql_files = [filename for filename in files if filename.endswith(".sql")]
 
+        basename = root.replace(args.sql_dir, args.destination, 1)
+        if not os.path.exists(basename) and (dirs or sql_files):
+            os.mkdir(basename)
+
+        for filename in sql_files:
             # get names of the UDFs used in the SQL queries
             udf_usages = udf_usages_in_file(os.path.join(root, filename))
 
-            with open(os.path.join(args.destination, filename), "a+") as output_file:
+            with open(os.path.join(basename, filename), "a+") as output_file:
                 # write UDF declarations to file first
 
                 # for each UDF in the file we need to get all dependencies and make sure
@@ -75,10 +77,10 @@ def main():
                 definitions = []
                 for dep in dependencies:
                     definitions += raw_udfs[dep].definitions
-                full_sql = "\n".join(definitions)
 
-                output_file.write(full_sql)
-                output_file.write("\n--\n")
+                if definitions:
+                    output_file.write("\n".join(definitions))
+                    output_file.write("\n--\n")
 
                 # write SQL of query to file
                 with open(os.path.join(root, filename)) as f:

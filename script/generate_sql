@@ -59,10 +59,6 @@ def main():
             os.mkdir(basename)
 
         for filename in sql_files:
-            # make sure only SQL files are considered
-            if not filename.endswith(".sql"):
-                continue
-
             # get names of the UDFs used in the SQL queries
             udf_usages = udf_usages_in_file(os.path.join(root, filename))
 

@@ -59,27 +59,14 @@ class Table:
 class GeneratedTest:
     """Define the info needed to run a generated test."""
 
+    dataset_id: str
     expect: List[Dict[str, Any]]
-    name: str
+    modified_query: str
+    path: str
     query: str
     query_name: str
     query_params: List[Any]
-    replace: Dict[str, str]
     tables: Dict[str, Table]
-    # post_init fields
-    dataset_id: Optional[str] = None
-    modified_query: Optional[str] = None
-
-    def __post_init__(self):
-        """Fill in calculated fields if not provided."""
-        if self.dataset_id is None:
-            self.dataset_id = f"{self.query_name}_{self.name}"
-        if "CIRCLE_BUILD_NUM" in os.environ:
-            self.dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
-        if self.modified_query is None:
-            self.modified_query = self.query
-            for old, new in self.replace.items():
-                self.modified_query = self.modified_query.replace(old, new)
 
 
 def read(*paths: str, decoder: Optional[Callable] = None, **kwargs):
@@ -146,62 +133,64 @@ def get_query_params(resource_dir: str) -> Generator[QueryParameter, None, None]
 def generate_tests() -> Generator[GeneratedTest, None, None]:
     """Attempt to generate tests."""
     tests_dir = os.path.dirname(__file__)
+    prefix_len = len(tests_dir) + 1
     sql_dir = os.path.join(os.path.dirname(tests_dir), "sql")
 
     # iterate over directories in tests_dir
-    for query_name in next(os.walk(tests_dir))[1]:
-        query_dir = os.path.join(tests_dir, query_name)
+    for root, _, resources in os.walk(tests_dir):
+        path = root[prefix_len:]
+        parent = os.path.dirname(path)
 
         # read query or skip
         try:
-            query = read(sql_dir, f"{query_name}.sql")
+            query = read(sql_dir, f"{parent}.sql")
         except FileNotFoundError:
             continue
 
-        # generate a test for each directory in query_dir
-        for test_name in next(os.walk(query_dir))[1]:
-            resource_dir = os.path.join(query_dir, test_name)
-            query_params = list(get_query_params(resource_dir))
-            tables: Dict[str, Table] = {}
-            replace: Dict[str, str] = {}
+        # load expect or skip
+        try:
+            expect = load(root, "expect")
+        except FileNotFoundError:
+            continue
 
-            # load expect or skip
-            try:
-                expect = load(resource_dir, "expect")
-            except FileNotFoundError:
-                continue
+        dataset_id = path.replace(os.path.sep, "_")
+        if "CIRCLE_BUILD_NUM" in os.environ:
+            dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
 
-            # generate tables for files with a supported table extension
-            for resource in next(os.walk(resource_dir))[2]:
-                if "." not in resource:
-                    continue  # tables require an extension
-                table_name, extension = resource.rsplit(".", 1)
-                if table_name.endswith(".schema") or table_name in (
-                    "expect",
-                    "query_params",
-                ):
-                    continue  # not a table
-                print(table_name)
-                if extension in table_extensions:
-                    source_format = table_extensions[extension]
-                    source_path = os.path.join(resource_dir, resource)
-                    if "." in table_name:
-                        # define replace to remove dataset from table_name in sql
-                        replace[table_name] = table_name.rsplit(".", 1)[1]
-                        # remove dataset from table_name
-                        table_name = replace[table_name]
-                    tables[table_name] = Table(table_name, source_format, source_path)
+        tables: Dict[str, Table] = {}
+        modified_query = query
 
-            # yield a test
-            yield GeneratedTest(
-                expect=expect,
-                name=test_name,
-                query=query,
-                query_name=query_name,
-                query_params=query_params,
-                replace=replace,
-                tables=tables,
-            )
+        # generate tables for files with a supported table extension
+        for resource in resources:
+            if "." not in resource:
+                continue  # tables require an extension
+            table_name, extension = resource.rsplit(".", 1)
+            if table_name.endswith(".schema") or table_name in (
+                "expect",
+                "query_params",
+            ):
+                continue  # not a table
+            print(table_name)
+            if extension in table_extensions:
+                source_format = table_extensions[extension]
+                source_path = os.path.join(root, resource)
+                if "." in table_name:
+                    # remove dataset from table_name
+                    original, table_name = table_name, table_name.rsplit(".", 1)[1]
+                    modified_query.replace(original, table_name)
+                tables[table_name] = Table(table_name, source_format, source_path)
+
+        # yield a test
+        yield GeneratedTest(
+            dataset_id=dataset_id,
+            expect=expect,
+            modified_query=modified_query,
+            path=path,
+            query=query,
+            query_name=os.path.basename(parent),
+            query_params=list(get_query_params(root)),
+            tables=tables,
+        )
 
 
 def coerce_result(*elements: Any) -> Generator[Any, None, None]:

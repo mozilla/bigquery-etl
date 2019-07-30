@@ -1,4 +1,66 @@
--- Note that this query runs in the telemetry_raw dataset, so sees raw tables
+CREATE TEMP FUNCTION
+  udf_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
+  IF
+    (days_since_created_profile BETWEEN 0
+      AND 6,
+      1 << days_since_created_profile,
+      0));
+CREATE TEMP FUNCTION
+  udf_bitmask_lowest_28() AS (0x0FFFFFFF);
+CREATE TEMP FUNCTION
+  udf_shift_bits_one_day(x INT64) AS (IFNULL((x << 1) & udf_bitmask_lowest_28(),
+    0));
+CREATE TEMP FUNCTION
+  udf_coalesce_adjacent_days_bits(prev INT64,
+    curr INT64) AS ( COALESCE( NULLIF(udf_shift_bits_one_day(prev),
+        0),
+      curr,
+      0));
+CREATE TEMP FUNCTION
+  udf_combine_adjacent_days_bits(prev INT64,
+    curr INT64) AS (udf_shift_bits_one_day(prev) + IFNULL(curr,
+    0));
+CREATE TEMP FUNCTION
+  udf_combine_experiment_days(
+    prev ARRAY<STRUCT<experiment STRING,
+    branch STRING,
+    bits INT64>>,
+    curr ARRAY<STRUCT<experiment STRING,
+    branch STRING,
+    bits INT64>>) AS (
+    ARRAY_CONCAT(
+      ARRAY(
+      SELECT
+        AS STRUCT experiment,
+        branch,
+        udf_combine_adjacent_days_bits(prev.bits,
+          curr.bits) AS bits
+      FROM
+        UNNEST(prev) AS prev
+      LEFT JOIN
+        UNNEST(curr) AS curr
+      USING
+        (experiment,
+          branch)
+      WHERE
+        udf_combine_adjacent_days_bits(prev.bits,
+          curr.bits) > 0),
+      ARRAY(
+      SELECT
+        AS STRUCT experiment,
+        branch,
+        curr.bits AS bits
+      FROM
+        UNNEST(curr) AS curr
+      LEFT JOIN
+        UNNEST(prev) AS prev
+      USING
+        (experiment,
+          branch)
+      WHERE
+        prev IS NULL)));
+--
+-- Note that this query runs in the telemetry_derived dataset, so sees derived tables
 -- rather than the user-facing views (so key_value structs haven't been eliminated, etc.)
 
 WITH
@@ -38,7 +100,7 @@ WITH
   SELECT
     * EXCEPT (submission_date)
   FROM
-    clients_last_seen_raw_v1 AS cls
+    clients_last_seen_v1
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

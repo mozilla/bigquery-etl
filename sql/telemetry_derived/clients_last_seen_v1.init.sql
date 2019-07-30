@@ -1,5 +1,5 @@
 CREATE TABLE
-  clients_last_seen_raw_v1
+  clients_last_seen_v1
 PARTITION BY
   submission_date
 CLUSTER BY

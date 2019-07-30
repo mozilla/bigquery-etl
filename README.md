@@ -40,13 +40,18 @@ Recommended practices
   in query operation: Resources exceeded during query execution: Not enough
   resources for query planning - too many subqueries or query is too complex.`
 - Should be used to avoid code duplication
-- Should use lower snake case names e.g. `udf_mode_last`
-  - Should use a `udf_` prefix for naming temporary udfs
-  - Should additionally use a `_js` suffix for naming temporary udfs implemented in JavaScript
-- Should be defined in files named as `udfs/function.sql` e.g. `udfs/udf_mode_last.sql`
-  or `udfs/udf_sum_buckets_with_ci_js.sql`
+- Must be named in files with lower snake case names ending in `.sql`
+  e.g. `mode_last.sql`
+  - Each file must define a single function using `CREATE TEMP FUNCTION` syntax
+  - SQL UDFs must be defined in the `udf/` directory and JS UDFs must be defined
+    in the `udf_js` directory
+  - The function must be named as `<dir_name>_<file_name_without_suffix>`
+    so `udf/mode_last.sql` must define a function `udf_mode_last`
+- Must be defined as temporary UDFs
+  - We provide tooling in `scripts/publish_persistent_udfs` for converting
+    these definitions to persistent UDFs (temporary UDF `udf_mode_last` is
+    published as persistent UDF `udf.mode_last`)
 - Should use `SQL` over `js` for performance
-- Must not be used for incremental queries with a _mostly materialized view_ (defined below)
 
 ### Backfills
 
@@ -85,7 +90,6 @@ Incremental Queries
   partitions atomically to prevent duplicate data
 - Will have tooling to generate an optimized _mostly materialized view_ that
   only calculates the most recent partition
-  - Note: incompatible with UDFs, which are not allowed in views
 
 ### Properties
 

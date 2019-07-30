@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+
+import glob
+import json
+import os.path
+import sys
+from urllib.request import urlopen, Request
+
+DRY_RUN_URL = 'https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/bigquery-etl-dryrun'
+exitcode = 0
+skip={
+    # Access Denied
+    "sql/telemetry/fxa_content_events_v1.sql",
+    "sql/telemetry/fenix_events_v1.sql",
+    "sql/telemetry/fenix_events_amplitude_v1.sql",
+    "sql/telemetry/fxa_auth_bounce_events_v1.sql",
+    "sql/telemetry/fxa_auth_events_v1.sql",
+    "sql/telemetry/glean_clients_daily_v1.sql",
+    # Already exists (and lacks an "OR REPLACE" clause)
+    "sql/telemetry/glean_clients_last_seen_raw_v1.init.sql",
+    "sql/telemetry/core_clients_last_seen_raw_v1.init.sql",
+    "sql/telemetry/fxa_users_last_seen_raw_v1.init.sql",
+    # Reference table not found
+    "sql/search/search_clients_daily_v7.sql",
+    # Cannot access field list
+    "sql/telemetry/lockwise_mobile_events_v1.sql",
+    # No matching signature for function IF
+    "sql/static/fxa_amplitude_export_users_last_seen.sql",
+    # SQL functions with the same name but different signatures are currently unsupported
+    "sql/static/fxa_amplitude_export_users_daily.sql",
+    # Syntax error
+    "sql/telemetry_derived/clients_last_seen_v1.init.sql",
+    # Unrecognized name: submission_date_s3
+    "sql/telemetry_derived/clients_daily_v7.sql",
+    "sql/telemetry_derived/addons_v3.sql",
+    "sql/telemetry_derived/addons_aggregates_v3.sql",
+}
+for sql in glob.glob('sql/*/*.sql'):
+    if sql in skip:
+        continue
+    pad = ' ' * (60 - len(sql))
+    try:
+        print(sql, end=pad)
+        r = urlopen(
+            Request(
+                DRY_RUN_URL,
+                headers = {
+                    'Content-Type': 'application/json'
+                },
+                data=json.dumps({
+                    'dataset': os.path.basename(os.path.dirname(sql)),
+                    'query': open(sql).read(),
+                }).encode('utf8'),
+                method='POST'
+            ))
+    except Exception as e:
+        print('ERROR\n', e)
+        exitcode = 1
+    else:
+        response = json.load(r)
+        if response['valid']:
+            print('OK')
+        else:
+            print('ERROR\n', response['errors'])
+            exitcode = 1
+
+sys.exit(exitcode)

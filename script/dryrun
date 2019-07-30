@@ -2,12 +2,13 @@
 
 import glob
 import json
-import os
+import os.path
+import sys
 from urllib.request import urlopen, Request
 
 DRY_RUN_URL = 'https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/bigquery-etl-dryrun'
 exitcode = 0
-for sql in glob.glob('sql/*.sql'):
+for sql in glob.glob('sql/*/*.sql'):
     pad = ' ' * (60 - len(sql))
     try:
         print(sql, end=pad)
@@ -18,7 +19,7 @@ for sql in glob.glob('sql/*.sql'):
                     'Content-Type': 'application/json'
                 },
                 data=json.dumps({
-                    'dataset': 'telemetry',
+                    'dataset': os.path.basename(os.path.dirname(sql)),
                     'query': open(sql).read(),
                 }).encode('utf8'),
                 method='POST'
@@ -34,4 +35,4 @@ for sql in glob.glob('sql/*.sql'):
             print('ERROR\n', response['errors'])
             exitcode = 1
 
-os.exit(exitcode)
+sys.exit(exitcode)

@@ -30,8 +30,8 @@ CREATE TEMP FUNCTION
     return binary2String(unzipped);
 """
 OPTIONS (
-  library = "gs://bigquery-wasm-dev/gunzip.min.js",
-  library = "gs://bigquery-wasm-dev/atob.js"
+  library = "gs://bigquery-etl/gunzip.min.js",
+  library = "gs://bigquery-etl/atob.js"
 );
 
 -- Tests

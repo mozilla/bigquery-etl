@@ -18,7 +18,7 @@ def bq():
     return bigquery.Client()
 
 
-@pytest.fixture(params=list(generated_tests.keys()))
+@pytest.fixture(params=sorted(generated_tests.keys()))
 def generated_test(request):
     return generated_tests[request.param]
 

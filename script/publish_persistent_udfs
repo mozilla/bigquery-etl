@@ -71,7 +71,7 @@ def publish_persistent_udf(raw_udf, dataset, project_id):
             "CREATE TEMP FUNCTION", "CREATE OR REPLACE FUNCTION"
         )
 
-        client.query(query)
+        client.query(query).result()
 
 
 if __name__ == "__main__":

@@ -5,9 +5,9 @@ SELECT
   SUM(udf_get_key(histogram_parent_http_pageload_is_ssl, 0)) AS non_ssl_loads,
   SUM(udf_get_key(histogram_parent_http_pageload_is_ssl, 1)) AS ssl_loads,
   -- ratio of pings that have the probe
-  COUNT(histogram_parent_http_pageload_is_ssl) / COUNT(*) AS reporting_ratio
+  COUNTIF(ARRAY_LENGTH(histogram_parent_http_pageload_is_ssl) > 0) / COUNT(*) AS reporting_ratio
 FROM
-  telemetry.main_summary_v4
+  main_summary_v4
 WHERE
   sample_id = 42
   AND normalized_channel = 'release'

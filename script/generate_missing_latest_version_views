@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 
-"""Create and update views of the latest versions of tables."""
+"""Generate one view definition file per document type in '_stable' tables.
+
+Run as:
+  ./script/generate_missing_latest_version_views 'moz-fx-data-shared-prod:*_stable.*'
+"""
 
 from argparse import ArgumentParser
 from google.cloud import bigquery
-from multidict import MultiDict
 from typing import Callable, Iterable, Tuple
 from fnmatch import fnmatchcase
 import logging
+import os
 import re
 import sys
 
@@ -41,22 +45,14 @@ parser.add_argument(
     f" defaults to: {DEFAULT_EXCLUDE}",
 )
 parser.add_argument(
-    "--dry-run",
-    action="store_true",
-    help="Don't apply changes and set log level to DEBUG",
-)
-parser.add_argument(
     "--log-level",
     default="INFO",
     help="Defaults to INFO",
 )
 
 args = parser.parse_args()
-exit(0)
 
 # set log level
-if args.dry_run:
-    args.log_level = "DEBUG"
 try:
     logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
 except ValueError as e:
@@ -84,16 +80,16 @@ for pattern in args.patterns:
     table = table or "*"
     if uses_wildcards(project):
         if all_projects is None:
-            all_projects = {p.project_id for p in client.list_projects()}
+            all_projects = [p.project_id for p in client.list_projects()]
         projects = [p for p in all_projects if fnmatchcase(project, p)]
     for project in projects:
         datasets = [dataset]
         if uses_wildcards(dataset):
             if project not in all_datasets:
-                all_datasets[project] = {
+                all_datasets[project] = [
                     d.dataset_id for d in client.list_datasets(project)
-                }
-            datasets = [d.dataset_id for d in all_datasets if fnmatchcase(dataset, d)]
+                ]
+            datasets = [d for d in all_datasets[project] if fnmatchcase(d, dataset)]
         for dataset in datasets:
             dataset = f"{project}.{dataset}"
             tables = [(f"{dataset}.{table}", None)]
@@ -102,45 +98,34 @@ for pattern in args.patterns:
                     all_tables[dataset] = list(client.list_tables(dataset))
                 tables = [
                     (f"{dataset}.{t.table_id}", t.table_type)
-                    for t in all_tables if fnmatchcase(table, t.table_id)
+                    for t in all_tables[dataset] if fnmatchcase(t.table_id, table)
                 ]
             for full_table_id, table_type in tables:
-                if fnmatchcase(table, t.table_id):
-                    view = VERSION_RE.sub("", full_table_id)
-                    if view not in views:
-                        views[view] = {}
-                    views[view][full_table_id] = table_type
+                view = VERSION_RE.sub("", full_table_id)
+                if view not in views:
+                    views[view] = {}
+                views[view][full_table_id] = table_type
 
 for view, tables in views.items():
     if any(fnmatchcase(pattern, view) for pattern in args.exclude):
         log.info("skipping table: matched by exclude pattern: {view}")
         continue
     version = max(
-        int(match.group())
+        int(match.group()[2:])
         for table in tables
         for match in (VERSION_RE.search(table),)
         if match is not None
     )
+    project, dataset, viewname = view.split(".")
     target = f"{view}_v{version}"
-    view_query = f"SELECT * FROM `{target}`"
-    try:
-        table = client.get_table(view)
-    except NotFound:
-        logging.info("creating view of: {latest_version}")
-        if not args.dry_run:
-            client.create_table(view, view_query=view_query)
-    else:
-        if table.table_type != "VIEW":
-            log.warning(f"skipping table: exists and is not view: {view}")
-            continue
-        actual_query = WHITESPACE_RE.sub(" ", table.view_query.replace("`", "").strip()))
-        if VERSION_RE.sub("", actual_query) != VERSION_RE.sub("", view_query.replace("`", "")):
-            log.warning(f"skipping table: not a version view: {view}")
-            continue
-        if normalized_actual_query == normalized_view_query:
-            log.warning(f"skipping table: already up to date: {view}")
-            continue
-        table.view_query = view_query
-        logging.info("updating view to: {latest_version}")
-        if not args.dry_run:
-            client.update_table(table, ["view_query"])
+    view_query = f"SELECT * FROM\n  `{target}`"
+    view_dataset = dataset.rsplit("_", 1)[-1]
+    full_view_id = '.'.join([project, view_dataset, viewname])
+    target_file = f"templates/{view_dataset}/{viewname}.sql"
+    full_sql = f"CREATE OR REPLACE VIEW\n  `{full_view_id}`\nAS {view_query}\n"
+    if not os.path.exists(target_file):
+        print("Creating " + target_file)
+        if not os.path.exists(os.path.dirname(target_file)):
+            os.makedirs(os.path.dirname(target_file))
+        with open(target_file, 'w') as f:
+            f.write(full_sql)

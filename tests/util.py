@@ -79,7 +79,7 @@ class SqlTest(pytest.Item, pytest.File):
     def runtest(self):
         """Run."""
         query_name = self.fspath.dirpath().basename
-        query = read(f"{self.fspath.dirname.replace('tests', 'sql')}.sql")
+        query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/query.sql")
         expect = load(self.fspath.strpath, "expect")
 
         tables: Dict[str, Table] = {}

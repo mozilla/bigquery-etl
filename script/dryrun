@@ -1,40 +1,36 @@
 #!/usr/bin/env python
 
+from multiprocessing.pool import ThreadPool
+from os.path import basename, dirname
+from urllib.request import urlopen, Request
 import glob
 import json
-from multiprocessing.pool import ThreadPool
-import os.path
 import sys
-from urllib.request import urlopen, Request
 
 
 DRY_RUN_URL = "https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/bigquery-etl-dryrun"
 
 SKIP = {
     # Access Denied
-    "sql/telemetry/fxa_content_events_v1.sql",
-    "sql/telemetry/fenix_events_v1.sql",
-    "sql/telemetry/fenix_events_amplitude_v1.sql",
-    "sql/telemetry/fxa_auth_bounce_events_v1.sql",
-    "sql/telemetry/fxa_auth_events_v1.sql",
-    "sql/telemetry/glean_clients_daily_v1.sql",
+    "sql/telemetry/fxa_content_events_v1/query.sql",
+    "sql/telemetry/fxa_auth_bounce_events_v1/query.sql",
+    "sql/telemetry/fxa_auth_events_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
-    "sql/telemetry/glean_clients_last_seen_raw_v1.init.sql",
-    "sql/telemetry/core_clients_last_seen_raw_v1.init.sql",
-    "sql/telemetry/fxa_users_last_seen_raw_v1.init.sql",
+    "sql/telemetry/glean_clients_last_seen_raw_v1/init.sql",
+    "sql/telemetry/core_clients_last_seen_raw_v1/init.sql",
+    "sql/telemetry/fxa_users_last_seen_raw_v1/init.sql",
     # Reference table not found
-    "sql/search/search_clients_daily_v7.sql",
-    # Cannot access field list
-    "sql/telemetry/lockwise_mobile_events_v1.sql",
+    "sql/search/search_aggregates_v5/query.sql",
+    "sql/search/search_clients_daily_v8/query.sql",
     # No matching signature for function IF
-    "sql/static/fxa_amplitude_export_users_last_seen.sql",
+    "sql/static/fxa_amplitude_export_users_last_seen/query.sql",
     # SQL functions with the same name but different signatures are currently unsupported
-    "sql/static/fxa_amplitude_export_users_daily.sql",
+    "sql/static/fxa_amplitude_export_users_daily/query.sql",
     # Syntax error
-    "sql/telemetry_derived/clients_last_seen_v1.init.sql",
+    "sql/telemetry_derived/clients_last_seen_v1/init.sql",
     # Unrecognized name: submission_date_s3
-    "sql/telemetry_derived/addons_v3.sql",
-    "sql/telemetry_derived/addons_aggregates_v3.sql",
+    "sql/telemetry_derived/addons_v3/query.sql",
+    "sql/telemetry_derived/addons_aggregates_v3/query.sql",
 }
 
 
@@ -47,7 +43,7 @@ def worker_entrypoint(sqlfile):
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(
                     {
-                        "dataset": os.path.basename(os.path.dirname(sqlfile)),
+                        "dataset": basename(dirname(dirname(sqlfile))),
                         "query": sql,
                     }
                 ).encode("utf8"),
@@ -81,7 +77,7 @@ def worker_entrypoint(sqlfile):
 
 
 def main():
-    sqlfiles = [f for f in glob.glob("sql/*/*.sql") if f not in SKIP]
+    sqlfiles = [f for f in glob.glob("sql/**/*.sql", recursive=True) if f not in SKIP]
     with ThreadPool(8) as p:
         result = p.map(worker_entrypoint, sqlfiles, chunksize=1)
     if all(result):

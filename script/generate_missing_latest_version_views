@@ -24,8 +24,10 @@ DEFAULT_EXCLUDE = r"*_raw"
 
 client = bigquery.Client()
 
+
 def pattern(value: str) -> Tuple[str, str, str]:
     PATTERN_RE.fullmatch(value).groups(client.project)
+
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -44,11 +46,7 @@ parser.add_argument(
     help="Latest-version views that should be ignored, may use shell-style wildcards,"
     f" defaults to: {DEFAULT_EXCLUDE}",
 )
-parser.add_argument(
-    "--log-level",
-    default="INFO",
-    help="Defaults to INFO",
-)
+parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
 
 args = parser.parse_args()
 
@@ -59,8 +57,11 @@ except ValueError as e:
     parser.error(f"argument --log-level: {e}")
 
 wildcards = set("*?[]")
+
+
 def uses_wildcards(pattern: str) -> bool:
     return bool(set("*?[]") & set(pattern))
+
 
 patterns = [
     (project, dataset, table)
@@ -98,7 +99,8 @@ for pattern in args.patterns:
                     all_tables[dataset] = list(client.list_tables(dataset))
                 tables = [
                     (f"{dataset}.{t.table_id}", t.table_type)
-                    for t in all_tables[dataset] if fnmatchcase(t.table_id, table)
+                    for t in all_tables[dataset]
+                    if fnmatchcase(t.table_id, table)
                 ]
             for full_table_id, table_type in tables:
                 view = VERSION_RE.sub("", full_table_id)
@@ -120,12 +122,12 @@ for view, tables in views.items():
     target = f"{view}_v{version}"
     view_query = f"SELECT * FROM\n  `{target}`"
     view_dataset = dataset.rsplit("_", 1)[-1]
-    full_view_id = '.'.join([project, view_dataset, viewname])
+    full_view_id = ".".join([project, view_dataset, viewname])
     target_file = f"templates/{view_dataset}/{viewname}.sql"
     full_sql = f"CREATE OR REPLACE VIEW\n  `{full_view_id}`\nAS {view_query}\n"
     if not os.path.exists(target_file):
         print("Creating " + target_file)
         if not os.path.exists(os.path.dirname(target_file)):
             os.makedirs(os.path.dirname(target_file))
-        with open(target_file, 'w') as f:
+        with open(target_file, "w") as f:
             f.write(full_sql)

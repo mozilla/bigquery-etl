@@ -77,7 +77,7 @@ def bq():
     "test_num,test_query,udf",
     [
         (i + 1, test, udf)
-        for udf in parse_udf.parse_udf_dir("udf")
+        for udf in parse_udf.parse_udf_dirs("udf")
         for i, test in enumerate(udf.tests)
     ],
 )
@@ -96,7 +96,7 @@ def test_udfs(bq, test_num, test_query, udf):
     "test_num,test_query,udf",
     [
         (i + 1, test, udf)
-        for udf in parse_udf.parse_udf_dir("udf_js")
+        for udf in parse_udf.parse_udf_dirs("udf_js")
         for i, test in enumerate(udf.tests)
     ],
 )

@@ -17,7 +17,7 @@ from google.cloud import bigquery
 # https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from bigquery_etl.parse_udf import (
-    read_udf_dir,
+    read_udf_dirs,
     udf_usages_in_file,
     accumulate_dependencies,
 )
@@ -45,7 +45,7 @@ parser.add_argument(
 def main():
     args = parser.parse_args()
 
-    raw_udfs = {x.name: x for x in read_udf_dir(args.udf_dir)}
+    raw_udfs = read_udf_dirs(args.udf_dir)
     published_udfs = []
     client = bigquery.Client(args.project_id)
 

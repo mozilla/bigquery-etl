@@ -3,6 +3,11 @@
 # file, you can obtain one at http://mozilla.org/MPL/2.0/.
 """Utilities."""
 
+from bigquery_etl.parse_udf import (
+    read_udf_dirs,
+    sub_persisent_udfs_as_temp,
+    prepend_udf_usage_definitions,
+)
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
@@ -135,6 +140,7 @@ def generate_tests() -> Generator[GeneratedTest, None, None]:
     tests_dir = os.path.dirname(__file__)
     prefix_len = len(tests_dir) + 1
     sql_dir = os.path.join(os.path.dirname(tests_dir), "sql")
+    raw_udfs = read_udf_dirs()
 
     # iterate over directories in tests_dir
     for root, _, resources in os.walk(tests_dir):
@@ -179,6 +185,13 @@ def generate_tests() -> Generator[GeneratedTest, None, None]:
                     original, table_name = table_name, table_name.rsplit(".", 1)[1]
                     modified_query.replace(original, table_name)
                 tables[table_name] = Table(table_name, source_format, source_path)
+
+        # rewrite all udfs as temporary
+        temp_udfs = sub_persisent_udfs_as_temp(modified_query)
+        if temp_udfs != modified_query:
+            modified_query = temp_udfs
+            # prepend udf definitions
+            modified_query = prepend_udf_usage_definitions(modified_query, raw_udfs)
 
         # yield a test
         yield GeneratedTest(

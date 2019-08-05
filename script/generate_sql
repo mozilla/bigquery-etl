@@ -14,7 +14,7 @@ import os, sys
 # and sibling directories. Also see:
 # https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from bigquery_etl.parse_udf import read_udf_dir, udf_usages_in_file, accumulate_dependencies
+from bigquery_etl.parse_udf import UDF_DIRS, read_udf_dirs, udf_usages_in_file, accumulate_dependencies
 from textwrap import dedent
 import shutil
 import re
@@ -28,7 +28,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--udf-dir",
-    default=["udf/", "udf_js/"],
+    default=UDF_DIRS,
     nargs='+',
     help="Directories where declarations of temporary UDFs are stored.",
 )
@@ -42,9 +42,7 @@ parser.add_argument(
 def main():
     args = parser.parse_args()
 
-    raw_udfs = {}
-    for udf_dir in args.udf_dir:
-        raw_udfs.update({x.name: x for x in read_udf_dir(udf_dir)})
+    raw_udfs = read_udf_dirs(*args.udf_dir)
 
     # create output directory if not exists or remove existing files
     if os.path.exists(args.destination):

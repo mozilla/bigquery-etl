@@ -16,7 +16,7 @@ SELECT
   -- ratio of pings that have the probe
   COUNTIF(ARRAY_LENGTH(histogram_parent_http_pageload_is_ssl) > 0) / COUNT(*) AS reporting_ratio
 FROM
-  main_summary_v4
+  telemetry.main_summary_v4
 WHERE
   sample_id = 42
   AND normalized_channel = 'release'

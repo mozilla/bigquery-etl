@@ -17,7 +17,7 @@ from google.cloud import bigquery
 # https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from bigquery_etl.parse_udf import (
-    read_udf_dir,
+    read_udf_dirs,
     udf_usages_in_file,
     accumulate_dependencies,
 )
@@ -45,8 +45,9 @@ parser.add_argument(
 def main():
     args = parser.parse_args()
 
-    raw_udfs = {x.name: x for x in read_udf_dir(args.udf_dir)}
+    raw_udfs = read_udf_dirs(args.udf_dir)
     published_udfs = []
+    client = bigquery.Client(args.project_id)
 
     for raw_udf in raw_udfs:
         # get all dependencies for UDF and publish as persistent UDF
@@ -54,13 +55,11 @@ def main():
         udfs_to_publish.append(raw_udf)
         for dep in udfs_to_publish:
             if dep not in published_udfs:
-                publish_persistent_udf(raw_udfs[dep], args.dataset, args.project_id)
+                publish_persistent_udf(raw_udfs[dep], client, args.dataset, args.project_id)
                 published_udfs.append(dep)
 
 
-def publish_persistent_udf(raw_udf, dataset, project_id):
-    client = bigquery.Client()
-
+def publish_persistent_udf(raw_udf, client, dataset, project_id):
     # transforms temporary UDF to persistent UDFs and publishes them
     for definition in raw_udf.definitions:
         # Within a standard SQL function, references to other entities require explicit project IDs
@@ -71,7 +70,7 @@ def publish_persistent_udf(raw_udf, dataset, project_id):
             "CREATE TEMP FUNCTION", "CREATE OR REPLACE FUNCTION"
         )
 
-        client.query(query)
+        client.query(query).result()
 
 
 if __name__ == "__main__":

@@ -13,7 +13,10 @@ from typing import List, Set
 import sqlparse
 
 
-UDF_RE = re.compile(r"udf_[a-zA-z0-9_]+")
+UDF_DIRS = ("udf", "udf_js")
+UDF_CHAR = "[a-zA-z0-9_]"
+UDF_RE = re.compile(f"udf_{UDF_CHAR}+")
+PRESISTENT_UDF_RE = re.compile(fr"(udf{UDF_CHAR}*)\.({UDF_CHAR}+)")
 
 
 @dataclass
@@ -64,17 +67,21 @@ class ParsedUdf(RawUdf):
         return ParsedUdf(*astuple(raw_udf), full_sql)
 
 
-def read_udf_dir(d):
-    """Read contents of d into RawUdf instances."""
-    for root, dirs, files in os.walk(d):
-        for filename in files:
-            if not filename.startswith("."):
-                yield RawUdf.from_file(os.path.join(root, filename))
+def read_udf_dirs(*udf_dirs):
+    """Read contents of udf_dirs into dict of RawUdf instances."""
+    return {
+        raw_udf.name: raw_udf
+        for udf_dir in (udf_dirs or UDF_DIRS)
+        for root, dirs, files in os.walk(udf_dir)
+        for filename in files
+        if not filename.startswith(".")
+        for raw_udf in (RawUdf.from_file(os.path.join(root, filename)),)
+    }
 
 
-def parse_udf_dir(d):
-    """Read contents of d into ParsedUdf instances."""
-    raw_udfs = {x.name: x for x in read_udf_dir(d)}
+def parse_udf_dirs(*udf_dirs):
+    """Read contents of udf_dirs into ParsedUdf instances."""
+    raw_udfs = read_udf_dirs(*udf_dirs)
     for raw_udf in raw_udfs.values():
         deps = accumulate_dependencies([], raw_udfs, raw_udf.name)
         definitions = []
@@ -107,6 +114,38 @@ def udf_usages_in_file(filepath):
     """Return a list of UDF names used in the provided SQL file."""
     with open(filepath) as f:
         text = f.read()
+    return udf_usages_in_text(text)
+
+
+def udf_usages_in_text(text):
+    """Return a list of UDF names used in the provided SQL text."""
     sql = sqlparse.format(text, strip_comments=True)
-    udf_usages = re.findall(UDF_RE, sql)
-    return sorted(list(set(udf_usages)))
+    udf_usages = UDF_RE.findall(sql)
+    return sorted(set(udf_usages))
+
+
+def udf_usage_definitions(text, raw_udfs=None):
+    """Return a list of definitions of UDFs used in provided SQL text."""
+    if raw_udfs is None:
+        raw_udfs = read_udf_dirs()
+    defined = set()
+    statements = []
+    for udf_usage in udf_usages_in_text(text):
+        for udf_name in accumulate_dependencies([], raw_udfs, udf_usage):
+            if udf_name not in defined:
+                statements.extend(raw_udfs[udf_name].definitions)
+                defined.add(udf_name)
+    return statements
+
+
+def prepend_udf_usage_definitions(text, raw_udfs=None):
+    """Prepend definitions of UDFs used to provided SQL text."""
+    statements = udf_usage_definitions(text, raw_udfs)
+    if statements:
+        statements.append("--")
+    return "\n".join(statements + [text])
+
+
+def sub_persisent_udfs_as_temp(text):
+    """Substitute persistent UDF references with temporary UDF references."""
+    return PRESISTENT_UDF_RE.sub(r"\1_\2", text)

@@ -14,7 +14,7 @@ import os, sys
 # and sibling directories. Also see:
 # https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from bigquery_etl.parse_udf import UDF_DIRS, read_udf_dirs, udf_usages_in_file, accumulate_dependencies
+from bigquery_etl.parse_udf import UDF_DIRS, read_udf_dirs, prepend_udf_usage_definitions
 from textwrap import dedent
 import shutil
 import re
@@ -57,34 +57,13 @@ def main():
             os.mkdir(basename)
 
         for filename in sql_files:
-            # get names of the UDFs used in the SQL queries
-            udf_usages = udf_usages_in_file(os.path.join(root, filename))
+            with open(os.path.join(root, filename)) as input_file:
+                text = input_file.read()
+
+            full_text = prepend_udf_usage_definitions(text, raw_udfs)
 
             with open(os.path.join(basename, filename), "a+") as output_file:
-                # write UDF declarations to file first
-
-                # for each UDF in the file we need to get all dependencies and make sure
-                # that UDFs are declared in the file only once
-                dependencies = []
-                for usage in udf_usages:
-                    # it is important that the order of dependencies is retained
-                    for dep in accumulate_dependencies([], raw_udfs, usage):
-                        if dep not in dependencies:
-                            dependencies.append(dep)
-
-                definitions = []
-                for dep in dependencies:
-                    definitions += raw_udfs[dep].definitions
-
-                if definitions:
-                    output_file.write("\n".join(definitions))
-                    output_file.write("\n--\n")
-
-                # write SQL of query to file
-                with open(os.path.join(root, filename)) as f:
-                    sql_text = f.read()
-
-                output_file.write(sql_text)
+                output_file.write(full_text)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,3 @@
-
---
 SELECT
   submission_date,
   app_version,

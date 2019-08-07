@@ -20,10 +20,10 @@ See [Mozilla BigQuery API Access instructions](https://docs.telemetry.mozilla.or
 How to Configure a Generated Test
 ===
 
-1. Make a directory for test resources named `tests/{query_name}/{test_name}/`,
-   e.g. `tests/clients_last_seen_v1/test_single_day`
-   - `query_name` must match a query file named `sql/{query_name}.sql`, e.g.
-     `sql/clients_last_seen_v1.sql`
+1. Make a directory for test resources named `tests/{dataset}/{query_name}/{test_name}/`,
+   e.g. `tests/telemetry_derived/clients_last_seen_raw_v1/test_single_day`
+   - `query_name` must match a query file named `sql/{dataset}/{query_name}.sql`, e.g.
+     `sql/telemetry_derived/clients_last_seen_v1.sql`
    - `test_name` should start with `test_`, e.g. `test_single_day`
 1. Add `.ndjson` files for input tables, e.g. `clients_daily_v6.ndjson`
    - Include the dataset prefix if it's set in the tested query,

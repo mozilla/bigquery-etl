@@ -1,0 +1,11 @@
+{"submission_date": "2019-08-01", "app_name": "Firefox", "histogram_parent_http_pageload_is_ssl": [{"value": 10, "key": 0}, {"value": 20, "key": 1}], "country": "MX", "sample_id": 42, "normalized_channel": "release", "os": "Windows_NT"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "histogram_parent_http_pageload_is_ssl": [{"value": 4, "key": 0}, {"value": 2, "key": 1}], "country": "DE", "sample_id": 42, "normalized_channel": "release", "os": "Windows_NT"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "histogram_parent_http_pageload_is_ssl": [{"value": 5, "key": 0}, {"value": 5, "key": 1}], "country": "US", "sample_id": 42, "normalized_channel": "release", "os": "Windows_NT"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "country": "US", "sample_id": 42, "normalized_channel": "release", "os": "Windows_NT"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "country": "US", "sample_id": 42, "normalized_channel": "release", "os": "Windows_NT"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "country": "US", "sample_id": 42, "normalized_channel": "release", "os": "Windows_NT"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "histogram_parent_http_pageload_is_ssl": [{"value": 20, "key": 0}, {"value": 30, "key": 1}], "country": "US", "sample_id": 42, "normalized_channel": "release", "os": "Darwin"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "histogram_parent_http_pageload_is_ssl": [{"value": 20, "key": 0}, {"value": 30, "key": 1}], "country": "DE", "sample_id": 42, "normalized_channel": "release", "os": "Linux"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "histogram_parent_http_pageload_is_ssl": [{"value": 80, "key": 0}, {"value": 20, "key": 1}], "country": "DE", "sample_id": 42, "normalized_channel": "release", "os": "Linux"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "country": "DE", "sample_id": 42, "normalized_channel": "release", "os": "Linux"}
+{"submission_date": "2019-08-01", "app_name": "Firefox", "country": "DE", "sample_id": 42, "normalized_channel": "release", "os": "Linux"}

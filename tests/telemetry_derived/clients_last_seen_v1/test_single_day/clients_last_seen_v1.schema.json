@@ -1,0 +1,114 @@
+[
+  {
+    "name": "days_seen_bits",
+    "type": "INT64",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "days_visited_5_uri_bits",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "days_opened_dev_tools_bits",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "days_created_profile_bits",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "days_seen_in_experiment",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "experiment",
+        "type": "STRING"
+      },
+      {
+        "name": "branch",
+        "type": "STRING"
+      },
+      {
+        "name": "bits",
+        "type": "INTEGER"
+      }
+    ]
+  },
+  {
+    "name": "submission_date",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "sample_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "active_hours_sum",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "devtools_toolbox_opened_count_sum",
+    "type": "FLOAT",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "profile_creation_date",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "attribution",
+    "type": "RECORD",
+    "mode": "REQUIRED",
+    "fields": [
+      {
+        "name": "source",
+        "type": "STRING",
+        "mode": "REQUIRED"
+      }
+    ]
+  },
+  {
+    "name": "scalar_parent_browser_engagement_total_uri_count_sum",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          }
+        ],
+        "mode": "REPEATED",
+        "name": "key_value",
+        "type": "RECORD"
+      }
+    ],
+    "name": "experiments",
+    "type": "RECORD"
+  },
+  {
+    "name": "fxa_configured",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
+  }
+]

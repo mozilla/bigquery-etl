@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+
+"""Find view definition files and execute them."""
+
+from argparse import ArgumentParser
+import logging
+import os
+
+from google.cloud import bigquery
+import sqlparse
+
+
+def process_file(client, args, filepath):
+    with open(filepath) as f:
+        sql = f.read()
+    parsed = sqlparse.parse(sql)[0]
+    tokens = [t for t in parsed.tokens if not t.is_whitespace]
+    if tokens[0].normalized == "CREATE OR REPLACE" and tokens[1].normalized == "VIEW":
+        target_view = str(tokens[2])
+        target_project = target_view.strip("`").split(".")[0]
+        if args.target_project is None or target_project == args.target_project:
+            job_config = bigquery.QueryJobConfig(
+                use_legacy_sql=False, dry_run=args.dry_run
+            )
+            query_job = client.query(sql, job_config)
+            if args.dry_run:
+                print(f"Validated definition of {target_view} in {filepath}")
+            else:
+                query_job.result()
+                print(f"Published view {target_view}")
+
+
+def main():
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "target",
+        nargs="+",
+        help="File or directory containing view definitions to execute",
+    )
+    parser.add_argument(
+        "--target-project",
+        help="If specified, only execute views defined under the given project ID",
+    )
+    parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
+    parser.add_argument(
+        "--dry_run",
+        "--dry-run",
+        action="store_true",
+        help="Validate view definitions, but do not publish them.",
+    )
+
+    args = parser.parse_args()
+    client = bigquery.Client()
+
+    # set log level
+    try:
+        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
+    except ValueError as e:
+        parser.error(f"argument --log-level: {e}")
+
+    for target in args.target:
+        if os.path.isdir(target):
+            for root, dirs, files in os.walk(target):
+                sql_files = [
+                    filename for filename in files if filename.endswith(".sql")
+                ]
+                for sql_file in sql_files:
+                    process_file(client, args, os.path.join(root, sql_file))
+        else:
+            process_file(client, args, target)
+
+
+if __name__ == "__main__":
+    main()

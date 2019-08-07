@@ -58,6 +58,13 @@ CREATE TEMP FUNCTION
       ' but got ',
       TO_JSON_STRING(actual))),
     TRUE));
+CREATE TEMP FUNCTION
+  assert_array_empty(actual ANY TYPE) AS (
+    IF(ARRAY_LENGTH(actual) = 0, TRUE,
+    ERROR(CONCAT(
+      'Expected empty array',
+      ' but got ',
+      TO_JSON_STRING(actual)))));
 """
 
 
@@ -70,11 +77,30 @@ def bq():
     "test_num,test_query,udf",
     [
         (i + 1, test, udf)
-        for udf in parse_udf.parse_udf_dir("udf")
+        for udf in parse_udf.parse_udf_dirs("udf")
         for i, test in enumerate(udf.tests)
     ],
 )
 def test_udfs(bq, test_num, test_query, udf):
+    job_config = bigquery.QueryJobConfig(use_legacy_sql=False)
+    # run query
+    sql = "\n".join([TEST_UDFS, udf.full_sql, test_query])
+    job = bq.query(sql, job_config=job_config)
+    try:
+        job.result()
+    except BadRequest as e:
+        raise Exception(f"Failed test #{test_num} for {udf.name}: {e}")
+
+
+@pytest.mark.parametrize(
+    "test_num,test_query,udf",
+    [
+        (i + 1, test, udf)
+        for udf in parse_udf.parse_udf_dirs("udf_js")
+        for i, test in enumerate(udf.tests)
+    ],
+)
+def test_js_udfs(bq, test_num, test_query, udf):
     job_config = bigquery.QueryJobConfig(use_legacy_sql=False)
     # run query
     sql = "\n".join([TEST_UDFS, udf.full_sql, test_query])

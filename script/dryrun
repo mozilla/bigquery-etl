@@ -2,13 +2,15 @@
 
 import glob
 import json
+from multiprocessing.pool import ThreadPool
 import os.path
 import sys
 from urllib.request import urlopen, Request
 
-DRY_RUN_URL = 'https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/bigquery-etl-dryrun'
-exitcode = 0
-skip={
+
+DRY_RUN_URL = "https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/bigquery-etl-dryrun"
+
+SKIP = {
     # Access Denied
     "sql/telemetry/fxa_content_events_v1.sql",
     "sql/telemetry/fenix_events_v1.sql",
@@ -35,33 +37,60 @@ skip={
     "sql/telemetry_derived/addons_v3.sql",
     "sql/telemetry_derived/addons_aggregates_v3.sql",
 }
-for sql in glob.glob('sql/*/*.sql'):
-    if sql in skip:
-        continue
-    pad = ' ' * (60 - len(sql))
+
+
+def worker_entrypoint(sqlfile):
+    sql = open(sqlfile).read()
     try:
-        print(sql, end=pad)
         r = urlopen(
             Request(
                 DRY_RUN_URL,
-                headers = {
-                    'Content-Type': 'application/json'
-                },
-                data=json.dumps({
-                    'dataset': os.path.basename(os.path.dirname(sql)),
-                    'query': open(sql).read(),
-                }).encode('utf8'),
-                method='POST'
-            ))
+                headers={"Content-Type": "application/json"},
+                data=json.dumps(
+                    {
+                        "dataset": os.path.basename(os.path.dirname(sqlfile)),
+                        "query": sql,
+                    }
+                ).encode("utf8"),
+                method="POST",
+            )
+        )
     except Exception as e:
-        print('ERROR\n', e)
-        exitcode = 1
+        print(f"{sqlfile:59} ERROR\n", e)
+        return False
+    response = json.load(r)
+    if "errors" in response and len(response["errors"]) == 1:
+        error = response["errors"][0]
     else:
-        response = json.load(r)
-        if response['valid']:
-            print('OK')
-        else:
-            print('ERROR\n', response['errors'])
-            exitcode = 1
+        error = None
+    if response["valid"]:
+        print(f"{sqlfile:59} OK")
+    elif (
+        error
+        and error["code"] == 403
+        and "does not have bigquery.tables.create permission for dataset"
+        in error["message"]
+    ):
+        # We want the dryrun service to only have read permissions, so
+        # we expect CREATE VIEW and CREATE TABLE to throw specific
+        # exceptions.
+        print(f"{sqlfile:59} OK, but with insufficient access to create table/view")
+    else:
+        print(f"{sqlfile:59} ERROR\n", response["errors"])
+        return False
+    return True
 
-sys.exit(exitcode)
+
+def main():
+    sqlfiles = [f for f in glob.glob("sql/*/*.sql") if f not in SKIP]
+    with ThreadPool(8) as p:
+        result = p.map(worker_entrypoint, sqlfiles, chunksize=1)
+    if all(result):
+        exitcode = 0
+    else:
+        exitcode = 1
+    sys.exit(exitcode)
+
+
+if __name__ == "__main__":
+    main()

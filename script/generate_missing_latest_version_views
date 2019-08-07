@@ -122,7 +122,7 @@ for view, tables in views.items():
     project, dataset, viewname = view.split(".")
     target = f"{view}_v{version}"
     view_query = f"SELECT * FROM\n  `{target}`"
-    view_dataset = dataset.rsplit("_", 1)[-1]
+    view_dataset = dataset.rsplit("_", 1)[0]
     full_view_id = ".".join([project, view_dataset, viewname])
     target_file = f"templates/{view_dataset}/{viewname}.sql"
     full_sql = f"CREATE OR REPLACE VIEW\n  `{full_view_id}`\nAS {view_query}\n"

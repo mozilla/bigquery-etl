@@ -23,9 +23,6 @@ WILDCARD_RE = re.compile(r"[*?[]")
 DEFAULT_PATTERN = "telemetry.*"
 DEFAULT_EXCLUDE = r"*_raw"
 
-client = bigquery.Client()
-
-
 def pattern(value: str) -> Tuple[str, str, str]:
     PATTERN_RE.fullmatch(value).groups(client.project)
 
@@ -58,6 +55,8 @@ except ValueError as e:
     parser.error(f"argument --log-level: {e}")
 
 wildcards = set("*?[]")
+
+client = bigquery.Client()
 
 
 def uses_wildcards(pattern: str) -> bool:

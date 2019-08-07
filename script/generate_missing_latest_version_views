@@ -7,13 +7,14 @@ Run as:
 """
 
 from argparse import ArgumentParser
-from google.cloud import bigquery
-from typing import Callable, Iterable, Tuple
 from fnmatch import fnmatchcase
 import logging
 import os
 import re
 import sys
+from typing import Callable, Iterable, Tuple
+
+from google.cloud import bigquery
 
 VERSION_RE = re.compile(r"_v([0-9]+)$")
 WHITESPACE_RE = re.compile(r"\s+")

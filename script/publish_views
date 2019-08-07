@@ -3,10 +3,10 @@
 """Find view definition files and execute them."""
 
 from argparse import ArgumentParser
-from google.cloud import bigquery
 import logging
 import os
 
+from google.cloud import bigquery
 import sqlparse
 
 

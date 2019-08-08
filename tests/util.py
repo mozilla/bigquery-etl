@@ -10,7 +10,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
-from typing import Any, Callable, Dict, Generator, List, Optional, Union
+from io import BytesIO
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
 
 import json
 import os
@@ -43,15 +44,20 @@ class Table:
 
     name: str
     source_format: str
-    source_path: str
+    # a tuple means read via `load(*source_path)` and format as source_format
+    # a string means source_path is already in source_format
+    source_path: Union[str, Tuple[str, str]]
     # post_init fields
     schema: Optional[List[bigquery.SchemaField]] = None
 
     def __post_init__(self):
         """Fill in calculated fields if not provided."""
         if self.schema is None:
-            resource_dir, resource = os.path.split(self.source_path)
-            full_name, _ = resource.rsplit(".", 1)
+            if isinstance(self.source_path, str):
+                resource_dir, resource = os.path.split(self.source_path)
+                full_name, _ = resource.rsplit(".", 1)
+            else:
+                resource_dir, full_name = self.source_path
             try:
                 self.schema = [
                     bigquery.SchemaField.from_api_repr(field)
@@ -88,9 +94,13 @@ class SqlTest(pytest.Item, pytest.File):
                 "query_params",
             ):
                 continue  # not a table
-            if extension in table_extensions:
-                source_format = table_extensions[extension]
-                source_path = os.path.join(self.fspath.strpath, resource)
+            if extension in table_extensions or extension in ("yaml", "json"):
+                if extension in table_extensions:
+                    source_format = table_extensions[extension]
+                    source_path = os.path.join(self.fspath.strpath, resource)
+                else:
+                    source_format = table_extensions["ndjson"]
+                    source_path = (self.fspath.strpath, table_name)
                 if "." in table_name:
                     # remove dataset from table_name
                     original, table_name = table_name, table_name.rsplit(".", 1)[1]
@@ -162,7 +172,16 @@ def load_tables(bq, dataset, tables):
                         field=field.name
                     )
                     break  # stop because there can only be one time partitioning field
-        with open(table.source_path, "rb") as file_obj:
+        if isinstance(table.source_path, str):
+            with open(table.source_path, "rb") as file_obj:
+                job = bq.load_table_from_file(
+                    file_obj, destination, job_config=job_config
+                )
+        else:
+            file_obj = BytesIO()
+            for row in load(*table.source_path):
+                file_obj.write(json.dumps(row).encode() + b"\n")
+            file_obj.seek(0)
             job = bq.load_table_from_file(file_obj, destination, job_config=job_config)
         try:
             job.result()

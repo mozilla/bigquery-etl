@@ -1,11 +1,11 @@
 [
   {
     "type": "DATE",
-    "name": "submission_date_s3",
+    "name": "submission_date",
     "mode": "REQUIRED"
   },
   {
-    "type": "STRING",
+    "type": "INTEGER",
     "name": "sample_id",
     "mode": "REQUIRED"
   },
@@ -92,11 +92,6 @@
   {
     "type": "STRING",
     "name": "distribution_id",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "submission_date",
     "mode": "NULLABLE"
   },
   {

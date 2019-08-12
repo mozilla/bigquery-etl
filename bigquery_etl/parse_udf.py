@@ -74,7 +74,7 @@ def read_udf_dirs(*udf_dirs):
         for udf_dir in (udf_dirs or UDF_DIRS)
         for root, dirs, files in os.walk(udf_dir)
         for filename in files
-        if not filename.startswith(".")
+        if not filename.startswith(".") and filename.endswith(".sql")
         for raw_udf in (RawUdf.from_file(os.path.join(root, filename)),)
     }
 

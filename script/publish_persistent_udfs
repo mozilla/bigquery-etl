@@ -26,8 +26,7 @@ from bigquery_etl.parse_udf import (
 
 UDF_RE = re.compile(r"udf_(?:js_)?([a-zA-z0-9_]+)")
 
-OPTIONS_LIB_RE = re.compile(r"library = \"gs://[^\\\"]+/([^\\\"]+)\"")
-
+OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -45,7 +44,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--gcs-bucket",
-    default="bigquery-etl",
+    default="moz-fx-data-prod-bigquery-etl",
     help="The GCS bucket where dependency files are uploaded to.",
 )
 parser.add_argument(
@@ -55,7 +54,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--dep-dir",
-    default="udf_dependencies/",
+    default="udf/lib/",
     help="The directory JavaScript dependency files for UDFs are stored.",
 )
 
@@ -90,7 +89,7 @@ def publish_persistent_udf(raw_udf, client, dataset, project_id):
 
         # adjust paths for dependencies stored in GCS
         query = OPTIONS_LIB_RE.sub(
-            'library = "gs://' + gcs_bucket + "/" + gcs_path + r"\1" + '"',
+            fr'library = "gs://{gcs_bucket}/{gcs_path}\1"',
             query_with_renamed_udfs,
         )
 

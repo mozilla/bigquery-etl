@@ -33,7 +33,6 @@ SKIP = {
     # Syntax error
     "sql/telemetry_derived/clients_last_seen_v1.init.sql",
     # Unrecognized name: submission_date_s3
-    "sql/telemetry_derived/clients_daily_v7.sql",
     "sql/telemetry_derived/addons_v3.sql",
     "sql/telemetry_derived/addons_aggregates_v3.sql",
 }

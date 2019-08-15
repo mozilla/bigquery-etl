@@ -25,13 +25,13 @@ How to Configure a Generated Test
    - `query_name` must match a query file named `sql/{dataset}/{query_name}.sql`, e.g.
      `sql/telemetry_derived/clients_last_seen_v1.sql`
    - `test_name` should start with `test_`, e.g. `test_single_day`
-1. Add `.ndjson` files for input tables, e.g. `clients_daily_v6.ndjson`
+1. Add `.yaml` files for input tables, e.g. `clients_daily_v6.yaml`
    - Include the dataset prefix if it's set in the tested query,
-     e.g. `analysis.clients_last_seen_v1.ndjson`
+     e.g. `analysis.clients_last_seen_v1.yaml`
      - This will result in the dataset prefix being removed from the query,
-       e.g. `query.replace("analysis.clients_last_seen_v1",
+       e.g. `query = query.replace("analysis.clients_last_seen_v1",
        "clients_last_seen_v1")`
-1. Add `expect.ndjson` to validate the result
+1. Add `expect.yaml` to validate the result
    - `DATE` and `DATETIME` type columns in the result are coerced to strings
      using `.isoformat()`
    - Columns named `generated_time` are removed from the result before
@@ -48,21 +48,24 @@ Additional Guidelines and Options
   be a required `DATETIME` field to ensure minimal validation
 - Input table files
    - All of the formats supported by `bq load` are supported
-   - Formats other than `.ndjson` and `.csv` should not be used because they
-     are not human readable
-- `expect.ndjson`
+   - `yaml` and `json` format are supported and must contain an array of rows
+     which are converted in memory to `ndjson` before loading
+   - Preferred formats are `yaml` for readability or `ndjson` for compatiblity
+     with `bq load`
+- `expect.yaml`
    - File extensions `yaml`, `json` and `ndjson` are supported
-   - Formats other than `ndjson` should not be used because they are not
-     supported by `bq load`
+   - Preferred formats are `yaml` for readability or `ndjson` for compatiblity
+     with `bq load`
 - Schema files
-  - Setting the description of a top level field to `time_partitioning_field`
-    will cause the table to use it for time partitioning
-  - File extensions `yaml`, `json` and `ndjson` are supported
-  - Formats other than `.json` should not be used because they are not
-    supported by `bq load`
+   - Setting the description of a top level field to `time_partitioning_field`
+     will cause the table to use it for time partitioning
+   - File extensions `yaml`, `json` and `ndjson` are supported
+   - Preferred formats are `yaml` for readability or `json` for compatiblity
+     with `bq load`
 - Query parameters
-  - Scalar query params should be defined as a dict with keys `name`, `type` or
-    `type_`, and `value`
-  - `query_parameters.yaml` may be used instead of `query_params.yaml`, but
-    they are mutually exclusive
-  - File extensions `yaml`, `json` and `ndjson` are supported
+   - Scalar query params should be defined as a dict with keys `name`, `type` or
+     `type_`, and `value`
+   - `query_parameters.yaml` may be used instead of `query_params.yaml`, but
+     they are mutually exclusive
+   - File extensions `yaml`, `json` and `ndjson` are supported
+   - Preferred format is `yaml` for readability

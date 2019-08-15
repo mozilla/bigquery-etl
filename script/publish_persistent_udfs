@@ -95,6 +95,14 @@ def publish_persistent_udf(raw_udf, client, dataset, project_id):
 
         client.query(query).result()
 
+def push_dependencies_to_gcs(bucket, path, dep_dir):
+    client = storage.Client()
+    bucket = storage_client.get_bucket(bucket)
+
+    for root, dirs, files in os.walk(dep_dir):
+        for filename in files:
+            blob = bucket.blob(path + filename)
+            blob.upload_from_filename(os.path.join(root, filename))
 
 if __name__ == "__main__":
     main()

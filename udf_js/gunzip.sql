@@ -34,8 +34,8 @@ CREATE TEMP FUNCTION
     }
 """
 OPTIONS (
-  library = "gs://moz-fx-data-prod-bigquery-etl/gunzip.min.js",
-  library = "gs://moz-fx-data-prod-bigquery-etl/atob.js"
+  library = "gs://moz-fx-data-circleci-tests-bigquery-etl/atob.js",
+  library = "gs://moz-fx-data-circleci-tests-bigquery-etl/gunzip.min.js"
 );
 
 -- Tests

@@ -38,6 +38,7 @@ jobs:
             venv/bin/pip install --upgrade -r requirements.txt
             rm -rf sql/
             venv/bin/python script/generate_sql
+            venv/bin/python script/generate_views
             echo "Inconsistencies between templates and generated SQL:"
             git ls-files --other --modified -x sql/*
             test `git ls-files --other --modified -x sql/* | wc -l` = 0

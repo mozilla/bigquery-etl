@@ -16,18 +16,22 @@ def process_file(client, args, filepath):
     parsed = sqlparse.parse(sql)[0]
     tokens = [t for t in parsed.tokens if not t.is_whitespace]
     if tokens[0].normalized == "CREATE OR REPLACE" and tokens[1].normalized == "VIEW":
-        target_view = str(tokens[2])
-        target_project = target_view.strip("`").split(".")[0]
-        if args.target_project is None or target_project == args.target_project:
-            job_config = bigquery.QueryJobConfig(
-                use_legacy_sql=False, dry_run=args.dry_run
-            )
-            query_job = client.query(sql, job_config)
-            if args.dry_run:
-                print(f"Validated definition of {target_view} in {filepath}")
-            else:
-                query_job.result()
-                print(f"Published view {target_view}")
+        target_view_orig = str(tokens[2]).strip().split()[0]
+        target_view = target_view_orig
+        if args.target_project:
+            project_id = target_view_orig.strip("`").split(".")[0]
+            target_view = target_view_orig.replace(project_id, args.target_project)
+            # We only change the first occurrence, which is in the target view name.
+            sql = sql.replace(project_id, args.target_project, 1)
+        job_config = bigquery.QueryJobConfig(
+            use_legacy_sql=False, dry_run=args.dry_run
+        )
+        query_job = client.query(sql, job_config)
+        if args.dry_run:
+            print(f"Validated definition of {target_view} in {filepath}")
+        else:
+            query_job.result()
+            print(f"Published view {target_view}")
 
 
 def main():
@@ -39,7 +43,8 @@ def main():
     )
     parser.add_argument(
         "--target-project",
-        help="If specified, only execute views defined under the given project ID",
+        help=("If specified, create views in the target project rather than"
+              " the project specified in the file"),
     )
     parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
     parser.add_argument(

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-`moz-fx-data-derived-datasets.telemetry.lockwise_mobile_events_v1` AS
+`moz-fx-data-shared-prod.telemetry.lockwise_mobile_events_v1` AS
   --
 WITH
   android AS (

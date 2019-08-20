@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-derived-datasets.telemetry.smoot_usage_all_v1`
+  `moz-fx-data-shared-prod.telemetry.smoot_usage_all_v1`
 AS
 SELECT
   *

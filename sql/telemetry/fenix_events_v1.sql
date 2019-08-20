@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-    `moz-fx-data-derived-datasets.telemetry.fenix_events_v1` AS
+    `moz-fx-data-shared-prod.telemetry.fenix_events_v1` AS
 SELECT
     submission_timestamp,
     client_info.client_id AS device_id,

@@ -7,6 +7,7 @@ expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}
 def pytest_configure():
     """Generate SQL files before running tests."""
     exec(open("script/generate_sql").read())
+    exec(open("script/generate_views").read())
 
 
 def pytest_collect_file(parent, path):

@@ -112,6 +112,8 @@ for view, tables in views.items():
     if any(fnmatchcase(pattern, view) for pattern in args.exclude):
         log.info("skipping table: matched by exclude pattern: {view}")
         continue
+    if view.endswith('_'):
+        continue
     version = max(
         int(match.group()[2:])
         for table in tables

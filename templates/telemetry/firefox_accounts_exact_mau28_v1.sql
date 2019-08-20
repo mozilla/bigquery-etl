@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-derived-datasets.analysis.firefox_accounts_exact_mau28_v1`
+  `moz-fx-data-shared-prod.analysis.firefox_accounts_exact_mau28_v1`
 AS
 SELECT
   submission_date,

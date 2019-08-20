@@ -131,9 +131,9 @@ def main():
     parser.add_argument("table")
     parser.add_argument(
         "--project",
-        default="moz-fx-data-derived-datasets",
+        default="moz-fx-data-shared-prod",
         help="project to use for partially qualified table and view, defaults to"
-        " moz-fx-data-derived-datasets",
+        " moz-fx-data-shared-prod",
     )
     parser.add_argument(
         "--dataset",

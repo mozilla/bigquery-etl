@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-derived-datasets.telemetry.nondesktop_clients_last_seen_v1` AS
+  `moz-fx-data-shared-prod.telemetry.nondesktop_clients_last_seen_v1` AS
 SELECT
   submission_date,
   client_id,

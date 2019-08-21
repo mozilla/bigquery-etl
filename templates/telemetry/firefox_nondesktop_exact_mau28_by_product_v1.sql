@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-derived-datasets.telemetry.firefox_nondesktop_exact_mau28_by_product_v1`
+  `moz-fx-data-shared-prod.telemetry.firefox_nondesktop_exact_mau28_by_product_v1`
 AS
 SELECT
   submission_date,

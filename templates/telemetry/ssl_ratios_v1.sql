@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-derived-datasets.telemetry.ssl_ratios_v1` AS
+  `moz-fx-data-shared-prod.telemetry.ssl_ratios_v1` AS
 WITH windowed AS (
   SELECT
     *,

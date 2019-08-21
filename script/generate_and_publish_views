@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+# Fill in any missing view definitions in the sql/ folder
+./script/generate_views 'moz-fx-data-shared-prod:*_stable.*'
+
+# All view definitions target moz-fx-data-shared-prod by default
+./script/publish_views templates/
+
+# We additionally make sure we have identical view definitions in moz-fx-data-derived-datasets
+./script/publish_views --target-project moz-fx-data-derived-datasets templates/

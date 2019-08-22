@@ -1,4 +1,4 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.telemetry_core_parquet`
 AS SELECT * FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.telemetry_core_parquet_v3`
+  `moz-fx-data-derived-datasets.telemetry.telemetry_core_parquet_v3`

@@ -10,10 +10,10 @@ Recommended practices
 
 ### Queries
 
-- Should be defined in files named as `sql/dataset/table_version/query.sql` e.g.
+- Should be defined in files named as `templates/<dataset>/<table>_<version>/query.sql` e.g.
   `sql/telemetry_derived/clients_daily_v7/query.sql`
 - May be generated using a python script that prints the query to stdout
-  - Should save output as `sql/dataset/table_version/query.sql` as above
+  - Should save output as `templates/<dataset>/<table>_<version>/query.sql` as above
   - Should be named as `sql/query_type.sql.py` e.g. `sql/clients_daily.sql.py`
   - May use options to generate queries for different destination tables e.g.
     using `--source telemetry_core_parquet_v3` to generate
@@ -106,7 +106,7 @@ Incremental Queries
 - Must produce similar results when run multiple times
   - Should produce identical results when run multiple times
 - May depend on the previous partition
-  - If using previous partition, must include an `init.sql` query to init the
+  - If using previous partition, must include an `init.sql` query to initialize the
     table, e.g. `templates/telemetry_derived/clients_last_seen_v1/init.sql`
   - Should be impacted by values from a finite number of preceding partitions
     - This allows for backfilling in chunks instead of serially for all time

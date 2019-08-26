@@ -19,21 +19,67 @@ from google.cloud import bigquery
 
 QUERY_TEMPLATE = """\
 WITH
-  numbered_duplicates AS (
+  -- Our 'base' is a single day of a live ping table.
+  base AS (
   SELECT
-    *,
-    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) AS _n
+    *
   FROM
     `{source_table_spec}`
   WHERE
-    DATE(submission_timestamp) = @submission_date )
+    DATE(submission_timestamp) = @submission_date ),
   --
-SELECT
-  * EXCEPT (_n)
-FROM
-  numbered_duplicates
-WHERE
-  _n = 1
+  -- We assume that the pipeline has already filtered out most duplicates,
+  -- so a list of all document_ids that appear more than once should be
+  -- reasonably small and fit in memory as a lookup table on each node.
+  duplicate_ids AS (
+  SELECT
+    document_id
+  FROM
+    base
+  GROUP BY
+    document_id
+  HAVING
+    COUNT(document_id) > 1),
+  --
+  -- We can directly include all singly-occurring documents in the final
+  -- result set without incurring the expense of sorting in a window function.
+  singly_occurring_documents AS (
+  SELECT
+    base.*
+  FROM
+    base
+  LEFT JOIN
+    duplicate_ids
+  USING
+    (document_id)
+  WHERE
+    duplicate_ids.document_id IS NULL),
+  --
+  -- For documents that appear multiple times, we have to order them by
+  -- assigning a row number.
+  numbered_duplicates AS (
+  SELECT
+    base.*,
+    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) AS _n
+  FROM
+    base
+  JOIN
+    duplicate_ids
+  USING
+    (document_id) ),
+  --
+  -- We retain only the first seen document for each ID, according to timestamp.
+  deduplicated_documents AS (
+  SELECT
+    * EXCEPT (_n)
+  FROM
+    numbered_duplicates
+  WHERE
+    _n = 1 )
+  --
+SELECT * FROM singly_occurring_documents
+UNION ALL
+SELECT * FROM deduplicated_documents
 """
 
 parser = ArgumentParser(description=__doc__)

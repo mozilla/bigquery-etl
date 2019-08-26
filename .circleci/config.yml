@@ -67,9 +67,6 @@ jobs:
         name: Build docker image
         command: docker build . --pull --tag "$IMAGE"
     - run:
-        name: Test
-        command: docker run --rm --tty --interactive --env CIRCLE_BUILD_NUM --env GCLOUD_SERVICE_KEY "$IMAGE"
-    - run:
         name: Deploy to Dockerhub
         command: |
           echo "${DOCKER_PASS:?}" | docker login -u "${DOCKER_USER:?}" --password-stdin

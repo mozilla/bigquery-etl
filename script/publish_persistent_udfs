@@ -11,6 +11,7 @@ import os
 import sys
 import re
 from google.cloud import bigquery
+from gcloud import storage
 
 # sys.path needs to be modified to enable package imports from parent
 # and sibling directories. Also see:
@@ -25,6 +26,7 @@ from bigquery_etl.parse_udf import (
 
 UDF_RE = re.compile(r"udf_(?:js_)?([a-zA-z0-9_]+)")
 
+OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -40,6 +42,21 @@ parser.add_argument(
     default="udf/",
     help="The directory where declarations of temporary UDFs are stored.",
 )
+parser.add_argument(
+    "--gcs-bucket",
+    default="moz-fx-data-prod-bigquery-etl",
+    help="The GCS bucket where dependency files are uploaded to.",
+)
+parser.add_argument(
+    "--gcs-path",
+    default="",
+    help="The GCS path in the bucket where dependency files are uploaded to.",
+)
+parser.add_argument(
+    "--dep-dir",
+    default="udf/lib/",
+    help="The directory JavaScript dependency files for UDFs are stored.",
+)
 
 
 def main():
@@ -48,6 +65,9 @@ def main():
     raw_udfs = read_udf_dirs(args.udf_dir)
     published_udfs = []
     client = bigquery.Client(args.project_id)
+
+    if args.dep_dir:
+        push_dependencies_to_gcs(args.gcs_bucket, args.gcs_path, args.dep_dir)
 
     for raw_udf in raw_udfs:
         # get all dependencies for UDF and publish as persistent UDF
@@ -66,12 +86,23 @@ def publish_persistent_udf(raw_udf, client, dataset, project_id):
         query_with_renamed_udfs = UDF_RE.sub(
             "`" + project_id + "`." + dataset + "." + r"\1", definition
         )
-        query = query_with_renamed_udfs.replace(
-            "CREATE TEMP FUNCTION", "CREATE OR REPLACE FUNCTION"
+
+        # adjust paths for dependencies stored in GCS
+        query = OPTIONS_LIB_RE.sub(
+            fr'library = "gs://{gcs_bucket}/{gcs_path}\1"',
+            query_with_renamed_udfs,
         )
 
         client.query(query).result()
 
+def push_dependencies_to_gcs(bucket, path, dep_dir):
+    client = storage.Client()
+    bucket = storage_client.get_bucket(bucket)
+
+    for root, dirs, files in os.walk(dep_dir):
+        for filename in files:
+            blob = bucket.blob(path + filename)
+            blob.upload_from_filename(os.path.join(root, filename))
 
 if __name__ == "__main__":
     main()

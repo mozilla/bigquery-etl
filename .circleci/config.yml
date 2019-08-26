@@ -79,7 +79,8 @@ workflows:
   version: 2
   build:
     jobs:
-    - build
+    - build:
+        context: data-eng-circleci-tests
     - verify-generated-sql
     - dry-run-sql
     - deploy:

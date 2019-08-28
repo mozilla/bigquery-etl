@@ -53,6 +53,8 @@ Recommended practices
   - Each file must define a single function using `CREATE TEMP FUNCTION` syntax
   - SQL UDFs must be defined in the `udf/` directory and JS UDFs must be defined
     in the `udf_js` directory
+    - The `udf_legacy/` directory is an exception which should only contain
+      compatibility functions for queries migrated from Athena/Presto.
   - The function must be named as `<dir_name>_<file_name_without_suffix>`
     so `udf/mode_last.sql` must define a function `udf_mode_last`
 - Must be defined as temporary UDFs

@@ -137,7 +137,7 @@ def create_views_if_not_exist(views, exclude, sql_dir):
         view_query = f"SELECT * FROM\n  `{target}`"
         view_dataset = dataset.rsplit("_", 1)[0]
         full_view_id = ".".join([project, view_dataset, viewname])
-        target_file = f"{sql_dir}/{view_dataset}/{viewname}.sql"
+        target_file = f"{sql_dir}/{view_dataset}/{viewname}/view.sql"
         full_sql = f"CREATE OR REPLACE VIEW\n  `{full_view_id}`\nAS {view_query}\n"
 
         if not os.path.exists(target_file):

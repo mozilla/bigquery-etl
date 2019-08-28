@@ -6,6 +6,9 @@ description and returns a Standard SQL DDL statement that recreates that table.
 
 See help for arguments. Currently does not implement field options or
 table options besides require_partition_filter.
+
+Example usage:
+    `bq show --format json <orignal table> | json_to_sql_ddl -d <new_project> -d <new_dataset>"
 """
 
 
@@ -22,27 +25,28 @@ TEMPLATE = """
 
 
 create_modes = {
-    "create": "CREATE TABLE",
-    "create_or_replace": "CREATE OR REPLACE TABLE",
-    "create_if_not_exists": "CREATE TABLE IF NOT EXISTS",
+    "CREATE": "CREATE TABLE",
+    "REPLACE": "CREATE OR REPLACE TABLE",
+    "IF_NOT_EXISTS": "CREATE TABLE IF NOT EXISTS",
 }
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
     "-m",
     "--mode",
     help="Specifies creation mode for the table",
     choices=create_modes.keys(),
     default="create_if_not_exists",
+    type=str.upper
 )
 parser.add_argument("-p", "--project", help="Specifies project name for new table")
 parser.add_argument("-d", "--dataset", help="Specifies dataset name for new table")
-parser.add_argument("-n", "--name", help="Specifies new table name")
+parser.add_argument("-t", "--table", help="Specifies new table name")
 parser.add_argument(
     "input",
     nargs="?",
-    help="JSON-formatted output from bq api or `bq show --format json <orignal table>`",
+    help="JSON-formatted output from bq api or `bq show --format json <orignal table>` (can be provided via stdin)",
 )
 
 
@@ -66,19 +70,19 @@ def field_to_string(field, nest_level):
     return tabs + field["name"] + " " + definition
 
 
-def main(args):
-    opts = parser.parse_args(args[1:])
-    if opts.input:
-        in_json = opts.input
+def main(argv):
+    args = parser.parse_args(argv[1:])
+    if args.input:
+        in_json = args.input
     else:
         with open("/dev/stdin") as i:
             in_json = i.read()
 
     orig = json.loads(in_json)
-    table_create_mode_string = create_modes[opts.mode]
-    project = opts.project if opts.project else orig["tableReference"]["projectId"]
-    dataset = opts.dataset if opts.dataset else orig["tableReference"]["datasetId"]
-    table_name = opts.name if opts.name else orig["tableReference"]["tableId"]
+    table_create_mode_string = create_modes[args.mode]
+    project = args.project if args.project else orig["tableReference"]["projectId"]
+    dataset = args.dataset if args.dataset else orig["tableReference"]["datasetId"]
+    table_name = args.name if args.name else orig["tableReference"]["tableId"]
     columns_string = ",\n".join(
         [field_to_string(column, 1) for column in orig["schema"]["fields"]]
     )

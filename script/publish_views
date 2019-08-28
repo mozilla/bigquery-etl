@@ -66,11 +66,8 @@ def main():
     for target in args.target:
         if os.path.isdir(target):
             for root, dirs, files in os.walk(target):
-                sql_files = [
-                    filename for filename in files if filename.endswith(".sql")
-                ]
-                for sql_file in sql_files:
-                    process_file(client, args, os.path.join(root, sql_file))
+                if 'view.sql' in files:
+                    process_file(client, args, os.path.join(root, 'view.sql'))
         else:
             process_file(client, args, target)
 

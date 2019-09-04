@@ -7,8 +7,9 @@ CREATE TEMP FUNCTION
   udf_legacy_date_trunc(part STRING, d DATE)
   AS (
     CASE
-    WHEN part = 'day' THEN DATE_TRUNC(d, DAY)
-    WHEN part = 'week' THEN DATE_TRUNC(d, WEEK)
-    WHEN part = 'month' THEN DATE_TRUNC(d, MONTH)
+    WHEN lower(part) = 'day' THEN DATE_TRUNC(d, DAY)
+    WHEN lower(part) = 'week' THEN DATE_TRUNC(d, WEEK)
+    WHEN lower(part) = 'month' THEN DATE_TRUNC(d, MONTH)
+    ELSE ERROR('This function is a legacy compatibility method and should not be used in new functions. Use the BigQuery built-in DATE_TRUNC instead'))
     END
   );

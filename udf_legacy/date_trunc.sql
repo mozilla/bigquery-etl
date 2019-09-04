@@ -10,6 +10,6 @@ CREATE TEMP FUNCTION
     WHEN lower(part) = 'day' THEN DATE_TRUNC(d, DAY)
     WHEN lower(part) = 'week' THEN DATE_TRUNC(d, WEEK)
     WHEN lower(part) = 'month' THEN DATE_TRUNC(d, MONTH)
-    ELSE ERROR('This function is a legacy compatibility method and should not be used in new functions. Use the BigQuery built-in DATE_TRUNC instead'))
+    ELSE ERROR('This function is a legacy compatibility method and should not be used in new queries. Use the BigQuery built-in DATE_TRUNC instead'))
     END
   );

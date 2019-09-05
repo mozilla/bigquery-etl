@@ -16,7 +16,7 @@ CREATE TEMP FUNCTION
 WITH
   base AS (
     SELECT
-      *,
+      * REPLACE(country_names.code AS country),
       user_id AS client_id,
       days_since_registered AS days_since_created_profile,
       language AS locale,
@@ -24,7 +24,12 @@ WITH
       CAST(NULL AS STRING) AS app_name,
       CAST(NULL AS STRING) AS channel
     FROM
-      fxa_users_last_seen_v1)
+      fxa_users_last_seen_v1 fxa
+    LEFT JOIN
+      static.country_names_v1 country_names
+    ON
+      fxa.country = country_names.`name`
+    )
   --
 SELECT
   submission_date,

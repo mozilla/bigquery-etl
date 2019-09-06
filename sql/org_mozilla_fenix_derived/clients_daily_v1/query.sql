@@ -73,7 +73,7 @@ WITH
     metrics AS baseline_metrics,
     NULL AS metrics
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_live.baseline_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.baseline_v1`
   UNION ALL
   SELECT
     submission_timestamp,
@@ -85,7 +85,7 @@ WITH
     NULL AS baseline_metrics,
     metrics
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
   ),
   --
   base AS (
@@ -98,20 +98,6 @@ WITH
   WHERE
     client_info.client_id IS NOT NULL ),
   --
-  numbered_duplicates AS (
-  SELECT
-    *,
-    ROW_NUMBER() OVER (PARTITION BY client_id, submission_date, document_id ORDER BY submission_timestamp) AS _n
-  FROM
-    base ),
-  -- Deduplicating on document_id is necessary to get valid SUM values.
-  deduplicated AS (
-  SELECT
-    * EXCEPT (_n)
-  FROM
-    numbered_duplicates
-  WHERE
-    _n = 1 ),
   windowed AS (
   SELECT
     submission_date,
@@ -141,7 +127,7 @@ WITH
     udf_mode_last(ARRAY_AGG(metrics.boolean.metrics_default_browser) OVER w1) AS default_browser,
     udf_mode_last(ARRAY_AGG(client_info.app_display_version) OVER w1) AS app_display_version
   FROM
-    deduplicated
+    base
   WHERE
     -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
     (@submission_date IS NULL OR @submission_date = submission_date)

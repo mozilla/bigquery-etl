@@ -32,7 +32,7 @@ WITH
       DATE_DIFF(submission_date, first_run_date, DAY)) AS days_created_profile_bits,
     * EXCEPT (submission_date)
   FROM
-    glean_clients_daily_v1
+    `moz-fx-data-shared-prod.org_mozilla_fenix_derived.clients_daily_v1`
   WHERE
     submission_date = @submission_date ),
   --
@@ -40,7 +40,7 @@ WITH
   SELECT
     * EXCEPT (submission_date)
   FROM
-    glean_clients_last_seen_raw_v1 AS cls
+    `moz-fx-data-shared-prod.org_mozilla_fenix_derived.clients_last_seen_v1` AS cls
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

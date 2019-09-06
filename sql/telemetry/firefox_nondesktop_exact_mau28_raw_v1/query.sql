@@ -23,7 +23,7 @@ WITH unioned AS (
     country,
     NULL AS distribution_id
   FROM
-    glean_clients_last_seen_v1
+    `moz-fx-data-shared-prod.org_mozilla_fenix.clients_last_seen`
 )
 SELECT
   submission_date,

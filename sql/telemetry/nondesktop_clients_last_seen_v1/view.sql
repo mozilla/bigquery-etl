@@ -38,4 +38,4 @@ SELECT
   NULL AS distribution_id,
   app_display_version AS app_version
 FROM
-  `moz-fx-data-derived-datasets.telemetry.glean_clients_last_seen_v1`
+  `moz-fx-data-shared-prod.org_mozilla_fenix.clients_last_seen`

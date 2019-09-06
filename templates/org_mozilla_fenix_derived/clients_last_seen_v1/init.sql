@@ -1,15 +1,12 @@
 CREATE TABLE
-  glean_clients_last_seen_raw_v1
+  `moz-fx-data-shared-prod.org_mozilla_fenix_derived.clients_last_seen_v1`
 PARTITION BY
   submission_date
 CLUSTER BY
   app_name,
   os
-  -- We are receiving errors if we include sample_id as a clustering field;
-  -- see https://enterprise.google.com/supportcenter/managecases#Case/001000000040sBR/U-19888772
-  --,sample_id
 OPTIONS
-  ( require_partition_filter=TRUE) AS
+  (require_partition_filter=TRUE) AS
 SELECT
   CAST(NULL AS DATE) AS submission_date,
   0 AS days_seen_bits,

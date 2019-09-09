@@ -14,7 +14,11 @@ SELECT
   SUM(udf_get_key(histogram_parent_http_pageload_is_ssl, 0)) AS non_ssl_loads,
   SUM(udf_get_key(histogram_parent_http_pageload_is_ssl, 1)) AS ssl_loads,
   -- ratio of pings that have the probe
-  COUNTIF(ARRAY_LENGTH(histogram_parent_http_pageload_is_ssl) > 0) / COUNT(*) AS reporting_ratio
+  -- It is only possible for histogram_parent_http_pageload_is_ssl to be NULL
+  -- because telemetry.main_summary_v4 is a view that selects it from a STRUCT.
+  -- If the underlying table changes to not nest this column in a STRUCT this must become:
+  -- COUNTIF(ARRAY_LENGTH(histogram_parent_http_pageload_is_ssl) > 0) / COUNT(*) AS reporting_ratio
+  COUNT(histogram_parent_http_pageload_is_ssl) / COUNT(*) AS reporting_ratio
 FROM
   telemetry.main_summary_v4
 WHERE

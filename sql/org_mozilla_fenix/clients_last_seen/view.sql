@@ -8,4 +8,4 @@ SELECT
   CAST(SAFE.LOG(days_created_profile_bits & -days_created_profile_bits, 2) AS INT64) AS days_since_created_profile,
   *
 FROM
-  `moz-fx-data-derived-datasets.org_mozilla_fenix.clients_last_seen_v1`
+  `moz-fx-data-shared-prod.org_mozilla_fenix_derived.clients_last_seen_v1`

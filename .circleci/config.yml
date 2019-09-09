@@ -81,6 +81,7 @@ workflows:
     - verify-generated-sql
     - dry-run-sql
     - deploy:
+        context: data-eng-bigquery-etl-dockerhub
         requires:
         # can't run in parallel because CIRCLE_BUILD_NUM is same
         - build

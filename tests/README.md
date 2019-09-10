@@ -31,6 +31,14 @@ How to Configure a Generated Test
      - This will result in the dataset prefix being removed from the query,
        e.g. `query = query.replace("analysis.clients_last_seen_v1",
        "clients_last_seen_v1")`
+1. Add `.sql` files for input view queries, e.g. `main_summary_v4.sql`
+   - ***Don't*** include a `CREATE ... AS` clause
+   - Fully qualify table names as ``` `{project}.{dataset}.table` ```
+   - Include the dataset prefix if it's set in the tested query,
+     e.g. `telemetry.main_summary_v4.sql`
+     - This will result in the dataset prefix being removed from the query,
+       e.g. `query = query.replace("telemetry.main_summary_v4",
+       "main_summary_v4")`
 1. Add `expect.yaml` to validate the result
    - `DATE` and `DATETIME` type columns in the result are coerced to strings
      using `.isoformat()`

@@ -32,18 +32,25 @@
   {
     "fields": [
       {
-        "type": "INTEGER",
-        "name": "key",
-        "mode": "REQUIRED"
-      },
-      {
-        "type": "INTEGER",
-        "name": "value",
-        "mode": "NULLABLE"
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
       }
     ],
     "type": "RECORD",
     "name": "histogram_parent_http_pageload_is_ssl",
-    "mode": "REPEATED"
+    "mode": "NULLABLE"
   }
 ]

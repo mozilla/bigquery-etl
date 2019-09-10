@@ -11,7 +11,17 @@ from decimal import Decimal
 from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
 from io import BytesIO
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
 
 import json
 import os
@@ -83,6 +93,7 @@ class SqlTest(pytest.Item, pytest.File):
         expect = load(self.fspath.strpath, "expect")
 
         tables: Dict[str, Table] = {}
+        views: Dict[str, str] = {}
 
         # generate tables for files with a supported table extension
         for resource in next(os.walk(self.fspath))[2]:
@@ -106,6 +117,12 @@ class SqlTest(pytest.Item, pytest.File):
                     original, table_name = table_name, table_name.rsplit(".", 1)[1]
                     query = query.replace(original, table_name)
                 tables[table_name] = Table(table_name, source_format, source_path)
+            elif extension == "sql":
+                if "." in table_name:
+                    # remove dataset from table_name
+                    original, table_name = table_name, table_name.rsplit(".", 1)[1]
+                    query = query.replace(original, table_name)
+                views[table_name] = read(self.fspath.strpath, resource)
 
         # rewrite all udfs as temporary
         temp_udfs = parse_udf.sub_persisent_udfs_as_temp(query)
@@ -121,6 +138,7 @@ class SqlTest(pytest.Item, pytest.File):
         bq = bigquery.Client()
         with dataset(bq, dataset_id) as default_dataset:
             load_tables(bq, default_dataset, tables.values())
+            load_views(bq, default_dataset, views)
 
             # configure job
             job_config = bigquery.QueryJobConfig(
@@ -141,20 +159,24 @@ class SqlTest(pytest.Item, pytest.File):
 
 
 @contextmanager
-def dataset(bq, dataset_id):
+def dataset(bq: bigquery.Client, dataset_id: str):
     """Context manager for creating and deleting the BigQuery dataset for a test."""
     try:
         bq.get_dataset(dataset_id)
     except NotFound:
         bq.create_dataset(dataset_id)
-    yield bq.dataset(dataset_id)
-    bq.delete_dataset(dataset_id, delete_contents=True)
+    try:
+        yield bq.dataset(dataset_id)
+    finally:
+        bq.delete_dataset(dataset_id, delete_contents=True)
 
 
-def load_tables(bq, dataset, tables):
+def load_tables(
+    bq: bigquery.Client, dataset: bigquery.Dataset, tables: Iterable[Table]
+):
     """Load tables for a test."""
     for table in tables:
-        destination = f"{dataset.dataset_id}.{table.name}"
+        destination = dataset.table(table.name)
         job_config = bigquery.LoadJobConfig(
             default_dataset=dataset,
             source_format=table.source_format,
@@ -190,13 +212,23 @@ def load_tables(bq, dataset, tables):
             raise
 
 
+def load_views(bq: bigquery.Client, dataset: bigquery.Dataset, views: Dict[str, str]):
+    """Load views for a test."""
+    for table, view_query in views.items():
+        view = bigquery.Table(dataset.table(table))
+        view.view_query = view_query.format(
+            project=dataset.project, dataset=dataset.dataset_id
+        )
+        bq.create_table(view)
+
+
 def read(*paths: str, decoder: Optional[Callable] = None, **kwargs):
     """Read a file and apply decoder if provided."""
     with open(os.path.join(*paths), **kwargs) as f:
         return decoder(f) if decoder else f.read()
 
 
-def ndjson_load(file_obj) -> List[Any]:
+def ndjson_load(file_obj: Iterable[str]) -> List[Any]:
     """Decode newline delimited json from file_obj."""
     return [json.loads(line) for line in file_obj]
 

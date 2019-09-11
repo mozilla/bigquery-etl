@@ -1,0 +1,22 @@
+---
+- &base
+  client_id: test
+  document_id: base
+  sample_id: 0
+  submission_date: '2019-01-01'
+  os: first
+  timestamp: '1546329600000000000'
+  document_id: avg_1
+- <<: *base
+  scalar_parent_browser_search_with_ads:
+    [
+      {"key": "key_a", "value": 1},
+      {"key": "key_a", "value": 5},
+      {"key": "key_a", "value": 7},
+      {"key": "key_b", "value": 2}
+    ]
+  scalar_parent_networking_data_transferred_v3_kb:
+    [{"key": "key_a", "value": 1}, {"key": "key_b", "value": 2}]
+  channel: nightly
+  app_version: first
+  app_build_id: first

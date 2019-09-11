@@ -81,7 +81,7 @@ WITH
             ASC
         ) AS _n,
         * REPLACE(LOWER(client_id) AS client_id)
-    FROM `moz-fx-data-shar-nonprod-efed.telemetry_live.main_v4`
+    FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
     WHERE DATE(submission_timestamp) = @submission_date
     AND application.channel in (
         "release", "esr", "beta", "aurora", "default", "nightly"

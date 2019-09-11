@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf_exponential_buckets(min INT64, max INT64, nBuckets INT64)
+CREATE TEMP FUNCTION udf_exponential_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
 RETURNS ARRAY<FLOAT64>
 LANGUAGE js AS
 '''
@@ -19,7 +19,7 @@ LANGUAGE js AS
   return retArray
 ''';
 
-CREATE TEMP FUNCTION udf_linear_buckets(min INT64, max INT64, nBuckets INT64)
+CREATE TEMP FUNCTION udf_linear_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
 RETURNS ARRAY<FLOAT64>
 LANGUAGE js AS
 '''
@@ -173,13 +173,23 @@ WITH latest_versions AS (
       normalized_channel AS channel,
       SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
       COUNT(*)
-    FROM `moz-fx-data-shared-prod.telemetry.main`
+    FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
     WHERE DATE(submission_timestamp) > DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
     AND normalized_channel IN ("nightly", "beta", "release")
     GROUP BY 1, 2
     HAVING COUNT(*) > 1000
     ORDER BY 1, 2 DESC)
   GROUP BY 1),
+
+filtered_aggregates AS (
+  SELECT *
+  FROM clients_daily_histogram_aggregates_v1
+  CROSS JOIN
+    UNNEST(histogram_aggregates)
+  WHERE submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  AND ARRAY_LENGTH(value) > 0
+  AND channel IN ('release', 'beta', 'nightly')
+),
 
 normalized_histograms AS
   (SELECT
@@ -191,24 +201,18 @@ normalized_histograms AS
       bucket_range.first_bucket,
       bucket_range.last_bucket,
       bucket_range.num_buckets,
-      aggregate.metric as metric,
-      aggregate.metric_type AS metric_type,
-      aggregate.key AS key,
-      aggregate.agg_type as agg_type,
+      metric,
+      metric_type,
+      key,
+      agg_type,
       latest_version,
       udf_normalized_sum(
-        udf_aggregate_map_sum(ARRAY_AGG(STRUCT<key_value ARRAY<STRUCT <key STRING, value INT64>>>(aggregate.value)))) AS aggregates
+        udf_aggregate_map_sum(ARRAY_AGG(STRUCT<key_value ARRAY<STRUCT <key STRING, value INT64>>>(hist_aggs.value)))) AS aggregates
   FROM
-      clients_daily_histogram_aggregates_v1 AS hist_aggs
-  CROSS JOIN
-      UNNEST(histogram_aggregates) AS aggregate
+      filtered_aggregates AS hist_aggs
   LEFT JOIN latest_versions
   ON latest_versions.channel = hist_aggs.channel
-  WHERE ARRAY_LENGTH(value) > 0
-  AND ((hist_aggs.channel = 'release' AND CAST(app_version AS INT64) >= (latest_version - 2))
-  OR (hist_aggs.channel = 'beta' AND CAST(app_version AS INT64) >= (latest_version - 2))
-  OR (hist_aggs.channel = 'nightly' AND CAST(app_version AS INT64) >= (latest_version - 2)))
-  AND submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
+  WHERE CAST(app_version AS INT64) >= (latest_version - 2)
   GROUP BY
       client_id,
       os,
@@ -218,10 +222,10 @@ normalized_histograms AS
       bucket_range.first_bucket,
       bucket_range.last_bucket,
       bucket_range.num_buckets,
-      aggregate.metric,
-      aggregate.metric_type,
-      aggregate.key,
-      aggregate.agg_type,
+      metric,
+      metric_type,
+      key,
+      agg_type,
       latest_version),
 
 bucketed_histograms AS
@@ -285,7 +289,8 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -299,7 +304,7 @@ GROUP BY
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets
@@ -314,21 +319,21 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_aggregates
 WHERE first_bucket IS NOT NULL
 GROUP BY
-  os,
   app_version,
   app_build_id,
   channel,
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets
@@ -343,7 +348,8 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -351,13 +357,12 @@ FROM clients_aggregates
 WHERE first_bucket IS NOT NULL
 GROUP BY
   os,
-  app_version,
   app_build_id,
   channel,
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets
@@ -372,7 +377,8 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -381,12 +387,11 @@ WHERE first_bucket IS NOT NULL
 GROUP BY
   os,
   app_version,
-  app_build_id,
   channel,
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets
@@ -401,7 +406,8 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -409,13 +415,11 @@ FROM clients_aggregates
 WHERE first_bucket IS NOT NULL
 GROUP BY
   os,
-  app_version,
-  app_build_id,
   channel,
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets
@@ -430,21 +434,20 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_aggregates
 WHERE first_bucket IS NOT NULL
 GROUP BY
-  os,
   app_version,
-  app_build_id,
   channel,
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets
@@ -459,21 +462,19 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_aggregates
 WHERE first_bucket IS NOT NULL
 GROUP BY
-  os,
   app_version,
-  app_build_id,
-  channel,
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets
@@ -488,7 +489,8 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -496,13 +498,10 @@ FROM clients_aggregates
 WHERE first_bucket IS NOT NULL
 GROUP BY
   os,
-  app_version,
-  app_build_id,
-  channel,
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets
@@ -517,21 +516,19 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_aggregates
 WHERE first_bucket IS NOT NULL
 GROUP BY
-  os,
-  app_version,
-  app_build_id,
   channel,
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets
@@ -546,21 +543,18 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_aggregates
 WHERE first_bucket IS NOT NULL
 GROUP BY
-  os,
-  app_version,
-  app_build_id,
-  channel,
   metric,
   metric_type,
   key,
-  agg_type,
+  client_agg_type,
   first_bucket,
   last_bucket,
   num_buckets

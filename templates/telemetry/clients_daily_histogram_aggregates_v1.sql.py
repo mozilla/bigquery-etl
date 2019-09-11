@@ -111,7 +111,7 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause):
                     ASC
                 ) AS _n,
                 * REPLACE(LOWER(client_id) AS client_id)
-            FROM `moz-fx-data-shar-nonprod-efed.telemetry_live.main_v4`
+            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
             WHERE DATE(submission_timestamp) = @submission_date
             AND application.channel in (
                 "release", "esr", "beta", "aurora", "default", "nightly"
@@ -365,7 +365,7 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
 
 def get_histogram_probes(histogram_type):
     """Return relevant histogram probes."""
-    project = "moz-fx-data-shar-nonprod-efed"
+    project = "moz-fx-data-shared-prod"
     main_summary_histograms = set()
     process = subprocess.Popen(
         [
@@ -373,7 +373,7 @@ def get_histogram_probes(histogram_type):
             "show",
             "--schema",
             "--format=json",
-            f"{project}:telemetry_live.main_v4",
+            f"{project}:telemetry_stable.main_v4",
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,

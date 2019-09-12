@@ -38,7 +38,7 @@ parser.add_argument(
     help="Specifies creation mode for the table",
     choices=create_modes.keys(),
     default="create_if_not_exists",
-    type=str.upper
+    type=str.upper,
 )
 parser.add_argument("-p", "--project", help="Specifies project name for new table")
 parser.add_argument("-d", "--dataset", help="Specifies dataset name for new table")

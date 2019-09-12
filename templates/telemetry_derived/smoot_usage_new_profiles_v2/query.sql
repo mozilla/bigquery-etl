@@ -3,6 +3,8 @@ WITH
   SELECT * FROM telemetry_derived.smoot_usage_desktop_v2
   UNION ALL
   SELECT * FROM telemetry_derived.smoot_usage_nondesktop_v2
+  UNION ALL
+  SELECT * FROM telemetry_derived.smoot_usage_fxa_v2
   )
   --
 SELECT

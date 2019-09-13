@@ -1,5 +1,5 @@
 CREATE TABLE
-  clients_last_seen_v1
+  `moz-fx-data-shared-prod:org_mozilla_fenix_derived.clients_last_seen_v1`
 PARTITION BY
   submission_date
 CLUSTER BY
@@ -18,7 +18,7 @@ SELECT
   -- the two tables to validate.
   * EXCEPT (submission_date)
 FROM
-  clients_daily_v1
+  `moz-fx-data-shared-prod:org_mozilla_fenix_derived.clients_daily_v1`
 WHERE
   -- Output empty table and read no input rows
   FALSE

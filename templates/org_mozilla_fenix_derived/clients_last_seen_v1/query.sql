@@ -9,7 +9,7 @@ WITH
       DATE_DIFF(submission_date, first_run_date, DAY)) AS days_created_profile_bits,
     * EXCEPT (submission_date)
   FROM
-    clients_daily_v1
+    `moz-fx-data-shared-prod:org_mozilla_fenix_derived.clients_daily_v1`
   WHERE
     submission_date = @submission_date ),
   --

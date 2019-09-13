@@ -1,5 +1,16 @@
 #!/usr/bin/env python
 
+"""
+Passes all queries defined under sql/ to a Cloud Function that will run the
+queries with the dry_run option enabled.
+
+We could provision BigQuery credentials to the CircleCI job to allow it to run
+the queries directly, but there is no way to restrict permissions such that
+only dry runs can be performed. In order to reduce risk of CI or local users
+accidentally running queries during tests and overwriting production data, we
+proxy the queries through the dry run service endpoint.
+"""
+ 
 from multiprocessing.pool import ThreadPool
 from os.path import basename, dirname
 from urllib.request import urlopen, Request
@@ -16,7 +27,7 @@ SKIP = {
     "sql/telemetry/fxa_auth_bounce_events_v1/query.sql",
     "sql/telemetry/fxa_auth_events_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
-    "sql/telemetry/glean_clients_last_seen_raw_v1/init.sql",
+    "sql/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql",
     "sql/telemetry/core_clients_last_seen_raw_v1/init.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/init.sql",
     # Reference table not found

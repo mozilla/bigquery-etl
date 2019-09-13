@@ -59,7 +59,7 @@ class RawUdf:
             tests,
             # We convert the list to a set to deduplicate entries,
             # but then convert back to a list for stable order.
-            list(sorted(set(dependencies))),
+            sorted(set(dependencies)),
         )
 
 

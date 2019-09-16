@@ -50,14 +50,19 @@ Recommended practices
 - Should be used to avoid code duplication
 - Must be named in files with lower snake case names ending in `.sql`
   e.g. `mode_last.sql`
-  - Each file must define a single function using `CREATE TEMP FUNCTION` syntax
+  - Each file must only define effectively private helper functions and one
+    public function which must be defined last
+    - Helper functions must not conflict with function names in other files
   - SQL UDFs must be defined in the `udf/` directory and JS UDFs must be defined
     in the `udf_js` directory
-    - The `udf_legacy/` directory is an exception which should only contain
+    - The `udf_legacy/` directory is an exception which must only contain
       compatibility functions for queries migrated from Athena/Presto.
-  - The function must be named as `<dir_name>_<file_name_without_suffix>`
-    so `udf/mode_last.sql` must define a function `udf_mode_last`
-- Must be defined as temporary UDFs
+  - Functions must be named with a prefix of `<dir_name>_` so all functions
+    in `udf/*.sql` must start with `udf_`
+    - The final function in a file must be named as
+      `<dir_name>_<file_name_without_suffix>` so `udf/mode_last.sql` must
+      define a function `udf_mode_last`
+- Functions must be defined as temporary using `CREATE TEMP FUNCTION` syntax
   - We provide tooling in `scripts/publish_persistent_udfs` for converting
     these definitions to persistent UDFs (temporary UDF `udf_mode_last` is
     published as persistent UDF `udf.mode_last`)

@@ -1,0 +1,138 @@
+#!/usr/bin/env node
+
+try {
+  require('klaw-sync'); // eslint-disable-line global-require
+  require('sql-formatter'); // eslint-disable-line global-require
+} catch (err) {
+  console.log('Missing dependencies. This probably means `npm install` should be run.');
+  process.exit(1);
+}
+
+const fs = require('fs');
+const klawSync = require('klaw-sync');
+const Formatter = require('sql-formatter/lib/core/Formatter');
+const Tokenizer = require('sql-formatter/lib/core/Tokenizer');
+
+const tokenizerCfg = {
+  // Define keywords for BigQuery Standard SQL
+  // These words get capitalized
+  reservedWords: [
+    'ASSERT_ROWS_MODIFIED', 'ALL', 'AND', 'ANY', 'ARRAY', 'AS', 'ASC', 'AT',
+    'BETWEEN', 'BY', 'CASE', 'CAST', 'COLLATE', 'CONTAINS', 'CREATE', 'CROSS',
+    'CUBE', 'CURRENT', 'DEFAULT', 'DEFINE', 'DESC', 'DISTINCT', 'ELSE', 'END',
+    'ENUM', 'ESCAPE', 'EXCEPT', 'EXCLUDE', 'EXISTS', 'EXTRACT', 'FALSE', 'FETCH',
+    'FOLLOWING', 'FOR', 'FROM', 'FULL', 'FUNCTION', 'GROUP', 'GROUPING',
+    'GROUPS', 'HASH', 'HAVING', 'IF', 'IGNORE', 'IN', 'INNER', 'INTERSECT',
+    'INTERVAL', 'INTO', 'IS', 'JOIN', 'LATERAL', 'LEFT', 'LIKE', 'LIMIT',
+    'LOOKUP', 'MERGE', 'NATURAL', 'NEW', 'NO', 'NOT', 'NULL', 'NULLS', 'OF',
+    'OFFSET', 'ON', 'OR', 'ORDER', 'ORDINAL', 'OUTER', 'OVER', 'PARTITION',
+    'PRECEDING', 'PROTO', 'RANGE', 'RECURSIVE', 'REPLACE', 'RESPECT', 'RIGHT',
+    'ROLLUP', 'ROWS', 'SELECT', 'SET', 'SOME', 'STRUCT', 'TABLESAMPLE', 'TEMP',
+    'TEMPORARY', 'THEN', 'TO', 'TREAT', 'TRUE', 'UNBOUNDED', 'UNION', 'UNNEST',
+    'USING', 'WHEN', 'WHERE', 'WINDOW', 'WITH', 'WITHIN',
+  ],
+  // These words get their own line followed by increased indent
+  reservedToplevelWords: [
+    // DDL
+    'ALTER TABLE IF EXISTS', 'ALTER TABLE', 'CREATE OR REPLACE TABLE',
+    'CREATE TABLE IF NOT EXISTS', 'CREATE TABLE', 'DROP TABLE', 'DROP VIEW',
+    // DML
+    'DELETE FROM', 'DELETE', 'INSERT INTO', 'INSERT', 'MERGE INTO', 'MERGE',
+    'UPDATE',
+    // SQL
+    'CROSS JOIN', 'FROM', 'FULL JOIN', 'FULL OUTER JOIN', 'GROUP BY', 'HAVING',
+    'INNER JOIN', 'INTERSECT', 'JOIN', 'LEFT JOIN', 'LEFT OUTER JOIN', 'LIMIT',
+    'ORDER BY', 'OUTER JOIN', 'PARTITION BY', 'RIGHT JOIN', 'RIGHT OUTER JOIN',
+    'ROWS BETWEEN', 'ROWS', 'SELECT AS STRUCT', 'SELECT AS VALUE', 'SELECT',
+    'SET', 'UNION ALL', 'UNION', 'USING', 'VALUES', 'WHERE',
+  ],
+  // These words start a new line at the current indent
+  reservedNewlineWords: ['AND', 'BETWEEN', 'ELSE', 'OR', 'WHEN', 'XOR'],
+  // eslint-disable-next-line quotes
+  stringTypes: [`''`, '""', '``'],
+  openParens: ['(', 'CASE', '['],
+  closeParens: [')', 'END', ']'],
+  indexedPlaceholderTypes: ['?'],
+  namedPlaceholderTypes: ['@'],
+  lineCommentTypes: ['#', '--'],
+};
+// add support for byte strings like b"" and b''
+const STRING_REGEX = new RegExp(`^([bB]?(?:${Tokenizer.prototype.createStringPattern(tokenizerCfg.stringTypes)}))`);
+// add >> and << to OPERATOR_REGEX to prevent spaces being added in the middle
+const OPERATOR_REGEX = /^(<<|>>|!=|<>|==|<=|>=|!<|!>|\|\||::|->>|->|~~\*|~~|!~~\*|!~~|~\*|!~\*|!~|.)/;
+
+// BigQuery Standard SQL and capitalizing keywords aren't directly supported
+// by the sql-formatter library, so we implement support for those here
+function format(query) {
+  const tokenizer = new Tokenizer(tokenizerCfg);
+  tokenizer.STRING_REGEX = STRING_REGEX;
+  tokenizer.OPERATOR_REGEX = OPERATOR_REGEX;
+  const formatter = new Formatter({}, tokenizer);
+  let unformatted;
+  formatter.tokens = tokenizer.tokenize(query).flatMap((token) => {
+    // rewrite 'format off' comment through 'format on' comment as a single multiline comment token
+    if (unformatted !== undefined) {
+      // append to unformatted
+      unformatted.value += token.value;
+      if (token.type.endsWith('comment') && token.value.match(/\s*format\s*[:\s]\s*on\s*/)) {
+        // end unformatted block
+        unformatted = undefined;
+      }
+      // drop token, now that value as been appended to unformatted
+      return [];
+    }
+    if (token.type.endsWith('comment') && token.value.match(/\s*format\s*[:\s]\s*off\s*/)) {
+      // begin unformatted block
+      unformatted = token;
+      return [token];
+    }
+    if (token.type.startsWith('reserved')) {
+      // capitalize keywords
+      return [{ type: token.type, value: token.value.toUpperCase() }];
+    }
+    return [token];
+  });
+  // format whitespace
+  // force newline after every semicolon
+  // trim unwanted whitespace from end of statement
+  // end with newline
+  return `${formatter.getFormattedQueryFromTokens().replace(/;\n?/g, ';\n').trim()}\n`;
+}
+
+// Accept files or directories to format as command line arguments
+const args = process.argv.slice(2);
+// Default to formatting stdin
+if (!args.length) {
+  if (process.stdin.isTTY) {
+    console.log('Error: must pipe to stdin or provide a list of files and directories as arguments');
+    process.exit(1);
+  }
+  process.stdout.write(format(fs.readFileSync(0, 'utf-8')));
+} else {
+  // Get number of formatted files
+  const modified = args.flatMap((arg) => {
+    try {
+      // try to walk directory
+      return klawSync(arg).flatMap(item => (item.path.endsWith('.sql') ? item.path : []));
+    } catch (ignore) {
+      // must not be a directory, treat it like a file
+      return [arg];
+    }
+  }).filter((file) => {
+    const query = fs.readFileSync(file, 'utf-8');
+    const formatted = format(query);
+    const changed = query !== formatted;
+    // log change and overwrite file
+    if (changed) {
+      console.log(`modified ${file}`);
+      fs.writeFileSync(file, formatted);
+    }
+    return changed;
+  }).length;
+  // Summarize changes unless we only formatted stdin
+  console.log(`${modified} file(s) modified`);
+  // Exit non-zero on changes to make CI fail
+  if (modified) {
+    process.exit(1);
+  }
+}

@@ -7,9 +7,8 @@
   {
     "type": "INTEGER",
     "name": "profile_creation_date",
-    "mode": "REQUIRED"
+    "mode": "NULLABLE"
   },
-
   {
     "type": "STRING",
     "name": "app_version",
@@ -110,9 +109,8 @@
     "name": "profile_age_in_days",
     "mode": "NULLABLE"
   },
-
   {
-    "type": "STRING",
+    "type": "NUMERIC",
     "name": "subsession_hours_sum",
     "mode": "NULLABLE"
   },
@@ -121,9 +119,8 @@
     "name": "active_hours_sum",
     "mode": "NULLABLE"
   },
-
   {
-    "type": "STRING",
+    "type": "INTEGER",
     "name": "sample_id",
     "mode": "NULLABLE"
   },
@@ -160,6 +157,11 @@
   {
     "type": "INTEGER",
     "name": "unknown",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "addon_version",
     "mode": "NULLABLE"
   }
 ]

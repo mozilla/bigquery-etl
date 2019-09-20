@@ -87,12 +87,9 @@ WITH
     datasource NOT IN ('nondesktop_global', 'nondesktop_tier1')
   UNION ALL
   SELECT
-    * EXCEPT (asofdate) REPLACE (REPLACE(datasource, '_nofire', '') AS datasource)
+    * REPLACE (REPLACE(datasource, '_nofire', '') AS datasource)
   FROM
-    `moz-fx-data-derived-datasets.analysis.jmccrosky_test`
-  WHERE
-    datasource LIKE 'nondesktop_nofire_%'
-    AND asofdate = (SELECT MAX(asofdate) AS asofdate FROM `moz-fx-data-derived-datasets.analysis.jmccrosky_test`)
+    `moz-fx-data-derived-datasets.analysis.growth_dashboard_forecasts_nofire`
   ),
   --
   desktop_base AS (

@@ -14,7 +14,11 @@ import os, sys
 # and sibling directories. Also see:
 # https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from bigquery_etl.parse_udf import UDF_DIRS, read_udf_dirs, prepend_udf_usage_definitions
+from bigquery_etl.parse_udf import (
+    UDF_DIRS,
+    read_udf_dirs,
+    prepend_udf_usage_definitions,
+)
 from textwrap import dedent
 import shutil
 import re
@@ -29,7 +33,7 @@ parser.add_argument(
 parser.add_argument(
     "--udf-dir",
     default=UDF_DIRS,
-    nargs='+',
+    nargs="+",
     help="Directories where declarations of temporary UDFs are stored.",
 )
 parser.add_argument(

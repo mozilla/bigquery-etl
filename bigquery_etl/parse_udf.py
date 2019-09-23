@@ -8,7 +8,7 @@ parsing UDF dependencies in queries as well.
 from dataclasses import dataclass, astuple
 import re
 import os
-from typing import List, Set
+from typing import List
 
 import sqlparse
 
@@ -27,7 +27,7 @@ class RawUdf:
     filepath: str
     definitions: List[str]
     tests: List[str]
-    dependencies: Set[str]
+    dependencies: List[str]
 
     @staticmethod
     def from_file(filepath):
@@ -52,7 +52,15 @@ class RawUdf:
                 )
             )
         dependencies.remove(name)
-        return RawUdf(name, filepath, definitions, tests, set(dependencies))
+        return RawUdf(
+            name,
+            filepath,
+            definitions,
+            tests,
+            # We convert the list to a set to deduplicate entries,
+            # but then convert back to a list for stable order.
+            sorted(set(dependencies)),
+        )
 
 
 @dataclass

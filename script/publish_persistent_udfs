@@ -75,8 +75,14 @@ def main():
         udfs_to_publish.append(raw_udf)
         for dep in udfs_to_publish:
             if dep not in published_udfs:
-                publish_persistent_udf(raw_udfs[dep], client, args.dataset, args.project_id,
-                                       args.gcs_bucket, args.gcs_path)
+                publish_persistent_udf(
+                    raw_udfs[dep],
+                    client,
+                    args.dataset,
+                    args.project_id,
+                    args.gcs_bucket,
+                    args.gcs_path,
+                )
                 published_udfs.append(dep)
 
 
@@ -94,11 +100,11 @@ def publish_persistent_udf(raw_udf, client, dataset, project_id, gcs_bucket, gcs
 
         # adjust paths for dependencies stored in GCS
         query = OPTIONS_LIB_RE.sub(
-            fr'library = "gs://{gcs_bucket}/{gcs_path}\1"',
-            query_with_renamed_udfs,
+            fr'library = "gs://{gcs_bucket}/{gcs_path}\1"', query_with_renamed_udfs
         )
 
         client.query(query).result()
+
 
 def push_dependencies_to_gcs(bucket, path, dep_dir):
     client = storage.Client()
@@ -108,6 +114,7 @@ def push_dependencies_to_gcs(bucket, path, dep_dir):
         for filename in files:
             blob = bucket.blob(path + filename)
             blob.upload_from_filename(os.path.join(root, filename))
+
 
 if __name__ == "__main__":
     main()

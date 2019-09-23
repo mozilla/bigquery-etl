@@ -26,6 +26,7 @@ SKIP = {
     "sql/telemetry/fxa_content_events_v1/query.sql",
     "sql/telemetry/fxa_auth_bounce_events_v1/query.sql",
     "sql/telemetry/fxa_auth_events_v1/query.sql",
+    "sql/telemetry/fxa_oauth_events_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql",
     "sql/telemetry/core_clients_last_seen_raw_v1/init.sql",

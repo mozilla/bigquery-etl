@@ -45,6 +45,20 @@ WITH
       jsonPayload.fields.event_type
     FROM
       `moz-fx-data-derived-datasets.telemetry.fxa_content_events_v1`
+  ),
+
+  fxa_oauth_events AS (
+    SELECT
+      timestamp AS submission_timestamp,
+      jsonPayload.fields.user_id,
+      CAST(NULL AS STRING) AS country,
+      CAST(NULL AS STRING) AS language,
+      jsonPayload.fields.app_version,
+      CAST(NULL AS STRING) AS os_name,
+      CAST(NULL AS STRING) AS os_version,
+      jsonPayload.fields.event_type
+    FROM
+      `moz-fx-data-derived-datasets.telemetry.fxa_oauth_events_v1`
   )
 
 SELECT * FROM fxa_auth_events
@@ -52,3 +66,5 @@ UNION ALL
 SELECT * FROM fxa_auth_bounce_events
 UNION ALL
 SELECT * FROM fxa_content_events
+UNION ALL
+SELECT * FROM fxa_oauth_events

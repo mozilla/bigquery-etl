@@ -3,7 +3,16 @@ WITH
   SELECT
     *
   FROM
-    `moz-fx-data-derived-datasets.analysis.growth_dashboard_forecasts_current` ),
+    `moz-fx-data-derived-datasets.analysis.growth_dashboard_forecasts_current`
+  -- We patch in nondesktop forecasts that exclude Firefox for Fire TV.
+  WHERE
+    datasource NOT IN ('nondesktop_global', 'nondesktop_tier1')
+  UNION ALL
+  SELECT
+    * REPLACE (REPLACE(datasource, '_nofire', '') AS datasource)
+  FROM
+    `moz-fx-data-derived-datasets.analysis.growth_dashboard_forecasts_nofire`
+  ),
   --
   desktop_base AS (
   SELECT
@@ -15,7 +24,9 @@ WITH
   SELECT
     *
   FROM
-    `moz-fx-data-derived-datasets.telemetry.firefox_nondesktop_exact_mau28_by_dimensions_v1` ),
+    `moz-fx-data-derived-datasets.telemetry.firefox_nondesktop_exact_mau28_by_dimensions_v1`
+  WHERE
+    product != 'FirefoxForFireTV' ),
   --
   fxa_base AS (
   SELECT

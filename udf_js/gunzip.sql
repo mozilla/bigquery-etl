@@ -12,15 +12,25 @@ CREATE TEMP FUNCTION
   udf_js_gunzip (input BYTES)
   RETURNS STRING
   LANGUAGE js AS """
-    // converts a UTF-16 byte array to a string
+    /*  Input is either:
+     *    - A gzipped UTF-8 byte array
+     *    - A UTF-8 byte array
+     *
+     *  Outputs a string representation
+     *  of the byte array (gunzipped if
+     *  possible).
+     */
+
     function binary2String(byteArray) {
+        // converts a UTF-16 byte array to a string
         return String.fromCharCode.apply(String, byteArray);
     }
     
     // BYTES are base64 encoded by BQ, so this needs to be decoded
+    // Outputs a UTF-16 string
     var decodedData = atob(input);
 
-    // convert UTF-8 string to byte array
+    // convert UTF-16 string to byte array
     var compressedData = decodedData.split('').map(function(e) {
         return e.charCodeAt(0);
     });

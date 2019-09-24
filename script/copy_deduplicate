@@ -191,7 +191,7 @@ def get_temporary_dataset(client):
     return temporary_dataset
 
 
-def get_temporary_table(client, schema, clustering_fields, time_partitioning, date):
+def get_temporary_table(client, schema, clustering_fields, time_partitioning, date, dry_run):
     """Generate a temporary table and return the specified date partition.
 
     Generates a table name that looks similar to, but won't collide with, a
@@ -216,10 +216,11 @@ def get_temporary_table(client, schema, clustering_fields, time_partitioning, da
     """
     dataset = get_temporary_dataset(client)
     table = bigquery.Table(dataset.table(f"anon{uuid4().hex}"), schema)
-    table.expires = datetime.now() + timedelta(days=1)
-    table.clustering_fields = clustering_fields
-    table.time_partitioning = time_partitioning
-    table = client.create_table(table, exists_ok=False)
+    if not dry_run:
+        table.expires = datetime.now() + timedelta(days=1)
+        table.clustering_fields = clustering_fields
+        table.time_partitioning = time_partitioning
+        table = client.create_table(table, exists_ok=False)
     return f"{sql_full_table_id(table)}${date:%Y%m%d}"
 
 
@@ -238,7 +239,7 @@ def get_query_job_configs(client, stable_table, date, dry_run, hourly, priority)
     if hourly:
         stable_table = client.get_table(stable_table)
         for hour in range(24):
-            value = (date + timedelta(hours=hour)).isoformat()
+            value = (datetime(*date.timetuple()[:6]) + timedelta(hours=hour))
             yield bigquery.QueryJobConfig(
                 destination=get_temporary_table(
                     client=client,
@@ -246,6 +247,7 @@ def get_query_job_configs(client, stable_table, date, dry_run, hourly, priority)
                     clustering_fields=stable_table.clustering_fields,
                     time_partitioning=stable_table.time_partitioning,
                     date=date,
+                    dry_run=dry_run,
                 ),
                 query_parameters=[
                     bigquery.ScalarQueryParameter("submission_hour", "TIMESTAMP", value)

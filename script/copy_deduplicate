@@ -238,7 +238,8 @@ def get_query_job_configs(client, stable_table, date, dry_run, hourly, priority)
     if hourly:
         stable_table = client.get_table(stable_table)
         for hour in range(24):
-            value = (date + timedelta(hours=hour)).isoformat()
+            dt = (datetime(*date.timetuple()[:6]) + timedelta(hours=hour))
+            value = dt.isoformat()
             yield bigquery.QueryJobConfig(
                 destination=get_temporary_table(
                     client=client,

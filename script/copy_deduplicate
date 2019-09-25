@@ -19,94 +19,51 @@ from uuid import uuid4
 
 from google.cloud import bigquery
 
-QUERY_DAY_BASE = """
-  -- A single day of a live ping table.
-  base AS (
-  SELECT
-    *
-  FROM
-    `{source_table_spec}`
-  WHERE
-    DATE(submission_timestamp) = @submission_date ),
-"""
-
-QUERY_HOUR_BASE = """
-  -- Document_ids already seen in previous hours on this day
-  previous_hours_document_ids AS (
-  SELECT
-    DISTINCT document_id
-  FROM
-    `{source_table_spec}`
-  WHERE
-    DATE(submission_timestamp) = DATE(@submission_hour)
-    AND submission_timestamp < @submission_hour),
-  -- A single hour of a live ping table.
-  base AS (
-  SELECT
-    *
-  FROM
-    `{source_table_spec}`
-  WHERE
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) = @submission_hour
-    AND document_id NOT IN (SELECT * FROM previous_hours_document_ids)),
-"""
-
-QUERY_TEMPLATE = """\
+QUERY_TEMPLATE = """
 WITH
-  {base}
-  --
-  -- We assume that the pipeline has already filtered out most duplicates,
-  -- so a list of all document_ids that appear more than once should be
-  -- reasonably small and fit in memory as a lookup table on each node.
-  duplicate_ids AS (
+  -- Distinct document_ids and their minimum submission_timestamp today
+  -- not including document_ids that only occur on or after @end_time
+  distinct_document_ids AS (
   SELECT
-    document_id
+    document_id,
+    MIN(submission_timestamp) AS submission_timestamp
   FROM
-    base
-  GROUP BY
-    document_id
-  HAVING
-    COUNT(document_id) > 1),
-  --
-  -- We can directly include all singly-occurring documents in the final
-  -- result set without incurring the expense of sorting in a window function.
-  singly_occurring_documents AS (
-  SELECT
-    base.*
-  FROM
-    base
-  LEFT JOIN
-    duplicate_ids
-  USING
-    (document_id)
+    `{live_table}`
   WHERE
-    duplicate_ids.document_id IS NULL),
+    DATE(submission_timestamp) = DATE(@start_time)
+    AND submission_timestamp < @end_time
+  GROUP BY
+    document_id),
+  -- A single slice of a live ping table.
+  base AS (
+  SELECT
+    *
+  FROM
+    `{live_table}`
+  JOIN
+    distinct_document_ids
+  USING
+    -- Retain only the first seen documents for each ID, according to timestamp.
+    (document_id, submission_timestamp)
+  WHERE
+    submission_timestamp >= @start_time
+    AND submission_timestamp < @end_time),
   --
-  -- For documents that appear multiple times, we have to order them by
-  -- assigning a row number.
+  -- Order documents by assigning a row number.
   numbered_duplicates AS (
   SELECT
-    base.*,
-    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) AS _n
+    *,
+    ROW_NUMBER() OVER (PARTITION BY document_id) AS _n
   FROM
-    base
-  JOIN
-    duplicate_ids
-  USING
-    (document_id) ),
+    base)
   --
-  -- We retain only the first seen document for each ID, according to timestamp.
-  deduplicated_documents AS (
-  SELECT
-    * EXCEPT (_n)
-  FROM
-    numbered_duplicates
-  WHERE
-    _n = 1 )
-  --
-SELECT * FROM singly_occurring_documents
-UNION ALL
-SELECT * FROM deduplicated_documents
+  -- Retain only one document for each ID.
+SELECT
+  * EXCEPT(_n)
+FROM
+  numbered_duplicates
+WHERE
+  _n = 1
 """
 
 parser = ArgumentParser(description=__doc__)
@@ -143,19 +100,26 @@ parser.add_argument(
     type=str.upper,
     choices=["BATCH", "INTERACTIVE"],
     help=(
-        "Deduplicate one hour at a time, rather than for whole days at once; "
-        "avoids memory overflow at the cost of less effective clustering; "
-        "recommended only for tables failing due to memory overflow"
+        "Priority for BigQuery query jobs; BATCH priority will significantly slow"
+        "down queries if reserved slots are not enabled for the billing project"
+    ),
+)
+parser.add_argument(
+    "--slices",
+    type=int,
+    default=1,
+    help=(
+        "Number of queries to split deduplicate over, each handling an equal-size time "
+        "slice of the date; avoids memory overflow at the cost of less effective"
+        "clustering; recommended only for tables failing due to memory overflow"
     ),
 )
 parser.add_argument(
     "--hourly",
-    action="store_true",
-    help=(
-        "Deduplicate one hour at a time, rather than for whole days at once; "
-        "avoids memory overflow at the cost of less effective clustering; "
-        "recommended only for tables failing due to memory overflow"
-    ),
+    action="store_const",
+    dest="slices",
+    const=24,
+    help="Deduplicate one hour at a time; equivalent to --slices=24",
 )
 group = parser.add_mutually_exclusive_group()
 group.add_argument(
@@ -204,7 +168,7 @@ def get_temporary_table(client, schema, clustering_fields, time_partitioning, da
     generated locally and never collide with server-assigned table names,
     because server-assigned tables cannot be modified. Server-assigned tables
     for a dry_run query cannot be detected by client.list_tables and cannot be
-    reused as that consitutes a modification.
+    reused as that constitutes a modification.
 
     Server-assigned tables have names that start with "anon" and follow with
     either 40 hex characters or a uuid replacing "-" with "_", and cannot be
@@ -228,18 +192,19 @@ def sql_full_table_id(table):
     return f"{table.project}.{table.dataset_id}.{table.table_id}"
 
 
-def get_deduplication_query(live_table, hourly):
-    base_template = QUERY_HOUR_BASE if hourly else QUERY_DAY_BASE
-    base = base_template.format(source_table_spec=sql_full_table_id(live_table))
-    return QUERY_TEMPLATE.format(base=base.strip())
-
-
-def get_query_job_configs(client, stable_table, date, dry_run, hourly, priority):
+def get_query_job_configs(client, stable_table, date, dry_run, slices, priority):
     kwargs = dict(use_legacy_sql=False, dry_run=dry_run, priority=priority)
-    if hourly:
+    start_time = datetime(*date.timetuple()[:6])
+    end_time = start_time + timedelta(days=1)
+    if slices > 1:
         stable_table = client.get_table(stable_table)
-        for hour in range(24):
-            value = (datetime(*date.timetuple()[:6]) + timedelta(hours=hour))
+        slice_size = (end_time - start_time) / slices
+        params = [
+            start_time + slice_size * i
+            for i in range(slices)
+        ] + [end_time]  # explicitly use end_time to avoid rounding errors
+        for i in range(slices):
+            start, end = params[i:i+2]
             yield bigquery.QueryJobConfig(
                 destination=get_temporary_table(
                     client=client,
@@ -249,8 +214,12 @@ def get_query_job_configs(client, stable_table, date, dry_run, hourly, priority)
                     date=date,
                     dry_run=dry_run,
                 ),
+                # repeat table options for dry run
+                clustering_fields=stable_table.clustering_fields,
+                time_partitioning=stable_table.time_partitioning,
                 query_parameters=[
-                    bigquery.ScalarQueryParameter("submission_hour", "TIMESTAMP", value)
+                    bigquery.ScalarQueryParameter("start_time", "TIMESTAMP", start),
+                    bigquery.ScalarQueryParameter("end_time", "TIMESTAMP", end),
                 ],
                 **kwargs,
             )
@@ -259,7 +228,8 @@ def get_query_job_configs(client, stable_table, date, dry_run, hourly, priority)
             destination=stable_table,
             write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
             query_parameters=[
-                bigquery.ScalarQueryParameter("submission_date", "DATE", date)
+                bigquery.ScalarQueryParameter("start_time", "TIMESTAMP", start_time),
+                bigquery.ScalarQueryParameter("start_time", "TIMESTAMP", end_time),
             ],
             **kwargs,
         )
@@ -325,16 +295,16 @@ def main():
             ):
                 print(f"Skipping {live_table_spec} due to --only argument")
                 continue
-            sql = get_deduplication_query(live_table, args.hourly)
+            sql = QUERY_TEMPLATE.format(live_table=sql_full_table_id(live_table))
             job_args.extend(
                 (client, sql, stable_table, job_config)
                 for job_config in get_query_job_configs(
-                    client,
-                    stable_table,
-                    args.date,
-                    args.dry_run,
-                    args.hourly,
-                    args.priority,
+                    client=client,
+                    stable_table=stable_table,
+                    date=args.date,
+                    dry_run=args.dry_run,
+                    slices=args.slices,
+                    priority=args.priority,
                 )
             )
 

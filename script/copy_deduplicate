@@ -229,7 +229,7 @@ def get_query_job_configs(client, stable_table, date, dry_run, slices, priority)
             write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
             query_parameters=[
                 bigquery.ScalarQueryParameter("start_time", "TIMESTAMP", start_time),
-                bigquery.ScalarQueryParameter("start_time", "TIMESTAMP", end_time),
+                bigquery.ScalarQueryParameter("end_time", "TIMESTAMP", end_time),
             ],
             **kwargs,
         )

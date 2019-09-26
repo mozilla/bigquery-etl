@@ -131,6 +131,11 @@ SELECT
   *
 FROM
   unnested
+WHERE
+  -- For the 'Firefox Non-desktop' umbrella, we include only apps that
+  -- are considered for KPIs, so we filter out FireTV and Reality.
+  app_name != 'FirefoxForFireTV'
+  AND NOT STARTS_WITH(app_name, 'FirefoxReality')
 UNION ALL
 SELECT
   -- Also present each app as its own usage criterion. App names are documented in

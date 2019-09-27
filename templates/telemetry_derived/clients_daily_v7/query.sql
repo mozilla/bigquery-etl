@@ -117,6 +117,7 @@ SELECT
   udf_mode_last(ARRAY_AGG(is_wow64)) AS is_wow64,
   udf_mode_last(ARRAY_AGG(locale)) AS locale,
   udf_mode_last(ARRAY_AGG(memory_mb)) AS memory_mb,
+  MIN(profile_subsession_counter) AS min_profile_subsession_counter,
   udf_mode_last(ARRAY_AGG(normalized_channel)) AS normalized_channel,
   udf_mode_last(ARRAY_AGG(normalized_os_version)) AS normalized_os_version,
   udf_mode_last(ARRAY_AGG(os)) AS os,

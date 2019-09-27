@@ -60,24 +60,13 @@ CREATE TEMP FUNCTION
     TRUE));
 
 CREATE TEMP FUNCTION
-  assert_sets_equals(expected ANY TYPE, actual ANY TYPE) AS (
-    IF(
-      EXISTS(
-        SELECT *
-        FROM UNNEST(expected) AS a
-        FULL OUTER JOIN (
-          SELECT * FROM UNNEST(actual) AS b
-        ) ON  a = b
-        WHERE
-          a IS NULL
-          OR b IS NULL)
-      OR ARRAY_LENGTH(expected) = ARRAY_LENGTH(actual),
-    ERROR(CONCAT(
-      'Expected ',
-      TO_JSON_STRING(expected),
-      ' but got ',
-      TO_JSON_STRING(actual))),
-    TRUE));
+  assert_array_equals_any_order(expected ANY TYPE, actual ANY TYPE) AS (
+    assert_array_equals(
+      (SELECT ARRAY_AGG(e ORDER BY e)
+      FROM UNNEST(expected) AS e)
+    , (SELECT ARRAY_AGG(e ORDER BY e)
+      FROM UNNEST(actual) AS e))
+);
 
 CREATE TEMP FUNCTION
   assert_array_empty(actual ANY TYPE) AS (

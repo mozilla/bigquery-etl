@@ -51,7 +51,7 @@ WITH error_examples AS (
     document_version,
     error_type,
     error_message,
-    udf_js_gunzip(ARRAY_AGG(payload)[OFFSET(0)]) AS sample_payload,
+    udf_js_gunzip(ANY_VALUE(payload)) AS sample_payload,
     COUNT(*) AS error_count
   FROM
     payload_bytes_error.structured

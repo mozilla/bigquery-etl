@@ -71,7 +71,7 @@ CREATE TEMP FUNCTION
         WHERE
           a IS NULL
           OR b IS NULL)
-      AND ARRAY_LENGTH(expected) = ARRAY_LENGTH(actual),
+      OR ARRAY_LENGTH(expected) = ARRAY_LENGTH(actual),
     ERROR(CONCAT(
       'Expected ',
       TO_JSON_STRING(expected),

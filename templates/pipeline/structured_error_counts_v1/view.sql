@@ -9,7 +9,7 @@ WITH ping_counts AS (
     metadata.document_version,
     COUNT(*) AS ping_count
   FROM
-    `payload_bytes_decoded.structured_*`
+    `moz-fx-data-shared-prod.payload_bytes_decoded.structured_*`
   WHERE
     submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 * 24 HOUR)
   GROUP BY hour, document_namespace, document_type, document_version
@@ -22,7 +22,7 @@ WITH ping_counts AS (
     error_type,
     COUNT(*) AS error_count
   FROM
-    payload_bytes_error.structured
+    `moz-fx-data-shared-prod.payload_bytes_error.structured`
   WHERE
     submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 * 24 HOUR)
   GROUP BY hour, document_namespace, document_type, document_version, error_type

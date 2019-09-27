@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.pipeline.detailed_structured_error_counts_v1`
+AS
 WITH error_examples AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS hour,
@@ -29,8 +32,5 @@ WITH error_examples AS (
   INNER JOIN
     error_examples USING (hour, document_namespace, document_type, document_version, error_type)
 )
-
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.pipeline.detailed_structured_error_counts_v1`
-AS SELECT * FROM
+SELECT * FROM
   structured_detailed_hourly_errors

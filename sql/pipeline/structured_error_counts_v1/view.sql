@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.pipeline.structured_error_counts_v1`
+AS
 WITH ping_counts AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS hour,
@@ -38,8 +41,5 @@ WITH ping_counts AS (
   INNER JOIN
     error_counts USING (hour, document_namespace, document_type, document_version)
 )
-
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.pipeline.structured_error_counts_v1`
-AS SELECT * FROM
+ SELECT * FROM
   structured_hourly_errors

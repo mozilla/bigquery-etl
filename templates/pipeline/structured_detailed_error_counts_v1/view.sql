@@ -1,4 +1,4 @@
-error_examples AS (
+WITH error_examples AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS hour,
     document_namespace,

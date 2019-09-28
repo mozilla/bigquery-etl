@@ -26,7 +26,6 @@ from typing import (
 import json
 import os
 import os.path
-import pytest
 import yaml
 
 QueryParameter = Union[
@@ -35,7 +34,7 @@ QueryParameter = Union[
     bigquery.StructQueryParameter,
 ]
 
-table_extensions = {
+TABLE_EXTENSIONS = {
     "ndjson": bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
     "csv": bigquery.SourceFormat.CSV,
     "backup_info": bigquery.SourceFormat.DATASTORE_BACKUP,
@@ -75,87 +74,6 @@ class Table:
                 ]
             except FileNotFoundError:
                 pass
-
-
-class SqlTest(pytest.Item, pytest.File):
-    """Test a SQL query."""
-
-    def __init__(self, path, parent):
-        """Initialize."""
-        super().__init__(path, parent)
-        self._nodeid += "::SQL"
-        self.add_marker("sql")
-
-    def runtest(self):
-        """Run."""
-        query_name = self.fspath.dirpath().basename
-        query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/query.sql")
-        expect = load(self.fspath.strpath, "expect")
-
-        tables: Dict[str, Table] = {}
-        views: Dict[str, str] = {}
-
-        # generate tables for files with a supported table extension
-        for resource in next(os.walk(self.fspath))[2]:
-            if "." not in resource:
-                continue  # tables require an extension
-            table_name, extension = resource.rsplit(".", 1)
-            if table_name.endswith(".schema") or table_name in (
-                "expect",
-                "query_params",
-            ):
-                continue  # not a table
-            if extension in table_extensions or extension in ("yaml", "json"):
-                if extension in table_extensions:
-                    source_format = table_extensions[extension]
-                    source_path = os.path.join(self.fspath.strpath, resource)
-                else:
-                    source_format = table_extensions["ndjson"]
-                    source_path = (self.fspath.strpath, table_name)
-                if "." in table_name:
-                    # remove dataset from table_name
-                    original, table_name = table_name, table_name.rsplit(".", 1)[1]
-                    query = query.replace(original, table_name)
-                tables[table_name] = Table(table_name, source_format, source_path)
-            elif extension == "sql":
-                if "." in table_name:
-                    # remove dataset from table_name
-                    original, table_name = table_name, table_name.rsplit(".", 1)[1]
-                    query = query.replace(original, table_name)
-                views[table_name] = read(self.fspath.strpath, resource)
-
-        # rewrite all udfs as temporary
-        temp_udfs = parse_udf.sub_persisent_udfs_as_temp(query)
-        if temp_udfs != query:
-            query = temp_udfs
-            # prepend udf definitions
-            query = parse_udf.prepend_udf_usage_definitions(query, raw_udfs)
-
-        dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
-        if "CIRCLE_BUILD_NUM" in os.environ:
-            dataset_id += f"_{os.environ['CIRCLE_BUILD_NUM']}"
-
-        bq = bigquery.Client()
-        with dataset(bq, dataset_id) as default_dataset:
-            load_tables(bq, default_dataset, tables.values())
-            load_views(bq, default_dataset, views)
-
-            # configure job
-            job_config = bigquery.QueryJobConfig(
-                default_dataset=default_dataset,
-                destination=bigquery.TableReference(default_dataset, query_name),
-                query_parameters=get_query_params(self.fspath.strpath),
-                use_legacy_sql=False,
-                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            )
-
-            # run query
-            job = bq.query(query, job_config=job_config)
-            result = list(coerce_result(*job.result()))
-            result.sort(key=lambda row: json.dumps(row, sort_keys=True))
-            expect.sort(key=lambda row: json.dumps(row, sort_keys=True))
-
-            assert expect == result
 
 
 @contextmanager

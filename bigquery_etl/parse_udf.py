@@ -15,8 +15,8 @@ import sqlparse
 
 UDF_DIRS = ("udf", "udf_js")
 UDF_CHAR = "[a-zA-z0-9_]"
-UDF_RE = re.compile(f"udf_{UDF_CHAR}+")
-PRESISTENT_UDF_RE = re.compile(fr"(udf{UDF_CHAR}*)\.({UDF_CHAR}+)")
+UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
+PRESISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
 
 
 @dataclass
@@ -47,9 +47,7 @@ class RawUdf:
         dependencies = re.findall(UDF_RE, "\n".join(definitions))
         if name not in dependencies:
             raise ValueError(
-                "Expected a temporary UDF named {} to be defined in {}".format(
-                    name, filepath
-                )
+                f"Expected a temporary UDF named {name} to be defined in {filepath}"
             )
         dependencies.remove(name)
         return RawUdf(
@@ -67,12 +65,12 @@ class RawUdf:
 class ParsedUdf(RawUdf):
     """Parsed representation of a UDF including dependent UDF code."""
 
-    full_sql: str
+    tests_full_sql: List[str]
 
     @staticmethod
-    def from_raw(raw_udf, full_sql):
+    def from_raw(raw_udf, tests_full_sql):
         """Promote a RawUdf to a ParsedUdf."""
-        return ParsedUdf(*astuple(raw_udf), full_sql)
+        return ParsedUdf(*astuple(raw_udf), tests_full_sql)
 
 
 def read_udf_dirs(*udf_dirs):
@@ -89,14 +87,14 @@ def read_udf_dirs(*udf_dirs):
 
 def parse_udf_dirs(*udf_dirs):
     """Read contents of udf_dirs into ParsedUdf instances."""
+    # collect udfs to parse
     raw_udfs = read_udf_dirs(*udf_dirs)
+    # prepend udf definitions to tests
     for raw_udf in raw_udfs.values():
-        deps = accumulate_dependencies([], raw_udfs, raw_udf.name)
-        definitions = []
-        for dep in deps:
-            definitions += raw_udfs[dep].definitions
-        full_sql = "\n".join(definitions)
-        yield ParsedUdf.from_raw(raw_udf, full_sql)
+        tests_full_sql = [
+            prepend_udf_usage_definitions(test, raw_udfs) for test in raw_udf.tests
+        ]
+        yield ParsedUdf.from_raw(raw_udf, tests_full_sql)
 
 
 def accumulate_dependencies(deps, raw_udfs, udf_name):
@@ -138,12 +136,12 @@ def udf_usage_definitions(text, raw_udfs=None):
         raw_udfs = read_udf_dirs()
     defined = set()
     statements = []
+    deps = []
     for udf_usage in udf_usages_in_text(text):
-        for udf_name in accumulate_dependencies([], raw_udfs, udf_usage):
-            if udf_name not in defined:
-                statements.extend(raw_udfs[udf_name].definitions)
-                defined.add(udf_name)
-    return statements
+        deps = accumulate_dependencies(deps, raw_udfs, udf_usage)
+    return [
+        statement for udf_name in deps for statement in raw_udfs[udf_name].definitions
+    ]
 
 
 def prepend_udf_usage_definitions(text, raw_udfs=None):

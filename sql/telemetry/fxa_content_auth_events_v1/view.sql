@@ -6,6 +6,7 @@ WITH
   SELECT
     jsonPayload.logger,
     jsonPayload.fields.event_type,
+    jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
     jsonPayload.fields.os_version,
     jsonPayload.fields.country,
@@ -23,6 +24,7 @@ WITH
   SELECT
     jsonPayload.logger,
     jsonPayload.fields.event_type,
+    jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
     jsonPayload.fields.os_version,
     jsonPayload.fields.country,

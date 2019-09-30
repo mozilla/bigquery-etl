@@ -6,6 +6,7 @@ CREATE OR REPLACE VIEW
     SELECT
       jsonPayload.logger,
       jsonPayload.fields.event_type,
+      jsonPayload.fields.app_version,
       jsonPayload.fields.os_name,
       jsonPayload.fields.os_version,
       jsonPayload.fields.country,
@@ -23,6 +24,7 @@ CREATE OR REPLACE VIEW
     SELECT
       jsonPayload.logger,
       jsonPayload.fields.event_type,
+      jsonPayload.fields.app_version,
       jsonPayload.fields.os_name,
       jsonPayload.fields.os_version,
       jsonPayload.fields.country,
@@ -40,6 +42,7 @@ CREATE OR REPLACE VIEW
     SELECT
       jsonPayload.logger,
       jsonPayload.fields.event_type,
+      jsonPayload.fields.app_version,
       CAST(NULL AS STRING) as os_name,
       CAST(NULL AS STRING) as os_version,
       CAST(NULL AS STRING) as country,

@@ -1,5 +1,6 @@
 SELECT
   submission_date,
+  addon_version,
   app_version,
   country,
   distribution_id,
@@ -8,6 +9,9 @@ SELECT
   search_cohort,
   source,
   default_search_engine,
+  os,
+  os_version,
+  COUNT(*) as client_count,
   SUM(organic) as organic,
   SUM(tagged_sap) as tagged_sap,
   SUM(tagged_follow_on) as tagged_follow_on,
@@ -21,11 +25,14 @@ WHERE
   submission_date = @submission_date
 GROUP BY
   submission_date,
+  addon_version,
   app_version,
   country,
   distribution_id,
+  engine,
   locale,
   search_cohort,
-  engine,
   source,
-  default_search_engine
+  default_search_engine,
+  os,
+  os_version

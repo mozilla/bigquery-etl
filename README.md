@@ -15,15 +15,31 @@ On OSX you can install `node` (and `npm` with it) from homebew with the command
 `brew install node`, or from nodesource as explained in
 [this guide](https://nodesource.com/blog/installing-nodejs-tutorial-mac-os-x/).
 
-Paths to directories or files can be passed as arguments to `script/format-sql`,
-or if none are specified it will read `.` and ignore `.git` and `node_modules`
-directories.
-
-SQL can be formatted without modifying files by piping sql to the script and
-output will automatically go to stdout, e.g.:
+Directories and files passed as arguments to `script/format-sql` will be
+formatted in place, with directories recursively searched for files with a
+`.sql` extension, e.g.:
 
 ```bash
-echo 'SELECT 1,2,3' | script/format-sql
+$ echo 'SELECT 1,2,3' > test.sql
+$ script/format-sql test.sql
+modified test.sql
+1 file(s) modified
+$ cat test.sql
+SELECT
+  1,
+  2,
+  3
+```
+
+If no arguments are specified the script will read from stdin and write to
+stdout, e.g.:
+
+```bash
+$ echo 'SELECT 1,2,3' | script/format-sql
+SELECT
+  1,
+  2,
+  3
 ```
 
 To turn off sql formatting for a block of SQL, wrap it in `format:off` and

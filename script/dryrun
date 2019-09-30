@@ -32,7 +32,7 @@ SKIP = {
     "sql/telemetry/core_clients_last_seen_raw_v1/init.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/init.sql",
     # Reference table not found
-    "sql/search/search_aggregates_v5/query.sql",
+    "sql/search/search_aggregates_v8/query.sql",
     "sql/search/search_clients_daily_v8/query.sql",
     # No matching signature for function IF
     "sql/static/fxa_amplitude_export_users_last_seen/query.sql",

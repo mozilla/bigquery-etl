@@ -1,7 +1,7 @@
 [
   {
     "type": "DATE",
-    "name": "submission_date_s3",
+    "name": "submission_date",
     "mode": "REQUIRED"
   },
   {
@@ -10,7 +10,7 @@
     "mode": "NULLABLE"
   },
   {
-    "type": "STRING",
+    "type": "INTEGER",
     "name": "sample_id",
     "mode": "REQUIRED"
   },

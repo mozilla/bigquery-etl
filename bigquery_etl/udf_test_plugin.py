@@ -15,7 +15,9 @@ def parsed_udfs():
     """Get cached parsed udfs."""
     global _parsed_udfs
     if _parsed_udfs is None:
-        _parsed_udfs = {udf.filepath: udf for udf in parse_udf_dirs(*TEST_UDF_DIRS)}
+        _parsed_udfs = {
+            udf.filepath: udf for udf in parse_udf_dirs("tests/assert", *UDF_DIRS)
+        }
     return _parsed_udfs
 
 

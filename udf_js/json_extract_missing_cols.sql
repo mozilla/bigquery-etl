@@ -14,6 +14,7 @@ Notes:
   histogram will be returned as a missing node, rather than the subvalues within the histogram
   (e.g. values, sum, etc.)
 - Use known_nodes if you're aware of a missing section, like ['simpleMeasurements']
+- This doesn't support Arrays of structs, the array itself will be returned as a node
 
 See here for an example usage
 https://sql.telemetry.mozilla.org/queries/64460/source

@@ -11,5 +11,10 @@ WHERE
   (jsonPayload.type LIKE '%.amplitudeEvent' OR jsonPayload.fields.op = 'amplitudeEvent')
   AND jsonPayload.fields.event_type IS NOT NULL
   AND jsonPayload.fields.user_id IS NOT NULL
+  AND JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties,
+    '$.oauth_client_id') NOT IN ( -- Per https://github.com/mozilla/bigquery-etl/issues/348
+    '3332a18d142636cb',
+    '5882386c6d801776',
+    '1b1a3e44c54fbb58')
   AND _TABLE_SUFFIX = FORMAT_DATE('%g%m%d',
     @submission_date)

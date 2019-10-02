@@ -35,11 +35,16 @@ WITH ping_counts AS (
     error_type,
     ping_count + error_counts.error_count AS ping_count,
     error_counts.error_count,
-    SAFE_DIVIDE(1.0 * error_counts.error_count, error_counts.error_count + ping_count) AS error_ratio
   FROM
     ping_counts
   INNER JOIN
     error_counts USING (hour, document_namespace, document_type, document_version)
+), with_ratio AS (
+  SELECT
+    *,
+    SAFE_DIVIDE(1.0 * error_count, ping_count) AS error_ratio
+  FROM
+    structured_hourly_errors
 )
- SELECT * FROM
-  structured_hourly_errors
+SELECT * FROM
+  with_ratio

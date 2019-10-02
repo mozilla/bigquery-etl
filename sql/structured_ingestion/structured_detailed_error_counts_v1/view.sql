@@ -41,7 +41,7 @@ OPTIONS (
 );
 --
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.pipeline.detailed_structured_error_counts_v1`
+  `moz-fx-data-shared-prod.pipeline.structured_detailed_error_counts_v1`
 AS
 WITH error_examples AS (
   SELECT
@@ -66,13 +66,18 @@ WITH error_examples AS (
     document_version,
     structured_hourly_errors.ping_count,
     error_examples.error_count,
-    SAFE_DIVIDE(1.0 * error_examples.error_count, ping_count) AS error_ratio,
     error_message,
     sample_payload
   FROM
     structured_hourly_errors
   INNER JOIN
     error_examples USING (hour, document_namespace, document_type, document_version, error_type)
+), with_ratio AS (
+  SELECT
+    *,
+    SAFE_DIVIDE(1.0 * error_count, ping_count) AS error_ratio
+  FROM
+    structured_detailed_hourly_errors
 )
 SELECT * FROM
-  structured_detailed_hourly_errors
+  with_ratio

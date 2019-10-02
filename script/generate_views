@@ -118,7 +118,7 @@ def create_views_if_not_exist(views, exclude, sql_dir):
         if any(fnmatchcase(pattern, view) for pattern in exclude):
             log.info("skipping table: matched by exclude pattern: {view}")
             continue
-        if view.endswith('_'):
+        if view.endswith("_"):
             # A trailing '_' confuses the logic here of parsing versions,
             # and likely indicates that the table is somehow private, so
             # we ignore it.

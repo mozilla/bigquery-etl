@@ -11,75 +11,61 @@ or to process only a specific list of tables.
 """
 
 from argparse import ArgumentParser
-from datetime import datetime
-from fnmatch import fnmatch
+from datetime import datetime, timedelta
+from itertools import groupby
 from multiprocessing.pool import ThreadPool
+from uuid import uuid4
+
+import fnmatch
+import re
 
 from google.cloud import bigquery
 
-QUERY_TEMPLATE = """\
+QUERY_TEMPLATE = """
 WITH
-  -- Our 'base' is a single day of a live ping table.
+  -- Distinct document_ids and their minimum submission_timestamp today
+  -- not including document_ids that only occur on or after @end_time
+  distinct_document_ids AS (
+  SELECT
+    document_id,
+    MIN(submission_timestamp) AS submission_timestamp
+  FROM
+    `{live_table}`
+  WHERE
+    DATE(submission_timestamp) = DATE(@start_time)
+    AND submission_timestamp < @end_time
+  GROUP BY
+    document_id),
+  -- A single slice of a live ping table.
   base AS (
   SELECT
     *
   FROM
-    `{source_table_spec}`
-  WHERE
-    DATE(submission_timestamp) = @submission_date ),
-  --
-  -- We assume that the pipeline has already filtered out most duplicates,
-  -- so a list of all document_ids that appear more than once should be
-  -- reasonably small and fit in memory as a lookup table on each node.
-  duplicate_ids AS (
-  SELECT
-    document_id
-  FROM
-    base
-  GROUP BY
-    document_id
-  HAVING
-    COUNT(document_id) > 1),
-  --
-  -- We can directly include all singly-occurring documents in the final
-  -- result set without incurring the expense of sorting in a window function.
-  singly_occurring_documents AS (
-  SELECT
-    base.*
-  FROM
-    base
-  LEFT JOIN
-    duplicate_ids
+    `{live_table}`
+  JOIN
+    distinct_document_ids
   USING
-    (document_id)
+    -- Retain only the first seen documents for each ID, according to timestamp.
+    (document_id, submission_timestamp)
   WHERE
-    duplicate_ids.document_id IS NULL),
+    submission_timestamp >= @start_time
+    AND submission_timestamp < @end_time),
   --
-  -- For documents that appear multiple times, we have to order them by
-  -- assigning a row number.
+  -- Order documents by assigning a row number.
   numbered_duplicates AS (
   SELECT
-    base.*,
-    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) AS _n
+    *,
+    ROW_NUMBER() OVER (PARTITION BY document_id) AS _n
   FROM
-    base
-  JOIN
-    duplicate_ids
-  USING
-    (document_id) ),
+    base)
   --
-  -- We retain only the first seen document for each ID, according to timestamp.
-  deduplicated_documents AS (
-  SELECT
-    * EXCEPT (_n)
-  FROM
-    numbered_duplicates
-  WHERE
-    _n = 1 )
-  --
-SELECT * FROM singly_occurring_documents
-UNION ALL
-SELECT * FROM deduplicated_documents
+  -- Retain only one document for each ID.
+SELECT
+  * EXCEPT(_n)
+FROM
+  numbered_duplicates
+WHERE
+  _n = 1
 """
 
 parser = ArgumentParser(description=__doc__)
@@ -110,6 +96,33 @@ parser.add_argument(
         "and bytes that would be processed"
     ),
 )
+parser.add_argument(
+    "--priority",
+    default="INTERACTIVE",
+    type=str.upper,
+    choices=["BATCH", "INTERACTIVE"],
+    help=(
+        "Priority for BigQuery query jobs; BATCH priority will significantly slow"
+        "down queries if reserved slots are not enabled for the billing project"
+    ),
+)
+parser.add_argument(
+    "--slices",
+    type=int,
+    default=1,
+    help=(
+        "Number of queries to split deduplicate over, each handling an equal-size time "
+        "slice of the date; avoids memory overflow at the cost of less effective"
+        "clustering; recommended only for tables failing due to memory overflow"
+    ),
+)
+parser.add_argument(
+    "--hourly",
+    action="store_const",
+    dest="slices",
+    const=24,
+    help="Deduplicate one hour at a time; equivalent to --slices=24",
+)
 group = parser.add_mutually_exclusive_group()
 group.add_argument(
     "--only",
@@ -130,77 +143,220 @@ group.add_argument(
     ),
 )
 
+temporary_dataset = None
+
+
+def get_temporary_dataset(client):
+    """Get a cached reference to the dataset used for server-assigned destinations."""
+    global temporary_dataset
+    if temporary_dataset is None:
+        # look up the dataset used for query results without a destination
+        dry_run = bigquery.QueryJobConfig(dry_run=True)
+        destination = client.query("SELECT 1", dry_run).destination
+        temporary_dataset = client.dataset(destination.dataset_id, destination.project)
+    return temporary_dataset
+
+
+def get_temporary_table(client, schema, clustering_fields, time_partitioning, date, dry_run):
+    """Generate a temporary table and return the specified date partition.
+
+    Generates a table name that looks similar to, but won't collide with, a
+    server-assigned table and that the web console will consider temporary.
+    Table expiration can't be set from a query job, so the table is created
+    here.
+
+    In order for query results to use time partitioning, and by extension
+    clustering, destination table must be explicitly set. Destination must be
+    generated locally and never collide with server-assigned table names,
+    because server-assigned tables cannot be modified. Server-assigned tables
+    for a dry_run query cannot be detected by client.list_tables and cannot be
+    reused as that constitutes a modification.
+
+    Server-assigned tables have names that start with "anon" and follow with
+    either 40 hex characters or a uuid replacing "-" with "_", and cannot be
+    modified (i.e. reused).
+
+    The web console considers a table temporary if the dataset name starts with
+    "_" and table_id starts with "anon" and is followed by at least one
+    character.
+    """
+    dataset = get_temporary_dataset(client)
+    table = bigquery.Table(dataset.table(f"anon{uuid4().hex}"), schema)
+    if not dry_run:
+        table.expires = datetime.now() + timedelta(days=1)
+        table.clustering_fields = clustering_fields
+        table.time_partitioning = time_partitioning
+        table = client.create_table(table, exists_ok=False)
+    return f"{sql_full_table_id(table)}${date:%Y%m%d}"
+
 
 def sql_full_table_id(table):
-    return table.full_table_id.replace(":", ".")
+    return f"{table.project}.{table.dataset_id}.{table.table_id}"
 
 
-def run_deduplication_query(client, live_table, stable_table, date, dry_run):
-
-    sql = QUERY_TEMPLATE.format(source_table_spec=sql_full_table_id(live_table))
-    destination = f"{sql_full_table_id(stable_table)}${date:%Y%m%d}"
-    job_config = bigquery.QueryJobConfig(
-        destination=destination,
-        query_parameters=[
-            bigquery.ScalarQueryParameter("submission_date", "DATE", date)
-        ],
-        use_legacy_sql=False,
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-        dry_run=dry_run,
-    )
-    query_job = client.query(sql, job_config)
-    if dry_run:
-        print(
-            "Would process {} bytes: {}".format(
-                query_job.total_bytes_processed, query_job.to_api_repr()
-            )
-        )
+def get_query_job_configs(client, live_table, date, dry_run, slices, priority):
+    sql = QUERY_TEMPLATE.format(live_table=live_table)
+    stable_table = f"{live_table.replace('_live.', '_stable.', 1)}${date:%Y%m%d}"
+    kwargs = dict(use_legacy_sql=False, dry_run=dry_run, priority=priority)
+    start_time = datetime(*date.timetuple()[:6])
+    end_time = start_time + timedelta(days=1)
+    if slices > 1:
+        stable_table = client.get_table(stable_table)
+        slice_size = (end_time - start_time) / slices
+        params = [
+            start_time + slice_size * i
+            for i in range(slices)
+        ] + [end_time]  # explicitly use end_time to avoid rounding errors
+        return [
+            (client, sql, stable_table, bigquery.QueryJobConfig(
+                destination=get_temporary_table(
+                    client=client,
+                    schema=stable_table.schema,
+                    clustering_fields=stable_table.clustering_fields,
+                    time_partitioning=stable_table.time_partitioning,
+                    date=date,
+                    dry_run=dry_run,
+                ),
+                # repeat table options for dry run
+                clustering_fields=stable_table.clustering_fields,
+                time_partitioning=stable_table.time_partitioning,
+                query_parameters=[
+                    bigquery.ScalarQueryParameter("start_time", "TIMESTAMP", params[i]),
+                    bigquery.ScalarQueryParameter("end_time", "TIMESTAMP", params[i+1]),
+                ],
+                **kwargs,
+            ))
+            for i in range(slices)
+        ]
     else:
+        return [(client, sql, stable_table, bigquery.QueryJobConfig(
+            destination=stable_table,
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+            query_parameters=[
+                bigquery.ScalarQueryParameter("start_time", "TIMESTAMP", start_time),
+                bigquery.ScalarQueryParameter("end_time", "TIMESTAMP", end_time),
+            ],
+            **kwargs,
+        ))]
+
+
+def run_deduplication_query(client, sql, stable_table, job_config):
+    query_job = client.query(sql, job_config)
+    if not query_job.dry_run:
         query_job.result()
-        print(
-            "Processed {} bytes to populate {}".format(
-                query_job.total_bytes_processed, destination
+    return stable_table, query_job
+
+
+def copy_join_parts(client, stable_table, query_jobs):
+    total_bytes = sum(query.total_bytes_processed for query in query_jobs)
+    if query_jobs[0].dry_run:
+        api_repr = query_jobs[0].to_api_repr()
+        if len(query_jobs) > 1:
+            print(f"Would process {total_bytes} bytes: [{api_repr},...]")
+            print(f"Would copy {len(query_jobs)} results to populate {stable_table}")
+        else:
+            print(f"Would process {total_bytes} bytes: {api_repr}")
+    else:
+        print(f"Processed {total_bytes} bytes to populate {stable_table}")
+        if len(query_jobs) > 1:
+            sources = [job.destination for job in query_jobs]
+            job_config = bigquery.CopyJobConfig(
+                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
             )
-        )
+            copy_job = client.copy_table(sources, stable_table, job_config=job_config)
+            copy_job.result()
+            print(f"Copied {len(query_jobs)} results to populate {stable_table}")
+            for source in sources:
+                client.delete_table(sql_full_table_id(source).split("$")[0])
+            print(f"Deleted {len(query_jobs)} temporary tables")
 
 
-def worker_entrypoint(args):
-    run_deduplication_query(*args)
+def contains_glob(patterns):
+    return any(set("*?[").intersection(pattern) for pattern in patterns)
+
+
+def glob_dataset(pattern):
+    return pattern.split(".", 1)[0]
+
+
+def compile_glob_patterns(patterns):
+    return re.compile("|".join(fnmatch.translate(pattern) for pattern in patterns))
+
+
+def glob_predicate(match, table, arg):
+    matched = match(table) is not None
+    if (arg == "only" and not matched) or (arg == "except" and matched):
+        print(f"Skipping {table} due to --{arg} argument")
+    return matched
+
+
+def list_live_tables(client, pool, project_id, except_tables, only_tables):
+    if only_tables and not contains_glob(only_tables):
+        # skip list calls when only_tables exists and contains no globs
+        return [f"{project_id}.{t}" for t in only_tables]
+    if only_tables and not contains_glob(glob_dataset(t) for t in only_tables):
+        # skip list_datasets call when only_tables exists and datasets contain no globs
+        live_datasets = {f"{project_id}.{glob_dataset(t)}" for t in only_tables}
+    else:
+        live_datasets = [
+            d.reference
+            for d in client.list_datasets(project_id)
+            if d.dataset_id.endswith("_live")
+        ]
+    live_tables = [
+        f"{t.dataset_id}.{t.table_id}"
+        for tables in pool.map(client.list_tables, live_datasets)
+        for t in tables
+    ]
+    if only_tables:
+        match = compile_glob_patterns(only_tables).match
+        live_tables = [t for t in live_tables if glob_predicate(match, t, "only")]
+    if except_tables:
+        match = compile_glob_patterns(except_tables).match
+        live_tables = [t for t in live_tables if not glob_predicate(match, t, "except")]
+    return [f"{project_id}.{t}" for t in live_tables]
 
 
 def main():
     args = parser.parse_args()
 
     client = bigquery.Client()
-    live_datasets = [
-        d
-        for d in client.list_datasets(args.project_id)
-        if d.dataset_id.endswith("_live")
-    ]
 
-    job_args = []
+    with ThreadPool(args.parallelism) as pool:
+        live_tables = list_live_tables(
+            client=client,
+            pool=pool,
+            project_id=args.project_id,
+            except_tables=args.except_tables,
+            only_tables=args.only_tables,
+        )
 
-    for live_dataset in live_datasets:
-        stable_dataset_id = live_dataset.dataset_id[:-5] + "_stable"
-        for live_table in client.list_tables(live_dataset.reference):
-            live_table_spec = f"{live_table.dataset_id}.{live_table.table_id}"
-            stable_table = client.get_table(
-                ".".join([args.project_id, stable_dataset_id, live_table.table_id])
+        job_args = [
+            args
+            for jobs in pool.starmap(
+                get_query_job_configs,
+                [
+                    (
+                        client,
+                        live_table,
+                        args.date,
+                        args.dry_run,
+                        args.slices,
+                        args.priority
+                    )
+                    for live_table in live_tables
+                ]
             )
-            if args.except_tables is not None and any(
-                fnmatch(live_table_spec, pattern) for pattern in args.except_tables
-            ):
-                print(f"Skipping {live_table_spec} due to --except argument")
-                continue
-            if args.only_tables is not None and not any(
-                fnmatch(live_table_spec, pattern) for pattern in args.only_tables
-            ):
-                print(f"Skipping {live_table_spec} due to --only argument")
-                continue
-            job_args.append([client, live_table, stable_table, args.date, args.dry_run])
+            for args in jobs
+        ]
 
-    with ThreadPool(args.parallelism) as p:
-        p.map(worker_entrypoint, job_args, chunksize=1)
+        # preserve job_args order so results stay sorted by stable_table for groupby
+        results = pool.starmap(run_deduplication_query, job_args, chunksize=1)
+        copy_args = [
+            (client, stable_table, [query_job for _, query_job in group])
+            for stable_table, group in groupby(results, key=lambda result: result[0])
+        ]
+        pool.starmap(copy_join_parts, copy_args)
 
 
 if __name__ == "__main__":

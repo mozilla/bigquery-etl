@@ -1,0 +1,8801 @@
+[
+  {
+    "type": "DATE",
+    "name": "submission_date",
+    "mode": "REQUIRED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id",
+    "mode": "REQUIRED"
+  },
+  {
+    "type": "STRING",
+    "name": "document_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "client_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "channel",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "country",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "city",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "os",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "os_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "os_service_pack_major",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "os_service_pack_minor",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "windows_build_number",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "windows_ubr",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "install_year",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "profile_creation_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "subsession_start_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "subsession_length",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "distribution_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "sync_configured",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sync_count_desktop",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sync_count_mobile",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "app_build_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "app_display_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "app_name",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "app_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "timestamp",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "env_build_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "env_build_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "env_build_arch",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "e10s_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "e10s_cohort",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "locale",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "active_experiment_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "active_experiment_branch",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "reason",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "timezone_offset",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "plugin_hangs",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "aborts_plugin",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "aborts_content",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "aborts_gmplugin",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "crashes_detected_plugin",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "crashes_detected_content",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "crashes_detected_gmplugin",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "crash_submit_attempt_main",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "crash_submit_attempt_content",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "crash_submit_attempt_plugin",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "crash_submit_success_main",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "crash_submit_success_content",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "crash_submit_success_plugin",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "active_addons_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "flash_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "vendor",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_default_browser",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_corroborate_system_addons_corrupted",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_corroborate_omnijar_corrupted",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_startup_is_cold",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine_data_name",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "INTEGER",
+        "name": "open_panel",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "open_conversation",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "room_open",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "room_share",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "room_delete",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "loop_activity_counter",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "devtools_toolbox_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "client_submission_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "places_bookmarks_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "places_pages_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "push_api_notification_received",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "web_notification_shown",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "type": "INTEGER",
+                "name": "offered",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "action_1",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "action_2",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "action_3",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "action_last",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "dismissal_click_elsewhere",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "dismissal_leave_page",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "dismissal_close_button",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "dismissal_not_now",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "open_submenu",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "learn_more",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_offered",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_action_1",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_action_2",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_action_3",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_action_last",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_dismissal_click_elsewhere",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_dismissal_leave_page",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_dismissal_close_button",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_dismissal_not_now",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_open_submenu",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "reopen_learn_more",
+                "mode": "NULLABLE"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "popup_notification_stats",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "engine",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "STRING",
+                "name": "source",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "count",
+                "mode": "NULLABLE"
+              }
+            ],
+            "type": "RECORD",
+            "name": "element",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "search_counts",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "plugins_infobar_allow",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_gc_max_pause_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "session_restored",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "STRING",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "experiments",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "addon_id",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "blocklisted",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "name",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "user_disabled",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "app_disabled",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "version",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "scope",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "type",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "foreign_install",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "has_binary_components",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "install_day",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "update_day",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "signed_state",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "is_system",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "is_web_extension",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "multiprocess_compatible",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "active_theme",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "active_ticks",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_max_concurrent_window_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_window_open_event_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_engagement_navigation_contextmenu",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_total_uri_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "first_paint",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "creation_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "addon_id",
+                "mode": "REQUIRED"
+              },
+              {
+                "type": "BOOLEAN",
+                "name": "blocklisted",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "STRING",
+                "name": "name",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "BOOLEAN",
+                "name": "user_disabled",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "BOOLEAN",
+                "name": "app_disabled",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "STRING",
+                "name": "version",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "scope",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "STRING",
+                "name": "type",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "BOOLEAN",
+                "name": "foreign_install",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "BOOLEAN",
+                "name": "has_binary_components",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "install_day",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "update_day",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "INTEGER",
+                "name": "signed_state",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "BOOLEAN",
+                "name": "is_system",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "BOOLEAN",
+                "name": "is_web_extension",
+                "mode": "NULLABLE"
+              },
+              {
+                "type": "BOOLEAN",
+                "name": "multiprocess_compatible",
+                "mode": "NULLABLE"
+              }
+            ],
+            "type": "RECORD",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "active_addons",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_engagement_navigation_urlbar",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "ssl_handshake_result",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "main",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_engagement_navigation_about_newtab",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_gc_max_pause_ms_2",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_engagement_navigation_about_home",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "ssl_handshake_result_failure",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "push_api_notify",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_max_concurrent_tab_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "plugins_infobar_shown",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_tab_open_event_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "scalar_parent_services_sync_fxa_verification_method",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_unique_domains_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "INTEGER",
+        "name": "dom_ipc_process_count",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "extensions_allow_non_mpc_extensions",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "user_prefs",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "scalar_parent_aushelper_websense_reg_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "INTEGER",
+        "name": "allow_now",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "allow_always",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "block",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "plugins_notification_user_action",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "total_time",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "ssl_handshake_result_success",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_copy_unique_css_selector_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_unfiltered_uri_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "shutdown_kill",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_dom_contentprocess_troubled_due_to_memory",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_nicer_turn_401s",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_cycle_collector_max_pause",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "memory_mb",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine_data_submission_url",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_engagement_navigation_searchbar",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "is_wow64",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_navigator_storage_persist_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_nicer_turn_403s",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "blocklist_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "fields": [
+              {
+                "type": "INTEGER",
+                "name": "timestamp",
+                "mode": "REQUIRED"
+              },
+              {
+                "type": "STRING",
+                "name": "category",
+                "mode": "REQUIRED"
+              },
+              {
+                "type": "STRING",
+                "name": "method",
+                "mode": "REQUIRED"
+              },
+              {
+                "type": "STRING",
+                "name": "object",
+                "mode": "REQUIRED"
+              },
+              {
+                "type": "STRING",
+                "name": "string_value",
+                "mode": "NULLABLE"
+              },
+              {
+                "fields": [
+                  {
+                    "fields": [
+                      {
+                        "type": "STRING",
+                        "name": "key",
+                        "mode": "REQUIRED"
+                      },
+                      {
+                        "type": "STRING",
+                        "name": "value",
+                        "mode": "NULLABLE"
+                      }
+                    ],
+                    "type": "RECORD",
+                    "name": "key_value",
+                    "mode": "REPEATED"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "map_values",
+                "mode": "NULLABLE"
+              }
+            ],
+            "type": "RECORD",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "events",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_nicer_turn_438s",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_copy_full_css_selector_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_storage_sync_api_usage_storage_consumed",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "profile_subsession_counter",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "subsession_counter",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_ghost_windows",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "plugins_infobar_block",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_storage_sync_api_usage_extensions_using",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "plugins_notification_shown",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_usage_graphite",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine_data_origin",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_telemetry_os_shutting_down",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_input_event_response_coalesced_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "addon_compatibility_check_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "search_cohort",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "telemetry_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_nicer_stun_retransmits",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_toolbar_eyedropper_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_storage_sync_api_usage_items_stored",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine_data_load_path",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "source",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "medium",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "campaign",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "content",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "attribution",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_navigator_storage_estimate_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "input_event_response_coalesced_ms_content_above_250",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "input_event_response_coalesced_ms_main_above_2500",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "input_event_response_coalesced_ms_content_above_2500",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "input_event_response_coalesced_ms_main_above_150",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "gc_max_pause_ms_content_above_250",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cycle_collector_max_pause_content_above_2500",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "quantum_ready",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "gfx_compositor",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cycle_collector_max_pause_main_above_150",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_security_pkcs11_modules_loaded",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cycle_collector_max_pause_main_above_2500",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "gc_max_pause_ms_main_above_150",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cycle_collector_max_pause_content_above_250",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "ghost_windows_content_above_1",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "gc_max_pause_ms_content_above_2500",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "gc_max_pause_ms_main_above_250",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_http_pageload_is_ssl",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "input_event_response_coalesced_ms_main_above_250",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cycle_collector_max_pause_content_above_150",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "gc_max_pause_ms_content_above_150",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "ghost_windows_main_above_1",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "input_event_response_coalesced_ms_content_above_150",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "gc_max_pause_ms_main_above_2500",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cycle_collector_max_pause_main_above_250",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_copy_xpath_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "plugins_infobar_dismissed",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_content_telemetry_accumulate_unknown_histogram_keys",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "apple_model_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_non_blank_paint_ms",
+    "mode": "NULLABLE"
+  },
+  {
+        "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_services_sync_sync_login_state_transitions",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_navigator_storage_persist_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_session_restore_browser_tabs_restorebutton",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_ssl_handshake_result",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_telemetry_discarded_accumulations",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_gc_max_pause_ms_2",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_webrtc_nicer_turn_401s",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_searchbar_selected_result_method",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_screenshots_copy",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_security_webauthn_used",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_timings_last_shutdown",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_cert_validation_success_by_ca",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webvr_users_view_in",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_gpu_browser_usage_graphite",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "user_pref_extensions_legacy_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_preferences_created_new_user_prefs_file",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_aboutdevtools_noinstall_exits",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_memory_vsize_max_contiguous",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_session_restore_worker_restart_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_webvr_users_view_in",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_input_event_response_coalesced_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_ssl_handshake_result",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_formautofill_addresses_fill_type_autofill_update",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "profile_reset_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_time_to_first_scroll_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webvr_time_spent_viewing_in_oculus",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_grid_showGridLineNumbers_checked",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_response_start_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_dom_loading_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_cycle_collector_max_pause",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_feeds_feed_subscribed",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_memory_vsize",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cpu_model",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "update_auto_download",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_first_scroll_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_dom_content_loaded_end_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_memory_heap_allocated",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_timestamps_first_paint",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_webvr_time_spent_viewing_in_2d",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "STRING",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_gpu_uptake_remote_content_result_1",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_webrtc_nicer_turn_438s",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_preferences_search_query",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "STRING",
+    "name": "session_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "STRING",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_uptake_remote_content_result_1",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "client_clock_skew",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "cpu_vendor",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_gc_max_pause_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_first_key_input_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_formautofill_creditCards_fill_type_manual",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_memory_unique",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_ghost_windows",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "update_channel",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "session_start_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_preferences_prefs_file_was_invalid",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_tracking_protection_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_search_reset_result",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_formautofill_creditCards_fill_type_autofill_modified",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_mediarecorder_recording_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "antivirus",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_telemetry_discarded_child_events",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_search_reset_result",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_idb_type_persistent_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_ssl_tls12_intolerance_reason_pre",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_urlbar_selected_result_index",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_ssl_handshake_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_http_pageload_is_ssl",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_tab_switch_total_e10s_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_browser_usage_plugin_instantiated",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_sandbox_no_job",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_memory_heap_allocated",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "INTEGER",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_urlbar_selected_result_index_by_type",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_memory_total",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_preferences_read_user_js",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_sw_synthesized_res_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_usage_plugin_instantiated",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_content_gfx_small_paint_phase_weight",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_http_channel_disposition",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_first_interaction_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "gfx_features_d3d11_status",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_gpu_webvr_users_view_in",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "INTEGER",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_urlbar_selected_result_index_by_type",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "gfx_features_advanced_layers_status",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_session_restore_number_of_tabs",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "previous_session_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_telemetry_discarded_keyed_scalar_actions",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_new_window_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sandbox_effective_content_process_level",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_gfx_advanced_layers_failure_id",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cpu_speed_mhz",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_formautofill_creditCards_fill_type_autofill",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_time_to_first_key_input_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_idb_type_temporary_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_mediarecorder_recording_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_memory_vsize",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "gfx_features_gpu_process_status",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_ssl_tls12_intolerance_reason_pre",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cpu_l3_cache_kb",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_mathml_doc_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_grid_showInfiniteLines_checked",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "update_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_session_restore_browser_startup_page",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_gpu_telemetry_discarded_keyed_scalar_actions",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_session_restore_number_of_win",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_a11y_instantiated_flag",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_time_to_first_interaction_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "INTEGER",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_memory_distribution_among_content",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webvr_time_spent_viewing_in_2d",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_memory_total",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_http_channel_disposition",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_time_to_first_mouse_move_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_tab_close_time_anim_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_memory_unique",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_ssl_handshake_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cpu_stepping",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_sw_cors_res_for_so_req_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_telemetry_accumulate_clamped_values",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_memory_resident_fast",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_active_ticks",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_load_event_end_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "previous_subsession_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_dom_content_loaded_start_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "gfx_features_d2d_status",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "previous_build_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "firewall",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_dom_complete_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_formautofill_addresses_fill_type_autofill",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_http_transaction_is_ssl",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_feeds_livebookmark_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_formautofill_availability",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_webrtc_nicer_turn_403s",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "disabled_addons_ids",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_new_window_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cpu_l2_cache_kb",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_telemetry_discarded_scalar_actions",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_formautofill_addresses_fill_type_manual",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_time_to_response_start_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "user_pref_dom_ipc_processcount",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_ssl_tls13_intolerance_reason_pre",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_preferences_browser_home_page_change",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_gpu_telemetry_accumulate_unknown_histogram_keys",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_grid_gridinspector_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_urlbar_selected_result_method",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_devtools_current_theme",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "INTEGER",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_memory_distribution_among_content",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_first_mouse_move_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "STRING",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_uptake_remote_content_result_1",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_ssl_tls13_intolerance_reason_pre",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_memory_vsize_max_contiguous",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_feeds_preview_loaded",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_webrtc_nicer_stun_retransmits",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_load_event_start_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_first_click_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_sw_cors_res_for_so_req_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_time_to_dom_interactive_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_searchbar_selected_result_method",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_urlbar_selected_result_index",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_browser_feeds_preview_loaded",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "user_pref_extensions_allow_non_mpc_extensions",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_aboutdevtools_installed",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_gpu_webvr_time_spent_viewing_in_oculus",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_screenshots_upload",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "subsession_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_browser_session_restore_tabbar_restore_available",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_sw_alternative_body_used_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_gfx_omtp_paint_wait_ratio",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "scalar_parent_a11y_instantiators",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_urlbar_selected_result_method",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_grid_showGridAreasOverlay_checked",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_feeds_livebookmark_item_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_a11y_consumers",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_tab_close_time_anim_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_gpu_webvr_time_spent_viewing_in_openvr",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_urlbar_selected_result_type",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "e10s_multi_processes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_gpu_telemetry_discarded_accumulations",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_time_to_non_blank_paint_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_urlbar_selected_result_type",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_touch_enabled_device",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_memory_resident_fast",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_a11y_indicator_acted_on",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_idb_type_temporary_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "user_pref_general_config_filename",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cpu_family",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_gpu_telemetry_discarded_child_events",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_sw_synthesized_res_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_time_to_first_click_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_navigator_storage_estimate_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cpu_cores",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_telemetry_accumulate_unknown_histogram_keys",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_http_transaction_is_ssl",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webvr_time_spent_viewing_in_openvr",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_tracking_protection_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_cert_validation_success_by_ca",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_idb_type_persistent_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "user_pref_browser_search_widget_innavbar",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_telemetry_discarded_keyed_accumulations",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "client_submission_latency",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "cpu_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_rules_gridinspector_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_preferences_browser_home_page_count",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_feeds_livebookmark_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_preferences_use_current_page",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_gpu_telemetry_discarded_scalar_actions",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_preferences_prevent_accessibility_services",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "session_length",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_devtools_onboarding_is_devtools_user",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_gpu_telemetry_discarded_keyed_accumulations",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_restored_pinned_tabs_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_browser_session_restore_tabbar_restore_clicked",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_screenshots_download",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "antispyware",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_sw_alternative_body_used_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_aboutdevtools_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_browser_usage_graphite",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_preferences_use_bookmark",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_devtools_responsive_open_trigger",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_responsive_toolbox_opened_first",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "scalar_parent_browser_errors_sample_rate",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_errors_reported_success_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_errors_reported_failure_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_errors_collected_count_by_filename",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_errors_collected_with_stack_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_errors_collected_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "user_pref_browser_search_region",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "geo_subdivision1",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "geo_subdivision2",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_gpu_telemetry_event_counts",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_telemetry_event_counts",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_content_telemetry_event_counts",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_accessibility_service_enabled_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_devtools_tool_registered",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_devtools_accessibility_select_accessible_for_node",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_accessibility_picker_used_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "STRING",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "BOOLEAN",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "keyed_boolean_addon_scalars",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "STRING",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "keyed_uint_addon_scalars",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_accessibility_node_inspected_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "STRING",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "string_addon_scalars",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "STRING",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "STRING",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "keyed_string_addon_scalars",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_accessibility_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "uint_addon_scalars",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "BOOLEAN",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "boolean_addon_scalars",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_memoryreporter_max_ghost_windows",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_devtools_inspector_three_pane_enabled",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_toolbox_time_active_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_entry_point",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_devtools_toolbox_time_active_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "user_pref_dom_ipc_plugins_sandbox_level_flash",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_devtools_toolbox_tabs_reordered",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_dom_contentprocess_buildID_mismatch",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_security_client_cert",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_webext_storage_local_set_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webext_browseraction_popup_open_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webext_pageaction_popup_open_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webext_extension_startup_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webext_storage_local_set_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webext_background_page_load_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_webext_storage_local_get_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_webext_content_script_injection_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webext_content_script_injection_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webext_storage_local_get_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_webext_browseraction_popup_preload_result_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_extensions_updates_rdf",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_telemetry_profile_directory_scans",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_telemetry_profile_directory_scans",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_gpu_telemetry_profile_directory_scans",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_telemetry_persistence_timer_hit_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_telemetry_pending_operations_highwatermark_reached",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_application_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_widget_ime_name_on_linux",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_widget_ime_name_on_mac",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_a11y_theme",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_widget_ime_name_on_windows",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_devtools_shadowdom_reveal_link_clicked",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_devtools_shadowdom_shadow_root_displayed",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_devtools_shadowdom_shadow_root_expanded",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_content_images_webp_content_frequency",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_images_webp_content_frequency",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_images_webp_probe_observed",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_images_webp_content_observed",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_content_images_webp_probe_observed",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_telemetry_profile_directory_scan_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_content_images_webp_content_observed",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_telemetry_data_upload_optin",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_media_page_had_media_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_media_autoplay_would_be_allowed_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_media_autoplay_would_not_be_allowed_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_media_autoplay_would_be_allowed_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_media_page_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_media_autoplay_would_not_be_allowed_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_media_page_had_media_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_media_page_had_play_revoked_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_media_page_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_media_page_had_play_revoked_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_content_webrtc_sdp_parser_diff",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_search_service_init_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_session_restore_restore_window_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_media_blocked_autoplay_no_audio_track_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "INTEGER",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_ipc_read_main_thread_latency_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_network_cache_metadata_first_read_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "INTEGER",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_gpu_ipc_read_main_thread_latency_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_plugin_shutdown_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_gpu_process_launch_time_ms_2",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_network_cache_metadata_first_read_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_tab_switch_update_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_media_blocked_autoplay_no_audio_track_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_session_restore_startup_onload_initial_window_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_gpu_gpu_process_initialization_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_gpu_process_initialization_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_network_cache_v2_hit_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_search_service_init_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_session_restore_restore_window_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_network_cache_v2_hit_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_network_cache_v2_miss_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {
+                    "type": "INTEGER",
+                    "name": "key",
+                    "mode": "REQUIRED"
+                  },
+                  {
+                    "type": "INTEGER",
+                    "name": "value",
+                    "mode": "NULLABLE"
+                  }
+                ],
+                "type": "RECORD",
+                "name": "key_value",
+                "mode": "REPEATED"
+              }
+            ],
+            "type": "RECORD",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_ipc_read_main_thread_latency_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_places_autocomplete_6_first_results_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_gpu_process_initialization_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_plugin_shutdown_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_session_restore_startup_init_session_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_gc_animation_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_session_restore_startup_init_session_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_network_cache_v2_miss_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_tab_switch_update_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_gpu_process_launch_time_ms_2",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_gc_animation_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_places_autocomplete_6_first_results_time_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_session_restore_startup_onload_initial_window_ms",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_peerconnection_legacy_callback_stats_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_peerconnection_promise_stats_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_peerconnection_promise_and_callback_stats_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_webrtc_peerconnection_legacy_callback_stats_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_webrtc_peerconnection_connected",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_peerconnection_connected",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_webrtc_peerconnection_promise_and_callback_stats_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_webrtc_peerconnection_promise_stats_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_media_allowed_autoplay_no_audio_track_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_media_blocked_no_metadata_endup_no_audio_track",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_media_blocked_no_metadata",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_media_allowed_autoplay_no_audio_track_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_media_blocked_no_metadata_endup_no_audio_track",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_media_blocked_no_metadata",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_webide_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_memory_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_jsbrowserdebugger_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_storage_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_fonteditor_n_font_axes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_browserconsole_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_shadereditor_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_picker_eyedropper_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_fontinspector_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_options_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_scratchpad_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_eyedropper_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_inspector_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_responsive_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_ruleview_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_paintflashing_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_fonteditor_n_fonts_rendered",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_storage_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_inspector_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_menu_eyedropper_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_netmonitor_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_dom_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_eyedropper_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_ruleview_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_fontinspector_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_menu_eyedropper_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_jsprofiler_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_custom_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_responsive_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_layoutview_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_computedview_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_paintflashing_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_jsdebugger_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_canvasdebugger_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_memory_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_fonteditor_font_type_displayed",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_scratchpad_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_styleeditor_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_jsbrowserdebugger_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_aboutdebugging_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_dom_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_aboutdebugging_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_animationinspector_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_scratchpad_window_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_layoutview_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_webaudioeditor_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_developertoolbar_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_browserconsole_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_about_devtools_opened_reason",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_webaudioeditor_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_picker_eyedropper_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_computedview_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_developertoolbar_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_styleeditor_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_about_devtools_opened_key",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_shadereditor_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_scratchpad_window_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_webconsole_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_options_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_jsdebugger_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_webconsole_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_custom_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_canvasdebugger_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_netmonitor_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_webide_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_devtools_animationinspector_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_devtools_jsprofiler_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_accessibility_service_time_active_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_devtools_accessibility_service_time_active_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_accessibility_picker_time_active_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_devtools_accessibility_time_active_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_devtools_accessibility_time_active_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_devtools_accessibility_picker_time_active_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_content_paint_time",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "blank_window_shown",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_content_paint_time",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_engagement_navigation_webextension",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_dom_parentprocess_private_window_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_blocklist_num_sites",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_pwmgr_form_autofill_result",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_checkerboard_severity",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_pwmgr_login_page_safety",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_gpu_composite_time",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_gpu_checkerboard_severity",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_pwmgr_manage_copied_password",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_composite_time",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_num_saved_passwords",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_checkerboard_severity",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_saving_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_prompt_remember_action",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_prompt_update_action",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_manage_visibility_toggled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_pwmgr_manage_deleted",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_composite_time",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_form_autofill_result",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_gpu_content_frame_time",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_login_page_safety",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_pwmgr_manage_copied_username",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_pwmgr_manage_copied_username",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_num_passwords_per_hostname",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_pwmgr_manage_deleted",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_content_frame_time",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_pwmgr_manage_copied_password",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_login_last_used_days",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_pwmgr_manage_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_geolocation_request_granted",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_geolocation_request_granted",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_contentblocking_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_contentblocking_exceptions",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_contentblocking_fastblock_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_resistfingerprinting_content_window_size",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "user_pref_marionette_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_identity_fxaccounts_missed_commands_fetched",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_webreplay_reload_recording",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_webreplay_save_recording",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_webreplay_load_recording",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_webreplay_stop_recording",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_webreplay_new_recording",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_parent_number_of_profiles",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "histogram_content_number_of_profiles",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_telemetry_keyed_scalars_exceed_limit",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_memory_unique_content_startup",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "gfx_features_webrender_status",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_sandbox_rejected_syscalls",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_sandbox_rejected_syscalls",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "gfx_features_wrqualified_status",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "user_pref_gfx_webrender_all_qualified",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "user_pref_privacy_fuzzyfox_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_update_binarytransparencyresult",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_parent_fx_page_load_ms_2",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "key",
+            "mode": "REQUIRED"
+          },
+          {
+            "type": "INTEGER",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "histogram_content_fx_page_load_ms_2",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_rules_flexboxhighlighter_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_markup_flexboxhighlighter_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_markup_gridinspector_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_layout_flexboxhighlighter_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_devtools_accessibility_accessible_context_menu_item_activated",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_accessibility_accessible_context_menu_opened",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_changesview_opened_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_search_ad_clicks",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_search_with_ads",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_devtools_tooltip_shown",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_update_bitshresult",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_networking_data_transferred_v3_kb",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_pictureinpicture_closed_method",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_qm_origin_directory_unexpected_filename",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_devtools_accessibility_audit_activated",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_networking_data_transferred_kb",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_changesview_contextmenu",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_gfx_hdr_windows_display_colorspace_bitfield",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "scalar_parent_startup_profile_selection_reason",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_timestamps_about_home_topsites_first_paint",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "environment_settings_intl_regional_prefs_locales",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "environment_settings_intl_app_locales",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "environment_settings_intl_requested_locales",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "environment_settings_intl_accept_languages",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "environment_settings_intl_available_locales",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "element",
+            "mode": "REQUIRED"
+          }
+        ],
+        "type": "RECORD",
+        "name": "list",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "environment_settings_intl_system_locales",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_telemetry_process_creation_timestamp_inconsistent",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_security_intermediate_preloading_num_preloaded",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_telemetry_process_creation_timestamp_inconsistent",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_security_intermediate_preloading_num_pending",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_contentblocking_fingerprinting_blocking_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "scalar_parent_contentblocking_cryptomining_blocking_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "plugins_notification_shown_false",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_contentblocking_category",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_changesview_copy_rule",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
+    "name": "user_pref_browser_launcherprocess_enabled",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_changesview_contextmenu_copy_declaration",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_content_script_preloader_mainthread_recompile",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_changesview_copy_all_changes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_script_preloader_mainthread_recompile",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_changesview_contextmenu_copy_rule",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "REQUIRED"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_normandy_recipe_freshness",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_peerconnection_datachannel_max_life_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_tab_pinned_event_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_inspector_element_picker_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_max_concurrent_tab_pinned_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_networking_http_transactions_captive_portal",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_dom_contentprocess_os_priority_change_considered",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_dom_contentprocess_os_priority_lowered",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_intervals_download_internal_partial",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_intervals_apply_complete",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_networking_data_transferred_captive_portal",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_downloads_bits_partial_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_downloads_internal_partial_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_downloads_internal_complete_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_devtools_inspector_node_selection_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_peerconnection_datachannel_max_retx_and_life_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_peerconnection_datachannel_created",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_downloads_bits_partial_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_intervals_stage_complete",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_intervals_apply_complete",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_downloads_bits_complete_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_downloads_internal_complete_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_downloads_bits_complete_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_dom_contentprocess_os_priority_raised",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_mar_partial_size_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_downloads_bits_partial_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_intervals_check",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_intervals_apply_partial",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_intervals_stage_partial",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_intervals_check",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_intervals_download_internal_complete",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_intervals_download_bits_complete",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_intervals_download_bits_partial",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_downloads_bits_complete_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_networking_http_connections_captive_portal",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_downloads_internal_partial_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_intervals_apply_partial",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_intervals_stage_partial",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_intervals_download_bits_complete",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_webrtc_peerconnection_datachannel_max_retx_used",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_downloads_internal_complete_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_intervals_download_internal_partial",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_intervals_download_bits_partial",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_intervals_download_internal_complete",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_downloads_bits_partial_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_mar_complete_size_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_downloads_internal_partial_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_startup_mar_complete_size_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_mar_partial_size_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_downloads_internal_partial_seconds",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_intervals_stage_complete",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_downloads_bits_complete_bytes",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_update_session_downloads_internal_complete_seconds",
+    "mode": "NULLABLE"
+  }
+]

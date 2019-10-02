@@ -5,6 +5,7 @@ SELECT
   client_id,
   days_seen_bits,
   days_since_seen,
+  days_created_profile_bits,
   days_since_created_profile,
   app_name,
   os,
@@ -25,6 +26,7 @@ SELECT
   client_id,
   days_seen_bits,
   days_since_seen,
+  days_created_profile_bits,
   days_since_created_profile,
   app_name,
   os,
@@ -36,4 +38,4 @@ SELECT
   NULL AS distribution_id,
   app_display_version AS app_version
 FROM
-  `moz-fx-data-derived-datasets.telemetry.glean_clients_last_seen_v1`
+  `moz-fx-data-shared-prod.org_mozilla_fenix.clients_last_seen`

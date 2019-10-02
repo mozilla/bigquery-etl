@@ -12,13 +12,25 @@ CREATE TEMP FUNCTION
   udf_js_gunzip (input BYTES)
   RETURNS STRING
   LANGUAGE js AS """
-    // converts a byte array to a string
+    /*  Input is either:
+     *    - A gzipped UTF-8 byte array
+     *    - A UTF-8 byte array
+     *
+     *  Outputs a string representation
+     *  of the byte array (gunzipped if
+     *  possible).
+     */
+
     function binary2String(byteArray) {
+        // converts a UTF-16 byte array to a string
         return String.fromCharCode.apply(String, byteArray);
     }
     
-    // input is in base64, so it needs to be decoded
+    // BYTES are base64 encoded by BQ, so this needs to be decoded
+    // Outputs a UTF-16 string
     var decodedData = atob(input);
+
+    // convert UTF-16 string to byte array
     var compressedData = decodedData.split('').map(function(e) {
         return e.charCodeAt(0);
     });
@@ -30,7 +42,7 @@ CREATE TEMP FUNCTION
       var unzipped = gunzip.decompress();
       return binary2String(unzipped);
     } catch (err) {
-      return binary2String(input);
+      return binary2String(compressedData);
     }
 """
 OPTIONS (
@@ -41,17 +53,24 @@ OPTIONS (
 -- Tests
 
 WITH
-  gzipped AS (
-    SELECT AS VALUE
-      FROM_BASE64('H4sIAKnBGlwAA6uuBQBDv6ajAgAAAA==')),
+  input AS (
+    SELECT
+      FROM_BASE64('H4sIAKnBGlwAA6uuBQBDv6ajAgAAAA==') AS test_input,
+      '{}' AS expected
+    UNION ALL
+    SELECT
+      CAST('{"hello": "world"}' AS BYTES),
+      '{"hello": "world"}'
+),
   --
   unzipped AS (
     SELECT
-      udf_js_gunzip(gzipped) AS result
+      udf_js_gunzip(test_input) AS result,
+      expected
     FROM
-      gzipped )
+      input )
   --
   SELECT
-    assert_equals('{}', result)
+    assert_equals(expected, result)
   FROM
     unzipped

@@ -84,8 +84,8 @@ WITH
       addl_properties )
     --
     SELECT
-      assert_sets_equals(no_args, ARRAY['`first`.`second`.`third`', '`first`.`other-second`']),
-      assert_sets_equals(indicates_node_arg, ARRAY['`first`.`second`', '`first`.`other-second`']),
-      assert_sets_equals(is_node_arg, ARRAY['`first`'])
+      assert_array_equals_any_order(no_args, ARRAY['`first`.`second`.`third`', '`first`.`other-second`']),
+      assert_array_equals_any_order(indicates_node_arg, ARRAY['`first`.`second`', '`first`.`other-second`']),
+      assert_array_equals_any_order(is_node_arg, ARRAY['`first`'])
   FROM
     extracted

@@ -1,4 +1,4 @@
-CREATE TABLE
+CREATE OR REPLACE TABLE
   `moz-fx-data-shared-prod.telemetry_derived.fxa_users_services_first_seen_v1`
 PARTITION BY DATE(first_service_timestamp)
 CLUSTER BY service, user_id AS

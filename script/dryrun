@@ -23,7 +23,7 @@ DRY_RUN_URL = "https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.n
 
 SKIP = {
     # Access Denied
-    "sql/structured_ingestion/structured_error_counts_v1/view.sql",
+    "sql/monitoring/structured_error_counts_v1/view.sql",
     "sql/telemetry/fxa_content_events_v1/query.sql",
     "sql/telemetry/fxa_auth_bounce_events_v1/query.sql",
     "sql/telemetry/fxa_auth_events_v1/query.sql",
@@ -33,7 +33,7 @@ SKIP = {
     "sql/telemetry/core_clients_last_seen_raw_v1/init.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/init.sql",
     # Reference table not found
-    "sql/structured_ingestion/structured_detailed_error_counts_v1/view.sql",
+    "sql/monitoring/structured_detailed_error_counts_v1/view.sql",
     "sql/search/search_aggregates_v8/query.sql",
     "sql/search/search_clients_daily_v8/query.sql",
     # No matching signature for function IF

@@ -18,7 +18,7 @@ Notes:
 
 See here for an example usage
 https://sql.telemetry.mozilla.org/queries/64460/source
- 
+
 */
 
 CREATE TEMP FUNCTION udf_js_json_extract_missing_cols (input STRING, indicates_node ARRAY<STRING>, known_nodes ARRAY<STRING>)
@@ -27,44 +27,44 @@ LANGUAGE js AS """
     if (input == null || input == '{}') {
       return null;
     }
-    
+
     var key_paths = [];
     var parsed = JSON.parse(input);
     var remaining_paths = Object.keys(parsed).map(k => [k]);
-    
+
     while(remaining_paths && remaining_paths.length){
         var next_keypath = remaining_paths.pop();
         var next_val = next_keypath.reduce((obj, k) => obj[k], parsed);
-        
+
         var is_node = true;
         if(typeof next_val === 'object' && next_val !== null && !Array.isArray(next_val)) {
             is_node = false;
             var keys = Object.keys(next_val);
-            
+
             if(known_nodes.indexOf(next_keypath[next_keypath.length - 1]) > -1){
                 is_node = true;
             }
-            
+
             var keys_indicating_node = keys.filter(
               e => indicates_node.indexOf(e) > -1
             )
-            
+
             if(keys_indicating_node.length > 0){
                 is_node = true;
             }
-            
+
             if(!is_node){
                 Object.keys(next_val).map(k =>
                     remaining_paths.push(next_keypath.concat([k]))
                 );
             }
         }
-        
+
         if(is_node) {
             key_paths.push(next_keypath.map(k => '`' + String(k) + '`').join('.'));
         }
     }
-    
+
     return key_paths;
 """;
 

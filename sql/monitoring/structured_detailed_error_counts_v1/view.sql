@@ -15,7 +15,7 @@ CREATE TEMP FUNCTION
         // converts a UTF-16 byte array to a string
         return String.fromCharCode.apply(String, byteArray);
     }
-    
+
     // BYTES are base64 encoded by BQ, so this needs to be decoded
     // Outputs a UTF-16 string
     var decodedData = atob(input);
@@ -24,10 +24,10 @@ CREATE TEMP FUNCTION
     var compressedData = decodedData.split('').map(function(e) {
         return e.charCodeAt(0);
     });
-    
+
     try {
-      var gunzip = new Zlib.Gunzip(compressedData); 
-    
+      var gunzip = new Zlib.Gunzip(compressedData);
+
       // decompress returns bytes that need to be converted into a string
       var unzipped = gunzip.decompress();
       return binary2String(unzipped);

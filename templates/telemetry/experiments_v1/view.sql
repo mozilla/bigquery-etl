@@ -2,6 +2,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.experiments_v1` AS
 SELECT
+  submission_date AS submission_date_s3,
   * REPLACE (
     ARRAY(SELECT * FROM UNNEST(active_addons.list)) AS active_addons,
     ARRAY(SELECT * FROM UNNEST(antispyware.list)) AS antispyware,
@@ -278,7 +279,6 @@ SELECT
     ARRAY(SELECT * FROM UNNEST(search_counts.list)) AS search_counts,
     ssl_handshake_result.key_value AS ssl_handshake_result,
     string_addon_scalars.key_value AS string_addon_scalars,
-    submission_date_s3 AS submission_date,
     uint_addon_scalars.key_value AS uint_addon_scalars
   )
 FROM

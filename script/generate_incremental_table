@@ -119,7 +119,9 @@ def main():
         for day in date_range(args.start, args.end):
             target(day)
     else:
-        Pool(processes=args.max_procs).map(target, date_range(args.start, args.end))
+        Pool(processes=args.max_procs).map(
+            target, date_range(args.start, args.end), chunksize=1
+        )
 
 
 if __name__ == "__main__":

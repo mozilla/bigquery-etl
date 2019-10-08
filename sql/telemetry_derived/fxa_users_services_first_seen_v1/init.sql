@@ -7,18 +7,16 @@ WITH
   -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.
   first_services AS (
   SELECT
+    ROW_NUMBER() OVER (PARTITION BY user_id, service ORDER BY `timestamp`) AS _n,
     user_id,
-    FIRST_VALUE(service) OVER (PARTITION BY user_id, service ORDER BY `timestamp`) AS service,
+    service,
     FIRST_VALUE(`timestamp`) OVER (PARTITION BY user_id, service ORDER BY `timestamp`) AS first_service_timestamp,
-    FIRST_VALUE(os_name) OVER (PARTITION BY user_id, service ORDER BY `timestamp`) AS first_service_os,
-    FIRST_VALUE(country) OVER (PARTITION BY user_id, service ORDER BY `timestamp`) AS first_service_country,
-    FIRST_VALUE(flow_id) OVER (PARTITION BY user_id, service ORDER BY `timestamp`) AS first_service_flow,
+    FIRST_VALUE(os_name) OVER (PARTITION BY user_id, service ORDER BY `timestamp`, os_name) AS first_service_os,
+    FIRST_VALUE(country) OVER (PARTITION BY user_id, service ORDER BY `timestamp`, country) AS first_service_country,
+    FIRST_VALUE(flow_id) OVER (PARTITION BY user_id, service ORDER BY `timestamp`, flow_id) AS first_service_flow,
     LOGICAL_OR(
-      CASE
-        WHEN event_type = 'fxa_reg - complete' THEN TRUE
-        ELSE FALSE
-      END
-    ) OVER (PARTITION BY user_id, service ORDER BY `timestamp`) AS did_register -- probably doesn't need to be a window function
+      IFNULL(event_type = 'fxa_reg - complete', FALSE)
+      ) OVER (PARTITION BY user_id, service) AS did_register
   FROM
     `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1`
   WHERE
@@ -32,22 +30,11 @@ WITH
   -- I've verified that `date(first_service_timestamp), count(distinct user_id) where did_register = true group by 1`  matches the counts of registrations per day in amplitude.
   first_services_g AS (
   SELECT
-    user_id,
-    service,
-    first_service_timestamp,
-    first_service_os,
-    first_service_country,
-    first_service_flow,
-    LOGICAL_OR(did_register) AS did_register
+    * EXCEPT(_n)
   FROM
     first_services
-  GROUP BY
-    user_id,
-    service,
-    first_service_timestamp,
-    first_service_os,
-    first_service_country,
-    first_service_flow ),
+  WHERE
+    _n = 1),
   -- sadly, `entrypoint` is null on registration complete and login complete events.
   -- this means we have to use first_service_flow to join back on the original source table's flow_id,
   -- and take the first occurrence of `entrypoint` within the flow that the user first appeared in the service on.
@@ -58,7 +45,7 @@ WITH
   FROM
     first_services_g s
   INNER JOIN
-    `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1` f
+    `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1` AS f
   ON
     s.first_service_flow = f.flow_id
   WHERE

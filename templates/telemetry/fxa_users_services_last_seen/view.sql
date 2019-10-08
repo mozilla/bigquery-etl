@@ -6,9 +6,9 @@ SELECT
   CAST(SAFE.LOG(days_seen_in_tier1_country_bits & -days_seen_in_tier1_country_bits, 2) AS INT64) AS days_since_seen_in_tier1_country,
   CAST(SAFE.LOG(days_registered_bits & -days_registered_bits, 2) AS INT64) AS days_since_registered,
   * REPLACE(cn.code AS country),
-  ls.country AS country_name
+  fxa.country AS country_name
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.fxa_users_services_last_seen_v1` ls
+  `moz-fx-data-shared-prod.telemetry_derived.fxa_users_services_last_seen_v1` AS fxa
 LEFT JOIN
-  `moz-fx-data-shared-prod.static.country_names_v1` cn
-  ON cn.name = ls.country
+  `moz-fx-data-shared-prod.static.country_names_v1` AS cn
+  ON cn.name = fxa.country

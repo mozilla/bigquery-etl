@@ -7,16 +7,17 @@ WITH
   -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.
   first_services AS (
   SELECT
-    ROW_NUMBER() OVER (w1) AS _n,
+    ROW_NUMBER() OVER w1_unframed AS _n,
     user_id,
     service,
-    udf_mode_last(ARRAY_AGG(`timestamp`) OVER (w1)) AS first_service_timestamp,
-    udf_mode_last(ARRAY_AGG(os_name) OVER (w1)) AS first_service_os,
-    udf_mode_last(ARRAY_AGG(country) OVER (w1)) AS first_service_country,
-    udf_mode_last(ARRAY_AGG(flow_id) OVER (w1)) AS first_service_flow,
+    -- using mode_last with w1_reversed to get mode_first
+    udf_mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp,
+    udf_mode_last(ARRAY_AGG(os_name) OVER w1_reversed) AS first_service_os,
+    udf_mode_last(ARRAY_AGG(country) OVER w1_reversed) AS first_service_country,
+    udf_mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
     LOGICAL_OR(
       IFNULL(event_type = 'fxa_reg - complete', FALSE)
-      ) OVER (w1) AS did_register
+      ) OVER w1_reversed AS did_register
   FROM
     `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1`
   WHERE
@@ -26,12 +27,23 @@ WITH
     AND service IS NOT NULL
     AND user_id IS NOT NULL
   WINDOW
-    w1 AS (
+    -- We must provide a window with `ORDER BY timestamp DESC` so that udf_mode_last actually aggregates mode first.
+    w1_reversed AS (
       PARTITION BY
         user_id,
         service
       ORDER BY
-        `timestamp` ) ),
+        `timestamp` DESC
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND UNBOUNDED FOLLOWING),
+    -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
+    w1_unframed AS (
+      PARTITION BY
+        user_id,
+        service
+      ORDER BY
+        `timestamp`)),
   -- we need this next section because `did_register` will be BOTH true and false within the flows that the user registered on.
   -- this dedupes the rows from above and sets did_register to true only on flows that included a registration
   -- I've verified that `date(first_service_timestamp), count(distinct user_id) where did_register = true group by 1`  matches the counts of registrations per day in amplitude.
@@ -48,7 +60,7 @@ WITH
   flows AS (
   SELECT
     DISTINCT s.first_service_flow,
-    FIRST_VALUE(f.entrypoint) OVER (PARTITION BY f.flow_id ORDER BY f.`timestamp`) AS first_service_entrypoint
+    FIRST_VALUE(f.entrypoint) OVER (PARTITION BY f.flow_id ORDER BY f.`timestamp` ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS first_service_entrypoint
   FROM
     first_services_g s
   INNER JOIN
@@ -70,5 +82,5 @@ FROM
   first_services_g s
 LEFT JOIN
   flows f
-ON
-  s.first_service_flow = f.first_service_flow
+USING
+  (first_service_flow)

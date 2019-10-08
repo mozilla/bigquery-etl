@@ -48,7 +48,7 @@ WITH
     w1_reversed AS (
       PARTITION BY
         user_id,
-        IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service
+        IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service)
       ORDER BY
         `timestamp` DESC
       ROWS BETWEEN
@@ -58,7 +58,7 @@ WITH
     w1_unframed AS (
       PARTITION BY
         user_id,
-        IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service
+        IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service)
       ORDER BY
         `timestamp`)),
   -- we need this next section because `did_register` will be BOTH true and false within the flows that the user registered on.

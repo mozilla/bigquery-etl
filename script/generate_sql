@@ -8,7 +8,9 @@ This script can be called via exec() (eg. in conftest.py).
 """
 
 from argparse import ArgumentParser
-import os, sys
+import os
+import shutil
+import sys
 
 # sys.path needs to be modified to enable package imports from parent
 # and sibling directories. Also see:
@@ -18,10 +20,7 @@ from bigquery_etl.parse_udf import (
     UDF_DIRS,
     read_udf_dirs,
     prepend_udf_usage_definitions,
-)
-from textwrap import dedent
-import shutil
-import re
+)  # noqa E402
 
 
 parser = ArgumentParser(description=__doc__)

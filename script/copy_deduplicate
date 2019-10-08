@@ -157,7 +157,9 @@ def get_temporary_dataset(client):
     return temporary_dataset
 
 
-def get_temporary_table(client, schema, clustering_fields, time_partitioning, date, dry_run):
+def get_temporary_table(
+    client, schema, clustering_fields, time_partitioning, date, dry_run
+):
     """Generate a temporary table and return the specified date partition.
 
     Generates a table name that looks similar to, but won't collide with, a
@@ -203,41 +205,60 @@ def get_query_job_configs(client, live_table, date, dry_run, slices, priority):
     if slices > 1:
         stable_table = client.get_table(stable_table)
         slice_size = (end_time - start_time) / slices
-        params = [
-            start_time + slice_size * i
-            for i in range(slices)
-        ] + [end_time]  # explicitly use end_time to avoid rounding errors
+        params = [start_time + slice_size * i for i in range(slices)] + [
+            end_time
+        ]  # explicitly use end_time to avoid rounding errors
         return [
-            (client, sql, stable_table, bigquery.QueryJobConfig(
-                destination=get_temporary_table(
-                    client=client,
-                    schema=stable_table.schema,
+            (
+                client,
+                sql,
+                stable_table,
+                bigquery.QueryJobConfig(
+                    destination=get_temporary_table(
+                        client=client,
+                        schema=stable_table.schema,
+                        clustering_fields=stable_table.clustering_fields,
+                        time_partitioning=stable_table.time_partitioning,
+                        date=date,
+                        dry_run=dry_run,
+                    ),
+                    # repeat table options for dry run
                     clustering_fields=stable_table.clustering_fields,
                     time_partitioning=stable_table.time_partitioning,
-                    date=date,
-                    dry_run=dry_run,
+                    query_parameters=[
+                        bigquery.ScalarQueryParameter(
+                            "start_time", "TIMESTAMP", params[i]
+                        ),
+                        bigquery.ScalarQueryParameter(
+                            "end_time", "TIMESTAMP", params[i + 1]
+                        ),
+                    ],
+                    **kwargs,
                 ),
-                # repeat table options for dry run
-                clustering_fields=stable_table.clustering_fields,
-                time_partitioning=stable_table.time_partitioning,
-                query_parameters=[
-                    bigquery.ScalarQueryParameter("start_time", "TIMESTAMP", params[i]),
-                    bigquery.ScalarQueryParameter("end_time", "TIMESTAMP", params[i+1]),
-                ],
-                **kwargs,
-            ))
+            )
             for i in range(slices)
         ]
     else:
-        return [(client, sql, stable_table, bigquery.QueryJobConfig(
-            destination=stable_table,
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            query_parameters=[
-                bigquery.ScalarQueryParameter("start_time", "TIMESTAMP", start_time),
-                bigquery.ScalarQueryParameter("end_time", "TIMESTAMP", end_time),
-            ],
-            **kwargs,
-        ))]
+        return [
+            (
+                client,
+                sql,
+                stable_table,
+                bigquery.QueryJobConfig(
+                    destination=stable_table,
+                    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+                    query_parameters=[
+                        bigquery.ScalarQueryParameter(
+                            "start_time", "TIMESTAMP", start_time
+                        ),
+                        bigquery.ScalarQueryParameter(
+                            "end_time", "TIMESTAMP", end_time
+                        ),
+                    ],
+                    **kwargs,
+                ),
+            )
+        ]
 
 
 def run_deduplication_query(client, sql, stable_table, job_config):
@@ -342,10 +363,10 @@ def main():
                         args.date,
                         args.dry_run,
                         args.slices,
-                        args.priority
+                        args.priority,
                     )
                     for live_table in live_tables
-                ]
+                ],
             )
             for args in jobs
         ]

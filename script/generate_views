@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 """
-Generate one view definition file per document type in '_stable' tables. 
-If there are existing view definitions in the destination directory then those will be kept instead.
+Generate one view definition file per document type in '_stable' tables.
+
+If there are existing view definitions in the destination directory then those will be
+kept instead.
 
 Run as:
   ./script/generate_views 'moz-fx-data-shared-prod:*_stable.*'
@@ -13,8 +15,6 @@ from fnmatch import fnmatchcase
 import logging
 import os
 import re
-import sys
-from typing import Callable, Iterable, Tuple
 
 from google.cloud import bigquery
 
@@ -60,8 +60,6 @@ def main():
         logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
-
-    wildcards = set("*?[]")
 
     client = bigquery.Client()
     views = get_views(client, args.patterns)
@@ -116,13 +114,13 @@ def create_views_if_not_exist(views, exclude, sql_dir):
     # create views unless a local file for creating the view exists
     for view, tables in views.items():
         if any(fnmatchcase(pattern, view) for pattern in exclude):
-            log.info("skipping table: matched by exclude pattern: {view}")
+            logging.info("skipping table: matched by exclude pattern: {view}")
             continue
         if view.endswith("_"):
             # A trailing '_' confuses the logic here of parsing versions,
             # and likely indicates that the table is somehow private, so
             # we ignore it.
-            log.info("skipping table ending in _: {view}")
+            logging.info("skipping table ending in _: {view}")
             continue
 
         version = max(

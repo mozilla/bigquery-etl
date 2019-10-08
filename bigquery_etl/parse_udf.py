@@ -134,8 +134,6 @@ def udf_usage_definitions(text, raw_udfs=None):
     """Return a list of definitions of UDFs used in provided SQL text."""
     if raw_udfs is None:
         raw_udfs = read_udf_dirs()
-    defined = set()
-    statements = []
     deps = []
     for udf_usage in udf_usages_in_text(text):
         deps = accumulate_dependencies(deps, raw_udfs, udf_usage)

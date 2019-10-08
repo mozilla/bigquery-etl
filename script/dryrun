@@ -10,7 +10,7 @@ only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
- 
+
 from multiprocessing.pool import ThreadPool
 from os.path import basename, dirname
 from urllib.request import urlopen, Request
@@ -19,7 +19,10 @@ import json
 import sys
 
 
-DRY_RUN_URL = "https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/bigquery-etl-dryrun"
+DRY_RUN_URL = (
+    "https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/"
+    "bigquery-etl-dryrun"
+)
 
 SKIP = {
     # Access Denied
@@ -37,7 +40,7 @@ SKIP = {
     "sql/search/search_clients_daily_v8/query.sql",
     # No matching signature for function IF
     "sql/static/fxa_amplitude_export_users_last_seen/query.sql",
-    # SQL functions with the same name but different signatures are currently unsupported
+    # Duplicate UDF
     "sql/static/fxa_amplitude_export_users_daily/query.sql",
     # Syntax error
     "sql/telemetry_derived/clients_last_seen_v1/init.sql",

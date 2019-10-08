@@ -7,24 +7,31 @@ WITH
   -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.
   first_services AS (
   SELECT
-    ROW_NUMBER() OVER (PARTITION BY user_id, service ORDER BY `timestamp`) AS _n,
+    ROW_NUMBER() OVER (w1) AS _n,
     user_id,
     service,
-    FIRST_VALUE(`timestamp`) OVER (PARTITION BY user_id, service ORDER BY `timestamp`) AS first_service_timestamp,
-    FIRST_VALUE(os_name) OVER (PARTITION BY user_id, service ORDER BY `timestamp`, os_name) AS first_service_os,
-    FIRST_VALUE(country) OVER (PARTITION BY user_id, service ORDER BY `timestamp`, country) AS first_service_country,
-    FIRST_VALUE(flow_id) OVER (PARTITION BY user_id, service ORDER BY `timestamp`, flow_id) AS first_service_flow,
+    udf_mode_last(ARRAY_AGG(`timestamp`)) OVER (w1) AS first_service_timestamp,
+    udf_mode_last(ARRAY_AGG(os_name)) OVER (w1) AS first_service_os,
+    udf_mode_last(ARRAY_AGG(country)) OVER (w1) AS first_service_country,
+    udf_mode_last(ARRAY_AGG(flow_id)) OVER (w1) AS first_service_flow,
     LOGICAL_OR(
       IFNULL(event_type = 'fxa_reg - complete', FALSE)
-      ) OVER (PARTITION BY user_id, service) AS did_register
+      ) OVER (w1) AS did_register
   FROM
     `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1`
   WHERE
     ((event_type IN ('fxa_login - complete', 'fxa_reg - complete'))
       OR (event_type LIKE 'fxa_activity%'))
-    AND DATE(`timestamp`) >= DATE(2019,3,1)
+    AND DATE(`timestamp`) >= '2019-03-01'
     AND service IS NOT NULL
-    AND user_id IS NOT NULL ),
+    AND user_id IS NOT NULL
+  WINDOW
+    w1 AS (
+      PARTITION BY
+        user_id,
+        service
+      ORDER BY
+        `timestamp` ) ),
   -- we need this next section because `did_register` will be BOTH true and false within the flows that the user registered on.
   -- this dedupes the rows from above and sets did_register to true only on flows that included a registration
   -- I've verified that `date(first_service_timestamp), count(distinct user_id) where did_register = true group by 1`  matches the counts of registrations per day in amplitude.

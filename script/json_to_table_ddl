@@ -8,7 +8,8 @@ See help for arguments. Currently does not implement field options or
 table options besides require_partition_filter.
 
 Example usage:
-    `bq show --format json <orignal table> | json_to_sql_ddl -d <new_project> -d <new_dataset>"
+    bq show --format json {orignal_table} |
+        json_to_table_ddl -d {new_project} -d {new_dataset}
 """
 
 
@@ -46,7 +47,8 @@ parser.add_argument("-t", "--table", help="Specifies new table name")
 parser.add_argument(
     "input",
     nargs="?",
-    help="JSON-formatted output from bq api or `bq show --format json <orignal table>` (can be provided via stdin)",
+    help="JSON-formatted output from bq api or `bq show --format json <orignal table>`"
+    " (can be provided via stdin)",
 )
 
 

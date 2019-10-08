@@ -1,11 +1,10 @@
 """PyTest plugin for running udf tests."""
-import traceback
 
-from .parse_udf import UDF_DIRS, parse_udf_dirs
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
-
 import pytest
+
+from ..parse_udf import UDF_DIRS, parse_udf_dirs
 
 TEST_UDF_DIRS = {"assert"}.union(UDF_DIRS)
 _parsed_udfs = None
@@ -19,6 +18,11 @@ def parsed_udfs():
             udf.filepath: udf for udf in parse_udf_dirs("tests/assert", *UDF_DIRS)
         }
     return _parsed_udfs
+
+
+def pytest_configure(config):
+    """Register a custom marker."""
+    config.addinivalue_line("markers", "udf: mark udf tests.")
 
 
 def pytest_collect_file(parent, path):
@@ -37,6 +41,7 @@ class UdfFile(pytest.File):
         self.udf = parsed_udfs()[self.name]
 
     def collect(self):
+        """Collect."""
         for i, query in enumerate(self.udf.tests_full_sql):
             yield UdfTest(f"{self.udf.name}#{i+1}", self, query)
 

@@ -1,6 +1,15 @@
 """PyTest plugin for running sql tests."""
-from . import parse_udf
-from .util import (
+
+from typing import Dict
+import json
+import os.path
+
+from google.api_core.exceptions import BadRequest
+from google.cloud import bigquery
+import pytest
+
+from .. import parse_udf
+from ..util import (
     coerce_result,
     dataset,
     get_query_params,
@@ -11,14 +20,13 @@ from .util import (
     Table,
     TABLE_EXTENSIONS,
 )
-from google.api_core.exceptions import BadRequest
-from google.cloud import bigquery
-
-import json
-import os.path
-import pytest
 
 expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}
+
+
+def pytest_configure(config):
+    """Register a custom marker."""
+    config.addinivalue_line("markers", "sql: mark sql tests.")
 
 
 def pytest_collect_file(parent, path):
@@ -96,7 +104,7 @@ class SqlTest(pytest.Item, pytest.File):
         if temp_udfs != query:
             query = temp_udfs
             # prepend udf definitions
-            query = parse_udf.prepend_udf_usage_definitions(query, raw_udfs)
+            query = parse_udf.prepend_udf_usage_definitions(query)
 
         dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
         if "CIRCLE_BUILD_NUM" in os.environ:

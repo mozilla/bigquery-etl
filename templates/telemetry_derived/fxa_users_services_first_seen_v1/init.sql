@@ -9,7 +9,7 @@ WITH
   SELECT
     ROW_NUMBER() OVER w1_unframed AS _n,
     user_id,
-    service,
+    IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service,
     -- using mode_last with w1_reversed to get mode_first
     udf_mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp,
     udf_mode_last(ARRAY_AGG(os_name) OVER w1_reversed) AS first_service_os,
@@ -21,17 +21,16 @@ WITH
   FROM
     `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1`
   WHERE
-    ((event_type IN ('fxa_login - complete', 'fxa_reg - complete'))
+    ((event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL)
       OR (event_type LIKE 'fxa_activity%'))
     AND DATE(`timestamp`) >= '2019-03-01'
-    AND service IS NOT NULL
     AND user_id IS NOT NULL
   WINDOW
     -- We must provide a window with `ORDER BY timestamp DESC` so that udf_mode_last actually aggregates mode first.
     w1_reversed AS (
       PARTITION BY
         user_id,
-        service
+        IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service
       ORDER BY
         `timestamp` DESC
       ROWS BETWEEN
@@ -41,7 +40,7 @@ WITH
     w1_unframed AS (
       PARTITION BY
         user_id,
-        service
+        IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service
       ORDER BY
         `timestamp`)),
   -- we need this next section because `did_register` will be BOTH true and false within the flows that the user registered on.

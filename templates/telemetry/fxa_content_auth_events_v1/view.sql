@@ -6,23 +6,7 @@ WITH
   SELECT
     jsonPayload.logger,
     jsonPayload.fields.event_type,
-    jsonPayload.fields.os_name,
-    jsonPayload.fields.os_version,
-    jsonPayload.fields.country,
-    jsonPayload.fields.language,
-    jsonPayload.fields.user_id,
-    jsonPayload.fields.user_properties,
-    jsonPayload.fields.event_properties,
-    `timestamp`,
-    receiveTimestamp
-  FROM
-    `moz-fx-data-derived-datasets.telemetry.fxa_auth_events_v1`
-  ),
-  --
-  auth as (
-  SELECT
-    jsonPayload.logger,
-    jsonPayload.fields.event_type,
+    jsonPayload.fields.app_version,
     jsonPayload.fields.os_name,
     jsonPayload.fields.os_version,
     jsonPayload.fields.country,
@@ -34,6 +18,24 @@ WITH
     receiveTimestamp
   FROM
     `moz-fx-data-derived-datasets.telemetry.fxa_content_events_v1`
+  ),
+  --
+  auth as (
+  SELECT
+    jsonPayload.logger,
+    jsonPayload.fields.event_type,
+    jsonPayload.fields.app_version,
+    jsonPayload.fields.os_name,
+    jsonPayload.fields.os_version,
+    jsonPayload.fields.country,
+    jsonPayload.fields.language,
+    jsonPayload.fields.user_id,
+    jsonPayload.fields.user_properties,
+    jsonPayload.fields.event_properties,
+    `timestamp`,
+    receiveTimestamp
+  FROM
+    `moz-fx-data-derived-datasets.telemetry.fxa_auth_events_v1`
   ),
   --
   unioned AS (

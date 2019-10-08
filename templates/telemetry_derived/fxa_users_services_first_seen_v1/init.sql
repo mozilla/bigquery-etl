@@ -10,10 +10,10 @@ WITH
     ROW_NUMBER() OVER (w1) AS _n,
     user_id,
     service,
-    udf_mode_last(ARRAY_AGG(`timestamp`)) OVER (w1) AS first_service_timestamp,
-    udf_mode_last(ARRAY_AGG(os_name)) OVER (w1) AS first_service_os,
-    udf_mode_last(ARRAY_AGG(country)) OVER (w1) AS first_service_country,
-    udf_mode_last(ARRAY_AGG(flow_id)) OVER (w1) AS first_service_flow,
+    udf_mode_last(ARRAY_AGG(`timestamp`) OVER (w1)) AS first_service_timestamp,
+    udf_mode_last(ARRAY_AGG(os_name) OVER (w1)) AS first_service_os,
+    udf_mode_last(ARRAY_AGG(country) OVER (w1)) AS first_service_country,
+    udf_mode_last(ARRAY_AGG(flow_id) OVER (w1)) AS first_service_flow,
     LOGICAL_OR(
       IFNULL(event_type = 'fxa_reg - complete', FALSE)
       ) OVER (w1) AS did_register

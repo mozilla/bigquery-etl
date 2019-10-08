@@ -50,7 +50,7 @@ WITH
       'mktg - email_sent',
       'sync - repair_success',
       'sync - repair_triggered')
-  )
+  ),
   windowed AS (
   SELECT
     DATE(`timestamp`) AS submission_date,

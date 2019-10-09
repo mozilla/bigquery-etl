@@ -3,13 +3,19 @@ CREATE OR REPLACE TABLE
 PARTITION BY DATE(first_service_timestamp)
 CLUSTER BY service, user_id AS
 WITH
+  base AS (
+  SELECT
+    * REPLACE(IF(service IS NULL AND event_type = 'fxa_activity - cert_signed',
+                 'sync', service) AS service)
+  FROM
+    `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1` ),
   -- use a window function to look within each USER and SERVICE for the first value of service, os, and country.
   -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.
   first_services AS (
   SELECT
     ROW_NUMBER() OVER w1_unframed AS _n,
     user_id,
-    IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service,
+    service,
     -- using mode_last with w1_reversed to get mode_first
     udf_mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp,
     udf_mode_last(ARRAY_AGG(os_name) OVER w1_reversed) AS first_service_os,
@@ -19,7 +25,7 @@ WITH
       IFNULL(event_type = 'fxa_reg - complete', FALSE)
       ) OVER w1_reversed AS did_register
   FROM
-    `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1`
+    base
   WHERE
     ((event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL)
       OR (event_type LIKE 'fxa_activity%'))
@@ -30,7 +36,7 @@ WITH
     w1_reversed AS (
       PARTITION BY
         user_id,
-        IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service)
+        service
       ORDER BY
         `timestamp` DESC
       ROWS BETWEEN
@@ -40,7 +46,7 @@ WITH
     w1_unframed AS (
       PARTITION BY
         user_id,
-        IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service)
+        service
       ORDER BY
         `timestamp`)),
   -- we need this next section because `did_register` will be BOTH true and false within the flows that the user registered on.

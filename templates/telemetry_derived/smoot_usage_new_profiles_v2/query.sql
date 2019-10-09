@@ -1,10 +1,10 @@
 WITH
   base AS (
-  SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_desktop_v2`
+  SELECT * FROM smoot_usage_desktop_v2
   UNION ALL
-  SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_nondesktop_v2`
+  SELECT * FROM smoot_usage_nondesktop_v2
   UNION ALL
-  SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.smoot_usage_fxa_v2`
+  SELECT * FROM smoot_usage_fxa_v2
   )
   --
 SELECT

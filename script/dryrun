@@ -10,7 +10,7 @@ only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
- 
+
 from multiprocessing.pool import ThreadPool
 from os.path import basename, dirname
 from urllib.request import urlopen, Request
@@ -19,7 +19,13 @@ import json
 import sys
 
 
-DRY_RUN_URL = "https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/bigquery-etl-dryrun"
+DRY_RUN_URL = (
+    "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun"
+)
+DERIVED_DATASETS_DRY_RUN_URL = (
+    "https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/"
+    "bigquery-etl-dryrun"
+)
 
 SKIP = {
     # Access Denied
@@ -32,13 +38,14 @@ SKIP = {
     "sql/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql",
     "sql/telemetry/core_clients_last_seen_raw_v1/init.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/init.sql",
+    "sql/telemetry_derived/fxa_users_services_last_seen_v1/init.sql",
     # Reference table not found
     "sql/monitoring/structured_detailed_error_counts_v1/view.sql",
     "sql/search/search_aggregates_v8/query.sql",
     "sql/search/search_clients_daily_v8/query.sql",
     # No matching signature for function IF
     "sql/static/fxa_amplitude_export_users_last_seen/query.sql",
-    # SQL functions with the same name but different signatures are currently unsupported
+    # Duplicate UDF
     "sql/static/fxa_amplitude_export_users_daily/query.sql",
     # Syntax error
     "sql/telemetry_derived/clients_last_seen_v1/init.sql",
@@ -47,13 +54,33 @@ SKIP = {
     "sql/telemetry_derived/addons_aggregates_v3/query.sql",
 }
 
+USE_DERIVED_DATASETS = {
+    "sql/telemetry_derived/ssl_ratios_v1/query.sql",
+    "sql/telemetry_derived/clients_last_seen_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_v7/query.sql",
+    "sql/telemetry/fxa_users_last_seen_raw_v1/query.sql",
+    "sql/telemetry/clients_daily_keyed_boolean_aggregates_v1/query.sql",
+    "sql/telemetry/clients_daily_scalar_aggregates_v1/query.sql",
+    "sql/telemetry/client_histogram_probe_counts_v1/query.sql",
+    "sql/telemetry/clients_daily_keyed_scalar_aggregates_v1/query.sql",
+    "sql/telemetry/firefox_accounts_exact_mau28_raw_v1/query.sql",
+    "sql/telemetry/core_clients_daily_v1/query.sql",
+    "sql/telemetry/client_scalar_probe_counts_v1/query.sql",
+    "sql/telemetry/firefox_kpi_dashboard_v1/query.sql",
+    "sql/telemetry/core_clients_last_seen_raw_v1/query.sql",
+}
+
 
 def worker_entrypoint(sqlfile):
     sql = open(sqlfile).read()
+    if sqlfile in USE_DERIVED_DATASETS:
+        url = DERIVED_DATASETS_DRY_RUN_URL
+    else:
+        url = DRY_RUN_URL
     try:
         r = urlopen(
             Request(
-                DRY_RUN_URL,
+                url,
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(
                     {"dataset": basename(dirname(dirname(sqlfile))), "query": sql}
@@ -80,7 +107,7 @@ def worker_entrypoint(sqlfile):
         # We want the dryrun service to only have read permissions, so
         # we expect CREATE VIEW and CREATE TABLE to throw specific
         # exceptions.
-        print(f"{sqlfile:59} OK, but with insufficient access to create table/view")
+        print(f"{sqlfile:59} OK")
     else:
         print(f"{sqlfile:59} ERROR\n", response["errors"])
         return False

@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
 """
-This script publishes all user-defined functions in udf/ as persistent UDFs in the udf dataset.
+This script publishes all user-defined functions in a directory as persistent
+UDFs in the {dirname} dataset.
 
-The udf_ prefix will be stripped from names of published UDFs.
+The {dirname}_ prefix will be stripped from names of published UDFs.
 """
 
 from argparse import ArgumentParser
 import os
 import sys
 import re
+
 from google.cloud import bigquery
 from gcloud import storage
 
@@ -17,11 +19,7 @@ from gcloud import storage
 # and sibling directories. Also see:
 # https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from bigquery_etl.parse_udf import (
-    read_udf_dirs,
-    udf_usages_in_file,
-    accumulate_dependencies,
-)
+from bigquery_etl.parse_udf import read_udf_dirs, accumulate_dependencies  # noqa E402
 
 
 UDF_RE = re.compile(r"udf_(?:js_|legacy_)?([a-zA-z0-9_]+)")
@@ -89,7 +87,8 @@ def main():
 def publish_persistent_udf(raw_udf, client, dataset, project_id, gcs_bucket, gcs_path):
     # transforms temporary UDF to persistent UDFs and publishes them
     for definition in raw_udf.definitions:
-        # Within a standard SQL function, references to other entities require explicit project IDs
+        # Within a standard SQL function, references to other entities require
+        # explicit project IDs
         query_with_renamed_udfs = UDF_RE.sub(
             "`" + project_id + "`." + dataset + "." + r"\1", definition
         )

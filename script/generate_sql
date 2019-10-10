@@ -51,11 +51,9 @@ def main():
 
     with tempfile.TemporaryDirectory() as d:
         for root, dirs, files in os.walk(args.sql_dir):
-            print("root: " + root)
             sql_files = [filename for filename in files if filename.endswith(".sql")]
 
             basename = root.replace(args.sql_dir, d, 1)
-            print(basename)
             if not os.path.exists(basename) and (dirs or sql_files):
                 os.mkdir(basename)
 
@@ -66,7 +64,6 @@ def main():
                 full_text = prepend_udf_usage_definitions(text, raw_udfs)
 
                 with open(os.path.join(basename, filename), "a+") as output_file:
-                    print(os.path.join(basename, filename))
                     output_file.write(full_text)
 
         if os.path.exists(args.destination):

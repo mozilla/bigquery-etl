@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.pipeline.structured_detailed_error_counts_v1`
+  `moz-fx-data-shared-prod.monitoring.structured_detailed_error_counts_v1`
 AS
 WITH error_examples AS (
   SELECT
@@ -9,7 +9,7 @@ WITH error_examples AS (
     document_version,
     error_type,
     error_message,
-    udf_js,gunzip(ANY_VALUE(payload)) AS sample_payload,
+    `moz-fx-data-shared-prod.udf_js.gunzip`(ANY_VALUE(payload)) AS sample_payload,
     COUNT(*) AS error_count
   FROM
     `moz-fx-data-shared-prod.payload_bytes_error.structured`
@@ -27,7 +27,7 @@ WITH error_examples AS (
     error_message,
     sample_payload
   FROM
-    structured_hourly_errors
+    `moz-fx-data-shared-prod.monitoring.structured_error_counts_v1` structured_hourly_errors
   INNER JOIN
     error_examples USING (hour, document_namespace, document_type, document_version, error_type)
 ), with_ratio AS (
@@ -37,5 +37,7 @@ WITH error_examples AS (
   FROM
     structured_detailed_hourly_errors
 )
-SELECT * FROM
+SELECT
+  *
+FROM
   with_ratio

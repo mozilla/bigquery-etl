@@ -11,6 +11,7 @@ from argparse import ArgumentParser
 import os
 import shutil
 import sys
+import tempfile
 
 # sys.path needs to be modified to enable package imports from parent
 # and sibling directories. Also see:
@@ -44,29 +45,33 @@ parser.add_argument(
 
 def main():
     args = parser.parse_args()
+    args.sql_dir = os.path.abspath(args.sql_dir)
 
     raw_udfs = read_udf_dirs(*args.udf_dir)
 
-    # create output directory if not exists or remove existing files
-    if os.path.exists(args.destination):
-        shutil.rmtree(args.destination, ignore_errors=True)
-    os.makedirs(args.destination, exist_ok=True)
+    with tempfile.TemporaryDirectory() as d:
+        for root, dirs, files in os.walk(args.sql_dir):
+            print("root: " + root)
+            sql_files = [filename for filename in files if filename.endswith(".sql")]
 
-    for root, dirs, files in os.walk(args.sql_dir):
-        sql_files = [filename for filename in files if filename.endswith(".sql")]
+            basename = root.replace(args.sql_dir, d, 1)
+            print(basename)
+            if not os.path.exists(basename) and (dirs or sql_files):
+                os.mkdir(basename)
 
-        basename = root.replace(args.sql_dir, args.destination, 1)
-        if not os.path.exists(basename) and (dirs or sql_files):
-            os.mkdir(basename)
+            for filename in sql_files:
+                with open(os.path.join(root, filename)) as input_file:
+                    text = input_file.read()
 
-        for filename in sql_files:
-            with open(os.path.join(root, filename)) as input_file:
-                text = input_file.read()
+                full_text = prepend_udf_usage_definitions(text, raw_udfs)
 
-            full_text = prepend_udf_usage_definitions(text, raw_udfs)
+                with open(os.path.join(basename, filename), "a+") as output_file:
+                    print(os.path.join(basename, filename))
+                    output_file.write(full_text)
 
-            with open(os.path.join(basename, filename), "a+") as output_file:
-                output_file.write(full_text)
+        if os.path.exists(args.destination):
+            shutil.rmtree(args.destination, ignore_errors=True)
+        shutil.copytree(d, args.destination)
 
 
 if __name__ == "__main__":

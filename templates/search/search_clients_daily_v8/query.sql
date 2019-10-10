@@ -110,7 +110,7 @@ WITH
     udf_mode_last(ARRAY_AGG(default_search_engine_data_submission_url) OVER w1) AS default_search_engine_data_submission_url,
     udf_mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
     COUNTIF(subsession_counter = 1) OVER w1 AS sessions_started_on_this_day,
-    UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))) - profile_creation_date AS profile_age_in_days,
+    SAFE_SUBTRACT(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))), profile_creation_date) AS profile_age_in_days,
     SUM(subsession_length/NUMERIC '3600') OVER w1 AS subsession_hours_sum,
     AVG(active_addons_count) OVER w1 AS active_addons_count_mean,
     MAX(scalar_parent_browser_engagement_max_concurrent_tab_count) OVER w1 AS max_concurrent_tab_count_max,

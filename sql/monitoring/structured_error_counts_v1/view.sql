@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.pipeline.structured_error_counts_v1`
+  `moz-fx-data-shared-prod.monitoring.structured_error_counts_v1`
 AS
 WITH ping_counts AS (
   SELECT
@@ -34,7 +34,7 @@ WITH ping_counts AS (
     document_version,
     error_type,
     ping_count + error_counts.error_count AS ping_count,
-    error_counts.error_count,
+    error_counts.error_count
   FROM
     ping_counts
   INNER JOIN
@@ -46,5 +46,7 @@ WITH ping_counts AS (
   FROM
     structured_hourly_errors
 )
-SELECT * FROM
+SELECT
+  *
+FROM
   with_ratio

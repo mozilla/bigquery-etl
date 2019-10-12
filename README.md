@@ -5,9 +5,9 @@ BigQuery ETL
 
 Bigquery UDFs and SQL queries for building derived datasets.
 
-Formatting SQL
+Formatting SQL//
 ---
-
+---
 SQL should be formatted using `script/format-sql`. This script requires `node`,
 with dependencies installed via `npm install`.
 

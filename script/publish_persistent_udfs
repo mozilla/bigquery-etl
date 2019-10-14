@@ -52,7 +52,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--dep-dir",
-    default="udf/lib/",
+    default="udf_js/lib/",
     help="The directory JavaScript dependency files for UDFs are stored.",
 )
 

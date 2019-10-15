@@ -170,6 +170,12 @@ Incremental Queries
       preceding the first day was missing because values are only impacted by
       27 preceding days
 
+Scheduling Queries in Airflow
+---
+
+Instructions for scheduling queries in Airflow can be found in this 
+[cookbook](https://docs.telemetry.mozilla.org/cookbooks/bigquery-airflow.html).
+
 Contributing
 ---
 

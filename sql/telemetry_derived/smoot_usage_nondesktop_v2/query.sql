@@ -59,6 +59,7 @@ WITH
       CASE app_name
         WHEN 'Fennec' THEN CONCAT(app_name, ' ', os)
         WHEN 'Focus' THEN CONCAT(app_name, ' ', os)
+        WHEN 'Lockbox' THEN CONCAT('Lockwise ', os)
         WHEN 'Zerda' THEN 'Firefox Lite'
         ELSE app_name
       END AS app_name),
@@ -74,6 +75,7 @@ WITH
       'Fenix',
       'Fennec', -- Firefox for Android and Firefox for iOS
       'Focus',
+      'Lockbox', -- Lockwise
       'FirefoxConnect', -- Amazon Echo
       'FirefoxForFireTV',
       'Zerda')) -- Firefox Lite, previously called Rocket

@@ -39,6 +39,7 @@ SELECT
   CASE app_name
     WHEN 'Fennec' THEN CONCAT(app_name, ' ', os)
     WHEN 'Focus' THEN CONCAT(app_name, ' ', os)
+    WHEN 'Lockbox' THEN CONCAT('Lockwise ', os)
     WHEN 'Zerda' THEN 'Firefox Lite'
     ELSE app_name
   END AS product,
@@ -58,6 +59,7 @@ WHERE
     'Fenix',
     'Fennec', -- Firefox for Android and Firefox for iOS
     'Focus',
+    'Lockbox', -- Lockwise
     'Zerda', -- Firefox Lite, previously called Rocket
     'FirefoxForFireTV', -- Amazon Fire TV
     'FirefoxConnect' -- Amazon Echo Show

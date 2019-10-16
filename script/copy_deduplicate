@@ -145,8 +145,12 @@ parser.add_argument(
     "--billing_project",
     "--billing-project",
     nargs="+",
+    # default to one client, with project=None for the google cloud sdk default project
     default=[None],
-    help="One or more billing projects over which bigquery jobs should be distributed",
+    help=(
+        "One or more billing projects over which bigquery jobs should be distributed; "
+        "if not specified use the google cloud sdk default project"
+    ),
 )
 group = parser.add_mutually_exclusive_group()
 group.add_argument(

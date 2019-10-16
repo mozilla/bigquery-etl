@@ -80,7 +80,7 @@ parser.add_argument(
     "--project_id",
     "--project-id",
     default="moz-fx-data-shar-nonprod-efed",
-    help="ID of the project in which to run query jobs",
+    help="ID of the project in which to find tables",
 )
 parser.add_argument(
     "--dates",

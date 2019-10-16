@@ -242,7 +242,9 @@ WITH
   FROM
     forecast_base
   WHERE
-    type != 'original'),
+    type != 'original'
+    -- Make sure we don't accidentally have the actuals and forecast overlap
+    AND `date` > (SELECT MAX(submission_date) FROM with_ci) ),
   -- We use imputed values for the period after the Armag-add-on deletion event;
   -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1552558
   with_imputed AS (

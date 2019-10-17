@@ -62,6 +62,8 @@ USE_DERIVED_DATASETS = {
     "sql/telemetry/clients_daily_keyed_boolean_aggregates_v1/query.sql",
     "sql/telemetry/clients_daily_scalar_aggregates_v1/query.sql",
     "sql/telemetry/client_histogram_probe_counts_v1/query.sql",
+    "sql/telemetry/clients_scalar_aggregates_v1/query.sql",
+    "sql/telemetry/clients_histogram_aggregates_v1/query.sql",
     "sql/telemetry/clients_daily_keyed_scalar_aggregates_v1/query.sql",
     "sql/telemetry/firefox_accounts_exact_mau28_raw_v1/query.sql",
     "sql/telemetry/core_clients_daily_v1/query.sql",

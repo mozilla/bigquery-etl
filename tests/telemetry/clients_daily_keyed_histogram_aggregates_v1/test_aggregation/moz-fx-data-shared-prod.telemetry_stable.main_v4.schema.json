@@ -16,17 +16,7 @@
   },
   {
     "type": "STRING",
-    "name": "app_build_id",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
     "name": "client_id",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "channel",
     "mode": "NULLABLE"
   },
   {
@@ -37,11 +27,6 @@
   {
     "type": "STRING",
     "name": "normalized_os",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "app_version",
     "mode": "NULLABLE"
   },
   {

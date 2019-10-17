@@ -98,39 +98,25 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause):
               WHERE histogram IS NOT NULL
               GROUP BY key));
 
-        WITH
-          -- normalize client_id and rank by document_id
-          numbered_duplicates AS (
+        WITH filtered AS (
             SELECT
-                ROW_NUMBER() OVER (
-                    PARTITION BY
-                        client_id,
-                        submission_timestamp,
-                        document_id
-                    ORDER BY submission_timestamp
-                    ASC
-                ) AS _n,
-                * REPLACE(LOWER(client_id) AS client_id)
+                *,
+                SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
+                DATE(submission_timestamp) as submission_date,
+                normalized_os as os,
+                application.build_id AS app_build_id,
+                normalized_channel AS channel
             FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
             WHERE DATE(submission_timestamp) = @submission_date
-            AND application.channel in (
-                "release", "esr", "beta", "aurora", "default", "nightly"
-            )
-            AND client_id IS NOT NULL
-          ),
-
-
-        -- Deduplicating on document_id is necessary to get valid SUM values.
-        deduplicated AS (
-            SELECT * EXCEPT (_n)
-            FROM numbered_duplicates
-            WHERE _n = 1
-        ),
+                AND normalized_channel in (
+                  "release", "beta", "nightly"
+                )
+                AND client_id IS NOT NULL),
 
         {additional_queries}
 
         -- Aggregate by client_id using windows
-        windowed AS (
+        aggregated AS (
             {windowed_clause}
         )
         {select_clause}
@@ -148,8 +134,8 @@ def _get_keyed_histogram_sql(probes):
     probes_string = """
         metric,
         key,
-        ARRAY_AGG(value) OVER w1 as bucket_range,
-        ARRAY_AGG(value) OVER w1 as value
+        ARRAY_AGG(value) as bucket_range,
+        ARRAY_AGG(value) as value
     """
 
     additional_queries = f"""
@@ -168,7 +154,7 @@ def _get_keyed_histogram_sql(probes):
             >>[
               {probes_arr}
             ] as metrics
-          FROM deduplicated),
+          FROM filtered),
 
           flattened_metrics AS
             (SELECT
@@ -189,7 +175,6 @@ def _get_keyed_histogram_sql(probes):
 
     windowed_clause = f"""
         SELECT
-            ROW_NUMBER() OVER w1_unframed AS _n,
             submission_date,
             client_id,
             os,
@@ -198,38 +183,19 @@ def _get_keyed_histogram_sql(probes):
             channel,
             {probes_string}
             FROM flattened_metrics
-            WINDOW
-                -- Aggregations require a framed window
-                w1 AS (
-                    PARTITION BY
-                        client_id,
-                        submission_date,
-                        os,
-                        app_version,
-                        app_build_id,
-                        channel,
-                        metric,
-                        key
-                    ORDER BY `submission_timestamp` ASC ROWS BETWEEN UNBOUNDED PRECEDING
-                    AND UNBOUNDED FOLLOWING
-                ),
-
-                -- ROW_NUMBER does not work on a framed window
-                w1_unframed AS (
-                    PARTITION BY
-                        client_id,
-                        submission_date,
-                        os,
-                        app_version,
-                        app_build_id,
-                        channel,
-                        metric,
-                        key
-                    ORDER BY `submission_timestamp` ASC)
+            GROUP BY
+                client_id,
+                submission_date,
+                os,
+                app_version,
+                app_build_id,
+                channel,
+                metric,
+                key
     """
 
     select_clause = """
-        select
+        SELECT
             client_id,
             submission_date,
             os,
@@ -255,9 +221,14 @@ def _get_keyed_histogram_sql(probes):
                 udf_get_bucket_range(bucket_range),
                 udf_aggregate_json_sum(value)
             )) AS histogram_aggregates
-        from windowed
-        where _n = 1
-        group by 1,2,3,4,5,6
+        FROM aggregated
+        GROUP BY
+            client_id,
+            submission_date,
+            os,
+            app_version,
+            app_build_id,
+            channel
     """
 
     return {
@@ -279,8 +250,8 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
             "('{metric}', "
             "'histogram', '', "
             "'summed-histogram', "
-            "ARRAY_AGG(payload.histograms.{metric}) OVER w1, "
-            "ARRAY_AGG(payload.histograms.{metric}) OVER w1)"
+            "ARRAY_AGG(payload.histograms.{metric}), "
+            "ARRAY_AGG(payload.histograms.{metric}))"
         )
         probe_structs.append(agg_string.format(metric=probe))
 
@@ -302,7 +273,7 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
         "select_clause"
     ] = f"""
         SELECT
-            * EXCEPT (_n) REPLACE (
+            * REPLACE (
                 ARRAY(
                 SELECT AS STRUCT
                     * REPLACE (
@@ -315,16 +286,13 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
                 ) AS histogram_aggregates
             )
         FROM
-            windowed
-        WHERE
-            _n = 1
+            aggregated
     """
 
     sql_strings[
         "windowed_clause"
     ] = f"""
         SELECT
-            ROW_NUMBER() OVER w1_unframed AS _n,
             DATE(submission_timestamp) as submission_date,
             client_id,
             normalized_os as os,
@@ -332,32 +300,14 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
             application.build_id AS app_build_id,
             normalized_channel AS channel,
                 {probes_string}
-            FROM deduplicated
-            WINDOW
-                -- Aggregations require a framed window
-                w1 AS (
-                    PARTITION BY
-                        client_id,
-                        DATE(submission_timestamp),
-                        normalized_os,
-                        SPLIT(application.version, '.')[OFFSET(0)],
-                        application.build_id,
-                        normalized_channel
-                    ORDER BY `submission_timestamp` ASC ROWS BETWEEN UNBOUNDED PRECEDING
-                    AND UNBOUNDED FOLLOWING
-                ),
-
-                -- ROW_NUMBER does not work on a framed window
-                w1_unframed AS (
-                    PARTITION BY
-                        client_id,
-                        DATE(submission_timestamp),
-                        normalized_os,
-                        SPLIT(application.version, '.')[OFFSET(0)],
-                        application.build_id,
-                        normalized_channel
-                    ORDER BY `submission_timestamp` ASC
-                )
+            FROM filtered
+            GROUP BY
+                client_id,
+                DATE(submission_timestamp),
+                normalized_os,
+                SPLIT(application.version, '.')[OFFSET(0)],
+                application.build_id,
+                normalized_channel
     """
 
     return sql_strings

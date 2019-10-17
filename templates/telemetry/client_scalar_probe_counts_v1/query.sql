@@ -39,7 +39,6 @@ RETURNS ARRAY<STRING> AS (
   )
 );
 
-
 CREATE TEMP FUNCTION udf_get_buckets(min INT64, max INT64, num INT64, metric_type STRING)
 RETURNS ARRAY<INT64> AS (
   (
@@ -55,22 +54,6 @@ RETURNS ARRAY<INT64> AS (
     SELECT ARRAY_AGG(CAST(item AS INT64))
     FROM buckets
     CROSS JOIN UNNEST(arr) AS item
-  )
-);
-
-CREATE TEMP FUNCTION udf_bucket (
-  val FLOAT64,
-  min_bucket INT64,
-  max_bucket INT64,
-  num_buckets INT64,
-  metric_type STRING
-)
-RETURNS FLOAT64 AS (
-  -- Bucket `value` into a histogram with min_bucket, max_bucket and num_buckets
-  (
-    SELECT max(CAST(bucket AS INT64))
-    FROM UNNEST(udf_get_buckets(min_bucket, max_bucket, num_buckets, metric_type)) AS bucket
-    WHERE val >= CAST(bucket AS INT64)
   )
 );
 
@@ -94,15 +77,19 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf_buckets_to_map (buckets ARRAY<STRING>)
-RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
-  -- Given an array of values, transform them into a histogram MAP
-  -- with the number of each key in the `buckets` array
+CREATE TEMP FUNCTION udf_bucket (
+  val FLOAT64,
+  min_bucket INT64,
+  max_bucket INT64,
+  num_buckets INT64,
+  metric_type STRING
+)
+RETURNS FLOAT64 AS (
+  -- Bucket `value` into a histogram with min_bucket, max_bucket and num_buckets
   (
-    SELECT
-       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, 1.0))
-    FROM
-      UNNEST(buckets) AS bucket
+    SELECT max(CAST(bucket AS INT64))
+    FROM UNNEST(udf_get_buckets(min_bucket, max_bucket, num_buckets, metric_type)) AS bucket
+    WHERE val >= CAST(bucket AS INT64)
   )
 );
 
@@ -127,140 +114,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
-WITH latest_versions AS (
-  SELECT channel, MAX(CAST(app_version AS INT64)) AS latest_version
-  FROM
-    (SELECT
-      normalized_channel AS channel,
-      SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
-      COUNT(*)
-    FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
-    WHERE DATE(submission_timestamp) > DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
-    AND normalized_channel IN ("nightly", "beta", "release")
-    GROUP BY 1, 2
-    HAVING COUNT(*) > 1000
-    ORDER BY 1, 2 DESC)
-  GROUP BY 1),
-
-filtered_aggregates AS (
-  SELECT *
-  FROM clients_daily_scalar_aggregates_v1
-  CROSS JOIN
-    UNNEST(scalar_aggregates)
-  WHERE submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
-  AND value IS NOT NULL
-  AND channel IN ('release', 'beta', 'nightly')
-),
-
-scalar_aggregates AS (
-  SELECT
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    scalar_aggs.channel,
-    metric,
-    metric_type,
-    key,
-    agg_type,
-    CASE agg_type
-      WHEN 'max' THEN max(value)
-      WHEN 'min' THEN min(value)
-      WHEN 'avg' THEN avg(value)
-      WHEN 'sum' THEN sum(value)
-      WHEN 'false' THEN sum(value)
-      WHEN 'true' THEN sum(value)
-    END AS agg_value
-  FROM filtered_aggregates AS scalar_aggs
-  LEFT JOIN latest_versions
-  ON latest_versions.channel = scalar_aggs.channel
-  WHERE CAST(app_version AS INT64) >= (latest_version - 2)
-  GROUP BY
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type
-),
-
-all_booleans AS (
-  SELECT
-    *
-  FROM
-    scalar_aggregates
-  WHERE
-    metric_type in ("boolean", "keyed-scalar-boolean")
-),
-
-boolean_columns AS
-  (SELECT
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type,
-    CASE agg_type
-      WHEN 'true' THEN agg_value ELSE 0
-    END AS bool_true,
-    CASE agg_type
-      WHEN 'false' THEN agg_value ELSE 0
-    END AS bool_false
-  FROM all_booleans),
-
-summed_bools AS
-  (SELECT
-      client_id,
-      os,
-      app_version,
-      app_build_id,
-      channel,
-      metric,
-      metric_type,
-      key,
-      '' AS agg_type,
-      SUM(bool_true) AS bool_true,
-      SUM(bool_false) AS bool_false
-  FROM boolean_columns
-  GROUP BY 1,2,3,4,5,6,7,8,9),
-
-booleans AS
-  (SELECT * EXCEPT(bool_true, bool_false),
-  CASE
-    WHEN bool_true > 0 AND bool_false > 0
-    THEN "sometimes"
-    WHEN bool_true > 0 AND bool_false = 0
-    THEN "always"
-    WHEN bool_true = 0 AND bool_false > 0
-    THEN "never"
-  END AS agg_value
-  FROM summed_bools
-  WHERE bool_true > 0 OR bool_false > 0),
-
-clients_aggregates_v1 AS (
-  SELECT
-    *
-  FROM
-    booleans
-
-  UNION ALL
-
-  SELECT
-    * REPLACE(CAST(agg_value AS STRING) AS agg_value)
-  FROM
-    scalar_aggregates
-  WHERE
-    metric_type in ("scalar", "keyed-scalar")
-),
-
-bucketed_scalars AS (
+WITH bucketed_scalars AS (
   SELECT
     client_id,
     os,
@@ -273,13 +127,38 @@ bucketed_scalars AS (
     agg_type,
     CASE
       WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-      THEN SAFE_CAST(udf_bucket(SAFE_CAST(agg_value AS FLOAT64), 1, 1000, 50, 'scalar') AS STRING)
+        THEN SAFE_CAST(udf_bucket(SAFE_CAST(agg_value AS FLOAT64), 1, 1000, 50, 'scalar') AS STRING)
       WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-      THEN agg_value
+        THEN agg_value
     END AS bucket
   FROM
-    clients_aggregates_v1
-)
+    clients_scalar_aggregates_v1),
+
+bucket_counts AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    agg_type AS client_agg_type,
+    'histogram' AS agg_type,
+    bucket,
+    COUNT(*) AS count
+  FROM
+    bucketed_scalars
+  GROUP BY
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    client_agg_type,
+    bucket)
 
 SELECT
   os,
@@ -289,21 +168,21 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   os,
   app_version,
@@ -312,7 +191,8 @@ GROUP BY
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type
 
 UNION ALL
 
@@ -324,21 +204,21 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   app_version,
   app_build_id,
@@ -346,7 +226,8 @@ GROUP BY
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type
 
 UNION ALL
 
@@ -358,21 +239,21 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   os,
   app_build_id,
@@ -380,7 +261,8 @@ GROUP BY
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type
 
 UNION ALL
 
@@ -392,21 +274,21 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   os,
   app_version,
@@ -414,7 +296,8 @@ GROUP BY
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type
 
 UNION ALL
 
@@ -426,28 +309,29 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   os,
   channel,
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type
 
 UNION ALL
 
@@ -459,28 +343,29 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   app_version,
   channel,
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type
 
 UNION ALL
 
@@ -492,27 +377,28 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   app_version,
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type
 
 UNION ALL
 
@@ -524,27 +410,28 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   os,
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type
 
 UNION ALL
 
@@ -556,27 +443,28 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   channel,
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type
 
 UNION ALL
 
@@ -588,23 +476,24 @@ SELECT
   metric,
   metric_type,
   key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
+  client_agg_type,
+  agg_type,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       udf_to_string_arr(udf_get_buckets(1, 1000, 50, metric_type))
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
     THEN udf_fill_buckets(
-      udf_dedupe_map_sum(udf_buckets_to_map(ARRAY_AGG(bucket))),
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
-  bucketed_scalars
+  bucket_counts
 GROUP BY
   metric,
   metric_type,
   key,
-  client_agg_type
+  client_agg_type,
+  agg_type

@@ -1,22 +1,26 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 """Read a table from the BigQuery Storage API and write it as parquet."""
 
 from argparse import ArgumentParser
 from textwrap import dedent
+import json
 import re
+import sys
 
+try:
+    from google.cloud import bigquery
+except ImportError as e:
+    bigquery = None
+    bigquery_error = e
 
 parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "table", help='Passed to spark.read.format("bigquery").option("table", _).'
-)
+parser.add_argument("table", help="BigQuery table to read")
 parser.add_argument(
     "--dataset",
     dest="dataset",
     default="telemetry",
-    help='Passed to spark.read.format("bigquery").option("dataset", _). Defaults to'
-    ' "telemetry".',
+    help='BigQuery dataset that contains TABLE. Defaults to "telemetry".',
 )
 parser.add_argument(
     "--destination",
@@ -38,7 +42,7 @@ parser.add_argument(
     dest="drop",
     nargs="+",
     help="A list of fields to exclude from the output. Passed to df.drop(*_) after"
-    " --select and --where are processed.",
+    " --select is applied.",
 )
 parser.add_argument(
     "--dry-run",
@@ -71,8 +75,21 @@ parser.add_argument(
     dest="select",
     nargs="+",
     help="A list of all fields to include in the output."
-    " Passed to df.selectExpr(*_) before --drop is processed and after --where"
-    " is processed. Can include sql expressions",
+    " Passed to df.selectExpr(*_) after --replace is applied and before --drop."
+    " Can include sql expressions.",
+)
+parser.add_argument(
+    "--maps-from-entries",
+    action="store_true",
+    help="Recursively convert repeated key-value structs with maps.",
+)
+parser.add_argument(
+    "--replace",
+    default=[],
+    nargs="+",
+    help="A list of expressions that modify columns in the output. Passed to"
+    " df.withColumnExpr(_) one at a time after --where applied and before --select."
+    " Can include sql expressions.",
 )
 parser.add_argument(
     "--static-partitions",
@@ -104,87 +121,165 @@ parser.add_argument(
     help='Passed to df.write.mode(_). Defaults to "overwrite".',
 )
 
-args = parser.parse_args()
 
-# handle --submission-date
-if args.submission_date is not None:
-    # --filter "submission_date = DATE 'SUBMISSION_DATE'"
-    condition = "submission_date = DATE '" + args.submission_date + "'"
-    args.filter.append(condition)
-    # --static-partitions submission_date=SUBMISSION_DATE
-    args.static_partitions.append("submission_date=" + args.submission_date)
-    # --where "submission_date IS NOT NULL"
-    if args.where == "TRUE":
-        args.where = condition
-    else:
-        args.where = "(" + args.where + ") AND " + condition
-
-# Set default --destination-table if it was not provided
-if args.destination_table is None:
-    args.destination_table = args.table
-
-# append table and --static-partitions to destination
-args.destination = "/".join(
-    [
-        re.sub("^s3://", "s3a://", args.destination).rstrip("/"),
-        re.sub("_(v[0-9]+)$", r"/\1", args.destination_table.rsplit(".", 1).pop()),
-    ]
-    + args.static_partitions
-)
-
-# convert --static-partitions to a dict
-args.static_partitions = dict(p.split("=", 1) for p in args.static_partitions)
-
-# remove --static-partitions fields from --partition-by
-args.partition_by = [f for f in args.partition_by if f not in args.static_partitions]
-
-# add --static-partitions fields to --drop
-args.drop += args.static_partitions.keys()
-
-# convert --filter to a single string
-args.filter = " AND ".join(args.filter)
-
-if args.dry_run:
-    print(
-        dedent(
-            """
-            (
-                SparkSession.builder.appName('export_to_parquet')
-                .getOrCreate()
-                .read.format('bigquery')
-                .option('dataset', {dataset!r})
-                .option('table', {table!r})
-                .option('filter', {filter!r})
-                .load()
-                .where({where!r})
-                .selectExpr(*{select!r})
-                .drop(*{drop!r})
-                .write.mode({write_mode!r})
-                .partitionBy(*{partition_by!r})
-                .parquet({destination!r})
-            )
-            """
+def maps_from_entries(field, transform_layer=0, *prefix):
+    """Generate spark SQL to recursively convert repeated key-value structs to maps."""
+    result = full_name = ".".join(prefix + (field.name,))
+    if field.field_type == "RECORD":
+        repeated = field.mode == "REPEATED"
+        if repeated:
+            if transform_layer > 0:
+                prefix = (f"_{transform_layer}",)
+            else:
+                prefix = ("_",)
+            transform_layer += 1
+        else:
+            prefix = (*prefix, field.name)
+        fields = ", ".join(
+            maps_from_entries(subfield, transform_layer, *prefix)
+            for subfield in field.fields
         )
-        .strip()
-        .format(**vars(args))
-    )
-else:
-    # delay import to allow --dry-run without spark
-    from pyspark.sql import SparkSession
+        if "(" in fields:
+            result = f"STRUCT({fields})"
+            if repeated:
+                result = f"TRANSFORM({full_name}, {prefix[0]} -> {result})"
+        if repeated and {"key", "value"} == {f.name for f in field.fields}:
+            result = f"MAP_FROM_ENTRIES({result})"
+    return f"{result} AS {field.name}"
 
-    # run spark job from parsed args
-    (
-        SparkSession.builder.appName("export_to_parquet")
-        .getOrCreate()
-        .read.format("bigquery")
-        .option("dataset", args.dataset)
-        .option("table", args.table)
-        .option("filter", args.filter)
-        .load()
-        .where(args.where)
-        .selectExpr(*args.select)
-        .drop(*args.drop)
-        .write.mode(args.write_mode)
-        .partitionBy(*args.partition_by)
-        .parquet(args.destination)
+
+def find_maps_from_entries(table):
+    """Get maps_from_entries expressions for all maps in the given table."""
+    if bigquery is None:
+        return ["..."]
+    schema = sorted(bigquery.Client().get_table(table).schema, key=lambda f: f.name)
+    replace = []
+    for index, field in enumerate(schema):
+        try:
+            expr = maps_from_entries(field)
+        except Exception:
+            json_field = json.dumps(field.to_api_repr(), indent=2)
+            print(f"problem with field {index}:\n{json_field}", file=sys.stderr)
+            raise
+        if "(" in expr:
+            replace += [expr]
+    return replace
+
+
+def main():
+    """Main."""
+    args = parser.parse_args()
+
+    # handle --submission-date
+    if args.submission_date is not None:
+        # --filter "submission_date = DATE 'SUBMISSION_DATE'"
+        condition = "submission_date = DATE '" + args.submission_date + "'"
+        args.filter.append(condition)
+        # --static-partitions submission_date=SUBMISSION_DATE
+        args.static_partitions.append("submission_date=" + args.submission_date)
+        # --where "submission_date IS NOT NULL"
+        if args.where == "TRUE":
+            args.where = condition
+        else:
+            args.where = "(" + args.where + ") AND " + condition
+
+    # Set default --destination-table if it was not provided
+    if args.destination_table is None:
+        args.destination_table = args.table
+
+    # append table and --static-partitions to destination
+    args.destination = "/".join(
+        [
+            re.sub("^s3://", "s3a://", args.destination).rstrip("/"),
+            re.sub("_(v[0-9]+)$", r"/\1", args.destination_table.rsplit(".", 1).pop()),
+        ]
+        + args.static_partitions
     )
+
+    # convert --static-partitions to a dict
+    args.static_partitions = dict(p.split("=", 1) for p in args.static_partitions)
+
+    # remove --static-partitions fields from --partition-by
+    args.partition_by = [
+        f for f in args.partition_by if f not in args.static_partitions
+    ]
+
+    # add --static-partitions fields to --drop
+    args.drop += args.static_partitions.keys()
+
+    # convert --filter to a single string
+    args.filter = " AND ".join(args.filter)
+
+    if args.maps_from_entries:
+        args.replace += find_maps_from_entries(f"{args.dataset}.{args.table}")
+
+    if args.dry_run:
+        replace = f"{args.replace!r}"
+        if len(replace) > 60:
+            replace = (
+                "["
+                + ",".join(f"\n{' '*4*5}{expr!r}" for expr in args.replace)
+                + f"\n{' '*4*4}]"
+            )
+        print(
+            dedent(
+                f"""
+                df = (
+                    SparkSession.builder.appName('export_to_parquet')
+                    .getOrCreate()
+                    .read.format('bigquery')
+                    .option('dataset', {args.dataset!r})
+                    .option('table', {args.table!r})
+                    .option('filter', {args.filter!r})
+                    .option("parallelism", 0)  # let BigQuery storage API decide
+                    .load()
+                    .where({args.where!r})
+                    .selectExpr(*{args.select!r})
+                    .with
+                    .drop(*{args.drop!r})
+                )
+                for sql in {replace}:
+                    value, name = re.fullmatch("(?i)(.*) AS (.*)", sql).groups()
+                    df = df.withColumn(name, expr(value))
+                (
+                    df.write.mode({args.write_mode!r})
+                    .partitionBy(*{args.partition_by!r})
+                    .parquet({args.destination!r})
+                )
+                """
+            ).strip()
+        )
+    else:
+        # delay import to allow --dry-run without spark
+        from pyspark.sql import SparkSession
+        from pyspark.sql.functions import expr
+
+        if bigquery is None:
+            raise bigquery_error
+
+        # run spark job from parsed args
+        df = (
+            SparkSession.builder.appName("export_to_parquet")
+            .getOrCreate()
+            .read.format("bigquery")
+            .option("dataset", args.dataset)
+            .option("table", args.table)
+            .option("filter", args.filter)
+            .option("parallelism", 0)  # let BigQuery storage API decide
+            .load()
+            .where(args.where)
+            .selectExpr(*args.select)
+            .drop(*args.drop)
+        )
+        for sql in args.replace:
+            value, name = re.fullmatch("(?i)(.*) AS (.*)", sql).groups()
+            df = df.withColumn(name, expr(value))
+        (
+            df.write.mode(args.write_mode)
+            .partitionBy(*args.partition_by)
+            .parquet(args.destination)
+        )
+
+
+if __name__ == "__main__":
+    main()

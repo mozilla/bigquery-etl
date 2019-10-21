@@ -6,14 +6,11 @@ LANGUAGE js AS
 '''
   var z = new Array();
   node = JSON.parse(y);
-  Object.keys(node).map(function(key) {
-    value = node[key].toString();
-    z.push(key + ":" + value);
-  });
-  return z
+  for (let [key, value] of Object.entries(node)) {
+    z.push(`${key}:${value}`);
+  }
+  return z;
 ''';
-
-
 
 -- convert a string like '[5, 6, 7]' to an array struct
 CREATE TEMPORARY FUNCTION string_to_arr(y STRING)
@@ -68,34 +65,20 @@ CREATE TEMP FUNCTION
       WHERE histogram IS NOT NULL
       GROUP BY key));
 
-WITH
-  -- normalize client_id and rank by document_id
-  numbered_duplicates AS (
+WITH filtered AS (
     SELECT
-        ROW_NUMBER() OVER (
-            PARTITION BY
-                client_id,
-                submission_timestamp,
-                document_id
-            ORDER BY submission_timestamp
-            ASC
-        ) AS _n,
-        * REPLACE(LOWER(client_id) AS client_id)
+        *,
+        SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
+        DATE(submission_timestamp) as submission_date,
+        normalized_os as os,
+        application.build_id AS app_build_id,
+        normalized_channel AS channel
     FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
     WHERE DATE(submission_timestamp) = @submission_date
-    AND application.channel in (
-        "release", "esr", "beta", "aurora", "default", "nightly"
-    )
-    AND client_id IS NOT NULL
-  ),
-
-
--- Deduplicating on document_id is necessary to get valid SUM values.
-deduplicated AS (
-    SELECT * EXCEPT (_n)
-    FROM numbered_duplicates
-    WHERE _n = 1
-),
+      AND normalized_channel in (
+        "release", "beta", "nightly"
+      )
+      AND client_id IS NOT NULL),
 
 
 grouped_metrics AS
@@ -271,7 +254,7 @@ grouped_metrics AS
       ('video_hidden_play_time_percentage', payload.keyed_histograms.video_hidden_play_time_percentage),
       ('canvas_webgl_failure_id', payload.keyed_histograms.canvas_webgl_failure_id)
     ] as metrics
-  FROM deduplicated),
+  FROM filtered),
 
   flattened_metrics AS
     (SELECT
@@ -291,10 +274,9 @@ grouped_metrics AS
 
 
 -- Aggregate by client_id using windows
-windowed AS (
+aggregated AS (
 
 SELECT
-    ROW_NUMBER() OVER w1_unframed AS _n,
     submission_date,
     client_id,
     os,
@@ -304,42 +286,23 @@ SELECT
 
 metric,
 key,
-ARRAY_AGG(value) OVER w1 as bucket_range,
-ARRAY_AGG(value) OVER w1 as value
+ARRAY_AGG(value) as bucket_range,
+ARRAY_AGG(value) as value
 
     FROM flattened_metrics
-    WINDOW
-        -- Aggregations require a framed window
-        w1 AS (
-            PARTITION BY
-                client_id,
-                submission_date,
-                os,
-                app_version,
-                app_build_id,
-                channel,
-                metric,
-                key
-            ORDER BY `submission_timestamp` ASC ROWS BETWEEN UNBOUNDED PRECEDING
-            AND UNBOUNDED FOLLOWING
-        ),
-
-        -- ROW_NUMBER does not work on a framed window
-        w1_unframed AS (
-            PARTITION BY
-                client_id,
-                submission_date,
-                os,
-                app_version,
-                app_build_id,
-                channel,
-                metric,
-                key
-            ORDER BY `submission_timestamp` ASC)
+    GROUP BY
+        client_id,
+        submission_date,
+        os,
+        app_version,
+        app_build_id,
+        channel,
+        metric,
+        key
 
 )
 
-select
+SELECT
     client_id,
     submission_date,
     os,
@@ -365,6 +328,11 @@ select
         udf_get_bucket_range(bucket_range),
         udf_aggregate_json_sum(value)
     )) AS histogram_aggregates
-from windowed
-where _n = 1
-group by 1,2,3,4,5,6
+FROM aggregated
+GROUP BY
+    client_id,
+    submission_date,
+    os,
+    app_version,
+    app_build_id,
+    channel

@@ -392,7 +392,7 @@ class ClientQueue:
 
     def with_client(self, func, *args):
         with self.client() as client:
-            func(client, *args)
+            return func(client, *args)
 
 
 def main():

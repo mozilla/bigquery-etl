@@ -78,6 +78,9 @@ class Table:
 
 class NDJsonDecodeError(Exception):
     pass
+
+class JsonDecodeError(Exception):
+    pass
     
 
 @contextmanager
@@ -162,6 +165,13 @@ def ndjson_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
 
     return [json.loads(line) for line in file_obj]
 
+def json_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
+    """Decode json from file_obj."""
+    try:
+        return json.loads("".join(file_obj))
+    except json.JSONDecodeError as e:
+        raise JsonDecodeError(f"Line {e.lineno} column {e.colno} of file {filepath}, {e.msg}")
+
 
 def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> Any:
     """Read the first matching file found in resource_dir.
@@ -176,8 +186,8 @@ def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> An
     :raises FileNotFoundError: when all matching files raise FileNotFoundError
     """
     search = search or {
-        "yaml": yaml.full_load,
-        "json": json.load,
+        "yaml": lambda x, y: yaml.full_load(x),
+        "json": json_load,
         "ndjson": ndjson_load,
     }
     not_found: List[str] = []

@@ -76,6 +76,10 @@ class Table:
                 pass
 
 
+class NDJsonDecodeError(Exception):
+    pass
+    
+
 @contextmanager
 def dataset(bq: bigquery.Client, dataset_id: str):
     """Context manager for creating and deleting the BigQuery dataset for a test."""
@@ -142,12 +146,20 @@ def load_views(bq: bigquery.Client, dataset: bigquery.Dataset, views: Dict[str, 
 
 def read(*paths: str, decoder: Optional[Callable] = None, **kwargs):
     """Read a file and apply decoder if provided."""
-    with open(os.path.join(*paths), **kwargs) as f:
-        return decoder(f) if decoder else f.read()
+    filepath = os.path.join(*paths)
+    with open(filepath, **kwargs) as f:
+        return decoder(f, filepath) if decoder else f.read()
 
 
-def ndjson_load(file_obj: Iterable[str]) -> List[Any]:
+def ndjson_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
     """Decode newline delimited json from file_obj."""
+    res = []
+    for i, line in enumerate(file_obj):
+        try:
+            res.append(json.loads(line))
+        except json.JSONDecodeError as e:
+            raise NDJsonDecodeError(f"Line {i+1} column {e.colno} of file {filepath}, {e.msg}")
+
     return [json.loads(line) for line in file_obj]
 
 

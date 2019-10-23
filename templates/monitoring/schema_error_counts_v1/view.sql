@@ -5,6 +5,7 @@ OR REPLACE VIEW `moz-fx-data-shared-prod.monitoring.schema_error_counts_v1` AS W
     job_name,
     document_namespace,
     document_type,
+    document_version,
     error_message
   FROM
     `moz-fx-data-shared-prod.payload_bytes_error.*`
@@ -20,6 +21,7 @@ count_errors AS (
   SELECT
     document_namespace,
     document_type,
+    document_version,
     hour,
     job_name,
     SPLIT(error_message, ":")[OFFSET (1)] AS path,
@@ -28,18 +30,20 @@ count_errors AS (
       PARTITION BY
         hour,
         document_namespace,
-        document_type
+        document_type,
+        document_version
       ORDER BY
         COUNT(*) DESC
     ) AS error_rank
   FROM
     extracted
   GROUP BY
-    1,
-    2,
-    3,
-    4,
-    5
+    document_namespace,
+    document_type,
+    document_version,
+    hour,
+    job_name,
+    path
 )
 SELECT
   *

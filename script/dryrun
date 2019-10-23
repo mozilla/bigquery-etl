@@ -29,6 +29,7 @@ DERIVED_DATASETS_DRY_RUN_URL = (
 
 SKIP = {
     # Access Denied
+    "sql/monitoring/schema_error_counts_v1/view.sql",
     "sql/monitoring/structured_error_counts_v1/view.sql",
     "sql/telemetry/fxa_content_events_v1/query.sql",
     "sql/telemetry/fxa_auth_bounce_events_v1/query.sql",

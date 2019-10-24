@@ -28,7 +28,7 @@ TEMPLATE = """
 create_modes = {
     "CREATE": "CREATE TABLE",
     "REPLACE": "CREATE OR REPLACE TABLE",
-    "IF_NOT_EXISTS": "CREATE TABLE IF NOT EXISTS",
+    "CREATE_IF_NOT_EXISTS": "CREATE TABLE IF NOT EXISTS",
 }
 
 
@@ -84,7 +84,7 @@ def main(argv):
     table_create_mode_string = create_modes[args.mode]
     project = args.project if args.project else orig["tableReference"]["projectId"]
     dataset = args.dataset if args.dataset else orig["tableReference"]["datasetId"]
-    table_name = args.name if args.name else orig["tableReference"]["tableId"]
+    table_name = args.table if args.table else orig["tableReference"]["tableId"]
     columns_string = ",\n".join(
         [field_to_string(column, 1) for column in orig["schema"]["fields"]]
     )

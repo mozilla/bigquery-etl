@@ -57,76 +57,6 @@ CREATE TEMP FUNCTION udf_histogram_to_threshold_count(histogram STRING, threshol
       key >= threshold
   )
 );
-CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
-  active_addons ARRAY<STRUCT<
-    key STRING,
-    value STRUCT<
-      app_disabled BOOL,
-      blocklisted BOOL,
-      description STRING,
-      has_binary_components BOOL,
-      install_day INT64,
-      is_system BOOL,
-      name STRING,
-      scope INT64,
-      signed_state INT64,
-      type STRING,
-      update_day INT64,
-      is_web_extension BOOL,
-      multiprocess_compatible BOOL
-    >
-  >>,
-  active_addons_json STRING
-)
-RETURNS ARRAY<STRUCT<
-  addon_id STRING,
-  blocklisted BOOL,
-  name STRING,
-  user_disabled BOOL,
-  app_disabled BOOL,
-  version STRING,
-  scope INT64,
-  type STRING,
-  foreign_install BOOL,
-  has_binary_components BOOL,
-  install_day INT64,
-  update_day INT64,
-  signed_state INT64,
-  is_system BOOL,
-  is_web_extension BOOL,
-  multiprocess_compatible BOOL
->>
-LANGUAGE js AS """
-try {
-  const additional_properties = JSON.parse(active_addons_json) || {};
-  const result = [];
-  (active_addons || []).forEach((item) => {
-    const addon_json = additional_properties[item.key] || {};
-    const value = item.value || {};
-    result.push({
-      addon_id: item.key,
-      blocklisted: value.blocklisted,
-      name: value.name,
-      user_disabled: addon_json.userDisabled,
-      app_disabled: value.app_disabled,
-      version: addon_json.version,
-      scope: value.scope,
-      type: value.type,
-      foreign_install: addon_json.foreignInstall,
-      has_binary_components: value.has_binary_components,
-      install_day: value.install_day,
-      update_day: value.update_day,
-      signed_state: value.signed_state,
-      is_system: value.is_system,
-      is_web_extension: value.is_web_extension,
-      multiprocess_compatible: value.multiprocess_compatible,
-    });
-  });
-  return result;
-} catch(err) {
-  return null;
-}
-""";
 CREATE TEMP FUNCTION udf_js_main_summary_addon_scalars(dynamic_scalars_json STRING, dynamic_keyed_scalars_json STRING)
 RETURNS STRUCT<
   keyed_boolean_addon_scalars ARRAY<STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value BOOL>>>>,
@@ -183,6 +113,59 @@ try {
   return null;
 }
 """;
+CREATE TEMP FUNCTION udf_main_summary_active_addons(active_addons ANY TYPE) AS (
+  ARRAY(
+    SELECT AS STRUCT
+      key AS addon_id,
+      value.blocklisted,
+      value.name,
+      value.user_disabled > 0 AS user_disabled,
+      value.app_disabled,
+      value.version,
+      value.scope,
+      value.type,
+      value.foreign_install > 0 AS foreign_install,
+      value.has_binary_components,
+      value.install_day,
+      value.update_day,
+      value.signed_state,
+      value.is_system,
+      value.is_web_extension,
+      value.multiprocess_compatible
+    FROM
+      UNNEST(active_addons)
+  )
+);
+CREATE TEMP FUNCTION udf_max_flash_version(active_plugins ANY TYPE) AS (
+  (
+    SELECT
+      version
+    FROM
+      UNNEST(active_plugins),
+      UNNEST([STRUCT(SPLIT(version, '.') AS parts)])
+    WHERE
+      name = 'Shockwave Flash'
+    ORDER BY
+      SAFE_CAST(parts[SAFE_OFFSET(0)] AS INT64) DESC,
+      SAFE_CAST(parts[SAFE_OFFSET(1)] AS INT64) DESC,
+      SAFE_CAST(parts[SAFE_OFFSET(2)] AS INT64) DESC,
+      SAFE_CAST(parts[SAFE_OFFSET(3)] AS INT64) DESC
+    LIMIT
+      1
+  )
+);
+CREATE TEMP FUNCTION udf_search_counts(search_counts ANY TYPE) AS (
+  ARRAY(
+    SELECT AS STRUCT
+      SUBSTR(_key, 0, pos - 2) AS engine,
+      SUBSTR(_key, pos) AS source,
+      udf_json_extract_histogram(value).sum AS `count`
+    FROM
+      UNNEST(search_counts),
+      UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
+      UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
+  )
+);
 --
 SELECT
   document_id,
@@ -316,22 +299,7 @@ SELECT
   ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
 
   -- See https://github.com/mozilla-services/data-pipeline/blob/master/hindsight/modules/fx/ping.lua#L82
-  (
-    SELECT
-      version
-    FROM
-      UNNEST(environment.addons.active_plugins),
-      UNNEST([STRUCT(SPLIT(version, '.') AS parts)])
-    WHERE
-      name = 'Shockwave Flash'
-    ORDER BY
-      SAFE_CAST(parts[SAFE_OFFSET(0)] AS INT64) DESC,
-      SAFE_CAST(parts[SAFE_OFFSET(1)] AS INT64) DESC,
-      SAFE_CAST(parts[SAFE_OFFSET(2)] AS INT64) DESC,
-      SAFE_CAST(parts[SAFE_OFFSET(3)] AS INT64) DESC
-    LIMIT
-      1
-  ) AS flash_version, -- latest installable version of flash plugin
+  udf_max_flash_version(environment.addons.active_plugins) AS flash_version, -- latest installable version of flash plugin
   application.vendor,
   environment.settings.is_default_browser,
   environment.settings.default_search_engine_data.name AS default_search_engine_data_name,
@@ -401,19 +369,10 @@ SELECT
 
   -- Search counts
   -- split up and organize the SEARCH_COUNTS keyed histogram
-  ARRAY(
-    SELECT AS STRUCT
-      SUBSTR(_key, 0, pos - 2) AS engine,
-      SUBSTR(_key, pos) AS source,
-      udf_json_extract_histogram(value).sum AS `count`
-    FROM
-      UNNEST(payload.keyed_histograms.search_counts),
-      UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-      UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
-  ) AS search_counts,
+  udf_search_counts(payload.keyed_histograms.search_counts) AS search_counts,
 
   -- Addon and configuration settings per Bug 1290181
-  udf_js_main_summary_active_addons(environment.addons.active_addons, JSON_EXTRACT(additional_properties, '$.environment.addons.activeAddons')) AS active_addons,
+  udf_main_summary_active_addons(environment.addons.active_addons) AS active_addons,
 
   -- Legacy/disabled addon and configuration settings per Bug 1390814. Please note that |disabled_addons_ids| may go away in the future.
   udf_js_main_summary_disabled_addons(

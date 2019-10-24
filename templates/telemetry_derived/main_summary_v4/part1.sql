@@ -130,22 +130,7 @@ SELECT
   ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
 
   -- See https://github.com/mozilla-services/data-pipeline/blob/master/hindsight/modules/fx/ping.lua#L82
-  (
-    SELECT
-      version
-    FROM
-      UNNEST(environment.addons.active_plugins),
-      UNNEST([STRUCT(SPLIT(version, '.') AS parts)])
-    WHERE
-      name = 'Shockwave Flash'
-    ORDER BY
-      SAFE_CAST(parts[SAFE_OFFSET(0)] AS INT64) DESC,
-      SAFE_CAST(parts[SAFE_OFFSET(1)] AS INT64) DESC,
-      SAFE_CAST(parts[SAFE_OFFSET(2)] AS INT64) DESC,
-      SAFE_CAST(parts[SAFE_OFFSET(3)] AS INT64) DESC
-    LIMIT
-      1
-  ) AS flash_version, -- latest installable version of flash plugin
+  udf_max_flash_version(environment.addons.active_plugins) AS flash_version, -- latest installable version of flash plugin
   application.vendor,
   environment.settings.is_default_browser,
   environment.settings.default_search_engine_data.name AS default_search_engine_data_name,
@@ -215,19 +200,10 @@ SELECT
 
   -- Search counts
   -- split up and organize the SEARCH_COUNTS keyed histogram
-  ARRAY(
-    SELECT AS STRUCT
-      SUBSTR(_key, 0, pos - 2) AS engine,
-      SUBSTR(_key, pos) AS source,
-      udf_json_extract_histogram(value).sum AS `count`
-    FROM
-      UNNEST(payload.keyed_histograms.search_counts),
-      UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-      UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
-  ) AS search_counts,
+  udf_search_counts(payload.keyed_histograms.search_counts) AS search_counts,
 
   -- Addon and configuration settings per Bug 1290181
-  udf_js_main_summary_active_addons(environment.addons.active_addons, JSON_EXTRACT(additional_properties, '$.environment.addons.activeAddons')) AS active_addons,
+  udf_main_summary_active_addons(environment.addons.active_addons) AS active_addons,
 
   -- Legacy/disabled addon and configuration settings per Bug 1390814. Please note that |disabled_addons_ids| may go away in the future.
   udf_js_main_summary_disabled_addons(

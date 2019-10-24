@@ -4,19 +4,11 @@ Return an array containing only distinct values of the given array
 
  */
 CREATE TEMP FUNCTION udf_dedupe_array(list ANY TYPE) AS (
-  (
-    SELECT
-      ARRAY(
-        SELECT AS STRUCT
-          *
-        FROM
-          (
-            SELECT
-              DISTINCT *
-            FROM
-              UNNEST(list)
-          )
-      )
+  ARRAY(
+    SELECT DISTINCT AS STRUCT
+      *
+    FROM
+      UNNEST(list)
   )
 );
 

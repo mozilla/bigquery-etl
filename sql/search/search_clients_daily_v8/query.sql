@@ -1,17 +1,9 @@
 CREATE TEMP FUNCTION udf_dedupe_array(list ANY TYPE) AS (
-  (
-    SELECT
-      ARRAY(
-        SELECT AS STRUCT
-          *
-        FROM
-          (
-            SELECT
-              DISTINCT *
-            FROM
-              UNNEST(list)
-          )
-      )
+  ARRAY(
+    SELECT DISTINCT AS STRUCT
+      *
+    FROM
+      UNNEST(list)
   )
 );
 CREATE TEMP FUNCTION
@@ -67,12 +59,10 @@ CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
 -- This is a workaround for the inability to use ARRAY_CONCAT_AGG as an analytical function
 CREATE TEMP FUNCTION union_experiments(list ANY TYPE) AS (
   (
-    SELECT udf_dedupe_array(ARRAY_CONCAT_AGG(key_value))
-    FROM (
-      SELECT 1 AS val, key_value
-      FROM UNNEST(list)
-    )
-    GROUP BY val
+    SELECT
+      udf_dedupe_array(ARRAY_CONCAT_AGG(key_value))
+    FROM
+      UNNEST(list)
   )
 );
 

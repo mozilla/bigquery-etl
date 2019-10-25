@@ -18,6 +18,7 @@ WITH
       search_clients_daily_v7
     WHERE
       submission_date_s3 = @submission_date
+      and sample_id = "84"
   ),
 
   _derived_engine_searches AS (

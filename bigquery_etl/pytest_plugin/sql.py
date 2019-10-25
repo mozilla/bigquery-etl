@@ -122,9 +122,11 @@ class SqlTest(pytest.Item, pytest.File):
             load_views(bq, default_dataset, views)
 
             # configure job
+            res_table = bigquery.TableReference(default_dataset, query_name)
+
             job_config = bigquery.QueryJobConfig(
                 default_dataset=default_dataset,
-                destination=bigquery.TableReference(default_dataset, query_name),
+                destination=res_table,
                 query_parameters=get_query_params(self.fspath.strpath),
                 use_legacy_sql=False,
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
@@ -132,7 +134,18 @@ class SqlTest(pytest.Item, pytest.File):
 
             # run query
             job = bq.query(query, job_config=job_config)
-            result = list(coerce_result(*job.result()))
+
+            # Bytes are not JSON serializable, cast them to hex strings
+            # Again, this only handles top-level BYTES fields
+            row_iter = job.result()
+            bytes_fields = [f for f in row_iter.schema if f.field_type == 'BYTES']
+
+            if bytes_fields:
+                as_str = ','.join([f'TO_HEX({f.name}) AS {f.name}' for f in row_iter.schema if f.field_type == 'BYTES'])
+                as_str_query = f'SELECT * REPLACE ({as_str}) FROM `{res_table.dataset_id}.{res_table.table_id}`;'
+                row_iter = bq.query(as_str_query).result()
+
+            result = list(coerce_result(*row_iter))
             result.sort(key=lambda row: json.dumps(row, sort_keys=True))
             expect.sort(key=lambda row: json.dumps(row, sort_keys=True))
 

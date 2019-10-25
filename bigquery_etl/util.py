@@ -107,18 +107,40 @@ def load_tables(
             source_format=table.source_format,
             write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         )
+        has_bytes_fields = False
+
         if table.schema is None:
             # autodetect schema if not provided
             job_config.autodetect = True
         else:
             job_config.schema = table.schema
             # look for time_partitioning_field in provided schema
-            for field in job_config.schema:
+            for i, field in enumerate(job_config.schema):
+                if field.field_type == 'BYTES':
+                    has_bytes_fields = True
                 if field.description == "time_partitioning_field":
                     job_config.time_partitioning = bigquery.TimePartitioning(
                         field=field.name
                     )
                     break  # stop because there can only be one time partitioning field
+
+        # If bytes fields, make them strings, and write this data to temp table
+        # Create the actual table as a read from that temp table
+        # NOTE: This doesn't handle nested BYTES fields!!
+        if has_bytes_fields:
+            updated_schema = [
+                bigquery.schema.SchemaField(
+                    f.name, 'STRING', f.mode
+                ) if f.field_type == 'BYTES' else f
+                for f in job_config.schema
+            ]
+
+            job_config.schema = updated_schema
+            temp_table_name = '_' + table.name
+            destination = dataset.table(temp_table_name)
+            as_bytes = ','.join([f'FROM_HEX({f.name}) AS {f.name}' for f in table.schema if f.field_type == 'BYTES'])
+            cast_bytes_query = f'CREATE TABLE {dataset.dataset_id}.{table.name} AS SELECT * REPLACE ({as_bytes}) FROM `{dataset.dataset_id}.{temp_table_name}`;'
+
         if isinstance(table.source_path, str):
             with open(table.source_path, "rb") as file_obj:
                 job = bq.load_table_from_file(
@@ -130,8 +152,11 @@ def load_tables(
                 file_obj.write(json.dumps(row).encode() + b"\n")
             file_obj.seek(0)
             job = bq.load_table_from_file(file_obj, destination, job_config=job_config)
+
         try:
             job.result()
+            if has_bytes_fields:
+                bq.query(cast_bytes_query).result()
         except BadRequest:
             print(job.errors)
             raise

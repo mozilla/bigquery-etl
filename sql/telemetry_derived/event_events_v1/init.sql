@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.telemetry_derived.bq_events` (
+  `moz-fx-data-shared-prod.telemetry_derived.event_events_v1` (
     submission_date DATE,
     document_id STRING,
     client_id STRING,
@@ -26,10 +26,8 @@ CREATE TABLE IF NOT EXISTS
     event_string_value STRING,
     event_map_values ARRAY < STRUCT < key STRING,
     value STRING >>,
-    event_process STRING,
-    doc_type STRING
+    event_process STRING
   )
 PARTITION BY
   submission_date CLUSTER BY event_category,
-  sample_id,
-  doc_type OPTIONS (require_partition_filter = TRUE)
+  sample_id OPTIONS (require_partition_filter = TRUE)

@@ -19,6 +19,7 @@ from ..util import (
     read,
     Table,
     TABLE_EXTENSIONS,
+    print_and_test,
 )
 
 expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}
@@ -149,4 +150,4 @@ class SqlTest(pytest.Item, pytest.File):
             result.sort(key=lambda row: json.dumps(row, sort_keys=True))
             expect.sort(key=lambda row: json.dumps(row, sort_keys=True))
 
-            assert expect == result
+            print_and_test(expect, result)

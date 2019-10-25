@@ -26,6 +26,7 @@ from typing import (
 import json
 import os
 import os.path
+import pprint
 import yaml
 
 QueryParameter = Union[
@@ -188,7 +189,7 @@ def ndjson_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
         except json.JSONDecodeError as e:
             raise NDJsonDecodeError(f"Line {i+1} column {e.colno} of file {filepath}, {e.msg}")
 
-    return [json.loads(line) for line in file_obj]
+    return res
 
 def json_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
     """Decode json from file_obj."""
@@ -271,3 +272,60 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
             yield str(element)
         else:
             yield element
+
+def get_differences(exp, res, path="", sep=" / "):
+    """Get the differences between two JSON-like python objects
+
+    For complicated objects, this is a big improvement over pytest -vv
+    """
+    differences = []
+
+    if exp is not None and res is None:
+        differences.append(("Expected exists but not Result", path))
+    if exp is None and res is not None:
+        differences.append(("Result exists but not Expected", path))
+    if exp is None and res is None:
+        return differences
+
+    exp_dict, res_dict = isinstance(exp, dict), isinstance(res, dict)
+    exp_list, res_list = isinstance(exp, list), isinstance(res, list)
+    if exp_dict and not res_dict:
+        differences.append(("Expected is dict but not Result", path))
+    elif res_dict and not exp_dict:
+        differences.append(("Result is dict but not Expected", path))
+    elif not exp_dict and not res_dict:
+        if exp_list and res_list:
+            for i, (exp_e, res_e) in enumerate(zip(exp, res)):
+                differences += get_differences(exp_e, res_e, path + sep + str(i))
+        elif exp != res:
+            differences.append((f"Expected={exp}, Result={res}", path))
+    else:
+        exp_keys, res_keys = set(exp.keys()), set(res.keys())
+        exp_not_res, res_not_exp = exp_keys - res_keys, res_keys - exp_keys
+
+        for k in exp_not_res:
+            differences.append(("In Expected, not in Result", path + sep + k))
+        for k in res_not_exp:
+            differences.append(("In Result, not in Expected", path + sep + k))
+
+        for k in (exp_keys & res_keys):
+            differences += get_differences(exp[k], res[k], path + sep + k)
+
+    return differences
+
+
+def print_and_test(expected, result):
+    """Print objects and differences, then test equality"""
+
+    pp = pprint.PrettyPrinter(indent=2)
+
+    print("\nExpected:")
+    pp.pprint(expected)
+
+    print("\nActual:")
+    pp.pprint(result)
+
+    print("\nDifferences:")
+    print('\n'.join([' - '.join(v) for v in get_differences(expected, result)]))
+
+    assert(result == expected)

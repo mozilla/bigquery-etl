@@ -53,6 +53,9 @@ SKIP = {
     # Unrecognized name: submission_date_s3
     "sql/telemetry_derived/addons_v3/query.sql",
     "sql/telemetry_derived/addons_aggregates_v3/query.sql",
+    # HTTP Error 408: Request Time-out
+    "sql/telemetry/clients_histogram_aggregates_v1/query.sql",
+    "sql/telemetry/clients_scalar_aggregates_v1/query.sql",
 }
 
 USE_DERIVED_DATASETS = {

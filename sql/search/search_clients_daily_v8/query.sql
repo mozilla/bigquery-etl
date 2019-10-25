@@ -138,7 +138,7 @@ WITH
     udf_mode_last(ARRAY_AGG(default_search_engine_data_load_path) OVER w1) AS default_search_engine_data_load_path,
     udf_mode_last(ARRAY_AGG(default_search_engine_data_submission_url) OVER w1) AS default_search_engine_data_submission_url,
     udf_mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
-    udf_map_mode_last(ARRAY_AGG(experiments) OVER w1) AS experiments,
+    udf_map_mode_last(ARRAY_AGG(experiments) OVER w1).key_value AS experiments,
     COUNTIF(subsession_counter = 1) OVER w1 AS sessions_started_on_this_day,
     SAFE_SUBTRACT(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))), profile_creation_date) AS profile_age_in_days,
     SUM(subsession_length/NUMERIC '3600') OVER w1 AS subsession_hours_sum,

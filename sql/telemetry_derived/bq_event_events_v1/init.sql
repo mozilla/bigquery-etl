@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.telemetry_derived.bq_main_events` (
+  `moz-fx-data-shared-prod.telemetry_derived.bq_event_events_v1` (
     submission_date DATE,
     document_id STRING,
     client_id STRING,

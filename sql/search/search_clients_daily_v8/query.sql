@@ -1,11 +1,3 @@
-CREATE TEMP FUNCTION udf_dedupe_array(list ANY TYPE) AS (
-  ARRAY(
-    SELECT DISTINCT AS STRUCT
-      *
-    FROM
-      UNNEST(list)
-  )
-);
 CREATE TEMP FUNCTION
   udf_mode_last(list ANY TYPE) AS ((
     SELECT
@@ -23,6 +15,17 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
+CREATE TEMP FUNCTION
+  udf_map_mode_last(maps ANY TYPE) AS (STRUCT(ARRAY(
+      SELECT
+        AS STRUCT
+        key,
+        udf_mode_last(ARRAY_AGG(value)) AS value
+      FROM
+        UNNEST(maps),
+        UNNEST(key_value)
+      GROUP BY
+        key) AS key_value));
 --
 -- Return the version of the search addon if it exists, null otherwise
 CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
@@ -52,17 +55,6 @@ CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
       MAX(_offset_2) DESC
     LIMIT
       1
-  )
-);
-
--- Take array of experiment structs and return union of experiments.key_value arrays
--- This is a workaround for the inability to use ARRAY_CONCAT_AGG as an analytical function
-CREATE TEMP FUNCTION union_experiments(list ANY TYPE) AS (
-  (
-    SELECT
-      udf_dedupe_array(ARRAY_CONCAT_AGG(key_value))
-    FROM
-      UNNEST(list)
   )
 );
 
@@ -146,7 +138,7 @@ WITH
     udf_mode_last(ARRAY_AGG(default_search_engine_data_load_path) OVER w1) AS default_search_engine_data_load_path,
     udf_mode_last(ARRAY_AGG(default_search_engine_data_submission_url) OVER w1) AS default_search_engine_data_submission_url,
     udf_mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
-    union_experiments(ARRAY_AGG(experiments) OVER w1) AS experiments,
+    udf_map_mode_last(ARRAY_AGG(experiments) OVER w1) AS experiments,
     COUNTIF(subsession_counter = 1) OVER w1 AS sessions_started_on_this_day,
     SAFE_SUBTRACT(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))), profile_creation_date) AS profile_age_in_days,
     SUM(subsession_length/NUMERIC '3600') OVER w1 AS subsession_hours_sum,

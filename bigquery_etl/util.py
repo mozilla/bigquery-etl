@@ -78,11 +78,16 @@ class Table:
 
 
 class NDJsonDecodeError(Exception):
+    """ndjson decode error."""
+
     pass
 
+
 class JsonDecodeError(Exception):
+    """JSON decode error."""
+
     pass
-    
+
 
 @contextmanager
 def dataset(bq: bigquery.Client, dataset_id: str):
@@ -117,7 +122,7 @@ def load_tables(
             job_config.schema = table.schema
             # look for time_partitioning_field in provided schema
             for i, field in enumerate(job_config.schema):
-                if field.field_type == 'BYTES':
+                if field.field_type == "BYTES":
                     has_bytes_fields = True
                 if field.description == "time_partitioning_field":
                     job_config.time_partitioning = bigquery.TimePartitioning(
@@ -127,20 +132,30 @@ def load_tables(
 
         # If bytes fields, make them strings, and write this data to temp table
         # Create the actual table as a read from that temp table
-        # NOTE: This doesn't handle nested BYTES fields!!
+        # NOTE: This doesn"t handle nested BYTES fields!!
         if has_bytes_fields:
             updated_schema = [
-                bigquery.schema.SchemaField(
-                    f.name, 'STRING', f.mode
-                ) if f.field_type == 'BYTES' else f
+                bigquery.schema.SchemaField(f.name, "STRING", f.mode)
+                if f.field_type == "BYTES"
+                else f
                 for f in job_config.schema
             ]
 
             job_config.schema = updated_schema
-            temp_table_name = '_' + table.name
+            temp_table_name = "_" + table.name
             destination = dataset.table(temp_table_name)
-            as_bytes = ','.join([f'FROM_HEX({f.name}) AS {f.name}' for f in table.schema if f.field_type == 'BYTES'])
-            cast_bytes_query = f'CREATE TABLE {dataset.dataset_id}.{table.name} AS SELECT * REPLACE ({as_bytes}) FROM `{dataset.dataset_id}.{temp_table_name}`;'
+            as_bytes = ",".join(
+                [
+                    f"FROM_HEX({f.name}) AS {f.name}"
+                    for f in table.schema
+                    if f.field_type == "BYTES"
+                ]
+            )
+            cast_bytes_query = (
+                f"CREATE TABLE {dataset.dataset_id}.{table.name} "
+                f"AS SELECT * REPLACE ({as_bytes}) FROM "
+                f"`{dataset.dataset_id}.{temp_table_name}`;"
+            )
 
         if isinstance(table.source_path, str):
             with open(table.source_path, "rb") as file_obj:
@@ -187,16 +202,21 @@ def ndjson_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
         try:
             res.append(json.loads(line))
         except json.JSONDecodeError as e:
-            raise NDJsonDecodeError(f"Line {i+1} column {e.colno} of file {filepath}, {e.msg}")
+            raise NDJsonDecodeError(
+                f"Line {i+1} column {e.colno} of file {filepath}, {e.msg}"
+            )
 
     return res
+
 
 def json_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
     """Decode json from file_obj."""
     try:
         return json.loads("".join(file_obj))
     except json.JSONDecodeError as e:
-        raise JsonDecodeError(f"Line {e.lineno} column {e.colno} of file {filepath}, {e.msg}")
+        raise JsonDecodeError(
+            f"Line {e.lineno} column {e.colno} of file {filepath}, {e.msg}"
+        )
 
 
 def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> Any:
@@ -273,8 +293,9 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
         else:
             yield element
 
+
 def get_differences(exp, res, path="", sep=" / "):
-    """Get the differences between two JSON-like python objects
+    """Get the differences between two JSON-like python objects.
 
     For complicated objects, this is a big improvement over pytest -vv
     """
@@ -308,15 +329,14 @@ def get_differences(exp, res, path="", sep=" / "):
         for k in res_not_exp:
             differences.append(("In Result, not in Expected", path + sep + k))
 
-        for k in (exp_keys & res_keys):
+        for k in exp_keys & res_keys:
             differences += get_differences(exp[k], res[k], path + sep + k)
 
     return differences
 
 
 def print_and_test(expected, result):
-    """Print objects and differences, then test equality"""
-
+    """Print objects and differences, then test equality."""
     pp = pprint.PrettyPrinter(indent=2)
 
     print("\nExpected:")
@@ -326,6 +346,6 @@ def print_and_test(expected, result):
     pp.pprint(result)
 
     print("\nDifferences:")
-    print('\n'.join([' - '.join(v) for v in get_differences(expected, result)]))
+    print("\n".join([" - ".join(v) for v in get_differences(expected, result)]))
 
-    assert(result == expected)
+    assert result == expected

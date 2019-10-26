@@ -15,6 +15,17 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
+CREATE TEMP FUNCTION
+  udf_map_mode_last(maps ANY TYPE) AS (STRUCT(ARRAY(
+      SELECT
+        AS STRUCT
+        key,
+        udf_mode_last(ARRAY_AGG(value)) AS value
+      FROM
+        UNNEST(maps),
+        UNNEST(key_value)
+      GROUP BY
+        key) AS key_value));
 --
 -- Return the version of the search addon if it exists, null otherwise
 CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
@@ -127,6 +138,7 @@ WITH
     udf_mode_last(ARRAY_AGG(default_search_engine_data_load_path) OVER w1) AS default_search_engine_data_load_path,
     udf_mode_last(ARRAY_AGG(default_search_engine_data_submission_url) OVER w1) AS default_search_engine_data_submission_url,
     udf_mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
+    udf_map_mode_last(ARRAY_AGG(experiments) OVER w1).key_value AS experiments,
     COUNTIF(subsession_counter = 1) OVER w1 AS sessions_started_on_this_day,
     SAFE_SUBTRACT(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))), profile_creation_date) AS profile_age_in_days,
     SUM(subsession_length/NUMERIC '3600') OVER w1 AS subsession_hours_sum,
@@ -134,6 +146,7 @@ WITH
     MAX(scalar_parent_browser_engagement_max_concurrent_tab_count) OVER w1 AS max_concurrent_tab_count_max,
     SUM(scalar_parent_browser_engagement_tab_open_event_count) OVER w1 AS tab_open_event_count_sum,
     SUM(active_ticks/(3600/5)) OVER w1 AS active_hours_sum,
+    SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count,
     SUM(
     IF
       (type = 'organic',

@@ -288,7 +288,7 @@
     "name": "scalar_parent_browser_search_ad_clicks",
     "mode": "NULLABLE"
   },
-{
+  {
     "fields": [
       {
         "fields": [
@@ -310,6 +310,35 @@
     ],
     "type": "RECORD",
     "name": "scalar_parent_browser_search_with_ads",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "key",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "value",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "key_value",
+        "mode": "REPEATED"
+      }
+    ],
+    "type": "RECORD",
+    "name": "experiments",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "scalar_parent_browser_engagement_total_uri_count",
     "mode": "NULLABLE"
   }
 ]

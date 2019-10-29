@@ -87,6 +87,21 @@
   },
   {
     "type": "STRING",
+    "name": "default_private_search_engine",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_private_search_engine_data_load_path",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_private_search_engine_data_submission_url",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
     "name": "subsession_start_date",
     "mode": "NULLABLE"
   },

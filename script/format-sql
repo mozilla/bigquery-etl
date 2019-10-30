@@ -50,8 +50,8 @@ const tokenizerCfg = {
   reservedNewlineWords: ['AND', 'BETWEEN', 'ELSE', 'OR', 'WHEN', 'XOR'],
   // eslint-disable-next-line quotes
   stringTypes: [`''`, '""', '``'],
-  openParens: ['(', 'CASE', '['],
-  closeParens: [')', 'END', ']'],
+  openParens: ['(', 'CASE', '[', 'STRUCT<', 'ARRAY<'],
+  closeParens: [')', 'END', ']', '>', '>'],
   indexedPlaceholderTypes: ['?'],
   namedPlaceholderTypes: ['@'],
   lineCommentTypes: ['#', '--'],

@@ -3,8 +3,8 @@ OR REPLACE VIEW `moz-fx-data-shared-prod.monitoring.telemetry_missing_columns_v1
 SELECT
   TIMESTAMP_TRUNC(submission_timestamp, DAY) AS day,
   'telemetry' AS document_namespace,
-  REGEXP_EXTRACT(_TABLE_SUFFIX, r "^(.*)_v.*") AS document_type,
-  REGEXP_EXTRACT(_TABLE_SUFFIX, r "^.*_v(.*)$") AS document_version,
+  REGEXP_EXTRACT(_TABLE_SUFFIX, r"^(.*)_v.*") AS document_type,
+  REGEXP_EXTRACT(_TABLE_SUFFIX, r"^.*_v(.*)$") AS document_version,
   path,
   COUNT(*) AS path_count
 FROM

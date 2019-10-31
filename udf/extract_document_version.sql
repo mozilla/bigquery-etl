@@ -3,7 +3,7 @@
 Extract the document version from a table name e.g. _TABLE_SUFFIX.
 
 */
-CREATE TEMP FUNCTION udf_extract_document_version(table_name STRING) AS (REGEXP_EXTRACT(_TABLE_SUFFIX, r"^.*_v(.*)$"));
+CREATE TEMP FUNCTION udf_extract_document_version(table_name STRING) AS (REGEXP_EXTRACT(table_name, r"^.*_v(.*)$"));
 -- Tests
 SELECT
   assert_equals("1", udf_extract_document_type("type_v1")),

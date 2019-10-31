@@ -56,17 +56,32 @@
   },
   {
     "type": "STRING",
+    "name": "default_search_engine_data_load_path",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_private_search_engine",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_private_search_engine_data_submission_url",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_private_search_engine_data_load_path",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
     "name": "user_pref_browser_search_region",
     "mode": "NULLABLE"
   },
   {
     "type": "INTEGER",
     "name": "max_concurrent_tab_count_max",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "default_search_engine_data_load_path",
     "mode": "NULLABLE"
   },
   {

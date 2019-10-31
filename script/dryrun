@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Passes all queries defined under sql/ to a Cloud Function that will run the

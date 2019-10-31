@@ -80,16 +80,6 @@
     "mode": "NULLABLE"
   },
   {
-    "type": "INTEGER",
-    "name": "max_concurrent_tab_count_max",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "INTEGER",
-    "name": "tab_open_event_count_sum",
-    "mode": "NULLABLE"
-  },
-  {
     "type": "STRING",
     "name": "client_id",
     "mode": "NULLABLE"
@@ -110,28 +100,8 @@
     "mode": "NULLABLE"
   },
   {
-    "type": "FLOAT",
-    "name": "active_addons_count_mean",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "INTEGER",
-    "name": "sessions_started_on_this_day",
-    "mode": "NULLABLE"
-  },
-  {
     "type": "INTEGER",
     "name": "profile_age_in_days",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "NUMERIC",
-    "name": "subsession_hours_sum",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "FLOAT",
-    "name": "active_hours_sum",
     "mode": "NULLABLE"
   },
   {
@@ -177,28 +147,6 @@
   {
     "type": "STRING",
     "name": "addon_version",
-    "mode": "NULLABLE"
-  },
-  {
-    "fields": [
-      {
-        "type": "STRING",
-        "name": "key",
-        "mode": "NULLABLE"
-      },
-      {
-        "type": "STRING",
-        "name": "value",
-        "mode": "NULLABLE"
-      }
-    ],
-    "type": "RECORD",
-    "name": "experiments",
-    "mode": "REPEATED"
-  },
-  {
-    "type": "INTEGER",
-    "name": "total_uri_count",
     "mode": "NULLABLE"
   }
 ]

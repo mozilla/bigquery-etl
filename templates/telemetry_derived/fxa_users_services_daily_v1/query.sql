@@ -33,7 +33,7 @@ WITH
         -- 'service' field populated, so we fill in the service name for this special case.
         IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service)
     FROM
-      `moz-fx-data-shared-prod.telemetry.fxa_content_auth_oauth_events_v1`
+      telemetry.fxa_content_auth_oauth_events_v1
     WHERE
       user_id IS NOT NULL
       AND event_type NOT IN ( --

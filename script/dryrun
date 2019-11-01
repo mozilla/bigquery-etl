@@ -44,6 +44,7 @@ SKIP = {
     "sql/monitoring/structured_detailed_error_counts_v1/view.sql",
     "sql/search/search_aggregates_v8/query.sql",
     "sql/search/search_clients_daily_v8/query.sql",
+    "sql/telemetry/smoot_usage_all_mtr_v1/query.sql",
     # No matching signature for function IF
     "sql/static/fxa_amplitude_export_users_last_seen/query.sql",
     # Duplicate UDF

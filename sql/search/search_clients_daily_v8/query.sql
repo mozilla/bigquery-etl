@@ -114,7 +114,7 @@ WITH
     source,
     udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
     get_search_addon_version(ARRAY_AGG(active_addons) OVER w1) AS addon_version,
-    MAX(app_version) OVER w1 AS app_version,
+    udf_mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
     udf_mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
     udf_mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
     udf_mode_last(ARRAY_AGG(user_pref_browser_search_region) OVER w1) AS user_pref_browser_search_region,

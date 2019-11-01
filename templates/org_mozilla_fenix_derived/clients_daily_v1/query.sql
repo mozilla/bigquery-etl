@@ -10,7 +10,7 @@ WITH
     metrics AS baseline_metrics,
     NULL AS metrics
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.baseline_v1`
+    org_mozilla_fenix_stable.baseline_v1
   UNION ALL
   SELECT
     submission_timestamp,
@@ -22,7 +22,7 @@ WITH
     NULL AS baseline_metrics,
     metrics
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
+    org_mozilla_fenix_stable.metrics_v1
   ),
   --
   base AS (

@@ -56,8 +56,8 @@ const tokenizerCfg = {
   namedPlaceholderTypes: ['@'],
   lineCommentTypes: ['#', '--'],
 };
-// add support for byte strings like b"" and b''
-const STRING_REGEX = new RegExp(`^([bB]?(?:${Tokenizer.prototype.createStringPattern(tokenizerCfg.stringTypes)}))`);
+// add support for byte strings like b"" and b'', as well as regex strings r""
+const STRING_REGEX = new RegExp(`^([bBrR]?(?:${Tokenizer.prototype.createStringPattern(tokenizerCfg.stringTypes)}))`);
 // add >> and << to OPERATOR_REGEX to prevent spaces being added in the middle
 const OPERATOR_REGEX = /^(<<|>>|!=|<>|==|<=|>=|!<|!>|\|\||::|->>|->|~~\*|~~|!~~\*|!~~|~\*|!~\*|!~|.)/;
 

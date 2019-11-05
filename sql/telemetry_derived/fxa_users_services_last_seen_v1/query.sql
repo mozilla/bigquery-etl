@@ -29,7 +29,7 @@ WITH
     CAST(registered AS INT64) AS days_registered_bits,
     * EXCEPT (submission_date, seen_in_tier1_country, registered)
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.fxa_users_services_daily_v1`
+    fxa_users_services_daily_v1
   WHERE
     submission_date = @submission_date ),
   --
@@ -37,7 +37,7 @@ WITH
   SELECT
     * EXCEPT (submission_date, resurrected_same_service, resurrected_any_service)
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.fxa_users_services_last_seen_v1`
+    fxa_users_services_last_seen_v1
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
@@ -69,7 +69,7 @@ WITH
     user_id,
     service
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.fxa_users_services_first_seen_v1`
+    fxa_users_services_first_seen_v1
   WHERE
     DATE(first_service_timestamp) < @submission_date ),
   --

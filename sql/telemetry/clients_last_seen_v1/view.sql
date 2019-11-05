@@ -22,6 +22,9 @@ SELECT
       AS STRUCT *,
       CAST(SAFE.LOG(bits & -bits, 2) AS INT64) AS days_since_seen
     FROM
-      UNNEST(days_seen_in_experiment)) AS days_seen_in_experiment)
+      UNNEST(days_seen_in_experiment)) AS days_seen_in_experiment),
+  -- TODO: Remove this temporary field once we transition the underlying
+  -- clients_last_seen_v1 table to use integer sample_id.
+  sample_id AS _sample_id_string
 FROM
   `moz-fx-data-derived-datasets.telemetry_derived.clients_last_seen_v1`

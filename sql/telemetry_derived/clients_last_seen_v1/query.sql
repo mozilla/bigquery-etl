@@ -78,8 +78,7 @@ WITH
     -- We only trust profile_date if it is within one week of the ping submission,
     -- so we ignore any value more than seven days old.
     udf_bits_from_days_since_created_profile(
-      DATE_DIFF(submission_date, SAFE.PARSE_DATE("%F",
-        SUBSTR(profile_creation_date, 0, 10)), DAY)) AS days_created_profile_bits,
+      DATE_DIFF(submission_date, profile_creation_date, DAY)) AS days_created_profile_bits,
     -- Experiments are an array, so we keep track of a usage bit pattern per experiment.
     ARRAY(
     SELECT
@@ -88,9 +87,8 @@ WITH
       value AS branch,
       1 AS bits
     FROM
-      UNNEST(experiments.key_value)) AS days_seen_in_experiment,
+      UNNEST(experiments)) AS days_seen_in_experiment,
     * EXCEPT (submission_date)
-      REPLACE (CAST(sample_id AS STRING) AS sample_id)
   FROM
     clients_daily_v6
   WHERE
@@ -127,7 +125,4 @@ FROM
 FULL JOIN
   _previous
 USING
-  -- Include sample_id to match the clustering of the tables, which may improve
-  -- join performance.
-  (sample_id,
-    client_id)
+  (client_id)

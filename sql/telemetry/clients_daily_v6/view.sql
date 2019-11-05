@@ -12,13 +12,13 @@ SELECT
     ARRAY(SELECT * FROM UNNEST(environment_settings_intl_requested_locales.list)) AS environment_settings_intl_requested_locales,
     ARRAY(SELECT * FROM UNNEST(environment_settings_intl_system_locales.list)) AS environment_settings_intl_system_locales,
     experiments.key_value AS experiments,
+    SAFE.PARSE_DATE("%F", SUBSTR(profile_creation_date, 0, 10)) AS profile_creation_date,
     scalar_parent_devtools_accessibility_select_accessible_for_node_sum.key_value AS scalar_parent_devtools_accessibility_select_accessible_for_node_sum
   )
 FROM
   `moz-fx-data-derived-datasets.telemetry_derived.clients_daily_v6`
-/*
 WHERE
-  submission_date < @first_sql_day
+  submission_date < DATE '2019-11-14'
 UNION ALL
 SELECT
   submission_date AS submission_date_s3,
@@ -26,5 +26,4 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
 WHERE
-  submission_date >= @first_sql_day
-*/
+  submission_date >= DATE '2019-11-14'

@@ -26,6 +26,8 @@ UDF_RE = re.compile(r"udf_(?:js_|legacy_)?([a-zA-z0-9_]+)")
 
 OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
 
+SKIP = {"udf/main_summary_scalars.sql"}
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--project-id", default="moz-fx-data-derived-datasets", help="The project ID."
@@ -72,7 +74,7 @@ def main():
         udfs_to_publish = accumulate_dependencies([], raw_udfs, raw_udf)
         udfs_to_publish.append(raw_udf)
         for dep in udfs_to_publish:
-            if dep not in published_udfs:
+            if dep not in published_udfs and dep.filepath not in SKIP:
                 publish_persistent_udf(
                     raw_udfs[dep],
                     client,

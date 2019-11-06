@@ -211,7 +211,11 @@ def main():
     args.filter = " AND ".join(args.filter)
 
     if args.maps_from_entries:
-        args.replace += find_maps_from_entries(f"{args.dataset}.{args.table}")
+        if "." in args.table:
+            table_ref = args.table.replace(":", ".")
+        else:
+            table_ref = f"{args.dataset}.{args.table}"
+        args.replace += find_maps_from_entries(table_ref)
 
     if args.dry_run:
         replace = f"{args.replace!r}"

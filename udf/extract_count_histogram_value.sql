@@ -1,3 +1,5 @@
+-- Per https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/histograms.html#count
+-- count histograms record a single value into the 0 bucket
 CREATE TEMP FUNCTION
   udf_extract_count_histogram_value(input STRING) AS (
     udf_get_key(udf_json_extract_histogram(input).values, 0)

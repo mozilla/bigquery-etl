@@ -16,34 +16,38 @@ RETURNS STRUCT<
   boolean_addon_scalars ARRAY<STRUCT<key STRING, value BOOL>>
 >
 LANGUAGE js AS """
-const dynamicScalars = JSON.parse(dynamic_scalars_json) || {};
-const dynamicKeyedScalars = JSON.parse(dynamic_keyed_scalars_json) || {};
-const result = {
-  keyed_boolean_addon_scalars: [],
-  keyed_uint_addon_scalars: [],
-  string_addon_scalars: [],
-  keyed_string_addon_scalars: [],
-  uint_addon_scalars: [],
-  boolean_addon_scalars: [],
-};
-const typeMap = {
-  number: 'uint',
-  boolean: 'boolean',
-  string: 'string',
-};
-Object.entries(dynamicKeyedScalars).forEach(([k, v]) => {
-  const type = typeMap[typeof Object.values(v)[0]];
-  const column = `keyed_${type}_addon_scalars`;
-  result[column].push({
-    key: k,
-    value: Object.entries(v).map(([key, value]) => ({ key, value }))
+try {
+  const dynamicScalars = JSON.parse(dynamic_scalars_json) || {};
+  const dynamicKeyedScalars = JSON.parse(dynamic_keyed_scalars_json) || {};
+  const result = {
+    keyed_boolean_addon_scalars: [],
+    keyed_uint_addon_scalars: [],
+    string_addon_scalars: [],
+    keyed_string_addon_scalars: [],
+    uint_addon_scalars: [],
+    boolean_addon_scalars: [],
+  };
+  const typeMap = {
+    number: 'uint',
+    boolean: 'boolean',
+    string: 'string',
+  };
+  Object.entries(dynamicKeyedScalars).forEach(([k, v]) => {
+    const type = typeMap[typeof Object.values(v)[0]];
+    const column = `keyed_${type}_addon_scalars`;
+    result[column].push({
+      key: k,
+      value: Object.entries(v).map(([key, value]) => ({ key, value }))
+    });
   });
-});
-Object.entries(dynamicScalars).forEach(([k, v]) => {
-  const type = typeMap[typeof v];
-  result[`${type}_addon_scalars`].push({key: k, value: v});
-});
-return result;
+  Object.entries(dynamicScalars).forEach(([k, v]) => {
+    const type = typeMap[typeof v];
+    result[`${type}_addon_scalars`].push({key: k, value: v});
+  });
+  return result;
+} catch(err) {
+  return null;
+}
 """;
 
 -- Tests

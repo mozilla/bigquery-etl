@@ -74,7 +74,7 @@ def main():
         udfs_to_publish = accumulate_dependencies([], raw_udfs, raw_udf)
         udfs_to_publish.append(raw_udf)
         for dep in udfs_to_publish:
-            if dep not in published_udfs and dep.filepath not in SKIP:
+            if dep not in published_udfs and raw_udfs[dep].filepath not in SKIP:
                 publish_persistent_udf(
                     raw_udfs[dep],
                     client,

@@ -1,8 +1,7 @@
 - aborts_content_sum: 2
   aborts_gmplugin_sum: 2
   aborts_plugin_sum: 2
-  active_addons:
-    list: []
+  active_addons: []
   active_addons_count_mean: 2
   active_hours_sum: 2
   addon_compatibility_check_enabled: true
@@ -44,8 +43,13 @@
   env_build_arch: second
   env_build_id: second
   env_build_version: second
-  experiments:
-    key_value: []
+  environment_settings_intl_accept_languages: []
+  environment_settings_intl_app_locales: []
+  environment_settings_intl_available_locales: []
+  environment_settings_intl_regional_prefs_locales: []
+  environment_settings_intl_requested_locales: []
+  environment_settings_intl_system_locales: []
+  experiments: []
   first_paint_mean: 2
   flash_version: second
   gfx_features_advanced_layers_status: second
@@ -120,8 +124,7 @@
   scalar_parent_browser_engagement_unique_domains_count_max: 3
   scalar_parent_browser_engagement_unique_domains_count_mean: 2
   scalar_parent_browser_engagement_window_open_event_count_sum: 2
-  scalar_parent_devtools_accessibility_select_accessible_for_node_sum:
-    key_value: []
+  scalar_parent_devtools_accessibility_select_accessible_for_node_sum: []
   scalar_parent_devtools_copy_full_css_selector_opened_sum: 2
   scalar_parent_devtools_copy_unique_css_selector_opened_sum: 2
   scalar_parent_devtools_toolbar_eyedropper_opened_sum: 2

@@ -16,3 +16,15 @@ SELECT
   )
 FROM
   `moz-fx-data-derived-datasets.telemetry_derived.clients_daily_v6`
+/*
+WHERE
+  submission_date < @first_sql_day
+UNION ALL
+SELECT
+  submission_date AS submission_date_s3,
+  *
+FROM
+  `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+WHERE
+  submission_date >= @first_sql_day
+*/

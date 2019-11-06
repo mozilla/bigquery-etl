@@ -51,31 +51,35 @@ RETURNS ARRAY<STRUCT<
   multiprocess_compatible BOOL
 >>
 LANGUAGE js AS """
-const additional_properties = JSON.parse(active_addons_json) || {};
-const result = [];
-(active_addons || []).forEach((item) => {
-  const addon_json = additional_properties[item.key] || {};
-  const value = item.value || {};
-  result.push({
-    addon_id: item.key,
-    blocklisted: value.blocklisted,
-    name: value.name,
-    user_disabled: addon_json.userDisabled,
-    app_disabled: value.app_disabled,
-    version: addon_json.version,
-    scope: value.scope,
-    type: value.type,
-    foreign_install: addon_json.foreignInstall,
-    has_binary_components: value.has_binary_components,
-    install_day: value.install_day,
-    update_day: value.update_day,
-    signed_state: value.signed_state,
-    is_system: value.is_system,
-    is_web_extension: value.is_web_extension,
-    multiprocess_compatible: value.multiprocess_compatible,
+try {
+  const additional_properties = JSON.parse(active_addons_json) || {};
+  const result = [];
+  (active_addons || []).forEach((item) => {
+    const addon_json = additional_properties[item.key] || {};
+    const value = item.value || {};
+    result.push({
+      addon_id: item.key,
+      blocklisted: value.blocklisted,
+      name: value.name,
+      user_disabled: addon_json.userDisabled,
+      app_disabled: value.app_disabled,
+      version: addon_json.version,
+      scope: value.scope,
+      type: value.type,
+      foreign_install: addon_json.foreignInstall,
+      has_binary_components: value.has_binary_components,
+      install_day: value.install_day,
+      update_day: value.update_day,
+      signed_state: value.signed_state,
+      is_system: value.is_system,
+      is_web_extension: value.is_web_extension,
+      multiprocess_compatible: value.multiprocess_compatible,
+    });
   });
-});
-return result;
+  return result;
+} catch(err) {
+  return null;
+}
 """;
 -- Tests
 WITH result AS (

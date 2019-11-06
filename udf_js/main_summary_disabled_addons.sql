@@ -14,8 +14,12 @@ CREATE TEMP FUNCTION udf_js_main_summary_disabled_addons(
 )
 RETURNS ARRAY<STRING>
 LANGUAGE js AS """
-const addonDetails = Object.keys(JSON.parse(addon_details_json) || {});
-return addonDetails.filter(k => !(active_addon_ids || []).includes(k));
+try {
+  const addonDetails = Object.keys(JSON.parse(addon_details_json) || {});
+  return addonDetails.filter(k => !(active_addon_ids || []).includes(k));
+} catch(err) {
+  return null;
+}
 """;
 -- Tests
 SELECT

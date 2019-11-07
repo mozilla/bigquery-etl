@@ -17,6 +17,10 @@ except ImportError as e:
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("table", help="BigQuery table to read")
 parser.add_argument(
+    "--avro-path",
+    help="Avro export path that should be read instead of BigQuery Storage API.",
+)
+parser.add_argument(
     "--dataset",
     dest="dataset",
     default="telemetry",
@@ -225,32 +229,41 @@ def main():
                 + ",".join(f"\n{' '*4*5}{expr!r}" for expr in args.replace)
                 + f"\n{' '*4*4}]"
             )
+        print("spark = SparkSession.builder.appName('export_to_parquet').getOrCreate()")
+        print("")
+        if args.avro_path is not None:
+            print(f"df = spark.read.format('avro').load({args.avro_path!r})")
+        else:
+            print(
+                dedent(
+                    f"""
+                    df = (
+                        spark.read.format('bigquery')
+                        .option('dataset', {args.dataset!r})
+                        .option('table', {args.table!r})
+                        .option('filter', {args.filter!r})
+                        .option("parallelism", 0)  # let BigQuery storage API decide
+                        .load()
+                    )
+                    """
+                ).strip()
+            )
+        print("")
         print(
             dedent(
                 f"""
-                df = (
-                    SparkSession.builder.appName('export_to_parquet')
-                    .getOrCreate()
-                    .read.format('bigquery')
-                    .option('dataset', {args.dataset!r})
-                    .option('table', {args.table!r})
-                    .option('filter', {args.filter!r})
-                    .option("parallelism", 0)  # let BigQuery storage API decide
-                    .load()
-                    .where({args.where!r})
-                    .selectExpr(*{args.select!r})
-                    .with
-                    .drop(*{args.drop!r})
-                )
+                df = df.where({args.where!r}).selectExpr(*{args.select!r}).drop(*{args.drop!r})
+
                 for sql in {replace}:
                     value, name = re.fullmatch("(?i)(.*) AS (.*)", sql).groups()
                     df = df.withColumn(name, expr(value))
+
                 (
                     df.write.mode({args.write_mode!r})
                     .partitionBy(*{args.partition_by!r})
                     .parquet({args.destination!r})
                 )
-                """
+                """  # noqa:E501
             ).strip()
         )
     else:
@@ -261,23 +274,27 @@ def main():
         if bigquery is None:
             raise bigquery_error
 
+        spark = SparkSession.builder.appName("export_to_parquet").getOrCreate()
+
         # run spark job from parsed args
-        df = (
-            SparkSession.builder.appName("export_to_parquet")
-            .getOrCreate()
-            .read.format("bigquery")
-            .option("dataset", args.dataset)
-            .option("table", args.table)
-            .option("filter", args.filter)
-            .option("parallelism", 0)  # let BigQuery storage API decide
-            .load()
-            .where(args.where)
-            .selectExpr(*args.select)
-            .drop(*args.drop)
-        )
+        if args.avro_path is not None:
+            df = spark.read.format("avro").load(args.avro_path)
+        else:
+            df = (
+                spark.read.format("bigquery")
+                .option("dataset", args.dataset)
+                .option("table", args.table)
+                .option("filter", args.filter)
+                .option("parallelism", 0)  # let BigQuery storage API decide
+                .load()
+            )
+
+        df = df.where(args.where).selectExpr(*args.select).drop(*args.drop)
+
         for sql in args.replace:
             value, name = re.fullmatch("(?i)(.*) AS (.*)", sql).groups()
             df = df.withColumn(name, expr(value))
+
         (
             df.write.mode(args.write_mode)
             .partitionBy(*args.partition_by)

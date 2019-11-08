@@ -25,9 +25,9 @@ SELECT
   distribution_id,
   COALESCE(cc.name, cls.country) AS country_name
 FROM
-  clients_last_seen_v1 cls
+  clients_last_seen_v1 AS cls
 LEFT JOIN
-  static.country_codes_v1 cc
+  static.country_codes_v1 AS cc
   ON (cls.country = cc.code)
 WHERE
   client_id IS NOT NULL

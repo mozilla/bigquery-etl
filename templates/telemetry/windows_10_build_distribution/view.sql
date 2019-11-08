@@ -5,32 +5,33 @@ WITH
   SELECT
     normalized_channel,
     build_group,
-    max(build_number) oo,
-    sum(count) frequency
+    max(build_number) AS oo,
+    sum(count) AS frequency
   FROM
     `moz-fx-data-shared-prod.telemetry.windows_10_aggregate`
   GROUP BY
-    1,
-    2
+    normalized_channel,
+    build_group
   ORDER BY
-    2 ASC ),
+    build_group ASC),
   counts AS (
   SELECT
     normalized_channel,
-    sum(frequency) total
+    sum(frequency) AS total
   FROM
     channel_summary
   GROUP BY
-    1 )
+    normalized_channel)
 SELECT
-  cs.normalized_channel,
+  normalized_channel,
   build_group,
-  (frequency / total) frequency,
-  frequency count
-FROM (channel_summary cs
-  INNER JOIN
-    counts cc
-  ON
-    (cs.normalized_channel = cc.normalized_channel))
+  (frequency / total) AS frequency,
+  frequency AS `count`
+FROM
+  channel_summary
+INNER JOIN
+  counts
+USING
+  (normalized_channel)
 ORDER BY
-  cs.oo ASC
+  oo ASC

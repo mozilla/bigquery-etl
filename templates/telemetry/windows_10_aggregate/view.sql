@@ -21,23 +21,23 @@ WITH
     END AS build_group,
     SPLIT(app_version, ".")[OFFSET(0)] AS ff_build_version,
     normalized_channel,
-    COUNT(1) count
+    COUNT(*) AS `count`
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
-    submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 28 DAY)
+    submission_date > DATE_SUB(CURRENT_DATE, INTERVAL 28 DAY)
     AND os = 'Windows_NT'
     AND STARTS_WITH(os_version, '10')
     AND SAFE_CAST(SPLIT(app_version, ".")[OFFSET(0)] AS INT64) >= 47
     AND sample_id = 42
   GROUP BY
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7),
+    name,
+    version,
+    build_number,
+    ubr,
+    build_group,
+    ff_build_version,
+    normalized_channel),
   total AS (
   SELECT
     SUM(count) total_obs

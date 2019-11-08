@@ -5,7 +5,7 @@ WITH
   SELECT
     normalized_channel,
     build_group,
-    max(build_number) AS oo,
+    max(build_number) AS max_build_number,
     sum(count) AS frequency
   FROM
     `moz-fx-data-shared-prod.telemetry.windows_10_aggregate`
@@ -34,4 +34,4 @@ INNER JOIN
 USING
   (normalized_channel)
 ORDER BY
-  oo ASC
+  max_build_number ASC

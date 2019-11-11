@@ -1,15 +1,4 @@
-CREATE TEMP FUNCTION
-  udf_aggregate_map_sum(maps ANY TYPE) AS (STRUCT(ARRAY(
-      SELECT
-        AS STRUCT key,
-        SUM(value) AS value
-      FROM
-        UNNEST(maps),
-        UNNEST(key_value)
-      GROUP BY
-        key) AS key_value));
---
-CREATE TEMP FUNCTION udf_normalized_sum (arrs STRUCT<key_value ARRAY<STRUCT<key STRING, value INT64>>>)
+CREATE TEMP FUNCTION udf_normalized_sum (arrs ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Returns the normalized sum of the input maps.
   -- It returns the total_count[k] / SUM(total_count)
@@ -19,7 +8,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
       SELECT
         sum(a.value) AS total_count
       FROM
-        UNNEST(arrs.key_value) AS a
+        UNNEST(arrs) AS a
     ),
 
     summed_counts AS (
@@ -27,7 +16,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
         a.key AS k,
         SUM(a.value) AS v
       FROM
-        UNNEST(arrs.key_value) AS a
+        UNNEST(arrs) AS a
       GROUP BY
         a.key
     ),
@@ -126,8 +115,7 @@ normalized_histograms AS
       key,
       agg_type,
       latest_version,
-      udf_normalized_sum(
-        udf_aggregate_map_sum(ARRAY_AGG(STRUCT<key_value ARRAY<STRUCT <key STRING, value INT64>>>(value)))) AS aggregates
+      udf_normalized_sum(udf_map_sum(ARRAY_CONCAT_AGG(value))) AS aggregates
   FROM
       version_filtered
   GROUP BY

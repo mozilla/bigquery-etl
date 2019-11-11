@@ -1,11 +1,9 @@
 ---
 - &base
   client_id: test
-  document_id: base
   sample_id: 0
   submission_date: '2019-01-01'
 - <<: *base
-  document_id: avg_1
   active_addons_count: 1
   client_clock_skew: 1
   client_submission_latency: 1
@@ -17,7 +15,6 @@
   sync_count_desktop: 1
   sync_count_mobile: 1
 - <<: *base
-  document_id: avg_2
   active_addons_count: 3
   client_clock_skew: 3
   client_submission_latency: 3
@@ -28,11 +25,8 @@
   session_restored: 3
   sync_count_desktop: 3
   sync_count_mobile: 3
-- &mode_last_1_1
+- &mode_last_1
   <<: *base
-  document_id: mode_last_1
-  active_experiment_branch: first
-  active_experiment_id: first
   addon_compatibility_check_enabled: false
   app_build_id: first
   app_display_version: first
@@ -89,13 +83,9 @@
   vendor: first
   windows_build_number: 1
   windows_ubr: 1
-- <<: *mode_last_1_1
-  document_id: mode_last_1_2
-- &mode_last_2_1
+- <<: *mode_last_1
+- &mode_last_2
   <<: *base
-  document_id: mode_last_2
-  active_experiment_branch: second
-  active_experiment_id: second
   addon_compatibility_check_enabled: true
   app_build_id: second
   app_display_version: second
@@ -152,13 +142,9 @@
   vendor: second
   windows_build_number: 2
   windows_ubr: 2
-- <<: *mode_last_2_1
-  document_id: mode_last_2_2
+- <<: *mode_last_2
 - <<: *base
   # leave out booleans
-  document_id: mode_last_3
-  active_experiment_branch: third
-  active_experiment_id: third
   app_build_id: third
   app_display_version: third
   app_name: third
@@ -207,18 +193,15 @@
   windows_build_number: 3
   windows_ubr: 3
 - <<: *base
-  document_id: max_1
   scalar_parent_browser_engagement_max_concurrent_tab_count: 1
   scalar_parent_browser_engagement_max_concurrent_window_count: 1
   scalar_parent_browser_engagement_unique_domains_count: 1
 - <<: *base
-  document_id: max_2
   scalar_parent_browser_engagement_max_concurrent_tab_count: 3
   scalar_parent_browser_engagement_max_concurrent_window_count: 3
   scalar_parent_browser_engagement_unique_domains_count: 3
-- &sum_1
+- &sum
   <<: *base
-  document_id: sum_1
   aborts_content: 1
   aborts_gmplugin: 1
   aborts_plugin: 1
@@ -294,5 +277,4 @@
   ssl_handshake_result_success: 1
   subsession_length: 3600
   web_notification_shown: 1
-- <<: *sum_1
-  document_id: sum_2
+- <<: *sum

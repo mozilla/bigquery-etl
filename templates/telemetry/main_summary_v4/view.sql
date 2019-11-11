@@ -290,3 +290,13 @@ SELECT
   )
 FROM
   `moz-fx-data-derived-datasets.telemetry_derived.main_summary_v4`
+WHERE
+  submission_date < DATE '2019-11-09'
+UNION ALL
+SELECT
+  submission_date AS submission_date_s3,
+  *
+FROM
+  `moz-fx-data-shared-prod.telemetry_derived.main_summary_v4`
+WHERE
+  submission_date >= DATE '2019-11-09'

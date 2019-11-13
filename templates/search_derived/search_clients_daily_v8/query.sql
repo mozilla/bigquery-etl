@@ -12,6 +12,17 @@ CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
   )
 );
 
+-- Take array of experiment structs and return union of experiments arrays
+-- This is a workaround for the inability to use ARRAY_CONCAT_AGG as an analytical function
+CREATE TEMP FUNCTION dedupe_experiments(list ANY TYPE) AS (
+  (
+    SELECT
+      udf_dedupe_array(ARRAY_CONCAT_AGG(client_experiments))
+    FROM
+      UNNEST(list)
+  )
+);
+
 WITH
   augmented AS (
   SELECT
@@ -51,9 +62,24 @@ WITH
         value AS count,
         "search-with-ads" AS type
       FROM
-        UNNEST(scalar_parent_browser_search_with_ads) ) ) AS _searches
+        UNNEST(scalar_parent_browser_search_with_ads) ) ) AS _searches,
+    -- Aggregate numerical values before flattening engine/source array
+    SUM(subsession_length/3600) OVER w1 AS subsession_hours_sum,
+    COUNTIF(subsession_counter = 1) OVER w1 AS sessions_started_on_this_day,
+    AVG(active_addons_count) OVER w1 AS active_addons_count_mean,
+    MAX(scalar_parent_browser_engagement_max_concurrent_tab_count) OVER w1 AS max_concurrent_tab_count_max,
+    SUM(scalar_parent_browser_engagement_tab_open_event_count) OVER w1 AS tab_open_event_count_sum,
+    SUM(active_ticks/(3600/5)) OVER w1 AS active_hours_sum,
+    SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count
+    -- TODO: experiments
   FROM
-    telemetry.main_summary ),
+    telemetry.main_summary
+  WINDOW
+    w1 AS (
+      PARTITION BY
+        client_id,
+        submission_date
+    )),
   flattened AS (
   SELECT
     *
@@ -95,6 +121,13 @@ WITH
     udf_mode_last(ARRAY_AGG(default_private_search_engine_data_load_path) OVER w1) AS default_private_search_engine_data_load_path,
     udf_mode_last(ARRAY_AGG(default_private_search_engine_data_submission_url) OVER w1) AS default_private_search_engine_data_submission_url,
     udf_mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
+    udf_mode_last(ARRAY_AGG(subsession_hours_sum) OVER w1) AS subsession_hours_sum,
+    udf_mode_last(ARRAY_AGG(sessions_started_on_this_day) OVER w1) AS sessions_started_on_this_day,
+    udf_mode_last(ARRAY_AGG(active_addons_count_mean) OVER w1) AS active_addons_count_mean,
+    udf_mode_last(ARRAY_AGG(max_concurrent_tab_count_max) OVER w1) AS max_concurrent_tab_count_max,
+    udf_mode_last(ARRAY_AGG(tab_open_event_count_sum) OVER w1) AS tab_open_event_count_sum,
+    udf_mode_last(ARRAY_AGG(active_hours_sum) OVER w1) AS active_hours_sum,
+    udf_mode_last(ARRAY_AGG(total_uri_count) OVER w1) AS total_uri_count,
     SAFE_SUBTRACT(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))), profile_creation_date) AS profile_age_in_days,
     SUM(
     IF

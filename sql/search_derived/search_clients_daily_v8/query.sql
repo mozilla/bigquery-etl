@@ -20,30 +20,13 @@ CREATE TEMP FUNCTION
 CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
   (
     SELECT
-      element.version
+      udf_mode_last(ARRAY_AGG(version))
     FROM
-      (
-        SELECT
-          list,
-          _offset_1
-        FROM
-          UNNEST(active_addons)
-        WITH
-          OFFSET AS _offset_1
-      ),
-      UNNEST(list)
-    WITH
-      OFFSET AS _offset_2
+      UNNEST(active_addons)
     WHERE
-      element.addon_id = 'followonsearch@mozilla.com'
+      addon_id = 'followonsearch@mozilla.com'
     GROUP BY
-      element.version
-    ORDER BY
-      COUNT(element.version) DESC,
-      MAX(_offset_1) DESC,
-      MAX(_offset_2) DESC
-    LIMIT
-      1
+      version
   )
 );
 
@@ -70,7 +53,7 @@ WITH
       END
         AS type
       FROM
-        UNNEST(search_counts.list) ),
+        UNNEST(search_counts) AS element ),
       ARRAY(
       SELECT
         AS STRUCT "ad-click:" AS source,
@@ -78,7 +61,7 @@ WITH
         value AS count,
         "ad-click" AS type
       FROM
-        UNNEST(scalar_parent_browser_search_ad_clicks.key_value) ),
+        UNNEST(scalar_parent_browser_search_ad_clicks) ),
       ARRAY(
       SELECT
         AS STRUCT "search-with-ads:" AS source,
@@ -86,9 +69,9 @@ WITH
         value AS count,
         "search-with-ads" AS type
       FROM
-        UNNEST(scalar_parent_browser_search_with_ads.key_value) ) ) AS _searches
+        UNNEST(scalar_parent_browser_search_with_ads) ) ) AS _searches
   FROM
-    telemetry_derived.main_summary_v4 ),
+    telemetry.main_summary ),
   flattened AS (
   SELECT
     *
@@ -113,7 +96,7 @@ WITH
     engine,
     source,
     udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    get_search_addon_version(ARRAY_AGG(active_addons) OVER w1) AS addon_version,
+    udf_mode_last(ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1) AS addon_version,
     udf_mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
     udf_mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
     udf_mode_last(ARRAY_AGG(locale) OVER w1) AS locale,

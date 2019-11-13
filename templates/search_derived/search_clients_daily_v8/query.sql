@@ -35,7 +35,7 @@ WITH
       END
         AS type
       FROM
-        UNNEST(search_counts) element ),
+        UNNEST(search_counts) AS element ),
       ARRAY(
       SELECT
         AS STRUCT "ad-click:" AS source,

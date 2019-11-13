@@ -30,13 +30,13 @@ WITH crash_ping_agg AS (
       1,
       0
     ) AS content_shutdown_crash,
-    -- 0 columns to match main pings
+    -- 0 for values retrieved from main/core pings
     0 AS usage_hours,
     0 AS gpu_crashes,
     0 AS plugin_crashes,
     0 AS gmplugin_crashes
   FROM
-    `moz-fx-data-shared-prod.telemetry_live.crash_v4`
+    telemetry_live.crash_v4
 ),
 main_ping_agg AS (
   SELECT
@@ -50,17 +50,17 @@ main_ping_agg AS (
     environment.system.os.version AS os_version,
     environment.build.architecture,
     normalized_country_code AS country,
-    -- 0 columns to match crash ping
+    -- 0 for values retrieved from crash pings
     0 AS main_crash,
     0 AS content_crash,
     0 AS startup_crash,
     0 AS content_shutdown_crash,
-    LEAST(GREATEST(payload.info.subsession_length / 3600, 0), 25) AS usage_hours,
+    LEAST(GREATEST(payload.info.subsession_length / 3600, 0), 25) AS usage_hours,  -- protect against extreme values
     COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'), 0) AS gpu_crashes,
     COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
     COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
   FROM
-    `moz-fx-data-shared-prod.telemetry_live.main_v4`
+    telemetry_live.main_v4
 ),
 core_ping_agg AS (
   SELECT
@@ -74,19 +74,19 @@ core_ping_agg AS (
     osversion AS os_version,
     arch AS architecture,
     normalized_country_code AS country,
-    -- 0 columns to match crash ping
+    -- 0 for values retrieved from crash pings
     0 AS main_crash,
     0 AS content_crash,
     0 AS startup_crash,
     0 AS content_shutdown_crash,
-    LEAST(GREATEST(durations / 3600, 0), 25) AS usage_hours,
+    LEAST(GREATEST(durations / 3600, 0), 25) AS usage_hours,  -- protect against extreme values
     0 AS gpu_crashes,
     0 AS plugin_crashes,
     0 AS gmplugin_crashes
   FROM
-    `moz-fx-data-shared-prod.telemetry_live.core_v10`
+    telemetry_live.core_v10
 ),
-combined_crashes AS (
+combined_aggregates AS (
   SELECT
     *
   FROM
@@ -125,7 +125,7 @@ SELECT
   SUM(gmplugin_crashes) AS gmplugin_crashes,
   SUM(usage_hours) AS usage_hours
 FROM
-  combined_crashes
+  combined_aggregates
 WHERE
   DATE(submission_timestamp) = '2019-11-05' -- TODO: USE param
   AND DATE_DIFF(  -- Only use builds from the last 6 months

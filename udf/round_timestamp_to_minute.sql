@@ -21,4 +21,8 @@ SELECT
   assert_equals(
     udf_round_timestamp_to_minute(TIMESTAMP '2019-05-03 00:34:59', 2),
     TIMESTAMP '2019-05-03 00:34:00'
+  ),
+  assert_equals(
+    udf_round_timestamp_to_minute(TIMESTAMP '2019-05-03 00:34:59.999999', 2),
+    TIMESTAMP '2019-05-03 00:34:00'
   )

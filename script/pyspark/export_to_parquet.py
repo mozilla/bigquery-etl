@@ -88,6 +88,12 @@ parser.add_argument(
     help="Recursively convert repeated key-value structs with maps.",
 )
 parser.add_argument(
+    "--bigint-columns",
+    nargs="*",
+    help="A list of columns that should remain BIGINT in the output, while any other "
+    " BIGINT columns are converted to INT. If unspecified, all columns remain BIGINT.",
+)
+parser.add_argument(
     "--replace",
     default=[],
     nargs="+",
@@ -126,33 +132,63 @@ parser.add_argument(
 )
 
 
-def maps_from_entries(field, transform_layer=0, *prefix):
-    """Generate spark SQL to recursively convert repeated key-value structs to maps."""
+def transform_field(
+    field, maps_from_entries=False, bigint_columns=None, transform_layer=0, *prefix
+):
+    """
+    Generate spark SQL to recursively convert fields types.
+
+    If maps_from_entries is True, convert repeated key-value structs to maps.
+
+    If bigint_columns is a list, convert non-matching BIGINT columns to INT.
+    """
+    transformed = False
     result = full_name = ".".join(prefix + (field.name,))
-    if field.field_type == "RECORD":
-        repeated = field.mode == "REPEATED"
-        if repeated:
-            if transform_layer > 0:
-                prefix = (f"_{transform_layer}",)
-            else:
-                prefix = ("_",)
-            transform_layer += 1
+    repeated = field.mode == "REPEATED"
+    if repeated:
+        if transform_layer > 0:
+            prefix = (f"_{transform_layer}",)
         else:
-            prefix = (*prefix, field.name)
-        fields = ", ".join(
-            maps_from_entries(subfield, transform_layer, *prefix)
+            prefix = ("_",)
+        transform_layer += 1
+    else:
+        prefix = (*prefix, field.name)
+    if field.field_type == "RECORD":
+        if bigint_columns is not None:
+            # get the bigint_columns nested under this field
+            prefix_len = len(field.name) + 1
+            bigint_columns = [
+                column[prefix_len:]
+                for column in bigint_columns
+                if column.startswith(field.name + ".")
+            ]
+        subfields = [
+            transform_field(
+                subfield, maps_from_entries, bigint_columns, transform_layer, *prefix
+            )
             for subfield in field.fields
-        )
-        if "(" in fields:
+        ]
+        if any(subfield_transformed for _, subfield_transformed in subfields):
+            transformed = True
+            fields = ", ".join(transform for transform, _ in subfields)
             result = f"STRUCT({fields})"
             if repeated:
                 result = f"TRANSFORM({full_name}, {prefix[0]} -> {result})"
-        if repeated and {"key", "value"} == {f.name for f in field.fields}:
-            result = f"MAP_FROM_ENTRIES({result})"
-    return f"{result} AS {field.name}"
+        if maps_from_entries:
+            if repeated and {"key", "value"} == {f.name for f in field.fields}:
+                transformed = True
+                result = f"MAP_FROM_ENTRIES({result})"
+    elif field.field_type == "INTEGER":
+        if bigint_columns is not None and field.name not in bigint_columns:
+            transformed = True
+            if repeated:
+                result = f"TRANSFORM({full_name}, {prefix[0]} -> INT({prefix[0]}))"
+            else:
+                result = f"INT({full_name})"
+    return f"{result} AS {field.name}", transformed
 
 
-def find_maps_from_entries(table):
+def transform_schema(table, maps_from_entries=False, bigint_columns=None):
     """Get maps_from_entries expressions for all maps in the given table."""
     if bigquery is None:
         return ["..."]
@@ -160,12 +196,14 @@ def find_maps_from_entries(table):
     replace = []
     for index, field in enumerate(schema):
         try:
-            expr = maps_from_entries(field)
+            expr, transformed = transform_field(
+                field, maps_from_entries, bigint_columns
+            )
         except Exception:
             json_field = json.dumps(field.to_api_repr(), indent=2)
             print(f"problem with field {index}:\n{json_field}", file=sys.stderr)
             raise
-        if "(" in expr:
+        if transformed:
             replace += [expr]
     return replace
 
@@ -214,12 +252,14 @@ def main():
     # convert --filter to a single string
     args.filter = " AND ".join(args.filter)
 
-    if args.maps_from_entries:
+    if args.maps_from_entries or args.bigint_columns is not None:
         if "." in args.table:
             table_ref = args.table.replace(":", ".")
         else:
             table_ref = f"{args.dataset}.{args.table}"
-        args.replace += find_maps_from_entries(table_ref)
+        args.replace += transform_schema(
+            table_ref, args.maps_from_entries, args.bigint_columns
+        )
 
     if args.dry_run:
         replace = f"{args.replace!r}"

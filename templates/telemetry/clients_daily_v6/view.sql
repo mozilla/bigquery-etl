@@ -16,9 +16,8 @@ SELECT
   )
 FROM
   `moz-fx-data-derived-datasets.telemetry_derived.clients_daily_v6`
-/*
 WHERE
-  submission_date < @first_sql_day
+  submission_date < DATE '2019-11-14'
 UNION ALL
 SELECT
   submission_date AS submission_date_s3,
@@ -26,5 +25,4 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
 WHERE
-  submission_date >= @first_sql_day
-*/
+  submission_date >= DATE '2019-11-14'

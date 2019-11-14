@@ -12,7 +12,7 @@
   },
   {
     "name": "sample_id",
-    "type": "INTEGER",
+    "type": "INT64",
     "mode": "REQUIRED"
   },
   {
@@ -50,21 +50,15 @@
   {
     "fields": [
       {
-        "fields": [
-          {
-            "name": "key",
-            "type": "STRING"
-          },
-          {
-            "name": "value",
-            "type": "STRING"
-          }
-        ],
-        "mode": "REPEATED",
-        "name": "key_value",
-        "type": "RECORD"
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
       }
     ],
+    "mode": "REPEATED",
     "name": "experiments",
     "type": "RECORD"
   },

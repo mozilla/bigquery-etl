@@ -26,9 +26,8 @@ WITH
       value AS branch,
       1 AS bits
     FROM
-      UNNEST(experiments.key_value)) AS days_seen_in_experiment,
+      UNNEST(experiments)) AS days_seen_in_experiment,
     * EXCEPT (submission_date)
-      REPLACE (CAST(sample_id AS STRING) AS sample_id)
   FROM
     clients_daily_v6
   WHERE
@@ -65,7 +64,4 @@ FROM
 FULL JOIN
   _previous
 USING
-  -- Include sample_id to match the clustering of the tables, which may improve
-  -- join performance.
-  (sample_id,
-    client_id)
+  (client_id)

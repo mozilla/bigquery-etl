@@ -60,7 +60,6 @@ SKIP = {
 
 USE_DERIVED_DATASETS = {
     "sql/telemetry_derived/ssl_ratios_v1/query.sql",
-    "sql/telemetry_derived/clients_last_seen_v1/query.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/query.sql",
     "sql/telemetry/firefox_accounts_exact_mau28_raw_v1/query.sql",
     "sql/telemetry/core_clients_daily_v1/query.sql",

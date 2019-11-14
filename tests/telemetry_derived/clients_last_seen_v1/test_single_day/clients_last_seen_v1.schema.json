@@ -26,15 +26,18 @@
     "fields": [
       {
         "name": "experiment",
-        "type": "STRING"
+        "type": "STRING",
+        "mode": "NULLABLE"
       },
       {
         "name": "branch",
-        "type": "STRING"
+        "type": "STRING",
+        "mode": "NULLABLE"
       },
       {
         "name": "bits",
-        "type": "INTEGER"
+        "type": "INT64",
+        "mode": "NULLABLE"
       }
     ]
   },
@@ -50,7 +53,7 @@
   },
   {
     "name": "sample_id",
-    "type": "STRING",
+    "type": "INT64",
     "mode": "REQUIRED"
   },
   {
@@ -88,21 +91,17 @@
   {
     "fields": [
       {
-        "fields": [
-          {
-            "name": "key",
-            "type": "STRING"
-          },
-          {
-            "name": "value",
-            "type": "STRING"
-          }
-        ],
-        "mode": "REPEATED",
-        "name": "key_value",
-        "type": "RECORD"
+        "name": "key",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "value",
+        "type": "STRING",
+        "mode": "NULLABLE"
       }
     ],
+    "mode": "REPEATED",
     "name": "experiments",
     "type": "RECORD"
   },

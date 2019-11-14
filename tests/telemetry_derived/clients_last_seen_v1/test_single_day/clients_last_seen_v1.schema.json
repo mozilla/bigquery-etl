@@ -68,7 +68,7 @@
   },
   {
     "name": "profile_creation_date",
-    "type": "DATE",
+    "type": "STRING",
     "mode": "NULLABLE"
   },
   {

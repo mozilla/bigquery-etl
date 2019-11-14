@@ -256,7 +256,7 @@ SELECT
   SUM(plugins_notification_shown) AS plugins_notification_shown_sum,
   udf_mode_last(ARRAY_AGG(previous_build_id ORDER BY `timestamp`)) AS previous_build_id,
   UNIX_DATE(DATE(SAFE.TIMESTAMP(ANY_VALUE(subsession_start_date)))) - ANY_VALUE(profile_creation_date) AS profile_age_in_days,
-  SAFE.DATE_FROM_UNIX_DATE(ANY_VALUE(profile_creation_date)) AS profile_creation_date,
+  FORMAT_DATE("%F 00:00:00", SAFE.DATE_FROM_UNIX_DATE(ANY_VALUE(profile_creation_date))) AS profile_creation_date,
   SUM(push_api_notify) AS push_api_notify_sum,
   ANY_VALUE(sample_id) AS sample_id,
   udf_mode_last(ARRAY_AGG(sandbox_effective_content_process_level ORDER BY `timestamp`)) AS sandbox_effective_content_process_level,

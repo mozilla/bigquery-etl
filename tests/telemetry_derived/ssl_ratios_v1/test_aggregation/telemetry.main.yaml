@@ -1,0 +1,64 @@
+---
+- &us_winnt
+  metadata:
+    geo:
+      country: US
+  environment:
+    system:
+      os:
+        name: Windows_NT
+  application:
+    name: Firefox
+  normalized_channel: release
+  sample_id: 42
+  submission_timestamp: '2019-08-01T00:00:00Z'
+- *us_winnt
+- *us_winnt
+- <<: *us_winnt
+  payload:
+    histograms:
+      http_pageload_is_ssl: '{"values":{}}'
+- <<: *us_winnt
+  payload:
+    histograms:
+      http_pageload_is_ssl: '{"values":{"0":5,"1":5}}'
+- <<: *us_winnt
+  metadata:
+    geo:
+      country: MX
+  payload:
+    histograms:
+      http_pageload_is_ssl: '{"values":{"0":10,"1":20}}'
+- <<: *us_winnt
+  metadata:
+    geo:
+      country: DE
+  payload:
+    histograms:
+      http_pageload_is_ssl: '{"values":{"0":4,"1":2}}'
+- <<: *us_winnt
+  environment:
+    system:
+      os:
+        name: Darwin
+  payload:
+    histograms:
+      http_pageload_is_ssl: '{"values":{"0":20,"1":30}}'
+- &de_linux
+  <<: *us_winnt
+  metadata:
+    geo:
+      country: DE
+  environment:
+    system:
+      os:
+        name: Linux
+- *de_linux
+- <<: *de_linux
+  payload:
+    histograms:
+      http_pageload_is_ssl: '{"values":{"0":20,"1":30}}'
+- <<: *de_linux
+  payload:
+    histograms:
+      http_pageload_is_ssl: '{"values":{"0":80,"1":20}}'

@@ -26,7 +26,7 @@ CREATE TEMP FUNCTION dedupe_experiments(list ANY TYPE) AS (
 WITH
   augmented AS (
   SELECT
-    *,
+    * EXCEPT (experiments),
     ARRAY_CONCAT(
       ARRAY(
       SELECT
@@ -70,8 +70,8 @@ WITH
     MAX(scalar_parent_browser_engagement_max_concurrent_tab_count) OVER w1 AS max_concurrent_tab_count_max,
     SUM(scalar_parent_browser_engagement_tab_open_event_count) OVER w1 AS tab_open_event_count_sum,
     SUM(active_ticks/(3600/5)) OVER w1 AS active_hours_sum,
-    SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count
-    -- TODO: experiments
+    SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count,
+    dedupe_experiments(ARRAY_AGG(STRUCT(experiments AS client_experiments)) OVER w1) AS experiments
   FROM
     telemetry.main_summary
   WINDOW
@@ -121,13 +121,14 @@ WITH
     udf_mode_last(ARRAY_AGG(default_private_search_engine_data_load_path) OVER w1) AS default_private_search_engine_data_load_path,
     udf_mode_last(ARRAY_AGG(default_private_search_engine_data_submission_url) OVER w1) AS default_private_search_engine_data_submission_url,
     udf_mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
-    udf_mode_last(ARRAY_AGG(subsession_hours_sum) OVER w1) AS subsession_hours_sum,
-    udf_mode_last(ARRAY_AGG(sessions_started_on_this_day) OVER w1) AS sessions_started_on_this_day,
-    udf_mode_last(ARRAY_AGG(active_addons_count_mean) OVER w1) AS active_addons_count_mean,
-    udf_mode_last(ARRAY_AGG(max_concurrent_tab_count_max) OVER w1) AS max_concurrent_tab_count_max,
-    udf_mode_last(ARRAY_AGG(tab_open_event_count_sum) OVER w1) AS tab_open_event_count_sum,
-    udf_mode_last(ARRAY_AGG(active_hours_sum) OVER w1) AS active_hours_sum,
-    udf_mode_last(ARRAY_AGG(total_uri_count) OVER w1) AS total_uri_count,
+    subsession_hours_sum,
+    sessions_started_on_this_day,
+    active_addons_count_mean,
+    max_concurrent_tab_count_max,
+    tab_open_event_count_sum,
+    active_hours_sum,
+    total_uri_count,
+    experiments,
     SAFE_SUBTRACT(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))), profile_creation_date) AS profile_age_in_days,
     SUM(
     IF

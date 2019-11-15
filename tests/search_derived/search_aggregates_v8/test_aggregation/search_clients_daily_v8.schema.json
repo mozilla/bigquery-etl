@@ -148,5 +148,40 @@
     "type": "STRING",
     "name": "addon_version",
     "mode": "NULLABLE"
+  },
+  {
+    "type": "FLOAT",
+    "name": "subsession_hours_sum",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "session_started_on_this_day",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "FLOAT",
+    "name": "active_addons_count_mean",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "max_concurrent_tab_count_max",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "tab_open_event_count_sum",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "FLOAT",
+    "name": "active_hours_sum",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "total_uri_count",
+    "mode": "NULLABLE"
   }
 ]

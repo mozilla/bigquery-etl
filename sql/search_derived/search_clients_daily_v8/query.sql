@@ -1,11 +1,3 @@
-CREATE TEMP FUNCTION udf_dedupe_array(list ANY TYPE) AS (
-  ARRAY(
-    SELECT DISTINCT AS STRUCT
-      *
-    FROM
-      UNNEST(list)
-  )
-);
 CREATE TEMP FUNCTION
   udf_mode_last(list ANY TYPE) AS ((
     SELECT
@@ -38,21 +30,10 @@ CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
   )
 );
 
--- Take array of experiment structs and return union of experiments arrays
--- This is a workaround for the inability to use ARRAY_CONCAT_AGG as an analytical function
-CREATE TEMP FUNCTION dedupe_experiments(list ANY TYPE) AS (
-  (
-    SELECT
-      udf_dedupe_array(ARRAY_CONCAT_AGG(client_experiments))
-    FROM
-      UNNEST(list)
-  )
-);
-
 WITH
   augmented AS (
   SELECT
-    * EXCEPT (experiments),
+    *,
     ARRAY_CONCAT(
       ARRAY(
       SELECT
@@ -96,8 +77,7 @@ WITH
     MAX(scalar_parent_browser_engagement_max_concurrent_tab_count) OVER w1 AS max_concurrent_tab_count_max,
     SUM(scalar_parent_browser_engagement_tab_open_event_count) OVER w1 AS tab_open_event_count_sum,
     SUM(active_ticks/(3600/5)) OVER w1 AS active_hours_sum,
-    SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count,
-    dedupe_experiments(ARRAY_AGG(STRUCT(experiments AS client_experiments)) OVER w1) AS experiments
+    SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count
   FROM
     telemetry.main_summary
   WINDOW
@@ -154,7 +134,6 @@ WITH
     tab_open_event_count_sum,
     active_hours_sum,
     total_uri_count,
-    experiments,
     SAFE_SUBTRACT(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))), profile_creation_date) AS profile_age_in_days,
     SUM(
     IF

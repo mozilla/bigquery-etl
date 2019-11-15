@@ -183,22 +183,5 @@
     "type": "INTEGER",
     "name": "total_uri_count",
     "mode": "NULLABLE"
-  },
-  {
-    "fields": [
-      {
-        "type": "STRING",
-        "name": "key",
-        "mode": "NULLABLE"
-      },
-      {
-        "type": "STRING",
-        "name": "value",
-        "mode": "NULLABLE"
-      }
-    ],
-    "type": "RECORD",
-    "name": "experiments",
-    "mode": "REPEATED"
   }
 ]

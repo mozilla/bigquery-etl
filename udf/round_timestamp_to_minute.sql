@@ -11,18 +11,18 @@ CREATE TEMP FUNCTION udf_round_timestamp_to_minute(timestamp_expression TIMESTAM
 -- Test
 SELECT
   assert_equals(
-    udf_round_timestamp_to_minute(TIMESTAMP '2019-01-01 13:31:11', 5),
-    TIMESTAMP '2019-01-01 13:30:00'
+    TIMESTAMP '2019-01-01 13:30:00',
+    udf_round_timestamp_to_minute(TIMESTAMP '2019-01-01 13:31:11', 5)
   ),
   assert_equals(
-    udf_round_timestamp_to_minute(TIMESTAMP '2019-05-03 00:34:59', 5),
-    TIMESTAMP '2019-05-03 00:30:00'
+    TIMESTAMP '2019-05-03 00:30:00',
+    udf_round_timestamp_to_minute(TIMESTAMP '2019-05-03 00:34:59', 5)
   ),
   assert_equals(
-    udf_round_timestamp_to_minute(TIMESTAMP '2019-05-03 00:34:59', 2),
-    TIMESTAMP '2019-05-03 00:34:00'
+    TIMESTAMP '2019-05-03 00:34:00',
+    udf_round_timestamp_to_minute(TIMESTAMP '2019-05-03 00:34:59', 2)
   ),
   assert_equals(
-    udf_round_timestamp_to_minute(TIMESTAMP '2019-05-03 00:34:59.999999', 2),
-    TIMESTAMP '2019-05-03 00:34:00'
+    TIMESTAMP '2019-05-03 00:34:00',
+    udf_round_timestamp_to_minute(TIMESTAMP '2019-05-03 00:34:59.999999', 2)
   )

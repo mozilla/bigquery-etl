@@ -36,7 +36,73 @@ CREATE TEMP FUNCTION udf_round_timestamp_to_minute(timestamp_expression TIMESTAM
   )
 );
 --
-WITH crash_ping_agg AS (
+-- Get pings from the last day from live tables, stable tables for older
+WITH crash_pings AS (
+  SELECT
+    *
+  FROM
+    telemetry_live.crash_v4
+  WHERE
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+  UNION ALL
+  SELECT
+    *
+  FROM
+    telemetry_stable.crash_v4
+  WHERE
+    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+),
+main_pings AS (
+  SELECT
+    *
+  FROM
+    telemetry_live.main_v4
+  WHERE
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+  UNION ALL
+  SELECT
+    *
+  FROM
+    telemetry_stable.main_v4
+  WHERE
+    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+),
+live_core_pings AS (
+  SELECT * FROM telemetry_live.core_v2
+  UNION ALL
+  SELECT * FROM telemetry_live.core_v3
+  UNION ALL
+  SELECT * FROM telemetry_live.core_v4
+  UNION ALL
+  SELECT * FROM telemetry_live.core_v5
+  UNION ALL
+  SELECT * FROM telemetry_live.core_v6
+  UNION ALL
+  SELECT * FROM telemetry_live.core_v7
+  UNION ALL
+  SELECT * FROM telemetry_live.core_v8
+  UNION ALL
+  SELECT * FROM telemetry_live.core_v9
+  UNION ALL
+  SELECT * FROM telemetry_live.core_v10
+),
+core_pings AS (
+  SELECT
+    *
+  FROM
+    live_core_pings
+  WHERE
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+  UNION ALL
+  SELECT
+    *
+  FROM
+    telemetry.core
+  WHERE
+    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+),
+-- Get main, content, startup, and content_shutdown crashes from crash pings
+crash_ping_data AS (
   SELECT
     submission_timestamp,
     normalized_channel AS channel,
@@ -76,7 +142,8 @@ WITH crash_ping_agg AS (
   FROM
     telemetry_live.crash_v4
 ),
-main_ping_agg AS (
+-- Get desktop usage hours and gpu, plugin, and gmplugin crashes from main pings
+main_ping_data AS (
   SELECT
     submission_timestamp,
     normalized_channel AS channel,
@@ -100,7 +167,8 @@ main_ping_agg AS (
   FROM
     telemetry_live.main_v4
 ),
-core_ping_agg AS (
+-- Get mobile usage hours from core pings
+core_ping_data AS (
   SELECT
     submission_timestamp,
     normalized_channel AS channel,
@@ -124,21 +192,21 @@ core_ping_agg AS (
   FROM
     telemetry_live.core_v10
 ),
-combined_aggregates AS (
+combined_pings AS (
   SELECT
     *
   FROM
-    crash_ping_agg
+    crash_ping_data
   UNION ALL
   SELECT
     *
   FROM
-    main_ping_agg
+    main_ping_data
   UNION ALL
   SELECT
     *
   FROM
-    core_ping_agg
+    core_ping_data
 )
 
 SELECT
@@ -163,7 +231,7 @@ SELECT
   SUM(gmplugin_crashes) AS gmplugin_crashes,
   SUM(usage_hours) AS usage_hours
 FROM
-  combined_aggregates
+  combined_pings
 WHERE
   DATE(submission_timestamp) = '2019-11-05' -- TODO: USE param
   AND DATE_DIFF(  -- Only use builds from the last 6 months

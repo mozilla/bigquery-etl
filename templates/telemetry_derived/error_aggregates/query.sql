@@ -29,30 +29,11 @@ main_pings AS (
   WHERE
     DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
-live_core_pings AS (
-  SELECT * FROM telemetry_live.core_v2
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v3
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v4
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v5
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v6
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v7
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v8
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v9
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v10
-),
 core_pings AS (
   SELECT
     *
   FROM
-    live_core_pings
+    telemetry.core_live
   WHERE
     DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL

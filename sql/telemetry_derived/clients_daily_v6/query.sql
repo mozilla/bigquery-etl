@@ -140,6 +140,19 @@ CREATE TEMP FUNCTION udf_null_if_empty_list(list ANY TYPE) AS (
   )
 );
 --
+WITH overactive AS (
+  -- find client_ids with over 200,000 pings in a day
+  SELECT
+    client_id
+  FROM
+    main_summary_v4
+  WHERE
+    submission_date = @submission_date
+  GROUP BY
+    client_id
+  HAVING
+    COUNT(*) > 200000
+)
 SELECT
   submission_date,
   client_id,
@@ -312,8 +325,14 @@ SELECT
   udf_mode_last(ARRAY_AGG(windows_ubr ORDER BY `timestamp`)) AS windows_ubr
 FROM
   main_summary_v4
+LEFT JOIN
+  overactive
+USING
+  (client_id)
 WHERE
   submission_date = @submission_date
+  -- filter out overactive client_ids to prevent OOM errors
+  AND overactive.client_id IS NULL
 GROUP BY
   client_id,
   submission_date

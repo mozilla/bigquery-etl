@@ -135,7 +135,7 @@ core_ping_data AS (
   FROM
     core_pings
 ),
-combined_pings AS (
+combined_ping_data AS (
   SELECT
     *
   FROM
@@ -174,7 +174,7 @@ SELECT
   SUM(gmplugin_crashes) AS gmplugin_crashes,
   SUM(usage_hours) AS usage_hours
 FROM
-  combined_pings
+  combined_ping_data
 WHERE
   DATE(submission_timestamp) = @submission_date
   AND DATE_DIFF(  -- Only use builds from the last 6 months

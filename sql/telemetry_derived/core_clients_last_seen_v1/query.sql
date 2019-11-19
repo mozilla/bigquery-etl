@@ -40,7 +40,7 @@ WITH
   SELECT
     * EXCEPT (submission_date)
   FROM
-    core_clients_last_seen_raw_v1 AS cls
+    core_clients_last_seen_v1 AS cls
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

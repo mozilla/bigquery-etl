@@ -37,7 +37,7 @@ SKIP = {
     "sql/telemetry/fxa_oauth_events_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql",
-    "sql/telemetry/core_clients_last_seen_raw_v1/init.sql",
+    "sql/telemetry_derived/core_clients_last_seen_v1/init.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/init.sql",
     "sql/telemetry_derived/fxa_users_services_last_seen_v1/init.sql",
     # Reference table not found

@@ -43,14 +43,14 @@ WITH crash_pings AS (
   FROM
     telemetry_live.crash_v4
   WHERE
-    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) <= 1
   UNION ALL
   SELECT
     *
   FROM
     telemetry_stable.crash_v4
   WHERE
-    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) > 1
 ),
 main_pings AS (
   SELECT
@@ -58,48 +58,29 @@ main_pings AS (
   FROM
     telemetry_live.main_v4
   WHERE
-    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) <= 1
   UNION ALL
   SELECT
     *
   FROM
     telemetry_stable.main_v4
   WHERE
-    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
-),
-live_core_pings AS (
-  SELECT * FROM telemetry_live.core_v2
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v3
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v4
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v5
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v6
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v7
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v8
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v9
-  UNION ALL
-  SELECT * FROM telemetry_live.core_v10
+    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) > 1
 ),
 core_pings AS (
   SELECT
     *
   FROM
-    live_core_pings
+    telemetry.core_live
   WHERE
-    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) <= 1
   UNION ALL
   SELECT
     *
   FROM
     telemetry.core
   WHERE
-    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) > 1
 ),
 -- Get main, content, startup, and content_shutdown crashes from crash pings
 crash_ping_data AS (
@@ -140,7 +121,7 @@ crash_ping_data AS (
     0 AS plugin_crashes,
     0 AS gmplugin_crashes
   FROM
-    telemetry_live.crash_v4
+    crash_pings
 ),
 -- Get desktop usage hours and gpu, plugin, and gmplugin crashes from main pings
 main_ping_data AS (
@@ -165,7 +146,7 @@ main_ping_data AS (
     COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
     COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
   FROM
-    telemetry_live.main_v4
+    main_pings
 ),
 -- Get mobile usage hours from core pings
 core_ping_data AS (
@@ -190,7 +171,7 @@ core_ping_data AS (
     0 AS plugin_crashes,
     0 AS gmplugin_crashes
   FROM
-    telemetry_live.core_v10
+    core_pings
 ),
 combined_pings AS (
   SELECT
@@ -233,9 +214,9 @@ SELECT
 FROM
   combined_pings
 WHERE
-  DATE(submission_timestamp) = '2019-11-05' -- TODO: USE param
+  DATE(submission_timestamp) = @submission_date
   AND DATE_DIFF(  -- Only use builds from the last 6 months
-    CURRENT_DATE(),
+    CURRENT_DATE,
     SAFE.PARSE_DATE('%Y%m%d', SUBSTR(build_id, 0, 8)),
     MONTH
   ) <= 6

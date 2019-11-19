@@ -13,6 +13,19 @@ CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
 );
 
 WITH
+  overactive AS (
+  -- find client_ids with over 200,000 pings in a day
+  SELECT
+    client_id
+  FROM
+    telemetry.main_summary
+  WHERE
+    submission_date = @submission_date
+  GROUP BY
+    client_id
+  HAVING
+    COUNT(*) > 200000
+  ),
   augmented AS (
   SELECT
     *,
@@ -62,6 +75,12 @@ WITH
     SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count
   FROM
     telemetry.main_summary
+  LEFT JOIN
+    overactive
+  USING
+    (client_id)
+  WHERE
+    overactive.client_id IS NULL
   WINDOW
     w1 AS (
       PARTITION BY

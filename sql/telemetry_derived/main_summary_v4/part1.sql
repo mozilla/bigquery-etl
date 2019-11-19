@@ -339,6 +339,11 @@ SELECT
   environment.settings.default_search_engine_data.origin AS default_search_engine_data_origin,
   environment.settings.default_search_engine_data.submission_url AS default_search_engine_data_submission_url,
   environment.settings.default_search_engine,
+  environment.settings.default_private_search_engine_data.name AS default_private_search_engine_data_name,
+  environment.settings.default_private_search_engine_data.load_path AS default_private_search_engine_data_load_path,
+  environment.settings.default_private_search_engine_data.origin AS default_private_search_engine_data_origin,
+  environment.settings.default_private_search_engine_data.submission_url AS default_private_search_engine_data_submission_url,
+  environment.settings.default_private_search_engine,
 
   -- DevTools usage per bug 1262478
   udf_json_extract_histogram(payload.histograms.devtools_toolbox_opened_count).sum AS devtools_toolbox_opened_count,

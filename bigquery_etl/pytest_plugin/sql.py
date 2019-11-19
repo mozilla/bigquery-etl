@@ -88,14 +88,20 @@ class SqlTest(pytest.Item, pytest.File):
                     source_format = TABLE_EXTENSIONS["ndjson"]
                     source_path = (self.fspath.strpath, table_name)
                 if "." in table_name:
-                    # remove dataset from table_name
-                    original, table_name = table_name, table_name.rsplit(".", 1)[1]
+                    # combine project and dataset name with table name
+                    original, table_name = (
+                        table_name,
+                        table_name.replace(".", "_").replace("-", "_"),
+                    )
                     query = query.replace(original, table_name)
                 tables[table_name] = Table(table_name, source_format, source_path)
             elif extension == "sql":
                 if "." in table_name:
-                    # remove dataset from table_name
-                    original, table_name = table_name, table_name.rsplit(".", 1)[1]
+                    # combine project and dataset name with table name
+                    original, table_name = (
+                        table_name,
+                        table_name.replace(".", "_").replace("-", "_"),
+                    )
                     query = query.replace(original, table_name)
                 views[table_name] = read(self.fspath.strpath, resource)
 

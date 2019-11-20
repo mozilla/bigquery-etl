@@ -215,7 +215,7 @@ FROM
 WHERE
   DATE(submission_timestamp) = @submission_date
   AND DATE_DIFF(  -- Only use builds from the last 6 months
-    CURRENT_DATE,
+    @submission_date,
     SAFE.PARSE_DATE('%Y%m%d', SUBSTR(build_id, 0, 8)),
     MONTH
   ) <= 6

@@ -17,7 +17,7 @@ SELECT
   distribution_id,
   metadata_app_version AS app_version
 FROM
-  `moz-fx-data-derived-datasets.telemetry.core_clients_last_seen_v1`
+  `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
   --
 UNION ALL
   --

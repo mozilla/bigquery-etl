@@ -10,7 +10,7 @@ WITH unioned AS (
     country,
     distribution_id
   FROM
-    `moz-fx-data-shared-prod.telemetry.core_clients_last_seen_v1`
+    `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
   UNION ALL
   SELECT
     submission_date,

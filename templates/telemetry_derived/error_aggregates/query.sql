@@ -5,14 +5,14 @@ WITH crash_pings AS (
   FROM
     telemetry_live.crash_v4
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) <= 1
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
     telemetry_stable.crash_v4
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) > 1
+    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
 main_pings AS (
   SELECT
@@ -20,14 +20,14 @@ main_pings AS (
   FROM
     telemetry_live.main_v4
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) <= 1
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
     telemetry_stable.main_v4
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) > 1
+    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
 core_pings AS (
   SELECT
@@ -35,14 +35,14 @@ core_pings AS (
   FROM
     telemetry.core_live
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) <= 1
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
     telemetry.core
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) > 1
+    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
 -- Get main, content, startup, and content_shutdown crashes from crash pings
 crash_ping_data AS (
@@ -104,9 +104,9 @@ main_ping_data AS (
     0 AS startup_crash,
     0 AS content_shutdown_crash,
     LEAST(GREATEST(payload.info.subsession_length / 3600, 0), 25) AS usage_hours,  -- protect against extreme values
-    COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'), 0) AS gpu_crashes,
-    COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
-    COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
+    COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'), 0) AS gpu_crashes,
+    COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
+    COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
   FROM
     main_pings
 ),

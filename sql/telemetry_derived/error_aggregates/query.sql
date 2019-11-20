@@ -1,3 +1,11 @@
+CREATE TEMP FUNCTION udf_get_key(map ANY TYPE, k ANY TYPE) AS (
+ (
+   SELECT key_value.value
+   FROM UNNEST(map) AS key_value
+   WHERE key_value.key = k
+   LIMIT 1
+ )
+);
 CREATE TEMP FUNCTION
   udf_json_extract_int_map (input STRING) AS (ARRAY(
     SELECT
@@ -18,17 +26,8 @@ CREATE TEMP FUNCTION
       FROM
         UNNEST(SPLIT(TRIM(JSON_EXTRACT(input, '$.range'), '[]'), ',')) AS bound) AS `range`,
     udf_json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values` ));
-CREATE TEMP FUNCTION udf_histogram_get_sum(histogram_list ANY TYPE, target_key STRING) AS (
-  (
-    SELECT
-      udf_json_extract_histogram(value).sum
-    FROM
-      UNNEST(histogram_list)
-    WHERE
-      key = target_key
-    LIMIT
-      1
-  )
+CREATE TEMP FUNCTION udf_keyed_histogram_get_sum(keyed_histogram ANY TYPE, target_key STRING) AS (
+  udf_json_extract_histogram(udf_get_key(keyed_histogram, target_key)).sum
 );
 CREATE TEMP FUNCTION udf_round_timestamp_to_minute(timestamp_expression TIMESTAMP, minute INT64) AS (
   TIMESTAMP_SECONDS(
@@ -43,14 +42,14 @@ WITH crash_pings AS (
   FROM
     telemetry_live.crash_v4
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) <= 1
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
     telemetry_stable.crash_v4
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) > 1
+    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
 main_pings AS (
   SELECT
@@ -58,14 +57,14 @@ main_pings AS (
   FROM
     telemetry_live.main_v4
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) <= 1
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
     telemetry_stable.main_v4
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) > 1
+    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
 core_pings AS (
   SELECT
@@ -73,14 +72,14 @@ core_pings AS (
   FROM
     telemetry.core_live
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) <= 1
+    DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
   SELECT
     *
   FROM
     telemetry.core
   WHERE
-    DATE_DIFF(CURRENT_DATE, DATE(submission_timestamp), DAY) > 1
+    DATE(submission_timestamp) < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
 ),
 -- Get main, content, startup, and content_shutdown crashes from crash pings
 crash_ping_data AS (
@@ -142,9 +141,9 @@ main_ping_data AS (
     0 AS startup_crash,
     0 AS content_shutdown_crash,
     LEAST(GREATEST(payload.info.subsession_length / 3600, 0), 25) AS usage_hours,  -- protect against extreme values
-    COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'), 0) AS gpu_crashes,
-    COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
-    COALESCE(udf_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
+    COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'), 0) AS gpu_crashes,
+    COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
+    COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
   FROM
     main_pings
 ),

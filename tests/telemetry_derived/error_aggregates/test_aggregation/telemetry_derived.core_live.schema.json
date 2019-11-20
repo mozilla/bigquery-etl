@@ -53,11 +53,11 @@
   },
   {
     "type": "STRING",
-    "name": "os"
+    "name": "normalized_os"
   },
   {
     "type": "STRING",
-    "name": "osversion"
+    "name": "normalized_os_version"
   },
   {
     "type": "TIMESTAMP",

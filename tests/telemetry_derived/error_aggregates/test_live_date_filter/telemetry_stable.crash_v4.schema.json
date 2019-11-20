@@ -74,30 +74,6 @@
       {
         "fields": [
           {
-            "fields": [
-              {
-                "type": "STRING",
-                "name": "version",
-                "mode": "NULLABLE"
-              },
-              {
-                "type": "STRING",
-                "name": "name",
-                "mode": "NULLABLE"
-              }
-            ],
-            "type": "RECORD",
-            "name": "os",
-            "mode": "NULLABLE"
-          }
-        ],
-        "type": "RECORD",
-        "name": "system",
-        "mode": "NULLABLE"
-      },
-      {
-        "fields": [
-          {
             "type": "STRING",
             "name": "architecture",
             "mode": "NULLABLE"
@@ -125,6 +101,16 @@
   {
     "type": "STRING",
     "name": "normalized_channel",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os",
     "mode": "NULLABLE"
   }
 ]

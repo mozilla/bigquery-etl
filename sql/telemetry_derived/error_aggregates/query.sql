@@ -70,7 +70,7 @@ core_pings AS (
   SELECT
     *
   FROM
-    telemetry.core_live
+    telemetry_derived.core_live
   WHERE
     DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   UNION ALL
@@ -91,10 +91,10 @@ crash_ping_data AS (
     environment.build.build_id,
     metadata.uri.app_name,
     IF(metadata.uri.app_name = 'Fennec'
-       AND environment.system.os.name = 'Linux',
+       AND normalized_os = 'Linux',
        'Android',
-       environment.system.os.name) AS os,
-    environment.system.os.version AS os_version,
+       normalized_os) AS os,
+    normalized_os_version AS os_version,
     environment.build.architecture,
     normalized_country_code AS country,
     IF(
@@ -115,7 +115,7 @@ crash_ping_data AS (
       0
     ) AS content_shutdown_crash,
     -- 0 for values retrieved from main/core pings
-    0 AS usage_hours,
+    0 AS usage_seconds,
     0 AS gpu_crashes,
     0 AS plugin_crashes,
     0 AS gmplugin_crashes
@@ -131,8 +131,8 @@ main_ping_data AS (
     application.display_version,
     environment.build.build_id,
     metadata.uri.app_name,
-    environment.system.os.name AS os,
-    environment.system.os.version AS os_version,
+    normalized_os AS os,
+    normalized_os_version AS os_version,
     environment.build.architecture,
     normalized_country_code AS country,
     -- 0 for values retrieved from crash pings
@@ -140,7 +140,7 @@ main_ping_data AS (
     0 AS content_crash,
     0 AS startup_crash,
     0 AS content_shutdown_crash,
-    LEAST(GREATEST(payload.info.subsession_length / 3600, 0), 25) AS usage_hours,  -- protect against extreme values
+    payload.info.subsession_length AS usage_seconds,
     COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'), 0) AS gpu_crashes,
     COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
     COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
@@ -156,8 +156,8 @@ core_ping_data AS (
     COALESCE(display_version, metadata.uri.app_version) AS display_version,
     metadata.uri.app_build_id AS build_id,
     metadata.uri.app_name,
-    os,
-    osversion AS os_version,
+    normalized_os,
+    normalized_os_version AS os_version,
     arch AS architecture,
     normalized_country_code AS country,
     -- 0 for values retrieved from crash pings
@@ -165,7 +165,7 @@ core_ping_data AS (
     0 AS content_crash,
     0 AS startup_crash,
     0 AS content_shutdown_crash,
-    LEAST(GREATEST(durations / 3600, 0), 25) AS usage_hours,  -- protect against extreme values
+    durations AS usage_seconds,
     0 AS gpu_crashes,
     0 AS plugin_crashes,
     0 AS gmplugin_crashes
@@ -196,8 +196,8 @@ SELECT
   version,
   display_version,
   build_id,
-  app_name as application,
-  os as os_name,
+  app_name AS application,
+  os AS os_name,
   os_version,
   architecture,
   country,
@@ -209,7 +209,7 @@ SELECT
   SUM(gpu_crashes) AS gpu_crashes,
   SUM(plugin_crashes) AS plugin_crashes,
   SUM(gmplugin_crashes) AS gmplugin_crashes,
-  SUM(usage_hours) AS usage_hours
+  SUM(LEAST(GREATEST(usage_seconds / 3600, 0), 24)) AS usage_hours  -- protect against extreme values
 FROM
   combined_ping_data
 WHERE

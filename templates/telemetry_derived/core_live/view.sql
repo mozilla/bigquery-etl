@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.core_live`
+  `moz-fx-data-shared-prod.telemetry_derived.core_live`
 AS
 WITH unioned AS (
   SELECT * FROM `moz-fx-data-shared-prod.telemetry_live.core_v2`
@@ -24,4 +24,3 @@ SELECT
   *
 FROM
   unioned
-

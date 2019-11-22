@@ -73,7 +73,10 @@ CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
       type STRING,
       update_day INT64,
       is_web_extension BOOL,
-      multiprocess_compatible BOOL
+      multiprocess_compatible BOOL,
+      foreign_install INT64,
+      user_disabled INT64,
+      version STRING
     >
   >>,
   active_addons_json STRING
@@ -107,12 +110,12 @@ try {
       addon_id: item.key,
       blocklisted: value.blocklisted,
       name: value.name,
-      user_disabled: addon_json.userDisabled,
+      user_disabled: value.user_disabled || addon_json.userDisabled,
       app_disabled: value.app_disabled,
-      version: addon_json.version,
+      version: value.version || addon_json.version,
       scope: value.scope,
       type: value.type,
-      foreign_install: addon_json.foreignInstall,
+      foreign_install: value.foreign_install || addon_json.foreignInstall,
       has_binary_components: value.has_binary_components,
       install_day: value.install_day,
       update_day: value.update_day,
@@ -424,7 +427,10 @@ SELECT
     IFNULL(environment.addons.theme.id, 'MISSING') AS addon_id,
     environment.addons.theme.app_disabled,
     environment.addons.theme.blocklisted,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.environment.addons.theme.foreignInstall') AS BOOL) AS foreign_install,
+    COALESCE(
+      environment.addons.theme.foreign_install > 0,
+      SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.environment.addons.theme.foreignInstall') AS BOOL)
+    ) AS foreign_install,
     environment.addons.theme.has_binary_components,
     environment.addons.theme.install_day,
     -- define removed fields for schema compatiblity
@@ -528,16 +534,30 @@ SELECT
   -- bug 1353114 - payload.simpleMeasurements.*
   COALESCE(
     payload.processes.parent.scalars.browser_engagement_active_ticks,
+    payload.simple_measurements.active_ticks,
     SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.activeTicks') AS INT64)
   ) AS active_ticks,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.main') AS INT64) AS main,
+  COALESCE(
+    payload.simple_measurements.main,
+    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.main') AS INT64)
+  ) AS main,
   COALESCE(
     payload.processes.parent.scalars.timestamps_first_paint,
+    payload.simple_measurements.first_paint,
     SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.firstPaint') AS INT64)
   ) AS first_paint,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.sessionRestored') AS INT64) AS session_restored,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.totalTime') AS INT64) AS total_time,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.blankWindowShown') AS INT64) AS blank_window_shown,
+  COALESCE(
+    payload.simple_measurements.session_restored,
+    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.sessionRestored') AS INT64)
+  ) AS session_restored,
+  COALESCE(
+    payload.simple_measurements.total_time,
+    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.totalTime') AS INT64)
+  ) AS total_time,
+  COALESCE(
+    payload.simple_measurements.blank_window_shown,
+    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.blankWindowShown') AS INT64)
+  ) AS blank_window_shown,
 
   -- bug 1362520 and 1526278 - plugin notifications
   SAFE_CAST(JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.1') AS INT64) AS plugins_notification_shown,

@@ -2,8 +2,8 @@
 # Creates Amplitude-compatible event views, for more information see https://bugzilla.mozilla.org/show_bug.cgi?id=1574490
 # Usage:
 # CONFIGS_PATH = ~/mozilla/github/telemetry-streaming/configs
-# for f in $(ls $CONFIGS_PATH/*.json); do 
-#   python make_events_view.py $f
+# for f (devtools_prerelease_schemas.json devtools_release_schemas.json fennec_ios_events_schemas.json fire_tv_events_schemas.json focus_android_events_schemas.json); do
+#   python make_events_view.py $CONFIGS_PATH/$f
 # done
 ### Use the "simple" path for rocket.
 # python make_events_view.py $CONFIGS_PATH/rocket_android_events_schemas.json simplify

@@ -50,8 +50,8 @@ WHERE
   submission_date = @submission_date
   AND event_category = 'normandy'
 GROUP BY
-  1,
-  2,
-  3,
-  4,
-  5
+  `type`,
+  experiment,
+  branch,
+  window_start,
+  window_end

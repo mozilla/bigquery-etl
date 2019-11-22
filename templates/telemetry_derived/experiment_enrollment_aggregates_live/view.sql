@@ -43,11 +43,11 @@ OR REPLACE VIEW `moz-fx-data-shared-prod`.telemetry_derived.experiment_enrollmen
       AND date(timestamp)
   > @submission_date
   GROUP BY
-    1,
-    2,
-    3,
-    4,
-    5
+    `type`,
+    experiment,
+    branch,
+    window_start,
+    window_end
 ),
 previous AS (
   SELECT
@@ -70,67 +70,22 @@ all_enrollments AS (
 )
 SELECT
   *,
-  SUM(enroll_count) OVER (
-    PARTITION BY
-      experiment,
-      branch
-    ORDER BY
-      window_start
-    ROWS BETWEEN
-      UNBOUNDED PRECEDING
-      AND CURRENT ROW
-  ) AS cumulative_enroll_count,
-  SUM(unenroll_count) OVER (
-    PARTITION BY
-      experiment,
-      branch
-    ORDER BY
-      window_start
-    ROWS BETWEEN
-      UNBOUNDED PRECEDING
-      AND CURRENT ROW
-  ) AS cumulative_unenroll_count,
-  SUM(graduate_count) OVER (
-    PARTITION BY
-      experiment,
-      branch
-    ORDER BY
-      window_start
-    ROWS BETWEEN
-      UNBOUNDED PRECEDING
-      AND CURRENT ROW
-  ) AS cumulative_graduate_count,
-  SUM(update_count) OVER (
-    PARTITION BY
-      experiment,
-      branch
-    ORDER BY
-      window_start
-    ROWS BETWEEN
-      UNBOUNDED PRECEDING
-      AND CURRENT ROW
-  ) AS cumulative_update_count,
-  SUM(enroll_failed_count) OVER (
-    PARTITION BY
-      experiment,
-      branch
-    ORDER BY
-      window_start
-  ) AS cumulative_enroll_failed_count,
-  SUM(unenroll_failed_count) OVER (
-    PARTITION BY
-      experiment,
-      branch
-    ORDER BY
-      window_start
-  ) AS cumulative_unenroll_failed_count,
-  SUM(update_failed_count) OVER (
-    PARTITION BY
-      experiment,
-      branch
-    ORDER BY
-      window_start
-  ) AS cumulative_update_failed_count
+  SUM(enroll_count) OVER previous_rows_window AS cumulative_enroll_count,
+  SUM(unenroll_count) OVER previous_rows_window AS cumulative_unenroll_count,
+  SUM(graduate_count) OVER previous_rows_window AS cumulative_graduate_count,
+  SUM(update_count) OVER previous_rows_window AS cumulative_update_count,
+  SUM(enroll_failed_count) OVER previous_rows_window AS cumulative_enroll_failed_count,
+  SUM(unenroll_failed_count) OVER previous_rows_window AS cumulative_unenroll_failed_count,
+  SUM(update_failed_count) OVER previous_rows_window AS cumulative_update_failed_count
 FROM
-  all_enrollments
+  all_enrollments WINDOW previous_rows_window AS (
+    PARTITION BY
+      experiment,
+      branch
+    ORDER BY
+      window_start
+    ROWS BETWEEN
+      UNBOUNDED PRECEDING
+      AND CURRENT ROW
+  )
 )

@@ -7,7 +7,7 @@ SELECT
   timestamp AS submission_timestamp,
   event_string_value AS event_value
 FROM
-  telemetry.events
+  `moz-fx-data-shared-prod.telemetry.events`
 
 ), all_events AS (
 SELECT
@@ -15,7 +15,6 @@ SELECT
     submission_timestamp,
     client_id AS device_id,
     `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS session_id_offset,
-    CONCAT(document_id, CAST(timestamp AS STRING)) AS insert_id,
     CONCAT(event_category, '.', event_method) AS event_type,
     CASE
         WHEN (event_category IN ('meta') ) AND (event_method IN ('session_split') ) THEN 'Meta - session split v3' 
@@ -62,10 +61,20 @@ SELECT
     event_map_values,
     event_object,
     event_value,
-    event_method
+    event_method,
+    event_category,
+    created
 FROM
     base_events
 WHERE doc_type IN ('main') AND (`moz-fx-data-derived-datasets.udf.get_key`(experiments, 'pref-flip-savant-1457226-de-existing-users') IS NOT NULL OR `moz-fx-data-derived-datasets.udf.get_key`(experiments, 'pref-flip-savant-1457226-de-new-users') IS NOT NULL OR `moz-fx-data-derived-datasets.udf.get_key`(experiments, 'pref-flip-savant-1457226-en-existing-users') IS NOT NULL OR `moz-fx-data-derived-datasets.udf.get_key`(experiments, 'pref-flip-savant-1457226-en-new-users') IS NOT NULL)
+), all_events_with_insert_ids AS (
+SELECT
+  * EXCEPT (event_category, created),
+  CONCAT(device_id, "-", CAST(created AS STRING), "-", event_name, "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id
+FROM
+  all_events
+WHERE
+  event_name IS NOT NULL
 ), extra_props AS (
 SELECT
   * EXCEPT (event_map_values, event_object, event_value, event_method),
@@ -173,9 +182,7 @@ SELECT
   ) WHERE VALUE IS NOT NULL) AS event_props_2,
   ARRAY<STRING>[] AS user_props
 FROM
-  all_events
-WHERE
-  event_name IS NOT NULL
+  all_events_with_insert_ids
 )
 
 SELECT

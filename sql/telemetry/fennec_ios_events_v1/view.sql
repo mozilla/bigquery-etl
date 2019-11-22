@@ -16,7 +16,7 @@ SELECT
   osversion AS os_version,
   metadata.geo.country
 FROM
-  telemetry.mobile_event
+  `moz-fx-data-shared-prod.telemetry.mobile_event`
   CROSS JOIN UNNEST(events) AS event
 
 ), all_events AS (
@@ -25,7 +25,6 @@ SELECT
     submission_timestamp,
     client_id AS device_id,
     `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS session_id_offset,
-    CONCAT(document_id, CAST(timestamp AS STRING)) AS insert_id,
     CONCAT(event_category, '.', event_method) AS event_type,
     CASE
         WHEN (event_category IN ('action') ) AND (event_method IN ('foreground') ) AND (event_object IN ('app') ) THEN 'Fennec-iOS - App is foregrounded (session start)' 
@@ -89,10 +88,20 @@ SELECT
     event_map_values,
     event_object,
     event_value,
-    event_method
+    event_method,
+    event_category,
+    created
 FROM
     base_events
 
+), all_events_with_insert_ids AS (
+SELECT
+  * EXCEPT (event_category, created),
+  CONCAT(device_id, "-", CAST(created AS STRING), "-", event_name, "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id
+FROM
+  all_events
+WHERE
+  event_name IS NOT NULL
 ), extra_props AS (
 SELECT
   * EXCEPT (event_map_values, event_object, event_value, event_method),
@@ -124,9 +133,7 @@ SELECT
   ) WHERE VALUE IS NOT NULL) AS event_props_2,
   ARRAY<STRING>[] AS user_props
 FROM
-  all_events
-WHERE
-  event_name IS NOT NULL
+  all_events_with_insert_ids
 )
 
 SELECT

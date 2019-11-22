@@ -57,7 +57,7 @@ WITH
   SELECT
     * REPLACE(normalized_channel AS channel)
   FROM
-    `moz-fx-data-derived-datasets.telemetry.clients_last_seen_raw_v1`),
+    telemetry.clients_last_seen),
   --
   nested AS (
   SELECT

@@ -1,0 +1,116 @@
+[
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "ipc_channel_error",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "startup_crash",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "metadata",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "process_type",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "payload",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_country_code",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "app_name",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "uri",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "metadata",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "display_version",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "application",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "architecture",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "build_id",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "version",
+            "mode": "NULLABLE"
+          }
+        ],
+        "type": "RECORD",
+        "name": "build",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "environment",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os",
+    "mode": "NULLABLE"
+  }
+]

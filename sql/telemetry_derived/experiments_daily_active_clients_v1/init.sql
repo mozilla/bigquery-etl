@@ -6,5 +6,7 @@ CREATE TABLE IF NOT EXISTS
     active_clients INT64
   )
 PARTITION BY
-  submission_date CLUSTER BY experiment_id,
+  submission_date
+CLUSTER BY
+  experiment_id,
   branch

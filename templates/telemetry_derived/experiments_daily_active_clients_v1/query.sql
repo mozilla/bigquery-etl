@@ -1,6 +1,6 @@
 SELECT
   submission_date,
-  e.key AS experiments,
+  e.key AS experiment_id,
   e.value AS branch,
   count(*) AS active_clients
 FROM
@@ -10,6 +10,6 @@ CROSS JOIN
 WHERE
   submission_date = @submission_date
 GROUP BY
-  1,
-  2,
-  3
+  submission_date,
+  experiment_id,
+  branch

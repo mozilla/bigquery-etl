@@ -20,7 +20,7 @@ OR REPLACE VIEW `moz-fx-data-shared-prod.telemetry_derived.events_live` AS (
     `moz-fx-data-shared-prod`.udf.deanonymize_event(e).*,
     event_process
   FROM
-    `moz-fx-data-shared-prod`.telemetry_live.event_v4
+    `moz-fx-data-shared-prod.telemetry_live.event_v4`
   CROSS JOIN
     UNNEST(
       [

@@ -1,5 +1,5 @@
 CREATE
-OR REPLACE VIEW `moz-fx-data-shared-prod`.telemetry_derived.experiment_enrollment_aggregates_live AS (
+OR REPLACE VIEW `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live` AS
   WITH live AS (
     SELECT
       event_object AS `type`,
@@ -7,27 +7,12 @@ OR REPLACE VIEW `moz-fx-data-shared-prod`.telemetry_derived.experiment_enrollmen
       `moz-fx-data-shared-prod`.udf.get_key(event_map_values, 'branch') AS branch,
       TIMESTAMP_ADD(
         TIMESTAMP_TRUNC(`timestamp`, HOUR),
-        INTERVAL (
-          CAST(
-            EXTRACT(
-              MINUTE
-              FROM
-                `timestamp`
-            ) / 5 AS int64
-          ) * 5
-        ) MINUTE
+        -- Aggregates event counts over 5-minute intervals
+        INTERVAL (DIV(EXTRACT(MINUTE FROM `timestamp`), 5) * 5) MINUTE
       ) AS window_start,
       TIMESTAMP_ADD(
         TIMESTAMP_TRUNC(`timestamp`, HOUR),
-        INTERVAL (
-          CAST(
-            EXTRACT(
-              MINUTE
-              FROM
-                `timestamp`
-            ) / 5 + 1 AS int64
-          ) * 5
-        ) MINUTE
+        INTERVAL ((DIV(EXTRACT(MINUTE FROM `timestamp`), 5) + 1) * 5) MINUTE
       ) AS window_end,
       COUNTIF(event_method = 'enroll') AS enroll_count,
       COUNTIF(event_method = 'unenroll') AS unenroll_count,
@@ -37,11 +22,10 @@ OR REPLACE VIEW `moz-fx-data-shared-prod`.telemetry_derived.experiment_enrollmen
       COUNTIF(event_method = 'unenrollFailed') AS unenroll_failed_count,
       COUNTIF(event_method = 'updateFailed') AS update_failed_count
     FROM
-      `moz-fx-data-shared-prod`.telemetry_derived.events_live
+      `moz-fx-data-shared-prod.telemetry_derived.events_live`
     WHERE
       event_category = 'normandy'
-      AND date(timestamp)
-  > @submission_date
+      AND date(timestamp) > @submission_date
   GROUP BY
     `type`,
     experiment,
@@ -53,7 +37,7 @@ previous AS (
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod`.telemetry_derived.experiment_enrollment_aggregates_v1
+    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_v1`
   WHERE
     date(window_start) <= @submission_date
 ),
@@ -78,14 +62,14 @@ SELECT
   SUM(unenroll_failed_count) OVER previous_rows_window AS cumulative_unenroll_failed_count,
   SUM(update_failed_count) OVER previous_rows_window AS cumulative_update_failed_count
 FROM
-  all_enrollments WINDOW previous_rows_window AS (
-    PARTITION BY
-      experiment,
-      branch
-    ORDER BY
-      window_start
-    ROWS BETWEEN
-      UNBOUNDED PRECEDING
-      AND CURRENT ROW
-  )
+  all_enrollments
+WINDOW previous_rows_window AS (
+  PARTITION BY
+    experiment,
+    branch
+  ORDER BY
+    window_start
+  ROWS BETWEEN
+    UNBOUNDED PRECEDING
+    AND CURRENT ROW
 )

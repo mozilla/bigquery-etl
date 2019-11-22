@@ -2,12 +2,12 @@ WITH all_events AS (
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod`.telemetry_derived.event_events_v1
+    `moz-fx-data-shared-prod.telemetry_derived.event_events_v1`
   UNION ALL
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod`.telemetry_derived.main_events_v1
+    `moz-fx-data-shared-prod.telemetry_derived.main_events_v1`
 )
 SELECT
   event_object AS `type`,
@@ -15,27 +15,12 @@ SELECT
   udf.get_key(event_map_values, 'branch') AS branch,
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(`timestamp`, HOUR),
-    INTERVAL (
-      CAST(
-        EXTRACT(
-          MINUTE
-          FROM
-            `timestamp`
-        ) / 5 AS int64
-      ) * 5
-    ) MINUTE
+    -- Aggregates event counts over 5-minute intervals
+    INTERVAL (DIV(EXTRACT(MINUTE FROM `timestamp`), 5) * 5) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(`timestamp`, HOUR),
-    INTERVAL (
-      CAST(
-        EXTRACT(
-          MINUTE
-          FROM
-            `timestamp`
-        ) / 5 + 1 AS int64
-      ) * 5
-    ) MINUTE
+    INTERVAL ((DIV(EXTRACT(MINUTE FROM `timestamp`), 5) + 1) * 5) MINUTE
   ) AS window_end,
   COUNTIF(event_method = 'enroll') AS enroll_count,
   COUNTIF(event_method = 'unenroll') AS unenroll_count,

@@ -104,13 +104,15 @@ crash_ping_data AS (
       0
     ) AS main_crash,
     IF(
-      REGEXP_CONTAINS(payload.process_type, 'content'),
+      REGEXP_CONTAINS(payload.process_type, 'content')
+      AND NOT REGEXP_CONTAINS(COALESCE(payload.metadata.ipc_channel_error, ''), 'ShutDownKill'),
       1,
       0
     ) AS content_crash,
     IF(payload.metadata.startup_crash = '1', 1, 0) AS startup_crash,
     IF(
-      REGEXP_CONTAINS(payload.metadata.ipc_channel_error, 'ShutDownKill'),
+      REGEXP_CONTAINS(payload.process_type, 'content')
+      AND REGEXP_CONTAINS(payload.metadata.ipc_channel_error, 'ShutDownKill'),
       1,
       0
     ) AS content_shutdown_crash,

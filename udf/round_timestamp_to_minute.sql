@@ -5,7 +5,7 @@ Floor a timestamp object to the given minute interval.
  */
 CREATE TEMP FUNCTION udf_round_timestamp_to_minute(timestamp_expression TIMESTAMP, minute INT64) AS (
   TIMESTAMP_SECONDS(
-    CAST((FLOOR(UNIX_SECONDS(timestamp_expression) / (minute * 60)) * minute * 60) AS INT64)
+    DIV(UNIX_SECONDS(timestamp_expression), minute * 60) * minute * 60
   )
 );
 -- Test

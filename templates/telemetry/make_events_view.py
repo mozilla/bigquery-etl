@@ -98,7 +98,6 @@ SELECT
     submission_timestamp,
     client_id AS device_id,
     `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS session_id_offset,
-    CONCAT(event_category, '.', event_method) AS event_type,
     {}
     event_timestamp AS timestamp,
     app_version,
@@ -124,7 +123,8 @@ FROM
 ), all_events_with_insert_ids AS (
 SELECT
   * EXCEPT (event_category, created),
-  CONCAT(device_id, "-", CAST(created AS STRING), "-", SPLIT(event_name, " - ")[OFFSET(1)], "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id
+  CONCAT(device_id, "-", CAST(created AS STRING), "-", SPLIT(event_name, " - ")[OFFSET(1)], "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id,
+  event_name AS event_type
 FROM
   all_events
 WHERE

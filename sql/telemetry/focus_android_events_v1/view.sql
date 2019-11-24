@@ -25,7 +25,6 @@ SELECT
     submission_timestamp,
     client_id AS device_id,
     `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS session_id_offset,
-    CONCAT(event_category, '.', event_method) AS event_type,
     CASE
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('tip') ) AND (event_value IN ('open_in_new_tab_tip') ) THEN 'Focus - Open in new tab tip displayed' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('tip') ) AND (event_value IN ('add_to_homescreen_tip') ) THEN 'Focus - Add to homescreen tip displayed' 
@@ -113,7 +112,8 @@ FROM
 ), all_events_with_insert_ids AS (
 SELECT
   * EXCEPT (event_category, created),
-  CONCAT(device_id, "-", CAST(created AS STRING), "-", SPLIT(event_name, " - ")[OFFSET(1)], "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id
+  CONCAT(device_id, "-", CAST(created AS STRING), "-", SPLIT(event_name, " - ")[OFFSET(1)], "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id,
+  event_name AS event_type
 FROM
   all_events
 WHERE

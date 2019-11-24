@@ -222,7 +222,7 @@ FROM
 ), all_events_with_insert_ids AS (
 SELECT
   * EXCEPT (event_category, created),
-  CONCAT(device_id, "-", CAST(created AS STRING), "-", event_name, "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id
+  CONCAT(device_id, "-", CAST(created AS STRING), "-", SPLIT(event_name, " - ")[OFFSET(1)], "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id
 FROM
   all_events
 WHERE

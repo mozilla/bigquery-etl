@@ -29,6 +29,12 @@ elif [ "$1" = "query" ]; then
     # to
     #     bq query [options] < FILE
     exec bq "${@:1:$#-1}" < "${@: -1}"
+elif [ "$1" = "pyquery" ]; then
+    # Alias
+    #     query [options] FILE
+    # to
+    #     bq query [options] < FILE
+    exec python "${@: -1}" | bq "${@:1:$#-1}"
 else
     exec "$@"
 fi

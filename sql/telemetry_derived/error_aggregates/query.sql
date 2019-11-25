@@ -31,7 +31,7 @@ CREATE TEMP FUNCTION udf_keyed_histogram_get_sum(keyed_histogram ANY TYPE, targe
 );
 CREATE TEMP FUNCTION udf_round_timestamp_to_minute(timestamp_expression TIMESTAMP, minute INT64) AS (
   TIMESTAMP_SECONDS(
-    CAST((FLOOR(UNIX_SECONDS(timestamp_expression) / (minute * 60)) * minute * 60) AS INT64)
+    DIV(UNIX_SECONDS(timestamp_expression), minute * 60) * minute * 60
   )
 );
 --

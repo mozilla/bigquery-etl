@@ -31,7 +31,7 @@ CREATE TEMP FUNCTION udf_keyed_histogram_get_sum(keyed_histogram ANY TYPE, targe
 );
 CREATE TEMP FUNCTION udf_round_timestamp_to_minute(timestamp_expression TIMESTAMP, minute INT64) AS (
   TIMESTAMP_SECONDS(
-    CAST((FLOOR(UNIX_SECONDS(timestamp_expression) / (minute * 60)) * minute * 60) AS INT64)
+    DIV(UNIX_SECONDS(timestamp_expression), minute * 60) * minute * 60
   )
 );
 --
@@ -104,13 +104,15 @@ crash_ping_data AS (
       0
     ) AS main_crash,
     IF(
-      REGEXP_CONTAINS(payload.process_type, 'content'),
+      REGEXP_CONTAINS(payload.process_type, 'content')
+      AND NOT REGEXP_CONTAINS(COALESCE(payload.metadata.ipc_channel_error, ''), 'ShutDownKill'),
       1,
       0
     ) AS content_crash,
     IF(payload.metadata.startup_crash = '1', 1, 0) AS startup_crash,
     IF(
-      REGEXP_CONTAINS(payload.metadata.ipc_channel_error, 'ShutDownKill'),
+      REGEXP_CONTAINS(payload.process_type, 'content')
+      AND REGEXP_CONTAINS(payload.metadata.ipc_channel_error, 'ShutDownKill'),
       1,
       0
     ) AS content_shutdown_crash,

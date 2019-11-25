@@ -27,7 +27,10 @@ CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
       type STRING,
       update_day INT64,
       is_web_extension BOOL,
-      multiprocess_compatible BOOL
+      multiprocess_compatible BOOL,
+      foreign_install INT64,
+      user_disabled INT64,
+      version STRING
     >
   >>,
   active_addons_json STRING
@@ -61,12 +64,12 @@ try {
       addon_id: item.key,
       blocklisted: value.blocklisted,
       name: value.name,
-      user_disabled: addon_json.userDisabled,
+      user_disabled: value.user_disabled || addon_json.userDisabled,
       app_disabled: value.app_disabled,
-      version: addon_json.version,
+      version: value.version || addon_json.version,
       scope: value.scope,
       type: value.type,
-      foreign_install: addon_json.foreignInstall,
+      foreign_install: value.foreign_install || addon_json.foreignInstall,
       has_binary_components: value.has_binary_components,
       install_day: value.install_day,
       update_day: value.update_day,
@@ -84,15 +87,31 @@ try {
 -- Tests
 WITH result AS (
   SELECT AS VALUE
-    udf_js_main_summary_active_addons(
-      [
-        (
+    udf_js_main_summary_active_addons(active_addons, active_addons_json)
+  FROM
+    UNNEST([
+      STRUCT(
+        [(
           'addon_id',
-          (TRUE, TRUE, '', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE)
-        )
-      ],
-      '{"addon_id":{"version":"version","userDisabled":true,"foreignInstall":true}}'
-    )
+          (TRUE, TRUE, '', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, NULL, NULL, CAST(NULL AS STRING))
+        )] AS active_addons,
+        '{"addon_id":{"version":"version","userDisabled":true,"foreignInstall":true}}' AS active_addons_json
+      ),
+      (
+        [(
+          'addon_id',
+          (TRUE, TRUE, '', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, 1, 1, 'version')
+        )],
+        '{}'
+      ),
+      (
+        [(
+          'addon_id',
+          (TRUE, TRUE, '', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, 1, 1, 'version')
+        )],
+        NULL
+      )
+    ])
 )
 SELECT
   assert_equals(1, ARRAY_LENGTH(result)),

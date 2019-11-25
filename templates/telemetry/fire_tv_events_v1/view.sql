@@ -14,7 +14,8 @@ SELECT
   event.f5_ AS event_map_values,
   metadata.uri.app_version,
   osversion AS os_version,
-  metadata.geo.country
+  metadata.geo.country,
+  metadata.geo.city
 FROM
   `moz-fx-data-shared-prod.telemetry.mobile_event`
   CROSS JOIN UNNEST(events) AS event
@@ -64,6 +65,7 @@ SELECT
     os AS os_name,
     os_version,
     country,
+    city,
     (SELECT
       ARRAY_AGG(CONCAT('"',
         CAST(key AS STRING), '":"',

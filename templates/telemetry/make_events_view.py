@@ -61,7 +61,8 @@ SELECT
   *,
   timestamp AS submission_timestamp,
   event_string_value AS event_value,
-  session_start_time AS created
+  session_start_time AS created,
+  NULL AS city
 FROM
   `moz-fx-data-shared-prod.telemetry.events`
 """
@@ -79,7 +80,8 @@ SELECT
   event.f5_ AS event_map_values,
   metadata.uri.app_version,
   osversion AS os_version,
-  metadata.geo.country
+  metadata.geo.country,
+  metadata.geo.city
 FROM
   `moz-fx-data-shared-prod.telemetry.mobile_event`
   CROSS JOIN UNNEST(events) AS event
@@ -110,6 +112,7 @@ SELECT
     os AS os_name,
     os_version,
     country,
+    city,
     (SELECT
       ARRAY_AGG(CONCAT('"',
         CAST(key AS STRING), '":"',

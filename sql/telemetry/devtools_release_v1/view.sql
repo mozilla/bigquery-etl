@@ -6,7 +6,8 @@ SELECT
   *,
   timestamp AS submission_timestamp,
   event_string_value AS event_value,
-  session_start_time AS created
+  session_start_time AS created,
+  NULL AS city
 FROM
   `moz-fx-data-shared-prod.telemetry.events`
 
@@ -76,6 +77,7 @@ SELECT
     os AS os_name,
     os_version,
     country,
+    city,
     (SELECT
       ARRAY_AGG(CONCAT('"',
         CAST(key AS STRING), '":"',

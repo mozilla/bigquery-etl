@@ -25,6 +25,7 @@ FROM
   ]) AS is_self_install
 WHERE
   client_id IS NOT NULL
+  AND normalized_app_name = 'Firefox'
   AND DATE(submission_timestamp) = @submission_date
 GROUP BY
   submission_date,

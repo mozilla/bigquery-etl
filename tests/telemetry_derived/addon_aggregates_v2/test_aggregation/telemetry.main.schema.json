@@ -16,6 +16,11 @@
     "mode": "NULLABLE"
   },
   {
+    "name": "normalized_app_name",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
     "name": "application",
     "type": "RECORD",
     "mode": "NULLABLE",

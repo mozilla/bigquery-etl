@@ -33,4 +33,5 @@ FROM
   )
 WHERE
   client_id IS NOT NULL
+  AND normalized_app_name = 'Firefox'
   AND DATE(submission_timestamp) = @submission_date

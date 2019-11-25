@@ -89,7 +89,8 @@ SELECT
     event_value,
     event_method,
     event_category,
-    created
+    created,
+    settings
 FROM
     base_events
 
@@ -131,13 +132,38 @@ SELECT
           WHEN event_name = 'Fennec-iOS - Dismiss onboarding screen on sign up card' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'slide-num')
           END AS value
   ) WHERE VALUE IS NOT NULL) AS event_props_2,
-  ARRAY<STRING>[] AS user_props
+  ARRAY_CONCAT(ARRAY<STRING>[],
+    (SELECT ARRAY_AGG(
+    CASE
+        WHEN key='defaultSearchEngine' THEN CONCAT('"', 'pref_default_search_engine', '":"', CAST(value AS STRING), '"')
+        WHEN key='prefKeyAutomaticSliderValue' THEN CONCAT('"', 'pref_automatic_slider_value', '":"', CAST(value AS STRING), '"')
+        WHEN key='prefKeyAutomaticSwitchOnOff' THEN CONCAT('"', 'pref_automatic_switch_on_off', '":"', CAST(value AS STRING), '"')
+        WHEN key='prefKeyThemeName' THEN CONCAT('"', 'pref_theme_name', '":"', CAST(value AS STRING), '"')
+        WHEN key='profile.ASBookmarkHighlightsVisible' THEN CONCAT('"', 'pref_activity_stream_bookmark_highlights_visible', '":', CAST(COALESCE(SAFE_CAST(value AS BOOLEAN), false) AS STRING))
+        WHEN key='profile.ASPocketStoriesVisible' THEN CONCAT('"', 'pref_activity_stream_pocket_stories_visible', '":', CAST(COALESCE(SAFE_CAST(value AS BOOLEAN), false) AS STRING))
+        WHEN key='profile.ASRecentHighlightsVisible' THEN CONCAT('"', 'pref_activity_stream_recent_highlights_visible', '":', CAST(COALESCE(SAFE_CAST(value AS BOOLEAN), false) AS STRING))
+        WHEN key='profile.blockPopups' THEN CONCAT('"', 'pref_block_popups', '":', CAST(COALESCE(SAFE_CAST(value AS BOOLEAN), false) AS STRING))
+        WHEN key='profile.prefkey.trackingprotection.enabled' THEN CONCAT('"', 'pref_tracking_protection_enabled', '":"', CAST(value AS STRING), '"')
+        WHEN key='profile.prefkey.trackingprotection.normalbrowsing' THEN CONCAT('"', 'pref_tracking_protection_normal_browsing', '":"', CAST(value AS STRING), '"')
+        WHEN key='profile.prefkey.trackingprotection.privatebrowsing' THEN CONCAT('"', 'pref_tracking_protection_private_browsing', '":"', CAST(value AS STRING), '"')
+        WHEN key='profile.prefkey.trackingprotection.strength' THEN CONCAT('"', 'pref_tracking_protection_strength', '":"', CAST(value AS STRING), '"')
+        WHEN key='profile.saveLogins' THEN CONCAT('"', 'pref_save_logins', '":', CAST(COALESCE(SAFE_CAST(value AS BOOLEAN), false) AS STRING))
+        WHEN key='profile.settings.closePrivateTabs' THEN CONCAT('"', 'pref_settings_close_private_tabs', '":', CAST(COALESCE(SAFE_CAST(value AS BOOLEAN), false) AS STRING))
+        WHEN key='profile.show-translation' THEN CONCAT('"', 'pref_show_translation', '":"', CAST(value AS STRING), '"')
+        WHEN key='profile.showClipboardBar' THEN CONCAT('"', 'pref_show_clipboard_bar', '":', CAST(COALESCE(SAFE_CAST(value AS BOOLEAN), false) AS STRING))
+        WHEN key='windowHeight' THEN CONCAT('"', 'pref_window_height', '":"', CAST(value AS STRING), '"')
+        WHEN key='windowWidth' THEN CONCAT('"', 'pref_window_width', '":"', CAST(value AS STRING), '"')
+    END
+    IGNORE NULLS)
+  FROM
+    UNNEST(SETTINGS)
+  )) AS user_props
 FROM
   all_events_with_insert_ids
 )
 
 SELECT
-  * EXCEPT (event_props_1, event_props_2, user_props),
+  * EXCEPT (event_props_1, event_props_2, user_props, settings),
   CONCAT('{', ARRAY_TO_STRING((
    SELECT ARRAY_AGG(DISTINCT e) FROM UNNEST(ARRAY_CONCAT(event_props_1, event_props_2)) AS e
   ), ","), '}') AS event_properties,

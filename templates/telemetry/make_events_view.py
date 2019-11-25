@@ -88,6 +88,11 @@ FROM
 # mobile_event and focus_event have the same structure.
 base_events["telemetry.focus_event"] = base_events["telemetry.mobile_event"].replace("mobile_event", "focus_event")
 
+settings_columns = {}
+settings_columns["telemetry.mobile_event"] = """settings"""
+settings_columns["telemetry.focus_event"] = settings_columns["telemetry.mobile_event"]
+settings_columns["telemetry.events"] = "NULL AS settings" # TODO: some environment fields are needed here, see: https://github.com/mozilla/telemetry-streaming/blob/b85cdffc72a6f9ab224f9eececc38dfa09d98b8c/src/main/scala/com/mozilla/telemetry/pings/Ping.scala#L434-L447
+
 # This is the main query that will power the resulting view
 query_template = """{}
 WITH base_events AS (
@@ -116,7 +121,8 @@ SELECT
     event_value,
     event_method,
     event_category,
-    created
+    created,
+    {}
 FROM
     base_events
 {}
@@ -141,7 +147,7 @@ FROM
 )
 
 SELECT
-  * EXCEPT (event_props_1, event_props_2, user_props),
+  * EXCEPT (event_props_1, event_props_2, user_props, settings),
   CONCAT('{{', ARRAY_TO_STRING((
    SELECT ARRAY_AGG(DISTINCT e) FROM UNNEST(ARRAY_CONCAT(event_props_1, event_props_2)) AS e
   ), ","), '}}') AS event_properties,
@@ -266,11 +272,47 @@ if user_fields:
   {}
 ))""".format(user_properties)
 
+user_properties_ping_overrides = {}
+user_properties_ping_overrides['fennec_ios_events_schemas.json'] = [ # setting_key, alias, as_bool; see https://github.com/mozilla/telemetry-streaming/blob/b85cdffc72a6f9ab224f9eececc38dfa09d98b8c/src/main/scala/com/mozilla/telemetry/pings/MobileEvent.scala#L41-L59
+	('defaultSearchEngine', 'pref_default_search_engine', False),
+	('prefKeyAutomaticSliderValue', 'pref_automatic_slider_value', False),
+	('prefKeyAutomaticSwitchOnOff', 'pref_automatic_switch_on_off', False),
+	('prefKeyThemeName', 'pref_theme_name', False),
+	('profile.ASBookmarkHighlightsVisible', 'pref_activity_stream_bookmark_highlights_visible', True),
+	('profile.ASPocketStoriesVisible', 'pref_activity_stream_pocket_stories_visible', True),
+	('profile.ASRecentHighlightsVisible', 'pref_activity_stream_recent_highlights_visible', True),
+	('profile.blockPopups', 'pref_block_popups', True),
+	('profile.prefkey.trackingprotection.enabled', 'pref_tracking_protection_enabled', False),
+	('profile.prefkey.trackingprotection.normalbrowsing', 'pref_tracking_protection_normal_browsing', False),
+	('profile.prefkey.trackingprotection.privatebrowsing', 'pref_tracking_protection_private_browsing', False),
+	('profile.prefkey.trackingprotection.strength', 'pref_tracking_protection_strength', False),
+	('profile.saveLogins', 'pref_save_logins', True),
+	('profile.settings.closePrivateTabs', 'pref_settings_close_private_tabs', True),
+	('profile.show-translation', 'pref_show_translation', False),
+	('profile.showClipboardBar', 'pref_show_clipboard_bar', True),
+	('windowHeight', 'pref_window_height', False),
+	('windowWidth', 'pref_window_width', False),
+]
+
+user_properties_ping_override = user_properties_ping_overrides.get(input_filename.split('/')[-1])
+if (user_properties_ping_override):
+	user_properties_override_string = """(SELECT ARRAY_AGG(\n    CASE\n"""
+	for setting_key, alias, as_bool in user_properties_ping_override:
+		if as_bool:
+			value_string = """'":', CAST(COALESCE(SAFE_CAST(value AS BOOLEAN), false) AS STRING)"""
+		else:
+			value_string = """'":"', CAST(value AS STRING), '"'"""
+		user_properties_override_string += f"""        WHEN key='{setting_key}' THEN CONCAT('"', '{alias}', {value_string})\n"""
+	user_properties_override_string += """    END\n    IGNORE NULLS)\n  FROM\n    UNNEST(SETTINGS)\n  )"""
+
+	user_properties = """ARRAY_CONCAT({},\n    {})""".format(user_properties, user_properties_override_string)
+
 # Final query
 final_query = query_template.format(
 	create_snippet,
 	base_events[source_table],
 	event_name,
+	settings_columns[source_table],
 	where,
 	amplitude_properties,
 	user_properties,

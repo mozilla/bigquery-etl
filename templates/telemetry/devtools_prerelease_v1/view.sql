@@ -87,7 +87,8 @@ SELECT
     event_value,
     event_method,
     event_category,
-    created
+    created,
+    NULL AS settings
 FROM
     base_events
 WHERE doc_type IN ('main', 'event')
@@ -300,7 +301,7 @@ FROM
 )
 
 SELECT
-  * EXCEPT (event_props_1, event_props_2, user_props),
+  * EXCEPT (event_props_1, event_props_2, user_props, settings),
   CONCAT('{', ARRAY_TO_STRING((
    SELECT ARRAY_AGG(DISTINCT e) FROM UNNEST(ARRAY_CONCAT(event_props_1, event_props_2)) AS e
   ), ","), '}') AS event_properties,

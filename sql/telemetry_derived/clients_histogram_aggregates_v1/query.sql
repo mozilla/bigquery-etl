@@ -199,26 +199,11 @@ clients_histogram_aggregates_old AS
 
 joined_new_old AS (
   SELECT
-    CASE
-      WHEN old_data.client_id IS NOT NULL THEN old_data.client_id
-      ELSE new_data.client_id
-    END AS client_id,
-    CASE
-      WHEN old_data.os IS NOT NULL THEN old_data.os
-      ELSE new_data.os
-    END AS os,
-    CASE
-      WHEN old_data.app_version IS NOT NULL THEN old_data.app_version
-      ELSE CAST(new_data.app_version AS INT64)
-    END AS app_version,
-    CASE
-      WHEN old_data.app_build_id IS NOT NULL THEN old_data.app_build_id
-      ELSE new_data.app_build_id
-    END AS app_build_id,
-    CASE
-      WHEN old_data.channel IS NOT NULL THEN old_data.channel
-      ELSE new_data.channel
-    END AS channel,
+    COALESCE(old_data.client_id, new_data.client_id) AS client_id,
+    COALESCE(old_data.os, new_data.os) AS os,
+    COALESCE(old_data.app_version, CAST(new_data.app_version AS INT64)) AS app_version,
+    COALESCE(old_data.app_build_id, new_data.app_build_id) AS app_build_id,
+    COALESCE(old_data.channel, new_data.channel) AS channel,
     old_data.histogram_aggregates AS old_aggs,
     new_data.histogram_aggregates AS new_aggs
   FROM clients_histogram_aggregates_new AS new_data

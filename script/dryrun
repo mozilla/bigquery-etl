@@ -52,9 +52,6 @@ SKIP = {
     "sql/static/fxa_amplitude_export_users_daily/query.sql",
     # Syntax error
     "sql/telemetry_derived/clients_last_seen_v1/init.sql",
-    # Unrecognized name: submission_date_s3
-    "sql/telemetry_derived/addons_v3/query.sql",
-    "sql/telemetry_derived/addons_aggregates_v3/query.sql",
     # HTTP Error 408: Request Time-out
     "sql/telemetry_derived/clients_histogram_aggregates_v1/query.sql",
     "sql/telemetry_derived/clients_scalar_aggregates_v1/query.sql",

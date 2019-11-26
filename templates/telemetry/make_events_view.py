@@ -104,7 +104,7 @@ SELECT
     submission_date,
     submission_timestamp,
     client_id AS device_id,
-    `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS session_id_offset,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS NUMERIC), 0)) AS session_id,
     {}
     event_timestamp AS timestamp,
     app_version,

@@ -16,7 +16,7 @@ SELECT
     submission_date,
     submission_timestamp,
     client_id AS device_id,
-    `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS session_id_offset,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS NUMERIC), 0)) AS session_id,
     CASE
         WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('open') ) AND (event_object IN ('tools') ) THEN 'dt - open' 
         WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('close') ) AND (event_object IN ('tools') ) THEN 'dt - close' 

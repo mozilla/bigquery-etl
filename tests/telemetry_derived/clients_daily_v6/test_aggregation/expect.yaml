@@ -132,6 +132,13 @@
   scalar_parent_navigator_storage_persist_count_sum: 2
   scalar_parent_storage_sync_api_usage_extensions_using_sum: 2
   search_cohort: second
+  search_count_abouthome: 0
+  search_count_all: 0
+  search_count_contextmenu: 0
+  search_count_newtab: 0
+  search_count_searchbar: 0
+  search_count_system: 0
+  search_count_urlbar: 0
   session_restored_mean: 2
   sessions_started_on_this_day: 0
   shutdown_kill_sum: 2

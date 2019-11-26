@@ -153,6 +153,7 @@
   sync_count_mobile_sum: 4
   telemetry_enabled: true
   timezone_offset: 2
+  trackers_blocked_sum: 2
   update_auto_download: true
   update_channel: second
   update_enabled: true

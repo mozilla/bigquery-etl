@@ -100,22 +100,36 @@ RETURNS ARRAY<STRUCT<
   multiprocess_compatible BOOL
 >>
 LANGUAGE js AS """
+function ifnull(value1, value2) {
+  // preserve falsey values and ignore missing values
+  if (value1 !== null && value1 !== undefined) {
+    return value1;
+  }
+  return value2;
+}
+
+function maybeParseInt(value) {
+  // return null instead of NaN on failure
+  result = parseInt(value);
+  return isNaN(result) ? null : result;
+}
+
 try {
-  const additional_properties = JSON.parse(active_addons_json) || {};
+  const additional_properties = ifnull(JSON.parse(active_addons_json), {});
   const result = [];
-  (active_addons || []).forEach((item) => {
-    const addon_json = additional_properties[item.key] || {};
-    const value = item.value || {};
+  ifnull(active_addons, []).forEach((item) => {
+    const addon_json = ifnull(additional_properties[item.key], {});
+    const value = ifnull(item.value, {});
     result.push({
       addon_id: item.key,
       blocklisted: value.blocklisted,
       name: value.name,
-      user_disabled: value.user_disabled || addon_json.userDisabled,
+      user_disabled: ifnull(maybeParseInt(value.user_disabled), addon_json.userDisabled),
       app_disabled: value.app_disabled,
-      version: value.version || addon_json.version,
+      version: ifnull(value.version, addon_json.version),
       scope: value.scope,
       type: value.type,
-      foreign_install: value.foreign_install || addon_json.foreignInstall,
+      foreign_install: ifnull(maybeParseInt(value.foreign_install), addon_json.foreignInstall),
       has_binary_components: value.has_binary_components,
       install_day: value.install_day,
       update_day: value.update_day,

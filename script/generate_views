@@ -25,6 +25,14 @@ WILDCARD_RE = re.compile(r"[*?[]")
 DEFAULT_PATTERN = "telemetry.*"
 DEFAULT_EXCLUDE = r"*_raw"
 
+VIEW_QUERY_TEMPLATE = """
+SELECT
+  * REPLACE(
+    `moz-fx-data-shared-prod.udf.normalize_metadata`(metadata) AS metadata)
+FROM
+  `{target}`
+"""
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "patterns",
@@ -132,10 +140,10 @@ def create_views_if_not_exist(views, exclude, sql_dir):
 
         project, dataset, viewname = view.split(".")
         target = f"{view}_v{version}"
-        view_query = f"SELECT * FROM\n  `{target}`"
+        view_query = VIEW_QUERY_TEMPLATE.format(target=target).strip()
         view_dataset = dataset.rsplit("_", 1)[0]
         full_view_id = ".".join([project, view_dataset, viewname])
-        target_file = f"{sql_dir}/{view_dataset}/{viewname}/view.sql"
+        target_file = os.path.join(sql_dir, view_dataset, viewname, "view.sql")
         full_sql = f"CREATE OR REPLACE VIEW\n  `{full_view_id}`\nAS {view_query}\n"
 
         if not os.path.exists(target_file):

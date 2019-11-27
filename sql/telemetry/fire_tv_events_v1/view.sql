@@ -100,7 +100,19 @@ SELECT
           WHEN event_name = 'Firefox for Fire TV - settings - turbo_mode' THEN event_value
           END AS value
   ) WHERE VALUE IS NOT NULL) AS event_props_2,
-  ARRAY<STRING>[] AS user_props
+  ARRAY_CONCAT(ARRAY<STRING>[],
+    (SELECT ARRAY_AGG(
+    CASE
+        WHEN key='tracking_protection_enabled' THEN CONCAT('"', 'tracking_protection_enabled', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='total_home_tile_count' THEN CONCAT('"', 'total_home_tile_count', '":"', CAST(value AS STRING), '"')
+        WHEN key='custom_home_tile_count' THEN CONCAT('"', 'custom_home_tile_count', '":"', CAST(value AS STRING), '"')
+        WHEN key='remote_control_name' THEN CONCAT('"', 'remote_control_name', '":"', CAST(value AS STRING), '"')
+        WHEN key='app_id' THEN CONCAT('"', 'app_id', '":"', CAST(value AS STRING), '"')
+    END
+    IGNORE NULLS)
+  FROM
+    UNNEST(SETTINGS)
+  )) AS user_props
 FROM
   all_events_with_insert_ids
 )

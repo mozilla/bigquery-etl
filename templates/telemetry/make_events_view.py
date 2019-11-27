@@ -316,6 +316,13 @@ user_properties_ping_overrides['focus_android_events_schemas.json'] = [ # settin
 	('pref_autocomplete_custom', 'pref_autocomplete_custom', True),
 	('pref_key_tips', 'pref_key_tips', True)
 ]
+user_properties_ping_overrides['fire_tv_events_schemas.json'] = [ # setting_key, alias, as_bool; see https://github.com/mozilla/telemetry-streaming/blob/b85cdffc72a6f9ab224f9eececc38dfa09d98b8c/src/main/scala/com/mozilla/telemetry/pings/FireTvEventPing.scala#L40-L45
+	('tracking_protection_enabled', 'tracking_protection_enabled', True),
+	('total_home_tile_count', 'total_home_tile_count', False),
+	('custom_home_tile_count', 'custom_home_tile_count', False),
+	('remote_control_name', 'remote_control_name', False),
+	('app_id', 'app_id', False)
+]
 
 user_properties_ping_override = user_properties_ping_overrides.get(input_filename.split('/')[-1])
 if (user_properties_ping_override):

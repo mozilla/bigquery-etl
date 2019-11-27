@@ -95,6 +95,11 @@ settings_columns["telemetry.mobile_event"] = """settings"""
 settings_columns["telemetry.focus_event"] = settings_columns["telemetry.mobile_event"]
 settings_columns["telemetry.events"] = "NULL AS settings" # TODO: some environment fields are needed here, see: https://github.com/mozilla/telemetry-streaming/blob/b85cdffc72a6f9ab224f9eececc38dfa09d98b8c/src/main/scala/com/mozilla/telemetry/pings/Ping.scala#L434-L447
 
+if input_filename.split('/')[-1] == "fire_tv_events_schemas.json":
+	event_name_expr = "SUBSTR(event_name, 23)" # fire_tv event names contain whitespaces
+else:
+	event_name_expr = """SPLIT(event_name, " - ")[OFFSET(1)]"""
+
 # This is the main query that will power the resulting view
 query_template = """{}
 WITH base_events AS (
@@ -132,7 +137,7 @@ FROM
 ), all_events_with_insert_ids AS (
 SELECT
   * EXCEPT (event_category, created),
-  CONCAT(device_id, "-", CAST(created AS STRING), "-", SPLIT(event_name, " - ")[OFFSET(1)], "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id,
+  CONCAT(device_id, "-", CAST(created AS STRING), "-", {}, "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id,
   event_name AS event_type
 FROM
   all_events
@@ -332,6 +337,7 @@ final_query = query_template.format(
 	event_name,
 	settings_columns[source_table],
 	where,
+	event_name_expr,
 	amplitude_properties,
 	user_properties,
 	filter_snippet)

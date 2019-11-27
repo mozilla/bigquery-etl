@@ -133,33 +133,9 @@ WITH
     'actual' AS type,
     submission_date AS date,
     id_bucket,
-    SUM(
-    IF
-      (country IN ('US',
-          'FR',
-          'DE',
-          'GB',
-          'CA'),
-        mau,
-        0)) AS mau,
-    SUM(
-    IF
-      (country IN ('US',
-          'FR',
-          'DE',
-          'GB',
-          'CA'),
-        wau,
-        0)) AS wau,
-    SUM(
-    IF
-      (country IN ('US',
-          'FR',
-          'DE',
-          'GB',
-          'CA'),
-        dau,
-        0)) AS dau
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), mau, 0)) AS mau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), wau, 0)) AS wau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), dau, 0)) AS dau
   FROM
     desktop_base
   GROUP BY
@@ -187,33 +163,9 @@ WITH
     'actual' AS type,
     submission_date AS date,
     id_bucket,
-    SUM(
-    IF
-      (country IN ('US',
-          'FR',
-          'DE',
-          'GB',
-          'CA'),
-        mau,
-        0)) AS mau,
-    SUM(
-    IF
-      (country IN ('US',
-        'FR',
-        'DE',
-        'GB',
-        'CA'),
-        wau,
-        0)) AS wau,
-    SUM(
-    IF
-      (country IN ('US',
-        'FR',
-        'DE',
-        'GB',
-        'CA'),
-        dau,
-        0)) AS dau
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), mau, 0)) AS mau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), wau, 0)) AS wau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), dau, 0)) AS dau
   FROM
     nondesktop_base
   GROUP BY
@@ -244,24 +196,8 @@ WITH
     -- We have a special way of determining whether to include a user in tier1
     -- to match historical definition of tier1 FxA mau.
     SUM(seen_in_tier1_country_mau) AS mau,
-    SUM(
-    IF
-      (country IN ('US',
-          'FR',
-          'DE',
-          'GB',
-          'CA'),
-        wau,
-        0)) AS wau,
-    SUM(
-    IF
-      (country IN ('US',
-          'FR',
-          'DE',
-          'GB',
-          'CA'),
-        dau,
-        0)) AS dau
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), wau, 0)) AS wau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), dau, 0)) AS dau
   FROM
     fxa_base
   GROUP BY

@@ -26,7 +26,7 @@ SELECT
     submission_date,
     submission_timestamp,
     client_id AS device_id,
-    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS NUMERIC), 0)) AS session_id,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     CASE
         WHEN (event_category IN ('action') ) AND (event_method IN ('page') ) AND (event_object IN ('browser') ) AND (event_value IN ('back') ) THEN 'Firefox for Fire TV - app - back' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('foreground') ) AND (event_object IN ('app') ) THEN 'Firefox for Fire TV - app - foreground' 
@@ -61,6 +61,7 @@ SELECT
         WHEN (event_category IN ('pocket') ) AND (event_method IN ('click') ) AND (event_object IN ('video_id') ) THEN 'Firefox for Fire TV - pocket_video - click'
     END AS event_name,
     event_timestamp AS timestamp,
+    (event_timestamp + created) AS time,
     app_version,
     os AS platform,
     os AS os_name,

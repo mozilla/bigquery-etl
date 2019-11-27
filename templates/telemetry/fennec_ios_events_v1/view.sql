@@ -26,7 +26,7 @@ SELECT
     submission_date,
     submission_timestamp,
     client_id AS device_id,
-    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS NUMERIC), 0)) AS session_id,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     CASE
         WHEN (event_category IN ('action') ) AND (event_method IN ('foreground') ) AND (event_object IN ('app') ) THEN 'Fennec-iOS - App is foregrounded (session start)' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('background') ) AND (event_object IN ('app') ) THEN 'Fennec-iOS - App is backgrounded (session end)' 
@@ -75,6 +75,7 @@ SELECT
         WHEN (event_category IN ('action') ) AND (event_method IN ('press') ) AND (event_object IN ('dismissed-onboarding-sign-up') ) THEN 'Fennec-iOS - Dismiss onboarding screen on sign up card'
     END AS event_name,
     event_timestamp AS timestamp,
+    (event_timestamp + created) AS time,
     app_version,
     os AS platform,
     os AS os_name,

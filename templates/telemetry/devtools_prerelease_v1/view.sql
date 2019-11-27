@@ -16,7 +16,7 @@ SELECT
     submission_date,
     submission_timestamp,
     client_id AS device_id,
-    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS NUMERIC), 0)) AS session_id,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     CASE
         WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('open') ) AND (event_object IN ('tools') ) THEN 'dt - open' 
         WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('close') ) AND (event_object IN ('tools') ) THEN 'dt - close' 
@@ -72,6 +72,7 @@ SELECT
         WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('update_conn_prompt') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - update_conn_prompt'
     END AS event_name,
     event_timestamp AS timestamp,
+    (event_timestamp + created) AS time,
     app_version,
     os AS platform,
     os AS os_name,

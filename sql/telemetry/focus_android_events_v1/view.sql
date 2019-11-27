@@ -26,7 +26,7 @@ SELECT
     submission_date,
     submission_timestamp,
     client_id AS device_id,
-    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS NUMERIC), 0)) AS session_id,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     CASE
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('tip') ) AND (event_value IN ('open_in_new_tab_tip') ) THEN 'Focus - Open in new tab tip displayed' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('tip') ) AND (event_value IN ('add_to_homescreen_tip') ) THEN 'Focus - Add to homescreen tip displayed' 
@@ -91,6 +91,7 @@ SELECT
         WHEN (event_category IN ('action') ) AND (event_method IN ('click') ) AND (event_object IN ('add_to_homescreen_dialog') ) AND (event_value IN ('add_to_homescreen', 'cancel') ) THEN 'Focus - "Add to Homescreen" dialog shown'
     END AS event_name,
     event_timestamp AS timestamp,
+    (event_timestamp + created) AS time,
     app_version,
     os AS platform,
     os AS os_name,

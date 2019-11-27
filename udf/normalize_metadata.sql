@@ -11,7 +11,7 @@ CREATE TEMP FUNCTION
       AS STRUCT metadata.* REPLACE ( (
         SELECT
           AS STRUCT metadata.header.*,
-            PARSE_TIMESTAMP('%a, %d %b %Y %T %Z', metadata.header.`date`) AS parsed_date) AS header )) );
+            SAFE.PARSE_TIMESTAMP('%a, %d %b %Y %T %Z', metadata.header.`date`) AS parsed_date) AS header )) );
 
 -- Tests
 
@@ -22,4 +22,12 @@ assert_equals(
     TIMESTAMP '2019-11-21 22:06:06' AS parsed_date) AS header),
   udf_normalize_metadata(
     STRUCT(STRUCT(
-      'Thu, 21 Nov 2019 22:06:06 GMT' AS `date`) AS header)));
+      'Thu, 21 Nov 2019 22:06:06 GMT' AS `date`) AS header))),
+assert_null(
+  udf_normalize_metadata(
+    STRUCT(STRUCT(
+    'Thu, 21 Nov 2019 22:06:06 GMT+00:00' AS `date`) AS header)).header.parsed_date),
+assert_null(
+  udf_normalize_metadata(
+    STRUCT(STRUCT(
+    CAST(NULL AS STRING) AS `date`) AS header)).header.parsed_date);

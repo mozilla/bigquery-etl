@@ -155,7 +155,27 @@ SELECT
           WHEN event_name = 'Focus - "Add to Homescreen" dialog shown' THEN event_value
           END AS value
   ) WHERE VALUE IS NOT NULL) AS event_props_2,
-  ARRAY<STRING>[] AS user_props
+  ARRAY_CONCAT(ARRAY<STRING>[],
+    (SELECT ARRAY_AGG(
+    CASE
+        WHEN key='pref_privacy_block_ads' THEN CONCAT('"', 'pref_privacy_block_ads', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_locale' THEN CONCAT('"', 'pref_locale', '":"', CAST(value AS STRING), '"')
+        WHEN key='pref_privacy_block_social' THEN CONCAT('"', 'pref_privacy_block_social', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_secure' THEN CONCAT('"', 'pref_secure', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_privacy_block_analytics' THEN CONCAT('"', 'pref_privacy_block_analytics', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_search_engine' THEN CONCAT('"', 'pref_search_engine', '":"', CAST(value AS STRING), '"')
+        WHEN key='pref_privacy_block_other' THEN CONCAT('"', 'pref_privacy_block_other', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_default_browser' THEN CONCAT('"', 'pref_default_browser', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_performance_block_webfonts' THEN CONCAT('"', 'pref_performance_block_webfonts', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_performance_block_images' THEN CONCAT('"', 'pref_performance_block_images', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_autocomplete_installed' THEN CONCAT('"', 'pref_autocomplete_installed', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_autocomplete_custom' THEN CONCAT('"', 'pref_autocomplete_custom', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_key_tips' THEN CONCAT('"', 'pref_key_tips', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+    END
+    IGNORE NULLS)
+  FROM
+    UNNEST(SETTINGS)
+  )) AS user_props
 FROM
   all_events_with_insert_ids
 )

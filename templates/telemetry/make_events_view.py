@@ -296,13 +296,28 @@ user_properties_ping_overrides['fennec_ios_events_schemas.json'] = [ # setting_k
 	('windowHeight', 'pref_window_height', False),
 	('windowWidth', 'pref_window_width', False),
 ]
+user_properties_ping_overrides['focus_android_events_schemas.json'] = [ # setting_key, alias, as_bool; see https://github.com/mozilla/telemetry-streaming/blob/b85cdffc72a6f9ab224f9eececc38dfa09d98b8c/src/main/scala/com/mozilla/telemetry/pings/FocusEvent.scala#L34-L47
+	('pref_privacy_block_ads', 'pref_privacy_block_ads', True),
+	('pref_locale', 'pref_locale', False),
+	('pref_privacy_block_social', 'pref_privacy_block_social', True),
+	('pref_secure', 'pref_secure', True),
+	('pref_privacy_block_analytics', 'pref_privacy_block_analytics', True),
+	('pref_search_engine', 'pref_search_engine', False),
+	('pref_privacy_block_other', 'pref_privacy_block_other', True),
+	('pref_default_browser', 'pref_default_browser', True),
+	('pref_performance_block_webfonts', 'pref_performance_block_webfonts', True),
+	('pref_performance_block_images', 'pref_performance_block_images', True),
+	('pref_autocomplete_installed', 'pref_autocomplete_installed', True),
+	('pref_autocomplete_custom', 'pref_autocomplete_custom', True),
+	('pref_key_tips', 'pref_key_tips', True)
+]
 
 user_properties_ping_override = user_properties_ping_overrides.get(input_filename.split('/')[-1])
 if (user_properties_ping_override):
 	user_properties_override_string = """(SELECT ARRAY_AGG(\n    CASE\n"""
 	for setting_key, alias, as_bool in user_properties_ping_override:
 		if as_bool:
-			value_string = """'":', CAST(COALESCE(SAFE_CAST(value AS BOOLEAN), false) AS STRING)"""
+			value_string = """'":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING)"""
 		else:
 			value_string = """'":"', CAST(value AS STRING), '"'"""
 		user_properties_override_string += f"""        WHEN key='{setting_key}' THEN CONCAT('"', '{alias}', {value_string})\n"""

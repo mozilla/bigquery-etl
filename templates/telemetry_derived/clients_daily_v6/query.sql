@@ -180,7 +180,8 @@ SELECT
   udf_mode_last(ARRAY_AGG(vendor ORDER BY `timestamp`)) AS vendor,
   SUM(web_notification_shown) AS web_notification_shown_sum,
   udf_mode_last(ARRAY_AGG(windows_build_number ORDER BY `timestamp`)) AS windows_build_number,
-  udf_mode_last(ARRAY_AGG(windows_ubr ORDER BY `timestamp`)) AS windows_ubr
+  udf_mode_last(ARRAY_AGG(windows_ubr ORDER BY `timestamp`)) AS windows_ubr,
+  SUM(scalar_parent_contentblocking_trackers_blocked_count) AS trackers_blocked_sum
 FROM
   main_summary_v4
 LEFT JOIN

@@ -262,6 +262,7 @@
   scalar_parent_browser_engagement_total_uri_count: 1
   scalar_parent_browser_engagement_unfiltered_uri_count: 1
   scalar_parent_browser_engagement_window_open_event_count: 1
+  scalar_parent_contentblocking_trackers_blocked_count: 1
   scalar_parent_devtools_copy_full_css_selector_opened: 1
   scalar_parent_devtools_copy_unique_css_selector_opened: 1
   scalar_parent_devtools_toolbar_eyedropper_opened: 1

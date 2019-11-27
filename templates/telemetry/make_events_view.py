@@ -323,6 +323,19 @@ user_properties_ping_overrides['fire_tv_events_schemas.json'] = [ # setting_key,
 	('remote_control_name', 'remote_control_name', False),
 	('app_id', 'app_id', False)
 ]
+user_properties_ping_overrides['rocket_android_events_schemas.json'] = [ # setting_key, alias, as_bool; see https://github.com/mozilla/telemetry-streaming/blob/b85cdffc72a6f9ab224f9eececc38dfa09d98b8c/src/main/scala/com/mozilla/telemetry/pings/RocketEvent.scala#L34-L41
+	('pref_search_engine', 'pref_search_engine', False),
+    ('pref_privacy_turbo_mode', 'pref_privacy_turbo_mode', True),
+    ('pref_performance_block_images', 'pref_performance_block_images', True),
+    ('pref_default_browser', 'pref_default_browser', True),
+    ('pref_save_downloads_to', 'pref_save_downloads_to', False),
+    ('pref_webview_version', 'pref_webview_version', False),
+    ('install_referrer', 'install_referrer', False),
+    ('experiment_name', 'experiment_name', False),
+    ('experiment_bucket', 'experiment_bucket', False),
+    ('pref_locale', 'pref_locale', False),
+    ('pref_key_s_tracker_token', 'pref_key_s_tracker_token', False)
+]
 
 user_properties_ping_override = user_properties_ping_overrides.get(input_filename.split('/')[-1])
 if (user_properties_ping_override):

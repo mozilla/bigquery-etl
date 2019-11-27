@@ -276,7 +276,25 @@ SELECT
       UNION ALL SELECT 'task' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'task') AS value
       UNION ALL SELECT 'item_name' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'item_name') AS value
   ) WHERE VALUE IS NOT NULL) AS event_props_2,
-  ARRAY<STRING>[] AS user_props
+  ARRAY_CONCAT(ARRAY<STRING>[],
+    (SELECT ARRAY_AGG(
+    CASE
+        WHEN key='pref_search_engine' THEN CONCAT('"', 'pref_search_engine', '":"', CAST(value AS STRING), '"')
+        WHEN key='pref_privacy_turbo_mode' THEN CONCAT('"', 'pref_privacy_turbo_mode', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_performance_block_images' THEN CONCAT('"', 'pref_performance_block_images', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_default_browser' THEN CONCAT('"', 'pref_default_browser', '":', CAST(SAFE_CAST(value AS BOOLEAN) AS STRING))
+        WHEN key='pref_save_downloads_to' THEN CONCAT('"', 'pref_save_downloads_to', '":"', CAST(value AS STRING), '"')
+        WHEN key='pref_webview_version' THEN CONCAT('"', 'pref_webview_version', '":"', CAST(value AS STRING), '"')
+        WHEN key='install_referrer' THEN CONCAT('"', 'install_referrer', '":"', CAST(value AS STRING), '"')
+        WHEN key='experiment_name' THEN CONCAT('"', 'experiment_name', '":"', CAST(value AS STRING), '"')
+        WHEN key='experiment_bucket' THEN CONCAT('"', 'experiment_bucket', '":"', CAST(value AS STRING), '"')
+        WHEN key='pref_locale' THEN CONCAT('"', 'pref_locale', '":"', CAST(value AS STRING), '"')
+        WHEN key='pref_key_s_tracker_token' THEN CONCAT('"', 'pref_key_s_tracker_token', '":"', CAST(value AS STRING), '"')
+    END
+    IGNORE NULLS)
+  FROM
+    UNNEST(SETTINGS)
+  )) AS user_props
 FROM
   all_events_with_insert_ids
 )

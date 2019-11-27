@@ -100,22 +100,36 @@ RETURNS ARRAY<STRUCT<
   multiprocess_compatible BOOL
 >>
 LANGUAGE js AS """
+function ifnull(value1, value2) {
+  // preserve falsey values and ignore missing values
+  if (value1 !== null && value1 !== undefined) {
+    return value1;
+  }
+  return value2;
+}
+
+function maybeParseInt(value) {
+  // return null instead of NaN on failure
+  result = parseInt(value);
+  return isNaN(result) ? null : result;
+}
+
 try {
-  const additional_properties = JSON.parse(active_addons_json) || {};
+  const additional_properties = ifnull(JSON.parse(active_addons_json), {});
   const result = [];
-  (active_addons || []).forEach((item) => {
-    const addon_json = additional_properties[item.key] || {};
-    const value = item.value || {};
+  ifnull(active_addons, []).forEach((item) => {
+    const addon_json = ifnull(additional_properties[item.key], {});
+    const value = ifnull(item.value, {});
     result.push({
       addon_id: item.key,
       blocklisted: value.blocklisted,
       name: value.name,
-      user_disabled: value.user_disabled || addon_json.userDisabled,
+      user_disabled: ifnull(maybeParseInt(value.user_disabled), addon_json.userDisabled),
       app_disabled: value.app_disabled,
-      version: value.version || addon_json.version,
+      version: ifnull(value.version, addon_json.version),
       scope: value.scope,
       type: value.type,
-      foreign_install: value.foreign_install || addon_json.foreignInstall,
+      foreign_install: ifnull(maybeParseInt(value.foreign_install), addon_json.foreignInstall),
       has_binary_components: value.has_binary_components,
       install_day: value.install_day,
       update_day: value.update_day,
@@ -257,10 +271,10 @@ SELECT
   creation_date,
   environment.partner.distribution_id,
   DATE(submission_timestamp) AS submission_date,
-  -- See bug 1550752
-  udf_boolean_histogram_to_boolean(payload.histograms.fxa_configured) AS fxa_configured,
-  -- See bug 1232050
-  udf_boolean_histogram_to_boolean(payload.histograms.weave_configured) AS sync_configured,
+  -- See bugs 1550752 and 1593773
+  ifnull(environment.services.account_enabled, udf_boolean_histogram_to_boolean(payload.histograms.fxa_configured)) AS fxa_configured,
+  -- See bugs 1232050 and 1593773
+  ifnull(environment.services.sync_enabled, udf_boolean_histogram_to_boolean(payload.histograms.weave_configured)) AS sync_configured,
   udf_histogram_max_key_with_nonzero_value(payload.histograms.weave_device_count_desktop) AS sync_count_desktop,
   udf_histogram_max_key_with_nonzero_value(payload.histograms.weave_device_count_mobile) AS sync_count_mobile,
 

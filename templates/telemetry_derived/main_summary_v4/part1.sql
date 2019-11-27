@@ -68,10 +68,10 @@ SELECT
   creation_date,
   environment.partner.distribution_id,
   DATE(submission_timestamp) AS submission_date,
-  -- See bug 1550752
-  udf_boolean_histogram_to_boolean(payload.histograms.fxa_configured) AS fxa_configured,
-  -- See bug 1232050
-  udf_boolean_histogram_to_boolean(payload.histograms.weave_configured) AS sync_configured,
+  -- See bugs 1550752 and 1593773
+  ifnull(environment.services.account_enabled, udf_boolean_histogram_to_boolean(payload.histograms.fxa_configured)) AS fxa_configured,
+  -- See bugs 1232050 and 1593773
+  ifnull(environment.services.sync_enabled, udf_boolean_histogram_to_boolean(payload.histograms.weave_configured)) AS sync_configured,
   udf_histogram_max_key_with_nonzero_value(payload.histograms.weave_device_count_desktop) AS sync_count_desktop,
   udf_histogram_max_key_with_nonzero_value(payload.histograms.weave_device_count_mobile) AS sync_count_mobile,
 

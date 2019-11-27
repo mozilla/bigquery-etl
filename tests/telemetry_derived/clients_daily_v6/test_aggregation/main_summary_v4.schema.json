@@ -345,6 +345,11 @@
   },
   {
     "type": "INTEGER",
+    "name": "scalar_parent_contentblocking_trackers_blocked_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
     "name": "first_paint",
     "mode": "NULLABLE"
   },

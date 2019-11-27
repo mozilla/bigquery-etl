@@ -93,7 +93,7 @@ SELECT
     NULL AS settings
 FROM
     base_events
-WHERE doc_type IN ('main', 'event')
+WHERE doc_type IN ('main', 'event') AND app_name IN ('Firefox')
 ), all_events_with_insert_ids AS (
 SELECT
   * EXCEPT (event_category, created),

@@ -81,7 +81,8 @@ SELECT
   metadata.uri.app_version,
   osversion AS os_version,
   metadata.geo.country,
-  metadata.geo.city
+  metadata.geo.city,
+  metadata.uri.app_name
 FROM
   `moz-fx-data-shared-prod.telemetry.mobile_event`
   CROSS JOIN UNNEST(events) AS event
@@ -192,6 +193,12 @@ elif len(docTypes) > 1:
 	print("-- TODO: Why are there so many doctypes: {}".format(', '.join(docTypes)))
 else:
 	source_table = 'telemetry.{}'.format(docTypes[0])
+appNames = filters.get("appName", [])
+if len(appNames)>0:
+	criteria.append("app_name IN ('{}')".format("', '".join(appNames)))
+osNames = filters.get("os", [])
+if len(osNames)>0:
+	criteria.append("os IN ('{}')".format("', '".join(osNames)))
 
 source_table = snake_case(source_table)
 print("-- Source table: {}".format(source_table))

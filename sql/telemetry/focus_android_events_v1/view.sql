@@ -15,7 +15,8 @@ SELECT
   metadata.uri.app_version,
   osversion AS os_version,
   metadata.geo.country,
-  metadata.geo.city
+  metadata.geo.city,
+  metadata.uri.app_name
 FROM
   `moz-fx-data-shared-prod.telemetry.focus_event`
   CROSS JOIN UNNEST(events) AS event
@@ -111,7 +112,7 @@ SELECT
     settings
 FROM
     base_events
-
+WHERE app_name IN ('Focus') AND os IN ('Android')
 ), all_events_with_insert_ids AS (
 SELECT
   * EXCEPT (event_category, created),

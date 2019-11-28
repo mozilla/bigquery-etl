@@ -4,7 +4,6 @@ WITH base_events AS (
 
 SELECT
   *,
-  DATE(submission_timestamp) AS submission_date,
   event.f0_ AS timestamp,
   event.f0_ AS event_timestamp,
   event.f1_ AS event_category,
@@ -23,7 +22,6 @@ FROM
 
 ), all_events AS (
 SELECT
-    submission_date,
     submission_timestamp,
     client_id AS device_id,
     (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,

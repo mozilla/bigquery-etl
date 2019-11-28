@@ -122,7 +122,7 @@ WHERE
   event_name IS NOT NULL
 ), extra_props AS (
 SELECT
-  * EXCEPT (event_map_values, event_object, event_value, event_method),
+  * EXCEPT (event_map_values, event_object, event_value, event_method, event_name),
   (SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')) FROM (
       SELECT 'requested' AS key, CASE
           WHEN event_name = 'Focus - Request Desktop Site Clicked' THEN event_value

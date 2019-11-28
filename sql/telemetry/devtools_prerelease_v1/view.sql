@@ -104,7 +104,7 @@ WHERE
   event_name IS NOT NULL
 ), extra_props AS (
 SELECT
-  * EXCEPT (event_map_values, event_object, event_value, event_method),
+  * EXCEPT (event_map_values, event_object, event_value, event_method, event_name),
   (SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')) FROM (
       SELECT 'entrypoint' AS key, CASE
           WHEN event_name = 'dt - open' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'entrypoint')

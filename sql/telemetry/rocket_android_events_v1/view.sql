@@ -231,7 +231,7 @@ WHERE
   event_name IS NOT NULL
 ), extra_props AS (
 SELECT
-  * EXCEPT (event_map_values, event_object, event_value, event_method),
+  * EXCEPT (event_map_values, event_object, event_value, event_method, event_name),
   (SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')) FROM (
       SELECT 'to' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'to') AS value
       UNION ALL SELECT 'on' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'on') AS value

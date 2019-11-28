@@ -202,7 +202,6 @@ SELECT
     event_timestamp AS timestamp,
     (event_timestamp + created) AS time,
     app_version,
-    os AS platform,
     os AS os_name,
     os_version,
     country,

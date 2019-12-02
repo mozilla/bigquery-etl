@@ -42,7 +42,7 @@ WITH
     udf_mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
     udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country,
     udf_contains_registration(ARRAY_AGG(event_type) OVER w1) AS registered,
-    COUNTIF(event_type != 'fxa_rp - engage') OVER w1 = 0 AS rp_engage_only
+    COUNTIF(NOT (event_type = 'fxa_rp - engage' AND service = 'fx-monitor')) OVER w1 = 0 AS monitor_only
   FROM
     fxa_all_events_v1
   WHERE

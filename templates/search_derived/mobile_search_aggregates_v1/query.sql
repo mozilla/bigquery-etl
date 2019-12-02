@@ -14,7 +14,7 @@ SELECT
   COUNT(*) AS client_count,
   SUM(search_count) AS search_count
 FROM
-  search_derived.mobile_search_clients_daily_v1
+  mobile_search_clients_daily_v1
 WHERE
   submission_date = @submission_date
   AND engine IS NOT NULL

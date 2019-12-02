@@ -18,3 +18,4 @@
 {"submission_timestamp":"2019-01-01 00:00:06.000000Z","user_id":"f","country":"Spain","event_type":"mktg - email_sent"}
 {"submission_timestamp":"2019-01-01 00:00:07.000000Z","user_id":"f","country":"Spain","event_type":"mktg - email_sent"}
 {"submission_timestamp":"2019-01-01 00:00:08.000000Z","user_id":"f","country":"Spain","event_type":""}
+{"submission_timestamp":"2019-01-01 00:00:08.000000Z","user_id":"g","country":"Spain","event_type":"fxa_rp - engage","service":"fx-monitor"}

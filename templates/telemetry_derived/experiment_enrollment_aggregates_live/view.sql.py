@@ -2,10 +2,9 @@
 """Experiment enrollment aggregates live view query generator."""
 import argparse
 import datetime
+import json
 import sys
 import textwrap
-
-
 
 
 p = argparse.ArgumentParser()
@@ -15,13 +14,18 @@ p.add_argument(
     help="Cut-off date for using pre-computed vs live tables in view",
     required=True
 )
+p.add_argument(
+    "--json-output",
+    action='store_true',
+    help="Output the result wrapped in json parseable as an XCOM",
+)
 
 def generate_sql(opts):
     """Create a BigQuery SQL query for the experiment enrollments aggregates view with new date filled in.
        Unfortunately, BigQuery does not allow parameters in view definitions, so this script is a very thin
        wrapper over the nearly complete sql query to fill in the cutoff date for using the pre-aggregated vs
        live table for the view"""
-    return textwrap.dedent(
+    query = textwrap.dedent(
         """
         CREATE
         OR REPLACE VIEW `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live` AS
@@ -102,6 +106,10 @@ def generate_sql(opts):
             **opts
         )
     )
+    if opts['json_output']:
+        return json.dumps({'return_value': query})
+    else:
+        return query
 
 
 def main(argv, out=print):

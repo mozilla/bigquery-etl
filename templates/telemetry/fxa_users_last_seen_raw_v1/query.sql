@@ -11,7 +11,8 @@ WITH
     -- 28 days even if the most recent "country" value is not in this set.
     CAST(seen_in_tier1_country AS INT64) AS days_seen_in_tier1_country_bits,
     CAST(registered AS INT64) AS days_registered_bits,
-    * EXCEPT (submission_date, seen_in_tier1_country, registered)
+    * EXCEPT (submission_date, seen_in_tier1_country, registered, monitor_only),
+    CAST(NOT monitor_only AS INT64) AS days_seen_no_monitor_bits
   FROM
     fxa_users_daily_v1
   WHERE
@@ -36,7 +37,9 @@ IF
     udf_combine_adjacent_days_bits(_previous.days_seen_in_tier1_country_bits,
       _current.days_seen_in_tier1_country_bits) AS days_seen_in_tier1_country_bits,
     udf_coalesce_adjacent_days_bits(_previous.days_registered_bits,
-      _current.days_registered_bits) AS days_registered_bits )
+      _current.days_registered_bits) AS days_registered_bits,
+    udf_combine_adjacent_days_bits(_previous.days_seen_no_monitor_bits,
+      _current.days_seen_no_monitor_bits) AS days_seen_no_monitor_bits )
 FROM
   _current
 FULL JOIN

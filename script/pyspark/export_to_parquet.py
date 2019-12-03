@@ -130,6 +130,13 @@ parser.add_argument(
     default="overwrite",
     help='Passed to df.write.mode(_). Defaults to "overwrite".',
 )
+parser.add_argument(
+    "--partition-overwrite-mode",
+    default="STATIC",
+    type=str.upper,
+    help='Passed to spark.conf.set("spark.sql.sources.partitionOverwriteMode", _).'
+    ' Defaults to "STATIC".',
+)
 
 
 def transform_field(
@@ -271,6 +278,11 @@ def main():
             )
         print("spark = SparkSession.builder.appName('export_to_parquet').getOrCreate()")
         print("")
+        print(
+            "spark.conf.set('spark.sql.sources.partitionOverwriteMode', "
+            f"{args.partition_overwrite_mode!r})"
+        )
+        print("")
         if args.avro_path is not None:
             print(f"df = spark.read.format('avro').load({args.avro_path!r})")
         else:
@@ -315,6 +327,10 @@ def main():
             raise bigquery_error
 
         spark = SparkSession.builder.appName("export_to_parquet").getOrCreate()
+
+        spark.conf.set(
+            "spark.sql.sources.partitionOverwriteMode", args.partition_overwrite_mode
+        )
 
         # run spark job from parsed args
         if args.avro_path is not None:

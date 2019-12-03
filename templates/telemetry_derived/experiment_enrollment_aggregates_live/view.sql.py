@@ -107,7 +107,7 @@ def generate_sql(opts):
         )
     )
     if opts['json_output']:
-        return json.dumps({'return_value': query})
+        return json.dumps(query)
     else:
         return query
 

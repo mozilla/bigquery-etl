@@ -4,7 +4,6 @@
 
 from argparse import ArgumentParser
 import json
-import sys
 import time
 
 import requests

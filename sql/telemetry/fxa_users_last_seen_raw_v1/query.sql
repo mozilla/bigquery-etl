@@ -30,7 +30,7 @@ WITH
     * EXCEPT (submission_date, seen_in_tier1_country, registered, monitor_only),
     -- The first days with Monitor email engagement events is 2019-11-25;
     -- adding some extra logic here avoids the need for a backfill.
-    CAST(IF(submission_date < '2019-11-25', TRUE, monitor_only = false) AS INT64) AS days_seen_no_monitor_bits
+    CAST(IF(submission_date < '2019-11-25', TRUE, monitor_only IS FALSE) AS INT64) AS days_seen_no_monitor_bits
   FROM
     fxa_users_daily_v1
   WHERE

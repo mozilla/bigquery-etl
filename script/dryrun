@@ -54,6 +54,8 @@ SKIP = {
     "sql/telemetry_derived/clients_last_seen_v1/init.sql",
     # HTTP Error 408: Request Time-out
     "sql/telemetry_derived/latest_versions/query.sql",
+    # Query parameter not found
+    "sql/telemetry_derived/experiments_v1/query.sql",
 }
 
 USE_DERIVED_DATASETS = {

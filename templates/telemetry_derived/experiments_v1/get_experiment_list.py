@@ -9,7 +9,7 @@ import time
 
 import requests
 
-experiments_qualifying_actions = {"preference-experiment", "opt-out-study"}
+experiments_qualifying_actions = {"preference-experiment", "opt-out-study", "branched-addon-study", "multi-preference-experiment"}
 excluded_experiments = {
     None,
     "pref-flip-screenshots-release-1369150",

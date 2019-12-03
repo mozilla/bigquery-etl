@@ -75,38 +75,15 @@ def generate_sql(
     )
 
 
-def get_histogram_type(keyval_fields):
-    """Return the type of histogram given its schema."""
-    if (
-        len(keyval_fields) == 2
-        and keyval_fields[0].get("type", None) == "INTEGER"
-        and keyval_fields[1].get("type", None) == "INTEGER"
-    ):
-        return "histogram"
-
-    if (
-        len(keyval_fields) == 2
-        and keyval_fields[0].get("type", None) == "STRING"
-        and keyval_fields[1].get("type", None) == "INTEGER"
-    ):
-        return "string-histogram"
-
-    if (
-        len(keyval_fields) == 2
-        and keyval_fields[0].get("type", None) == "STRING"
-        and keyval_fields[1].get("type", None) == "RECORD"
-        and keyval_fields[1]["fields"][0]["type"] == "INTEGER"
-    ):
-        return "keyed-histogram"
-
-
 def _get_generic_keyed_scalar_sql(probes, value_type):
     probes_struct = []
-    for probe in probes:
-        probes_struct.append(
-            f"('{probe}', payload.processes.parent.keyed_scalars.{probe})"
-        )
+    for probe, processes in probes.items():
+        for process in processes:
+            probes_struct.append(
+                f"('{probe}', '{process}', payload.processes.{process}.keyed_scalars.{probe})"
+            )
 
+    probes_struct.sort()
     probes_arr = ",\n\t\t\t".join(probes_struct)
 
     additional_queries = f"""
@@ -120,6 +97,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
             channel,
             ARRAY<STRUCT<
                 name STRING,
+                process STRING,
                 value ARRAY<STRUCT<key STRING, value {value_type}>>
             >>[
               {probes_arr}
@@ -135,6 +113,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
               app_build_id,
               channel,
               metrics.name AS metric,
+              metrics.process AS process,
               value.key AS key,
               value.value AS value
             FROM grouped_metrics
@@ -146,6 +125,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
 
     additional_partitions = """,
                             metric,
+                            process,
                             key
     """
 
@@ -164,6 +144,7 @@ def get_keyed_boolean_probes_sql_string(probes):
     ] = """
         metric,
         key,
+        process,
         SUM(CASE WHEN value = True THEN 1 ELSE 0 END) AS true_col,
         SUM(CASE WHEN value = False THEN 1 ELSE 0 END) AS false_col
     """
@@ -182,12 +163,13 @@ def get_keyed_boolean_probes_sql_string(probes):
                     metric STRING,
                     metric_type STRING,
                     key STRING,
+                    process STRING,
                     agg_type STRING,
                     value FLOAT64
                 >>
                 [
-                    (metric, 'keyed-scalar-boolean', key, 'true', true_col),
-                    (metric, 'keyed-scalar-boolean', key, 'false', false_col)
+                    (metric, 'keyed-scalar-boolean', key, process, 'true', true_col),
+                    (metric, 'keyed-scalar-boolean', key, process, 'false', false_col)
                 ]
             ) AS scalar_aggregates
         FROM aggregated
@@ -209,6 +191,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         "probes_string"
     ] = """
         metric,
+        process,
         key,
         MAX(value) AS max,
         MIN(value) AS min,
@@ -231,15 +214,16 @@ def get_keyed_scalar_probes_sql_string(probes):
                 metric STRING,
                 metric_type STRING,
                 key STRING,
+                process STRING,
                 agg_type STRING,
                 value FLOAT64
             >>
                 [
-                    (metric, 'keyed-scalar', key, 'max', max),
-                    (metric, 'keyed-scalar', key, 'min', min),
-                    (metric, 'keyed-scalar', key, 'avg', avg),
-                    (metric, 'keyed-scalar', key, 'sum', sum),
-                    (metric, 'keyed-scalar', key, 'count', count)
+                    (metric, 'keyed-scalar', key, process, 'max', max),
+                    (metric, 'keyed-scalar', key, process, 'min', min),
+                    (metric, 'keyed-scalar', key, process, 'avg', avg),
+                    (metric, 'keyed-scalar', key, process, 'sum', sum),
+                    (metric, 'keyed-scalar', key, process, 'count', count)
                 ]
         ) AS scalar_aggregates
         FROM aggregated
@@ -263,47 +247,53 @@ def get_scalar_probes_sql_strings(probes, scalar_type):
         return get_keyed_boolean_probes_sql_string(probes["keyed_boolean"])
 
     probe_structs = []
-    for probe in probes["scalars"]:
-        probe_structs.append((
-            f"('{probe}', 'scalar', '', 'max', "
-            f"max(CAST(payload.processes.parent.scalars.{probe} AS INT64)))")
-        )
-        probe_structs.append((
-            f"('{probe}', 'scalar', '', 'avg', "
-            f"avg(CAST(payload.processes.parent.scalars.{probe} AS INT64)))")
-        )
-        probe_structs.append((
-            f"('{probe}', 'scalar', '', 'min', "
-            f"min(CAST(payload.processes.parent.scalars.{probe} AS INT64)))")
-        )
-        probe_structs.append((
-            f"('{probe}', 'scalar', '', 'sum', "
-            f"sum(CAST(payload.processes.parent.scalars.{probe} AS INT64)))")
-        )
-        probe_structs.append(f"('{probe}', 'scalar', '', 'count', IF(MIN(payload.processes.parent.scalars.{probe}) IS NULL, NULL, COUNT(*)))")
-
-    for probe in probes["booleans"]:
-        probe_structs.append(
-            (
-                f"('{probe}', 'boolean', '', 'false', "
-                f"SUM(case when payload.processes.parent.scalars.{probe} = False "
-                "THEN 1 ELSE 0 END))"
+    for probe, processes in probes["scalars"].items():
+        for process in processes:
+            probe_structs.append((
+                f"('{probe}', 'scalar', '', '{process}', 'max', "
+                f"max(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))")
             )
-        )
-        probe_structs.append(
-            (
-                f"('{probe}', 'boolean', '', 'true', "
-                f"SUM(case when payload.processes.parent.scalars.{probe} = True "
-                "THEN 1 ELSE 0 END))"
+            probe_structs.append((
+                f"('{probe}', 'scalar', '', '{process}', 'avg', "
+                f"avg(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))")
             )
-        )
+            probe_structs.append((
+                f"('{probe}', 'scalar', '', '{process}', 'min', "
+                f"min(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))")
+            )
+            probe_structs.append((
+                f"('{probe}', 'scalar', '', '{process}', 'sum', "
+                f"sum(CAST(payload.processes.{process}.scalars.{probe} AS INT64)))")
+            )
+            probe_structs.append(
+                f"('{probe}', 'scalar', '', '{process}', 'count', IF(MIN(payload.processes.{process}.scalars.{probe}) IS NULL, NULL, COUNT(*)))"
+            )
 
+    for probe, processes in probes["booleans"].items():
+        for process in processes:
+            probe_structs.append(
+                (
+                    f"('{probe}', 'boolean', '', '{process}', 'false', "
+                    f"SUM(case when payload.processes.{process}.scalars.{probe} = False "
+                    "THEN 1 ELSE 0 END))"
+                )
+            )
+            probe_structs.append(
+                (
+                    f"('{probe}', 'boolean', '', '{process}', 'true', "
+                    f"SUM(case when payload.processes.{process}.scalars.{probe} = True "
+                    "THEN 1 ELSE 0 END))"
+                )
+            )
+
+    probe_structs.sort()
     probes_arr = ",\n\t\t\t".join(probe_structs)
     probes_string = f"""
             ARRAY<STRUCT<
                 metric STRING,
                 metric_type STRING,
                 key STRING,
+                process STRING,
                 agg_type STRING,
                 value FLOAT64
             >> [
@@ -319,16 +309,30 @@ def get_scalar_probes_sql_strings(probes, scalar_type):
     return {"probes_string": probes_string, "select_clause": select_clause}
 
 
+def save_scalars_by_type(scalars_dict, scalar, process):
+    if scalars_dict is None:
+        return
+
+    processes = scalars_dict.setdefault(scalar, set())
+    processes.add(process)
+    scalars_dict[scalar] = processes
+
+
+def filter_scalars_dict(scalars_dict, required_probes):
+    return {
+        scalar: process for scalar, process in scalars_dict.items() if scalar in required_probes
+    }
+
 def get_scalar_probes(scalar_type):
     """Find all scalar probes in main summary.
 
     Note: that non-integer scalar probes are not included.
     """
     project = "moz-fx-data-shared-prod"
-    main_summary_scalars = set()
-    main_summary_record_scalars = set()
-    main_summary_boolean_record_scalars = set()
-    main_summary_boolean_scalars = set()
+    main_summary_scalars = {}
+    main_summary_record_scalars = {}
+    main_summary_boolean_record_scalars = {}
+    main_summary_boolean_scalars = {}
 
     process = subprocess.Popen(
         [
@@ -348,7 +352,7 @@ def get_scalar_probes(scalar_type):
         )
     main_summary_schema = json.loads(stdout)
 
-    scalars_field = None
+    scalars_fields = []
     for field in main_summary_schema:
         if field["name"] != "payload":
             continue
@@ -356,28 +360,37 @@ def get_scalar_probes(scalar_type):
         for payload_field in field["fields"]:
             if payload_field["name"] == "processes":
                 for processes_field in payload_field["fields"]:
-                    if processes_field["name"] == "parent":
-                        for parent_field in processes_field["fields"]:
-                            if parent_field["name"] == scalar_type:
-                                scalars_field = parent_field
+                    if processes_field["name"] in ["parent", "content", "gpu"]:
+                        process_field = processes_field["name"]
+                        for type_field in processes_field["fields"]:
+                            if type_field["name"] == scalar_type:
+                                scalars_fields.append({"scalars": type_field, "process": process_field})
                                 break
 
-    if scalars_field is None:
+    if len(scalars_fields) == 0:
         return
 
-    for scalar in scalars_field.get("fields", {}):
-        if "name" not in scalar:
-            continue
+    for scalars_and_process in scalars_fields:
+        for scalar in scalars_and_process["scalars"].get("fields", {}):
+            scalars_dict = None
+            if "name" not in scalar:
+                continue
 
-        if scalar.get("type", "") == "INTEGER":
-            main_summary_scalars.add(scalar["name"])
-        elif scalar.get("type", "") == "BOOLEAN":
-            main_summary_boolean_scalars.add(scalar["name"])
-        elif scalar.get("type", "") == "RECORD":
-            if scalar["fields"][1]["type"] == "BOOLEAN":
-                main_summary_boolean_record_scalars.add(scalar["name"])
-            else:
-                main_summary_record_scalars.add(scalar["name"])
+            if scalar.get("type", "") == "INTEGER":
+                scalars_dict = main_summary_scalars
+            elif scalar.get("type", "") == "BOOLEAN":
+                scalars_dict = main_summary_boolean_scalars
+            elif scalar.get("type", "") == "RECORD":
+                if scalar["fields"][1]["type"] == "BOOLEAN":
+                    scalars_dict = main_summary_boolean_record_scalars
+                else:
+                    scalars_dict = main_summary_record_scalars
+
+            save_scalars_by_type(
+                scalars_dict,
+                scalar["name"],
+                scalars_and_process["process"]
+            )
 
     # Find the intersection between relevant scalar probes
     # and those that exist in main summary
@@ -390,13 +403,12 @@ def get_scalar_probes(scalar_type):
                 if x.startswith("scalar/")
             ]
         )
+
         return {
-            "scalars": scalar_probes.intersection(main_summary_scalars),
-            "booleans": scalar_probes.intersection(main_summary_boolean_scalars),
-            "keyed": scalar_probes.intersection(main_summary_record_scalars),
-            "keyed_boolean": scalar_probes.intersection(
-                main_summary_boolean_record_scalars
-            ),
+            "scalars": filter_scalars_dict(main_summary_scalars, scalar_probes),
+            "booleans": filter_scalars_dict(main_summary_boolean_scalars, scalar_probes),
+            "keyed": filter_scalars_dict(main_summary_record_scalars, scalar_probes),
+            "keyed_boolean": filter_scalars_dict(main_summary_boolean_record_scalars, scalar_probes),
         }
 
 

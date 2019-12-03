@@ -287,6 +287,17 @@ SELECT
     ssl_handshake_result.key_value AS ssl_handshake_result,
     string_addon_scalars.key_value AS string_addon_scalars,
     uint_addon_scalars.key_value AS uint_addon_scalars
-  )
+  ),
+  CAST(NULL AS STRING) AS experiment_enrollment_id
 FROM
   `moz-fx-data-derived-datasets.telemetry_derived.experiments_v1`
+WHERE
+  submission_date < '2019-12-03'
+UNION ALL
+SELECT
+  submission_date AS submission_date_s3,
+  *
+FROM
+  `moz-fx-data-shared-prod.telemetry_derived.experiments_v1`
+WHERE
+  submission_date >= '2019-12-03'

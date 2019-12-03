@@ -59,6 +59,10 @@
             "fields": [
               {
                 "fields": [
+                  {"type": "INTEGER", "name": "gfx_adapter_ram", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "gfx_display_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "gfx_display_primary_height", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "gfx_display_primary_width", "mode": "NULLABLE"},
                   {"type": "INTEGER", "name": "datasanitization_session_permission_exceptions", "mode": "NULLABLE"},
                   {"type": "INTEGER", "name": "devtools_changesview_copy_rule", "mode": "NULLABLE"},
                   {"type": "INTEGER", "name": "browser_errors_collected_with_stack_count", "mode": "NULLABLE"},
@@ -262,7 +266,8 @@
                   {"type": "BOOLEAN", "name": "preferences_prefs_file_was_invalid", "mode": "NULLABLE"},
                   {"type": "BOOLEAN", "name": "corroborate_system_addons_corrupted", "mode": "NULLABLE"},
                   {"type": "BOOLEAN", "name": "update_fix_permissions_attempted", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "devtools_shadowdom_shadow_root_displayed", "mode": "NULLABLE"}
+                  {"type": "BOOLEAN", "name": "devtools_shadowdom_shadow_root_displayed", "mode": "NULLABLE"},
+                  {"type": "BOOLEAN", "name": "gfx_headless", "mode": "NULLABLE"}
                 ],
                 "type": "RECORD",
                 "name": "scalars",
@@ -271,6 +276,94 @@
             ],
             "type": "RECORD",
             "name": "parent",
+            "mode": "NULLABLE"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {"type": "INTEGER", "name": "browser_feeds_preview_loaded", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "browser_usage_plugin_instantiated", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "gfx_omtp_paint_wait_ratio", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "idb_type_persistent_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "idb_type_temporary_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "mathml_doc_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "media_allowed_autoplay_no_audio_track_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "media_autoplay_would_be_allowed_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "media_autoplay_would_not_be_allowed_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "media_blocked_no_metadata", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "media_blocked_no_metadata_endup_no_audio_track", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "media_page_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "media_page_had_media_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "media_page_had_play_revoked_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "mediarecorder_recording_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "memoryreporter_max_ghost_windows", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "navigator_storage_estimate_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "navigator_storage_persist_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "script_preloader_mainthread_recompile", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "sw_alternative_body_used_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "sw_cors_res_for_so_req_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "sw_synthesized_res_count", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_process_creation_timestamp_inconsistent", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_nicer_stun_retransmits", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_nicer_turn_401s", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_nicer_turn_403s", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_nicer_turn_438s", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_peerconnection_connected", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_created", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_max_life_used", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_max_retx_and_life_used", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_max_retx_used", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_peerconnection_legacy_callback_stats_used", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_peerconnection_promise_and_callback_stats_used", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_peerconnection_promise_stats_used", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "pdf_viewer_fallback_shown", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "pdf_viewer_print", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "pdf_viewer_used", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_disabled_failed", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_disabled_succeeded", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_enabled_failed", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_enabled_succeeded", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "browser_usage_graphite", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_accumulations", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_child_events", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_keyed_accumulations", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_keyed_scalar_actions", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_scalar_actions", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_profile_directory_scans", "mode": "NULLABLE"},
+                  {"type": "BOOLEAN", "name": "encoding_override_used", "mode": "NULLABLE"},
+                  {"type": "BOOLEAN", "name": "images_webp_content_observed", "mode": "NULLABLE"},
+                  {"type": "BOOLEAN", "name": "images_webp_probe_observed", "mode": "NULLABLE"},
+                  {"type": "BOOLEAN", "name": "media_autoplay_default_blocked", "mode": "NULLABLE"}
+                ],
+                "type": "RECORD",
+                "name": "scalars",
+                "mode": "NULLABLE"
+              }
+            ],
+            "type": "RECORD",
+            "name": "content",
+            "mode": "NULLABLE"
+          },
+          {
+            "fields": [
+              {
+                "fields": [
+                  {"type": "INTEGER", "name": "browser_usage_graphite", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_accumulations", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_child_events", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_keyed_accumulations", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_keyed_scalar_actions", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_discarded_scalar_actions", "mode": "NULLABLE"},
+                  {"type": "INTEGER", "name": "telemetry_profile_directory_scans", "mode": "NULLABLE"}
+                ],
+                "type": "RECORD",
+                "name": "scalars",
+                "mode": "NULLABLE"
+              }
+            ],
+            "type": "RECORD",
+            "name": "gpu",
             "mode": "NULLABLE"
           }
         ],

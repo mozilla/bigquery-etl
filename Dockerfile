@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.7
+ARG PYTHON_VERSION=3.8
 
 # build typed-ast in separate stage because it requires gcc and libc-dev
 FROM python:${PYTHON_VERSION}-slim

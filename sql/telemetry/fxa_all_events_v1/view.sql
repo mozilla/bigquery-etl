@@ -13,7 +13,7 @@ WITH
       jsonPayload.fields.os_name,
       jsonPayload.fields.os_version,
       jsonPayload.fields.event_type,
-      JSON_EXTRACT(jsonPayload.fields.event_properties, '$.service') AS service
+      JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
     FROM
       `moz-fx-data-derived-datasets.telemetry.fxa_auth_events_v1`
   ),
@@ -30,7 +30,7 @@ WITH
       CAST(NULL AS STRING),
       CAST(NULL AS STRING),
       jsonPayload.fields.event_type,
-      JSON_EXTRACT(jsonPayload.fields.event_properties, '$.service') AS service
+      JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
     FROM
       `moz-fx-data-derived-datasets.telemetry.fxa_auth_bounce_events_v1`
   ),
@@ -45,7 +45,7 @@ WITH
       jsonPayload.fields.os_name,
       jsonPayload.fields.os_version,
       jsonPayload.fields.event_type,
-      JSON_EXTRACT(jsonPayload.fields.event_properties, '$.service') AS service
+      JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
     FROM
       `moz-fx-data-derived-datasets.telemetry.fxa_content_events_v1`
   ),
@@ -60,7 +60,7 @@ WITH
       CAST(NULL AS STRING) AS os_name,
       CAST(NULL AS STRING) AS os_version,
       jsonPayload.fields.event_type,
-      JSON_EXTRACT(jsonPayload.fields.event_properties, '$.service') AS service
+      JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
     FROM
       `moz-fx-data-derived-datasets.telemetry.fxa_oauth_events_v1`
   )

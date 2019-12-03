@@ -28,7 +28,9 @@ WITH
     CAST(seen_in_tier1_country AS INT64) AS days_seen_in_tier1_country_bits,
     CAST(registered AS INT64) AS days_registered_bits,
     * EXCEPT (submission_date, seen_in_tier1_country, registered, monitor_only),
-    CAST(NOT monitor_only AS INT64) AS days_seen_no_monitor_bits
+    -- The first days with Monitor email engagement events is 2019-11-25;
+    -- adding some extra logic here avoids the need for a backfill.
+    CAST(IF(submission_date < '2019-11-25', TRUE, monitor_only = false) AS INT64) AS days_seen_no_monitor_bits
   FROM
     fxa_users_daily_v1
   WHERE
@@ -36,6 +38,7 @@ WITH
   _previous AS (
   SELECT
     * EXCEPT (submission_date)
+    REPLACE (IF(submission_date < '2019-11-25', days_seen_bits, days_seen_no_monitor_bits) AS days_seen_no_monitor_bits)
   FROM
     fxa_users_last_seen_raw_v1
   WHERE

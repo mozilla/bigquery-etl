@@ -12,8 +12,6 @@ RUN apt-get update -qqy && apt-get install -qqy bash python
 COPY --from=google/cloud-sdk:alpine /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=0 /usr/local /usr/local
-RUN mkdir -p /airflow/xcom && touch /airflow/xcom/return.json && \
-    chmod +w /airflow/xcom/return.json
 WORKDIR /app
 COPY .bigqueryrc /root/
 COPY . .

@@ -136,7 +136,10 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
 
     final_values AS (
       SELECT
-        STRUCT<key STRING, value FLOAT64>(k, 1.0 * v / total_count) AS record
+        STRUCT<key STRING, value FLOAT64>(
+          k,
+          COALESCE(SAFE_DIVIDE(1.0 * v, total_count), 0)
+        ) AS record
       FROM
         summed_counts
       CROSS JOIN

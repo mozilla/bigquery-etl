@@ -292,7 +292,7 @@ SELECT
 FROM
   `moz-fx-data-derived-datasets.telemetry_derived.experiments_v1`
 WHERE
-  submission_date < '2019-12-03'
+  submission_date < '2019-12-04'
 UNION ALL
 SELECT
   submission_date AS submission_date_s3,
@@ -300,4 +300,4 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.experiments_v1`
 WHERE
-  submission_date >= '2019-12-03'
+  submission_date >= '2019-12-04'

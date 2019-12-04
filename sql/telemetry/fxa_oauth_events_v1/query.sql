@@ -22,12 +22,19 @@ WHERE
   (jsonPayload.type LIKE '%.amplitudeEvent' OR jsonPayload.fields.op = 'amplitudeEvent')
   AND jsonPayload.fields.event_type IS NOT NULL
   AND jsonPayload.fields.user_id IS NOT NULL
-  AND (_oauth_client_id IS NULL
-    OR _oauth_client_id NOT IN (
-      -- We filter out events associated with high-volume oauth client IDs that
-      -- are redundant with cert_signed events;
-      -- see https://github.com/mozilla/bigquery-etl/issues/348
+  AND (
+    -- We filter out events associated with high-volume oauth client IDs that
+    -- are redundant with cert_signed events;
+    -- see https://github.com/mozilla/bigquery-etl/issues/348
+    _oauth_client_id NOT IN (
       '3332a18d142636cb', -- fennec sync
       '5882386c6d801776', -- desktop sync
       '1b1a3e44c54fbb58') -- ios sync
-      )
+    -- We do want to let through some desktop sync events
+    -- see https://github.com/mozilla/bigquery-etl/issues/573
+    OR (_oauth_client_id = '5882386c6d801776'
+        AND jsonPayload.fields.event_type NOT IN (
+          'fxa_activity - access_token_checked',
+          'fxa_activity - access_token_created' ))
+    OR _oauth_client_id IS NULL
+  )

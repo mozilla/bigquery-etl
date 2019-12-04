@@ -1,3 +1,7 @@
+-- Return a stratified sample of documents within the payload_bytes_decoded and
+-- payload_bytes_error tables. This query can be used for testing the expected
+-- behavior of the ingestion pipeline and for validating changes when updating
+-- schemas.
 WITH extract_decoded AS (
   SELECT
     metadata.document_namespace,
@@ -8,8 +12,7 @@ WITH extract_decoded AS (
   FROM
     `moz-fx-data-shar-nonprod-efed.payload_bytes_decoded.*`
   WHERE
-    submission_timestamp
-> TIMESTAMP_SUB(current_timestamp, INTERVAL 1 day)
+    submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY)
 ),
 extract_error AS (
   SELECT
@@ -21,13 +24,24 @@ extract_error AS (
   FROM
     `moz-fx-data-shar-nonprod-efed.payload_bytes_error.*`
   WHERE
-    submission_timestamp
-> TIMESTAMP_SUB(current_timestamp, INTERVAL 1 day)
+    submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY)
 AND error_type = 'ParsePayload'
+),
+extracted AS (
+  SELECT
+    *
+  FROM
+    extract_decoded
+  UNION ALL
+  SELECT
+    *
+  FROM
+    extract_error
 )
 SELECT
-  n_samples,
-  document_is_decoded,
+  CURRENT_TIMESTAMP() AS submission_timestamp,
+  ARRAY_LENGTH(samples) AS n_samples,
+  document_decoded,
   sample.*
 FROM
   (
@@ -35,35 +49,22 @@ FROM
       document_namespace,
       document_type,
       document_version,
-      BYTE_LENGTH(error_message) = 0 AS document_is_decoded,
+      BYTE_LENGTH(error_message) = 0 AS document_decoded,
       ARRAY_AGG(
-        e
+        extracted
         ORDER BY
-          rand()
+          RAND()
         LIMIT
           1000
-      ) samples, COUNT(*) AS n_samples
+      ) samples
     FROM
-      (
-        SELECT
-          *
-        FROM
-          extract_decoded
-        UNION ALL
-        SELECT
-          *
-        FROM
-          extract_error
-      ) e
+      extracted
     GROUP BY
       document_namespace,
       document_type,
       document_version,
-      document_is_decoded
+      document_decoded
     HAVING
-      n_samples
-  > 10
-ORDER BY
-  n_samples
+      ARRAY_LENGTH(samples) > 10
 ),
 UNNEST(samples) sample

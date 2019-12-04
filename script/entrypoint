@@ -29,9 +29,11 @@ elif [ "$1" = "query" ]; then
     # to
     #     bq query [options] < FILE
     exec bq "${@:1:$#-1}" < "${@: -1}"
-else
+elif ["$XCOM_PUSH" = "True"]; then
     # KubernetesPodOperator will extract the contents of /airflow/xcom/return.json as an xcom
     # if the xcom_push parameter is true
-    mkdir -p /airflow/xcom && touch /airflow/xcom/return.json
-    exec "$@" > /airflow/xcom/return.json
+    mkdir -p /airflow/xcom/ && touch /airflow/xcom/return.json
+    exec "$@" | tee /airflow/xcom/return.json
+else
+    exec "$@"
 fi

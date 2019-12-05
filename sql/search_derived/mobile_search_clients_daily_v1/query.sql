@@ -150,10 +150,17 @@ combined_search_clients AS (
 SELECT
   submission_date,
   client_id,
-  normalized_search_key[SAFE_OFFSET(0)] AS engine,
-  normalized_search_key[SAFE_OFFSET(1)] AS source,
+  IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(0)]) AS engine,
+  IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(1)]) AS source,
   app_name,
-  SUM(IF(ARRAY_LENGTH(normalized_search_key) = 0, 0, search_count)) AS search_count,
+  SUM(
+    IF(
+      ARRAY_LENGTH(normalized_search_key) = 0
+      OR search_count > 10000,
+      0,
+      search_count
+    )
+  ) AS search_count,
   udf_mode_last(ARRAY_AGG(country)) AS country,
   udf_mode_last(ARRAY_AGG(locale)) AS locale,
   udf_mode_last(ARRAY_AGG(app_version)) AS app_version,

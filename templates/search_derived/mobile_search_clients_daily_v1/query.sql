@@ -60,10 +60,10 @@ fenix_flattened_searches AS (
     *,
     normalize_fenix_search_key(searches.key) AS normalized_search_key,
     searches.value AS search_count,
-    UNIX_DATE(udf_iso8601_str_to_date(client_info.first_run_date)) AS profile_creation_date,
+    UNIX_DATE(udf_parse_iso8601_date(client_info.first_run_date)) AS profile_creation_date,
     SAFE.DATE_DIFF(
-      udf_iso8601_str_to_date(ping_info.end_time),
-      udf_iso8601_str_to_date(client_info.first_run_date),
+      udf_parse_iso8601_date(ping_info.end_time),
+      udf_parse_iso8601_date(client_info.first_run_date),
       DAY
     ) AS profile_age_in_days
   FROM
@@ -83,62 +83,72 @@ combined_search_clients AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_id,
-    normalized_search_key[SAFE_OFFSET(0)] AS engine,
-    normalized_search_key[SAFE_OFFSET(1)] AS source,
-    SUM(IF(ARRAY_LENGTH(normalized_search_key) = 0, 0, search_count)) AS search_count,
-    udf_mode_last(ARRAY_AGG(normalized_country_code)) AS country,
-    udf_mode_last(ARRAY_AGG(locale)) AS locale,
+    normalized_search_key,
+    search_count,
+    normalized_country_code AS country,
+    locale,
     normalized_app_name AS app_name,
-    udf_mode_last(ARRAY_AGG(metadata.uri.app_version)) AS app_version,
-    udf_mode_last(ARRAY_AGG(normalized_channel)) AS channel,
-    udf_mode_last(ARRAY_AGG(normalized_os)) AS os,
-    udf_mode_last(ARRAY_AGG(normalized_os_version)) AS os_version,
-    udf_mode_last(ARRAY_AGG(default_search)) AS default_search_engine,
+    metadata.uri.app_version AS app_version,
+    normalized_channel AS channel,
+    normalized_os AS os,
+    normalized_os_version AS os_version,
+    default_search AS default_search_engine,
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
-    udf_mode_last(ARRAY_AGG(distribution_id)) AS distribution_id,
-    udf_mode_last(ARRAY_AGG(profile_date)) AS profile_creation_date,
-    udf_mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
-    udf_mode_last(ARRAY_AGG(sample_id)) AS sample_id
+    distribution_id,
+    profile_date AS profile_creation_date,
+    profile_age_in_days,
+    sample_id
   FROM
     core_flattened_searches
-  GROUP BY
-    client_id,
-    submission_date,
-    engine,
-    source,
-    app_name
   UNION ALL
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
-    normalized_search_key[SAFE_OFFSET(0)] AS engine,
-    normalized_search_key[SAFE_OFFSET(1)] AS source,
-    SUM(IF(ARRAY_LENGTH(normalized_search_key) = 0, 0, search_count)) AS search_count,
-    udf_mode_last(ARRAY_AGG(normalized_country_code)) AS country,
-    udf_mode_last(ARRAY_AGG(locale)) AS locale,
+    normalized_search_key,
+    search_count,
+    normalized_country_code AS country,
+    locale,
     'Fenix' AS app_name,
-    udf_mode_last(ARRAY_AGG(client_info.app_display_version)) AS app_version,
-    udf_mode_last(ARRAY_AGG(normalized_channel)) AS channel,
-    udf_mode_last(ARRAY_AGG(normalized_os)) AS os,
-    udf_mode_last(ARRAY_AGG(client_info.android_sdk_version)) AS os_version,
-    udf_mode_last(ARRAY_AGG(metrics.string.search_default_engine_code)) AS default_search_engine,
-    udf_mode_last(ARRAY_AGG(metrics.string.search_default_engine_submission_url)) AS default_search_engine_submission_url,
+    client_info.app_display_version AS app_version,
+    normalized_channel AS channel,
+    normalized_os AS os,
+    client_info.android_sdk_version AS os_version,
+    metrics.string.search_default_engine_code AS default_search_engine,
+    metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     CAST(NULL AS STRING) AS distribution_id,
-    udf_mode_last(ARRAY_AGG(profile_creation_date)) AS profile_creation_date,
-    udf_mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
-    udf_mode_last(ARRAY_AGG(sample_id)) AS sample_id
+    profile_creation_date,
+    profile_age_in_days,
+    sample_id
   FROM
     fenix_flattened_searches
-  GROUP BY
-    client_id,
-    submission_date,
-    engine,
-    source
 )
 
 SELECT
-  *
+  submission_date,
+  client_id,
+  normalized_search_key[SAFE_OFFSET(0)] AS engine,
+  normalized_search_key[SAFE_OFFSET(1)] AS source,
+  app_name,
+  SUM(IF(ARRAY_LENGTH(normalized_search_key) = 0, 0, search_count)) AS search_count,
+  udf_mode_last(ARRAY_AGG(country)) AS country,
+  udf_mode_last(ARRAY_AGG(locale)) AS locale,
+  udf_mode_last(ARRAY_AGG(app_version)) AS app_version,
+  udf_mode_last(ARRAY_AGG(channel)) AS channel,
+  udf_mode_last(ARRAY_AGG(os)) AS os,
+  udf_mode_last(ARRAY_AGG(os_version)) AS os_version,
+  udf_mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
+  udf_mode_last(ARRAY_AGG(default_search_engine_submission_url)) AS default_search_engine_submission_url,
+  udf_mode_last(ARRAY_AGG(distribution_id)) AS distribution_id,
+  udf_mode_last(ARRAY_AGG(profile_creation_date)) AS profile_creation_date,
+  udf_mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
+  udf_mode_last(ARRAY_AGG(sample_id)) AS sample_id
 FROM
   combined_search_clients
 WHERE
   submission_date = @submission_date
+GROUP BY
+  submission_date,
+  client_id,
+  engine,
+  source,
+  app_name

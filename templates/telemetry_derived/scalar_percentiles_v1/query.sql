@@ -30,7 +30,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
@@ -56,7 +56,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
@@ -81,7 +81,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
@@ -106,7 +106,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
@@ -131,7 +131,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
@@ -155,7 +155,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
@@ -179,7 +179,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
@@ -202,7 +202,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
@@ -225,7 +225,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
@@ -248,7 +248,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    -1 AS total_users,
+    COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates

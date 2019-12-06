@@ -5,7 +5,7 @@ This repository uses `pytest`:
 
 ```
 # create a venv
-python3.7 -m venv venv/
+python3.8 -m venv venv/
 
 # install requirements
 venv/bin/pip install -r requirements.txt

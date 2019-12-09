@@ -11,10 +11,11 @@ RETURNS FLOAT64 AS (
 );
 
 CREATE TEMP FUNCTION udf_boolean_buckets(
-  scalar_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>)
+  scalar_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, process STRING, agg_type STRING, value FLOAT64>>)
   RETURNS ARRAY<STRUCT<metric STRING,
     metric_type STRING,
     key STRING,
+    process STRING,
     agg_type STRING,
     bucket STRING>> AS (
     (
@@ -23,6 +24,7 @@ CREATE TEMP FUNCTION udf_boolean_buckets(
           metric,
           metric_type,
           key,
+          process,
           agg_type,
           CASE agg_type
             WHEN 'true' THEN value ELSE 0
@@ -38,6 +40,7 @@ CREATE TEMP FUNCTION udf_boolean_buckets(
           metric,
           metric_type,
           key,
+          process,
           '' AS agg_type,
           SUM(bool_true) AS bool_true,
           SUM(bool_false) AS bool_false
@@ -57,7 +60,7 @@ CREATE TEMP FUNCTION udf_boolean_buckets(
         FROM summed_bools
         WHERE bool_true > 0 OR bool_false > 0)
 
-      SELECT ARRAY_AGG((metric, metric_type, key, agg_type, bucket))
+      SELECT ARRAY_AGG((metric, metric_type, key, process, agg_type, bucket))
       FROM booleans
     )
 );
@@ -83,6 +86,7 @@ bucketed_scalars AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type,
     SAFE_CAST(udf_bucket(SAFE_CAST(value AS FLOAT64)) AS STRING) AS bucket
   FROM
@@ -109,6 +113,7 @@ SELECT
   metric,
   metric_type,
   key,
+  process,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   bucket,
@@ -123,5 +128,6 @@ GROUP BY
   metric,
   metric_type,
   key,
+  process,
   client_agg_type,
   bucket

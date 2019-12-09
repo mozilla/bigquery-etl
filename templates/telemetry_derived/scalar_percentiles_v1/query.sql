@@ -28,6 +28,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -42,6 +43,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type
 
   UNION ALL
@@ -54,6 +56,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -67,6 +70,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type
 
   UNION ALL
@@ -79,6 +83,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -92,6 +97,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type
 
   UNION ALL
@@ -104,6 +110,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -117,6 +124,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type
 
   UNION ALL
@@ -129,6 +137,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -141,6 +150,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type
 
   UNION ALL
@@ -153,6 +163,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -165,6 +176,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type
 
   UNION ALL
@@ -177,6 +189,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -188,6 +201,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type
 
   UNION ALL
@@ -200,6 +214,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -211,6 +226,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type
 
   UNION ALL
@@ -223,6 +239,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -234,6 +251,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type
 
   UNION ALL
@@ -246,6 +264,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     COUNT(*) AS total_users,
@@ -256,6 +275,7 @@ percentiles AS (
     metric,
     metric_type,
     key,
+    process,
     client_agg_type)
 
 SELECT *

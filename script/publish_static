@@ -22,13 +22,16 @@ def parse_args():
     return parser.parse_args()
 
 
-def load_table(data_file_path, schema_file_path=None, description_file_path=None):
+def load_table(
+    data_file_path, schema_file_path=None, description_file_path=None, project=None
+):
     client = bigquery.Client()
 
+    # Assume path is .../dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split("/")
     dataset_id = path_split[-3]
     table_id = path_split[-2]
-    dataset_ref = client.dataset(dataset_id)
+    dataset_ref = client.dataset(dataset_id, project=project)
     table_ref = dataset_ref.table(table_id)
 
     job_config = bigquery.LoadJobConfig(
@@ -36,7 +39,6 @@ def load_table(data_file_path, schema_file_path=None, description_file_path=None
         skip_leading_rows=1,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
-
     with open(data_file_path, "rb") as data_file:
         if schema_file_path is None:
             fields = data_file.readline().decode().strip().split(",")
@@ -87,7 +89,10 @@ def main():
                     else None
                 )
                 load_table(
-                    os.path.join(root, file), schema_file_path, description_file_path
+                    os.path.join(root, file),
+                    schema_file_path,
+                    description_file_path,
+                    args.project_id,
                 )
 
 

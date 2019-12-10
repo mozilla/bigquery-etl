@@ -50,9 +50,10 @@ flattened_metrics AS
     value.key AS key,
     value.value AS value
   FROM grouped_metrics
-  CROSS JOIN unnest(metrics) AS metrics,
+  CROSS JOIN UNNEST(metrics) AS metrics,
   UNNEST(metrics.value) AS value),
 
+-- Using `min` for when `agg_type` is `count` returns null when all rows are null
 aggregated AS (
   SELECT
       submission_date,

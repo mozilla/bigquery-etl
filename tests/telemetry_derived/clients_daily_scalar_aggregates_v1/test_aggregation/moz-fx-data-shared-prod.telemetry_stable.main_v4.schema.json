@@ -59,6 +59,7 @@
             "fields": [
               {
                 "fields": [
+                  {"type": "INTEGER", "name": "datasanitization_session_permission_exceptions", "mode": "NULLABLE"},
                   {"type": "INTEGER", "name": "devtools_changesview_copy_rule", "mode": "NULLABLE"},
                   {"type": "INTEGER", "name": "browser_errors_collected_with_stack_count", "mode": "NULLABLE"},
                   {"type": "INTEGER", "name": "update_session_intervals_download_internal_partial", "mode": "NULLABLE"},

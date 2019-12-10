@@ -265,6 +265,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -295,6 +296,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -324,6 +326,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -353,6 +356,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -382,6 +386,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -410,6 +415,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -438,6 +444,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -465,6 +472,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -492,6 +500,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
@@ -519,6 +528,7 @@ SELECT
   key,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(udf_dedupe_map_sum(
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates

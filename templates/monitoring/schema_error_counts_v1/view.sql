@@ -8,7 +8,7 @@ OR REPLACE VIEW `moz-fx-data-shared-prod.monitoring.schema_error_counts_v1` AS W
     document_version,
     error_message
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_error.*`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_*`
   WHERE
     submission_timestamp < TIMESTAMP_TRUNC(current_timestamp, day)
     AND submission_timestamp > TIMESTAMP_SUB(

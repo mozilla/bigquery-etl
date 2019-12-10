@@ -12,7 +12,7 @@ WITH error_examples AS (
     `moz-fx-data-shared-prod.udf_js.gunzip`(ANY_VALUE(payload)) AS sample_payload,
     COUNT(*) AS error_count
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_error.structured`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
   WHERE
     submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 * 24 HOUR)
   GROUP BY hour, document_namespace, document_type, document_version, error_type, error_message

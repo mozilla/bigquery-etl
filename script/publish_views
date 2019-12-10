@@ -9,7 +9,12 @@ import os
 from google.cloud import bigquery
 import sqlparse
 
-VIEWS_TO_AUTHORIZE = ("sql/monitoring/payload_bytes_error_structured/view.sql",)
+VIEWS_TO_AUTHORIZE = (
+    "sql/monitoring/payload_bytes_error_structured/view.sql",
+    "sql/monitoring/payload_bytes_error_telemetry/view.sql",
+    "sql/monitoring/payload_bytes_raw_structured/view.sql",
+    "sql/monitoring/payload_bytes_raw_telemetry/view.sql",
+)
 
 
 def process_file(client, args, filepath):

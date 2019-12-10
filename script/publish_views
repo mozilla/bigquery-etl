@@ -9,6 +9,8 @@ import os
 from google.cloud import bigquery
 import sqlparse
 
+VIEWS_TO_AUTHORIZE = ("sql/monitoring/payload_bytes_error_structured/view.sql",)
+
 
 def process_file(client, args, filepath):
     with open(filepath) as f:
@@ -30,6 +32,25 @@ def process_file(client, args, filepath):
         else:
             query_job.result()
             print(f"Published view {target_view}")
+            # Authorize view if necessary; see
+            # https://cloud.google.com/bigquery/docs/share-access-views
+            if filepath in VIEWS_TO_AUTHORIZE:
+                view = client.get_table(target_view.replace("`", ""))
+                source_datasets = set(
+                    ".".join([t.project, t.dataset_id])
+                    for t in query_job.referenced_tables
+                )
+                for d in source_datasets:
+                    source_dataset = client.get_dataset(d)
+                    access_entries = source_dataset.access_entries
+                    access_entries.append(
+                        bigquery.AccessEntry(None, "view", view.reference.to_api_repr())
+                    )
+                    source_dataset.access_entries = access_entries
+                    source_dataset = client.update_dataset(
+                        source_dataset, ["access_entries"]
+                    )
+                print(f"Authorized view {target_view}")
 
 
 def main():
@@ -47,6 +68,14 @@ def main():
         ),
     )
     parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
+    parser.add_argument(
+        "--authorize",
+        action="store_true",
+        help=(
+            "If enabled, process views that need authorization "
+            "(requires admin privs on the source datasets)"
+        ),
+    )
     parser.add_argument(
         "--dry_run",
         "--dry-run",
@@ -67,7 +96,9 @@ def main():
         if os.path.isdir(target):
             for root, dirs, files in os.walk(target):
                 if "view.sql" in files:
-                    process_file(client, args, os.path.join(root, "view.sql"))
+                    filepath = os.path.join(root, "view.sql")
+                    if args.authorize or filepath not in VIEWS_TO_AUTHORIZE:
+                        process_file(client, args, filepath)
         else:
             process_file(client, args, target)
 

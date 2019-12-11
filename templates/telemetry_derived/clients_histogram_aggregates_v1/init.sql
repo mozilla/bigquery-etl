@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS
       metric_type STRING,
       key STRING,
       agg_type STRING,
-      aggregates STRUCT<key_val ARRAY<STRUCT<key STRING, value INT64>>>
+      aggregates ARRAY<STRUCT<key STRING, value INT64>>
     >>
 )
 PARTITION BY RANGE_BUCKET(app_version, GENERATE_ARRAY(30, 200, 1))

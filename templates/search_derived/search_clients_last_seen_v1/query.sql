@@ -91,33 +91,33 @@ WITH
   ),
 
   _current AS (
-  SELECT
-    *,
-    -- In this raw table, we capture the history of activity over the past
-    -- 365 days for each usage criterion as an array of bytes. The
-    -- rightmost bit represents whether the user was active in the current day.
-    udf_bool_to_365_bits(TRUE) AS days_seen_bytes,
-    udf_bool_to_365_bits(total_searches > 0) AS days_searched_bytes,
-    udf_bool_to_365_bits(tagged_searches > 0) AS days_tagged_searched_bytes,
-    udf_bool_to_365_bits(search_with_ads > 0) AS days_searched_with_ads_bytes,
-    udf_bool_to_365_bits(ad_click > 0) AS days_clicked_ads_bytes,
-    udf_int_to_365_bits(
-      udf_28_bits_from_days_since_created_profile(
-        DATE_DIFF(@submission_date,
-                  SAFE.DATE_FROM_UNIX_DATE(profile_creation_date),
-                  DAY))) AS days_created_profile_bytes
-  FROM
-    _grouped),
+    SELECT
+      *,
+      -- In this raw table, we capture the history of activity over the past
+      -- 365 days for each usage criterion as an array of bytes. The
+      -- rightmost bit represents whether the user was active in the current day.
+      udf_bool_to_365_bits(TRUE) AS days_seen_bytes,
+      udf_bool_to_365_bits(total_searches > 0) AS days_searched_bytes,
+      udf_bool_to_365_bits(tagged_searches > 0) AS days_tagged_searched_bytes,
+      udf_bool_to_365_bits(search_with_ads > 0) AS days_searched_with_ads_bytes,
+      udf_bool_to_365_bits(ad_click > 0) AS days_clicked_ads_bytes,
+      udf_int_to_365_bits(
+        udf_28_bits_from_days_since_created_profile(
+          DATE_DIFF(@submission_date,
+                    SAFE.DATE_FROM_UNIX_DATE(profile_creation_date),
+                    DAY))) AS days_created_profile_bytes
+    FROM
+      _grouped),
 
   _previous AS (
-  SELECT
-    * EXCEPT (submission_date)
-  FROM
-    search_clients_last_seen_v1
-  WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-    -- Filter out rows from yesterday that have now fallen outside the 365-day window.
-    AND BIT_COUNT(udf_shift_365_bits_one_day(days_seen_bytes)) > 0
+    SELECT
+      * EXCEPT (submission_date)
+    FROM
+      search_clients_last_seen_v1
+    WHERE
+      submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+      -- Filter out rows from yesterday that have now fallen outside the 365-day window.
+      AND BIT_COUNT(udf_shift_365_bits_one_day(days_seen_bytes)) > 0)
 
 SELECT
   @submission_date AS submission_date,

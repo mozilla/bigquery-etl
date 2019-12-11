@@ -1,7 +1,6 @@
 [
-  {"type":"DATE","name":"submission_date_s3","mode":"REQUIRED"},
+  {"type":"DATE","name":"submission_date","mode":"REQUIRED"},
   {"type":"STRING","name":"client_id","mode":"NULLABLE"},
-  {"type":"STRING","name":"submission_date","mode":"NULLABLE"},
   {"type":"STRING","name":"engine","mode":"NULLABLE"},
   {"type":"STRING","name":"source","mode":"NULLABLE"},
   {"type":"STRING","name":"country","mode":"NULLABLE"},

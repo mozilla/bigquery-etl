@@ -49,6 +49,7 @@ CREATE TEMP FUNCTION udf_normalize_histograms (
     metric STRING,
     metric_type STRING,
     key STRING,
+    process STRING,
     agg_type STRING,
     aggregates ARRAY<STRUCT<key STRING, value INT64>>>>)
 RETURNS ARRAY<STRUCT<
@@ -59,6 +60,7 @@ RETURNS ARRAY<STRUCT<
   metric STRING,
   metric_type STRING,
   key STRING,
+  process STRING,
   agg_type STRING,
   aggregates ARRAY<STRUCT<key STRING, value FLOAT64>>>> AS (
 (
@@ -71,11 +73,12 @@ RETURNS ARRAY<STRUCT<
         metric,
         metric_type,
         key,
+        process,
         agg_type,
         udf_normalized_sum(aggregates) AS aggregates
       FROM UNNEST(arrs))
 
-    SELECT ARRAY_AGG((first_bucket, last_bucket, num_buckets, latest_version, metric, metric_type, key, agg_type, aggregates))
+    SELECT ARRAY_AGG((first_bucket, last_bucket, num_buckets, latest_version, metric, metric_type, key, process, agg_type, aggregates))
     FROM normalized
 ));
 
@@ -102,6 +105,7 @@ unnested AS (
     latest_version,
     metric,
     metric_type,
+    process,
     agg_type,
     histogram_aggregates.key AS key,
     aggregates.key AS bucket,
@@ -121,6 +125,7 @@ SELECT
   metric,
   metric_type,
   key,
+  process,
   agg_type,
   STRUCT<key STRING, value FLOAT64>(
     CAST(bucket AS STRING),
@@ -138,5 +143,6 @@ GROUP BY
   metric,
   metric_type,
   key,
+  process,
   agg_type,
   bucket

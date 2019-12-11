@@ -1,4 +1,11 @@
 CREATE TEMP FUNCTION
+  udf_28_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
+  IF
+    (days_since_created_profile BETWEEN 0
+      AND 6,
+      1 << days_since_created_profile,
+      0));
+CREATE TEMP FUNCTION
   udf_array_drop_first_and_append(arr ANY TYPE, append ANY TYPE) AS (
     ARRAY_CONCAT(
       ARRAY(
@@ -6,9 +13,9 @@ CREATE TEMP FUNCTION
         FROM UNNEST(arr) AS v WITH OFFSET off
         WHERE off > 0
         ORDER BY off ASC),
-      ARRAY [append]));
+      [append]));
 CREATE TEMP FUNCTION
-  udf_vector_add(a ARRAY<INT64>, b ARRAY<INT64>) AS ((
+  udf_vector_add(a ARRAY<INT64>, b ARRAY<INT64>) AS (ARRAY(
     with a_unnested AS (
       SELECT _a, _a_off
       FROM UNNEST(a) AS _a WITH OFFSET _a_off
@@ -17,11 +24,12 @@ CREATE TEMP FUNCTION
       FROM UNNEST(b) AS _b WITH OFFSET _b_off
     )
 
-    SELECT ARRAY_AGG(COALESCE(_a + _b, _a, _b) ORDER BY COALESCE(_a_off, _b_off) ASC)
+    SELECT COALESCE(_a + _b, _a, _b)
     FROM a_unnested
     FULL OUTER JOIN b_unnested
       ON _a_off = _b_off
-    ));
+    ORDER BY COALESCE(_a_off, _b_off) ASC
+  ));
 CREATE TEMP FUNCTION
   udf_add_monthly_engine_searches(prev STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>,
                            curr STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>,
@@ -41,35 +49,32 @@ CREATE TEMP FUNCTION
     )
 ));
 CREATE TEMP FUNCTION
-  udf_zeroed_array(len INT64) AS (
-    ARRAY(
-      SELECT 0
-      FROM UNNEST(generate_array(1, len))));
-CREATE TEMP FUNCTION  udf_engine_searches_struct() AS (
+  udf_12_zeroes() AS ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+CREATE TEMP FUNCTION  udf_new_monthly_engine_searches_struct() AS (
   STRUCT(
-    udf_zeroed_array(12) AS total_searches,
-    udf_zeroed_array(12) AS tagged_searches,
-    udf_zeroed_array(12) AS search_with_ads,
-    udf_zeroed_array(12) AS ad_click
+    udf_12_zeroes() AS total_searches,
+    udf_12_zeroes() AS tagged_searches,
+    udf_12_zeroes() AS search_with_ads,
+    udf_12_zeroes() AS ad_click
   )
 );
 CREATE TEMP FUNCTION
   udf_add_monthly_searches(prev ARRAY<STRUCT<key STRING, value STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>>>,
                            curr ARRAY<STRUCT<key STRING, value STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>>>,
-                           submission_date DATE) AS ((
+                           submission_date DATE) AS (ARRAY(
   WITH prev_tbl AS (
     SELECT *
-    FROM UNNEST(prev) AS p
+    FROM UNNEST(prev)
   )
 
-  SELECT ARRAY_AGG(
+  SELECT
     STRUCT(
       key,
       udf_add_monthly_engine_searches(
-        COALESCE(p.value, udf_engine_searches_struct()),
-        COALESCE(c.value, udf_engine_searches_struct()),
+        COALESCE(p.value, udf_new_monthly_engine_searches_struct()),
+        COALESCE(c.value, udf_new_monthly_engine_searches_struct()),
         submission_date) AS value
-    ))
+    )
   FROM
       UNNEST(curr) AS c
   FULL OUTER JOIN
@@ -78,7 +83,7 @@ CREATE TEMP FUNCTION
 
 ));
 CREATE TEMP FUNCTION
-  udf_zeroed_array_with_last_val(val INT64)  AS (
+  udf_array_11_zeroes_then(val INT64)  AS (
     ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, val]);
 CREATE TEMP FUNCTION
   udf_aggregate_search_map(engine_searches_list ANY TYPE)
@@ -87,10 +92,10 @@ CREATE TEMP FUNCTION
         SELECT AS STRUCT
           v.key,
           STRUCT(
-            udf_zeroed_array_with_last_val(SUM(v.value.total_searches)) AS total_searches,
-            udf_zeroed_array_with_last_val(SUM(v.value.tagged_searches)) AS tagged_searches,
-            udf_zeroed_array_with_last_val(SUM(v.value.search_with_ads)) AS search_with_ads,
-            udf_zeroed_array_with_last_val(SUM(v.value.ad_click)) AS ad_click
+            udf_array_11_zeroes_then(SUM(v.value.total_searches)) AS total_searches,
+            udf_array_11_zeroes_then(SUM(v.value.tagged_searches)) AS tagged_searches,
+            udf_array_11_zeroes_then(SUM(v.value.search_with_ads)) AS search_with_ads,
+            udf_array_11_zeroes_then(SUM(v.value.ad_click)) AS ad_click
           ) AS value
         FROM
           UNNEST(engine_searches_list) AS v
@@ -99,83 +104,44 @@ CREATE TEMP FUNCTION
     )
 );
 CREATE TEMP FUNCTION
-  udf_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
-  IF
-    (days_since_created_profile BETWEEN 0
-      AND 6,
-      1 << days_since_created_profile,
-      0));
-CREATE TEMP FUNCTION
-  udf_zeroed_364_days_active_1_bytes() AS (
+  udf_one_as_365_bits() AS (
     CONCAT(
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x01'));
+        REPEAT(b'\x00', 45),
+        b'\x01'));
 CREATE TEMP FUNCTION
-  udf_zeroed_365_days_bytes() AS (
+  udf_zero_as_365_bits() AS (
+    REPEAT(b'\x00', 46));
+CREATE TEMP FUNCTION
+  udf_bool_to_365_bits(val BOOLEAN) AS (
+    IF(val, udf_one_as_365_bits(), udf_zero_as_365_bits()));
+CREATE TEMP FUNCTION
+  udf_bitmask_365() AS (
     CONCAT(
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00\x00\x00',
-        b'\x00\x00'));
+        b'\x1F',
+        REPEAT(b'\xFF', 45)));
 CREATE TEMP FUNCTION
-  udf_bool_to_bytes(val BOOLEAN) AS (
-    IF(COALESCE(val, FALSE), udf_zeroed_364_days_active_1_bytes(), udf_zeroed_365_days_bytes()));
+  udf_shift_365_bits_one_day(x BYTES) AS (COALESCE(x << 1 & udf_bitmask_365(), udf_zero_as_365_bits()));
 CREATE TEMP FUNCTION
-  udf_bytesmask_365_days() AS (
-    CONCAT(
-        b'\x1F\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF\xFF\xFF',
-        b'\xFF\xFF'));
-CREATE TEMP FUNCTION
-  udf_shift_bytes_one_day(x BYTES) AS (COALESCE(x << 1 & udf_bytesmask_365_days(), udf_zeroed_365_days_bytes()));
-CREATE TEMP FUNCTION
-  udf_coalesce_adjacent_days_bytes(prev BYTES, curr BYTES) AS (
+  udf_coalesce_adjacent_days_365_bits(prev BYTES, curr BYTES) AS (
     COALESCE(
-        NULLIF(udf_shift_bytes_one_day(prev), udf_zeroed_365_days_bytes()),
+        NULLIF(udf_shift_365_bits_one_day(prev), udf_zero_as_365_bits()),
         curr,
-        udf_zeroed_365_days_bytes()
+        udf_zero_as_365_bits()
     ));
 CREATE TEMP FUNCTION
-  udf_combine_adjacent_days_bytes(prev BYTES, curr BYTES) AS (
-    udf_shift_bytes_one_day(prev) | COALESCE(curr, udf_zeroed_365_days_bytes()));
+  udf_combine_adjacent_days_365_bits(prev BYTES, curr BYTES) AS (
+    udf_shift_365_bits_one_day(prev) | COALESCE(curr, udf_zero_as_365_bits()));
 CREATE TEMP FUNCTION
   udf_int_to_hex_string(value INT64) AS ((
     SELECT STRING_AGG(
-        SPLIT('0123456789ABCDEF','')[OFFSET((value >> (bits*4)) & 0xF)], ''
-        ORDER BY bits DESC
+        SPLIT('0123456789ABCDEF','')[OFFSET((value >> (nibbles*4)) & 0xF)], ''
+        ORDER BY nibbles DESC
     )
-    FROM UNNEST(generate_array(0, 91)) AS bits
+    FROM UNNEST(generate_array(0, 16)) AS nibbles
 ));
 CREATE TEMP FUNCTION
-  udf_int_to_bytes(value INT64) AS (
-   FROM_HEX(udf_int_to_hex_string(value)));
+  udf_int_to_365_bits(value INT64) AS (
+   CONCAT(REPEAT(b'\x00', 37), FROM_HEX(udf_int_to_hex_string(value))));
 CREATE TEMP FUNCTION
   udf_mode_last(list ANY TYPE) AS ((
     SELECT
@@ -292,13 +258,13 @@ WITH
     -- In this raw table, we capture the history of activity over the past
     -- 365 days for each usage criterion as an array of bytes. The
     -- rightmost bit represents whether the user was active in the current day.
-    udf_bool_to_bytes(TRUE) AS days_seen_bytes,
-    udf_bool_to_bytes(total_searches > 0) AS days_searched_bytes,
-    udf_bool_to_bytes(tagged_searches > 0) AS days_tagged_searched_bytes,
-    udf_bool_to_bytes(search_with_ads > 0) AS days_searched_with_ads_bytes,
-    udf_bool_to_bytes(ad_click > 0) AS days_clicked_ads_bytes,
-    udf_int_to_bytes(
-      udf_bits_from_days_since_created_profile(
+    udf_bool_to_365_bits(TRUE) AS days_seen_bytes,
+    udf_bool_to_365_bits(total_searches > 0) AS days_searched_bytes,
+    udf_bool_to_365_bits(tagged_searches > 0) AS days_tagged_searched_bytes,
+    udf_bool_to_365_bits(search_with_ads > 0) AS days_searched_with_ads_bytes,
+    udf_bool_to_365_bits(ad_click > 0) AS days_clicked_ads_bytes,
+    udf_int_to_365_bits(
+      udf_28_bits_from_days_since_created_profile(
         DATE_DIFF(@submission_date,
                   SAFE.DATE_FROM_UNIX_DATE(profile_creation_date),
                   DAY))) AS days_created_profile_bytes
@@ -313,34 +279,34 @@ WITH
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 365-day window.
-    AND udf_combine_adjacent_days_bytes(days_seen_bytes, udf_bool_to_bytes(FALSE)) != udf_zeroed_365_days_bytes())
+    AND BIT_COUNT(udf_shift_365_bits_one_day(days_seen_bytes)) > 0
 
 SELECT
   @submission_date AS submission_date,
 IF(_current.client_id IS NOT NULL,
    _current,
    _previous).* REPLACE (
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_seen_bytes,
         _current.days_seen_bytes
       ) AS days_seen_bytes,
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_searched_bytes,
         _current.days_searched_bytes
       ) AS days_searched_bytes,
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_tagged_searched_bytes,
         _current.days_tagged_searched_bytes
       ) AS days_tagged_searched_bytes,
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_searched_with_ads_bytes,
         _current.days_searched_with_ads_bytes
       ) AS days_searched_with_ads_bytes,
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_clicked_ads_bytes,
         _current.days_clicked_ads_bytes
       ) AS days_clicked_ads_bytes,
-      udf_coalesce_adjacent_days_bytes(
+      udf_coalesce_adjacent_days_365_bits(
         _previous.days_created_profile_bytes,
         _current.days_created_profile_bytes
       ) AS days_created_profile_bytes,

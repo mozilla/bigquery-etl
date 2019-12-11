@@ -6,7 +6,7 @@ SELECT
   *,
   timestamp AS submission_timestamp,
   event_string_value AS event_value,
-  session_start_time AS created,
+  UNIX_MILLIS(session_start_time) AS created,
   NULL AS city
 FROM
   `moz-fx-data-shared-prod.telemetry.events`

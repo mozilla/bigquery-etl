@@ -10,7 +10,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
-from io import BytesIO
+from io import BytesIO, TextIOWrapper
 from typing import (
     Any,
     Callable,
@@ -23,6 +23,7 @@ from typing import (
     Union,
 )
 
+import codecs
 import json
 import os
 import os.path
@@ -113,7 +114,6 @@ def load_tables(
             source_format=table.source_format,
             write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         )
-        has_bytes_fields = False
 
         if table.schema is None:
             # autodetect schema if not provided
@@ -121,41 +121,12 @@ def load_tables(
         else:
             job_config.schema = table.schema
             # look for time_partitioning_field in provided schema
-            for i, field in enumerate(job_config.schema):
-                if field.field_type == "BYTES":
-                    has_bytes_fields = True
+            for field in job_config.schema:
                 if field.description == "time_partitioning_field":
                     job_config.time_partitioning = bigquery.TimePartitioning(
                         field=field.name
                     )
                     break  # stop because there can only be one time partitioning field
-
-        # If bytes fields, make them strings, and write this data to temp table
-        # Create the actual table as a read from that temp table
-        # NOTE: This doesn"t handle nested BYTES fields!!
-        if has_bytes_fields:
-            updated_schema = [
-                bigquery.schema.SchemaField(f.name, "STRING", f.mode)
-                if f.field_type == "BYTES"
-                else f
-                for f in job_config.schema
-            ]
-
-            job_config.schema = updated_schema
-            temp_table_name = "_" + table.name
-            destination = dataset.table(temp_table_name)
-            as_bytes = ",".join(
-                [
-                    f"FROM_HEX({f.name}) AS {f.name}"
-                    for f in table.schema
-                    if f.field_type == "BYTES"
-                ]
-            )
-            cast_bytes_query = (
-                f"CREATE TABLE {dataset.dataset_id}.{table.name} "
-                f"AS SELECT * REPLACE ({as_bytes}) FROM "
-                f"`{dataset.dataset_id}.{temp_table_name}`;"
-            )
 
         if isinstance(table.source_path, str):
             with open(table.source_path, "rb") as file_obj:
@@ -171,10 +142,7 @@ def load_tables(
 
         try:
             job.result()
-            if has_bytes_fields:
-                bq.query(cast_bytes_query).result()
         except BadRequest:
-            print(job.errors)
             raise
 
 
@@ -190,12 +158,11 @@ def load_views(bq: bigquery.Client, dataset: bigquery.Dataset, views: Dict[str, 
 
 def read(*paths: str, decoder: Optional[Callable] = None, **kwargs):
     """Read a file and apply decoder if provided."""
-    filepath = os.path.join(*paths)
-    with open(filepath, **kwargs) as f:
-        return decoder(f, filepath) if decoder else f.read()
+    with open(os.path.join(*paths), **kwargs) as f:
+        return decoder(f) if decoder else f.read()
 
 
-def ndjson_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
+def ndjson_load(file_obj: TextIOWrapper) -> List[Any]:
     """Decode newline delimited json from file_obj."""
     res = []
     for i, line in enumerate(file_obj):
@@ -203,19 +170,19 @@ def ndjson_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
             res.append(json.loads(line))
         except json.JSONDecodeError as e:
             raise NDJsonDecodeError(
-                f"Line {i+1} column {e.colno} of file {filepath}, {e.msg}"
+                f"Line {i+1} column {e.colno} of file {file_obj.name}, {e.msg}"
             )
 
     return res
 
 
-def json_load(file_obj: Iterable[str], filepath: str) -> List[Any]:
+def json_load(file_obj: TextIOWrapper) -> List[Any]:
     """Decode json from file_obj."""
     try:
-        return json.loads("".join(file_obj))
+        return json.load(file_obj)
     except json.JSONDecodeError as e:
         raise JsonDecodeError(
-            f"Line {e.lineno} column {e.colno} of file {filepath}, {e.msg}"
+            f"Line {e.lineno} column {e.colno} of file {file_obj.name}, {e.msg}"
         )
 
 
@@ -232,7 +199,7 @@ def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> An
     :raises FileNotFoundError: when all matching files raise FileNotFoundError
     """
     search = search or {
-        "yaml": lambda x, y: yaml.full_load(x),
+        "yaml": yaml.full_load,
         "json": json_load,
         "ndjson": ndjson_load,
     }
@@ -274,14 +241,18 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
 
     Coerce date and datetime to string using isoformat.
     Coerce bigquery.Row to dict using comprehensions.
+    Coerce bytes to base64 encoded strings.
     Omit dict keys named "generated_time".
+    Omit columns with null results to simplify `expect` files.
     """
     for element in elements:
         if isinstance(element, (dict, bigquery.Row)):
             yield {
-                key: list(coerce_result(*value))
-                if isinstance(value, list)
-                else next(coerce_result(value))
+                key: (
+                    list(coerce_result(*value))
+                    if isinstance(value, list)
+                    else next(coerce_result(value))
+                )
                 for key, value in element.items()
                 # drop generated_time column
                 if key not in ("generated_time",) and value is not None
@@ -290,47 +261,49 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
             yield element.isoformat()
         elif isinstance(element, Decimal):
             yield str(element)
+        elif isinstance(element, bytes):
+            yield codecs.encode(element, "base64").decode().strip()
         else:
             yield element
 
 
-def get_differences(exp, res, path="", sep=" / "):
+def get_differences(expected, result, path="", sep="."):
     """Get the differences between two JSON-like python objects.
 
     For complicated objects, this is a big improvement over pytest -vv
     """
     differences = []
 
-    if exp is not None and res is None:
+    if expected is not None and result is None:
         differences.append(("Expected exists but not Result", path))
-    if exp is None and res is not None:
+    if expected is None and result is not None:
         differences.append(("Result exists but not Expected", path))
-    if exp is None and res is None:
+    if expected is None and result is None:
         return differences
 
-    exp_dict, res_dict = isinstance(exp, dict), isinstance(res, dict)
-    exp_list, res_list = isinstance(exp, list), isinstance(res, list)
-    if exp_dict and not res_dict:
+    exp_is_dict, res_is_dict = isinstance(expected, dict), isinstance(result, dict)
+    exp_is_list, res_is_list = isinstance(expected, list), isinstance(result, list)
+    if exp_is_dict and not res_is_dict:
         differences.append(("Expected is dict but not Result", path))
-    elif res_dict and not exp_dict:
+    elif res_is_dict and not exp_is_dict:
         differences.append(("Result is dict but not Expected", path))
-    elif not exp_dict and not res_dict:
-        if exp_list and res_list:
-            for i, (exp_e, res_e) in enumerate(zip(exp, res)):
-                differences += get_differences(exp_e, res_e, path + sep + str(i))
-        elif exp != res:
-            differences.append((f"Expected={exp}, Result={res}", path))
+    elif not exp_is_dict and not res_is_dict:
+        if exp_is_list and res_is_list:
+            for i, (exp_elem, res_elem) in enumerate(zip(expected, result)):
+                differences += get_differences(exp_elem, res_elem, path + sep + str(i))
+        elif expected != result:
+            differences.append((f"Expected={expected}, Result={result}", path))
     else:
-        exp_keys, res_keys = set(exp.keys()), set(res.keys())
-        exp_not_res, res_not_exp = exp_keys - res_keys, res_keys - exp_keys
+        exp_keys, res_keys = set(expected.keys()), set(result.keys())
+        in_exp_not_res, in_res_not_exp = exp_keys - res_keys, res_keys - exp_keys
 
-        for k in exp_not_res:
+        for k in in_exp_not_res:
             differences.append(("In Expected, not in Result", path + sep + k))
-        for k in res_not_exp:
+        for k in in_res_not_exp:
             differences.append(("In Result, not in Expected", path + sep + k))
 
         for k in exp_keys & res_keys:
-            differences += get_differences(exp[k], res[k], path + sep + k)
+            differences += get_differences(expected[k], result[k], path + sep + k)
 
     return differences
 

@@ -96,13 +96,13 @@ WITH
     -- In this raw table, we capture the history of activity over the past
     -- 365 days for each usage criterion as an array of bytes. The
     -- rightmost bit represents whether the user was active in the current day.
-    udf_bool_to_bytes(TRUE) AS days_seen_bytes,
-    udf_bool_to_bytes(total_searches > 0) AS days_searched_bytes,
-    udf_bool_to_bytes(tagged_searches > 0) AS days_tagged_searched_bytes,
-    udf_bool_to_bytes(search_with_ads > 0) AS days_searched_with_ads_bytes,
-    udf_bool_to_bytes(ad_click > 0) AS days_clicked_ads_bytes,
-    udf_int_to_bytes(
-      udf_bits_from_days_since_created_profile(
+    udf_bool_to_365_bits(TRUE) AS days_seen_bytes,
+    udf_bool_to_365_bits(total_searches > 0) AS days_searched_bytes,
+    udf_bool_to_365_bits(tagged_searches > 0) AS days_tagged_searched_bytes,
+    udf_bool_to_365_bits(search_with_ads > 0) AS days_searched_with_ads_bytes,
+    udf_bool_to_365_bits(ad_click > 0) AS days_clicked_ads_bytes,
+    udf_int_to_365_bits(
+      udf_28_bits_from_days_since_created_profile(
         DATE_DIFF(@submission_date,
                   SAFE.DATE_FROM_UNIX_DATE(profile_creation_date),
                   DAY))) AS days_created_profile_bytes
@@ -117,34 +117,34 @@ WITH
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 365-day window.
-    AND udf_combine_adjacent_days_bytes(days_seen_bytes, udf_bool_to_bytes(FALSE)) != udf_zeroed_365_days_bytes())
+    AND BIT_COUNT(udf_shift_365_bits_one_day(days_seen_bytes)) > 0
 
 SELECT
   @submission_date AS submission_date,
 IF(_current.client_id IS NOT NULL,
    _current,
    _previous).* REPLACE (
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_seen_bytes,
         _current.days_seen_bytes
       ) AS days_seen_bytes,
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_searched_bytes,
         _current.days_searched_bytes
       ) AS days_searched_bytes,
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_tagged_searched_bytes,
         _current.days_tagged_searched_bytes
       ) AS days_tagged_searched_bytes,
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_searched_with_ads_bytes,
         _current.days_searched_with_ads_bytes
       ) AS days_searched_with_ads_bytes,
-      udf_combine_adjacent_days_bytes(
+      udf_combine_adjacent_days_365_bits(
         _previous.days_clicked_ads_bytes,
         _current.days_clicked_ads_bytes
       ) AS days_clicked_ads_bytes,
-      udf_coalesce_adjacent_days_bytes(
+      udf_coalesce_adjacent_days_365_bits(
         _previous.days_created_profile_bytes,
         _current.days_created_profile_bytes
       ) AS days_created_profile_bytes,

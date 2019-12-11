@@ -135,27 +135,7 @@ class SqlTest(pytest.Item, pytest.File):
 
             # run query
             job = bq.query(query, job_config=job_config)
-
-            # Bytes are not JSON serializable, cast them to hex strings
-            # Again, this only handles top-level BYTES fields
-            row_iter = job.result()
-            bytes_fields = [f for f in row_iter.schema if f.field_type == "BYTES"]
-
-            if bytes_fields:
-                as_str = ",".join(
-                    [
-                        f"TO_HEX({f.name}) AS {f.name}"
-                        for f in row_iter.schema
-                        if f.field_type == "BYTES"
-                    ]
-                )
-                as_str_query = (
-                    f"SELECT * REPLACE ({as_str}) FROM "
-                    f"`{res_table.dataset_id}.{res_table.table_id}`;"
-                )
-                row_iter = bq.query(as_str_query).result()
-
-            result = list(coerce_result(*row_iter))
+            result = list(coerce_result(*job.result()))
             result.sort(key=lambda row: json.dumps(row, sort_keys=True))
             expect.sort(key=lambda row: json.dumps(row, sort_keys=True))
 

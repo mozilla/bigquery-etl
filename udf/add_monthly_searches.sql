@@ -4,20 +4,20 @@
 CREATE TEMP FUNCTION
   udf_add_monthly_searches(prev ARRAY<STRUCT<key STRING, value STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>>>,
                            curr ARRAY<STRUCT<key STRING, value STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>>>,
-                           submission_date DATE) AS ((
+                           submission_date DATE) AS (ARRAY(
   WITH prev_tbl AS (
     SELECT *
-    FROM UNNEST(prev) AS p
+    FROM UNNEST(prev)
   )
 
-  SELECT ARRAY_AGG(
+  SELECT 
     STRUCT(
       key,
       udf_add_monthly_engine_searches(
-        COALESCE(p.value, udf_engine_searches_struct()),
-        COALESCE(c.value, udf_engine_searches_struct()),
+        COALESCE(p.value, udf_new_monthly_engine_searches_struct()),
+        COALESCE(c.value, udf_new_monthly_engine_searches_struct()),
         submission_date) AS value
-    ))
+    )
   FROM
       UNNEST(curr) AS c
   FULL OUTER JOIN
@@ -35,7 +35,7 @@ NOTE: These tests are structured in this way to distribute them.
 
 WITH previous_examples AS (
     SELECT
-        ARRAY [
+        [
           STRUCT(
             "google" AS key,
             STRUCT(generate_array(11, 0, -1) AS total_searches,
@@ -47,7 +47,7 @@ WITH previous_examples AS (
     SELECT NULL AS prev, "null" as type
 ), current_examples AS (
     SELECT
-        ARRAY [
+        [
           STRUCT(
             "google" AS key,
             STRUCT(udf_array_drop_first_and_append(udf_zeroed_array(12), 5) AS total_searches,
@@ -68,51 +68,51 @@ WITH previous_examples AS (
     SELECT NULL as curr, "null" as type
 ), dates AS (
     SELECT d AS date
-    FROM UNNEST(ARRAY ["2019-10-01", "2019-10-02"]) AS d
+    FROM UNNEST([DATE "2019-10-01", DATE "2019-10-02"]) AS d
 ), results AS (
-    SELECT udf_add_monthly_searches(p.prev, c.curr, CAST(d.date AS date)) AS res,
+    SELECT udf_add_monthly_searches(p.prev, c.curr, d.date) AS res,
       p.type AS p_type, c.type AS c_type, d.date AS date
     FROM previous_examples p
     CROSS JOIN current_examples c
     CROSS JOIN dates d
 ), expected AS (
     SELECT *
-    FROM UNNEST(ARRAY [
+    FROM UNNEST([
       -- First day of the month, join new day of same engine
-      STRUCT("google" AS p_type, "google" AS c_type, "2019-10-01" AS date, "google" AS key, "total_searches" AS res_type, ARRAY [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 5] AS exp),
-      STRUCT("google" AS p_type, "google" AS c_type, "2019-10-01" AS date, "google" AS key, "tagged_searches" AS res_type, ARRAY [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10] AS exp),
-      STRUCT("google" AS p_type, "google" AS c_type, "2019-10-01" AS date, "google" AS key, "search_with_ads" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15] AS exp),
-      STRUCT("google" AS p_type, "google" AS c_type, "2019-10-01" AS date, "google" AS key, "ad_click" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20] AS exp),
+      STRUCT("google" AS p_type, "google" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "total_searches" AS res_type, [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 5] AS exp),
+      STRUCT("google" AS p_type, "google" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "tagged_searches" AS res_type, [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10] AS exp),
+      STRUCT("google" AS p_type, "google" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "search_with_ads" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15] AS exp),
+      STRUCT("google" AS p_type, "google" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "ad_click" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20] AS exp),
 
       -- Second day of the month, join new day of same engine
-      STRUCT("google" AS p_type, "google" AS c_type, "2019-10-02" AS date, "google" AS key, "total_searches" AS res_type, ARRAY [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 5] AS exp),
-      STRUCT("google" AS p_type, "google" AS c_type, "2019-10-02" AS date, "google" AS key, "tagged_searches" AS res_type, ARRAY [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 11] AS exp),
-      STRUCT("google" AS p_type, "google" AS c_type, "2019-10-02" AS date, "google" AS key, "search_with_ads" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15] AS exp),
-      STRUCT("google" AS p_type, "google" AS c_type, "2019-10-02" AS date, "google" AS key, "ad_click" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20] AS exp),
+      STRUCT("google" AS p_type, "google" AS c_type, DATE "2019-10-02" AS date, "google" AS key, "total_searches" AS res_type, [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 5] AS exp),
+      STRUCT("google" AS p_type, "google" AS c_type, DATE "2019-10-02" AS date, "google" AS key, "tagged_searches" AS res_type, [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 11] AS exp),
+      STRUCT("google" AS p_type, "google" AS c_type, DATE "2019-10-02" AS date, "google" AS key, "search_with_ads" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15] AS exp),
+      STRUCT("google" AS p_type, "google" AS c_type, DATE "2019-10-02" AS date, "google" AS key, "ad_click" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20] AS exp),
 
       -- Join new client of data
-      STRUCT("null" AS p_type, "google" AS c_type, "2019-10-01" AS date, "google" AS key, "total_searches" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5] AS exp),
-      STRUCT("null" AS p_type, "google" AS c_type, "2019-10-01" AS date, "google" AS key, "tagged_searches" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] AS exp),
-      STRUCT("null" AS p_type, "google" AS c_type, "2019-10-01" AS date, "google" AS key, "search_with_ads" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15] AS exp),
-      STRUCT("null" AS p_type, "google" AS c_type, "2019-10-01" AS date, "google" AS key, "ad_click" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20] AS exp),
+      STRUCT("null" AS p_type, "google" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "total_searches" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5] AS exp),
+      STRUCT("null" AS p_type, "google" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "tagged_searches" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10] AS exp),
+      STRUCT("null" AS p_type, "google" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "search_with_ads" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15] AS exp),
+      STRUCT("null" AS p_type, "google" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "ad_click" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20] AS exp),
 
       -- Join existing client without any new data
-      STRUCT("google" AS p_type, "null" AS c_type, "2019-10-01" AS date, "google" AS key, "total_searches" AS res_type, ARRAY [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0] AS exp),
-      STRUCT("google" AS p_type, "null" AS c_type, "2019-10-01" AS date, "google" AS key, "tagged_searches" AS res_type, ARRAY [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0] AS exp),
-      STRUCT("google" AS p_type, "null" AS c_type, "2019-10-01" AS date, "google" AS key, "search_with_ads" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
-      STRUCT("google" AS p_type, "null" AS c_type, "2019-10-01" AS date, "google" AS key, "ad_click" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
+      STRUCT("google" AS p_type, "null" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "total_searches" AS res_type, [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0] AS exp),
+      STRUCT("google" AS p_type, "null" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "tagged_searches" AS res_type, [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0] AS exp),
+      STRUCT("google" AS p_type, "null" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "search_with_ads" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
+      STRUCT("google" AS p_type, "null" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "ad_click" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
 
       -- Join existing client with data from new engine (check both engines)
-      STRUCT("google" AS p_type, "bing" AS c_type, "2019-10-01" AS date, "google" AS key, "total_searches" AS res_type, ARRAY [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0] AS exp),
-      STRUCT("google" AS p_type, "bing" AS c_type, "2019-10-01" AS date, "google" AS key, "tagged_searches" AS res_type, ARRAY [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0] AS exp),
-      STRUCT("google" AS p_type, "bing" AS c_type, "2019-10-01" AS date, "google" AS key, "search_with_ads" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
-      STRUCT("google" AS p_type, "bing" AS c_type, "2019-10-01" AS date, "google" AS key, "ad_click" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
+      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "total_searches" AS res_type, [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0] AS exp),
+      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "tagged_searches" AS res_type, [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0] AS exp),
+      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "search_with_ads" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
+      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "google" AS key, "ad_click" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
 
       -- Checking second engine
-      STRUCT("google" AS p_type, "bing" AS c_type, "2019-10-01" AS date, "bing" AS key, "total_searches" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1] AS exp),
-      STRUCT("google" AS p_type, "bing" AS c_type, "2019-10-01" AS date, "bing" AS key, "tagged_searches" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2] AS exp),
-      STRUCT("google" AS p_type, "bing" AS c_type, "2019-10-01" AS date, "bing" AS key, "search_with_ads" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3] AS exp),
-      STRUCT("google" AS p_type, "bing" AS c_type, "2019-10-01" AS date, "bing" AS key, "ad_click" AS res_type, ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4] AS exp)
+      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "bing" AS key, "total_searches" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1] AS exp),
+      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "bing" AS key, "tagged_searches" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2] AS exp),
+      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "bing" AS key, "search_with_ads" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3] AS exp),
+      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "bing" AS key, "ad_click" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4] AS exp)
     ])
 )
 

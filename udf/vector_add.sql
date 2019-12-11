@@ -1,5 +1,5 @@
 CREATE TEMP FUNCTION
-  udf_vector_add(a ARRAY<INT64>, b ARRAY<INT64>) AS ((
+  udf_vector_add(a ARRAY<INT64>, b ARRAY<INT64>) AS (ARRAY(
     with a_unnested AS (
       SELECT _a, _a_off
       FROM UNNEST(a) AS _a WITH OFFSET _a_off
@@ -8,11 +8,12 @@ CREATE TEMP FUNCTION
       FROM UNNEST(b) AS _b WITH OFFSET _b_off
     )
 
-    SELECT ARRAY_AGG(COALESCE(_a + _b, _a, _b) ORDER BY COALESCE(_a_off, _b_off) ASC)
+    SELECT COALESCE(_a + _b, _a, _b)
     FROM a_unnested
     FULL OUTER JOIN b_unnested
       ON _a_off = _b_off
-    ));
+    ORDER BY COALESCE(_a_off, _b_off) ASC
+  ));
 
 -- 
 

@@ -1,4 +1,8 @@
 /*
+This function specifically windows searches into calendar-month windows. This means groups are not necessarily directly comparable,
+since different months have different numbers of days.
+
+On the first of each month, a new month is appended, and the first month is dropped.
 */
 
 CREATE TEMP FUNCTION
@@ -45,19 +49,19 @@ WITH examples AS (
 )
 
 SELECT
-  assert_array_equals(ARRAY [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 5], res.total_searches),
-  assert_array_equals(ARRAY [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10], res.tagged_searches),
-  assert_array_equals(ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
-  assert_array_equals(ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
+  assert_array_equals([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 5], res.total_searches),
+  assert_array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 10], res.tagged_searches),
+  assert_array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
+  assert_array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
 FROM
   oct_first
 
 UNION ALL
 
 SELECT
-  assert_array_equals(ARRAY [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 5], res.total_searches),
-  assert_array_equals(ARRAY [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 11], res.tagged_searches),
-  assert_array_equals(ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
-  assert_array_equals(ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
+  assert_array_equals([11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 5], res.total_searches),
+  assert_array_equals([12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 11], res.tagged_searches),
+  assert_array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15], res.search_with_ads),
+  assert_array_equals([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20], res.ad_click)
 FROM
   oct_second

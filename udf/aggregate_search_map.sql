@@ -5,10 +5,10 @@ CREATE TEMP FUNCTION
         SELECT AS STRUCT
           v.key,
           STRUCT(
-            udf_zeroed_array_with_last_val(SUM(v.value.total_searches)) AS total_searches,
-            udf_zeroed_array_with_last_val(SUM(v.value.tagged_searches)) AS tagged_searches,
-            udf_zeroed_array_with_last_val(SUM(v.value.search_with_ads)) AS search_with_ads,
-            udf_zeroed_array_with_last_val(SUM(v.value.ad_click)) AS ad_click
+            udf_array_11_zeroes_then(SUM(v.value.total_searches)) AS total_searches,
+            udf_array_11_zeroes_then(SUM(v.value.tagged_searches)) AS tagged_searches,
+            udf_array_11_zeroes_then(SUM(v.value.search_with_ads)) AS search_with_ads,
+            udf_array_11_zeroes_then(SUM(v.value.ad_click)) AS ad_click
           ) AS value
         FROM
           UNNEST(engine_searches_list) AS v
@@ -24,10 +24,10 @@ WITH output AS (
 
 SELECT
   assert_equals("google", res[OFFSET(0)].key),
-  assert_array_equals(udf_zeroed_array_with_last_val(10), res[OFFSET(0)].value.total_searches),
-  assert_array_equals(udf_zeroed_array_with_last_val(5), res[OFFSET(0)].value.tagged_searches),
-  assert_array_equals(udf_zeroed_array_with_last_val(0), res[OFFSET(0)].value.search_with_ads),
-  assert_array_equals(udf_zeroed_array_with_last_val(0), res[OFFSET(0)].value.ad_click),
+  assert_array_equals(udf_array_11_zeroes_then(10), res[OFFSET(0)].value.total_searches),
+  assert_array_equals(udf_array_11_zeroes_then(5), res[OFFSET(0)].value.tagged_searches),
+  assert_array_equals(udf_array_11_zeroes_then(0), res[OFFSET(0)].value.search_with_ads),
+  assert_array_equals(udf_array_11_zeroes_then(0), res[OFFSET(0)].value.ad_click),
   assert_equals(array_length(res), 1)
 FROM
   output;

@@ -51,20 +51,20 @@ SELECT
     CAST(NULL AS INT64) AS tagged_searches,
 
     -- Monthly search totals
-    ARRAY [
+    [
       STRUCT(
         CAST(NULL AS STRING) AS key,
-        udf_engine_searches_struct() AS value)
+        udf_new_monthly_engine_searches_struct() AS value)
     ] AS engine_searches
 
     -- Each of the below is one year of activity, as BYTES.
-    udf_zeroed_365_days_bytes() AS days_seen_bytes,
-    udf_zeroed_365_days_bytes() AS days_searched_bytes,
-    udf_zeroed_365_days_bytes() AS days_tagged_searched_bytes,
-    udf_zeroed_365_days_bytes() AS days_searched_with_ads_bytes,
-    udf_zeroed_365_days_bytes() AS days_clicked_ads_bytes,
-    udf_zeroed_365_days_bytes() AS days_created_profile_bytes
- FROM
+    CAST(NULL AS BYTES) AS days_seen_bytes,
+    CAST(NULL AS BYTES) AS days_searched_bytes,
+    CAST(NULL AS BYTES) AS days_tagged_searched_bytes,
+    CAST(NULL AS BYTES) AS days_searched_with_ads_bytes,
+    CAST(NULL AS BYTES) AS days_clicked_ads_bytes,
+    CAST(NULL AS BYTES) AS days_created_profile_bytes
+FROM
   search_clients_daily_v7
 WHERE
   FALSE

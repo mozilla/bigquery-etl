@@ -66,7 +66,7 @@ SELECT
       STRUCT(
         CAST(NULL AS STRING) AS key,
         udf_new_monthly_engine_searches_struct() AS value)
-    ] AS engine_searches
+    ] AS engine_searches,
 
     -- Each of the below is one year of activity, as BYTES.
     CAST(NULL AS BYTES) AS days_seen_bytes,

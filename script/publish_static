@@ -76,8 +76,8 @@ def main():
     args = parse_args()
 
     for root, dirs, files in os.walk(args.data_dir):
-        for file in files:
-            if file == DATA_FILENAME:
+        for filename in files:
+            if filename == DATA_FILENAME:
                 schema_file_path = (
                     os.path.join(root, SCHEMA_FILENAME)
                     if SCHEMA_FILENAME in files
@@ -89,7 +89,7 @@ def main():
                     else None
                 )
                 load_table(
-                    os.path.join(root, file),
+                    os.path.join(root, filename),
                     schema_file_path,
                     description_file_path,
                     args.project_id,

@@ -119,7 +119,9 @@ WITH
     'actual' AS type,
     submission_date,
     id_bucket,
-    SUM(mau) AS mau
+    SUM(mau) AS mau,
+    SUM(wau) AS wau,
+    SUM(dau) AS dau
   FROM
     desktop_base
   GROUP BY
@@ -131,15 +133,9 @@ WITH
     'actual' AS type,
     submission_date AS date,
     id_bucket,
-    SUM(
-    IF
-      (country IN ('US',
-          'FR',
-          'DE',
-          'GB',
-          'CA'),
-        mau,
-        0)) AS mau
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), mau, 0)) AS mau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), wau, 0)) AS wau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), dau, 0)) AS dau
   FROM
     desktop_base
   GROUP BY
@@ -153,7 +149,9 @@ WITH
     'actual' AS type,
     submission_date,
     id_bucket,
-    SUM(mau) AS mau
+    SUM(mau) AS mau,
+    SUM(wau) AS wau,
+    SUM(dau) AS dau
   FROM
     nondesktop_base
   GROUP BY
@@ -165,15 +163,9 @@ WITH
     'actual' AS type,
     submission_date AS date,
     id_bucket,
-    SUM(
-    IF
-      (country IN ('US',
-          'FR',
-          'DE',
-          'GB',
-          'CA'),
-        mau,
-        0)) AS mau
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), mau, 0)) AS mau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), wau, 0)) AS wau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), dau, 0)) AS dau
   FROM
     nondesktop_base
   GROUP BY
@@ -187,7 +179,9 @@ WITH
     'actual' AS type,
     submission_date,
     id_bucket,
-    SUM(mau) AS mau
+    SUM(mau) AS mau,
+    SUM(wau) AS wau,
+    SUM(dau) AS dau
   FROM
     fxa_base
   GROUP BY
@@ -199,7 +193,11 @@ WITH
     'actual' AS type,
     submission_date AS date,
     id_bucket,
-    SUM(seen_in_tier1_country_mau) AS mau
+    -- We have a special way of determining whether to include a user in tier1
+    -- to match historical definition of tier1 FxA mau.
+    SUM(seen_in_tier1_country_mau) AS mau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), wau, 0)) AS wau,
+    SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), dau, 0)) AS dau
   FROM
     fxa_base
   GROUP BY
@@ -212,7 +210,9 @@ WITH
     datasource,
     type,
     submission_date,
-    udf_js_jackknife_sum_ci(20, ARRAY_AGG(mau)).*
+    udf_js_jackknife_sum_ci(20, ARRAY_AGG(mau)) AS mau_ci,
+    udf_js_jackknife_sum_ci(20, ARRAY_AGG(wau)) AS wau_ci,
+    udf_js_jackknife_sum_ci(20, ARRAY_AGG(dau)) AS dau_ci
   FROM
     per_bucket
   GROUP BY
@@ -226,9 +226,15 @@ WITH
     datasource,
     type,
     submission_date AS `date`,
-    total AS mau,
-    low AS mau_low,
-    high AS mau_high
+    mau_ci.total AS mau,
+    mau_ci.low AS mau_low,
+    mau_ci.high AS mau_high,
+    wau_ci.total AS wau,
+    wau_ci.low AS wau_low,
+    wau_ci.high AS wau_high,
+    dau_ci.total AS dau,
+    dau_ci.low AS dau_low,
+    dau_ci.high AS dau_high
   FROM
     with_ci
   UNION ALL
@@ -238,7 +244,14 @@ WITH
     `date`,
     mau,
     low90 AS mau_low,
-    high90 AS mau_high
+    high90 AS mau_high,
+    -- We only have forecasts for MAU, so we use null for forecast DAU and WAU.
+    null as wau,
+    null as wau_low,
+    null as wau_high,
+    null as dau,
+    null as dau_low,
+    null as dau_high
   FROM
     forecast_base
   WHERE
@@ -249,27 +262,17 @@ WITH
   -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1552558
   with_imputed AS (
   SELECT
-    *
+    with_forecast.* REPLACE (
+      COALESCE(imputed.mau, with_forecast.mau) AS mau,
+      COALESCE(imputed.mau + imputed.mau * 0.005, with_forecast.mau_high) AS mau_high,
+      COALESCE(imputed.mau - imputed.mau * 0.005, with_forecast.mau_low) AS mau_low )
   FROM
     with_forecast
-  WHERE
-    NOT (`date` BETWEEN '2019-05-15'
-      AND '2019-06-08'
-      AND datasource IN ('desktop_global',
-        'desktop_tier1'))
-  UNION ALL
-  SELECT
-    datasource,
-    'actual' AS type,
-    `date`,
-    mau,
-    -- The confidence interval is chosen here somewhat arbitrarily as 0.5% of
-    -- the value; in any case, we should show a larger interval than we do for
-    -- non-imputed actuals.
-    mau - mau * 0.005 AS mau_low,
-    mau + mau * 0.005 AS mau_high
-  FROM
-    static.firefox_desktop_imputed_mau28_v1 )
+  LEFT JOIN
+    static.firefox_desktop_imputed_mau28_v1 AS imputed
+  USING
+    (datasource, `date`)
+  )
   --
 SELECT
   *

@@ -29,6 +29,7 @@ DERIVED_DATASETS_DRY_RUN_URL = (
 
 SKIP = {
     # Access Denied
+    "sql/monitoring/document_sample_nonprod_v1/query.sql",
     "sql/monitoring/schema_error_counts_v1/view.sql",
     "sql/monitoring/structured_error_counts_v1/view.sql",
     "sql/telemetry/fxa_content_events_v1/query.sql",
@@ -46,6 +47,9 @@ SKIP = {
     "sql/search_derived/search_aggregates_v8/query.sql",
     "sql/search/search_aggregates/view.sql",
     "sql/search/search_clients_daily/view.sql",
+    "sql/search_derived/mobile_search_aggregates_v1/query.sql",
+    "sql/search/mobile_search_aggregates/view.sql",
+    "sql/search/mobile_search_clients_daily/view.sql",
     # No matching signature for function IF
     "sql/static/fxa_amplitude_export_users_last_seen/query.sql",
     # Duplicate UDF
@@ -54,6 +58,8 @@ SKIP = {
     "sql/telemetry_derived/clients_last_seen_v1/init.sql",
     # HTTP Error 408: Request Time-out
     "sql/telemetry_derived/latest_versions/query.sql",
+    # Query parameter not found
+    "sql/telemetry_derived/experiments_v1/query.sql",
 }
 
 USE_DERIVED_DATASETS = {

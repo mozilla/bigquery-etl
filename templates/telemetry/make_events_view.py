@@ -2,11 +2,9 @@
 # Creates Amplitude-compatible event views, for more information see https://bugzilla.mozilla.org/show_bug.cgi?id=1574490
 # Usage:
 # CONFIGS_PATH = ~/mozilla/github/telemetry-streaming/configs
-# for f (devtools_prerelease_schemas.json devtools_release_schemas.json fennec_ios_events_schemas.json fire_tv_events_schemas.json focus_android_events_schemas.json); do
+# for f (devtools_prerelease_schemas.json devtools_release_schemas.json); do
 #   python make_events_view.py $CONFIGS_PATH/$f
 # done
-### Use the "simple" path for rocket.
-# python make_events_view.py $CONFIGS_PATH/rocket_android_events_schemas.json simplify
 
 from collections import defaultdict
 import json
@@ -61,7 +59,7 @@ SELECT
   *,
   timestamp AS submission_timestamp,
   event_string_value AS event_value,
-  session_start_time AS created,
+  UNIX_MILLIS(session_start_time) AS created,
   NULL AS city
 FROM
   `moz-fx-data-shared-prod.telemetry.events`

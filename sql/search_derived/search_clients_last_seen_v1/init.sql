@@ -76,6 +76,6 @@ SELECT
     CAST(NULL AS BYTES) AS days_clicked_ads_bytes,
     CAST(NULL AS BYTES) AS days_created_profile_bytes
 FROM
-  search_clients_daily_v7
+  search_clients_daily_v8
 WHERE
   FALSE

@@ -15,9 +15,9 @@ WITH
       COALESCE(search_with_ads, 0) AS search_with_ads,
       * EXCEPT (ad_click, search_with_ads)
     FROM
-      search_clients_daily_v7
+      search_clients_daily_v8
     WHERE
-      submission_date_s3 = @submission_date
+      submission_date = @submission_date
       and sample_id = "84"
   ),
 

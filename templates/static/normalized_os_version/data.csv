@@ -1,4 +1,4 @@
-os_name,os_version,normalized_os_name,normalized_os_version,release_date
+os_name,os_version_regexp,normalized_os_name,normalized_os_version,release_date
 Windows_NT,^10.0$,Windows,10,2015-07-15
 Windows_NT,^6.3$,Windows,8.1,2013-08-27
 Windows_NT,^6.2$,Windows,8,2012-08-01

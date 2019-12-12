@@ -5,7 +5,7 @@ WITH
     -- 28 days for each usage criterion as a single 64-bit integer. The
     -- rightmost bit represents whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
-    udf_28_bits_from_days_since_created_profile(
+    udf_days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, profile_date, DAY)) AS days_created_profile_bits,
     * EXCEPT (submission_date)
   FROM

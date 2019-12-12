@@ -1,6 +1,6 @@
 CREATE TEMP FUNCTION
   udf_12_zeroes() AS ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-CREATE TEMP FUNCTION  udf_new_monthly_engine_searches_struct() AS (
+CREATE TEMP FUNCTION udf_new_monthly_engine_searches_struct() AS (
   STRUCT(
     udf_12_zeroes() AS total_searches,
     udf_12_zeroes() AS tagged_searches,
@@ -23,7 +23,7 @@ SELECT
 
     -- Grouping columns
     client_id,
-    CAST(sample_id AS INT64) AS sample_id,
+    sample_id,
 
     -- Dimensional data
     country,

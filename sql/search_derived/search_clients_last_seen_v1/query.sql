@@ -50,7 +50,7 @@ CREATE TEMP FUNCTION
 ));
 CREATE TEMP FUNCTION
   udf_12_zeroes() AS ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-CREATE TEMP FUNCTION  udf_new_monthly_engine_searches_struct() AS (
+CREATE TEMP FUNCTION udf_new_monthly_engine_searches_struct() AS (
   STRUCT(
     udf_12_zeroes() AS total_searches,
     udf_12_zeroes() AS tagged_searches,
@@ -163,7 +163,7 @@ CREATE TEMP FUNCTION
 WITH
   _derived_search_cols AS (
     SELECT
-      CASE
+      CASE -- we only care about certain normalized engines
           WHEN engine IS NULL THEN 'none'
           WHEN STARTS_WITH(engine, 'google') THEN 'google'
           WHEN STARTS_WITH(engine, 'ddg') OR STARTS_WITH(engine, 'duckduckgo') THEN 'ddg'
@@ -180,10 +180,12 @@ WITH
       search_clients_daily_v8
     WHERE
       submission_date = @submission_date
-      and sample_id = "84"
+      and sample_id = 84 -- limit to 1%
   ),
 
   _derived_engine_searches AS (
+    -- From the clients search info, make a struct
+    -- that we will use for aggregation later
     SELECT
       STRUCT(
         short_engine AS key,
@@ -205,7 +207,7 @@ WITH
     SELECT
       -- Grouping columns
       client_id,
-      CAST(sample_id AS INT64) AS sample_id,
+      sample_id,
 
       -- Dimensional data
       udf_mode_last(ARRAY_AGG(country)) AS country,

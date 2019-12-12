@@ -15,7 +15,7 @@
   {"type":"STRING","name":"default_search_engine","mode":"NULLABLE"},
   {"type":"STRING","name":"default_search_engine_data_load_path","mode":"NULLABLE"},
   {"type":"STRING","name":"default_search_engine_data_submission_url","mode":"NULLABLE"},
-  {"type":"STRING","name":"sample_id","mode":"NULLABLE"},
+  {"type":"INTEGER","name":"sample_id","mode":"NULLABLE"},
   {"type":"INTEGER","name":"sessions_started_on_this_day","mode":"NULLABLE"},
   {"type":"INTEGER","name":"profile_age_in_days","mode":"NULLABLE"},
   {"type":"FLOAT","name":"subsession_hours_sum","mode":"NULLABLE"},

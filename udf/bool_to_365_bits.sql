@@ -1,4 +1,4 @@
-/* Convert a boolean to byte array */
+/* Convert a boolean to 365 bit byte array */
 
 CREATE TEMP FUNCTION
   udf_bool_to_365_bits(val BOOLEAN) AS (

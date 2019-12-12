@@ -47,7 +47,6 @@ def format_response (s, date):
     # e.g. survey_data: {'25': {'id': 25, 'type': 'RADIO', 'question': 'I trust Firefox to help me with my online privacy',
     # 'section_id': 2, 'answer': 'Agree', 'answer_id': 10066, 'shown': True}}
     resp = list(s.get("survey_data", {}).values())
-    ret = []
     try:
         # Shield ID is sent as a hidden field with question name "Shield ID"
         shield_id = [r.get("answer") for r in resp if r.get('question') == 'Shield ID'][0]

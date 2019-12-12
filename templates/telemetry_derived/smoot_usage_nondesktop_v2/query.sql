@@ -33,7 +33,7 @@ WITH
     submission_date,
     [
     STRUCT('Any Firefox Non-desktop Activity' AS usage,
-      udf_smoot_usage_from_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+      udf_smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
         days_seen_bits))) AS metrics)
     ] AS metrics_array,
     MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,

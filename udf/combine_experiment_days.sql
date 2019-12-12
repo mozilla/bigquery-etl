@@ -29,7 +29,7 @@ CREATE TEMP FUNCTION
       SELECT
         AS STRUCT experiment,
         branch,
-        udf_combine_adjacent_days_bits(prev.bits,
+        udf_combine_adjacent_days_28_bits(prev.bits,
           curr.bits) AS bits
       FROM
         UNNEST(prev) AS prev
@@ -39,7 +39,7 @@ CREATE TEMP FUNCTION
         (experiment,
           branch)
       WHERE
-        udf_combine_adjacent_days_bits(prev.bits,
+        udf_combine_adjacent_days_28_bits(prev.bits,
           curr.bits) > 0),
       -- Experiments present in curr only
       ARRAY(

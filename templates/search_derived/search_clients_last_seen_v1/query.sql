@@ -104,7 +104,7 @@ WITH
       udf_bool_to_365_bits(search_with_ads > 0) AS days_searched_with_ads_bytes,
       udf_bool_to_365_bits(ad_click > 0) AS days_clicked_ads_bytes,
       udf_int_to_365_bits(
-        udf_28_bits_from_days_since_created_profile(
+        udf_days_since_created_profile_as_28_bits(
           DATE_DIFF(@submission_date,
                     SAFE.DATE_FROM_UNIX_DATE(profile_creation_date),
                     DAY))) AS days_created_profile_bytes

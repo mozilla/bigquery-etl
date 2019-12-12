@@ -6,7 +6,7 @@ for the smoot_usage_* tables.
 */
 
 CREATE TEMP FUNCTION
-  udf_smoot_usage_from_bits(
+  udf_smoot_usage_from_28_bits(
     bit_arrays ARRAY<STRUCT<days_created_profile_bits INT64, days_active_bits INT64>>)
     AS ((
     WITH

@@ -1,17 +1,17 @@
 CREATE TEMP FUNCTION
   udf_bitmask_lowest_28() AS (0x0FFFFFFF);
 CREATE TEMP FUNCTION
-  udf_shift_bits_one_day(x INT64) AS (IFNULL((x << 1) & udf_bitmask_lowest_28(),
+  udf_shift_28_bits_one_day(x INT64) AS (IFNULL((x << 1) & udf_bitmask_lowest_28(),
     0));
 CREATE TEMP FUNCTION
-  udf_coalesce_adjacent_days_bits(prev INT64,
-    curr INT64) AS ( COALESCE( NULLIF(udf_shift_bits_one_day(prev),
+  udf_coalesce_adjacent_days_28_bits(prev INT64,
+    curr INT64) AS ( COALESCE( NULLIF(udf_shift_28_bits_one_day(prev),
         0),
       curr,
       0));
 CREATE TEMP FUNCTION
-  udf_combine_adjacent_days_bits(prev INT64,
-    curr INT64) AS (udf_shift_bits_one_day(prev) + IFNULL(curr,
+  udf_combine_adjacent_days_28_bits(prev INT64,
+    curr INT64) AS (udf_shift_28_bits_one_day(prev) + IFNULL(curr,
     0));
 --
 WITH
@@ -41,7 +41,7 @@ WITH
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
-    AND udf_shift_bits_one_day(days_seen_bits) > 0),
+    AND udf_shift_28_bits_one_day(days_seen_bits) > 0),
   --
   combined AS (
   SELECT
@@ -50,11 +50,11 @@ WITH
     (_current.user_id IS NOT NULL,
       _current,
       _previous).* REPLACE ( --
-      udf_combine_adjacent_days_bits(_previous.days_seen_bits,
+      udf_combine_adjacent_days_28_bits(_previous.days_seen_bits,
         _current.days_seen_bits) AS days_seen_bits,
-      udf_combine_adjacent_days_bits(_previous.days_seen_in_tier1_country_bits,
+      udf_combine_adjacent_days_28_bits(_previous.days_seen_in_tier1_country_bits,
         _current.days_seen_in_tier1_country_bits) AS days_seen_in_tier1_country_bits,
-      udf_coalesce_adjacent_days_bits(_previous.days_registered_bits,
+      udf_coalesce_adjacent_days_28_bits(_previous.days_registered_bits,
         _current.days_registered_bits) AS days_registered_bits ),
     _previous.user_id IS NULL AS new_observation -- used for determining "resurrected" criteria
   FROM

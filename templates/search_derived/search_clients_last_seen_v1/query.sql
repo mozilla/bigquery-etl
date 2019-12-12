@@ -18,7 +18,7 @@ WITH
       search_clients_daily_v8
     WHERE
       submission_date = @submission_date
-      and sample_id = "84"
+      and sample_id = 84 -- limit to 1%
   ),
 
   _derived_engine_searches AS (
@@ -43,7 +43,7 @@ WITH
     SELECT
       -- Grouping columns
       client_id,
-      CAST(sample_id AS INT64) AS sample_id,
+      sample_id,
 
       -- Dimensional data
       udf_mode_last(ARRAY_AGG(country)) AS country,

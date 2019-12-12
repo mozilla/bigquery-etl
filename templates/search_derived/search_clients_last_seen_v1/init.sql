@@ -12,7 +12,7 @@ SELECT
 
     -- Grouping columns
     client_id,
-    CAST(sample_id AS INT64) AS sample_id,
+    sample_id,
 
     -- Dimensional data
     country,

@@ -20,7 +20,7 @@ parser.add_argument("--sg_api_secret", required=True)
 parser.add_argument("--destination_table", default="moz-fx-data-shared-prod.external.survey_gizmo_daily_attitudes")
 
 
-q_fields = {
+Q_FIELDS = {
   "I trust Firefox to help me with my online privacy": "trust_firefox",
   "All the sites I’ve visited recently have worked; none of them seem broken": "sites_work",
   "The internet is open and accessible to all": "internet_accessible",

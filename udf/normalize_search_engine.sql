@@ -20,7 +20,7 @@ CREATE TEMP FUNCTION
       WHEN STARTS_WITH(engine, 'yandex')
       OR STARTS_WITH(engine, 'Yandex')
       OR STARTS_WITH(engine, 'other-Yandex') THEN 'Yandex'
-      ELSE 'Other'
+      ELSE engine
     END
   );
 
@@ -29,6 +29,6 @@ CREATE TEMP FUNCTION
 SELECT
   assert_equals('Google', udf_normalize_search_engine('google')),
   assert_equals('Google', udf_normalize_search_engine('Google-abc')),
-  assert_equals('Other', udf_normalize_search_engine('not-bing')),
-  assert_equals('Other', udf_normalize_search_engine('engine'))
+  assert_equals('not-bing', udf_normalize_search_engine('not-bing')),
+  assert_equals('engine', udf_normalize_search_engine('engine'))
 

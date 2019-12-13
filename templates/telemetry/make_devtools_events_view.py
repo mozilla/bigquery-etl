@@ -4,7 +4,7 @@
 # Usage:
 # CONFIGS_PATH = ~/mozilla/github/telemetry-streaming/configs
 # for f (devtools_prerelease_schemas.json devtools_release_schemas.json); do
-#   python make_events_view.py $CONFIGS_PATH/$f
+#   python make_devtools_events_view.py $CONFIGS_PATH/$f
 # done
 
 from collections import defaultdict
@@ -106,7 +106,7 @@ WITH base_events AS (
 ), all_events AS (
 SELECT
     submission_timestamp,
-    client_id AS device_id,
+    client_id AS user_id,
     (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     {}
     event_timestamp AS timestamp,
@@ -135,7 +135,7 @@ FROM
 ), all_events_with_insert_ids AS (
 SELECT
   * EXCEPT (event_category, created),
-  CONCAT(device_id, "-", CAST(created AS STRING), "-", {}, "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id,
+  CONCAT(user_id, "-", CAST(created AS STRING), "-", {}, "-", CAST(timestamp AS STRING), "-", event_category, "-", event_method, "-", event_object) AS insert_id,
   event_name AS event_type
 FROM
   all_events

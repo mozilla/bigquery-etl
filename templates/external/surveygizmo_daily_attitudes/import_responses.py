@@ -57,7 +57,7 @@ def format_response (s, date):
         'shield_id': shield_id,
         'date': date,
         'question': r.get('question'),
-        'question_key': q_fields.get(r.get('question')),
+        'question_key': Q_FIELDS.get(r.get('question')),
         'value': r.get('answer')
     } for r in resp if r.get('question') != 'Shield ID']
 

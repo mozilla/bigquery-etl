@@ -1,0 +1,398 @@
+#!/usr/bin/python3
+
+"""A pile of regexes for translating the easy parts of queries from Athena to BigQuery."""
+
+
+from google.cloud import bigquery
+import re
+import requests
+import os
+import json
+from redash_client.client import RedashClient
+import csv
+
+
+DATASET = 'telemetry'
+CSV_DIR = '/Users/ssuh/dev/mozilla/scratch/'
+
+
+TABLE_IDS = [
+    'clients_last_seen_v1',
+    'anonymous',
+    'clients_last_seen',
+    'firefox_desktop_exact_mau28',
+    'certificate_checker',
+    'system_addon_deployment_diagnostics',
+    'active_profiles_v1',
+    'addon_install_blocked',
+    'bhr',
+    'sync',
+    'sync_log_device_counts_v1',
+    'eng_workflow_hgpush_parquet_v1',
+    'ssl_ratios_v1',
+    'sync_flat_summary',
+    'smoot_usage_desktop_v1',
+    'firefox_accounts_exact_mau28_by_dimensions',
+    'crash_aggregates_v1',
+    'tls13_middlebox_repetition',
+    'main_summary_v4',
+    'pre_account',
+    'experiment_error_aggregates',
+    'fxa_content_events',
+    'sync_log_device_activity',
+    'telemetry_core_parquet',
+    'first_shutdown',
+    'core_clients_last_seen',
+    'firefox_nondesktop_exact_mau28_by_product',
+    'fxa_users_daily_v1',
+    'clients_daily',
+    'fxa_users_last_seen_v1_outgoing',
+    'modules',
+    'smoot_clients_daily_1percent_v1',
+    'remote_content_uptake',
+    'firefox_accounts_exact_mau28_v1',
+    'telemetry_heartbeat_parquet_v1',
+    'optout',
+    'main',
+    'disable_sha1rollout',
+    'sync_log_v1',
+    'crash_summary_v1',
+    'smoot_usage_all',
+    'lockwise_mobile_events_v1',
+    'smoot_usage_all_mtr_v1',
+    'clients_daily_scalar_aggregates_v1',
+    'ftu',
+    'sync_events',
+    'experiments',
+    'fenix_events_amplitude_v1',
+    'firefox_accounts_exact_mau28_by_dimensions_v1',
+    'firefox_kpi_dashboard_v1',
+    'smoot_metrics',
+    'smoot_usage_fxa_raw_v1',
+    'core_clients_daily',
+    'fxa_auth_bounce_events',
+    'firefox_accounts_exact_mau28_raw_v1',
+    'first_shutdown_summary',
+    'downgrade',
+    'smoot_usage_nondesktop_v1',
+    'health',
+    'crash_summary',
+    'smoot_usage_2week_raw_v1',
+    'telemetry_downgrade_parquet',
+    'telemetry_new_profile_parquet',
+    'searchvolextra',
+    'prio',
+    'fxa_content_auth_events',
+    'glean_clients_last_seen_v1',
+    'nondesktop_clients_last_seen_v1',
+    'crash_aggregates',
+    'telemetry_focus_event_parquet',
+    'telemetry_core_parquet_v3',
+    'main_summary',
+    'deployment_checker',
+    'voice',
+    'eng_workflow_hgpush_parquet',
+    'fxa_content_auth_events_v1',
+    'telemetry_anonymous_parquet',
+    'event',
+    'smoot_usage_desktop',
+    'shield_study_addon',
+    'smoot_clients_last_seen_1percent_cleaned_v1',
+    'testpilottest',
+    'experiments_aggregates',
+    'advancedtelemetry',
+    'tls_13_study_v1',
+    'retention',
+    'heartbeat',
+    'sync_log_device_counts',
+    'smoot_nondesktop_usage',
+    'mobile_metrics',
+    'firefox_kpi_dashboard',
+    'firefox_desktop_exact_mau28_by_dimensions_v1',
+    'retention_v1',
+    'socorro_crash',
+    'tls_13_study',
+    'tls13_middlebox_alt_server_hello_1',
+    'smoot_usage_metrics_raw_v1',
+    'android_anr_report',
+    'smoot_desktop_usage_raw_v1',
+    'telemetry_ip_privacy_parquet_v1',
+    'events_v1',
+    'firefox_nondesktop_exact_mau28',
+    'fxa_users_last_seen',
+    'shield_study_error',
+    'new_profile',
+    'telemetry_focus_event_parquet_v1',
+    'firefox_desktop_exact_mau28_v1',
+    'smoot_usage_v1',
+    'smoot_nondesktop_usage_v1',
+    'fxa_users_last_seen_v1',
+    'smoot_all_usage_v1',
+    'addons',
+    'firefox_nondesktop_exact_mau28_v1',
+    'addon_aggregates',
+    'tls_13_study_v2',
+    'firefox_nondesktop_exact_mau28_raw_v1',
+    'fxa_content_events_v1',
+    'update',
+    'smoot_desktop_0week_v1',
+    'events',
+    'churn_v3',
+    'smoot_usage_1week_raw_v1',
+    'smoot_desktop_usage',
+    'tls13_middlebox_draft22',
+    'fxa_users_last_seen_raw_v1',
+    'smoot_all_usage',
+    'firefox_nondesktop_exact_mau28_by_dimensions_v1',
+    'smoot_clients_daily_1percent',
+    'sync_flat_summary_v1',
+    'experiments_v1',
+    'shield_study',
+    'experiment_error_aggregates_v1',
+    'sync_events_v1',
+    'smoot_usage',
+    'sync_summary_v2',
+    'socorro_crash_v2',
+    'mobile_event',
+    'fxa_users_daily',
+    'addons_v2',
+    'focus_event',
+    'sync_summary',
+    'smoot_usage_fxa_v1',
+    'sync_log',
+    'clients_daily_v6',
+    'active_profiles',
+    'remote_content_uptake_v1',
+    'clients_profile_per_install_affected',
+    'shield_icq_v1',
+    'experiments_aggregates_v1',
+    'sync_bmk_total_per_day_v1',
+    'telemetry_heartbeat_parquet',
+    'crash',
+    'telemetry_shield_study_parquet_v1',
+    'fenix_events_v1',
+    'glean_clients_daily_v1',
+    'core_clients_daily_v1',
+    'telemetry_shield_study_parquet',
+    'fxa_auth_events',
+    'addon_aggregates_v2',
+    'smoot_usage_all_v1',
+    'telemetry_ip_privacy_parquet',
+    'client_probe_counts_v2',
+    'telemetry_downgrade_parquet_v1',
+    'smoot_usage_nondesktop_raw_v1',
+    'smoot_clients_last_seen_1percent_raw_v1',
+    'firefox_desktop_exact_mau28_by_dimensions',
+    'firefox_nondesktop_exact_mau28_by_product_v1',
+    'churn_v2',
+    'clients_daily_scalar_aggregates_v2',
+    'sync_bmk_total_per_day',
+    'telemetry_mobile_event_parquet',
+    'first_shutdown_summary_v4',
+    'fxa_all_events_v1',
+    'pioneer_study',
+    'clients_last_seen_raw_v1',
+    'lockwise_mobile_events',
+    'main_summary_v3',
+    'tls13_middlebox_beta',
+    'client_probe_counts_v1',
+    'smoot_nondesktop_usage_raw_v1',
+    'eng_workflow_build_parquet_v1',
+    'fxa_auth_bounce_events_v1',
+    'core_clients_last_seen_v1',
+    'flash_shield_study',
+    'block_autoplay',
+    'churn',
+    'tls13_middlebox_testing',
+    'searchvol',
+    'firefox_nondesktop_exact_mau28_by_dimensions',
+    'uitour_tag',
+    'ssl_ratios',
+    'fxa_auth_events_v1',
+    'smoot_desktop_0week',
+    'deletion',
+    'telemetry_mobile_event_parquet_v2',
+    'tls13_middlebox_ghack',
+    'smoot_clients_last_seen_1percent_cleaned',
+    'malware_addon_states',
+    'crash_summary_v2',
+    'fxa_all_events',
+    'glean_clients_last_seen_raw_v1',
+    'smoot_desktop_usage_v1',
+    'telemetry_new_profile_parquet_v2',
+    'core',
+    'smoot_clients_last_seen_1percent',
+    'core_clients_last_seen_raw_v1',
+    'sync_log_device_activity_v1',
+    'smoot_metrics_v1',
+    'tls_13_study_v4',
+    'saved_session',
+    'testpilot',
+    'smoot_clients_last_seen_1percent_v1',
+    'telemetry_anonymous_parquet_v1',
+    'outofdate_notifications_system_addon',
+    'untrusted_modules',
+    'tls_13_study_v3',
+    'smoot_usage_desktop_raw_v1',
+    'eng_workflow_build_parquet',
+    'clients_daily_histogram_aggregates_v1',
+    'smoot_usage_nondesktop',
+    'frecency_update',
+    'x_contextual_feature_recommendation'
+]
+
+SEARCH_DATASET = "search"
+
+SEARCH_TABLE_IDS = [
+    "search_aggregates",
+    "search_aggregates_dev_v3",
+    "search_aggregates_v3",
+    "search_aggregates_v4",
+    "search_aggregates_v5",
+    "search_aggregates_v6",
+    "search_aggregates_v7",
+    "search_clients_daily",
+    "search_clients_daily_v3",
+    "search_clients_daily_v4",
+    "search_clients_daily_v5",
+    "search_clients_daily_v6",
+    "search_clients_daily_v7",
+]
+
+
+UDF_DATASET = "udf_legacy"
+
+UDFS = [
+    "contains",
+    "date_format",
+    "to_iso8601",
+    "date_trunc",
+]
+
+
+substitutions = [
+    # Add dataset to telemetry dataset table names
+    (f"(^|\\s+)({'|'.join(TABLE_IDS)})(\\s+)", f"\\1{DATASET}.\\2\\3"),
+    # Add dataset to search dataset table names
+    (f"(^|\\s+)({'|'.join(SEARCH_TABLE_IDS)})(\\s+)", f"\\1{SEARCH_DATASET}.\\2\\3"),
+    # MMMMYYDD to MMMM-YY-DD
+    (r"20(\d\d)(\d\d)(\d\d)", r"20\1-\2-\3"),
+    # submission_date_s3 => submission_date
+    (r"submission_date_s3", r"submission_date"),
+    # sample_id string to int
+    (r"sample_id ([<=>]+) '(\d+)'", r"sample_id \1 \2"),
+    # remove ARRAY from array declarations
+    (r"(?i)ARRAY\s*\[", r"["),
+    # DOUBLE or FLOAT -> FLOAT64
+    (r"(?i)AS (DOUBLE|FLOAT)", "AS FLOAT64"),
+    # INTEGER -> INT64
+    (r"(?i)AS (INT|INTEGER|BIGINT|SMALLINT|TINYINT)\b", "AS INT64"),
+    # VARCHAR or CHAR -> STRING
+    (r"(?i)AS (VARCHAR|CHAR)", "AS STRING"),
+    # Common date parsing no longer necessary (note: keeping this after
+    # the submission_date_s3 sub means we catch more cases since some
+    # tables use submission_date as the date field
+    (r"(?i)DATE_PARSE\(submission_date,\s*'%Y%m%d'\)", "submission_date"),
+    # Similar to above, current date -> string is no longer necessary
+    (r"(?i)DATE_FORMAT\(current_date,\s*'%Y%m%d'\)", "CURRENT_DATE"),
+    # Map Access -> get_key
+    (r"([\w\.]+)\[('[\w-]+?')\]", r"udf.get_key(\1, \2)"),
+    # approx_distinct -> approx_count_distinct
+    (r"(?i)APPROX_DISTINCT\(", "APPROX_COUNT_DISTINCT("),
+    # TRY_CAST -> SAFE_CAST
+    (r"(?i)TRY_CAST\(", "SAFE_CAST("),
+    # element_at -> udf.get_key
+    (r"(?i)ELEMENT_AT\(", "udf.get_key("),
+    # use UDFs for some built-in functions
+    (f"(?i)\\b({'|'.join(UDFS)})\(", f"{UDF_DATASET}.\\1("),
+    # a few instances of this pattern can be simplified
+    (r"(?i)reduce\(map_values\(searches\), 0, \(x, y\) -> x \+ y, s -> s\)",
+     "(SELECT SUM(value) from UNNEST(searches))"),
+    # simple date_add invocations (addition)
+    (r"(?i)date_add\('(\w+)',\s*(\d+),\s*(\w+)\)",
+     "DATE_ADD(\\3, INTERVAL \\2 \\1)"),
+    # simple date_add invocations (subtraction)
+    (r"(?i)date_add\('(\w+)',\s*-(\d+),\s*(\w+)\)",
+     "DATE_SUB(\\3, INTERVAL \\2 \\1)"),
+    # UNIX_DATE built-in replaces more verbose version
+    ("to_unixtime(current_date)/86400", "UNIX_DATE(CURRENT_DATE)"),
+    # UNION in bq requires either ALL or DISTINCT keywords
+    (r"\bUNION\b", "UNION ALL"),
+    # bare INTERVAL addition/subtraction translated to date_add/date_sub
+    (r"(?i)(\w+)\s+\s+INTERVAL '(\d+)'\s+(\w+)", r"DATE_ADD(\1, INTERVAL \2 \3)"),
+    (r"(?i)(\w+)\s-\s+INTERVAL '(\d+)'\s+(\w+)", r"DATE_SUB(\1, INTERVAL \2 \3)"),
+]
+
+
+def translate(text):
+    subs = [(re.compile(r[0]), r[1]) for r in substitutions]
+    for pattern, replacement in subs:
+        text = re.sub(pattern, replacement, text)
+    return text
+
+
+BQ_DATASOURCE_ID = 63
+
+
+with open(CVS_DIR + 'query_ids_batch_2.txt', 'r') as f:
+    api_key = os.environ["REDASH_API_KEY"]
+    redash_client = RedashClient(api_key)
+    headers = {"Authorization": f"Key {api_key}"}
+    bq_client = bigquery.Client(project='moz-fx-data-derived-datasets')
+    results = []
+    for query_id in f:
+        q_id = query_id.strip()
+        new_query = redash_client.fork_query(q_id)
+
+        new_details = requests.get(
+            f"https://sql.telemetry.mozilla.org/api/queries/{new_query['id']}",
+            headers=headers
+        ).json()
+        transformed = (
+            "/* This query was auto-transformed for BigQuery from "
+            f"https://sql.telemetry.mozilla.org/queries/{q_id} */\n\n"
+            + translate(new_details['query'])
+        ).encode('ascii', 'ignore').decode('ascii')
+
+        job_config = bigquery.QueryJobConfig()
+        job_config.dry_run = True
+        job_config.use_query_cache = False
+        query_job = bq_client.query(transformed)
+
+        redash_client.update_query(new_details['id'], new_details['name'],
+                                   transformed, BQ_DATASOURCE_ID,
+                                   new_details.get('description'))
+
+        """
+        text = requests.get(
+            f"https://sql.telemetry.mozilla.org/api/queries/{query_id}",
+            headers=headers
+        ).json()['query']
+        transformed = (
+            "/* This query was auto-transformed for BigQuery from "
+            f"https://sql.telemetry.mozilla.org/queries/{query_id} */\n\n"
+            + translate(text)
+        )
+
+        job_config = bigquery.QueryJobConfig()
+        job_config.dry_run = True
+        job_config.use_query_cache = False
+        query_job = bq_client.query(transformed)
+        """
+
+        obj = {
+            'origId': q_id,
+            'newId': new_details['id'],
+            'orig': new_details['query'],
+            'transformed': transformed,
+            'errorResult': query_job.error_result
+        }
+        results.append(obj)
+
+    print(json.dumps(results))
+
+    with open(CSV_DIR + 'new_queries_batch_2.csv', 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=results[0].keys())
+        writer.writeheader()
+        for r in results:
+            writer.writerow(r)

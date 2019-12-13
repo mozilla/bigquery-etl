@@ -10,7 +10,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from google.api_core.exceptions import BadRequest, NotFound
 from google.cloud import bigquery
-from io import BytesIO
+from io import BytesIO, TextIOWrapper
 from typing import (
     Any,
     Callable,
@@ -23,9 +23,11 @@ from typing import (
     Union,
 )
 
+import codecs
 import json
 import os
 import os.path
+import pprint
 import yaml
 
 QueryParameter = Union[
@@ -76,6 +78,18 @@ class Table:
                 pass
 
 
+class NDJsonDecodeError(Exception):
+    """ndjson decode error."""
+
+    pass
+
+
+class JsonDecodeError(Exception):
+    """JSON decode error."""
+
+    pass
+
+
 @contextmanager
 def dataset(bq: bigquery.Client, dataset_id: str):
     """Context manager for creating and deleting the BigQuery dataset for a test."""
@@ -100,6 +114,7 @@ def load_tables(
             source_format=table.source_format,
             write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         )
+
         if table.schema is None:
             # autodetect schema if not provided
             job_config.autodetect = True
@@ -112,6 +127,7 @@ def load_tables(
                         field=field.name
                     )
                     break  # stop because there can only be one time partitioning field
+
         if isinstance(table.source_path, str):
             with open(table.source_path, "rb") as file_obj:
                 job = bq.load_table_from_file(
@@ -123,10 +139,10 @@ def load_tables(
                 file_obj.write(json.dumps(row).encode() + b"\n")
             file_obj.seek(0)
             job = bq.load_table_from_file(file_obj, destination, job_config=job_config)
+
         try:
             job.result()
         except BadRequest:
-            print(job.errors)
             raise
 
 
@@ -146,9 +162,28 @@ def read(*paths: str, decoder: Optional[Callable] = None, **kwargs):
         return decoder(f) if decoder else f.read()
 
 
-def ndjson_load(file_obj: Iterable[str]) -> List[Any]:
+def ndjson_load(file_obj: TextIOWrapper) -> List[Any]:
     """Decode newline delimited json from file_obj."""
-    return [json.loads(line) for line in file_obj]
+    res = []
+    for i, line in enumerate(file_obj):
+        try:
+            res.append(json.loads(line))
+        except json.JSONDecodeError as e:
+            raise NDJsonDecodeError(
+                f"Line {i+1} column {e.colno} of file {file_obj.name}, {e.msg}"
+            )
+
+    return res
+
+
+def json_load(file_obj: TextIOWrapper) -> List[Any]:
+    """Decode json from file_obj."""
+    try:
+        return json.load(file_obj)
+    except json.JSONDecodeError as e:
+        raise JsonDecodeError(
+            f"Line {e.lineno} column {e.colno} of file {file_obj.name}, {e.msg}"
+        )
 
 
 def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> Any:
@@ -165,7 +200,7 @@ def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> An
     """
     search = search or {
         "yaml": yaml.full_load,
-        "json": json.load,
+        "json": json_load,
         "ndjson": ndjson_load,
     }
     not_found: List[str] = []
@@ -206,14 +241,18 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
 
     Coerce date and datetime to string using isoformat.
     Coerce bigquery.Row to dict using comprehensions.
+    Coerce bytes to base64 encoded strings.
     Omit dict keys named "generated_time".
+    Omit columns with null results to simplify `expect` files.
     """
     for element in elements:
         if isinstance(element, (dict, bigquery.Row)):
             yield {
-                key: list(coerce_result(*value))
-                if isinstance(value, list)
-                else next(coerce_result(value))
+                key: (
+                    list(coerce_result(*value))
+                    if isinstance(value, list)
+                    else next(coerce_result(value))
+                )
                 for key, value in element.items()
                 # drop generated_time column
                 if key not in ("generated_time",) and value is not None
@@ -222,5 +261,64 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
             yield element.isoformat()
         elif isinstance(element, Decimal):
             yield str(element)
+        elif isinstance(element, bytes):
+            yield codecs.encode(element, "base64").decode().strip()
         else:
             yield element
+
+
+def get_differences(expected, result, path="", sep="."):
+    """Get the differences between two JSON-like python objects.
+
+    For complicated objects, this is a big improvement over pytest -vv
+    """
+    differences = []
+
+    if expected is not None and result is None:
+        differences.append(("Expected exists but not Result", path))
+    if expected is None and result is not None:
+        differences.append(("Result exists but not Expected", path))
+    if expected is None and result is None:
+        return differences
+
+    exp_is_dict, res_is_dict = isinstance(expected, dict), isinstance(result, dict)
+    exp_is_list, res_is_list = isinstance(expected, list), isinstance(result, list)
+    if exp_is_dict and not res_is_dict:
+        differences.append(("Expected is dict but not Result", path))
+    elif res_is_dict and not exp_is_dict:
+        differences.append(("Result is dict but not Expected", path))
+    elif not exp_is_dict and not res_is_dict:
+        if exp_is_list and res_is_list:
+            for i, (exp_elem, res_elem) in enumerate(zip(expected, result)):
+                differences += get_differences(exp_elem, res_elem, path + sep + str(i))
+        elif expected != result:
+            differences.append((f"Expected={expected}, Result={result}", path))
+    else:
+        exp_keys, res_keys = set(expected.keys()), set(result.keys())
+        in_exp_not_res, in_res_not_exp = exp_keys - res_keys, res_keys - exp_keys
+
+        for k in in_exp_not_res:
+            differences.append(("In Expected, not in Result", path + sep + k))
+        for k in in_res_not_exp:
+            differences.append(("In Result, not in Expected", path + sep + k))
+
+        for k in exp_keys & res_keys:
+            differences += get_differences(expected[k], result[k], path + sep + k)
+
+    return differences
+
+
+def print_and_test(expected, result):
+    """Print objects and differences, then test equality."""
+    pp = pprint.PrettyPrinter(indent=2)
+
+    print("\nExpected:")
+    pp.pprint(expected)
+
+    print("\nActual:")
+    pp.pprint(result)
+
+    print("\nDifferences:")
+    print("\n".join([" - ".join(v) for v in get_differences(expected, result)]))
+
+    assert result == expected

@@ -57,6 +57,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
@@ -93,6 +94,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
@@ -128,6 +130,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
@@ -163,6 +166,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
@@ -198,6 +202,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
@@ -232,6 +237,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
@@ -266,6 +272,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
@@ -299,6 +306,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
@@ -332,6 +340,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(
@@ -365,6 +374,7 @@ SELECT
   key,
   client_agg_type,
   agg_type,
+  SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
     THEN udf_fill_buckets(

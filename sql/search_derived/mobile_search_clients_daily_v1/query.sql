@@ -21,6 +21,26 @@ CREATE TEMP FUNCTION udf_parse_iso8601_date(date_str STRING) RETURNS DATE AS (
     SAFE.PARSE_DATE('%Y%m%d', SAFE.SUBSTR(date_str, 0, 8))
   )
 );
+CREATE TEMP FUNCTION
+  udf_strict_normalize_search_engine(engine STRING) AS (
+    CASE
+      WHEN engine IS NULL THEN NULL
+      WHEN STARTS_WITH(engine, 'google')
+      OR STARTS_WITH(engine, 'Google')
+      OR STARTS_WITH(engine, 'other-Google') THEN 'Google'
+      WHEN STARTS_WITH(engine, 'ddg')
+      OR STARTS_WITH(engine, 'duckduckgo')
+      OR STARTS_WITH(engine, 'DuckDuckGo')
+      OR STARTS_WITH(engine, 'other-DuckDuckGo') THEN 'DuckDuckGo'
+      WHEN STARTS_WITH(engine, 'bing')
+      OR STARTS_WITH(engine, 'Bing')
+      OR STARTS_WITH(engine, 'other-Bing') THEN 'Bing'
+      WHEN STARTS_WITH(engine, 'yandex')
+      OR STARTS_WITH(engine, 'Yandex')
+      OR STARTS_WITH(engine, 'other-Yandex') THEN 'Yandex'
+      ELSE 'Other'
+    END
+  );
 --
 -- Older versions separate source and engine with an underscore instead of period
 -- Return array of form [source, engine] if key is valid, empty array otherwise
@@ -151,6 +171,11 @@ SELECT
   submission_date,
   client_id,
   IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(0)]) AS engine,
+  IF(
+    search_count > 10000,
+    NULL,
+    udf_strict_normalize_search_engine(normalized_search_key[SAFE_OFFSET(0)])
+  ) AS normalized_engine,
   IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(1)]) AS source,
   app_name,
   SUM(
@@ -181,5 +206,6 @@ GROUP BY
   submission_date,
   client_id,
   engine,
+  normalized_engine,
   source,
   app_name

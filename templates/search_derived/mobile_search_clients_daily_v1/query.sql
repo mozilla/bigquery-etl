@@ -127,6 +127,11 @@ SELECT
   submission_date,
   client_id,
   IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(0)]) AS engine,
+  IF(
+    search_count > 10000,
+    NULL,
+    udf_strict_normalize_search_engine(normalized_search_key[SAFE_OFFSET(0)])
+  ) AS normalized_engine,
   IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(1)]) AS source,
   app_name,
   SUM(
@@ -157,5 +162,6 @@ GROUP BY
   submission_date,
   client_id,
   engine,
+  normalized_engine,
   source,
   app_name

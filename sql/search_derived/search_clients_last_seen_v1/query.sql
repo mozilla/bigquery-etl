@@ -1,11 +1,4 @@
 CREATE TEMP FUNCTION
-  udf_28_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
-  IF
-    (days_since_created_profile BETWEEN 0
-      AND 6,
-      1 << days_since_created_profile,
-      0));
-CREATE TEMP FUNCTION
   udf_array_drop_first_and_append(arr ANY TYPE, append ANY TYPE) AS (
     ARRAY_CONCAT(
       ARRAY(
@@ -49,13 +42,13 @@ CREATE TEMP FUNCTION
     )
 ));
 CREATE TEMP FUNCTION
-  udf_12_zeroes() AS ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  udf_array_of_12_zeroes() AS ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 CREATE TEMP FUNCTION udf_new_monthly_engine_searches_struct() AS (
   STRUCT(
-    udf_12_zeroes() AS total_searches,
-    udf_12_zeroes() AS tagged_searches,
-    udf_12_zeroes() AS search_with_ads,
-    udf_12_zeroes() AS ad_click
+    udf_array_of_12_zeroes() AS total_searches,
+    udf_array_of_12_zeroes() AS tagged_searches,
+    udf_array_of_12_zeroes() AS search_with_ads,
+    udf_array_of_12_zeroes() AS ad_click
   )
 );
 CREATE TEMP FUNCTION
@@ -131,6 +124,13 @@ CREATE TEMP FUNCTION
 CREATE TEMP FUNCTION
   udf_combine_adjacent_days_365_bits(prev BYTES, curr BYTES) AS (
     udf_shift_365_bits_one_day(prev) | COALESCE(curr, udf_zero_as_365_bits()));
+CREATE TEMP FUNCTION
+  udf_days_since_created_profile_as_28_bits(days_since_created_profile INT64) AS (
+  IF
+    (days_since_created_profile BETWEEN 0
+      AND 6,
+      1 << days_since_created_profile,
+      0));
 CREATE TEMP FUNCTION
   udf_int_to_hex_string(value INT64) AS ((
     SELECT STRING_AGG(
@@ -266,7 +266,7 @@ WITH
       udf_bool_to_365_bits(search_with_ads > 0) AS days_searched_with_ads_bytes,
       udf_bool_to_365_bits(ad_click > 0) AS days_clicked_ads_bytes,
       udf_int_to_365_bits(
-        udf_28_bits_from_days_since_created_profile(
+        udf_days_since_created_profile_as_28_bits(
           DATE_DIFF(@submission_date,
                     SAFE.DATE_FROM_UNIX_DATE(profile_creation_date),
                     DAY))) AS days_created_profile_bytes

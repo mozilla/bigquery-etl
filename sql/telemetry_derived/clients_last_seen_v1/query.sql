@@ -1,11 +1,4 @@
 CREATE TEMP FUNCTION
-  udf_28_bits_from_days_since_created_profile(days_since_created_profile INT64) AS (
-  IF
-    (days_since_created_profile BETWEEN 0
-      AND 6,
-      1 << days_since_created_profile,
-      0));
-CREATE TEMP FUNCTION
   udf_bitmask_lowest_28() AS (0x0FFFFFFF);
 CREATE TEMP FUNCTION
   udf_shift_28_bits_one_day(x INT64) AS (IFNULL((x << 1) & udf_bitmask_lowest_28(),
@@ -59,6 +52,13 @@ CREATE TEMP FUNCTION
           branch)
       WHERE
         prev IS NULL)));
+CREATE TEMP FUNCTION
+  udf_days_since_created_profile_as_28_bits(days_since_created_profile INT64) AS (
+  IF
+    (days_since_created_profile BETWEEN 0
+      AND 6,
+      1 << days_since_created_profile,
+      0));
 --
 -- Note that this query runs in the telemetry_derived dataset, so sees derived tables
 -- rather than the user-facing views (so key_value structs haven't been eliminated, etc.)
@@ -77,7 +77,7 @@ WITH
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
     -- We only trust profile_date if it is within one week of the ping submission,
     -- so we ignore any value more than seven days old.
-    udf_28_bits_from_days_since_created_profile(
+    udf_days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, SAFE.PARSE_DATE("%F",
         SUBSTR(profile_creation_date, 0, 10)), DAY)) AS days_created_profile_bits,
     -- Experiments are an array, so we keep track of a usage bit pattern per experiment.

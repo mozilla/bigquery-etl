@@ -29,8 +29,7 @@ Q_FIELDS = {
 
 
 def utc_date_to_eastern_string(date_string):
-  # Takes in a YYYY-MM-DD date string and returns the equivalent in eastern time
-  # of midnight UTC of that date
+  """Takes in a YYYY-MM-DD date string and returns the equivalent in eastern time of midnight UTC of that date"""
   naive_dt = dt.datetime.strptime(date_string, '%Y-%m-%d')
   as_utc = pytz.utc.localize(naive_dt)
   as_eastern = as_utc.astimezone(pytz.timezone('US/Eastern'))
@@ -41,8 +40,10 @@ def date_plus_one(date_string):
   return dt.datetime.strftime(dt.date.fromisoformat(date_string) + dt.timedelta(days=1), '%Y-%m-%d')
 
 
-def format_response (s, date):
-    # Takes a single user's responses and returns a list of dictionaries, one per answer, formatted to corresponding bigquery fields.
+def format_responses(s, date):
+    """Takes a single user's responses and returns a list of dictionaries, one per answer,
+    formatted to corresponding bigquery fields."""
+
     # `survey_data` is a dict with question ID as the key and question/response details as the value
     # e.g. survey_data: {'25': {'id': 25, 'type': 'RADIO', 'question': 'I trust Firefox to help me with my online privacy',
     # 'section_id': 2, 'answer': 'Agree', 'answer_id': 10066, 'shown': True}}
@@ -100,10 +101,12 @@ def get_survey_data(survey_id, date_string, token, secret):
     return ret
 
 
-def insert_to_bq(data, table):
+def insert_to_bq(data, table, date, write_disposition=bigquery.job.WriteDisposition.WRITE_APPEND):
     client = bigquery.Client()
     print(f"Inserting {len(data)} rows into bigquery")
-    job = client.load_table_from_json(data, table)
+    job_config = bigquery.LoadJobConfig(write_disposition=write_disposition)
+    partition = f"{table}${date.replace('-', '')}"
+    job = client.load_table_from_json(data, partition, job_config=job_config)
     # job.result() returns a LoadJob object if successful, or raises an exception if not
     job.result()
 
@@ -111,7 +114,7 @@ def insert_to_bq(data, table):
 def main():
     args = parser.parse_args()
     survey_data = get_survey_data(args.survey_id, args.date, args.sg_api_token, args.sg_api_secret)
-    insert_to_bq(survey_data, args.destination_table)
+    insert_to_bq(survey_data, args.destination_table, args.date)
 
 
 if __name__ == "__main__":

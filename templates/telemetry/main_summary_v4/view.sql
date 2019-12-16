@@ -4,6 +4,10 @@ CREATE OR REPLACE VIEW
 SELECT
   submission_date AS submission_date_s3,
   * REPLACE (
+    IFNULL(country, '??') AS country,
+    IFNULL(city, '??') AS city,
+    IFNULL(geo_subdivision1, '??') AS geo_subdivision1,
+    IFNULL(geo_subdivision2, '??') AS geo_subdivision2,
     ARRAY(SELECT * FROM UNNEST(active_addons.list)) AS active_addons,
     ARRAY(SELECT * FROM UNNEST(antispyware.list)) AS antispyware,
     ARRAY(SELECT * FROM UNNEST(antivirus.list)) AS antivirus,

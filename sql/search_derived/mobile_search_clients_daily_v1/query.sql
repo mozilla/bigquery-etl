@@ -15,14 +15,8 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
-CREATE TEMP FUNCTION udf_parse_iso8601_date(date_str STRING) RETURNS DATE AS (
-  COALESCE(
-    SAFE.PARSE_DATE('%F', SAFE.SUBSTR(date_str, 0, 10)),
-    SAFE.PARSE_DATE('%Y%m%d', SAFE.SUBSTR(date_str, 0, 8))
-  )
-);
 CREATE TEMP FUNCTION
-  udf_strict_normalize_search_engine(engine STRING) AS (
+  udf_normalize_search_engine(engine STRING) AS (
     CASE
       WHEN engine IS NULL THEN NULL
       WHEN STARTS_WITH(engine, 'google')
@@ -41,6 +35,12 @@ CREATE TEMP FUNCTION
       ELSE 'Other'
     END
   );
+CREATE TEMP FUNCTION udf_parse_iso8601_date(date_str STRING) RETURNS DATE AS (
+  COALESCE(
+    SAFE.PARSE_DATE('%F', SAFE.SUBSTR(date_str, 0, 10)),
+    SAFE.PARSE_DATE('%Y%m%d', SAFE.SUBSTR(date_str, 0, 8))
+  )
+);
 --
 -- Older versions separate source and engine with an underscore instead of period
 -- Return array of form [source, engine] if key is valid, empty array otherwise
@@ -207,6 +207,6 @@ unfiltered_search_clients AS (
 
 SELECT
   *,
-  udf_strict_normalize_search_engine(engine) AS normalized_engine
+  udf_normalize_search_engine(engine) AS normalized_engine
 FROM
   unfiltered_search_clients

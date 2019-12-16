@@ -1,7 +1,7 @@
 WITH
   _derived_search_cols AS (
     SELECT
-      udf_strict_normalize_search_engine(engine) AS short_engine,
+      udf_normalize_search_engine(engine) AS short_engine,
       COALESCE(organic, 0) + COALESCE(sap, 0) + COALESCE(unknown, 0) + COALESCE(tagged_sap, 0) + COALESCE(tagged_follow_on, 0) AS total_searches,
       COALESCE(tagged_sap, 0) + COALESCE(tagged_follow_on, 0) AS tagged_searches,
       COALESCE(ad_click, 0) AS ad_click,

@@ -22,7 +22,8 @@ SELECT
   os,
   os_version,
   IFNULL(client_count, 0) AS client_count,
-  NULL AS default_private_search_engine
+  NULL AS default_private_search_engine,
+  NULL AS normalized_engine
 FROM
   `moz-fx-data-derived-datasets.search.search_aggregates_v6`
 WHERE

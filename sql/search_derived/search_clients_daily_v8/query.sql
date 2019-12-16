@@ -15,6 +15,26 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
+CREATE TEMP FUNCTION
+  udf_strict_normalize_search_engine(engine STRING) AS (
+    CASE
+      WHEN engine IS NULL THEN NULL
+      WHEN STARTS_WITH(engine, 'google')
+      OR STARTS_WITH(engine, 'Google')
+      OR STARTS_WITH(engine, 'other-Google') THEN 'Google'
+      WHEN STARTS_WITH(engine, 'ddg')
+      OR STARTS_WITH(engine, 'duckduckgo')
+      OR STARTS_WITH(engine, 'DuckDuckGo')
+      OR STARTS_WITH(engine, 'other-DuckDuckGo') THEN 'DuckDuckGo'
+      WHEN STARTS_WITH(engine, 'bing')
+      OR STARTS_WITH(engine, 'Bing')
+      OR STARTS_WITH(engine, 'other-Bing') THEN 'Bing'
+      WHEN STARTS_WITH(engine, 'yandex')
+      OR STARTS_WITH(engine, 'Yandex')
+      OR STARTS_WITH(engine, 'other-Yandex') THEN 'Yandex'
+      ELSE 'Other'
+    END
+  );
 --
 -- Return the version of the search addon if it exists, null otherwise
 CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
@@ -127,6 +147,7 @@ WITH
     submission_date,
     client_id,
     engine,
+    udf_strict_normalize_search_engine(engine) AS normalized_engine,
     source,
     udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
     udf_mode_last(ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1) AS addon_version,

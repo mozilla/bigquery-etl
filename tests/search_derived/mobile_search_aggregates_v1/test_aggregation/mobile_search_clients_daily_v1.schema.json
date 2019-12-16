@@ -16,6 +16,11 @@
   },
   {
     "type": "STRING",
+    "name": "normalized_engine",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
     "name": "source",
     "mode": "NULLABLE"
   },

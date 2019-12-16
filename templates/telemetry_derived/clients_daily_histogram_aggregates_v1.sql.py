@@ -115,7 +115,6 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause):
 
         {additional_queries}
 
-        -- Aggregate by client_id using windows
         aggregated AS (
             {windowed_clause}
         )
@@ -128,7 +127,6 @@ def _get_keyed_histogram_sql(probes):
     probes_struct = []
     for probe in probes:
         probes_struct.append(f"('{probe}', payload.keyed_histograms.{probe})")
-
     probes_arr = ",\n\t\t\t".join(probes_struct)
 
     probes_string = """
@@ -248,10 +246,7 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
     for probe in probes:
         agg_string = (
             "('{metric}', "
-            "'histogram', '', "
-            "'summed-histogram', "
-            "ARRAY_AGG(payload.histograms.{metric}), "
-            "ARRAY_AGG(payload.histograms.{metric}))"
+            "payload.histograms.{metric})"
         )
         probe_structs.append(agg_string.format(metric=probe))
 
@@ -259,11 +254,7 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
     probes_string = f"""
             ARRAY<STRUCT<
                 metric STRING,
-                metric_type STRING,
-                key STRING,
-                agg_type STRING,
-                bucket_range ARRAY<STRING>,
-                value ARRAY<STRING>
+                value STRING
             >> [
             {probes_arr}
         ] AS histogram_aggregates
@@ -273,41 +264,76 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
         "select_clause"
     ] = f"""
         SELECT
-            * REPLACE (
-                ARRAY(
-                SELECT AS STRUCT
-                    * REPLACE (
-                      udf_aggregate_json_sum(value) AS value,
-                      udf_get_bucket_range(bucket_range) AS bucket_range,
-                      udf_get_histogram_type(bucket_range) AS metric_type
-                    )
-                FROM
-                    UNNEST(histogram_aggregates)
-                ) AS histogram_aggregates
-            )
-        FROM
-            aggregated
+          client_id,
+          submission_date,
+          os,
+          app_version,
+          app_build_id,
+          channel,
+          ARRAY_AGG(STRUCT<
+            metric STRING,
+            metric_type STRING,
+            key STRING,
+            agg_type STRING,
+            bucket_range STRUCT<first_bucket INT64, last_bucket INT64, num_buckets INT64>,
+            value ARRAY<STRUCT<key STRING, value INT64>>
+          > (metric,
+            udf_get_histogram_type(value),
+            '',
+            'summed_histogram',
+            udf_get_bucket_range(value),
+            udf_aggregate_json_sum(value))) AS histogram_aggregates
+        FROM aggregated
+        GROUP BY
+          1, 2, 3, 4, 5, 6
+
+    """
+
+    sql_strings["additional_queries"] = f"""
+        histograms AS (
+            SELECT
+                client_id,
+                submission_date,
+                os,
+                app_version,
+                app_build_id,
+                channel,
+                {probes_string}
+            FROM filtered),
+
+        filtered_aggregates AS (
+          SELECT
+            submission_date,
+            client_id,
+            os,
+            app_version,
+            app_build_id,
+            channel,
+            metric,
+            value
+          FROM histograms
+          CROSS JOIN
+            UNNEST(histogram_aggregates)
+          WHERE value IS NOT NULL
+        ),
     """
 
     sql_strings[
         "windowed_clause"
+
     ] = f"""
-        SELECT
-            DATE(submission_timestamp) as submission_date,
-            client_id,
-            normalized_os as os,
-            SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
-            application.build_id AS app_build_id,
-            normalized_channel AS channel,
-                {probes_string}
-            FROM filtered
-            GROUP BY
-                client_id,
-                DATE(submission_timestamp),
-                normalized_os,
-                SPLIT(application.version, '.')[OFFSET(0)],
-                application.build_id,
-                normalized_channel
+      SELECT
+        client_id,
+        submission_date,
+        os,
+        app_version,
+        app_build_id,
+        channel,
+        metric,
+        ARRAY_AGG(value) AS value
+      FROM filtered_aggregates
+      GROUP BY
+        1, 2, 3, 4, 5, 6, 7
     """
 
     return sql_strings

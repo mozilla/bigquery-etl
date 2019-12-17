@@ -101,7 +101,7 @@ def get_survey_data(survey_id, date_string, token, secret):
     return ret
 
 
-def insert_to_bq(data, table, date, write_disposition=bigquery.job.WriteDisposition.WRITE_APPEND):
+def insert_to_bq(data, table, date, write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE):
     client = bigquery.Client()
     print(f"Inserting {len(data)} rows into bigquery")
     job_config = bigquery.LoadJobConfig(write_disposition=write_disposition)

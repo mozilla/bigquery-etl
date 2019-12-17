@@ -279,8 +279,13 @@ percentiles AS (
     client_agg_type)
 
 SELECT *
-REPLACE(udf_get_values(
-  [5.0, 25.0, 50.0, 75.0, 95.0],
-  aggregates
-) AS aggregates)
+  REPLACE(
+    [STRUCT<bucket_type STRING, value ARRAY<STRUCT<key STRING, value FLOAT64>>>(
+      'default',
+      udf_get_values(
+        [5.0, 25.0, 50.0, 75.0, 95.0],
+        aggregates
+      )
+    )] AS aggregates
+  )
 FROM percentiles

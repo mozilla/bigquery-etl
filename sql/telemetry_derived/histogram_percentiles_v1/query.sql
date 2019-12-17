@@ -45,14 +45,15 @@ SELECT *
   EXCEPT(aggregates)
   REPLACE('percentiles' AS agg_type),
   ARRAY<STRUCT<
-      key STRING,
-      value FLOAT64
-  >> [
-    ('5', udf_percentile(5, aggregates, metric_type)),
-    ('25', udf_percentile(25, aggregates, metric_type)),
-    ('50', udf_percentile(50, aggregates, metric_type)),
-    ('75', udf_percentile(75, aggregates, metric_type)),
-    ('95', udf_percentile(95, aggregates, metric_type))
-  ] AS aggregates
-FROM client_probe_counts_v1
+    bucket_type STRING,
+    value ARRAY<STRUCT<key STRING, value FLOAT64>>
+  >>
+  [('default', [
+    ('5', udf_percentile(5, aggregates[OFFSET(0)].value, metric_type)),
+    ('25', udf_percentile(25, aggregates[OFFSET(0)].value, metric_type)),
+    ('50', udf_percentile(50, aggregates[OFFSET(0)].value, metric_type)),
+    ('75', udf_percentile(75, aggregates[OFFSET(0)].value, metric_type)),
+    ('95', udf_percentile(95, aggregates[OFFSET(0)].value, metric_type))
+  ])] AS aggregates
+FROM telemetry_derived.histogram_probe_counts_with_type
 WHERE metric_type LIKE "%histogram%"

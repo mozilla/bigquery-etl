@@ -16,7 +16,7 @@ p = argparse.ArgumentParser()
 p.add_argument(
     "--agg-type",
     type=str,
-    help="One of scalars/histograms/booleans/events",
+    help="One of histograms/keyed_histograms",
     required=True,
 )
 
@@ -125,8 +125,17 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause):
 
 def _get_keyed_histogram_sql(probes):
     probes_struct = []
-    for probe in probes:
-        probes_struct.append(f"('{probe}', payload.keyed_histograms.{probe})")
+    for probe, processes in probes.items():
+        for process in processes:
+            probe_location = (f"payload.keyed_histograms.{probe}"
+                if process == 'parent'
+                else f"payload.processes.{process}.keyed_histograms.{probe}"
+            )
+            probes_struct.append((
+                f"('{probe}', '{process}', {probe_location})"
+            ))
+
+    probes_struct.sort()
     probes_arr = ",\n\t\t\t".join(probes_struct)
 
     probes_string = """
@@ -148,6 +157,7 @@ def _get_keyed_histogram_sql(probes):
             normalized_channel AS channel,
             ARRAY<STRUCT<
                 name STRING,
+                process STRING,
                 value ARRAY<STRUCT<key STRING, value STRING>>
             >>[
               {probes_arr}
@@ -163,6 +173,7 @@ def _get_keyed_histogram_sql(probes):
               app_version,
               app_build_id,
               channel,
+              process,
               metrics.name AS metric,
               value.key AS key,
               value.value AS value
@@ -179,6 +190,7 @@ def _get_keyed_histogram_sql(probes):
             app_version,
             app_build_id,
             channel,
+            process,
             {probes_string}
             FROM flattened_metrics
             GROUP BY
@@ -188,6 +200,7 @@ def _get_keyed_histogram_sql(probes):
                 app_version,
                 app_build_id,
                 channel,
+                process,
                 metric,
                 key
     """
@@ -204,6 +217,7 @@ def _get_keyed_histogram_sql(probes):
                 metric STRING,
                 metric_type STRING,
                 key STRING,
+                process STRING,
                 agg_type STRING,
                 bucket_range STRUCT<
                     first_bucket INT64,
@@ -215,6 +229,7 @@ def _get_keyed_histogram_sql(probes):
                 metric,
                 udf_get_histogram_type(bucket_range),
                 key,
+                process,
                 '',
                 udf_get_bucket_range(bucket_range),
                 udf_aggregate_json_sum(value)
@@ -243,17 +258,22 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
         return _get_keyed_histogram_sql(probes)
 
     probe_structs = []
-    for probe in probes:
-        agg_string = (
-            "('{metric}', "
-            "payload.histograms.{metric})"
-        )
-        probe_structs.append(agg_string.format(metric=probe))
+    for probe, processes in probes.items():
+        for process in processes:
+            probe_location = (f"payload.histograms.{probe}"
+                if process == 'parent'
+                else f"payload.processes.{process}.histograms.{probe}"
+            )
+            probe_structs.append((
+                f"('{probe}', '{process}', {probe_location})"
+            ))
 
+    probe_structs.sort()
     probes_arr = ",\n\t\t\t".join(probe_structs)
     probes_string = f"""
             ARRAY<STRUCT<
                 metric STRING,
+                process STRING,
                 value STRING
             >> [
             {probes_arr}
@@ -274,12 +294,14 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
             metric STRING,
             metric_type STRING,
             key STRING,
+            process STRING,
             agg_type STRING,
             bucket_range STRUCT<first_bucket INT64, last_bucket INT64, num_buckets INT64>,
             value ARRAY<STRUCT<key STRING, value INT64>>
           > (metric,
             udf_get_histogram_type(value),
             '',
+            process,
             'summed_histogram',
             udf_get_bucket_range(value),
             udf_aggregate_json_sum(value))) AS histogram_aggregates
@@ -310,6 +332,7 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
             app_build_id,
             channel,
             metric,
+            process,
             value
           FROM histograms
           CROSS JOIN
@@ -330,10 +353,11 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
         app_build_id,
         channel,
         metric,
+        process,
         ARRAY_AGG(value) AS value
       FROM filtered_aggregates
       GROUP BY
-        1, 2, 3, 4, 5, 6, 7
+        1, 2, 3, 4, 5, 6, 7, 8
     """
 
     return sql_strings
@@ -342,7 +366,7 @@ def get_histogram_probes_sql_strings(probes, histogram_type):
 def get_histogram_probes(histogram_type):
     """Return relevant histogram probes."""
     project = "moz-fx-data-shared-prod"
-    main_summary_histograms = set()
+    main_summary_histograms = {}
     process = subprocess.Popen(
         [
             "bq",
@@ -362,22 +386,37 @@ def get_histogram_probes(histogram_type):
     main_summary_schema = json.loads(stdout)
 
     # Fetch the histograms field
-    histograms_field = None
+    histograms_field = []
     for field in main_summary_schema:
         if field["name"] != "payload":
             continue
 
         for payload_field in field["fields"]:
             if payload_field["name"] == histogram_type:
-                histograms_field = payload_field
-                break
+                histograms_field.append({"histograms": payload_field, "process": 'parent'})
+                continue
 
-    if histograms_field is None:
+            if payload_field["name"] == "processes":
+                for processes_field in payload_field["fields"]:
+                    if processes_field["name"] == "content":
+                        process_field = processes_field["name"]
+                        for type_field in processes_field["fields"]:
+                            if type_field["name"] == histogram_type:
+                                histograms_field.append({"histograms": type_field, "process": process_field})
+                                break
+
+    if len(histograms_field) == 0:
         return
 
-    for histogram in histograms_field.get("fields", {}):
-        if "name" in histogram:
-            main_summary_histograms.add(histogram["name"])
+    for histograms_and_process in histograms_field:
+        for histogram in histograms_and_process["histograms"].get("fields", {}):
+            histograms_dict = None
+            if "name" not in histogram:
+                continue
+
+            processes = main_summary_histograms.setdefault(histogram["name"], set())
+            processes.add(histograms_and_process["process"])
+            main_summary_histograms[histogram["name"]] = processes
 
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
         data = json.loads(url.read().decode())
@@ -386,7 +425,9 @@ def get_histogram_probes(histogram_type):
             for x in data.keys()
             if x.startswith("histogram/")
         }
-        relevant_probes = histogram_probes.intersection(main_summary_histograms)
+        relevant_probes = {
+            histogram: process for histogram, process in main_summary_histograms.items() if histogram in histogram_probes
+        }
         return relevant_probes
 
 

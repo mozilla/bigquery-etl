@@ -145,6 +145,7 @@
   ssl_handshake_result_failure_sum: 2
   ssl_handshake_result_success_sum: 2
   submission_date: '2019-01-01'
+  submission_timestamp_min: '2019-01-01T08:00:00+00:00'
   subsession_hours_sum: '2'
   sync_configured: true
   sync_count_desktop_mean: 2

@@ -16,7 +16,7 @@ CREATE TEMP FUNCTION
     LIMIT
       1 ));
 CREATE TEMP FUNCTION
-  udf_strict_normalize_search_engine(engine STRING) AS (
+  udf_normalize_search_engine(engine STRING) AS (
     CASE
       WHEN engine IS NULL THEN NULL
       WHEN STARTS_WITH(engine, 'google')
@@ -56,7 +56,7 @@ WITH
   SELECT
     client_id
   FROM
-    telemetry.main_summary
+    telemetry_derived.main_summary_v4
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -112,7 +112,7 @@ WITH
     SUM(active_ticks/(3600/5)) OVER w1 AS active_hours_sum,
     SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count
   FROM
-    telemetry.main_summary
+    telemetry_derived.main_summary_v4
   LEFT JOIN
     overactive
   USING
@@ -147,7 +147,7 @@ WITH
     submission_date,
     client_id,
     engine,
-    udf_strict_normalize_search_engine(engine) AS normalized_engine,
+    udf_normalize_search_engine(engine) AS normalized_engine,
     source,
     udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
     udf_mode_last(ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1) AS addon_version,

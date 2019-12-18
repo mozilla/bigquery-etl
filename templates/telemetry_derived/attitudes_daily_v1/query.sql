@@ -23,10 +23,11 @@ WITH
     SELECT
       *
     FROM
-      `moz-fx-data-shared-prod.external.survey_gizmo_daily_attitudes`
+      `moz-fx-data-shared-prod.telemetry_derived.survey_gizmo_daily_attitudes` AS sg
     JOIN
       heartbeat
     USING(shield_id)
+    WHERE sg.date = @submission_date
   )
 SELECT
   cd.*,

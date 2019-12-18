@@ -1,6 +1,6 @@
-CREATE
-OR REPLACE VIEW `moz-fx-data-shared-prod.monitoring.telemetry_missing_columns_v1` AS
-SELECT
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.monitoring.telemetry_missing_columns_v1`
+AS SELECT
   TIMESTAMP_TRUNC(submission_timestamp, DAY) AS day,
   'telemetry' AS document_namespace,
   REGEXP_EXTRACT(_TABLE_SUFFIX, r"^(.*)_v.*") AS document_type,

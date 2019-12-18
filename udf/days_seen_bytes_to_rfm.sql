@@ -5,10 +5,10 @@ Return the frequency, recency, and T from a BYTE array
 CREATE TEMP FUNCTION
   udf_days_seen_bytes_to_rfm(days_seen_bytes BYTES) AS (
     STRUCT(
-      udf_bits_to_days_seen_int(days_seen_bytes) AS frequency,
-      udf_bits_to_first_seen_int(days_seen_bytes) AS T,
-      udf_bits_to_first_seen_int(days_seen_bytes)
-          - udf_bits_to_last_seen_int(days_seen_bytes) AS recency
+      udf_bits_to_days_seen(days_seen_bytes) AS frequency,
+      udf_bits_to_days_since_first_seen(days_seen_bytes) AS T,
+      udf_bits_to_days_since_first_seen(days_seen_bytes)
+          - udf_bits_to_days_since_seen(days_seen_bytes) AS recency
     ));
 
 -- Tests

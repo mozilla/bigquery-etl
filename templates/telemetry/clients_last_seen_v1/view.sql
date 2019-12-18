@@ -23,7 +23,12 @@ WITH unioned AS (
     submission_date < DATE '2019-11-14'
   UNION ALL
   SELECT
-    *,
+    * REPLACE (
+      IFNULL(country, '??') AS country,
+      IFNULL(city, '??') AS city,
+      IFNULL(geo_subdivision1, '??') AS geo_subdivision1,
+      IFNULL(geo_subdivision2, '??') AS geo_subdivision2
+    ),
     -- TODO: Remove this temporary field once we transition the off the underlying
     -- clients_last_seen_v1 table that uses string sample_id.
     CAST(sample_id AS STRING) AS _sample_id_string

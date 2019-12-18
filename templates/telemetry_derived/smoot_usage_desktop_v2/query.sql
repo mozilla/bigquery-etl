@@ -3,20 +3,20 @@ WITH
   SELECT
     * REPLACE(normalized_channel AS channel)
   FROM
-    `moz-fx-data-derived-datasets.telemetry.clients_last_seen_raw_v1`),
+    telemetry.clients_last_seen),
   --
   nested AS (
   SELECT
     submission_date,
     [
     STRUCT('Any Firefox Desktop Activity' AS usage,
-      udf_smoot_usage_from_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+      udf_smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
         days_seen_bits))) AS metrics),
     STRUCT('Firefox Desktop Visited 5 URI' AS usage,
-      udf_smoot_usage_from_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+      udf_smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
           days_visited_5_uri_bits))) AS metrics),
     STRUCT('Firefox Desktop Opened Dev Tools' AS usage,
-      udf_smoot_usage_from_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+      udf_smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
           days_opened_dev_tools_bits))) AS metrics)
     ] AS metrics_array,
     MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,

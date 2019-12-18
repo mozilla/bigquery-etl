@@ -1,0 +1,13 @@
+os_name,normalized_os_name
+Windows_NT,Windows
+Windows_98,Windows
+Windows_95,Windows
+Darwin,Mac
+Android,Android
+iOS,iOS
+iPhoneOS,iOS
+Linux,Linux
+SunOS,Linux
+OpenBSD,Linux
+FreeBSD,Linux
+NetBSD,Linux

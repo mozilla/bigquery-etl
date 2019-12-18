@@ -50,6 +50,7 @@ def generate_sql(
 
         {additional_queries}
 
+        -- Using `min` for when `agg_type` is `count` returns null when all rows are null
         aggregated AS (
             SELECT
                 submission_date,
@@ -213,7 +214,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         MIN(value) AS min,
         AVG(value) AS avg,
         SUM(value) AS sum,
-        COUNT(*) AS count
+        IF(MIN(value) IS NULL, NULL, COUNT(*)) AS count
     """
 
     sql_strings[
@@ -279,21 +280,21 @@ def get_scalar_probes_sql_strings(probes, scalar_type):
             f"('{probe}', 'scalar', '', 'sum', "
             f"sum(CAST(payload.processes.parent.scalars.{probe} AS INT64)))")
         )
-        probe_structs.append(f"('{probe}', 'scalar', '', 'count', count(*))")
+        probe_structs.append(f"('{probe}', 'scalar', '', 'count', IF(MIN(payload.processes.parent.scalars.{probe}) IS NULL, NULL, COUNT(*)))")
 
     for probe in probes["booleans"]:
         probe_structs.append(
             (
                 f"('{probe}', 'boolean', '', 'false', "
-                f"sum(case when payload.processes.parent.scalars.{probe} = False "
-                "then 1 else 0 end))"
+                f"SUM(case when payload.processes.parent.scalars.{probe} = False "
+                "THEN 1 ELSE 0 END))"
             )
         )
         probe_structs.append(
             (
                 f"('{probe}', 'boolean', '', 'true', "
-                f"sum(case when payload.processes.parent.scalars.{probe} = True "
-                "then 1 else 0 end))"
+                f"SUM(case when payload.processes.parent.scalars.{probe} = True "
+                "THEN 1 ELSE 0 END))"
             )
         )
 

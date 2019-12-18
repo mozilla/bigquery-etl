@@ -73,7 +73,10 @@ CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
       type STRING,
       update_day INT64,
       is_web_extension BOOL,
-      multiprocess_compatible BOOL
+      multiprocess_compatible BOOL,
+      foreign_install INT64,
+      user_disabled INT64,
+      version STRING
     >
   >>,
   active_addons_json STRING
@@ -97,22 +100,36 @@ RETURNS ARRAY<STRUCT<
   multiprocess_compatible BOOL
 >>
 LANGUAGE js AS """
+function ifnull(value1, value2) {
+  // preserve falsey values and ignore missing values
+  if (value1 !== null && value1 !== undefined) {
+    return value1;
+  }
+  return value2;
+}
+
+function maybeParseInt(value) {
+  // return null instead of NaN on failure
+  result = parseInt(value);
+  return isNaN(result) ? null : result;
+}
+
 try {
-  const additional_properties = JSON.parse(active_addons_json) || {};
+  const additional_properties = ifnull(JSON.parse(active_addons_json), {});
   const result = [];
-  (active_addons || []).forEach((item) => {
-    const addon_json = additional_properties[item.key] || {};
-    const value = item.value || {};
+  ifnull(active_addons, []).forEach((item) => {
+    const addon_json = ifnull(additional_properties[item.key], {});
+    const value = ifnull(item.value, {});
     result.push({
       addon_id: item.key,
       blocklisted: value.blocklisted,
       name: value.name,
-      user_disabled: addon_json.userDisabled,
+      user_disabled: ifnull(maybeParseInt(value.user_disabled), addon_json.userDisabled),
       app_disabled: value.app_disabled,
-      version: addon_json.version,
+      version: ifnull(value.version, addon_json.version),
       scope: value.scope,
       type: value.type,
-      foreign_install: addon_json.foreignInstall,
+      foreign_install: ifnull(maybeParseInt(value.foreign_install), addon_json.foreignInstall),
       has_binary_components: value.has_binary_components,
       install_day: value.install_day,
       update_day: value.update_day,
@@ -254,10 +271,10 @@ SELECT
   creation_date,
   environment.partner.distribution_id,
   DATE(submission_timestamp) AS submission_date,
-  -- See bug 1550752
-  udf_boolean_histogram_to_boolean(payload.histograms.fxa_configured) AS fxa_configured,
-  -- See bug 1232050
-  udf_boolean_histogram_to_boolean(payload.histograms.weave_configured) AS sync_configured,
+  -- See bugs 1550752 and 1593773
+  ifnull(environment.services.account_enabled, udf_boolean_histogram_to_boolean(payload.histograms.fxa_configured)) AS fxa_configured,
+  -- See bugs 1232050 and 1593773
+  ifnull(environment.services.sync_enabled, udf_boolean_histogram_to_boolean(payload.histograms.weave_configured)) AS sync_configured,
   udf_histogram_max_key_with_nonzero_value(payload.histograms.weave_device_count_desktop) AS sync_count_desktop,
   udf_histogram_max_key_with_nonzero_value(payload.histograms.weave_device_count_mobile) AS sync_count_mobile,
 
@@ -339,6 +356,11 @@ SELECT
   environment.settings.default_search_engine_data.origin AS default_search_engine_data_origin,
   environment.settings.default_search_engine_data.submission_url AS default_search_engine_data_submission_url,
   environment.settings.default_search_engine,
+  environment.settings.default_private_search_engine_data.name AS default_private_search_engine_data_name,
+  environment.settings.default_private_search_engine_data.load_path AS default_private_search_engine_data_load_path,
+  environment.settings.default_private_search_engine_data.origin AS default_private_search_engine_data_origin,
+  environment.settings.default_private_search_engine_data.submission_url AS default_private_search_engine_data_submission_url,
+  environment.settings.default_private_search_engine,
 
   -- DevTools usage per bug 1262478
   udf_json_extract_histogram(payload.histograms.devtools_toolbox_opened_count).sum AS devtools_toolbox_opened_count,
@@ -419,7 +441,10 @@ SELECT
     IFNULL(environment.addons.theme.id, 'MISSING') AS addon_id,
     environment.addons.theme.app_disabled,
     environment.addons.theme.blocklisted,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.environment.addons.theme.foreignInstall') AS BOOL) AS foreign_install,
+    COALESCE(
+      environment.addons.theme.foreign_install > 0,
+      SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.environment.addons.theme.foreignInstall') AS BOOL)
+    ) AS foreign_install,
     environment.addons.theme.has_binary_components,
     environment.addons.theme.install_day,
     -- define removed fields for schema compatiblity
@@ -523,16 +548,30 @@ SELECT
   -- bug 1353114 - payload.simpleMeasurements.*
   COALESCE(
     payload.processes.parent.scalars.browser_engagement_active_ticks,
+    payload.simple_measurements.active_ticks,
     SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.activeTicks') AS INT64)
   ) AS active_ticks,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.main') AS INT64) AS main,
+  COALESCE(
+    payload.simple_measurements.main,
+    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.main') AS INT64)
+  ) AS main,
   COALESCE(
     payload.processes.parent.scalars.timestamps_first_paint,
+    payload.simple_measurements.first_paint,
     SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.firstPaint') AS INT64)
   ) AS first_paint,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.sessionRestored') AS INT64) AS session_restored,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.totalTime') AS INT64) AS total_time,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.blankWindowShown') AS INT64) AS blank_window_shown,
+  COALESCE(
+    payload.simple_measurements.session_restored,
+    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.sessionRestored') AS INT64)
+  ) AS session_restored,
+  COALESCE(
+    payload.simple_measurements.total_time,
+    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.totalTime') AS INT64)
+  ) AS total_time,
+  COALESCE(
+    payload.simple_measurements.blank_window_shown,
+    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.blankWindowShown') AS INT64)
+  ) AS blank_window_shown,
 
   -- bug 1362520 and 1526278 - plugin notifications
   SAFE_CAST(JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.1') AS INT64) AS plugins_notification_shown,

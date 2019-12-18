@@ -1,0 +1,1 @@
+Lookup table of telemetry OS name and version to normalized name and version.  OS versions are regex strings and should be matched with REGEXP_CONTAINS.

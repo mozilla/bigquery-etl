@@ -1,0 +1,122 @@
+[
+  {
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED",
+    "description": "time_partitioning_field"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_channel",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "normalized_app_name",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "application",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "version",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  {
+    "name": "sample_id",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "environment",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "addons",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "active_addons",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "value",
+                "type": "RECORD",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "is_system",
+                    "type": "BOOL",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "foreign_install",
+                    "type": "INT64",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "addon_id",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "is_web_extension",
+                    "type": "BOOL",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "install_day",
+                    "type": "INT64",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "settings",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "locale",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "profile",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "creation_date",
+            "type": "FLOAT64",
+            "mode": "NULLABLE"
+          }
+        ]
+      }
+    ]
+  }
+]

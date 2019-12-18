@@ -132,12 +132,20 @@
   scalar_parent_navigator_storage_persist_count_sum: 2
   scalar_parent_storage_sync_api_usage_extensions_using_sum: 2
   search_cohort: second
+  search_count_abouthome: 0
+  search_count_all: 0
+  search_count_contextmenu: 0
+  search_count_newtab: 0
+  search_count_searchbar: 0
+  search_count_system: 0
+  search_count_urlbar: 0
   session_restored_mean: 2
   sessions_started_on_this_day: 0
   shutdown_kill_sum: 2
   ssl_handshake_result_failure_sum: 2
   ssl_handshake_result_success_sum: 2
   submission_date: '2019-01-01'
+  submission_timestamp_min: '2019-01-01T08:00:00+00:00'
   subsession_hours_sum: '2'
   sync_configured: true
   sync_count_desktop_mean: 2
@@ -146,6 +154,7 @@
   sync_count_mobile_sum: 4
   telemetry_enabled: true
   timezone_offset: 2
+  trackers_blocked_sum: 2
   update_auto_download: true
   update_channel: second
   update_enabled: true

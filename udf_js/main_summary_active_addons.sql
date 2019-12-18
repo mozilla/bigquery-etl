@@ -2,7 +2,10 @@
 
 Add fields from additional_attributes to active_addons in main_v4.
 
-Returns an array instead of a "map" for backwards compatibility.
+Return an array instead of a "map" for backwards compatibility.
+
+The INT64 columns from BigQuery may be passed as strings, so parseInt before
+returning them if they will be coerced to BOOL.
 
 The fields from additional_attributes due to union types: integer or boolean
 for foreignInstall and userDisabled; string or number for version.
@@ -27,7 +30,10 @@ CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
       type STRING,
       update_day INT64,
       is_web_extension BOOL,
-      multiprocess_compatible BOOL
+      multiprocess_compatible BOOL,
+      foreign_install INT64,
+      user_disabled INT64,
+      version STRING
     >
   >>,
   active_addons_json STRING
@@ -51,22 +57,36 @@ RETURNS ARRAY<STRUCT<
   multiprocess_compatible BOOL
 >>
 LANGUAGE js AS """
+function ifnull(value1, value2) {
+  // preserve falsey values and ignore missing values
+  if (value1 !== null && value1 !== undefined) {
+    return value1;
+  }
+  return value2;
+}
+
+function maybeParseInt(value) {
+  // return null instead of NaN on failure
+  result = parseInt(value);
+  return isNaN(result) ? null : result;
+}
+
 try {
-  const additional_properties = JSON.parse(active_addons_json) || {};
+  const additional_properties = ifnull(JSON.parse(active_addons_json), {});
   const result = [];
-  (active_addons || []).forEach((item) => {
-    const addon_json = additional_properties[item.key] || {};
-    const value = item.value || {};
+  ifnull(active_addons, []).forEach((item) => {
+    const addon_json = ifnull(additional_properties[item.key], {});
+    const value = ifnull(item.value, {});
     result.push({
       addon_id: item.key,
       blocklisted: value.blocklisted,
       name: value.name,
-      user_disabled: addon_json.userDisabled,
+      user_disabled: ifnull(maybeParseInt(value.user_disabled), addon_json.userDisabled),
       app_disabled: value.app_disabled,
-      version: addon_json.version,
+      version: ifnull(value.version, addon_json.version),
       scope: value.scope,
       type: value.type,
-      foreign_install: addon_json.foreignInstall,
+      foreign_install: ifnull(maybeParseInt(value.foreign_install), addon_json.foreignInstall),
       has_binary_components: value.has_binary_components,
       install_day: value.install_day,
       update_day: value.update_day,
@@ -84,21 +104,82 @@ try {
 -- Tests
 WITH result AS (
   SELECT AS VALUE
-    udf_js_main_summary_active_addons(
-      [
-        (
-          'addon_id',
-          (TRUE, TRUE, '', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE)
-        )
-      ],
-      '{"addon_id":{"version":"version","userDisabled":true,"foreignInstall":true}}'
+    ARRAY_CONCAT(
+      udf_js_main_summary_active_addons(
+        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,BOOL,INT64,BOOL,STRING,INT64,INT64,STRING,INT64,BOOL,BOOL,INT64,INT64,STRING>>>[
+          -- truthy columns and additional_properties
+          ('a', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, NULL, NULL, NULL)),
+          -- falsey columns and truthy additional_properties
+          ('b', (FALSE, FALSE, '', FALSE, 0, FALSE, '', 0, 0, '', 0, FALSE, FALSE, NULL, NULL, NULL)),
+          -- falsey columns and additional_properties
+          ('c', (FALSE, FALSE, '', FALSE, 0, FALSE, '', 0, 0, '', 0, FALSE, FALSE, NULL, NULL, NULL)),
+          -- truthy columns and falsey additional_properties
+          ('d', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, NULL, NULL, NULL)),
+          -- truthy columns and missing additional_properties
+          ('e', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, 1, 1, "version")),
+          -- falsey columns and missing additional_properties
+          ('f', (FALSE, FALSE, '', FALSE, 0, FALSE, '', 0, 0, '', 0, FALSE, FALSE, 0, 0, "")),
+          -- null columns and missing additional_properties
+          ('g', (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)),
+          -- null value and ignore additional_properties
+          ('h', NULL),
+          -- null value and truthy additional_properties
+          ('i', NULL),
+          -- null value and falsey additional_properties
+          ('j', NULL)
+          -- 'k' missing value and truthy additional_properties
+        ],
+        '''{
+        "a":{"version":"version","userDisabled":true,"foreignInstall":true},
+        "b":{"version":"version","userDisabled":1,"foreignInstall":1},
+        "c":{"version":"","userDisabled":false,"foreignInstall":false},
+        "d":{"version":"","userDisabled":0,"foreignInstall":0},
+        "h":{"ignored":"ignored"},
+        "i":{"version":"version","userDisabled":true,"foreignInstall":true},
+        "j":{"version":"","userDisabled":false,"foreignInstall":false},
+        "k":{"version":"version","userDisabled":true,"foreignInstall":true}
+        }'''
+      ),
+      -- null additional properties
+      udf_js_main_summary_active_addons(
+        ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,BOOL,INT64,BOOL,STRING,INT64,INT64,STRING,INT64,BOOL,BOOL,INT64,INT64,STRING>>>[
+          -- truthy columns and null additional_properties
+          ('l', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, 1, 1, "version")),
+          -- falsey columns and null additional_properties
+          ('m', (FALSE, FALSE, '', FALSE, 0, FALSE, '', 0, 0, '', 0, FALSE, FALSE, 0, 0, "")),
+          -- null columns and additional_properties
+          ('n', NULL)
+        ],
+        NULL
+      ),
+      -- null addons and additional_properties
+      udf_js_main_summary_active_addons(NULL, NULL),
+      -- null addons and truthy additional_properties
+      udf_js_main_summary_active_addons(NULL, '{"m":{"version":"version"}}')
     )
 )
 SELECT
-  assert_equals(1, ARRAY_LENGTH(result)),
-  assert_equals(
-    ('addon_id', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE),
-    result[OFFSET(0)]
-  )
+  assert_equals(13, ARRAY_LENGTH(result)),
+  assert_equals(('a', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(0)]),
+  assert_equals(('b', FALSE, '', TRUE, FALSE, 'version', 0, '', TRUE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(1)]),
+  assert_equals(('c', FALSE, '', FALSE, FALSE, '', 0, '', FALSE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(2)]),
+  assert_equals(('d', TRUE, 'name', FALSE, TRUE, '', 1, 'type', FALSE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(3)]),
+  assert_equals(('e', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(4)]),
+  assert_equals(('f', FALSE, '', FALSE, FALSE, '', 0, '', FALSE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(5)]),
+  assert_equals('g', result[OFFSET(6)].addon_id),
+  assert_all_fields_null((SELECT AS STRUCT result[OFFSET(6)].* EXCEPT (addon_id))),
+  assert_equals('h', result[OFFSET(7)].addon_id),
+  assert_all_fields_null((SELECT AS STRUCT result[OFFSET(7)].* EXCEPT (addon_id))),
+  assert_equals(('i', "version", TRUE, TRUE), STRUCT(result[OFFSET(8)].addon_id, result[OFFSET(8)].version, result[OFFSET(8)].user_disabled, result[OFFSET(8)].foreign_install)),
+  assert_all_fields_null((SELECT AS STRUCT result[OFFSET(8)].* EXCEPT (addon_id, version, user_disabled, foreign_install))),
+  assert_equals(('j', "", FALSE, FALSE), STRUCT(result[OFFSET(9)].addon_id, result[OFFSET(9)].version, result[OFFSET(9)].user_disabled, result[OFFSET(9)].foreign_install)),
+  assert_all_fields_null((SELECT AS STRUCT result[OFFSET(9)].* EXCEPT (addon_id, version, user_disabled, foreign_install))),
+  assert_equals(('l', TRUE, 'name', TRUE, TRUE, 'version', 1, 'type', TRUE, TRUE, 2, 3, 4, TRUE, TRUE, TRUE), result[OFFSET(10)]),
+  assert_equals(('m', FALSE, '', FALSE, FALSE, '', 0, '', FALSE, FALSE, 0, 0, 0, FALSE, FALSE, FALSE), result[OFFSET(11)]),
+  assert_equals('n', result[OFFSET(12)].addon_id),
+  assert_all_fields_null((SELECT AS STRUCT result[OFFSET(12)].* EXCEPT (addon_id))),
+  null
 FROM
-  result
+  result,
+  -- use SAFE_OFFSET to get a result with all fields null
+  UNNEST([(SELECT AS STRUCT result[SAFE_OFFSET(-1)].* EXCEPT (addon_id))]) AS empty_value

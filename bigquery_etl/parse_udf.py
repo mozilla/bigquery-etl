@@ -17,6 +17,7 @@ UDF_DIRS = ("udf", "udf_js")
 UDF_CHAR = "[a-zA-z0-9_]"
 UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PRESISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
+UDF_NAME_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 
 
 @dataclass
@@ -33,9 +34,19 @@ class RawUdf:
     def from_file(filepath):
         """Read in a RawUdf from a SQL file on disk."""
         dirpath, basename = os.path.split(filepath)
-        name = os.path.basename(dirpath) + "_" + basename.replace(".sql", "")
+        prod_name = basename.replace(".sql", "")
+        internal_name = os.path.basename(dirpath) + "_" + prod_name
+
+        for name in (prod_name, internal_name):
+            if not UDF_NAME_RE.match(name):
+                raise ValueError(
+                    f"Invalid UDF name {name}: Must start with alpha char, "
+                    f"limited to chars {UDF_CHAR}, and be at most 256 chars long"
+                )
+
         with open(filepath) as f:
             text = f.read()
+
         sql = sqlparse.format(text, strip_comments=True)
         statements = [s for s in sqlparse.split(sql) if s.strip()]
         definitions = [
@@ -45,13 +56,15 @@ class RawUdf:
             s for s in statements if not s.lower().startswith("create temp function")
         ]
         dependencies = re.findall(UDF_RE, "\n".join(definitions))
-        if name not in dependencies:
+        if internal_name not in dependencies:
             raise ValueError(
-                f"Expected a temporary UDF named {name} to be defined in {filepath}"
+                f"Expected a temporary UDF named {internal_name} "
+                f"to be defined in {filepath}"
             )
-        dependencies.remove(name)
+        dependencies.remove(internal_name)
+
         return RawUdf(
-            name,
+            internal_name,
             filepath,
             definitions,
             tests,

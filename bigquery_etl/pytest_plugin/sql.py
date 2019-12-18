@@ -19,6 +19,7 @@ from ..util import (
     read,
     Table,
     TABLE_EXTENSIONS,
+    print_and_test,
 )
 
 expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}
@@ -88,14 +89,20 @@ class SqlTest(pytest.Item, pytest.File):
                     source_format = TABLE_EXTENSIONS["ndjson"]
                     source_path = (self.fspath.strpath, table_name)
                 if "." in table_name:
-                    # remove dataset from table_name
-                    original, table_name = table_name, table_name.rsplit(".", 1)[1]
+                    # combine project and dataset name with table name
+                    original, table_name = (
+                        table_name,
+                        table_name.replace(".", "_").replace("-", "_"),
+                    )
                     query = query.replace(original, table_name)
                 tables[table_name] = Table(table_name, source_format, source_path)
             elif extension == "sql":
                 if "." in table_name:
-                    # remove dataset from table_name
-                    original, table_name = table_name, table_name.rsplit(".", 1)[1]
+                    # combine project and dataset name with table name
+                    original, table_name = (
+                        table_name,
+                        table_name.replace(".", "_").replace("-", "_"),
+                    )
                     query = query.replace(original, table_name)
                 views[table_name] = read(self.fspath.strpath, resource)
 
@@ -116,9 +123,11 @@ class SqlTest(pytest.Item, pytest.File):
             load_views(bq, default_dataset, views)
 
             # configure job
+            res_table = bigquery.TableReference(default_dataset, query_name)
+
             job_config = bigquery.QueryJobConfig(
                 default_dataset=default_dataset,
-                destination=bigquery.TableReference(default_dataset, query_name),
+                destination=res_table,
                 query_parameters=get_query_params(self.fspath.strpath),
                 use_legacy_sql=False,
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
@@ -130,4 +139,4 @@ class SqlTest(pytest.Item, pytest.File):
             result.sort(key=lambda row: json.dumps(row, sort_keys=True))
             expect.sort(key=lambda row: json.dumps(row, sort_keys=True))
 
-            assert expect == result
+            print_and_test(expect, result)

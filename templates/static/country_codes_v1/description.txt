@@ -1,0 +1,1 @@
+Mapping of ISO 3166 alpha-2 country codes to country names; country codes are unique

@@ -27,7 +27,8 @@ WITH
     JOIN
       heartbeat
     USING(shield_id)
-    WHERE sg.date = @submission_date
+    WHERE
+      sg.date = @submission_date
   )
 SELECT
   cd.*,

@@ -163,6 +163,6 @@ unfiltered_search_clients AS (
 
 SELECT
   *,
-  udf_strict_normalize_search_engine(engine) AS normalized_engine
+  udf_normalize_search_engine(engine) AS normalized_engine
 FROM
   unfiltered_search_clients

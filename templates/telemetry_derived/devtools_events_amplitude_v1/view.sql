@@ -3,9 +3,10 @@ CREATE OR REPLACE VIEW
   OPTIONS(
     description="A view for extracting Devtools events to Amplitude. Compatible with event taxonomy from legacy Spark jobs."
   ) AS
-WITH event_events_v1 AS (
+WITH event_events AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
+    'event' AS doc_type,
     document_id,
     client_id,
     normalized_channel,
@@ -48,9 +49,10 @@ WITH event_events_v1 AS (
     )
   CROSS JOIN
     UNNEST(events) AS e
-), main_events_v1 AS (
+), main_events AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
+    'main' AS doc_type,
     document_id,
     client_id,
     normalized_channel,
@@ -98,82 +100,6 @@ WITH event_events_v1 AS (
     )
   CROSS JOIN
     UNNEST(events) AS e
-), main_events AS (
-  SELECT
-    submission_date,
-    'main' AS doc_type,
-    document_id,
-    client_id,
-    normalized_channel,
-    country,
-    locale,
-    app_name,
-    app_version,
-    os,
-    os_version,
-    `timestamp`,
-    sample_id,
-    event_timestamp,
-    event_category,
-    event_method,
-    event_object,
-    event_string_value,
-    event_map_values,
-    experiments,
-    event_process,
-    subsession_id,
-    session_start_time,
-    session_id,
-    env_build_arch,
-    application_build_id,
-    is_default_browser,
-    is_wow64,
-    memory_mb,
-    profile_creation_date,
-    attribution_source,
-    city
-  FROM
-    main_events_v1
-  WHERE
-    submission_date >= '2019-10-31'
-), event_events AS (
-  SELECT
-    submission_date,
-    'event' AS doc_type,
-    document_id,
-    client_id,
-    normalized_channel,
-    country,
-    locale,
-    app_name,
-    app_version,
-    os,
-    os_version,
-    `timestamp`,
-    sample_id,
-    event_timestamp,
-    event_category,
-    event_method,
-    event_object,
-    event_string_value,
-    event_map_values,
-    experiments,
-    event_process,
-    subsession_id,
-    session_start_time,
-    session_id,
-    env_build_arch,
-    application_build_id,
-    is_default_browser,
-    is_wow64,
-    memory_mb,
-    profile_creation_date,
-    attribution_source,
-    city
-  FROM
-    event_events_v1
-  WHERE
-    submission_date >= '2019-10-31'
 ), events AS (
   SELECT
     *

@@ -10,25 +10,26 @@ CREATE TEMP FUNCTION
                            curr ARRAY<STRUCT<key STRING, value STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>>>,
                            submission_date DATE) AS (ARRAY(
   WITH prev_tbl AS (
-    SELECT *
+    SELECT * REPLACE (COALESCE(key, "missing_search_engine") AS key)
     FROM UNNEST(prev)
+  ), curr_tbl AS (
+    SELECT * REPLACE (COALESCE(key, "missing_search_engine") AS key)
+    FROM UNNEST(curr)
   )
 
-  SELECT 
+  SELECT
     STRUCT(
-      key,
+      NULLIF(key, "missing_search_engine"),
       udf_add_monthly_engine_searches(
         COALESCE(p.value, udf_new_monthly_engine_searches_struct()),
         COALESCE(c.value, udf_new_monthly_engine_searches_struct()),
         submission_date) AS value
     )
   FROM
-      UNNEST(curr) AS c
+      curr_tbl AS c
   FULL OUTER JOIN
       prev_tbl AS p
       USING (key)
-
-));
 
 -- Tests
 /*
@@ -48,7 +49,10 @@ WITH previous_examples AS (
                    udf_zeroed_array(12) AS ad_click) AS value
         )] AS prev, "google" as type
     UNION ALL
-    SELECT NULL AS prev, "null" as type
+    SELECT [ STRUCT(
+            CAST(NULL AS STRING) AS key,
+            udf_new_monthly_engine_searches_struct() AS value
+        ) ] AS prev, "null" as type
 ), current_examples AS (
     SELECT
         [
@@ -69,7 +73,10 @@ WITH previous_examples AS (
 )] AS curr,
         "bing" as type
     UNION ALL
-    SELECT NULL as curr, "null" as type
+    SELECT [ STRUCT(
+            CAST(NULL AS STRING) AS key,
+            udf_new_monthly_engine_searches_struct() AS value
+        ) ] as curr, "null" as type
 ), dates AS (
     SELECT d AS date
     FROM UNNEST([DATE "2019-10-01", DATE "2019-10-02"]) AS d
@@ -116,7 +123,13 @@ WITH previous_examples AS (
       STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "bing" AS key, "total_searches" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1] AS exp),
       STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "bing" AS key, "tagged_searches" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2] AS exp),
       STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "bing" AS key, "search_with_ads" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3] AS exp),
-      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "bing" AS key, "ad_click" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4] AS exp)
+      STRUCT("google" AS p_type, "bing" AS c_type, DATE "2019-10-01" AS date, "bing" AS key, "ad_click" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4] AS exp),
+
+      -- Check NULL join
+      STRUCT("null" AS p_type, "null" AS c_type, DATE "2019-10-01" AS date, NULL AS key, "total_searches" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
+      STRUCT("null" AS p_type, "null" AS c_type, DATE "2019-10-01" AS date, NULL AS key, "tagged_searches" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
+      STRUCT("null" AS p_type, "null" AS c_type, DATE "2019-10-01" AS date, NULL AS key, "search_with_ads" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp),
+      STRUCT("null" AS p_type, "null" AS c_type, DATE "2019-10-01" AS date, NULL AS key, "ad_click" AS res_type, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] AS exp)
     ])
 )
 
@@ -126,7 +139,8 @@ SELECT
        WHEN res_type = "tagged_searches" THEN udf_get_key(res, key).tagged_searches
        WHEN res_type = "search_with_ads" THEN udf_get_key(res, key).search_with_ads
        WHEN res_type = "ad_click" THEN udf_get_key(res, key).ad_click
-  END)
+  END),
+  assert_equals(1, array_length((SELECT ARRAY_AGG(r.key) FROM UNNEST(res) AS r WHERE r.key = key)))
 FROM
   results
 INNER JOIN

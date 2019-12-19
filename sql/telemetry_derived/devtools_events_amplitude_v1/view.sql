@@ -227,60 +227,16 @@ WHERE
 SELECT
   * EXCEPT (event_map_values, event_object, event_value, event_method, event_name),
   ARRAY_CONCAT((SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')) FROM (
-  SELECT 'host' AS key, CASE
-          WHEN event_name = 'dt - open' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt - close' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_webconsole - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_webconsole - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_inspector - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_inspector - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_jsdebugger - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_jsdebugger - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_styleeditor - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_styleeditor - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_netmonitor - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_netmonitor - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_storage - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_storage - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_other - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_other - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_responsive_design - activate' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_responsive_design - deactivate' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_split_console - activate' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          WHEN event_name = 'dt_split_console - deactivate' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
-          END AS value
-      UNION ALL SELECT 'width' AS key, CASE
-          WHEN event_name = 'dt - open' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt - close' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_webconsole - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_webconsole - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_inspector - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_inspector - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_jsdebugger - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_jsdebugger - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_styleeditor - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_styleeditor - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_netmonitor - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_netmonitor - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_storage - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_storage - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_other - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_other - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_responsive_design - activate' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_responsive_design - deactivate' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_split_console - activate' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_split_console - deactivate' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_adbg - close_adbg' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          WHEN event_name = 'dt_adbg - open_adbg' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width')
-          END AS value
-      UNION ALL SELECT 'channel' AS key, normalized_channel AS value
-      UNION ALL SELECT 'app_build_id' AS key, application_build_id AS value
-      UNION ALL SELECT 'app_name' AS key, app_name AS value
-      UNION ALL SELECT 'locale' AS key, locale AS value
-      UNION ALL SELECT 'country' AS key, country AS value
-      UNION ALL SELECT 'env_build_arch' AS key, env_build_arch AS value
-      UNION ALL SELECT 'source' AS key, attribution_source AS value
-      UNION ALL SELECT 'profile_creation_date' AS key, CAST(SAFE.DATE_FROM_UNIX_DATE(CAST(profile_creation_date AS INT64)) AS STRING) AS value
+    SELECT 'host' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host') AS value
+    UNION ALL SELECT 'width' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width') AS value
+    UNION ALL SELECT 'channel' AS key, normalized_channel AS value
+    UNION ALL SELECT 'app_build_id' AS key, application_build_id AS value
+    UNION ALL SELECT 'app_name' AS key, app_name AS value
+    UNION ALL SELECT 'locale' AS key, locale AS value
+    UNION ALL SELECT 'country' AS key, country AS value
+    UNION ALL SELECT 'env_build_arch' AS key, env_build_arch AS value
+    UNION ALL SELECT 'source' AS key, attribution_source AS value
+    UNION ALL SELECT 'profile_creation_date' AS key, CAST(SAFE.DATE_FROM_UNIX_DATE(CAST(profile_creation_date AS INT64)) AS STRING) AS value
 )),
 (SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":', CAST(value AS STRING))) FROM (
     SELECT 'experiments' AS key, CONCAT('["', ARRAY_TO_STRING(experiments, '","'),'"]') AS value

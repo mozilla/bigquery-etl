@@ -30,6 +30,7 @@ CREATE TEMP FUNCTION
   FULL OUTER JOIN
       prev_tbl AS p
       USING (key)
+));
 
 -- Tests
 /*

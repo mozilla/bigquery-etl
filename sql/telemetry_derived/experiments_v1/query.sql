@@ -1,10 +1,10 @@
 SELECT
-  main_summary_v4.*,
+  main_summary.* EXCEPT (submission_date_s3),
   key AS experiment_id,
   udf.get_key(value, 'branch') AS experiment_branch,
   udf.get_key(value, 'enrollment_id') AS experiment_enrollment_id
 FROM
-  main_summary_v4
+  telemetry.main_summary
 CROSS JOIN
   UNNEST(experiments_details)
 WHERE

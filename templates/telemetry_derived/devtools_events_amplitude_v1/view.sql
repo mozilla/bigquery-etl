@@ -189,7 +189,7 @@ SELECT
         CAST(key AS STRING), '":"',
         CAST(value AS STRING), '"'))
      FROM
-       UNNEST(event_map_values)) AS event_props_1,
+       UNNEST(event_map_values)) AS event_props,
     event_map_values,
     event_object,
     event_value,
@@ -226,150 +226,6 @@ WHERE
 ), extra_props AS (
 SELECT
   * EXCEPT (event_map_values, event_object, event_value, event_method, event_name),
-  (SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')) FROM (
-      SELECT 'entrypoint' AS key, CASE
-          WHEN event_name = 'dt - open' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'entrypoint')
-          END AS value
-      UNION ALL SELECT 'first_panel' AS key, CASE
-          WHEN event_name = 'dt - open' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'first_panel')
-          END AS value
-      UNION ALL SELECT 'splitconsole' AS key, CASE
-          WHEN event_name = 'dt - open' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'splitconsole')
-          END AS value
-      UNION ALL SELECT 'shortcut' AS key, CASE
-          WHEN event_name = 'dt - open' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'shortcut')
-          END AS value
-      UNION ALL SELECT 'cold' AS key, CASE
-          WHEN event_name = 'dt_webconsole - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'cold')
-          WHEN event_name = 'dt_inspector - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'cold')
-          WHEN event_name = 'dt_jsdebugger - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'cold')
-          WHEN event_name = 'dt_styleeditor - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'cold')
-          WHEN event_name = 'dt_netmonitor - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'cold')
-          WHEN event_name = 'dt_storage - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'cold')
-          WHEN event_name = 'dt_other - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'cold')
-          END AS value
-      UNION ALL SELECT 'message_count' AS key, CASE
-          WHEN event_name = 'dt_webconsole - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'message_count')
-          END AS value
-      UNION ALL SELECT 'next_panel' AS key, CASE
-          WHEN event_name = 'dt_webconsole - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'next_panel')
-          WHEN event_name = 'dt_inspector - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'next_panel')
-          WHEN event_name = 'dt_jsdebugger - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'next_panel')
-          WHEN event_name = 'dt_styleeditor - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'next_panel')
-          WHEN event_name = 'dt_netmonitor - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'next_panel')
-          WHEN event_name = 'dt_storage - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'next_panel')
-          WHEN event_name = 'dt_other - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'next_panel')
-          END AS value
-      UNION ALL SELECT 'reason' AS key, CASE
-          WHEN event_name = 'dt_webconsole - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'reason')
-          WHEN event_name = 'dt_inspector - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'reason')
-          WHEN event_name = 'dt_jsdebugger - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'reason')
-          WHEN event_name = 'dt_jsdebugger - pause' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'reason')
-          WHEN event_name = 'dt_styleeditor - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'reason')
-          WHEN event_name = 'dt_netmonitor - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'reason')
-          WHEN event_name = 'dt_storage - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'reason')
-          WHEN event_name = 'dt_other - exit' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'reason')
-          END AS value
-      UNION ALL SELECT 'lines' AS key, CASE
-          WHEN event_name = 'dt_webconsole - execute_js' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'lines')
-          END AS value
-      UNION ALL SELECT 'trigger' AS key, CASE
-          WHEN event_name = 'dt_webconsole - filters_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'trigger')
-          WHEN event_name = 'dt_netmonitor - filters_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'trigger')
-          END AS value
-      UNION ALL SELECT 'active' AS key, CASE
-          WHEN event_name = 'dt_webconsole - filters_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'active')
-          WHEN event_name = 'dt_netmonitor - filters_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'active')
-          END AS value
-      UNION ALL SELECT 'inactive' AS key, CASE
-          WHEN event_name = 'dt_webconsole - filters_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'inactive')
-          WHEN event_name = 'dt_netmonitor - filters_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'inactive')
-          END AS value
-      UNION ALL SELECT 'start_state' AS key, CASE
-          WHEN event_name = 'dt_inspector - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'start_state')
-          WHEN event_name = 'dt_jsdebugger - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'start_state')
-          WHEN event_name = 'dt_styleeditor - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'start_state')
-          WHEN event_name = 'dt_netmonitor - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'start_state')
-          WHEN event_name = 'dt_storage - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'start_state')
-          END AS value
-      UNION ALL SELECT 'made_changes' AS key, CASE
-          WHEN event_name = 'dt_inspector - edit_html' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'made_changes')
-          END AS value
-      UNION ALL SELECT 'time_open' AS key, CASE
-          WHEN event_name = 'dt_inspector - edit_html' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'time_open')
-          END AS value
-      UNION ALL SELECT 'oldpanel' AS key, CASE
-          WHEN event_name = 'dt_inspector - sidepanel_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'oldpanel')
-          WHEN event_name = 'dt_netmonitor - sidepanel_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'oldpanel')
-          END AS value
-      UNION ALL SELECT 'newpanel' AS key, CASE
-          WHEN event_name = 'dt_inspector - sidepanel_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'newpanel')
-          WHEN event_name = 'dt_netmonitor - sidepanel_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'newpanel')
-          END AS value
-      UNION ALL SELECT 'exceptions' AS key, CASE
-          WHEN event_name = 'dt_jsdebugger - pause_on_exceptions' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'exceptions')
-          END AS value
-      UNION ALL SELECT 'caught_exceptio' AS key, CASE
-          WHEN event_name = 'dt_jsdebugger - pause_on_exceptions' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'caught_exceptio')
-          END AS value
-      UNION ALL SELECT 'lib_stacks' AS key, CASE
-          WHEN event_name = 'dt_jsdebugger - pause' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'lib_stacks')
-          END AS value
-      UNION ALL SELECT 'mode' AS key, CASE
-          WHEN event_name = 'dt_netmonitor - throttle_changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'mode')
-          END AS value
-      UNION ALL SELECT 'panel_name' AS key, CASE
-          WHEN event_name = 'dt_other - enter' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'panel_name')
-          END AS value
-      UNION ALL SELECT 'connection_type' AS key, CASE
-          WHEN event_name = 'dt_adbg - device_added' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'connection_type')
-          WHEN event_name = 'dt_adbg - device_removed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'connection_type')
-          WHEN event_name = 'dt_adbg - runtime_added' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'connection_type')
-          WHEN event_name = 'dt_adbg - runtime_connected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'connection_type')
-          WHEN event_name = 'dt_adbg - runtime_disconnected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'connection_type')
-          WHEN event_name = 'dt_adbg - runtime_removed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'connection_type')
-          END AS value
-      UNION ALL SELECT 'device_name' AS key, CASE
-          WHEN event_name = 'dt_adbg - device_added' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'device_name')
-          WHEN event_name = 'dt_adbg - device_removed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'device_name')
-          WHEN event_name = 'dt_adbg - runtime_added' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'device_name')
-          WHEN event_name = 'dt_adbg - runtime_connected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'device_name')
-          WHEN event_name = 'dt_adbg - runtime_disconnected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'device_name')
-          WHEN event_name = 'dt_adbg - runtime_removed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'device_name')
-          END AS value
-      UNION ALL SELECT 'runtime_type' AS key, CASE
-          WHEN event_name = 'dt_adbg - inspect' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_type')
-          END AS value
-      UNION ALL SELECT 'target_type' AS key, CASE
-          WHEN event_name = 'dt_adbg - inspect' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'target_type')
-          END AS value
-      UNION ALL SELECT 'runtime_id' AS key, CASE
-          WHEN event_name = 'dt_adbg - runtime_added' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_id')
-          WHEN event_name = 'dt_adbg - runtime_connected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_id')
-          WHEN event_name = 'dt_adbg - runtime_disconnected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_id')
-          WHEN event_name = 'dt_adbg - runtime_removed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_id')
-          WHEN event_name = 'dt_adbg - show_profiler' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_id')
-          WHEN event_name = 'dt_adbg - update_conn_prompt' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_id')
-          END AS value
-      UNION ALL SELECT 'runtime_name' AS key, CASE
-          WHEN event_name = 'dt_adbg - runtime_added' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_name')
-          WHEN event_name = 'dt_adbg - runtime_connected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_name')
-          WHEN event_name = 'dt_adbg - runtime_disconnected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_name')
-          WHEN event_name = 'dt_adbg - runtime_removed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_name')
-          END AS value
-      UNION ALL SELECT 'runtime_os' AS key, CASE
-          WHEN event_name = 'dt_adbg - runtime_connected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_os')
-          END AS value
-      UNION ALL SELECT 'runtime_version' AS key, CASE
-          WHEN event_name = 'dt_adbg - runtime_connected' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'runtime_version')
-          END AS value
-      UNION ALL SELECT 'page_type' AS key, CASE
-          WHEN event_name = 'dt_adbg - select_page' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'page_type')
-          END AS value
-      UNION ALL SELECT 'prompt_enabled' AS key, CASE
-          WHEN event_name = 'dt_adbg - update_conn_prompt' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'prompt_enabled')
-          END AS value
-  ) WHERE VALUE IS NOT NULL) AS event_props_2,
   ARRAY_CONCAT((SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')) FROM (
   SELECT 'host' AS key, CASE
           WHEN event_name = 'dt - open' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host')
@@ -439,11 +295,11 @@ FROM
 )
 
 SELECT
-  * EXCEPT (event_props_1, event_props_2, user_props, settings, normalized_channel, env_build_arch, sample_id, 
+  * EXCEPT (event_props, user_props, settings, normalized_channel, env_build_arch, sample_id, 
     application_build_id, app_name, locale, is_default_browser, is_wow64, memory_mb, profile_creation_date,
     attribution_source, experiments),
   CONCAT('{', ARRAY_TO_STRING((
-   SELECT ARRAY_AGG(DISTINCT e) FROM UNNEST(ARRAY_CONCAT(event_props_2)) AS e
+   SELECT ARRAY_AGG(DISTINCT e) FROM UNNEST(ARRAY_CONCAT(event_props)) AS e
   ), ","), '}') AS event_properties,
   CONCAT('{', ARRAY_TO_STRING(user_props, ","), '}') AS user_properties
 FROM extra_props

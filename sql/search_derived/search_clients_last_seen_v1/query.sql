@@ -56,16 +56,16 @@ CREATE TEMP FUNCTION
                            curr ARRAY<STRUCT<key STRING, value STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>>>,
                            submission_date DATE) AS (ARRAY(
   WITH prev_tbl AS (
-    SELECT * REPLACE (COALESCE(key, "missing_search_engine") AS key)
+    SELECT * REPLACE(COALESCE(key, "null_engine") AS key)
     FROM UNNEST(prev)
   ), curr_tbl AS (
-    SELECT * REPLACE (COALESCE(key, "missing_search_engine") AS key)
+    SELECT * REPLACE(COALESCE(key, "null_engine") AS key)
     FROM UNNEST(curr)
   )
 
   SELECT
     STRUCT(
-      NULLIF(key, "missing_search_engine"),
+      NULLIF(key, "null_engine") AS key,
       udf_add_monthly_engine_searches(
         COALESCE(p.value, udf_new_monthly_engine_searches_struct()),
         COALESCE(c.value, udf_new_monthly_engine_searches_struct()),

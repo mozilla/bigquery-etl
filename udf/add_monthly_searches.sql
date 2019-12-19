@@ -10,16 +10,16 @@ CREATE TEMP FUNCTION
                            curr ARRAY<STRUCT<key STRING, value STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>>>,
                            submission_date DATE) AS (ARRAY(
   WITH prev_tbl AS (
-    SELECT * REPLACE (COALESCE(key, "missing_search_engine") AS key)
+    SELECT * REPLACE(COALESCE(key, "null_engine") AS key)
     FROM UNNEST(prev)
   ), curr_tbl AS (
-    SELECT * REPLACE (COALESCE(key, "missing_search_engine") AS key)
+    SELECT * REPLACE(COALESCE(key, "null_engine") AS key)
     FROM UNNEST(curr)
   )
 
   SELECT
     STRUCT(
-      NULLIF(key, "missing_search_engine"),
+      NULLIF(key, "null_engine") AS key,
       udf_add_monthly_engine_searches(
         COALESCE(p.value, udf_new_monthly_engine_searches_struct()),
         COALESCE(c.value, udf_new_monthly_engine_searches_struct()),
@@ -136,13 +136,12 @@ WITH previous_examples AS (
 
 SELECT
   assert_array_equals(exp,
-  CASE WHEN res_type = "total_searches" THEN udf_get_key(res, key).total_searches
-       WHEN res_type = "tagged_searches" THEN udf_get_key(res, key).tagged_searches
-       WHEN res_type = "search_with_ads" THEN udf_get_key(res, key).search_with_ads
-       WHEN res_type = "ad_click" THEN udf_get_key(res, key).ad_click
+  CASE WHEN res_type = "total_searches" THEN udf_get_key_with_null(res, key).total_searches
+       WHEN res_type = "tagged_searches" THEN udf_get_key_with_null(res, key).tagged_searches
+       WHEN res_type = "search_with_ads" THEN udf_get_key_with_null(res, key).search_with_ads
+       WHEN res_type = "ad_click" THEN udf_get_key_with_null(res, key).ad_click
   END),
-  assert_equals(1, array_length((SELECT ARRAY_AGG(r.key) FROM UNNEST(res) AS r WHERE r.key = key)))
 FROM
   results
 INNER JOIN
-  expected USING (p_type, c_type, date)
+  expected USING (p_type, c_type, date);

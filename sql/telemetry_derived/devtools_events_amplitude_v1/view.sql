@@ -424,7 +424,7 @@ SELECT
       UNION ALL SELECT 'country' AS key, country AS value
       UNION ALL SELECT 'env_build_arch' AS key, env_build_arch AS value
       UNION ALL SELECT 'source' AS key, attribution_source AS value
-      UNION ALL SELECT 'profile_creation_date' AS key, CAST(DATE_FROM_UNIX_DATE(CAST(profile_creation_date AS INT64)) AS STRING) AS value
+      UNION ALL SELECT 'profile_creation_date' AS key, CAST(SAFE.DATE_FROM_UNIX_DATE(CAST(profile_creation_date AS INT64)) AS STRING) AS value
 )),
 (SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":', CAST(value AS STRING))) FROM (
     SELECT 'experiments' AS key, CONCAT('["', ARRAY_TO_STRING(experiments, '","'),'"]') AS value

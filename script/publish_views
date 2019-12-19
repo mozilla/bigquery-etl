@@ -5,6 +5,7 @@
 from argparse import ArgumentParser
 import logging
 import os
+import sys
 
 from google.cloud import bigquery
 import sqlparse
@@ -14,8 +15,16 @@ def process_file(client, args, filepath):
     with open(filepath) as f:
         sql = f.read()
     parsed = sqlparse.parse(sql)[0]
-    tokens = [t for t in parsed.tokens if not t.is_whitespace]
-    if tokens[0].normalized == "CREATE OR REPLACE" and tokens[1].normalized == "VIEW":
+    tokens = [
+        t
+        for t in parsed.tokens
+        if not (t.is_whitespace or isinstance(t, sqlparse.sql.Comment))
+    ]
+    is_view_statement = (
+        " ".join(tokens[0].normalized.split()) == "CREATE OR REPLACE"
+        and tokens[1].normalized == "VIEW"
+    )
+    if is_view_statement:
         target_view_orig = str(tokens[2]).strip().split()[0]
         target_view = target_view_orig
         if args.target_project:
@@ -30,6 +39,12 @@ def process_file(client, args, filepath):
         else:
             query_job.result()
             print(f"Published view {target_view}")
+    else:
+        print(
+            f"ERROR: {filepath} does not appear to be "
+            "a CREATE OR REPLACE VIEW statement! Quitting..."
+        )
+        sys.exit(1)
 
 
 def main():

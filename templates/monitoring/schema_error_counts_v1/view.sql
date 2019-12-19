@@ -1,5 +1,7 @@
-CREATE
-OR REPLACE VIEW `moz-fx-data-shared-prod.monitoring.schema_error_counts_v1` AS WITH extracted AS (
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.monitoring.schema_error_counts_v1`
+AS
+WITH extracted AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS hour,
     job_name,

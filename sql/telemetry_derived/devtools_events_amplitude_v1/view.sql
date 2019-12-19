@@ -124,58 +124,10 @@ SELECT
     client_id AS user_id,
     (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     CASE
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('open') ) AND (event_object IN ('tools') ) THEN 'dt - open' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('close') ) AND (event_object IN ('tools') ) THEN 'dt - close' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('enter') ) AND (event_object IN ('webconsole') ) THEN 'dt_webconsole - enter' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('exit') ) AND (event_object IN ('webconsole') ) THEN 'dt_webconsole - exit' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('execute_js') ) AND (event_object IN ('webconsole') ) THEN 'dt_webconsole - execute_js' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('filters_changed') ) AND (event_object IN ('webconsole') ) THEN 'dt_webconsole - filters_changed' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('jump_to_definition') ) AND (event_object IN ('webconsole') ) THEN 'dt_webconsole - jump_to_definition' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('jump_to_source') ) AND (event_object IN ('webconsole') ) THEN 'dt_webconsole - jump_to_source' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('object_expanded') ) AND (event_object IN ('webconsole') ) THEN 'dt_webconsole - object_expanded' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('persist_changed') ) AND (event_object IN ('webconsole') ) THEN 'dt_webconsole - persist_changed' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('enter') ) AND (event_object IN ('inspector') ) THEN 'dt_inspector - enter' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('exit') ) AND (event_object IN ('inspector') ) THEN 'dt_inspector - exit' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('edit_html') ) AND (event_object IN ('inspector') ) THEN 'dt_inspector - edit_html' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('sidepanel_changed') ) AND (event_object IN ('inspector') ) THEN 'dt_inspector - sidepanel_changed' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('enter') ) AND (event_object IN ('jsdebugger') ) THEN 'dt_jsdebugger - enter' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('exit') ) AND (event_object IN ('jsdebugger') ) THEN 'dt_jsdebugger - exit' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('add_breakpoint') ) AND (event_object IN ('debugger') ) THEN 'dt_jsdebugger - add_breakpoint' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('blackbox') ) AND (event_object IN ('debugger') ) THEN 'dt_jsdebugger - blackbox' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('continue') ) AND (event_object IN ('debugger') ) THEN 'dt_jsdebugger - continue' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('pause_on_exceptions') ) AND (event_object IN ('debugger') ) THEN 'dt_jsdebugger - pause_on_exceptions' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('pause') ) AND (event_object IN ('debugger') ) THEN 'dt_jsdebugger - pause' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('pretty_print') ) AND (event_object IN ('debugger') ) THEN 'dt_jsdebugger - pretty_print' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('remove_breakpoint') ) AND (event_object IN ('debugger') ) THEN 'dt_jsdebugger - remove_breakpoint' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('enter') ) AND (event_object IN ('styleeditor') ) THEN 'dt_styleeditor - enter' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('exit') ) AND (event_object IN ('styleeditor') ) THEN 'dt_styleeditor - exit' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('enter') ) AND (event_object IN ('netmonitor') ) THEN 'dt_netmonitor - enter' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('exit') ) AND (event_object IN ('netmonitor') ) THEN 'dt_netmonitor - exit' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('edit_resend') ) AND (event_object IN ('netmonitor') ) THEN 'dt_netmonitor - edit_resend' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('filters_changed') ) AND (event_object IN ('netmonitor') ) THEN 'dt_netmonitor - filters_changed' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('persist_changed') ) AND (event_object IN ('netmonitor') ) THEN 'dt_netmonitor - persist_changed' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('sidepanel_changed') ) AND (event_object IN ('netmonitor') ) THEN 'dt_netmonitor - sidepanel_changed' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('throttle_changed') ) AND (event_object IN ('netmonitor') ) THEN 'dt_netmonitor - throttle_changed' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('enter') ) AND (event_object IN ('storage') ) THEN 'dt_storage - enter' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('exit') ) AND (event_object IN ('storage') ) THEN 'dt_storage - exit' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('enter') ) AND (event_object IN ('other') ) THEN 'dt_other - enter' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('exit') ) AND (event_object IN ('other') ) THEN 'dt_other - exit' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('activate') ) AND (event_object IN ('responsive_design') ) THEN 'dt_responsive_design - activate' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('deactivate') ) AND (event_object IN ('responsive_design') ) THEN 'dt_responsive_design - deactivate' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('activate') ) AND (event_object IN ('split_console') ) THEN 'dt_split_console - activate' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('deactivate') ) AND (event_object IN ('split_console') ) THEN 'dt_split_console - deactivate' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('close_adbg') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - close_adbg' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('device_added') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - device_added' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('device_removed') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - device_removed' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('inspect') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - inspect' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('open_adbg') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - open_adbg' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('runtime_added') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - runtime_added' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('runtime_connected') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - runtime_connected' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('runtime_disconnected') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - runtime_disconnected' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('runtime_removed') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - runtime_removed' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('select_page') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - select_page' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('show_profiler') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - show_profiler' 
-        WHEN (event_category IN ('devtools.main') ) AND (event_method IN ('update_conn_prompt') ) AND (event_object IN ('aboutdebugging') ) THEN 'dt_adbg - update_conn_prompt'
+        WHEN event_object = 'tools' THEN CONCAT('dt - ',  event_method)
+        WHEN event_object = 'debugger' THEN CONCAT('dt_jsdebugger - ',  event_method)
+        WHEN event_object = 'aboutdebugging' THEN CONCAT('dt_adbg - ',  event_method)
+        WHEN event_category = 'devtools.main' THEN CONCAT('dt_', event_object, ' - ',  event_method)
     END AS event_name,
     event_timestamp AS timestamp,
     (event_timestamp + created) AS time,
@@ -214,6 +166,8 @@ FROM
 WHERE 
     (doc_type IN ('main', 'event') AND app_name = 'Firefox' AND normalized_channel IN ('nightly', 'beta', 'aurora'))
     OR (doc_type = 'event' AND app_name = 'Firefox' AND normalized_channel = 'release' AND sample_id < 50)
+    AND event_category = 'devtools.main'
+    AND event_method NOT IN ('edit_rule', 'tool_timer')
 ), all_events_with_insert_ids AS (
 SELECT
   * EXCEPT (event_category, created),

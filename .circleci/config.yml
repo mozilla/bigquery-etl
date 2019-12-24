@@ -71,17 +71,6 @@ jobs:
         command: |
           echo "${DOCKER_PASS:?}" | docker login -u "${DOCKER_USER:?}" --password-stdin
           docker push "$IMAGE"
-  lint:
-    docker:
-    - image: node:12
-    steps:
-    - checkout
-    - run:
-        name: Install dependencies
-        command: npm install
-    - run:
-        name: Lint js code
-        command: npm run lint:js
 
 workflows:
   version: 2
@@ -91,7 +80,6 @@ workflows:
         context: data-eng-circleci-tests
     - verify-generated-sql
     - dry-run-sql
-    - lint
     - deploy:
         context: data-eng-bigquery-etl-dockerhub
         requires:

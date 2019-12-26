@@ -10,12 +10,12 @@ see https://stackoverflow.com/a/42747608/1260237
 */
 
 CREATE TEMP FUNCTION
-  udf_bitpos( bits INT64 ) AS ( CAST(SAFE.LOG(bits & -bits, 2) AS INT64));
+  udf_pos_of_trailing_set_bit( bits INT64 ) AS ( CAST(SAFE.LOG(bits & -bits, 2) AS INT64));
 
 -- Tests
 
 SELECT
-  assert_null(udf_bitpos(0)),
-  assert_equals(0, udf_bitpos(1)),
-  assert_equals(3, udf_bitpos(8)),
-  assert_equals(0, udf_bitpos(8 + 1))
+  assert_null(udf_pos_of_trailing_set_bit(0)),
+  assert_equals(0, udf_pos_of_trailing_set_bit(1)),
+  assert_equals(3, udf_pos_of_trailing_set_bit(8)),
+  assert_equals(0, udf_pos_of_trailing_set_bit(8 + 1))

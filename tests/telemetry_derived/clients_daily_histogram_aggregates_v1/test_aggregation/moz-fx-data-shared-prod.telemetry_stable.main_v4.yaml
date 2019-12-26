@@ -21,7 +21,6 @@
     }
   application:
     {
-      "channel": nightly,
       "version": first,
       "build_id": first
     }

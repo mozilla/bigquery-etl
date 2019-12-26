@@ -19,6 +19,7 @@ from ..util import (
     read,
     Table,
     TABLE_EXTENSIONS,
+    print_and_test,
 )
 
 expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}
@@ -122,9 +123,11 @@ class SqlTest(pytest.Item, pytest.File):
             load_views(bq, default_dataset, views)
 
             # configure job
+            res_table = bigquery.TableReference(default_dataset, query_name)
+
             job_config = bigquery.QueryJobConfig(
                 default_dataset=default_dataset,
-                destination=bigquery.TableReference(default_dataset, query_name),
+                destination=res_table,
                 query_parameters=get_query_params(self.fspath.strpath),
                 use_legacy_sql=False,
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
@@ -136,4 +139,4 @@ class SqlTest(pytest.Item, pytest.File):
             result.sort(key=lambda row: json.dumps(row, sort_keys=True))
             expect.sort(key=lambda row: json.dumps(row, sort_keys=True))
 
-            assert expect == result
+            print_and_test(expect, result)

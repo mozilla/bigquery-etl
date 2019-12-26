@@ -1,5 +1,7 @@
-CREATE
-OR REPLACE VIEW `moz-fx-data-shared-prod.telemetry.origin_content_blocking` AS WITH most_recent AS (
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.telemetry.origin_content_blocking`
+AS
+WITH most_recent AS (
   SELECT
     * EXCEPT(_n)
   FROM

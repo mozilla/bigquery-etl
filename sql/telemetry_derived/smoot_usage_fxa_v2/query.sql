@@ -11,17 +11,17 @@ CREATE TEMP FUNCTION
   	BIT_COUNT(x & udf_bitmask_lowest_7())
   );
 CREATE TEMP FUNCTION
-  udf_bitpos( bits INT64 ) AS ( CAST(SAFE.LOG(bits & -bits, 2) AS INT64));
+  udf_pos_of_trailing_set_bit( bits INT64 ) AS ( CAST(SAFE.LOG(bits & -bits, 2) AS INT64));
 CREATE TEMP FUNCTION
-  udf_smoot_usage_from_bits(
+  udf_smoot_usage_from_28_bits(
     bit_arrays ARRAY<STRUCT<days_created_profile_bits INT64, days_active_bits INT64>>)
     AS ((
     WITH
       unnested AS (
       SELECT
         days_active_bits AS bits,
-        udf_bitpos(days_created_profile_bits) AS dnp,
-        udf_bitpos(days_active_bits) AS days_since_active,
+        udf_pos_of_trailing_set_bit(days_created_profile_bits) AS dnp,
+        udf_pos_of_trailing_set_bit(days_active_bits) AS days_since_active,
         udf_bitcount_lowest_7(days_active_bits) AS active_days_in_week
       FROM
         UNNEST(bit_arrays) )
@@ -74,7 +74,7 @@ WITH
     submission_date,
     [
     STRUCT('Any Firefox Account Activity' AS usage,
-      udf_smoot_usage_from_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+      udf_smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
         days_seen_bits))) AS metrics)
     ] AS metrics_array,
     MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,

@@ -50,10 +50,15 @@ function array_avg(arr) {
     return array_sum(arr) / arr.length;
 }
 
+function pad_array(arr, len, fill) {
+    return arr.concat(Array(len).fill(fill)).slice(0,len);
+}
+
 function sum_buckets_with_ci(n_buckets, counts_per_bucket) {
     if (counts_per_bucket.every(x => x == null)) {
       return null;
     };
+    counts_per_bucket = pad_array(counts_per_bucket, n_buckets, 0);
     counts_per_bucket = counts_per_bucket.map(x => parseInt(x));
     var total = array_sum(counts_per_bucket);
     var mean = total / n_buckets;

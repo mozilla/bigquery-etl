@@ -1,7 +1,9 @@
 -- Creates a union view to provide continuity between legacy parquet events view and new
 -- all-gcp events tables
-CREATE
-OR REPLACE VIEW `moz-fx-data-shared-prod`.telemetry.events_v1 AS WITH parquet_events AS (
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.telemetry.events_v1`
+AS
+WITH parquet_events AS (
   SELECT
     * EXCEPT (
       -- These are old fields that were removed in the parquet job but resurfaced in the BQ import

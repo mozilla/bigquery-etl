@@ -24,7 +24,7 @@ RETURNS ARRAY<FLOAT64>
 LANGUAGE js AS
 '''
   let result = [0];
-  for (let i = 1; i < nBuckets; i++) {
+  for (let i = 1; i < Math.min(nBuckets, max); i++) {
     let linearRange = (min * (nBuckets - 1 - i) + max * (i - 1)) / (nBuckets - 2);
     result.push(Math.round(linearRange));
   }

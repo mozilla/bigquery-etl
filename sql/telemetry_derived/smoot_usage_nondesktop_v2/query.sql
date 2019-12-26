@@ -11,7 +11,7 @@ CREATE TEMP FUNCTION
   	BIT_COUNT(x & udf_bitmask_lowest_7())
   );
 CREATE TEMP FUNCTION
-  udf_bitpos( bits INT64 ) AS ( CAST(SAFE.LOG(bits & -bits, 2) AS INT64));
+  udf_pos_of_trailing_set_bit( bits INT64 ) AS ( CAST(SAFE.LOG(bits & -bits, 2) AS INT64));
 CREATE TEMP FUNCTION
   udf_smoot_usage_from_28_bits(
     bit_arrays ARRAY<STRUCT<days_created_profile_bits INT64, days_active_bits INT64>>)
@@ -20,8 +20,8 @@ CREATE TEMP FUNCTION
       unnested AS (
       SELECT
         days_active_bits AS bits,
-        udf_bitpos(days_created_profile_bits) AS dnp,
-        udf_bitpos(days_active_bits) AS days_since_active,
+        udf_pos_of_trailing_set_bit(days_created_profile_bits) AS dnp,
+        udf_pos_of_trailing_set_bit(days_active_bits) AS days_since_active,
         udf_bitcount_lowest_7(days_active_bits) AS active_days_in_week
       FROM
         UNNEST(bit_arrays) )

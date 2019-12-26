@@ -1,5 +1,6 @@
-CREATE
-OR REPLACE VIEW `moz-fx-data-shared-prod.telemetry_derived.events_live` AS (
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.telemetry_derived.events_live`
+AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     document_id,

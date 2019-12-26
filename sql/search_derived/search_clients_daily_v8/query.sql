@@ -56,7 +56,7 @@ WITH
   SELECT
     client_id
   FROM
-    telemetry_derived.main_summary_v4
+    telemetry.main_summary
   WHERE
     submission_date = @submission_date
   GROUP BY
@@ -112,7 +112,7 @@ WITH
     SUM(active_ticks/(3600/5)) OVER w1 AS active_hours_sum,
     SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count
   FROM
-    telemetry_derived.main_summary_v4
+    telemetry.main_summary
   LEFT JOIN
     overactive
   USING

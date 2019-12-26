@@ -13,8 +13,8 @@ CREATE TEMP FUNCTION
       unnested AS (
       SELECT
         days_active_bits AS bits,
-        udf_bitpos(days_created_profile_bits) AS dnp,
-        udf_bitpos(days_active_bits) AS days_since_active,
+        udf_pos_of_trailing_set_bit(days_created_profile_bits) AS dnp,
+        udf_pos_of_trailing_set_bit(days_active_bits) AS days_since_active,
         udf_bitcount_lowest_7(days_active_bits) AS active_days_in_week
       FROM
         UNNEST(bit_arrays) )

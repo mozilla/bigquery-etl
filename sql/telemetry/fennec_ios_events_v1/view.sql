@@ -71,6 +71,10 @@ SELECT
         WHEN (event_category IN ('action') ) AND (event_method IN ('press') ) AND (event_object IN ('dismissed-onboarding') ) THEN 'Fennec-iOS - Dismiss onboarding screen' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('press') ) AND (event_object IN ('dismissed-onboarding-email-login') ) THEN 'Fennec-iOS - Dismiss onboarding screen on email login card' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('press') ) AND (event_object IN ('dismissed-onboarding-sign-up') ) THEN 'Fennec-iOS - Dismiss onboarding screen on sign up card'
+        WHEN NOT ( -- events above are legacy definitions, moved from the previous Spark job. Following statement captures all new, non-ignored events
+          (event_category = 'action' and event_method = 'add' and event_object = 'tab') OR
+          (event_category = 'action' and event_method = 'delete' and event_object = 'tab')
+          ) THEN CONCAT('Fennec-iOS - ', event_category, '.', event_method, '.', event_object)
     END AS event_name,
     event_timestamp AS timestamp,
     (event_timestamp + created) AS time,
@@ -132,6 +136,7 @@ SELECT
           WHEN event_name = 'Fennec-iOS - Dismiss onboarding screen on email login card' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'slide-num')
           WHEN event_name = 'Fennec-iOS - Dismiss onboarding screen on sign up card' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'slide-num')
           END AS value
+      UNION ALL SELECT 'event_value' AS key, event_value AS value
   ) WHERE VALUE IS NOT NULL) AS event_props_2,
   ARRAY_CONCAT(ARRAY<STRING>[],
     (SELECT ARRAY_AGG(
@@ -166,7 +171,7 @@ FROM
 SELECT
   * EXCEPT (event_props_1, event_props_2, user_props, settings),
   CONCAT('{', ARRAY_TO_STRING((
-   SELECT ARRAY_AGG(DISTINCT e) FROM UNNEST(ARRAY_CONCAT(event_props_1, event_props_2)) AS e
+   SELECT ARRAY_AGG(DISTINCT e) FROM UNNEST(ARRAY_CONCAT(IFNULL(event_props_1, []), IFNULL(event_props_2, []))) AS e
   ), ","), '}') AS event_properties,
   CONCAT('{', ARRAY_TO_STRING(user_props, ","), '}') AS user_properties
 FROM extra_props

@@ -11,7 +11,7 @@ python3.8 -m venv venv/
 venv/bin/pip install -r requirements.txt
 
 # run pytest with all linters and 4 workers in parallel
-venv/bin/pytest --black --docstyle --flake8 --mypy-ignore-missing-imports -n 4
+venv/bin/pytest --black --pydocstyle --flake8 --mypy-ignore-missing-imports -n 4
 ```
 
 To provide [authentication credentials for the Google Cloud API](https://cloud.google.com/docs/authentication/getting-started) the `GOOGLE_APPLICATION_CREDENTIALS` environment variable must be set to the file path of the JSON file that contains the service account key.

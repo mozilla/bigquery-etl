@@ -94,7 +94,7 @@ def make_field(source, target, s, schema_fields, keyed=False):
 
 
 def main(root):
-    """Main."""
+    """Write out a query file for scalars."""
     main_schema_json = open("main.4.bq")
     main_schema = json.load(main_schema_json)
     schema_fields = collect_fields(main_schema)

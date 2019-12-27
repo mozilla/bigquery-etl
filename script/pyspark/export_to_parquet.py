@@ -216,7 +216,7 @@ def transform_schema(table, maps_from_entries=False, bigint_columns=None):
 
 
 def main():
-    """Main."""
+    """Execute a Spark job that writes out Parquet files."""
     args = parser.parse_args()
 
     # handle --submission-date

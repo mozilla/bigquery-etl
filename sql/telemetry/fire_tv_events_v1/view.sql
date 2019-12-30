@@ -119,7 +119,7 @@ FROM
 SELECT
   * EXCEPT (event_props_1, event_props_2, user_props, settings),
   CONCAT('{', ARRAY_TO_STRING((
-   SELECT ARRAY_AGG(DISTINCT e) FROM UNNEST(ARRAY_CONCAT(event_props_1, event_props_2)) AS e
+   SELECT ARRAY_AGG(DISTINCT e) FROM UNNEST(ARRAY_CONCAT(IFNULL(event_props_1, []), IFNULL(event_props_2, []))) AS e
   ), ","), '}') AS event_properties,
   CONCAT('{', ARRAY_TO_STRING(user_props, ","), '}') AS user_properties
 FROM extra_props

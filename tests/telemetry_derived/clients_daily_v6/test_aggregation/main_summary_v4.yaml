@@ -54,6 +54,7 @@
   env_build_id: first
   env_build_version: first
   flash_version: first
+  fxa_configured: false
   gfx_features_advanced_layers_status: first
   gfx_features_d2d_status: first
   gfx_features_d3d11_status: first
@@ -113,6 +114,7 @@
   env_build_id: second
   env_build_version: second
   flash_version: second
+  fxa_configured: true
   gfx_features_advanced_layers_status: second
   gfx_features_d2d_status: second
   gfx_features_d3d11_status: second

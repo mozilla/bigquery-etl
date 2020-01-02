@@ -91,6 +91,11 @@
   },
   {
     "type": "BOOLEAN",
+    "name": "fxa_configured",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "BOOLEAN",
     "name": "sync_configured",
     "mode": "NULLABLE"
   },

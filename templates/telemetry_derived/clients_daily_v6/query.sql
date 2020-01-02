@@ -181,6 +181,7 @@ SELECT
   SUM(web_notification_shown) AS web_notification_shown_sum,
   udf_mode_last(ARRAY_AGG(windows_build_number ORDER BY `timestamp`)) AS windows_build_number,
   udf_mode_last(ARRAY_AGG(windows_ubr ORDER BY `timestamp`)) AS windows_ubr,
+  udf_mode_last(ARRAY_AGG(fxa_configured ORDER BY `timestamp`)) AS fxa_configured,
   SUM(scalar_parent_contentblocking_trackers_blocked_count) AS trackers_blocked_sum,
   TIMESTAMP_MICROS(DIV(MIN(`timestamp`), 1000)) AS submission_timestamp_min
 FROM

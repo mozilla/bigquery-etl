@@ -28,7 +28,7 @@ DEFAULT_EXCLUDE = r"*_raw"
 VIEW_QUERY_TEMPLATE = """
 SELECT
   * REPLACE(
-    `moz-fx-data-shared-prod.udf.normalize_metadata`(metadata) AS metadata)
+    {replacements})
 FROM
   `{target}`
 """
@@ -72,7 +72,7 @@ def main():
     client = bigquery.Client()
     views = get_views(client, args.patterns)
 
-    create_views_if_not_exist(views, args.exclude, args.sql_dir)
+    create_views_if_not_exist(client, views, args.exclude, args.sql_dir)
 
 
 def get_views(client, patterns):
@@ -118,7 +118,7 @@ def get_views(client, patterns):
     return views
 
 
-def create_views_if_not_exist(views, exclude, sql_dir):
+def create_views_if_not_exist(client, views, exclude, sql_dir):
     # create views unless a local file for creating the view exists
     for view, tables in views.items():
         if any(fnmatchcase(pattern, view) for pattern in exclude):
@@ -140,13 +140,29 @@ def create_views_if_not_exist(views, exclude, sql_dir):
 
         project, dataset, viewname = view.split(".")
         target = f"{view}_v{version}"
-        view_query = VIEW_QUERY_TEMPLATE.format(target=target).strip()
         view_dataset = dataset.rsplit("_", 1)[0]
         full_view_id = ".".join([project, view_dataset, viewname])
         target_file = os.path.join(sql_dir, view_dataset, viewname, "view.sql")
-        full_sql = f"CREATE OR REPLACE VIEW\n  `{full_view_id}`\nAS {view_query}\n"
 
         if not os.path.exists(target_file):
+            # We put this BQ API all inside the conditional to speed up execution
+            # in the case target files already exist.
+            table = client.get_table(target)
+            replacements = [
+                "`moz-fx-data-shared-prod.udf.normalize_metadata`(metadata)"
+                " AS metadata"
+            ]
+            if "ping_info" in (f.name for f in table.schema):
+                # If we have ping_info, this must be a Glean schema.
+                replacements += [
+                    "`moz-fx-data-shared-prod.udf.normalize_glean_ping_info`(ping_info)"
+                    " AS ping_info"
+                ]
+            replacements = ",\n    ".join(replacements)
+            view_query = VIEW_QUERY_TEMPLATE.format(
+                target=target, replacements=replacements
+            ).strip()
+            full_sql = f"CREATE OR REPLACE VIEW\n  `{full_view_id}`\nAS {view_query}\n"
             print("Creating " + target_file)
             if not os.path.exists(os.path.dirname(target_file)):
                 os.makedirs(os.path.dirname(target_file))

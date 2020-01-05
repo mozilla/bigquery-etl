@@ -123,10 +123,10 @@ class Line:
             return [self.indent_token] + self.inline_tokens
 
 
-def inline_block_format(tokens, max_inline_length=100):
+def inline_block_format(tokens, max_line_length=100):
     """Extend simple_format with inline blocks.
 
-    Inline a bracket block if it would be shorter than max_inline_length.
+    Inline a bracket block if it would be shorter than max_line_length.
 
     Do not inline bracket blocks that contain a comment.
 
@@ -142,7 +142,7 @@ def inline_block_format(tokens, max_inline_length=100):
         else:
             lines[-1].add(token)
 
-    # combine all lines in each bracket block if that fits in max_inline_length
+    # combine all lines in each bracket block that fits in max_line_length
     skip_lines = 0
     for index, line in enumerate(lines):
         if skip_lines > 0:
@@ -170,7 +170,7 @@ def inline_block_format(tokens, max_inline_length=100):
                 last_token_is_opening_bracket = isinstance(
                     line.inline_tokens[-1], OpeningBracket
                 )
-                if line_length > max_inline_length:
+                if line_length > max_line_length:
                     break
                 if line.indent_level <= indent_level:
                     # flush pending and handle next block if present

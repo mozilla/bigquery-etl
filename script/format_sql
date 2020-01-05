@@ -55,6 +55,7 @@ def main():
                 print(f"modified {path}")
                 with open(path, "w") as fp:
                     fp.write(formatted)
+                    fp.write("\n")
                 modified += 1
         print(f"{modified} file(s) modified")
         if modified:

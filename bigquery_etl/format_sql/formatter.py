@@ -7,8 +7,10 @@ from .tokenizer import (
     ClosingBracket,
     Comment,
     ExpressionSeparator,
+    FieldAccessOperator,
+    Identifier,
+    Literal,
     NewlineKeyword,
-    NoSpaceOperator,
     Operator,
     OpeningBracket,
     ReservedKeyword,
@@ -26,6 +28,8 @@ def simple_format(tokens, indent="  "):
     require_newline_before_next_token = False
     allow_space_before_next_bracket = False
     allow_space_before_next_token = False
+    prev_was_unary_operator = False
+    next_operator_is_unary = True
     indent_types = []
     for token in tokens:
         # skip original whitespace tokens
@@ -59,7 +63,10 @@ def simple_format(tokens, indent="  "):
                 allow_space_before_next_bracket or not isinstance(token, OpeningBracket)
             )
             and not isinstance(
-                token, (NoSpaceOperator, ExpressionSeparator, StatementSeparator)
+                token, (FieldAccessOperator, ExpressionSeparator, StatementSeparator)
+            )
+            and not (
+                prev_was_unary_operator and isinstance(token, (Literal, Identifier))
             )
         ):
             yield Whitespace(" ")
@@ -77,7 +84,11 @@ def simple_format(tokens, indent="  "):
                 StatementSeparator,
             ),
         )
-        allow_space_before_next_token = not isinstance(token, NoSpaceOperator)
+        allow_space_before_next_token = not isinstance(token, FieldAccessOperator)
+        prev_was_unary_operator = next_operator_is_unary and isinstance(token, Operator)
+        if not isinstance(token, Comment):
+            # format next operator as unary if there is no preceding argument
+            next_operator_is_unary = not isinstance(token, (Literal, Identifier, ClosingBracket))
         allow_space_before_next_bracket = isinstance(
             token, (SpaceBeforeBracketKeyword, Operator)
         )

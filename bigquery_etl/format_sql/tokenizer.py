@@ -9,9 +9,12 @@ TOP_LEVEL_KEYWORDS = [
     "ALTER TABLE IF EXISTS",
     "ALTER TABLE",
     "CREATE OR REPLACE TABLE",
+    "CREATE OR REPLACE VIEW",
     "CREATE TABLE IF NOT EXISTS",
+    "CREATE VIEW IF NOT EXISTS",
     "CREATE TEMP TABLE",
     "CREATE TABLE",
+    "CREATE VIEW",
     "DROP TABLE",
     "DROP VIEW",
     "CLUSTER BY",
@@ -70,6 +73,7 @@ NEWLINE_KEYWORDS = [
     "AND",
     "BETWEEN",
     "ELSE",
+    "END",
     "OR",
     "WHEN",
     "XOR",
@@ -270,9 +274,9 @@ class Literal(Token):
         # String literal
         fr"(?:r?b|b?r)?({QUOTE})(?:{STRING_CONTENT})*?\1"
         # Hexadecimal integer literal
-        "|[+-]?0[xX][0-9a-fA-F]+"
+        "|0[xX][0-9a-fA-F]+"
         # Decimal integer or float literal
-        r"|[+-]?\d+\.?\d*(?:[Ee][+-]?)?\d*"
+        r"|\d+\.?\d*(?:[Ee][+-]?)?\d*"
     )
 
 
@@ -332,8 +336,14 @@ class Operator(Token):
     pattern = re.compile(r"<<|>>|>=|<=|<>|!=|.")
 
 
-class NoSpaceOperator(Operator):
-    """Operator that should have no surrounding whitespace."""
+class FieldAccessOperator(Operator):
+    """Operator for field access.
+
+    May use whitespace different from other operators.
+
+    May be followed by an identifier that would otherwise be a reserved
+    keyword.
+    """
 
     pattern = re.compile(r"\.")
 
@@ -353,7 +363,7 @@ BIGQUERY_TOKEN_PRIORITY = [
     ClosingBracket,
     MaybeOpeningAngleBracket,
     MaybeClosingAngleBracket,
-    NoSpaceOperator,
+    FieldAccessOperator,
     ExpressionSeparator,
     StatementSeparator,
     Operator,
@@ -363,8 +373,8 @@ BIGQUERY_TOKEN_PRIORITY = [
 def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
     """Split query into a series of tokens."""
     open_angle_brackets = 0
-    sign_is_operator = False
     angle_bracket_is_operator = True
+    reserved_keyword_is_identifier = False
     while query:
         for token_type in token_priority:
             match = token_type.pattern.match(query)
@@ -382,23 +392,21 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
                     continue  # prevent matching operator as closing bracket
                 token = ClosingBracket(token.value)
                 open_angle_brackets -= 1
-            elif (
-                isinstance(token, Literal)
-                and token.value[:1] in {"+", "-"}
-                and sign_is_operator
-            ):
-                continue  # prevent number literal from consuming preceding operator
+            elif reserved_keyword_is_identifier and isinstance(token, ReservedKeyword):
+                continue  # prevent matching identifier as keyword
             yield token
             length = len(token.value)
             query = query[length:]
             # update stateful conditions for next token
             if not isinstance(token, (Comment, Whitespace)):
-                sign_is_operator = isinstance(
-                    token, (Literal, Identifier, ClosingBracket)
-                )
+                # angle brackets are operators unless already in angle bracket
+                # block or preceded by an AngleBracketKeyword
                 angle_bracket_is_operator = not (
                     open_angle_brackets > 0 or isinstance(token, AngleBracketKeyword)
                 )
+                # field access operator may be followed by an identifier that
+                # would otherwise be a reserved keyword.
+                reserved_keyword_is_identifier = isinstance(token, FieldAccessOperator)
             break
         else:
             raise ValueError(f"Could not determine next token in {query!r}")

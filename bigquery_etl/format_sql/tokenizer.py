@@ -368,37 +368,37 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
     while query:
         for token_type in token_priority:
             match = token_type.pattern.match(query)
-            if match:
-                token = token_type(match.group())
-                # handle stateful matches
-                if isinstance(token, MaybeOpeningAngleBracket):
-                    if angle_bracket_is_operator:
-                        continue  # prevent matching operator as opening bracket
-                    token = OpeningBracket(token.value)
-                    open_angle_brackets += 1
-                elif isinstance(token, MaybeClosingAngleBracket):
-                    if angle_bracket_is_operator:
-                        continue  # prevent matching operator as closing bracket
-                    token = ClosingBracket(token.value)
-                    open_angle_brackets -= 1
-                elif (
-                    isinstance(token, Literal)
-                    and token.value[:1] in {"+", "-"}
-                    and sign_is_operator
-                ):
-                    continue  # prevent number literal from consuming preceding operator
-                yield token
-                length = len(token.value)
-                query = query[length:]
-                # update stateful conditions for next token
-                if not isinstance(token, (Comment, Whitespace)):
-                    sign_is_operator = isinstance(
-                        token, (Literal, Identifier, ClosingBracket)
-                    )
-                    angle_bracket_is_operator = not (
-                        open_angle_brackets > 0
-                        or isinstance(token, AngleBracketKeyword)
-                    )
-                break
+            if not match:
+                continue
+            token = token_type(match.group())
+            # handle stateful matches
+            if isinstance(token, MaybeOpeningAngleBracket):
+                if angle_bracket_is_operator:
+                    continue  # prevent matching operator as opening bracket
+                token = OpeningBracket(token.value)
+                open_angle_brackets += 1
+            elif isinstance(token, MaybeClosingAngleBracket):
+                if angle_bracket_is_operator:
+                    continue  # prevent matching operator as closing bracket
+                token = ClosingBracket(token.value)
+                open_angle_brackets -= 1
+            elif (
+                isinstance(token, Literal)
+                and token.value[:1] in {"+", "-"}
+                and sign_is_operator
+            ):
+                continue  # prevent number literal from consuming preceding operator
+            yield token
+            length = len(token.value)
+            query = query[length:]
+            # update stateful conditions for next token
+            if not isinstance(token, (Comment, Whitespace)):
+                sign_is_operator = isinstance(
+                    token, (Literal, Identifier, ClosingBracket)
+                )
+                angle_bracket_is_operator = not (
+                    open_angle_brackets > 0 or isinstance(token, AngleBracketKeyword)
+                )
+            break
         else:
             raise ValueError(f"Could not determine next token in {query!r}")

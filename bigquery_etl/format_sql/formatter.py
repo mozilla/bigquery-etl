@@ -183,7 +183,7 @@ def inline_block_format(tokens, max_line_length=100):
                         break
 
 
-def reformat(query):
+def reformat(query, format_=inline_block_format):
     """Reformat query and return as a string."""
-    tokens = inline_block_format(tokenize(query))
+    tokens = format_(tokenize(query))
     return "".join(token.value for token in tokens)

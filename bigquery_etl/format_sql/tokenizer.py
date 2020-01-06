@@ -191,9 +191,7 @@ def _keyword_pattern(words):
     match whole words.
     """
     return re.compile(
-        "(?:"
-        + "|".join(pattern.replace(" ", r"\s+") for pattern in words)
-        + ")(?![A-Za-z_0-9])",
+        "(?:" + "|".join(pattern.replace(" ", r"\s+") for pattern in words) + r")\b",
         re.IGNORECASE,
     )
 
@@ -221,6 +219,7 @@ class Comment(Token):
     _format_on = re.compile(r"\bformat\s*:?\s*on\b")
 
     def __post_init__(self):
+        """Detect format off/on comments."""
         self.format_off = self._format_off.search(self.value) is not None
         self.format_on = self._format_on.search(self.value) is not None
 
@@ -228,19 +227,19 @@ class Comment(Token):
 class LineComment(Comment):
     """Comment that spans to the end of the current line, sans trailing whitespace."""
 
-    pattern = re.compile(r"\n?[\t ]*(?:#|--)(?:[^\s]|[^\n][^\s])*")
+    pattern = re.compile(r"\n?[^\S\n]*(#|--)([^\n]*\S)?")
 
 
 class BlockComment(Comment):
     """Comment that may span multiple lines."""
 
-    pattern = re.compile(r"(:?\n[\t ]*)?/\*.*?\*/", re.DOTALL)
+    pattern = re.compile(r"\n?[^\S\n]*/\*.*?\*/", re.DOTALL)
 
 
 class Whitespace(Token):
     """One or more whitespace characters on a single line."""
 
-    pattern = re.compile(r"\s((?!\n)\s)*")
+    pattern = re.compile(r"\s[^\S\n]*")
 
 
 class ReservedKeyword(Token):

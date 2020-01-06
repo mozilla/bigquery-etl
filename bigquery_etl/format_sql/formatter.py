@@ -148,27 +148,46 @@ class Line:
 
     @property
     def can_start_inline_block(self):
-        return self.can_format and self.last_token_is_opening_bracket
+        """Determine if this line starts a bracket block that may be inlined."""
+        return self.can_format and self.ends_with_opening_bracket
 
     @property
-    def last_token_is_opening_bracket(self):
+    def ends_with_opening_bracket(self):
+        """Determine if this line ends with an OpeningBracket."""
         return self.inline_tokens and isinstance(self.inline_tokens[-1], OpeningBracket)
 
     @property
-    def first_token_is_closing_bracket(self):
+    def starts_with_closing_bracket(self):
+        """Determine if this line starts with a ClosingBracket."""
         return self.inline_tokens and isinstance(self.inline_tokens[0], ClosingBracket)
 
 
 def inline_block_format(tokens, max_line_length=100):
-    """Extend simple_format with inline blocks.
+    """Extend simple_format to inline each bracket block if possible.
 
-    Inline a bracket block if it would be shorter than max_line_length.
+    A bracket block is a series of tokens from an opening bracket to the
+    matching closing bracket. To inline a block means to put it on a single
+    line, instead of multiple lines.
 
-    Do not inline bracket blocks that contain a comment.
+    Inline a block if the result would be shorter than max_line_length.
 
-    Implementation assumes simple_format will put opening brackets
-    at the end of the line and closing brackets at the beginning of the line,
-    unless there is a comment between them.
+    Do not inline if block if contains a comment.
+
+    For example, this formatter may convert:
+
+        IF(
+          condition,
+          value_if_true,
+          value_if_false,
+        )
+
+    to
+
+        IF(condition, value_if_true, value_if_false)
+
+    Implementation requires simple_format to put opening brackets at the end of
+    the line and closing brackets at the beginning of the line, unless there is
+    a comment between them.
     """
     # format tokens using simple_format, then group into lines
     lines = [Line()]
@@ -199,14 +218,14 @@ def inline_block_format(tokens, max_line_length=100):
             line_length = indent_level + line.inline_length
             pending_lines = 0
             pending = []
-            last_token_was_opening_bracket = line.last_token_is_opening_bracket
+            last_token_was_opening_bracket = line.ends_with_opening_bracket
             index += 1  # start on the next line
             for line in lines[index:]:
                 if not line.can_format:
                     break
                 if (
                     not last_token_was_opening_bracket
-                    and not line.first_token_is_closing_bracket
+                    and not line.starts_with_closing_bracket
                 ):
                     pending.append(Whitespace(" "))
                     line_length += 1
@@ -224,7 +243,7 @@ def inline_block_format(tokens, max_line_length=100):
                         pending = []
                     else:
                         break
-                last_token_was_opening_bracket = line.last_token_is_opening_bracket
+                last_token_was_opening_bracket = line.ends_with_opening_bracket
 
 
 def reformat(query, format_=inline_block_format):

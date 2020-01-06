@@ -121,6 +121,7 @@ RESERVED_KEYWORDS = [
     "GROUPS",
     "HASH",
     "HAVING",
+    "IFNULL",
     "IF",
     "IGNORE",
     "IN",
@@ -204,6 +205,10 @@ class Token:
     value: str
     pattern: re.Pattern = field(init=False, repr=False)
 
+    def __post_init__(self):
+        """Enable post-init for child classes."""
+        pass
+
 
 class Comment(Token):
     """Comment abstract class.
@@ -211,6 +216,13 @@ class Comment(Token):
     Comments must match preceding whitespace, but not match multiple preceding
     lines or trailing whitespace.
     """
+
+    _format_off = re.compile(r"\bformat\s*:?\s*off\b")
+    _format_on = re.compile(r"\bformat\s*:?\s*on\b")
+
+    def __post_init__(self):
+        self.format_off = self._format_off.search(self.value) is not None
+        self.format_on = self._format_on.search(self.value) is not None
 
 
 class LineComment(Comment):
@@ -237,7 +249,13 @@ class ReservedKeyword(Token):
     pattern = _keyword_pattern(RESERVED_KEYWORDS)
 
 
-class NewlineKeyword(ReservedKeyword):
+class SpaceBeforeBracketKeyword(ReservedKeyword):
+    """Keyword that should be separated by a space from a following opening bracket."""
+
+    pattern = _keyword_pattern(["AS", "IN", "EXCEPT", "REPLACE", "NOT"])
+
+
+class NewlineKeyword(SpaceBeforeBracketKeyword):
     """Keyword that should start a new line."""
 
     pattern = _keyword_pattern(NEWLINE_KEYWORDS)
@@ -253,12 +271,6 @@ class AngleBracketKeyword(ReservedKeyword):
     """Keyword indicating that if the next token is '<' it is a bracket."""
 
     pattern = _keyword_pattern(["ARRAY", "STRUCT"])
-
-
-class SpaceBeforeBracketKeyword(ReservedKeyword):
-    """Keyword that should be separated by a space from a following opening bracket."""
-
-    pattern = _keyword_pattern(["AS", "IN", "EXCEPT", "REPLACE"])
 
 
 class Identifier(Token):

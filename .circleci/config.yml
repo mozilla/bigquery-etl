@@ -41,6 +41,18 @@ jobs:
             echo "Inconsistencies between templates and generated SQL:"
             git ls-files --other --modified -x sql/*
             test `git ls-files --other --modified -x sql/* | wc -l` = 0
+  verify-format-sql:
+    docker:
+      - image: python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Verify that SQL is correctly formatted
+          command: >-
+            script/format_sql
+            --check
+            templates/telemetry_derived/main_summary_v4
+            udf/safe_crc32_uuid.sql
   dry-run-sql:
     docker:
       - image: python:3.8

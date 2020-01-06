@@ -31,17 +31,22 @@ def simple_format(tokens, indent="  "):
     prev_was_unary_operator = False
     next_operator_is_unary = True
     indent_types = []
+    can_format = True
     for token in tokens:
-        # skip original whitespace tokens
+        # skip original whitespace tokens, unless formatting is disabled
         if isinstance(token, Whitespace):
+            if not can_format:
+                yield token
             continue
 
-        # uppercase keywords and replace contained whitespace with single spaces
-        if isinstance(token, ReservedKeyword):
-            token = replace(token, value=re.sub(r"\s+", " ", token.value.upper()))
-
         # update state for current token
-        if isinstance(token, ClosingBracket):
+        if isinstance(token, Comment):
+            # enable to disable formatting
+            if can_format and token.format_off:
+                can_format = False
+            elif not can_format and token.format_on:
+                can_format = True
+        elif isinstance(token, ClosingBracket):
             # decrease indent to match last OpeningBracket
             while indent_types and indent_types.pop() is not OpeningBracket:
                 pass
@@ -51,8 +56,11 @@ def simple_format(tokens, indent="  "):
                 indent_types.pop()
 
         # yield whitespace
-        if first_token or isinstance(token, Comment):
-            pass  # no space before first token and comments contain original whitespace
+        if not can_format or isinstance(token, Comment) or first_token:
+            # no space before first token
+            # no space before comments because they contain original whitespace
+            # no new whitespace when formatting is disabled
+            pass
         elif require_newline_before_next_token or isinstance(
             token, (NewlineKeyword, ClosingBracket)
         ):
@@ -70,6 +78,10 @@ def simple_format(tokens, indent="  "):
             )
         ):
             yield Whitespace(" ")
+
+        # uppercase keywords and replace contained whitespace with single spaces
+        if isinstance(token, ReservedKeyword) and can_format:
+            token = replace(token, value=re.sub(r"\s+", " ", token.value.upper()))
 
         yield token
 
@@ -106,9 +118,10 @@ def simple_format(tokens, indent="  "):
 class Line:
     """Container for a line of tokens."""
 
-    def __init__(self, indent_token=None):
+    def __init__(self, indent_token=None, can_format=True):
         """Initialize."""
         self.indent_token = indent_token
+        self.can_format = can_format
         if indent_token is None:
             self.indent_level = 0
         else:
@@ -117,15 +130,13 @@ class Line:
                 self.indent_level -= 1
         self.inline_tokens = []
         self.inline_length = 0
-        self.contains_comment = isinstance(indent_token, Comment)
-        self.can_start_inline_block = False
+        self.can_format = can_format and not isinstance(indent_token, Comment)
 
     def add(self, token):
         """Add a token to this line."""
         self.inline_length += len(token.value)
         self.inline_tokens.append(token)
-        self.contains_comment = self.contains_comment or isinstance(token, Comment)
-        self.can_start_inline_block = isinstance(token, OpeningBracket)
+        self.can_format = self.can_format and not isinstance(token, Comment)
 
     @property
     def tokens(self):
@@ -134,6 +145,18 @@ class Line:
             return self.inline_tokens
         else:
             return [self.indent_token] + self.inline_tokens
+
+    @property
+    def can_start_inline_block(self):
+        return self.can_format and self.last_token_is_opening_bracket
+
+    @property
+    def last_token_is_opening_bracket(self):
+        return self.inline_tokens and isinstance(self.inline_tokens[-1], OpeningBracket)
+
+    @property
+    def first_token_is_closing_bracket(self):
+        return self.inline_tokens and isinstance(self.inline_tokens[0], ClosingBracket)
 
 
 def inline_block_format(tokens, max_line_length=100):
@@ -149,11 +172,20 @@ def inline_block_format(tokens, max_line_length=100):
     """
     # format tokens using simple_format, then group into lines
     lines = [Line()]
+    can_format = True
     for token in simple_format(tokens):
         if token.value.startswith("\n"):
-            lines.append(Line(token))
+            lines.append(Line(token, can_format))
         else:
             lines[-1].add(token)
+        if isinstance(token, Comment):
+            if can_format and token.format_off:
+                # disable formatting for current and following lines
+                lines[-1].can_format = False
+                can_format = False
+            elif not can_format and token.format_on:
+                # enable formatting for following lines
+                can_format = True
 
     # combine all lines in each bracket block that fits in max_line_length
     skip_lines = 0
@@ -167,22 +199,20 @@ def inline_block_format(tokens, max_line_length=100):
             line_length = indent_level + line.inline_length
             pending_lines = 0
             pending = []
-            last_token_is_opening_bracket = True
-            index = index + 1  # start on the next line
+            last_token_was_opening_bracket = line.last_token_is_opening_bracket
+            index += 1  # start on the next line
             for line in lines[index:]:
-                if line.contains_comment:
+                if not line.can_format:
                     break
-                if not last_token_is_opening_bracket and not isinstance(
-                    line.inline_tokens[0], ClosingBracket
+                if (
+                    not last_token_was_opening_bracket
+                    and not line.first_token_is_closing_bracket
                 ):
                     pending.append(Whitespace(" "))
                     line_length += 1
                 pending_lines += 1
                 pending.extend(line.inline_tokens)
                 line_length += line.inline_length
-                last_token_is_opening_bracket = isinstance(
-                    line.inline_tokens[-1], OpeningBracket
-                )
                 if line_length > max_line_length:
                     break
                 if line.indent_level <= indent_level:
@@ -194,6 +224,7 @@ def inline_block_format(tokens, max_line_length=100):
                         pending = []
                     else:
                         break
+                last_token_was_opening_bracket = line.last_token_is_opening_bracket
 
 
 def reformat(query, format_=inline_block_format):

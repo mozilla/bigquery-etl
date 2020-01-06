@@ -91,6 +91,7 @@ workflows:
     - build:
         context: data-eng-circleci-tests
     - verify-generated-sql
+    - verify-format-sql
     - dry-run-sql
     - deploy:
         context: data-eng-bigquery-etl-dockerhub

@@ -16,7 +16,7 @@ from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 
 SKIP = {
     # alias identifier matched as keyword gets capitalized
-    "templates/telemetry/fxa_all_events_v1/view.sql",
+    "templates/telemetry/fxa_all_events_v1/view.sql"
 }
 
 parser = ArgumentParser(description=__doc__)
@@ -82,11 +82,6 @@ def main():
                 reformatted += 1
             else:
                 unchanged += 1
-        reformatted_files = unchanged_files = "files"
-        if reformatted == 1:
-            reformatted_files = "file"
-        if unchanged == 1:
-            unchanged_files = "file"
         print(
             ", ".join(
                 f"{number} file{'s' if number > 1 else ''}"

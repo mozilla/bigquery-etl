@@ -433,7 +433,7 @@ SELECT
       udf_json_extract_histogram(value).sum AS `count`
     FROM
       UNNEST(payload.keyed_histograms.search_counts),
-      UNNEST([REPLACE (key, 'in-content.', 'in-content:')]) AS _key,
+      UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
       UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
   ) AS search_counts,
   -- Addon and configuration settings per Bug 1290181

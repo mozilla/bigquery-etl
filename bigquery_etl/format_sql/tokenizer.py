@@ -251,7 +251,7 @@ class ReservedKeyword(Token):
 class SpaceBeforeBracketKeyword(ReservedKeyword):
     """Keyword that should be separated by a space from a following opening bracket."""
 
-    pattern = _keyword_pattern(["AS", "IN", "EXCEPT", "REPLACE", "NOT"])
+    pattern = _keyword_pattern(["AS", "IN", r"\* EXCEPT", r"\* REPLACE", "NOT"])
 
 
 class NewlineKeyword(SpaceBeforeBracketKeyword):

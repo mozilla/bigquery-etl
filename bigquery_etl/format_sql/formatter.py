@@ -88,7 +88,9 @@ def simple_format(tokens, indent="  "):
         prev_was_unary_operator = next_operator_is_unary and isinstance(token, Operator)
         if not isinstance(token, Comment):
             # format next operator as unary if there is no preceding argument
-            next_operator_is_unary = not isinstance(token, (Literal, Identifier, ClosingBracket))
+            next_operator_is_unary = not isinstance(
+                token, (Literal, Identifier, ClosingBracket)
+            )
         allow_space_before_next_bracket = isinstance(
             token, (SpaceBeforeBracketKeyword, Operator)
         )

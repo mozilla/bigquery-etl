@@ -61,7 +61,7 @@ WITH windowed AS (
     user_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
     udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    udf_mode_last(ARRAY_AGG(LANGUAGE) OVER w1) AS language,
+    udf_mode_last(ARRAY_AGG(`language`) OVER w1) AS language,
     udf_mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
     udf_mode_last(ARRAY_AGG(os_name) OVER w1) AS os_name,
     udf_mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,

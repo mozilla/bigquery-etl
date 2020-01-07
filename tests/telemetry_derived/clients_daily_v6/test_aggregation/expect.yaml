@@ -52,6 +52,7 @@
   experiments: []
   first_paint_mean: 2
   flash_version: second
+  fxa_configured: true
   gfx_features_advanced_layers_status: second
   gfx_features_d2d_status: second
   gfx_features_d3d11_status: second

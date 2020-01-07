@@ -25,7 +25,7 @@ extract_error AS (
     `moz-fx-data-shar-nonprod-efed.payload_bytes_error.*`
   WHERE
     submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY)
-AND error_type = 'ParsePayload'
+    AND error_type = 'ParsePayload'
 ),
 extracted AS (
   SELECT
@@ -50,13 +50,7 @@ FROM
       document_type,
       document_version,
       BYTE_LENGTH(error_message) = 0 AS document_decoded,
-      ARRAY_AGG(
-        extracted
-        ORDER BY
-          RAND()
-        LIMIT
-          1000
-      ) samples
+      ARRAY_AGG(extracted ORDER BY RAND() LIMIT 1000) samples
     FROM
       extracted
     GROUP BY
@@ -66,5 +60,5 @@ FROM
       document_decoded
     HAVING
       ARRAY_LENGTH(samples) > 10
-),
-UNNEST(samples) sample
+  ),
+  UNNEST(samples) sample

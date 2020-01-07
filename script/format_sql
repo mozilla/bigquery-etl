@@ -1,0 +1,102 @@
+#!/usr/bin/env python3
+
+"""Format SQL."""
+
+from argparse import ArgumentParser
+import os
+import os.path
+import sys
+
+# sys.path needs to be modified to enable package imports from parent
+# and sibling directories. Also see:
+# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from bigquery_etl.format_sql.formatter import reformat  # noqa E402
+
+
+SKIP = {
+    # alias identifier matched as keyword gets capitalized
+    "templates/telemetry/fxa_all_events_v1/view.sql"
+}
+
+parser = ArgumentParser(description=__doc__)
+parser.add_argument(
+    "paths",
+    metavar="PATH",
+    nargs="*",
+    help="file or directory to format;"
+    " if not specified read from stdin and write to stdout;"
+    " recursively search directories for .sql files",
+)
+parser.add_argument(
+    "--check",
+    action="store_true",
+    help="do not write changes, just return status;"
+    " return code 0 indicates nothing would change;"
+    " return code 1 indicates some files would be reformatted",
+)
+
+
+def main():
+    args = parser.parse_args()
+    if not args.paths:
+        if sys.stdin.isatty():
+            parser.print_help()
+            print("Error: must specify PATH or provide input via stdin")
+            sys.exit(255)
+        query = sys.stdin.read()
+        formatted = reformat(query) + "\n"
+        if not args.check:
+            print(formatted, end="")
+        if args.check and query != formatted:
+            sys.exit(1)
+    else:
+        sql_files = []
+        for path in args.paths:
+            if os.path.isdir(path):
+                sql_files.extend(
+                    filepath
+                    for dirpath, _, filenames in os.walk(path)
+                    for filename in filenames
+                    if filename.endswith(".sql")
+                    for filepath in [os.path.join(dirpath, filename)]
+                    if filepath not in SKIP
+                )
+            elif path:
+                sql_files.append(path)
+        if not sql_files:
+            print("Error: no files were found to format")
+            sys.exit(255)
+        reformatted = unchanged = 0
+        for path in sql_files:
+            with open(path) as fp:
+                query = fp.read()
+            formatted = reformat(query) + "\n"
+            if query != formatted:
+                if args.check:
+                    print(f"would reformat {path}")
+                else:
+                    with open(path, "w") as fp:
+                        fp.write(formatted)
+                    print(f"reformatted {path}")
+                reformatted += 1
+            else:
+                unchanged += 1
+        print(
+            ", ".join(
+                f"{number} file{'s' if number > 1 else ''}"
+                f"{' would be' if args.check else ''} {msg}"
+                for number, msg in [
+                    (reformatted, "reformatted"),
+                    (unchanged, "left unchanged"),
+                ]
+                if number > 0
+            )
+            + "."
+        )
+        if args.check and reformatted:
+            sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

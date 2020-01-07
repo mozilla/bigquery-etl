@@ -41,6 +41,25 @@ jobs:
             echo "Inconsistencies between templates and generated SQL:"
             git ls-files --other --modified -x sql/*
             test `git ls-files --other --modified -x sql/* | wc -l` = 0
+  verify-format-sql:
+    docker:
+      - image: python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Verify that SQL is correctly formatted
+          command: >-
+            script/format_sql
+            --check
+            templates/monitoring/document_sample_nonprod_v1/query.sql
+            templates/monitoring/telemetry_missing_columns_v1/view.sql
+            templates/org_mozilla_fenix/clients_last_seen/view.sql
+            templates/org_mozilla_fenix_derived/clients_daily_v1/query.sql
+            templates/telemetry/fxa_all_events_v1/view.sql
+            templates/telemetry/fxa_users_daily_v1/query.sql
+            templates/telemetry_derived/fxa_users_services_first_seen_v1/init.sql
+            templates/telemetry_derived/main_summary_v4
+            udf/safe_crc32_uuid.sql
   dry-run-sql:
     docker:
       - image: python:3.8
@@ -71,17 +90,6 @@ jobs:
         command: |
           echo "${DOCKER_PASS:?}" | docker login -u "${DOCKER_USER:?}" --password-stdin
           docker push "$IMAGE"
-  lint:
-    docker:
-    - image: node:12
-    steps:
-    - checkout
-    - run:
-        name: Install dependencies
-        command: npm install
-    - run:
-        name: Lint js code
-        command: npm run lint:js
 
 workflows:
   version: 2
@@ -90,8 +98,8 @@ workflows:
     - build:
         context: data-eng-circleci-tests
     - verify-generated-sql
+    - verify-format-sql
     - dry-run-sql
-    - lint
     - deploy:
         context: data-eng-bigquery-etl-dockerhub
         requires:

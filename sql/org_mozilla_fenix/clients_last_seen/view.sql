@@ -1,13 +1,17 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.org_mozilla_fenix.clients_last_seen` AS
+  `moz-fx-data-shared-prod.org_mozilla_fenix.clients_last_seen`
+AS
 WITH with_days_since AS (
   SELECT
     -- We cannot use UDFs in a view, so we paste the body of udf_bitpos(bits) literally here.
     CAST(SAFE.LOG(days_seen_bits & -days_seen_bits, 2) AS INT64) AS days_since_seen,
-    CAST(SAFE.LOG(days_created_profile_bits & -days_created_profile_bits, 2) AS INT64) AS days_since_created_profile,
+    CAST(
+      SAFE.LOG(days_created_profile_bits & -days_created_profile_bits, 2) AS INT64
+    ) AS days_since_created_profile,
     *
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_derived.clients_last_seen_v1` )
+    `moz-fx-data-shared-prod.org_mozilla_fenix_derived.clients_last_seen_v1`
+)
   --
 SELECT
   -- Include date_last_seen for compatibility with existing queries.

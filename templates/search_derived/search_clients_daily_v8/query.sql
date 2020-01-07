@@ -121,6 +121,7 @@ WITH
     udf_mode_last(ARRAY_AGG(os) OVER w1) AS os,
     udf_mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
     udf_mode_last(ARRAY_AGG(channel) OVER w1) AS channel,
+    udf_mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
     udf_mode_last(ARRAY_AGG(profile_creation_date) OVER w1) AS profile_creation_date,
     udf_mode_last(ARRAY_AGG(default_search_engine) OVER w1) AS default_search_engine,
     udf_mode_last(ARRAY_AGG(default_search_engine_data_load_path) OVER w1) AS default_search_engine_data_load_path,

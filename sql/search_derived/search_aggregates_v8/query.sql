@@ -13,6 +13,7 @@ SELECT
   default_private_search_engine,
   os,
   os_version,
+  is_default_browser,
   COUNT(*) AS client_count,
   SUM(organic) AS organic,
   SUM(tagged_sap) AS tagged_sap,
@@ -40,4 +41,5 @@ GROUP BY
   default_search_engine,
   default_private_search_engine,
   os,
-  os_version
+  os_version,
+  is_default_browser

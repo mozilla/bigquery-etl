@@ -71,6 +71,11 @@
     "mode": "NULLABLE"
   },
   {
+    "type": "BOOLEAN",
+    "name": "is_default_browser",
+    "mode": "NULLABLE"
+  },
+  {
     "type": "STRING",
     "name": "default_search_engine",
     "mode": "NULLABLE"

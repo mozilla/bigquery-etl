@@ -3,6 +3,4 @@
 *.swo
 .DS_Store
 .mypy_cache/
-node_modules/
-package-lock.json
 venv/

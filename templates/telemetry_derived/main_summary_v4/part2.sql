@@ -4,370 +4,469 @@ WITH histogram_lists AS (
     udf_main_summary_scalars(payload.processes).*,
     ARRAY(
       SELECT AS STRUCT
-        udf_null_if_empty_list(udf_json_extract_int_map(JSON_EXTRACT(histogram, '$.values'))) AS list
+        udf_null_if_empty_list(
+          udf_json_extract_int_map(JSON_EXTRACT(histogram, '$.values'))
+        ) AS list
       FROM
-        UNNEST([
-          payload.histograms.a11y_consumers,
-          payload.histograms.cert_validation_success_by_ca,
-          payload.processes.content.histograms.cert_validation_success_by_ca,
-          payload.histograms.checkerboard_severity,
-          payload.processes.content.histograms.checkerboard_severity,
-          JSON_EXTRACT(additional_properties, '$.payload.processes.gpu.histograms.CHECKERBOARD_SEVERITY'),
-          payload.histograms.composite_time,
-          payload.processes.content.histograms.composite_time,
-          JSON_EXTRACT(additional_properties, '$.payload.processes.gpu.histograms.COMPOSITE_TIME'),
-          JSON_EXTRACT(additional_properties, '$.payload.processes.gpu.histograms.CONTENT_FRAME_TIME'),
-          payload.histograms.content_paint_time,
-          payload.processes.content.histograms.content_paint_time,
-          payload.histograms.cookie_behavior,
-          payload.histograms.cycle_collector_max_pause,
-          payload.processes.content.histograms.cycle_collector_max_pause,
-          payload.histograms.devtools_accessibility_picker_time_active_seconds,
-          payload.processes.content.histograms.devtools_accessibility_picker_time_active_seconds,
-          payload.histograms.devtools_accessibility_service_time_active_seconds,
-          payload.processes.content.histograms.devtools_accessibility_service_time_active_seconds,
-          payload.histograms.devtools_accessibility_time_active_seconds,
-          payload.processes.content.histograms.devtools_accessibility_time_active_seconds,
-          payload.histograms.devtools_fonteditor_n_fonts_rendered,
-          payload.histograms.devtools_fonteditor_n_font_axes,
-          payload.histograms.devtools_toolbox_time_active_seconds,
-          payload.processes.content.histograms.devtools_toolbox_time_active_seconds,
-          payload.histograms.dns_failed_lookup_time,
-          payload.histograms.dns_lookup_time,
-          payload.histograms.fx_new_window_ms,
-          payload.histograms.fx_page_load_ms_2,
-          payload.processes.content.histograms.fx_page_load_ms_2,
-          payload.histograms.fx_session_restore_restore_window_ms,
-          payload.histograms.fx_session_restore_startup_init_session_ms,
-          payload.histograms.fx_session_restore_startup_onload_initial_window_ms,
-          payload.histograms.fx_tab_close_time_anim_ms,
-          payload.histograms.fx_tab_switch_total_e10s_ms,
-          payload.histograms.fx_tab_switch_update_ms,
-          payload.histograms.fx_urlbar_selected_result_index,
-          payload.processes.content.histograms.fx_urlbar_selected_result_index,
-          payload.histograms.fx_urlbar_selected_result_type,
-          payload.processes.content.histograms.fx_urlbar_selected_result_type,
-          payload.histograms.gc_animation_ms,
-          payload.processes.content.histograms.gc_animation_ms,
-          payload.histograms.gc_max_pause_ms_2,
-          payload.processes.content.histograms.gc_max_pause_ms_2,
-          payload.histograms.geolocation_request_granted,
-          payload.processes.content.histograms.geolocation_request_granted,
-          payload.histograms.ghost_windows,
-          payload.processes.content.histograms.ghost_windows,
-          payload.histograms.gpu_process_initialization_time_ms,
-          payload.processes.content.histograms.gpu_process_initialization_time_ms,
-          JSON_EXTRACT(additional_properties, '$.payload.processes.gpu.histograms.GPU_PROCESS_INITIALIZATION_TIME_MS'),
-          payload.histograms.gpu_process_launch_time_ms_2,
-          payload.processes.content.histograms.gpu_process_launch_time_ms_2,
-          payload.histograms.http_channel_disposition,
-          payload.processes.content.histograms.http_channel_disposition,
-          payload.histograms.http_pageload_is_ssl,
-          payload.processes.content.histograms.http_pageload_is_ssl,
-          payload.histograms.http_transaction_is_ssl,
-          payload.processes.content.histograms.http_transaction_is_ssl,
-          payload.histograms.input_event_response_coalesced_ms,
-          payload.processes.content.histograms.input_event_response_coalesced_ms,
-          payload.histograms.memory_heap_allocated,
-          payload.processes.content.histograms.memory_heap_allocated,
-          payload.histograms.memory_resident_fast,
-          payload.processes.content.histograms.memory_resident_fast,
-          payload.histograms.memory_total,
-          payload.histograms.memory_unique,
-          payload.processes.content.histograms.memory_unique,
-          payload.processes.content.histograms.memory_unique_content_startup,
-          payload.histograms.memory_vsize,
-          payload.processes.content.histograms.memory_vsize,
-          payload.histograms.memory_vsize_max_contiguous,
-          payload.processes.content.histograms.memory_vsize_max_contiguous,
-          payload.histograms.network_cache_metadata_first_read_time_ms,
-          payload.processes.content.histograms.network_cache_metadata_first_read_time_ms,
-          payload.histograms.network_cache_v2_hit_time_ms,
-          payload.processes.content.histograms.network_cache_v2_hit_time_ms,
-          payload.histograms.network_cache_v2_miss_time_ms,
-          payload.processes.content.histograms.network_cache_v2_miss_time_ms,
-          payload.histograms.places_autocomplete_6_first_results_time_ms,
-          payload.histograms.plugin_shutdown_ms,
-          payload.processes.content.histograms.plugin_shutdown_ms,
-          payload.histograms.pwmgr_blocklist_num_sites,
-          payload.histograms.pwmgr_form_autofill_result,
-          payload.processes.content.histograms.pwmgr_form_autofill_result,
-          payload.histograms.pwmgr_login_last_used_days,
-          payload.histograms.pwmgr_login_page_safety,
-          payload.processes.content.histograms.pwmgr_login_page_safety,
-          payload.histograms.pwmgr_manage_opened,
-          payload.histograms.pwmgr_manage_visibility_toggled,
-          payload.histograms.pwmgr_num_passwords_per_hostname,
-          payload.histograms.pwmgr_num_saved_passwords,
-          payload.histograms.pwmgr_prompt_remember_action,
-          payload.histograms.pwmgr_prompt_update_action,
-          payload.histograms.pwmgr_saving_enabled,
-          payload.histograms.search_service_init_ms,
-          payload.histograms.ssl_handshake_result,
-          payload.processes.content.histograms.ssl_handshake_result,
-          payload.histograms.ssl_handshake_version,
-          payload.processes.content.histograms.ssl_handshake_version,
-          payload.histograms.ssl_tls12_intolerance_reason_pre,
-          payload.processes.content.histograms.ssl_tls12_intolerance_reason_pre,
-          payload.histograms.ssl_tls13_intolerance_reason_pre,
-          payload.processes.content.histograms.ssl_tls13_intolerance_reason_pre,
-          payload.processes.content.histograms.time_to_dom_complete_ms,
-          payload.processes.content.histograms.time_to_dom_content_loaded_end_ms,
-          payload.processes.content.histograms.time_to_dom_content_loaded_start_ms,
-          payload.processes.content.histograms.time_to_dom_interactive_ms,
-          payload.processes.content.histograms.time_to_dom_loading_ms,
-          payload.histograms.time_to_first_click_ms,
-          payload.processes.content.histograms.time_to_first_click_ms,
-          payload.histograms.time_to_first_interaction_ms,
-          payload.processes.content.histograms.time_to_first_interaction_ms,
-          payload.histograms.time_to_first_key_input_ms,
-          payload.processes.content.histograms.time_to_first_key_input_ms,
-          payload.histograms.time_to_first_mouse_move_ms,
-          payload.processes.content.histograms.time_to_first_mouse_move_ms,
-          payload.histograms.time_to_first_scroll_ms,
-          payload.processes.content.histograms.time_to_first_scroll_ms,
-          payload.processes.content.histograms.time_to_load_event_end_ms,
-          payload.processes.content.histograms.time_to_load_event_start_ms,
-          payload.histograms.time_to_non_blank_paint_ms,
-          payload.processes.content.histograms.time_to_non_blank_paint_ms,
-          payload.histograms.time_to_response_start_ms,
-          payload.processes.content.histograms.time_to_response_start_ms,
-          payload.histograms.touch_enabled_device,
-          payload.histograms.tracking_protection_enabled,
-          payload.histograms.update_download_code_partial,
-          payload.histograms.update_download_code_complete,
-          payload.histograms.update_bits_result_partial,
-          payload.histograms.update_bits_result_complete,
-          payload.histograms.update_state_code_partial_stage,
-          payload.histograms.update_state_code_complete_stage,
-          payload.histograms.update_status_error_code_complete_stage,
-          payload.histograms.update_status_error_code_partial_stage,
-          payload.histograms.update_state_code_partial_startup,
-          payload.histograms.update_state_code_complete_startup,
-          payload.histograms.update_status_error_code_partial_startup,
-          payload.histograms.update_status_error_code_complete_startup,
-          payload.histograms.webext_background_page_load_ms,
-          payload.histograms.webext_browseraction_popup_open_ms,
-          payload.histograms.webext_content_script_injection_ms,
-          payload.processes.content.histograms.webext_content_script_injection_ms,
-          payload.histograms.webext_extension_startup_ms,
-          payload.histograms.webext_pageaction_popup_open_ms,
-          payload.histograms.webext_storage_local_get_ms,
-          payload.processes.content.histograms.webext_storage_local_get_ms,
-          payload.histograms.webext_storage_local_set_ms,
-          payload.processes.content.histograms.webext_storage_local_set_ms,
-          payload.histograms.webvr_time_spent_viewing_in_2d,
-          payload.processes.content.histograms.webvr_time_spent_viewing_in_2d,
-          payload.histograms.webvr_time_spent_viewing_in_oculus,
-          JSON_EXTRACT(additional_properties, '$.payload.processes.gpu.histograms.WEBVR_TIME_SPENT_VIEWING_IN_OCULUS'),
-          payload.histograms.webvr_time_spent_viewing_in_openvr,
-          JSON_EXTRACT(additional_properties, '$.payload.processes.gpu.histograms.WEBVR_TIME_SPENT_VIEWING_IN_OPENVR'),
-          payload.histograms.webvr_users_view_in,
-          JSON_EXTRACT(additional_properties, '$.payload.processes.gpu.histograms.WEBVR_USERS_VIEW_IN'),
-          payload.processes.content.histograms.webvr_users_view_in,
-          payload.histograms.a11y_instantiated_flag,
-          payload.histograms.search_reset_result,
-          payload.processes.content.histograms.search_reset_result,
-          payload.histograms.gc_max_pause_ms,
-          payload.processes.content.histograms.gc_max_pause_ms,
-          payload.histograms.content_frame_time,
-          payload.processes.content.histograms.tracking_protection_enabled,
-          payload.processes.content.histograms.places_autocomplete_6_first_results_time_ms,
-          payload.processes.content.histograms.memory_total,
-          payload.processes.content.histograms.fx_session_restore_restore_window_ms,
-          payload.processes.content.histograms.fx_session_restore_startup_init_session_ms,
-          payload.processes.content.histograms.fx_session_restore_startup_onload_initial_window_ms,
-          payload.processes.content.histograms.fx_tab_close_time_anim_ms,
-          payload.processes.content.histograms.fx_tab_switch_update_ms,
-          payload.processes.content.histograms.fx_new_window_ms,
-          payload.processes.content.histograms.search_service_init_ms
-        ]) AS histogram
+        UNNEST(
+          [
+            payload.histograms.a11y_consumers,
+            payload.histograms.cert_validation_success_by_ca,
+            payload.processes.content.histograms.cert_validation_success_by_ca,
+            payload.histograms.checkerboard_severity,
+            payload.processes.content.histograms.checkerboard_severity,
+            JSON_EXTRACT(
+              additional_properties,
+              '$.payload.processes.gpu.histograms.CHECKERBOARD_SEVERITY'
+            ),
+            payload.histograms.composite_time,
+            payload.processes.content.histograms.composite_time,
+            JSON_EXTRACT(
+              additional_properties,
+              '$.payload.processes.gpu.histograms.COMPOSITE_TIME'
+            ),
+            JSON_EXTRACT(
+              additional_properties,
+              '$.payload.processes.gpu.histograms.CONTENT_FRAME_TIME'
+            ),
+            payload.histograms.content_paint_time,
+            payload.processes.content.histograms.content_paint_time,
+            payload.histograms.cookie_behavior,
+            payload.histograms.cycle_collector_max_pause,
+            payload.processes.content.histograms.cycle_collector_max_pause,
+            payload.histograms.devtools_accessibility_picker_time_active_seconds,
+            payload.processes.content.histograms.devtools_accessibility_picker_time_active_seconds,
+            payload.histograms.devtools_accessibility_service_time_active_seconds,
+            payload.processes.content.histograms.devtools_accessibility_service_time_active_seconds,
+            payload.histograms.devtools_accessibility_time_active_seconds,
+            payload.processes.content.histograms.devtools_accessibility_time_active_seconds,
+            payload.histograms.devtools_fonteditor_n_fonts_rendered,
+            payload.histograms.devtools_fonteditor_n_font_axes,
+            payload.histograms.devtools_toolbox_time_active_seconds,
+            payload.processes.content.histograms.devtools_toolbox_time_active_seconds,
+            payload.histograms.dns_failed_lookup_time,
+            payload.histograms.dns_lookup_time,
+            payload.histograms.fx_new_window_ms,
+            payload.histograms.fx_page_load_ms_2,
+            payload.processes.content.histograms.fx_page_load_ms_2,
+            payload.histograms.fx_session_restore_restore_window_ms,
+            payload.histograms.fx_session_restore_startup_init_session_ms,
+            payload.histograms.fx_session_restore_startup_onload_initial_window_ms,
+            payload.histograms.fx_tab_close_time_anim_ms,
+            payload.histograms.fx_tab_switch_total_e10s_ms,
+            payload.histograms.fx_tab_switch_update_ms,
+            payload.histograms.fx_urlbar_selected_result_index,
+            payload.processes.content.histograms.fx_urlbar_selected_result_index,
+            payload.histograms.fx_urlbar_selected_result_type,
+            payload.processes.content.histograms.fx_urlbar_selected_result_type,
+            payload.histograms.gc_animation_ms,
+            payload.processes.content.histograms.gc_animation_ms,
+            payload.histograms.gc_max_pause_ms_2,
+            payload.processes.content.histograms.gc_max_pause_ms_2,
+            payload.histograms.geolocation_request_granted,
+            payload.processes.content.histograms.geolocation_request_granted,
+            payload.histograms.ghost_windows,
+            payload.processes.content.histograms.ghost_windows,
+            payload.histograms.gpu_process_initialization_time_ms,
+            payload.processes.content.histograms.gpu_process_initialization_time_ms,
+            JSON_EXTRACT(
+              additional_properties,
+              '$.payload.processes.gpu.histograms.GPU_PROCESS_INITIALIZATION_TIME_MS'
+            ),
+            payload.histograms.gpu_process_launch_time_ms_2,
+            payload.processes.content.histograms.gpu_process_launch_time_ms_2,
+            payload.histograms.http_channel_disposition,
+            payload.processes.content.histograms.http_channel_disposition,
+            payload.histograms.http_pageload_is_ssl,
+            payload.processes.content.histograms.http_pageload_is_ssl,
+            payload.histograms.http_transaction_is_ssl,
+            payload.processes.content.histograms.http_transaction_is_ssl,
+            payload.histograms.input_event_response_coalesced_ms,
+            payload.processes.content.histograms.input_event_response_coalesced_ms,
+            payload.histograms.memory_heap_allocated,
+            payload.processes.content.histograms.memory_heap_allocated,
+            payload.histograms.memory_resident_fast,
+            payload.processes.content.histograms.memory_resident_fast,
+            payload.histograms.memory_total,
+            payload.histograms.memory_unique,
+            payload.processes.content.histograms.memory_unique,
+            payload.processes.content.histograms.memory_unique_content_startup,
+            payload.histograms.memory_vsize,
+            payload.processes.content.histograms.memory_vsize,
+            payload.histograms.memory_vsize_max_contiguous,
+            payload.processes.content.histograms.memory_vsize_max_contiguous,
+            payload.histograms.network_cache_metadata_first_read_time_ms,
+            payload.processes.content.histograms.network_cache_metadata_first_read_time_ms,
+            payload.histograms.network_cache_v2_hit_time_ms,
+            payload.processes.content.histograms.network_cache_v2_hit_time_ms,
+            payload.histograms.network_cache_v2_miss_time_ms,
+            payload.processes.content.histograms.network_cache_v2_miss_time_ms,
+            payload.histograms.places_autocomplete_6_first_results_time_ms,
+            payload.histograms.plugin_shutdown_ms,
+            payload.processes.content.histograms.plugin_shutdown_ms,
+            payload.histograms.pwmgr_blocklist_num_sites,
+            payload.histograms.pwmgr_form_autofill_result,
+            payload.processes.content.histograms.pwmgr_form_autofill_result,
+            payload.histograms.pwmgr_login_last_used_days,
+            payload.histograms.pwmgr_login_page_safety,
+            payload.processes.content.histograms.pwmgr_login_page_safety,
+            payload.histograms.pwmgr_manage_opened,
+            payload.histograms.pwmgr_manage_visibility_toggled,
+            payload.histograms.pwmgr_num_passwords_per_hostname,
+            payload.histograms.pwmgr_num_saved_passwords,
+            payload.histograms.pwmgr_prompt_remember_action,
+            payload.histograms.pwmgr_prompt_update_action,
+            payload.histograms.pwmgr_saving_enabled,
+            payload.histograms.search_service_init_ms,
+            payload.histograms.ssl_handshake_result,
+            payload.processes.content.histograms.ssl_handshake_result,
+            payload.histograms.ssl_handshake_version,
+            payload.processes.content.histograms.ssl_handshake_version,
+            payload.histograms.ssl_tls12_intolerance_reason_pre,
+            payload.processes.content.histograms.ssl_tls12_intolerance_reason_pre,
+            payload.histograms.ssl_tls13_intolerance_reason_pre,
+            payload.processes.content.histograms.ssl_tls13_intolerance_reason_pre,
+            payload.processes.content.histograms.time_to_dom_complete_ms,
+            payload.processes.content.histograms.time_to_dom_content_loaded_end_ms,
+            payload.processes.content.histograms.time_to_dom_content_loaded_start_ms,
+            payload.processes.content.histograms.time_to_dom_interactive_ms,
+            payload.processes.content.histograms.time_to_dom_loading_ms,
+            payload.histograms.time_to_first_click_ms,
+            payload.processes.content.histograms.time_to_first_click_ms,
+            payload.histograms.time_to_first_interaction_ms,
+            payload.processes.content.histograms.time_to_first_interaction_ms,
+            payload.histograms.time_to_first_key_input_ms,
+            payload.processes.content.histograms.time_to_first_key_input_ms,
+            payload.histograms.time_to_first_mouse_move_ms,
+            payload.processes.content.histograms.time_to_first_mouse_move_ms,
+            payload.histograms.time_to_first_scroll_ms,
+            payload.processes.content.histograms.time_to_first_scroll_ms,
+            payload.processes.content.histograms.time_to_load_event_end_ms,
+            payload.processes.content.histograms.time_to_load_event_start_ms,
+            payload.histograms.time_to_non_blank_paint_ms,
+            payload.processes.content.histograms.time_to_non_blank_paint_ms,
+            payload.histograms.time_to_response_start_ms,
+            payload.processes.content.histograms.time_to_response_start_ms,
+            payload.histograms.touch_enabled_device,
+            payload.histograms.tracking_protection_enabled,
+            payload.histograms.update_download_code_partial,
+            payload.histograms.update_download_code_complete,
+            payload.histograms.update_bits_result_partial,
+            payload.histograms.update_bits_result_complete,
+            payload.histograms.update_state_code_partial_stage,
+            payload.histograms.update_state_code_complete_stage,
+            payload.histograms.update_status_error_code_complete_stage,
+            payload.histograms.update_status_error_code_partial_stage,
+            payload.histograms.update_state_code_partial_startup,
+            payload.histograms.update_state_code_complete_startup,
+            payload.histograms.update_status_error_code_partial_startup,
+            payload.histograms.update_status_error_code_complete_startup,
+            payload.histograms.webext_background_page_load_ms,
+            payload.histograms.webext_browseraction_popup_open_ms,
+            payload.histograms.webext_content_script_injection_ms,
+            payload.processes.content.histograms.webext_content_script_injection_ms,
+            payload.histograms.webext_extension_startup_ms,
+            payload.histograms.webext_pageaction_popup_open_ms,
+            payload.histograms.webext_storage_local_get_ms,
+            payload.processes.content.histograms.webext_storage_local_get_ms,
+            payload.histograms.webext_storage_local_set_ms,
+            payload.processes.content.histograms.webext_storage_local_set_ms,
+            payload.histograms.webvr_time_spent_viewing_in_2d,
+            payload.processes.content.histograms.webvr_time_spent_viewing_in_2d,
+            payload.histograms.webvr_time_spent_viewing_in_oculus,
+            JSON_EXTRACT(
+              additional_properties,
+              '$.payload.processes.gpu.histograms.WEBVR_TIME_SPENT_VIEWING_IN_OCULUS'
+            ),
+            payload.histograms.webvr_time_spent_viewing_in_openvr,
+            JSON_EXTRACT(
+              additional_properties,
+              '$.payload.processes.gpu.histograms.WEBVR_TIME_SPENT_VIEWING_IN_OPENVR'
+            ),
+            payload.histograms.webvr_users_view_in,
+            JSON_EXTRACT(
+              additional_properties,
+              '$.payload.processes.gpu.histograms.WEBVR_USERS_VIEW_IN'
+            ),
+            payload.processes.content.histograms.webvr_users_view_in,
+            payload.histograms.a11y_instantiated_flag,
+            payload.histograms.search_reset_result,
+            payload.processes.content.histograms.search_reset_result,
+            payload.histograms.gc_max_pause_ms,
+            payload.processes.content.histograms.gc_max_pause_ms,
+            payload.histograms.content_frame_time,
+            payload.processes.content.histograms.tracking_protection_enabled,
+            payload.processes.content.histograms.places_autocomplete_6_first_results_time_ms,
+            payload.processes.content.histograms.memory_total,
+            payload.processes.content.histograms.fx_session_restore_restore_window_ms,
+            payload.processes.content.histograms.fx_session_restore_startup_init_session_ms,
+            payload.processes.content.histograms.fx_session_restore_startup_onload_initial_window_ms,
+            payload.processes.content.histograms.fx_tab_close_time_anim_ms,
+            payload.processes.content.histograms.fx_tab_switch_update_ms,
+            payload.processes.content.histograms.fx_new_window_ms,
+            payload.processes.content.histograms.search_service_init_ms
+          ]
+        ) AS histogram
     ) AS values_histograms,
     ARRAY(
       SELECT AS STRUCT
-        udf_null_if_empty_list(ARRAY(
-          SELECT AS STRUCT
-            key,
-            udf_json_extract_int_map(JSON_EXTRACT(value, '$.values')) AS value
-          FROM
-            UNNEST(histogram)
-        )) AS list
+        udf_null_if_empty_list(
+          ARRAY(
+            SELECT AS STRUCT
+              key,
+              udf_json_extract_int_map(JSON_EXTRACT(value, '$.values')) AS value
+            FROM
+              UNNEST(histogram)
+          )
+        ) AS list
       FROM
-        UNNEST([
-          STRUCT(payload.processes.content.keyed_histograms.fx_urlbar_selected_result_index_by_type AS histogram),
-          STRUCT(payload.keyed_histograms.fx_urlbar_selected_result_index_by_type AS histogram),
-          STRUCT(payload.processes.content.keyed_histograms.ipc_read_main_thread_latency_ms AS histogram),
-          STRUCT(payload.processes.gpu.keyed_histograms.ipc_read_main_thread_latency_ms AS histogram),
-          STRUCT(payload.keyed_histograms.ipc_read_main_thread_latency_ms AS histogram),
-          STRUCT(payload.keyed_histograms.memory_distribution_among_content AS histogram),
-          STRUCT(payload.processes.content.keyed_histograms.memory_distribution_among_content AS histogram)
-        ])
+        UNNEST(
+          [
+            -- format:off
+            STRUCT(payload.processes.content.keyed_histograms.fx_urlbar_selected_result_index_by_type AS histogram),
+            STRUCT(payload.keyed_histograms.fx_urlbar_selected_result_index_by_type AS histogram),
+            STRUCT(payload.processes.content.keyed_histograms.ipc_read_main_thread_latency_ms AS histogram),
+            STRUCT(payload.processes.gpu.keyed_histograms.ipc_read_main_thread_latency_ms AS histogram),
+            STRUCT(payload.keyed_histograms.ipc_read_main_thread_latency_ms AS histogram),
+            STRUCT(payload.keyed_histograms.memory_distribution_among_content AS histogram),
+            STRUCT(payload.processes.content.keyed_histograms.memory_distribution_among_content AS histogram)
+            -- format:on
+          ]
+        )
     ) AS keyed_values_histograms,
     ARRAY(
       SELECT AS STRUCT
         SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, '$.values.0') AS INT64) AS histogram
       FROM
-        UNNEST([
-          payload.processes.content.histograms.devtools_aboutdebugging_opened_count,
-          payload.processes.content.histograms.devtools_animationinspector_opened_count,
-          payload.processes.content.histograms.devtools_browserconsole_opened_count,
-          payload.processes.content.histograms.devtools_canvasdebugger_opened_count,
-          payload.processes.content.histograms.devtools_computedview_opened_count,
-          payload.processes.content.histograms.devtools_custom_opened_count,
-          payload.processes.content.histograms.devtools_dom_opened_count,
-          payload.processes.content.histograms.devtools_eyedropper_opened_count,
-          payload.processes.content.histograms.devtools_fontinspector_opened_count,
-          payload.processes.content.histograms.devtools_inspector_opened_count,
-          payload.processes.content.histograms.devtools_jsbrowserdebugger_opened_count,
-          payload.processes.content.histograms.devtools_jsdebugger_opened_count,
-          payload.processes.content.histograms.devtools_jsprofiler_opened_count,
-          payload.processes.content.histograms.devtools_layoutview_opened_count,
-          payload.processes.content.histograms.devtools_memory_opened_count,
-          payload.processes.content.histograms.devtools_menu_eyedropper_opened_count,
-          payload.processes.content.histograms.devtools_netmonitor_opened_count,
-          payload.processes.content.histograms.devtools_options_opened_count,
-          payload.processes.content.histograms.devtools_paintflashing_opened_count,
-          payload.processes.content.histograms.devtools_picker_eyedropper_opened_count,
-          payload.processes.content.histograms.devtools_responsive_opened_count,
-          payload.processes.content.histograms.devtools_ruleview_opened_count,
-          payload.processes.content.histograms.devtools_scratchpad_opened_count,
-          payload.processes.content.histograms.devtools_scratchpad_window_opened_count,
-          payload.processes.content.histograms.devtools_shadereditor_opened_count,
-          payload.processes.content.histograms.devtools_storage_opened_count,
-          payload.processes.content.histograms.devtools_styleeditor_opened_count,
-          payload.processes.content.histograms.devtools_webaudioeditor_opened_count,
-          payload.processes.content.histograms.devtools_webconsole_opened_count,
-          payload.processes.content.histograms.devtools_webide_opened_count,
-          payload.processes.content.histograms.number_of_profiles,
-          payload.processes.content.histograms.pwmgr_manage_copied_password,
-          payload.processes.content.histograms.pwmgr_manage_copied_username,
-          payload.processes.content.histograms.pwmgr_manage_deleted,
-          payload.histograms.devtools_aboutdebugging_opened_count,
-          payload.histograms.devtools_animationinspector_opened_count,
-          payload.histograms.devtools_browserconsole_opened_count,
-          payload.histograms.devtools_canvasdebugger_opened_count,
-          payload.histograms.devtools_computedview_opened_count,
-          payload.histograms.devtools_custom_opened_count,
-          payload.histograms.devtools_dom_opened_count,
-          payload.histograms.devtools_eyedropper_opened_count,
-          payload.histograms.devtools_fontinspector_opened_count,
-          payload.histograms.devtools_inspector_opened_count,
-          payload.histograms.devtools_jsbrowserdebugger_opened_count,
-          payload.histograms.devtools_jsdebugger_opened_count,
-          payload.histograms.devtools_jsprofiler_opened_count,
-          payload.histograms.devtools_layoutview_opened_count,
-          payload.histograms.devtools_memory_opened_count,
-          payload.histograms.devtools_menu_eyedropper_opened_count,
-          payload.histograms.devtools_netmonitor_opened_count,
-          payload.histograms.devtools_options_opened_count,
-          payload.histograms.devtools_paintflashing_opened_count,
-          payload.histograms.devtools_picker_eyedropper_opened_count,
-          payload.histograms.devtools_responsive_opened_count,
-          payload.histograms.devtools_ruleview_opened_count,
-          payload.histograms.devtools_scratchpad_opened_count,
-          payload.histograms.devtools_scratchpad_window_opened_count,
-          payload.histograms.devtools_shadereditor_opened_count,
-          payload.histograms.devtools_storage_opened_count,
-          payload.histograms.devtools_styleeditor_opened_count,
-          payload.histograms.devtools_webaudioeditor_opened_count,
-          payload.histograms.devtools_webconsole_opened_count,
-          payload.histograms.devtools_webide_opened_count,
-          payload.histograms.number_of_profiles,
-          payload.histograms.pwmgr_manage_copied_password,
-          payload.histograms.pwmgr_manage_copied_username,
-          payload.histograms.pwmgr_manage_deleted,
-          payload.histograms.devtools_developertoolbar_opened_count,
-          payload.processes.content.histograms.devtools_developertoolbar_opened_count
-        ]) AS histogram
+        UNNEST(
+          [
+            payload.processes.content.histograms.devtools_aboutdebugging_opened_count,
+            payload.processes.content.histograms.devtools_animationinspector_opened_count,
+            payload.processes.content.histograms.devtools_browserconsole_opened_count,
+            payload.processes.content.histograms.devtools_canvasdebugger_opened_count,
+            payload.processes.content.histograms.devtools_computedview_opened_count,
+            payload.processes.content.histograms.devtools_custom_opened_count,
+            payload.processes.content.histograms.devtools_dom_opened_count,
+            payload.processes.content.histograms.devtools_eyedropper_opened_count,
+            payload.processes.content.histograms.devtools_fontinspector_opened_count,
+            payload.processes.content.histograms.devtools_inspector_opened_count,
+            payload.processes.content.histograms.devtools_jsbrowserdebugger_opened_count,
+            payload.processes.content.histograms.devtools_jsdebugger_opened_count,
+            payload.processes.content.histograms.devtools_jsprofiler_opened_count,
+            payload.processes.content.histograms.devtools_layoutview_opened_count,
+            payload.processes.content.histograms.devtools_memory_opened_count,
+            payload.processes.content.histograms.devtools_menu_eyedropper_opened_count,
+            payload.processes.content.histograms.devtools_netmonitor_opened_count,
+            payload.processes.content.histograms.devtools_options_opened_count,
+            payload.processes.content.histograms.devtools_paintflashing_opened_count,
+            payload.processes.content.histograms.devtools_picker_eyedropper_opened_count,
+            payload.processes.content.histograms.devtools_responsive_opened_count,
+            payload.processes.content.histograms.devtools_ruleview_opened_count,
+            payload.processes.content.histograms.devtools_scratchpad_opened_count,
+            payload.processes.content.histograms.devtools_scratchpad_window_opened_count,
+            payload.processes.content.histograms.devtools_shadereditor_opened_count,
+            payload.processes.content.histograms.devtools_storage_opened_count,
+            payload.processes.content.histograms.devtools_styleeditor_opened_count,
+            payload.processes.content.histograms.devtools_webaudioeditor_opened_count,
+            payload.processes.content.histograms.devtools_webconsole_opened_count,
+            payload.processes.content.histograms.devtools_webide_opened_count,
+            payload.processes.content.histograms.number_of_profiles,
+            payload.processes.content.histograms.pwmgr_manage_copied_password,
+            payload.processes.content.histograms.pwmgr_manage_copied_username,
+            payload.processes.content.histograms.pwmgr_manage_deleted,
+            payload.histograms.devtools_aboutdebugging_opened_count,
+            payload.histograms.devtools_animationinspector_opened_count,
+            payload.histograms.devtools_browserconsole_opened_count,
+            payload.histograms.devtools_canvasdebugger_opened_count,
+            payload.histograms.devtools_computedview_opened_count,
+            payload.histograms.devtools_custom_opened_count,
+            payload.histograms.devtools_dom_opened_count,
+            payload.histograms.devtools_eyedropper_opened_count,
+            payload.histograms.devtools_fontinspector_opened_count,
+            payload.histograms.devtools_inspector_opened_count,
+            payload.histograms.devtools_jsbrowserdebugger_opened_count,
+            payload.histograms.devtools_jsdebugger_opened_count,
+            payload.histograms.devtools_jsprofiler_opened_count,
+            payload.histograms.devtools_layoutview_opened_count,
+            payload.histograms.devtools_memory_opened_count,
+            payload.histograms.devtools_menu_eyedropper_opened_count,
+            payload.histograms.devtools_netmonitor_opened_count,
+            payload.histograms.devtools_options_opened_count,
+            payload.histograms.devtools_paintflashing_opened_count,
+            payload.histograms.devtools_picker_eyedropper_opened_count,
+            payload.histograms.devtools_responsive_opened_count,
+            payload.histograms.devtools_ruleview_opened_count,
+            payload.histograms.devtools_scratchpad_opened_count,
+            payload.histograms.devtools_scratchpad_window_opened_count,
+            payload.histograms.devtools_shadereditor_opened_count,
+            payload.histograms.devtools_storage_opened_count,
+            payload.histograms.devtools_styleeditor_opened_count,
+            payload.histograms.devtools_webaudioeditor_opened_count,
+            payload.histograms.devtools_webconsole_opened_count,
+            payload.histograms.devtools_webide_opened_count,
+            payload.histograms.number_of_profiles,
+            payload.histograms.pwmgr_manage_copied_password,
+            payload.histograms.pwmgr_manage_copied_username,
+            payload.histograms.pwmgr_manage_deleted,
+            payload.histograms.devtools_developertoolbar_opened_count,
+            payload.processes.content.histograms.devtools_developertoolbar_opened_count
+          ]
+        ) AS histogram
     ) AS count_histograms,
     ARRAY(
       SELECT AS STRUCT
-        udf_null_if_empty_list(ARRAY(
-          SELECT AS STRUCT
-            key,
-            SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.0') AS INT64) AS value
-          FROM
-            UNNEST(histogram)
-        )) AS list
+        udf_null_if_empty_list(
+          ARRAY(
+            SELECT AS STRUCT
+              key,
+              SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.0') AS INT64) AS value
+            FROM
+              UNNEST(histogram)
+          )
+        ) AS list
       FROM
-        UNNEST([
-          STRUCT(payload.processes.content.keyed_histograms.sandbox_rejected_syscalls AS histogram),
-          STRUCT(payload.keyed_histograms.sandbox_rejected_syscalls AS histogram)
-        ])
+        UNNEST(
+          [
+            -- format:off
+            STRUCT(payload.processes.content.keyed_histograms.sandbox_rejected_syscalls AS histogram),
+            STRUCT(payload.keyed_histograms.sandbox_rejected_syscalls AS histogram)
+            -- format:on
+          ]
+        )
     ) AS keyed_count_histograms,
     ARRAY(
       SELECT AS STRUCT
-        udf_null_if_empty_list(ARRAY(
-          SELECT AS STRUCT
-            IFNULL(labels[SAFE_OFFSET(key)], 'spill') AS key,
-            value
-          FROM
-            UNNEST(udf_json_extract_int_map(JSON_EXTRACT(histogram, '$.values')))
-        )) AS list
+        udf_null_if_empty_list(
+          ARRAY(
+            SELECT AS STRUCT
+              IFNULL(labels[SAFE_OFFSET(key)], 'spill') AS key,
+              value
+            FROM
+              UNNEST(udf_json_extract_int_map(JSON_EXTRACT(histogram, '$.values')))
+          )
+        ) AS list
       FROM
-        UNNEST([
-          STRUCT(
-            [
-              payload.processes.content.histograms.fx_searchbar_selected_result_method,
-              payload.histograms.fx_searchbar_selected_result_method
-            ] AS histograms,
-            ['enter', 'enterSelection', 'click'] AS labels
-          ),
-          (
-            [
-              payload.histograms.devtools_about_devtools_opened_key,
-              payload.histograms.devtools_about_devtools_opened_reason
-            ],
-            []
-          ),
-          ([payload.histograms.devtools_entry_point], ['KeyShortcut', 'SystemMenu', 'HamburgerMenu', 'ContextMenu', 'CommandLine', 'SessionRestore']),
-          ([payload.histograms.devtools_fonteditor_font_type_displayed], ['variable', 'nonvariable']),
-          (
-            [
-              payload.processes.content.histograms.fx_urlbar_selected_result_method,
-              payload.histograms.fx_urlbar_selected_result_method
-            ],
-            ['enter', 'enterSelection', 'click', 'arrowEnterSelection', 'tabEnterSelection', 'rightClickEnter']
-          ),
-          ([payload.histograms.update_can_use_bits_notify], ['CanUseBits', 'NoBits_NotWindows', 'NoBits_FeatureOff', 'NoBits_Pref', 'NoBits_Proxy', 'NoBits_OtherUser']),
-          ([payload.histograms.webext_browseraction_popup_preload_result_count], ['popupShown', 'clearAfterHover', 'clearAfterMousedown'])
-        ]),
+        UNNEST(
+          [
+            STRUCT(
+              [
+                payload.processes.content.histograms.fx_searchbar_selected_result_method,
+                payload.histograms.fx_searchbar_selected_result_method
+              ] AS histograms,
+              ['enter', 'enterSelection', 'click'] AS labels
+            ),
+            (
+              [
+                payload.histograms.devtools_about_devtools_opened_key,
+                payload.histograms.devtools_about_devtools_opened_reason
+              ],
+              []
+            ),
+            (
+              [payload.histograms.devtools_entry_point],
+              [
+                'KeyShortcut',
+                'SystemMenu',
+                'HamburgerMenu',
+                'ContextMenu',
+                'CommandLine',
+                'SessionRestore'
+              ]
+            ),
+            (
+              [payload.histograms.devtools_fonteditor_font_type_displayed],
+              ['variable', 'nonvariable']
+            ),
+            (
+              [
+                payload.processes.content.histograms.fx_urlbar_selected_result_method,
+                payload.histograms.fx_urlbar_selected_result_method
+              ],
+              [
+                'enter',
+                'enterSelection',
+                'click',
+                'arrowEnterSelection',
+                'tabEnterSelection',
+                'rightClickEnter'
+              ]
+            ),
+            (
+              [payload.histograms.update_can_use_bits_notify],
+              [
+                'CanUseBits',
+                'NoBits_NotWindows',
+                'NoBits_FeatureOff',
+                'NoBits_Pref',
+                'NoBits_Proxy',
+                'NoBits_OtherUser'
+              ]
+            ),
+            (
+              [payload.histograms.webext_browseraction_popup_preload_result_count],
+              ['popupShown', 'clearAfterHover', 'clearAfterMousedown']
+            )
+          ]
+        ),
         UNNEST(histograms) AS histogram
     ) AS categorical_histograms,
     ARRAY(
       SELECT AS STRUCT
-        udf_null_if_empty_list(ARRAY(
-          SELECT AS STRUCT
-            key,
-            ARRAY(
-              SELECT AS STRUCT
-                IFNULL(labels[SAFE_OFFSET(_.key)], 'spill') AS key,
-                _.value
-              FROM
-                UNNEST(udf_json_extract_int_map(JSON_EXTRACT(value, '$.values'))) AS _
-            ) AS value
-          FROM
-            UNNEST(histogram)
-        )) AS list
-      FROM
-        UNNEST([
-          STRUCT(
-            [
-              STRUCT(payload.processes.content.keyed_histograms.uptake_remote_content_result_1 AS histogram),
-              STRUCT(payload.processes.gpu.keyed_histograms.uptake_remote_content_result_1 AS histogram),
-              STRUCT(payload.keyed_histograms.uptake_remote_content_result_1 AS histogram)
-            ] AS histograms,
-            [
-              'up_to_date', 'success', 'backoff', 'pref_disabled',
-              'parse_error', 'content_error', 'sign_error', 'sign_retry_error',
-              'conflict_error', 'sync_error', 'apply_error', 'server_error',
-              'certificate_error', 'download_error', 'timeout_error',
-              'network_error', 'offline_error', 'cleanup_error',
-              'unknown_error', 'custom_1_error', 'custom_2_error',
-              'custom_3_error', 'custom_4_error', 'custom_5_error'
-            ] AS labels
+        udf_null_if_empty_list(
+          ARRAY(
+            SELECT AS STRUCT
+              key,
+              ARRAY(
+                SELECT AS STRUCT
+                  IFNULL(labels[SAFE_OFFSET(_.key)], 'spill') AS key,
+                  _.value
+                FROM
+                  UNNEST(udf_json_extract_int_map(JSON_EXTRACT(value, '$.values'))) AS _
+              ) AS value
+            FROM
+              UNNEST(histogram)
           )
-        ]),
+        ) AS list
+      FROM
+        UNNEST(
+          [
+            STRUCT(
+              [
+                -- format:off
+                STRUCT(payload.processes.content.keyed_histograms.uptake_remote_content_result_1 AS histogram),
+                STRUCT(payload.processes.gpu.keyed_histograms.uptake_remote_content_result_1 AS histogram),
+                STRUCT(payload.keyed_histograms.uptake_remote_content_result_1 AS histogram)
+                -- format:on
+              ] AS histograms,
+              [
+                'up_to_date',
+                'success',
+                'backoff',
+                'pref_disabled',
+                'parse_error',
+                'content_error',
+                'sign_error',
+                'sign_retry_error',
+                'conflict_error',
+                'sync_error',
+                'apply_error',
+                'server_error',
+                'certificate_error',
+                'download_error',
+                'timeout_error',
+                'network_error',
+                'offline_error',
+                'cleanup_error',
+                'unknown_error',
+                'custom_1_error',
+                'custom_2_error',
+                'custom_3_error',
+                'custom_4_error',
+                'custom_5_error'
+              ] AS labels
+            )
+          ]
+        ),
         UNNEST(histograms)
     ) AS keyed_categorical_histograms
   FROM
@@ -378,7 +477,7 @@ WITH histogram_lists AS (
     AND document_id IS NOT NULL
 )
 SELECT
-  * EXCEPT(
+  * EXCEPT (
     values_histograms,
     keyed_values_histograms,
     count_histograms,
@@ -386,6 +485,7 @@ SELECT
     categorical_histograms,
     keyed_categorical_histograms
   ),
+  -- format:off
   values_histograms[OFFSET(0)] AS histogram_parent_a11y_consumers,
   values_histograms[OFFSET(1)] AS histogram_parent_cert_validation_success_by_ca,
   values_histograms[OFFSET(2)] AS histogram_content_cert_validation_success_by_ca,
@@ -652,5 +752,6 @@ SELECT
   keyed_categorical_histograms[OFFSET(0)] AS histogram_content_uptake_remote_content_result_1,
   keyed_categorical_histograms[OFFSET(1)] AS histogram_gpu_uptake_remote_content_result_1,
   keyed_categorical_histograms[OFFSET(2)] AS histogram_parent_uptake_remote_content_result_1
+  -- format:on
 FROM
   histogram_lists

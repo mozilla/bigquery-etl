@@ -7,7 +7,6 @@ recursion does not work.
 Based on https://stackoverflow.com/a/18639999/1260237
 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 */
-
 CREATE TEMP FUNCTION udf_crc32_table() AS (
   -- precalculated from this algorithm:
   -- for c in range(256):
@@ -15,6 +14,7 @@ CREATE TEMP FUNCTION udf_crc32_table() AS (
   --     c = (0xEDB88320 if c & 1 else 0) ^ (c >> 1)
   --   yield c
   [
+    -- format:off
     0, 1996959894, 3993919788, 2567524794, 124634137, 1886057615, 3915621685,
     2657392035, 249268274, 2044508324, 3772115230, 2547177864, 162941995,
     2125561021, 3887607047, 2428444049, 498536548, 1789927666, 4089016648,
@@ -58,60 +58,34 @@ CREATE TEMP FUNCTION udf_crc32_table() AS (
     3401237130, 1404277552, 615818150, 3134207493, 3453421203, 1423857449,
     601450431, 3009837614, 3294710456, 1567103746, 711928724, 3020668471,
     3272380065, 1510334235, 755167117
+    -- format:on
   ]
 );
 CREATE TEMP FUNCTION udf_crc32_partial_1(crc INT64, value BYTES) AS (
   (crc >> 8) ^ udf_crc32_table()[OFFSET((crc ^ TO_CODE_POINTS(value)[SAFE_OFFSET(0)]) & 0xFF)]
 );
 CREATE TEMP FUNCTION udf_crc32_partial_2(crc INT64, value BYTES) AS (
-  udf_crc32_partial_1(
-    udf_crc32_partial_1(crc, SUBSTR(value, 1, 1)),
-    SUBSTR(value, 2, 1)
-  )
+  udf_crc32_partial_1(udf_crc32_partial_1(crc, SUBSTR(value, 1, 1)), SUBSTR(value, 2, 1))
 );
 CREATE TEMP FUNCTION udf_crc32_partial_4(crc INT64, value BYTES) AS (
-  udf_crc32_partial_2(
-    udf_crc32_partial_2(crc, SUBSTR(value, 1, 2)),
-    SUBSTR(value, 3, 2)
-  )
+  udf_crc32_partial_2(udf_crc32_partial_2(crc, SUBSTR(value, 1, 2)), SUBSTR(value, 3, 2))
 );
 CREATE TEMP FUNCTION udf_crc32_partial_8(crc INT64, value BYTES) AS (
-  udf_crc32_partial_4(
-    udf_crc32_partial_4(crc, SUBSTR(value, 1, 4)),
-    SUBSTR(value, 5, 4)
-  )
+  udf_crc32_partial_4(udf_crc32_partial_4(crc, SUBSTR(value, 1, 4)), SUBSTR(value, 5, 4))
 );
 CREATE TEMP FUNCTION udf_crc32_partial_16(crc INT64, value BYTES) AS (
-  udf_crc32_partial_8(
-    udf_crc32_partial_8(crc, SUBSTR(value, 1, 8)),
-    SUBSTR(value, 9, 8)
-  )
+  udf_crc32_partial_8(udf_crc32_partial_8(crc, SUBSTR(value, 1, 8)), SUBSTR(value, 9, 8))
 );
 CREATE TEMP FUNCTION udf_crc32_partial_32(crc INT64, value BYTES) AS (
-  udf_crc32_partial_16(
-    udf_crc32_partial_16(crc, SUBSTR(value, 1, 16)),
-    SUBSTR(value, 17, 16)
-  )
+  udf_crc32_partial_16(udf_crc32_partial_16(crc, SUBSTR(value, 1, 16)), SUBSTR(value, 17, 16))
 );
 CREATE TEMP FUNCTION udf_crc32_partial_36(crc INT64, value BYTES) AS (
-  udf_crc32_partial_4(
-    udf_crc32_partial_32(crc, SUBSTR(value, 1, 32)),
-    SUBSTR(value, 33, 4)
-  )
+  udf_crc32_partial_4(udf_crc32_partial_32(crc, SUBSTR(value, 1, 32)), SUBSTR(value, 33, 4))
 );
 CREATE TEMP FUNCTION udf_safe_crc32_uuid(value BYTES) AS (
-  IF(
-    LENGTH(value) = 36,
-    udf_crc32_partial_36(0xFFFFFFFF, value) ^ 0xFFFFFFFF,
-    NULL
-  )
+  IF(LENGTH(value) = 36, udf_crc32_partial_36(0xFFFFFFFF, value) ^ 0xFFFFFFFF, NULL)
 );
-
 --Tests
-
 SELECT
-  assert_equals(
-    308953907,
-    udf_safe_crc32_uuid(b"51baf8b4-75d1-3648-b96d-809569b89a12")
-  ),
+  assert_equals(308953907, udf_safe_crc32_uuid(b"51baf8b4-75d1-3648-b96d-809569b89a12")),
   assert_null(udf_safe_crc32_uuid(b"length != 36"))

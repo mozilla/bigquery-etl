@@ -1,5 +1,4 @@
-WITH
-  unioned AS (
+WITH unioned AS (
   SELECT
     submission_timestamp,
     document_id,
@@ -23,9 +22,9 @@ WITH
     metrics
   FROM
     org_mozilla_fenix_stable.metrics_v1
-  ),
+),
   --
-  base AS (
+base AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     LOWER(client_info.client_id) AS client_id,
@@ -33,9 +32,10 @@ WITH
   FROM
     unioned
   WHERE
-    client_info.client_id IS NOT NULL ),
+    client_info.client_id IS NOT NULL
+),
   --
-  windowed AS (
+windowed AS (
   SELECT
     submission_date,
     client_id,
@@ -47,20 +47,28 @@ WITH
     MIN(SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10))) OVER w1 AS first_run_date,
     --
     -- Sums over distinct baseline pings.
-    SUM(udf_glean_timespan_seconds(baseline_metrics.timespan.glean_baseline_duration)) OVER w1 AS durations,
+    SUM(
+      udf_glean_timespan_seconds(baseline_metrics.timespan.glean_baseline_duration)
+    ) OVER w1 AS durations,
     --
     -- For all other dimensions, we use the mode of observed values in the day.
     udf_mode_last(ARRAY_AGG(client_info.os) OVER w1) AS os,
     udf_mode_last(ARRAY_AGG(client_info.os_version) OVER w1) AS os_version,
     udf_mode_last(ARRAY_AGG(baseline_metrics.string.glean_baseline_locale) OVER w1) AS locale,
-    udf_json_mode_last(ARRAY_AGG(udf_geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1).* EXCEPT (geo_subdivision1, geo_subdivision2),
+    udf_json_mode_last(
+      ARRAY_AGG(udf_geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1
+    ).* EXCEPT(geo_subdivision1, geo_subdivision2),
     udf_mode_last(ARRAY_AGG(client_info.device_manufacturer) OVER w1) AS device_manufacturer,
     udf_mode_last(ARRAY_AGG(client_info.device_model) OVER w1) AS device_model,
     udf_mode_last(ARRAY_AGG(client_info.app_build) OVER w1) AS app_build,
     udf_mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
     udf_mode_last(ARRAY_AGG(client_info.architecture) OVER w1) AS architecture,
-    udf_mode_last(ARRAY_AGG(metrics.string.search_default_engine_name) OVER w1) AS search_default_engine_name,
-    udf_mode_last(ARRAY_AGG(metrics.string.search_default_engine_name) OVER w1) AS search_default_engine_code,
+    udf_mode_last(
+      ARRAY_AGG(metrics.string.search_default_engine_name) OVER w1
+    ) AS search_default_engine_name,
+    udf_mode_last(
+      ARRAY_AGG(metrics.string.search_default_engine_name) OVER w1
+    ) AS search_default_engine_code,
     udf_mode_last(ARRAY_AGG(metrics.boolean.metrics_default_browser) OVER w1) AS default_browser,
     udf_mode_last(ARRAY_AGG(client_info.app_display_version) OVER w1) AS app_display_version
   FROM
@@ -70,19 +78,24 @@ WITH
     (@submission_date IS NULL OR @submission_date = submission_date)
   WINDOW
     w1 AS (
-    PARTITION BY
-      client_id,
-      submission_date
-    ORDER BY
-      submission_timestamp
-    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
+      PARTITION BY
+        client_id,
+        submission_date
+      ORDER BY
+        submission_timestamp
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND UNBOUNDED FOLLOWING
+    ),
     -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
     w1_unframed AS (
-    PARTITION BY
-      client_id,
-      submission_date
-    ORDER BY
-      submission_timestamp) )
+      PARTITION BY
+        client_id,
+        submission_date
+      ORDER BY
+        submission_timestamp
+    )
+)
 SELECT
   * EXCEPT (_n)
 FROM

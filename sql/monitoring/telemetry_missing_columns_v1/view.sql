@@ -1,6 +1,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.monitoring.telemetry_missing_columns_v1`
-AS SELECT
+AS
+SELECT
   TIMESTAMP_TRUNC(submission_timestamp, DAY) AS day,
   'telemetry' AS document_namespace,
   REGEXP_EXTRACT(_TABLE_SUFFIX, r"^(.*)_v.*") AS document_type,
@@ -13,12 +14,7 @@ FROM
     `moz-fx-data-shared-prod`.udf_js.json_extract_missing_cols(
       additional_properties,
       ["histogram_type"],
-      [
-        "activeAddons",
-        "userPrefs",
-        "activeGMPlugins",
-        "simpleMeasurements"
-      ]
+      ["activeAddons", "userPrefs", "activeGMPlugins", "simpleMeasurements"]
     )
   ) AS path
 WHERE

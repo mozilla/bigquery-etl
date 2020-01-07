@@ -218,13 +218,11 @@ SELECT
   SAFE_CAST(environment.system.os.service_pack_minor AS INT64) AS os_service_pack_minor,
   SAFE_CAST(environment.system.os.windows_build_number AS INT64) AS windows_build_number,
   SAFE_CAST(environment.system.os.windows_ubr AS INT64) AS windows_ubr,
-
   -- Note: Windows only!
   SAFE_CAST(environment.system.os.install_year AS INT64) AS install_year,
   environment.system.is_wow64,
-
+  --
   SAFE_CAST(environment.system.memory_mb AS INT64) AS memory_mb,
-
   environment.system.cpu.count AS cpu_count,
   environment.system.cpu.cores AS cpu_cores,
   environment.system.cpu.vendor AS cpu_vendor,
@@ -234,26 +232,22 @@ SELECT
   SAFE_CAST(environment.system.cpu.l2cache_kb AS INT64) AS cpu_l2_cache_kb,
   SAFE_CAST(environment.system.cpu.l3cache_kb AS INT64) AS cpu_l3_cache_kb,
   SAFE_CAST(environment.system.cpu.speed_m_hz AS INT64) AS cpu_speed_mhz,
-
   environment.system.gfx.features.d3d11.status AS gfx_features_d3d11_status,
   environment.system.gfx.features.d2d.status AS gfx_features_d2d_status,
   environment.system.gfx.features.gpu_process.status AS gfx_features_gpu_process_status,
   environment.system.gfx.features.advanced_layers.status AS gfx_features_advanced_layers_status,
   environment.system.gfx.features.wr_qualified.status AS gfx_features_wrqualified_status,
   environment.system.gfx.features.webrender.status AS gfx_features_webrender_status,
-
   -- Bug 1552940
   environment.system.hdd.profile.type AS hdd_profile_type,
   environment.system.hdd.binary.type AS hdd_binary_type,
   environment.system.hdd.system.type AS hdd_system_type,
-
+  --
   environment.system.apple_model_id,
-
   -- Bug 1431198 - Windows 8 only
   environment.system.sec.antivirus,
   environment.system.sec.antispyware,
   environment.system.sec.firewall,
-
   -- TODO: use proper 'date' type for date columns.
   SAFE_CAST(environment.profile.creation_date AS INT64) AS profile_creation_date,
   SAFE_CAST(environment.profile.reset_date AS INT64) AS profile_reset_date,
@@ -272,29 +266,35 @@ SELECT
   environment.partner.distribution_id,
   DATE(submission_timestamp) AS submission_date,
   -- See bugs 1550752 and 1593773
-  ifnull(environment.services.account_enabled, udf_boolean_histogram_to_boolean(payload.histograms.fxa_configured)) AS fxa_configured,
+  IFNULL(
+    environment.services.account_enabled,
+    udf_boolean_histogram_to_boolean(payload.histograms.fxa_configured)
+  ) AS fxa_configured,
   -- See bugs 1232050 and 1593773
-  ifnull(environment.services.sync_enabled, udf_boolean_histogram_to_boolean(payload.histograms.weave_configured)) AS sync_configured,
-  udf_histogram_max_key_with_nonzero_value(payload.histograms.weave_device_count_desktop) AS sync_count_desktop,
-  udf_histogram_max_key_with_nonzero_value(payload.histograms.weave_device_count_mobile) AS sync_count_mobile,
-
+  IFNULL(
+    environment.services.sync_enabled,
+    udf_boolean_histogram_to_boolean(payload.histograms.weave_configured)
+  ) AS sync_configured,
+  udf_histogram_max_key_with_nonzero_value(
+    payload.histograms.weave_device_count_desktop
+  ) AS sync_count_desktop,
+  udf_histogram_max_key_with_nonzero_value(
+    payload.histograms.weave_device_count_mobile
+  ) AS sync_count_mobile,
   application.build_id AS app_build_id,
   application.display_version AS app_display_version,
   application.name AS app_name,
   application.version AS app_version,
   UNIX_MICROS(submission_timestamp) * 1000 AS `timestamp`,
-
   environment.build.build_id AS env_build_id,
   environment.build.version AS env_build_version,
   environment.build.architecture AS env_build_arch,
-
   -- See bug 1232050
   environment.settings.e10s_enabled,
   environment.settings.e10s_cohort,
-
   -- See bug 1232050
   environment.settings.e10s_multi_processes,
-
+  --
   environment.settings.locale,
   environment.settings.update.channel AS update_channel,
   environment.settings.update.enabled AS update_enabled,
@@ -311,10 +311,8 @@ SELECT
   environment.addons.active_experiment.id AS active_experiment_id,
   environment.addons.active_experiment.branch AS active_experiment_branch,
   payload.info.reason,
-
   payload.info.timezone_offset,
-
-  -- Different types of crashes / hangs:
+  -- Different types of crashes / hangs; format:off
   udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'pluginhang')).sum AS plugin_hangs,
   udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'plugin')).sum AS aborts_plugin,
   udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'content')).sum AS aborts_content,
@@ -329,9 +327,8 @@ SELECT
   udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.process_crash_submit_success, 'content-crash')).sum AS crash_submit_success_content,
   udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash')).sum AS crash_submit_success_plugin,
   udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')).sum AS shutdown_kill,
-
+  -- format:on
   ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
-
   -- See https://github.com/mozilla-services/data-pipeline/blob/master/hindsight/modules/fx/ping.lua#L82
   (
     SELECT
@@ -361,34 +358,45 @@ SELECT
   environment.settings.default_private_search_engine_data.origin AS default_private_search_engine_data_origin,
   environment.settings.default_private_search_engine_data.submission_url AS default_private_search_engine_data_submission_url,
   environment.settings.default_private_search_engine,
-
   -- DevTools usage per bug 1262478
-  udf_json_extract_histogram(payload.histograms.devtools_toolbox_opened_count).sum AS devtools_toolbox_opened_count,
-
+  udf_json_extract_histogram(
+    payload.histograms.devtools_toolbox_opened_count
+  ).sum AS devtools_toolbox_opened_count,
   -- client date per bug 1270505
   metadata.header.date AS client_submission_date, -- the HTTP Date header sent by the client
-
   -- clock skew per bug 1270183
-  TIMESTAMP_DIFF(TIMESTAMP_TRUNC(submission_timestamp, SECOND), SAFE.PARSE_TIMESTAMP('%a, %d %b %Y %T %Z', metadata.header.date), SECOND) AS client_clock_skew,
-  TIMESTAMP_DIFF(TIMESTAMP_TRUNC(submission_timestamp, SECOND), SAFE.PARSE_TIMESTAMP('%FT%R:%E*SZ', creation_date), SECOND) AS client_submission_latency,
-
+  TIMESTAMP_DIFF(
+    TIMESTAMP_TRUNC(submission_timestamp, SECOND),
+    SAFE.PARSE_TIMESTAMP('%a, %d %b %Y %T %Z', metadata.header.date),
+    SECOND
+  ) AS client_clock_skew,
+  TIMESTAMP_DIFF(
+    TIMESTAMP_TRUNC(submission_timestamp, SECOND),
+    SAFE.PARSE_TIMESTAMP('%FT%R:%E*SZ', creation_date),
+    SECOND
+  ) AS client_submission_latency,
   -- We use the mean for bookmarks and pages because we do not expect them to be
   -- heavily skewed during the lifetime of a subsession. Using the median for a
   -- histogram would probably be better in general, but the granularity of the
   -- buckets for these particular histograms is not fine enough for the median
   -- to give a more accurate value than the mean.
-  udf_histogram_to_mean(udf_json_extract_histogram(payload.histograms.places_bookmarks_count)) AS places_bookmarks_count,
-  udf_histogram_to_mean(udf_json_extract_histogram(payload.histograms.places_pages_count)) AS places_pages_count,
-
+  udf_histogram_to_mean(
+    udf_json_extract_histogram(payload.histograms.places_bookmarks_count)
+  ) AS places_bookmarks_count,
+  udf_histogram_to_mean(
+    udf_json_extract_histogram(payload.histograms.places_pages_count)
+  ) AS places_pages_count,
   -- Push metrics per bug 1270482 and bug 1311174
   udf_json_extract_histogram(payload.histograms.push_api_notify).sum AS push_api_notify,
-  udf_json_extract_histogram(payload.histograms.web_notification_shown).sum AS web_notification_shown,
-
+  udf_json_extract_histogram(
+    payload.histograms.web_notification_shown
+  ).sum AS web_notification_shown,
   -- Info from POPUP_NOTIFICATION_STATS keyed histogram
   ARRAY(
     SELECT AS STRUCT
       key,
       STRUCT(
+        -- format:off
         IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.0') AS INT64), 0) AS offered,
         IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.1') AS INT64), 0) AS action_1,
         IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.2') AS INT64), 0) AS action_2,
@@ -411,11 +419,11 @@ SELECT
         IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.28') AS INT64), 0) AS reopen_dismissal_not_now,
         IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.30') AS INT64), 0) AS reopen_open_submenu,
         IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.31') AS INT64), 0) AS reopen_learn_more
+        -- format:on
       ) AS value
     FROM
       UNNEST(payload.keyed_histograms.popup_notification_stats)
   ) AS popup_notification_stats,
-
   -- Search counts
   -- split up and organize the SEARCH_COUNTS keyed histogram
   ARRAY(
@@ -428,10 +436,11 @@ SELECT
       UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
       UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
   ) AS search_counts,
-
   -- Addon and configuration settings per Bug 1290181
-  udf_js_main_summary_active_addons(environment.addons.active_addons, JSON_EXTRACT(additional_properties, '$.environment.addons.activeAddons')) AS active_addons,
-
+  udf_js_main_summary_active_addons(
+    environment.addons.active_addons,
+    JSON_EXTRACT(additional_properties, '$.environment.addons.activeAddons')
+  ) AS active_addons,
   -- Legacy/disabled addon and configuration settings per Bug 1390814. Please note that |disabled_addons_ids| may go away in the future.
   udf_js_main_summary_disabled_addons(
     ARRAY(SELECT key FROM UNNEST(environment.addons.active_addons)),
@@ -443,7 +452,12 @@ SELECT
     environment.addons.theme.blocklisted,
     COALESCE(
       environment.addons.theme.foreign_install > 0,
-      SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.environment.addons.theme.foreignInstall') AS BOOL)
+      SAFE_CAST(
+        JSON_EXTRACT_SCALAR(
+          additional_properties,
+          '$.environment.addons.theme.foreignInstall'
+        ) AS BOOL
+      )
     ) AS foreign_install,
     environment.addons.theme.has_binary_components,
     environment.addons.theme.install_day,
@@ -463,19 +477,18 @@ SELECT
   environment.settings.blocklist_enabled,
   environment.settings.addon_compatibility_check_enabled,
   environment.settings.telemetry_enabled,
-
+  --
   environment.settings.intl.accept_languages AS environment_settings_intl_accept_languages,
   environment.settings.intl.app_locales AS environment_settings_intl_app_locales,
   environment.settings.intl.available_locales AS environment_settings_intl_available_locales,
   environment.settings.intl.regional_prefs_locales AS environment_settings_intl_regional_prefs_locales,
   environment.settings.intl.requested_locales AS environment_settings_intl_requested_locales,
   environment.settings.intl.system_locales AS environment_settings_intl_system_locales,
-
   environment.system.gfx.headless AS environment_system_gfx_headless,
-
   -- user prefs
   (
     SELECT AS STRUCT
+      -- format:off
       ANY_VALUE(IF(key = 'browser.launcherProcess.enabled', SAFE_CAST(value AS BOOL), NULL)) AS user_pref_browser_launcherprocess_enabled,
       ANY_VALUE(IF(key = 'browser.search.widget.inNavBar', SAFE_CAST(value AS BOOL), NULL)) AS user_pref_browser_search_widget_innavbar,
       ANY_VALUE(IF(key = 'browser.search.region', value, NULL)) AS user_pref_browser_search_region,
@@ -496,10 +509,11 @@ SELECT
         ANY_VALUE(IF(key = 'dom.ipc.process_count', SAFE_CAST(value AS INT64), NULL)) AS dom_ipc_process_count,
         ANY_VALUE(IF(key = 'extensions.allow-non_mpc-extensions', SAFE_CAST(value AS BOOL), NULL)) AS extensions_allow_non_mpc_extensions
       ) AS user_prefs
+      -- format:on
     FROM
       UNNEST(environment.settings.user_prefs)
   ).*,
-
+  -- events
   ARRAY(
     SELECT AS STRUCT
       f0_ AS `timestamp`,
@@ -507,10 +521,7 @@ SELECT
       f2_ AS method,
       f3_ AS object,
       f4_ AS string_value,
-      ARRAY_CONCAT(
-        [STRUCT('telemetry_process' AS key, process AS value)],
-        f5_
-      ) AS map_values
+      ARRAY_CONCAT([STRUCT('telemetry_process' AS key, process AS value)], f5_) AS map_values
     FROM
       UNNEST(
         [
@@ -523,16 +534,19 @@ SELECT
     CROSS JOIN
       UNNEST(events)
   ) AS events,
-
   -- bug 1339655
-  SAFE_CAST(JSON_EXTRACT_SCALAR(payload.histograms.ssl_handshake_result, '$.values.0') AS INT64) AS ssl_handshake_result_success,
+  SAFE_CAST(
+    JSON_EXTRACT_SCALAR(payload.histograms.ssl_handshake_result, '$.values.0') AS INT64
+  ) AS ssl_handshake_result_success,
   (
     SELECT
       IFNULL(SUM(value), 0)
     FROM
       UNNEST(udf_json_extract_histogram(payload.histograms.ssl_handshake_result).values)
     WHERE
-      key BETWEEN 1 AND 671
+      key
+      BETWEEN 1
+      AND 671
   ) AS ssl_handshake_result_failure,
   ARRAY(
     SELECT AS STRUCT
@@ -541,51 +555,92 @@ SELECT
     FROM
       UNNEST(udf_json_extract_histogram(payload.histograms.ssl_handshake_result).values)
     WHERE
-      key BETWEEN 0 AND 671
+      key
+      BETWEEN 0
+      AND 671
       AND value > 0
   ) AS ssl_handshake_result,
-
   -- bug 1353114 - payload.simpleMeasurements.*
   COALESCE(
     payload.processes.parent.scalars.browser_engagement_active_ticks,
     payload.simple_measurements.active_ticks,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.activeTicks') AS INT64)
+    SAFE_CAST(
+      JSON_EXTRACT_SCALAR(
+        additional_properties,
+        '$.payload.simpleMeasurements.activeTicks'
+      ) AS INT64
+    )
   ) AS active_ticks,
   COALESCE(
     payload.simple_measurements.main,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.main') AS INT64)
+    SAFE_CAST(
+      JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.main') AS INT64
+    )
   ) AS main,
   COALESCE(
     payload.processes.parent.scalars.timestamps_first_paint,
     payload.simple_measurements.first_paint,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.firstPaint') AS INT64)
+    SAFE_CAST(
+      JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.firstPaint') AS INT64
+    )
   ) AS first_paint,
   COALESCE(
     payload.simple_measurements.session_restored,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.sessionRestored') AS INT64)
+    SAFE_CAST(
+      JSON_EXTRACT_SCALAR(
+        additional_properties,
+        '$.payload.simpleMeasurements.sessionRestored'
+      ) AS INT64
+    )
   ) AS session_restored,
   COALESCE(
     payload.simple_measurements.total_time,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.totalTime') AS INT64)
+    SAFE_CAST(
+      JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.totalTime') AS INT64
+    )
   ) AS total_time,
   COALESCE(
     payload.simple_measurements.blank_window_shown,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(additional_properties, '$.payload.simpleMeasurements.blankWindowShown') AS INT64)
+    SAFE_CAST(
+      JSON_EXTRACT_SCALAR(
+        additional_properties,
+        '$.payload.simpleMeasurements.blankWindowShown'
+      ) AS INT64
+    )
   ) AS blank_window_shown,
-
   -- bug 1362520 and 1526278 - plugin notifications
-  SAFE_CAST(JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.1') AS INT64) AS plugins_notification_shown,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.0') AS INT64) AS plugins_notification_shown_false,
+  SAFE_CAST(
+    JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.1') AS INT64
+  ) AS plugins_notification_shown,
+  SAFE_CAST(
+    JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.0') AS INT64
+  ) AS plugins_notification_shown_false,
   STRUCT(
-    SAFE_CAST(JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_user_action, '$.values.0') AS INT64) AS allow_now,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_user_action, '$.values.1') AS INT64) AS allow_always,
-    SAFE_CAST(JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_user_action, '$.values.2') AS INT64) AS block
+    SAFE_CAST(
+      JSON_EXTRACT_SCALAR(
+        payload.histograms.plugins_notification_user_action,
+        '$.values.0'
+      ) AS INT64
+    ) AS allow_now,
+    SAFE_CAST(
+      JSON_EXTRACT_SCALAR(
+        payload.histograms.plugins_notification_user_action,
+        '$.values.1'
+      ) AS INT64
+    ) AS allow_always,
+    SAFE_CAST(
+      JSON_EXTRACT_SCALAR(
+        payload.histograms.plugins_notification_user_action,
+        '$.values.2'
+      ) AS INT64
+    ) AS block
   ) AS plugins_notification_user_action,
   udf_json_extract_histogram(payload.histograms.plugins_infobar_shown).sum AS plugins_infobar_shown,
   udf_json_extract_histogram(payload.histograms.plugins_infobar_block).sum AS plugins_infobar_block,
   udf_json_extract_histogram(payload.histograms.plugins_infobar_allow).sum AS plugins_infobar_allow,
-  udf_json_extract_histogram(payload.histograms.plugins_infobar_dismissed).sum AS plugins_infobar_dismissed,
-
+  udf_json_extract_histogram(
+    payload.histograms.plugins_infobar_dismissed
+  ).sum AS plugins_infobar_dismissed,
   -- bug 1366253 - active experiments
   ARRAY(
     SELECT AS STRUCT
@@ -605,9 +660,8 @@ SELECT
     FROM
       UNNEST(environment.experiments)
   ) AS experiments_details,
-
+  --
   environment.settings.search_cohort,
-
   -- bug 1366838 - Quantum Release Criteria
   environment.system.gfx.features.compositor AS gfx_compositor,
   (
@@ -619,15 +673,12 @@ SELECT
     )
     AND (
       SELECT
-        LOGICAL_AND(
-          value.is_system IS TRUE
-          OR value.is_web_extension IS TRUE
-        ) IS NOT FALSE
+        LOGICAL_AND(value.is_system IS TRUE OR value.is_web_extension IS TRUE) IS NOT FALSE
       FROM
         UNNEST(environment.addons.active_addons)
     )
   ) AS quantum_ready,
-
+  -- threshold counts; format:off
   udf_histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_main_above_150,
   udf_histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_main_above_250,
   udf_histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_main_above_2500,
@@ -654,12 +705,11 @@ SELECT
 
   udf_histogram_to_threshold_count(payload.histograms.ghost_windows, 1) AS ghost_windows_main_above_1,
   udf_histogram_to_threshold_count(payload.processes.content.histograms.ghost_windows, 1) AS ghost_windows_content_above_1,
-
+  -- format:on
   udf_js_main_summary_addon_scalars(
     JSON_EXTRACT(additional_properties, '$.payload.processes.dynamic.scalars'),
     JSON_EXTRACT(additional_properties, '$.payload.processes.dynamic.keyedScalars')
   ).*,
-
   -- define removed fields for schema compatiblity
   NULL AS push_api_notification_received,
   STRUCT(

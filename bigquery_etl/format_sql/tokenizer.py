@@ -8,6 +8,7 @@ TOP_LEVEL_KEYWORDS = [
     # DDL
     "ALTER TABLE IF EXISTS",
     "ALTER TABLE",
+    "CLUSTER BY",
     "CREATE OR REPLACE TABLE",
     "CREATE OR REPLACE VIEW",
     "CREATE TABLE IF NOT EXISTS",
@@ -17,7 +18,6 @@ TOP_LEVEL_KEYWORDS = [
     "CREATE VIEW",
     "DROP TABLE",
     "DROP VIEW",
-    "CLUSTER BY",
     "OPTIONS",
     # DML
     "DELETE FROM",
@@ -28,6 +28,7 @@ TOP_LEVEL_KEYWORDS = [
     "MERGE",
     "UPDATE",
     # SQL
+    "AS",  # only when not identified as an AliasSeparator
     "CROSS JOIN",
     "EXCEPT DISTINCT",
     "INTERSECT DISTINCT",
@@ -42,6 +43,7 @@ TOP_LEVEL_KEYWORDS = [
     "LEFT JOIN",
     "LEFT OUTER JOIN",
     "LIMIT",
+    "ON",
     "ORDER BY",
     "OUTER JOIN",
     "PARTITION BY",
@@ -60,8 +62,8 @@ TOP_LEVEL_KEYWORDS = [
     "USING",
     "VALUES",
     "WHERE",
-    "WINDOW",
     "WITH",
+    "WINDOW",
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
@@ -78,7 +80,7 @@ NEWLINE_KEYWORDS = [
     "WHEN",
     "XOR",
 ]
-# These words, and all get capitalized
+# These words get capitalized
 RESERVED_KEYWORDS = [
     "ALL",
     "AND",
@@ -251,7 +253,18 @@ class ReservedKeyword(Token):
 class SpaceBeforeBracketKeyword(ReservedKeyword):
     """Keyword that should be separated by a space from a following opening bracket."""
 
-    pattern = _keyword_pattern(["AS", "IN", r"\* EXCEPT", r"\* REPLACE", "NOT"])
+    pattern = _keyword_pattern(["IN", r"\* EXCEPT", r"\* REPLACE", "NOT", "OVER"])
+
+
+class AliasSeparator(SpaceBeforeBracketKeyword):
+    """Keyword separating an expression from an alias.
+
+    May be followed by an alias identifier that would otherwise be a reserved keyword.
+
+    Must not be followed by the keywords "WITH" or "SELECT".
+    """
+
+    pattern = re.compile(r"AS(?=\s+(?!WITH|SELECT)[a-z_`(])", re.IGNORECASE)
 
 
 class NewlineKeyword(SpaceBeforeBracketKeyword):
@@ -363,6 +376,7 @@ BIGQUERY_TOKEN_PRIORITY = [
     LineComment,
     BlockComment,
     Whitespace,
+    AliasSeparator,
     TopLevelKeyword,
     NewlineKeyword,
     AngleBracketKeyword,
@@ -417,7 +431,9 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
                 )
                 # field access operator may be followed by an identifier that
                 # would otherwise be a reserved keyword.
-                reserved_keyword_is_identifier = isinstance(token, FieldAccessOperator)
+                reserved_keyword_is_identifier = isinstance(
+                    token, (FieldAccessOperator, AliasSeparator)
+                )
             break
         else:
             raise ValueError(f"Could not determine next token in {query!r}")

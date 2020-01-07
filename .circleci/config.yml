@@ -51,6 +51,13 @@ jobs:
           command: >-
             script/format_sql
             --check
+            templates/monitoring/document_sample_nonprod_v1/query.sql
+            templates/monitoring/telemetry_missing_columns_v1/view.sql
+            templates/org_mozilla_fenix/clients_last_seen/view.sql
+            templates/org_mozilla_fenix_derived/clients_daily_v1/query.sql
+            templates/telemetry/fxa_all_events_v1/view.sql
+            templates/telemetry/fxa_users_daily_v1/query.sql
+            templates/telemetry_derived/fxa_users_services_first_seen_v1/init.sql
             templates/telemetry_derived/main_summary_v4
             udf/safe_crc32_uuid.sql
   dry-run-sql:

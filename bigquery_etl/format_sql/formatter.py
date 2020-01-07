@@ -4,6 +4,7 @@ from dataclasses import replace
 import re
 
 from .tokenizer import (
+    AliasSeparator,
     ClosingBracket,
     Comment,
     ExpressionSeparator,
@@ -106,7 +107,10 @@ def simple_format(tokens, indent="  "):
         allow_space_before_next_bracket = isinstance(
             token, (SpaceBeforeBracketKeyword, Operator)
         )
-        if isinstance(token, (TopLevelKeyword, OpeningBracket)):
+        if isinstance(token, TopLevelKeyword) and token.value == "WITH":
+            # don't indent CTE's and don't put the first one on a new line
+            require_newline_before_next_token = False
+        elif isinstance(token, (TopLevelKeyword, OpeningBracket)):
             # increase indent
             indent_types.append(type(token))
         elif isinstance(token, StatementSeparator):
@@ -148,8 +152,23 @@ class Line:
 
     @property
     def can_start_inline_block(self):
-        """Determine if this line starts a bracket block that may be inlined."""
-        return self.can_format and self.ends_with_opening_bracket
+        """Determine if this line starts a bracket block that may be inlined.
+
+        This line starts a bracket block if it ends with an OpeningBracket.
+
+        This line can't be inlined if formatting is disabled.
+
+        Blocks preceded by an alias, such as common table expressions and
+        window expressions, should not be inlined.
+        """
+        return (
+            self.can_format
+            and self.ends_with_opening_bracket
+            and not (
+                len(self.inline_tokens) > 2
+                and isinstance(self.inline_tokens[-3], AliasSeparator)
+            )
+        )
 
     @property
     def ends_with_opening_bracket(self):

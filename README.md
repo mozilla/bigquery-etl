@@ -8,20 +8,15 @@ Bigquery UDFs and SQL queries for building derived datasets.
 Formatting SQL
 ---
 
-SQL should be formatted using `script/format-sql`. This script requires `node`,
-with dependencies installed via `npm install`.
+SQL should be formatted using `script/format_sql`.
 
-On OSX you can install `node` (and `npm` with it) from homebew with the command
-`brew install node`, or from nodesource as explained in
-[this guide](https://nodesource.com/blog/installing-nodejs-tutorial-mac-os-x/).
-
-Directories and files passed as arguments to `script/format-sql` will be
+Directories and files passed as arguments to `script/format_sql` will be
 formatted in place, with directories recursively searched for files with a
 `.sql` extension, e.g.:
 
 ```bash
 $ echo 'SELECT 1,2,3' > test.sql
-$ script/format-sql test.sql
+$ script/format_sql test.sql
 modified test.sql
 1 file(s) modified
 $ cat test.sql
@@ -35,7 +30,7 @@ If no arguments are specified the script will read from stdin and write to
 stdout, e.g.:
 
 ```bash
-$ echo 'SELECT 1,2,3' | script/format-sql
+$ echo 'SELECT 1,2,3' | script/format_sql
 SELECT
   1,
   2,

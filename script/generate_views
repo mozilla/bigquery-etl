@@ -152,8 +152,8 @@ def create_views_if_not_exist(client, views, exclude, sql_dir):
                 "`moz-fx-data-shared-prod.udf.normalize_metadata`(metadata)"
                 " AS metadata"
             ]
-            if "ping_info" in (f.name for f in table.schema):
-                # If we have ping_info, this must be a Glean schema.
+            # Add special replacements for Glean pings.
+            if table.labels.get("schema_id", None) == "glean_ping_1":
                 replacements += [
                     "`moz-fx-data-shared-prod.udf.normalize_glean_ping_info`(ping_info)"
                     " AS ping_info"

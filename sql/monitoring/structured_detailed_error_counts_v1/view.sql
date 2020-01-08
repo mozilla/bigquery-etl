@@ -15,8 +15,15 @@ WITH error_examples AS (
     `moz-fx-data-shared-prod.payload_bytes_error.structured`
   WHERE
     submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 * 24 HOUR)
-  GROUP BY hour, document_namespace, document_type, document_version, error_type, error_message
-), structured_detailed_hourly_errors AS (
+  GROUP BY
+    hour,
+    document_namespace,
+    document_type,
+    document_version,
+    error_type,
+    error_message
+),
+structured_detailed_hourly_errors AS (
   SELECT
     hour,
     document_namespace,
@@ -29,8 +36,11 @@ WITH error_examples AS (
   FROM
     `moz-fx-data-shared-prod.monitoring.structured_error_counts_v1` structured_hourly_errors
   INNER JOIN
-    error_examples USING (hour, document_namespace, document_type, document_version, error_type)
-), with_ratio AS (
+    error_examples
+  USING
+    (hour, document_namespace, document_type, document_version, error_type)
+),
+with_ratio AS (
   SELECT
     *,
     SAFE_DIVIDE(1.0 * error_count, ping_count) AS error_ratio

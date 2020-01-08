@@ -720,7 +720,7 @@ SELECT
     NULL AS room_share
   ) AS loop_activity_counter
 FROM
-  `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+  `moz-fx-data-shared-prod.telemetry.main`
 WHERE
   DATE(submission_timestamp) = @submission_date
   AND normalized_app_name = 'Firefox'

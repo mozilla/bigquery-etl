@@ -1,6 +1,6 @@
 /*
 
-Rename struct fields in anonymous event tuples to meaningful names
+Rename struct fields in anonymous event tuples to meaningful names.
 
 */
 CREATE TEMP FUNCTION
@@ -12,7 +12,9 @@ CREATE TEMP FUNCTION
     f4_ STRING,
     f5_ ARRAY<STRUCT<key STRING, value STRING>>>) AS (
 
-    STRUCT(tuple.f0_ AS event_timestamp,
+    STRUCT(
+      -- Bug 1602521; some clients report bogus negative timestamps
+      IF(tuple.f0_ < 0, NULL, tuple.f0_) AS event_timestamp,
       tuple.f1_ AS event_category,
       tuple.f2_ AS event_method,
       tuple.f3_ AS event_object,
@@ -40,4 +42,18 @@ FROM (
     [STRUCT("branch" AS key,
     "control" AS value)] AS f5_
    ) AS event
+);
+
+SELECT
+  assert_null(udf_deanonymize_event(event).event_timestamp)
+FROM (
+  SELECT STRUCT(
+    -859101 AS f0_,
+    "normandy" AS f1_,
+    "enroll" AS f2_,
+    "pref-flip" AS f3_,
+    "test-experiment" AS f4_,
+    [STRUCT("branch" AS key,
+    "control" AS value)] AS f5_
+  ) AS event
 );

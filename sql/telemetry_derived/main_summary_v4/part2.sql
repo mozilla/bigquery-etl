@@ -840,7 +840,7 @@ WITH histogram_lists AS (
         UNNEST(histograms)
     ) AS keyed_categorical_histograms
   FROM
-    `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+    `moz-fx-data-shared-prod.telemetry.main`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND normalized_app_name = 'Firefox'

@@ -21,6 +21,7 @@ WITH unioned AS (
   SELECT * FROM `moz-fx-data-shared-prod.telemetry_stable.core_v10`)
   --
 SELECT
-  * REPLACE(`moz-fx-data-shared-prod.udf.normalize_metadata`(metadata) AS metadata)
+  * REPLACE(
+    `moz-fx-data-shared-prod.udf.normalize_metadata`(metadata) AS metadata)
 FROM
   unioned

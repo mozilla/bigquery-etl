@@ -153,10 +153,16 @@ def create_views_if_not_exist(client, views, exclude, sql_dir):
                 " AS metadata"
             ]
             # Add special replacements for Glean pings.
-            if table.labels.get("schema_id", None) == "glean_ping_1":
+            schema_id = table.labels.get("schema_id", None)
+            if schema_id == "glean_ping_1":
                 replacements += [
                     "`moz-fx-data-shared-prod.udf.normalize_glean_ping_info`(ping_info)"
                     " AS ping_info"
+                ]
+            elif schema_id in ("main_ping_1", "main_ping_4"):
+                replacements += [
+                    "`moz-fx-data-shared-prod.udf.normalize_main_payload`(payload)"
+                    " AS payload"
                 ]
             replacements = ",\n    ".join(replacements)
             view_query = VIEW_QUERY_TEMPLATE.format(

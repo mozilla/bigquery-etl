@@ -8,13 +8,12 @@ RETURNS STRING AS (
   IF(
     STARTS_WITH(error_message, "org.everit.json.schema.ValidationException"),
     TRIM(SPLIT(error_message, ":")[OFFSET(1)]),
-    ""
+    NULL
   )
 );
 -- Tests
 SELECT
-  assert_equals(
-    "",
+  assert_null(
     udf_extract_schema_validation_path(
       "com.mozilla.telemetry.decoder.Deduplicate$DuplicateIdException: A message with this documentId has already been successfully processed."
     )

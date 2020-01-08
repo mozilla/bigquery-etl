@@ -58,6 +58,7 @@ jobs:
             templates/telemetry_derived/fxa_users_services_first_seen_v1/init.sql
             templates/telemetry_derived/main_summary_v4
             udf/safe_crc32_uuid.sql
+            udf/normalize_main_payload.sql
   dry-run-sql:
     docker:
       - image: python:3.8

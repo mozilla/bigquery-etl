@@ -12,9 +12,13 @@ CREATE TEMP FUNCTION udf_normalize_main_payload(payload ANY TYPE) AS (
           SELECT AS STRUCT
             payload.info.* REPLACE(
               IF(
-                payload.info.session_length < 0,
-                NULL,
+                -- Bug 1592012 - some clients report bogus negative session lengths;
+                -- we also filter out values longer than 1 year, which is highly unlikely.
                 payload.info.session_length
+                BETWEEN 0
+                AND 31536000,
+                payload.info.session_length,
+                NULL
               ) AS session_length
             )
         ) AS info
@@ -30,5 +34,10 @@ SELECT
   assert_null(
     udf_normalize_main_payload(
       STRUCT(STRUCT(-98984108 AS session_length) AS info)
+    ).info.session_length
+  ),
+  assert_null(
+    udf_normalize_main_payload(
+      STRUCT(STRUCT(51536000 AS session_length) AS info)
     ).info.session_length
   );

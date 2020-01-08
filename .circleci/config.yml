@@ -49,8 +49,7 @@ jobs:
           command: >-
             script/format_sql
             --check
-            templates/monitoring/document_sample_nonprod_v1/query.sql
-            templates/monitoring/telemetry_missing_columns_v1/view.sql
+            templates/monitoring
             templates/org_mozilla_fenix/clients_last_seen/view.sql
             templates/org_mozilla_fenix_derived/clients_daily_v1/query.sql
             templates/telemetry/fxa_all_events_v1/view.sql

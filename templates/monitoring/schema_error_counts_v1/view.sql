@@ -26,7 +26,7 @@ count_errors AS (
     document_version,
     hour,
     job_name,
-    SPLIT(error_message, ":")[OFFSET (1)] AS path,
+    SPLIT(error_message, ":")[OFFSET(1)] AS path,
     COUNT(*) AS error_count,
     ROW_NUMBER() OVER (
       PARTITION BY

@@ -8,7 +8,7 @@ LANGUAGE js AS
     current = 1;
   } // If starting from 0, the second bucket should be 1 rather than 0
   let retArray = [0, current];
-  for (let bucketIndex = 2; bucketIndex < nBuckets; bucketIndex++) {
+  for (let bucketIndex = 2; bucketIndex < Math.min(nBuckets, max); bucketIndex++) {
     let logCurrent = Math.log(current);
     let logRatio = (logMax - logCurrent) / (nBuckets - bucketIndex);
     let logNext = logCurrent + logRatio;

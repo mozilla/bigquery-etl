@@ -417,7 +417,11 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
                     continue  # prevent matching operator as closing bracket
                 token = ClosingBracket(token.value)
                 open_angle_brackets -= 1
-            elif reserved_keyword_is_identifier and isinstance(token, ReservedKeyword):
+            elif (
+                reserved_keyword_is_identifier
+                and isinstance(token, ReservedKeyword)
+                and Identifier.pattern.match(token.value) is not None
+            ):
                 continue  # prevent matching identifier as keyword
             yield token
             length = len(token.value)

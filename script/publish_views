@@ -11,7 +11,13 @@ from google.cloud import bigquery
 import sqlparse
 
 
+AUTHORIZED_VIEWS_TO_SKIP = ("sql/activity_stream/tile_id_types/view.sql",)
+
+
 def process_file(client, args, filepath):
+    if filepath in AUTHORIZED_VIEWS_TO_SKIP:
+        print(f"Skipping authorized view definition {filepath}")
+        return
     with open(filepath) as f:
         sql = f.read()
     parsed = sqlparse.parse(sql)[0]

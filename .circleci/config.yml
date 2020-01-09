@@ -12,7 +12,8 @@ jobs:
           - python-packages-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}-
           - python-packages-v1-{{ .Branch }}-
           - python-packages-v1-
-    - run:
+    - &build
+      run:
         name: Build
         command: |
           python3.8 -m venv venv/
@@ -26,16 +27,13 @@ jobs:
         key: python-packages-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "constraints.txt" }}
   verify-generated-sql:
     docker:
-      - image: circleci/python:3.8
+      - image: python:3.8
     steps:
       - checkout
-      - setup_remote_docker
+      - *build
       - run:
           name: Verify that all of generated SQL is committed
           command: |
-            sudo apt-get update
-            python3.8 -m venv venv/
-            venv/bin/pip install --upgrade -r requirements.txt
             rm -rf sql/
             venv/bin/python script/generate_sql
             echo "Inconsistencies between templates and generated SQL:"

@@ -361,11 +361,7 @@ CREATE TEMP FUNCTION udf_main_summary_scalars(processes ANY TYPE) AS (
   )
 );
 CREATE TEMP FUNCTION udf_null_if_empty_list(list ANY TYPE) AS (
-  IF(
-    ARRAY_LENGTH(list) > 0,
-    list,
-    NULL
-  )
+  IF(ARRAY_LENGTH(list) > 0, list, NULL)
 );
 --
 WITH histogram_lists AS (

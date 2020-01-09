@@ -5,17 +5,25 @@ Parse scalars from payload.processes.dynamic into map columns for each value typ
 https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L385-L399
 
 */
-
-CREATE TEMP FUNCTION udf_js_main_summary_addon_scalars(dynamic_scalars_json STRING, dynamic_keyed_scalars_json STRING)
+CREATE TEMP FUNCTION udf_js_main_summary_addon_scalars(
+  dynamic_scalars_json STRING,
+  dynamic_keyed_scalars_json STRING
+)
 RETURNS STRUCT<
-  keyed_boolean_addon_scalars ARRAY<STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value BOOL>>>>,
+  keyed_boolean_addon_scalars ARRAY<
+    STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value BOOL>>>
+  >,
   keyed_uint_addon_scalars ARRAY<STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>,
   string_addon_scalars ARRAY<STRUCT<key STRING, value STRING>>,
-  keyed_string_addon_scalars ARRAY<STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value STRING>>>>,
+  keyed_string_addon_scalars ARRAY<
+    STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value STRING>>>
+  >,
   uint_addon_scalars ARRAY<STRUCT<key STRING, value INT64>>,
   boolean_addon_scalars ARRAY<STRUCT<key STRING, value BOOL>>
 >
-LANGUAGE js AS """
+LANGUAGE js
+AS
+  """
 try {
   const dynamicScalars = JSON.parse(dynamic_scalars_json) || {};
   const dynamicKeyedScalars = JSON.parse(dynamic_keyed_scalars_json) || {};
@@ -49,9 +57,8 @@ try {
   return null;
 }
 """;
-
 -- Tests
-
+-- format:off
 SELECT
   assert_equals(2, ARRAY_LENGTH(keyed_boolean_addon_scalars)),
   assert_equals("foo1", keyed_boolean_addon_scalars[OFFSET(0)].key),
@@ -80,3 +87,4 @@ FROM (
       '{"foo1": {"a": true, "b": false}, "foo2": {"a": 17, "b": 42}, "foo4": {"a": "yes", "b": "no"}, "foo7": {"c": false, "d": true}}'
     ).*
 )
+-- format:on

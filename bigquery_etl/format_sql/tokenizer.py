@@ -261,10 +261,12 @@ class AliasSeparator(SpaceBeforeBracketKeyword):
 
     May be followed by an alias identifier that would otherwise be a reserved keyword.
 
-    Must not be followed by the keywords "WITH" or "SELECT".
+    Must not be followed by the keyword WITH, SELECT, STRUCT or ARRAY.
     """
 
-    pattern = re.compile(r"AS(?=\s+(?!WITH|SELECT)[a-z_`(])", re.IGNORECASE)
+    pattern = re.compile(
+        r"AS(?=\s+(?!WITH|SELECT|STRUCT|ARRAY)[a-z_`(])", re.IGNORECASE
+    )
 
 
 class NewlineKeyword(SpaceBeforeBracketKeyword):

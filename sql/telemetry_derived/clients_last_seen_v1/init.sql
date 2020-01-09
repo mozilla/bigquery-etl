@@ -6,7 +6,8 @@ CLUSTER BY
   normalized_channel,
   sample_id
 OPTIONS
-  (require_partition_filter=TRUE) AS
+  (require_partition_filter = TRUE)
+AS
 SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
   CAST(NULL AS INT64) AS days_visited_5_uri_bits,

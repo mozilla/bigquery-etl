@@ -13,50 +13,55 @@ for foreignInstall and userDisabled; string or number for version.
 https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/views/MainSummaryView.scala#L422-L449
 
 */
-
 CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
-  active_addons ARRAY<STRUCT<
-    key STRING,
-    value STRUCT<
-      app_disabled BOOL,
-      blocklisted BOOL,
-      description STRING,
-      has_binary_components BOOL,
-      install_day INT64,
-      is_system BOOL,
-      name STRING,
-      scope INT64,
-      signed_state INT64,
-      type STRING,
-      update_day INT64,
-      is_web_extension BOOL,
-      multiprocess_compatible BOOL,
-      foreign_install INT64,
-      user_disabled INT64,
-      version STRING
+  active_addons ARRAY<
+    STRUCT<
+      key STRING,
+      value STRUCT<
+        app_disabled BOOL,
+        blocklisted BOOL,
+        description STRING,
+        has_binary_components BOOL,
+        install_day INT64,
+        is_system BOOL,
+        name STRING,
+        scope INT64,
+        signed_state INT64,
+        type STRING,
+        update_day INT64,
+        is_web_extension BOOL,
+        multiprocess_compatible BOOL,
+        foreign_install INT64,
+        user_disabled INT64,
+        version STRING
+      >
     >
-  >>,
+  >,
   active_addons_json STRING
 )
-RETURNS ARRAY<STRUCT<
-  addon_id STRING,
-  blocklisted BOOL,
-  name STRING,
-  user_disabled BOOL,
-  app_disabled BOOL,
-  version STRING,
-  scope INT64,
-  type STRING,
-  foreign_install BOOL,
-  has_binary_components BOOL,
-  install_day INT64,
-  update_day INT64,
-  signed_state INT64,
-  is_system BOOL,
-  is_web_extension BOOL,
-  multiprocess_compatible BOOL
->>
-LANGUAGE js AS """
+RETURNS ARRAY<
+  STRUCT<
+    addon_id STRING,
+    blocklisted BOOL,
+    name STRING,
+    user_disabled BOOL,
+    app_disabled BOOL,
+    version STRING,
+    scope INT64,
+    type STRING,
+    foreign_install BOOL,
+    has_binary_components BOOL,
+    install_day INT64,
+    update_day INT64,
+    signed_state INT64,
+    is_system BOOL,
+    is_web_extension BOOL,
+    multiprocess_compatible BOOL
+  >
+>
+LANGUAGE js
+AS
+  """
 function ifnull(value1, value2) {
   // preserve falsey values and ignore missing values
   if (value1 !== null && value1 !== undefined) {
@@ -102,6 +107,7 @@ try {
 }
 """;
 -- Tests
+-- format:off
 WITH result AS (
   SELECT AS VALUE
     ARRAY_CONCAT(
@@ -183,3 +189,4 @@ FROM
   result,
   -- use SAFE_OFFSET to get a result with all fields null
   UNNEST([(SELECT AS STRUCT result[SAFE_OFFSET(-1)].* EXCEPT (addon_id))]) AS empty_value
+-- format:on

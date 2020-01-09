@@ -1,21 +1,12 @@
 /*
 Stably hash a client_id to an integer between 0 and 99, or NULL if client_id isn't 36 bytes
 */
-
 CREATE TEMP FUNCTION udf_safe_sample_id(client_id STRING) AS (
-  MOD(
-    udf_safe_crc32_uuid(CAST(client_id AS BYTES)),
-    100
-  )
+  MOD(udf_safe_crc32_uuid(CAST(client_id AS BYTES)), 100)
 );
-
 -- Tests
-
 SELECT
-  assert_equals(
-    sample_id,
-    udf_safe_sample_id(client_id)
-  )
+  assert_equals(sample_id, udf_safe_sample_id(client_id))
 FROM
   UNNEST(
     [

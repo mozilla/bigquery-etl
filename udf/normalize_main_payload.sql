@@ -7,10 +7,10 @@ includes a few parsed or normalized variants of the input metadata fields.
 CREATE TEMP FUNCTION udf_normalize_main_payload(payload ANY TYPE) AS (
   (
     SELECT AS STRUCT
-      payload.* REPLACE(
+      payload.* REPLACE (
         (
           SELECT AS STRUCT
-            payload.info.* REPLACE(
+            payload.info.* REPLACE (
               IF(
                 -- Bug 1592012 - some clients report bogus negative session lengths;
                 -- we also filter out values longer than 1 year, which is highly unlikely.

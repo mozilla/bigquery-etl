@@ -23,7 +23,7 @@ How to Configure a UDF Test
 Include a comment like `-- Tests` followed by one or more query statements
 after the UDF in the SQL file where it is defined. Each statement in a SQL file
 that defines a UDF that does not define a temporary function is collected as a
-test and executed indepentently of other tests in the file.
+test and executed independently of other tests in the file.
 
 Each test must use the UDF and throw an error to fail. Assert functions defined
 in `tests/assert/` may be used to evaluate outputs. Tests must not use any

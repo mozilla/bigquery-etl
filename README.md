@@ -8,7 +8,8 @@ Bigquery UDFs and SQL queries for building derived datasets.
 Formatting SQL
 ---
 
-SQL should be formatted using `script/format_sql`.
+We enforce consistent SQL formatting as part of CI. After adding or changing a
+query, use `script/format_sql` to apply formatting rules.
 
 Directories and files passed as arguments to `script/format_sql` will be
 formatted in place, with directories recursively searched for files with a

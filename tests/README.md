@@ -17,6 +17,44 @@ venv/bin/pytest --black --docstyle --flake8 --mypy-ignore-missing-imports -n 4
 To provide [authentication credentials for the Google Cloud API](https://cloud.google.com/docs/authentication/getting-started) the `GOOGLE_APPLICATION_CREDENTIALS` environment variable must be set to the file path of the JSON file that contains the service account key.
 See [Mozilla BigQuery API Access instructions](https://docs.telemetry.mozilla.org/cookbooks/bigquery.html#gcp-bigquery-api-access) to request credentials if you don't already have them.
 
+How to Configure a UDF Test
+===
+
+Include a comment like `-- Tests` followed by one or more query statements
+after the UDF in the SQL file where it is defined. Each statement in a SQL file
+that defines a UDF that does not define a temporary function is collected as a
+test and executed indepentently of other tests in the file.
+
+Each test must use the UDF and throw an error to fail. Assert functions defined
+in `tests/assert/` may be used to evaluate outputs. Tests must not use any
+query parameters and should not reference any tables. Each test that is
+expected to fail must be preceded by a comment like `#xfail`, similar to a [SQL
+dialect prefix] in the BigQuery Cloud Console.
+
+For example:
+
+```sql
+CREATE TEMP FUNCTION udf_example(option INT64) AS (
+  CASE
+  WHEN option > 0 then TRUE
+  WHEN option = 0 then FALSE
+  ELSE ERROR("invalid option")
+  END
+);
+-- Tests
+SELECT
+  assert_true(udf_example(1)),
+  assert_false(udf_example(0));
+#xfail
+SELECT
+  udf_example(-1);
+#xfail
+SELECT
+  udf_example(NULL);
+```
+
+[SQL dialect prefix]: https://cloud.google.com/bigquery/docs/reference/standard-sql/enabling-standard-sql#sql-prefix
+
 How to Configure a Generated Test
 ===
 

@@ -1,6 +1,3 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring.telemetry_missing_columns_v2`
-AS
 WITH placeholder_table_names AS (
   SELECT
     DISTINCT table_name
@@ -13,17 +10,20 @@ extracted AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, DAY) AS day,
     'telemetry' AS document_namespace,
-    REGEXP_EXTRACT(_TABLE_SUFFIX, r"^(.*)_v.*") AS document_type,
-    REGEXP_EXTRACT(_TABLE_SUFFIX, r"^.*_v(.*)$") AS document_version,
+    `moz-fx-data-shared-prod`.udf.extract_document_type(_TABLE_SUFFIX) AS document_type,
+    `moz-fx-data-shared-prod`.udf.extract_document_type(_TABLE_SUFFIX) AS document_version,
     additional_properties
   FROM
     `moz-fx-data-shared-prod.telemetry_live.*`
   WHERE
     -- only observe full days of data
     (
-      DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL 2 day)
-      OR DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL 2 + 7 day)
+      DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL 1 day)
+      OR DATE(submission_timestamp) = DATE_SUB(current_date, INTERVAL 1 + 7 day)
     )
+    -- https://cloud.google.com/bigquery/docs/querying-wildcard-tables#filtering_selected_tables_using_table_suffix
+    -- exclude pings derived from main schema to save on space, 300GB vs 3TB
+    AND _TABLE_SUFFIX NOT IN ('main_v4', 'saved_session_v4', 'first_shutdown_v4')
     AND _TABLE_SUFFIX NOT IN (SELECT * FROM placeholder_table_names)
 ),
 transformed AS (
@@ -36,22 +36,24 @@ transformed AS (
       `moz-fx-data-shared-prod`.udf_js.json_extract_missing_cols(
         additional_properties,
         [],
+        -- Manually curated list of known missing sections. The process to
+        -- generate list is to change the project for the live table to
+        -- moz-fx-data-shar-nonprod-efed to obtain a 1% sample. Run this query
+        -- except with the following list empty. This generates a total of
+        -- O(1e5) total distinct (document, path) rows. All nodes with a large
+        -- number of subpaths are added to the following list, e.g. activeAddons
+        -- or histograms. The list is then curated such that there are
+        -- approximately less than 1000 distinct paths.
         [
+          -- common environment
           "activeAddons",
           "userPrefs",
-          "activeGMPlugins",
-          "simpleMeasurements",
-          "slowSQL",
-          "slowSQLStartup",
-          "XPI",
-          "keyedHistograms",
-          "histograms",
-          "prio",
-          "fileIOReports",
           "experiments",
+          -- common measures
           "keyedScalars",
           "scalars",
-          "IceCandidatesStats"
+          "histograms",
+          "keyedHistograms"
         ]
       )
     ) AS path

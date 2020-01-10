@@ -53,6 +53,8 @@ class UdfTest(pytest.Item):
         """Initialize."""
         super().__init__(name, parent)
         self.query = query
+        if "#xfail" in query:
+            self.add_marker(pytest.mark.xfail(strict=True))
 
     def reportinfo(self):
         """Set report title to `self.name`."""

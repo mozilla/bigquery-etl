@@ -192,7 +192,6 @@ SKIP = {
     "tests/assert/array_equals.sql",
     "tests/assert/array_equals_any_order.sql",
     "tests/assert/equals.sql",
-    "tests/assert/false.sql",
     "tests/assert/null.sql",
     "tests/assert/true.sql",
     "udf/active_n_weeks_ago.sql",

@@ -12,8 +12,13 @@ WITH ping_counts AS (
     `moz-fx-data-shared-prod.payload_bytes_decoded.structured_*`
   WHERE
     submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 * 24 HOUR)
-  GROUP BY hour, document_namespace, document_type, document_version
-), error_counts AS (
+  GROUP BY
+    hour,
+    document_namespace,
+    document_type,
+    document_version
+),
+error_counts AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS hour,
     document_namespace,
@@ -25,8 +30,14 @@ WITH ping_counts AS (
     `moz-fx-data-shared-prod.payload_bytes_error.structured`
   WHERE
     submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 * 24 HOUR)
-  GROUP BY hour, document_namespace, document_type, document_version, error_type
-), structured_hourly_errors AS (
+  GROUP BY
+    hour,
+    document_namespace,
+    document_type,
+    document_version,
+    error_type
+),
+structured_hourly_errors AS (
   SELECT
     hour,
     document_namespace,
@@ -38,8 +49,11 @@ WITH ping_counts AS (
   FROM
     ping_counts
   INNER JOIN
-    error_counts USING (hour, document_namespace, document_type, document_version)
-), with_ratio AS (
+    error_counts
+  USING
+    (hour, document_namespace, document_type, document_version)
+),
+with_ratio AS (
   SELECT
     *,
     SAFE_DIVIDE(1.0 * error_count, ping_count) AS error_ratio

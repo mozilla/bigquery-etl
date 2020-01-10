@@ -46,18 +46,8 @@ jobs:
       - checkout
       - run:
           name: Verify that SQL is correctly formatted
-          command: >-
-            script/format_sql
-            --check
-            templates/monitoring
-            templates/org_mozilla_fenix/clients_last_seen/view.sql
-            templates/org_mozilla_fenix_derived/clients_daily_v1/query.sql
-            templates/telemetry/fxa_all_events_v1/view.sql
-            templates/telemetry/fxa_users_daily_v1/query.sql
-            templates/telemetry_derived/fxa_users_services_first_seen_v1/init.sql
-            templates/telemetry_derived/main_summary_v4
-            udf/extract_schema_validation_path.sql
-            udf/safe_crc32_uuid.sql
+          # check all directories owned by git except sql
+          command: script/format_sql --check $(git ls-tree -d HEAD --name-only | grep -vx sql)
   dry-run-sql:
     docker:
       - image: python:3.8

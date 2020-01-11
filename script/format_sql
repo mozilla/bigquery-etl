@@ -155,7 +155,6 @@ SKIP = {
     "templates/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",
     "templates/telemetry_derived/smoot_usage_nondesktop_v2/query.sql",
     "templates/telemetry_derived/surveygizmo_daily_attitudes/init.sql",
-    "tests/assert/false.sql",
     "udf/active_n_weeks_ago.sql",
     "udf/add_monthly_engine_searches.sql",
     "udf/add_monthly_searches.sql",

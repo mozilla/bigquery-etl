@@ -1,0 +1,48 @@
+---
+- &base
+  ad_click: 0
+  organic: 0
+  sap: 4
+  search_with_ads: 0
+  sessions_started_on_this_day: 0
+  source: urlbar
+  submission_date: '2017-01-01'
+  tagged_follow_on: 0
+  tagged_sap: 0
+  unknown: 0
+  client_id: a
+  engine: bing
+  normalized_engine: Bing
+  experiments:
+  - key: exp1
+    value: active
+  - key: exp2
+    value: active
+- <<: *base
+  client_id: a
+  sap: 4
+  engine: yahoo
+  normalized_engine: Other
+  experiments:
+  - key: exp1
+    value: active
+  - key: exp2
+    value: active
+- <<: *base
+  client_id: a
+  sap: 8
+  engine: google
+  normalized_engine: Google
+  experiments:
+  - key: exp1
+    value: active
+  - key: exp2
+    value: active
+- <<: *base
+  client_id: b
+  sap: 4
+  engine: google
+  normalized_engine: Google
+  experiments:
+  - key: exp1
+    value: active

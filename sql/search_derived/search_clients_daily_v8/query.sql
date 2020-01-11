@@ -15,6 +15,17 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
+CREATE TEMP FUNCTION udf_map_mode_last(entries ANY TYPE) AS (
+  ARRAY(
+    SELECT AS STRUCT
+      key,
+      udf_mode_last(ARRAY_AGG(value)) AS value
+    FROM
+      UNNEST(entries)
+    GROUP BY
+      key
+  )
+);
 CREATE TEMP FUNCTION
   udf_normalize_search_engine(engine STRING) AS (
     CASE
@@ -64,9 +75,25 @@ WITH
   HAVING
     COUNT(*) > 200000
   ),
+  client_experiments AS (
+  SELECT
+    client_id,
+    udf_map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
+  FROM
+    telemetry.main_summary
+  LEFT JOIN
+    overactive
+  USING
+    (client_id)
+  WHERE
+    submission_date = @submission_date
+    AND overactive.client_id IS NULL
+  GROUP BY
+    client_id
+  ),
   augmented AS (
   SELECT
-    *,
+    * EXCEPT (experiments),
     ARRAY_CONCAT(
       ARRAY(
       SELECT
@@ -110,15 +137,14 @@ WITH
     MAX(scalar_parent_browser_engagement_max_concurrent_tab_count) OVER w1 AS max_concurrent_tab_count_max,
     SUM(scalar_parent_browser_engagement_tab_open_event_count) OVER w1 AS tab_open_event_count_sum,
     SUM(active_ticks/(3600/5)) OVER w1 AS active_hours_sum,
-    SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count
+    SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count,
+    COALESCE(client_experiments.experiments, []) AS experiments,
   FROM
     telemetry.main_summary
   LEFT JOIN
-    overactive
+    client_experiments
   USING
     (client_id)
-  WHERE
-    overactive.client_id IS NULL
   WINDOW
     w1 AS (
       PARTITION BY
@@ -175,6 +201,7 @@ WITH
     tab_open_event_count_sum,
     active_hours_sum,
     total_uri_count,
+    experiments,
     SAFE_SUBTRACT(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))), profile_creation_date) AS profile_age_in_days,
     SUM(
     IF

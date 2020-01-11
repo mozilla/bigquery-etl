@@ -1,0 +1,46 @@
+---
+- &base
+  submission_date: '2017-01-01'
+  scalar_parent_browser_search_with_ads: []
+  scalar_parent_browser_search_ad_clicks: []
+  active_addons: []
+  search_counts:
+  - engine: google
+    source: urlbar
+    count: 4
+  client_id: b
+  experiments:
+  - key: exp1
+    value: active
+- <<: *base
+  search_counts:
+  - engine: google
+    source: urlbar
+    count: 4
+  client_id: a
+  experiments:
+  - key: exp1
+    value: active
+- <<: *base
+  search_counts:
+  - engine: bing
+    source: urlbar
+    count: 4
+  - engine: yahoo
+    source: urlbar
+    count: 4
+  client_id: a
+  experiments:
+  - key: exp1
+    value: active
+  - key: exp2
+    value: active
+- <<: *base
+  search_counts:
+  - engine: google
+    source: urlbar
+    count: 4
+  client_id: a
+  experiments:
+  - key: exp1
+    value: inactive

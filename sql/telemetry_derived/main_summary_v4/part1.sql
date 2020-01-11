@@ -1,16 +1,11 @@
-CREATE TEMP FUNCTION
-  udf_boolean_histogram_to_boolean(histogram STRING) AS (
-    COALESCE(SAFE_CAST(JSON_EXTRACT_SCALAR(histogram,
-          "$.values.1") AS INT64) > 0,
-      NOT SAFE_CAST( JSON_EXTRACT_SCALAR(histogram,
-          "$.values.0") AS INT64) > 0));
+CREATE TEMP FUNCTION udf_boolean_histogram_to_boolean(histogram STRING) AS (
+  COALESCE(
+    SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, "$.values.1") AS INT64) > 0,
+    NOT SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, "$.values.0") AS INT64) > 0
+  )
+);
 CREATE TEMP FUNCTION udf_get_key(map ANY TYPE, k ANY TYPE) AS (
- (
-   SELECT key_value.value
-   FROM UNNEST(map) AS key_value
-   WHERE key_value.key = k
-   LIMIT 1
- )
+  (SELECT key_value.value FROM UNNEST(map) AS key_value WHERE key_value.key = k LIMIT 1)
 );
 CREATE TEMP FUNCTION
   udf_json_extract_int_map (input STRING) AS (ARRAY(
@@ -32,19 +27,18 @@ CREATE TEMP FUNCTION
       FROM
         UNNEST(SPLIT(TRIM(JSON_EXTRACT(input, '$.range'), '[]'), ',')) AS bound) AS `range`,
     udf_json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values` ));
-CREATE TEMP FUNCTION
-  udf_histogram_max_key_with_nonzero_value(histogram STRING) AS ((
-    SELECT
-      MAX(key)
-    FROM
-      UNNEST(udf_json_extract_histogram(histogram).values)
-    WHERE
-      value > 0));
+CREATE TEMP FUNCTION udf_histogram_max_key_with_nonzero_value(histogram STRING) AS (
+  (SELECT MAX(key) FROM UNNEST(udf_json_extract_histogram(histogram).values) WHERE value > 0)
+);
 CREATE TEMP FUNCTION udf_histogram_to_mean(histogram ANY TYPE) AS (
   CASE
   WHEN histogram.sum < 0 THEN NULL
   WHEN histogram.sum = 0 THEN 0
-  ELSE SAFE_CAST(TRUNC(histogram.sum / (SELECT SUM(value) FROM UNNEST(histogram.values) WHERE value > 0)) AS INT64)
+  ELSE SAFE_CAST(
+    TRUNC(
+      histogram.sum / (SELECT SUM(value) FROM UNNEST(histogram.values) WHERE value > 0)
+    ) AS INT64
+  )
   END
 );
 CREATE TEMP FUNCTION udf_histogram_to_threshold_count(histogram STRING, threshold INT64) AS (
@@ -58,48 +52,54 @@ CREATE TEMP FUNCTION udf_histogram_to_threshold_count(histogram STRING, threshol
   )
 );
 CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
-  active_addons ARRAY<STRUCT<
-    key STRING,
-    value STRUCT<
-      app_disabled BOOL,
-      blocklisted BOOL,
-      description STRING,
-      has_binary_components BOOL,
-      install_day INT64,
-      is_system BOOL,
-      name STRING,
-      scope INT64,
-      signed_state INT64,
-      type STRING,
-      update_day INT64,
-      is_web_extension BOOL,
-      multiprocess_compatible BOOL,
-      foreign_install INT64,
-      user_disabled INT64,
-      version STRING
+  active_addons ARRAY<
+    STRUCT<
+      key STRING,
+      value STRUCT<
+        app_disabled BOOL,
+        blocklisted BOOL,
+        description STRING,
+        has_binary_components BOOL,
+        install_day INT64,
+        is_system BOOL,
+        name STRING,
+        scope INT64,
+        signed_state INT64,
+        type STRING,
+        update_day INT64,
+        is_web_extension BOOL,
+        multiprocess_compatible BOOL,
+        foreign_install INT64,
+        user_disabled INT64,
+        version STRING
+      >
     >
-  >>,
+  >,
   active_addons_json STRING
 )
-RETURNS ARRAY<STRUCT<
-  addon_id STRING,
-  blocklisted BOOL,
-  name STRING,
-  user_disabled BOOL,
-  app_disabled BOOL,
-  version STRING,
-  scope INT64,
-  type STRING,
-  foreign_install BOOL,
-  has_binary_components BOOL,
-  install_day INT64,
-  update_day INT64,
-  signed_state INT64,
-  is_system BOOL,
-  is_web_extension BOOL,
-  multiprocess_compatible BOOL
->>
-LANGUAGE js AS """
+RETURNS ARRAY<
+  STRUCT<
+    addon_id STRING,
+    blocklisted BOOL,
+    name STRING,
+    user_disabled BOOL,
+    app_disabled BOOL,
+    version STRING,
+    scope INT64,
+    type STRING,
+    foreign_install BOOL,
+    has_binary_components BOOL,
+    install_day INT64,
+    update_day INT64,
+    signed_state INT64,
+    is_system BOOL,
+    is_web_extension BOOL,
+    multiprocess_compatible BOOL
+  >
+>
+LANGUAGE js
+AS
+  """
 function ifnull(value1, value2) {
   // preserve falsey values and ignore missing values
   if (value1 !== null && value1 !== undefined) {
@@ -144,16 +144,25 @@ try {
   return null;
 }
 """;
-CREATE TEMP FUNCTION udf_js_main_summary_addon_scalars(dynamic_scalars_json STRING, dynamic_keyed_scalars_json STRING)
+CREATE TEMP FUNCTION udf_js_main_summary_addon_scalars(
+  dynamic_scalars_json STRING,
+  dynamic_keyed_scalars_json STRING
+)
 RETURNS STRUCT<
-  keyed_boolean_addon_scalars ARRAY<STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value BOOL>>>>,
+  keyed_boolean_addon_scalars ARRAY<
+    STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value BOOL>>>
+  >,
   keyed_uint_addon_scalars ARRAY<STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>,
   string_addon_scalars ARRAY<STRUCT<key STRING, value STRING>>,
-  keyed_string_addon_scalars ARRAY<STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value STRING>>>>,
+  keyed_string_addon_scalars ARRAY<
+    STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value STRING>>>
+  >,
   uint_addon_scalars ARRAY<STRUCT<key STRING, value INT64>>,
   boolean_addon_scalars ARRAY<STRUCT<key STRING, value BOOL>>
 >
-LANGUAGE js AS """
+LANGUAGE js
+AS
+  """
 try {
   const dynamicScalars = JSON.parse(dynamic_scalars_json) || {};
   const dynamicKeyedScalars = JSON.parse(dynamic_keyed_scalars_json) || {};
@@ -192,7 +201,9 @@ CREATE TEMP FUNCTION udf_js_main_summary_disabled_addons(
   addon_details_json STRING
 )
 RETURNS ARRAY<STRING>
-LANGUAGE js AS """
+LANGUAGE js
+AS
+  """
 try {
   const addonDetails = Object.keys(JSON.parse(addon_details_json) || {});
   return addonDetails.filter(k => !(active_addon_ids || []).includes(k));

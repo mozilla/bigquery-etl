@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.ssl_ratios_v1` AS
+  `moz-fx-data-shared-prod.telemetry.ssl_ratios_v1`
+AS
 WITH windowed AS (
   SELECT
     *,
@@ -7,7 +8,14 @@ WITH windowed AS (
   FROM
     `moz-fx-data-derived-datasets.telemetry_derived.ssl_ratios_v1`
   WINDOW
-    w1 AS (ORDER BY submission_date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING))
+    w1 AS (
+      ORDER BY
+        submission_date
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND UNBOUNDED FOLLOWING
+    )
+)
 SELECT
   submission_date,
   os,

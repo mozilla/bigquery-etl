@@ -7,13 +7,14 @@ We need this as addonDetails may contain both disabled and active addons.
 https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/views/MainSummaryView.scala#L451-L464
 
 */
-
 CREATE TEMP FUNCTION udf_js_main_summary_disabled_addons(
   active_addon_ids ARRAY<STRING>,
   addon_details_json STRING
 )
 RETURNS ARRAY<STRING>
-LANGUAGE js AS """
+LANGUAGE js
+AS
+  """
 try {
   const addonDetails = Object.keys(JSON.parse(addon_details_json) || {});
   return addonDetails.filter(k => !(active_addon_ids || []).includes(k));
@@ -27,7 +28,4 @@ SELECT
     udf_js_main_summary_disabled_addons(["foo", "baz", "buz"], '{"foo":{}, "buz":{}, "blee":{}}'),
     ["blee"]
   ),
-  assert_array_equals(
-    udf_js_main_summary_disabled_addons(NULL, '{"foo":{}}'),
-    ["foo"]
-  )
+  assert_array_equals(udf_js_main_summary_disabled_addons(NULL, '{"foo":{}}'), ["foo"])

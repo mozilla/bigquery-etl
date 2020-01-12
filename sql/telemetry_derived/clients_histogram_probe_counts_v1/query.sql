@@ -127,6 +127,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -188,6 +189,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   app_build_id,
@@ -218,6 +220,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -248,6 +251,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   channel,
@@ -334,6 +338,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   metric,

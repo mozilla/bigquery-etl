@@ -6,11 +6,19 @@ SELECT
   client_id,
   normalized_channel,
   normalized_country_code AS country,
+  metadata.geo.city,
   environment.settings.locale AS locale,
   normalized_app_name AS app_name,
   metadata.uri.app_version AS app_version,
   normalized_os AS os,
   normalized_os_version AS os_version,
+  environment.settings.attribution.source AS attribution_source,
+  application.build_id,
+  environment.build.architecture AS build_architecture,
+  environment.settings.is_default_browser,
+  environment.profile.creation_date AS profile_creation_date,
+  environment.system.is_wow64 AS system_is_wow64,
+  environment.system.memory_mb AS system_memory_mb,
   environment.experiments AS experiments,
   sample_id,
   payload.session_id AS session_id,
@@ -18,15 +26,7 @@ SELECT
   payload.subsession_id AS subsession_id,
   submission_timestamp AS `timestamp`,
   udf.deanonymize_event(e).*,
-  event_process,
-  application.build_id,
-  environment.build.architecture AS build_architecture,
-  environment.profile.creation_date AS profile_creation_date,
-  environment.settings.is_default_browser,
-  environment.settings.attribution.source AS attribution_source,
-  environment.system.is_wow64 AS system_is_wow64,
-  environment.system.memory_mb AS system_memory_mb,
-  metadata.geo.city
+  event_process
 FROM
   telemetry.event
 CROSS JOIN

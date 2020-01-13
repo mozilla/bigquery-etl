@@ -18,7 +18,15 @@ SELECT
   payload.subsession_id AS subsession_id,
   submission_timestamp AS `timestamp`,
   udf.deanonymize_event(e).*,
-  event_process
+  event_process,
+  application.build_id,
+  environment.build.architecture AS build_architecture,
+  environment.profile.creation_date AS profile_creation_date,
+  environment.settings.is_default_browser,
+  environment.settings.attribution.source AS attribution_source,
+  environment.system.is_wow64 AS system_is_wow64,
+  environment.system.memory_mb AS system_memory_mb,
+  metadata.geo.city
 FROM
   telemetry.event
 CROSS JOIN

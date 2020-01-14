@@ -71,6 +71,7 @@ SELECT
    END AS aggregates
 FROM
   clients_scalar_bucket_counts_v1
+WHERE os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -144,6 +145,7 @@ SELECT
    END AS aggregates
 FROM
   clients_scalar_bucket_counts_v1
+WHERE os IS NOT NULL
 GROUP BY
   os,
   app_build_id,
@@ -180,6 +182,7 @@ SELECT
    END AS aggregates
 FROM
   clients_scalar_bucket_counts_v1
+WHERE os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -216,6 +219,7 @@ SELECT
    END AS aggregates
 FROM
   clients_scalar_bucket_counts_v1
+WHERE os IS NOT NULL
 GROUP BY
   os,
   channel,
@@ -320,6 +324,7 @@ SELECT
    END AS aggregates
 FROM
   clients_scalar_bucket_counts_v1
+WHERE os IS NOT NULL
 GROUP BY
   os,
   metric,

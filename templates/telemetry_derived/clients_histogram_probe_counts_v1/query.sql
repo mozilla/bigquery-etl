@@ -8,7 +8,7 @@ LANGUAGE js AS
     current = 1;
   } // If starting from 0, the second bucket should be 1 rather than 0
   let retArray = [0, current];
-  for (let bucketIndex = 2; bucketIndex < Math.min(nBuckets, max); bucketIndex++) {
+  for (let bucketIndex = 2; bucketIndex < Math.min(nBuckets, max, 10000); bucketIndex++) {
     let logCurrent = Math.log(current);
     let logRatio = (logMax - logCurrent) / (nBuckets - bucketIndex);
     let logNext = logCurrent + logRatio;
@@ -24,7 +24,7 @@ RETURNS ARRAY<FLOAT64>
 LANGUAGE js AS
 '''
   let result = [0];
-  for (let i = 1; i < Math.min(nBuckets, max); i++) {
+  for (let i = 1; i < Math.min(nBuckets, max, 10000); i++) {
     let linearRange = (min * (nBuckets - 1 - i) + max * (i - 1)) / (nBuckets - 2);
     result.push(Math.round(linearRange));
   }
@@ -127,6 +127,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -188,6 +189,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   app_build_id,
@@ -218,6 +220,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -248,6 +251,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   channel,
@@ -334,6 +338,7 @@ SELECT
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 WHERE first_bucket IS NOT NULL
+  AND os IS NOT NULL
 GROUP BY
   os,
   metric,

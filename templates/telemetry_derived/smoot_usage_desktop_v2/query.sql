@@ -19,7 +19,7 @@ WITH
       udf_smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
           days_opened_dev_tools_bits))) AS metrics)
     ] AS metrics_array,
-    MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
+    udf_id_to_bucket(client_id, 20) AS id_bucket,
     app_name,
     app_version,
     country,

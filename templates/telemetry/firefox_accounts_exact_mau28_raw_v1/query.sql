@@ -46,7 +46,7 @@ SELECT
   -- We hash user_ids into 20 buckets to aid in computing
   -- confidence intervals for mau/wau/dau sums; the particular hash
   -- function and number of buckets is subject to change in the future.
-  MOD(ABS(FARM_FINGERPRINT(user_id)), 20) AS id_bucket,
+  udf_id_to_bucket(user_id, 20) AS id_bucket,
   country
 FROM
   unioned

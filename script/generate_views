@@ -159,6 +159,14 @@ def create_views_if_not_exist(client, views, exclude, sql_dir):
                     "`moz-fx-data-shared-prod.udf.normalize_glean_ping_info`(ping_info)"
                     " AS ping_info"
                 ]
+                if table.dataset_id.startswith(
+                    "org_mozilla_fenix"
+                ) and table.table_id.startswith("metrics"):
+                    replacements += [
+                        "`moz-fx-data-shared-prod.udf.normalize_fenix_metrics`"
+                        "(client_info.telemetry_sdk_build, metrics.metrics)"
+                        " AS metrics"
+                    ]
             elif schema_id in ("main_ping_1", "main_ping_4"):
                 replacements += [
                     "`moz-fx-data-shared-prod.udf.normalize_main_payload`(payload)"

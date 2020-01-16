@@ -24,6 +24,9 @@ from bigquery_etl.parse_udf import (
 )  # noqa E402
 
 
+METADATA_FILE = "metadata.yaml"
+
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--destination",
@@ -65,6 +68,9 @@ def main():
 
                 with open(os.path.join(basename, filename), "a+") as output_file:
                     output_file.write(full_text)
+
+            if METADATA_FILE in files:
+                shutil.copyfile(os.path.join(root, METADATA_FILE), os.path.join(basename, METADATA_FILE))
 
         if os.path.exists(args.destination):
             shutil.rmtree(args.destination, ignore_errors=True)

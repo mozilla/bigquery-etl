@@ -26,15 +26,15 @@ CREATE TEMP FUNCTION udf_get_bucket_range(histograms ARRAY<STRING>) AS ((
   WITH buckets AS (
     SELECT
       string_to_arr(JSON_EXTRACT(histogram, "$.range")) AS bucket_range,
-      CAST(JSON_EXTRACT(histogram, "$.bucket_count") AS INT64) AS num_buckets
+      SAFE_CAST(JSON_EXTRACT(histogram, "$.bucket_count") AS INT64) AS num_buckets
     FROM UNNEST(histograms) AS histogram
     WHERE histogram IS NOT NULL
     LIMIT 1
   )
 
   SELECT AS STRUCT
-    CAST(bucket_range[OFFSET(0)] AS INT64) AS first_bucket,
-    CAST(bucket_range[OFFSET(1)] AS INT64) AS last_bucket,
+    SAFE_CAST(bucket_range[OFFSET(0)] AS INT64) AS first_bucket,
+    SAFE_CAST(bucket_range[OFFSET(1)] AS INT64) AS last_bucket,
     num_buckets
   FROM
     buckets));
@@ -42,7 +42,7 @@ CREATE TEMP FUNCTION udf_get_bucket_range(histograms ARRAY<STRING>) AS ((
 
 CREATE TEMP FUNCTION udf_get_histogram_type(histograms ARRAY<STRING>) AS ((
     SELECT
-      CASE CAST(JSON_EXTRACT(histogram, "$.histogram_type") AS INT64)
+      CASE SAFE_CAST(JSON_EXTRACT(histogram, "$.histogram_type") AS INT64)
         WHEN 0 THEN 'histogram-exponential'
         WHEN 1 THEN 'histogram-linear'
         WHEN 2 THEN 'histogram-boolean'
@@ -59,7 +59,7 @@ CREATE TEMP FUNCTION
   udf_aggregate_json_sum(histograms ARRAY<STRING>) AS (ARRAY(
       SELECT
         AS STRUCT SPLIT(keyval, ':')[OFFSET(0)] AS key,
-        SUM(CAST(SPLIT(keyval, ':')[OFFSET(1)] AS INT64)) AS value
+        SUM(SAFE_CAST(SPLIT(keyval, ':')[OFFSET(1)] AS INT64)) AS value
       FROM
         UNNEST(histograms) AS histogram,
         UNNEST(get_keyval_pairs(JSON_EXTRACT(histogram, "$.values"))) AS keyval

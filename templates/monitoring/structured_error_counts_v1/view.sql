@@ -44,11 +44,11 @@ structured_hourly_errors AS (
     document_type,
     document_version,
     error_type,
-    ping_count + error_counts.error_count AS ping_count,
-    error_counts.error_count
+    COALESCE(ping_count, 0) + COALESCE(error_count, 0) AS ping_count,
+    COALESCE(error_count, 0) AS error_count
   FROM
     ping_counts
-  INNER JOIN
+  FULL OUTER JOIN
     error_counts
   USING
     (hour, document_namespace, document_type, document_version)

@@ -7,15 +7,19 @@ CREATE TEMP FUNCTION udf_boolean_histogram_to_boolean(histogram STRING) AS (
 CREATE TEMP FUNCTION udf_get_key(map ANY TYPE, k ANY TYPE) AS (
   (SELECT key_value.value FROM UNNEST(map) AS key_value WHERE key_value.key = k LIMIT 1)
 );
-CREATE TEMP FUNCTION
-  udf_json_extract_int_map (input STRING) AS (ARRAY(
+CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
+  ARRAY(
     SELECT
-      STRUCT(CAST(SPLIT(entry, ':')[OFFSET(0)] AS INT64) AS key,
-             CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value)
+      STRUCT(
+        SAFE_CAST(SPLIT(entry, ':')[OFFSET(0)] AS INT64) AS key,
+        SAFE_CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value
+      )
     FROM
       UNNEST(SPLIT(REPLACE(TRIM(input, '{}'), '"', ''), ',')) AS entry
     WHERE
-      LENGTH(entry) > 0 ));
+      LENGTH(entry) > 0
+  )
+);
 CREATE TEMP FUNCTION
   udf_json_extract_histogram (input STRING) AS (STRUCT(
     CAST(JSON_EXTRACT_SCALAR(input, '$.bucket_count') AS INT64) AS bucket_count,

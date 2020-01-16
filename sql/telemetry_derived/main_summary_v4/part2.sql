@@ -1,12 +1,16 @@
-CREATE TEMP FUNCTION
-  udf_json_extract_int_map (input STRING) AS (ARRAY(
+CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
+  ARRAY(
     SELECT
-      STRUCT(CAST(SPLIT(entry, ':')[OFFSET(0)] AS INT64) AS key,
-             CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value)
+      STRUCT(
+        SAFE_CAST(SPLIT(entry, ':')[OFFSET(0)] AS INT64) AS key,
+        SAFE_CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value
+      )
     FROM
       UNNEST(SPLIT(REPLACE(TRIM(input, '{}'), '"', ''), ',')) AS entry
     WHERE
-      LENGTH(entry) > 0 ));
+      LENGTH(entry) > 0
+  )
+);
 CREATE TEMP FUNCTION udf_main_summary_scalars(processes ANY TYPE) AS (
   STRUCT(
     processes.parent.scalars.a11y_backplate AS scalar_parent_a11y_backplate,

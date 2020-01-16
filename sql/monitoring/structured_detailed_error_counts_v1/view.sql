@@ -29,13 +29,14 @@ structured_detailed_hourly_errors AS (
     document_namespace,
     document_type,
     document_version,
+    error_type,
     structured_hourly_errors.ping_count,
-    error_examples.error_count,
+    COALESCE(error_examples.error_count, 0) AS error_count,
     error_message,
     sample_payload
   FROM
     `moz-fx-data-shared-prod.monitoring.structured_error_counts_v1` structured_hourly_errors
-  INNER JOIN
+  FULL OUTER JOIN
     error_examples
   USING
     (hour, document_namespace, document_type, document_version, error_type)

@@ -70,7 +70,10 @@ def main():
                     output_file.write(full_text)
 
             if METADATA_FILE in files:
-                shutil.copyfile(os.path.join(root, METADATA_FILE), os.path.join(basename, METADATA_FILE))
+                shutil.copyfile(
+                    os.path.join(root, METADATA_FILE),
+                    os.path.join(basename, METADATA_FILE),
+                )
 
         if os.path.exists(args.destination):
             shutil.rmtree(args.destination, ignore_errors=True)

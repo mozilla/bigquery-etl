@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+
+"""Update metadata of BigQuery tables."""
+
+from argparse import ArgumentParser
+import logging
+import os
+import yaml
+
+from google.cloud import bigquery
+
+
+METADATA_FILE = "metadata.yaml"
+
+
+def publish_metadata(client, dataset, table, metadata_file):
+    with open(metadata_file, "r") as yaml_stream:
+        try:
+            metadata = yaml.safe_load(yaml_stream)
+            table_ref = client.dataset(dataset).table(table)
+            table = client.get_table(table_ref)
+
+            if "friendly_name" in metadata:
+                table.friendly_name = metadata["friendly_name"]
+
+            if "description" in metadata:
+                table.description = metadata["description"]
+
+            if "labels" in metadata:
+                # only string type and lowercased labels are allowed
+                table.labels = {
+                    k: str(v).lower() for k, v in metadata["labels"].items()
+                }
+
+            client.update_table(table, ["friendly_name", "description", "labels"])
+        except yaml.YAMLError as e:
+            print(e)
+
+
+def main():
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--project-id", help="Default project")
+    parser.add_argument(
+        "--target", nargs="+", help="File or directory containing metadata files"
+    )
+
+    parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
+
+    args = parser.parse_args()
+    client = bigquery.Client(args.project_id)
+
+    # set log level
+    try:
+        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
+    except ValueError as e:
+        parser.error(f"argument --log-level: {e}")
+
+    for target in args.target:
+        if os.path.isdir(target):
+            for root, dirs, files in os.walk(target):
+                if METADATA_FILE in files:
+                    dataset = root.split("/")[-2]
+                    table = root.split("/")[-1]
+                    metadata_file = os.path.join(root, METADATA_FILE)
+
+                    publish_metadata(client, dataset, table, metadata_file)
+        else:
+            print(
+                """
+                Invalid target: {}, target must be a directory with
+                structure /<dataset>/<table>/metadata.yaml.
+                """.format(
+                    args.target
+                )
+            )
+
+
+if __name__ == "__main__":
+    main()

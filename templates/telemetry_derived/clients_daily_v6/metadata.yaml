@@ -1,11 +1,9 @@
 friendly_name: Clients Daily
 description: >
-  A daily aggregate of each Firefox client,
+  A daily aggregate of main pings from each Firefox desktop client,
   partitioned by day
 owners:
-  - relud@mozilla.com
+  - dthorn@mozilla.com
 labels:
   application: firefox
-  refresh: daily
-  version: 6
-  incremental: true
+  schedule: daily

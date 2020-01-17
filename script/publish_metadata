@@ -1,16 +1,26 @@
 #!/usr/bin/env python3
 
-"""Update metadata of BigQuery tables."""
+"""Update metadata of BigQuery tables and views."""
 
 from argparse import ArgumentParser
 import logging
 import os
 import yaml
+import re
 
 from google.cloud import bigquery
 
 
 METADATA_FILE = "metadata.yaml"
+
+
+def is_valid_label(label):
+    """
+    Check if a label has the right format:
+    Only hyphens (-), underscores (_), lowercase characters, and numbers are allowed.
+    International characters are allowed.
+    """
+    return re.match(r"[\w\d_-]+", label)
 
 
 def publish_metadata(client, dataset, table, metadata_file):
@@ -27,10 +37,21 @@ def publish_metadata(client, dataset, table, metadata_file):
                 table.description = metadata["description"]
 
             if "labels" in metadata:
-                # only string type and lowercased labels are allowed
-                table.labels = {
-                    k: str(v).lower() for k, v in metadata["labels"].items()
-                }
+                table.labels = {}
+
+                for key, label in metadata["labels"].items():
+                    if is_valid_label(str(key)) and is_valid_label(str(label)):
+                        table.labels[str(key)] = str(label)
+                    else:
+                        print(
+                            """
+                            Invalid label format: {}: {}. Only hyphens (-),
+                            underscores (_), lowercase characters, and numbers
+                            are allowed. International characters are allowed.
+                            """.format(
+                                key, label
+                            )
+                        )
 
             client.update_table(table, ["friendly_name", "description", "labels"])
         except yaml.YAMLError as e:
@@ -59,8 +80,9 @@ def main():
         if os.path.isdir(target):
             for root, dirs, files in os.walk(target):
                 if METADATA_FILE in files:
-                    dataset = root.split("/")[-2]
-                    table = root.split("/")[-1]
+                    path = os.path.normpath(root)
+                    dataset = path.split(os.sep)[-2]
+                    table = path.split(os.sep)[-1]
                     metadata_file = os.path.join(root, METADATA_FILE)
 
                     publish_metadata(client, dataset, table, metadata_file)

@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS
       metric STRING,
       metric_type STRING,
       key STRING,
+      process STRING,
       agg_type STRING,
       aggregates ARRAY<STRUCT<key STRING, value INT64>>
     >>

@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS
     scalar_aggregates ARRAY <STRUCT<metric STRING,
     metric_type STRING,
     key STRING,
+    process STRING,
     agg_type STRING,
     value FLOAT64>>)
 PARTITION BY submission_date

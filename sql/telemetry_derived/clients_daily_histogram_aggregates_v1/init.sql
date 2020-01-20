@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS
     histogram_aggregates ARRAY <STRUCT<metric STRING,
     metric_type STRING,
     key STRING,
+    process STRING,
     agg_type STRING,
     bucket_range STRUCT<first_bucket INT64,
     last_bucket INT64,

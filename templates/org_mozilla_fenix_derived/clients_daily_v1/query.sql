@@ -5,7 +5,7 @@ WITH unioned AS (
     client_info,
     sample_id,
     metadata,
-    normalized_channel,
+    'release' AS normalized_channel,
     metrics AS baseline_metrics,
     NULL AS metrics
   FROM
@@ -17,11 +17,35 @@ WITH unioned AS (
     client_info,
     sample_id,
     metadata,
-    normalized_channel,
+    'release' AS normalized_channel,
     NULL AS baseline_metrics,
     metrics
   FROM
     org_mozilla_fenix_stable.metrics_v1
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    document_id,
+    client_info,
+    sample_id,
+    metadata,
+    'nightly' AS normalized_channel,
+    metrics AS baseline_metrics,
+    NULL AS metrics
+  FROM
+    org_mozilla_fenix_nightly_stable.baseline_v1
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    document_id,
+    client_info,
+    sample_id,
+    metadata,
+    'nightly' AS normalized_channel,
+    NULL AS baseline_metrics,
+    metrics
+  FROM
+    org_mozilla_fenix_nightly_stable.metrics_v1
 ),
   --
 base AS (

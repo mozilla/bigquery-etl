@@ -1,73 +1,6 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v1`
 AS
-WITH unioned AS (
-  SELECT
-    * REPLACE (
-      ARRAY(SELECT * FROM UNNEST(active_addons.list)) AS active_addons,
-      ARRAY(
-        SELECT
-          *
-        FROM
-          UNNEST(environment_settings_intl_accept_languages.list)
-      ) AS environment_settings_intl_accept_languages,
-      ARRAY(
-        SELECT
-          *
-        FROM
-          UNNEST(environment_settings_intl_app_locales.list)
-      ) AS environment_settings_intl_app_locales,
-      ARRAY(
-        SELECT
-          *
-        FROM
-          UNNEST(environment_settings_intl_available_locales.list)
-      ) AS environment_settings_intl_available_locales,
-      ARRAY(
-        SELECT
-          *
-        FROM
-          UNNEST(environment_settings_intl_regional_prefs_locales.list)
-      ) AS environment_settings_intl_regional_prefs_locales,
-      ARRAY(
-        SELECT
-          *
-        FROM
-          UNNEST(environment_settings_intl_requested_locales.list)
-      ) AS environment_settings_intl_requested_locales,
-      ARRAY(
-        SELECT
-          *
-        FROM
-          UNNEST(environment_settings_intl_system_locales.list)
-      ) AS environment_settings_intl_system_locales,
-      experiments.key_value AS experiments,
-      SAFE_CAST(sample_id AS INT64) AS sample_id,
-      scalar_parent_devtools_accessibility_select_accessible_for_node_sum.key_value AS scalar_parent_devtools_accessibility_select_accessible_for_node_sum
-    ),
-    -- TODO: Remove this temporary field once we transition the underlying
-    -- clients_last_seen_v1 table to use integer sample_id.
-    sample_id AS _sample_id_string
-  FROM
-    `moz-fx-data-derived-datasets.telemetry_derived.clients_last_seen_v1`
-  WHERE
-    submission_date < DATE '2019-10-25'
-  UNION ALL
-  SELECT
-    * REPLACE (
-      IFNULL(country, '??') AS country,
-      IFNULL(city, '??') AS city,
-      IFNULL(geo_subdivision1, '??') AS geo_subdivision1,
-      IFNULL(geo_subdivision2, '??') AS geo_subdivision2
-    ),
-    -- TODO: Remove this temporary field once we transition the off the underlying
-    -- clients_last_seen_v1 table that uses string sample_id.
-    CAST(sample_id AS STRING) AS _sample_id_string
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`
-  WHERE
-    submission_date >= DATE '2019-10-25'
-)
 SELECT
   -- We cannot use UDFs in a view, so we paste the body of udf_bitpos(bits) literally here.
   CAST(SAFE.LOG(days_seen_bits & -days_seen_bits, 2) AS INT64) AS days_since_seen,
@@ -81,6 +14,10 @@ SELECT
     SAFE.LOG(days_created_profile_bits & -days_created_profile_bits, 2) AS INT64
   ) AS days_since_created_profile,
   * REPLACE (
+    IFNULL(country, '??') AS country,
+    IFNULL(city, '??') AS city,
+    IFNULL(geo_subdivision1, '??') AS geo_subdivision1,
+    IFNULL(geo_subdivision2, '??') AS geo_subdivision2,
     ARRAY(
       SELECT AS STRUCT
         *,
@@ -88,6 +25,8 @@ SELECT
       FROM
         UNNEST(days_seen_in_experiment)
     ) AS days_seen_in_experiment
-  )
+  ),
+  -- TODO: Announce and remove this temporary field.
+  CAST(sample_id AS STRING) AS _sample_id_string
 FROM
-  unioned
+  `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`

@@ -11,6 +11,7 @@
   payload:
     {
       "processes": {
+        "content": {},
         "parent": {
           "scalars": {
             "update_session_downloads_bits_partial_seconds": 400

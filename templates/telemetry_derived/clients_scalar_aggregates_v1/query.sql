@@ -1,10 +1,11 @@
 CREATE TEMP FUNCTION udf_merged_user_data(
-  old_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>,
-  new_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>)
+  old_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, process STRING, agg_type STRING, value FLOAT64>>,
+  new_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, process STRING, agg_type STRING, value FLOAT64>>)
 
   RETURNS ARRAY<STRUCT<metric STRING,
     metric_type STRING,
     key STRING,
+    process STRING,
     agg_type STRING,
     value FLOAT64>> AS (
   (
@@ -23,6 +24,7 @@ CREATE TEMP FUNCTION udf_merged_user_data(
         metric,
         metric_type,
         key,
+        process,
         agg_type,
         CASE agg_type
           WHEN 'max' THEN max(value)
@@ -38,6 +40,7 @@ CREATE TEMP FUNCTION udf_merged_user_data(
         metric,
         metric_type,
         key,
+        process,
         agg_type),
 
     scalar_count_and_sum AS (
@@ -45,6 +48,7 @@ CREATE TEMP FUNCTION udf_merged_user_data(
         metric,
         metric_type,
         key,
+        process,
         'avg' AS agg_type,
         CASE WHEN agg_type = 'count' THEN value ELSE 0 END AS count,
         CASE WHEN agg_type = 'sum' THEN value ELSE 0 END AS sum
@@ -60,6 +64,7 @@ CREATE TEMP FUNCTION udf_merged_user_data(
         metric,
         metric_type,
         key,
+        process,
         agg_type),
 
     merged_data AS (
@@ -71,7 +76,7 @@ CREATE TEMP FUNCTION udf_merged_user_data(
       SELECT *
       FROM scalar_averages)
 
-    SELECT ARRAY_AGG((metric, metric_type, key, agg_type, value))
+    SELECT ARRAY_AGG((metric, metric_type, key, process, agg_type, value))
     FROM merged_data
   )
 );
@@ -93,6 +98,7 @@ filtered_aggregates AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type,
     value
   FROM filtered_date_channel
@@ -112,6 +118,7 @@ version_filtered_new AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type,
     value
   FROM filtered_aggregates AS scalar_aggs
@@ -130,6 +137,7 @@ scalar_aggregates_new AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type,
     CASE agg_type
       WHEN 'max' THEN max(value)
@@ -149,6 +157,7 @@ scalar_aggregates_new AS (
     metric,
     metric_type,
     key,
+    process,
     agg_type
 ),
 
@@ -159,7 +168,7 @@ filtered_new AS (
     app_version,
     app_build_id,
     channel,
-    ARRAY_AGG((metric, metric_type, key, agg_type, value)) AS scalar_aggregates
+    ARRAY_AGG((metric, metric_type, key, process, agg_type, value)) AS scalar_aggregates
   FROM scalar_aggregates_new
   GROUP BY
     client_id,

@@ -25,16 +25,17 @@ grouped_metrics AS
     channel,
     ARRAY<STRUCT<
         name STRING,
+        process STRING,
         value ARRAY<STRUCT<key STRING, value BOOLEAN>>
     >>[
-      ('services_sync_sync_login_state_transitions', payload.processes.parent.keyed_scalars.services_sync_sync_login_state_transitions),
-      ('a11y_theme', payload.processes.parent.keyed_scalars.a11y_theme),
-      ('devtools_tool_registered', payload.processes.parent.keyed_scalars.devtools_tool_registered),
-      ('widget_ime_name_on_linux', payload.processes.parent.keyed_scalars.widget_ime_name_on_linux),
-      ('widget_ime_name_on_mac', payload.processes.parent.keyed_scalars.widget_ime_name_on_mac),
-      ('widget_ime_name_on_windows', payload.processes.parent.keyed_scalars.widget_ime_name_on_windows),
-      ('security_pkcs11_modules_loaded', payload.processes.parent.keyed_scalars.security_pkcs11_modules_loaded),
-      ('sandbox_no_job', payload.processes.parent.keyed_scalars.sandbox_no_job)
+      ('a11y_theme', 'parent', payload.processes.parent.keyed_scalars.a11y_theme),
+      ('devtools_tool_registered', 'parent', payload.processes.parent.keyed_scalars.devtools_tool_registered),
+      ('sandbox_no_job', 'parent', payload.processes.parent.keyed_scalars.sandbox_no_job),
+      ('security_pkcs11_modules_loaded', 'parent', payload.processes.parent.keyed_scalars.security_pkcs11_modules_loaded),
+      ('services_sync_sync_login_state_transitions', 'parent', payload.processes.parent.keyed_scalars.services_sync_sync_login_state_transitions),
+      ('widget_ime_name_on_linux', 'parent', payload.processes.parent.keyed_scalars.widget_ime_name_on_linux),
+      ('widget_ime_name_on_mac', 'parent', payload.processes.parent.keyed_scalars.widget_ime_name_on_mac),
+      ('widget_ime_name_on_windows', 'parent', payload.processes.parent.keyed_scalars.widget_ime_name_on_windows)
     ] as metrics
   FROM filtered),
 
@@ -47,6 +48,7 @@ flattened_metrics AS
     app_build_id,
     channel,
     metrics.name AS metric,
+    metrics.process AS process,
     value.key AS key,
     value.value AS value
   FROM grouped_metrics
@@ -64,6 +66,7 @@ aggregated AS (
       channel,
       metric,
       key,
+      process,
       SUM(CASE WHEN value = True THEN 1 ELSE 0 END) AS true_col,
       SUM(CASE WHEN value = False THEN 1 ELSE 0 END) AS false_col
   FROM flattened_metrics
@@ -75,6 +78,7 @@ aggregated AS (
       app_build_id,
       channel,
       metric,
+      process,
       key)
 
 SELECT
@@ -88,14 +92,15 @@ SELECT
         metric STRING,
         metric_type STRING,
         key STRING,
+        process STRING,
         agg_type STRING,
         value FLOAT64
     >>
     [
-        (metric, 'keyed-scalar-boolean', key, 'true', true_col),
-        (metric, 'keyed-scalar-boolean', key, 'false', false_col)
+        (metric, 'keyed-scalar-boolean', key, process, 'true', true_col),
+        (metric, 'keyed-scalar-boolean', key, process, 'false', false_col)
     ]
-  ) AS scalar_aggregates
+) AS scalar_aggregates
 FROM aggregated
 GROUP BY
   client_id,

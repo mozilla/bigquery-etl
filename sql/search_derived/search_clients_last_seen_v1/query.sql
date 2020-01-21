@@ -7,6 +7,7 @@ CREATE TEMP FUNCTION
         WHERE off > 0
         ORDER BY off ASC),
       [append]));
+
 CREATE TEMP FUNCTION
   udf_vector_add(a ARRAY<INT64>, b ARRAY<INT64>) AS (ARRAY(
     with a_unnested AS (
@@ -23,6 +24,7 @@ CREATE TEMP FUNCTION
       ON _a_off = _b_off
     ORDER BY COALESCE(_a_off, _b_off) ASC
   ));
+
 CREATE TEMP FUNCTION
   udf_add_monthly_engine_searches(prev STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>,
                            curr STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>,
@@ -41,8 +43,10 @@ CREATE TEMP FUNCTION
         udf_vector_add(prev.ad_click, curr.ad_click) AS ad_click
     )
 ));
+
 CREATE TEMP FUNCTION
   udf_array_of_12_zeroes() AS ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
 CREATE TEMP FUNCTION udf_new_monthly_engine_searches_struct() AS (
   STRUCT(
     udf_array_of_12_zeroes() AS total_searches,
@@ -51,6 +55,7 @@ CREATE TEMP FUNCTION udf_new_monthly_engine_searches_struct() AS (
     udf_array_of_12_zeroes() AS ad_click
   )
 );
+
 CREATE TEMP FUNCTION
   udf_add_monthly_searches(prev ARRAY<STRUCT<key STRING, value STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>>>,
                            curr ARRAY<STRUCT<key STRING, value STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>>>,
@@ -77,9 +82,11 @@ CREATE TEMP FUNCTION
       prev_tbl AS p
       USING (key)
 ));
+
 CREATE TEMP FUNCTION
   udf_array_11_zeroes_then(val INT64)  AS (
     ARRAY [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, val]);
+
 CREATE TEMP FUNCTION
   udf_aggregate_search_map(engine_searches_list ANY TYPE)
     AS (
@@ -98,24 +105,30 @@ CREATE TEMP FUNCTION
           v.key
     )
 );
+
 CREATE TEMP FUNCTION
   udf_one_as_365_bits() AS (
     CONCAT(
         REPEAT(b'\x00', 45),
         b'\x01'));
+
 CREATE TEMP FUNCTION
   udf_zero_as_365_bits() AS (
     REPEAT(b'\x00', 46));
+
 CREATE TEMP FUNCTION
   udf_bool_to_365_bits(val BOOLEAN) AS (
     IF(val, udf_one_as_365_bits(), udf_zero_as_365_bits()));
+
 CREATE TEMP FUNCTION
   udf_bitmask_365() AS (
     CONCAT(
         b'\x1F',
         REPEAT(b'\xFF', 45)));
+
 CREATE TEMP FUNCTION
   udf_shift_365_bits_one_day(x BYTES) AS (COALESCE(x << 1 & udf_bitmask_365(), udf_zero_as_365_bits()));
+
 CREATE TEMP FUNCTION
   udf_coalesce_adjacent_days_365_bits(prev BYTES, curr BYTES) AS (
     COALESCE(
@@ -123,9 +136,11 @@ CREATE TEMP FUNCTION
         curr,
         udf_zero_as_365_bits()
     ));
+
 CREATE TEMP FUNCTION
   udf_combine_adjacent_days_365_bits(prev BYTES, curr BYTES) AS (
     udf_shift_365_bits_one_day(prev) | COALESCE(curr, udf_zero_as_365_bits()));
+
 CREATE TEMP FUNCTION
   udf_days_since_created_profile_as_28_bits(days_since_created_profile INT64) AS (
   IF
@@ -133,6 +148,7 @@ CREATE TEMP FUNCTION
       AND 6,
       1 << days_since_created_profile,
       0));
+
 CREATE TEMP FUNCTION
   udf_int_to_hex_string(value INT64) AS ((
     SELECT STRING_AGG(
@@ -141,9 +157,11 @@ CREATE TEMP FUNCTION
     )
     FROM UNNEST(generate_array(0, 16)) AS nibbles
 ));
+
 CREATE TEMP FUNCTION
   udf_int_to_365_bits(value INT64) AS (
    CONCAT(REPEAT(b'\x00', 37), FROM_HEX(udf_int_to_hex_string(value))));
+
 CREATE TEMP FUNCTION
   udf_mode_last(list ANY TYPE) AS ((
     SELECT
@@ -161,6 +179,7 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
+
 CREATE TEMP FUNCTION
   udf_normalize_search_engine(engine STRING) AS (
     CASE
@@ -181,7 +200,7 @@ CREATE TEMP FUNCTION
       ELSE 'Other'
     END
   );
---
+
 WITH
   _derived_search_cols AS (
     SELECT

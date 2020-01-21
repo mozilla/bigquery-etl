@@ -25,6 +25,7 @@ CREATE TEMP FUNCTION udf_normalize_main_payload(payload ANY TYPE) AS (
       )
   )
 );
+
 -- Tests
 SELECT
   assert_equals(

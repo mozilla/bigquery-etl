@@ -267,6 +267,8 @@ def main():
                     for dirpath, _, filenames in os.walk(path)
                     for filename in filenames
                     if filename.endswith(".sql")
+                    # skip tests/**/input.sql
+                    and not (path.startswith("tests") and filename == "input.sql")
                     for filepath in [os.path.join(dirpath, filename)]
                     if filepath not in SKIP
                 )

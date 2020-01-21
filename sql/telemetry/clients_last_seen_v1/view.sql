@@ -51,7 +51,7 @@ WITH unioned AS (
   FROM
     `moz-fx-data-derived-datasets.telemetry_derived.clients_last_seen_v1`
   WHERE
-    submission_date < DATE '2019-11-14'
+    submission_date < DATE '2019-10-25'
   UNION ALL
   SELECT
     * REPLACE (
@@ -66,7 +66,7 @@ WITH unioned AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`
   WHERE
-    submission_date >= DATE '2019-11-14'
+    submission_date >= DATE '2019-10-25'
 )
 SELECT
   -- We cannot use UDFs in a view, so we paste the body of udf_bitpos(bits) literally here.

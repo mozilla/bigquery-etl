@@ -4,18 +4,25 @@ Calculate the CRC-32 hash of a UUID using a stored procedure.
 Based on https://stackoverflow.com/a/18639999/1260237
 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 */
-CREATE
-OR REPLACE PROCEDURE udf_safe_crc32_uuid(value BYTES, OUT crc INT64) BEGIN DECLARE len INT64;
-DECLARE i INT64;
-DECLARE k INT64;
-DECLARE crc_table ARRAY<INT64>;
+CREATE OR REPLACE PROCEDURE
+  udf_safe_crc32_uuid(value BYTES, OUT crc INT64)
+BEGIN
+  DECLARE len INT64;
+
+  DECLARE i INT64;
+
+  DECLARE k INT64;
+
+  DECLARE crc_table ARRAY<INT64>;
+
+  DECLARE code_points ARRAY<INT64>;
+
   -- precalculated from this algorithm:
   -- for c in range(256):
   --   for _ in range(8):
   --     c = (0xEDB88320 if c & 1 else 0) ^ (c >> 1)
   --   yield c
-SET
-  crc_table = [
+  SET crc_table = [
     -- format:off
     0, 1996959894, 3993919788, 2567524794, 124634137, 1886057615, 3915621685,
     2657392035, 249268274, 2044508324, 3772115230, 2547177864, 162941995,
@@ -62,28 +69,40 @@ SET
     3272380065, 1510334235, 755167117
     -- format:on
   ];
-SET
-  len = BYTE_LENGTH(value);
-SET
-  crc = 0xFFFFFFFF;
-SET
-  i = 1;
-WHILE len >= i DO
-SET
-  k = TO_CODE_POINTS(SUBSTR(value, i, 1))[SAFE_OFFSET(0)];
-SET
-  crc = (crc >> 8) ^ crc_table[OFFSET(((crc & 0xFF) ^ k))];
-SET
-  i = i + 1;
-END WHILE;
-SET
-  crc = crc ^ 0xFFFFFFFF;
-END
+
+  SET len = BYTE_LENGTH(value);
+
+  SET crc = 0xFFFFFFFF;
+
+  SET i = 1;
+
+  SET code_points = TO_CODE_POINTS(value);
+
+  WHILE
+    len >= i
+  DO
+    SET crc = (crc >> 8) ^ crc_table[OFFSET(((crc & 0xFF) ^ code_points[OFFSET(i - 1)]))];
+
+    SET i = i + 1;
+  END WHILE;
+
+  SET crc = crc ^ 0xFFFFFFFF;
+END;
+
 -- Tests
 DECLARE crc1 INT64;
+
 DECLARE crc2 INT64;
+
+DECLARE crc3 INT64;
+
 CALL udf_safe_crc32_uuid(b"51baf8b4-75d1-3648-b96d-809569b89a12", crc1);
+
 CALL udf_safe_crc32_uuid(b"0", crc2);
+
+CALL udf_safe_crc32_uuid(b"CRC32 for a very long input ================================", crc3);
+
 SELECT
   assert_equals(308953907, crc1),
-  assert_equals(4108050209, crc2);
+  assert_equals(4108050209, crc2),
+  assert_equals(2380273621, crc3);

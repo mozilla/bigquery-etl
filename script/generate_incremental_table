@@ -57,19 +57,21 @@ parser.add_argument(
 )
 
 
-def date_range(start=None, end=None, step=1):
+def date_range(start=None, end=None, step=None):
     """Generate dates from START to END, in steps of STEP days."""
+    if step is None:
+        if end is not None and start is not None and end < start:
+            step = -1
+        else:
+            step = 1
     if isinstance(step, int):
         step = timedelta(days=step)
     if end is None:
         end = datetime.utcnow().date()
     if start is None:
-        day = end - step
-    else:
-        day = start
-    while day < end:
-        yield day
-        day = day + step
+        start = end - step
+    for offset in range((end - start) // step):
+        yield start + (offset * step)
 
 
 def query(day, entrypoint, destination_table, query_options, query_file):

@@ -3,7 +3,13 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   submission_date AS submission_date_s3,
-  * REPLACE (
+  * EXCEPT (
+    active_experiment_id,
+    active_experiment_branch,
+    total_hours_sum,
+    scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,
+    histogram_parent_devtools_developertoolbar_opened_count_sum
+  ) REPLACE(
     IFNULL(country, '??') AS country,
     IFNULL(city, '??') AS city,
     IFNULL(geo_subdivision1, '??') AS geo_subdivision1,

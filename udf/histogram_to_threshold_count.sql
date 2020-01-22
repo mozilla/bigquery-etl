@@ -20,6 +20,7 @@ CREATE TEMP FUNCTION udf_histogram_to_threshold_count(histogram STRING, threshol
       key >= threshold
   )
 );
+
 -- Tests
 SELECT
   assert_equals(

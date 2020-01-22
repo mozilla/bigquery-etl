@@ -55,6 +55,9 @@ Recommended practices
 
 - Should be defined in files named as `templates/<dataset>/<table>_<version>/query.sql` e.g.
   `sql/telemetry_derived/clients_daily_v7/query.sql`
+  - Queries that populate tables should always be named with a version suffix;
+    we assume that future optimizations to the data representation may require
+    schema-incompatible changes such as dropping columns
 - May be generated using a python script that prints the query to stdout
   - Should save output as `templates/<dataset>/<table>_<version>/query.sql` as above
   - Should be named as `sql/query_type.sql.py` e.g. `sql/clients_daily.sql.py`
@@ -80,10 +83,16 @@ Recommended practices
 
 ### Views
 
-- Should be defined in files named as `sql/dataset/table_version/view.sql` e.g.
-  `sql/telemetry/telemetry_core_parquet_v3/view.sql`
+- Should be defined in files named as `templates/<dataset>/<table>/view.sql` e.g.
+  `templates/telemetry/core/view.sql`
+  - Views should generally _not_ be named with a version suffix; a view represents a
+    stable interface for users and whenever possible should maintain compatibility
+    with existing queries; if the view logic cannot be adapted to changes in underlying
+    tables, breaking changes must be communicated to `fx-data-dev@mozilla.org`
 - Must specify project and dataset in all table names
-  - Should default to using the `moz-fx-data-shared-prod` project
+  - Should default to using the `moz-fx-data-shared-prod` project;
+    the `scripts/publish_views` tooling can handle parsing the definitions to publish
+    to other projects such as `derived-datasets`
 
 ### UDFs
 

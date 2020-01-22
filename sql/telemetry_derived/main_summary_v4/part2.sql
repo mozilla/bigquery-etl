@@ -11,6 +11,7 @@ CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
       LENGTH(entry) > 0
   )
 );
+
 CREATE TEMP FUNCTION udf_main_summary_scalars(processes ANY TYPE) AS (
   STRUCT(
     processes.parent.scalars.a11y_backplate AS scalar_parent_a11y_backplate,
@@ -364,10 +365,11 @@ CREATE TEMP FUNCTION udf_main_summary_scalars(processes ANY TYPE) AS (
     processes.gpu.keyed_scalars.telemetry_event_counts AS scalar_gpu_telemetry_event_counts
   )
 );
+
 CREATE TEMP FUNCTION udf_null_if_empty_list(list ANY TYPE) AS (
   IF(ARRAY_LENGTH(list) > 0, list, NULL)
 );
---
+
 WITH histogram_lists AS (
   SELECT
     document_id,

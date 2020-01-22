@@ -4,9 +4,11 @@ CREATE TEMP FUNCTION udf_boolean_histogram_to_boolean(histogram STRING) AS (
     NOT SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, "$.values.0") AS INT64) > 0
   )
 );
+
 CREATE TEMP FUNCTION udf_get_key(map ANY TYPE, k ANY TYPE) AS (
   (SELECT key_value.value FROM UNNEST(map) AS key_value WHERE key_value.key = k LIMIT 1)
 );
+
 CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
   ARRAY(
     SELECT
@@ -20,6 +22,7 @@ CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
       LENGTH(entry) > 0
   )
 );
+
 CREATE TEMP FUNCTION
   udf_json_extract_histogram (input STRING) AS (STRUCT(
     CAST(JSON_EXTRACT_SCALAR(input, '$.bucket_count') AS INT64) AS bucket_count,
@@ -31,20 +34,30 @@ CREATE TEMP FUNCTION
       FROM
         UNNEST(SPLIT(TRIM(JSON_EXTRACT(input, '$.range'), '[]'), ',')) AS bound) AS `range`,
     udf_json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values` ));
+
 CREATE TEMP FUNCTION udf_histogram_max_key_with_nonzero_value(histogram STRING) AS (
   (SELECT MAX(key) FROM UNNEST(udf_json_extract_histogram(histogram).values) WHERE value > 0)
 );
+
 CREATE TEMP FUNCTION udf_histogram_to_mean(histogram ANY TYPE) AS (
   CASE
-  WHEN histogram.sum < 0 THEN NULL
-  WHEN histogram.sum = 0 THEN 0
-  ELSE SAFE_CAST(
-    TRUNC(
-      histogram.sum / (SELECT SUM(value) FROM UNNEST(histogram.values) WHERE value > 0)
-    ) AS INT64
-  )
+  WHEN
+    histogram.sum < 0
+  THEN
+    NULL
+  WHEN
+    histogram.sum = 0
+  THEN
+    0
+  ELSE
+    SAFE_CAST(
+      TRUNC(
+        histogram.sum / (SELECT SUM(value) FROM UNNEST(histogram.values) WHERE value > 0)
+      ) AS INT64
+    )
   END
 );
+
 CREATE TEMP FUNCTION udf_histogram_to_threshold_count(histogram STRING, threshold INT64) AS (
   (
     SELECT
@@ -55,6 +68,7 @@ CREATE TEMP FUNCTION udf_histogram_to_threshold_count(histogram STRING, threshol
       key >= threshold
   )
 );
+
 CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
   active_addons ARRAY<
     STRUCT<
@@ -148,6 +162,7 @@ try {
   return null;
 }
 """;
+
 CREATE TEMP FUNCTION udf_js_main_summary_addon_scalars(
   dynamic_scalars_json STRING,
   dynamic_keyed_scalars_json STRING
@@ -200,6 +215,7 @@ try {
   return null;
 }
 """;
+
 CREATE TEMP FUNCTION udf_js_main_summary_disabled_addons(
   active_addon_ids ARRAY<STRING>,
   addon_details_json STRING
@@ -215,7 +231,7 @@ try {
   return null;
 }
 """;
---
+
 SELECT
   document_id,
   client_id,

@@ -1,5 +1,6 @@
 CREATE TEMP FUNCTION
   udf_array_of_12_zeroes() AS ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
 CREATE TEMP FUNCTION udf_new_monthly_engine_searches_struct() AS (
   STRUCT(
     udf_array_of_12_zeroes() AS total_searches,
@@ -8,7 +9,7 @@ CREATE TEMP FUNCTION udf_new_monthly_engine_searches_struct() AS (
     udf_array_of_12_zeroes() AS ad_click
   )
 );
---
+
 CREATE TABLE
   search_clients_last_seen_v1
 PARTITION BY

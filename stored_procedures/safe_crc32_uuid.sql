@@ -1,19 +1,28 @@
 /*
-Calculate the CRC-32 hash of a 36-byte UUID, or NULL if the value isn't 36 bytes.
-
-This implementation is limited to an exact length because
-recursion does not work.
+Calculate the CRC-32 hash of a UUID using a stored procedure.
 
 Based on https://stackoverflow.com/a/18639999/1260237
 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 */
-CREATE TEMP FUNCTION udf_crc32_table() AS (
+CREATE OR REPLACE PROCEDURE
+  udf_safe_crc32_uuid(value BYTES, OUT crc INT64)
+BEGIN
+  DECLARE len INT64;
+
+  DECLARE i INT64;
+
+  DECLARE k INT64;
+
+  DECLARE crc_table ARRAY<INT64>;
+
+  DECLARE code_points ARRAY<INT64>;
+
   -- precalculated from this algorithm:
   -- for c in range(256):
   --   for _ in range(8):
   --     c = (0xEDB88320 if c & 1 else 0) ^ (c >> 1)
   --   yield c
-  [
+  SET crc_table = [
     -- format:off
     0, 1996959894, 3993919788, 2567524794, 124634137, 1886057615, 3915621685,
     2657392035, 249268274, 2044508324, 3772115230, 2547177864, 162941995,
@@ -59,42 +68,41 @@ CREATE TEMP FUNCTION udf_crc32_table() AS (
     601450431, 3009837614, 3294710456, 1567103746, 711928724, 3020668471,
     3272380065, 1510334235, 755167117
     -- format:on
-  ]
-);
+  ];
 
-CREATE TEMP FUNCTION udf_crc32_partial_1(crc INT64, value BYTES) AS (
-  (crc >> 8) ^ udf_crc32_table()[OFFSET((crc ^ TO_CODE_POINTS(value)[SAFE_OFFSET(0)]) & 0xFF)]
-);
+  SET len = BYTE_LENGTH(value);
 
-CREATE TEMP FUNCTION udf_crc32_partial_2(crc INT64, value BYTES) AS (
-  udf_crc32_partial_1(udf_crc32_partial_1(crc, SUBSTR(value, 1, 1)), SUBSTR(value, 2, 1))
-);
+  SET crc = 0xFFFFFFFF;
 
-CREATE TEMP FUNCTION udf_crc32_partial_4(crc INT64, value BYTES) AS (
-  udf_crc32_partial_2(udf_crc32_partial_2(crc, SUBSTR(value, 1, 2)), SUBSTR(value, 3, 2))
-);
+  SET i = 1;
 
-CREATE TEMP FUNCTION udf_crc32_partial_8(crc INT64, value BYTES) AS (
-  udf_crc32_partial_4(udf_crc32_partial_4(crc, SUBSTR(value, 1, 4)), SUBSTR(value, 5, 4))
-);
+  SET code_points = TO_CODE_POINTS(value);
 
-CREATE TEMP FUNCTION udf_crc32_partial_16(crc INT64, value BYTES) AS (
-  udf_crc32_partial_8(udf_crc32_partial_8(crc, SUBSTR(value, 1, 8)), SUBSTR(value, 9, 8))
-);
+  WHILE
+    len >= i
+  DO
+    SET crc = (crc >> 8) ^ crc_table[OFFSET(((crc & 0xFF) ^ code_points[OFFSET(i - 1)]))];
 
-CREATE TEMP FUNCTION udf_crc32_partial_32(crc INT64, value BYTES) AS (
-  udf_crc32_partial_16(udf_crc32_partial_16(crc, SUBSTR(value, 1, 16)), SUBSTR(value, 17, 16))
-);
+    SET i = i + 1;
+  END WHILE;
 
-CREATE TEMP FUNCTION udf_crc32_partial_36(crc INT64, value BYTES) AS (
-  udf_crc32_partial_4(udf_crc32_partial_32(crc, SUBSTR(value, 1, 32)), SUBSTR(value, 33, 4))
-);
+  SET crc = crc ^ 0xFFFFFFFF;
+END;
 
-CREATE TEMP FUNCTION udf_safe_crc32_uuid(value BYTES) AS (
-  IF(LENGTH(value) = 36, udf_crc32_partial_36(0xFFFFFFFF, value) ^ 0xFFFFFFFF, NULL)
-);
+-- Tests
+DECLARE crc1 INT64;
 
---Tests
+DECLARE crc2 INT64;
+
+DECLARE crc3 INT64;
+
+CALL udf_safe_crc32_uuid(b"51baf8b4-75d1-3648-b96d-809569b89a12", crc1);
+
+CALL udf_safe_crc32_uuid(b"0", crc2);
+
+CALL udf_safe_crc32_uuid(b"CRC32 for a very long input ================================", crc3);
+
 SELECT
-  assert_equals(308953907, udf_safe_crc32_uuid(b"51baf8b4-75d1-3648-b96d-809569b89a12")),
-  assert_null(udf_safe_crc32_uuid(b"length != 36"))
+  assert_equals(308953907, crc1),
+  assert_equals(4108050209, crc2),
+  assert_equals(2380273621, crc3);

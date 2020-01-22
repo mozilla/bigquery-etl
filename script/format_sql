@@ -225,6 +225,7 @@ SKIP = {
     "udf_legacy/date_format.sql",
     "udf_legacy/date_trunc.sql",
     "udf_legacy/to_iso8601.sql",
+    "stored_procedures/safe_crc32_uuid.sql",
 }
 
 parser = ArgumentParser(description=__doc__)
@@ -267,6 +268,8 @@ def main():
                     for dirpath, _, filenames in os.walk(path)
                     for filename in filenames
                     if filename.endswith(".sql")
+                    # skip tests/**/input.sql
+                    and not (path.startswith("tests") and filename == "input.sql")
                     for filepath in [os.path.join(dirpath, filename)]
                     if filepath not in SKIP
                 )

@@ -158,9 +158,7 @@ def udf_usage_definitions(text, raw_udfs=None):
 def prepend_udf_usage_definitions(text, raw_udfs=None):
     """Prepend definitions of UDFs used to provided SQL text."""
     statements = udf_usage_definitions(text, raw_udfs)
-    if statements:
-        statements.append("--")
-    return "\n".join(statements + [text])
+    return "\n\n".join(statements + [text])
 
 
 def sub_persisent_udfs_as_temp(text):

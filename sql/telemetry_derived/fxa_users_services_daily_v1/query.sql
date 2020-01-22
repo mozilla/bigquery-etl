@@ -15,7 +15,7 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
---
+
 CREATE TEMP FUNCTION
   udf_contains_tier1_country(x ANY TYPE) AS ( --
     EXISTS(

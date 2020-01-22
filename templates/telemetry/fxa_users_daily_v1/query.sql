@@ -1,10 +1,8 @@
-  -- This UDF is only applicable in the context of this query;
-  -- telemetry data accepts countries as two-digit codes, but FxA
-  -- data includes long-form country names. The logic here is specific
-  -- to the FxA data.
-CREATE TEMP FUNCTION udf_contains_tier1_country(
-  x ANY TYPE
-) AS ( --
+-- This UDF is only applicable in the context of this query;
+-- telemetry data accepts countries as two-digit codes, but FxA
+-- data includes long-form country names. The logic here is specific
+-- to the FxA data.
+CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS (
   EXISTS(
     SELECT
       country
@@ -20,11 +18,9 @@ CREATE TEMP FUNCTION udf_contains_tier1_country(
       )
   )
 );
-  --
-  -- This UDF is also only applicable in the context of this query.
-CREATE TEMP FUNCTION udf_contains_registration(
-  x ANY TYPE
-) AS ( --
+
+-- This UDF is also only applicable in the context of this query.
+CREATE TEMP FUNCTION udf_contains_registration(x ANY TYPE) AS (
   EXISTS(
     SELECT
       event_type
@@ -36,7 +32,7 @@ CREATE TEMP FUNCTION udf_contains_registration(
       )
   )
 );
-  --
+
 WITH windowed AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,

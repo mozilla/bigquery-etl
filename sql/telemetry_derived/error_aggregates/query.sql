@@ -1,6 +1,7 @@
 CREATE TEMP FUNCTION udf_get_key(map ANY TYPE, k ANY TYPE) AS (
   (SELECT key_value.value FROM UNNEST(map) AS key_value WHERE key_value.key = k LIMIT 1)
 );
+
 CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
   ARRAY(
     SELECT
@@ -14,6 +15,7 @@ CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
       LENGTH(entry) > 0
   )
 );
+
 CREATE TEMP FUNCTION
   udf_json_extract_histogram (input STRING) AS (STRUCT(
     CAST(JSON_EXTRACT_SCALAR(input, '$.bucket_count') AS INT64) AS bucket_count,
@@ -25,15 +27,17 @@ CREATE TEMP FUNCTION
       FROM
         UNNEST(SPLIT(TRIM(JSON_EXTRACT(input, '$.range'), '[]'), ',')) AS bound) AS `range`,
     udf_json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values` ));
+
 CREATE TEMP FUNCTION udf_keyed_histogram_get_sum(keyed_histogram ANY TYPE, target_key STRING) AS (
   udf_json_extract_histogram(udf_get_key(keyed_histogram, target_key)).sum
 );
+
 CREATE TEMP FUNCTION udf_round_timestamp_to_minute(timestamp_expression TIMESTAMP, minute INT64) AS (
   TIMESTAMP_SECONDS(
     DIV(UNIX_SECONDS(timestamp_expression), minute * 60) * minute * 60
   )
 );
---
+
 -- Get pings from the last day from live tables, stable tables for older
 WITH crash_pings AS (
   SELECT

@@ -6,8 +6,11 @@ WITH unioned AS (
     sample_id,
     metadata,
     'release' AS normalized_channel,
-    metrics AS baseline_metrics,
-    NULL AS metrics
+    metrics.string.glean_baseline_locale,
+    udf_glean_timespan_seconds(metrics.timespan.glean_baseline_duration) AS glean_baseline_duration,
+    CAST(NULL AS STRING) AS search_default_engine_name,
+    CAST(NULL AS STRING) AS search_default_engine_code,
+    CAST(NULL AS BOOLEAN) AS metrics_default_browser,
   FROM
     org_mozilla_fenix_stable.baseline_v1
   UNION ALL
@@ -18,8 +21,11 @@ WITH unioned AS (
     sample_id,
     metadata,
     'release' AS normalized_channel,
-    NULL AS baseline_metrics,
-    metrics
+    CAST(NULL AS STRING) AS glean_baseline_locale,
+    CAST(NULL AS INT64) AS glean_baseline_duration,
+    metrics.string.search_default_engine_name,
+    metrics.string.search_default_engine_code,
+    metrics.boolean.metrics_default_browser,
   FROM
     org_mozilla_fenix_stable.metrics_v1
   UNION ALL
@@ -30,8 +36,11 @@ WITH unioned AS (
     sample_id,
     metadata,
     'nightly' AS normalized_channel,
-    metrics AS baseline_metrics,
-    NULL AS metrics
+    metrics.string.glean_baseline_locale,
+    udf_glean_timespan_seconds(metrics.timespan.glean_baseline_duration) AS glean_baseline_duration,
+    CAST(NULL AS STRING) AS search_default_engine_name,
+    CAST(NULL AS STRING) AS search_default_engine_code,
+    CAST(NULL AS BOOLEAN) AS metrics_default_browser,
   FROM
     org_mozilla_fenix_nightly_stable.baseline_v1
   UNION ALL
@@ -42,8 +51,11 @@ WITH unioned AS (
     sample_id,
     metadata,
     'nightly' AS normalized_channel,
-    NULL AS baseline_metrics,
-    metrics
+    CAST(NULL AS STRING) AS glean_baseline_locale,
+    CAST(NULL AS INT64) AS glean_baseline_duration,
+    metrics.string.search_default_engine_name,
+    metrics.string.search_default_engine_code,
+    metrics.boolean.metrics_default_browser,
   FROM
     org_mozilla_fenix_nightly_stable.metrics_v1
 ),
@@ -71,14 +83,12 @@ windowed AS (
     MIN(SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10))) OVER w1 AS first_run_date,
     --
     -- Sums over distinct baseline pings.
-    SUM(
-      udf_glean_timespan_seconds(baseline_metrics.timespan.glean_baseline_duration)
-    ) OVER w1 AS durations,
+    SUM(glean_baseline_duration) OVER w1 AS durations,
     --
     -- For all other dimensions, we use the mode of observed values in the day.
     udf_mode_last(ARRAY_AGG(client_info.os) OVER w1) AS os,
     udf_mode_last(ARRAY_AGG(client_info.os_version) OVER w1) AS os_version,
-    udf_mode_last(ARRAY_AGG(baseline_metrics.string.glean_baseline_locale) OVER w1) AS locale,
+    udf_mode_last(ARRAY_AGG(glean_baseline_locale) OVER w1) AS locale,
     udf_json_mode_last(
       ARRAY_AGG(udf_geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1
     ).* EXCEPT (geo_subdivision1, geo_subdivision2),
@@ -87,13 +97,9 @@ windowed AS (
     udf_mode_last(ARRAY_AGG(client_info.app_build) OVER w1) AS app_build,
     udf_mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
     udf_mode_last(ARRAY_AGG(client_info.architecture) OVER w1) AS architecture,
-    udf_mode_last(
-      ARRAY_AGG(metrics.string.search_default_engine_name) OVER w1
-    ) AS search_default_engine_name,
-    udf_mode_last(
-      ARRAY_AGG(metrics.string.search_default_engine_name) OVER w1
-    ) AS search_default_engine_code,
-    udf_mode_last(ARRAY_AGG(metrics.boolean.metrics_default_browser) OVER w1) AS default_browser,
+    udf_mode_last(ARRAY_AGG(search_default_engine_name) OVER w1) AS search_default_engine_name,
+    udf_mode_last(ARRAY_AGG(search_default_engine_code) OVER w1) AS search_default_engine_code,
+    udf_mode_last(ARRAY_AGG(metrics_default_browser) OVER w1) AS default_browser,
     udf_mode_last(ARRAY_AGG(client_info.app_display_version) OVER w1) AS app_display_version
   FROM
     base

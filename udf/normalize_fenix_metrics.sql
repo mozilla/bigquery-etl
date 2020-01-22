@@ -17,6 +17,7 @@ CREATE TEMP FUNCTION udf_normalize_fenix_metrics(telemetry_sdk_build STRING, met
       )
   )
 );
+
 -- Tests
 SELECT
   assert_equals(

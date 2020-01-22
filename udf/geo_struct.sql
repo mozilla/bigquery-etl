@@ -16,6 +16,7 @@ CREATE TEMP FUNCTION udf_geo_struct(
     )
   )
 );
+
 /*
 
 Convert geoip lookup fields to a struct, replacing '??' with NULL.

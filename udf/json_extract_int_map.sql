@@ -18,6 +18,7 @@ CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
       LENGTH(entry) > 0
   )
 );
+
 -- Tests
 SELECT
   assert_array_equals(

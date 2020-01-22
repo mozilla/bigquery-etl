@@ -15,7 +15,7 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
---
+
 CREATE TEMP FUNCTION
   udf_mode_last(list ANY TYPE) AS ((
     SELECT

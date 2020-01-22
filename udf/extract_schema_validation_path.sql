@@ -11,6 +11,7 @@ RETURNS STRING AS (
     NULL
   )
 );
+
 -- Tests
 SELECT
   assert_null(

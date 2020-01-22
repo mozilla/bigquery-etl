@@ -51,7 +51,7 @@ WITH unioned AS (
   FROM
     `moz-fx-data-derived-datasets.telemetry_derived.clients_last_seen_v1`
   WHERE
-    submission_date < DATE '2019-11-14'
+    submission_date < DATE '2019-10-25'
   UNION ALL
   SELECT
     * REPLACE (
@@ -66,7 +66,7 @@ WITH unioned AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`
   WHERE
-    submission_date >= DATE '2019-11-14'
+    submission_date >= DATE '2019-10-25'
 )
 SELECT
   -- We cannot use UDFs in a view, so we paste the body of udf_bitpos(bits) literally here.
@@ -80,7 +80,13 @@ SELECT
   CAST(
     SAFE.LOG(days_created_profile_bits & -days_created_profile_bits, 2) AS INT64
   ) AS days_since_created_profile,
-  * REPLACE (
+  * EXCEPT (
+    active_experiment_id,
+    scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,
+    total_hours_sum,
+    histogram_parent_devtools_developertoolbar_opened_count_sum,
+    active_experiment_branch
+  ) REPLACE(
     ARRAY(
       SELECT AS STRUCT
         *,

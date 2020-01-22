@@ -225,6 +225,7 @@ SKIP = {
     "udf_legacy/date_format.sql",
     "udf_legacy/date_trunc.sql",
     "udf_legacy/to_iso8601.sql",
+    "stored_procedures/safe_crc32_uuid.sql",
 }
 
 parser = ArgumentParser(description=__doc__)

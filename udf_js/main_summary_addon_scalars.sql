@@ -57,6 +57,7 @@ try {
   return null;
 }
 """;
+
 -- Tests
 -- format:off
 SELECT

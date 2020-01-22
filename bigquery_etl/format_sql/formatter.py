@@ -5,6 +5,9 @@ import re
 
 from .tokenizer import (
     AliasSeparator,
+    BlockKeyword,
+    BlockStartKeyword,
+    BlockEndKeyword,
     ClosingBracket,
     Comment,
     ExpressionSeparator,
@@ -29,6 +32,7 @@ def simple_format(tokens, indent="  "):
     require_newline_before_next_token = False
     allow_space_before_next_bracket = False
     allow_space_before_next_token = False
+    prev_was_statement_separator = False
     prev_was_unary_operator = False
     next_operator_is_unary = True
     indent_types = []
@@ -52,28 +56,41 @@ def simple_format(tokens, indent="  "):
             while indent_types and indent_types.pop() is not OpeningBracket:
                 pass
         elif isinstance(token, TopLevelKeyword):
-            # decrease indent to top of current block
-            while indent_types and indent_types[-1] is TopLevelKeyword:
+            # decrease indent from previous TopLevelKeyword
+            if indent_types and indent_types[-1] is TopLevelKeyword:
                 indent_types.pop()
+        elif isinstance(token, BlockEndKeyword):
+            # decrease indent to match last BlockKeyword
+            while indent_types and indent_types.pop() is not BlockKeyword:
+                pass
+            prev_was_statement_separator = False
 
         # yield whitespace
-        if not can_format or isinstance(token, Comment) or first_token:
-            # no space before first token
-            # no space before comments because they contain original whitespace
+        if not can_format or isinstance(token, StatementSeparator) or first_token:
+            # except between statements
             # no new whitespace when formatting is disabled
+            # no space before statement separator
+            # no space before first token
             pass
-        elif require_newline_before_next_token or isinstance(
-            token, (NewlineKeyword, ClosingBracket)
+        elif isinstance(token, Comment):
+            # blank line before comments only if they start on their own line
+            # and come after a statement separator
+            if token.value.startswith("\n") and prev_was_statement_separator:
+                yield Whitespace("\n")
+        elif (
+            require_newline_before_next_token
+            or isinstance(token, (NewlineKeyword, ClosingBracket, BlockKeyword))
+            or prev_was_statement_separator
         ):
+            if prev_was_statement_separator:
+                yield Whitespace("\n")
             yield Whitespace("\n" + indent * len(indent_types))
         elif (
             allow_space_before_next_token
             and (
                 allow_space_before_next_bracket or not isinstance(token, OpeningBracket)
             )
-            and not isinstance(
-                token, (FieldAccessOperator, ExpressionSeparator, StatementSeparator)
-            )
+            and not isinstance(token, (FieldAccessOperator, ExpressionSeparator))
             and not (
                 prev_was_unary_operator and isinstance(token, (Literal, Identifier))
             )
@@ -91,6 +108,7 @@ def simple_format(tokens, indent="  "):
             token,
             (
                 Comment,
+                BlockKeyword,
                 TopLevelKeyword,
                 OpeningBracket,
                 ExpressionSeparator,
@@ -98,6 +116,7 @@ def simple_format(tokens, indent="  "):
             ),
         )
         allow_space_before_next_token = not isinstance(token, FieldAccessOperator)
+        prev_was_statement_separator = isinstance(token, StatementSeparator)
         prev_was_unary_operator = next_operator_is_unary and isinstance(token, Operator)
         if not isinstance(token, Comment):
             # format next operator as unary if there is no preceding argument
@@ -110,12 +129,16 @@ def simple_format(tokens, indent="  "):
         if isinstance(token, TopLevelKeyword) and token.value == "WITH":
             # don't indent CTE's and don't put the first one on a new line
             require_newline_before_next_token = False
+        elif isinstance(token, BlockStartKeyword):
+            # increase indent
+            indent_types.append(BlockKeyword)
         elif isinstance(token, (TopLevelKeyword, OpeningBracket)):
             # increase indent
             indent_types.append(type(token))
         elif isinstance(token, StatementSeparator):
-            # reset indent
-            indent_types = []
+            # decrease for previous top level keyword
+            if indent_types and indent_types[-1] is TopLevelKeyword:
+                indent_types.pop()
         first_token = False
 
 

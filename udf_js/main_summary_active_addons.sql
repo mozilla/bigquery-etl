@@ -106,6 +106,7 @@ try {
   return null;
 }
 """;
+
 -- Tests
 -- format:off
 WITH result AS (

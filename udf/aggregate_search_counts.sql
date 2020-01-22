@@ -16,6 +16,7 @@ CREATE TEMP FUNCTION udf_aggregate_search_counts(
       source IN ("abouthome", "contextmenu", "newtab", "searchbar", "system", "urlbar")
   )
 );
+
 SELECT
   assert_equals(
     STRUCT(

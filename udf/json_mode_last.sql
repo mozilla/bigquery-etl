@@ -22,6 +22,7 @@ CREATE TEMP FUNCTION udf_json_mode_last(list ANY TYPE) AS (
       1
   )
 );
+
 -- Tests
 SELECT
   assert_equals(

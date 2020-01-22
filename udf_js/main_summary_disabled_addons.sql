@@ -22,6 +22,7 @@ try {
   return null;
 }
 """;
+
 -- Tests
 SELECT
   assert_array_equals(

@@ -34,7 +34,9 @@ WITH nested AS (
       ),
       STRUCT(
         'developertoolbar' AS tool,
-        COUNTIF(histogram_parent_devtools_developertoolbar_opened_count_sum > 0) AS dau
+        -- no longer available
+        -- COUNTIF(histogram_parent_devtools_developertoolbar_opened_count_sum > 0) AS dau
+        NULL AS dau
       ),
       STRUCT('dom' AS tool, COUNTIF(histogram_parent_devtools_dom_opened_count_sum > 0) AS dau),
       STRUCT(

@@ -133,7 +133,6 @@ SKIP = {
     "templates/telemetry_derived/core_clients_last_seen_v1/query.sql",
     "templates/telemetry_derived/core_live/view.sql",
     "templates/telemetry_derived/devtools_events_amplitude_v1/view.sql",
-    "templates/telemetry_derived/devtools_panel_usage_v1/query.sql",
     "templates/telemetry_derived/error_aggregates/query.sql",
     "templates/telemetry_derived/event_events_v1/init.sql",
     "templates/telemetry_derived/event_events_v1/query.sql",

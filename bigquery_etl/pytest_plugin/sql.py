@@ -9,7 +9,7 @@ from google.cloud import bigquery
 import pytest
 
 from .. import parse_udf
-from ..util import (
+from ..util.test_sql import (
     coerce_result,
     dataset,
     get_query_params,

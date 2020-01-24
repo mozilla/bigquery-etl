@@ -67,7 +67,7 @@ CREATE TEMP FUNCTION
     LIMIT
       1 ));
 
-WITH baseline AS (
+WITH baseline_v1 AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     LOWER(client_info.client_id) AS client_id,
@@ -112,7 +112,7 @@ windowed AS (
     udf_mode_last(ARRAY_AGG(client_info.architecture) OVER w1) AS architecture,
     udf_mode_last(ARRAY_AGG(client_info.app_display_version) OVER w1) AS app_display_version
   FROM
-    baseline
+    baseline_v1
   WHERE
     -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
     (@submission_date IS NULL OR @submission_date = submission_date)

@@ -1,0 +1,9 @@
+friendly_name: VR Browser Baseline Daily
+description: >
+  A daily aggregate of baseline pings from each Firefox Reality client,
+  partitioned by day
+owners:
+  - ascholtz@mozilla.com
+labels:
+  application: firefox-reality
+  schedule: daily

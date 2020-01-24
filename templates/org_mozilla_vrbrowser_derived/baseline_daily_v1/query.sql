@@ -33,6 +33,7 @@ windowed AS (
     -- For all other dimensions, we use the mode of observed values in the day.
     udf_mode_last(ARRAY_AGG(client_info.os) OVER w1) AS os,
     udf_mode_last(ARRAY_AGG(client_info.os_version) OVER w1) AS os_version,
+    udf_mode_last(ARRAY_AGG(baseline_metrics.string.glean_baseline_locale) OVER w1) AS locale,
     udf_json_mode_last(
       ARRAY_AGG(udf_geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1
     ).* EXCEPT (geo_subdivision1, geo_subdivision2),

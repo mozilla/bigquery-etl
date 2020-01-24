@@ -51,7 +51,7 @@ CREATE TEMP FUNCTION
     LIMIT
       1 ));
 
-WITH metrics AS (
+WITH metrics_v1 AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     LOWER(client_info.client_id) AS client_id,
@@ -94,7 +94,7 @@ windowed AS (
       ARRAY_AGG(metrics.string.distribution_channel_name) OVER w1
     ) AS distribution_channel_name
   FROM
-    metrics
+    metrics_v1
   WHERE
     -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
     (@submission_date IS NULL OR @submission_date = submission_date)

@@ -25,7 +25,7 @@ FROM
   activity_stream_stable.impression_stats_v1
 CROSS JOIN
   UNNEST(tiles) AS flattened_tiles
-WITH OFFSET AS alt_pos
+  WITH OFFSET AS alt_pos
 WHERE
   (@submission_date IS NULL OR @submission_date = DATE(submission_timestamp))
 GROUP BY

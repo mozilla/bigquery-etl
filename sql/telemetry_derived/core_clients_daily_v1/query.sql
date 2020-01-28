@@ -22,7 +22,7 @@ CREATE TEMP FUNCTION udf_json_mode_last(list ANY TYPE) AS (
       ANY_VALUE(_value)
     FROM
       UNNEST(list) AS _value
-    WITH OFFSET AS _offset
+      WITH OFFSET AS _offset
     GROUP BY
       TO_JSON_STRING(_value)
     ORDER BY

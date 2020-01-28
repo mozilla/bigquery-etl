@@ -6,13 +6,13 @@ CREATE TEMP FUNCTION assert_array_equals(expected ANY TYPE, actual ANY TYPE) AS 
           *
         FROM
           UNNEST(expected)
-        WITH OFFSET
+          WITH OFFSET
         EXCEPT DISTINCT
         SELECT
           *
         FROM
           UNNEST(actual)
-        WITH OFFSET
+          WITH OFFSET
       )
       UNION ALL
         (
@@ -20,13 +20,13 @@ CREATE TEMP FUNCTION assert_array_equals(expected ANY TYPE, actual ANY TYPE) AS 
             *
           FROM
             UNNEST(actual)
-          WITH OFFSET
+            WITH OFFSET
           EXCEPT DISTINCT
           SELECT
             *
           FROM
             UNNEST(expected)
-          WITH OFFSET
+            WITH OFFSET
         )
     ),
     ERROR(CONCAT('Expected ', TO_JSON_STRING(expected), ' but got ', TO_JSON_STRING(actual))),

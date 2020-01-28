@@ -67,11 +67,12 @@ TOP_LEVEL_KEYWORDS = [
     "USING",
     "VALUES",
     "WHERE",
-    "WITH",
+    "WITH(?! OFFSET)",
     "WINDOW",
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
+    "WITH OFFSET",
     # UDF
     "CREATE OR REPLACE",
     "CREATE",

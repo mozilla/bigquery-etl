@@ -1,12 +1,21 @@
 -- Older versions separate source and engine with an underscore instead of period
 -- Return array of form [source, engine] if key is valid, empty array otherwise
-CREATE TEMP FUNCTION normalize_fenix_search_key(key STRING) AS ((
-  CASE
-    WHEN ARRAY_LENGTH(SPLIT(key, '_')) = 2 THEN SPLIT(key, '_')
-    WHEN ARRAY_LENGTH(SPLIT(key, '.')) = 2 THEN SPLIT(key, '.')
-    ELSE []
-  END
-));
+CREATE TEMP FUNCTION normalize_fenix_search_key(key STRING) AS (
+  (
+    CASE
+    WHEN
+      ARRAY_LENGTH(SPLIT(key, '_')) = 2
+    THEN
+      SPLIT(key, '_')
+    WHEN
+      ARRAY_LENGTH(SPLIT(key, '.')) = 2
+    THEN
+      SPLIT(key, '.')
+    ELSE
+      []
+    END
+  )
+);
 
 -- Older versions have source.engine instead of engine.source
 -- Assume action is one of actionbar, listitem, suggestion, or quicksearch
@@ -14,11 +23,17 @@ CREATE TEMP FUNCTION normalize_fenix_search_key(key STRING) AS ((
 -- Return array of form [source, engine] if key is valid, empty array otherwise
 CREATE TEMP FUNCTION normalize_core_search_key(key STRING) AS (
   CASE
-    WHEN ARRAY_LENGTH(SPLIT(key, '.')) != 2 THEN []
-    WHEN SPLIT(key, '.')[OFFSET(0)] IN UNNEST(['actionbar', 'listitem', 'suggestion', 'quicksearch'])
-      THEN ARRAY_REVERSE(SPLIT(key, '.'))
-    ELSE SPLIT(key, '.')
-    END
+  WHEN
+    ARRAY_LENGTH(SPLIT(key, '.')) != 2
+  THEN
+    []
+  WHEN
+    SPLIT(key, '.')[OFFSET(0)] IN UNNEST(['actionbar', 'listitem', 'suggestion', 'quicksearch'])
+  THEN
+    ARRAY_REVERSE(SPLIT(key, '.'))
+  ELSE
+    SPLIT(key, '.')
+  END
 );
 
 CREATE TEMP FUNCTION null_search() AS (
@@ -36,12 +51,9 @@ WITH core_flattened_searches AS (
   CROSS JOIN
     UNNEST(
       -- Add a null search to pings that have no searches
-      IF(ARRAY_LENGTH(searches) = 0,
-         null_search(),
-         searches
-      )) AS searches
+      IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
+    ) AS searches
 ),
-
 -- baseline has locale but not default search engine, metrics has default search engine but not locale
 fenix_client_locales AS (
   SELECT
@@ -54,7 +66,6 @@ fenix_client_locales AS (
   GROUP BY
     client_info.client_id
 ),
-
 fenix_flattened_searches AS (
   SELECT
     *,
@@ -69,16 +80,19 @@ fenix_flattened_searches AS (
   FROM
     org_mozilla_fenix_stable.metrics_v1
   LEFT JOIN
-    fenix_client_locales ON client_id = client_info.client_id
+    fenix_client_locales
+  ON
+    client_id = client_info.client_id
   CROSS JOIN
     UNNEST(
       -- Add a null search to pings that have no searches
-      IF(ARRAY_LENGTH(metrics.labeled_counter.metrics_search_count) = 0,
-         null_search(),
-         metrics.labeled_counter.metrics_search_count
-      )) AS searches
+      IF(
+        ARRAY_LENGTH(metrics.labeled_counter.metrics_search_count) = 0,
+        null_search(),
+        metrics.labeled_counter.metrics_search_count
+      )
+    ) AS searches
 ),
-
 combined_search_clients AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -130,12 +144,7 @@ unfiltered_search_clients AS (
     IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(1)]) AS source,
     app_name,
     SUM(
-      IF(
-        ARRAY_LENGTH(normalized_search_key) = 0
-        OR search_count > 10000,
-        0,
-        search_count
-      )
+      IF(ARRAY_LENGTH(normalized_search_key) = 0 OR search_count > 10000, 0, search_count)
     ) AS search_count,
     udf.mode_last(ARRAY_AGG(country)) AS country,
     udf.mode_last(ARRAY_AGG(locale)) AS locale,
@@ -144,7 +153,9 @@ unfiltered_search_clients AS (
     udf.mode_last(ARRAY_AGG(os)) AS os,
     udf.mode_last(ARRAY_AGG(os_version)) AS os_version,
     udf.mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
-    udf.mode_last(ARRAY_AGG(default_search_engine_submission_url)) AS default_search_engine_submission_url,
+    udf.mode_last(
+      ARRAY_AGG(default_search_engine_submission_url)
+    ) AS default_search_engine_submission_url,
     udf.mode_last(ARRAY_AGG(distribution_id)) AS distribution_id,
     udf.mode_last(ARRAY_AGG(profile_creation_date)) AS profile_creation_date,
     udf.mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
@@ -160,7 +171,6 @@ unfiltered_search_clients AS (
     source,
     app_name
 )
-
 SELECT
   *,
   udf.normalize_search_engine(engine) AS normalized_engine

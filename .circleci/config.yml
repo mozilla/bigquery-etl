@@ -40,8 +40,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Publish persistent UDFs
-        command: script/publish-persistent-udfs   
+          name: Publish persistent UDFs
+          command: script/publish_persistent_udfs   
   dry-run-sql:
     docker:
       - image: python:3.8

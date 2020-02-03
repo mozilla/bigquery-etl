@@ -5,7 +5,10 @@ nulls out histograms for older versions of the Glean SDK that reported
 pathological binning; see https://bugzilla.mozilla.org/show_bug.cgi?id=1592930
 
 */
-CREATE OR REPLACE FUNCTION udf.normalize_fenix_metrics(telemetry_sdk_build STRING, metrics ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION udf.normalize_fenix_metrics(
+  telemetry_sdk_build STRING,
+  metrics ANY TYPE
+) AS (
   (
     SELECT AS STRUCT
       metrics.* REPLACE (

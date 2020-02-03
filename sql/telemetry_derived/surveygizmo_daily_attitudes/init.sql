@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.telemetry_derived.survey_gizmo_daily_attitudes` (
+  `moz-fx-data-shared-prod.telemetry_derived.survey_gizmo_daily_attitudes`(
     date DATE,
     shield_id STRING,
     question STRING,

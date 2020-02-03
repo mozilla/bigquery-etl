@@ -6,7 +6,8 @@ CLUSTER BY
   app_name,
   os
 OPTIONS
-  ( require_partition_filter=TRUE) AS
+  (require_partition_filter = TRUE)
+AS
 SELECT
   CAST(NULL AS DATE) AS submission_date,
   0 AS days_seen_bits,

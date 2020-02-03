@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf.get_values(required ARRAY<FLOAT64>, values ARRAY<FLOAT64>)
+CREATE TEMP FUNCTION udf_get_values(required ARRAY<FLOAT64>, values ARRAY<FLOAT64>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   (
     SELECT ARRAY_AGG(record)
@@ -279,7 +279,7 @@ percentiles AS (
     client_agg_type)
 
 SELECT *
-REPLACE(udf.get_values(
+REPLACE(udf_get_values(
   [5.0, 25.0, 50.0, 75.0, 95.0],
   aggregates
 ) AS aggregates)

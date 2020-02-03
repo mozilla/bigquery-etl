@@ -30,7 +30,7 @@ WITH
     -- For all other dimensions, we use the mode of observed values in the day.
     udf.mode_last(ARRAY_AGG(metadata.uri.app_name) OVER w1) AS app_name,
     udf.mode_last(ARRAY_AGG(os) OVER w1) AS os,
-    udf.json_mode_last(ARRAY_AGG(udf_geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1).* EXCEPT (geo_subdivision1, geo_subdivision2),
+    udf.json_mode_last(ARRAY_AGG(udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1).* EXCEPT (geo_subdivision1, geo_subdivision2),
     udf.mode_last(ARRAY_AGG(metadata.uri.app_build_id) OVER w1) AS app_build_id,
     udf.mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
     udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,

@@ -36,7 +36,7 @@ transformed AS (
   FROM
     extracted,
     UNNEST(
-      `moz-fx-data-shared-prod`.udf.js.json_extract_missing_cols(
+      `moz-fx-data-shared-prod`.udf_js.json_extract_missing_cols(
         additional_properties,
         [],
         -- Manually curated list of known missing sections. The process to

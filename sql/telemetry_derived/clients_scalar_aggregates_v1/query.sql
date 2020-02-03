@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf.merged_user_data(
+CREATE TEMP FUNCTION udf_merged_user_data(
   old_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, process STRING, agg_type STRING, value FLOAT64>>,
   new_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, process STRING, agg_type STRING, value FLOAT64>>)
 
@@ -215,5 +215,5 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  udf.merged_user_data(old_aggs, new_aggs) AS scalar_aggregates
+  udf_merged_user_data(old_aggs, new_aggs) AS scalar_aggregates
 FROM joined_new_old

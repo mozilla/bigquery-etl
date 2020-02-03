@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf.get_buckets()
+CREATE TEMP FUNCTION udf_get_buckets()
 RETURNS ARRAY<STRING> AS (
   (
     SELECT ARRAY_AGG(CAST(bucket AS STRING))
@@ -6,7 +6,7 @@ RETURNS ARRAY<STRING> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf.dedupe_map_sum (map ARRAY<STRUCT<key STRING, value FLOAT64>>)
+CREATE TEMP FUNCTION udf_dedupe_map_sum (map ARRAY<STRUCT<key STRING, value FLOAT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given a MAP with duplicate keys, de-duplicates by summing the values of duplicate keys
   (
@@ -26,7 +26,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf.fill_buckets(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>)
+CREATE TEMP FUNCTION udf_fill_buckets(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given a MAP `input_map`, fill in any missing keys with value `0.0`
   (
@@ -61,13 +61,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
@@ -101,13 +101,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
@@ -139,13 +139,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
@@ -178,13 +178,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
@@ -217,13 +217,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
@@ -255,13 +255,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
@@ -292,13 +292,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
@@ -328,13 +328,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
@@ -365,13 +365,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM
@@ -401,13 +401,13 @@ SELECT
   SUM(count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf.get_buckets()
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf.fill_buckets(
-      udf.dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+    THEN udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
       ['always','never','sometimes'])
    END AS aggregates
 FROM

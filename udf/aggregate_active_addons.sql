@@ -7,10 +7,10 @@ ARRAY<STRUCT<addon_id STRING, ...>>, i.e. the output of
 is left unspecified to allow changes to the fields of the STRUCT.
 
 */
-CREATE TEMP FUNCTION udf_aggregate_active_addons(active_addons ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION udf.aggregate_active_addons(active_addons ANY TYPE) AS (
   ARRAY(
     SELECT
-      udf_json_mode_last(ARRAY_AGG(element))
+      udf.json_mode_last(ARRAY_AGG(element))
     FROM
       UNNEST(active_addons) AS element
     GROUP BY

@@ -5,7 +5,7 @@ Parse scalars from payload.processes.dynamic into map columns for each value typ
 https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L385-L399
 
 */
-CREATE TEMP FUNCTION udf_js_main_summary_addon_scalars(
+CREATE OR REPLACE FUNCTION udf_js.main_summary_addon_scalars(
   dynamic_scalars_json STRING,
   dynamic_keyed_scalars_json STRING
 )
@@ -83,7 +83,7 @@ SELECT
   assert_equals(false, boolean_addon_scalars[OFFSET(0)].value)
 FROM (
   SELECT
-    udf_js_main_summary_addon_scalars(
+    udf_js.main_summary_addon_scalars(
       '{"foo3": "blee", "foo5": 17, "foo6": false}',
       '{"foo1": {"a": true, "b": false}, "foo2": {"a": 17, "b": 42}, "foo4": {"a": "yes", "b": "no"}, "foo7": {"c": false, "d": true}}'
     ).*

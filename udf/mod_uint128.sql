@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf_mod_uint128(dividend BYTES, divisor INT64) AS (
+CREATE OR REPLACE FUNCTION udf.mod_uint128(dividend BYTES, divisor INT64) AS (
   -- Throw error if the divisor could result in overflow of INT64
   IF(
     -- max safe value of MOD(upper 8 bytes)
@@ -14,14 +14,14 @@ CREATE TEMP FUNCTION udf_mod_uint128(dividend BYTES, divisor INT64) AS (
     -- Calculate MOD of the upper 8 bytes * 2^64
     MOD(
       -- Calculate MOD of the upper 8 bytes
-      MOD(udf_decode_int64(SUBSTR(dividend, 1, 8)), divisor)
+      MOD(udf.decode_int64(SUBSTR(dividend, 1, 8)), divisor)
       -- Shift by MOD of 2^64
       * MOD(MOD(0x100000000, divisor) * MOD(0x100000000, divisor), divisor),
       -- MOD after shift to avoid overflow
       divisor
     )
     -- Add MOD of the lower 8 bytes
-    + MOD(udf_decode_int64(SUBSTR(dividend, 9, 8)), divisor)
+    + MOD(udf.decode_int64(SUBSTR(dividend, 9, 8)), divisor)
     -- Shift result to positive value
     + ABS(divisor) * 2,
     -- MOD after add to get final result

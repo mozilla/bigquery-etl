@@ -11,7 +11,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry_stable.*`,
   UNNEST(
-    `moz-fx-data-shared-prod`.udf_js.json_extract_missing_cols(
+    `moz-fx-data-shared-prod`.udf.js.json_extract_missing_cols(
       additional_properties,
       ["histogram_type"],
       ["activeAddons", "userPrefs", "activeGMPlugins", "simpleMeasurements"]

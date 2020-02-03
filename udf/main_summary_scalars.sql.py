@@ -141,7 +141,7 @@ def main(root):
     )
 
     scalars_sql = """
-CREATE TEMP FUNCTION udf_main_summary_scalars(processes ANY TYPE, additional_properties STRING) AS (
+CREATE OR REPLACE FUNCTION udf_main_summary_scalars(processes ANY TYPE, additional_properties STRING) AS (
   STRUCT(
     %s
   )

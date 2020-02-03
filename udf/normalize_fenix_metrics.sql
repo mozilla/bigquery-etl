@@ -5,7 +5,7 @@ nulls out histograms for older versions of the Glean SDK that reported
 pathological binning; see https://bugzilla.mozilla.org/show_bug.cgi?id=1592930
 
 */
-CREATE TEMP FUNCTION udf_normalize_fenix_metrics(telemetry_sdk_build STRING, metrics ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION udf.normalize_fenix_metrics(telemetry_sdk_build STRING, metrics ANY TYPE) AS (
   (
     SELECT AS STRUCT
       metrics.* REPLACE (
@@ -22,13 +22,13 @@ CREATE TEMP FUNCTION udf_normalize_fenix_metrics(telemetry_sdk_build STRING, met
 SELECT
   assert_equals(
     'foo',
-    udf_normalize_fenix_metrics(
+    udf.normalize_fenix_metrics(
       '19.0.0',
       STRUCT(STRUCT('foo' AS foo) AS timing_distribution)
     ).timing_distribution.foo
   ),
   assert_null(
-    udf_normalize_fenix_metrics(
+    udf.normalize_fenix_metrics(
       '0.3.0',
       STRUCT(STRUCT('foo' AS foo) AS timing_distribution)
     ).timing_distribution.foo

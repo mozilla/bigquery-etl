@@ -10,8 +10,8 @@ https://cloud.google.com/bigquery/docs/reference/standard-sql/functions-and-oper
 
 */
 
-CREATE TEMP FUNCTION
-  udf_bitmask_range( start_ordinal INT64,
+CREATE OR REPLACE FUNCTION
+  udf.bitmask_range( start_ordinal INT64,
     _length INT64) AS ((
     SELECT
       SUM(1 << (_n - 1))
@@ -21,7 +21,7 @@ CREATE TEMP FUNCTION
 -- Tests
 
 SELECT
-  assert_equals(1, udf_bitmask_range(1, 1)),
-  assert_equals(30, udf_bitmask_range(2, 4)),
+  assert_equals(1, udf.bitmask_range(1, 1)),
+  assert_equals(30, udf.bitmask_range(2, 4)),
   -- Taking just the second and third bits (from the right) of binary 11011 should give us 00010 (decimal 2)
-  assert_equals(2, ((1 << 4) + (1 << 3) + (1 << 1) + (1 << 0)) & udf_bitmask_range(2, 2))
+  assert_equals(2, ((1 << 4) + (1 << 3) + (1 << 1) + (1 << 0)) & udf.bitmask_range(2, 2))

@@ -1,8 +1,8 @@
 -- Per https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/histograms.html#count
 -- count histograms record a single value into the 0 bucket
-CREATE TEMP FUNCTION
-  udf_extract_count_histogram_value(input STRING) AS (
-    udf_get_key(udf_json_extract_histogram(input).values, 0)
+CREATE OR REPLACE FUNCTION
+  udf.extract_count_histogram_value(input STRING) AS (
+    udf.get_key(udf.json_extract_histogram(input).values, 0)
   );
 
 -- Tests
@@ -16,8 +16,8 @@ WITH
   --
   extracted AS (
      SELECT
-       udf_extract_count_histogram_value(histogram[OFFSET(0)]) as has_value,
-       udf_extract_count_histogram_value(histogram[OFFSET(1)]) as null_value
+       udf.extract_count_histogram_value(histogram[OFFSET(0)]) as has_value,
+       udf.extract_count_histogram_value(histogram[OFFSET(1)]) as null_value
      FROM
        histogram )
     --

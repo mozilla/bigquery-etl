@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf_bucket (
+CREATE TEMP FUNCTION udf.bucket (
   val FLOAT64
 )
 RETURNS FLOAT64 AS (
@@ -10,7 +10,7 @@ RETURNS FLOAT64 AS (
   )
 );
 
-CREATE TEMP FUNCTION udf_boolean_buckets(
+CREATE TEMP FUNCTION udf.boolean_buckets(
   scalar_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, process STRING, agg_type STRING, value FLOAT64>>)
   RETURNS ARRAY<STRUCT<metric STRING,
     metric_type STRING,
@@ -72,7 +72,7 @@ WITH bucketed_booleans AS (
     app_version,
     app_build_id,
     channel,
-    udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
+    udf.boolean_buckets(scalar_aggregates) AS scalar_aggregates
   FROM
     clients_scalar_aggregates_v1),
 
@@ -88,7 +88,7 @@ bucketed_scalars AS (
     key,
     process,
     agg_type,
-    SAFE_CAST(udf_bucket(SAFE_CAST(value AS FLOAT64)) AS STRING) AS bucket
+    SAFE_CAST(udf.bucket(SAFE_CAST(value AS FLOAT64)) AS STRING) AS bucket
   FROM
     clients_scalar_aggregates_v1
   CROSS JOIN UNNEST(scalar_aggregates)

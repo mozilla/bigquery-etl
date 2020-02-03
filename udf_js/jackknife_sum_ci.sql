@@ -32,8 +32,8 @@ GROUP BY
 
 */
 
-CREATE TEMP FUNCTION
-  udf_js_jackknife_sum_ci(n_buckets INT64, counts_per_bucket ARRAY<INT64>)
+CREATE OR REPLACE FUNCTION
+  udf_js.jackknife_sum_ci(n_buckets INT64, counts_per_bucket ARRAY<INT64>)
   RETURNS STRUCT<total INT64,
   low INT64,
   high INT64,
@@ -119,4 +119,4 @@ return sum_buckets_with_ci(n_buckets, counts_per_bucket);
 
 SELECT
   -- Make sure a single-element array doesn't throw an error.
-  assert_equals(5, udf_js_jackknife_sum_ci(20, [5]).total)
+  assert_equals(5, udf_js.jackknife_sum_ci(20, [5]).total)

@@ -1,49 +1,3 @@
-CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
-    SELECT
-      _value
-    FROM
-      UNNEST(list) AS _value
-    WITH
-    OFFSET
-      AS
-    _offset
-    GROUP BY
-      _value
-    ORDER BY
-      COUNT(_value) DESC,
-      MAX(_offset) DESC
-    LIMIT
-      1 ));
-
-CREATE TEMP FUNCTION
-  udf_normalize_search_engine(engine STRING) AS (
-    CASE
-      WHEN engine IS NULL THEN NULL
-      WHEN STARTS_WITH(engine, 'google')
-      OR STARTS_WITH(engine, 'Google')
-      OR STARTS_WITH(engine, 'other-Google') THEN 'Google'
-      WHEN STARTS_WITH(engine, 'ddg')
-      OR STARTS_WITH(engine, 'duckduckgo')
-      OR STARTS_WITH(engine, 'DuckDuckGo')
-      OR STARTS_WITH(engine, 'other-DuckDuckGo') THEN 'DuckDuckGo'
-      WHEN STARTS_WITH(engine, 'bing')
-      OR STARTS_WITH(engine, 'Bing')
-      OR STARTS_WITH(engine, 'other-Bing') THEN 'Bing'
-      WHEN STARTS_WITH(engine, 'yandex')
-      OR STARTS_WITH(engine, 'Yandex')
-      OR STARTS_WITH(engine, 'other-Yandex') THEN 'Yandex'
-      ELSE 'Other'
-    END
-  );
-
-CREATE TEMP FUNCTION udf_parse_iso8601_date(date_str STRING) RETURNS DATE AS (
-  COALESCE(
-    SAFE.PARSE_DATE('%F', SAFE.SUBSTR(date_str, 0, 10)),
-    SAFE.PARSE_DATE('%Y%m%d', SAFE.SUBSTR(date_str, 0, 8))
-  )
-);
-
 -- Older versions separate source and engine with an underscore instead of period
 -- Return array of form [source, engine] if key is valid, empty array otherwise
 CREATE TEMP FUNCTION normalize_fenix_search_key(key STRING) AS ((
@@ -92,7 +46,7 @@ WITH core_flattened_searches AS (
 fenix_client_locales AS (
   SELECT
     client_info.client_id,
-    udf_mode_last(ARRAY_AGG(metrics.string.glean_baseline_locale)) AS locale
+    udf.mode_last(ARRAY_AGG(metrics.string.glean_baseline_locale)) AS locale
   FROM
     org_mozilla_fenix_stable.baseline_v1
   WHERE
@@ -106,10 +60,10 @@ fenix_flattened_searches AS (
     *,
     normalize_fenix_search_key(searches.key) AS normalized_search_key,
     searches.value AS search_count,
-    UNIX_DATE(udf_parse_iso8601_date(client_info.first_run_date)) AS profile_creation_date,
+    UNIX_DATE(udf.parse_iso8601_date(client_info.first_run_date)) AS profile_creation_date,
     SAFE.DATE_DIFF(
-      udf_parse_iso8601_date(ping_info.end_time),
-      udf_parse_iso8601_date(client_info.first_run_date),
+      udf.parse_iso8601_date(ping_info.end_time),
+      udf.parse_iso8601_date(client_info.first_run_date),
       DAY
     ) AS profile_age_in_days
   FROM
@@ -183,18 +137,18 @@ unfiltered_search_clients AS (
         search_count
       )
     ) AS search_count,
-    udf_mode_last(ARRAY_AGG(country)) AS country,
-    udf_mode_last(ARRAY_AGG(locale)) AS locale,
-    udf_mode_last(ARRAY_AGG(app_version)) AS app_version,
-    udf_mode_last(ARRAY_AGG(channel)) AS channel,
-    udf_mode_last(ARRAY_AGG(os)) AS os,
-    udf_mode_last(ARRAY_AGG(os_version)) AS os_version,
-    udf_mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
-    udf_mode_last(ARRAY_AGG(default_search_engine_submission_url)) AS default_search_engine_submission_url,
-    udf_mode_last(ARRAY_AGG(distribution_id)) AS distribution_id,
-    udf_mode_last(ARRAY_AGG(profile_creation_date)) AS profile_creation_date,
-    udf_mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
-    udf_mode_last(ARRAY_AGG(sample_id)) AS sample_id
+    udf.mode_last(ARRAY_AGG(country)) AS country,
+    udf.mode_last(ARRAY_AGG(locale)) AS locale,
+    udf.mode_last(ARRAY_AGG(app_version)) AS app_version,
+    udf.mode_last(ARRAY_AGG(channel)) AS channel,
+    udf.mode_last(ARRAY_AGG(os)) AS os,
+    udf.mode_last(ARRAY_AGG(os_version)) AS os_version,
+    udf.mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
+    udf.mode_last(ARRAY_AGG(default_search_engine_submission_url)) AS default_search_engine_submission_url,
+    udf.mode_last(ARRAY_AGG(distribution_id)) AS distribution_id,
+    udf.mode_last(ARRAY_AGG(profile_creation_date)) AS profile_creation_date,
+    udf.mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
+    udf.mode_last(ARRAY_AGG(sample_id)) AS sample_id
   FROM
     combined_search_clients
   WHERE
@@ -209,6 +163,6 @@ unfiltered_search_clients AS (
 
 SELECT
   *,
-  udf_normalize_search_engine(engine) AS normalized_engine
+  udf.normalize_search_engine(engine) AS normalized_engine
 FROM
   unfiltered_search_clients

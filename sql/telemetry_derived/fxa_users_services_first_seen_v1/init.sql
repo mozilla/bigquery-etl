@@ -1,21 +1,3 @@
-CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
-    SELECT
-      _value
-    FROM
-      UNNEST(list) AS _value
-    WITH
-    OFFSET
-      AS
-    _offset
-    GROUP BY
-      _value
-    ORDER BY
-      COUNT(_value) DESC,
-      MAX(_offset) DESC
-    LIMIT
-      1 ));
-
 CREATE OR REPLACE TABLE
   `moz-fx-data-shared-prod.telemetry_derived.fxa_users_services_first_seen_v1`
 PARTITION BY
@@ -40,10 +22,10 @@ first_services AS (
     user_id,
     service,
     -- using mode_last with w1_reversed to get mode_first
-    udf_mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp,
-    udf_mode_last(ARRAY_AGG(os_name) OVER w1_reversed) AS first_service_os,
-    udf_mode_last(ARRAY_AGG(country) OVER w1_reversed) AS first_service_country,
-    udf_mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
+    udf.mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp,
+    udf.mode_last(ARRAY_AGG(os_name) OVER w1_reversed) AS first_service_os,
+    udf.mode_last(ARRAY_AGG(country) OVER w1_reversed) AS first_service_country,
+    udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
     LOGICAL_OR(IFNULL(event_type = 'fxa_reg - complete', FALSE)) OVER w1_reversed AS did_register
   FROM
     base
@@ -55,7 +37,7 @@ first_services AS (
     AND DATE(`timestamp`) >= '2019-03-01'
     AND user_id IS NOT NULL
   WINDOW
-    -- We must provide a window with `ORDER BY timestamp DESC` so that udf_mode_last actually aggregates mode first.
+    -- We must provide a window with `ORDER BY timestamp DESC` so that udf.mode_last actually aggregates mode first.
     w1_reversed AS (
       PARTITION BY
         user_id,

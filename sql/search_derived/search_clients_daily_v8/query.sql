@@ -1,59 +1,8 @@
-CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
-    SELECT
-      _value
-    FROM
-      UNNEST(list) AS _value
-    WITH
-    OFFSET
-      AS
-    _offset
-    GROUP BY
-      _value
-    ORDER BY
-      COUNT(_value) DESC,
-      MAX(_offset) DESC
-    LIMIT
-      1 ));
-
-CREATE TEMP FUNCTION udf_map_mode_last(entries ANY TYPE) AS (
-  ARRAY(
-    SELECT AS STRUCT
-      key,
-      udf_mode_last(ARRAY_AGG(value)) AS value
-    FROM
-      UNNEST(entries)
-    GROUP BY
-      key
-  )
-);
-
-CREATE TEMP FUNCTION
-  udf_normalize_search_engine(engine STRING) AS (
-    CASE
-      WHEN engine IS NULL THEN NULL
-      WHEN STARTS_WITH(engine, 'google')
-      OR STARTS_WITH(engine, 'Google')
-      OR STARTS_WITH(engine, 'other-Google') THEN 'Google'
-      WHEN STARTS_WITH(engine, 'ddg')
-      OR STARTS_WITH(engine, 'duckduckgo')
-      OR STARTS_WITH(engine, 'DuckDuckGo')
-      OR STARTS_WITH(engine, 'other-DuckDuckGo') THEN 'DuckDuckGo'
-      WHEN STARTS_WITH(engine, 'bing')
-      OR STARTS_WITH(engine, 'Bing')
-      OR STARTS_WITH(engine, 'other-Bing') THEN 'Bing'
-      WHEN STARTS_WITH(engine, 'yandex')
-      OR STARTS_WITH(engine, 'Yandex')
-      OR STARTS_WITH(engine, 'other-Yandex') THEN 'Yandex'
-      ELSE 'Other'
-    END
-  );
-
 -- Return the version of the search addon if it exists, null otherwise
 CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
   (
     SELECT
-      udf_mode_last(ARRAY_AGG(version))
+      udf.mode_last(ARRAY_AGG(version))
     FROM
       UNNEST(active_addons)
     WHERE
@@ -80,7 +29,7 @@ WITH
   client_experiments AS (
   SELECT
     client_id,
-    udf_map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
+    udf.map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
   FROM
     telemetry.main_summary
   LEFT JOIN
@@ -175,27 +124,27 @@ WITH
     submission_date,
     client_id,
     engine,
-    udf_normalize_search_engine(engine) AS normalized_engine,
+    udf.normalize_search_engine(engine) AS normalized_engine,
     source,
-    udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    udf_mode_last(ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1) AS addon_version,
-    udf_mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
-    udf_mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
-    udf_mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
-    udf_mode_last(ARRAY_AGG(user_pref_browser_search_region) OVER w1) AS user_pref_browser_search_region,
-    udf_mode_last(ARRAY_AGG(search_cohort) OVER w1) AS search_cohort,
-    udf_mode_last(ARRAY_AGG(os) OVER w1) AS os,
-    udf_mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
-    udf_mode_last(ARRAY_AGG(channel) OVER w1) AS channel,
-    udf_mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
-    udf_mode_last(ARRAY_AGG(profile_creation_date) OVER w1) AS profile_creation_date,
-    udf_mode_last(ARRAY_AGG(default_search_engine) OVER w1) AS default_search_engine,
-    udf_mode_last(ARRAY_AGG(default_search_engine_data_load_path) OVER w1) AS default_search_engine_data_load_path,
-    udf_mode_last(ARRAY_AGG(default_search_engine_data_submission_url) OVER w1) AS default_search_engine_data_submission_url,
-    udf_mode_last(ARRAY_AGG(default_private_search_engine) OVER w1) AS default_private_search_engine,
-    udf_mode_last(ARRAY_AGG(default_private_search_engine_data_load_path) OVER w1) AS default_private_search_engine_data_load_path,
-    udf_mode_last(ARRAY_AGG(default_private_search_engine_data_submission_url) OVER w1) AS default_private_search_engine_data_submission_url,
-    udf_mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
+    udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
+    udf.mode_last(ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1) AS addon_version,
+    udf.mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
+    udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+    udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
+    udf.mode_last(ARRAY_AGG(user_pref_browser_search_region) OVER w1) AS user_pref_browser_search_region,
+    udf.mode_last(ARRAY_AGG(search_cohort) OVER w1) AS search_cohort,
+    udf.mode_last(ARRAY_AGG(os) OVER w1) AS os,
+    udf.mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
+    udf.mode_last(ARRAY_AGG(channel) OVER w1) AS channel,
+    udf.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
+    udf.mode_last(ARRAY_AGG(profile_creation_date) OVER w1) AS profile_creation_date,
+    udf.mode_last(ARRAY_AGG(default_search_engine) OVER w1) AS default_search_engine,
+    udf.mode_last(ARRAY_AGG(default_search_engine_data_load_path) OVER w1) AS default_search_engine_data_load_path,
+    udf.mode_last(ARRAY_AGG(default_search_engine_data_submission_url) OVER w1) AS default_search_engine_data_submission_url,
+    udf.mode_last(ARRAY_AGG(default_private_search_engine) OVER w1) AS default_private_search_engine,
+    udf.mode_last(ARRAY_AGG(default_private_search_engine_data_load_path) OVER w1) AS default_private_search_engine_data_load_path,
+    udf.mode_last(ARRAY_AGG(default_private_search_engine_data_submission_url) OVER w1) AS default_private_search_engine_data_submission_url,
+    udf.mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
     subsession_hours_sum,
     sessions_started_on_this_day,
     active_addons_count_mean,

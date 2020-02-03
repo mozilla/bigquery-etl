@@ -2,10 +2,10 @@
 
 Returns an array of key/value structs from a string representing a JSON map.
 
-Used by udf_json_extract_histogram.
+Used by udf.json_extract_histogram.
 
 */
-CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
+CREATE OR REPLACE FUNCTION udf.json_extract_int_map(input STRING) AS (
   ARRAY(
     SELECT
       STRUCT(
@@ -27,10 +27,10 @@ SELECT
       STRUCT(1 AS key, 297 AS value),
       STRUCT(13 AS key, 8 AS value)
     ],
-    udf_json_extract_int_map('{"0":12434,"1":297,"13":8}')
+    udf.json_extract_int_map('{"0":12434,"1":297,"13":8}')
   ),
-  assert_equals(0, ARRAY_LENGTH(udf_json_extract_int_map('{}'))),
+  assert_equals(0, ARRAY_LENGTH(udf.json_extract_int_map('{}'))),
   assert_array_equals(
     [STRUCT(1 AS key, NULL AS value)],
-    udf_json_extract_int_map('{"1":147573952589676410000}')
+    udf.json_extract_int_map('{"1":147573952589676410000}')
   );

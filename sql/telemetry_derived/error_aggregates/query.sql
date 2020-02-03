@@ -1,43 +1,3 @@
-CREATE TEMP FUNCTION udf_get_key(map ANY TYPE, k ANY TYPE) AS (
-  (SELECT key_value.value FROM UNNEST(map) AS key_value WHERE key_value.key = k LIMIT 1)
-);
-
-CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
-  ARRAY(
-    SELECT
-      STRUCT(
-        SAFE_CAST(SPLIT(entry, ':')[OFFSET(0)] AS INT64) AS key,
-        SAFE_CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value
-      )
-    FROM
-      UNNEST(SPLIT(REPLACE(TRIM(input, '{}'), '"', ''), ',')) AS entry
-    WHERE
-      LENGTH(entry) > 0
-  )
-);
-
-CREATE TEMP FUNCTION
-  udf_json_extract_histogram (input STRING) AS (STRUCT(
-    CAST(JSON_EXTRACT_SCALAR(input, '$.bucket_count') AS INT64) AS bucket_count,
-    CAST(JSON_EXTRACT_SCALAR(input, '$.histogram_type') AS INT64) AS histogram_type,
-    CAST(JSON_EXTRACT_SCALAR(input, '$.sum') AS INT64) AS `sum`,
-    ARRAY(
-      SELECT
-        CAST(bound AS INT64)
-      FROM
-        UNNEST(SPLIT(TRIM(JSON_EXTRACT(input, '$.range'), '[]'), ',')) AS bound) AS `range`,
-    udf_json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values` ));
-
-CREATE TEMP FUNCTION udf_keyed_histogram_get_sum(keyed_histogram ANY TYPE, target_key STRING) AS (
-  udf_json_extract_histogram(udf_get_key(keyed_histogram, target_key)).sum
-);
-
-CREATE TEMP FUNCTION udf_round_timestamp_to_minute(timestamp_expression TIMESTAMP, minute INT64) AS (
-  TIMESTAMP_SECONDS(
-    DIV(UNIX_SECONDS(timestamp_expression), minute * 60) * minute * 60
-  )
-);
-
 -- Get pings from the last day from live tables, stable tables for older
 WITH crash_pings AS (
   SELECT
@@ -146,9 +106,9 @@ main_ping_data AS (
     0 AS startup_crash,
     0 AS content_shutdown_crash,
     payload.info.subsession_length AS usage_seconds,
-    COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'), 0) AS gpu_crashes,
-    COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
-    COALESCE(udf_keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
+    COALESCE(udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'), 0) AS gpu_crashes,
+    COALESCE(udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
+    COALESCE(udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
   FROM
     main_pings
 ),
@@ -196,7 +156,7 @@ combined_ping_data AS (
 
 SELECT
   DATE(submission_timestamp) AS submission_date,
-  udf_round_timestamp_to_minute(submission_timestamp, 5) AS window_start,
+  udf.round_timestamp_to_minute(submission_timestamp, 5) AS window_start,
   channel,
   version,
   display_version,

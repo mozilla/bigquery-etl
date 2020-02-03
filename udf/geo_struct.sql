@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf_geo_struct(
+CREATE OR REPLACE FUNCTION udf.geo_struct(
   country STRING,
   city STRING,
   geo_subdivision1 STRING,

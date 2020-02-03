@@ -87,7 +87,7 @@ def make_field(source, target, s, schema_fields, keyed=False):
         )
         if keyed:
             kind = {"BOOL": "bool", "INT64": "string_int"}[sql_type]
-            source = "udf_json_extract_%s_map(%s)" % (kind, source)
+            source = "udf.json_extract_%s_map(%s)" % (kind, source)
         else:
             source = "CAST(%s AS %s)" % (source, sql_type)
     return "%s AS %s_%s" % (source, target, name)
@@ -141,7 +141,7 @@ def main(root):
     )
 
     scalars_sql = """
-CREATE OR REPLACE FUNCTION udf_main_summary_scalars(processes ANY TYPE, additional_properties STRING) AS (
+CREATE OR REPLACE FUNCTION udf.main_summary_scalars(processes ANY TYPE, additional_properties STRING) AS (
   STRUCT(
     %s
   )

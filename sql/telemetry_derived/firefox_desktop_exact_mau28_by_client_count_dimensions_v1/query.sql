@@ -28,7 +28,8 @@ FROM
   telemetry.clients_last_seen AS cls
 LEFT JOIN
   static.country_codes_v1 AS cc
-  ON (cls.country = cc.code)
+ON
+  (cls.country = cc.code)
 WHERE
   client_id IS NOT NULL
   -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL

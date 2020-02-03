@@ -12,4 +12,5 @@ FROM
   `moz-fx-data-derived-datasets.telemetry.firefox_accounts_exact_mau28_raw_v1` AS raw
 LEFT JOIN
   `moz-fx-data-derived-datasets.static.country_names_v1` cn
-  ON (raw.country = cn.name)
+ON
+  (raw.country = cn.name)

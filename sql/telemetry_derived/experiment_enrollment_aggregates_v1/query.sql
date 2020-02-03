@@ -16,11 +16,11 @@ SELECT
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(`timestamp`, HOUR),
     -- Aggregates event counts over 5-minute intervals
-    INTERVAL (DIV(EXTRACT(MINUTE FROM `timestamp`), 5) * 5) MINUTE
+    INTERVAL(DIV(EXTRACT(MINUTE FROM `timestamp`), 5) * 5) MINUTE
   ) AS window_start,
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(`timestamp`, HOUR),
-    INTERVAL ((DIV(EXTRACT(MINUTE FROM `timestamp`), 5) + 1) * 5) MINUTE
+    INTERVAL((DIV(EXTRACT(MINUTE FROM `timestamp`), 5) + 1) * 5) MINUTE
   ) AS window_end,
   COUNTIF(event_method = 'enroll') AS enroll_count,
   COUNTIF(event_method = 'unenroll') AS unenroll_count,

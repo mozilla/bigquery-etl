@@ -1,7 +1,8 @@
 CREATE TEMP FUNCTION udf_exponential_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
 RETURNS ARRAY<FLOAT64>
-LANGUAGE js AS
-'''
+LANGUAGE js
+AS
+  '''
   let logMax = Math.log(max);
   let current = min;
   if (current === 0) {
@@ -21,8 +22,9 @@ LANGUAGE js AS
 
 CREATE TEMP FUNCTION udf_linear_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
 RETURNS ARRAY<FLOAT64>
-LANGUAGE js AS
-'''
+LANGUAGE js
+AS
+  '''
   let result = [0];
   for (let i = 1; i < Math.min(nBuckets, max, 10000); i++) {
     let linearRange = (min * (nBuckets - 1 - i) + max * (i - 1)) / (nBuckets - 2);
@@ -33,12 +35,8 @@ LANGUAGE js AS
 
 CREATE TEMP FUNCTION udf_to_string_arr(buckets ARRAY<INT64>)
 RETURNS ARRAY<STRING> AS (
-  (
-    SELECT ARRAY_AGG(CAST(bucket AS STRING))
-    FROM UNNEST(buckets) AS bucket
-  )
+  (SELECT ARRAY_AGG(CAST(bucket AS STRING)) FROM UNNEST(buckets) AS bucket)
 );
-
 
 CREATE TEMP FUNCTION udf_get_buckets(min INT64, max INT64, num INT64, metric_type STRING)
 RETURNS ARRAY<INT64> AS (
@@ -46,19 +44,25 @@ RETURNS ARRAY<INT64> AS (
     WITH buckets AS (
       SELECT
         CASE
-          WHEN metric_type = 'histogram-exponential'
-          THEN udf_exponential_buckets(min, max, num)
-          ELSE udf_linear_buckets(min, max, num)
-       END AS arr
+        WHEN
+          metric_type = 'histogram-exponential'
+        THEN
+          udf_exponential_buckets(min, max, num)
+        ELSE
+          udf_linear_buckets(min, max, num)
+        END
+        AS arr
     )
-
-    SELECT ARRAY_AGG(CAST(item AS INT64))
-    FROM buckets
-    CROSS JOIN UNNEST(arr) AS item
+    SELECT
+      ARRAY_AGG(CAST(item AS INT64))
+    FROM
+      buckets
+    CROSS JOIN
+      UNNEST(arr) AS item
   )
 );
 
-CREATE TEMP FUNCTION udf_dedupe_map_sum (map ARRAY<STRUCT<key STRING, value FLOAT64>>)
+CREATE TEMP FUNCTION udf_dedupe_map_sum(map ARRAY<STRUCT<key STRING, value FLOAT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given a MAP with duplicate keys, de-duplicates by summing the values of duplicate keys
   (
@@ -70,27 +74,24 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
       GROUP BY
         e.key
     )
-
     SELECT
-       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(record.key, record.value))
+      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(record.key, record.value))
     FROM
       summed_counts
   )
 );
 
-CREATE TEMP FUNCTION udf_buckets_to_map (buckets ARRAY<STRING>)
+CREATE TEMP FUNCTION udf_buckets_to_map(buckets ARRAY<STRING>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given an array of values, transform them into a histogram MAP
   -- with the number of each key in the `buckets` array
-  (
-    SELECT
-       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, 1.0))
-    FROM
-      UNNEST(buckets) AS bucket
-  )
+  (SELECT ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, 1.0)) FROM UNNEST(buckets) AS bucket)
 );
 
-CREATE TEMP FUNCTION udf_fill_buckets(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>)
+CREATE TEMP FUNCTION udf_fill_buckets(
+  input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
+  buckets ARRAY<STRING>
+)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given a MAP `input_map`, fill in any missing keys with value `0.0`
   (
@@ -99,11 +100,12 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
         key,
         COALESCE(e.value, 0.0) AS value
       FROM
-        UNNEST(buckets) as key
+        UNNEST(buckets) AS key
       LEFT JOIN
-        UNNEST(input_map) AS e ON SAFE_CAST(key AS STRING) = e.key
+        UNNEST(input_map) AS e
+      ON
+        SAFE_CAST(key AS STRING) = e.key
     )
-    
     SELECT
       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value))
     FROM
@@ -123,11 +125,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
   AND os IS NOT NULL
 GROUP BY
   os,
@@ -142,9 +147,7 @@ GROUP BY
   first_bucket,
   last_bucket,
   num_buckets
-
 UNION ALL
-
 SELECT
   CAST(NULL AS STRING) AS os,
   app_version,
@@ -157,11 +160,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
 GROUP BY
   app_version,
   app_build_id,
@@ -174,9 +180,7 @@ GROUP BY
   first_bucket,
   last_bucket,
   num_buckets
-
 UNION ALL
-
 SELECT
   os,
   CAST(NULL AS INT64) AS app_version,
@@ -189,11 +193,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
   AND os IS NOT NULL
 GROUP BY
   os,
@@ -207,9 +214,7 @@ GROUP BY
   first_bucket,
   last_bucket,
   num_buckets
-
 UNION ALL
-
 SELECT
   os,
   app_version,
@@ -222,11 +227,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
   AND os IS NOT NULL
 GROUP BY
   os,
@@ -240,9 +248,7 @@ GROUP BY
   first_bucket,
   last_bucket,
   num_buckets
-
 UNION ALL
-
 SELECT
   os,
   CAST(NULL AS INT64) AS app_version,
@@ -255,11 +261,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
   AND os IS NOT NULL
 GROUP BY
   os,
@@ -272,9 +281,7 @@ GROUP BY
   first_bucket,
   last_bucket,
   num_buckets
-
 UNION ALL
-
 SELECT
   CAST(NULL AS STRING) AS os,
   app_version,
@@ -287,11 +294,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
 GROUP BY
   app_version,
   channel,
@@ -303,9 +313,7 @@ GROUP BY
   first_bucket,
   last_bucket,
   num_buckets
-
 UNION ALL
-
 SELECT
   CAST(NULL AS STRING) AS os,
   app_version,
@@ -318,11 +326,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
 GROUP BY
   app_version,
   metric,
@@ -333,9 +344,7 @@ GROUP BY
   first_bucket,
   last_bucket,
   num_buckets
-
 UNION ALL
-
 SELECT
   os,
   CAST(NULL AS INT64) AS app_version,
@@ -348,11 +357,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
   AND os IS NOT NULL
 GROUP BY
   os,
@@ -364,9 +376,7 @@ GROUP BY
   first_bucket,
   last_bucket,
   num_buckets
-
 UNION ALL
-
 SELECT
   CAST(NULL AS STRING) AS os,
   CAST(NULL AS INT64) AS app_version,
@@ -379,11 +389,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
 GROUP BY
   channel,
   metric,
@@ -394,9 +407,7 @@ GROUP BY
   first_bucket,
   last_bucket,
   num_buckets
-
 UNION ALL
-
 SELECT
   CAST(NULL AS STRING) AS os,
   CAST(NULL AS INT64) AS app_version,
@@ -409,11 +420,14 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
 GROUP BY
   metric,
   metric_type,

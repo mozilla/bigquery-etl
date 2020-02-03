@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.analysis.experiment_enrollment_aggregates` (
+  `moz-fx-data-shared-prod.analysis.experiment_enrollment_aggregates`(
     type STRING,
     experiment STRING,
     branch STRING,
@@ -14,5 +14,7 @@ CREATE TABLE IF NOT EXISTS
     update_failed_count INT64
   )
 PARTITION BY
-  DATE(window_start) CLUSTER BY experiment,
+  DATE(window_start)
+CLUSTER BY
+  experiment,
   branch

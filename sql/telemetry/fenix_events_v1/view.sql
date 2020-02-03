@@ -15,7 +15,7 @@ SELECT
     metadata.geo.country AS country,
     metadata.geo.subdivision1 AS region,
     metadata.geo.city AS city,
-    ( -- direct insert of `udf_kv_array_to_json_string`, for use in a view
+    ( -- direct insert of `udf.kv_array_to_json_string`, for use in a view
       SELECT CONCAT(
         '{',
         ARRAY_TO_STRING(

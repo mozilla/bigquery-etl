@@ -7,8 +7,8 @@ See https://mozilla.github.io/glean/book/user/metrics/timespan.html
 
 */
 
-CREATE TEMP FUNCTION
-  udf_glean_timespan_seconds(timespan STRUCT<time_unit STRING, value INT64>)
+CREATE OR REPLACE FUNCTION
+  udf.glean_timespan_seconds(timespan STRUCT<time_unit STRING, value INT64>)
   RETURNS INT64 AS (
     CAST(
       FLOOR(
@@ -26,7 +26,7 @@ CREATE TEMP FUNCTION
 -- Tests
 
 SELECT
-  assert_equals(345600, udf_glean_timespan_seconds(STRUCT('day', 4))),
-  assert_equals(0, udf_glean_timespan_seconds(STRUCT('nanosecond', 13))),
-  assert_equals(13, udf_glean_timespan_seconds(STRUCT('second', 13))),
-  assert_null(udf_glean_timespan_seconds(STRUCT('nonexistent_unit', 13)))
+  assert_equals(345600, udf.glean_timespan_seconds(STRUCT('day', 4))),
+  assert_equals(0, udf.glean_timespan_seconds(STRUCT('nanosecond', 13))),
+  assert_equals(13, udf.glean_timespan_seconds(STRUCT('second', 13))),
+  assert_null(udf.glean_timespan_seconds(STRUCT('nonexistent_unit', 13)))

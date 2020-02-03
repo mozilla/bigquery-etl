@@ -8,8 +8,8 @@ the atob function for decoding base64.
 */
 
 
-CREATE TEMP FUNCTION
-  udf_js_gunzip (input BYTES)
+CREATE OR REPLACE FUNCTION
+  udf_js.gunzip (input BYTES)
   RETURNS STRING
   LANGUAGE js AS """
     /*  Input is either:
@@ -65,7 +65,7 @@ WITH
   --
   unzipped AS (
     SELECT
-      udf_js_gunzip(test_input) AS result,
+      udf_js.gunzip(test_input) AS result,
       expected
     FROM
       input )

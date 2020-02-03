@@ -9,14 +9,14 @@ payload validation in the data pipeline should ensure that histograms are well
 formed, which gives us some flexibility here.
 
 The only "correct" way to fully parse JSON strings in BigQuery is via JS UDFs;
-we provide a JS implementation udf_json_extract_histogram_js for comparison,
+we provide a JS implementation udf.json_extract_histogram_js for comparison,
 but we expect that the overhead of the JS sandbox means that the pure SQL
 implementation here will have better performance.
 
 */
 
-CREATE TEMP FUNCTION
-  udf_json_extract_histogram (input STRING) AS (STRUCT(
+CREATE OR REPLACE FUNCTION
+  udf.json_extract_histogram (input STRING) AS (STRUCT(
     CAST(JSON_EXTRACT_SCALAR(input, '$.bucket_count') AS INT64) AS bucket_count,
     CAST(JSON_EXTRACT_SCALAR(input, '$.histogram_type') AS INT64) AS histogram_type,
     CAST(JSON_EXTRACT_SCALAR(input, '$.sum') AS INT64) AS `sum`,
@@ -25,7 +25,7 @@ CREATE TEMP FUNCTION
         CAST(bound AS INT64)
       FROM
         UNNEST(SPLIT(TRIM(JSON_EXTRACT(input, '$.range'), '[]'), ',')) AS bound) AS `range`,
-    udf_json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values` ));
+    udf.json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values` ));
 
 -- Tests
 
@@ -36,7 +36,7 @@ WITH
   --
   extracted AS (
      SELECT
-       udf_json_extract_histogram(histogram).*
+       udf.json_extract_histogram(histogram).*
      FROM
        histogram )
   --

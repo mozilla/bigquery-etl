@@ -13,8 +13,8 @@ then aggregating over buckets, passing ARRAY_AGG(metric) to this function.
 
 */
 
-CREATE TEMP FUNCTION
-  udf_js_jackknife_mean_ci(
+CREATE OR REPLACE FUNCTION
+  udf_js.jackknife_mean_ci(
     n_buckets INT64,
     values_per_bucket ARRAY<FLOAT64>)
   RETURNS STRUCT<

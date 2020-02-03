@@ -1,23 +1,5 @@
 CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
-    SELECT
-      _value
-    FROM
-      UNNEST(list) AS _value
-    WITH
-    OFFSET
-      AS
-    _offset
-    GROUP BY
-      _value
-    ORDER BY
-      COUNT(_value) DESC,
-      MAX(_offset) DESC
-    LIMIT
-      1 ));
-
-CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
+  udf.mode_last(list ANY TYPE) AS ((
     SELECT
       _value
     FROM
@@ -38,7 +20,7 @@ CREATE TEMP FUNCTION
 -- telemetry data accepts countries as two-digit codes, but FxA
 -- data includes long-form country names. The logic here is specific
 -- to the FxA data.
-CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS (
+CREATE TEMP FUNCTION udf.contains_tier1_country(x ANY TYPE) AS (
   EXISTS(
     SELECT
       country
@@ -58,8 +40,8 @@ WITH
     @submission_date AS submission_date,
     user_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
-    udf_mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    udf_contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country
+    udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
+    udf.contains_tier1_country(ARRAY_AGG(country) OVER w1) AS seen_in_tier1_country
   FROM
     fxa_amplitude_export_event_date
   WHERE

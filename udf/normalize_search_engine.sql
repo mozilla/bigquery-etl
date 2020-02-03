@@ -4,8 +4,8 @@ Return normalized engine name for recognized engines
 
 */
 
-CREATE TEMP FUNCTION
-  udf_normalize_search_engine(engine STRING) AS (
+CREATE OR REPLACE FUNCTION
+  udf.normalize_search_engine(engine STRING) AS (
     CASE
       WHEN engine IS NULL THEN NULL
       WHEN STARTS_WITH(engine, 'google')
@@ -28,8 +28,8 @@ CREATE TEMP FUNCTION
 -- Test
 
 SELECT
-  assert_equals('Google', udf_normalize_search_engine('google')),
-  assert_equals('Google', udf_normalize_search_engine('Google-abc')),
-  assert_equals('Other', udf_normalize_search_engine('not-bing')),
-  assert_equals('Other', udf_normalize_search_engine('engine')),
-  assert_null(udf_normalize_search_engine(NULL))
+  assert_equals('Google', udf.normalize_search_engine('google')),
+  assert_equals('Google', udf.normalize_search_engine('Google-abc')),
+  assert_equals('Other', udf.normalize_search_engine('not-bing')),
+  assert_equals('Other', udf.normalize_search_engine('engine')),
+  assert_null(udf.normalize_search_engine(NULL))

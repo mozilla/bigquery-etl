@@ -8,7 +8,7 @@ This version matches NULL keys as well.
 
 */
 
-CREATE TEMP FUNCTION udf_get_key_with_null(map ANY TYPE, k ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION udf.get_key_with_null(map ANY TYPE, k ANY TYPE) AS (
  (
    SELECT key_value.value
    FROM UNNEST(map) AS key_value
@@ -21,5 +21,5 @@ CREATE TEMP FUNCTION udf_get_key_with_null(map ANY TYPE, k ANY TYPE) AS (
 -- Tests
 
 SELECT
-  assert_equals(12, udf_get_key_with_null([STRUCT('foo' AS key, 42 AS value), ('bar', 12)], 'bar')),
-  assert_equals(12, udf_get_key_with_null([STRUCT('foo' AS key, 42 AS value), (CAST(NULL AS STRING), 12)], CAST(NULL AS STRING)));
+  assert_equals(12, udf.get_key_with_null([STRUCT('foo' AS key, 42 AS value), ('bar', 12)], 'bar')),
+  assert_equals(12, udf.get_key_with_null([STRUCT('foo' AS key, 42 AS value), (CAST(NULL AS STRING), 12)], CAST(NULL AS STRING)));

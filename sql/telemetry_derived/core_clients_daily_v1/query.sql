@@ -1,56 +1,3 @@
-CREATE TEMP FUNCTION udf_geo_struct(
-  country STRING,
-  city STRING,
-  geo_subdivision1 STRING,
-  geo_subdivision2 STRING
-) AS ( IF(
-    country IS NULL
-    OR country = '??',
-    NULL,
-    STRUCT(
-      country,
-      NULLIF(city, '??') AS city,
-      NULLIF(geo_subdivision1, '??') AS geo_subdivision1,
-      NULLIF(geo_subdivision2, '??') AS geo_subdivision2
-    )
-  )
-);
-
-CREATE TEMP FUNCTION udf_json_mode_last(list ANY TYPE) AS (
-  (
-    SELECT
-      ANY_VALUE(_value)
-    FROM
-      UNNEST(list) AS _value
-      WITH OFFSET AS _offset
-    GROUP BY
-      TO_JSON_STRING(_value)
-    ORDER BY
-      COUNT(_value) DESC,
-      MAX(_offset) DESC
-    LIMIT
-      1
-  )
-);
-
-CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
-    SELECT
-      _value
-    FROM
-      UNNEST(list) AS _value
-    WITH
-    OFFSET
-      AS
-    _offset
-    GROUP BY
-      _value
-    ORDER BY
-      COUNT(_value) DESC,
-      MAX(_offset) DESC
-    LIMIT
-      1 ));
-
 WITH
   base AS (
   SELECT
@@ -81,23 +28,23 @@ WITH
     SUM(IF(durations BETWEEN 0 AND 100000, durations, 0)) OVER w1 AS durations,
     SUM(IF(flash_usage BETWEEN 0 AND 100000, flash_usage, 0)) OVER w1 AS flash_usage,
     -- For all other dimensions, we use the mode of observed values in the day.
-    udf_mode_last(ARRAY_AGG(metadata.uri.app_name) OVER w1) AS app_name,
-    udf_mode_last(ARRAY_AGG(os) OVER w1) AS os,
-    udf_json_mode_last(ARRAY_AGG(udf_geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1).* EXCEPT (geo_subdivision1, geo_subdivision2),
-    udf_mode_last(ARRAY_AGG(metadata.uri.app_build_id) OVER w1) AS app_build_id,
-    udf_mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
-    udf_mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
-    udf_mode_last(ARRAY_AGG(osversion) OVER w1) AS osversion,
-    udf_mode_last(ARRAY_AGG(device) OVER w1) AS device,
-    udf_mode_last(ARRAY_AGG(arch) OVER w1) AS arch,
-    udf_mode_last(ARRAY_AGG(default_search) OVER w1) AS default_search,
-    udf_mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
-    udf_mode_last(ARRAY_AGG(campaign) OVER w1) AS campaign,
-    udf_mode_last(ARRAY_AGG(campaign_id) OVER w1) AS campaign_id,
-    udf_mode_last(ARRAY_AGG(default_browser) OVER w1) AS default_browser,
-    udf_mode_last(ARRAY_AGG(show_tracker_stats_share) OVER w1) AS show_tracker_stats_share,
-    udf_mode_last(ARRAY_AGG(metadata.uri.app_version) OVER w1) AS metadata_app_version,
-    udf_mode_last(ARRAY_AGG(bug_1501329_affected) OVER w1) AS bug_1501329_affected
+    udf.mode_last(ARRAY_AGG(metadata.uri.app_name) OVER w1) AS app_name,
+    udf.mode_last(ARRAY_AGG(os) OVER w1) AS os,
+    udf.json_mode_last(ARRAY_AGG(udf_geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1).* EXCEPT (geo_subdivision1, geo_subdivision2),
+    udf.mode_last(ARRAY_AGG(metadata.uri.app_build_id) OVER w1) AS app_build_id,
+    udf.mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
+    udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
+    udf.mode_last(ARRAY_AGG(osversion) OVER w1) AS osversion,
+    udf.mode_last(ARRAY_AGG(device) OVER w1) AS device,
+    udf.mode_last(ARRAY_AGG(arch) OVER w1) AS arch,
+    udf.mode_last(ARRAY_AGG(default_search) OVER w1) AS default_search,
+    udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+    udf.mode_last(ARRAY_AGG(campaign) OVER w1) AS campaign,
+    udf.mode_last(ARRAY_AGG(campaign_id) OVER w1) AS campaign_id,
+    udf.mode_last(ARRAY_AGG(default_browser) OVER w1) AS default_browser,
+    udf.mode_last(ARRAY_AGG(show_tracker_stats_share) OVER w1) AS show_tracker_stats_share,
+    udf.mode_last(ARRAY_AGG(metadata.uri.app_version) OVER w1) AS metadata_app_version,
+    udf.mode_last(ARRAY_AGG(bug_1501329_affected) OVER w1) AS bug_1501329_affected
   FROM
     base
   WHERE

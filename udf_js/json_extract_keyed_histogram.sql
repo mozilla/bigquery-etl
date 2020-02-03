@@ -10,8 +10,8 @@ does not provide any functions for listing or iterating over keys in a JSON map.
 
 */
 
-CREATE TEMP FUNCTION
-  udf_js_json_extract_keyed_histogram (input STRING)
+CREATE OR REPLACE FUNCTION
+  udf_js.json_extract_keyed_histogram (input STRING)
   RETURNS ARRAY<STRUCT<key STRING,
   bucket_count INT64,
   histogram_type INT64,
@@ -51,7 +51,7 @@ WITH
       histogram.*
     FROM
       keyed_histogram,
-      UNNEST(udf_js_json_extract_keyed_histogram(keyed_histogram)) AS histogram )
+      UNNEST(udf_js.json_extract_keyed_histogram(keyed_histogram)) AS histogram )
   --
 SELECT
   assert_equals('audio/mp4a-latm', `key`),

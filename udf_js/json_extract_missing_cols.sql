@@ -21,7 +21,7 @@ https://sql.telemetry.mozilla.org/queries/64460/source
 
 */
 
-CREATE TEMP FUNCTION udf_js_json_extract_missing_cols (input STRING, indicates_node ARRAY<STRING>, known_nodes ARRAY<STRING>)
+CREATE OR REPLACE FUNCTION udf_js.json_extract_missing_cols (input STRING, indicates_node ARRAY<STRING>, known_nodes ARRAY<STRING>)
 RETURNS ARRAY<STRING>
 LANGUAGE js AS """
     if (input == null || input == '{}') {
@@ -77,9 +77,9 @@ WITH
     --
   extracted AS (
     SELECT
-      udf_js_json_extract_missing_cols(additional_properties, ARRAY[], ARRAY[]) AS no_args,
-      udf_js_json_extract_missing_cols(additional_properties, ARRAY['third'], ARRAY[]) AS indicates_node_arg,
-      udf_js_json_extract_missing_cols(additional_properties, ARRAY[], ARRAY['first']) AS is_node_arg
+      udf_js.json_extract_missing_cols(additional_properties, ARRAY[], ARRAY[]) AS no_args,
+      udf_js.json_extract_missing_cols(additional_properties, ARRAY['third'], ARRAY[]) AS indicates_node_arg,
+      udf_js.json_extract_missing_cols(additional_properties, ARRAY[], ARRAY['first']) AS is_node_arg
     FROM
       addl_properties )
     --

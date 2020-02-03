@@ -11,8 +11,8 @@ of new profile creation.
 
 */
 
-CREATE TEMP FUNCTION
-  udf_days_since_created_profile_as_28_bits(days_since_created_profile INT64) AS (
+CREATE OR REPLACE FUNCTION
+  udf.days_since_created_profile_as_28_bits(days_since_created_profile INT64) AS (
   IF
     (days_since_created_profile BETWEEN 0
       AND 6,
@@ -22,9 +22,9 @@ CREATE TEMP FUNCTION
 -- Tests
 
 SELECT
-  assert_equals(2, udf_days_since_created_profile_as_28_bits(1)),
-  assert_equals(4, udf_days_since_created_profile_as_28_bits(2)),
-  assert_equals(64, udf_days_since_created_profile_as_28_bits(6)),
-  assert_equals(0, udf_days_since_created_profile_as_28_bits(7)),
-  assert_equals(0, udf_days_since_created_profile_as_28_bits(-1)),
-  assert_equals(0, udf_days_since_created_profile_as_28_bits(NULL));
+  assert_equals(2, udf.days_since_created_profile_as_28_bits(1)),
+  assert_equals(4, udf.days_since_created_profile_as_28_bits(2)),
+  assert_equals(64, udf.days_since_created_profile_as_28_bits(6)),
+  assert_equals(0, udf.days_since_created_profile_as_28_bits(7)),
+  assert_equals(0, udf.days_since_created_profile_as_28_bits(-1)),
+  assert_equals(0, udf.days_since_created_profile_as_28_bits(NULL));

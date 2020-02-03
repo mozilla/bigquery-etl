@@ -13,8 +13,8 @@ See:
 
 */
 
-CREATE TEMP FUNCTION
-  udf_country_code_to_flag(country_code string) AS ( --
+CREATE OR REPLACE FUNCTION
+  udf.country_code_to_flag(country_code string) AS ( --
     CODE_POINTS_TO_STRING(ARRAY(
       SELECT
         -- This constant offset transforms from ASCII characters A-Z to
@@ -28,4 +28,4 @@ CREATE TEMP FUNCTION
 
 SELECT
   -- The emoji below may not be visible in your code editor.
-  assert_equals('🇫🇮', udf_country_code_to_flag('FI'));
+  assert_equals('🇫🇮', udf.country_code_to_flag('FI'));

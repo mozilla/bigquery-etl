@@ -1,8 +1,4 @@
-CREATE TEMP FUNCTION udf_map_sum(entries ANY TYPE) AS (
-  ARRAY(SELECT AS STRUCT key, SUM(value) AS value FROM UNNEST(entries) GROUP BY key)
-);
-
-CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
+CREATE TEMP FUNCTION udf.merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
   RETURNS ARRAY<STRUCT<
     first_bucket INT64,
     last_bucket INT64,
@@ -35,7 +31,7 @@ CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
         key,
         process,
         agg_type,
-        udf_map_sum(ARRAY_CONCAT_AGG(aggregates)) AS histogram_aggregates
+        udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS histogram_aggregates
       FROM unnested
       GROUP BY
         first_bucket,
@@ -130,7 +126,7 @@ aggregated_histograms AS
       key,
       process,
       agg_type,
-      udf_map_sum(ARRAY_CONCAT_AGG(value)) AS aggregates
+      udf.map_sum(ARRAY_CONCAT_AGG(value)) AS aggregates
   FROM
       version_filtered_new
   GROUP BY
@@ -220,5 +216,5 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
+  udf.merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
 FROM joined_new_old

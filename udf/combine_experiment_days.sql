@@ -10,8 +10,8 @@ current day, returning a single array of experiment structs.
 
 */
 
-CREATE TEMP FUNCTION
-  udf_combine_experiment_days(
+CREATE OR REPLACE FUNCTION
+  udf.combine_experiment_days(
     --
     prev ARRAY<STRUCT<experiment STRING,
     branch STRING,
@@ -29,7 +29,7 @@ CREATE TEMP FUNCTION
       SELECT
         AS STRUCT experiment,
         branch,
-        udf_combine_adjacent_days_28_bits(prev.bits,
+        udf.combine_adjacent_days_28_bits(prev.bits,
           curr.bits) AS bits
       FROM
         UNNEST(prev) AS prev
@@ -39,7 +39,7 @@ CREATE TEMP FUNCTION
         (experiment,
           branch)
       WHERE
-        udf_combine_adjacent_days_28_bits(prev.bits,
+        udf.combine_adjacent_days_28_bits(prev.bits,
           curr.bits) > 0),
       -- Experiments present in curr only
       ARRAY(
@@ -61,7 +61,7 @@ CREATE TEMP FUNCTION
 
 SELECT
   assert_array_equals(
-    udf_combine_experiment_days(
+    udf.combine_experiment_days(
       [STRUCT("exp1" AS experiment, "1a" AS branch, 1 AS bits),
        STRUCT("exp2" AS experiment, "2b" AS branch, 3 AS bits),
        STRUCT("filtered_out" AS experiment, "?" AS branch, 1 << 27 AS bits)],

@@ -12,8 +12,8 @@ See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 
 */
 
-CREATE TEMP FUNCTION
-  udf_js_crc32(data STRING)
+CREATE OR REPLACE FUNCTION
+  udf_js.crc32(data STRING)
   RETURNS INT64
   LANGUAGE js AS """
   var makeCRCTable = function(){
@@ -49,4 +49,4 @@ CREATE TEMP FUNCTION
 -- Tests
 
 SELECT
-  assert_equals(308953907, udf_js_crc32("51baf8b4-75d1-3648-b96d-809569b89a12"));
+  assert_equals(308953907, udf_js.crc32("51baf8b4-75d1-3648-b96d-809569b89a12"));

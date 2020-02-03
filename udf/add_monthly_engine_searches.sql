@@ -41,10 +41,10 @@ WITH examples AS (
                generate_array(12, 1, -1) AS tagged_searches,
                udf.zeroed_array(12) AS search_with_ads,
                udf.zeroed_array(12) AS ad_click) AS prev,
-        STRUCT(udf.array_drop_first_and_append(udf_zeroed_array(12),  5) AS total_searches,
-               udf.array_drop_first_and_append(udf_zeroed_array(12), 10) AS tagged_searches,
-               udf.array_drop_first_and_append(udf_zeroed_array(12), 15) AS search_with_ads,
-               udf.array_drop_first_and_append(udf_zeroed_array(12), 20) AS ad_click) AS curr
+        STRUCT(udf.array_drop_first_and_append(udf.zeroed_array(12),  5) AS total_searches,
+               udf.array_drop_first_and_append(udf.zeroed_array(12), 10) AS tagged_searches,
+               udf.array_drop_first_and_append(udf.zeroed_array(12), 15) AS search_with_ads,
+               udf.array_drop_first_and_append(udf.zeroed_array(12), 20) AS ad_click) AS curr
 ), oct_first AS (
     SELECT
       udf.add_monthly_engine_searches(prev, curr, "2019-10-01") AS res, "2019-10-01" AS date

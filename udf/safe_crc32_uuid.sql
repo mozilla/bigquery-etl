@@ -67,27 +67,27 @@ CREATE OR REPLACE FUNCTION udf.crc32_partial_1(crc INT64, value BYTES) AS (
 );
 
 CREATE OR REPLACE FUNCTION udf.crc32_partial_2(crc INT64, value BYTES) AS (
-  udf.crc32_partial_1(udf_crc32_partial_1(crc, SUBSTR(value, 1, 1)), SUBSTR(value, 2, 1))
+  udf.crc32_partial_1(udf.crc32_partial_1(crc, SUBSTR(value, 1, 1)), SUBSTR(value, 2, 1))
 );
 
 CREATE OR REPLACE FUNCTION udf.crc32_partial_4(crc INT64, value BYTES) AS (
-  udf.crc32_partial_2(udf_crc32_partial_2(crc, SUBSTR(value, 1, 2)), SUBSTR(value, 3, 2))
+  udf.crc32_partial_2(udf.crc32_partial_2(crc, SUBSTR(value, 1, 2)), SUBSTR(value, 3, 2))
 );
 
 CREATE OR REPLACE FUNCTION udf.crc32_partial_8(crc INT64, value BYTES) AS (
-  udf.crc32_partial_4(udf_crc32_partial_4(crc, SUBSTR(value, 1, 4)), SUBSTR(value, 5, 4))
+  udf.crc32_partial_4(udf.crc32_partial_4(crc, SUBSTR(value, 1, 4)), SUBSTR(value, 5, 4))
 );
 
 CREATE OR REPLACE FUNCTION udf.crc32_partial_16(crc INT64, value BYTES) AS (
-  udf.crc32_partial_8(udf_crc32_partial_8(crc, SUBSTR(value, 1, 8)), SUBSTR(value, 9, 8))
+  udf.crc32_partial_8(udf.crc32_partial_8(crc, SUBSTR(value, 1, 8)), SUBSTR(value, 9, 8))
 );
 
 CREATE OR REPLACE FUNCTION udf.crc32_partial_32(crc INT64, value BYTES) AS (
-  udf.crc32_partial_16(udf_crc32_partial_16(crc, SUBSTR(value, 1, 16)), SUBSTR(value, 17, 16))
+  udf.crc32_partial_16(udf.crc32_partial_16(crc, SUBSTR(value, 1, 16)), SUBSTR(value, 17, 16))
 );
 
 CREATE OR REPLACE FUNCTION udf.crc32_partial_36(crc INT64, value BYTES) AS (
-  udf.crc32_partial_4(udf_crc32_partial_32(crc, SUBSTR(value, 1, 32)), SUBSTR(value, 33, 4))
+  udf.crc32_partial_4(udf.crc32_partial_32(crc, SUBSTR(value, 1, 32)), SUBSTR(value, 33, 4))
 );
 
 CREATE OR REPLACE FUNCTION udf.safe_crc32_uuid(value BYTES) AS (

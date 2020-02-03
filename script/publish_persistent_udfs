@@ -35,7 +35,7 @@ parser.add_argument(
 parser.add_argument(
     "--udf-dirs",
     nargs='+',
-    default="udf/ udf_js/",
+    default=["udf/", "udf_js/"],
     help="The directories where declarations of UDFs are stored.",
 )
 parser.add_argument(
@@ -63,7 +63,7 @@ def main():
     client = bigquery.Client(args.project_id)
 
     if args.dep_dir:
-        push_dependencies_to_gcs(args.gcs_bucket, args.gcs_path, args.dep_dir)
+        push_dependencies_to_gcs(args.gcs_bucket, args.gcs_path, args.dep_dir, args.project_id)
 
     for raw_udf in raw_udfs:
         # get all dependencies for UDF and publish as persistent UDF
@@ -98,8 +98,8 @@ def publish_persistent_udf(raw_udf, client, project_id, gcs_bucket, gcs_path):
         client.query(query).result()
 
 
-def push_dependencies_to_gcs(bucket, path, dep_dir):
-    client = storage.Client()
+def push_dependencies_to_gcs(bucket, path, dep_dir, project_id):
+    client = storage.Client(project_id)
     bucket = client.get_bucket(bucket)
 
     for root, dirs, files in os.walk(dep_dir):

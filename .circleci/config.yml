@@ -34,6 +34,14 @@ jobs:
           name: Verify that SQL is correctly formatted
           # check all directories owned by git except sql
           command: script/format_sql --check $(git ls-tree -d HEAD --name-only | grep -vx sql)
+  publish-persistent-udfs:
+    docker:
+      - image: python:3.8
+    steps:
+      - checkout
+      - run:
+        name: Publish persistent UDFs
+        command: script/publish-persistent-udfs   
   dry-run-sql:
     docker:
       - image: python:3.8
@@ -79,6 +87,7 @@ workflows:
         requires:
         # can't run in parallel because CIRCLE_BUILD_NUM is same
         - build
+        - publish-persistent-udfs
         filters:
           branches:
             only: master

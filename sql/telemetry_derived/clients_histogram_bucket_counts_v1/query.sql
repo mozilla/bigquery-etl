@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf.normalized_sum (arrs ARRAY<STRUCT<key STRING, value INT64>>)
+CREATE TEMP FUNCTION udf_normalized_sum (arrs ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Returns the normalized sum of the input maps.
   -- It returns the total_count[k] / SUM(total_count)
@@ -40,7 +40,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf.normalize_histograms (
+CREATE TEMP FUNCTION udf_normalize_histograms (
   arrs ARRAY<STRUCT<
     first_bucket INT64,
     last_bucket INT64,
@@ -75,7 +75,7 @@ RETURNS ARRAY<STRUCT<
         key,
         process,
         agg_type,
-        udf.normalized_sum(aggregates) AS aggregates
+        udf_normalized_sum(aggregates) AS aggregates
       FROM UNNEST(arrs))
 
     SELECT ARRAY_AGG((first_bucket, last_bucket, num_buckets, latest_version, metric, metric_type, key, process, agg_type, aggregates))
@@ -89,7 +89,7 @@ WITH normalized_histograms AS (
     app_version,
     app_build_id,
     channel,
-    udf.normalize_histograms(histogram_aggregates) AS histogram_aggregates
+    udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
   FROM clients_histogram_aggregates_v1),
 
 unnested AS (

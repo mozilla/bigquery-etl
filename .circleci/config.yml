@@ -25,20 +25,6 @@ jobs:
         paths:
         - venv/
         key: python-packages-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "constraints.txt" }}
-  verify-generated-sql:
-    docker:
-      - image: python:3.8
-    steps:
-      - checkout
-      - *build
-      - run:
-          name: Verify that all of generated SQL is committed
-          command: |
-            rm -rf sql/
-            venv/bin/python script/generate_sql
-            echo "Inconsistencies between templates and generated SQL:"
-            git ls-files --other --modified -x sql/*
-            test `git ls-files --other --modified -x sql/* | wc -l` = 0
   verify-format-sql:
     docker:
       - image: python:3.8
@@ -85,7 +71,7 @@ workflows:
     jobs:
     - build:
         context: data-eng-circleci-tests
-    - verify-generated-sql
+    - publish-persistent-udfs
     - verify-format-sql
     - dry-run-sql
     - deploy:
@@ -93,7 +79,6 @@ workflows:
         requires:
         # can't run in parallel because CIRCLE_BUILD_NUM is same
         - build
-        - verify-generated-sql
         filters:
           branches:
             only: master

@@ -132,9 +132,9 @@ WITH
     datasource,
     type,
     submission_date,
-    udf.js_jackknife_sum_ci(20, ARRAY_AGG(mau)) AS mau_ci,
-    udf.js_jackknife_sum_ci(20, ARRAY_AGG(wau)) AS wau_ci,
-    udf.js_jackknife_sum_ci(20, ARRAY_AGG(dau)) AS dau_ci
+    udf_js.jackknife_sum_ci(20, ARRAY_AGG(mau)) AS mau_ci,
+    udf_js.jackknife_sum_ci(20, ARRAY_AGG(wau)) AS wau_ci,
+    udf_js.jackknife_sum_ci(20, ARRAY_AGG(dau)) AS dau_ci
   FROM
     per_bucket
   GROUP BY

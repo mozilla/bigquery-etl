@@ -22,7 +22,7 @@ LANGUAGE js AS
 ''';
 
 
-CREATE TEMP FUNCTION udf.get_bucket_range(histograms ARRAY<STRING>) AS ((
+CREATE TEMP FUNCTION udf_get_bucket_range(histograms ARRAY<STRING>) AS ((
   WITH buckets AS (
     SELECT
       string_to_arr(JSON_EXTRACT(histogram, "$.range")) AS bucket_range,
@@ -42,7 +42,7 @@ CREATE TEMP FUNCTION udf.get_bucket_range(histograms ARRAY<STRING>) AS ((
     buckets));
 
 
-CREATE TEMP FUNCTION udf.get_histogram_type(histograms ARRAY<STRING>) AS ((
+CREATE TEMP FUNCTION udf_get_histogram_type(histograms ARRAY<STRING>) AS ((
     SELECT
       CASE SAFE_CAST(JSON_EXTRACT(histogram, "$.histogram_type") AS INT64)
         WHEN 0 THEN 'histogram-exponential'
@@ -59,7 +59,7 @@ CREATE TEMP FUNCTION udf.get_histogram_type(histograms ARRAY<STRING>) AS ((
 ));
 
 CREATE TEMP FUNCTION
-  udf.aggregate_json_sum(histograms ARRAY<STRING>) AS (ARRAY(
+  udf_aggregate_json_sum(histograms ARRAY<STRING>) AS (ARRAY(
       SELECT
         AS STRUCT SPLIT(keyval, ':')[OFFSET(0)] AS key,
         SUM(SAFE_CAST(SPLIT(keyval, ':')[OFFSET(1)] AS INT64)) AS value
@@ -4923,12 +4923,12 @@ SELECT
     bucket_range STRUCT<first_bucket INT64, last_bucket INT64, num_buckets INT64>,
     value ARRAY<STRUCT<key STRING, value INT64>>
   > (metric,
-    udf.get_histogram_type(value),
+    udf_get_histogram_type(value),
     '',
     process,
     'summed_histogram',
-    udf.get_bucket_range(value),
-    udf.aggregate_json_sum(value))) AS histogram_aggregates
+    udf_get_bucket_range(value),
+    udf_aggregate_json_sum(value))) AS histogram_aggregates
 FROM aggregated
 GROUP BY
   1, 2, 3, 4, 5, 6

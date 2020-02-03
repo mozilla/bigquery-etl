@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf.percentile(percentile FLOAT64, histogram ARRAY<STRUCT<key STRING, value FLOAT64>>, type STRING)
+CREATE TEMP FUNCTION udf_percentile(percentile FLOAT64, histogram ARRAY<STRUCT<key STRING, value FLOAT64>>, type STRING)
 RETURNS FLOAT64
 LANGUAGE js AS
 '''
@@ -48,11 +48,11 @@ SELECT *
       key STRING,
       value FLOAT64
   >> [
-    ('5', udf.percentile(5, aggregates, metric_type)),
-    ('25', udf.percentile(25, aggregates, metric_type)),
-    ('50', udf.percentile(50, aggregates, metric_type)),
-    ('75', udf.percentile(75, aggregates, metric_type)),
-    ('95', udf.percentile(95, aggregates, metric_type))
+    ('5', udf_percentile(5, aggregates, metric_type)),
+    ('25', udf_percentile(25, aggregates, metric_type)),
+    ('50', udf_percentile(50, aggregates, metric_type)),
+    ('75', udf_percentile(75, aggregates, metric_type)),
+    ('95', udf_percentile(95, aggregates, metric_type))
   ] AS aggregates
 FROM client_probe_counts_v1
 WHERE metric_type LIKE "%histogram%"

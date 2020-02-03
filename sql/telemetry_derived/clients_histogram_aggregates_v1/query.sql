@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf.merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
+CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
   RETURNS ARRAY<STRUCT<
     first_bucket INT64,
     last_bucket INT64,
@@ -216,5 +216,5 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  udf.merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
+  udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
 FROM joined_new_old

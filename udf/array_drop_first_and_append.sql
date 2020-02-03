@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION
         ORDER BY off ASC),
       [append]));
 
--- 
+-- Tests
 
 SELECT
   assert_array_equals([2, 3, 4], udf.array_drop_first_and_append([1, 2, 3], 4)),

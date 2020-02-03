@@ -59,18 +59,18 @@ WITH previous_examples AS (
         [
           STRUCT(
             "google" AS key,
-            STRUCT(udf.array_drop_first_and_append(udf_zeroed_array(12), 5) AS total_searches,
-                   udf.array_drop_first_and_append(udf_zeroed_array(12), 10) AS tagged_searches,
-                   udf.array_drop_first_and_append(udf_zeroed_array(12), 15) AS search_with_ads,
-                   udf.array_drop_first_and_append(udf_zeroed_array(12), 20) AS ad_click) AS value
+            STRUCT(udf.array_drop_first_and_append(udf.zeroed_array(12), 5) AS total_searches,
+                   udf.array_drop_first_and_append(udf.zeroed_array(12), 10) AS tagged_searches,
+                   udf.array_drop_first_and_append(udf.zeroed_array(12), 15) AS search_with_ads,
+                   udf.array_drop_first_and_append(udf.zeroed_array(12), 20) AS ad_click) AS value
         )] AS curr, "google" AS type
     UNION ALL
     SELECT ARRAY[STRUCT(
                     "bing" AS key,
-                    STRUCT(udf.array_drop_first_and_append(udf_zeroed_array(12), 1) AS total_searches,
-                           udf.array_drop_first_and_append(udf_zeroed_array(12), 2) AS tagged_searches,
-                           udf.array_drop_first_and_append(udf_zeroed_array(12), 3) AS search_with_ads,
-                           udf.array_drop_first_and_append(udf_zeroed_array(12), 4) AS ad_click) AS value
+                    STRUCT(udf.array_drop_first_and_append(udf.zeroed_array(12), 1) AS total_searches,
+                           udf.array_drop_first_and_append(udf.zeroed_array(12), 2) AS tagged_searches,
+                           udf.array_drop_first_and_append(udf.zeroed_array(12), 3) AS search_with_ads,
+                           udf.array_drop_first_and_append(udf.zeroed_array(12), 4) AS ad_click) AS value
 )] AS curr,
         "bing" as type
     UNION ALL

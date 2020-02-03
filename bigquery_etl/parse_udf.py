@@ -60,6 +60,7 @@ class RawUdf:
                     internal_name = temp_name
 
         for name in (prod_name, internal_name):
+            print(name)
             if not UDF_NAME_RE.match(name):
                 raise ValueError(
                     f"Invalid UDF name {name}: Must start with alpha char, "

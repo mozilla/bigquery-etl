@@ -136,54 +136,6 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
     }
 
 
-def get_keyed_boolean_probes_sql_string(probes):
-    """Put together the subsets of SQL required to query keyed booleans."""
-    sql_strings = _get_generic_keyed_scalar_sql(probes, "BOOLEAN")
-    sql_strings[
-        "probes_string"
-    ] = """
-        metric,
-        key,
-        process,
-        SUM(CASE WHEN value = True THEN 1 ELSE 0 END) AS true_col,
-        SUM(CASE WHEN value = False THEN 1 ELSE 0 END) AS false_col
-    """
-
-    sql_strings[
-        "select_clause"
-    ] = """
-        SELECT
-              client_id,
-              submission_date,
-              os,
-              app_version,
-              app_build_id,
-              channel,
-              ARRAY_CONCAT_AGG(ARRAY<STRUCT<
-                    metric STRING,
-                    metric_type STRING,
-                    key STRING,
-                    process STRING,
-                    agg_type STRING,
-                    value FLOAT64
-                >>
-                [
-                    (metric, 'keyed-scalar-boolean', key, process, 'true', true_col),
-                    (metric, 'keyed-scalar-boolean', key, process, 'false', false_col)
-                ]
-            ) AS scalar_aggregates
-        FROM aggregated
-        GROUP BY
-            client_id,
-            submission_date,
-            os,
-            app_version,
-            app_build_id,
-            channel
-    """
-    return sql_strings
-
-
 def get_keyed_scalar_probes_sql_string(probes):
     """Put together the subsets of SQL required to query keyed scalars."""
     sql_strings = _get_generic_keyed_scalar_sql(probes, "INT64")
@@ -242,9 +194,6 @@ def get_scalar_probes_sql_strings(probes, scalar_type):
     """Put together the subsets of SQL required to query scalars or booleans."""
     if scalar_type == "keyed_scalars":
         return get_keyed_scalar_probes_sql_string(probes["keyed"])
-
-    if scalar_type == "keyed_booleans":
-        return get_keyed_boolean_probes_sql_string(probes["keyed_boolean"])
 
     probe_structs = []
     for probe, processes in probes["scalars"].items():
@@ -317,23 +266,6 @@ def get_scalar_probes_sql_strings(probes, scalar_type):
     return {"probes_string": probes_string, "select_clause": select_clause}
 
 
-def save_scalars_by_type(scalars_dict, scalar, process):
-    if scalars_dict is None:
-        return
-
-    processes = scalars_dict.setdefault(scalar, set())
-    processes.add(process)
-    scalars_dict[scalar] = processes
-
-
-def filter_scalars_dict(scalars_dict, required_probes):
-    return {
-        scalar: process
-        for scalar, process in scalars_dict.items()
-        if scalar in required_probes
-    }
-
-
 def get_schema(table, project="moz-fx-data-shared-prod"):
     """Return the dictionary representation of the BigQuery table schema.
     This returns types in the legacy SQL format.
@@ -384,17 +316,11 @@ def main(argv, out=print):
     sql_string = ""
 
     if opts["agg_type"] in ("scalars", "keyed_scalars"):
-        scalar_type = (
-            opts["agg_type"] if (opts["agg_type"] == "scalars") else "keyed_scalars"
-        )
+        scalar_type = opts["agg_type"]
         scalar_probes = get_scalar_probes(scalar_type)
-        pprint.pprint(scalar_probes)
-        return
-        sql_string = get_scalar_probes_sql_strings(scalar_probes, opts["agg_type"])
+        sql_string = get_scalar_probes_sql_strings(scalar_probes, scalar_type)
     else:
-        raise ValueError(
-            "agg-type must be one of scalars, keyed_scalars, keyed_booleans"
-        )
+        raise ValueError("agg-type must be one of scalars, keyed_scalars")
 
     out(
         generate_sql(

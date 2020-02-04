@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 """clients_daily_scalar_aggregates query generator."""
-import sys
-import json
 import argparse
-import textwrap
+import json
+import pprint
 import subprocess
+import sys
+import textwrap
 import urllib.request
-
-
-PROBE_INFO_SERVICE = (
-    "https://probeinfo.telemetry.mozilla.org/firefox/all/main/all_probes"
-)
+from typing import Dict, List
 
 p = argparse.ArgumentParser()
 p.add_argument(
@@ -337,25 +334,12 @@ def filter_scalars_dict(scalars_dict, required_probes):
     }
 
 
-def get_scalar_probes(scalar_type):
-    """Find all scalar probes in main summary.
-
-    Note: that non-integer scalar probes are not included.
+def get_schema(table, project="moz-fx-data-shared-prod"):
+    """Return the dictionary representation of the BigQuery table schema.
+    This returns types in the legacy SQL format.
     """
-    project = "moz-fx-data-shared-prod"
-    main_summary_scalars = {}
-    main_summary_record_scalars = {}
-    main_summary_boolean_record_scalars = {}
-    main_summary_boolean_scalars = {}
-
     process = subprocess.Popen(
-        [
-            "bq",
-            "show",
-            "--schema",
-            "--format=json",
-            f"{project}:telemetry_stable.main_v4",
-        ],
+        ["bq", "show", "--schema", "--format=json", f"{project}:{table}"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
@@ -364,70 +348,34 @@ def get_scalar_probes(scalar_type):
         raise Exception(
             f"Call to bq exited non-zero: {process.returncode}", stdout, stderr
         )
-    main_summary_schema = json.loads(stdout)
+    return json.loads(stdout)
 
-    scalars_fields = []
-    for field in main_summary_schema:
-        if field["name"] != "payload":
+
+def get_scalar_probes(scalar_type) -> Dict[str, List[str]]:
+    """Find all scalar probes in a Glean table.
+
+    Metric types are defined in the Glean documentation found here:
+    https://mozilla.github.io/glean/book/user/metrics/index.html
+    """
+    schema = get_schema("org_mozilla_fenix_stable.metrics_v1")
+    metric_type_set = {
+        "scalars": ["boolean", "counter", "quantity"],
+        "keyed_scalars": ["labeled_counter"],
+    }
+    scalars = {metric_type: [] for metric_type in metric_type_set[scalar_type]}
+
+    # Iterate over every element in the schema under the metrics section and
+    # collect a list of metric names.
+    for root_field in schema:
+        if root_field["name"] != "metrics":
             continue
-
-        for payload_field in field["fields"]:
-            if payload_field["name"] == "processes":
-                for processes_field in payload_field["fields"]:
-                    if processes_field["name"] in ["parent", "content", "gpu"]:
-                        process_field = processes_field["name"]
-                        for type_field in processes_field["fields"]:
-                            if type_field["name"] == scalar_type:
-                                scalars_fields.append(
-                                    {"scalars": type_field, "process": process_field}
-                                )
-                                break
-
-    if len(scalars_fields) == 0:
-        return
-
-    for scalars_and_process in scalars_fields:
-        for scalar in scalars_and_process["scalars"].get("fields", {}):
-            scalars_dict = None
-            if "name" not in scalar:
+        for metric_field in root_field["fields"]:
+            metric_type = metric_field["name"]
+            if metric_type not in metric_type_set[scalar_type]:
                 continue
-
-            if scalar.get("type", "") == "INTEGER":
-                scalars_dict = main_summary_scalars
-            elif scalar.get("type", "") == "BOOLEAN":
-                scalars_dict = main_summary_boolean_scalars
-            elif scalar.get("type", "") == "RECORD":
-                if scalar["fields"][1]["type"] == "BOOLEAN":
-                    scalars_dict = main_summary_boolean_record_scalars
-                else:
-                    scalars_dict = main_summary_record_scalars
-
-            save_scalars_by_type(
-                scalars_dict, scalar["name"], scalars_and_process["process"]
-            )
-
-    # Find the intersection between relevant scalar probes
-    # and those that exist in main summary
-    with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
-        data = json.loads(url.read().decode())
-        scalar_probes = set(
-            [
-                x.replace("scalar/", "").replace(".", "_")
-                for x in data.keys()
-                if x.startswith("scalar/")
-            ]
-        )
-
-        return {
-            "scalars": filter_scalars_dict(main_summary_scalars, scalar_probes),
-            "booleans": filter_scalars_dict(
-                main_summary_boolean_scalars, scalar_probes
-            ),
-            "keyed": filter_scalars_dict(main_summary_record_scalars, scalar_probes),
-            "keyed_boolean": filter_scalars_dict(
-                main_summary_boolean_record_scalars, scalar_probes
-            ),
-        }
+            for field in metric_field["fields"]:
+                scalars[metric_type].append(field["name"])
+    return scalars
 
 
 def main(argv, out=print):
@@ -435,11 +383,13 @@ def main(argv, out=print):
     opts = vars(p.parse_args(argv[1:]))
     sql_string = ""
 
-    if opts["agg_type"] in ("scalars", "keyed_scalars", "keyed_booleans"):
+    if opts["agg_type"] in ("scalars", "keyed_scalars"):
         scalar_type = (
             opts["agg_type"] if (opts["agg_type"] == "scalars") else "keyed_scalars"
         )
         scalar_probes = get_scalar_probes(scalar_type)
+        pprint.pprint(scalar_probes)
+        return
         sql_string = get_scalar_probes_sql_strings(scalar_probes, opts["agg_type"])
     else:
         raise ValueError(

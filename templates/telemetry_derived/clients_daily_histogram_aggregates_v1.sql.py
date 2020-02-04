@@ -61,6 +61,8 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause):
               SAFE_CAST(JSON_EXTRACT(histogram, "$.bucket_count") AS INT64) AS num_buckets
             FROM UNNEST(histograms) AS histogram
             WHERE histogram IS NOT NULL
+              AND JSON_EXTRACT(histogram, "$.range") IS NOT NULL
+              AND JSON_EXTRACT(histogram, "$.bucket_count") IS NOT NULL
             LIMIT 1
           )
 
@@ -84,6 +86,7 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause):
               END AS histogram_type
             FROM UNNEST(histograms) AS histogram
             WHERE histogram IS NOT NULL
+              AND JSON_EXTRACT(histogram, "$.histogram_type") IS NOT NULL
             LIMIT 1
         ));
 
@@ -96,6 +99,7 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause):
                 UNNEST(histograms) AS histogram,
                 UNNEST(get_keyval_pairs(JSON_EXTRACT(histogram, "$.values"))) AS keyval
               WHERE histogram IS NOT NULL
+                AND JSON_EXTRACT(histogram, "$.values") IS NOT NULL
               GROUP BY key));
 
         WITH filtered AS (

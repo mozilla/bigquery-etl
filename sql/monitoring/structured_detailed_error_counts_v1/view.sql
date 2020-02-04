@@ -9,7 +9,7 @@ WITH error_examples AS (
     document_version,
     error_type,
     error_message,
-    `moz-fx-data-shared-prod.udf.js.gunzip`(ANY_VALUE(payload)) AS sample_payload,
+    `moz-fx-data-shared-prod.udf_js.gunzip`(ANY_VALUE(payload)) AS sample_payload,
     COUNT(*) AS error_count
   FROM
     `moz-fx-data-shared-prod.payload_bytes_error.structured`

@@ -49,14 +49,15 @@ class RawUdf:
         definitions = []
 
         for s in statements:
-            if s.lower().startswith("create or replace function"):
+            normalized_statement = " ".join(s.lower().split())
+            if normalized_statement.startswith("create or replace function"):
                 definitions.append(s)
-                if persistent_name in s:
+                if persistent_name in normalized_statement:
                     internal_name = persistent_name
 
-            elif s.lower().startswith("create temp function"):
+            elif normalized_statement.startswith("create temp function"):
                 definitions.append(s)
-                if temp_name in s:
+                if temp_name in normalized_statement:
                     internal_name = temp_name
 
         for name in (prod_name, internal_name):

@@ -133,6 +133,7 @@ def parse_udf_dirs(*udf_dirs):
 def accumulate_dependencies(deps, raw_udfs, udf_name):
     """
     Accumulate a list of dependent UDF names.
+
     Given a dict of raw_udfs and a udf_name string, recurse into the
     UDF's dependencies, adding the names to deps in depth-first order.
     """
@@ -178,14 +179,15 @@ def udf_usage_definitions(text, raw_udfs=None):
 
 def udf_tests_sql(raw_udf, raw_udfs):
     """
-    Create tests for testing persistent UDFs. 
+    Create tests for testing persistent UDFs.
+
     Persistent UDFs need to be rewritten as temporary UDF so that changes
     can be tested.
     """
     tests_full_sql = []
     for test in raw_udf.tests:
         test_sql = prepend_udf_usage_definitions(test, raw_udfs)
-        test_sql = sub_persisent_udfs_as_temp(test_sql)
+        test_sql = sub_persistent_udfs_as_temp(test_sql)
         test_sql = test_sql.replace(
             "CREATE OR REPLACE FUNCTION", "CREATE TEMP FUNCTION"
         )
@@ -201,6 +203,6 @@ def prepend_udf_usage_definitions(text, raw_udfs=None):
     return "\n\n".join(statements + [text])
 
 
-def sub_persisent_udfs_as_temp(text):
+def sub_persistent_udfs_as_temp(text):
     """Substitute persistent UDF references with temporary UDF references."""
     return PERSISTENT_UDF_RE.sub(r"\1_\2", text)

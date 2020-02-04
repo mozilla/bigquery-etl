@@ -34,18 +34,6 @@ jobs:
           name: Verify that SQL is correctly formatted
           # check all directories owned by git except sql
           command: script/format_sql --check $(git ls-tree -d HEAD --name-only | grep -vx sql)
-  publish-persistent-udfs:
-    docker:
-      - image: python:3.8
-    steps:
-      - checkout
-      - run:
-          name: Publish persistent UDFs
-          command: |
-            python3.8 -m venv venv/
-            venv/bin/pip install --upgrade -r requirements.txt
-            script/publish_persistent_udfs
-            script/publish_persistent_udfs --project-id="moz-fx-data-shared-prod" 
   dry-run-sql:
     docker:
       - image: python:3.8
@@ -83,7 +71,6 @@ workflows:
     jobs:
     - build:
         context: data-eng-circleci-tests
-    - publish-persistent-udfs
     - verify-format-sql
     - dry-run-sql
     - deploy:
@@ -91,7 +78,6 @@ workflows:
         requires:
         # can't run in parallel because CIRCLE_BUILD_NUM is same
         - build
-        - publish-persistent-udfs
         filters:
           branches:
             only: master

@@ -31,6 +31,8 @@ CREATE TEMP FUNCTION udf_get_bucket_range(histograms ARRAY<STRING>) AS (
         UNNEST(histograms) AS histogram
       WHERE
         histogram IS NOT NULL
+        AND JSON_EXTRACT(histogram, "$.range") IS NOT NULL
+        AND JSON_EXTRACT(histogram, "$.bucket_count") IS NOT NULL
       LIMIT
         1
     )
@@ -78,6 +80,7 @@ CREATE TEMP FUNCTION udf_get_histogram_type(histograms ARRAY<STRING>) AS (
       UNNEST(histograms) AS histogram
     WHERE
       histogram IS NOT NULL
+      AND JSON_EXTRACT(histogram, "$.histogram_type") IS NOT NULL
     LIMIT
       1
   )
@@ -93,6 +96,7 @@ CREATE TEMP FUNCTION udf_aggregate_json_sum(histograms ARRAY<STRING>) AS (
       UNNEST(get_keyval_pairs(JSON_EXTRACT(histogram, "$.values"))) AS keyval
     WHERE
       histogram IS NOT NULL
+      AND JSON_EXTRACT(histogram, "$.values") IS NOT NULL
     GROUP BY
       key
   )

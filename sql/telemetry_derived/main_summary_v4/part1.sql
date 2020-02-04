@@ -23,8 +23,8 @@ CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
   )
 );
 
-CREATE TEMP FUNCTION
-  udf_json_extract_histogram (input STRING) AS (STRUCT(
+CREATE TEMP FUNCTION udf_json_extract_histogram(input STRING) AS (
+  STRUCT(
     CAST(JSON_EXTRACT_SCALAR(input, '$.bucket_count') AS INT64) AS bucket_count,
     CAST(JSON_EXTRACT_SCALAR(input, '$.histogram_type') AS INT64) AS histogram_type,
     CAST(JSON_EXTRACT_SCALAR(input, '$.sum') AS INT64) AS `sum`,
@@ -32,8 +32,11 @@ CREATE TEMP FUNCTION
       SELECT
         CAST(bound AS INT64)
       FROM
-        UNNEST(SPLIT(TRIM(JSON_EXTRACT(input, '$.range'), '[]'), ',')) AS bound) AS `range`,
-    udf_json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values` ));
+        UNNEST(SPLIT(TRIM(JSON_EXTRACT(input, '$.range'), '[]'), ',')) AS bound
+    ) AS `range`,
+    udf_json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values`
+  )
+);
 
 CREATE TEMP FUNCTION udf_histogram_max_key_with_nonzero_value(histogram STRING) AS (
   (SELECT MAX(key) FROM UNNEST(udf_json_extract_histogram(histogram).values) WHERE value > 0)

@@ -15,6 +15,7 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
+
 CREATE TEMP FUNCTION udf_map_mode_last(entries ANY TYPE) AS (
   ARRAY(
     SELECT AS STRUCT
@@ -26,6 +27,7 @@ CREATE TEMP FUNCTION udf_map_mode_last(entries ANY TYPE) AS (
       key
   )
 );
+
 CREATE TEMP FUNCTION
   udf_normalize_search_engine(engine STRING) AS (
     CASE
@@ -46,7 +48,7 @@ CREATE TEMP FUNCTION
       ELSE 'Other'
     END
   );
---
+
 -- Return the version of the search addon if it exists, null otherwise
 CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
   (

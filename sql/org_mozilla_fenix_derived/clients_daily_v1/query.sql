@@ -15,6 +15,7 @@ CREATE TEMP FUNCTION udf_geo_struct(
     )
   )
 );
+
 CREATE TEMP FUNCTION
   udf_glean_timespan_seconds(timespan STRUCT<time_unit STRING, value INT64>)
   RETURNS INT64 AS (
@@ -30,13 +31,14 @@ CREATE TEMP FUNCTION
           WHEN 'day' THEN timespan.value * 60 * 60 * 24
         END )
       AS INT64));
+
 CREATE TEMP FUNCTION udf_json_mode_last(list ANY TYPE) AS (
   (
     SELECT
       ANY_VALUE(_value)
     FROM
       UNNEST(list) AS _value
-    WITH OFFSET AS _offset
+      WITH OFFSET AS _offset
     GROUP BY
       TO_JSON_STRING(_value)
     ORDER BY
@@ -46,6 +48,7 @@ CREATE TEMP FUNCTION udf_json_mode_last(list ANY TYPE) AS (
       1
   )
 );
+
 CREATE TEMP FUNCTION
   udf_mode_last(list ANY TYPE) AS ((
     SELECT
@@ -63,7 +66,7 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
---
+
 WITH unioned AS (
   SELECT
     submission_timestamp,

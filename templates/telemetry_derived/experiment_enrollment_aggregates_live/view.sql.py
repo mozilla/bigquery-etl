@@ -5,6 +5,7 @@ import datetime
 import json
 import sys
 import textwrap
+from time import sleep
 
 
 p = argparse.ArgumentParser()
@@ -18,6 +19,12 @@ p.add_argument(
     "--json-output",
     action='store_true',
     help="Output the result wrapped in json parseable as an XCOM",
+)
+p.add_argument(
+    "--wait-seconds",
+    type=int,
+    default=0,
+    help="Add a delay before executing the script to allow time for the xcom sidecar to complete startup",
 )
 
 def generate_sql(opts):
@@ -114,8 +121,9 @@ def generate_sql(opts):
 
 def main(argv, out=print):
     """Print experiment enrollments aggregates view sql to stdout."""
-    opts = p.parse_args(argv[1:])
-    out(generate_sql(vars(opts)))
+    opts = vars(p.parse_args(argv[1:]))
+    sleep(opts['wait_seconds'])
+    out(generate_sql(opts))
 
 
 if __name__ == "__main__":

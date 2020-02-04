@@ -10,6 +10,7 @@ INT64, NUMERIC, and FLOAT64.
 CREATE TEMP FUNCTION udf_map_sum(entries ANY TYPE) AS (
   ARRAY(SELECT AS STRUCT key, SUM(value) AS value FROM UNNEST(entries) GROUP BY key)
 );
+
 -- Tests
 SELECT
   assert_array_equals(

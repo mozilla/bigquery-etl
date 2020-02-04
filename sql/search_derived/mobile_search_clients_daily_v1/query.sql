@@ -15,6 +15,7 @@ CREATE TEMP FUNCTION
       MAX(_offset) DESC
     LIMIT
       1 ));
+
 CREATE TEMP FUNCTION
   udf_normalize_search_engine(engine STRING) AS (
     CASE
@@ -35,13 +36,14 @@ CREATE TEMP FUNCTION
       ELSE 'Other'
     END
   );
+
 CREATE TEMP FUNCTION udf_parse_iso8601_date(date_str STRING) RETURNS DATE AS (
   COALESCE(
     SAFE.PARSE_DATE('%F', SAFE.SUBSTR(date_str, 0, 10)),
     SAFE.PARSE_DATE('%Y%m%d', SAFE.SUBSTR(date_str, 0, 8))
   )
 );
---
+
 -- Older versions separate source and engine with an underscore instead of period
 -- Return array of form [source, engine] if key is valid, empty array otherwise
 CREATE TEMP FUNCTION normalize_fenix_search_key(key STRING) AS ((

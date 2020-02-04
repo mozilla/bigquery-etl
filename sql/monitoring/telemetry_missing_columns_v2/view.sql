@@ -14,7 +14,7 @@ extracted AS (
     TIMESTAMP_TRUNC(submission_timestamp, DAY) AS day,
     'telemetry' AS document_namespace,
     `moz-fx-data-shared-prod`.udf.extract_document_type(_TABLE_SUFFIX) AS document_type,
-    `moz-fx-data-shared-prod`.udf.extract_document_type(_TABLE_SUFFIX) AS document_version,
+    `moz-fx-data-shared-prod`.udf.extract_document_version(_TABLE_SUFFIX) AS document_version,
     additional_properties
   FROM
     `moz-fx-data-shared-prod.telemetry_live.*`

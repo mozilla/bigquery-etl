@@ -12,6 +12,7 @@ CREATE TEMP FUNCTION udf_boolean_histogram_to_boolean(histogram STRING) AS (
     NOT SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, "$.values.0") AS INT64) > 0
   )
 );
+
 -- Tests
 SELECT
   assert_equals(TRUE, udf_boolean_histogram_to_boolean('{"values":{"0":1,"1":1}}')),

@@ -1,7 +1,7 @@
 CREATE TEMP FUNCTION udf_map_sum(entries ANY TYPE) AS (
   ARRAY(SELECT AS STRUCT key, SUM(value) AS value FROM UNNEST(entries) GROUP BY key)
 );
---
+
 CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
   RETURNS ARRAY<STRUCT<
     first_bucket INT64,

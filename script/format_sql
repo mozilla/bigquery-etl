@@ -133,7 +133,6 @@ SKIP = {
     "templates/telemetry_derived/core_clients_last_seen_v1/query.sql",
     "templates/telemetry_derived/core_live/view.sql",
     "templates/telemetry_derived/devtools_events_amplitude_v1/view.sql",
-    "templates/telemetry_derived/devtools_panel_usage_v1/query.sql",
     "templates/telemetry_derived/error_aggregates/query.sql",
     "templates/telemetry_derived/event_events_v1/init.sql",
     "templates/telemetry_derived/event_events_v1/query.sql",
@@ -225,6 +224,7 @@ SKIP = {
     "udf_legacy/date_format.sql",
     "udf_legacy/date_trunc.sql",
     "udf_legacy/to_iso8601.sql",
+    "stored_procedures/safe_crc32_uuid.sql",
 }
 
 parser = ArgumentParser(description=__doc__)
@@ -267,6 +267,8 @@ def main():
                     for dirpath, _, filenames in os.walk(path)
                     for filename in filenames
                     if filename.endswith(".sql")
+                    # skip tests/**/input.sql
+                    and not (path.startswith("tests") and filename == "input.sql")
                     for filepath in [os.path.join(dirpath, filename)]
                     if filepath not in SKIP
                 )

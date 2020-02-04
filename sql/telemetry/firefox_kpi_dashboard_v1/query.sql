@@ -80,7 +80,7 @@ function sum_buckets_with_ci(n_buckets, counts_per_bucket) {
 
 return sum_buckets_with_ci(n_buckets, counts_per_bucket);
 """;
---
+
 WITH
   forecast_base AS (
   SELECT

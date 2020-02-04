@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass, field
 import re
+import sys
 
 # These words get their own line followed by increased indent
 TOP_LEVEL_KEYWORDS = [
@@ -27,6 +28,11 @@ TOP_LEVEL_KEYWORDS = [
     "MERGE INTO",
     "MERGE",
     "UPDATE",
+    # scripting
+    "BREAK",
+    "CONTINUE",
+    "ITERATE",
+    "LEAVE",
     # SQL
     "AS",  # only when not identified as an AliasSeparator
     "CROSS JOIN",
@@ -55,19 +61,20 @@ TOP_LEVEL_KEYWORDS = [
     "SELECT AS STRUCT",
     "SELECT AS VALUE",
     "SELECT",
-    "SET",
     "UNION ALL",
     "UNION DISTINCT",
     "UNION",
     "USING",
     "VALUES",
     "WHERE",
-    "WITH",
+    "WITH(?! OFFSET)",
     "WINDOW",
 ]
 # These words start a new line at the current indent
 NEWLINE_KEYWORDS = [
+    "WITH OFFSET",
     # UDF
+    "CREATE OR REPLACE",
     "CREATE",
     "RETURNS",
     "LANGUAGE",
@@ -75,6 +82,7 @@ NEWLINE_KEYWORDS = [
     "AND",
     "BETWEEN",
     "ELSE",
+    "ELSEIF",
     "END",
     "OR",
     "WHEN",
@@ -100,6 +108,7 @@ RESERVED_KEYWORDS = [
     "CROSS",
     "CUBE",
     "CURRENT",
+    "DECLARE",
     "DEFAULT",
     "DEFINE",
     "DESC",
@@ -154,6 +163,8 @@ RESERVED_KEYWORDS = [
     "PARTITION",
     "PRECEDING",
     "PROTO",
+    "RAISE USING MESSAGE",
+    "RAISE",
     "RANGE",
     "RECURSIVE",
     "REPLACE",
@@ -254,6 +265,41 @@ class SpaceBeforeBracketKeyword(ReservedKeyword):
     """Keyword that should be separated by a space from a following opening bracket."""
 
     pattern = _keyword_pattern(["IN", r"\* EXCEPT", r"\* REPLACE", "NOT", "OVER"])
+
+
+class BlockKeyword(ReservedKeyword):
+    """Keyword that separates indented blocks, such as conditionals."""
+
+
+class BlockStartKeyword(BlockKeyword):
+    """Keyword that gets its own line followed by increased indent."""
+
+    pattern = _keyword_pattern(
+        [
+            "CREATE OR REPLACE PROCEDURE",
+            "CREATE PROCEDURE IF NOT EXISTS",
+            "CREATE PROCEDURE",
+            # negative lookahead prevents matching IF function
+            r"IF(?!(\s|\n)*[(])",
+            "WHILE",
+            "LOOP",
+            "CASE",
+        ]
+    )
+
+
+class BlockEndKeyword(BlockKeyword):
+    """Keyword that gets its own line preceded by decreased indent."""
+
+    pattern = _keyword_pattern(["END( (WHILE|LOOP|IF))?"])
+
+
+class BlockMiddleKeyword(BlockStartKeyword, BlockEndKeyword):
+    """Keyword that ends one indented block and starts another."""
+
+    pattern = _keyword_pattern(
+        ["BEGIN", "EXCEPTION WHEN ERROR THEN", "ELSEIF", "ELSE", "THEN", "DO", "WHEN"]
+    )
 
 
 class AliasSeparator(SpaceBeforeBracketKeyword):
@@ -378,6 +424,9 @@ BIGQUERY_TOKEN_PRIORITY = [
     LineComment,
     BlockComment,
     Whitespace,
+    BlockMiddleKeyword,
+    BlockStartKeyword,
+    BlockEndKeyword,
     AliasSeparator,
     TopLevelKeyword,
     NewlineKeyword,
@@ -443,3 +492,9 @@ def tokenize(query, token_priority=BIGQUERY_TOKEN_PRIORITY):
             break
         else:
             raise ValueError(f"Could not determine next token in {query!r}")
+
+
+if __name__ == "__main__":
+    # entrypoint for inspecting tokenize results
+    for token in tokenize(sys.stdin.read()):
+        print(f"{type(token).__name__}: {token.value!r}")

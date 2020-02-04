@@ -41,7 +41,11 @@ jobs:
       - checkout
       - run:
           name: Publish persistent UDFs
-          command: script/publish_persistent_udfs   
+          command: |
+            python3.8 -m venv venv/
+            venv/bin/pip install --upgrade -r requirements.txt
+            script/publish_persistent_udfs
+            script/publish_persistent_udfs --project-id="moz-fx-data-shared-prod" 
   dry-run-sql:
     docker:
       - image: python:3.8

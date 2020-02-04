@@ -22,7 +22,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from bigquery_etl.parse_udf import read_udf_dirs, accumulate_dependencies  # noqa E402
 
 
-UDF_RE = re.compile(r"udf_(?:js_|legacy_)?([a-zA-z0-9_]+)")
+UDF_RE = re.compile(r"(udf_js|udf|legacy)(?:\.|_)([a-zA-z0-9_]+)")
 
 OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
 
@@ -68,6 +68,7 @@ def main():
     for raw_udf in raw_udfs:
         # get all dependencies for UDF and publish as persistent UDF
         udfs_to_publish = accumulate_dependencies([], raw_udfs, raw_udf)
+
         udfs_to_publish.append(raw_udf)
         for dep in udfs_to_publish:
             if dep not in published_udfs and raw_udfs[dep].filepath not in SKIP:
@@ -87,7 +88,7 @@ def publish_persistent_udf(raw_udf, client, project_id, gcs_bucket, gcs_path):
         # Within a standard SQL function, references to other entities require
         # explicit project IDs
         query_with_renamed_udfs = UDF_RE.sub(
-            "`" + project_id + "`." + r"\1", definition
+            "`" + project_id + "`." + r"\1" + "." + r"\2", definition
         )
 
         # adjust paths for dependencies stored in GCS

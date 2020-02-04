@@ -3,7 +3,9 @@
 """Find view definition files and execute them."""
 
 from argparse import ArgumentParser
+from functools import partial
 import logging
+from multiprocessing.pool import ThreadPool
 import os
 import sys
 
@@ -17,7 +19,7 @@ AUTHORIZED_VIEWS_TO_SKIP = ("activity_stream/tile_id_types/view.sql",)
 def process_file(client, args, filepath):
     if any(filepath.endswith(p) for p in AUTHORIZED_VIEWS_TO_SKIP):
         print(f"Skipping authorized view definition {filepath}")
-        return
+        return True
     with open(filepath) as f:
         sql = f.read()
     parsed = sqlparse.parse(sql)[0]
@@ -50,7 +52,8 @@ def process_file(client, args, filepath):
             f"ERROR: {filepath} does not appear to be "
             "a CREATE OR REPLACE VIEW statement! Quitting..."
         )
-        sys.exit(1)
+        return False
+    return True
 
 
 def main():
@@ -69,6 +72,13 @@ def main():
     )
     parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
     parser.add_argument(
+        "-p",
+        "--parallelism",
+        default=8,
+        type=int,
+        help="Number of views to process in parallel",
+    )
+    parser.add_argument(
         "--dry_run",
         "--dry-run",
         action="store_true",
@@ -84,13 +94,24 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
+    worker_entrypoint = partial(process_file, client, args)
+    sqlfiles = []
+
     for target in args.target:
         if os.path.isdir(target):
             for root, dirs, files in os.walk(target):
                 if "view.sql" in files:
-                    process_file(client, args, os.path.join(root, "view.sql"))
+                    sqlfiles.append(os.path.join(root, "view.sql"))
         else:
-            process_file(client, args, target)
+            sqlfiles.append(target)
+
+    with ThreadPool(args.parallelism) as p:
+        result = p.map(worker_entrypoint, sqlfiles, chunksize=1)
+    if all(result):
+        exitcode = 0
+    else:
+        exitcode = 1
+    sys.exit(exitcode)
 
 
 if __name__ == "__main__":

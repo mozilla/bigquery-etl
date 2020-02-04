@@ -13,7 +13,7 @@ p = argparse.ArgumentParser()
 p.add_argument(
     "--agg-type",
     type=str,
-    help="One of scalar/keyed-scalar/keyed-boolean",
+    help="One of scalar/keyed-scalar",
     required=True,
 )
 
@@ -77,11 +77,9 @@ def generate_sql(
 
 def _get_generic_keyed_scalar_sql(probes, value_type):
     probes_struct = []
-    for probe, processes in probes.items():
-        for process in processes:
-            probes_struct.append(
-                f"('{probe}', '{process}', payload.processes.{process}.keyed_scalars.{probe})"
-            )
+    for metric_type, probes in probes.items():
+        for probe in probes:
+            probes_struct.append(f"('{probe}', metrics.{metric_type}.{probe})")
 
     probes_struct.sort()
     probes_arr = ",\n\t\t\t".join(probes_struct)
@@ -97,7 +95,6 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
             channel,
             ARRAY<STRUCT<
                 name STRING,
-                process STRING,
                 value ARRAY<STRUCT<key STRING, value {value_type}>>
             >>[
               {probes_arr}
@@ -113,7 +110,6 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
               app_build_id,
               channel,
               metrics.name AS metric,
-              metrics.process AS process,
               value.key AS key,
               value.value AS value
             FROM grouped_metrics
@@ -125,7 +121,6 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
 
     additional_partitions = """,
                             metric,
-                            process,
                             key
     """
 
@@ -143,7 +138,6 @@ def get_keyed_scalar_probes_sql_string(probes):
         "probes_string"
     ] = """
         metric,
-        process,
         key,
         MAX(value) AS max,
         MIN(value) AS min,
@@ -194,7 +188,7 @@ def get_scalar_probes_sql_strings(
 ) -> Dict[str, str]:
     """Put together the subsets of SQL required to query scalars or booleans."""
     if scalar_type == "keyed_scalars":
-        return get_keyed_scalar_probes_sql_string(probes["labeled_counter"])
+        return get_keyed_scalar_probes_sql_string({"labeled_counter": probes["labeled_counter"]})
 
     probe_structs = []
     for probe in probes.pop("boolean", []):

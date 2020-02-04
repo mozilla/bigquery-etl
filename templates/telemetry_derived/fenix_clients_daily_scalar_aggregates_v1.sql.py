@@ -10,11 +10,10 @@ import urllib.request
 from typing import Dict, List
 
 p = argparse.ArgumentParser()
-p.add_argument(
-    "--agg-type",
-    type=str,
-    help="One of scalar/keyed-scalar",
-    required=True,
+p.add_argument("--agg-type", type=str, help="One of scalar/keyed-scalar", required=True)
+
+ATTRIBUTES = ",".join(
+    ["client_id", "submission_date", "os", "app_version", "app_build_id", "channel"]
 )
 
 
@@ -53,21 +52,11 @@ def generate_sql(
         -- Using `min` for when `agg_type` is `count` returns null when all rows are null
         aggregated AS (
             SELECT
-                submission_date,
-                client_id,
-                os,
-                app_version,
-                app_build_id,
-                channel,
+                {ATTRIBUTES},
                 {aggregates}
             FROM {querying_table}
             GROUP BY
-                submission_date,
-                client_id,
-                os,
-                app_version,
-                app_build_id,
-                channel
+                {ATTRIBUTES},
                 {additional_partitions})
 
             {select_clause}
@@ -87,12 +76,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
     additional_queries = f"""
         grouped_metrics AS
           (SELECT
-            client_id,
-            submission_date,
-            os,
-            app_version,
-            app_build_id,
-            channel,
+            {ATTRIBUTES},
             ARRAY<STRUCT<
                 name STRING,
                 value ARRAY<STRUCT<key STRING, value {value_type}>>
@@ -103,12 +87,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
 
           flattened_metrics AS
             (SELECT
-              client_id,
-              submission_date,
-              os,
-              app_version,
-              app_build_id,
-              channel,
+              {ATTRIBUTES},
               metrics.name AS metric,
               value.key AS key,
               value.value AS value
@@ -117,17 +96,10 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
             UNNEST(metrics.value) AS value),
     """
 
-    querying_table = "flattened_metrics"
-
-    additional_partitions = """,
-                            metric,
-                            key
-    """
-
     return {
         "additional_queries": additional_queries,
-        "additional_partitions": additional_partitions,
-        "querying_table": querying_table,
+        "additional_partitions": "metric, key",
+        "querying_table": "flattened_metrics",
     }
 
 
@@ -148,14 +120,9 @@ def get_keyed_scalar_probes_sql_string(probes):
 
     sql_strings[
         "select_clause"
-    ] = """
+    ] = f"""
         SELECT
-            client_id,
-            submission_date,
-            os,
-            app_version,
-            app_build_id,
-            channel,
+            {ATTRIBUTES},
             ARRAY_CONCAT_AGG(ARRAY<STRUCT<
                 metric STRING,
                 metric_type STRING,
@@ -173,12 +140,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         ) AS scalar_aggregates
         FROM aggregated
         GROUP BY
-            client_id,
-            submission_date,
-            os,
-            app_version,
-            app_build_id,
-            channel
+            {ATTRIBUTES}
     """
     return sql_strings
 
@@ -188,7 +150,9 @@ def get_scalar_probes_sql_strings(
 ) -> Dict[str, str]:
     """Put together the subsets of SQL required to query scalars or booleans."""
     if scalar_type == "keyed_scalars":
-        return get_keyed_scalar_probes_sql_string({"labeled_counter": probes["labeled_counter"]})
+        return get_keyed_scalar_probes_sql_string(
+            {"labeled_counter": probes["labeled_counter"]}
+        )
 
     probe_structs = []
     for probe in probes.pop("boolean", []):

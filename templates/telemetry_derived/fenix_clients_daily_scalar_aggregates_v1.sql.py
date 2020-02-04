@@ -36,17 +36,20 @@ def generate_sql(
         WITH filtered AS (
             SELECT
                 *,
-                SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
+                client_info.client_id,
+                -- TODO: What is the right granularity for Fenix versioning?
+                SPLIT(client_info.app_display_version, '.')[OFFSET(0)] AS app_version,
                 DATE(submission_timestamp) as submission_date,
-                normalized_os as os,
-                application.build_id AS app_build_id,
-                normalized_channel AS channel
-            FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+                client_info.os as os,
+                client_info.app_build AS app_build_id,
+                -- TODO: Channels have a different meaning in Glean
+                client_info.channel AS channel
+            FROM `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
             WHERE DATE(submission_timestamp) = @submission_date
-                AND normalized_channel in (
-                  "release", "beta", "nightly"
+                AND client_info.channel in (
+                  "release", "fenixProduction"
                 )
-                AND client_id IS NOT NULL),
+                AND client_info.client_id IS NOT NULL),
 
         {additional_queries}
 

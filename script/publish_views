@@ -95,18 +95,18 @@ def main():
         parser.error(f"argument --log-level: {e}")
 
     worker_entrypoint = partial(process_file, client, args)
-    sqlfiles = []
+    sql_files = []
 
     for target in args.target:
         if os.path.isdir(target):
             for root, dirs, files in os.walk(target):
                 if "view.sql" in files:
-                    sqlfiles.append(os.path.join(root, "view.sql"))
+                    sql_files.append(os.path.join(root, "view.sql"))
         else:
-            sqlfiles.append(target)
+            sql_files.append(target)
 
     with ThreadPool(args.parallelism) as p:
-        result = p.map(worker_entrypoint, sqlfiles, chunksize=1)
+        result = p.map(worker_entrypoint, sql_files, chunksize=1)
     if all(result):
         exitcode = 0
     else:

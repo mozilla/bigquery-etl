@@ -79,7 +79,8 @@ def generate_sql(
                 {aggregates}
             FROM {querying_table}
             GROUP BY
-                {ATTRIBUTES},
+                {ATTRIBUTES}
+                {"," if additional_partitions else ""}
                 {additional_partitions})
 
             {select_clause}

@@ -4,7 +4,6 @@ import argparse
 import json
 import subprocess
 import sys
-import urllib.request
 from typing import Dict, List
 
 from bigquery_etl.format_sql.formatter import reformat
@@ -232,6 +231,7 @@ def get_scalar_probes_sql_strings(
 
 def get_schema(table: str, project: str = "moz-fx-data-shared-prod"):
     """Return the dictionary representation of the BigQuery table schema.
+
     This returns types in the legacy SQL format.
     """
     process = subprocess.Popen(
@@ -279,7 +279,7 @@ def main(argv, out=print):
     sql_string = ""
 
     scalar_type = opts["agg_type"]
-    if not scalar_type in ("scalars", "keyed_scalars"):
+    if scalar_type not in ("scalars", "keyed_scalars"):
         raise ValueError("agg-type must be one of scalars, keyed_scalars")
 
     table_id = opts["table_id"]

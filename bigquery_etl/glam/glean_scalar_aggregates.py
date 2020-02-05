@@ -54,9 +54,9 @@ def generate_sql(
         WITH filtered AS (
         SELECT
             *,
+            DATE(submission_timestamp) AS submission_date,
             client_info.client_id,
             SPLIT(client_info.app_display_version, '.')[OFFSET(0)] AS app_version,
-            DATE(submission_timestamp) AS submission_date,
             client_info.os AS os,
             client_info.app_build AS app_build_id,
             client_info.app_channel AS channel
@@ -67,10 +67,7 @@ def generate_sql(
             AND client_info.app_channel IN ("release", "fenixProduction")
             AND client_info.client_id IS NOT NULL
         ),
-
         {additional_queries}
-
-        -- Using `min` for when `agg_type` is `count` returns null when all rows are null
         aggregated AS (
             SELECT
                 {ATTRIBUTES},
@@ -89,7 +86,9 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
     probes_struct = []
     for metric_type, probes in probes.items():
         for probe in probes:
-            probes_struct.append(f"('{probe}', metrics.{metric_type}.{probe})")
+            probes_struct.append(
+                f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe})"
+            )
 
     probes_struct.sort()
     probes_arr = ",\n".join(probes_struct)
@@ -100,6 +99,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
             {ATTRIBUTES},
             ARRAY<STRUCT<
                 name STRING,
+                type STRING,
                 value ARRAY<STRUCT<key STRING, value {value_type}>>
             >>[
               {probes_arr}
@@ -110,6 +110,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
             (SELECT
               {ATTRIBUTES},
               metrics.name AS metric,
+              metrics.type as metric_type,
               value.key AS key,
               value.value AS value
             FROM grouped_metrics
@@ -119,7 +120,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
 
     return {
         "additional_queries": additional_queries,
-        "additional_partitions": "metric, key",
+        "additional_partitions": "metric, metric_type, key",
         "querying_table": "flattened_metrics",
     }
 
@@ -131,6 +132,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         "probes_string"
     ] = """
         metric,
+        metric_type,
         key,
         MAX(value) AS max,
         MIN(value) AS min,
@@ -152,11 +154,11 @@ def get_keyed_scalar_probes_sql_string(probes):
                 value FLOAT64
             >>
                 [
-                    (metric, 'keyed-scalar', key, 'max', max),
-                    (metric, 'keyed-scalar', key, 'min', min),
-                    (metric, 'keyed-scalar', key, 'avg', avg),
-                    (metric, 'keyed-scalar', key, 'sum', sum),
-                    (metric, 'keyed-scalar', key, 'count', count)
+                    (metric, metric_type, key, 'max', max),
+                    (metric, metric_type, key, 'min', min),
+                    (metric, metric_type, key, 'avg', avg),
+                    (metric, metric_type, key, 'sum', sum),
+                    (metric, metric_type, key, 'count', count)
                 ]
             ) AS scalar_aggregates
         FROM aggregated
@@ -197,12 +199,12 @@ def get_scalar_probes_sql_strings(
             for agg_func in ["max", "avg", "min", "sum"]:
                 probe_structs.append(
                     (
-                        f"('{probe}', 'scalar', '', '{agg_func}', "
+                        f"('{probe}', '{metric_type}', '', '{agg_func}', "
                         f"{agg_func}(CAST(metrics.{metric_type}.{probe} AS INT64)))"
                     )
                 )
             probe_structs.append(
-                f"('{probe}', 'scalar', '', 'count', "
+                f"('{probe}', '{metric_type}', '', 'count', "
                 f"IF(MIN(metrics.{metric_type}.{probe}) IS NULL, NULL, COUNT(*)))"
             )
 

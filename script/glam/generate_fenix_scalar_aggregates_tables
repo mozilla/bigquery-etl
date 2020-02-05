@@ -20,13 +20,13 @@ gcloud config set project $project
 bq rm -r -f $dataset
 bq mk $dataset
 
-tables=$(bq ls --format=json moz-fx-data-shared-prod:org_mozilla_fenix \
+tables=$(bq ls --format=json moz-fx-data-shared-prod:org_mozilla_fenix_stable \
 | jq -r '.[] | .tableReference.tableId')
 
 for table in $tables; do
     tempfile=test.sql
     python3 -m bigquery_etl.glam.glean_scalar_aggregates \
-        --table-id "org_mozilla_fenix.${table}" \
+        --table-id "org_mozilla_fenix_stable.${table}" \
         --agg-type "scalars" \
         --no-parameterize > $tempfile
     bq query \

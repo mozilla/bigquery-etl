@@ -2,6 +2,9 @@
 # Run the scalars sql job against all Glean pings in a product
 
 set -x
+set -e
+
+cd "$(dirname "$0")/../.."
 
 original_project=$(gcloud config get-value project)
 function cleanup {
@@ -22,7 +25,7 @@ tables=$(bq ls --format=json moz-fx-data-shared-prod:org_mozilla_fenix \
 
 for table in $tables; do
     tempfile=test.sql
-    python3 fenix_clients_daily_scalar_aggregates_v1.sql.py \
+    python3 -m bigquery_etl.glam.glean_scalar_aggregates \
         --table-id "org_mozilla_fenix.${table}" \
         --agg-type "scalars" \
         --no-parameterize > $tempfile

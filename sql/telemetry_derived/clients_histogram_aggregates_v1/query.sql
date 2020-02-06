@@ -156,6 +156,7 @@ clients_histogram_aggregates_new AS
     app_version,
     app_build_id,
     channel,
+    CONCAT(client_id, os, app_version, app_build_id, channel) AS join_key,
     ARRAY_AGG(STRUCT<
       first_bucket INT64,
       last_bucket INT64,
@@ -193,6 +194,7 @@ clients_histogram_aggregates_old AS
     app_version,
     app_build_id,
     histogram_aggs.channel AS channel,
+    CONCAT(client_id, os, app_version, app_build_id, histogram_aggs.channel) AS join_key,
     histogram_aggregates
   FROM clients_histogram_aggregates_v1 AS histogram_aggs
   LEFT JOIN latest_versions
@@ -210,11 +212,7 @@ joined_new_old AS (
     new_data.histogram_aggregates AS new_aggs
   FROM clients_histogram_aggregates_new AS new_data
   FULL OUTER JOIN clients_histogram_aggregates_old AS old_data
-    ON new_data.client_id = old_data.client_id
-    AND new_data.os = old_data.os
-    AND CAST(new_data.app_version AS INT64) = old_data.app_version
-    AND new_data.app_build_id = old_data.app_build_id
-    AND new_data.channel = old_data.channel)
+    ON new_data.join_key = old_data.join_key)
 
 SELECT
   client_id,

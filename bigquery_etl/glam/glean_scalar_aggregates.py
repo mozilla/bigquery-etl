@@ -23,7 +23,15 @@ parser.add_argument(
 )
 
 ATTRIBUTES = ",".join(
-    ["client_id", "submission_date", "os", "app_version", "app_build_id", "channel"]
+    [
+        "client_id",
+        "ping_type",
+        "submission_date",
+        "os",
+        "app_version",
+        "app_build_id",
+        "channel",
+    ]
 )
 
 
@@ -58,6 +66,7 @@ def generate_sql(
             *,
             DATE(submission_timestamp) AS submission_date,
             client_info.client_id,
+            REPLACE(ping_info.ping_type, "_", "-") as ping_type,
             SPLIT(client_info.app_display_version, '.')[OFFSET(0)] AS app_version,
             client_info.os AS os,
             client_info.app_build AS app_build_id,

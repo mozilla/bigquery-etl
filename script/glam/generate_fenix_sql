@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")/../.."
+
+project=moz-fx-data-shared-prod
+dataset=org_mozilla_fenix_stable
+# e.g. baseline_v1
+tables=$(bq ls --format=json $project:$dataset | \
+        jq -r '.[] | .tableReference.tableId')
+
+function write_sql {
+    local table=$1
+    local type=$2
+    local directory="sql/glam_etl/fenix_clients_daily_${type}_aggregates_${table}"
+    mkdir -p "$directory"
+    python3 -m bigquery_etl.glam.glean_scalar_aggregates \
+        --agg-type "$type" \
+        --table-id "$dataset.$table" \
+        > "$directory/query.sql"
+    echo "generated $directory/query.sql"
+}
+
+for table in $tables; do
+    write_sql "$table" scalars
+    write_sql "$table" keyed_scalars
+done

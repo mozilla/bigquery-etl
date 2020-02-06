@@ -1,0 +1,42 @@
+#!/bin/bash
+# Run the scalars sql job against all Glean pings in a product
+
+set -e
+cd "$(dirname "$0")/../.."
+
+# date is not consistent across macos and linux
+function yesterday {
+    python3 - <<EOD
+from datetime import date, timedelta
+dt = date.today() - timedelta(1)
+print(dt.strftime("%Y-%m-%d"))
+EOD
+}
+
+original_project=$(gcloud config get-value project)
+function cleanup {
+    gcloud config set project $original_project
+}
+trap cleanup EXIT
+
+project="glam-fenix-dev"
+dataset="glam_etl_fenix_test"
+
+gcloud config set project $project
+# force delete the dataset
+bq rm -r -f $dataset
+bq mk $dataset
+
+# run against previously generated etl
+for query in sql/glam_etl/fenix_clients_daily*scalars*/query.sql; do
+    echo "running $query"
+    bq query \
+        --max_rows=0 \
+        --use_legacy_sql=false \
+        --append_table \
+        --project_id=$project \
+        --dataset_id=$dataset \
+        --destination_table=fenix_clients_daily_scalar_aggregates_v1 \
+        --parameter=submission_date:DATE:"$(yesterday)" \
+        < $query
+done

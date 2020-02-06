@@ -1,17 +1,3 @@
-CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
-  ARRAY(
-    SELECT
-      STRUCT(
-        SAFE_CAST(SPLIT(entry, ':')[OFFSET(0)] AS INT64) AS key,
-        SAFE_CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value
-      )
-    FROM
-      UNNEST(SPLIT(REPLACE(TRIM(input, '{}'), '"', ''), ',')) AS entry
-    WHERE
-      LENGTH(entry) > 0
-  )
-);
-
 CREATE TEMP FUNCTION udf_main_summary_scalars(processes ANY TYPE) AS (
   STRUCT(
     processes.parent.scalars.a11y_backplate AS scalar_parent_a11y_backplate,
@@ -377,7 +363,7 @@ WITH histogram_lists AS (
     ARRAY(
       SELECT AS STRUCT
         udf_null_if_empty_list(
-          udf_json_extract_int_map(JSON_EXTRACT(histogram, '$.values'))
+          udf.json_extract_int_map(JSON_EXTRACT(histogram, '$.values'))
         ) AS list
       FROM
         UNNEST(
@@ -586,7 +572,7 @@ WITH histogram_lists AS (
           ARRAY(
             SELECT AS STRUCT
               key,
-              udf_json_extract_int_map(JSON_EXTRACT(value, '$.values')) AS value
+              udf.json_extract_int_map(JSON_EXTRACT(value, '$.values')) AS value
             FROM
               UNNEST(histogram)
           )
@@ -714,7 +700,7 @@ WITH histogram_lists AS (
               IFNULL(labels[SAFE_OFFSET(key)], 'spill') AS key,
               value
             FROM
-              UNNEST(udf_json_extract_int_map(JSON_EXTRACT(histogram, '$.values')))
+              UNNEST(udf.json_extract_int_map(JSON_EXTRACT(histogram, '$.values')))
           )
         ) AS list
       FROM
@@ -793,7 +779,7 @@ WITH histogram_lists AS (
                   IFNULL(labels[SAFE_OFFSET(_.key)], 'spill') AS key,
                   _.value
                 FROM
-                  UNNEST(udf_json_extract_int_map(JSON_EXTRACT(value, '$.values'))) AS _
+                  UNNEST(udf.json_extract_int_map(JSON_EXTRACT(value, '$.values'))) AS _
               ) AS value
             FROM
               UNNEST(histogram)

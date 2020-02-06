@@ -121,9 +121,9 @@ def worker_entrypoint(sqlfile):
 
 
 def main():
-    sqlfiles = [f for f in glob.glob("sql/**/*.sql", recursive=True) if f not in SKIP]
+    sql_files = [f for f in glob.glob("sql/**/*.sql", recursive=True) if f not in SKIP]
     with ThreadPool(8) as p:
-        result = p.map(worker_entrypoint, sqlfiles, chunksize=1)
+        result = p.map(worker_entrypoint, sql_files, chunksize=1)
     if all(result):
         exitcode = 0
     else:

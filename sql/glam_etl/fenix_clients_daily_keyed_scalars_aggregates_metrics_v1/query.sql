@@ -4,6 +4,7 @@ WITH filtered AS (
     *,
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    REPLACE(ping_info.ping_type, "_", "-") AS ping_type,
     SPLIT(client_info.app_display_version, '.')[OFFSET(0)] AS app_version,
     client_info.os AS os,
     client_info.app_build AS app_build_id,
@@ -18,6 +19,7 @@ WITH filtered AS (
 grouped_metrics AS (
   SELECT
     client_id,
+    ping_type,
     submission_date,
     os,
     app_version,
@@ -77,6 +79,7 @@ grouped_metrics AS (
 flattened_metrics AS (
   SELECT
     client_id,
+    ping_type,
     submission_date,
     os,
     app_version,
@@ -95,6 +98,7 @@ flattened_metrics AS (
 aggregated AS (
   SELECT
     client_id,
+    ping_type,
     submission_date,
     os,
     app_version,
@@ -112,6 +116,7 @@ aggregated AS (
     flattened_metrics
   GROUP BY
     client_id,
+    ping_type,
     submission_date,
     os,
     app_version,
@@ -123,6 +128,7 @@ aggregated AS (
 )
 SELECT
   client_id,
+  ping_type,
   submission_date,
   os,
   app_version,
@@ -141,6 +147,7 @@ FROM
   aggregated
 GROUP BY
   client_id,
+  ping_type,
   submission_date,
   os,
   app_version,

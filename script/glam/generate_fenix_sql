@@ -17,6 +17,7 @@ function write_sql {
     mkdir -p "$directory"
     python3 -m bigquery_etl.glam.glean_scalar_aggregates \
         --agg-type "$type" \
+        --table-id "$dataset.$table" \
         > "$directory/query.sql"
     echo "generated $directory/query.sql"
 }

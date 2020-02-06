@@ -53,16 +53,19 @@ crash_ping_data AS (
     application.display_version,
     environment.build.build_id,
     metadata.uri.app_name,
-    IF(
-      metadata.uri.app_name = 'Fennec'
-      AND normalized_os = 'Linux',
-      'Android',
-      normalized_os
-    ) AS os,
+    IF(metadata.uri.app_name = 'Fennec'
+       AND normalized_os = 'Linux',
+       'Android',
+       normalized_os) AS os,
     normalized_os_version AS os_version,
     environment.build.architecture,
     normalized_country_code AS country,
-    IF(payload.process_type = 'main' OR payload.process_type IS NULL, 1, 0) AS main_crash,
+    IF(
+      payload.process_type = 'main'
+      OR payload.process_type IS NULL,
+      1,
+      0
+    ) AS main_crash,
     IF(
       REGEXP_CONTAINS(payload.process_type, 'content')
       AND NOT REGEXP_CONTAINS(COALESCE(payload.metadata.ipc_channel_error, ''), 'ShutDownKill'),
@@ -103,21 +106,9 @@ main_ping_data AS (
     0 AS startup_crash,
     0 AS content_shutdown_crash,
     payload.info.subsession_length AS usage_seconds,
-    COALESCE(
-      udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'),
-      0
-    ) AS gpu_crashes,
-    COALESCE(
-      udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'),
-      0
-    ) AS plugin_crashes,
-    COALESCE(
-      udf.keyed_histogram_get_sum(
-        payload.keyed_histograms.subprocess_crashes_with_dump,
-        'gmplugin'
-      ),
-      0
-    ) AS gmplugin_crashes
+    COALESCE(udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gpu'), 0) AS gpu_crashes,
+    COALESCE(udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin'), 0) AS plugin_crashes,
+    COALESCE(udf.keyed_histogram_get_sum(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin'), 0) AS gmplugin_crashes
   FROM
     main_pings
 ),
@@ -162,6 +153,7 @@ combined_ping_data AS (
   FROM
     core_ping_data
 )
+
 SELECT
   DATE(submission_timestamp) AS submission_date,
   udf.round_timestamp_to_minute(submission_timestamp, 5) AS window_start,
@@ -182,9 +174,7 @@ SELECT
   SUM(gpu_crashes) AS gpu_crashes,
   SUM(plugin_crashes) AS plugin_crashes,
   SUM(gmplugin_crashes) AS gmplugin_crashes,
-  SUM(
-    LEAST(GREATEST(usage_seconds / 3600, 0), 24)
-  ) AS usage_hours  -- protect against extreme values
+  SUM(LEAST(GREATEST(usage_seconds / 3600, 0), 24)) AS usage_hours  -- protect against extreme values
 FROM
   combined_ping_data
 WHERE

@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.firefox_desktop_exact_mau28_v1`
-AS
-WITH base AS (
+  `moz-fx-data-shared-prod.telemetry.firefox_desktop_exact_mau28_v1` AS
+WITH
+  base AS (
   SELECT
     submission_date,
     SUM(mau) AS mau,
@@ -16,34 +16,33 @@ WITH base AS (
   FROM
     `moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_by_dimensions_v1`
   GROUP BY
-    submission_date
-),
+    submission_date ),
   -- We use imputed values for the period after the Armag-add-on deletion event;
   -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1552558
-imputed_global AS (
+  imputed_global AS (
   SELECT
     `date` AS submission_date,
     mau
   FROM
     `moz-fx-data-derived-datasets.static.firefox_desktop_imputed_mau28_v1`
   WHERE
-    datasource = 'desktop_global'
-),
+    datasource = 'desktop_global'),
     --
-imputed_tier1 AS (
+      imputed_tier1 AS (
   SELECT
     `date` AS submission_date,
     mau
   FROM
     `moz-fx-data-derived-datasets.static.firefox_desktop_imputed_mau28_v1`
   WHERE
-    datasource = 'desktop_tier1'
-)
+    datasource = 'desktop_tier1')
+
 SELECT
   base.* REPLACE (
-    COALESCE(imputed_global.mau, base.mau) AS mau,
-    COALESCE(imputed_tier1.mau, base.tier1_mau) AS tier1_mau
-  )
+  COALESCE(imputed_global.mau,
+    base.mau) AS mau,
+  COALESCE(imputed_tier1.mau,
+    base.tier1_mau) AS tier1_mau)
 FROM
   base
 FULL JOIN

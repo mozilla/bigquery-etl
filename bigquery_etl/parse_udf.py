@@ -17,7 +17,9 @@ UDF_DIRS = ("udf", "udf_js")
 UDF_CHAR = "[a-zA-z0-9_]"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
-PERSISTENT_UDF_PREFIX = re.compile(r"CREATE\s+(OR\s+REPLACE\s+)?FUNCTION(\s+IF\s+NOT\s+EXISTS)?", re.IGNORECASE)
+PERSISTENT_UDF_PREFIX = re.compile(
+    r"CREATE\s+(OR\s+REPLACE\s+)?FUNCTION(\s+IF\s+NOT\s+EXISTS)?", re.IGNORECASE
+)
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 
 
@@ -40,7 +42,7 @@ class RawUdf:
             text = f.read()
 
         sql = sqlparse.format(text, strip_comments=True)
-        statements = [s for s in sqlparse.split(sql)]
+        statements = [s for s in sqlparse.split(sql) if s.strip()]
 
         prod_name = basename.replace(".sql", "")
         persistent_name = os.path.basename(dirpath) + "." + prod_name
@@ -79,7 +81,7 @@ class RawUdf:
 
         if internal_name is None:
             raise ValueError(
-                f"Expected a UDF named {persistent_name} or {temporary_name} "
+                f"Expected a UDF named {persistent_name} or {temp_name} "
                 f"to be defined in {filepath}"
             )
         dependencies.remove(internal_name)

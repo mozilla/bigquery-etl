@@ -1,9 +1,10 @@
-WITH base AS (
+WITH
+  base AS (
   SELECT
-    * REPLACE (country_names.code AS country),
+    * REPLACE(country_names.code AS country),
     user_id AS client_id,
     days_registered_bits AS days_created_profile_bits,
-    LANGUAGE AS locale,
+    language AS locale,
     os_name AS os,
     CAST(NULL AS STRING) AS app_name,
     CAST(NULL AS STRING) AS channel
@@ -12,19 +13,15 @@ WITH base AS (
   LEFT JOIN
     `moz-fx-data-derived-datasets.static.country_names_v1` country_names
   ON
-    fxa.country = country_names.`name`
-),
+    fxa.country = country_names.`name` ),
   --
-nested AS (
+  nested AS (
   SELECT
     submission_date,
     [
-      STRUCT(
-        'Any Firefox Account Activity' AS usage,
-        udf.smoot_usage_from_28_bits(
-          ARRAY_AGG(STRUCT(days_created_profile_bits, days_seen_bits))
-        ) AS metrics
-      )
+    STRUCT('Any Firefox Account Activity' AS usage,
+      udf.smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+        days_seen_bits))) AS metrics)
     ] AS metrics_array,
     MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
     app_name,
@@ -49,8 +46,7 @@ nested AS (
     locale,
     os,
     os_version,
-    channel
-)
+    channel )
   --
 SELECT
   submission_date,

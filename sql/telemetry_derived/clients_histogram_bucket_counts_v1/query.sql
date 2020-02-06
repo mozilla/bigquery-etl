@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf_normalized_sum(arrs ARRAY<STRUCT<key STRING, value INT64>>)
+CREATE TEMP FUNCTION udf_normalized_sum (arrs ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Returns the normalized sum of the input maps.
   -- It returns the total_count[k] / SUM(total_count)
@@ -10,6 +10,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
       FROM
         UNNEST(arrs) AS a
     ),
+
     summed_counts AS (
       SELECT
         a.key AS k,
@@ -19,6 +20,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
       GROUP BY
         a.key
     ),
+
     final_values AS (
       SELECT
         STRUCT<key STRING, value FLOAT64>(
@@ -30,31 +32,16 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
       CROSS JOIN
         total_counts
     )
+
     SELECT
-      ARRAY_AGG(record)
+        ARRAY_AGG(record)
     FROM
       final_values
   )
 );
 
-CREATE TEMP FUNCTION udf_normalize_histograms(
-  arrs ARRAY<
-    STRUCT<
-      first_bucket INT64,
-      last_bucket INT64,
-      num_buckets INT64,
-      latest_version INT64,
-      metric STRING,
-      metric_type STRING,
-      key STRING,
-      process STRING,
-      agg_type STRING,
-      aggregates ARRAY<STRUCT<key STRING, value INT64>>
-    >
-  >
-)
-RETURNS ARRAY<
-  STRUCT<
+CREATE TEMP FUNCTION udf_normalize_histograms (
+  arrs ARRAY<STRUCT<
     first_bucket INT64,
     last_bucket INT64,
     num_buckets INT64,
@@ -64,10 +51,19 @@ RETURNS ARRAY<
     key STRING,
     process STRING,
     agg_type STRING,
-    aggregates ARRAY<STRUCT<key STRING, value FLOAT64>>
-  >
-> AS (
-  (
+    aggregates ARRAY<STRUCT<key STRING, value INT64>>>>)
+RETURNS ARRAY<STRUCT<
+  first_bucket INT64,
+  last_bucket INT64,
+  num_buckets INT64,
+  latest_version INT64,
+  metric STRING,
+  metric_type STRING,
+  key STRING,
+  process STRING,
+  agg_type STRING,
+  aggregates ARRAY<STRUCT<key STRING, value FLOAT64>>>> AS (
+(
     WITH normalized AS (
       SELECT
         first_bucket,
@@ -80,28 +76,11 @@ RETURNS ARRAY<
         process,
         agg_type,
         udf_normalized_sum(aggregates) AS aggregates
-      FROM
-        UNNEST(arrs)
-    )
-    SELECT
-      ARRAY_AGG(
-        (
-          first_bucket,
-          last_bucket,
-          num_buckets,
-          latest_version,
-          metric,
-          metric_type,
-          key,
-          process,
-          agg_type,
-          aggregates
-        )
-      )
-    FROM
-      normalized
-  )
-);
+      FROM UNNEST(arrs))
+
+    SELECT ARRAY_AGG((first_bucket, last_bucket, num_buckets, latest_version, metric, metric_type, key, process, agg_type, aggregates))
+    FROM normalized
+));
 
 WITH normalized_histograms AS (
   SELECT
@@ -111,9 +90,8 @@ WITH normalized_histograms AS (
     app_build_id,
     channel,
     udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
-  FROM
-    clients_histogram_aggregates_v1
-),
+  FROM clients_histogram_aggregates_v1),
+
 unnested AS (
   SELECT
     client_id,
@@ -132,13 +110,10 @@ unnested AS (
     histogram_aggregates.key AS key,
     aggregates.key AS bucket,
     aggregates.value
-  FROM
-    normalized_histograms
-  CROSS JOIN
-    UNNEST(histogram_aggregates) AS histogram_aggregates
-  CROSS JOIN
-    UNNEST(aggregates) AS aggregates
-)
+  FROM normalized_histograms
+  CROSS JOIN UNNEST(histogram_aggregates) AS histogram_aggregates
+  CROSS JOIN UNNEST(aggregates) AS aggregates)
+
 SELECT
   os,
   app_version,
@@ -152,9 +127,11 @@ SELECT
   key,
   process,
   agg_type,
-  STRUCT<key STRING, value FLOAT64>(CAST(bucket AS STRING), 1.0 * SUM(value)) AS record
-FROM
-  unnested
+  STRUCT<key STRING, value FLOAT64>(
+    CAST(bucket AS STRING),
+    1.0 * SUM(value)
+  ) AS record
+FROM unnested
 GROUP BY
   os,
   app_version,

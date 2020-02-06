@@ -1,14 +1,14 @@
-WITH base AS (
+WITH
+  base AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    * REPLACE (LOWER(client_id) AS client_id)
+    * REPLACE(LOWER(client_id) AS client_id)
   FROM
     telemetry.core
   WHERE
-    client_id IS NOT NULL
-),
+    client_id IS NOT NULL ),
   --
-windowed AS (
+  windowed AS (
   SELECT
     submission_date,
     client_id,
@@ -30,9 +30,7 @@ windowed AS (
     -- For all other dimensions, we use the mode of observed values in the day.
     udf.mode_last(ARRAY_AGG(metadata.uri.app_name) OVER w1) AS app_name,
     udf.mode_last(ARRAY_AGG(os) OVER w1) AS os,
-    udf.json_mode_last(
-      ARRAY_AGG(udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1
-    ).* EXCEPT (geo_subdivision1, geo_subdivision2),
+    udf.json_mode_last(ARRAY_AGG(udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL)) OVER w1).* EXCEPT (geo_subdivision1, geo_subdivision2),
     udf.mode_last(ARRAY_AGG(metadata.uri.app_build_id) OVER w1) AS app_build_id,
     udf.mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
     udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
@@ -56,24 +54,19 @@ windowed AS (
     AND (@submission_date IS NULL OR @submission_date = submission_date)
   WINDOW
     w1 AS (
-      PARTITION BY
-        client_id,
-        submission_date
-      ORDER BY
-        submission_timestamp
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ),
+    PARTITION BY
+      client_id,
+      submission_date
+    ORDER BY
+      submission_timestamp
+    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),
     -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
     w1_unframed AS (
-      PARTITION BY
-        client_id,
-        submission_date
-      ORDER BY
-        submission_timestamp
-    )
-)
+    PARTITION BY
+      client_id,
+      submission_date
+    ORDER BY
+      submission_timestamp) )
 SELECT
   * EXCEPT (_n)
 FROM

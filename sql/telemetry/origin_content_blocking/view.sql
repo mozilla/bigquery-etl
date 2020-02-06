@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 WITH most_recent AS (
   SELECT
-    * EXCEPT (_n)
+    * EXCEPT(_n)
   FROM
     (
       SELECT

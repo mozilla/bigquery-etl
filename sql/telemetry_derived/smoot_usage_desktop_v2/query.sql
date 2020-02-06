@@ -1,32 +1,23 @@
-WITH base AS (
+WITH
+  base AS (
   SELECT
-    * REPLACE (normalized_channel AS channel)
+    * REPLACE(normalized_channel AS channel)
   FROM
-    telemetry.clients_last_seen
-),
+    telemetry.clients_last_seen),
   --
-nested AS (
+  nested AS (
   SELECT
     submission_date,
     [
-      STRUCT(
-        'Any Firefox Desktop Activity' AS usage,
-        udf.smoot_usage_from_28_bits(
-          ARRAY_AGG(STRUCT(days_created_profile_bits, days_seen_bits))
-        ) AS metrics
-      ),
-      STRUCT(
-        'Firefox Desktop Visited 5 URI' AS usage,
-        udf.smoot_usage_from_28_bits(
-          ARRAY_AGG(STRUCT(days_created_profile_bits, days_visited_5_uri_bits))
-        ) AS metrics
-      ),
-      STRUCT(
-        'Firefox Desktop Opened Dev Tools' AS usage,
-        udf.smoot_usage_from_28_bits(
-          ARRAY_AGG(STRUCT(days_created_profile_bits, days_opened_dev_tools_bits))
-        ) AS metrics
-      )
+    STRUCT('Any Firefox Desktop Activity' AS usage,
+      udf.smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+        days_seen_bits))) AS metrics),
+    STRUCT('Firefox Desktop Visited 5 URI' AS usage,
+      udf.smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+          days_visited_5_uri_bits))) AS metrics),
+    STRUCT('Firefox Desktop Opened Dev Tools' AS usage,
+      udf.smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+          days_opened_dev_tools_bits))) AS metrics)
     ] AS metrics_array,
     MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
     app_name,
@@ -51,8 +42,7 @@ nested AS (
     locale,
     os,
     os_version,
-    channel
-)
+    channel )
   --
 SELECT
   submission_date,

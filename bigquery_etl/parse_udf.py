@@ -17,6 +17,7 @@ UDF_DIRS = ("udf", "udf_js")
 UDF_CHAR = "[a-zA-z0-9_]"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
+PERSISTENT_UDF_PREFIX = re.compile(r"CREATE\s+(OR\s+REPLACE\s+)?FUNCTION(\s+IF\s+NOT\s+EXISTS)?", re.IGNORECASE)
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 
 
@@ -39,7 +40,7 @@ class RawUdf:
             text = f.read()
 
         sql = sqlparse.format(text, strip_comments=True)
-        statements = [s for s in sqlparse.split(sql) if s.strip()]
+        statements = [s for s in sqlparse.split(sql)]
 
         prod_name = basename.replace(".sql", "")
         persistent_name = os.path.basename(dirpath) + "." + prod_name
@@ -47,6 +48,7 @@ class RawUdf:
         internal_name = None
 
         definitions = []
+        tests = []
 
         for s in statements:
             normalized_statement = " ".join(s.lower().split())
@@ -60,29 +62,25 @@ class RawUdf:
                 if temp_name in normalized_statement:
                     internal_name = temp_name
 
+            else:
+                tests.append(s)
+
         for name in (prod_name, internal_name):
-            print(name)
             if not UDF_NAME_RE.match(name):
                 raise ValueError(
                     f"Invalid UDF name {name}: Must start with alpha char, "
                     f"limited to chars {UDF_CHAR}, be at most 256 chars long."
                 )
 
-        tests = [
-            s
-            for s in statements
-            if not s.lower().startswith("create or replace function")
-            and not s.lower().startswith("create temp function")
-        ]
-
         # find usages of both persistent and temporary UDFs
         dependencies = re.findall(PERSISTENT_UDF_RE, "\n".join(definitions))
-        dependencies = list(map(lambda t: ".".join(t), dependencies))
+        dependencies = [".".join(t) for t in dependencies]
         dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
 
-        if internal_name not in dependencies:
+        if internal_name is None:
             raise ValueError(
-                f"Expected a UDF named {internal_name} " f"to be defined in {filepath}"
+                f"Expected a UDF named {persistent_name} or {temporary_name} "
+                f"to be defined in {filepath}"
             )
         dependencies.remove(internal_name)
 
@@ -178,21 +176,24 @@ def udf_usage_definitions(text, raw_udfs=None):
     ]
 
 
+def persistent_udf_as_temp(raw_udf, raw_udfs=None):
+    """Transform persistent UDF into temporary UDF."""
+    sql = prepend_udf_usage_definitions(raw_udf, raw_udfs)
+    sql = sub_persistent_udf_names_as_temp(sql)
+    sql = PERSISTENT_UDF_PREFIX.sub("CREATE TEMP FUNCTION", sql)
+    return sql
+
+
 def udf_tests_sql(raw_udf, raw_udfs):
     """
     Create tests for testing persistent UDFs.
 
-    Persistent UDFs need to be rewritten as temporary UDF so that changes
+    Persistent UDFs need to be rewritten as temporary UDFs so that changes
     can be tested.
     """
     tests_full_sql = []
     for test in raw_udf.tests:
-        test_sql = prepend_udf_usage_definitions(test, raw_udfs)
-        test_sql = sub_persistent_udfs_as_temp(test_sql)
-        test_sql = test_sql.replace(
-            "CREATE OR REPLACE FUNCTION", "CREATE TEMP FUNCTION"
-        )
-
+        test_sql = persistent_udf_as_temp(test, raw_udfs)
         tests_full_sql.append(test_sql)
 
     return tests_full_sql
@@ -204,6 +205,6 @@ def prepend_udf_usage_definitions(text, raw_udfs=None):
     return "\n\n".join(statements + [text])
 
 
-def sub_persistent_udfs_as_temp(text):
+def sub_persistent_udf_names_as_temp(text):
     """Substitute persistent UDF references with temporary UDF references."""
     return PERSISTENT_UDF_RE.sub(r"\1_\2", text)

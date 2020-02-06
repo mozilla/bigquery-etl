@@ -1,4 +1,5 @@
-WITH forecast_base AS (
+WITH
+  forecast_base AS (
   SELECT
     *
   FROM
@@ -11,33 +12,30 @@ WITH forecast_base AS (
     * REPLACE (REPLACE(datasource, '_nofire', '') AS datasource)
   FROM
     `moz-fx-data-derived-datasets.analysis.growth_dashboard_forecasts_nofire`
-),
+  ),
   --
-desktop_base AS (
+  desktop_base AS (
   SELECT
     *
   FROM
-    `moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_by_dimensions_v1`
-),
+    `moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_by_dimensions_v1` ),
   --
-nondesktop_base AS (
+  nondesktop_base AS (
   SELECT
     *
   FROM
     `moz-fx-data-derived-datasets.telemetry.firefox_nondesktop_exact_mau28_by_dimensions_v1`
   WHERE
-    product != 'FirefoxForFireTV'
-),
+    product != 'FirefoxForFireTV' ),
   --
-fxa_base AS (
+  fxa_base AS (
   SELECT
     *
   FROM
-    `moz-fx-data-derived-datasets.telemetry.firefox_accounts_exact_mau28_by_dimensions_v1`
-),
+    `moz-fx-data-derived-datasets.telemetry.firefox_accounts_exact_mau28_by_dimensions_v1` ),
   --
   --
-per_bucket AS (
+  per_bucket AS (
   SELECT
     'desktop_global' AS datasource,
     'actual' AS type,
@@ -126,11 +124,10 @@ per_bucket AS (
     fxa_base
   GROUP BY
     id_bucket,
-    submission_date
-),
+    submission_date ),
   --
   --
-with_ci AS (
+  with_ci AS (
   SELECT
     datasource,
     type,
@@ -143,11 +140,10 @@ with_ci AS (
   GROUP BY
     datasource,
     type,
-    submission_date
-),
+    submission_date ),
   --
   --
-with_forecast AS (
+  with_forecast AS (
   SELECT
     datasource,
     type,
@@ -172,35 +168,33 @@ with_forecast AS (
     low90 AS mau_low,
     high90 AS mau_high,
     -- We only have forecasts for MAU, so we use null for forecast DAU and WAU.
-    NULL AS wau,
-    NULL AS wau_low,
-    NULL AS wau_high,
-    NULL AS dau,
-    NULL AS dau_low,
-    NULL AS dau_high
+    null as wau,
+    null as wau_low,
+    null as wau_high,
+    null as dau,
+    null as dau_low,
+    null as dau_high
   FROM
     forecast_base
   WHERE
     type != 'original'
     -- Make sure we don't accidentally have the actuals and forecast overlap
-    AND `date` > (SELECT MAX(submission_date) FROM with_ci)
-),
+    AND `date` > (SELECT MAX(submission_date) FROM with_ci) ),
   -- We use imputed values for the period after the Armag-add-on deletion event;
   -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1552558
-with_imputed AS (
+  with_imputed AS (
   SELECT
     with_forecast.* REPLACE (
       COALESCE(imputed.mau, with_forecast.mau) AS mau,
       COALESCE(imputed.mau + imputed.mau * 0.005, with_forecast.mau_high) AS mau_high,
-      COALESCE(imputed.mau - imputed.mau * 0.005, with_forecast.mau_low) AS mau_low
-    )
+      COALESCE(imputed.mau - imputed.mau * 0.005, with_forecast.mau_low) AS mau_low )
   FROM
     with_forecast
   LEFT JOIN
     static.firefox_desktop_imputed_mau28_v1 AS imputed
   USING
     (datasource, `date`)
-)
+  )
   --
 SELECT
   *

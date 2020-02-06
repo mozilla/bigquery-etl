@@ -1,29 +1,14 @@
-WITH base AS (
+WITH
+  base AS (
   SELECT
     * REPLACE (
-      CASE
-        app_name
-      WHEN
-        'Fennec'
-      THEN
-        CONCAT(app_name, ' ', os)
-      WHEN
-        'Focus'
-      THEN
-        CONCAT(app_name, ' ', os)
-      WHEN
-        'Lockbox'
-      THEN
-        CONCAT('Lockwise ', os)
-      WHEN
-        'Zerda'
-      THEN
-        'Firefox Lite'
-      ELSE
-        app_name
-      END
-      AS app_name
-    ),
+      CASE app_name
+        WHEN 'Fennec' THEN CONCAT(app_name, ' ', os)
+        WHEN 'Focus' THEN CONCAT(app_name, ' ', os)
+        WHEN 'Lockbox' THEN CONCAT('Lockwise ', os)
+        WHEN 'Zerda' THEN 'Firefox Lite'
+        ELSE app_name
+      END AS app_name),
     normalized_channel AS channel
   FROM
     telemetry.nondesktop_clients_last_seen_v1
@@ -32,32 +17,24 @@ WITH base AS (
     -- is not normalized and there are many single pings that come in with unique
     -- nonsensical app_name values. App names are documented in
     -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
-    (
-      STARTS_WITH(app_name, 'FirefoxReality')
-      OR app_name IN (
-        'Fenix',
-        'Fennec', -- Firefox for Android and Firefox for iOS
-        'Focus',
-        'Lockbox', -- Lockwise
-        'FirefoxConnect', -- Amazon Echo
-        'FirefoxForFireTV',
-        'Zerda'
-      )
-    ) -- Firefox Lite, previously called Rocket
+    (STARTS_WITH(app_name, 'FirefoxReality') OR app_name IN (
+      'Fenix',
+      'Fennec', -- Firefox for Android and Firefox for iOS
+      'Focus',
+      'Lockbox', -- Lockwise
+      'FirefoxConnect', -- Amazon Echo
+      'FirefoxForFireTV',
+      'Zerda')) -- Firefox Lite, previously called Rocket
     -- There are also many strange nonsensical entries for os, so we filter here.
-    AND os IN ('Android', 'iOS')
-),
+    AND os IN ('Android', 'iOS')),
   --
-nested AS (
+  nested AS (
   SELECT
     submission_date,
     [
-      STRUCT(
-        'Any Firefox Non-desktop Activity' AS usage,
-        udf.smoot_usage_from_28_bits(
-          ARRAY_AGG(STRUCT(days_created_profile_bits, days_seen_bits))
-        ) AS metrics
-      )
+    STRUCT('Any Firefox Non-desktop Activity' AS usage,
+      udf.smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
+        days_seen_bits))) AS metrics)
     ] AS metrics_array,
     MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
     app_name,
@@ -82,10 +59,9 @@ nested AS (
     locale,
     os,
     os_version,
-    channel
-),
+    channel ),
   --
-unnested AS (
+  unnested AS (
   SELECT
     submission_date,
     m.usage,
@@ -97,8 +73,7 @@ unnested AS (
     UNNEST(metrics_array) AS m
   WHERE
     -- Optimization so we don't have to store rows where counts are all zero.
-    NOT m.metrics.is_empty_group
-)
+    NOT m.metrics.is_empty_group )
   --
 SELECT
   *
@@ -113,6 +88,6 @@ UNION ALL
 SELECT
   -- Also present each app as its own usage criterion. App names are documented in
   -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
-  * REPLACE (REPLACE(usage, 'Firefox Non-desktop', app_name) AS usage)
+  * REPLACE(REPLACE(usage, 'Firefox Non-desktop', app_name) AS usage)
 FROM
   unnested

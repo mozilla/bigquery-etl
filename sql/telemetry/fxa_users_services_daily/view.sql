@@ -1,8 +1,7 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.fxa_users_services_daily`
-AS
+  `moz-fx-data-shared-prod.telemetry.fxa_users_services_daily` AS
 SELECT
-  * REPLACE (cn.code AS country),
+  * REPLACE(cn.code AS country),
   fxa.country AS country_name
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.fxa_users_services_daily_v1` AS fxa

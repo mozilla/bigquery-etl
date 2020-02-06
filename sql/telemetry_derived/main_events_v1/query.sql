@@ -14,7 +14,10 @@ SELECT
   environment.experiments AS experiments,
   sample_id,
   payload.info.session_id AS session_id,
-  SAFE.PARSE_TIMESTAMP("%FT%H:%M:%S.0%Ez", payload.info.session_start_date) AS session_start_time,
+  SAFE.PARSE_TIMESTAMP(
+    "%FT%H:%M:%S.0%Ez",
+    payload.info.session_start_date
+  ) AS session_start_time,
   payload.info.subsession_id AS subsession_id,
   submission_timestamp AS `timestamp`,
   udf.deanonymize_event(e).*,
@@ -35,7 +38,10 @@ CROSS JOIN
   -- an exhaustive list of processes in which we'd expect to see events in main pings
   UNNEST(
     [
-      STRUCT("content" AS event_process, payload.processes.content.events AS events),
+      STRUCT(
+        "content" AS event_process,
+        payload.processes.content.events AS events
+      ),
       ("dynamic", payload.processes.dynamic.events),
       ("gpu", payload.processes.gpu.events),
       ("parent", payload.processes.parent.events)

@@ -36,28 +36,13 @@ SELECT
   MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
   -- Instead of app_name and os, we provide a single clean "product" name
   -- that includes OS where necessary to disambiguate.
-  CASE
-    app_name
-  WHEN
-    'Fennec'
-  THEN
-    CONCAT(app_name, ' ', os)
-  WHEN
-    'Focus'
-  THEN
-    CONCAT(app_name, ' ', os)
-  WHEN
-    'Lockbox'
-  THEN
-    CONCAT('Lockwise ', os)
-  WHEN
-    'Zerda'
-  THEN
-    'Firefox Lite'
-  ELSE
-    app_name
-  END
-  AS product,
+  CASE app_name
+    WHEN 'Fennec' THEN CONCAT(app_name, ' ', os)
+    WHEN 'Focus' THEN CONCAT(app_name, ' ', os)
+    WHEN 'Lockbox' THEN CONCAT('Lockwise ', os)
+    WHEN 'Zerda' THEN 'Firefox Lite'
+    ELSE app_name
+  END AS product,
   normalized_channel,
   campaign,
   country,
@@ -78,7 +63,7 @@ WHERE
     'Zerda', -- Firefox Lite, previously called Rocket
     'FirefoxForFireTV', -- Amazon Fire TV
     'FirefoxConnect' -- Amazon Echo Show
-  )
+    )
   -- There are also many strange nonsensical entries for os, so we filter here.
   AND os IN ('Android', 'iOS')
   -- 2017-01-01 is the first populated day of telemetry_core_parquet, so start 28 days later.

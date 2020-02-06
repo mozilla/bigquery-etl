@@ -32,7 +32,10 @@ FROM
 CROSS JOIN
   UNNEST(
     [
-      STRUCT("content" AS event_process, payload.events.content AS events),
+      STRUCT(
+        "content" AS event_process,
+        payload.events.content AS events
+      ),
       ("dynamic", payload.events.dynamic),
       ("extension", payload.events.extension),
       ("gpu", payload.events.gpu),

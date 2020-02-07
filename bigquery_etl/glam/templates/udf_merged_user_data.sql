@@ -1,35 +1,8 @@
 CREATE TEMP FUNCTION udf_merged_user_data(
-  old_aggs ARRAY<
-    STRUCT<
-      metric STRING,
-      metric_type STRING,
-      key STRING,
-      process STRING,
-      agg_type STRING,
-      value FLOAT64
-    >
-  >,
-  new_aggs ARRAY<
-    STRUCT<
-      metric STRING,
-      metric_type STRING,
-      key STRING,
-      process STRING,
-      agg_type STRING,
-      value FLOAT64
-    >
-  >
+  old_aggs {{ user_data_type }},
+  new_aggs {{ user_data_type }}
 )
-RETURNS ARRAY<
-  STRUCT<
-    metric STRING,
-    metric_type STRING,
-    key STRING,
-    process STRING,
-    agg_type STRING,
-    value FLOAT64
-  >
-> AS (
+RETURNS {{ user_data_type }} AS (
   (
     WITH unnested AS (
       SELECT
@@ -46,10 +19,7 @@ RETURNS ARRAY<
     ),
     aggregated AS (
       SELECT
-        metric,
-        metric_type,
-        key,
-        process,
+        {{ user_data_attributes }},
         agg_type,
         --format:off
         CASE agg_type
@@ -66,18 +36,12 @@ RETURNS ARRAY<
       WHERE
         value IS NOT NULL
       GROUP BY
-        metric,
-        metric_type,
-        key,
-        process,
+        {{ user_data_attributes }},
         agg_type
     ),
     scalar_count_and_sum AS (
       SELECT
-        metric,
-        metric_type,
-        key,
-        process,
+        {{ user_data_attributes }},
         'avg' AS agg_type,
         --format:off
         CASE WHEN agg_type = 'count' THEN value ELSE 0 END AS count,
@@ -95,10 +59,7 @@ RETURNS ARRAY<
       FROM
         scalar_count_and_sum
       GROUP BY
-        metric,
-        metric_type,
-        key,
-        process,
+        {{ user_data_attributes }},
         agg_type
     ),
     merged_data AS (
@@ -113,7 +74,7 @@ RETURNS ARRAY<
         scalar_averages
     )
     SELECT
-      ARRAY_AGG((metric, metric_type, key, process, agg_type, value))
+      ARRAY_AGG(({{ user_data_attributes }}, agg_type, value))
     FROM
       merged_data
   )

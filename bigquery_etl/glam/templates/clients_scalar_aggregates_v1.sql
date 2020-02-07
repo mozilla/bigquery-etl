@@ -1,3 +1,6 @@
+{{ header }}
+{% include "udf_merged_user_data.sql" %}
+
 WITH filtered_date_channel AS (
   SELECT
     *
@@ -9,15 +12,8 @@ WITH filtered_date_channel AS (
 filtered_aggregates AS (
   SELECT
     submission_date,
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
+    {{ attributes }},
+    {{ user_data_attributes }},
     agg_type,
     value
   FROM
@@ -35,10 +31,7 @@ version_filtered_new AS (
     app_version,
     app_build_id,
     scalar_aggs.channel AS channel,
-    metric,
-    metric_type,
-    key,
-    process,
+    {{ user_data_attributes }},
     agg_type,
     value
   FROM
@@ -52,15 +45,8 @@ version_filtered_new AS (
 ),
 scalar_aggregates_new AS (
   SELECT
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
+    {{ attributes }},
+    {{ user_data_attributes }},
     agg_type,
     --format:off
     CASE agg_type
@@ -75,33 +61,18 @@ scalar_aggregates_new AS (
   FROM
     version_filtered_new
   GROUP BY
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
+    {{ attributes }},
+    {{ user_data_attributes }},
     agg_type
 ),
 filtered_new AS (
   SELECT
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    ARRAY_AGG((metric, metric_type, key, process, agg_type, value)) AS scalar_aggregates
+    {{ attributes }},
+    ARRAY_AGG(({{ user_data_attributes }}, agg_type, value)) AS scalar_aggregates
   FROM
     scalar_aggregates_new
   GROUP BY
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel
+    {{ attributes }}
 ),
 filtered_old AS (
   SELECT
@@ -141,11 +112,7 @@ joined_new_old AS (
     AND new_data.channel = old_data.channel
 )
 SELECT
-  client_id,
-  os,
-  app_version,
-  app_build_id,
-  channel,
+  {{ attributes }},
   udf_merged_user_data(old_aggs, new_aggs) AS scalar_aggregates
 FROM
   joined_new_old

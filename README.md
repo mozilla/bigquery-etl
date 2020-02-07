@@ -117,6 +117,8 @@ Recommended practices
       `CREATE OR REPLACE FUNCTION <dir_name>.<file_name>`
   - We provide tooling in `scripts/publish_persistent_udfs` for
     publishing these UDFs to BigQuery
+    - Changes made to UDFs need to be published manually in order for the
+      dry run CI task to pass
 - Should use `SQL` over `js` for performance
 
 ### Backfills

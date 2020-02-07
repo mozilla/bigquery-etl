@@ -53,13 +53,13 @@ Recommended practices
 
 ### Queries
 
-- Should be defined in files named as `templates/<dataset>/<table>_<version>/query.sql` e.g.
+- Should be defined in files named as `sql/<dataset>/<table>_<version>/query.sql` e.g.
   `sql/telemetry_derived/clients_daily_v7/query.sql`
   - Queries that populate tables should always be named with a version suffix;
     we assume that future optimizations to the data representation may require
     schema-incompatible changes such as dropping columns
 - May be generated using a python script that prints the query to stdout
-  - Should save output as `templates/<dataset>/<table>_<version>/query.sql` as above
+  - Should save output as `sql/<dataset>/<table>_<version>/query.sql` as above
   - Should be named as `sql/query_type.sql.py` e.g. `sql/clients_daily.sql.py`
   - May use options to generate queries for different destination tables e.g.
     using `--source telemetry_core_parquet_v3` to generate
@@ -83,8 +83,8 @@ Recommended practices
 
 ### Views
 
-- Should be defined in files named as `templates/<dataset>/<table>/view.sql` e.g.
-  `templates/telemetry/core/view.sql`
+- Should be defined in files named as `sql/<dataset>/<table>/view.sql` e.g.
+  `sql/telemetry/core/view.sql`
   - Views should generally _not_ be named with a version suffix; a view represents a
     stable interface for users and whenever possible should maintain compatibility
     with existing queries; if the view logic cannot be adapted to changes in underlying
@@ -109,15 +109,14 @@ Recommended practices
     in the `udf_js` directory
     - The `udf_legacy/` directory is an exception which must only contain
       compatibility functions for queries migrated from Athena/Presto.
-  - Functions must be named with a prefix of `<dir_name>_` so all functions
-    in `udf/*.sql` must start with `udf_`
-    - The final function in a file must be named as
-      `<dir_name>_<file_name_without_suffix>` so `udf/mode_last.sql` must
-      define a function `udf_mode_last`
-- Functions must be defined as temporary using `CREATE TEMP FUNCTION` syntax
-  - We provide tooling in `scripts/publish_persistent_udfs` for converting
-    these definitions to persistent UDFs (temporary UDF `udf_mode_last` is
-    published as persistent UDF `udf.mode_last`)
+- Functions must be defined as [persistent UDFs](https://cloud.google.com/bigquery/docs/reference/standard-sql/user-defined-functions#temporary-udf-syntax)
+  using `CREATE OR REPLACE FUNCTION` syntax
+  - Function names must be prefixed with a dataset of `<dir_name>.` so, for example, 
+    all functions in `udf/*.sql` are part of the `udf` dataset
+    - The final syntax for creating a function in a file will look like
+      `CREATE OR REPLACE FUNCTION <dir_name>.<file_name>`
+  - We provide tooling in `scripts/publish_persistent_udfs` for
+    publishing these UDFs to BigQuery
 - Should use `SQL` over `js` for performance
 
 ### Backfills
@@ -166,7 +165,7 @@ Incremental Queries
   - Should produce identical results when run multiple times
 - May depend on the previous partition
   - If using previous partition, must include an `init.sql` query to initialize the
-    table, e.g. `templates/telemetry_derived/clients_last_seen_v1/init.sql`
+    table, e.g. `sql/telemetry_derived/clients_last_seen_v1/init.sql`
   - Should be impacted by values from a finite number of preceding partitions
     - This allows for backfilling in chunks instead of serially for all time
       and limiting backfills to a certain number of days following updated data
@@ -185,18 +184,7 @@ Contributing
 ---
 
 When adding or modifying a query in this repository, make your changes in the
-`templates/` directory. Each time you run tests locally (see [Tests](#tests) below),
-the `sql/` directory will be regenerated, inserting definitions of any UDFs
-referenced by the query. To force recreation of the `sql/` directory without
-running tests, invoke:
-
-    ./script/generate_sql
-
-You are expected to commit the generated content in `sql/` along with your
-changes to the source in `templates/`, otherwise CI will fail. This matches
-the strategy used by [mozilla-pipeline-schemas] and ensures that the final
-queries being run by Airflow are directly available to reference via URL and
-to view via the GitHub UI.
+`sql/` directory. 
 
 Tests
 ---

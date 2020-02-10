@@ -420,6 +420,15 @@ class FieldAccessOperator(Operator):
     pattern = re.compile(r"\.")
 
 
+class TemplateExpression(Token):
+    """Template variable.
+
+    An expression is denoted by double curly braces e.g. `{{ param }}`.
+    """
+
+    pattern = re.compile(r"{{.*}}")
+
+
 BIGQUERY_TOKEN_PRIORITY = [
     LineComment,
     BlockComment,
@@ -433,6 +442,7 @@ BIGQUERY_TOKEN_PRIORITY = [
     AngleBracketKeyword,
     SpaceBeforeBracketKeyword,
     ReservedKeyword,
+    TemplateExpression,
     Literal,
     Identifier,
     OpeningBracket,

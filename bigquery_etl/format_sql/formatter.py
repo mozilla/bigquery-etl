@@ -20,6 +20,7 @@ from .tokenizer import (
     ReservedKeyword,
     SpaceBeforeBracketKeyword,
     StatementSeparator,
+    TemplateExpression,
     TopLevelKeyword,
     Whitespace,
     tokenize,

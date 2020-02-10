@@ -429,6 +429,21 @@ class TemplateExpression(Token):
     pattern = re.compile(r"{{.*}}")
 
 
+class TemplateStatement(Token):
+    """Template control flow.
+
+        -- Jinja2, trailing comma
+        SELECT
+            {% for column in column_list %}
+                {{ column }} AS prefixed_{{ column }},
+            {% endfor %}
+        FROM
+            {{ table }}
+    """
+
+    pattern = re.compile(r"{%.*%}")
+
+
 BIGQUERY_TOKEN_PRIORITY = [
     LineComment,
     BlockComment,
@@ -442,6 +457,7 @@ BIGQUERY_TOKEN_PRIORITY = [
     AngleBracketKeyword,
     SpaceBeforeBracketKeyword,
     ReservedKeyword,
+    TemplateStatement,
     TemplateExpression,
     Literal,
     Identifier,

@@ -123,7 +123,7 @@ RETURNS ARRAY<
 WITH filtered_date_channel AS (
   SELECT
     * EXCEPT (app_version),
-    CAST(app_version, INT64) AS app_version
+    CAST(app_version AS INT64) AS app_version
   FROM
     clients_daily_scalar_aggregates_v1
   WHERE
@@ -168,7 +168,7 @@ version_filtered_new AS (
     filtered_aggregates AS scalar_aggs
   LEFT JOIN
     latest_versions
-  ON
+  USING
     (channel)
   WHERE
     app_version >= (latest_version - 2)
@@ -238,7 +238,7 @@ filtered_old AS (
     clients_scalar_aggregates_v1 AS scalar_aggs
   LEFT JOIN
     latest_versions
-  ON
+  USING
     (channel)
   WHERE
     app_version >= (latest_version - 2)
@@ -256,7 +256,7 @@ joined_new_old AS (
     filtered_new AS new_data
   FULL OUTER JOIN
     filtered_old AS old_data
-  ON
+  USING
     (client_id, os, app_version, app_build_id, channel)
 )
 SELECT

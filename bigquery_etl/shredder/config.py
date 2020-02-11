@@ -4,10 +4,6 @@
 
 from dataclasses import dataclass
 from functools import partial
-from itertools import chain
-from typing import Optional, Tuple
-
-from ..util.sql_table_id import sql_table_id
 
 
 SHARED_PROD = "moz-fx-data-shared-prod"
@@ -31,52 +27,18 @@ class DeleteSource:
         """Dataset Id."""
         return self.table.split(".", 1)[0]
 
-    @property
-    def sql_table_id(self):
-        """Make sql_table_id available as a property for easier templating."""
-        return sql_table_id(self)
-
-
-@dataclass(frozen=True)
-class ClusterCondition:
-    """Data class for cluster condition."""
-
-    condition: str
-    needs_clustering: bool
-
 
 @dataclass(frozen=True)
 class DeleteTarget:
     """Data class for deletion request target.
 
-    Without cluster conditions rows will be removed using either one DELETE
-    statement for the whole table, or one DELETE statement per partition if the
-    table is larger than some configurable threshold.
-
-    When provided cluster conditions are used to divide up deletes into parts
-    smaller than partitions. This is a mitigation specifically for main_v4
-    because it has thousands of sparsely populated columns and partitions in
-    excess of 10TiB, resulting in very slow DELETE performance that could
-    exceed 6 hours for a single partition and makes flat-rate pricing more
-    expensive than on-demand pricing.
-
-    To improve performance vs DELETE operations, cluster conditions can set
-    needs_clustering to False to avoid the overhead of clustering results when
-    the condition identifies a single cluster.
-
-    Each cluster condition is used with a SELECT statement to extract rows from
-    the target table into an intermediate table while filtering out rows with
-    deletion requests. The intermediate tables are then combined using a copy
-    operation to overwrite target table partitions.
-
-    This means that every row must be covered by precisely one cluster
-    condition. Any rows not covered by a cluster condition would be dropped,
-    and any rows covered by multiple conditions would be duplicated.
+    Rows will be removed using either one DELETE statement for the whole table,
+    or one DELETE statement per partition if the table is larger than some
+    configurable threshold.
     """
 
     table: str
     field: str
-    cluster_conditions: Optional[Tuple[ClusterCondition, ...]] = None
     project: str = SHARED_PROD
 
     @property
@@ -88,11 +50,6 @@ class DeleteTarget:
     def dataset_id(self):
         """Dataset Id."""
         return self.table.split(".", 1)[0]
-
-    @property
-    def sql_table_id(self):
-        """Make sql_table_id available as a property for easier templating."""
-        return sql_table_id(self)
 
 
 CLIENT_ID = "client_id"
@@ -196,26 +153,7 @@ DELETE_TARGETS = {
     client_id_target(table="telemetry_stable.frecency_update_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.health_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.heartbeat_v4"): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_stable.main_v4",
-        cluster_conditions=tuple(
-            ClusterCondition(condition, needs_clustering)
-            for condition, needs_clustering in chain(
-                {
-                    f"sample_id = {sample_id} AND normalized_channel = 'release'": False
-                    for sample_id in range(100)
-                }.items(),
-                [
-                    (
-                        "(sample_id IS NULL "
-                        "OR normalized_channel IS NULL "
-                        "OR normalized_channel != 'release')",
-                        True,
-                    )
-                ],
-            )
-        ),
-    ): DESKTOP_SRC,
+    client_id_target(table="telemetry_stable.main_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.modules_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.new_profile_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.saved_session_v4"): DESKTOP_SRC,

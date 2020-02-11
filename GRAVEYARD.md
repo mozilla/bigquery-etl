@@ -14,3 +14,13 @@ history every day, which had started to take on order 1 hour to run. The
 v2 tables instead define a `day_0` view and a `day_13` view and relies on
 the Growth and Usage Dashboard (GUD) to query them separately and join the
 results together at query time.
+
+## Shredder support for per-cluster deletes
+
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/733)
+
+For `telemetry_stable.main_v4` shredder used `SELECT` statements over single
+clusters, then combined the result to remove rows from the table. This was an
+attempt to improve performance so that reserved slots would be cheaper than
+on-demand pricing, but it turned out to be slower than using `DELETE`
+statements for whole partitions.

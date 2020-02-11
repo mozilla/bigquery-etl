@@ -1,4 +1,4 @@
-"""Generate a query for incremental processing of scalar aggregates.
+r"""Generate a query for incremental processing of scalar aggregates.
 
 ```bash
 python -m bigquery_etl.glam.scalar_aggregates_incremental \

@@ -26,6 +26,7 @@ CREATE TEMP FUNCTION udf_merged_user_data(
         key,
         process,
         agg_type,
+        --format:off
         CASE agg_type
           WHEN 'max' THEN max(value)
           WHEN 'min' THEN min(value)
@@ -34,6 +35,7 @@ CREATE TEMP FUNCTION udf_merged_user_data(
           WHEN 'false' THEN sum(value)
           WHEN 'true' THEN sum(value)
         END AS value
+        --format:on
       FROM unnested
       WHERE value IS NOT NULL
       GROUP BY
@@ -50,8 +52,10 @@ CREATE TEMP FUNCTION udf_merged_user_data(
         key,
         process,
         'avg' AS agg_type,
+        --format:off
         CASE WHEN agg_type = 'count' THEN value ELSE 0 END AS count,
         CASE WHEN agg_type = 'sum' THEN value ELSE 0 END AS sum
+        --format:on
       FROM aggregated
       WHERE agg_type IN ('sum', 'count')),
 
@@ -139,6 +143,7 @@ scalar_aggregates_new AS (
     key,
     process,
     agg_type,
+    --format:off
     CASE agg_type
       WHEN 'max' THEN max(value)
       WHEN 'min' THEN min(value)
@@ -147,6 +152,7 @@ scalar_aggregates_new AS (
       WHEN 'false' THEN sum(value)
       WHEN 'true' THEN sum(value)
     END AS value
+    --format:on
   FROM version_filtered_new
   GROUP BY
     client_id,

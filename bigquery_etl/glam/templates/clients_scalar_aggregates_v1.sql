@@ -12,7 +12,7 @@ WITH filtered_date_channel AS (
 filtered_aggregates AS (
   SELECT
     submission_date,
-    {{ attributes | join(",") }},
+    {{ attributes }},
     {{ user_data_attributes }},
     agg_type,
     value
@@ -26,7 +26,7 @@ filtered_aggregates AS (
 version_filtered_new AS (
   SELECT
     submission_date,
-    {% for attribute in attributes %}
+    {% for attribute in attributes_list %}
       scalar_aggs.{{ attribute }},
     {% endfor %}
     {{ user_data_attributes }},
@@ -38,7 +38,7 @@ version_filtered_new AS (
 ),
 scalar_aggregates_new AS (
   SELECT
-    {{ attributes | join(",") }},
+    {{ attributes }},
     {{ user_data_attributes }},
     agg_type,
     --format:off
@@ -54,23 +54,23 @@ scalar_aggregates_new AS (
   FROM
     version_filtered_new
   GROUP BY
-    {{ attributes | join(",") }},
+    {{ attributes }},
     {{ user_data_attributes }},
     agg_type
 ),
 filtered_new AS (
   SELECT
-    {{ attributes | join(",") }},
+    {{ attributes }},
     ARRAY_AGG(({{ user_data_attributes }}, agg_type, value)) AS scalar_aggregates
   FROM
     scalar_aggregates_new
   GROUP BY
-    {{ attributes | join(",") }}
+    {{ attributes }}
 
 ),
 filtered_old AS (
   SELECT
-    {% for attribute in attributes %}
+    {% for attribute in attributes_list %}
       scalar_aggs.{{ attribute }},
     {% endfor %}
     scalar_aggregates
@@ -80,7 +80,7 @@ filtered_old AS (
 ),
 joined_new_old AS (
   SELECT
-    {% for attribute in attributes %}
+    {% for attribute in attributes_list %}
       COALESCE(old_data.{{attribute}}, new_data.{{attribute}}) as {{attribute}},
     {% endfor %}
     old_data.scalar_aggregates AS old_aggs,
@@ -90,10 +90,10 @@ joined_new_old AS (
   FULL OUTER JOIN
     filtered_old AS old_data
   ON
-    ({{ attributes | join(",") }})
+    ({{ attributes }})
 )
 SELECT
-  {{ attributes | join(",") }},
+  {{ attributes }},
   udf_merged_user_data(old_aggs, new_aggs) AS scalar_aggregates
 FROM
   joined_new_old

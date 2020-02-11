@@ -89,7 +89,7 @@ joined_new_old AS (
     filtered_new AS new_data
   FULL OUTER JOIN
     filtered_old AS old_data
-  ON
+  USING
     ({{ attributes }})
 )
 SELECT

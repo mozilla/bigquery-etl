@@ -26,14 +26,14 @@ USER_DATA_ATTRIBUTES = [
 ]
 
 EXTRACT_SELECT_CLAUSE = f"""
-* except(app_version),
-CAST(app_version, INT64) as app_version
+* EXCEPT(app_version),
+CAST(app_version AS INT64) as app_version
 """
 
 JOIN_FILTER = """
 LEFT JOIN
     latest_versions
-ON
+USING
     (channel)
 WHERE
     app_version >= (latest_version - 2)

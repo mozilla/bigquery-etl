@@ -122,7 +122,8 @@ RETURNS ARRAY<
 
 WITH filtered_date_channel AS (
   SELECT
-    *
+    * EXCEPT (app_version),
+    CAST(app_version, INT64) AS app_version
   FROM
     clients_daily_scalar_aggregates_v1
   WHERE
@@ -152,11 +153,11 @@ filtered_aggregates AS (
 version_filtered_new AS (
   SELECT
     submission_date,
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    scalar_aggs.channel AS channel,
+    scalar_aggs.client_id,
+    scalar_aggs.os,
+    scalar_aggs.app_version,
+    scalar_aggs.app_build_id,
+    scalar_aggs.channel,
     metric,
     metric_type,
     key,
@@ -168,9 +169,9 @@ version_filtered_new AS (
   LEFT JOIN
     latest_versions
   ON
-    latest_versions.channel = scalar_aggs.channel
+    (channel)
   WHERE
-    CAST(app_version AS INT64) >= (latest_version - 2)
+    app_version >= (latest_version - 2)
 ),
 scalar_aggregates_new AS (
   SELECT
@@ -227,18 +228,18 @@ filtered_new AS (
 ),
 filtered_old AS (
   SELECT
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    scalar_aggs.channel AS channel,
+    scalar_aggs.client_id,
+    scalar_aggs.os,
+    scalar_aggs.app_version,
+    scalar_aggs.app_build_id,
+    scalar_aggs.channel,
     scalar_aggregates
   FROM
     clients_scalar_aggregates_v1 AS scalar_aggs
   LEFT JOIN
     latest_versions
   ON
-    latest_versions.channel = scalar_aggs.channel
+    (channel)
   WHERE
     app_version >= (latest_version - 2)
 ),
@@ -246,7 +247,7 @@ joined_new_old AS (
   SELECT
     COALESCE(old_data.client_id, new_data.client_id) AS client_id,
     COALESCE(old_data.os, new_data.os) AS os,
-    COALESCE(old_data.app_version, CAST(new_data.app_version AS INT64)) AS app_version,
+    COALESCE(old_data.app_version, new_data.app_version) AS app_version,
     COALESCE(old_data.app_build_id, new_data.app_build_id) AS app_build_id,
     COALESCE(old_data.channel, new_data.channel) AS channel,
     old_data.scalar_aggregates AS old_aggs,
@@ -256,11 +257,7 @@ joined_new_old AS (
   FULL OUTER JOIN
     filtered_old AS old_data
   ON
-    new_data.client_id = old_data.client_id
-    AND new_data.os = old_data.os
-    AND CAST(new_data.app_version AS INT64) = old_data.app_version
-    AND new_data.app_build_id = old_data.app_build_id
-    AND new_data.channel = old_data.channel
+    (client_id, os, app_version, app_build_id, channel)
 )
 SELECT
   client_id,

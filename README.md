@@ -186,7 +186,25 @@ Contributing
 ---
 
 When adding or modifying a query in this repository, make your changes in the
-`sql/` directory. 
+`sql/` directory.
+
+When adding a new library to the Python requirements, first compile the
+dependencies into the constraints, and then add the library to the requirements.
+
+```bash
+# If not installed:
+pip install hashin pip-tools
+
+# Add the dependency to constraints.txt e.g. jinja2. The purpose of constraints.txt
+# is to avoid cluttering the real dependencies requirements.txt.
+hashin jinja2==2.11.1 -r constraints.txt
+
+# Compile constraints to obtain hashes for dependencies
+pip-compile --generate-hashes constraints.txt
+
+# Finally add dependency to requirements.txt
+hashin jinja2==2.11.1
+```
 
 Tests
 ---

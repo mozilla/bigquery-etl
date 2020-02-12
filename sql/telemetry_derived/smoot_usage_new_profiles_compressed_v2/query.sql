@@ -28,7 +28,8 @@ WITH compressed AS (
     ) AS country,
     substr(locale, 0, 2) AS locale,
     IF(os IN ('Windows_NT', 'Darwin', 'Linux'), os, 'Other') AS os,
-    channel
+    channel,
+    attributed,
   FROM
     smoot_usage_new_profiles_v2
 )
@@ -40,6 +41,7 @@ SELECT
   locale,
   os,
   channel,
+  attributed,
   SUM(new_profiles) AS new_profiles
 FROM
   compressed
@@ -52,4 +54,5 @@ GROUP BY
   country,
   locale,
   os,
-  channel
+  channel,
+  attributed

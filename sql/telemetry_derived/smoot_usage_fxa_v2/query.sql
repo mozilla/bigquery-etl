@@ -7,7 +7,8 @@ WITH
     language AS locale,
     os_name AS os,
     CAST(NULL AS STRING) AS app_name,
-    CAST(NULL AS STRING) AS channel
+    CAST(NULL AS STRING) AS channel,
+    CAST(NULL AS BOOLEAN) AS attributed,
   FROM
     `moz-fx-data-derived-datasets.telemetry.fxa_users_last_seen_raw_v1` fxa
   LEFT JOIN
@@ -30,7 +31,8 @@ WITH
     locale,
     os,
     os_version,
-    channel
+    channel,
+    attributed
   FROM
     base
   WHERE
@@ -46,7 +48,8 @@ WITH
     locale,
     os,
     os_version,
-    channel )
+    channel,
+    attributed )
   --
 SELECT
   submission_date,

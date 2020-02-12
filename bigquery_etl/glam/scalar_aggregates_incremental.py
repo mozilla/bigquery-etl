@@ -3,6 +3,9 @@ r"""Generate a query for incremental processing of scalar aggregates.
 Telemetry usage:
 
 ```bash
+python -m bigquery_etl.glam.scalar_aggregates_incremental --init \
+    > sql/telemetry_derived/clients_scalar_aggregates_v1/init.sql
+
 python -m bigquery_etl.glam.scalar_aggregates_incremental \
     > sql/telemetry_derived/clients_scalar_aggregates_v1/query.sql
 ```
@@ -52,7 +55,9 @@ def render_main(
     )
 
 
-def render_init(header, destination_table, attributes, user_data_type, **kwargs) -> str:
+def render_init(
+    header, destination_table, attributes, user_data_type, partition_clause, **kwargs
+) -> str:
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
     init_sql = env.get_template("clients_scalar_aggregates_v1.init.sql")
     return reformat(
@@ -61,6 +66,7 @@ def render_init(header, destination_table, attributes, user_data_type, **kwargs)
             destination_table=destination_table,
             attributes=",".join(attributes),
             user_data_type=user_data_type,
+            partition_clause=partition_clause,
         )
     )
 
@@ -99,6 +105,10 @@ def telemetry_variables():
             WHERE
                 app_version >= (latest_version - 2)
         """,
+        partition_clause="""
+            PARTITION BY
+                RANGE_BUCKET(app_version, GENERATE_ARRAY(30, 200, 1))
+        """,
     )
 
 
@@ -136,6 +146,7 @@ def glean_variables():
         """,
         # no filtering on channel
         join_filter="",
+        partition_clause="",
     )
 
 
@@ -145,12 +156,12 @@ def main():
     parser = ArgumentParser(description=main.__doc__)
     parser.add_argument(
         "--source",
-        default="clients_daily_scalar_aggregates_v1",
+        default="telemetry_derived.clients_daily_scalar_aggregates_v1",
         help="Source `clients_daily_scalar_aggregates` table",
     )
     parser.add_argument(
         "--destination",
-        default="clients_scalar_aggregates_v1",
+        default="telemetry_derived.clients_scalar_aggregates_v1",
         help="Destination for incremental `clients_scalar_aggregates` table",
     )
     parser.add_argument(

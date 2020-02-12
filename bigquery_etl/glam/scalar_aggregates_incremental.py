@@ -13,6 +13,11 @@ python -m bigquery_etl.glam.scalar_aggregates_incremental \
 Glean usage:
 
 ``bash
+python -m bigquery_etl.glam.scalar_aggregates_incremental --init \
+    --ping-type glean \
+    --destination glam_etl.fenix_clients_scalar_aggregates_v1 \
+    > sql/telemetry_derived/clients_scalar_aggregates_v1/init.sql
+
 python -m bigquery_etl.glam.scalar_aggregates_incremental \
     --ping-type glean \
     --source glam_etl.fenix_clients_daily_scalar_aggregates_v1 \

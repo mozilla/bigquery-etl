@@ -15,8 +15,8 @@ Glean usage:
 ``bash
 python -m bigquery_etl.glam.scalar_aggregates_incremental \
     --ping-type glean \
-    --source fenix_clients_daily_scalar_aggregates_v1 \
-    --destination fenix_clients_scalar_aggregates_v1 \
+    --source glam_etl.fenix_clients_daily_scalar_aggregates_v1 \
+    --destination glam_etl.fenix_clients_scalar_aggregates_v1 \
     > sql/glam_etl/fenix_clients_scalar_aggregates_v1/query.sql
 ```
 """
@@ -37,6 +37,7 @@ def render_main(
     join_filter: str,
     source_table: str,
     destination_table: str,
+    **kwargs,
 ) -> str:
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
     main_sql = env.get_template("clients_scalar_aggregates_v1.sql")
@@ -56,7 +57,13 @@ def render_main(
 
 
 def render_init(
-    header, destination_table, attributes, user_data_type, partition_clause, **kwargs
+    header,
+    destination_table,
+    attributes,
+    attributes_type,
+    user_data_type,
+    partition_clause,
+    **kwargs,
 ) -> str:
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
     init_sql = env.get_template("clients_scalar_aggregates_v1.init.sql")
@@ -64,7 +71,7 @@ def render_init(
         init_sql.render(
             header=header,
             destination_table=destination_table,
-            attributes=",".join(attributes),
+            attributes_type=",".join(f"{name} {dtype}" for name, dtype in zip(attributes, attributes_type)),
             user_data_type=user_data_type,
             partition_clause=partition_clause,
         )
@@ -93,6 +100,7 @@ def telemetry_variables():
             # [agg_type, value] are shared between telemetry and glean
         ],
         attributes=["client_id", "os", "app_version", "app_build_id", "channel"],
+        attributes_type=["STRING", "STRING", "INT64", "STRING", "STRING"],
         extract_select_clause=f"""
             * EXCEPT(app_version),
             CAST(app_version AS INT64) as app_version
@@ -140,6 +148,7 @@ def glean_variables():
             "app_build_id",
             "channel",
         ],
+        attributes_type=["STRING", "STRING", "STRING", "INT64", "STRING", "STRING"],
         extract_select_clause=f"""
             * EXCEPT(app_version),
             CAST(app_version AS INT64) as app_version
@@ -186,6 +195,7 @@ def main():
     variables = (
         telemetry_variables() if args.ping_type == "telemetry" else glean_variables()
     )
+    assert len(variables["attributes"]) == len(variables["attributes_type"])
 
     render = render_init if args.init else render_main
     rendered = render(

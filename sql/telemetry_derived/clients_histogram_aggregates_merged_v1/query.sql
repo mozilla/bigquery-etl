@@ -10,5 +10,5 @@ SELECT
 FROM clients_histogram_aggregates_old_v1 AS old_data
 FULL OUTER JOIN clients_histogram_aggregates_new_v1 AS new_data
   ON new_data.join_key = old_data.join_key
-WHERE old_data.channel_enum = @channel_enum
-  AND new_data.channel_enum = @channel_enum
+WHERE (old_data.channel_enum = @channel_enum OR old_data.channel_enum IS NULL)
+  AND (new_data.channel_enum = @channel_enum OR new_data.channel_enum IS NULL)

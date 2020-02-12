@@ -9,7 +9,8 @@ WITH
         WHEN 'Zerda' THEN 'Firefox Lite'
         ELSE app_name
       END AS app_name),
-    normalized_channel AS channel
+    normalized_channel AS channel,
+    (campaign IS NOT NULL) AS attributed,
   FROM
     telemetry.nondesktop_clients_last_seen_v1
   WHERE
@@ -43,7 +44,8 @@ WITH
     locale,
     os,
     os_version,
-    channel
+    channel,
+    attributed
   FROM
     base
   WHERE
@@ -59,7 +61,8 @@ WITH
     locale,
     os,
     os_version,
-    channel ),
+    channel,
+    attributed ),
   --
   unnested AS (
   SELECT

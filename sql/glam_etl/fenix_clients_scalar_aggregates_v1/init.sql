@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS
       STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>
     >
   )
+PARTITION BY
+  RANGE_BUCKET(app_version, GENERATE_ARRAY(0, 100, 1))
 CLUSTER BY
   app_version,
   channel,

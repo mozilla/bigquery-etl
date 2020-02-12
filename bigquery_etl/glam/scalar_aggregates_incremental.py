@@ -16,7 +16,7 @@ Glean usage:
 python -m bigquery_etl.glam.scalar_aggregates_incremental --init \
     --ping-type glean \
     --destination glam_etl.fenix_clients_scalar_aggregates_v1 \
-    > sql/telemetry_derived/clients_scalar_aggregates_v1/init.sql
+    > sql/glam_etl/fenix_clients_scalar_aggregates_v1/init.sql
 
 python -m bigquery_etl.glam.scalar_aggregates_incremental \
     --ping-type glean \
@@ -76,7 +76,9 @@ def render_init(
         init_sql.render(
             header=header,
             destination_table=destination_table,
-            attributes_type=",".join(f"{name} {dtype}" for name, dtype in zip(attributes, attributes_type)),
+            attributes_type=",".join(
+                f"{name} {dtype}" for name, dtype in zip(attributes, attributes_type)
+            ),
             user_data_type=user_data_type,
             partition_clause=partition_clause,
         )
@@ -160,7 +162,11 @@ def glean_variables():
         """,
         # no filtering on channel
         join_filter="",
-        partition_clause="",
+        # TODO: is this the appropriate partitioning of the table?
+        partition_clause="""
+            PARTITION BY
+                RANGE_BUCKET(app_version, GENERATE_ARRAY(0, 100, 1))
+        """,
     )
 
 

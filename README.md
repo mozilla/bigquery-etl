@@ -186,7 +186,34 @@ Contributing
 ---
 
 When adding or modifying a query in this repository, make your changes in the
-`sql/` directory. 
+`sql/` directory.
+
+When adding a new library to the Python requirements, first add the library to
+the requirements and then add any meta-dependencies into constraints.
+Constraints are discovered by installing requirements into a fresh virtual
+environment. A dependency should be added to either `requirements.txt` or
+`constraints.txt`, but not both.
+
+```bash
+# Create and activate a python virtual environment.
+python3 -m venv venv/
+source venv/bin/activate
+
+# If not installed:
+pip install hashin
+
+# Add the dependency to requirements.txt e.g. Jinja2.
+hashin Jinja2==2.11.1
+
+# Use pip install to check for missing meta-dependencies.
+pip install --require-hashes -r requirements.txt
+
+# Add hashes for missing meta-dependencies until pip install succeeds.
+hashin MarkupSafe -r constraints.txt
+
+# Deactivate the python virtual environment.
+deactivate
+```
 
 Tests
 ---

@@ -94,7 +94,7 @@ def make_field(source, target, s, schema_fields, keyed=False):
 
 
 def main(root):
-    """Main."""
+    """Generate udf/main_summary_scalars.sql."""
     main_schema_json = open("main.4.bq")
     main_schema = json.load(main_schema_json)
     schema_fields = collect_fields(main_schema)
@@ -150,7 +150,7 @@ CREATE OR REPLACE FUNCTION udf.main_summary_scalars(processes ANY TYPE, addition
         scalar_fields,
     )
 
-    open(os.path.join(root, "scalar_row.sql"), "w").write(scalars_sql)
+    open(os.path.join(root, "main_summary_scalars.sql"), "w").write(scalars_sql)
 
 
 if __name__ == "__main__":

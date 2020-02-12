@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-"""Read a table from the BigQuery Storage API and write it as parquet."""
+"""Read a table from BigQuery and write it as parquet."""
 
 from argparse import ArgumentParser
 from textwrap import dedent
@@ -216,7 +216,7 @@ def transform_schema(table, maps_from_entries=False, bigint_columns=None):
 
 
 def main():
-    """Main."""
+    """Read a table from BigQuery and write it as parquet."""
     args = parser.parse_args()
 
     # handle --submission-date

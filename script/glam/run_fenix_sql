@@ -47,7 +47,7 @@ function clients_scalar {
     local destination_table="fenix_clients_scalar_aggregates_v1"
     local init="sql/glam_etl/$destination_table/init.sql"
     local query="sql/glam_etl/$destination_table/query.sql"
-    if ! bq show "${dataset}.${destination_table}"; then
+    if ! bq show --quiet "${dataset}.${destination_table}"; then
         echo "running $init"
         bq query \
             --use_legacy_sql=false \

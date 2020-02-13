@@ -179,7 +179,7 @@ Incremental Queries
 Scheduling Queries in Airflow
 ---
 
-Instructions for scheduling queries in Airflow can be found in this 
+Instructions for scheduling queries in Airflow can be found in this
 [cookbook](https://docs.telemetry.mozilla.org/cookbooks/bigquery-airflow.html).
 
 Contributing
@@ -200,16 +200,13 @@ python3 -m venv venv/
 source venv/bin/activate
 
 # If not installed:
-pip install hashin
+pip install pip-tools
 
-# Add the dependency to requirements.txt e.g. Jinja2.
-hashin Jinja2==2.11.1
+# Add the dependency to requirements.in e.g. Jinja2.
+echo Jinja2==2.11.1 >> requirements.in
 
-# Use pip install to check for missing meta-dependencies.
-pip install --require-hashes -r requirements.txt
-
-# Add hashes for missing meta-dependencies until pip install succeeds.
-hashin MarkupSafe -r constraints.txt
+# Compile hashes for new dependencies.
+pip-compile --generate-hashes requirements.in
 
 # Deactivate the python virtual environment.
 deactivate

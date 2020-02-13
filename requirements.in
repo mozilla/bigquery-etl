@@ -1,0 +1,11 @@
+gcloud==0.18.3
+google-cloud-bigquery==1.24.0
+Jinja2==2.11.1
+pytest-black==0.3.7
+pytest-docstyle==1.5.0
+pytest-flake8==1.0.4
+pytest-mypy==0.4.2
+pytest-xdist==1.31.0
+pytest==5.3.5
+PyYAML==5.3
+sqlparse==0.3.0

@@ -97,8 +97,7 @@ RETURNS ARRAY<
 
 WITH filtered_date_channel AS (
   SELECT
-    * EXCEPT (app_version),
-    CAST(app_version AS INT64) AS app_version
+    *
   FROM
     glam_etl.fenix_clients_daily_scalar_aggregates_v1
   WHERE

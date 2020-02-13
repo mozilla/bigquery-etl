@@ -8,8 +8,9 @@ jobs:
     - restore_cache:
         keys:
           # when lock files change, use increasingly general patterns to restore cache
-          - python-packages-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "constraints.txt" }}
-          - python-packages-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}-
+          - &cache_key
+            python-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
+          - python-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
           - python-packages-v1-{{ .Branch }}-
           - python-packages-v1-
     - &build
@@ -24,7 +25,7 @@ jobs:
     - save_cache:
         paths:
         - venv/
-        key: python-packages-v1-{{ .Branch }}-{{ checksum "requirements.txt" }}-{{ checksum "constraints.txt" }}
+        key: *cache_key
   verify-format-sql:
     docker:
       - image: python:3.8

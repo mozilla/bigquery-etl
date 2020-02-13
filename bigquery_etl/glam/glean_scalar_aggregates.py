@@ -67,7 +67,12 @@ def generate_sql(
             DATE(submission_timestamp) AS submission_date,
             client_info.client_id,
             REPLACE(ping_info.ping_type, "_", "-") as ping_type,
-            COALESCE(SAFE_CAST(SPLIT(client_info.app_display_version, '.')[OFFSET(0)] as INT64), 0) AS app_version,
+            COALESCE(
+                SAFE_CAST(
+                    SPLIT(client_info.app_display_version, '.')[OFFSET(0)]
+                    AS INT64
+                ),
+            0) AS app_version,
             client_info.os AS os,
             client_info.app_build AS app_build_id,
             client_info.app_channel AS channel

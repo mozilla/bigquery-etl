@@ -44,6 +44,7 @@ def render_main(
     destination_table: str,
     **kwargs,
 ) -> str:
+    """Render the main query."""
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
     main_sql = env.get_template("clients_scalar_aggregates_v1.sql")
     return reformat(
@@ -70,6 +71,7 @@ def render_init(
     partition_clause,
     **kwargs,
 ) -> str:
+    """Render the table initialization DML for partitioning and clustering."""
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
     init_sql = env.get_template("clients_scalar_aggregates_v1.init.sql")
     return reformat(
@@ -86,6 +88,7 @@ def render_init(
 
 
 def telemetry_variables():
+    """Telemetry specific variables."""
     return dict(
         user_data_type="""
             ARRAY<
@@ -128,6 +131,7 @@ def telemetry_variables():
 
 
 def glean_variables():
+    """Glean/Fenix specific variables."""
     return dict(
         # does not include "process" field
         user_data_type="""
@@ -169,7 +173,6 @@ def glean_variables():
 
 def main():
     """Generate `telemetry_derived.clients_scalar_aggregates_v1`."""
-
     parser = ArgumentParser(description=main.__doc__)
     parser.add_argument(
         "--source",

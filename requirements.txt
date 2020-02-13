@@ -206,8 +206,8 @@ pyparsing==2.4.6 \
     --hash=sha256:4c830582a84fb022400b85429791bc551f1f4871c33f23e44f353119e92f969f \
     --hash=sha256:c342dccb5250c08d45fd6f8b4a559613ca603b57498511740e65cd11a2e7dcec \
     # via packaging
-pytest-black==0.3.7 \
-    --hash=sha256:75bbeccfe23442a190164c0bf202d7498df25451fa4177b781cee20183e7fc0d
+pytest-black==0.3.8 \
+    --hash=sha256:01a9a7acc69e618ebf3f834932a4d7a81909f6911051d0871b0ed4de3cbe9712
 pytest-docstyle==1.5.0 \
     --hash=sha256:dcc54084b8e8282a83e50c6220c85d1c7d05e3871f74f0e911499b4f3adea756
 pytest-flake8==1.0.4 \

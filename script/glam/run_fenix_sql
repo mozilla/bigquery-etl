@@ -86,7 +86,12 @@ function main {
     bq rm -r -f $dataset
     bq mk $dataset
 
+    # NOTE: the append mechanism is a bit non-standard, it may be useful to have
+    # a view using a wildcard table query instead. This will simplify the
+    # automated DAG creation later.
     if ((start_stage <= 0)); then clients_daily_scalar $project $dataset; fi
+    # NOTE: if starting from stage 1, then old data from stage 0 will be deleted
+    # NOTE: there isn't a mechanism to test the incremental query here
     if ((start_stage <= 1)); then clients_scalar $project $dataset; fi
 }
 

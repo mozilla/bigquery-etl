@@ -156,10 +156,7 @@ def glean_variables():
             "channel",
         ],
         attributes_type=["STRING", "STRING", "STRING", "INT64", "STRING", "STRING"],
-        extract_select_clause=f"""
-            * EXCEPT(app_version),
-            CAST(app_version AS INT64) as app_version
-        """,
+        extract_select_clause="*",
         # no filtering on channel
         join_filter="",
         # TODO: is this the appropriate partitioning of the table?

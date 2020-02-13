@@ -5,7 +5,7 @@ python3 -m bigquery_etl.glam.glean_metric_counts
 
 diff \
     <(cat sql/telemetry_derived/clients_histogram_probe_counts_v1/query.sql) \
-    <(python3 -m bigquery_etl.glam.glean_metric_counts) 
+    <(python3 -m bigquery_etl.glam.glean_metric_counts)
 ```
 """
 from itertools import combinations

@@ -1,14 +1,11 @@
 r"""Metric counting.
 
 ```bash
-python3 -m bigquery_etl.glam.glean_metric_counting
+python3 -m bigquery_etl.glam.glean_metric_counts
 
 diff \
     <(cat sql/telemetry_derived/clients_histogram_probe_counts_v1/query.sql) \
-    <(python3 -m bigquery_etl.glam.glean_metric_bucketing) 
-
-python3 -m bigquery_etl.glam.glean_metric_bucketing > \
-    sql/telemetry_derived/clients_histogram_probe_counts_v1/query.sql
+    <(python3 -m bigquery_etl.glam.glean_metric_counts) 
 ```
 """
 from itertools import combinations
@@ -29,7 +26,7 @@ def render_query(
 ) -> str:
     """Render the main query."""
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
-    sql = env.get_template("metric_bucketing_v1.sql")
+    sql = env.get_template("metric_counts_v1.sql")
 
     # include attributes included and excluded from grouping set
     attribute_combinations = []
@@ -38,7 +35,7 @@ def render_query(
         for grouping in combinations(attributes, subset_size):
             hidden = list(set(attributes) - set(grouping))
             attribute_combinations.append((grouping, hidden))
-    
+
     return reformat(
         sql.render(
             header=header,

@@ -1,15 +1,17 @@
 -- TODO: Remove deduping when dupes are fixed.
 WITH deduped AS (
-  SELECT
-    *,
-    ROW_NUMBER() OVER(
-        PARTITION BY
-            channel, app_version, agg_type, os, app_build_id, process, metric, key, client_agg_type, metric_type
-        ORDER BY
-            total_users DESC
-    ) AS rank
-  FROM
-    `moz-fx-data-shared-prod.telemetry.client_probe_counts`
+    SELECT
+        *,
+        ROW_NUMBER() OVER(
+            PARTITION BY
+                channel, app_version, agg_type, os, app_build_id, process, metric, key, client_agg_type, metric_type
+            ORDER BY
+                total_users DESC
+        ) AS rank
+    FROM
+        `moz-fx-data-shared-prod.telemetry.client_probe_counts`
+    WHERE
+        app_version IS NOT NULL
 )
 
 SELECT

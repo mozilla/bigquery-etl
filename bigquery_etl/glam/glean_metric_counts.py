@@ -64,7 +64,7 @@ def glean_variables():
         aggregate_attributes="""
             metric,
             metric_type,
-            key,
+            key
         """,
         aggregate_grouping="""
             client_agg_type,

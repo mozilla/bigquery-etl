@@ -60,6 +60,7 @@ function write_probe_counts {
     directory="sql/glam_etl/fenix_clients_scalar_probe_counts_v1"
     mkdir -p "$directory"
     python -m bigquery_etl.glam.glean_metric_counts \
+        --ping-type glean \
         > $directory/query.sql
     echo "generated $directory/query.sql"
 }

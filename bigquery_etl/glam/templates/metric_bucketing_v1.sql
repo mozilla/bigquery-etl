@@ -4,29 +4,20 @@
 WITH bucketed_booleans AS (
   SELECT
     client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel,
+    {{ attributes }},
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
   FROM
-    clients_scalar_aggregates_v1
+    {{ source_table }}
 ),
 bucketed_scalars AS (
   SELECT
     client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
+    {{ attributes }},
+    {{ aggregate_attributes }},
     agg_type,
     SAFE_CAST(udf_bucket(SAFE_CAST(value AS FLOAT64)) AS STRING) AS bucket
   FROM
-    clients_scalar_aggregates_v1
+    {{ source_table }}
   CROSS JOIN
     UNNEST(scalar_aggregates)
   WHERE
@@ -47,14 +38,8 @@ booleans_and_scalars AS (
     bucketed_scalars
 )
 SELECT
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
+  {{ attributes }},
+  {{ aggregate_attributes }},
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   bucket,
@@ -62,13 +47,7 @@ SELECT
 FROM
   booleans_and_scalars
 GROUP BY
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
+  {{ attributes }},
+  {{ aggregate_attributes }},
   client_agg_type,
   bucket

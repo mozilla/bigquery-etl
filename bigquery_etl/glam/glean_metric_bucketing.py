@@ -18,14 +18,21 @@ def render_query(**kwargs) -> str:
 
 def telemetry_variables():
     """Variables for metric_bucketing."""
+    attributes_list = ["os", "app_version", "app_build_id", "channel"]
     return dict(
-        source_table="clients_histogram_bucket_counts_v1",
-        attributes=["os", "app_version", "app_build_id", "channel"],
+        source_table="clients_scalar_aggregates_v1",
+        attributes=",".join(attributes_list),
         aggregate_attributes="""
             metric,
             metric_type,
             key,
             process
+        """,
+        aggregate_attributes_type="""
+            metric STRING,
+            metric_type STRING,
+            key STRING,
+            process STRING
         """,
         aggregate_grouping="""
             client_agg_type,

@@ -267,10 +267,7 @@ RETURNS FLOAT64 AS (
 CREATE TEMP FUNCTION udf_boolean_buckets(
   scalar_aggs ARRAY<
     STRUCT<
-      metric STRING,
-      metric_type STRING,
-      key STRING,
-      process STRING,
+      {{ aggregate_attributes_type }},
       agg_type STRING,
       value FLOAT64
     >
@@ -278,10 +275,7 @@ CREATE TEMP FUNCTION udf_boolean_buckets(
 )
 RETURNS ARRAY<
   STRUCT<
-    metric STRING,
-    metric_type STRING,
-    key STRING,
-    process STRING,
+    {{ aggregate_attributes_type }},
     agg_type STRING,
     bucket STRING
   >
@@ -289,10 +283,7 @@ RETURNS ARRAY<
   (
     WITH boolean_columns AS (
       SELECT
-        metric,
-        metric_type,
-        key,
-        process,
+        {{ aggregate_attributes }},
         agg_type,
         CASE
           agg_type
@@ -321,10 +312,7 @@ RETURNS ARRAY<
     ),
     summed_bools AS (
       SELECT
-        metric,
-        metric_type,
-        key,
-        process,
+        {{ aggregate_attributes }},
         '' AS agg_type,
         SUM(bool_true) AS bool_true,
         SUM(bool_false) AS bool_false
@@ -364,7 +352,7 @@ RETURNS ARRAY<
         OR bool_false > 0
     )
     SELECT
-      ARRAY_AGG((metric, metric_type, key, process, agg_type, bucket))
+      ARRAY_AGG(({{ aggregate_attributes }}, agg_type, bucket))
     FROM
       booleans
   )

@@ -1,13 +1,18 @@
 {{ header }}
 {% include "metric_counts_v1.udf.scalar.sql" %}
 
-{% for grouping_attributes, hidden_attributes in attribute_combinations %}
+{% for attribute_combo in attribute_combinations %}
     SELECT
-        {% if grouping_attributes %}
-            {{ grouping_attributes | join(",") }},
-        {% endif %}
-        {% for hidden in hidden_attributes %}
-            CAST(NULL AS STRING) AS {{ hidden }},
+        {% for attribute, in_grouping in attribute_combo %}
+            {% if in_grouping %}
+                {{ attribute }},
+            {% else %}
+                {% if attribute == "app_version" %}
+                    CAST(NULL AS INT64) AS {{ attribute }},
+                {% else %}
+                    CAST(NULL AS STRING) AS {{ attribute }},
+                {% endif %}
+            {% endif %}
         {% endfor %}
         {{ aggregate_attributes }},
         client_agg_type,

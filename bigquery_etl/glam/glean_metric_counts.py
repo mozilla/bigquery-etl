@@ -26,8 +26,10 @@ def render_query(attributes: List[str], **kwargs) -> str:
     attribute_combinations = []
     for subset_size in reversed(range(len(attributes) + 1)):
         for grouping in combinations(attributes, subset_size):
-            hidden = list(sorted(set(attributes) - set(grouping)))
-            attribute_combinations.append((grouping, hidden))
+            select_expr = []
+            for attribute in attributes:
+                select_expr.append((attribute, attribute in grouping))
+            attribute_combinations.append(select_expr)
 
     return reformat(sql.render(attribute_combinations=attribute_combinations, **kwargs))
 

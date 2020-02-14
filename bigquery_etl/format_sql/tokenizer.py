@@ -420,7 +420,7 @@ class FieldAccessOperator(Operator):
     pattern = re.compile(r"\.")
 
 
-class TemplateExpression(Token):
+class JinjaExpression(Identifier):
     """Template variable.
 
     An expression is denoted by double curly braces e.g. `{{ param }}`.
@@ -429,7 +429,7 @@ class TemplateExpression(Token):
     pattern = re.compile(r"{{.*}}")
 
 
-class TemplateStatement(Token):
+class JinjaStatement(BlockMiddleKeyword):
     """Template control flow.
 
         -- Jinja2, trailing comma
@@ -442,6 +442,18 @@ class TemplateStatement(Token):
     """
 
     pattern = re.compile(r"{%.*%}")
+
+
+class JinjaStatementStart(BlockStartKeyword):
+    """Jinja expression that gets its own line followed by increased indent."""
+
+    pattern = re.compile(r"{%\s*(for|if|macro|call|filter|block|raw).*%}", re.IGNORECASE)
+
+
+class JinjaStatementEnd(BlockEndKeyword):
+    """Jinja expression that gets its own line preceded by decreased indent."""
+
+    pattern = re.compile(r"{%\s*end.*%}, re.IGNORECASE")
 
 
 BIGQUERY_TOKEN_PRIORITY = [
@@ -457,8 +469,10 @@ BIGQUERY_TOKEN_PRIORITY = [
     AngleBracketKeyword,
     SpaceBeforeBracketKeyword,
     ReservedKeyword,
-    TemplateStatement,
-    TemplateExpression,
+    JinjaStatementStart,
+    JinjaStatementEnd,
+    JinjaStatement,
+    JinjaExpression,
     Literal,
     Identifier,
     OpeningBracket,

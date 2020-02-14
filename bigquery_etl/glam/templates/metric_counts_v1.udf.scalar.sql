@@ -6,7 +6,7 @@ RETURNS ARRAY<STRING> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf_dedupe_map_sum (map ARRAY<STRUCT<key STRING, value FLOAT64>>)
+CREATE TEMP FUNCTION udf_dedupe_map_sum(map ARRAY<STRUCT<key STRING, value FLOAT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given a MAP with duplicate keys, de-duplicates by summing the values of duplicate keys
   (

@@ -30,10 +30,9 @@ def render_query(
 
     # include attributes included and excluded from grouping set
     attribute_combinations = []
-    # reversed(range(len(attributes)))
-    for subset_size in [4, 3, 2, 1, 0]:
+    for subset_size in reversed(range(len(attributes) + 1)):
         for grouping in combinations(attributes, subset_size):
-            hidden = list(set(attributes) - set(grouping))
+            hidden = list(sorted(set(attributes) - set(grouping)))
             attribute_combinations.append((grouping, hidden))
 
     return reformat(

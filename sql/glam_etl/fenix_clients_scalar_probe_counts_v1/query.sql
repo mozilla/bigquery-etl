@@ -554,55 +554,7 @@ UNION ALL
 SELECT
   os,
   app_version,
-  CAST(NULL AS STRING) AS channel,
   CAST(NULL AS STRING) AS app_build_id,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type = 'scalar'
-    OR metric_type = 'keyed-scalar'
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type = 'boolean'
-    OR metric_type = 'keyed-scalar-boolean'
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  clients_histogram_bucket_counts_v1
-WHERE
-  first_bucket IS NOT NULL
-  AND os IS NOT NULL
-GROUP BY
-  os,
-  app_version,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
-UNION ALL
-SELECT
-  os,
-  app_build_id,
-  CAST(NULL AS STRING) AS app_version,
   CAST(NULL AS STRING) AS channel,
   metric,
   metric_type,
@@ -637,6 +589,54 @@ WHERE
   AND os IS NOT NULL
 GROUP BY
   os,
+  app_version,
+  metric,
+  metric_type,
+  key,
+  process,
+  client_agg_type,
+  first_bucket,
+  last_bucket,
+  num_buckets
+UNION ALL
+SELECT
+  os,
+  app_build_id,
+  CAST(NULL AS STRING) AS app_version,
+  CAST(NULL AS STRING) AS channel,
+  metric,
+  metric_type,
+  key,
+  process,
+  client_agg_type,
+  agg_type,
+  SUM(count) AS total_users,
+  CASE
+  WHEN
+    metric_type = 'scalar'
+    OR metric_type = 'keyed-scalar'
+  THEN
+    udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
+    )
+  WHEN
+    metric_type = 'boolean'
+    OR metric_type = 'keyed-scalar-boolean'
+  THEN
+    udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      ['always', 'never', 'sometimes']
+    )
+  END
+  AS aggregates
+FROM
+  clients_histogram_bucket_counts_v1
+WHERE
+  first_bucket IS NOT NULL
+  AND os IS NOT NULL
+GROUP BY
+  os,
   app_build_id,
   metric,
   metric_type,
@@ -650,8 +650,8 @@ UNION ALL
 SELECT
   os,
   channel,
-  CAST(NULL AS STRING) AS app_version,
   CAST(NULL AS STRING) AS app_build_id,
+  CAST(NULL AS STRING) AS app_version,
   metric,
   metric_type,
   key,
@@ -745,8 +745,8 @@ UNION ALL
 SELECT
   app_version,
   channel,
-  CAST(NULL AS STRING) AS os,
   CAST(NULL AS STRING) AS app_build_id,
+  CAST(NULL AS STRING) AS os,
   metric,
   metric_type,
   key,
@@ -838,9 +838,9 @@ GROUP BY
 UNION ALL
 SELECT
   os,
+  CAST(NULL AS STRING) AS app_build_id,
   CAST(NULL AS STRING) AS app_version,
   CAST(NULL AS STRING) AS channel,
-  CAST(NULL AS STRING) AS app_build_id,
   metric,
   metric_type,
   key,
@@ -885,9 +885,9 @@ GROUP BY
 UNION ALL
 SELECT
   app_version,
+  CAST(NULL AS STRING) AS app_build_id,
   CAST(NULL AS STRING) AS channel,
   CAST(NULL AS STRING) AS os,
-  CAST(NULL AS STRING) AS app_build_id,
   metric,
   metric_type,
   key,
@@ -977,9 +977,9 @@ GROUP BY
 UNION ALL
 SELECT
   channel,
+  CAST(NULL AS STRING) AS app_build_id,
   CAST(NULL AS STRING) AS app_version,
   CAST(NULL AS STRING) AS os,
-  CAST(NULL AS STRING) AS app_build_id,
   metric,
   metric_type,
   key,
@@ -1022,10 +1022,10 @@ GROUP BY
   num_buckets
 UNION ALL
 SELECT
+  CAST(NULL AS STRING) AS app_build_id,
   CAST(NULL AS STRING) AS app_version,
   CAST(NULL AS STRING) AS channel,
   CAST(NULL AS STRING) AS os,
-  CAST(NULL AS STRING) AS app_build_id,
   metric,
   metric_type,
   key,

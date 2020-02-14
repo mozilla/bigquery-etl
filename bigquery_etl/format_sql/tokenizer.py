@@ -429,6 +429,12 @@ class JinjaExpression(Identifier):
     pattern = re.compile(r"{{.*}}")
 
 
+class JinjaStatementLine(Token):
+    """Jinja statement that occurs in a single block."""
+
+    pattern = re.compile(r"{%\s*(include|set).*%}", re.IGNORECASE)
+
+
 class JinjaStatement(BlockMiddleKeyword):
     """Template control flow.
 
@@ -447,7 +453,9 @@ class JinjaStatement(BlockMiddleKeyword):
 class JinjaStatementStart(BlockStartKeyword):
     """Jinja expression that gets its own line followed by increased indent."""
 
-    pattern = re.compile(r"{%\s*(for|if|macro|call|filter|block|raw).*%}", re.IGNORECASE)
+    pattern = re.compile(
+        r"{%\s*(for|if|macro|call|filter|block|raw).*%}", re.IGNORECASE
+    )
 
 
 class JinjaStatementEnd(BlockEndKeyword):
@@ -469,6 +477,7 @@ BIGQUERY_TOKEN_PRIORITY = [
     AngleBracketKeyword,
     SpaceBeforeBracketKeyword,
     ReservedKeyword,
+    JinjaStatementLine,
     JinjaStatementStart,
     JinjaStatementEnd,
     JinjaStatement,

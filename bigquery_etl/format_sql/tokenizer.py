@@ -443,6 +443,20 @@ class JinjaStatementLine(Token):
     pattern = re.compile(r"{%\s*(include|set).*%}", re.IGNORECASE)
 
 
+class JinjaStatementStart(BlockStart):
+    """Jinja expression that gets its own line followed by increased indent."""
+
+    pattern = re.compile(
+        r"{%\s*(for|if|macro|call|filter|block|raw).*%}", re.IGNORECASE
+    )
+
+
+class JinjaStatementEnd(BlockEnd):
+    """Jinja expression that gets its own line preceded by decreased indent."""
+
+    pattern = re.compile(r"{%\s*end.*%}", re.IGNORECASE)
+
+
 class JinjaStatementMiddle(JinjaStatementStart, JinjaStatementEnd):
     """Template control flow.
 
@@ -456,20 +470,6 @@ class JinjaStatementMiddle(JinjaStatementStart, JinjaStatementEnd):
     """
 
     pattern = re.compile(r"{%\s*(else).*%}")
-
-
-class JinjaStatementStart(BlockStart):
-    """Jinja expression that gets its own line followed by increased indent."""
-
-    pattern = re.compile(
-        r"{%\s*(for|if|macro|call|filter|block|raw).*%}", re.IGNORECASE
-    )
-
-
-class JinjaStatementEnd(BlockEnd):
-    """Jinja expression that gets its own line preceded by decreased indent."""
-
-    pattern = re.compile(r"{%\s*end.*%}", re.IGNORECASE)
 
 
 BIGQUERY_TOKEN_PRIORITY = [

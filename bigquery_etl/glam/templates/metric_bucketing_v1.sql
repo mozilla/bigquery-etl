@@ -21,8 +21,7 @@ bucketed_scalars AS (
   CROSS JOIN
     UNNEST(scalar_aggregates)
   WHERE
-    metric_type = 'scalar'
-    OR metric_type = 'keyed-scalar'
+    metric_type in ({{ scalar_metric_types }})
 ),
 booleans_and_scalars AS (
   SELECT

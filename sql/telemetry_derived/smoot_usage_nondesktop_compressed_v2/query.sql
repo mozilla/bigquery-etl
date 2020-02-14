@@ -28,7 +28,8 @@ WITH compressed AS (
     ) AS country,
     substr(locale, 0, 2) AS locale,
     IF(os IN ('Windows_NT', 'Darwin', 'Linux'), os, 'Other') AS os,
-    channel
+    channel,
+    attributed,
   FROM
     smoot_usage_nondesktop_v2
 )
@@ -40,6 +41,7 @@ SELECT
   locale,
   os,
   channel,
+  attributed,
   STRUCT(
     STRUCT(
       sum(metrics.day_0.dau) AS dau,
@@ -69,4 +71,5 @@ GROUP BY
   country,
   locale,
   os,
-  channel
+  channel,
+  attributed

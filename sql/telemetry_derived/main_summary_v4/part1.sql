@@ -1,237 +1,3 @@
-CREATE TEMP FUNCTION udf_boolean_histogram_to_boolean(histogram STRING) AS (
-  COALESCE(
-    SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, "$.values.1") AS INT64) > 0,
-    NOT SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, "$.values.0") AS INT64) > 0
-  )
-);
-
-CREATE TEMP FUNCTION udf_get_key(map ANY TYPE, k ANY TYPE) AS (
-  (SELECT key_value.value FROM UNNEST(map) AS key_value WHERE key_value.key = k LIMIT 1)
-);
-
-CREATE TEMP FUNCTION udf_json_extract_int_map(input STRING) AS (
-  ARRAY(
-    SELECT
-      STRUCT(
-        SAFE_CAST(SPLIT(entry, ':')[OFFSET(0)] AS INT64) AS key,
-        SAFE_CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value
-      )
-    FROM
-      UNNEST(SPLIT(REPLACE(TRIM(input, '{}'), '"', ''), ',')) AS entry
-    WHERE
-      LENGTH(entry) > 0
-  )
-);
-
-CREATE TEMP FUNCTION
-  udf_json_extract_histogram (input STRING) AS (STRUCT(
-    CAST(JSON_EXTRACT_SCALAR(input, '$.bucket_count') AS INT64) AS bucket_count,
-    CAST(JSON_EXTRACT_SCALAR(input, '$.histogram_type') AS INT64) AS histogram_type,
-    CAST(JSON_EXTRACT_SCALAR(input, '$.sum') AS INT64) AS `sum`,
-    ARRAY(
-      SELECT
-        CAST(bound AS INT64)
-      FROM
-        UNNEST(SPLIT(TRIM(JSON_EXTRACT(input, '$.range'), '[]'), ',')) AS bound) AS `range`,
-    udf_json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values` ));
-
-CREATE TEMP FUNCTION udf_histogram_max_key_with_nonzero_value(histogram STRING) AS (
-  (SELECT MAX(key) FROM UNNEST(udf_json_extract_histogram(histogram).values) WHERE value > 0)
-);
-
-CREATE TEMP FUNCTION udf_histogram_to_mean(histogram ANY TYPE) AS (
-  CASE
-  WHEN
-    histogram.sum < 0
-  THEN
-    NULL
-  WHEN
-    histogram.sum = 0
-  THEN
-    0
-  ELSE
-    SAFE_CAST(
-      TRUNC(
-        histogram.sum / (SELECT SUM(value) FROM UNNEST(histogram.values) WHERE value > 0)
-      ) AS INT64
-    )
-  END
-);
-
-CREATE TEMP FUNCTION udf_histogram_to_threshold_count(histogram STRING, threshold INT64) AS (
-  (
-    SELECT
-      IFNULL(SUM(value), 0)
-    FROM
-      UNNEST(udf_json_extract_histogram(histogram).values)
-    WHERE
-      key >= threshold
-  )
-);
-
-CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
-  active_addons ARRAY<
-    STRUCT<
-      key STRING,
-      value STRUCT<
-        app_disabled BOOL,
-        blocklisted BOOL,
-        description STRING,
-        has_binary_components BOOL,
-        install_day INT64,
-        is_system BOOL,
-        name STRING,
-        scope INT64,
-        signed_state INT64,
-        type STRING,
-        update_day INT64,
-        is_web_extension BOOL,
-        multiprocess_compatible BOOL,
-        foreign_install INT64,
-        user_disabled INT64,
-        version STRING
-      >
-    >
-  >,
-  active_addons_json STRING
-)
-RETURNS ARRAY<
-  STRUCT<
-    addon_id STRING,
-    blocklisted BOOL,
-    name STRING,
-    user_disabled BOOL,
-    app_disabled BOOL,
-    version STRING,
-    scope INT64,
-    type STRING,
-    foreign_install BOOL,
-    has_binary_components BOOL,
-    install_day INT64,
-    update_day INT64,
-    signed_state INT64,
-    is_system BOOL,
-    is_web_extension BOOL,
-    multiprocess_compatible BOOL
-  >
->
-LANGUAGE js
-AS
-  """
-function ifnull(value1, value2) {
-  // preserve falsey values and ignore missing values
-  if (value1 !== null && value1 !== undefined) {
-    return value1;
-  }
-  return value2;
-}
-
-function maybeParseInt(value) {
-  // return null instead of NaN on failure
-  result = parseInt(value);
-  return isNaN(result) ? null : result;
-}
-
-try {
-  const additional_properties = ifnull(JSON.parse(active_addons_json), {});
-  const result = [];
-  ifnull(active_addons, []).forEach((item) => {
-    const addon_json = ifnull(additional_properties[item.key], {});
-    const value = ifnull(item.value, {});
-    result.push({
-      addon_id: item.key,
-      blocklisted: value.blocklisted,
-      name: value.name,
-      user_disabled: ifnull(maybeParseInt(value.user_disabled), addon_json.userDisabled),
-      app_disabled: value.app_disabled,
-      version: ifnull(value.version, addon_json.version),
-      scope: value.scope,
-      type: value.type,
-      foreign_install: ifnull(maybeParseInt(value.foreign_install), addon_json.foreignInstall),
-      has_binary_components: value.has_binary_components,
-      install_day: value.install_day,
-      update_day: value.update_day,
-      signed_state: value.signed_state,
-      is_system: value.is_system,
-      is_web_extension: value.is_web_extension,
-      multiprocess_compatible: value.multiprocess_compatible,
-    });
-  });
-  return result;
-} catch(err) {
-  return null;
-}
-""";
-
-CREATE TEMP FUNCTION udf_js_main_summary_addon_scalars(
-  dynamic_scalars_json STRING,
-  dynamic_keyed_scalars_json STRING
-)
-RETURNS STRUCT<
-  keyed_boolean_addon_scalars ARRAY<
-    STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value BOOL>>>
-  >,
-  keyed_uint_addon_scalars ARRAY<STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>,
-  string_addon_scalars ARRAY<STRUCT<key STRING, value STRING>>,
-  keyed_string_addon_scalars ARRAY<
-    STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value STRING>>>
-  >,
-  uint_addon_scalars ARRAY<STRUCT<key STRING, value INT64>>,
-  boolean_addon_scalars ARRAY<STRUCT<key STRING, value BOOL>>
->
-LANGUAGE js
-AS
-  """
-try {
-  const dynamicScalars = JSON.parse(dynamic_scalars_json) || {};
-  const dynamicKeyedScalars = JSON.parse(dynamic_keyed_scalars_json) || {};
-  const result = {
-    keyed_boolean_addon_scalars: [],
-    keyed_uint_addon_scalars: [],
-    string_addon_scalars: [],
-    keyed_string_addon_scalars: [],
-    uint_addon_scalars: [],
-    boolean_addon_scalars: [],
-  };
-  const typeMap = {
-    number: 'uint',
-    boolean: 'boolean',
-    string: 'string',
-  };
-  Object.entries(dynamicKeyedScalars).forEach(([k, v]) => {
-    const type = typeMap[typeof Object.values(v)[0]];
-    const column = `keyed_${type}_addon_scalars`;
-    result[column].push({
-      key: k,
-      value: Object.entries(v).map(([key, value]) => ({ key, value }))
-    });
-  });
-  Object.entries(dynamicScalars).forEach(([k, v]) => {
-    const type = typeMap[typeof v];
-    result[`${type}_addon_scalars`].push({key: k, value: v});
-  });
-  return result;
-} catch(err) {
-  return null;
-}
-""";
-
-CREATE TEMP FUNCTION udf_js_main_summary_disabled_addons(
-  active_addon_ids ARRAY<STRING>,
-  addon_details_json STRING
-)
-RETURNS ARRAY<STRING>
-LANGUAGE js
-AS
-  """
-try {
-  const addonDetails = Object.keys(JSON.parse(addon_details_json) || {});
-  return addonDetails.filter(k => !(active_addon_ids || []).includes(k));
-} catch(err) {
-  return null;
-}
-""";
-
 SELECT
   document_id,
   client_id,
@@ -299,17 +65,17 @@ SELECT
   -- See bugs 1550752 and 1593773
   IFNULL(
     environment.services.account_enabled,
-    udf_boolean_histogram_to_boolean(payload.histograms.fxa_configured)
+    udf.boolean_histogram_to_boolean(payload.histograms.fxa_configured)
   ) AS fxa_configured,
   -- See bugs 1232050 and 1593773
   IFNULL(
     environment.services.sync_enabled,
-    udf_boolean_histogram_to_boolean(payload.histograms.weave_configured)
+    udf.boolean_histogram_to_boolean(payload.histograms.weave_configured)
   ) AS sync_configured,
-  udf_histogram_max_key_with_nonzero_value(
+  udf.histogram_max_key_with_nonzero_value(
     payload.histograms.weave_device_count_desktop
   ) AS sync_count_desktop,
-  udf_histogram_max_key_with_nonzero_value(
+  udf.histogram_max_key_with_nonzero_value(
     payload.histograms.weave_device_count_mobile
   ) AS sync_count_mobile,
   application.build_id AS app_build_id,
@@ -344,20 +110,20 @@ SELECT
   payload.info.reason,
   payload.info.timezone_offset,
   -- Different types of crashes / hangs; format:off
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'pluginhang')).sum AS plugin_hangs,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'plugin')).sum AS aborts_plugin,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'content')).sum AS aborts_content,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'gmplugin')).sum AS aborts_gmplugin,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin')).sum AS crashes_detected_plugin,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'content')).sum AS crashes_detected_content,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin')).sum AS crashes_detected_gmplugin,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.process_crash_submit_attempt, 'main-crash')).sum AS crash_submit_attempt_main,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.process_crash_submit_attempt, 'content-crash')).sum AS crash_submit_attempt_content,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.process_crash_submit_attempt, 'plugin-crash')).sum AS crash_submit_attempt_plugin,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.process_crash_submit_success, 'main-crash')).sum AS crash_submit_success_main,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.process_crash_submit_success, 'content-crash')).sum AS crash_submit_success_content,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash')).sum AS crash_submit_success_plugin,
-  udf_json_extract_histogram(udf_get_key(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')).sum AS shutdown_kill,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'pluginhang')).sum AS plugin_hangs,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'plugin')).sum AS aborts_plugin,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'content')).sum AS aborts_content,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'gmplugin')).sum AS aborts_gmplugin,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin')).sum AS crashes_detected_plugin,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'content')).sum AS crashes_detected_content,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin')).sum AS crashes_detected_gmplugin,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'main-crash')).sum AS crash_submit_attempt_main,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'content-crash')).sum AS crash_submit_attempt_content,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'plugin-crash')).sum AS crash_submit_attempt_plugin,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'main-crash')).sum AS crash_submit_success_main,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'content-crash')).sum AS crash_submit_success_content,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash')).sum AS crash_submit_success_plugin,
+  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')).sum AS shutdown_kill,
   -- format:on
   ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
   -- See https://github.com/mozilla-services/data-pipeline/blob/master/hindsight/modules/fx/ping.lua#L82
@@ -390,7 +156,7 @@ SELECT
   environment.settings.default_private_search_engine_data.submission_url AS default_private_search_engine_data_submission_url,
   environment.settings.default_private_search_engine,
   -- DevTools usage per bug 1262478
-  udf_json_extract_histogram(
+  udf.json_extract_histogram(
     payload.histograms.devtools_toolbox_opened_count
   ).sum AS devtools_toolbox_opened_count,
   -- client date per bug 1270505
@@ -411,15 +177,15 @@ SELECT
   -- histogram would probably be better in general, but the granularity of the
   -- buckets for these particular histograms is not fine enough for the median
   -- to give a more accurate value than the mean.
-  udf_histogram_to_mean(
-    udf_json_extract_histogram(payload.histograms.places_bookmarks_count)
+  udf.histogram_to_mean(
+    udf.json_extract_histogram(payload.histograms.places_bookmarks_count)
   ) AS places_bookmarks_count,
-  udf_histogram_to_mean(
-    udf_json_extract_histogram(payload.histograms.places_pages_count)
+  udf.histogram_to_mean(
+    udf.json_extract_histogram(payload.histograms.places_pages_count)
   ) AS places_pages_count,
   -- Push metrics per bug 1270482 and bug 1311174
-  udf_json_extract_histogram(payload.histograms.push_api_notify).sum AS push_api_notify,
-  udf_json_extract_histogram(
+  udf.json_extract_histogram(payload.histograms.push_api_notify).sum AS push_api_notify,
+  udf.json_extract_histogram(
     payload.histograms.web_notification_shown
   ).sum AS web_notification_shown,
   -- Info from POPUP_NOTIFICATION_STATS keyed histogram
@@ -461,19 +227,19 @@ SELECT
     SELECT AS STRUCT
       SUBSTR(_key, 0, pos - 2) AS engine,
       SUBSTR(_key, pos) AS source,
-      udf_json_extract_histogram(value).sum AS `count`
+      udf.json_extract_histogram(value).sum AS `count`
     FROM
       UNNEST(payload.keyed_histograms.search_counts),
       UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
       UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
   ) AS search_counts,
   -- Addon and configuration settings per Bug 1290181
-  udf_js_main_summary_active_addons(
+  udf_js.main_summary_active_addons(
     environment.addons.active_addons,
     JSON_EXTRACT(additional_properties, '$.environment.addons.activeAddons')
   ) AS active_addons,
   -- Legacy/disabled addon and configuration settings per Bug 1390814. Please note that |disabled_addons_ids| may go away in the future.
-  udf_js_main_summary_disabled_addons(
+  udf_js.main_summary_disabled_addons(
     ARRAY(SELECT key FROM UNNEST(environment.addons.active_addons)),
     JSON_EXTRACT(additional_properties, '$.payload.addonDetails.XPI')
   ) AS disabled_addons_ids, -- One per item in payload.addonDetails.XPI
@@ -573,7 +339,7 @@ SELECT
     SELECT
       IFNULL(SUM(value), 0)
     FROM
-      UNNEST(udf_json_extract_histogram(payload.histograms.ssl_handshake_result).values)
+      UNNEST(udf.json_extract_histogram(payload.histograms.ssl_handshake_result).values)
     WHERE
       key
       BETWEEN 1
@@ -584,7 +350,7 @@ SELECT
       CAST(key AS STRING) AS key,
       value
     FROM
-      UNNEST(udf_json_extract_histogram(payload.histograms.ssl_handshake_result).values)
+      UNNEST(udf.json_extract_histogram(payload.histograms.ssl_handshake_result).values)
     WHERE
       key
       BETWEEN 0
@@ -666,10 +432,10 @@ SELECT
       ) AS INT64
     ) AS block
   ) AS plugins_notification_user_action,
-  udf_json_extract_histogram(payload.histograms.plugins_infobar_shown).sum AS plugins_infobar_shown,
-  udf_json_extract_histogram(payload.histograms.plugins_infobar_block).sum AS plugins_infobar_block,
-  udf_json_extract_histogram(payload.histograms.plugins_infobar_allow).sum AS plugins_infobar_allow,
-  udf_json_extract_histogram(
+  udf.json_extract_histogram(payload.histograms.plugins_infobar_shown).sum AS plugins_infobar_shown,
+  udf.json_extract_histogram(payload.histograms.plugins_infobar_block).sum AS plugins_infobar_block,
+  udf.json_extract_histogram(payload.histograms.plugins_infobar_allow).sum AS plugins_infobar_allow,
+  udf.json_extract_histogram(
     payload.histograms.plugins_infobar_dismissed
   ).sum AS plugins_infobar_dismissed,
   -- bug 1366253 - active experiments
@@ -710,34 +476,34 @@ SELECT
     )
   ) AS quantum_ready,
   -- threshold counts; format:off
-  udf_histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_main_above_150,
-  udf_histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_main_above_250,
-  udf_histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_main_above_2500,
+  udf.histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_main_above_150,
+  udf.histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_main_above_250,
+  udf.histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_main_above_2500,
 
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_content_above_150,
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_content_above_250,
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_content_above_2500,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_content_above_150,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_content_above_250,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_content_above_2500,
 
-  udf_histogram_to_threshold_count(payload.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_main_above_150,
-  udf_histogram_to_threshold_count(payload.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_main_above_250,
-  udf_histogram_to_threshold_count(payload.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_main_above_2500,
+  udf.histogram_to_threshold_count(payload.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_main_above_150,
+  udf.histogram_to_threshold_count(payload.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_main_above_250,
+  udf.histogram_to_threshold_count(payload.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_main_above_2500,
 
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_content_above_150,
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_content_above_250,
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_content_above_2500,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_content_above_150,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_content_above_250,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_content_above_2500,
 
-  udf_histogram_to_threshold_count(payload.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_main_above_150,
-  udf_histogram_to_threshold_count(payload.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_main_above_250,
-  udf_histogram_to_threshold_count(payload.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_main_above_2500,
+  udf.histogram_to_threshold_count(payload.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_main_above_150,
+  udf.histogram_to_threshold_count(payload.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_main_above_250,
+  udf.histogram_to_threshold_count(payload.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_main_above_2500,
 
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_content_above_150,
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_content_above_250,
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_content_above_2500,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_content_above_150,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_content_above_250,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_content_above_2500,
 
-  udf_histogram_to_threshold_count(payload.histograms.ghost_windows, 1) AS ghost_windows_main_above_1,
-  udf_histogram_to_threshold_count(payload.processes.content.histograms.ghost_windows, 1) AS ghost_windows_content_above_1,
+  udf.histogram_to_threshold_count(payload.histograms.ghost_windows, 1) AS ghost_windows_main_above_1,
+  udf.histogram_to_threshold_count(payload.processes.content.histograms.ghost_windows, 1) AS ghost_windows_content_above_1,
   -- format:on
-  udf_js_main_summary_addon_scalars(
+  udf_js.main_summary_addon_scalars(
     JSON_EXTRACT(additional_properties, '$.payload.processes.dynamic.scalars'),
     JSON_EXTRACT(additional_properties, '$.payload.processes.dynamic.keyedScalars')
   ).*,

@@ -16,7 +16,7 @@ WITH parquet_events AS (
       sync_count_mobile,
       active_experiment_id,
       active_experiment_branch
-    ) REPLACE (
+    ) REPLACE(
       event_map_values.key_value AS event_map_values,
       -- experiments struct in new events includes enrollment_id and type subfields
       (
@@ -36,9 +36,14 @@ WITH parquet_events AS (
       ) AS experiments,
       -- Bug 1525620: fix inconsistencies in timestamp resolution for main vs event events
       CASE
-        WHEN doc_type = 'main' THEN SAFE.TIMESTAMP_MICROS(CAST(`timestamp` / 1000 AS INT64))
-        ELSE SAFE.TIMESTAMP_SECONDS(`timestamp`)
-      END AS `timestamp`,
+      WHEN
+        doc_type = 'main'
+      THEN
+        SAFE.TIMESTAMP_MICROS(CAST(`timestamp` / 1000 AS INT64))
+      ELSE
+        SAFE.TIMESTAMP_SECONDS(`timestamp`)
+      END
+      AS `timestamp`,
       SAFE.TIMESTAMP_MILLIS(session_start_time) AS session_start_time
     )
   FROM

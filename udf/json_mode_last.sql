@@ -6,7 +6,7 @@ In the case of multiple values tied for the highest count, it returns the value
 that appears latest in the array. Nulls are ignored.
 
 */
-CREATE TEMP FUNCTION udf_json_mode_last(list ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION udf.json_mode_last(list ANY TYPE) AS (
   (
     SELECT
       ANY_VALUE(_value)
@@ -27,12 +27,12 @@ CREATE TEMP FUNCTION udf_json_mode_last(list ANY TYPE) AS (
 SELECT
   assert_equals(
     STRUCT('bar'),
-    udf_json_mode_last([STRUCT('foo'), STRUCT('bar'), STRUCT('baz'), STRUCT('bar'), STRUCT('fred')])
+    udf.json_mode_last([STRUCT('foo'), STRUCT('bar'), STRUCT('baz'), STRUCT('bar'), STRUCT('fred')])
   ),
   assert_equals(
     STRUCT('baz'),
-    udf_json_mode_last(
+    udf.json_mode_last(
       [STRUCT('foo'), STRUCT('bar'), STRUCT('baz'), STRUCT('bar'), STRUCT('baz'), STRUCT('fred')]
     )
   ),
-  assert_equals(STRUCT('foo'), udf_json_mode_last([NULL, STRUCT('foo'), NULL]));
+  assert_equals(STRUCT('foo'), udf.json_mode_last([NULL, STRUCT('foo'), NULL]));

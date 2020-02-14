@@ -4,8 +4,8 @@ Take a keyed histogram of type STRUCT<key STRING, value STRING>,
 extract the histogram of the given key, and return the sum value
 
  */
-CREATE TEMP FUNCTION udf_keyed_histogram_get_sum(keyed_histogram ANY TYPE, target_key STRING) AS (
-  udf_json_extract_histogram(udf_get_key(keyed_histogram, target_key)).sum
+CREATE OR REPLACE FUNCTION udf.keyed_histogram_get_sum(keyed_histogram ANY TYPE, target_key STRING) AS (
+  udf.json_extract_histogram(udf.get_key(keyed_histogram, target_key)).sum
 );
 -- Test
 WITH histograms AS (
@@ -17,14 +17,14 @@ WITH histograms AS (
 )
 
 SELECT
-  assert_null(udf_keyed_histogram_get_sum(ARRAY<STRUCT<key STRING, value STRING>>[], 'dne')),
-  assert_null(udf_keyed_histogram_get_sum((SELECT * FROM histograms), 'dne')),
+  assert_null(udf.keyed_histogram_get_sum(ARRAY<STRUCT<key STRING, value STRING>>[], 'dne')),
+  assert_null(udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'dne')),
   assert_equals(
     1,
-    udf_keyed_histogram_get_sum((SELECT * FROM histograms), 'key1')
+    udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'key1')
   ),
   assert_equals(
     2,
-    udf_keyed_histogram_get_sum((SELECT * FROM histograms), 'key2')
+    udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'key2')
   ),
-  assert_null(udf_keyed_histogram_get_sum((SELECT * FROM histograms), 'key3'))
+  assert_null(udf.keyed_histogram_get_sum((SELECT * FROM histograms), 'key3'))

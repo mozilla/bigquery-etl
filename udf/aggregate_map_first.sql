@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf_aggregate_map_first(maps ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION udf.aggregate_map_first(maps ANY TYPE) AS (
   STRUCT(
     ARRAY(
       SELECT AS STRUCT

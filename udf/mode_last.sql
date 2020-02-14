@@ -7,8 +7,8 @@ that appears latest in the array. Nulls are ignored.
 
 */
 
-CREATE TEMP FUNCTION
-  udf_mode_last(list ANY TYPE) AS ((
+CREATE OR REPLACE FUNCTION
+  udf.mode_last(list ANY TYPE) AS ((
     SELECT
       _value
     FROM
@@ -28,6 +28,6 @@ CREATE TEMP FUNCTION
 -- Test
 
 SELECT
-  assert_equals('bar', udf_mode_last(['foo', 'bar', 'baz', 'bar', 'fred'])),
-  assert_equals('baz', udf_mode_last(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
-  assert_equals('foo', udf_mode_last([null, 'foo', null]));
+  assert_equals('bar', udf.mode_last(['foo', 'bar', 'baz', 'bar', 'fred'])),
+  assert_equals('baz', udf.mode_last(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
+  assert_equals('foo', udf.mode_last([null, 'foo', null]));

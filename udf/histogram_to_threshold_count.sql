@@ -10,12 +10,12 @@ threshold of 2. Use threshold that are not bucket boundaries with caution.
 https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239
 
 */
-CREATE TEMP FUNCTION udf_histogram_to_threshold_count(histogram STRING, threshold INT64) AS (
+CREATE OR REPLACE FUNCTION udf.histogram_to_threshold_count(histogram STRING, threshold INT64) AS (
   (
     SELECT
       IFNULL(SUM(value), 0)
     FROM
-      UNNEST(udf_json_extract_histogram(histogram).values)
+      UNNEST(udf.json_extract_histogram(histogram).values)
     WHERE
       key >= threshold
   )
@@ -25,8 +25,8 @@ CREATE TEMP FUNCTION udf_histogram_to_threshold_count(histogram STRING, threshol
 SELECT
   assert_equals(
     17,
-    udf_histogram_to_threshold_count('{"values":{"0":1,"1":2, "4": 10, "8": 7}}', 4)
+    udf.histogram_to_threshold_count('{"values":{"0":1,"1":2, "4": 10, "8": 7}}', 4)
   ),
-  assert_equals(0, udf_histogram_to_threshold_count('{}', 1)),
-  assert_equals(0, udf_histogram_to_threshold_count('{"values":{"0":0}}', 1)),
-  assert_equals(3, udf_histogram_to_threshold_count('{"values":{"5":1, "6":3}}', 6))
+  assert_equals(0, udf.histogram_to_threshold_count('{}', 1)),
+  assert_equals(0, udf.histogram_to_threshold_count('{"values":{"0":0}}', 1)),
+  assert_equals(3, udf.histogram_to_threshold_count('{"values":{"5":1, "6":3}}', 6))

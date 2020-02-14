@@ -15,7 +15,7 @@ def parse_args():
     parser = ArgumentParser()
     parser.add_argument(
         "--data-dir",
-        default="templates/",
+        default="sql/",
         help="Path containing CSV's containing static data",
     )
     parser.add_argument("--project-id", help="Project to publish tables to")

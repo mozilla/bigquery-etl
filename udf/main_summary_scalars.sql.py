@@ -87,14 +87,14 @@ def make_field(source, target, s, schema_fields, keyed=False):
         )
         if keyed:
             kind = {"BOOL": "bool", "INT64": "string_int"}[sql_type]
-            source = "udf_json_extract_%s_map(%s)" % (kind, source)
+            source = "udf.json_extract_%s_map(%s)" % (kind, source)
         else:
             source = "CAST(%s AS %s)" % (source, sql_type)
     return "%s AS %s_%s" % (source, target, name)
 
 
 def main(root):
-    """Main."""
+    """Generate udf/main_summary_scalars.sql."""
     main_schema_json = open("main.4.bq")
     main_schema = json.load(main_schema_json)
     schema_fields = collect_fields(main_schema)
@@ -141,7 +141,7 @@ def main(root):
     )
 
     scalars_sql = """
-CREATE TEMP FUNCTION udf_main_summary_scalars(processes ANY TYPE, additional_properties STRING) AS (
+CREATE OR REPLACE FUNCTION udf.main_summary_scalars(processes ANY TYPE, additional_properties STRING) AS (
   STRUCT(
     %s
   )
@@ -150,7 +150,7 @@ CREATE TEMP FUNCTION udf_main_summary_scalars(processes ANY TYPE, additional_pro
         scalar_fields,
     )
 
-    open(os.path.join(root, "scalar_row.sql"), "w").write(scalars_sql)
+    open(os.path.join(root, "main_summary_scalars.sql"), "w").write(scalars_sql)
 
 
 if __name__ == "__main__":

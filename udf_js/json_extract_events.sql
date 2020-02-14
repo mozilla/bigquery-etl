@@ -1,5 +1,5 @@
-CREATE TEMP FUNCTION
-  udf_js_json_extract_events (input STRING)
+CREATE OR REPLACE FUNCTION
+  udf_js.json_extract_events (input STRING)
   RETURNS ARRAY<STRUCT<
   event_process STRING,
   event_timestamp INT64,
@@ -49,7 +49,7 @@ WITH
     --
     extracted AS (
       SELECT
-        udf_js_json_extract_events(events) as e
+        udf_js.json_extract_events(events) as e
       FROM
         events )
     --

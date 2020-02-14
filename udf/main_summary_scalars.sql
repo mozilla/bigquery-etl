@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf_main_summary_scalars(processes ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION udf.main_summary_scalars(processes ANY TYPE) AS (
   STRUCT(
     processes.parent.scalars.a11y_backplate AS scalar_parent_a11y_backplate,
     processes.parent.scalars.a11y_indicator_acted_on AS scalar_parent_a11y_indicator_acted_on,

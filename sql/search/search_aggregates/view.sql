@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.search.search_aggregates` AS
+  `moz-fx-data-shared-prod.search.search_aggregates`
+AS
 SELECT
   submission_date_s3,
   submission_date_s3 AS submission_date,
@@ -28,8 +29,8 @@ SELECT
 FROM
   `moz-fx-data-derived-datasets.search.search_aggregates_v6`
 WHERE
- submission_date_s3 >= '2019-05-04'
- AND submission_date_s3 <= '2019-05-11'
+  submission_date_s3 >= '2019-05-04'
+  AND submission_date_s3 <= '2019-05-11'
 UNION ALL
 SELECT
   submission_date AS submission_date_s3,

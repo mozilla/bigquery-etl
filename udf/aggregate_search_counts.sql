@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf_aggregate_search_counts(
+CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
   search_counts ARRAY<STRUCT<engine STRING, source STRING, count INT64>>
 ) AS (
   (
@@ -28,7 +28,7 @@ SELECT
       0 AS search_count_system,
       0 AS search_count_urlbar
     ),
-    udf_aggregate_search_counts(
+    udf.aggregate_search_counts(
       [
         STRUCT('foo' AS engine, 'abouthome' AS source, 3 AS count),
         STRUCT('foo' AS engine, 'abouthome' AS source, 2 AS count),
@@ -47,5 +47,5 @@ SELECT
       0 AS search_count_system,
       0 AS search_count_urlbar
     ),
-    udf_aggregate_search_counts([])
+    udf.aggregate_search_counts([])
   );

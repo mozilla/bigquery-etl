@@ -14,22 +14,22 @@ On any other day of the month, the result would be [1, 2, 3, 4, 5, 6, 7, 8, 9, 1
 This happens for every aggregate (searches, ad clicks, etc.)
 */
 
-CREATE TEMP FUNCTION
-  udf_add_monthly_engine_searches(prev STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>,
+CREATE OR REPLACE FUNCTION
+  udf.add_monthly_engine_searches(prev STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>,
                            curr STRUCT<total_searches ARRAY<INT64>, tagged_searches ARRAY<INT64>, search_with_ads ARRAY<INT64>, ad_click ARRAY<INT64>>,
                            submission_date DATE) AS (
   IF(EXTRACT(DAY FROM submission_date) = 1,
     STRUCT(
-        udf_array_drop_first_and_append(prev.total_searches, curr.total_searches[OFFSET(11)]) AS total_searches,
-        udf_array_drop_first_and_append(prev.tagged_searches, curr.tagged_searches[OFFSET(11)]) AS tagged_searches,
-        udf_array_drop_first_and_append(prev.search_with_ads, curr.search_with_ads[OFFSET(11)]) AS search_with_ads,
-        udf_array_drop_first_and_append(prev.ad_click, curr.ad_click[OFFSET(11)]) AS ad_click
+        udf.array_drop_first_and_append(prev.total_searches, curr.total_searches[OFFSET(11)]) AS total_searches,
+        udf.array_drop_first_and_append(prev.tagged_searches, curr.tagged_searches[OFFSET(11)]) AS tagged_searches,
+        udf.array_drop_first_and_append(prev.search_with_ads, curr.search_with_ads[OFFSET(11)]) AS search_with_ads,
+        udf.array_drop_first_and_append(prev.ad_click, curr.ad_click[OFFSET(11)]) AS ad_click
     ),
     STRUCT(
-        udf_vector_add(prev.total_searches, curr.total_searches) AS total_searches,
-        udf_vector_add(prev.tagged_searches, curr.tagged_searches) AS tagged_searches,
-        udf_vector_add(prev.search_with_ads, curr.search_with_ads) AS search_with_ads,
-        udf_vector_add(prev.ad_click, curr.ad_click) AS ad_click
+        udf.vector_add(prev.total_searches, curr.total_searches) AS total_searches,
+        udf.vector_add(prev.tagged_searches, curr.tagged_searches) AS tagged_searches,
+        udf.vector_add(prev.search_with_ads, curr.search_with_ads) AS search_with_ads,
+        udf.vector_add(prev.ad_click, curr.ad_click) AS ad_click
     )
 ));
 
@@ -39,20 +39,20 @@ WITH examples AS (
     SELECT
         STRUCT(generate_array(11, 0, -1) AS total_searches,
                generate_array(12, 1, -1) AS tagged_searches,
-               udf_zeroed_array(12) AS search_with_ads,
-               udf_zeroed_array(12) AS ad_click) AS prev,
-        STRUCT(udf_array_drop_first_and_append(udf_zeroed_array(12),  5) AS total_searches,
-               udf_array_drop_first_and_append(udf_zeroed_array(12), 10) AS tagged_searches,
-               udf_array_drop_first_and_append(udf_zeroed_array(12), 15) AS search_with_ads,
-               udf_array_drop_first_and_append(udf_zeroed_array(12), 20) AS ad_click) AS curr
+               udf.zeroed_array(12) AS search_with_ads,
+               udf.zeroed_array(12) AS ad_click) AS prev,
+        STRUCT(udf.array_drop_first_and_append(udf.zeroed_array(12),  5) AS total_searches,
+               udf.array_drop_first_and_append(udf.zeroed_array(12), 10) AS tagged_searches,
+               udf.array_drop_first_and_append(udf.zeroed_array(12), 15) AS search_with_ads,
+               udf.array_drop_first_and_append(udf.zeroed_array(12), 20) AS ad_click) AS curr
 ), oct_first AS (
     SELECT
-      udf_add_monthly_engine_searches(prev, curr, "2019-10-01") AS res, "2019-10-01" AS date
+      udf.add_monthly_engine_searches(prev, curr, "2019-10-01") AS res, "2019-10-01" AS date
     FROM
       examples
 ), oct_second AS (
     SELECT
-      udf_add_monthly_engine_searches(prev, curr, "2019-10-02") AS res, "2019-10-02" AS date
+      udf.add_monthly_engine_searches(prev, curr, "2019-10-02") AS res, "2019-10-02" AS date
     FROM
       examples
 )

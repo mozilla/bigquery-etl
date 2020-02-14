@@ -3,8 +3,8 @@
 Rename struct fields in anonymous event tuples to meaningful names.
 
 */
-CREATE TEMP FUNCTION
-  udf_deanonymize_event(tuple STRUCT<
+CREATE OR REPLACE FUNCTION
+  udf.deanonymize_event(tuple STRUCT<
     f0_ INT64,
     f1_ STRING,
     f2_ STRING,
@@ -25,13 +25,13 @@ CREATE TEMP FUNCTION
 -- Tests
 
 SELECT
-    assert_equals(1, udf_deanonymize_event(event).event_timestamp),
-    assert_equals("normandy", udf_deanonymize_event(event).event_category),
-    assert_equals("enroll", udf_deanonymize_event(event).event_method),
-    assert_equals("pref-flip", udf_deanonymize_event(event).event_object),
-    assert_equals("test-experiment", udf_deanonymize_event(event).event_string_value),
-    assert_equals("branch", udf_deanonymize_event(event).event_map_values[OFFSET(0)].key),
-    assert_equals("control", udf_deanonymize_event(event).event_map_values[OFFSET(0)].value)
+    assert_equals(1, udf.deanonymize_event(event).event_timestamp),
+    assert_equals("normandy", udf.deanonymize_event(event).event_category),
+    assert_equals("enroll", udf.deanonymize_event(event).event_method),
+    assert_equals("pref-flip", udf.deanonymize_event(event).event_object),
+    assert_equals("test-experiment", udf.deanonymize_event(event).event_string_value),
+    assert_equals("branch", udf.deanonymize_event(event).event_map_values[OFFSET(0)].key),
+    assert_equals("control", udf.deanonymize_event(event).event_map_values[OFFSET(0)].value)
 FROM (
   SELECT STRUCT(
     1 AS f0_,
@@ -45,7 +45,7 @@ FROM (
 );
 
 SELECT
-  assert_null(udf_deanonymize_event(event).event_timestamp)
+  assert_null(udf.deanonymize_event(event).event_timestamp)
 FROM (
   SELECT STRUCT(
     -859101 AS f0_,

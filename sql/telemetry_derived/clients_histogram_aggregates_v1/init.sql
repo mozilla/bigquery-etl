@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS
     app_version INT64,
     app_build_id STRING,
     channel STRING,
+    channel_enum INT64,
     histogram_aggregates ARRAY <STRUCT<
       first_bucket INT64,
       last_bucket INT64,

@@ -13,7 +13,7 @@ for foreignInstall and userDisabled; string or number for version.
 https://github.com/mozilla/telemetry-batch-view/blob/ea0733c00df191501b39d2c4e2ece3fe703a0ef3/src/main/scala/com/mozilla/telemetry/views/MainSummaryView.scala#L422-L449
 
 */
-CREATE TEMP FUNCTION udf_js_main_summary_active_addons(
+CREATE OR REPLACE FUNCTION udf_js.main_summary_active_addons(
   active_addons ARRAY<
     STRUCT<
       key STRING,
@@ -112,7 +112,7 @@ try {
 WITH result AS (
   SELECT AS VALUE
     ARRAY_CONCAT(
-      udf_js_main_summary_active_addons(
+      udf_js.main_summary_active_addons(
         ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,BOOL,INT64,BOOL,STRING,INT64,INT64,STRING,INT64,BOOL,BOOL,INT64,INT64,STRING>>>[
           -- truthy columns and additional_properties
           ('a', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, NULL, NULL, NULL)),
@@ -148,7 +148,7 @@ WITH result AS (
         }'''
       ),
       -- null additional properties
-      udf_js_main_summary_active_addons(
+      udf_js.main_summary_active_addons(
         ARRAY<STRUCT<STRING,STRUCT<BOOL,BOOL,STRING,BOOL,INT64,BOOL,STRING,INT64,INT64,STRING,INT64,BOOL,BOOL,INT64,INT64,STRING>>>[
           -- truthy columns and null additional_properties
           ('l', (TRUE, TRUE, 'description', TRUE, 2, TRUE, 'name', 1, 4, 'type', 3, TRUE, TRUE, 1, 1, "version")),
@@ -160,9 +160,9 @@ WITH result AS (
         NULL
       ),
       -- null addons and additional_properties
-      udf_js_main_summary_active_addons(NULL, NULL),
+      udf_js.main_summary_active_addons(NULL, NULL),
       -- null addons and truthy additional_properties
-      udf_js_main_summary_active_addons(NULL, '{"m":{"version":"version"}}')
+      udf_js.main_summary_active_addons(NULL, '{"m":{"version":"version"}}')
     )
 )
 SELECT

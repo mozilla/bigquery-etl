@@ -34,8 +34,8 @@ GROUP BY
 
 */
 
-CREATE TEMP FUNCTION
-  udf_js_jackknife_ratio_ci(
+CREATE OR REPLACE FUNCTION
+  udf_js.jackknife_ratio_ci(
     n_buckets INT64,
     values_per_bucket ARRAY<STRUCT<numerator FLOAT64, denominator FLOAT64>>)
   RETURNS STRUCT<

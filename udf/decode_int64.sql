@@ -1,5 +1,5 @@
-CREATE TEMP FUNCTION
-  udf_decode_int64(raw BYTES) AS ( CAST(
+CREATE OR REPLACE FUNCTION
+  udf.decode_int64(raw BYTES) AS ( CAST(
       -- bigquery can only decode raw int from bytes via hex
       CONCAT('0x', TO_HEX(
           -- remove most significant bit because INT64 is signed
@@ -16,5 +16,5 @@ CREATE TEMP FUNCTION
 -- Tests
 
 SELECT
-  assert_equals(1, udf_decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x01')),
-  assert_equals(16, udf_decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x10'));
+  assert_equals(1, udf.decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x01')),
+  assert_equals(16, udf.decode_int64(b'\x00\x00\x00\x00\x00\x00\x00\x10'));

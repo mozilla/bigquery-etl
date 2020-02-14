@@ -453,7 +453,7 @@ class JinjaStatementStart(BlockStartKeyword):
 class JinjaStatementEnd(BlockEndKeyword):
     """Jinja expression that gets its own line preceded by decreased indent."""
 
-    pattern = re.compile(r"{%\s*end.*%}, re.IGNORECASE")
+    pattern = re.compile(r"{%\s*end.*%}", re.IGNORECASE)
 
 
 BIGQUERY_TOKEN_PRIORITY = [

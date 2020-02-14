@@ -33,7 +33,6 @@
     FROM
         {{ source_table }}
     WHERE
-        first_bucket IS NOT NULL
         {% if "os" in grouping_attributes %}
             AND os IS NOT NULL
         {% endif %}

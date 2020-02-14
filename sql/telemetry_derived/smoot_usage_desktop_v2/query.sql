@@ -1,7 +1,8 @@
 WITH
   base AS (
   SELECT
-    * REPLACE(normalized_channel AS channel)
+    * REPLACE(normalized_channel AS channel),
+    (attribution.source IS NOT NULL OR attribution.campaign IS NOT NULL) AS attributed
   FROM
     telemetry.clients_last_seen),
   --
@@ -26,7 +27,8 @@ WITH
     locale,
     os,
     os_version,
-    channel
+    channel,
+    attributed
   FROM
     base
   WHERE
@@ -42,7 +44,8 @@ WITH
     locale,
     os,
     os_version,
-    channel )
+    channel,
+    attributed )
   --
 SELECT
   submission_date,

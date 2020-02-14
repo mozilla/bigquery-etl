@@ -48,4 +48,4 @@ class FormatTest(pytest.Item, pytest.File):
                 query = fp.read()
         except FileNotFoundError:
             query = expect
-        assert reformat(query) + "\n" == expect
+        assert expect == reformat(query) + "\n"

@@ -268,7 +268,7 @@ class SpaceBeforeBracketKeyword(ReservedKeyword):
 
 
 class BlockToken(Token):
-    """Scope for the current block."""
+    """Token that separates indented blocks, such as conditionals."""
 
 
 class BlockStart(BlockToken):
@@ -279,15 +279,7 @@ class BlockEnd(BlockToken):
     """End of a block scope."""
 
 
-class BlockMiddle(BlockStart, BlockEnd):
-    """Ends one indented block and starts another."""
-
-
-class BlockKeyword(BlockToken, ReservedKeyword):
-    """Keyword that separates indented blocks, such as conditionals."""
-
-
-class BlockStartKeyword(BlockStart, BlockKeyword):
+class BlockStartKeyword(BlockStart, ReservedKeyword):
     """Keyword that gets its own line followed by increased indent."""
 
     pattern = _keyword_pattern(
@@ -304,7 +296,7 @@ class BlockStartKeyword(BlockStart, BlockKeyword):
     )
 
 
-class BlockEndKeyword(BlockEnd, BlockKeyword):
+class BlockEndKeyword(BlockEnd, ReservedKeyword):
     """Keyword that gets its own line preceded by decreased indent."""
 
     pattern = _keyword_pattern(["END( (WHILE|LOOP|IF))?"])
@@ -451,7 +443,7 @@ class JinjaStatementLine(Token):
     pattern = re.compile(r"{%\s*(include|set).*%}", re.IGNORECASE)
 
 
-class JinjaStatementMiddle(BlockMiddle):
+class JinjaStatementMiddle(JinjaStatementStart, JinjaStatementEnd):
     """Template control flow.
 
         -- Jinja2, trailing comma

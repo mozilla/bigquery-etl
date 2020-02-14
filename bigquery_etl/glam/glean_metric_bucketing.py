@@ -48,8 +48,8 @@ def glean_variables():
     return dict(
         source_table="glam_etl.fenix_clients_scalar_aggregates_v1",
         attributes=",".join(attributes_list),
+        # does _not_ include boolean
         scalar_metric_types="""
-            "boolean",
             "counter",
             "quantity",
             "labeled_counter"

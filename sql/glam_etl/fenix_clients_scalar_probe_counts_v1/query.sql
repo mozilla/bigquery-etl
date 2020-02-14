@@ -338,7 +338,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   ping_type,
   os,
@@ -385,7 +385,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   ping_type,
   os,
@@ -431,7 +431,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   ping_type,
   os,
@@ -477,7 +477,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   ping_type,
   os,
@@ -522,7 +522,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   ping_type,
   app_version,
@@ -568,7 +567,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -614,7 +613,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   ping_type,
   os,
@@ -659,7 +658,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   ping_type,
   os,
@@ -704,7 +703,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   ping_type,
   os,
@@ -748,7 +747,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   ping_type,
   app_version,
@@ -792,7 +790,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   ping_type,
   app_version,
@@ -836,7 +833,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   ping_type,
   app_build_id,
@@ -881,7 +877,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -926,7 +922,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -971,7 +967,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   os,
   app_build_id,
@@ -1015,7 +1011,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   app_version,
   app_build_id,
@@ -1060,7 +1055,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   ping_type,
   os,
@@ -1103,7 +1098,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   ping_type,
   app_version,
@@ -1146,7 +1140,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   ping_type,
   app_build_id,
@@ -1189,7 +1182,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   ping_type,
   channel,
@@ -1233,7 +1225,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   os,
   app_version,
@@ -1277,7 +1269,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   os,
   app_build_id,
@@ -1321,7 +1313,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   os,
   channel,
@@ -1364,7 +1356,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   app_version,
   app_build_id,
@@ -1407,7 +1398,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   app_version,
   channel,
@@ -1450,7 +1440,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   app_build_id,
   channel,
@@ -1493,7 +1482,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   ping_type,
   metric,
@@ -1536,7 +1524,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 WHERE
-  AND os IS NOT NULL
+  os IS NOT NULL
 GROUP BY
   os,
   metric,
@@ -1578,7 +1566,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   app_version,
   metric,
@@ -1620,7 +1607,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   app_build_id,
   metric,
@@ -1662,7 +1648,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   channel,
   metric,
@@ -1704,7 +1689,6 @@ SELECT
   AS aggregates
 FROM
   fenix_clients_scalar_bucket_counts_v1
-WHERE
 GROUP BY
   metric,
   metric_type,

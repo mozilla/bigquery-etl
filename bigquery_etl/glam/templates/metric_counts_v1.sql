@@ -32,10 +32,10 @@
         AS aggregates
     FROM
         {{ source_table }}
+    {% if "os" in grouping_attributes %}
     WHERE
-        {% if "os" in grouping_attributes %}
-            AND os IS NOT NULL
-        {% endif %}
+        os IS NOT NULL
+    {% endif %}
     GROUP BY
         {% if grouping_attributes %}
             {{ grouping_attributes | join(",") }},

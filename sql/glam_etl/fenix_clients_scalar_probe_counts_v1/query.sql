@@ -338,6 +338,11 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  os,
+  app_version,
+  app_build_id,
+  channel,
   metric,
   metric_type,
   key,
@@ -376,6 +381,10 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  os,
+  app_version,
+  app_build_id,
   metric,
   metric_type,
   key,
@@ -414,6 +423,10 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  os,
+  app_version,
+  channel,
   metric,
   metric_type,
   key,
@@ -452,6 +465,10 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  os,
+  app_build_id,
+  channel,
   metric,
   metric_type,
   key,
@@ -490,6 +507,10 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  app_version,
+  app_build_id,
+  channel,
   metric,
   metric_type,
   key,
@@ -528,6 +549,10 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  os,
+  app_version,
+  app_build_id,
+  channel,
   metric,
   metric_type,
   key,
@@ -566,6 +591,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  os,
+  app_version,
   metric,
   metric_type,
   key,
@@ -604,6 +632,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  os,
+  app_build_id,
   metric,
   metric_type,
   key,
@@ -642,6 +673,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  os,
+  channel,
   metric,
   metric_type,
   key,
@@ -680,6 +714,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  app_version,
+  app_build_id,
   metric,
   metric_type,
   key,
@@ -718,6 +755,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  app_version,
+  channel,
   metric,
   metric_type,
   key,
@@ -756,6 +796,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  app_build_id,
+  channel,
   metric,
   metric_type,
   key,
@@ -794,6 +837,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  os,
+  app_version,
+  app_build_id,
   metric,
   metric_type,
   key,
@@ -832,6 +878,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  os,
+  app_version,
+  channel,
   metric,
   metric_type,
   key,
@@ -870,6 +919,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  os,
+  app_build_id,
+  channel,
   metric,
   metric_type,
   key,
@@ -908,6 +960,9 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  app_version,
+  app_build_id,
+  channel,
   metric,
   metric_type,
   key,
@@ -946,6 +1001,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  os,
   metric,
   metric_type,
   key,
@@ -984,6 +1041,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  app_version,
   metric,
   metric_type,
   key,
@@ -1022,6 +1081,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  app_build_id,
   metric,
   metric_type,
   key,
@@ -1060,6 +1121,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
+  channel,
   metric,
   metric_type,
   key,
@@ -1098,6 +1161,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  os,
+  app_version,
   metric,
   metric_type,
   key,
@@ -1136,6 +1201,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  os,
+  app_build_id,
   metric,
   metric_type,
   key,
@@ -1174,6 +1241,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  os,
+  channel,
   metric,
   metric_type,
   key,
@@ -1212,6 +1281,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  app_version,
+  app_build_id,
   metric,
   metric_type,
   key,
@@ -1250,6 +1321,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  app_version,
+  channel,
   metric,
   metric_type,
   key,
@@ -1288,6 +1361,8 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  app_build_id,
+  channel,
   metric,
   metric_type,
   key,
@@ -1326,6 +1401,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  ping_type,
   metric,
   metric_type,
   key,
@@ -1364,6 +1440,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  os,
   metric,
   metric_type,
   key,
@@ -1402,6 +1479,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  app_version,
   metric,
   metric_type,
   key,
@@ -1440,6 +1518,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  app_build_id,
   metric,
   metric_type,
   key,
@@ -1478,6 +1557,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
+  channel,
   metric,
   metric_type,
   key,

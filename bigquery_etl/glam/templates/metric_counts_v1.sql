@@ -37,14 +37,14 @@
         AS aggregates
     FROM
         {{ source_table }}
-    {% if "os" in grouping_attributes %}
+    {% if ("os", True) in grouping_attributes %}
     WHERE
         os IS NOT NULL
     {% endif %}
     GROUP BY
-        {% if grouping_attributes %}
-            {{ grouping_attributes | join(",") }},
-        {% endif %}
+        {% for attribute, in_grouping in attribute_combo if in_grouping %}
+            {{ attribute }},
+        {% endfor %}
         {{ aggregate_attributes }},
         {{ aggregate_grouping }}
     {% if not loop.last %}

@@ -209,28 +209,28 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.gfx_status_headless = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.gfx_status_headless AS INT64))
       ),
       (
         'gfx_status_headless',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.gfx_status_headless = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.gfx_status_headless AS INT64))
       ),
       (
         'glean_core_migration_successful',
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.glean_core_migration_successful = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.glean_core_migration_successful AS INT64))
       ),
       (
         'glean_core_migration_successful',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.glean_core_migration_successful = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.glean_core_migration_successful AS INT64))
       ),
       (
         'glean_error_preinit_tasks_overflow',
@@ -272,14 +272,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.glean_error_preinit_tasks_timeout = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.glean_error_preinit_tasks_timeout AS INT64))
       ),
       (
         'glean_error_preinit_tasks_timeout',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.glean_error_preinit_tasks_timeout = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.glean_error_preinit_tasks_timeout AS INT64))
       ),
       (
         'glean_validation_app_forceclosed_count',
@@ -461,14 +461,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.metrics_default_browser = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.metrics_default_browser AS INT64))
       ),
       (
         'metrics_default_browser',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.metrics_default_browser = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.metrics_default_browser AS INT64))
       )
     ] AS scalar_aggregates
   FROM

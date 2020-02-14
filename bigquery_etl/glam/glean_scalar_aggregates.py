@@ -198,15 +198,13 @@ def get_scalar_probes_sql_strings(
         probe_structs.append(
             (
                 f"('{probe}', 'boolean', '', 'false', "
-                f"SUM(case when metrics.boolean.{probe} = False "
-                "THEN 1 ELSE 0 END))"
+                f"SUM(CAST(NOT metrics.boolean.{probe} AS INT64)))"
             )
         )
         probe_structs.append(
             (
                 f"('{probe}', 'boolean', '', 'true', "
-                f"SUM(case when metrics.boolean.{probe} = True "
-                "THEN 1 ELSE 0 END))"
+                f"SUM(CAST(metrics.boolean.{probe} AS INT64)))"
             )
         )
 

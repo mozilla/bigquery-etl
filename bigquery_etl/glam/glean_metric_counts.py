@@ -43,6 +43,7 @@ def telemetry_variables():
             key,
             process
         """,
+        # TODO: some of these are histogram specific
         aggregate_grouping="""
             client_agg_type,
             first_bucket,
@@ -68,9 +69,7 @@ def glean_variables():
         """,
         aggregate_grouping="""
             client_agg_type,
-            first_bucket,
-            last_bucket,
-            num_buckets
+            agg_type
         """,
         # not boolean
         scalar_metric_types="""

@@ -349,9 +349,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -395,9 +393,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -441,9 +437,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -487,9 +481,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -531,9 +523,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -577,9 +567,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -622,9 +610,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -667,9 +653,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -712,9 +696,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -755,9 +737,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -798,9 +778,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -841,9 +819,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -886,9 +862,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -931,9 +905,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -976,9 +948,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   app_version,
@@ -1019,9 +989,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -1063,9 +1031,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -1105,9 +1071,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -1147,9 +1111,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -1189,9 +1151,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -1233,9 +1193,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -1277,9 +1235,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -1321,9 +1277,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   app_version,
@@ -1363,9 +1317,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   app_version,
@@ -1405,9 +1357,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   app_build_id,
@@ -1447,9 +1397,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   ping_type,
@@ -1488,9 +1436,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   os,
@@ -1531,9 +1477,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   app_version,
@@ -1572,9 +1516,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   app_build_id,
@@ -1613,9 +1555,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   channel,
@@ -1654,9 +1594,7 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type
 UNION ALL
 SELECT
   CAST(NULL AS STRING) AS app_build_id,
@@ -1694,6 +1632,4 @@ GROUP BY
   metric_type,
   key,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  agg_type

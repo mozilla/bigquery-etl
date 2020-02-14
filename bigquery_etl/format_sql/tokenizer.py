@@ -267,11 +267,27 @@ class SpaceBeforeBracketKeyword(ReservedKeyword):
     pattern = _keyword_pattern(["IN", r"\* EXCEPT", r"\* REPLACE", "NOT", "OVER"])
 
 
-class BlockKeyword(ReservedKeyword):
+class BlockToken(Token):
+    """Scope for the current block."""
+
+
+class BlockStart(BlockToken):
+    """Start of a new indent."""
+
+
+class BlockEnd(BlockToken):
+    """End of a block scope."""
+
+
+class BlockMiddle(BlockStart, BlockEnd):
+    """Ends one indented block and starts another."""
+
+
+class BlockKeyword(BlockToken, ReservedKeyword):
     """Keyword that separates indented blocks, such as conditionals."""
 
 
-class BlockStartKeyword(BlockKeyword):
+class BlockStartKeyword(BlockStart, BlockKeyword):
     """Keyword that gets its own line followed by increased indent."""
 
     pattern = _keyword_pattern(
@@ -288,7 +304,7 @@ class BlockStartKeyword(BlockKeyword):
     )
 
 
-class BlockEndKeyword(BlockKeyword):
+class BlockEndKeyword(BlockEnd, BlockKeyword):
     """Keyword that gets its own line preceded by decreased indent."""
 
     pattern = _keyword_pattern(["END( (WHILE|LOOP|IF))?"])
@@ -435,7 +451,7 @@ class JinjaStatementLine(Token):
     pattern = re.compile(r"{%\s*(include|set).*%}", re.IGNORECASE)
 
 
-class JinjaStatement(BlockMiddleKeyword):
+class JinjaStatementMiddle(BlockMiddle):
     """Template control flow.
 
         -- Jinja2, trailing comma
@@ -447,10 +463,10 @@ class JinjaStatement(BlockMiddleKeyword):
             {{ table }}
     """
 
-    pattern = re.compile(r"{%.*%}")
+    pattern = re.compile(r"{%\s*(else).*%}")
 
 
-class JinjaStatementStart(BlockStartKeyword):
+class JinjaStatementStart(BlockStart):
     """Jinja expression that gets its own line followed by increased indent."""
 
     pattern = re.compile(
@@ -458,7 +474,7 @@ class JinjaStatementStart(BlockStartKeyword):
     )
 
 
-class JinjaStatementEnd(BlockEndKeyword):
+class JinjaStatementEnd(BlockEnd):
     """Jinja expression that gets its own line preceded by decreased indent."""
 
     pattern = re.compile(r"{%\s*end.*%}", re.IGNORECASE)
@@ -478,9 +494,9 @@ BIGQUERY_TOKEN_PRIORITY = [
     SpaceBeforeBracketKeyword,
     ReservedKeyword,
     JinjaStatementLine,
+    JinjaStatementMiddle,
     JinjaStatementStart,
     JinjaStatementEnd,
-    JinjaStatement,
     JinjaExpression,
     Literal,
     Identifier,

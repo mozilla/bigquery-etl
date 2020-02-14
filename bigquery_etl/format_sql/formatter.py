@@ -5,6 +5,9 @@ import re
 
 from .tokenizer import (
     AliasSeparator,
+    BlockToken,
+    BlockStart,
+    BlockEnd,
     BlockKeyword,
     BlockStartKeyword,
     BlockEndKeyword,
@@ -59,9 +62,9 @@ def simple_format(tokens, indent="  "):
             # decrease indent from previous TopLevelKeyword
             if indent_types and indent_types[-1] is TopLevelKeyword:
                 indent_types.pop()
-        elif isinstance(token, BlockEndKeyword):
+        elif isinstance(token, BlockEnd):
             # decrease indent to match last BlockKeyword
-            while indent_types and indent_types.pop() is not BlockKeyword:
+            while indent_types and indent_types.pop() is not BlockToken:
                 pass
             prev_was_statement_separator = False
 
@@ -79,7 +82,7 @@ def simple_format(tokens, indent="  "):
                 yield Whitespace("\n")
         elif (
             require_newline_before_next_token
-            or isinstance(token, (NewlineKeyword, ClosingBracket, BlockKeyword))
+            or isinstance(token, (NewlineKeyword, ClosingBracket, BlockToken))
             or prev_was_statement_separator
         ):
             if prev_was_statement_separator:
@@ -108,7 +111,7 @@ def simple_format(tokens, indent="  "):
             token,
             (
                 Comment,
-                BlockKeyword,
+                BlockToken,
                 TopLevelKeyword,
                 OpeningBracket,
                 ExpressionSeparator,
@@ -129,9 +132,9 @@ def simple_format(tokens, indent="  "):
         if isinstance(token, TopLevelKeyword) and token.value == "WITH":
             # don't indent CTE's and don't put the first one on a new line
             require_newline_before_next_token = False
-        elif isinstance(token, BlockStartKeyword):
+        elif isinstance(token, BlockStart):
             # increase indent
-            indent_types.append(BlockKeyword)
+            indent_types.append(BlockToken)
         elif isinstance(token, (TopLevelKeyword, OpeningBracket)):
             # increase indent
             indent_types.append(type(token))

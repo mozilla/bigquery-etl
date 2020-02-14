@@ -21,7 +21,7 @@ def telemetry_variables():
     """Variables for metric_bucketing."""
     attributes_list = ["os", "app_version", "app_build_id", "channel"]
     return dict(
-        source_table="clients_scalar_aggregates_v1",
+        source_table="telemetry_derived.clients_scalar_aggregates_v1",
         attributes=",".join(attributes_list),
         scalar_metric_types="""
             "scalars",
@@ -46,7 +46,7 @@ def glean_variables():
     """Variables for metric_bucketing."""
     attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
     return dict(
-        source_table="fenix_clients_scalar_aggregates_v1",
+        source_table="glam_etl.fenix_clients_scalar_aggregates_v1",
         attributes=",".join(attributes_list),
         scalar_metric_types=",".join(
             ["boolean", "counter", "quantity"] + ["labeled_counter"]

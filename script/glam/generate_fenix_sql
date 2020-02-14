@@ -51,6 +51,7 @@ function write_bucket_counts {
     directory="sql/glam_etl/fenix_clients_scalar_bucket_counts_v1"
     mkdir -p "$directory"
     python -m bigquery_etl.glam.glean_metric_bucketing \
+        --ping-type glean \
         > $directory/query.sql
     echo "generated $directory/query.sql"
 }

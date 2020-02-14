@@ -7,11 +7,7 @@
             {% if in_grouping %}
                 {{ attribute }},
             {% else %}
-                {% if attribute == "app_version" %}
-                    CAST(NULL AS INT64) AS {{ attribute }},
-                {% else %}
-                    CAST(NULL AS STRING) AS {{ attribute }},
-                {% endif %}
+                NULL AS {{ attribute }},
             {% endif %}
         {% endfor %}
         {{ aggregate_attributes }},

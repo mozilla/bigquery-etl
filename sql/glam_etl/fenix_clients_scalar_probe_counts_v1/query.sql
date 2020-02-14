@@ -310,8 +310,8 @@ SELECT
   ping_type,
   os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS app_build_id,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -350,9 +350,9 @@ UNION ALL
 SELECT
   ping_type,
   os,
-  CAST(NULL AS INT64) AS app_version,
+  NULL AS app_version,
   app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -391,8 +391,8 @@ UNION ALL
 SELECT
   ping_type,
   os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  NULL AS app_version,
+  NULL AS app_build_id,
   channel,
   metric,
   metric_type,
@@ -431,10 +431,10 @@ GROUP BY
 UNION ALL
 SELECT
   ping_type,
-  CAST(NULL AS STRING) AS os,
+  NULL AS os,
   app_version,
   app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -472,9 +472,9 @@ GROUP BY
 UNION ALL
 SELECT
   ping_type,
-  CAST(NULL AS STRING) AS os,
+  NULL AS os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  NULL AS app_build_id,
   channel,
   metric,
   metric_type,
@@ -513,8 +513,8 @@ GROUP BY
 UNION ALL
 SELECT
   ping_type,
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
+  NULL AS os,
+  NULL AS app_version,
   app_build_id,
   channel,
   metric,
@@ -553,11 +553,11 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
+  NULL AS ping_type,
   os,
   app_version,
   app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -594,10 +594,10 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
+  NULL AS ping_type,
   os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  NULL AS app_build_id,
   channel,
   metric,
   metric_type,
@@ -635,9 +635,9 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
+  NULL AS ping_type,
   os,
-  CAST(NULL AS INT64) AS app_version,
+  NULL AS app_version,
   app_build_id,
   channel,
   metric,
@@ -676,8 +676,8 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  CAST(NULL AS STRING) AS os,
+  NULL AS ping_type,
+  NULL AS os,
   app_version,
   app_build_id,
   channel,
@@ -710,46 +710,6 @@ GROUP BY
   app_version,
   app_build_id,
   channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  ping_type,
-  os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ('boolean', 'keyed-scalar-boolean')
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  fenix_clients_scalar_bucket_counts_v1
-GROUP BY
-  ping_type,
-  os,
   metric,
   metric_type,
   key,
@@ -758,10 +718,10 @@ GROUP BY
 UNION ALL
 SELECT
   ping_type,
-  CAST(NULL AS STRING) AS os,
-  app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  os,
+  NULL AS app_version,
+  NULL AS app_build_id,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -789,59 +749,19 @@ FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
   ping_type,
+  os,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type
+UNION ALL
+SELECT
+  ping_type,
+  NULL AS os,
   app_version,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  ping_type,
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
-  app_build_id,
-  CAST(NULL AS STRING) AS channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ('boolean', 'keyed-scalar-boolean')
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  fenix_clients_scalar_bucket_counts_v1
-GROUP BY
-  ping_type,
-  app_build_id,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  ping_type,
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  channel,
+  NULL AS app_build_id,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -869,46 +789,6 @@ FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
   ping_type,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  os,
-  app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ('boolean', 'keyed-scalar-boolean')
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  fenix_clients_scalar_bucket_counts_v1
-GROUP BY
-  os,
   app_version,
   metric,
   metric_type,
@@ -917,11 +797,11 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  os,
-  CAST(NULL AS INT64) AS app_version,
+  ping_type,
+  NULL AS os,
+  NULL AS app_version,
   app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -948,7 +828,7 @@ SELECT
 FROM
   fenix_clients_scalar_bucket_counts_v1
 GROUP BY
-  os,
+  ping_type,
   app_build_id,
   metric,
   metric_type,
@@ -957,10 +837,130 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
+  ping_type,
+  NULL AS os,
+  NULL AS app_version,
+  NULL AS app_build_id,
+  channel,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type,
+  SUM(count) AS total_users,
+  CASE
+  WHEN
+    metric_type IN ("counter", "quantity", "labeled_counter")
+  THEN
+    udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
+    )
+  WHEN
+    metric_type IN ('boolean', 'keyed-scalar-boolean')
+  THEN
+    udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      ['always', 'never', 'sometimes']
+    )
+  END
+  AS aggregates
+FROM
+  fenix_clients_scalar_bucket_counts_v1
+GROUP BY
+  ping_type,
+  channel,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type
+UNION ALL
+SELECT
+  NULL AS ping_type,
   os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  app_version,
+  NULL AS app_build_id,
+  NULL AS channel,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type,
+  SUM(count) AS total_users,
+  CASE
+  WHEN
+    metric_type IN ("counter", "quantity", "labeled_counter")
+  THEN
+    udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
+    )
+  WHEN
+    metric_type IN ('boolean', 'keyed-scalar-boolean')
+  THEN
+    udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      ['always', 'never', 'sometimes']
+    )
+  END
+  AS aggregates
+FROM
+  fenix_clients_scalar_bucket_counts_v1
+GROUP BY
+  os,
+  app_version,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type
+UNION ALL
+SELECT
+  NULL AS ping_type,
+  os,
+  NULL AS app_version,
+  app_build_id,
+  NULL AS channel,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type,
+  SUM(count) AS total_users,
+  CASE
+  WHEN
+    metric_type IN ("counter", "quantity", "labeled_counter")
+  THEN
+    udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      udf_get_buckets()
+    )
+  WHEN
+    metric_type IN ('boolean', 'keyed-scalar-boolean')
+  THEN
+    udf_fill_buckets(
+      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+      ['always', 'never', 'sometimes']
+    )
+  END
+  AS aggregates
+FROM
+  fenix_clients_scalar_bucket_counts_v1
+GROUP BY
+  os,
+  app_build_id,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type
+UNION ALL
+SELECT
+  NULL AS ping_type,
+  os,
+  NULL AS app_version,
+  NULL AS app_build_id,
   channel,
   metric,
   metric_type,
@@ -997,11 +997,11 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  CAST(NULL AS STRING) AS os,
+  NULL AS ping_type,
+  NULL AS os,
   app_version,
   app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -1037,10 +1037,10 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  CAST(NULL AS STRING) AS os,
+  NULL AS ping_type,
+  NULL AS os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  NULL AS app_build_id,
   channel,
   metric,
   metric_type,
@@ -1077,9 +1077,9 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
+  NULL AS ping_type,
+  NULL AS os,
+  NULL AS app_version,
   app_build_id,
   channel,
   metric,
@@ -1118,10 +1118,10 @@ GROUP BY
 UNION ALL
 SELECT
   ping_type,
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS os,
+  NULL AS app_version,
+  NULL AS app_build_id,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -1156,11 +1156,11 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
+  NULL AS ping_type,
   os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS app_version,
+  NULL AS app_build_id,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -1195,11 +1195,11 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  CAST(NULL AS STRING) AS os,
+  NULL AS ping_type,
+  NULL AS os,
   app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS app_build_id,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -1234,11 +1234,11 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
+  NULL AS ping_type,
+  NULL AS os,
+  NULL AS app_version,
   app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS channel,
   metric,
   metric_type,
   key,
@@ -1273,10 +1273,10 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
+  NULL AS ping_type,
+  NULL AS os,
+  NULL AS app_version,
+  NULL AS app_build_id,
   channel,
   metric,
   metric_type,
@@ -1312,11 +1312,11 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  CAST(NULL AS STRING) AS ping_type,
-  CAST(NULL AS STRING) AS os,
-  CAST(NULL AS INT64) AS app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  CAST(NULL AS STRING) AS channel,
+  NULL AS ping_type,
+  NULL AS os,
+  NULL AS app_version,
+  NULL AS app_build_id,
+  NULL AS channel,
   metric,
   metric_type,
   key,

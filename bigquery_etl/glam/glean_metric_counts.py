@@ -16,14 +16,7 @@ from jinja2 import Environment, PackageLoader
 from bigquery_etl.format_sql.formatter import reformat
 
 
-def render_query(
-    header: str,
-    source_table: str,
-    attributes: List[str],
-    aggregate_attributes: str,
-    aggregate_grouping: str,
-    **kwargs,
-) -> str:
+def render_query(attributes: List[str], **kwargs) -> str:
     """Render the main query."""
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
     sql = env.get_template("metric_counts_v1.sql")
@@ -35,15 +28,7 @@ def render_query(
             hidden = list(sorted(set(attributes) - set(grouping)))
             attribute_combinations.append((grouping, hidden))
 
-    return reformat(
-        sql.render(
-            header=header,
-            source_table=source_table,
-            attribute_combinations=attribute_combinations,
-            aggregate_attributes=aggregate_attributes,
-            aggregate_grouping=aggregate_grouping,
-        )
-    )
+    return reformat(sql.render(attribute_combinations=attribute_combinations, **kwargs))
 
 
 def telemetry_variables():
@@ -62,6 +47,10 @@ def telemetry_variables():
             first_bucket,
             last_bucket,
             num_buckets
+        """,
+        scalar_metric_types="""
+            "scalars",
+            "keyed-scalars"
         """,
     )
 

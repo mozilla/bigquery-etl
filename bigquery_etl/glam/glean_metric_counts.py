@@ -22,9 +22,10 @@ def render_query(attributes: List[str], **kwargs) -> str:
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
     sql = env.get_template("metric_counts_v1.sql")
 
-    # include attributes included and excluded from grouping set
+    # only compute a shallow set of attributes to avoid excess complexity
+    max_combinations = 3
     attribute_combinations = []
-    for subset_size in reversed(range(len(attributes) + 1)):
+    for subset_size in reversed(range(max_combinations + 1)):
         for grouping in combinations(attributes, subset_size):
             select_expr = []
             for attribute in attributes:

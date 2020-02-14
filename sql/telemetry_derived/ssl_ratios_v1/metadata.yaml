@@ -1,0 +1,10 @@
+friendly_name: SSL Ratios
+description: >
+  Percentages of page loads Firefox users have performed that were conducted over SSL.
+owners:
+  - chutten@mozilla.com
+labels:
+  application: firefox
+  schedule: daily
+  public_json: true
+  public_bigquery: true

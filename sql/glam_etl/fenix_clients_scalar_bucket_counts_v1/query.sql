@@ -385,7 +385,7 @@ bucketed_scalars AS (
   CROSS JOIN
     UNNEST(scalar_aggregates)
   WHERE
-    metric_type IN (boolean, counter, quantity, labeled_counter)
+    metric_type IN ("boolean", "counter", "quantity", "labeled_counter")
 ),
 booleans_and_scalars AS (
   SELECT

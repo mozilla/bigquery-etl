@@ -1,63 +1,53 @@
 """Calculate percentiles for scalars."""
 from argparse import ArgumentParser
+from itertools import combinations
+from typing import List
+
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
 
 
-def render_query(**kwargs) -> str:
+def render_query(attributes: List[str], **kwargs) -> str:
     """Render the main query."""
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
     sql = env.get_template("scalar_percentiles_v1.sql")
-    return reformat(sql.render(**kwargs))
+
+    max_combinations = len(attributes) + 1
+    attribute_combinations = []
+    for subset_size in reversed(range(max_combinations)):
+        for grouping in combinations(attributes, subset_size):
+            select_expr = []
+            for attribute in attributes:
+                select_expr.append((attribute, attribute in grouping))
+            attribute_combinations.append(select_expr)
+
+    return reformat(sql.render(attribute_combinations=attribute_combinations, **kwargs))
 
 
 def telemetry_variables():
     """Variables for bucket_counts."""
-    attributes_list = ["os", "app_version", "app_build_id", "channel"]
     return dict(
         source_table="telemetry_derived.clients_scalar_aggregates_v1",
-        attributes=",".join(attributes_list),
-        scalar_metric_types="""
-            "scalars",
-            "keyed-scalars"
-        """,
+        attributes=["os", "app_version", "app_build_id", "channel"],
         aggregate_attributes="""
             metric,
             metric_type,
             key,
             process
         """,
-        aggregate_attributes_type="""
-            metric STRING,
-            metric_type STRING,
-            key STRING,
-            process STRING
-        """,
     )
 
 
 def glean_variables():
     """Variables for bucket_counts."""
-    attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
     return dict(
         source_table="glam_etl.fenix_clients_scalar_aggregates_v1",
-        attributes=",".join(attributes_list),
-        # does _not_ include boolean
-        scalar_metric_types="""
-            "counter",
-            "quantity",
-            "labeled_counter"
-        """,
+        attributes=["ping_type", "os", "app_version", "app_build_id", "channel"],
         aggregate_attributes="""
             metric,
             metric_type,
             key
-        """,
-        aggregate_attributes_type="""
-            metric STRING,
-            metric_type STRING,
-            key STRING
         """,
     )
 

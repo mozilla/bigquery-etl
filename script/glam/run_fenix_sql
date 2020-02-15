@@ -101,6 +101,23 @@ function clients_scalar_probe_counts {
         < "$query"
 }
 
+function scalar_percentiles {
+    local project=$1
+    local dataset=$2
+    local destination_table="fenix_scalar_percentiles_v1"
+    local query="sql/glam_etl/$destination_table/query.sql"
+    echo "running $query"
+    bq query \
+        --max_rows=0 \
+        --use_legacy_sql=false \
+        --replace \
+        --project_id="$project" \
+        --dataset_id="$dataset" \
+        --destination_table=$destination_table \
+        --parameter=submission_date:DATE:"$(yesterday)" \
+        < "$query"
+}
+
 
 function main {
     cd "$(dirname "$0")/../.."
@@ -134,6 +151,7 @@ function main {
     if ((start_stage <= 1)); then clients_scalar $project $dataset; fi
     if ((start_stage <= 2)); then clients_scalar_bucket_counts $project $dataset; fi
     if ((start_stage <= 3)); then clients_scalar_probe_counts $project $dataset; fi
+    if ((start_stage <= 4)); then scalar_percentiles $project $dataset; fi
 }
 
 main

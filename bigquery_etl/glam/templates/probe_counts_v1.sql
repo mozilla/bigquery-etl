@@ -1,5 +1,5 @@
 {{ header }}
-{% include "metric_counts_v1.udf.scalar.sql" %}
+{% include "probe_counts_v1.udf.scalar.sql" %}
 
 {% for attribute_combo in attribute_combinations %}
     SELECT

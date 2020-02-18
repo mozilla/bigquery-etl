@@ -7,5 +7,6 @@ owners:
 labels:
   application: firefox
   incremental: true
+  schedule: daily
   public_json: true
   public_bigquery: true

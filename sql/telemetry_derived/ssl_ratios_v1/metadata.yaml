@@ -6,6 +6,6 @@ owners:
   - chutten@mozilla.com
 labels:
   application: firefox
-  schedule: daily
+  incremental: true
   public_json: true
   public_bigquery: true

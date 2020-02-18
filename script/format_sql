@@ -18,6 +18,7 @@ SKIP = {
     # files that existed before we started to enforce this script
     "bigquery_etl/glam/templates/clients_scalar_aggregates_v1.sql",
     "bigquery_etl/glam/templates/clients_scalar_aggregates_v1.init.sql",
+    "bigquery_etl/glam/templates/latest_versions_v1.sql",
     "bigquery_etl/glam/templates/udf_merged_user_data.sql",
     "sql/telemetry/experiments_aggregates_v1/view.sql",
     "sql/telemetry/fenix_events_v1/view.sql",

@@ -85,16 +85,12 @@ aggregated_histograms AS
       latest_version)
 
 SELECT
+  udf_js.sample_id(client_id) AS sample_id,
   client_id,
   os,
   app_version,
   app_build_id,
   channel,
-  CASE
-    WHEN channel = 'nightly' THEN 0
-    WHEN channel = 'beta' THEN 1
-    WHEN channel = 'release' THEN 2
-  END AS channel_enum,
   CONCAT(client_id, os, app_version, app_build_id, channel) AS join_key,
   ARRAY_AGG(STRUCT<
     first_bucket INT64,

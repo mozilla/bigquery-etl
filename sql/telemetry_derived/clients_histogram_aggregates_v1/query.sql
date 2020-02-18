@@ -60,11 +60,11 @@ CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
 );
 
 SELECT
+  sample_id,
   client_id,
   os,
   app_version,
   app_build_id,
   channel,
-  channel_enum,
   udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
 FROM clients_histogram_aggregates_merged_v1

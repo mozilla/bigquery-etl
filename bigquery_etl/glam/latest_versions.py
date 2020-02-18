@@ -27,7 +27,7 @@ def main():
     header += " " + " ".join(
         [f"--{k} {v}" for k, v in vars(args).items() if k != "init"]
     )
-    rendered = render_main(source_table=args.source)
+    rendered = render_main(header=header, source_table=args.source)
     print(rendered)
 
 

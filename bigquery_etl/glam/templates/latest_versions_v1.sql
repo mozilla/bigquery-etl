@@ -1,3 +1,4 @@
+{{ header }}
 WITH extracted AS (
   SELECT
     client_info.client_id,

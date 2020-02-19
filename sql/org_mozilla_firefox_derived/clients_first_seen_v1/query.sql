@@ -91,7 +91,7 @@ per_client AS (
   FROM
     base
   WHERE
-    submission_timestamp = @submission_timestamp
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     client_id
 )

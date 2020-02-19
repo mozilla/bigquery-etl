@@ -7,8 +7,8 @@ WITH clients_today AS (
     DATE(submission_timestamp) = @submission_date
 )
 SELECT
-  DISTINCT client_id,
-  DATE @submission_date AS first_submission_date
+  client_id,
+  @submission_date AS first_seen_date
 FROM
   clients_today
 LEFT JOIN

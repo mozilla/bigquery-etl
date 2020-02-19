@@ -18,7 +18,10 @@ SELECT
 -- to clients_daily, we can add those columns in the same order to the end
 -- of this schema, which may be necessary for the daily join query between
 -- the two tables to validate.
-  (SELECT AS STRUCT baseline.* EXCEPT (submission_date, client_id, sample_id)) AS baseline,
+  (
+    SELECT AS STRUCT
+      baseline.* EXCEPT (submission_date, client_id, sample_id, normalized_channel)
+  ) AS baseline,
   (SELECT AS STRUCT metrics.* EXCEPT (submission_date, client_id, sample_id)) AS metrics,
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_derived.baseline_daily_v1` AS baseline

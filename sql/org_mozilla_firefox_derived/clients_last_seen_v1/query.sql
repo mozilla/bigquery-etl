@@ -31,7 +31,10 @@ cls_today AS (
 -- 28 days for each usage criterion as a single 64-bit integer. The
 -- rightmost bit represents whether the user was active in the current day.
     CAST(baseline_today.client_id IS NOT NULL AS INT64) AS days_seen_bits,
-    (SELECT AS STRUCT baseline_today.* EXCEPT (submission_date, client_id, sample_id)) AS baseline,
+    (
+      SELECT AS STRUCT
+        baseline_today.* EXCEPT (submission_date, client_id, sample_id, normalized_channel)
+    ) AS baseline,
     (SELECT AS STRUCT metrics_today.* EXCEPT (submission_date, client_id, sample_id)) AS metrics,
   FROM
     baseline_daily_v1 AS baseline_today

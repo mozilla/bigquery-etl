@@ -55,8 +55,12 @@ SELECT
     cls_yesterday.days_seen_bits,
     cls_today.days_seen_bits
   ) AS days_seen_bits,
-  IF(cls_today.baseline IS NOT NULL, cls_today.baseline, cls_yesterday.baseline) AS baseline,
-  IF(cls_today.metrics IS NOT NULL, cls_today.metrics, cls_yesterday.metrics) AS metrics,
+  IF(
+    cls_today.baseline.client_id IS NOT NULL,
+    cls_today.baseline,
+    cls_yesterday.baseline
+  ) AS baseline,
+  IF(cls_today.metrics.client_id IS NOT NULL, cls_today.metrics, cls_yesterday.metrics) AS metrics,
 FROM
   cls_today
 FULL JOIN

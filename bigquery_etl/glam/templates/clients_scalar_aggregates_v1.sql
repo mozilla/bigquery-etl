@@ -5,7 +5,7 @@ WITH filtered_date_channel AS (
   SELECT
     {{ extract_select_clause }}
   FROM
-    clients_daily_scalar_aggregates_v1
+    {{ source_table }}
   WHERE
     submission_date = @submission_date
 ),
@@ -75,7 +75,7 @@ filtered_old AS (
     {% endfor %}
     scalar_aggregates
   FROM
-    clients_scalar_aggregates_v1 AS scalar_aggs
+    {{ destination_table }} AS scalar_aggs
   {{ join_filter }}
 ),
 joined_new_old AS (

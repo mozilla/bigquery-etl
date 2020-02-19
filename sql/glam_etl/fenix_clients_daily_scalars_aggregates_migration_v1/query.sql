@@ -5,7 +5,10 @@ WITH filtered AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     REPLACE(ping_info.ping_type, "_", "-") AS ping_type,
-    SPLIT(client_info.app_display_version, '.')[OFFSET(0)] AS app_version,
+    COALESCE(
+      SAFE_CAST(SPLIT(client_info.app_display_version, '.')[OFFSET(0)] AS INT64),
+      0
+    ) AS app_version,
     client_info.os AS os,
     client_info.app_build AS app_build_id,
     client_info.app_channel AS channel
@@ -939,6 +942,252 @@ aggregated AS (
         '',
         'sum',
         sum(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
+      ),
+      (
+        'migration_pinned_sites_any_failures',
+        'boolean',
+        '',
+        'false',
+        SUM(CASE WHEN metrics.boolean.migration_pinned_sites_any_failures = FALSE THEN 1 ELSE 0 END)
+      ),
+      (
+        'migration_pinned_sites_any_failures',
+        'boolean',
+        '',
+        'true',
+        SUM(CASE WHEN metrics.boolean.migration_pinned_sites_any_failures = TRUE THEN 1 ELSE 0 END)
+      ),
+      (
+        'migration_pinned_sites_detected_pinned_sites',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
+      ),
+      (
+        'migration_pinned_sites_detected_pinned_sites',
+        'counter',
+        '',
+        'count',
+        IF(
+          MIN(metrics.counter.migration_pinned_sites_detected_pinned_sites) IS NULL,
+          NULL,
+          COUNT(*)
+        )
+      ),
+      (
+        'migration_pinned_sites_detected_pinned_sites',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
+      ),
+      (
+        'migration_pinned_sites_detected_pinned_sites',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
+      ),
+      (
+        'migration_pinned_sites_detected_pinned_sites',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.migration_pinned_sites_detected_pinned_sites AS INT64))
+      ),
+      (
+        'migration_pinned_sites_failure_reason',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
+      ),
+      (
+        'migration_pinned_sites_failure_reason',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.migration_pinned_sites_failure_reason) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_pinned_sites_failure_reason',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
+      ),
+      (
+        'migration_pinned_sites_failure_reason',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
+      ),
+      (
+        'migration_pinned_sites_failure_reason',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.migration_pinned_sites_failure_reason AS INT64))
+      ),
+      (
+        'migration_pinned_sites_migrated_pinned_sites',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
+      ),
+      (
+        'migration_pinned_sites_migrated_pinned_sites',
+        'counter',
+        '',
+        'count',
+        IF(
+          MIN(metrics.counter.migration_pinned_sites_migrated_pinned_sites) IS NULL,
+          NULL,
+          COUNT(*)
+        )
+      ),
+      (
+        'migration_pinned_sites_migrated_pinned_sites',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
+      ),
+      (
+        'migration_pinned_sites_migrated_pinned_sites',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
+      ),
+      (
+        'migration_pinned_sites_migrated_pinned_sites',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.migration_pinned_sites_migrated_pinned_sites AS INT64))
+      ),
+      (
+        'migration_pinned_sites_success_reason',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
+      ),
+      (
+        'migration_pinned_sites_success_reason',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.migration_pinned_sites_success_reason) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_pinned_sites_success_reason',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
+      ),
+      (
+        'migration_pinned_sites_success_reason',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
+      ),
+      (
+        'migration_pinned_sites_success_reason',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
+      ),
+      (
+        'migration_search_any_failures',
+        'boolean',
+        '',
+        'false',
+        SUM(CASE WHEN metrics.boolean.migration_search_any_failures = FALSE THEN 1 ELSE 0 END)
+      ),
+      (
+        'migration_search_any_failures',
+        'boolean',
+        '',
+        'true',
+        SUM(CASE WHEN metrics.boolean.migration_search_any_failures = TRUE THEN 1 ELSE 0 END)
+      ),
+      (
+        'migration_search_failure_reason',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.migration_search_failure_reason AS INT64))
+      ),
+      (
+        'migration_search_failure_reason',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.migration_search_failure_reason) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_search_failure_reason',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.migration_search_failure_reason AS INT64))
+      ),
+      (
+        'migration_search_failure_reason',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.migration_search_failure_reason AS INT64))
+      ),
+      (
+        'migration_search_failure_reason',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.migration_search_failure_reason AS INT64))
+      ),
+      (
+        'migration_search_success_reason',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.migration_search_success_reason AS INT64))
+      ),
+      (
+        'migration_search_success_reason',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.migration_search_success_reason) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_search_success_reason',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.migration_search_success_reason AS INT64))
+      ),
+      (
+        'migration_search_success_reason',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.migration_search_success_reason AS INT64))
+      ),
+      (
+        'migration_search_success_reason',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.migration_search_success_reason AS INT64))
       ),
       (
         'migration_settings_any_failures',

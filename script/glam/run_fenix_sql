@@ -1,10 +1,10 @@
 #!/bin/bash
-# Run the scalars sql job against all Glean pings in a product
+# Run the scalars sql job against all Glean pings in a product. Assumes that
+# generate_fenix_sql has already been run.
 
 set -e
-cd "$(dirname "$0")/../.."
 
-# date is not consistent across macos and linux
+# `date` is not consistent across MacOS and GNU/Linux
 function yesterday {
     python3 - <<EOD
 from datetime import date, timedelta
@@ -13,30 +13,103 @@ print(dt.strftime("%Y-%m-%d"))
 EOD
 }
 
-original_project=$(gcloud config get-value project)
-function cleanup {
-    gcloud config set project $original_project
+# NOTE: it may not even be necessary to include the project where the table is
+# going to be created in the sql folder if the `--project_id` parameter is
+# always passed to `bq query`.
+function init_sql_replace_project {
+    local sql_path=$1
+    local project=$2
+    local prod="moz-fx-data-shared-prod"
+    sed "s/$prod/$project/g" < "$sql_path"
 }
-trap cleanup EXIT
 
-project="glam-fenix-dev"
-dataset="glam_etl_fenix_test"
+function clients_daily_scalar {
+    local project=$1
+    local dataset=$2
+    local destination_table="fenix_clients_daily_scalar_aggregates_v1"
+    for query in sql/glam_etl/fenix_clients_daily*scalars*/query.sql; do
+        echo "running $query"
+        bq query \
+            --max_rows=0 \
+            --use_legacy_sql=false \
+            --append_table \
+            --project_id="$project" \
+            --dataset_id="$dataset" \
+            --destination_table=$destination_table \
+            --parameter=submission_date:DATE:"$(yesterday)" \
+            < "$query"
+    done
+}
 
-gcloud config set project $project
-# force delete the dataset
-bq rm -r -f $dataset
-bq mk $dataset
-
-# run against previously generated etl
-for query in sql/glam_etl/fenix_clients_daily*scalars*/query.sql; do
+function latest_versions {
+    local project=$1
+    local dataset=$2
+    local destination_table="fenix_latest_versions_v1"
+    local query="sql/glam_etl/$destination_table/query.sql"
     echo "running $query"
     bq query \
         --max_rows=0 \
         --use_legacy_sql=false \
-        --append_table \
-        --project_id=$project \
-        --dataset_id=$dataset \
-        --destination_table=fenix_clients_daily_scalar_aggregates_v1 \
+        --replace \
+        --project_id="$project" \
+        --dataset_id="$dataset" \
+        --destination_table=$destination_table \
+        < "$query"
+}
+
+function clients_scalar {
+    local project=$1
+    local dataset=$2
+    local destination_table="fenix_clients_scalar_aggregates_v1"
+    local init="sql/glam_etl/$destination_table/init.sql"
+    local query="sql/glam_etl/$destination_table/query.sql"
+    if ! bq show --quiet "${dataset}.${destination_table}"; then
+        echo "running $init"
+        bq query \
+            --use_legacy_sql=false \
+            --project_id="$project" \
+            "$(init_sql_replace_project $init "$project" | sed 1d)"
+            # bq thinks the comment in the first line is a flag...
+    fi
+    echo "running $query"
+    bq query \
+        --max_rows=0 \
+        --use_legacy_sql=false \
+        --replace \
+        --project_id="$project" \
+        --dataset_id="$dataset" \
+        --destination_table=$destination_table \
         --parameter=submission_date:DATE:"$(yesterday)" \
-        < $query
-done
+        < "$query"
+}
+
+function main {
+    cd "$(dirname "$0")/../.."
+
+    local start_stage=${START_STAGE:-0}
+    local project="glam-fenix-dev"
+    local dataset="glam_etl"
+
+    # revert to the original default project in the environment
+    original_project=$(gcloud config get-value project)
+    function cleanup {
+        gcloud config set project "$original_project"
+    }
+    trap cleanup EXIT
+
+    gcloud config set project $project
+    # force delete the dataset
+    bq rm -r -f $dataset
+    bq mk $dataset
+
+    # NOTE: the append mechanism is a bit non-standard, it may be useful to have
+    # a view using a wildcard table query instead. This will simplify the
+    # automated DAG creation later.
+    if ((start_stage <= 0)); then clients_daily_scalar $project $dataset; fi
+    # NOTE: if starting from stage 1, then old data from stage 0 will be deleted
+    # NOTE: there isn't a mechanism to test the incremental query here
+    if ((start_stage <= 1)); then latest_versions $project $dataset; fi
+    if ((start_stage <= 1)); then clients_scalar $project $dataset; fi
+}
+
+main

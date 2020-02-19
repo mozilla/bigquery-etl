@@ -1,0 +1,10 @@
+friendly_name: Baseline Daily
+description: >
+  A daily aggregate of baseline pings from each Firefox for Android (Fenix)
+  client across all release channels, partitioned by day
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: fenix
+  schedule: daily
+  incremental: true

@@ -45,6 +45,7 @@ function latest_versions {
     local project=$1
     local dataset=$2
     local destination_table="fenix_latest_versions_v1"
+    local query="sql/glam_etl/$destination_table/query.sql"
     echo "running $query"
     bq query \
         --max_rows=0 \

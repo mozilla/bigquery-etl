@@ -22,11 +22,15 @@ def render_query(attributes: List[str], **kwargs) -> str:
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
     sql = env.get_template("probe_counts_v1.sql")
 
-    # only compute a shallow set of attributes to avoid excess complexity
-    max_combinations = 3
+    # If the set of attributes grows, the max_combinations can be set only
+    # compute a shallow set for less query complexity
+    max_combinations = len(attributes)
     attribute_combinations = []
     for subset_size in reversed(range(max_combinations + 1)):
         for grouping in combinations(attributes, subset_size):
+            # channel and app_version are required in the GLAM frontend
+            if "channel" not in grouping or "app_version" not in grouping:
+                continue
             select_expr = []
             for attribute in attributes:
                 select_expr.append((attribute, attribute in grouping))

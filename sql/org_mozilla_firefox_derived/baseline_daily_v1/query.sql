@@ -132,7 +132,11 @@ SELECT
   wnd.submission_date,
   cfs.fenix_first_seen_date,
   cfs.fennec_first_seen_date,
-  wnd.* EXCEPT (_n, submission_date) REPLACE(
+  wnd.* EXCEPT (_n, submission_date)
+  -- We need to do some post-processing on these arrays; they may contain nulls,
+  -- but BigQuery will throw an error if it tries to materialize an array with
+  -- null elements.
+  REPLACE(
     ARRAY(SELECT DISTINCT d FROM UNNEST(start_dates) d WHERE d IS NOT NULL) AS start_dates,
     ARRAY(SELECT DISTINCT d FROM UNNEST(end_dates) d WHERE d IS NOT NULL) AS end_dates
   )

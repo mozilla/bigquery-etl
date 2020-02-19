@@ -59,6 +59,12 @@ CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
   )
 );
 
+WITH clients_histogram_merged_partition AS
+  (SELECT *
+  FROM clients_histogram_aggregates_merged_v1
+  WHERE sample_id >= @min_sample_id
+    AND sample_id <= @max_sample_id)
+
 SELECT
   sample_id,
   client_id,
@@ -67,4 +73,4 @@ SELECT
   app_build_id,
   channel,
   udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
-FROM clients_histogram_aggregates_merged_v1
+FROM clients_histogram_merged_partition

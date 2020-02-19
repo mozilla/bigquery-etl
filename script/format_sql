@@ -16,10 +16,17 @@ from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 
 SKIP = {
     # files that existed before we started to enforce this script
+    "bigquery_etl/glam/templates/bucket_counts_v1.udf.sql",
+    "bigquery_etl/glam/templates/probe_counts_v1.sql",
+    "bigquery_etl/glam/templates/scalar_percentiles_v1.udf.sql",
     "bigquery_etl/glam/templates/clients_scalar_aggregates_v1.sql",
+    "bigquery_etl/glam/templates/bucket_counts_v1.sql",
+    "bigquery_etl/glam/templates/probe_counts_v1.udf.scalar.sql",
     "bigquery_etl/glam/templates/clients_scalar_aggregates_v1.init.sql",
     "bigquery_etl/glam/templates/latest_versions_v1.sql",
     "bigquery_etl/glam/templates/udf_merged_user_data.sql",
+    "bigquery_etl/glam/templates/scalar_percentiles_v1.sql",
+    "bigquery_etl/glam/templates/clients_scalar_aggregates_v1.init.sql",
     "sql/telemetry/experiments_aggregates_v1/view.sql",
     "sql/telemetry/fenix_events_v1/view.sql",
     "sql/telemetry/fennec_ios_events_v1/view.sql",

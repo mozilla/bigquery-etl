@@ -34,14 +34,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_addons_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_addons_any_failures AS INT64))
       ),
       (
         'migration_addons_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_addons_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_addons_any_failures AS INT64))
       ),
       (
         'migration_addons_failed_addons',
@@ -188,14 +188,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_bookmarks_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_bookmarks_any_failures AS INT64))
       ),
       (
         'migration_bookmarks_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_bookmarks_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_bookmarks_any_failures AS INT64))
       ),
       (
         'migration_bookmarks_detected',
@@ -307,14 +307,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_fxa_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_fxa_any_failures AS INT64))
       ),
       (
         'migration_fxa_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_fxa_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_fxa_any_failures AS INT64))
       ),
       (
         'migration_fxa_failure_reason',
@@ -356,46 +356,28 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_fxa_has_custom_idp_server = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_fxa_has_custom_idp_server AS INT64))
       ),
       (
         'migration_fxa_has_custom_idp_server',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_fxa_has_custom_idp_server = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_fxa_has_custom_idp_server AS INT64))
       ),
       (
         'migration_fxa_has_custom_token_server',
         'boolean',
         '',
         'false',
-        SUM(
-          CASE
-          WHEN
-            metrics.boolean.migration_fxa_has_custom_token_server = FALSE
-          THEN
-            1
-          ELSE
-            0
-          END
-        )
+        SUM(CAST(NOT metrics.boolean.migration_fxa_has_custom_token_server AS INT64))
       ),
       (
         'migration_fxa_has_custom_token_server',
         'boolean',
         '',
         'true',
-        SUM(
-          CASE
-          WHEN
-            metrics.boolean.migration_fxa_has_custom_token_server = TRUE
-          THEN
-            1
-          ELSE
-            0
-          END
-        )
+        SUM(CAST(metrics.boolean.migration_fxa_has_custom_token_server AS INT64))
       ),
       (
         'migration_fxa_success_reason',
@@ -437,14 +419,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_gecko_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_gecko_any_failures AS INT64))
       ),
       (
         'migration_gecko_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_gecko_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_gecko_any_failures AS INT64))
       ),
       (
         'migration_gecko_failure_reason',
@@ -521,14 +503,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_history_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_history_any_failures AS INT64))
       ),
       (
         'migration_history_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_history_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_history_any_failures AS INT64))
       ),
       (
         'migration_history_detected',
@@ -640,14 +622,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_logins_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_logins_any_failures AS INT64))
       ),
       (
         'migration_logins_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_logins_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_logins_any_failures AS INT64))
       ),
       (
         'migration_logins_detected',
@@ -794,14 +776,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_open_tabs_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_open_tabs_any_failures AS INT64))
       ),
       (
         'migration_open_tabs_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_open_tabs_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_open_tabs_any_failures AS INT64))
       ),
       (
         'migration_open_tabs_detected',
@@ -948,14 +930,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_pinned_sites_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_pinned_sites_any_failures AS INT64))
       ),
       (
         'migration_pinned_sites_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_pinned_sites_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_pinned_sites_any_failures AS INT64))
       ),
       (
         'migration_pinned_sites_detected_pinned_sites',
@@ -1110,14 +1092,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_search_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_search_any_failures AS INT64))
       ),
       (
         'migration_search_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_search_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_search_any_failures AS INT64))
       ),
       (
         'migration_search_failure_reason',
@@ -1194,14 +1176,14 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(CASE WHEN metrics.boolean.migration_settings_any_failures = FALSE THEN 1 ELSE 0 END)
+        SUM(CAST(NOT metrics.boolean.migration_settings_any_failures AS INT64))
       ),
       (
         'migration_settings_any_failures',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_settings_any_failures = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_settings_any_failures AS INT64))
       ),
       (
         'migration_settings_failure_reason',
@@ -1278,55 +1260,28 @@ aggregated AS (
         'boolean',
         '',
         'false',
-        SUM(
-          CASE
-          WHEN
-            metrics.boolean.migration_settings_telemetry_enabled = FALSE
-          THEN
-            1
-          ELSE
-            0
-          END
-        )
+        SUM(CAST(NOT metrics.boolean.migration_settings_telemetry_enabled AS INT64))
       ),
       (
         'migration_settings_telemetry_enabled',
         'boolean',
         '',
         'true',
-        SUM(CASE WHEN metrics.boolean.migration_settings_telemetry_enabled = TRUE THEN 1 ELSE 0 END)
+        SUM(CAST(metrics.boolean.migration_settings_telemetry_enabled AS INT64))
       ),
       (
         'migration_telemetry_identifiers_any_failures',
         'boolean',
         '',
         'false',
-        SUM(
-          CASE
-          WHEN
-            metrics.boolean.migration_telemetry_identifiers_any_failures = FALSE
-          THEN
-            1
-          ELSE
-            0
-          END
-        )
+        SUM(CAST(NOT metrics.boolean.migration_telemetry_identifiers_any_failures AS INT64))
       ),
       (
         'migration_telemetry_identifiers_any_failures',
         'boolean',
         '',
         'true',
-        SUM(
-          CASE
-          WHEN
-            metrics.boolean.migration_telemetry_identifiers_any_failures = TRUE
-          THEN
-            1
-          ELSE
-            0
-          END
-        )
+        SUM(CAST(metrics.boolean.migration_telemetry_identifiers_any_failures AS INT64))
       ),
       (
         'migration_telemetry_identifiers_failure_reason',

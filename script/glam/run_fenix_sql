@@ -83,10 +83,62 @@ function clients_scalar {
         < "$query"
 }
 
+function clients_scalar_bucket_counts {
+    local project=$1
+    local dataset=$2
+    local destination_table="fenix_clients_scalar_bucket_counts_v1"
+    local query="sql/glam_etl/$destination_table/query.sql"
+    echo "running $query"
+    bq query \
+        --max_rows=0 \
+        --use_legacy_sql=false \
+        --replace \
+        --project_id="$project" \
+        --dataset_id="$dataset" \
+        --destination_table=$destination_table \
+        --parameter=submission_date:DATE:"$(yesterday)" \
+        < "$query"
+}
+
+function clients_scalar_probe_counts {
+    local project=$1
+    local dataset=$2
+    local destination_table="fenix_clients_scalar_probe_counts_v1"
+    local query="sql/glam_etl/$destination_table/query.sql"
+    echo "running $query"
+    bq query \
+        --max_rows=0 \
+        --use_legacy_sql=false \
+        --replace \
+        --project_id="$project" \
+        --dataset_id="$dataset" \
+        --destination_table=$destination_table \
+        --parameter=submission_date:DATE:"$(yesterday)" \
+        < "$query"
+}
+
+function scalar_percentiles {
+    local project=$1
+    local dataset=$2
+    local destination_table="fenix_scalar_percentiles_v1"
+    local query="sql/glam_etl/$destination_table/query.sql"
+    echo "running $query"
+    bq query \
+        --max_rows=0 \
+        --use_legacy_sql=false \
+        --replace \
+        --project_id="$project" \
+        --dataset_id="$dataset" \
+        --destination_table=$destination_table \
+        --parameter=submission_date:DATE:"$(yesterday)" \
+        < "$query"
+}
+
 function main {
     cd "$(dirname "$0")/../.."
 
     local start_stage=${START_STAGE:-0}
+    local reset=${RESET:-false}
     local project="glam-fenix-dev"
     local dataset="glam_etl"
 
@@ -98,9 +150,13 @@ function main {
     trap cleanup EXIT
 
     gcloud config set project $project
-    # force delete the dataset
-    bq rm -r -f $dataset
-    bq mk $dataset
+
+    if $reset; then
+        # force delete the dataset
+        bq rm -r -f $dataset
+        bq mk $dataset
+    fi
+
 
     # NOTE: the append mechanism is a bit non-standard, it may be useful to have
     # a view using a wildcard table query instead. This will simplify the
@@ -110,6 +166,9 @@ function main {
     # NOTE: there isn't a mechanism to test the incremental query here
     if ((start_stage <= 1)); then latest_versions $project $dataset; fi
     if ((start_stage <= 1)); then clients_scalar $project $dataset; fi
+    if ((start_stage <= 2)); then clients_scalar_bucket_counts $project $dataset; fi
+    if ((start_stage <= 3)); then clients_scalar_probe_counts $project $dataset; fi
+    if ((start_stage <= 4)); then scalar_percentiles $project $dataset; fi
 }
 
 main

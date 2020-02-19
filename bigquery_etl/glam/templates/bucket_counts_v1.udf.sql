@@ -308,7 +308,7 @@ RETURNS ARRAY<
       FROM
         UNNEST(scalar_aggs)
       WHERE
-        metric_type IN ("boolean", "keyed-scalar-boolean")
+        metric_type IN ({{ boolean_metric_types }})
     ),
     summed_bools AS (
       SELECT

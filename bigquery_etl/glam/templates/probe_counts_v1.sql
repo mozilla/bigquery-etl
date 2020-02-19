@@ -23,7 +23,7 @@
                 udf_get_buckets()
             )
         WHEN
-            metric_type in ('boolean', 'keyed-scalar-boolean')
+            metric_type in ({{ boolean_metric_types }})
         THEN
             udf_fill_buckets(
                 udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),

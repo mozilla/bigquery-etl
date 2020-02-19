@@ -61,6 +61,10 @@ def telemetry_variables():
             "scalars",
             "keyed-scalars"
         """,
+        boolean_metric_types="""
+            "boolean",
+            "keyed-scalar-boolean"
+        """,
     )
 
 
@@ -83,6 +87,9 @@ def glean_variables():
             "counter",
             "quantity",
             "labeled_counter"
+        """,
+        boolean_metric_types="""
+            "boolean"
         """,
     )
 

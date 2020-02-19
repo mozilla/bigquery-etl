@@ -303,7 +303,7 @@ RETURNS ARRAY<
       FROM
         UNNEST(scalar_aggs)
       WHERE
-        metric_type IN ("boolean", "keyed-scalar-boolean")
+        metric_type IN ("boolean")
     ),
     summed_bools AS (
       SELECT

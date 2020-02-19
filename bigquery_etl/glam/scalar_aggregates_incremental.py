@@ -161,9 +161,15 @@ def glean_variables():
         ],
         attributes_type=["STRING", "STRING", "STRING", "INT64", "STRING", "STRING"],
         extract_select_clause="*",
-        # no filtering on channel
-        join_filter="",
-        # TODO: is this the appropriate partitioning of the table?
+        # NOTE: this will need to be refactored again when generalized to glean
+        join_filter="""
+            LEFT JOIN
+                fenix_latest_versions_v1
+            USING
+                (channel)
+            WHERE
+                app_version >= (latest_version - 2)
+        """,
         partition_clause="""
             PARTITION BY
                 RANGE_BUCKET(app_version, GENERATE_ARRAY(0, 100, 1))

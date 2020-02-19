@@ -40,7 +40,12 @@ def publish_metadata(client, dataset, table, metadata_file):
                 table.labels = {}
 
                 for key, label in metadata["labels"].items():
-                    if is_valid_label(str(key)) and is_valid_label(str(label)):
+                    if isinstance(label, bool) and is_valid_label(str(key)):
+                        # key-value pair with boolean value should get published as tag
+                        if label:
+                            table.labels[str(key)] = ""
+                    elif is_valid_label(str(key)) and is_valid_label(str(label)):
+                        # all other pairs get published as key-value pair label
                         table.labels[str(key)] = str(label)
                     else:
                         print(

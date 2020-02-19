@@ -140,6 +140,12 @@ version_filtered_new AS (
     value
   FROM
     filtered_aggregates AS scalar_aggs
+  LEFT JOIN
+    fenix_latest_versions_v1
+  USING
+    (channel)
+  WHERE
+    app_version >= (latest_version - 2)
 ),
 scalar_aggregates_new AS (
   SELECT
@@ -207,6 +213,12 @@ filtered_old AS (
     scalar_aggregates
   FROM
     glam_etl.fenix_clients_scalar_aggregates_v1 AS scalar_aggs
+  LEFT JOIN
+    fenix_latest_versions_v1
+  USING
+    (channel)
+  WHERE
+    app_version >= (latest_version - 2)
 ),
 joined_new_old AS (
   SELECT

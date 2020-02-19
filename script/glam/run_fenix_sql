@@ -41,6 +41,21 @@ function clients_daily_scalar {
     done
 }
 
+function latest_versions {
+    local project=$1
+    local dataset=$2
+    local destination_table="fenix_latest_versions_v1"
+    echo "running $query"
+    bq query \
+        --max_rows=0 \
+        --use_legacy_sql=false \
+        --replace \
+        --project_id="$project" \
+        --dataset_id="$dataset" \
+        --destination_table=$destination_table \
+        < "$query"
+}
+
 function clients_scalar {
     local project=$1
     local dataset=$2
@@ -118,7 +133,6 @@ function scalar_percentiles {
         < "$query"
 }
 
-
 function main {
     cd "$(dirname "$0")/../.."
 
@@ -142,12 +156,14 @@ function main {
         bq mk $dataset
     fi
 
+
     # NOTE: the append mechanism is a bit non-standard, it may be useful to have
     # a view using a wildcard table query instead. This will simplify the
     # automated DAG creation later.
     if ((start_stage <= 0)); then clients_daily_scalar $project $dataset; fi
     # NOTE: if starting from stage 1, then old data from stage 0 will be deleted
     # NOTE: there isn't a mechanism to test the incremental query here
+    if ((start_stage <= 1)); then latest_versions $project $dataset; fi
     if ((start_stage <= 1)); then clients_scalar $project $dataset; fi
     if ((start_stage <= 2)); then clients_scalar_bucket_counts $project $dataset; fi
     if ((start_stage <= 3)); then clients_scalar_probe_counts $project $dataset; fi

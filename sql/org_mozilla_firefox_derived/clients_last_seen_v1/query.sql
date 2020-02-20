@@ -19,7 +19,7 @@ WITH cls_yesterday AS (
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
 -- Filter out rows from yesterday that have now fallen outside the 28-day window.
-    AND udf.shift_28_bits_one_day(days_seen_bits) > 0
+    AND udf.shift_28_bits_one_day(baseline.days_seen_bits) > 0
 ),
 --
 cls_today AS (
@@ -27,17 +27,15 @@ cls_today AS (
     client_id,
     sample_id,
     baseline_today.normalized_channel,
--- In this raw table, we capture the history of activity over the past
--- 28 days for each usage criterion as a single 64-bit integer. The
--- rightmost bit represents whether the user was active in the current day.
-    CAST(baseline_today.client_id IS NOT NULL AS INT64) AS days_seen_bits,
-    days_seen_session_start_bits,
-    days_seen_session_end_bits,
     IF(
       baseline_today IS NULL,
       NULL,
       (
         SELECT AS STRUCT
+        -- In this raw table, we capture the history of activity over the past
+        -- 28 days for each usage criterion as a single 64-bit integer. The
+        -- rightmost bit represents whether the user was active in the current day.
+          CAST(baseline_today.client_id IS NOT NULL AS INT64) AS days_seen_bits,
           baseline_today.* EXCEPT (submission_date, client_id, sample_id, normalized_channel)
       )
     ) AS baseline,
@@ -61,24 +59,24 @@ SELECT
   client_id,
   sample_id,
   COALESCE(cls_today.normalized_channel, cls_yesterday.normalized_channel) AS normalized_channel,
-  udf.combine_adjacent_days_28_bits(
-    cls_yesterday.days_seen_bits,
-    cls_today.days_seen_bits
-  ) AS days_seen_bits,
-  udf.combine_adjacent_days_28_bits(
-    cls_yesterday.days_seen_session_start_bits,
-    cls_today.days_seen_session_start_bits
-  ) AS days_seen_session_start_bits,
-  udf.combine_adjacent_days_28_bits(
-    cls_yesterday.days_seen_session_end_bits,
-    cls_today.days_seen_session_end_bits
-  ) AS days_seen_session_end_bits,
-  IF(
-    cls_today.baseline.client_id IS NOT NULL,
-    cls_today.baseline,
-    cls_yesterday.baseline
+  (
+    SELECT AS STRUCT
+      IF(cls_today.baseline IS NOT NULL, cls_today.baseline, cls_yesterday.baseline).* REPLACE (
+        udf.combine_adjacent_days_28_bits(
+          cls_yesterday.baseline.days_seen_bits,
+          cls_today.baseline.days_seen_bits
+        ) AS days_seen_bits,
+        udf.combine_adjacent_days_28_bits(
+          cls_yesterday.baseline.days_seen_session_start_bits,
+          cls_today.baseline.days_seen_session_start_bits
+        ) AS days_seen_session_start_bits,
+        udf.combine_adjacent_days_28_bits(
+          cls_yesterday.baseline.days_seen_session_end_bits,
+          cls_today.baseline.days_seen_session_end_bits
+        ) AS days_seen_session_end_bits
+      )
   ) AS baseline,
-  IF(cls_today.metrics.client_id IS NOT NULL, cls_today.metrics, cls_yesterday.metrics) AS metrics,
+  IF(cls_today.metrics IS NOT NULL, cls_today.metrics, cls_yesterday.metrics) AS metrics,
 FROM
   cls_today
 FULL JOIN

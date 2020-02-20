@@ -14,6 +14,8 @@ SELECT
   sample_id,
   baseline.normalized_channel,
   0 AS days_seen_bits,
+  0 AS days_seen_session_start_bits,
+  0 AS days_seen_session_end_bits,
 -- We make sure to delay * until the end so that as new columns are added
 -- to clients_daily, we can add those columns in the same order to the end
 -- of this schema, which may be necessary for the daily join query between

@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+"""Generate a DAG for glam based on metadata."""
+
+from pathlib import Path
+from typing import List, Tuple
+
+import yaml
+
+ROOT = Path(__file__).parent.parent.parent
+
+
+def find_dependencies(path: Path) -> List[Tuple[str, str]]:
+    deps = []
+    for metadata in path.glob("**/metadata.yaml"):
+        name = metadata.parts[-2]
+        data = yaml.load(metadata.open("r").read())
+        for dep in data.get("scheduling", {}).get("set_downstream", []):
+            deps.append((dep, name))
+    return deps
+
+
+def generate_mermaid(deps: List[Tuple[str, str]]) -> str:
+    res = []
+    res.append("graph LR")
+    for left, right in deps:
+        res.append(f"{left} --> {right}")
+    return "\n".join(res)
+
+def main():
+    glam_etl = ROOT / "sql" / "glam_etl"
+    dependencies = find_dependencies(glam_etl)
+    data = generate_mermaid(dependencies)
+    print(data)
+
+
+if __name__ == "__main__":
+    main()

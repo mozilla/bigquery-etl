@@ -1,0 +1,30 @@
+friendly_name: Daily Incremental Scalar Aggregation for org_mozilla_fenix
+labels:
+  product: org_mozilla_fenix
+owners:
+- amiyaguchi@mozilla.com
+scheduling:
+  dag_name: fenix_glam_etl
+  depends_on_past: true
+  set_downstream:
+  - fenix_clients_daily_scalars_aggregates_bookmarks_sync_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_logins_sync_v1
+  - fenix_clients_daily_scalars_aggregates_migration_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_activation_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_metrics_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_history_sync_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_baseline_v1
+  - fenix_clients_daily_scalars_aggregates_logins_sync_v1
+  - fenix_clients_daily_scalars_aggregates_metrics_v1
+  - fenix_clients_daily_scalars_aggregates_deletion_request_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_bookmarks_sync_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_installation_v1
+  - fenix_clients_daily_scalars_aggregates_events_v1
+  - fenix_clients_daily_scalars_aggregates_history_sync_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_events_v1
+  - fenix_clients_daily_scalars_aggregates_installation_v1
+  - fenix_clients_daily_scalars_aggregates_activation_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_migration_v1
+  - fenix_clients_daily_scalars_aggregates_baseline_v1
+  - fenix_clients_daily_keyed_scalars_aggregates_deletion_request_v1
+  - fenix_latest_versions_v1

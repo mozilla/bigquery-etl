@@ -1,0 +1,10 @@
+friendly_name: Clients Scalar Probe Counts for org_mozilla_fenix
+labels:
+  product: org_mozilla_fenix
+owners:
+- amiyaguchi@mozilla.com
+scheduling:
+  dag_name: fenix_glam_etl
+  depends_on_past: false
+  set_downstream:
+  - fenix_clients_scalar_bucket_counts_v1

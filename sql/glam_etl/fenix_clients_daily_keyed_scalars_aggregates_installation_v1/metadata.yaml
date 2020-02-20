@@ -1,0 +1,8 @@
+friendly_name: fenix_clients_daily_keyed_scalars_aggregates_installation_v1
+labels:
+  product: org_mozilla_fenix
+owners:
+- amiyaguchi@mozilla.com
+scheduling:
+  dag_name: fenix_glam_etl
+  depends_on_past: false

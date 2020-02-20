@@ -9,7 +9,10 @@ import yaml
 ROOT = Path(__file__).parent.parent.parent
 
 
-def find_dependencies(path: Path) -> List[Tuple[str, str]]:
+EdgeList = List[Tuple[str, str]]
+
+
+def find_dependencies(path: Path) -> EdgeList:
     deps = []
     for metadata in path.glob("**/metadata.yaml"):
         name = metadata.parts[-2]
@@ -19,12 +22,13 @@ def find_dependencies(path: Path) -> List[Tuple[str, str]]:
     return deps
 
 
-def generate_mermaid(deps: List[Tuple[str, str]]) -> str:
+def generate_mermaid(deps: EdgeList) -> str:
     res = []
     res.append("graph LR")
     for left, right in deps:
         res.append(f"{left} --> {right}")
     return "\n".join(res)
+
 
 def main():
     glam_etl = ROOT / "sql" / "glam_etl"

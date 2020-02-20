@@ -15,7 +15,7 @@ CREATE TEMP FUNCTION extract_fields(baseline ANY TYPE) AS (
       LOWER(baseline.client_info.client_id) AS client_id,
       baseline.sample_id,
       SAFE.PARSE_DATE('%F', SUBSTR(baseline.client_info.first_run_date, 1, 10)) AS first_run_date,
-      baseline.ping_info.parsed_end_time AS end_time,
+      baseline.ping_info.parsed_end_time,
       udf.glean_timespan_seconds(baseline.metrics.timespan.glean_baseline_duration) AS duration,
       baseline.client_info.android_sdk_version,
       baseline.client_info.app_build,
@@ -34,7 +34,7 @@ CREATE TEMP FUNCTION extract_fields(baseline ANY TYPE) AS (
   )
 );
 
-WITH base AS (
+WITH unioned AS (
   SELECT
     extract_fields(baseline).*,
     'release' AS normalized_channel
@@ -67,6 +67,26 @@ WITH base AS (
     org_mozilla_fenix_nightly.baseline AS baseline
 ),
 --
+with_dates AS (
+  SELECT
+    *,
+    -- For explanation of session start time calculation, see Glean docs:
+    -- https://mozilla.github.io/glean/book/user/pings/baseline.html#contents
+    DATE(TIMESTAMP_SUB(parsed_end_time, INTERVAL duration SECOND)) AS session_start_date,
+    DATE(parsed_end_time) AS session_end_date,
+  FROM
+    unioned
+),
+--
+base AS (
+  SELECT
+    *,
+    DATE_DIFF(submission_date, session_start_date, DAY) AS session_start_date_offset,
+    DATE_DIFF(submission_date, session_end_date, DAY) AS session_end_date_offset,
+  FROM
+    with_dates
+),
+--
 windowed AS (
   SELECT
     submission_date,
@@ -80,9 +100,13 @@ windowed AS (
     -- Sums over distinct baseline pings.
     SUM(IF(duration BETWEEN 0 AND 100000, duration, 0)) OVER w1 AS durations,
     --
-    -- Maintain lists of unique client activity dates for usage criteria based on client timestamps.
-    ARRAY_AGG(DATE(TIMESTAMP_SUB(end_time, INTERVAL duration SECOND))) OVER w1 AS start_dates,
-    ARRAY_AGG(DATE(end_time)) OVER w1 AS end_dates,
+    -- Bit patterns capturing activity dates relative to the submission date.
+    BIT_OR(
+      1 << IF(session_start_date_offset BETWEEN 0 AND 27, session_start_date_offset, NULL)
+    ) OVER w1 AS days_seen_session_start_bits,
+    BIT_OR(
+      1 << IF(session_end_date_offset BETWEEN 0 AND 27, session_end_date_offset, NULL)
+    ) OVER w1 AS days_seen_session_end_bits,
     --
     -- For all other dimensions, we use the mode of observed values in the day.
     udf.mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
@@ -133,13 +157,6 @@ SELECT
   cfs.fenix_first_seen_date,
   cfs.fennec_first_seen_date,
   wnd.* EXCEPT (_n, submission_date)
-  -- We need to do some post-processing on these arrays; they may contain nulls,
-  -- but BigQuery will throw an error if it tries to materialize an array with
-  -- null elements.
-  REPLACE(
-    ARRAY(SELECT DISTINCT d FROM UNNEST(start_dates) d WHERE d IS NOT NULL) AS start_dates,
-    ARRAY(SELECT DISTINCT d FROM UNNEST(end_dates) d WHERE d IS NOT NULL) AS end_dates
-  )
 FROM
   windowed AS wnd
 -- We incur the expense of joining in first_seen dates here so that we can

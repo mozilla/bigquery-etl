@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+"""Generate metadata for glam based on convention."""
+
+from pathlib import Path
+import yaml
+from typing import List, Dict
+
+ROOT = Path(__file__).parent.parent.parent
+
+glam_etl = ROOT / "sql" / "glam_etl"
+DAG_NAME = "fenix_glam_etl"
+product = "org_mozilla_fenix"
+
+
+def create_metadata(
+    name: str,
+    description: str = None,
+    labels: Dict[str, str] = {},
+    depends_on_past: bool = False,
+    set_downstream: List[str] = [],
+    dag_name: str = DAG_NAME,
+) -> dict:
+    metadata = dict(
+        friendly_name=name,
+        owners=["amiyaguchi@mozilla.com"],
+        labels={**dict(product="org_mozilla_fenix"), **labels},
+        scheduling=dict(dag_name=dag_name, depends_on_past=depends_on_past),
+    )
+    if description:
+        metadata["description"] = description
+    if set_downstream:
+        metadata["scheduling"]["set_downstream"] = set_downstream
+    return metadata
+
+
+def write_metadata(path: Path, **kwargs: dict):
+    assert path.is_dir()
+    assert len(list(path.glob("*.sql"))) > 0
+    metadata = create_metadata(**kwargs)
+    metadata_yml = path / "metadata.yaml"
+    print(f"writing {metadata_yml}")
+    with metadata_yml.open("w") as fp:
+        fp.write(yaml.dump(metadata))
+
+
+clients_daily_scalar_aggregates = []
+for query in glam_etl.glob("*clients_daily*scalars_aggregates*/"):
+    # e.g. sql/glam_etl/fenix_clients_daily_scalars_aggregates_bookmarks_sync_v1
+    write_metadata(query, name=query.name)
+    clients_daily_scalar_aggregates.append(query.name)
+
+latest_versions = list(glam_etl.glob("*latest_versions*/"))[0]
+write_metadata(latest_versions, name=f"Latest Application Versions for {product}")
+
+clients_scalar_aggregates = list(glam_etl.glob("*clients_scalar_aggregates*/"))[0]
+write_metadata(
+    clients_scalar_aggregates,
+    name=f"Daily Incremental Scalar Aggregation for {product}",
+    depends_on_past=True,
+    set_downstream=clients_daily_scalar_aggregates + [latest_versions.name],
+)
+
+clients_scalar_bucket_counts = list(glam_etl.glob("*clients_scalar_bucket_counts*/"))[0]
+write_metadata(
+    clients_scalar_bucket_counts,
+    name=f"Clients Scalar Bucket Counts for {product}",
+    set_downstream=[clients_scalar_aggregates.name],
+)
+
+clients_scalar_probe_counts = list(glam_etl.glob("*clients_scalar_probe_counts*/"))[0]
+write_metadata(
+    clients_scalar_probe_counts,
+    name=f"Clients Scalar Probe Counts for {product}",
+    set_downstream=[clients_scalar_bucket_counts.name],
+)
+
+scalar_percentiles = list(glam_etl.glob("*scalar_percentiles*/"))[0]
+write_metadata(
+    scalar_percentiles,
+    name=f"Scalar Percentiles for {product}",
+    set_downstream=[clients_scalar_aggregates.name],
+)

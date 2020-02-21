@@ -23,14 +23,14 @@ SUBMISSION_DATE=${SUBMISSION_DATE:-$(yesterday)}
 # separate dataset. This is effectively a hack for what should be generated
 # queries in the correct location. However, this provides a mechanism for
 # changing the dataset location for testing.
-function query_sql_replace_dataset {
+function replace_dataset {
     local sql_path=$1
     sed "s/$PROD_DATASET/$DATASET/g" < "$sql_path"
 }
 
 
-# replace project and dataset in the init file
-function init_sql_replace_project {
+# replace project and dataset in an init or view file
+function replace_project_dataset {
     local sql_path=$1
     local prod="moz-fx-data-shared-prod"
     sed "s/$prod/$PROJECT/g" < "$sql_path" | \
@@ -40,13 +40,16 @@ function init_sql_replace_project {
 
 function run_query {
     local destination_table=$1
-    # optionally take a second argument for the query to run, otherwise default
-    # to the name of the destination table
+    local time_partition=${2:-false}
     local query="sql/glam_etl/$destination_table/query.sql"
+    # add an option to write to a time-partitioned table
+    if $time_partition; then
+        destination_table="${destination_table}\$${SUBMISSION_DATE//-/}"
+    fi
     echo "running $query"
-    local tmp_query
-    tmp_query=$(mktemp)
-    query_sql_replace_dataset "$query" > "$tmp_query"
+    local tmp
+    tmp=$(mktemp)
+    replace_dataset "$query" > "$tmp"
     bq query \
         --max_rows=0 \
         --use_legacy_sql=false \
@@ -55,7 +58,8 @@ function run_query {
         --dataset_id="$DATASET" \
         --destination_table="$destination_table" \
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
-        < "$tmp_query"
+        "$(if $time_partition; then echo --time_partitioning_type="DAY"; fi)" \
+        < "$tmp"
 }
 
 
@@ -65,14 +69,29 @@ function run_init {
     # run if needed
     if ! bq show --quiet "${DATASET}.${destination_table}"; then
         echo "running $init"
-        local tmp_init
-        tmp_init=$(mktemp)
-        init_sql_replace_project "$init" > "$tmp_init"
+        local tmp
+        tmp=$(mktemp)
+        replace_project_dataset "$init" > "$tmp"
         bq query \
             --use_legacy_sql=false \
             --project_id="$PROJECT" \
-            < "$tmp_init"
+            < "$tmp"
     fi
+}
+
+
+function run_view {
+    local view_name=$1
+    local view="sql/glam_etl/$view_name/view.sql"
+    echo "running $view"
+    local tmp
+    tmp=$(mktemp)
+    replace_project_dataset "$view" > "$tmp"
+    bq query \
+        --use_legacy_sql=false \
+        --project_id="$PROJECT" \
+        --dataset_id="$DATASET" \
+        < "$tmp"
 }
 
 
@@ -104,11 +123,12 @@ function main {
     # automated DAG creation later.
     if ((start_stage <= 0)); then
         for directory in sql/glam_etl/fenix_clients_daily*scalars*/; do
-            run_query "$(basename "$directory")"
+            run_query "$(basename "$directory")" true
         done
     fi
     # NOTE: there isn't a mechanism to test the incremental query here
     if ((start_stage <= 1)); then
+        run_view "fenix_view_clients_daily_scalar_aggregates_v1"
         run_query "fenix_latest_versions_v1"
         run_init "fenix_clients_scalar_aggregates_v1"
         run_query "fenix_clients_scalar_aggregates_v1"

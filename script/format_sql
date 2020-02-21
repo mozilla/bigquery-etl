@@ -143,7 +143,6 @@ SKIP = {
     "udf/bool_to_365_bits.sql",
     "udf/coalesce_adjacent_days_28_bits.sql",
     "udf/coalesce_adjacent_days_365_bits.sql",
-    "udf/combine_adjacent_days_28_bits.sql",
     "udf/combine_adjacent_days_365_bits.sql",
     "udf/combine_experiment_days.sql",
     "udf/country_code_to_flag.sql",

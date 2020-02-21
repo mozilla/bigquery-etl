@@ -1,0 +1,12 @@
+[
+  {
+    "name": "score",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "value",
+    "type": "NUMERIC",
+    "mode": "REQUIRED"
+  }
+]

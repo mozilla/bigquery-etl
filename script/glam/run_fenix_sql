@@ -4,10 +4,6 @@
 
 set -e
 
-PROJECT="glam-fenix-dev"
-DATASET="glam_etl"
-
-
 # `date` is not consistent across MacOS and GNU/Linux
 function yesterday {
     python3 - <<EOD
@@ -17,14 +13,28 @@ print(dt.strftime("%Y-%m-%d"))
 EOD
 }
 
+PROJECT="glam-fenix-dev"
+PROD_DATASET="glam_etl"
+DATASET=${DATASET:-"glam_etl_dev"}
+SUBMISSION_DATE=${SUBMISSION_DATE:-$(yesterday)}
 
-# NOTE: it may not even be necessary to include the project where the table is
-# going to be created in the sql folder if the `--project_id` parameter is
-# always passed to `bq query`.
+
+# Replace PROD_DATASET with DATASET in order to run the entire pipeline within a
+# separate dataset. This is effectively a hack for what should be generated
+# queries in the correct location. However, this provides a mechanism for
+# changing the dataset location for testing.
+function query_sql_replace_dataset {
+    local sql_path=$1
+    sed "s/$PROD_DATASET/$DATASET/g" < "$sql_path"
+}
+
+
+# replace project and dataset in the init file
 function init_sql_replace_project {
     local sql_path=$1
     local prod="moz-fx-data-shared-prod"
-    sed "s/$prod/$PROJECT/g" < "$sql_path"
+    sed "s/$prod/$PROJECT/g" < "$sql_path" | \
+        sed "s/$PROD_DATASET/$DATASET/g"
 }
 
 
@@ -32,8 +42,11 @@ function run_query {
     local destination_table=$1
     # optionally take a second argument for the query to run, otherwise default
     # to the name of the destination table
-    local query=${2:-"sql/glam_etl/$destination_table/query.sql"}
+    local query="sql/glam_etl/$destination_table/query.sql"
     echo "running $query"
+    local tmp_query
+    tmp_query=$(mktemp)
+    query_sql_replace_dataset "$query" > "$tmp_query"
     bq query \
         --max_rows=0 \
         --use_legacy_sql=false \
@@ -41,8 +54,8 @@ function run_query {
         --project_id="$PROJECT" \
         --dataset_id="$DATASET" \
         --destination_table="$destination_table" \
-        --parameter=submission_date:DATE:"$(yesterday)" \
-        < "$query"
+        --parameter="submission_date:DATE:$SUBMISSION_DATE" \
+        < "$tmp_query"
 }
 
 
@@ -52,11 +65,13 @@ function run_init {
     # run if needed
     if ! bq show --quiet "${DATASET}.${destination_table}"; then
         echo "running $init"
+        local tmp_init
+        tmp_init=$(mktemp)
+        init_sql_replace_project "$init" > "$tmp_init"
         bq query \
             --use_legacy_sql=false \
             --project_id="$PROJECT" \
-            "$(init_sql_replace_project "$init" "$PROJECT" | sed 1d)"
-            # bq thinks the comment in the first line is a flag...
+            < "$tmp_init"
     fi
 }
 
@@ -76,9 +91,11 @@ function main {
 
     gcloud config set project $PROJECT
 
+    # force delete the dataset
     if $reset; then
-        # force delete the dataset
         bq rm -r -f "$DATASET"
+    fi
+    if ! bq ls "${PROJECT}:${DATASET}"; then
         bq mk "$DATASET"
     fi
 
@@ -86,8 +103,8 @@ function main {
     # a view using a wildcard table query instead. This will simplify the
     # automated DAG creation later.
     if ((start_stage <= 0)); then
-        for query in sql/glam_etl/fenix_clients_daily*scalars*/query.sql; do
-            run_query "fenix_clients_daily_scalar_aggregates_v1" "$query"
+        for directory in sql/glam_etl/fenix_clients_daily*scalars*/; do
+            run_query "$(basename "$directory")"
         done
     fi
     # NOTE: there isn't a mechanism to test the incremental query here

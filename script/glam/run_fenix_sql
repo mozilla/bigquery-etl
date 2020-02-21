@@ -118,9 +118,6 @@ function main {
         bq mk "$DATASET"
     fi
 
-    # NOTE: the append mechanism is a bit non-standard, it may be useful to have
-    # a view using a wildcard table query instead. This will simplify the
-    # automated DAG creation later.
     if ((start_stage <= 0)); then
         for directory in sql/glam_etl/fenix_clients_daily*scalars*/; do
             run_query "$(basename "$directory")" true

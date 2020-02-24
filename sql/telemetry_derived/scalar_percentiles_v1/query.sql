@@ -35,6 +35,7 @@ percentiles AS (
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
+  WHERE os IS NOT NULL
   GROUP BY
     os,
     app_version,
@@ -90,6 +91,7 @@ percentiles AS (
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
     flat_clients_scalar_aggregates
+  WHERE os IS NOT NULL
   GROUP BY
     os,
     app_version,

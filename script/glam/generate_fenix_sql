@@ -12,20 +12,17 @@ tables=$(bq ls --format=json $project:$dataset | \
 
 function write_sql {
     local table=$1
-    local type=$2
-    local directory="sql/glam_etl/fenix_clients_daily_${type}_aggregates_${table}"
+    local directory="sql/glam_etl/fenix_clients_daily_scalar_aggregates_${table}"
     mkdir -p "$directory"
-    python3 -m bigquery_etl.glam.glean_scalar_aggregates \
-        --agg-type "$type" \
-        --table-id "$dataset.$table" \
+    python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
+        --source-table "$dataset.$table" \
         > "$directory/query.sql"
     echo "generated $directory/query.sql"
 }
 
 function write_clients_daily_aggregates {
     for table in $tables; do
-        write_sql "$table" scalars
-        write_sql "$table" keyed_scalars
+        write_sql "$table"
     done
 }
 

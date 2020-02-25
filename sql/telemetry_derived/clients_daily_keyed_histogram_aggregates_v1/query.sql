@@ -468,7 +468,7 @@ SELECT
       udf_get_histogram_type(bucket_range),
       key,
       process,
-      '',
+      'summed_histogram',
       udf_get_bucket_range(bucket_range),
       udf_aggregate_json_sum(value)
   )) AS histogram_aggregates

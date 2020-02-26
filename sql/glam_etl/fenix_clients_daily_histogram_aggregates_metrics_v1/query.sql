@@ -37,48 +37,6 @@ histograms AS (
       >
     >[
       (
-        "gfx_checkerboard_peak_pixel_count",
-        "custom_distribution",
-        metrics.custom_distribution.gfx_checkerboard_peak_pixel_count.sum,
-        metrics.custom_distribution.gfx_checkerboard_peak_pixel_count.values
-      ),
-      (
-        "gfx_checkerboard_severity",
-        "custom_distribution",
-        metrics.custom_distribution.gfx_checkerboard_severity.sum,
-        metrics.custom_distribution.gfx_checkerboard_severity.values
-      ),
-      (
-        "gfx_content_frame_time_from_paint",
-        "custom_distribution",
-        metrics.custom_distribution.gfx_content_frame_time_from_paint.sum,
-        metrics.custom_distribution.gfx_content_frame_time_from_paint.values
-      ),
-      (
-        "gfx_content_frame_time_from_vsync",
-        "custom_distribution",
-        metrics.custom_distribution.gfx_content_frame_time_from_vsync.sum,
-        metrics.custom_distribution.gfx_content_frame_time_from_vsync.values
-      ),
-      (
-        "gfx_content_frame_time_with_svg",
-        "custom_distribution",
-        metrics.custom_distribution.gfx_content_frame_time_with_svg.sum,
-        metrics.custom_distribution.gfx_content_frame_time_with_svg.values
-      ),
-      (
-        "gfx_content_frame_time_without_resource_upload",
-        "custom_distribution",
-        metrics.custom_distribution.gfx_content_frame_time_without_resource_upload.sum,
-        metrics.custom_distribution.gfx_content_frame_time_without_resource_upload.values
-      ),
-      (
-        "gfx_content_frame_time_without_upload",
-        "custom_distribution",
-        metrics.custom_distribution.gfx_content_frame_time_without_upload.sum,
-        metrics.custom_distribution.gfx_content_frame_time_without_upload.values
-      ),
-      (
         "geckoview_document_site_origins",
         "custom_distribution",
         metrics.custom_distribution.geckoview_document_site_origins.sum,
@@ -115,16 +73,58 @@ histograms AS (
         metrics.timing_distribution.gfx_checkerboard_duration.values
       ),
       (
+        "gfx_checkerboard_peak_pixel_count",
+        "custom_distribution",
+        metrics.custom_distribution.gfx_checkerboard_peak_pixel_count.sum,
+        metrics.custom_distribution.gfx_checkerboard_peak_pixel_count.values
+      ),
+      (
         "gfx_checkerboard_potential_duration",
         "timing_distribution",
         metrics.timing_distribution.gfx_checkerboard_potential_duration.sum,
         metrics.timing_distribution.gfx_checkerboard_potential_duration.values
       ),
       (
+        "gfx_checkerboard_severity",
+        "custom_distribution",
+        metrics.custom_distribution.gfx_checkerboard_severity.sum,
+        metrics.custom_distribution.gfx_checkerboard_severity.values
+      ),
+      (
         "gfx_composite_time",
         "timing_distribution",
         metrics.timing_distribution.gfx_composite_time.sum,
         metrics.timing_distribution.gfx_composite_time.values
+      ),
+      (
+        "gfx_content_frame_time_from_paint",
+        "custom_distribution",
+        metrics.custom_distribution.gfx_content_frame_time_from_paint.sum,
+        metrics.custom_distribution.gfx_content_frame_time_from_paint.values
+      ),
+      (
+        "gfx_content_frame_time_from_vsync",
+        "custom_distribution",
+        metrics.custom_distribution.gfx_content_frame_time_from_vsync.sum,
+        metrics.custom_distribution.gfx_content_frame_time_from_vsync.values
+      ),
+      (
+        "gfx_content_frame_time_with_svg",
+        "custom_distribution",
+        metrics.custom_distribution.gfx_content_frame_time_with_svg.sum,
+        metrics.custom_distribution.gfx_content_frame_time_with_svg.values
+      ),
+      (
+        "gfx_content_frame_time_without_resource_upload",
+        "custom_distribution",
+        metrics.custom_distribution.gfx_content_frame_time_without_resource_upload.sum,
+        metrics.custom_distribution.gfx_content_frame_time_without_resource_upload.values
+      ),
+      (
+        "gfx_content_frame_time_without_upload",
+        "custom_distribution",
+        metrics.custom_distribution.gfx_content_frame_time_without_upload.sum,
+        metrics.custom_distribution.gfx_content_frame_time_without_upload.values
       ),
       (
         "gfx_content_full_paint_time",
@@ -137,6 +137,12 @@ histograms AS (
         "timing_distribution",
         metrics.timing_distribution.gfx_content_paint_time.sum,
         metrics.timing_distribution.gfx_content_paint_time.values
+      ),
+      (
+        "gfx_scroll_present_latency",
+        "timing_distribution",
+        metrics.timing_distribution.gfx_scroll_present_latency.sum,
+        metrics.timing_distribution.gfx_scroll_present_latency.values
       ),
       (
         "gfx_status_framebuild_time",
@@ -173,6 +179,24 @@ histograms AS (
         "timing_distribution",
         metrics.timing_distribution.gfx_webrender_sceneswap_time.sum,
         metrics.timing_distribution.gfx_webrender_sceneswap_time.values
+      ),
+      (
+        "logins_store_read_query_time",
+        "timing_distribution",
+        metrics.timing_distribution.logins_store_read_query_time.sum,
+        metrics.timing_distribution.logins_store_read_query_time.values
+      ),
+      (
+        "logins_store_unlock_time",
+        "timing_distribution",
+        metrics.timing_distribution.logins_store_unlock_time.sum,
+        metrics.timing_distribution.logins_store_unlock_time.values
+      ),
+      (
+        "logins_store_write_query_time",
+        "timing_distribution",
+        metrics.timing_distribution.logins_store_write_query_time.sum,
+        metrics.timing_distribution.logins_store_write_query_time.values
       ),
       (
         "network_cache_hit_time",
@@ -281,30 +305,6 @@ histograms AS (
         "timing_distribution",
         metrics.timing_distribution.performance_time_response_start.sum,
         metrics.timing_distribution.performance_time_response_start.values
-      ),
-      (
-        "logins_store_read_query_time",
-        "timing_distribution",
-        metrics.timing_distribution.logins_store_read_query_time.sum,
-        metrics.timing_distribution.logins_store_read_query_time.values
-      ),
-      (
-        "logins_store_unlock_time",
-        "timing_distribution",
-        metrics.timing_distribution.logins_store_unlock_time.sum,
-        metrics.timing_distribution.logins_store_unlock_time.values
-      ),
-      (
-        "logins_store_write_query_time",
-        "timing_distribution",
-        metrics.timing_distribution.logins_store_write_query_time.sum,
-        metrics.timing_distribution.logins_store_write_query_time.values
-      ),
-      (
-        "gfx_scroll_present_latency",
-        "timing_distribution",
-        metrics.timing_distribution.gfx_scroll_present_latency.sum,
-        metrics.timing_distribution.gfx_scroll_present_latency.values
       )
     ] AS metadata
   FROM

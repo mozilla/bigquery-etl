@@ -68,7 +68,7 @@ def get_metrics_sql(metrics: Dict[str, List[str]]) -> str:
 
     # create the query sub-string
     results = []
-    for name, metric_type, sum_path, value_path in items:
+    for name, metric_type, sum_path, value_path in sorted(items):
         results.append(f"""("{name}", "{metric_type}", {sum_path}, {value_path})""")
     return ",".join(results)
 

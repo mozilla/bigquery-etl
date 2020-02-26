@@ -6,6 +6,4 @@ SELECT
   * EXCEPT (submission_date),
   DATE(_PARTITIONTIME) AS submission_date
 FROM
-  `moz-fx-data-shared-prod.glam_etl.fenix_clients_daily*`
-WHERE
-  _TABLE_SUFFIX LIKE '%scalars_aggregates%'
+  `moz-fx-data-shared-prod.glam_etl.fenix_clients_daily_scalar_aggregates*`

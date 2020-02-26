@@ -119,7 +119,7 @@ function main {
     fi
 
     if ((start_stage <= 0)); then
-        for directory in sql/glam_etl/fenix_clients_daily*scalars*/; do
+        for directory in sql/glam_etl/fenix_clients_daily_scalar_aggregates*/; do
             run_query "$(basename "$directory")" true
         done
     fi

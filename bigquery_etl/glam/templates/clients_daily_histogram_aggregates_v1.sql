@@ -43,53 +43,27 @@ flattened_histograms AS (
   WHERE
     value IS NOT NULL
 ),
--- Aggregate the true sum of values before they are quantized for recording.
--- This is done separately from the actual distributions.
-aggregated_sum AS (
+-- ARRAY_CONCAT_AGG may fail if the array of records exceeds 20 MB when
+-- serialized and shuffled. This may exhibit itself in a pathological case where
+-- the a single client sends *many* pings in a single day. However, this case
+-- has not been observed. If this does occur, each histogram should be unnested
+-- aggregated. This will force more shuffles and is inefficient.
+--
+-- Tested via org_mozilla_fenix.metrics_v1 for 2020-02-23, unnest vs concat
+-- Slot consumed: 00:50:15 vs 00:06:45, Shuffled: 27.5GB vs 6.0 GB
+aggregated AS (
   SELECT
     {{ attributes }},
     metric,
     metric_type,
     SUM(sum) AS sum,
+    `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) as value
   FROM
     flattened_histograms
   GROUP BY
     {{ attributes }},
     metric,
     metric_type
-),
-aggregated_histograms_unnested AS (
-  SELECT
-    {{ attributes }},
-    metric,
-    metric_type,
-    value.key,
-    SUM(value.value) as value
-  FROM
-    flattened_histograms,
-    UNNEST(value) as value
-  GROUP BY
-    {{ attributes }},
-    metric,
-    metric_type,
-    key
-),
-aggregated_histograms AS (
-  SELECT
-    * EXCEPT(key, value),
-    ARRAY_AGG(STRUCT<key INT64, value INT64>(CAST(key as INT64), value)) as value
-  FROM
-    aggregated_histograms_unnested
-  GROUP BY
-    {{ attributes }},
-    metric,
-    metric_type
-),
-aggregated as (
-  SELECT *
-  FROM aggregated_sum
-  JOIN aggregated_histograms
-  USING ({{ attributes }}, metric, metric_type)
 )
 SELECT
   {{ attributes }},
@@ -100,7 +74,7 @@ SELECT
       key STRING,
       agg_type STRING,
       sum INT64,
-      value ARRAY<STRUCT<key INT64, value INT64>>
+      value ARRAY<STRUCT<key STRING, value INT64>>
     >(metric, metric_type, '', 'summed_histogram', sum, value)
   ) AS histogram_aggregates
 FROM

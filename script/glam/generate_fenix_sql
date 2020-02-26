@@ -14,10 +14,14 @@ function write_scalars {
     local table=$1
     local directory="sql/glam_etl/fenix_clients_daily_scalar_aggregates_${table}"
     mkdir -p "$directory"
-    python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
+    if ! python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
         --source-table "$dataset.$table" \
-        > "$directory/query.sql"
-    echo "generated $directory/query.sql"
+        > "$directory/query.sql"; then
+            echo "skipping $directory/query.sql: no probes found"
+            rm -r "$directory"
+    else
+        echo "generated $directory/query.sql"
+    fi
 }
 
 function write_histograms {

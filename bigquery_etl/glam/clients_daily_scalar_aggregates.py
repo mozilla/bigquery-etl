@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """clients_daily_scalar_aggregates query generator."""
 import argparse
+import sys
 from typing import Dict, List
 from jinja2 import Environment, PackageLoader
 
@@ -138,15 +139,21 @@ def main():
     schema = get_schema(args.source_table)
     unlabeled_metric_names = get_scalar_metrics(schema, "unlabeled")
     labeled_metric_names = get_scalar_metrics(schema, "labeled")
+    unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
+    labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
 
+    if not unlabeled_metrics and not labeled_metrics:
+        print(header)
+        print("-- Empty query: no probes found!")
+        sys.exit(1)
     print(
         render_main(
             header=header,
             source_table=args.source_table,
             submission_date=submission_date,
             attributes=ATTRIBUTES,
-            unlabeled_metrics=get_unlabeled_metrics_sql(unlabeled_metric_names),
-            labeled_metrics=get_labeled_metrics_sql(labeled_metric_names),
+            unlabeled_metrics=unlabeled_metrics,
+            labeled_metrics=labeled_metrics,
         )
     )
 

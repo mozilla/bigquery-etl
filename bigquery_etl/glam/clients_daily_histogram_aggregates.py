@@ -6,6 +6,18 @@ from jinja2 import Environment, PackageLoader
 from bigquery_etl.format_sql.formatter import reformat
 from .utils import get_schema
 
+ATTRIBUTES = ",".join(
+    [
+        "client_id",
+        "ping_type",
+        "submission_date",
+        "os",
+        "app_version",
+        "app_build_id",
+        "channel",
+    ]
+)
+
 
 def render_main(**kwargs):
     """Create a SQL query for the clients_daily_histogram_aggregates dataset."""
@@ -41,6 +53,25 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
     return metrics
 
 
+def get_metrics_sql(metrics: Dict[str, List[str]]) -> str:
+    """Return a tuple containing the relevant information about the distributions."""
+
+    # accumulate relevant information about metrics
+    items = []
+    for metric_type, metric_names in metrics.items():
+        for name in metric_names:
+            path = f"metrics.{metric_type}.{name}"
+            sum_path = f"{path}.sum"
+            value_path = f"{path}.values"
+            items.append((name, metric_type, sum_path, value_path))
+
+    # create the query sub-string
+    results = []
+    for name, metric_type, sum_path, value_path in items:
+        results.append(f"""("{name}", "{metric_type}", {sum_path}, {value_path})""")
+    return ",".join(results)
+
+
 def main():
     """Print a clients_daily_scalar_aggregates query to stdout."""
     parser = argparse.ArgumentParser()
@@ -71,7 +102,15 @@ def main():
 
     schema = get_schema(args.source_table)
     distributions = get_distribution_metrics(schema)
-    print(distributions)
+    print(
+        render_main(
+            header=header,
+            source_table=args.source_table,
+            submission_date=submission_date,
+            attributes=ATTRIBUTES,
+            histograms=get_metrics_sql(distributions),
+        )
+    )
 
 
 if __name__ == "__main__":

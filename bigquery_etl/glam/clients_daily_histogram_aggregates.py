@@ -1,5 +1,6 @@
 """clients_daily_histogram_aggregates query generator."""
 import argparse
+import sys
 from typing import Dict, List
 from jinja2 import Environment, PackageLoader
 
@@ -102,13 +103,18 @@ def main():
 
     schema = get_schema(args.source_table)
     distributions = get_distribution_metrics(schema)
+    metrics_sql = get_metrics_sql(distributions).strip()
+    if not metrics_sql:
+        print(header)
+        print("-- Empty query: no probes found!")
+        sys.exit(1)
     print(
         render_main(
             header=header,
             source_table=args.source_table,
             submission_date=submission_date,
             attributes=ATTRIBUTES,
-            histograms=get_metrics_sql(distributions),
+            histograms=metrics_sql,
         )
     )
 

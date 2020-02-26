@@ -10,7 +10,7 @@ dataset=org_mozilla_fenix_stable
 tables=$(bq ls --format=json $project:$dataset | \
         jq -r '.[] | .tableReference.tableId')
 
-function write_sql {
+function write_scalars {
     local table=$1
     local directory="sql/glam_etl/fenix_clients_daily_scalar_aggregates_${table}"
     mkdir -p "$directory"
@@ -20,9 +20,20 @@ function write_sql {
     echo "generated $directory/query.sql"
 }
 
+function write_histograms {
+    local table=$1
+    local directory="sql/glam_etl/fenix_clients_daily_histogram_aggregates_${table}"
+    mkdir -p "$directory"
+    python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
+        --source-table "$dataset.$table" \
+        > "$directory/query.sql"
+    echo "generated $directory/query.sql"
+}
+
 function write_clients_daily_aggregates {
     for table in $tables; do
-        write_sql "$table"
+        write_scalars "$table"
+        write_histograms "$table"
     done
 }
 

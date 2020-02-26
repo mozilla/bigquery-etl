@@ -122,6 +122,9 @@ function main {
         for directory in sql/glam_etl/fenix_clients_daily_scalar_aggregates*/; do
             run_query "$(basename "$directory")" true
         done
+        for directory in sql/glam_etl/fenix_clients_daily_histogram_aggregates*/; do
+            run_query "$(basename "$directory")" true
+        done
     fi
     # NOTE: there isn't a mechanism to test the incremental query here
     if ((start_stage <= 1)); then

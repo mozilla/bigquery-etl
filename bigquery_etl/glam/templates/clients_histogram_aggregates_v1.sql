@@ -82,7 +82,6 @@ extracted_daily AS (
 filtered_daily AS (
   SELECT
     `noz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
-    -- TODO: prefix with hist_aggs
     {{ attributes }},
     {{ metric_attributes }},
     latest_versions,
@@ -133,21 +132,13 @@ transformed_daily AS (
     attributes
 )
 SELECT
-  COALESCE(old_data.sample_id, new_data.sample_id) AS sample_id,
-  COALESCE(old_data.client_id, new_data.client_id) AS client_id,
-  COALESCE(old_data.os, new_data.os) AS os,
-  COALESCE(old_data.app_version, new_data.app_version) AS app_version,
-  COALESCE(old_data.app_build_id, new_data.app_build_id) AS app_build_id,
-  COALESCE(old_data.channel, new_data.channel) AS channel,
-  udf_merged_user_data(
-    old_aggs,
-    new_aggs
-  ) AS histogram_aggregates old_data.histogram_aggregates AS old_aggs,
-  new_data.histogram_aggregates AS new_aggs
+  {% for attribute in attributes_list %}
+    COALESCE(accumulated.{{ attribute }}, daily.{{ attribute }}) AS {{ attribute }},
+  {% endfor %}
+  udf_merged_user_data(accumulated, daily) AS histogram_aggregates
 FROM
   filtered_accumulated AS accumulated
 FULL OUTER JOIN
   transformed_daily AS daily
 USING
   ({{ attributes }})
-)

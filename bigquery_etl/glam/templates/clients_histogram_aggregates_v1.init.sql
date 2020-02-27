@@ -8,16 +8,13 @@ CREATE TABLE IF NOT EXISTS
     channel STRING,
     histogram_aggregates ARRAY<
       STRUCT<
-        first_bucket INT64,
-        last_bucket INT64,
-        num_buckets INT64,
         latest_version INT64,
         metric STRING,
         metric_type STRING,
         key STRING,
-        process STRING,
         agg_type STRING,
-        aggregates ARRAY<STRUCT<key STRING, value INT64>>
+        sum INT64,
+        value ARRAY<STRUCT<key STRING, value INT64>>
       >
     >
   )

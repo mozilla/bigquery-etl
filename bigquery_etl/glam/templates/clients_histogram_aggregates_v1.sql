@@ -50,7 +50,7 @@ WITH extracted_accumulated AS (
     sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id
 ),
-accumulated_filtered AS (
+filtered_accumulated AS (
   SELECT
     sample_id,
     -- TODO: prefix with hist_aggs
@@ -71,14 +71,14 @@ extracted_daily AS (
     CAST(app_version AS INT64) AS app_version,
     histogram_aggregates.*
   FROM
-    clients_daily_histogram_aggregates_v1,
+    glam_etl.clients_daily_histogram_aggregates_v1,
     UNNEST(histogram_aggregates) histogram_aggregates
   WHERE
     submission_date = @submission_date
     AND value IS NOT NULL
     AND ARRAY_LENGTH(value) > 0
 ),
-daily_filtered AS (
+filtered_daily AS (
   SELECT
     `noz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
     -- TODO: prefix with hist_aggs
@@ -95,7 +95,8 @@ daily_filtered AS (
   WHERE
     app_version >= (latest_version - 2)
 ),
-daily_aggregate_by_version AS (
+-- re-aggregate based on the latest version
+aggregated_daily AS (
   SELECT
     {{ attributes }},
     {{ metric_attributes }},
@@ -109,26 +110,43 @@ daily_aggregate_by_version AS (
     {{ metric_attributes }},
     latest_version
 ),
-merged_aggregates AS (
+-- note: this seems costly, if it's just going to be unnested again
+transformed_daily AS (
   SELECT
-    COALESCE(old_data.sample_id, new_data.sample_id) AS sample_id,
-    COALESCE(old_data.client_id, new_data.client_id) AS client_id,
-    COALESCE(old_data.os, new_data.os) AS os,
-    COALESCE(old_data.app_version, new_data.app_version) AS app_version,
-    COALESCE(old_data.app_build_id, new_data.app_build_id) AS app_build_id,
-    COALESCE(old_data.channel, new_data.channel) AS channel,
-    old_data.histogram_aggregates AS old_aggs,
-    new_data.histogram_aggregates AS new_aggs
+    {{ attributes }},
+    ARRAY_AGG(
+      STRUCT<
+        latest_version INT64,
+        metric STRING,
+        metric_type STRING,
+        key STRING,
+        process STRING,
+        agg_type STRING,
+        sum INT64,
+        aggregates ARRAY<STRUCT<key STRING, value INT64>>
+      >(latest_version, {{ metric_attributes }}, sum, value)
+    ) AS histogram_aggregates
   FROM
-    old_data
-  FULL OUTER JOIN
-    new_data
-  ON
-    new_data.join_key = old_data.join_key
+    aggregated_daily
+  GROUP BY
+    attributes
 )
 SELECT
-  sample_id,
-  {{ attributes }},
-  udf_merged_user_data(old_aggs, new_aggs) AS histogram_aggregates
+  COALESCE(old_data.sample_id, new_data.sample_id) AS sample_id,
+  COALESCE(old_data.client_id, new_data.client_id) AS client_id,
+  COALESCE(old_data.os, new_data.os) AS os,
+  COALESCE(old_data.app_version, new_data.app_version) AS app_version,
+  COALESCE(old_data.app_build_id, new_data.app_build_id) AS app_build_id,
+  COALESCE(old_data.channel, new_data.channel) AS channel,
+  udf_merged_user_data(
+    old_aggs,
+    new_aggs
+  ) AS histogram_aggregates old_data.histogram_aggregates AS old_aggs,
+  new_data.histogram_aggregates AS new_aggs
 FROM
-  merged
+  filtered_accumulated AS accumulated
+FULL OUTER JOIN
+  transformed_daily AS daily
+USING
+  ({{ attributes }})
+)

@@ -65,11 +65,12 @@ filtered_accumulated AS (
   WHERE
     app_version >= (latest_version - 2)
 ),
+-- unnest the daily data
 extracted_daily AS (
   SELECT
     * EXCEPT (app_version),
     CAST(app_version AS INT64) AS app_version,
-    histogram_aggregates.*
+    histogram_aggregates
   FROM
     glam_etl.clients_daily_histogram_aggregates_v1,
     UNNEST(histogram_aggregates) histogram_aggregates
@@ -85,9 +86,9 @@ filtered_daily AS (
     {{ attributes }},
     {{ metric_attributes }},
     latest_versions,
-    hist_aggs.value
+    histogram_aggregates.*
   FROM
-    filtered_aggregates AS hist_aggs
+    extracted_daily
   LEFT JOIN
     latest_versions
   USING

@@ -9,45 +9,22 @@ results should be written to a corresponding public dataset.
 
 from argparse import ArgumentParser
 import os
-
-from google.cloud import bigquery
+import re
+import subprocess
+import yaml
 
 
 METADATA_FILE = "metadata.yaml"
-
+PROJECT_ID_ARG_RE = re.compile(f"(--project_id=)(\s?[a-zA-z0-9_-]+)")
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
-    "--public_project_id", 
+    "--public_project_id",
     default="mozilla-public-data",
-    help="Project with publicly accessible data"
+    help="Project with publicly accessible data",
 )
-parser.add_argument(
-    "--query_file",
-    help="File path to query to be executed"
-)
-parser.add_argument(
-    "--destination_table",
-    help="Destination table"
-)
-parser.add_argument(
-    "--dataset_id",
-    help="Destination dataset"
-)
-parser.add_argument(
-    "--project_id",
-    help=("Destination project; public_project_id is used instead if"
-        " query results are to be made public"
-    ),
-)
-parser.add_argument(
-    "--parameter",
-    help="Query parameters",
-)
-parser.add_argument(
-    "--arguments",
-    help="Additonal BigQuery arguments",
-)
+parser.add_argument("--query_file", help="File path to query to be executed")
+parser.add_argument("--arguments", help="All other BigQuery arguments")
 
 
 def is_public_bigquery(query_file):
@@ -56,45 +33,41 @@ def is_public_bigquery(query_file):
     results should be written into the public dataset.
     """
 
-    metadata_file = os.path.join(os.path.split(query_file)[:-1], METADATA_FILE)
+    path, _ = os.path.split(query_file)
+    metadata_file = os.path.join(path, METADATA_FILE)
 
-    with open(metadata_file, "r") as yaml_stream:
-        try:
-            if "labels" in metadata:
-                if "public_bigquery" in metadata["labels"]:
-                    if metadata["labels"]["public_bigquery"] == True:
-                        return True
-        except yaml.YAMLError as e:
-            # currently, some queries do not have a metadata file,
-            # but they should still be executed
-            print("Error opening metadata file: {}".format(metadata_file))
-    
+    try:
+        with open(metadata_file, "r") as yaml_stream:
+            try:
+                metadata = yaml.safe_load(yaml_stream)
+
+                if "labels" in metadata:
+                    if "public_bigquery" in metadata["labels"]:
+                        if metadata["labels"]["public_bigquery"] == True:
+                            return True
+            except yaml.YAMLError as e:
+                print("Error reading metadata file: {}".format(metadata_file))
+    except FileNotFoundError as e:
+        # currently, some queries do not have a metadata file,
+        # but they should still be executed 
+        print("Metadata file does not exist: {}", e)
+
     return False
 
 
 def main():
     args = parser.parse_args()
+    query_arguments = args.arguments
+    query_file = args.query_file
 
     if is_public_bigquery(args.query_file):
-        # write results to the public dataset
+        # change the project ID to write results to the public dataset
         # a view to the public table in the internal dataset is created when CI runs
-        project_id = args.public_project_id
+        public_project_id_sub = rf"\1{args.public_project_id}"
+        query_arguments = PROJECT_ID_ARG_RE.sub(public_project_id_sub, query_arguments)
 
-    else:
-        # execute query as usual
-        project_id = args.project_id
-
-    client = bigquery.Client(project_id)
-    job_config = bigquery.QueryJobConfig()
-    parameter_list = [int(item) for item in args.parameter.split(',')]
-    job_config.query_parameters = parameter_list
-    job_config.destination = args.destination
-    job_config.default_dataset = args.dataset_id
-
-    with open(args.query_file, 'r') as query_file:
-        sql = query_file.read()
-        print(sql)
-        # client.query(sql, job_config=job_config)
+    # run the query as shell command so that passed parameters can used as is
+    subprocess.call(["bq {} < {}".format(query_arguments, query_file)], shell=True)
 
 
 if __name__ == "__main__":

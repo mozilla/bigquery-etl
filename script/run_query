@@ -11,7 +11,15 @@ from argparse import ArgumentParser
 import os
 import re
 import subprocess
+import sys
 import yaml
+
+
+# sys.path needs to be modified to enable package imports from parent
+# and sibling directories. Also see:
+# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
 METADATA_FILE = "metadata.yaml"
@@ -27,44 +35,24 @@ parser.add_argument("--query_file", help="File path to query to be executed")
 parser.add_argument("--arguments", help="All other BigQuery arguments")
 
 
-def is_public_bigquery(query_file):
-    """
-    Reads the metadata file associated with the query to determine if the query 
-    results should be written into the public dataset.
-    """
-
-    path, _ = os.path.split(query_file)
-    metadata_file = os.path.join(path, METADATA_FILE)
-
-    try:
-        with open(metadata_file, "r") as yaml_stream:
-            try:
-                metadata = yaml.safe_load(yaml_stream)
-
-                if "labels" in metadata:
-                    if "public_bigquery" in metadata["labels"]:
-                        if metadata["labels"]["public_bigquery"] == True:
-                            return True
-            except yaml.YAMLError as e:
-                print("Error reading metadata file: {}".format(metadata_file))
-    except FileNotFoundError as e:
-        # currently, some queries do not have a metadata file,
-        # but they should still be executed 
-        print("Metadata file does not exist: {}", e)
-
-    return False
-
-
 def main():
     args = parser.parse_args()
     query_arguments = args.arguments
     query_file = args.query_file
+    path, _ = os.path.split(query_file)
+    metadata_file = os.path.join(path, METADATA_FILE)
 
-    if is_public_bigquery(args.query_file):
-        # change the project ID to write results to the public dataset
-        # a view to the public table in the internal dataset is created when CI runs
-        public_project_id_sub = rf"\1{args.public_project_id}"
-        query_arguments = PROJECT_ID_ARG_RE.sub(public_project_id_sub, query_arguments)
+    try:
+        metadata = Metadata.from_file(metadata_file)
+        if metadata.is_public_bigquery(args.query_file):
+            # change the project ID to write results to the public dataset
+            # a view to the public table in the internal dataset is created when CI runs
+            public_project_id_sub = rf"\1{args.public_project_id}"
+            query_arguments = PROJECT_ID_ARG_RE.sub(public_project_id_sub, query_arguments)
+    except yaml.YAMLError as e:
+        print(e)
+    except FileNotFoundError as e:
+        print("Metadata file does not exist: {}", e)
 
     # run the query as shell command so that passed parameters can used as is
     subprocess.call(["bq {} < {}".format(query_arguments, query_file)], shell=True)

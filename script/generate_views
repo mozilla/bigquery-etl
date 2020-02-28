@@ -159,6 +159,13 @@ def create_views_if_not_exist(client, views, exclude, sql_dir):
                     "`moz-fx-data-shared-prod.udf.normalize_glean_ping_info`(ping_info)"
                     " AS ping_info"
                 ]
+                if table.table_id == "baseline_v1":
+                    replacements += [
+                        "`moz-fx-data-shared-prod.udf"
+                        ".normalize_glean_baseline_client_info`"
+                        "(client_info, metrics)"
+                        " AS client_info"
+                    ]
                 if table.dataset_id.startswith(
                     "org_mozilla_fenix"
                 ) and table.table_id.startswith("metrics"):

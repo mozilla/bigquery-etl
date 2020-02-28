@@ -26,6 +26,9 @@ DERIVED_DATASETS_DRY_RUN_URL = (
     "https://us-central1-moz-fx-data-derived-datasets.cloudfunctions.net/"
     "bigquery-etl-dryrun"
 )
+PUBLIC_DATASETS_DRY_RUN_URL = (
+    "https://us-central1-mozilla-public-data-prod.cloudfunctions.net/bigquery-etl-dryrun"
+)
 
 SKIP = {
     # Access Denied
@@ -81,7 +84,6 @@ SKIP = {
 }
 
 USE_DERIVED_DATASETS = {
-    "sql/telemetry_derived/ssl_ratios_v1/query.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/query.sql",
     "sql/telemetry/firefox_accounts_exact_mau28_raw_v1/query.sql",
     "sql/telemetry/core_clients_daily_v1/query.sql",
@@ -89,11 +91,17 @@ USE_DERIVED_DATASETS = {
     "sql/telemetry/core_clients_last_seen_raw_v1/query.sql",
 }
 
+USE_PUBLIC_DATASETS = {
+    "sql/telemetry_derived/ssl_ratios_v1/query.sql",
+}
+
 
 def worker_entrypoint(sqlfile):
     sql = open(sqlfile).read()
     if sqlfile in USE_DERIVED_DATASETS:
         url = DERIVED_DATASETS_DRY_RUN_URL
+    elif sqlfile in USE_PUBLIC_DATASETS:
+        url = PUBLIC_DATASETS_DRY_RUN_URL
     else:
         url = DRY_RUN_URL
     try:

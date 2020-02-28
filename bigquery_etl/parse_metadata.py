@@ -12,16 +12,14 @@ class Metadata:
         self.description = description
         self.labels = labels
 
-
     @staticmethod
     def is_valid_label(label):
         """
         Check if a label has the right format:
-        Only hyphens (-), underscores (_), lowercase characters, and numbers are allowed.
-        International characters are allowed.
+        Only hyphens (-), underscores (_), lowercase characters, and
+        numbers are allowed. International characters are allowed.
         """
         return re.match(r"[\w\d_-]+", label)
-
 
     @classmethod
     def from_file(cls, metadata_file):
@@ -46,7 +44,7 @@ class Metadata:
                         if isinstance(label, bool) and Metadata.is_valid_label(
                             str(key)
                         ):
-                            # key-value pair with boolean value should get published as tag
+                            # publish key-value pair with bool value as tag
                             if label:
                                 labels[str(key)] = ""
                         elif Metadata.is_valid_label(
@@ -68,7 +66,6 @@ class Metadata:
                 return cls(friendly_name, description, labels)
             except yaml.YAMLError as e:
                 raise e
-
 
     def is_public_bigquery(self):
         """

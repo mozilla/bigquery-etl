@@ -14,6 +14,13 @@ import yaml
 
 from google.cloud import bigquery
 
+# sys.path needs to be modified to enable package imports from parent
+# and sibling directories. Also see:
+# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from bigquery_etl.parse_metadata import Metadata  # noqa E402
+
+
 METADATA_FILE = "metadata.yaml"
 
 
@@ -44,16 +51,10 @@ def is_public_bigquery(metadata_file):
     """
 
     try:
-        with open(metadata_file, "r") as yaml_stream:
-            try:
-                metadata = yaml.safe_load(yaml_stream)
-
-                if "labels" in metadata:
-                    if "public_bigquery" in metadata["labels"]:
-                        if metadata["labels"]["public_bigquery"] == True:
-                            return True
-            except yaml.YAMLError as e:
-                print("Error reading metadata file: {}".format(metadata_file))
+        metadata = Metadata.from_file(metadata_file)
+        return metadata.is_public_bigquery()
+    except yaml.YAMLError as e:
+        print(e)
     except FileNotFoundError as e:
         print("Metadata file does not exist: {}", e)
 

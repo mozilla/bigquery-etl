@@ -1,3 +1,4 @@
+{{ header }}
 CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
 RETURNS ARRAY<
   STRUCT<
@@ -45,21 +46,22 @@ WITH extracted_accumulated AS (
   SELECT
     *
   FROM
+    -- TODO: create parameter
     glam_etl.fenix_clients_histogram_aggregates_v1
+  {% if parameterize %}
   WHERE
     sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id
+  {% endif %}
 ),
 filtered_accumulated AS (
   SELECT
-    sample_id,
-    -- TODO: prefix with hist_aggs
     {{ attributes }},
     histogram_aggregates
   FROM
     extracted_accumulated AS hist_aggs
   LEFT JOIN
-    latest_versions
+    glam_etl.fenix_latest_versions_v1
   USING
     (channel)
   WHERE
@@ -72,16 +74,20 @@ extracted_daily AS (
     CAST(app_version AS INT64) AS app_version,
     histogram_aggregates
   FROM
-    glam_etl.clients_daily_histogram_aggregates_v1,
+    glam_etl.fenix_view_clients_daily_histogram_aggregates_v1,
     UNNEST(histogram_aggregates) histogram_aggregates
   WHERE
-    submission_date = @submission_date
+    {% if parameterize %}
+      submission_date = @submission_date
+    {% else %}
+      submission_date = DATE_SUB(current_date, interval 2 day)
+    {% endif %}
     AND value IS NOT NULL
     AND ARRAY_LENGTH(value) > 0
 ),
 filtered_daily AS (
   SELECT
-    `noz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
+    `moz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
     {{ attributes }},
     {{ metric_attributes }},
     latest_versions,
@@ -89,7 +95,7 @@ filtered_daily AS (
   FROM
     extracted_daily
   LEFT JOIN
-    latest_versions
+    glam_etl.fenix_latest_versions_v1
   USING
     (channel)
   WHERE
@@ -104,7 +110,7 @@ aggregated_daily AS (
     SUM(sum) AS sum,
     udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
   FROM
-    version_filtered_new
+    filtered_daily
   GROUP BY
     {{ attributes }},
     {{ metric_attributes }},

@@ -91,7 +91,6 @@ filtered_daily AS (
     -- TODO: add this earlier in the pipeline
     `moz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
     {{ attributes }},
-    {{ metric_attributes }},
     latest_version,
     histogram_aggregates.*
   FROM
@@ -110,7 +109,7 @@ aggregated_daily AS (
     {{ attributes }},
     {{ metric_attributes }},
     SUM(sum) AS sum,
-    udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
+    `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
   FROM
     filtered_daily
   GROUP BY
@@ -129,16 +128,16 @@ transformed_daily AS (
         metric STRING,
         metric_type STRING,
         key STRING,
-        process STRING,
         agg_type STRING,
         sum INT64,
         aggregates ARRAY<STRUCT<key STRING, value INT64>>
-      >(latest_version, {{ metric_attributes }}, sum, value)
+      >({{ metric_attributes }}, sum, value)
     ) AS histogram_aggregates
   FROM
     aggregated_daily
   GROUP BY
-    attributes
+    sample_id,
+    {{ attributes }}
 )
 SELECT
   COALESCE(accumulated.sample_id, daily.sample_id) AS sample_id,

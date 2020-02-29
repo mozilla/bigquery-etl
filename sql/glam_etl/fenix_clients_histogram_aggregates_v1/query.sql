@@ -102,11 +102,6 @@ filtered_daily AS (
     app_build_id,
     channel,
     latest_version,
-    metric,
-    metric_type,
-    key,
-    agg_type,
-    latest_version,
     histogram_aggregates.*
   FROM
     extracted_daily
@@ -132,7 +127,7 @@ aggregated_daily AS (
     key,
     agg_type,
     SUM(sum) AS sum,
-    udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
+    `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
   FROM
     filtered_daily
   GROUP BY
@@ -163,16 +158,20 @@ transformed_daily AS (
         metric STRING,
         metric_type STRING,
         key STRING,
-        process STRING,
         agg_type STRING,
         sum INT64,
         aggregates ARRAY<STRUCT<key STRING, value INT64>>
-      >(latest_version, latest_version, metric, metric_type, key, agg_type, sum, value)
+      >(latest_version, metric, metric_type, key, agg_type, sum, value)
     ) AS histogram_aggregates
   FROM
     aggregated_daily
   GROUP BY
-    attributes
+    sample_id,
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel
 )
 SELECT
   COALESCE(accumulated.sample_id, daily.sample_id) AS sample_id,

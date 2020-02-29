@@ -70,6 +70,18 @@ function write_clients_aggregates {
         --destination glam_etl.fenix_clients_scalar_aggregates_v1 \
         > $directory/query.sql
     echo "generated $directory/query.sql"
+
+    # write histograms
+    directory="sql/glam_etl/fenix_clients_histogram_aggregates_v1"
+    mkdir -p "$directory"
+    python -m bigquery_etl.glam.clients_histogram_aggregates \
+        --init \
+        > $directory/init.sql
+    echo "generated $directory/init.sql"
+
+    python -m bigquery_etl.glam.clients_histogram_aggregates \
+        > $directory/query.sql
+    echo "generated $directory/query.sql"
 }
 
 function write_bucket_counts {

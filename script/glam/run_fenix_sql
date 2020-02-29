@@ -58,6 +58,8 @@ function run_query {
         --dataset_id="$DATASET" \
         --destination_table="$destination_table" \
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
+        --parameter="min_sample_id:INT64:0" \
+        --parameter="max_sample_id:INT64:99" \
         "$(if $time_partition; then echo --time_partitioning_type="DAY"; fi)" \
         < "$tmp"
 }
@@ -133,9 +135,16 @@ function main {
         run_init "fenix_clients_scalar_aggregates_v1"
         run_query "fenix_clients_scalar_aggregates_v1"
     fi
-    if ((start_stage <= 2)); then run_query "fenix_clients_scalar_bucket_counts_v1"; fi
-    if ((start_stage <= 3)); then run_query "fenix_clients_scalar_probe_counts_v1"; fi
-    if ((start_stage <= 4)); then run_query "fenix_scalar_percentiles_v1"; fi
+    if ((start_stage <= 2)); then
+        run_view "fenix_view_clients_daily_histogram_aggregates_v1"
+        run_init "fenix_clients_histogram_aggregates_v1"
+        run_query "fenix_clients_histogram_aggregates_v1"
+    fi
+    if ((start_stage <= 3)); then
+        run_query "fenix_clients_scalar_bucket_counts_v1"
+        run_query "fenix_clients_scalar_probe_counts_v1"
+        run_query "fenix_scalar_percentiles_v1"
+    fi
 }
 
 main

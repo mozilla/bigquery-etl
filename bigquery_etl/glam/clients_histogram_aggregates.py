@@ -20,14 +20,7 @@ def render_init(**kwargs):
 
 
 def glean_variables():
-    attributes_list = [
-        "sample_id",
-        "client_id",
-        "os",
-        "app_version",
-        "app_build_id",
-        "channel",
-    ]
+    attributes_list = ["client_id", "os", "app_version", "app_build_id", "channel"]
     return dict(
         attributes_list=attributes_list,
         attributes=",".join(attributes_list),

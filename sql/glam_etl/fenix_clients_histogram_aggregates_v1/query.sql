@@ -70,7 +70,7 @@ filtered_accumulated AS (
     channel,
     histogram_aggregates
   FROM
-    extracted_accumulated AS hist_aggs
+    extracted_accumulated
   LEFT JOIN
     glam_etl.fenix_latest_versions_v1
   USING
@@ -81,12 +81,12 @@ filtered_accumulated AS (
 -- unnest the daily data
 extracted_daily AS (
   SELECT
-    * EXCEPT (app_version),
+    * EXCEPT (app_version, histogram_aggregates),
     CAST(app_version AS INT64) AS app_version,
-    histogram_aggregates
+    unnested_histogram_aggregates AS histogram_aggregates
   FROM
     glam_etl.fenix_view_clients_daily_histogram_aggregates_v1,
-    UNNEST(histogram_aggregates) histogram_aggregates
+    UNNEST(histogram_aggregates) unnested_histogram_aggregates
   WHERE
     submission_date = @submission_date
     AND value IS NOT NULL
@@ -106,7 +106,7 @@ filtered_daily AS (
     metric_type,
     key,
     agg_type,
-    latest_versions,
+    latest_version,
     histogram_aggregates.*
   FROM
     extracted_daily
@@ -131,7 +131,6 @@ aggregated_daily AS (
     metric_type,
     key,
     agg_type,
-    latest_version,
     SUM(sum) AS sum,
     udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
   FROM
@@ -147,8 +146,7 @@ aggregated_daily AS (
     metric,
     metric_type,
     key,
-    agg_type,
-    latest_version
+    agg_type
 ),
 -- note: this seems costly, if it's just going to be unnested again
 transformed_daily AS (

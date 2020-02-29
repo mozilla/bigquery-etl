@@ -60,7 +60,7 @@ filtered_accumulated AS (
     {{ attributes }},
     histogram_aggregates
   FROM
-    extracted_accumulated AS hist_aggs
+    extracted_accumulated
   LEFT JOIN
     glam_etl.fenix_latest_versions_v1
   USING
@@ -71,12 +71,12 @@ filtered_accumulated AS (
 -- unnest the daily data
 extracted_daily AS (
   SELECT
-    * EXCEPT (app_version),
+    * EXCEPT (app_version, histogram_aggregates),
     CAST(app_version AS INT64) AS app_version,
-    histogram_aggregates
+    unnested_histogram_aggregates as histogram_aggregates
   FROM
     glam_etl.fenix_view_clients_daily_histogram_aggregates_v1,
-    UNNEST(histogram_aggregates) histogram_aggregates
+    UNNEST(histogram_aggregates) unnested_histogram_aggregates
   WHERE
     {% if parameterize %}
       submission_date = @submission_date
@@ -92,7 +92,7 @@ filtered_daily AS (
     `moz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
     {{ attributes }},
     {{ metric_attributes }},
-    latest_versions,
+    latest_version,
     histogram_aggregates.*
   FROM
     extracted_daily
@@ -109,7 +109,6 @@ aggregated_daily AS (
     sample_id,
     {{ attributes }},
     {{ metric_attributes }},
-    latest_version,
     SUM(sum) AS sum,
     udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
   FROM
@@ -117,8 +116,7 @@ aggregated_daily AS (
   GROUP BY
     sample_id,
     {{ attributes }},
-    {{ metric_attributes }},
-    latest_version
+    {{ metric_attributes }}
 ),
 -- note: this seems costly, if it's just going to be unnested again
 transformed_daily AS (

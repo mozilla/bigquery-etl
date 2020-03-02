@@ -11,8 +11,9 @@ WITH deduped AS (
     FROM
         `moz-fx-data-shared-prod.telemetry.client_probe_counts`
     WHERE
-        app_version IS NOT NULL
-        AND channel IN ("nightly", "beta", "release")
+        channel IN ("nightly", "beta", "release")
+        AND app_version IS NOT NULL
+        AND total_users > 1
 )
 
 SELECT

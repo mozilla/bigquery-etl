@@ -25,10 +25,9 @@ RETURNS ARRAY<
     ),
     aggregated_data AS (
       SELECT AS STRUCT
-        latest_version,
         {{ metric_attributes }},
         SUM(sum) AS sum,
-        udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
+        `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
       FROM
         unnested
       GROUP BY
@@ -36,7 +35,7 @@ RETURNS ARRAY<
         {{ metric_attributes }}
     )
     SELECT
-      ARRAY_AGG((latest_version, {{ metric_attributes }}, sum, value))
+      ARRAY_AGG(({{ metric_attributes }}, sum, value))
     FROM
       aggregated_data
   )
@@ -144,7 +143,10 @@ SELECT
   {% for attribute in attributes_list %}
     COALESCE(accumulated.{{ attribute }}, daily.{{ attribute }}) AS {{ attribute }},
   {% endfor %}
-  udf_merged_user_data(accumulated, daily) AS histogram_aggregates
+  udf_merged_user_data(
+    accumulated.histogram_aggregates,
+    daily.histogram_aggregates
+  ) AS histogram_aggregates
 FROM
   filtered_accumulated AS accumulated
 FULL OUTER JOIN

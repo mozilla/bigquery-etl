@@ -26,13 +26,12 @@ RETURNS ARRAY<
     aggregated_data AS (
       SELECT AS STRUCT
         latest_version,
-        latest_version,
         metric,
         metric_type,
         key,
         agg_type,
         SUM(sum) AS sum,
-        udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
+        `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
       FROM
         unnested
       GROUP BY
@@ -44,7 +43,7 @@ RETURNS ARRAY<
         agg_type
     )
     SELECT
-      ARRAY_AGG((latest_version, latest_version, metric, metric_type, key, agg_type, sum, value))
+      ARRAY_AGG((latest_version, metric, metric_type, key, agg_type, sum, value))
     FROM
       aggregated_data
   )
@@ -180,7 +179,10 @@ SELECT
   COALESCE(accumulated.app_version, daily.app_version) AS app_version,
   COALESCE(accumulated.app_build_id, daily.app_build_id) AS app_build_id,
   COALESCE(accumulated.channel, daily.channel) AS channel,
-  udf_merged_user_data(accumulated, daily) AS histogram_aggregates
+  udf_merged_user_data(
+    accumulated.histogram_aggregates,
+    daily.histogram_aggregates
+  ) AS histogram_aggregates
 FROM
   filtered_accumulated AS accumulated
 FULL OUTER JOIN

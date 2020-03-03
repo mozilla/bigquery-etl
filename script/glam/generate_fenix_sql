@@ -84,7 +84,7 @@ function write_clients_aggregates {
     echo "generated $directory/query.sql"
 }
 
-function write_bucket_counts {
+function write_scalar_bucket_counts {
     directory="sql/glam_etl/fenix_clients_scalar_bucket_counts_v1"
     mkdir -p "$directory"
     python -m bigquery_etl.glam.bucket_counts \
@@ -93,7 +93,7 @@ function write_bucket_counts {
     echo "generated $directory/query.sql"
 }
 
-function write_probe_counts {
+function write_scalar_probe_counts {
     directory="sql/glam_etl/fenix_clients_scalar_probe_counts_v1"
     mkdir -p "$directory"
     python -m bigquery_etl.glam.probe_counts \
@@ -111,11 +111,45 @@ function write_scalar_percentiles {
     echo "generated $directory/query.sql"
 }
 
+function write_histogram_bucket_counts {
+    directory="sql/glam_etl/fenix_clients_histogram_bucket_counts_v1"
+    mkdir -p "$directory"
+    python -m bigquery_etl.glam.clients_histogram_bucket_counts \
+        > $directory/query.sql
+    echo "generated $directory/query.sql"
+}
+
+function write_histogram_probe_counts {
+    directory="sql/glam_etl/fenix_clients_histogram_probe_counts_v1"
+    mkdir -p "$directory"
+    python -m bigquery_etl.glam.probe_counts \
+        --ping-type glean \
+        --histogram \
+        > $directory/query.sql
+    echo "generated $directory/query.sql"
+}
+
+# function write_histogram_percentiles {
+#     directory="sql/glam_etl/fenix_histogram_percentiles_v1"
+#     mkdir -p "$directory"
+#     python -m bigquery_etl.glam.histogram_percentiles \
+#         --ping-type glean \
+#         > $directory/query.sql
+#     echo "generated $directory/query.sql"
+# }
+
 
 start_stage=${START_STAGE:-0}
 if ((start_stage <= 0)); then write_clients_daily_aggregates; fi
-if ((start_stage <= 1)); then write_clients_aggregates; fi
-if ((start_stage <= 1)); then latest_versions; fi
-if ((start_stage <= 2)); then write_bucket_counts; fi
-if ((start_stage <= 3)); then write_probe_counts; fi
-if ((start_stage <= 4)); then write_scalar_percentiles; fi
+if ((start_stage <= 1)); then
+    write_clients_aggregates
+    latest_versions
+
+    write_scalar_bucket_counts
+    write_scalar_probe_counts
+    write_scalar_percentiles
+
+    write_histogram_bucket_counts
+    write_histogram_probe_counts
+    # write_histogram_percentiles
+fi

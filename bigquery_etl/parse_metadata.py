@@ -1,13 +1,14 @@
-"""
-Parsing of metadata yaml files.
-"""
+"""Parsing of metadata yaml files."""
 
 import re
 import yaml
 
 
 class Metadata:
+    """Representation of metadata file content."""
+
     def __init__(self, friendly_name=None, description=None, labels={}):
+        """Create a new Metadata instance."""
         self.friendly_name = friendly_name
         self.description = description
         self.labels = labels
@@ -15,7 +16,8 @@ class Metadata:
     @staticmethod
     def is_valid_label(label):
         """
-        Check if a label has the right format:
+        Check if a label has the right format.
+
         Only hyphens (-), underscores (_), lowercase characters, and
         numbers are allowed. International characters are allowed.
         """
@@ -23,6 +25,7 @@ class Metadata:
 
     @classmethod
     def from_file(cls, metadata_file):
+        """Parse metadata from the provided file and create a new Metadata instance."""
         friendly_name = None
         description = None
         labels = {}
@@ -68,8 +71,5 @@ class Metadata:
                 raise e
 
     def is_public_bigquery(self):
-        """
-        Return true if the public_bigquery flag is set.
-        """
-
+        """Return true if the public_bigquery flag is set."""
         return "public_bigquery" in self.labels

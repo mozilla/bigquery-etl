@@ -5,7 +5,6 @@
 from argparse import ArgumentParser
 import logging
 import os
-import re
 import sys
 import yaml
 

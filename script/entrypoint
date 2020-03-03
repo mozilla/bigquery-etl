@@ -28,7 +28,7 @@ elif [ "$1" = "query" ]; then
     #     query [options] FILE
     # to
     #     bq query [options] < FILE
-    exec script/run_query --query_file="${@: -1}" --arguments="${*:1:$#-2}"
+    exec script/run_query --query_file="${@: -1}" "${*:1:$#-1}"
 elif [ "$XCOM_PUSH" = "true" ]; then
     # KubernetesPodOperator will extract the contents of /airflow/xcom/return.json as an xcom
     # if the xcom_push parameter is true

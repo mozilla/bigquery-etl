@@ -23,7 +23,7 @@ from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
 METADATA_FILE = "metadata.yaml"
-PROJECT_ID_ARG_RE = re.compile(f"(--project_id=)(\s?[a-zA-z0-9_-]+)")
+PROJECT_ID_ARG_RE = re.compile(fr"(--project_id=)(\s?[a-zA-z0-9_-]+)")
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -32,12 +32,11 @@ parser.add_argument(
     help="Project with publicly accessible data",
 )
 parser.add_argument("--query_file", help="File path to query to be executed")
-parser.add_argument("--arguments", help="All other BigQuery arguments")
 
 
 def main():
-    args = parser.parse_args()
-    query_arguments = args.arguments
+    args, query_arguments = parser.parse_known_args()
+    query_arguments = query_arguments[0]
     query_file = args.query_file
     path, _ = os.path.split(query_file)
     metadata_file = os.path.join(path, METADATA_FILE)
@@ -46,16 +45,22 @@ def main():
         metadata = Metadata.from_file(metadata_file)
         if metadata.is_public_bigquery(args.query_file):
             # change the project ID to write results to the public dataset
-            # a view to the public table in the internal dataset is created when CI runs
+            # a view to the public table in the internal dataset is created
+            # when CI runs
             public_project_id_sub = rf"\1{args.public_project_id}"
-            query_arguments = PROJECT_ID_ARG_RE.sub(public_project_id_sub, query_arguments)
+            query_arguments = PROJECT_ID_ARG_RE.sub(
+                public_project_id_sub, query_arguments
+            )
     except yaml.YAMLError as e:
         print(e)
+        sys.exit(1)
     except FileNotFoundError as e:
         print("Metadata file does not exist: {}", e)
 
-    # run the query as shell command so that passed parameters can used as is
-    subprocess.call(["bq {} < {}".format(query_arguments, query_file)], shell=True)
+    with open(query_file) as query_stream:
+        # run the query as shell command so that passed parameters can be used as is
+        sql = query_stream.read()
+        subprocess.call(["bq"] + query_arguments.split() + [sql])
 
 
 if __name__ == "__main__":

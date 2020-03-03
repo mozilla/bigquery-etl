@@ -96,19 +96,16 @@ unnested AS (
     app_version,
     app_build_id,
     channel,
-    latest_version,
-    metric,
-    metric_type,
-    key,
-    agg_type,
+    histogram_aggregates.latest_version AS latest_version,
+    histogram_aggregates.metric AS metric,
+    histogram_aggregates.metric_type AS metric_type,
     histogram_aggregates.key AS key,
+    histogram_aggregates.agg_type AS agg_type,
     aggregates.key AS bucket,
     aggregates.value
   FROM
-    normalized_histograms
-  CROSS JOIN
-    UNNEST(histogram_aggregates) AS histogram_aggregates
-  CROSS JOIN
+    normalized_histograms,
+    UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
 )
 SELECT

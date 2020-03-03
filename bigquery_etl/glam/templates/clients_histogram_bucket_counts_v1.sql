@@ -86,15 +86,14 @@ WITH normalized_histograms AS (
 unnested AS (
   SELECT
     {{ attributes }},
-    {{ metric_attributes }},
-    histogram_aggregates.key AS key,
+    {% for metric_attribute in metric_attributes_list %}
+        histogram_aggregates.{{ metric_attribute }} AS {{ metric_attribute }},
+    {% endfor %}
     aggregates.key AS bucket,
     aggregates.value
   FROM
-    normalized_histograms
-  CROSS JOIN
-    UNNEST(histogram_aggregates) AS histogram_aggregates
-  CROSS JOIN
+    normalized_histograms,
+    UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
 )
 SELECT

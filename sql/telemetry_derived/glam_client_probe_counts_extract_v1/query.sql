@@ -13,7 +13,7 @@ WITH deduped AS (
     WHERE
         channel IN ("nightly", "beta", "release")
         AND app_version IS NOT NULL
-        AND total_users > 1
+        AND total_users > 1000
 )
 
 SELECT

@@ -37,12 +37,12 @@
             END
             AS aggregates
         {% else %}
-            {{ metric_attributes }},
             agg_type AS client_agg_type,
             'histogram' as agg_type,
             CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
             udf_fill_buckets(
                 udf_dedupe_map_sum(ARRAY_AGG(record)),
+                -- TODO: these variables don't exist yet
                 udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
             ) AS aggregates
         {% endif %}

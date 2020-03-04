@@ -56,6 +56,11 @@
         {% for attribute, in_grouping in attribute_combo if in_grouping %}
             {{ attribute }},
         {% endfor %}
+        {% if not is_scalar %}
+            first_bucket,
+            last_bucket,
+            num_buckets,
+        {% endif %}
         {{ aggregate_attributes }},
         {{ aggregate_grouping }}
     {% if not loop.last %}

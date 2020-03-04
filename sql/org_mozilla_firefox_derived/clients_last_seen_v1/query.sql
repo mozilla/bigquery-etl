@@ -18,8 +18,6 @@ WITH cls_yesterday AS (
     clients_last_seen_v1 AS cls
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
--- Filter out rows from yesterday that have now fallen outside the 28-day window.
-    AND udf.shift_28_bits_one_day(baseline.days_seen_bits) > 0
 ),
 --
 cls_today AS (
@@ -46,34 +44,42 @@ cls_today AS (
     (submission_date, client_id, sample_id)
   WHERE
     submission_date = @submission_date
-)
+),
   --
+adjacent_days_combined AS (
+  SELECT
+    @submission_date AS submission_date,
+    client_id,
+    sample_id,
+    COALESCE(cls_today.normalized_channel, cls_yesterday.normalized_channel) AS normalized_channel,
+    (
+      SELECT AS STRUCT
+        IF(baseline_received_today, cls_today.baseline, cls_yesterday.baseline).* REPLACE (
+          udf.combine_adjacent_days_28_bits(
+            cls_yesterday.baseline.days_seen_bits,
+            cls_today.baseline.days_seen_bits
+          ) AS days_seen_bits,
+          udf.combine_adjacent_days_28_bits(
+            cls_yesterday.baseline.days_seen_session_start_bits,
+            cls_today.baseline.days_seen_session_start_bits
+          ) AS days_seen_session_start_bits,
+          udf.combine_adjacent_days_28_bits(
+            cls_yesterday.baseline.days_seen_session_end_bits,
+            cls_today.baseline.days_seen_session_end_bits
+          ) AS days_seen_session_end_bits
+        )
+    ) AS baseline,
+    IF(metrics_received_today, cls_today.metrics, cls_yesterday.metrics) AS metrics,
+  FROM
+    cls_today
+  FULL JOIN
+    cls_yesterday
+  USING
+    (client_id, sample_id)
+)
 SELECT
-  @submission_date AS submission_date,
-  client_id,
-  sample_id,
-  COALESCE(cls_today.normalized_channel, cls_yesterday.normalized_channel) AS normalized_channel,
-  (
-    SELECT AS STRUCT
-      IF(baseline_received_today, cls_today.baseline, cls_yesterday.baseline).* REPLACE (
-        udf.combine_adjacent_days_28_bits(
-          cls_yesterday.baseline.days_seen_bits,
-          cls_today.baseline.days_seen_bits
-        ) AS days_seen_bits,
-        udf.combine_adjacent_days_28_bits(
-          cls_yesterday.baseline.days_seen_session_start_bits,
-          cls_today.baseline.days_seen_session_start_bits
-        ) AS days_seen_session_start_bits,
-        udf.combine_adjacent_days_28_bits(
-          cls_yesterday.baseline.days_seen_session_end_bits,
-          cls_today.baseline.days_seen_session_end_bits
-        ) AS days_seen_session_end_bits
-      )
-  ) AS baseline,
-  IF(metrics_received_today, cls_today.metrics, cls_yesterday.metrics) AS metrics,
+  *
 FROM
-  cls_today
-FULL JOIN
-  cls_yesterday
-USING
-  (client_id, sample_id)
+  adjacent_days_combined
+WHERE
+  baseline.days_seen_bits > 0

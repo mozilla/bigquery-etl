@@ -63,6 +63,7 @@ filtered_accumulated AS (
   SELECT
     sample_id,
     client_id,
+    ping_type,
     os,
     app_version,
     app_build_id,
@@ -96,6 +97,7 @@ filtered_daily AS (
     -- TODO: add this earlier in the pipeline
     `moz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
     client_id,
+    ping_type,
     os,
     app_version,
     app_build_id,
@@ -116,6 +118,7 @@ aggregated_daily AS (
   SELECT
     sample_id,
     client_id,
+    ping_type,
     os,
     app_version,
     app_build_id,
@@ -132,6 +135,7 @@ aggregated_daily AS (
   GROUP BY
     sample_id,
     client_id,
+    ping_type,
     os,
     app_version,
     app_build_id,
@@ -147,6 +151,7 @@ transformed_daily AS (
   SELECT
     sample_id,
     client_id,
+    ping_type,
     os,
     app_version,
     app_build_id,
@@ -167,6 +172,7 @@ transformed_daily AS (
   GROUP BY
     sample_id,
     client_id,
+    ping_type,
     os,
     app_version,
     app_build_id,
@@ -175,6 +181,7 @@ transformed_daily AS (
 SELECT
   COALESCE(accumulated.sample_id, daily.sample_id) AS sample_id,
   COALESCE(accumulated.client_id, daily.client_id) AS client_id,
+  COALESCE(accumulated.ping_type, daily.ping_type) AS ping_type,
   COALESCE(accumulated.os, daily.os) AS os,
   COALESCE(accumulated.app_version, daily.app_version) AS app_version,
   COALESCE(accumulated.app_build_id, daily.app_build_id) AS app_build_id,
@@ -188,4 +195,4 @@ FROM
 FULL OUTER JOIN
   transformed_daily AS daily
 USING
-  (client_id, os, app_version, app_build_id, channel)
+  (client_id, ping_type, os, app_version, app_build_id, channel)

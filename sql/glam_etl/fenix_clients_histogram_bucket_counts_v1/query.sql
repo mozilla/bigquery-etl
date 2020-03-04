@@ -82,6 +82,7 @@ RETURNS ARRAY<
 
 WITH normalized_histograms AS (
   SELECT
+    ping_type,
     os,
     app_version,
     app_build_id,
@@ -92,6 +93,7 @@ WITH normalized_histograms AS (
 ),
 unnested AS (
   SELECT
+    ping_type,
     os,
     app_version,
     app_build_id,
@@ -109,6 +111,7 @@ unnested AS (
     UNNEST(aggregates) AS aggregates
 )
 SELECT
+  ping_type,
   os,
   app_version,
   app_build_id,
@@ -122,6 +125,7 @@ SELECT
 FROM
   unnested
 GROUP BY
+  ping_type,
   os,
   app_version,
   app_build_id,

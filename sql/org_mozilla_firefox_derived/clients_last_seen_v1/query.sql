@@ -27,23 +27,17 @@ cls_today AS (
     client_id,
     sample_id,
     baseline_today.normalized_channel,
-    IF(
-      baseline_today IS NULL,
-      NULL,
-      (
-        SELECT AS STRUCT
+    baseline_today.client_id IS NOT NULL AS baseline_received_today,
+    metrics_today.client_id IS NOT NULL AS metrics_received_today,
+    (
+      SELECT AS STRUCT
         -- In this raw table, we capture the history of activity over the past
         -- 28 days for each usage criterion as a single 64-bit integer. The
         -- rightmost bit represents whether the user was active in the current day.
-          CAST(baseline_today.client_id IS NOT NULL AS INT64) AS days_seen_bits,
-          baseline_today.* EXCEPT (submission_date, client_id, sample_id, normalized_channel)
-      )
+        CAST(baseline_today.client_id IS NOT NULL AS INT64) AS days_seen_bits,
+        baseline_today.* EXCEPT (submission_date, client_id, sample_id, normalized_channel)
     ) AS baseline,
-    IF(
-      metrics_today IS NULL,
-      NULL,
-      (SELECT AS STRUCT metrics_today.* EXCEPT (submission_date, client_id, sample_id))
-    ) AS metrics,
+    (SELECT AS STRUCT metrics_today.* EXCEPT (submission_date, client_id, sample_id)) AS metrics,
   FROM
     baseline_daily_v1 AS baseline_today
   FULL JOIN
@@ -61,7 +55,7 @@ SELECT
   COALESCE(cls_today.normalized_channel, cls_yesterday.normalized_channel) AS normalized_channel,
   (
     SELECT AS STRUCT
-      IF(cls_today.baseline IS NOT NULL, cls_today.baseline, cls_yesterday.baseline).* REPLACE (
+      IF(baseline_received_today, cls_today.baseline, cls_yesterday.baseline).* REPLACE (
         udf.combine_adjacent_days_28_bits(
           cls_yesterday.baseline.days_seen_bits,
           cls_today.baseline.days_seen_bits
@@ -76,7 +70,7 @@ SELECT
         ) AS days_seen_session_end_bits
       )
   ) AS baseline,
-  IF(cls_today.metrics IS NOT NULL, cls_today.metrics, cls_yesterday.metrics) AS metrics,
+  IF(metrics_received_today, cls_today.metrics, cls_yesterday.metrics) AS metrics,
 FROM
   cls_today
 FULL JOIN

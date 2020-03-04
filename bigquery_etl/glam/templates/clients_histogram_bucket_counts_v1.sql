@@ -95,14 +95,42 @@ unnested AS (
     normalized_histograms,
     UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
+),
+-- Find information that can be used to construct the bucket range.
+-- TODO: is there a better way to incorporate the bucket information and to
+-- validate the correctness of these buckets. The Glean documentation does
+-- mention that there is a maximum recorded size, and that there are 8 buckets
+-- for each power of 2. This doesn't apply to the custom distributions
+-- (GeckoView), which would need to incorporate information from the probe info
+-- service.
+distribution_metadata AS (
+    SELECT
+        metric,
+        MIN(CAST(bucket as INT64)) as first_bucket,
+        MAX(CAST(bucket as INT64)) as last_bucket,
+        COUNT(DISTINCT bucket) as num_buckets
+    FROM
+        unnested
+    GROUP BY
+        metric
+),
+records as (
+    SELECT
+        {{ attributes }},
+        {{ metric_attributes }},
+        STRUCT<key STRING, value FLOAT64>(CAST(bucket AS STRING), 1.0 * SUM(value)) AS record
+    FROM
+        unnested
+    GROUP BY
+        {{ attributes }},
+        {{ metric_attributes }},
+        bucket
 )
 SELECT
-  {{ attributes }},
-  {{ metric_attributes }},
-  STRUCT<key STRING, value FLOAT64>(CAST(bucket AS STRING), 1.0 * SUM(value)) AS record
+    *
 FROM
-  unnested
-GROUP BY
-  {{ attributes }},
-  {{ metric_attributes }},
-  bucket
+    records
+JOIN
+    distribution_metadata
+USING
+    (metric)

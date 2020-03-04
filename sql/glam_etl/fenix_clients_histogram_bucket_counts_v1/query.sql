@@ -119,14 +119,76 @@ unnested AS (
 -- service.
 distribution_metadata AS (
   SELECT
-    metric,
-    MIN(CAST(bucket AS INT64)) AS first_bucket,
-    MAX(CAST(bucket AS INT64)) AS last_bucket,
-    COUNT(DISTINCT bucket) AS num_buckets
+    *
   FROM
-    unnested
-  GROUP BY
-    metric
+    UNNEST(
+      [
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "geckoview_document_site_origins" AS metric,
+          "0" AS range_min,
+          "100" AS range_max,
+          "50" AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_checkerboard_peak_pixel_count" AS metric,
+          "1" AS range_min,
+          "66355200" AS range_max,
+          "50" AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_checkerboard_severity" AS metric,
+          "1" AS range_min,
+          "1073741824" AS range_max,
+          "50" AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_content_frame_time_from_paint" AS metric,
+          "1" AS range_min,
+          "5000" AS range_max,
+          "50" AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_content_frame_time_from_vsync" AS metric,
+          "8" AS range_min,
+          "792" AS range_max,
+          "100" AS bucket_count,
+          "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_content_frame_time_with_svg" AS metric,
+          "1" AS range_min,
+          "5000" AS range_max,
+          "50" AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_content_frame_time_without_resource_upload" AS metric,
+          "1" AS range_min,
+          "5000" AS range_max,
+          "50" AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "gfx_content_frame_time_without_upload" AS metric,
+          "1" AS range_min,
+          "5000" AS range_max,
+          "50" AS bucket_count,
+          "exponential" AS histogram_type
+        )
+      ]
+    )
 ),
 records AS (
   SELECT
@@ -160,7 +222,7 @@ SELECT
   *
 FROM
   records
-JOIN
+LEFT OUTER JOIN
   distribution_metadata
 USING
-  (metric)
+  (metric_type, metric)

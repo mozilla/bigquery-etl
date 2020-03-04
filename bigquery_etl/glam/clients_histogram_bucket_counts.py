@@ -3,6 +3,7 @@ import argparse
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
+from .utils import get_custom_distribution_metadata
 
 
 def render_main(**kwargs):
@@ -21,11 +22,13 @@ def glean_variables():
         "key",
         "agg_type",
     ]
+
     return dict(
         attributes_list=attributes_list,
         attributes=",".join(attributes_list),
         metric_attributes_list=metric_attributes_list,
         metric_attributes=",".join(metric_attributes_list),
+        custom_distribution_metadata_list=get_custom_distribution_metadata("fenix"),
     )
 
 

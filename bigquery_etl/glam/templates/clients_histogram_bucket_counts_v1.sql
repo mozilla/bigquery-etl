@@ -104,15 +104,22 @@ unnested AS (
 -- (GeckoView), which would need to incorporate information from the probe info
 -- service.
 distribution_metadata AS (
-    SELECT
-        metric,
-        MIN(CAST(bucket as INT64)) as first_bucket,
-        MAX(CAST(bucket as INT64)) as last_bucket,
-        COUNT(DISTINCT bucket) as num_buckets
-    FROM
-        unnested
-    GROUP BY
-        metric
+    SELECT *
+    FROM UNNEST(
+        [
+            {% for meta in custom_distribution_metadata_list %}
+                STRUCT(
+                    "custom_distribution" as metric_type,
+                    "{{ meta.name.replace('.', '_') }}" as metric,
+                    "{{ meta.range_min }}" as range_min,
+                    "{{ meta.range_max }}" as range_max,
+                    "{{ meta.bucket_count }}" as bucket_count,
+                    "{{ meta.histogram_type }}" as histogram_type
+                )
+                {{ "," if not loop.last else "" }}
+            {% endfor %}
+        ]
+    )
 ),
 records as (
     SELECT
@@ -130,7 +137,7 @@ SELECT
     *
 FROM
     records
-JOIN
+LEFT OUTER JOIN
     distribution_metadata
 USING
-    (metric)
+    (metric_type, metric)

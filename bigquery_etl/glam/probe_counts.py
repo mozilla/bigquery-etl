@@ -42,7 +42,7 @@ def render_query(attributes: List[str], **kwargs) -> str:
 def telemetry_variables():
     """Variables for probe_counts."""
     return dict(
-        source_table="clients_scalar_bucket_counts_v1",
+        # source_table="clients_scalar_bucket_counts_v1",
         attributes=["os", "app_version", "app_build_id", "channel"],
         aggregate_attributes="""
             metric,
@@ -71,7 +71,6 @@ def telemetry_variables():
 def glean_variables():
     """Variables for probe_counts."""
     return dict(
-        source_table="fenix_clients_scalar_bucket_counts_v1",
         attributes=["ping_type", "os", "app_version", "app_build_id", "channel"],
         aggregate_attributes="""
             metric,
@@ -99,9 +98,12 @@ def main():
     parser = ArgumentParser(description=main.__doc__)
     parser.add_argument(
         "--ping-type",
-        default="telemetry",
+        default="glean",
         choices=["glean", "telemetry"],
         help="determine attributes and user data types to aggregate",
+    )
+    parser.add_argument(
+        "--source-table", default="glam_etl.fenix_clients_scalar_bucket_counts_v1"
     )
     parser.add_argument(
         "--histogram",
@@ -122,7 +124,14 @@ def main():
     if args.ping_type is "telemetry" and args.histogram:
         raise ValueError("histograms not supported for telemetry")
 
-    print(render_query(header=header, is_scalar=not args.histogram, **variables))
+    print(
+        render_query(
+            header=header,
+            is_scalar=not args.histogram,
+            source_table=args.source_table,
+            **variables,
+        )
+    )
 
 
 if __name__ == "__main__":

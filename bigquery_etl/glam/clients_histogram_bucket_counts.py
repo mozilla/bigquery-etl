@@ -14,7 +14,13 @@ def render_main(**kwargs):
 
 def glean_variables():
     attributes_list = ["os", "app_version", "app_build_id", "channel"]
-    metric_attributes_list = ["latest_version", "metric", "metric_type", "key", "agg_type"]
+    metric_attributes_list = [
+        "latest_version",
+        "metric",
+        "metric_type",
+        "key",
+        "agg_type",
+    ]
     return dict(
         attributes_list=attributes_list,
         attributes=",".join(attributes_list),

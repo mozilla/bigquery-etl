@@ -98,6 +98,7 @@ function write_scalar_probe_counts {
     mkdir -p "$directory"
     python -m bigquery_etl.glam.probe_counts \
         --ping-type glean \
+        --source-table "glam_etl.fenix_clients_scalar_bucket_counts_v1" \
         > $directory/query.sql
     echo "generated $directory/query.sql"
 }
@@ -124,6 +125,7 @@ function write_histogram_probe_counts {
     mkdir -p "$directory"
     python -m bigquery_etl.glam.probe_counts \
         --ping-type glean \
+        --source-table "glam_etl.fenix_clients_histogram_bucket_counts_v1" \
         --histogram \
         > $directory/query.sql
     echo "generated $directory/query.sql"

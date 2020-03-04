@@ -110,13 +110,11 @@ unnested AS (
     UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
 ),
--- Find information that can be used to construct the bucket range.
--- TODO: is there a better way to incorporate the bucket information and to
--- validate the correctness of these buckets. The Glean documentation does
--- mention that there is a maximum recorded size, and that there are 8 buckets
--- for each power of 2. This doesn't apply to the custom distributions
--- (GeckoView), which would need to incorporate information from the probe info
--- service.
+-- Find information that can be used to construct the bucket range. Most of the
+-- distributions follow a bucketing rule of 8*log2(n). This doesn't apply to the
+-- custom distributions e.g. GeckoView, which needs to incorporate information
+-- from the probe info service.
+-- See: https://mozilla.github.io/glean/book/user/metrics/custom_distribution.html
 distribution_metadata AS (
   SELECT
     *
@@ -126,65 +124,65 @@ distribution_metadata AS (
         STRUCT(
           "custom_distribution" AS metric_type,
           "geckoview_document_site_origins" AS metric,
-          "0" AS range_min,
-          "100" AS range_max,
-          "50" AS bucket_count,
+          0 AS range_min,
+          100 AS range_max,
+          50 AS bucket_count,
           "exponential" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
           "gfx_checkerboard_peak_pixel_count" AS metric,
-          "1" AS range_min,
-          "66355200" AS range_max,
-          "50" AS bucket_count,
+          1 AS range_min,
+          66355200 AS range_max,
+          50 AS bucket_count,
           "exponential" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
           "gfx_checkerboard_severity" AS metric,
-          "1" AS range_min,
-          "1073741824" AS range_max,
-          "50" AS bucket_count,
+          1 AS range_min,
+          1073741824 AS range_max,
+          50 AS bucket_count,
           "exponential" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
           "gfx_content_frame_time_from_paint" AS metric,
-          "1" AS range_min,
-          "5000" AS range_max,
-          "50" AS bucket_count,
+          1 AS range_min,
+          5000 AS range_max,
+          50 AS bucket_count,
           "exponential" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
           "gfx_content_frame_time_from_vsync" AS metric,
-          "8" AS range_min,
-          "792" AS range_max,
-          "100" AS bucket_count,
+          8 AS range_min,
+          792 AS range_max,
+          100 AS bucket_count,
           "linear" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
           "gfx_content_frame_time_with_svg" AS metric,
-          "1" AS range_min,
-          "5000" AS range_max,
-          "50" AS bucket_count,
+          1 AS range_min,
+          5000 AS range_max,
+          50 AS bucket_count,
           "exponential" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
           "gfx_content_frame_time_without_resource_upload" AS metric,
-          "1" AS range_min,
-          "5000" AS range_max,
-          "50" AS bucket_count,
+          1 AS range_min,
+          5000 AS range_max,
+          50 AS bucket_count,
           "exponential" AS histogram_type
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
           "gfx_content_frame_time_without_upload" AS metric,
-          "1" AS range_min,
-          "5000" AS range_max,
-          "50" AS bucket_count,
+          1 AS range_min,
+          5000 AS range_max,
+          50 AS bucket_count,
           "exponential" AS histogram_type
         )
       ]

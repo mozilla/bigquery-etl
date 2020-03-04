@@ -39,18 +39,35 @@ RETURNS ARRAY<STRING> AS (
   (SELECT ARRAY_AGG(CAST(bucket AS STRING)) FROM UNNEST(buckets) AS bucket)
 );
 
-CREATE TEMP FUNCTION udf_get_buckets(min INT64, max INT64, num INT64, metric_type STRING)
+CREATE TEMP FUNCTION udf_get_buckets(
+  metric_type STRING,
+  range_min INT64,
+  range_max INT64,
+  bucket_count INT64,
+  histogram_type STRING
+)
 RETURNS ARRAY<INT64> AS (
   (
     WITH buckets AS (
       SELECT
         CASE
         WHEN
-          metric_type = 'histogram-exponential'
+          metric_type IN ('timing_distribution', 'memory_distribution')
         THEN
-          udf_exponential_buckets(min, max, num)
+          -- TODO: implement a udf to generate bucket ranges
+          []
+        WHEN
+          metric_type = 'custom_distribution'
+          AND histogram_type = 'exponential'
+        THEN
+          udf_exponential_buckets(range_min, range_max, bucket_count)
+        WHEN
+          metric_type = 'custom_distribution'
+          AND histogram_type = 'linear'
+        THEN
+          udf_linear_buckets(range_min, range_max, bucket_count)
         ELSE
-          udf_linear_buckets(min, max, num)
+          []
         END
         AS arr
     )
@@ -128,8 +145,9 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-                -- TODO: these variables don't exist yet
-    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+    udf_to_string_arr(
+      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+    )
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -139,9 +157,10 @@ GROUP BY
   app_version,
   app_build_id,
   channel,
-  first_bucket,
-  last_bucket,
-  num_buckets,
+  range_min,
+  range_max,
+  bucket_count,
+  histogram_type,
   metric,
   metric_type,
   key,
@@ -162,8 +181,9 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-                -- TODO: these variables don't exist yet
-    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+    udf_to_string_arr(
+      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+    )
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -172,75 +192,10 @@ GROUP BY
   os,
   app_version,
   channel,
-  first_bucket,
-  last_bucket,
-  num_buckets,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  ping_type,
-  NULL AS os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
-  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(
-    udf_dedupe_map_sum(ARRAY_AGG(record)),
-                -- TODO: these variables don't exist yet
-    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
-  ) AS aggregates
-FROM
-  glam_etl.fenix_clients_histogram_bucket_counts_v1
-GROUP BY
-  ping_type,
-  app_version,
-  app_build_id,
-  channel,
-  first_bucket,
-  last_bucket,
-  num_buckets,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  NULL AS ping_type,
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
-  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(
-    udf_dedupe_map_sum(ARRAY_AGG(record)),
-                -- TODO: these variables don't exist yet
-    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
-  ) AS aggregates
-FROM
-  glam_etl.fenix_clients_histogram_bucket_counts_v1
-GROUP BY
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  first_bucket,
-  last_bucket,
-  num_buckets,
+  range_min,
+  range_max,
+  bucket_count,
+  histogram_type,
   metric,
   metric_type,
   key,
@@ -251,7 +206,7 @@ SELECT
   ping_type,
   NULL AS os,
   app_version,
-  NULL AS app_build_id,
+  app_build_id,
   channel,
   metric,
   metric_type,
@@ -261,18 +216,21 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-                -- TODO: these variables don't exist yet
-    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+    udf_to_string_arr(
+      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+    )
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
 GROUP BY
   ping_type,
   app_version,
+  app_build_id,
   channel,
-  first_bucket,
-  last_bucket,
-  num_buckets,
+  range_min,
+  range_max,
+  bucket_count,
+  histogram_type,
   metric,
   metric_type,
   key,
@@ -282,38 +240,6 @@ UNION ALL
 SELECT
   NULL AS ping_type,
   os,
-  app_version,
-  NULL AS app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
-  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(
-    udf_dedupe_map_sum(ARRAY_AGG(record)),
-                -- TODO: these variables don't exist yet
-    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
-  ) AS aggregates
-FROM
-  glam_etl.fenix_clients_histogram_bucket_counts_v1
-GROUP BY
-  os,
-  app_version,
-  channel,
-  first_bucket,
-  last_bucket,
-  num_buckets,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  NULL AS ping_type,
-  NULL AS os,
   app_version,
   app_build_id,
   channel,
@@ -325,18 +251,21 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-                -- TODO: these variables don't exist yet
-    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+    udf_to_string_arr(
+      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+    )
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
 GROUP BY
+  os,
   app_version,
   app_build_id,
   channel,
-  first_bucket,
-  last_bucket,
-  num_buckets,
+  range_min,
+  range_max,
+  bucket_count,
+  histogram_type,
   metric,
   metric_type,
   key,
@@ -344,7 +273,7 @@ GROUP BY
   agg_type
 UNION ALL
 SELECT
-  NULL AS ping_type,
+  ping_type,
   NULL AS os,
   app_version,
   NULL AS app_build_id,
@@ -357,17 +286,121 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-                -- TODO: these variables don't exist yet
-    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+    udf_to_string_arr(
+      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+    )
+  ) AS aggregates
+FROM
+  glam_etl.fenix_clients_histogram_bucket_counts_v1
+GROUP BY
+  ping_type,
+  app_version,
+  channel,
+  range_min,
+  range_max,
+  bucket_count,
+  histogram_type,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type
+UNION ALL
+SELECT
+  NULL AS ping_type,
+  os,
+  app_version,
+  NULL AS app_build_id,
+  channel,
+  metric,
+  metric_type,
+  key,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(
+      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+    )
+  ) AS aggregates
+FROM
+  glam_etl.fenix_clients_histogram_bucket_counts_v1
+GROUP BY
+  os,
+  app_version,
+  channel,
+  range_min,
+  range_max,
+  bucket_count,
+  histogram_type,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type
+UNION ALL
+SELECT
+  NULL AS ping_type,
+  NULL AS os,
+  app_version,
+  app_build_id,
+  channel,
+  metric,
+  metric_type,
+  key,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(
+      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+    )
+  ) AS aggregates
+FROM
+  glam_etl.fenix_clients_histogram_bucket_counts_v1
+GROUP BY
+  app_version,
+  app_build_id,
+  channel,
+  range_min,
+  range_max,
+  bucket_count,
+  histogram_type,
+  metric,
+  metric_type,
+  key,
+  client_agg_type,
+  agg_type
+UNION ALL
+SELECT
+  NULL AS ping_type,
+  NULL AS os,
+  app_version,
+  NULL AS app_build_id,
+  channel,
+  metric,
+  metric_type,
+  key,
+  agg_type AS client_agg_type,
+  'histogram' AS agg_type,
+  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
+  udf_fill_buckets(
+    udf_dedupe_map_sum(ARRAY_AGG(record)),
+    udf_to_string_arr(
+      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+    )
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
 GROUP BY
   app_version,
   channel,
-  first_bucket,
-  last_bucket,
-  num_buckets,
+  range_min,
+  range_max,
+  bucket_count,
+  histogram_type,
   metric,
   metric_type,
   key,

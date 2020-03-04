@@ -38,18 +38,35 @@ RETURNS ARRAY<STRING> AS (
   (SELECT ARRAY_AGG(CAST(bucket AS STRING)) FROM UNNEST(buckets) AS bucket)
 );
 
-CREATE TEMP FUNCTION udf_get_buckets(min INT64, max INT64, num INT64, metric_type STRING)
+CREATE TEMP FUNCTION udf_get_buckets(
+  metric_type STRING,
+  range_min INT64,
+  range_max INT64,
+  bucket_count INT64,
+  histogram_type STRING
+)
 RETURNS ARRAY<INT64> AS (
   (
     WITH buckets AS (
       SELECT
         CASE
         WHEN
-          metric_type = 'histogram-exponential'
+          metric_type IN ('timing_distribution', 'memory_distribution')
         THEN
-          udf_exponential_buckets(min, max, num)
+          -- TODO: implement a udf to generate bucket ranges
+          []
+        WHEN
+          metric_type = 'custom_distribution'
+          AND histogram_type = 'exponential'
+        THEN
+          udf_exponential_buckets(range_min, range_max, bucket_count)
+        WHEN
+          metric_type = 'custom_distribution'
+          AND histogram_type = 'linear'
+        THEN
+          udf_linear_buckets(range_min, range_max, bucket_count)
         ELSE
-          udf_linear_buckets(min, max, num)
+          []
         END
         AS arr
     )

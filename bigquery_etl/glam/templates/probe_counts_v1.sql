@@ -42,8 +42,9 @@
             CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
             udf_fill_buckets(
                 udf_dedupe_map_sum(ARRAY_AGG(record)),
-                -- TODO: these variables don't exist yet
-                udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+                udf_to_string_arr(
+                    udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+                )
             ) AS aggregates
         {% endif %}
     FROM
@@ -57,9 +58,10 @@
             {{ attribute }},
         {% endfor %}
         {% if not is_scalar %}
-            first_bucket,
-            last_bucket,
-            num_buckets,
+            range_min,
+            range_max,
+            bucket_count,
+            histogram_type,
         {% endif %}
         {{ aggregate_attributes }},
         {{ aggregate_grouping }}

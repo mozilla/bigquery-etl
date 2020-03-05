@@ -1,3 +1,6 @@
+CREATE OR REPLACE TABLE `moz-fx-data-shared-prod.search.search_rfm`
+PARTITION BY submission_date
+AS
 SELECT
   `moz-fx-data-shared-prod.udf.days_seen_bytes_to_rfm`(days_seen_bytes) AS days_seen,
   `moz-fx-data-shared-prod.udf.days_seen_bytes_to_rfm`(days_searched_bytes) AS days_searched,

@@ -33,7 +33,11 @@ AS
   return result;
 ''';
 
-CREATE TEMP FUNCTION udf_functional_buckets(log_base INT64, buckets_per_magnitude INT64, range_max INT64)
+CREATE TEMP FUNCTION udf_functional_buckets(
+  log_base INT64,
+  buckets_per_magnitude INT64,
+  range_max INT64
+)
 RETURNS ARRAY<FLOAT64>
 LANGUAGE js
 AS

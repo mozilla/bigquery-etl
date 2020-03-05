@@ -121,7 +121,7 @@ def main():
     variables = (
         telemetry_variables() if args.ping_type == "telemetry" else glean_variables()
     )
-    if args.ping_type is "telemetry" and args.histogram:
+    if args.ping_type == "telemetry" and args.histogram:
         raise ValueError("histograms not supported for telemetry")
 
     print(

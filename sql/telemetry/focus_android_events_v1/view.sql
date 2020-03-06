@@ -24,7 +24,7 @@ FROM
 SELECT
     submission_timestamp,
     client_id AS device_id,
-    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     CASE
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('tip') ) AND (event_value IN ('open_in_new_tab_tip') ) THEN 'Focus - Open in new tab tip displayed' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('tip') ) AND (event_value IN ('add_to_homescreen_tip') ) THEN 'Focus - Add to homescreen tip displayed' 
@@ -128,7 +128,7 @@ SELECT
           WHEN event_name = 'Focus - Request Desktop Site Clicked' THEN event_value
           END AS value
       UNION ALL SELECT 'source' AS key, CASE
-          WHEN event_name = 'Focus - Autocomplete Updates' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'source')
+          WHEN event_name = 'Focus - Autocomplete Updates' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'source')
           END AS value
       UNION ALL SELECT 'intent_type' AS key, CASE
           WHEN event_name = 'Focus - Link from third-party app' THEN event_method

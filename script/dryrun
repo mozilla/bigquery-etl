@@ -11,21 +11,12 @@ accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
 
-from argparse import ArgumentParser
-from functools import partial
 from multiprocessing.pool import ThreadPool
 from os.path import basename, dirname
 from urllib.request import urlopen, Request
 import glob
 import json
-import os
 import sys
-
-# sys.path needs to be modified to enable package imports from parent
-# and sibling directories. Also see:
-# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 DRY_RUN_URL = (
     "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun"
@@ -97,7 +88,7 @@ USE_DERIVED_DATASETS = {
 }
 
 
-def worker_entrypoint(public_project, sqlfile):
+def worker_entrypoint(sqlfile):
     sql = open(sqlfile).read()
     if sqlfile in USE_DERIVED_DATASETS:
         url = DERIVED_DATASETS_DRY_RUN_URL
@@ -105,22 +96,13 @@ def worker_entrypoint(public_project, sqlfile):
         url = DRY_RUN_URL
 
     try:
-        request_data = {"dataset": basename(dirname(dirname(sqlfile))), "query": sql}
-
-        try:
-            # specify project ID for queries in public project
-            metadata = Metadata.of_sql_file(sqlfile)
-            if metadata.is_public_bigquery():
-                request_data["project"] = public_project
-        except Exception:
-            # for all other queries perform dryrun in default project
-            pass
-
         r = urlopen(
             Request(
                 url,
                 headers={"Content-Type": "application/json"},
-                data=json.dumps(request_data).encode("utf8"),
+                data=json.dumps(
+                    {"dataset": basename(dirname(dirname(sqlfile))), "query": sql}
+                ).encode("utf8"),
                 method="POST",
             )
         )
@@ -150,21 +132,10 @@ def worker_entrypoint(public_project, sqlfile):
     return True
 
 
-parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "--public_project",
-    default="mozilla-public-data",
-    help="Project with publicly accessible data",
-)
-
-
 def main():
-    args = parser.parse_args()
     sql_files = [f for f in glob.glob("sql/**/*.sql", recursive=True) if f not in SKIP]
     with ThreadPool(8) as p:
-        result = p.map(
-            partial(worker_entrypoint, args.public_project), sql_files, chunksize=1
-        )
+        result = p.map(worker_entrypoint, sql_files, chunksize=1)
     if all(result):
         exitcode = 0
     else:

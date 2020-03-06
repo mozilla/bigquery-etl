@@ -97,8 +97,6 @@ USE_DERIVED_DATASETS = {
 }
 
 
-
-
 def worker_entrypoint(public_project, sqlfile):
     sql = open(sqlfile).read()
     if sqlfile in USE_DERIVED_DATASETS:
@@ -114,7 +112,7 @@ def worker_entrypoint(public_project, sqlfile):
             metadata = Metadata.of_sql_file(sqlfile)
             if metadata.is_public_bigquery():
                 request_data["project"] = public_project
-        except Exception as e:
+        except Exception:
             # for all other queries perform dryrun in default project
             pass
 

@@ -42,7 +42,9 @@ jobs:
       - checkout
       - run:
           name: Verify that BigQuery validates each query
-          command: script/dryrun
+          command: |
+            pip install PyYaml
+            script/dryrun
   deploy:
     parameters:
       image:

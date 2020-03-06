@@ -24,7 +24,7 @@ WITH
     `date` AS submission_date,
     mau
   FROM
-    `moz-fx-data-derived-datasets.static.firefox_desktop_imputed_mau28_v1`
+    `moz-fx-data-shared-prod.static.firefox_desktop_imputed_mau28_v1`
   WHERE
     datasource = 'desktop_global'),
     --
@@ -33,7 +33,7 @@ WITH
     `date` AS submission_date,
     mau
   FROM
-    `moz-fx-data-derived-datasets.static.firefox_desktop_imputed_mau28_v1`
+    `moz-fx-data-shared-prod.static.firefox_desktop_imputed_mau28_v1`
   WHERE
     datasource = 'desktop_tier1')
 

@@ -22,7 +22,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
-PROJECT_ID_ARG_RE = re.compile(fr"(--project_id=)(\s?[a-zA-z0-9_-]+)")
+PROJECT_ID_ARG_RE = re.compile(fr"(--destination_table=)(\s?[a-zA-z0-9_-]+)")
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -30,34 +30,54 @@ parser.add_argument(
     default="mozilla-public-data",
     help="Project with publicly accessible data",
 )
+parser.add_argument(
+    "--destination_table", help="Destination table name results are written to"
+)
+parser.add_argument("--dataset_id", help="Destination dataset")
 parser.add_argument("--query_file", help="File path to query to be executed")
 
 
 def main():
     args, query_arguments = parser.parse_known_args()
-    query_arguments = query_arguments[0]
     query_file = args.query_file
+
+    if args.dataset_id is not None:
+        # dataset ID was parsed by argparse but needs to be passed as parameter
+        # when running the query
+        query_arguments.append("--dataset_id={}".format(args.dataset_id))
+
+    use_public_table = False
 
     try:
         metadata = Metadata.of_sql_file(query_file)
-        if metadata.is_public_bigquery(args.query_file):
-            # change the project ID to write results to the public dataset
+        if metadata.is_public_bigquery():
+            # change the destination table to write results to the public dataset
             # a view to the public table in the internal dataset is created
             # when CI runs
-            public_project_id_sub = rf"\1{args.public_project_id}"
-            query_arguments = PROJECT_ID_ARG_RE.sub(
-                public_project_id_sub, query_arguments
-            )
+            if args.dataset_id is not None and args.destination_table is not None:
+                destination_table = "{}:{}.{}".format(
+                    args.public_project_id, args.dataset_id, args.destination_table
+                )
+                query_arguments.append(
+                    "--destination_table={}".format(destination_table)
+                )
+                use_public_table = True
     except yaml.YAMLError as e:
         print(e)
         sys.exit(1)
     except FileNotFoundError as e:
         print("Metadata file does not exist: {}", e)
 
+    if not use_public_table:
+        # destination table was parsed by argparse, however if it wasn't modified to
+        # point to a public table it needs to be passed as parameter for the query
+        query_arguments.append("--destination_table={}".format(args.destination_table))
+
     with open(query_file) as query_stream:
         # run the query as shell command so that passed parameters can be used as is
         sql = query_stream.read()
-        subprocess.call(["bq"] + query_arguments.split() + [sql])
+        print(query_arguments)
+        subprocess.call(["bq"] + query_arguments + [sql])
 
 
 if __name__ == "__main__":

@@ -46,7 +46,7 @@ parser.add_argument(
 
 def is_public_bigquery(metadata_file):
     """
-    Reads the metadata file associated with the query to determine if the query
+    Reads the metadata file associated with the query to determine if the query 
     results should be written into the public dataset.
     """
 
@@ -69,7 +69,7 @@ def generate_and_publish_view(client, project, dataset, table, public_project, d
     full_view_id = ".".join([project, dataset, table])
     public_table = ".".join([public_project, dataset, table])
 
-    view_sql = f"""CREATE OR REPLACE VIEW
+    view_sql = f"""CREATE OR REPLACE VIEW 
         `{full_view_id}`
     AS SELECT * FROM `{public_table}`
     """

@@ -38,11 +38,8 @@ class Metadata:
             try:
                 metadata = yaml.safe_load(yaml_stream)
 
-                if "friendly_name" in metadata:
-                    friendly_name = metadata["friendly_name"]
-
-                if "description" in metadata:
-                    description = metadata["description"]
+                friendly_name = metadata.get("friendly_name", None)
+                description = metadata.get("description", None)
 
                 if "labels" in metadata:
                     labels = {}

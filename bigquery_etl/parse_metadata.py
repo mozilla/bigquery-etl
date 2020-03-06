@@ -2,6 +2,10 @@
 
 import re
 import yaml
+import os
+
+
+METADATA_FILE = "metadata.yaml"
 
 
 class Metadata:
@@ -69,6 +73,14 @@ class Metadata:
                 return cls(friendly_name, description, labels)
             except yaml.YAMLError as e:
                 raise e
+
+    @classmethod
+    def of_sql_file(cls, sql_file):
+        """Returns the metadata that is associated with the provided SQL file."""
+        path, _ = os.path.split(sql_file)
+        metadata_file = os.path.join(path, METADATA_FILE)
+        cls = Metadata.from_file(metadata_file)
+        return cls
 
     def is_public_bigquery(self):
         """Return true if the public_bigquery flag is set."""

@@ -96,7 +96,7 @@ USE_DERIVED_DATASETS = {
     "sql/telemetry/core_clients_last_seen_raw_v1/query.sql",
 }
 
-METADATA_FILE = "metadata.yaml"
+
 
 
 def worker_entrypoint(public_project, sqlfile):
@@ -111,9 +111,7 @@ def worker_entrypoint(public_project, sqlfile):
 
         try:
             # specify project ID for queries in public project
-            path, _ = os.path.split(sqlfile)
-            metadata_file = os.path.join(path, METADATA_FILE)
-            metadata = Metadata.from_file(metadata_file)
+            metadata = Metadata.of_sql_file(sqlfile)
             if metadata.is_public_bigquery():
                 request_data["project"] = public_project
         except Exception as e:

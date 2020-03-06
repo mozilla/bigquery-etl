@@ -24,10 +24,10 @@ elif [ "${1:0:1}" = - ]; then
     # First argument is a flag, assume intended executable is pytest
     exec pytest "$@"
 elif [ "$1" = "query" ]; then
-    # Alias
+    # For an invocation like:
     #     query [options] FILE
-    # to
-    #     bq query [options] "FILE"
+    # we dispatch to a script that inspects metadata and emulates the following call:
+    #     bq query [options] < FILE 
     #
     # For queries that have a corresponding metadata file with public_bigquery set to
     # True, the destination_table option will be mapped to the destination table in

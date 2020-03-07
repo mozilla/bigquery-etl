@@ -2,10 +2,11 @@
 
 from argparse import ArgumentParser
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 from functools import partial
 from textwrap import dedent
+from typing import Optional
 import asyncio
 import logging
 import warnings
@@ -223,30 +224,76 @@ async def delete_from_partition(
 
 def get_partition_expr(table):
     """Get the SQL expression to use for a table's partitioning field."""
-    for field in table.schema:
-        if field.name != table.time_partitioning.field:
-            continue
-        if field.field_type == "TIMESTAMP":
-            return f"DATE({field.name})"
-        return field.name
+    if table.range_partitioning:
+        return table.range_partitioning.field
+    if table.time_partitioning:
+        return next(
+            f"DATE({field.name})" if field.field_type == "TIMESTAMP" else field.name
+            for field in table.schema
+            if field.name == table.time_partitioning.field
+        )
 
 
-def list_partitions(client, target):
-    """List the partition ids and corresponding dates in a table."""
+@dataclass
+class Partition:
+    """Return type for get_partition."""
+
+    condition: str
+    id: Optional[str] = None
+
+
+def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partition]:
+    """Return a Partition for id_ unless it is a date on or after end_date."""
+    if id_ is None:
+        if table.time_partitioning:
+            return Partition(f"{partition_expr} < '{end_date}'")
+        return Partition("TRUE")
+    if id_ == "__NULL__":
+        return Partition(f"{partition_expr} IS NULL", id_)
+    if table.time_partitioning:
+        date = datetime.strptime(id_, "%Y%m%d").date()
+        if date < end_date:
+            return Partition(f"{partition_expr} = '{date}'", id_)
+        return None
+    if table.range_partitioning:
+        if id_ == "__UNPARTITIONED__":
+            return Partition(
+                f"{partition_expr} < {table.range_partitioning.range_.start} "
+                f"OR {partition_expr} >= {table.range_partitioning.range_.end}",
+                id_,
+            )
+        if table.range_partitioning.range_.interval > 1:
+            return Partition(
+                f"{partition_expr} BETWEEN {id_} "
+                f"AND {int(id_) + table.range_partitioning.range_.interval - 1}",
+                id_,
+            )
+    return Partition(f"{partition_expr} = {id_}", id_)
+
+
+def list_partitions(client, table, partition_expr, end_date, max_single_dml_bytes):
+    """List the relevant partitions in a table."""
     return [
-        (partition_id, datetime.strptime(partition_id, "%Y%m%d").date())
-        for row in client.query(
-            dedent(
-                f"""
-                SELECT
-                  partition_id
-                FROM
-                  [{sql_table_id(target)}$__PARTITIONS_SUMMARY__]
-                """
-            ).strip(),
-            bigquery.QueryJobConfig(use_legacy_sql=True),
-        ).result()
-        for partition_id in [row["partition_id"]]
+        partition
+        for partition in (
+            [
+                get_partition(table, partition_expr, end_date, row["partition_id"])
+                for row in client.query(
+                    dedent(
+                        f"""
+                        SELECT
+                          partition_id
+                        FROM
+                          [{sql_table_id(table)}$__PARTITIONS_SUMMARY__]
+                        """
+                    ).strip(),
+                    bigquery.QueryJobConfig(use_legacy_sql=True),
+                ).result()
+            ]
+            if table.num_bytes > max_single_dml_bytes or partition_expr is None
+            else [get_partition(table, partition_expr, end_date)]
+        )
+        if partition is not None
     ]
 
 
@@ -264,23 +311,15 @@ async def delete_from_table(
                 delete_from_partition(
                     client_q=client_q,
                     dry_run=dry_run,
-                    partition_condition=(
-                        f"{partition_expr} <= '{end_date}'"
-                        if partition_date is None
-                        else f"{partition_expr} = '{partition_date}'"
-                    ),
-                    partition_expr=partition_expr,
-                    partition_id=partition_id,
+                    partition_condition=partition.condition,
+                    partition_id=partition.id,
                     target=target,
                     end_date=end_date,
                     **kwargs,
                 )
-                for partition_id, partition_date in (
-                    list_partitions(client=client, target=target)
-                    if table.num_bytes > max_single_dml_bytes
-                    else [(None, None)]
+                for partition in list_partitions(
+                    client, table, partition_expr, end_date, max_single_dml_bytes
                 )
-                if partition_date is None or partition_date < end_date
             ]
         )
     )
@@ -308,9 +347,6 @@ async def main():
         f"AND DATE(submission_timestamp) < '{args.end_date}'"
     )
     table_filter = get_table_filter(args)
-    # expire in 15 days because this script may take up to 14 days
-    expiration_date = datetime.utcnow().date() + timedelta(days=15)
-    expiration_timestamp = f"{expiration_date} 00:00:00 UTC"
     client_q = ClientQueue(args.billing_projects, args.parallelism)
     states = {}
     if args.state_table:
@@ -367,7 +403,6 @@ async def main():
                     max_single_dml_bytes=args.max_single_dml_bytes,
                     state_table=args.state_table,
                     states=states,
-                    expiration_timestamp=expiration_timestamp,
                 )
                 for target, source in DELETE_TARGETS.items()
                 if table_filter(target.table)

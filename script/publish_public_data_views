@@ -8,9 +8,9 @@ datasets.
 """
 
 from argparse import ArgumentParser
+from fnmatch import fnmatchcase
 import os
 import sys
-import yaml
 
 from google.cloud import bigquery
 
@@ -21,20 +21,22 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
-METADATA_FILE = "metadata.yaml"
+DEFAULT_PATTERN = "mozilla-public-data:*.*"
 
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
-    "--target",
-    nargs="+",
-    help="File or directory containing query definitions and metadata",
+    "--target-project",
+    default="moz-fx-data-derived-datasets",
+    help="Create views in the target project",
 )
-parser.add_argument("--target-project", help="Create views in the target project")
 parser.add_argument(
-    "--public-project",
-    default="mozilla-public-data",
-    help=("Project with publicly available data"),
+    "patterns",
+    metavar="[project:]dataset[.table]",
+    default=[DEFAULT_PATTERN],
+    nargs="*",
+    help="Table that should have a latest-version view, may use shell-style wildcards,"
+    f" defaults to: {DEFAULT_PATTERN}",
 )
 parser.add_argument(
     "--dry_run",
@@ -44,64 +46,74 @@ parser.add_argument(
 )
 
 
-def is_public_bigquery(metadata_file):
+def uses_wildcards(pattern: str) -> bool:
+    return bool(set("*?[]") & set(pattern))
+
+
+def generate_and_publish_views(client, tables, target_project, dry_run):
     """
-    Reads the metadata file associated with the query to determine if the query
-    results should be written into the public dataset.
-    """
-
-    try:
-        metadata = Metadata.from_file(metadata_file)
-        return metadata.is_public_bigquery()
-    except yaml.YAMLError as e:
-        print(e)
-    except FileNotFoundError as e:
-        print("Metadata file does not exist: {}", e)
-
-    return False
-
-
-def generate_and_publish_view(client, project, dataset, table, public_project, dry_run):
-    """
-    Generates view definitions for public data and executes them.
+    Generates view definitions for public data tables and executes them.
     """
 
-    full_view_id = ".".join([project, dataset, table])
-    public_table = ".".join([public_project, dataset, table])
+    for public_table in tables:
+        project, dataset, table_name = public_table.split(".")
+        full_view_id = f"{target_project}.{dataset}.{table_name}"
 
-    view_sql = f"""CREATE OR REPLACE VIEW
-        `{full_view_id}`
-    AS SELECT * FROM `{public_table}`
-    """
+        view_sql = f"""CREATE OR REPLACE VIEW
+            `{full_view_id}`
+        AS SELECT * FROM `{public_table}`
+        """
 
-    job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
-    client.query(view_sql, job_config)
+        job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
+        client.query(view_sql, job_config)
+
+
+def get_tables(client, patterns):
+    all_projects = None
+    all_datasets = {}
+    all_tables = {}
+    matching_tables = []
+
+    for pattern in patterns:
+        project, _, dataset_table = pattern.partition(":")
+        dataset, _, table = dataset_table.partition(".")
+        projects = [project or client.project]
+        dataset = dataset or "*"
+        table = table or "*"
+        if uses_wildcards(project):
+            if all_projects is None:
+                all_projects = [p.project_id for p in client.list_projects()]
+            projects = [p for p in all_projects if fnmatchcase(project, p)]
+        for project in projects:
+            datasets = [dataset]
+            if uses_wildcards(dataset):
+                if project not in all_datasets:
+                    all_datasets[project] = [
+                        d.dataset_id for d in client.list_datasets(project)
+                    ]
+                datasets = [d for d in all_datasets[project] if fnmatchcase(d, dataset)]
+            for dataset in datasets:
+                dataset = f"{project}.{dataset}"
+                tables = [(f"{dataset}.{table}", None)]
+                if uses_wildcards(table):
+                    if dataset not in all_tables:
+                        all_tables[dataset] = list(client.list_tables(dataset))
+                    tables = [
+                        f"{dataset}.{t.table_id}"
+                        for t in all_tables[dataset]
+                        if fnmatchcase(t.table_id, table)
+                    ]
+                    matching_tables += tables
+
+    return matching_tables
 
 
 def main():
     args = parser.parse_args()
-    target_project = args.target_project
-    client = bigquery.Client(target_project)
 
-    for target in args.target:
-        if os.path.isdir(target):
-            for root, dirs, files in os.walk(target):
-                if METADATA_FILE in files:
-                    metadata_file = os.path.join(root, METADATA_FILE)
-
-                    if is_public_bigquery(metadata_file):
-                        path = os.path.normpath(root)
-                        dataset = path.split(os.sep)[-2]
-                        table = path.split(os.sep)[-1]
-
-                        generate_and_publish_view(
-                            client,
-                            target_project,
-                            dataset,
-                            table,
-                            args.public_project,
-                            args.dry_run,
-                        )
+    client = bigquery.Client(args.target_project)
+    tables = get_tables(client, args.patterns)
+    generate_and_publish_views(client, tables, args.target_project, args.dry_run)
 
 
 if __name__ == "__main__":

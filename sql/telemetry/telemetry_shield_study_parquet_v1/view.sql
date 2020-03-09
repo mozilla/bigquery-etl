@@ -2,10 +2,10 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.telemetry_shield_study_parquet_v1` AS
 SELECT
-  submission AS submission_date,
+  submission_date AS submission,
   * REPLACE (
     (SELECT AS STRUCT application.* REPLACE ((SELECT AS STRUCT application.addons.* REPLACE (application.addons.active_addons.key_value AS active_addons, application.addons.active_gmplugins.key_value AS active_gmplugins)) AS addons)) AS application,
     (SELECT AS STRUCT payload.* REPLACE ((SELECT AS STRUCT payload.data.* REPLACE (payload.data.attributes.key_value AS attributes)) AS data)) AS payload
   )
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.telemetry_shield_study_parquet_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.telemetry_shield_study_parquet_v1`

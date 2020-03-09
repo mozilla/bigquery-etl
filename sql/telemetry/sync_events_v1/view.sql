@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.sync_events_v1`
 AS
 SELECT
-  submission_date_s3 AS submission_date,
+  submission_date AS submission_date_s3,
   * REPLACE (event_map_values.key_value AS event_map_values)
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.sync_events_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.sync_events_v1`

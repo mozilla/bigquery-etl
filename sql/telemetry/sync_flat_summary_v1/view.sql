@@ -6,4 +6,4 @@ SELECT
   submission_date_s3 AS submission_date,
   * REPLACE (ARRAY(SELECT * FROM UNNEST(devices.list)) AS devices)
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.sync_flat_summary_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.sync_flat_summary_v1`

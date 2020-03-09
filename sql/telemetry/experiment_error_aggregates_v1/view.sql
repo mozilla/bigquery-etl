@@ -2,7 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.experiment_error_aggregates_v1`
 AS
 SELECT
-  submission_date_s3 AS submission_date,
-  * EXCEPT (submission_date)
+  submission_date AS submission_date_s3,
+  *
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.experiment_error_aggregates_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.experiment_error_aggregates_v1`

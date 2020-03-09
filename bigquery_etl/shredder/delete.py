@@ -19,6 +19,9 @@ from ..util.table_filter import add_table_filter_arguments, get_table_filter
 from .config import DELETE_TARGETS
 
 
+NULL_PARTITION_ID = "__NULL__"
+OUTSIDE_RANGE_PARTITION_ID = "__UNPARTITIONED__"
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "-n",
@@ -235,11 +238,7 @@ def get_partition_expr(table):
     if table.range_partitioning:
         return table.range_partitioning.field
     if table.time_partitioning:
-        return next(
-            f"DATE({field.name})" if field.field_type == "TIMESTAMP" else field.name
-            for field in table.schema
-            if field.name == table.time_partitioning.field
-        )
+        return f"CAST({table.time_partitioning.field} AS DATE)"
 
 
 @dataclass
@@ -256,7 +255,7 @@ def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partiti
         if table.time_partitioning:
             return Partition(f"{partition_expr} < '{end_date}'")
         return Partition("TRUE")
-    if id_ == "__NULL__":
+    if id_ == NULL_PARTITION_ID:
         return Partition(f"{partition_expr} IS NULL", id_)
     if table.time_partitioning:
         date = datetime.strptime(id_, "%Y%m%d").date()
@@ -264,7 +263,7 @@ def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partiti
             return Partition(f"{partition_expr} = '{date}'", id_)
         return None
     if table.range_partitioning:
-        if id_ == "__UNPARTITIONED__":
+        if id_ == OUTSIDE_RANGE_PARTITION_ID:
             return Partition(
                 f"{partition_expr} < {table.range_partitioning.range_.start} "
                 f"OR {partition_expr} >= {table.range_partitioning.range_.end}",

@@ -24,8 +24,12 @@ class Metadata:
 
         Only hyphens (-), underscores (_), lowercase characters, and
         numbers are allowed. International characters are allowed.
+
+        Keys have a minimum length of 1 character and a maximum length of
+        63 characters, and cannot be empty. Values can be empty, and have
+        a maximum length of 63 characters.
         """
-        return re.match(r"[\w\d_-]+", label)
+        return re.match(r"[\w\d_-]+", label) and len(label) <= 63
 
     @classmethod
     def from_file(cls, metadata_file):

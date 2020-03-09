@@ -24,7 +24,7 @@ FROM
 SELECT
     submission_timestamp,
     client_id AS device_id,
-    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     CASE
         WHEN (event_category IN ('action') ) AND (event_method IN ('foreground') ) AND (event_object IN ('app') ) THEN 'Fennec-iOS - App is foregrounded (session start)' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('background') ) AND (event_object IN ('app') ) THEN 'Fennec-iOS - App is backgrounded (session end)' 
@@ -120,21 +120,21 @@ SELECT
           WHEN event_name = 'Fennec-iOS - Setting changed' THEN event_value
           END AS value
       UNION ALL SELECT 'to' AS key, CASE
-          WHEN event_name = 'Fennec-iOS - Setting changed' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'to')
-          WHEN event_name = 'Fennec-iOS - Prompt to translate tab to user\'s native language' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'to')
-          WHEN event_name = 'Fennec-iOS - Accept or decline offer to translate tab' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'to')
+          WHEN event_name = 'Fennec-iOS - Setting changed' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'to')
+          WHEN event_name = 'Fennec-iOS - Prompt to translate tab to user\'s native language' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'to')
+          WHEN event_name = 'Fennec-iOS - Accept or decline offer to translate tab' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'to')
           END AS value
       UNION ALL SELECT 'from' AS key, CASE
-          WHEN event_name = 'Fennec-iOS - Prompt to translate tab to user\'s native language' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'from')
-          WHEN event_name = 'Fennec-iOS - Accept or decline offer to translate tab' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'from')
+          WHEN event_name = 'Fennec-iOS - Prompt to translate tab to user\'s native language' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'from')
+          WHEN event_name = 'Fennec-iOS - Accept or decline offer to translate tab' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'from')
           END AS value
       UNION ALL SELECT 'action' AS key, CASE
-          WHEN event_name = 'Fennec-iOS - Accept or decline offer to translate tab' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'action')
+          WHEN event_name = 'Fennec-iOS - Accept or decline offer to translate tab' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'action')
           END AS value
       UNION ALL SELECT 'slide-num' AS key, CASE
-          WHEN event_name = 'Fennec-iOS - Dismiss onboarding screen' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'slide-num')
-          WHEN event_name = 'Fennec-iOS - Dismiss onboarding screen on email login card' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'slide-num')
-          WHEN event_name = 'Fennec-iOS - Dismiss onboarding screen on sign up card' THEN `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'slide-num')
+          WHEN event_name = 'Fennec-iOS - Dismiss onboarding screen' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'slide-num')
+          WHEN event_name = 'Fennec-iOS - Dismiss onboarding screen on email login card' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'slide-num')
+          WHEN event_name = 'Fennec-iOS - Dismiss onboarding screen on sign up card' THEN `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'slide-num')
           END AS value
       UNION ALL SELECT 'event_value' AS key, event_value AS value
   ) WHERE VALUE IS NOT NULL) AS event_props_2,

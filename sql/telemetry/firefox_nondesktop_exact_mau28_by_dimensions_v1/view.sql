@@ -7,5 +7,5 @@ SELECT
 FROM
   `moz-fx-data-derived-datasets.telemetry.firefox_nondesktop_exact_mau28_raw_v1` AS raw
 LEFT JOIN
-  `moz-fx-data-derived-datasets.static.country_codes_v1` cc
+  `moz-fx-data-shared-prod.static.country_codes_v1` cc
   ON (raw.country = cc.code)

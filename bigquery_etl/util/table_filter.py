@@ -54,8 +54,4 @@ def get_table_filter(args: Namespace) -> Callable[[str], bool]:
         ]
         if patterns
     ]
-    if len(predicates) > 1:
-        return lambda table: all(predicate(table) for predicate in predicates)
-    if len(predicates) == 1:
-        return predicates[0]
-    return lambda table: True
+    return lambda table: all(predicate(table) for predicate in predicates)

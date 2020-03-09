@@ -29,6 +29,13 @@ parser.add_argument(
     "use with --log-level=DEBUG to log query contents",
 )
 parser.add_argument(
+    "--read_only",
+    "--read-only",
+    action="store_true",
+    help="Use SELECT * FROM instead of DELETE with dry run queries to prevent errors "
+    "due to read-only permissions being insufficient to dry run DELETE dml",
+)
+parser.add_argument(
     "-l",
     "--log-level",
     "--log_level",
@@ -178,6 +185,7 @@ async def delete_from_partition(
     partition_condition,
     partition_id,
     priority,
+    read_only,
     source,
     source_condition,
     target,
@@ -189,7 +197,7 @@ async def delete_from_partition(
     def create_job(client):
         query = dedent(
             f"""
-            DELETE
+            {"SELECT * FROM" if dry_run and read_only else "DELETE"}
               `{sql_table_id(target)}`
             WHERE
               {target.field} IN (
@@ -397,6 +405,7 @@ async def main():
                     ),
                     source_condition=source_condition,
                     dry_run=args.dry_run,
+                    read_only=args.read_only,
                     priority=args.priority,
                     start_date=args.start_date,
                     end_date=args.end_date,

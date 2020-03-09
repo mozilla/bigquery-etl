@@ -122,7 +122,7 @@ WITH event_events AS (
 SELECT
     submission_timestamp,
     client_id AS user_id,
-    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     CASE
         WHEN event_object = 'tools' THEN CONCAT('dt - ',  event_method)
         WHEN event_object = 'debugger' THEN CONCAT('dt_jsdebugger - ',  event_method)
@@ -181,8 +181,8 @@ WHERE
 SELECT
   * EXCEPT (event_map_values, event_object, event_value, event_method, event_name),
   ARRAY_CONCAT((SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')) FROM (
-    SELECT 'host' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'host') AS value
-    UNION ALL SELECT 'width' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'width') AS value
+    SELECT 'host' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'host') AS value
+    UNION ALL SELECT 'width' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'width') AS value
     UNION ALL SELECT 'channel' AS key, normalized_channel AS value
     UNION ALL SELECT 'app_build_id' AS key, application_build_id AS value
     UNION ALL SELECT 'app_name' AS key, app_name AS value

@@ -24,7 +24,7 @@ FROM
 SELECT
     submission_timestamp,
     client_id AS device_id,
-    (created + COALESCE(SAFE_CAST(`moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
+    (created + COALESCE(SAFE_CAST(`moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'session_id') AS INT64), 0)) AS session_id,
     CASE
         WHEN (event_category IN ('action') ) AND (event_method IN ('change') ) AND (event_object IN ('firstrun') ) AND (event_value IN ('turbo') ) THEN 'Rocket -  Turn on Turbo Mode in First Run' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('firstrun') ) AND (event_value IN ('finish') ) THEN 'Rocket -  Finish First Run' 
@@ -259,47 +259,47 @@ WHERE
 SELECT
   * EXCEPT (event_map_values, event_object, event_value, event_method, event_name),
   (SELECT ARRAY_AGG(CONCAT('"', CAST(key AS STRING), '":"', CAST(value AS STRING), '"')) FROM (
-      SELECT 'to' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'to') AS value
-      UNION ALL SELECT 'on' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'on') AS value
-      UNION ALL SELECT 'from' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'from') AS value
-      UNION ALL SELECT 'mode' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'mode') AS value
-      UNION ALL SELECT 'type' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'type') AS value
-      UNION ALL SELECT 'source' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'source') AS value
-      UNION ALL SELECT 'default' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'default') AS value
-      UNION ALL SELECT 'position' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'position') AS value
-      UNION ALL SELECT 'version' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'version') AS value
-      UNION ALL SELECT 'category' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'category') AS value
-      UNION ALL SELECT 'category_versio' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'category_versio') AS value
-      UNION ALL SELECT 'snackbar' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'snackbar') AS value
-      UNION ALL SELECT 'success' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'success') AS value
-      UNION ALL SELECT 'delay' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'delay') AS value
-      UNION ALL SELECT 'message' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'message') AS value
-      UNION ALL SELECT 'engine' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'engine') AS value
-      UNION ALL SELECT 'duration' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'duration') AS value
-      UNION ALL SELECT 'from_build' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'from_build') AS value
-      UNION ALL SELECT 'to_build' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'to_build') AS value
-      UNION ALL SELECT 'action' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'action') AS value
-      UNION ALL SELECT 'finish' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'finish') AS value
-      UNION ALL SELECT 'page' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'page') AS value
-      UNION ALL SELECT 'message_id' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'message_id') AS value
-      UNION ALL SELECT 'link' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'link') AS value
-      UNION ALL SELECT 'background' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'background') AS value
-      UNION ALL SELECT 'primary' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'primary') AS value
-      UNION ALL SELECT 'vertical' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'vertical') AS value
-      UNION ALL SELECT 'component_id' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'component_id') AS value
-      UNION ALL SELECT 'feed' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'feed') AS value
-      UNION ALL SELECT 'subcategory_id' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'subcategory_id') AS value
-      UNION ALL SELECT 'version_id' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'version_id') AS value
-      UNION ALL SELECT 'app_link' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'app_link') AS value
-      UNION ALL SELECT 'session_time' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'session_time') AS value
-      UNION ALL SELECT 'show_keyboard' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'show_keyboard') AS value
-      UNION ALL SELECT 'url_counts' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'url_counts') AS value
-      UNION ALL SELECT 'impression' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'impression') AS value
-      UNION ALL SELECT 'loadtime' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'loadtime') AS value
-      UNION ALL SELECT 'audience_name' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'audience_name') AS value
-      UNION ALL SELECT 'finished' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'finished') AS value
-      UNION ALL SELECT 'task' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'task') AS value
-      UNION ALL SELECT 'item_name' AS key, `moz-fx-data-derived-datasets.udf.get_key`(event_map_values, 'item_name') AS value
+      SELECT 'to' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'to') AS value
+      UNION ALL SELECT 'on' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'on') AS value
+      UNION ALL SELECT 'from' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'from') AS value
+      UNION ALL SELECT 'mode' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'mode') AS value
+      UNION ALL SELECT 'type' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'type') AS value
+      UNION ALL SELECT 'source' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'source') AS value
+      UNION ALL SELECT 'default' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'default') AS value
+      UNION ALL SELECT 'position' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'position') AS value
+      UNION ALL SELECT 'version' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'version') AS value
+      UNION ALL SELECT 'category' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'category') AS value
+      UNION ALL SELECT 'category_versio' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'category_versio') AS value
+      UNION ALL SELECT 'snackbar' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'snackbar') AS value
+      UNION ALL SELECT 'success' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'success') AS value
+      UNION ALL SELECT 'delay' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'delay') AS value
+      UNION ALL SELECT 'message' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'message') AS value
+      UNION ALL SELECT 'engine' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'engine') AS value
+      UNION ALL SELECT 'duration' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'duration') AS value
+      UNION ALL SELECT 'from_build' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'from_build') AS value
+      UNION ALL SELECT 'to_build' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'to_build') AS value
+      UNION ALL SELECT 'action' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'action') AS value
+      UNION ALL SELECT 'finish' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'finish') AS value
+      UNION ALL SELECT 'page' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'page') AS value
+      UNION ALL SELECT 'message_id' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'message_id') AS value
+      UNION ALL SELECT 'link' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'link') AS value
+      UNION ALL SELECT 'background' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'background') AS value
+      UNION ALL SELECT 'primary' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'primary') AS value
+      UNION ALL SELECT 'vertical' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'vertical') AS value
+      UNION ALL SELECT 'component_id' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'component_id') AS value
+      UNION ALL SELECT 'feed' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'feed') AS value
+      UNION ALL SELECT 'subcategory_id' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'subcategory_id') AS value
+      UNION ALL SELECT 'version_id' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'version_id') AS value
+      UNION ALL SELECT 'app_link' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'app_link') AS value
+      UNION ALL SELECT 'session_time' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'session_time') AS value
+      UNION ALL SELECT 'show_keyboard' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'show_keyboard') AS value
+      UNION ALL SELECT 'url_counts' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'url_counts') AS value
+      UNION ALL SELECT 'impression' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'impression') AS value
+      UNION ALL SELECT 'loadtime' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'loadtime') AS value
+      UNION ALL SELECT 'audience_name' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'audience_name') AS value
+      UNION ALL SELECT 'finished' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'finished') AS value
+      UNION ALL SELECT 'task' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'task') AS value
+      UNION ALL SELECT 'item_name' AS key, `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'item_name') AS value
   ) WHERE VALUE IS NOT NULL) AS event_props_2,
   ARRAY_CONCAT(ARRAY<STRING>[],
     (SELECT ARRAY_AGG(

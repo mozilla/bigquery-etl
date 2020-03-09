@@ -12,7 +12,7 @@ WITH
   FROM
     `moz-fx-data-derived-datasets.telemetry.fxa_users_last_seen_raw_v1` fxa
   LEFT JOIN
-    `moz-fx-data-derived-datasets.static.country_names_v1` country_names
+    `moz-fx-data-shared-prod.static.country_names_v1` country_names
   ON
     fxa.country = country_names.`name` ),
   --

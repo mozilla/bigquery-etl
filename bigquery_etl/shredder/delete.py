@@ -292,6 +292,8 @@ def list_partitions(client, table, partition_expr, end_date, max_single_dml_byte
                           partition_id
                         FROM
                           [{sql_table_id(table)}$__PARTITIONS_SUMMARY__]
+                        ORDER BY
+                          partition_id DESC
                         """
                     ).strip(),
                     bigquery.QueryJobConfig(use_legacy_sql=True),

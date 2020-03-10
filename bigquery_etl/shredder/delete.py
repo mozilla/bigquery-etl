@@ -133,7 +133,7 @@ def record_state(client, task_id, job, dry_run, start_date, end_date, state_tabl
                       `{state_table}`(
                         task_id,
                         job,
-                        job_started,
+                        job_created,
                         start_date,
                         end_date
                       )
@@ -141,7 +141,7 @@ def record_state(client, task_id, job, dry_run, start_date, end_date, state_tabl
                       (
                         "{task_id}",
                         "{job_id}",
-                        TIMESTAMP "{job.started:%Y-%m-%d %H:%M:%S} UTC",
+                        TIMESTAMP "{job.created:%Y-%m-%d %H:%M:%S} UTC",
                         DATE "{start_date}",
                         DATE "{end_date}"
                       )
@@ -364,7 +364,7 @@ async def main():
                   `{args.state_table}`(
                     task_id STRING,
                     job_id STRING,
-                    job_started TIMESTAMP,
+                    job_created TIMESTAMP,
                     start_date DATE,
                     end_date DATE
                   )
@@ -385,7 +385,7 @@ async def main():
                       start_date = '{args.start_date}'
                       AND end_date = '{args.end_date}'
                     ORDER BY
-                      job_started
+                      job_created
                     """
                 ).strip()
             ).result()

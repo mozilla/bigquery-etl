@@ -132,7 +132,7 @@ def record_state(client, task_id, job, dry_run, start_date, end_date, state_tabl
                     INSERT INTO
                       `{state_table}`(
                         task_id,
-                        job,
+                        job_id,
                         job_created,
                         start_date,
                         end_date

@@ -18,7 +18,6 @@ import glob
 import json
 import sys
 
-
 DRY_RUN_URL = (
     "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun"
 )
@@ -81,7 +80,6 @@ SKIP = {
 }
 
 USE_DERIVED_DATASETS = {
-    "sql/telemetry_derived/ssl_ratios_v1/query.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/query.sql",
     "sql/telemetry/firefox_accounts_exact_mau28_raw_v1/query.sql",
     "sql/telemetry/core_clients_daily_v1/query.sql",
@@ -96,6 +94,7 @@ def worker_entrypoint(sqlfile):
         url = DERIVED_DATASETS_DRY_RUN_URL
     else:
         url = DRY_RUN_URL
+
     try:
         r = urlopen(
             Request(

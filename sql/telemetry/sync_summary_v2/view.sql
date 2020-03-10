@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.sync_summary_v2`
 AS
 SELECT
-  submission_date_s3 AS submission_date,
+  submission_date AS submission_date_s3,
   * REPLACE (
     ARRAY(SELECT * FROM UNNEST(devices.list)) AS devices,
     ARRAY(
@@ -22,4 +22,4 @@ SELECT
     ) AS engines
   )
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.sync_summary_v2`
+  `moz-fx-data-shared-prod.telemetry_derived.sync_summary_v2`

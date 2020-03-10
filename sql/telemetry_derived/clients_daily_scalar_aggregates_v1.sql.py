@@ -328,7 +328,7 @@ def get_scalar_probes(scalar_type):
 
     Note: that non-integer scalar probes are not included.
     """
-    project = "moz-fx-data-shared-prod"
+    project = "emtwo-252813"
     main_summary_scalars = {}
     main_summary_record_scalars = {}
     main_summary_boolean_record_scalars = {}

@@ -413,4 +413,4 @@ SELECT
     uint_addon_scalars.key_value AS uint_addon_scalars
   )
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.first_shutdown_summary_v4`
+  `moz-fx-data-shared-prod.telemetry_derived.first_shutdown_summary_v4`

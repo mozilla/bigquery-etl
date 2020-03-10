@@ -48,6 +48,10 @@ SKIP = {
     "sql/telemetry/fxa_users_last_seen_raw_v1/init.sql",
     "sql/telemetry_derived/core_clients_first_seen_v1/init.sql",
     "sql/telemetry_derived/fxa_users_services_last_seen_v1/init.sql",
+    "sql/messaging_system_derived/cfr_users_last_seen_v1/init.sql",
+    "sql/messaging_system_derived/onboarding_users_last_seen_v1/init.sql",
+    "sql/messaging_system_derived/snippets_users_last_seen_v1/init.sql",
+    "sql/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql",
     # Reference table not found
     "sql/monitoring/structured_detailed_error_counts_v1/view.sql",
     # Access denied for search

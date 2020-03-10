@@ -61,8 +61,6 @@ SKIP = {
     "sql/telemetry/smoot_usage_day_0/view.sql",
     "sql/telemetry/smoot_usage_day_13/view.sql",
     "sql/telemetry/sync/view.sql",
-    "sql/telemetry/sync_bmk_total_per_day/view.sql",
-    "sql/telemetry/sync_bmk_total_per_day_v1/view.sql",
     "sql/telemetry/telemetry_anonymous_parquet/view.sql",
     "sql/telemetry/telemetry_anonymous_parquet_v1/view.sql",
     "sql/telemetry/telemetry_core_parquet/view.sql",

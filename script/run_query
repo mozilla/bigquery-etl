@@ -22,7 +22,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
-DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_]{0,1024}$")
+DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 
 
 parser = ArgumentParser(description=__doc__)

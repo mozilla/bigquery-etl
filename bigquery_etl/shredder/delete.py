@@ -1,12 +1,14 @@
 """Delete user data from long term storage."""
 
 from argparse import ArgumentParser
-from concurrent.futures import ThreadPoolExecutor
-from dataclasses import replace
+from collections import defaultdict
+from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 from functools import partial
+from multiprocessing.pool import ThreadPool
+from operator import attrgetter
 from textwrap import dedent
-import asyncio
+from typing import Callable, Iterable, Optional
 import logging
 import warnings
 
@@ -18,6 +20,9 @@ from ..util.table_filter import add_table_filter_arguments, get_table_filter
 from .config import DELETE_TARGETS
 
 
+NULL_PARTITION_ID = "__NULL__"
+OUTSIDE_RANGE_PARTITION_ID = "__UNPARTITIONED__"
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "-n",
@@ -26,6 +31,13 @@ parser.add_argument(
     action="store_true",
     help="Do not make changes, only log actions that would be taken; "
     "use with --log-level=DEBUG to log query contents",
+)
+parser.add_argument(
+    "--read_only",
+    "--read-only",
+    action="store_true",
+    help="Use SELECT * FROM instead of DELETE with dry run queries to prevent errors "
+    "due to read-only permissions being insufficient to dry run DELETE dml",
 )
 parser.add_argument(
     "-l",
@@ -121,8 +133,8 @@ def record_state(client, task_id, job, dry_run, start_date, end_date, state_tabl
                     INSERT INTO
                       `{state_table}`(
                         task_id,
-                        job,
-                        job_started,
+                        job_id,
+                        job_created,
                         start_date,
                         end_date
                       )
@@ -130,7 +142,7 @@ def record_state(client, task_id, job, dry_run, start_date, end_date, state_tabl
                       (
                         "{task_id}",
                         "{job_id}",
-                        TIMESTAMP "{job.started:%Y-%m-%d %H:%M:%S} UTC",
+                        TIMESTAMP "{job.created:%Y-%m-%d %H:%M:%S} UTC",
                         DATE "{start_date}",
                         DATE "{end_date}"
                       )
@@ -170,25 +182,23 @@ def get_task_id(target, partition_id):
     return task_id
 
 
-async def delete_from_partition(
-    executor,
-    client_q,
+def delete_from_partition(
     dry_run,
     partition_condition,
-    partition_id,
     priority,
+    read_only,
     source,
     source_condition,
     target,
     **wait_for_job_kwargs,
 ):
-    """Process deletion requests for partitions of a target table."""
+    """Return callable to handle deletion requests for partitions of a target table."""
     # noqa: D202
 
     def create_job(client):
         query = dedent(
             f"""
-            DELETE
+            {"SELECT * FROM" if dry_run and read_only else "DELETE"}
               `{sql_table_id(target)}`
             WHERE
               {target.field} IN (
@@ -208,96 +218,128 @@ async def delete_from_partition(
             query, bigquery.QueryJobConfig(dry_run=dry_run, priority=priority)
         )
 
-    job = await client_q.async_with_client(
-        executor,
-        partial(
-            wait_for_job,
-            create_job=create_job,
-            dry_run=dry_run,
-            task_id=get_task_id(target, partition_id),
-            **wait_for_job_kwargs,
-        ),
+    return partial(
+        wait_for_job, create_job=create_job, dry_run=dry_run, **wait_for_job_kwargs
     )
-    return job.total_bytes_processed
 
 
 def get_partition_expr(table):
     """Get the SQL expression to use for a table's partitioning field."""
-    for field in table.schema:
-        if field.name != table.time_partitioning.field:
-            continue
-        if field.field_type == "TIMESTAMP":
-            return f"DATE({field.name})"
-        return field.name
+    if table.range_partitioning:
+        return table.range_partitioning.field
+    if table.time_partitioning:
+        return f"CAST({table.time_partitioning.field} AS DATE)"
 
 
-def list_partitions(client, target):
-    """List the partition ids and corresponding dates in a table."""
+@dataclass
+class Partition:
+    """Return type for get_partition."""
+
+    condition: str
+    id: Optional[str] = None
+
+
+def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partition]:
+    """Return a Partition for id_ unless it is a date on or after end_date."""
+    if id_ is None:
+        if table.time_partitioning:
+            return Partition(f"{partition_expr} < '{end_date}'")
+        return Partition("TRUE")
+    if id_ == NULL_PARTITION_ID:
+        return Partition(f"{partition_expr} IS NULL", id_)
+    if table.time_partitioning:
+        date = datetime.strptime(id_, "%Y%m%d").date()
+        if date < end_date:
+            return Partition(f"{partition_expr} = '{date}'", id_)
+        return None
+    if table.range_partitioning:
+        if id_ == OUTSIDE_RANGE_PARTITION_ID:
+            return Partition(
+                f"{partition_expr} < {table.range_partitioning.range_.start} "
+                f"OR {partition_expr} >= {table.range_partitioning.range_.end}",
+                id_,
+            )
+        if table.range_partitioning.range_.interval > 1:
+            return Partition(
+                f"{partition_expr} BETWEEN {id_} "
+                f"AND {int(id_) + table.range_partitioning.range_.interval - 1}",
+                id_,
+            )
+    return Partition(f"{partition_expr} = {id_}", id_)
+
+
+def list_partitions(client, table, partition_expr, end_date, max_single_dml_bytes):
+    """List the relevant partitions in a table."""
     return [
-        (partition_id, datetime.strptime(partition_id, "%Y%m%d").date())
-        for row in client.query(
-            dedent(
-                f"""
-                SELECT
-                  partition_id
-                FROM
-                  [{sql_table_id(target)}$__PARTITIONS_SUMMARY__]
-                """
-            ).strip(),
-            bigquery.QueryJobConfig(use_legacy_sql=True),
-        ).result()
-        for partition_id in [row["partition_id"]]
+        partition
+        for partition in (
+            [
+                get_partition(table, partition_expr, end_date, row["partition_id"])
+                for row in client.query(
+                    dedent(
+                        f"""
+                        SELECT
+                          partition_id
+                        FROM
+                          [{sql_table_id(table)}$__PARTITIONS_SUMMARY__]
+                        """
+                    ).strip(),
+                    bigquery.QueryJobConfig(use_legacy_sql=True),
+                ).result()
+            ]
+            if table.num_bytes > max_single_dml_bytes or partition_expr is None
+            else [get_partition(table, partition_expr, end_date)]
+        )
+        if partition is not None
     ]
 
 
-async def delete_from_table(
-    client_q, target, dry_run, end_date, max_single_dml_bytes, **kwargs
-):
-    """Process deletion requests for a target table."""
-    client = client_q.default_client
+@dataclass
+class Task:
+    """Return type for delete_from_table."""
+
+    table: bigquery.Table
+    partition_id: Optional[str]
+    func: Callable[[bigquery.Client], bigquery.QueryJob]
+
+    @property
+    def partition_sort_key(self):
+        """Return a tuple to control the order in which tasks will be handled.
+
+        When used with reverse=True, handle tasks without partition_id, then
+        tasks without time_partitioning, then most recent dates first.
+        """
+        return (
+            self.partition_id is None,
+            self.table.time_partitioning is None,
+            self.partition_id,
+        )
+
+
+def delete_from_table(
+    client, target, dry_run, end_date, max_single_dml_bytes, **kwargs
+) -> Iterable[Task]:
+    """Yield tasks to handle deletion requests for a target table."""
     table = client.get_table(sql_table_id(target))
     partition_expr = get_partition_expr(table)
-    bytes_deleted = 0
-    bytes_processed = sum(
-        await asyncio.gather(
-            *[
-                delete_from_partition(
-                    client_q=client_q,
-                    dry_run=dry_run,
-                    partition_condition=(
-                        f"{partition_expr} <= '{end_date}'"
-                        if partition_date is None
-                        else f"{partition_expr} = '{partition_date}'"
-                    ),
-                    partition_expr=partition_expr,
-                    partition_id=partition_id,
-                    target=target,
-                    end_date=end_date,
-                    **kwargs,
-                )
-                for partition_id, partition_date in (
-                    list_partitions(client=client, target=target)
-                    if table.num_bytes > max_single_dml_bytes
-                    else [(None, None)]
-                )
-                if partition_date is None or partition_date < end_date
-            ]
+    for partition in list_partitions(
+        client, table, partition_expr, end_date, max_single_dml_bytes
+    ):
+        yield Task(
+            table=table,
+            partition_id=partition.id,
+            func=delete_from_partition(
+                dry_run=dry_run,
+                partition_condition=partition.condition,
+                target=target,
+                task_id=get_task_id(target, partition.id),
+                end_date=end_date,
+                **kwargs,
+            ),
         )
-    )
-    if dry_run:
-        logging.info(f"Would scan {bytes_processed} bytes from {target.table}")
-    else:
-        bytes_deleted = (
-            table.num_bytes - client.get_table(sql_table_id(target)).num_bytes
-        )
-        logging.info(
-            f"Scanned {bytes_processed} bytes and "
-            f"deleted {bytes_deleted} from {target.table}"
-        )
-    return bytes_processed, bytes_deleted
 
 
-async def main():
+def main():
     """Process deletion requests."""
     args = parser.parse_args()
     if args.start_date is None:
@@ -308,20 +350,18 @@ async def main():
         f"AND DATE(submission_timestamp) < '{args.end_date}'"
     )
     table_filter = get_table_filter(args)
-    # expire in 15 days because this script may take up to 14 days
-    expiration_date = datetime.utcnow().date() + timedelta(days=15)
-    expiration_timestamp = f"{expiration_date} 00:00:00 UTC"
     client_q = ClientQueue(args.billing_projects, args.parallelism)
+    client = client_q.default_client
     states = {}
     if args.state_table:
-        client_q.default_client.query(
+        client.query(
             dedent(
                 f"""
                 CREATE TABLE IF NOT EXISTS
                   `{args.state_table}`(
                     task_id STRING,
                     job_id STRING,
-                    job_started TIMESTAMP,
+                    job_created TIMESTAMP,
                     start_date DATE,
                     end_date DATE
                   )
@@ -330,7 +370,7 @@ async def main():
         )
         states = {
             row["task_id"]: row["job_id"]
-            for row in client_q.default_client.query(
+            for row in client.query(
                 dedent(
                     f"""
                     SELECT
@@ -342,41 +382,57 @@ async def main():
                       start_date = '{args.start_date}'
                       AND end_date = '{args.end_date}'
                     ORDER BY
-                      job_started
+                      job_created
                     """
                 ).strip()
             ).result()
         }
-    with ThreadPoolExecutor(max_workers=args.parallelism) as executor:
-        results = await asyncio.gather(
-            *[
-                delete_from_table(
-                    client_q=client_q,
-                    executor=executor,
-                    target=replace(
-                        target, project=args.target_project or target.project
-                    ),
-                    source=replace(
-                        source, project=args.source_project or source.project
-                    ),
-                    source_condition=source_condition,
-                    dry_run=args.dry_run,
-                    priority=args.priority,
-                    start_date=args.start_date,
-                    end_date=args.end_date,
-                    max_single_dml_bytes=args.max_single_dml_bytes,
-                    state_table=args.state_table,
-                    states=states,
-                    expiration_timestamp=expiration_timestamp,
-                )
-                for target, source in DELETE_TARGETS.items()
-                if table_filter(target.table)
-            ]
+    tasks = [
+        task
+        for target, source in DELETE_TARGETS.items()
+        if table_filter(target.table)
+        for task in delete_from_table(
+            client=client,
+            target=replace(target, project=args.target_project or target.project),
+            source=replace(source, project=args.source_project or source.project),
+            source_condition=source_condition,
+            dry_run=args.dry_run,
+            read_only=args.read_only,
+            priority=args.priority,
+            start_date=args.start_date,
+            end_date=args.end_date,
+            max_single_dml_bytes=args.max_single_dml_bytes,
+            state_table=args.state_table,
+            states=states,
         )
-    if not results:
+    ]
+    if not tasks:
         logging.error("No tables selected")
         parser.exit(1)
-    bytes_processed, bytes_deleted = map(sum, zip(*results))
+    # ORDER BY partition_sort_key DESC, sql_table_id ASC
+    # https://docs.python.org/3/howto/sorting.html#sort-stability-and-complex-sorts
+    tasks.sort(key=lambda task: sql_table_id(task.table))
+    tasks.sort(key=attrgetter("partition_sort_key"), reverse=True)
+    with ThreadPool(args.parallelism) as pool:
+        results = pool.map(
+            client_q.with_client, (task.func for task in tasks), chunksize=1
+        )
+    bytes_processed_by_table = defaultdict(lambda: 0)
+    for i, job in enumerate(results):
+        bytes_processed_by_table[tasks[i].table] += job.total_bytes_processed
+    bytes_processed = bytes_deleted = 0
+    for table, table_bytes_processed in bytes_processed_by_table.items():
+        bytes_processed += table_bytes_processed
+        table_id = sql_table_id(table)
+        if args.dry_run:
+            logging.info(f"Would scan {table_bytes_processed} bytes from {table_id}")
+        else:
+            table_bytes_deleted = table.num_bytes - client.get_table(table).num_bytes
+            bytes_deleted += table_bytes_deleted
+            logging.info(
+                f"Scanned {table_bytes_processed} bytes and "
+                f"deleted {table_bytes_deleted} from {table_id}"
+            )
     if args.dry_run:
         logging.info(f"Would scan {bytes_processed} in total")
     else:
@@ -385,4 +441,4 @@ async def main():
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore", module="google.auth._default")
-    asyncio.run(main())
+    main()

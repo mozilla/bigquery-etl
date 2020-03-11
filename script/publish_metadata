@@ -5,62 +5,39 @@
 from argparse import ArgumentParser
 import logging
 import os
+import sys
 import yaml
-import re
 
 from google.cloud import bigquery
+
+
+# sys.path needs to be modified to enable package imports from parent
+# and sibling directories. Also see:
+# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
 METADATA_FILE = "metadata.yaml"
 
 
-def is_valid_label(label):
-    """
-    Check if a label has the right format:
-    Only hyphens (-), underscores (_), lowercase characters, and numbers are allowed.
-    International characters are allowed.
-    """
-    return re.match(r"[\w\d_-]+", label)
-
-
 def publish_metadata(client, dataset, table, metadata_file):
-    with open(metadata_file, "r") as yaml_stream:
-        try:
-            metadata = yaml.safe_load(yaml_stream)
-            table_ref = client.dataset(dataset).table(table)
-            table = client.get_table(table_ref)
+    try:
+        metadata = Metadata.from_file(metadata_file)
+        table_ref = client.dataset(dataset).table(table)
+        table = client.get_table(table_ref)
 
-            if "friendly_name" in metadata:
-                table.friendly_name = metadata["friendly_name"]
+        if metadata.friendly_name is not None:
+            table.friendly_name = metadata.friendly_name
 
-            if "description" in metadata:
-                table.description = metadata["description"]
+        if metadata.description is not None:
+            table.description = metadata.description
 
-            if "labels" in metadata:
-                table.labels = {}
+        table.labels = metadata.labels
 
-                for key, label in metadata["labels"].items():
-                    if isinstance(label, bool) and is_valid_label(str(key)):
-                        # key-value pair with boolean value should get published as tag
-                        if label:
-                            table.labels[str(key)] = ""
-                    elif is_valid_label(str(key)) and is_valid_label(str(label)):
-                        # all other pairs get published as key-value pair label
-                        table.labels[str(key)] = str(label)
-                    else:
-                        print(
-                            """
-                            Invalid label format: {}: {}. Only hyphens (-),
-                            underscores (_), lowercase characters, and numbers
-                            are allowed. International characters are allowed.
-                            """.format(
-                                key, label
-                            )
-                        )
-
-            client.update_table(table, ["friendly_name", "description", "labels"])
-        except yaml.YAMLError as e:
-            print(e)
+        client.update_table(table, ["friendly_name", "description", "labels"])
+    except yaml.YAMLError as e:
+        print(e)
 
 
 def main():

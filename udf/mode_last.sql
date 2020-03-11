@@ -5,6 +5,8 @@ Returns the most frequently occuring element in an array.
 In the case of multiple values tied for the highest count, it returns the value
 that appears latest in the array. Nulls are ignored.
 
+See also: `udf.mode_last_retain_nulls`, which retains nulls.
+
 */
 
 CREATE OR REPLACE FUNCTION

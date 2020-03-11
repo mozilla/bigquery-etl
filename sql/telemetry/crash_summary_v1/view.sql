@@ -8,4 +8,4 @@ SELECT
     (SELECT AS STRUCT payload.* REPLACE (payload.metadata.key_value AS metadata)) AS payload
   )
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.crash_summary_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.crash_summary_v1`

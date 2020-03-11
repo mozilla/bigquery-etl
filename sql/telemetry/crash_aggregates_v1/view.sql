@@ -5,4 +5,4 @@ AS
 SELECT
   * REPLACE (dimensions.key_value AS dimensions, stats.key_value AS stats)
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.crash_aggregates_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.crash_aggregates_v1`

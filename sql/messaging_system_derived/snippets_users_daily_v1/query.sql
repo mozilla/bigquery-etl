@@ -17,7 +17,6 @@ WITH windowed AS (
   WINDOW
     w1 AS (
       PARTITION BY
-        sample_id,
         client_id,
         DATE(submission_timestamp)
       ORDER BY
@@ -29,7 +28,6 @@ WITH windowed AS (
     -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
     w1_unframed AS (
       PARTITION BY
-        sample_id,
         client_id,
         DATE(submission_timestamp)
       ORDER BY

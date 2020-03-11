@@ -42,6 +42,9 @@ def main():
     args, query_arguments = parser.parse_known_args()
     query_file = args.query_file
 
+    # bq uses legacy SQL by default, force use of standard SQL
+    query_arguments.append("--use_legacy_sql=false")
+
     if args.dataset_id is not None:
         # dataset ID was parsed by argparse but needs to be passed as parameter
         # when running the query

@@ -36,14 +36,21 @@ parser.add_argument(
 )
 parser.add_argument("--dataset_id", help="Destination dataset")
 parser.add_argument("--query_file", help="File path to query to be executed")
+parser.add_argument(
+    "--use_legacy_sql",
+    help="Enable use of legacy SQL; Standard SQL by default",
+    default=False,
+)
 
 
 def main():
     args, query_arguments = parser.parse_known_args()
     query_file = args.query_file
 
-    # bq uses legacy SQL by default, force use of standard SQL
-    query_arguments.append("--use_legacy_sql=false")
+    # bq uses legacy SQL by default, force use of standard SQL if no flag is set
+    query_arguments.append(
+        "--use_legacy_sql={}".format(str(args.use_legacy_sql).lower())
+    )
 
     if args.dataset_id is not None:
         # dataset ID was parsed by argparse but needs to be passed as parameter

@@ -87,8 +87,7 @@ def main():
 
     with open(query_file) as query_stream:
         # run the query as shell command so that passed parameters can be used as is
-        sql = query_stream.read()
-        subprocess.call(["bq"] + query_arguments + [sql])
+        subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
 
 if __name__ == "__main__":

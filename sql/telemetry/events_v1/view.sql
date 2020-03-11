@@ -47,7 +47,7 @@ WITH parquet_events AS (
       SAFE.TIMESTAMP_MILLIS(session_start_time) AS session_start_time
     )
   FROM
-    `moz-fx-data-derived-datasets.telemetry_derived.events_v1`
+    `moz-fx-data-shared-prod.telemetry_derived.events_v1`
   WHERE
     submission_date < '2019-10-31'
 ),

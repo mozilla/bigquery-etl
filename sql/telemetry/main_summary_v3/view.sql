@@ -17,4 +17,4 @@ SELECT
     ssl_handshake_result.key_value AS ssl_handshake_result
   )
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.main_summary_v3`
+  `moz-fx-data-shared-prod.telemetry_derived.main_summary_v3`

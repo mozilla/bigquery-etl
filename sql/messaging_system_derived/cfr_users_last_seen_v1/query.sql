@@ -4,6 +4,7 @@ WITH _current AS (
 -- 28 days as a single 64-bit integer. The rightmost bit represents
 -- whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
+    CAST(seen_whats_new AS INT64) AS days_seen_whats_new_bits,
     * EXCEPT (submission_date)
   FROM
     cfr_users_daily_v1
@@ -32,7 +33,11 @@ SELECT
     udf.combine_adjacent_days_28_bits(
       _previous.days_seen_bits,
       _current.days_seen_bits
-    ) AS days_seen_bits
+    ) AS days_seen_bits,
+    udf.combine_adjacent_days_28_bits(
+        _previous.days_seen_whats_new_bits,
+        _current.days_seen_whats_new_bits
+    ) AS days_seen_whats_new_bits
   )
 FROM
   _current

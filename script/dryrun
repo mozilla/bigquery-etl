@@ -74,6 +74,7 @@ SKIP = {
     "sql/telemetry_derived/clients_histogram_aggregates_v1/query.sql",
     "sql/telemetry_derived/clients_histogram_aggregates_old_v1/query.sql",
     "sql/telemetry_derived/clients_histogram_aggregates_merged_v1/query.sql",
+    "sql/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
     "sql/glam_etl/fenix_clients_scalar_aggregates_v1/query.sql",
     "sql/glam_etl/fenix_clients_scalar_aggregates_v1/init.sql",

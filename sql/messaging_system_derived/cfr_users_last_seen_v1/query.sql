@@ -35,8 +35,8 @@ SELECT
       _current.days_seen_bits
     ) AS days_seen_bits,
     udf.combine_adjacent_days_28_bits(
-        _previous.days_seen_whats_new_bits,
-        _current.days_seen_whats_new_bits
+      _previous.days_seen_whats_new_bits,
+      _current.days_seen_whats_new_bits
     ) AS days_seen_whats_new_bits
   )
 FROM

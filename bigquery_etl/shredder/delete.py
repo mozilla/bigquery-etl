@@ -413,10 +413,10 @@ def main():
     # https://docs.python.org/3/howto/sorting.html#sort-stability-and-complex-sorts
     tasks.sort(key=lambda task: sql_table_id(task.table))
     tasks.sort(key=attrgetter("partition_sort_key"), reverse=True)
+    task_funcs = (task.func for task in tasks)
     with ThreadPool(args.parallelism) as pool:
-        results = pool.map(
-            client_q.with_client, (task.func for task in tasks), chunksize=1
-        )
+        # use list(pool.imap(...)) to ensure execution stops when exceptions are raised
+        results = list(pool.imap(client_q.with_client, task_funcs, chunksize=1))
     bytes_processed_by_table = defaultdict(lambda: 0)
     for i, job in enumerate(results):
         bytes_processed_by_table[tasks[i].table] += job.total_bytes_processed

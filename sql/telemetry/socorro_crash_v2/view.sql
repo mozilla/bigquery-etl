@@ -30,4 +30,4 @@ SELECT
     ) AS memory_report
   )
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.socorro_crash_v2`
+  `moz-fx-data-shared-prod.telemetry_derived.socorro_crash_v2`

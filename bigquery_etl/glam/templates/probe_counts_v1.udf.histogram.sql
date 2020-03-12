@@ -80,10 +80,12 @@ RETURNS ARRAY<INT64> AS (
         WHEN
           metric_type = 'timing_distribution'
         THEN
+          -- https://mozilla.github.io/glean/book/user/metrics/timing_distribution.html
           udf_functional_buckets(2, 8, range_max)
         WHEN
           metric_type = 'memory_distribution'
         THEN
+          -- https://mozilla.github.io/glean/book/user/metrics/memory_distribution.html
           udf_functional_buckets(2, 16, range_max)
         WHEN
           metric_type = 'custom_distribution'

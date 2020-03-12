@@ -7,7 +7,6 @@ RETURNS ARRAY<
     metric_type STRING,
     key STRING,
     agg_type STRING,
-    sum INT64,
     value ARRAY<STRUCT<key STRING, value INT64>>
   >
 > AS (
@@ -30,7 +29,6 @@ RETURNS ARRAY<
         metric_type,
         key,
         agg_type,
-        SUM(sum) AS sum,
         `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
       FROM
         unnested
@@ -43,7 +41,7 @@ RETURNS ARRAY<
         agg_type
     )
     SELECT
-      ARRAY_AGG((latest_version, metric, metric_type, key, agg_type, sum, value))
+      ARRAY_AGG((latest_version, metric, metric_type, key, agg_type, value))
     FROM
       aggregated_data
   )
@@ -128,7 +126,6 @@ aggregated_daily AS (
     metric_type,
     key,
     agg_type,
-    SUM(sum) AS sum,
     `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
   FROM
     filtered_daily
@@ -163,9 +160,8 @@ transformed_daily AS (
         metric_type STRING,
         key STRING,
         agg_type STRING,
-        sum INT64,
         aggregates ARRAY<STRUCT<key STRING, value INT64>>
-      >(latest_version, metric, metric_type, key, agg_type, sum, value)
+      >(latest_version, metric, metric_type, key, agg_type, value)
     ) AS histogram_aggregates
   FROM
     aggregated_daily

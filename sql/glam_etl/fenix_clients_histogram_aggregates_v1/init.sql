@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS
         metric_type STRING,
         key STRING,
         agg_type STRING,
-        sum INT64,
         value ARRAY<STRUCT<key STRING, value INT64>>
       >
     >

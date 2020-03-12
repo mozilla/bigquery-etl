@@ -45,7 +45,6 @@ CREATE TEMP FUNCTION udf_normalize_histograms(
       metric_type STRING,
       key STRING,
       agg_type STRING,
-      sum INT64,
       value ARRAY<STRUCT<key STRING, value INT64>>
     >
   >
@@ -197,6 +196,8 @@ distribution_metadata AS (
     NULL AS histogram_type
   FROM
     unnested
+  WHERE
+    metric_type <> "custom_distribution"
   GROUP BY
     metric_type,
     metric

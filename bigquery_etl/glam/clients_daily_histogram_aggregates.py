@@ -9,6 +9,7 @@ from .utils import get_schema
 
 ATTRIBUTES = ",".join(
     [
+        "sample_id",
         "client_id",
         "ping_type",
         "submission_date",

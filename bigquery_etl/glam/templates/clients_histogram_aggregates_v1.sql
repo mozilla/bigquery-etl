@@ -53,7 +53,6 @@ WITH extracted_accumulated AS (
 ),
 filtered_accumulated AS (
   SELECT
-    sample_id,
     {{ attributes }},
     histogram_aggregates
   FROM
@@ -85,8 +84,6 @@ extracted_daily AS (
 ),
 filtered_daily AS (
   SELECT
-    -- TODO: add this earlier in the pipeline
-    `moz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
     {{ attributes }},
     latest_version,
     histogram_aggregates.*
@@ -102,21 +99,18 @@ filtered_daily AS (
 -- re-aggregate based on the latest version
 aggregated_daily AS (
   SELECT
-    sample_id,
     {{ attributes }},
     {{ metric_attributes }},
     `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
   FROM
     filtered_daily
   GROUP BY
-    sample_id,
     {{ attributes }},
     {{ metric_attributes }}
 ),
 -- note: this seems costly, if it's just going to be unnested again
 transformed_daily AS (
   SELECT
-    sample_id,
     {{ attributes }},
     ARRAY_AGG(
       STRUCT<
@@ -131,11 +125,9 @@ transformed_daily AS (
   FROM
     aggregated_daily
   GROUP BY
-    sample_id,
     {{ attributes }}
 )
 SELECT
-  COALESCE(accumulated.sample_id, daily.sample_id) AS sample_id,
   {% for attribute in attributes_list %}
     COALESCE(accumulated.{{ attribute }}, daily.{{ attribute }}) AS {{ attribute }},
   {% endfor %}

@@ -22,6 +22,7 @@ def render_init(**kwargs):
 def glean_variables():
     """Variables for templated SQL."""
     attributes_list = [
+        "sample_id",
         "client_id",
         "ping_type",
         "os",

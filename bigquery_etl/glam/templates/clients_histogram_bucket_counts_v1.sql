@@ -128,6 +128,8 @@ distribution_metadata AS (
       NULL AS histogram_type
     FROM
       unnested
+    WHERE
+      metric_type <> "custom_distribution"
     GROUP BY
       metric_type,
       metric

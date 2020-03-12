@@ -21,6 +21,7 @@ WITH extracted AS (
 ),
 histograms AS (
   SELECT
+    sample_id,
     client_id,
     ping_type,
     submission_date,
@@ -260,6 +261,7 @@ histograms AS (
 ),
 flattened_histograms AS (
   SELECT
+    sample_id,
     client_id,
     ping_type,
     submission_date,
@@ -286,6 +288,7 @@ flattened_histograms AS (
 -- Slot consumed: 00:50:15 vs 00:06:45, Shuffled: 27.5GB vs 6.0 GB
 aggregated AS (
   SELECT
+    sample_id,
     client_id,
     ping_type,
     submission_date,
@@ -299,6 +302,7 @@ aggregated AS (
   FROM
     flattened_histograms
   GROUP BY
+    sample_id,
     client_id,
     ping_type,
     submission_date,
@@ -310,6 +314,7 @@ aggregated AS (
     metric_type
 )
 SELECT
+  sample_id,
   client_id,
   ping_type,
   submission_date,
@@ -329,6 +334,7 @@ SELECT
 FROM
   aggregated
 GROUP BY
+  sample_id,
   client_id,
   ping_type,
   submission_date,

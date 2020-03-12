@@ -92,8 +92,7 @@ extracted_daily AS (
 ),
 filtered_daily AS (
   SELECT
-    -- TODO: add this earlier in the pipeline
-    `moz-fx-data-shared-prod`.udf_js.sample_id(client_id) AS sample_id,
+    sample_id,
     client_id,
     ping_type,
     os,
@@ -191,4 +190,4 @@ FROM
 FULL OUTER JOIN
   transformed_daily AS daily
 USING
-  (client_id, ping_type, os, app_version, app_build_id, channel)
+  (sample_id, client_id, ping_type, os, app_version, app_build_id, channel)

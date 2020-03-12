@@ -42,7 +42,6 @@ def render_query(attributes: List[str], **kwargs) -> str:
 def telemetry_variables():
     """Variables for probe_counts."""
     return dict(
-        # source_table="clients_scalar_bucket_counts_v1",
         attributes=["os", "app_version", "app_build_id", "channel"],
         aggregate_attributes="""
             metric,
@@ -50,7 +49,6 @@ def telemetry_variables():
             key,
             process
         """,
-        # TODO: some of these are histogram specific
         aggregate_grouping="""
             client_agg_type,
             first_bucket,

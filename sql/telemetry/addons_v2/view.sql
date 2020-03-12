@@ -5,4 +5,4 @@ SELECT
   submission_date AS submission_date_s3,
   *
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.addons_v2`
+  `moz-fx-data-shared-prod.telemetry_derived.addons_v2`

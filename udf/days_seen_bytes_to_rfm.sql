@@ -1,5 +1,8 @@
 /*
-Return the frequency, recency, and T from a BYTE array
+Return the frequency, recency, and T from a BYTE array, as defined in
+https://lifetimes.readthedocs.io/en/latest/Quickstart.html#the-shape-of-your-data
+
+RFM refers to Recency, Frequency, and Monetary value.
 */
 
 CREATE OR REPLACE FUNCTION

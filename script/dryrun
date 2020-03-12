@@ -18,7 +18,6 @@ import glob
 import json
 import sys
 
-
 DRY_RUN_URL = (
     "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun"
 )
@@ -49,6 +48,10 @@ SKIP = {
     "sql/telemetry/fxa_users_last_seen_raw_v1/init.sql",
     "sql/telemetry_derived/core_clients_first_seen_v1/init.sql",
     "sql/telemetry_derived/fxa_users_services_last_seen_v1/init.sql",
+    "sql/messaging_system_derived/cfr_users_last_seen_v1/init.sql",
+    "sql/messaging_system_derived/onboarding_users_last_seen_v1/init.sql",
+    "sql/messaging_system_derived/snippets_users_last_seen_v1/init.sql",
+    "sql/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql",
     # Reference table not found
     "sql/monitoring/structured_detailed_error_counts_v1/view.sql",
     # Access denied for search
@@ -71,6 +74,7 @@ SKIP = {
     "sql/telemetry_derived/clients_histogram_aggregates_v1/query.sql",
     "sql/telemetry_derived/clients_histogram_aggregates_old_v1/query.sql",
     "sql/telemetry_derived/clients_histogram_aggregates_merged_v1/query.sql",
+    "sql/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
     "sql/glam_etl/fenix_clients_scalar_aggregates_v1/query.sql",
     "sql/glam_etl/fenix_clients_scalar_aggregates_v1/init.sql",
@@ -86,7 +90,6 @@ SKIP = {
 }
 
 USE_DERIVED_DATASETS = {
-    "sql/telemetry_derived/ssl_ratios_v1/query.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/query.sql",
     "sql/telemetry/firefox_accounts_exact_mau28_raw_v1/query.sql",
     "sql/telemetry/core_clients_daily_v1/query.sql",
@@ -101,6 +104,7 @@ def worker_entrypoint(sqlfile):
         url = DERIVED_DATASETS_DRY_RUN_URL
     else:
         url = DRY_RUN_URL
+
     try:
         r = urlopen(
             Request(

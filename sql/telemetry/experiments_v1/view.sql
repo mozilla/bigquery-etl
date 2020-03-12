@@ -396,7 +396,10 @@ SELECT
   ),
   CAST(NULL AS STRING) AS experiment_enrollment_id
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.experiments_v1`
+  -- This table was called experiments_v1 in the moz-fx-data-derived-datasets
+  -- project, but we renamed to v0 when copying to shared-prod so that we
+  -- could maintain this query that unions the old and new structures.
+  `moz-fx-data-shared-prod.telemetry_derived.experiments_v0`
 WHERE
   submission_date < '2019-12-04'
 UNION ALL

@@ -1,3 +1,15 @@
+/*
+
+This query is deprecated and no longer scheduled. The underlying tables
+on the FxA side have been removed and the relevant events now flow through
+auth tables instead.
+
+We keep this query here basically just to document the fact that this table
+still exists and is referenced in views. If we need to backfill downstream
+ETL, the historical data in this table is still relevant.
+
+*/
+
 WITH
   base AS (
   SELECT

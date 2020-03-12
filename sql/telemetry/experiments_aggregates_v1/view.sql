@@ -8,4 +8,4 @@ SELECT
     ARRAY(SELECT * FROM UNNEST(statistics.list)) AS statistics
   )
 FROM
-  `moz-fx-data-derived-datasets.telemetry_derived.experiments_aggregates_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.experiments_aggregates_v1`

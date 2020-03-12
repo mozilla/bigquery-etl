@@ -26,7 +26,6 @@ histograms AS (
       STRUCT<
         metric STRING,
         metric_type STRING,
-        sum INT64,
         value ARRAY<STRUCT<key STRING, value INT64>>
       >
     >[{{ histograms }}] AS metadata
@@ -58,7 +57,6 @@ aggregated AS (
     {{ attributes }},
     metric,
     metric_type,
-    SUM(sum) AS sum,
     `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) as value
   FROM
     flattened_histograms
@@ -75,9 +73,8 @@ SELECT
       metric_type STRING,
       key STRING,
       agg_type STRING,
-      sum INT64,
       value ARRAY<STRUCT<key STRING, value INT64>>
-    >(metric, metric_type, '', 'summed_histogram', sum, value)
+    >(metric, metric_type, '', 'summed_histogram', value)
   ) AS histogram_aggregates
 FROM
   aggregated

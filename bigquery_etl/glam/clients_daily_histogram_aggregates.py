@@ -61,14 +61,13 @@ def get_metrics_sql(metrics: Dict[str, List[str]]) -> str:
     for metric_type, metric_names in metrics.items():
         for name in metric_names:
             path = f"metrics.{metric_type}.{name}"
-            sum_path = f"{path}.sum"
             value_path = f"{path}.values"
-            items.append((name, metric_type, sum_path, value_path))
+            items.append((name, metric_type, value_path))
 
     # create the query sub-string
     results = []
-    for name, metric_type, sum_path, value_path in sorted(items):
-        results.append(f"""("{name}", "{metric_type}", {sum_path}, {value_path})""")
+    for name, metric_type, value_path in sorted(items):
+        results.append(f"""("{name}", "{metric_type}", {value_path})""")
     return ",".join(results)
 
 

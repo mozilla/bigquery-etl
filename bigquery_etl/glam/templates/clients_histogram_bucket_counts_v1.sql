@@ -45,7 +45,6 @@ CREATE TEMP FUNCTION udf_normalize_histograms(
       metric_type STRING,
       key STRING,
       agg_type STRING,
-      sum INT64,
       value ARRAY<STRUCT<key STRING, value INT64>>
     >
   >

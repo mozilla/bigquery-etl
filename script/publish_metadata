@@ -21,10 +21,9 @@ from bigquery_etl.parse_metadata import Metadata  # noqa E402
 METADATA_FILE = "metadata.yaml"
 
 
-def publish_metadata(client, dataset, table, metadata_file):
+def publish_metadata(client, project, dataset, table, metadata):
     try:
-        metadata = Metadata.from_file(metadata_file)
-        table_ref = client.dataset(dataset).table(table)
+        table_ref = client.dataset(dataset, project).table(table)
         table = client.get_table(table_ref)
 
         if metadata.friendly_name is not None:
@@ -43,6 +42,11 @@ def publish_metadata(client, dataset, table, metadata_file):
 def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--project-id", help="Default project")
+    parser.add_argument(
+        "--public-project",
+        default="mozilla-public-data",
+        help="Project ID for public datasets",
+    )
     parser.add_argument(
         "--target", nargs="+", help="File or directory containing metadata files"
     )
@@ -66,8 +70,14 @@ def main():
                     dataset = path.split(os.sep)[-2]
                     table = path.split(os.sep)[-1]
                     metadata_file = os.path.join(root, METADATA_FILE)
+                    metadata = Metadata.from_file(metadata_file)
 
-                    publish_metadata(client, dataset, table, metadata_file)
+                    publish_metadata(client, args.project_id, dataset, table, metadata)
+
+                    if metadata.is_public_bigquery():
+                        publish_metadata(
+                            client, args.public_project, dataset, table, metadata
+                        )
         else:
             print(
                 """

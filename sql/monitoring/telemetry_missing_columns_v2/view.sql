@@ -17,7 +17,7 @@ extracted AS (
     `moz-fx-data-shared-prod`.udf.extract_document_version(_TABLE_SUFFIX) AS document_version,
     additional_properties
   FROM
-    `moz-fx-data-shared-prod.telemetry_live.*`
+    `moz-fx-data-shared-prod.telemetry_stable.*`
   WHERE
     -- only observe full days of data
     (

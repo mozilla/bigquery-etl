@@ -6,7 +6,7 @@ WITH windowed AS (
     *,
     SUM(ssl_loads) OVER w1 + SUM(non_ssl_loads) OVER w1 AS total_loads
   FROM
-    `moz-fx-data-derived-datasets.telemetry_derived.ssl_ratios_v1`
+    `moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1`
   WINDOW
     w1 AS (
       ORDER BY

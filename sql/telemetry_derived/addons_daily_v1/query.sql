@@ -140,6 +140,8 @@ maut AS (
     COUNT(DISTINCT client_id) AS mau
   FROM
     addons_expanded
+  WHERE
+    days_since_seen < 28
   GROUP BY
     1
 ),

@@ -42,7 +42,7 @@ SELECT
   -- FxA data; we assign a single country per user per day and include a user
   -- in this calculation if they were assigned a tier 1 country in any of the
   -- 28 days of the MAU window.
-  COUNTIF(days_since_seen_in_tier1_country < 28) AS mau_tier1_inclusive,
+  COUNTIF(days_since_seen_in_tier1_country < 28) AS seen_in_tier1_country_mau,
   -- We hash user_ids into 20 buckets to aid in computing
   -- confidence intervals for mau/wau/dau sums; the particular hash
   -- function and number of buckets is subject to change in the future.

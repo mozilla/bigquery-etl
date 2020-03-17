@@ -13,7 +13,7 @@ WITH fxa_auth_events AS (
     jsonPayload.fields.event_type,
     JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
   FROM
-    `moz-fx-data-derived-datasets.telemetry.fxa_auth_events_v1`
+    `moz-fx-data-shared-prod.telemetry_derived.fxa_auth_events_v1`
 ),
   -- This table doesn't include any user events that are considered "active",
   -- but should always be included for a complete raw event log.
@@ -31,7 +31,7 @@ fxa_auth_bounce_events AS (
     jsonPayload.fields.event_type,
     JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
   FROM
-    `moz-fx-data-derived-datasets.telemetry.fxa_auth_bounce_events_v1`
+    `moz-fx-data-shared-prod.telemetry_derived.fxa_auth_bounce_events_v1`
 ),
 fxa_content_events AS (
   SELECT
@@ -45,7 +45,7 @@ fxa_content_events AS (
     jsonPayload.fields.event_type,
     JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
   FROM
-    `moz-fx-data-derived-datasets.telemetry.fxa_content_events_v1`
+    `moz-fx-data-shared-prod.telemetry_derived.fxa_content_events_v1`
 ),
 fxa_oauth_events AS (
   SELECT
@@ -59,7 +59,7 @@ fxa_oauth_events AS (
     jsonPayload.fields.event_type,
     JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties, '$.service') AS service
   FROM
-    `moz-fx-data-derived-datasets.telemetry.fxa_oauth_events_v1`
+    `moz-fx-data-shared-prod.telemetry_derived.fxa_oauth_events_v1`
 )
 SELECT
   *

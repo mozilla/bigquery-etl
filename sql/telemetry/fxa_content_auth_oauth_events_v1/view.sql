@@ -17,7 +17,7 @@ CREATE OR REPLACE VIEW
       `timestamp`,
       receiveTimestamp
     FROM
-      `moz-fx-data-derived-datasets.telemetry.fxa_content_events_v1`
+      `moz-fx-data-shared-prod.telemetry_derived.fxa_content_events_v1`
     ),
     --
     auth as (
@@ -35,7 +35,7 @@ CREATE OR REPLACE VIEW
       `timestamp`,
       receiveTimestamp
     FROM
-      `moz-fx-data-derived-datasets.telemetry.fxa_auth_events_v1`
+      `moz-fx-data-shared-prod.telemetry_derived.fxa_auth_events_v1`
     ),
     --
     oauth as (
@@ -53,7 +53,7 @@ CREATE OR REPLACE VIEW
       `timestamp`,
       receiveTimestamp
     FROM
-      `moz-fx-data-derived-datasets.telemetry.fxa_oauth_events_v1`
+      `moz-fx-data-shared-prod.telemetry_derived.fxa_oauth_events_v1`
     ),
     --
     unioned AS (

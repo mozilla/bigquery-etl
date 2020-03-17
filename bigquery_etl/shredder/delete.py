@@ -12,6 +12,7 @@ from typing import Callable, Iterable, Optional
 import logging
 import warnings
 
+from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
@@ -127,28 +128,18 @@ def record_state(client, task_id, job, dry_run, start_date, end_date, state_tabl
         insert_tense = "Would insert" if dry_run else "Inserting"
         logging.info(f"{insert_tense} {job_id} in {state_table} for task: {task_id}")
         if not dry_run:
-            client.query(
-                dedent(
-                    f"""
-                    INSERT INTO
-                      `{state_table}`(
-                        task_id,
-                        job_id,
-                        job_created,
-                        start_date,
-                        end_date
-                      )
-                    VALUES
-                      (
-                        "{task_id}",
-                        "{job_id}",
-                        TIMESTAMP "{job.created:%Y-%m-%d %H:%M:%S} UTC",
-                        DATE "{start_date}",
-                        DATE "{end_date}"
-                      )
-                    """
-                ).strip()
-            ).result()
+            client.insert_rows_json(
+                state_table,
+                [
+                    {
+                        "job_id": job_id,
+                        "task_id": task_id,
+                        "job_created": job.created.isoformat(),
+                        "start_date": start_date.isoformat(),
+                        "end_date": end_date.isoformat(),
+                    }
+                ],
+            )
 
 
 def wait_for_job(client, states, task_id, dry_run, create_job, **state_kwargs):
@@ -354,39 +345,46 @@ def main():
     client = client_q.default_client
     states = {}
     if args.state_table:
-        client.query(
-            dedent(
-                f"""
-                CREATE TABLE IF NOT EXISTS
-                  `{args.state_table}`(
-                    task_id STRING,
-                    job_id STRING,
-                    job_created TIMESTAMP,
-                    start_date DATE,
-                    end_date DATE
-                  )
-                """
-            ).strip()
-        )
-        states = {
-            row["task_id"]: row["job_id"]
-            for row in client.query(
-                dedent(
-                    f"""
-                    SELECT
-                      task_id,
-                      job_id,
-                    FROM
-                      `{args.state_table}`
-                    WHERE
-                      start_date = '{args.start_date}'
-                      AND end_date = '{args.end_date}'
-                    ORDER BY
-                      job_created
-                    """
-                ).strip()
-            ).result()
-        }
+        state_table_exists = False
+        try:
+            client.get_table(args.state_table)
+            state_table_exists = True
+        except NotFound:
+            if not args.dry_run:
+                client.create_table(
+                    bigquery.Table(
+                        args.state_table,
+                        [
+                            bigquery.SchemaField("task_id", "STRING"),
+                            bigquery.SchemaField("project_id", "STRING"),
+                            bigquery.SchemaField("location", "STRING"),
+                            bigquery.SchemaField("job_id", "STRING"),
+                            bigquery.SchemaField("creation_time", "TIMESTAMP"),
+                            bigquery.SchemaField("start_date", "DATE"),
+                            bigquery.SchemaField("end_date", "DATE"),
+                        ],
+                    )
+                )
+                state_table_exists = True
+        if state_table_exists:
+            states = dict(
+                client.query(
+                    dedent(
+                        f"""
+                        SELECT
+                          task_id,
+                          job_id,
+                        FROM
+                          `{args.state_table}`
+                        WHERE
+                          start_date = '{args.start_date}'
+                          AND end_date = '{args.end_date}'
+                        ORDER BY
+                          job_created
+                        """
+                    ).strip()
+                ).result()
+            )
     tasks = [
         task
         for target, source in DELETE_TARGETS.items()

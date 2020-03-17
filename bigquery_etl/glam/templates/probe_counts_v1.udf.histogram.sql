@@ -69,8 +69,7 @@ CREATE TEMP FUNCTION udf_get_buckets(
   metric_type STRING,
   range_min INT64,
   range_max INT64,
-  bucket_count INT64,
-  histogram_type STRING
+  bucket_count INT64
 )
 RETURNS ARRAY<INT64> AS (
   (
@@ -88,13 +87,11 @@ RETURNS ARRAY<INT64> AS (
           -- https://mozilla.github.io/glean/book/user/metrics/memory_distribution.html
           udf_functional_buckets(2, 16, range_max)
         WHEN
-          metric_type = 'custom_distribution'
-          AND histogram_type = 'exponential'
+          metric_type = 'custom_distribution_exponential'
         THEN
           udf_exponential_buckets(range_min, range_max, bucket_count)
         WHEN
-          metric_type = 'custom_distribution'
-          AND histogram_type = 'linear'
+          metric_type = 'custom_distribution_linear'
         THEN
           udf_linear_buckets(range_min, range_max, bucket_count)
         ELSE

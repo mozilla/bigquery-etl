@@ -43,7 +43,7 @@
             udf_fill_buckets(
                 udf_dedupe_map_sum(ARRAY_AGG(record)),
                 udf_to_string_arr(
-                    udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
+                    udf_get_buckets(metric_type, range_min, range_max, bucket_count)
                 )
             ) AS aggregates
         {% endif %}
@@ -61,7 +61,6 @@
             range_min,
             range_max,
             bucket_count,
-            histogram_type,
         {% endif %}
         {{ aggregate_attributes }},
         {{ aggregate_grouping }}

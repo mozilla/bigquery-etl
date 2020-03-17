@@ -11,17 +11,26 @@ or to process only a specific list of tables.
 """
 
 from argparse import ArgumentParser
-from contextlib import contextmanager
 from datetime import datetime, timedelta
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
-from queue import Queue
 from uuid import uuid4
 
-import fnmatch
-import re
+import logging
+import os
+import sys
 
 from google.cloud import bigquery
+
+
+# sys.path needs to be modified to enable package imports from parent
+# and sibling directories. Also see:
+# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from bigquery_etl.util import standard_args  # noqa E402
+from bigquery_etl.util.client_queue import ClientQueue  # noqa E402
+from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
+
 
 QUERY_TEMPLATE = """
 WITH
@@ -90,31 +99,10 @@ parser.add_argument(
     type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
     help="One or more days of data to copy, in format 2019-01-01",
 )
-parser.add_argument(
-    "--parallelism",
-    default=4,
-    type=int,
-    help="Maximum number of queries to execute concurrently",
-)
-parser.add_argument(
-    "--dry_run",
-    "--dry-run",
-    action="store_true",
-    help=(
-        "Do not run queries, but instead print the query job config "
-        "and bytes that would be processed"
-    ),
-)
-parser.add_argument(
-    "--priority",
-    default="INTERACTIVE",
-    type=str.upper,
-    choices=["BATCH", "INTERACTIVE"],
-    help=(
-        "Priority for BigQuery query jobs; BATCH priority will significantly slow"
-        "down queries if reserved slots are not enabled for the billing project"
-    ),
-)
+standard_args.add_parallelism(parser)
+standard_args.add_dry_run(parser, debug_log_queries=False)
+standard_args.add_log_level(parser)
+standard_args.add_priority(parser)
 parser.add_argument(
     "--slices",
     type=int,
@@ -139,38 +127,8 @@ parser.add_argument(
     default=0,
     help="Number of days preceding --date that should be used to filter out duplicates",
 )
-parser.add_argument(
-    "--billing_projects",
-    "--billing-projects",
-    "--billing_project",
-    "--billing-project",
-    nargs="+",
-    # default to one client, with project=None for the google cloud sdk default project
-    default=[None],
-    help=(
-        "One or more billing projects over which bigquery jobs should be distributed; "
-        "if not specified use the google cloud sdk default project"
-    ),
-)
-group = parser.add_mutually_exclusive_group()
-group.add_argument(
-    "--only",
-    nargs="+",
-    dest="only_tables",
-    help=(
-        "Process only the given tables; "
-        "pass names or globs like 'telemetry_live.main_v*' "
-    ),
-)
-group.add_argument(
-    "--except",
-    nargs="+",
-    dest="except_tables",
-    help=(
-        "Process all tables in *_live datasets except for the given tables; "
-        "pass names or globs like 'telemetry_live.main_v*'"
-    ),
-)
+standard_args.add_billing_projects(parser)
+standard_args.add_table_filter(parser)
 
 temporary_dataset = None
 
@@ -218,11 +176,7 @@ def get_temporary_table(
         table.clustering_fields = clustering_fields
         table.time_partitioning = time_partitioning
         table = client.create_table(table, exists_ok=False)
-    return f"{sql_full_table_id(table)}${date:%Y%m%d}"
-
-
-def sql_full_table_id(table):
-    return f"{table.project}.{table.dataset_id}.{table.table_id}"
+    return f"{sql_table_id(table)}${date:%Y%m%d}"
 
 
 def get_query_job_configs(
@@ -308,12 +262,12 @@ def copy_join_parts(client, stable_table, query_jobs):
     if query_jobs[0].dry_run:
         api_repr = query_jobs[0].to_api_repr()
         if len(query_jobs) > 1:
-            print(f"Would process {total_bytes} bytes: [{api_repr},...]")
-            print(f"Would copy {len(query_jobs)} results to populate {stable_table}")
+            logging.info(f"Would process {total_bytes} bytes: [{api_repr},...]")
+            logging.info(f"Would copy {len(query_jobs)} results to {stable_table}")
         else:
-            print(f"Would process {total_bytes} bytes: {api_repr}")
+            logging.info(f"Would process {total_bytes} bytes: {api_repr}")
     else:
-        print(f"Processed {total_bytes} bytes to populate {stable_table}")
+        logging.info(f"Processed {total_bytes} bytes to populate {stable_table}")
         if len(query_jobs) > 1:
             sources = [job.destination for job in query_jobs]
             job_config = bigquery.CopyJobConfig(
@@ -321,10 +275,10 @@ def copy_join_parts(client, stable_table, query_jobs):
             )
             copy_job = client.copy_table(sources, stable_table, job_config=job_config)
             copy_job.result()
-            print(f"Copied {len(query_jobs)} results to populate {stable_table}")
+            logging.info(f"Copied {len(query_jobs)} results to populate {stable_table}")
             for source in sources:
-                client.delete_table(sql_full_table_id(source).split("$")[0])
-            print(f"Deleted {len(query_jobs)} temporary tables")
+                client.delete_table(sql_table_id(source).split("$")[0])
+            logging.info(f"Deleted {len(query_jobs)} temporary tables")
 
 
 def contains_glob(patterns):
@@ -335,21 +289,10 @@ def glob_dataset(pattern):
     return pattern.split(".", 1)[0]
 
 
-def compile_glob_patterns(patterns):
-    return re.compile("|".join(fnmatch.translate(pattern) for pattern in patterns))
-
-
-def glob_predicate(match, table, arg):
-    matched = match(table) is not None
-    if (arg == "only" and not matched) or (arg == "except" and matched):
-        print(f"Skipping {table} due to --{arg} argument")
-    return matched
-
-
-def list_live_tables(client, pool, project_id, except_tables, only_tables):
+def list_live_tables(client, pool, project_id, only_tables, table_filter):
     if only_tables and not contains_glob(only_tables):
         # skip list calls when only_tables exists and contains no globs
-        return [f"{project_id}.{t}" for t in only_tables]
+        return [f"{project_id}.{t}" for t in only_tables if table_filter(t)]
     if only_tables and not contains_glob(glob_dataset(t) for t in only_tables):
         # skip list_datasets call when only_tables exists and datasets contain no globs
         live_datasets = {f"{project_id}.{glob_dataset(t)}" for t in only_tables}
@@ -359,44 +302,13 @@ def list_live_tables(client, pool, project_id, except_tables, only_tables):
             for d in client.list_datasets(project_id)
             if d.dataset_id.endswith("_live")
         ]
-    live_tables = [
-        f"{t.dataset_id}.{t.table_id}"
+    return [
+        sql_table_id(t)
         for tables in pool.map(client.list_tables, live_datasets)
         for t in tables
+        if table_filter(f"{t.dataset_id}.{t.table_id}")
+        and "beam_load_sink" not in t.table_id
     ]
-    if only_tables:
-        match = compile_glob_patterns(only_tables).match
-        live_tables = [t for t in live_tables if glob_predicate(match, t, "only")]
-    if except_tables:
-        match = compile_glob_patterns(except_tables).match
-        live_tables = [t for t in live_tables if not glob_predicate(match, t, "except")]
-
-    # Filter out temporary tables created by the Beam BigQuery sink job.
-    live_tables = [t for t in live_tables if "beam_load_sink" not in t]
-
-    return [f"{project_id}.{t}" for t in live_tables]
-
-
-class ClientQueue:
-    """Queue for balancing jobs across billing projects."""
-
-    def __init__(self, billing_projects, parallelism):
-        clients = [bigquery.Client(project) for project in billing_projects]
-        self._q = Queue(parallelism)
-        for i in range(parallelism):
-            self._q.put(clients[i % len(clients)])
-
-    @contextmanager
-    def client(self):
-        client = self._q.get_nowait()
-        try:
-            yield client
-        finally:
-            self._q.put_nowait(client)
-
-    def with_client(self, func, *args):
-        with self.client() as client:
-            return func(client, *args)
 
 
 def main():
@@ -411,8 +323,8 @@ def main():
                 client=client,
                 pool=pool,
                 project_id=args.project_id,
-                except_tables=args.except_tables,
-                only_tables=args.only_tables,
+                only_tables=getattr(args, "only_tables", None),
+                table_filter=args.table_filter,
             )
 
             query_jobs = [

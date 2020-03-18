@@ -90,7 +90,8 @@ WITH normalized_histograms AS (
     app_build_id,
     channel,
     udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
-  FROM clients_histogram_aggregates_v1),
+  FROM clients_histogram_aggregates_v1
+  WHERE submission_date = @submission_date),
 
 unnested AS (
   SELECT

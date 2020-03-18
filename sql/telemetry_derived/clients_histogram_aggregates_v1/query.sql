@@ -186,7 +186,7 @@ merged AS
     ON new_data.join_key = old_data.join_key)
 
 SELECT
-  DATE(@submission_date) AS submission_date,
+  @submission_date AS submission_date,
   sample_id,
   client_id,
   os,

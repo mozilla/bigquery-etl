@@ -113,7 +113,6 @@ SKIP = {
     "sql/telemetry_derived/fxa_users_services_daily_v1/query.sql",
     "sql/telemetry_derived/fxa_users_services_last_seen_v1/query.sql",
     "sql/telemetry_derived/glam_user_counts_v1/query.sql",
-    "sql/telemetry_derived/histogram_percentiles_v1/query.sql",
     "sql/telemetry_derived/latest_versions/query.sql",
     "sql/telemetry_derived/main_events_v1/init.sql",
     "sql/telemetry_derived/main_events_v1/query.sql",

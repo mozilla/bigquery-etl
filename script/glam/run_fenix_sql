@@ -58,6 +58,8 @@ function run_query {
         --dataset_id="$DATASET" \
         --destination_table="$destination_table" \
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
+        --parameter="min_sample_id:INT64:0" \
+        --parameter="max_sample_id:INT64:99" \
         "$(if $time_partition; then echo --time_partitioning_type="DAY"; fi)" \
         < "$tmp"
 }
@@ -122,17 +124,34 @@ function main {
         for directory in sql/glam_etl/fenix_clients_daily_scalar_aggregates*/; do
             run_query "$(basename "$directory")" true
         done
+        for directory in sql/glam_etl/fenix_clients_daily_histogram_aggregates*/; do
+            run_query "$(basename "$directory")" true
+        done
     fi
     # NOTE: there isn't a mechanism to test the incremental query here
     if ((start_stage <= 1)); then
-        run_view "fenix_view_clients_daily_scalar_aggregates_v1"
         run_query "fenix_latest_versions_v1"
+
+        run_view "fenix_view_clients_daily_scalar_aggregates_v1"
         run_init "fenix_clients_scalar_aggregates_v1"
         run_query "fenix_clients_scalar_aggregates_v1"
     fi
-    if ((start_stage <= 2)); then run_query "fenix_clients_scalar_bucket_counts_v1"; fi
-    if ((start_stage <= 3)); then run_query "fenix_clients_scalar_probe_counts_v1"; fi
-    if ((start_stage <= 4)); then run_query "fenix_scalar_percentiles_v1"; fi
+    if ((start_stage <= 2)); then
+        run_query "fenix_clients_scalar_bucket_counts_v1"
+        run_query "fenix_clients_scalar_probe_counts_v1"
+        run_query "fenix_scalar_percentiles_v1"
+    fi
+    if ((start_stage <= 3)); then
+        run_view "fenix_view_clients_daily_histogram_aggregates_v1"
+        run_init "fenix_clients_histogram_aggregates_v1"
+        run_query "fenix_clients_histogram_aggregates_v1"
+    fi
+    if ((start_stage <= 4)); then
+        run_query "fenix_clients_histogram_bucket_counts_v1"
+        run_query "fenix_clients_histogram_probe_counts_v1"
+        # TODO
+        # run_query "fenix_histogram_percentiles_v1"
+    fi
 }
 
 main

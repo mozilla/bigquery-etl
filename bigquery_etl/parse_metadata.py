@@ -90,3 +90,7 @@ class Metadata:
     def is_public_json(self):
         """Return true if the public_json flag is set."""
         return "public_json" in self.labels
+
+    def is_incremental(self):
+        """Return true if the incremental flag is set."""
+        return "incremental" in self.labels

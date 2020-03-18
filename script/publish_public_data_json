@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 """
-Export table data as JSON to a publicly accessible bucket. 
+Export query result data as JSON to a publicly accessible bucket. 
 
-Data of existing BigQuery tables is exported if "json_export" is set in 
+Data of the query is exported if "json_export" is set in 
 the corresponding metadata file.
 """
 
@@ -11,6 +11,7 @@ from argparse import ArgumentParser
 import os
 import sys
 import datetime
+import re
 
 from google.cloud import bigquery
 
@@ -21,18 +22,11 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
-DEFAULT_PATTERN = "mozilla-public-data:*.*"
 DEFAULT_BUCKET = ""
 METADATA_FILE = "metadata.yaml"
+SUBMISSION_DATE_RE = re.compile(r"^submission_date:DATE:(\d\d\d\d-\d\d-\d\d)$")
+QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_v([0-9]+)/query\.sql$")
 
-parser.add_argument(
-    "patterns",
-    metavar="[project:]dataset[.table]",
-    default=[DEFAULT_PATTERN],
-    nargs="*",
-    help="Table that should have a latest-version view, may use shell-style wildcards,"
-    f" defaults to: {DEFAULT_PATTERN}",
-)
 parser.add_argument(
     "--target-bucket",
     "--target_bucket",
@@ -40,98 +34,101 @@ parser.add_argument(
     help="GCP bucket JSON data is exported to.",
 )
 parser.add_argument(
-    "--target-project",
-    "--target_project",
+    "--project",
     default="moz-fx-data-derived-datasets",
-    help="Create views in the target project",
+    help="Run query in the target project",
 )
-parser.add_argument("--target", help="File or directory containing metadata files")
-parser.add_argument("--date", help="Submission timestamp [yyyy-mm-dd] of data to be exported")
+parser.add_argument("--parameter", help="Query parameters, such as submission_date")
+parser.add_argument("--query_file", help="File path to query to be executed")
 
 
-def get_tables(client, patterns):
-    all_projects = None
-    all_datasets = {}
-    all_tables = {}
-    matching_tables = []
-
-    for pattern in patterns:
-        project, _, dataset_table = pattern.partition(":")
-        dataset, _, table = dataset_table.partition(".")
-        projects = [project or client.project]
-        dataset = dataset or "*"
-        table = table or "*"
-        if uses_wildcards(project):
-            if all_projects is None:
-                all_projects = [p.project_id for p in client.list_projects()]
-            projects = [p for p in all_projects if fnmatchcase(project, p)]
-        for project in projects:
-            datasets = [dataset]
-            if uses_wildcards(dataset):
-                if project not in all_datasets:
-                    all_datasets[project] = [
-                        d.dataset_id for d in client.list_datasets(project)
-                    ]
-                datasets = [d for d in all_datasets[project] if fnmatchcase(d, dataset)]
-            for dataset in datasets:
-                dataset = f"{project}.{dataset}"
-                tables = [(f"{dataset}.{table}", None)]
-                if uses_wildcards(table):
-                    if dataset not in all_tables:
-                        all_tables[dataset] = list(client.list_tables(dataset))
-                    tables = [
-                        (dataset, t.table_id)
-                        for t in all_tables[dataset]
-                        if fnmatchcase(t.table_id, table)
-                    ]
-                    matching_tables += tables
-
-    return matching_tables
-
-
-def publish_json(client, dataset, table, version, date, bucket):
+def publish_table_as_json(
+    bucket, client, dataset, table, version, result_table, date=None
+):
     # "*" makes sure that files larger than 1GB get split up into multiple JSON files
-    destination_uri = "gs://{bucket}/{dataset}/{table}/{verions}/files/{date}/*"
+    destination_uri = f"gs://{bucket}/{dataset}/{table}/{version}/files/"
 
-    # todo: explicitly set project?
-    dataset_ref = client.dataset(dataset)
-    table_ref = dataset_ref.table(table)
+    if date is None:
+        # if date is not set, then export the entire table and overwrite existing JSON
+        destination_uri += "*"
+    else:
+        # if date exists, then query is incremental and newest results are exported
+        destination_uri += f"/{date}/*"
+
+    table_ref = client.get_table(result_table)
 
     extract_job = client.extract_table(
-        table_ref,
-        destination_uri,
-        location="US",  # todo
+        table_ref, destination_uri, location="US"  # todo
     )
     extract_job.result()
+
+
+def write_results_to_temp_table(client, query_file, date):
+    (dataset, table, version) = dataset_table_version_from_file(args.query_file)
+
+    temp_table = f"{dataset}.{table}_v{version}_{date}_temp"
+
+    with open(query_file) as query_stream:
+        sql = query_stream.read()
+        job_config = bigquery.QueryJobConfig(destination=temp_table)
+        query_job = client.query(sql, job_config=job_config)
+        query_job.result()
+
+        return temp_table
+
+
+def dataset_table_version_from_file(file_name):
+    # extract dataset, table and version from query file
+    query_file_re = re.search(QUERY_FILE_RE, query_file)
+    if query_file_re:
+        dataset = query_file_re.group(1)
+        table = query_file_re.group(2)
+        version = query_file_re.group(3)
+
+        return (dataset, table, version)
+    else:
+        print("Invalid file naming format: {}", query_file)
+        return None
 
 
 def main():
     args = parser.parse_args()
 
-    client = bigquery.Client(args.target_project)
-    all_tables = get_tables(client, args.patterns)
-    date = datetime.strptime(args.date, '%Y-%m-%d')
+    try:
+        metadata = Metadata.of_sql_file(args.query_file)
+    except FileNotFoundError:
+        print("No metadata file for: {}".format(args.query_file))
+        return
 
-    if os.path.isdir(args.target):
-        for (dataset, table) in get_tables(client, args.patterns):
-            metadata_file = os.path.join(args.target, dataset, table, METADATA_FILE)
+    # check if the data should be published as JSON
+    if not metadata.is_public_json():
+        return
 
-            try:
-                metadata = Metadata.from_file(metadata_file)
+    client = bigquery.Client(args.project)
+    date_search = re.search(SUBMISSION_DATE_RE, args.parameter)
 
-                if metadata.is_public_json():
-                    # todo: handle incremental and non-incremental differently
-                    publish_json(client, dataset, table, date, args.target_bucket)
-            except FileNotFoundError:
-                print("No metadata file for: {}.{}".format(dataset, table))
-    else:
-        print(
-            """
-            Invalid target: {}, target must be a directory with
-            structure /<dataset>/<table>/metadata.yaml.
-            """.format(
-                args.target
+    if date_search:
+        date = date_search.group(1)
+        date = datetime.strptime(date, "%Y-%m-%d")
+
+    if metadata.is_incremental():
+        (dataset, table, version) = dataset_table_version_from_file(args.query_file)
+
+        if date is not None:
+            temp_result_table = write_results_to_temp_table(
+                client, args.query_file, date
             )
+            publish_table_as_json(
+                args.bucket, client, dataset, table, version, temp_result_table, date
+            )
+            client.delete_table(f"{dataset}.{table}")
+        else:
+            print("Cannot publish JSON. submission_date needs to be set as parameter.")
+            return
+    else:
+        result_table = f"{dataset}.{table}_v{version}"
+        publish_table_as_json(
+            args.bucket, client, dataset, table, version, result_table
         )
 
 

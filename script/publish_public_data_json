@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 
 """
-Export query result data as JSON to a publicly accessible bucket. 
+Export query result data as JSON to a publicly accessible bucket.
 
-Data of the query is exported if "json_export" is set in 
+Data of the query is exported if "json_export" is set in
 the corresponding metadata file.
 """
 
 from argparse import ArgumentParser
 import os
 import sys
-import datetime
 import re
 
 from google.cloud import bigquery
@@ -22,11 +21,12 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
-DEFAULT_BUCKET = ""
+DEFAULT_BUCKET = "ascholtz-dev-test"  # todo
 METADATA_FILE = "metadata.yaml"
 SUBMISSION_DATE_RE = re.compile(r"^submission_date:DATE:(\d\d\d\d-\d\d-\d\d)$")
-QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_v([0-9]+)/query\.sql$")
+QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
 
+parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--target-bucket",
     "--target_bucket",
@@ -34,7 +34,7 @@ parser.add_argument(
     help="GCP bucket JSON data is exported to.",
 )
 parser.add_argument(
-    "--project",
+    "--project_id",
     default="moz-fx-data-derived-datasets",
     help="Run query in the target project",
 )
@@ -50,23 +50,26 @@ def publish_table_as_json(
 
     if date is None:
         # if date is not set, then export the entire table and overwrite existing JSON
-        destination_uri += "*"
+        destination_uri += "*.json"
     else:
         # if date exists, then query is incremental and newest results are exported
-        destination_uri += f"/{date}/*"
+        destination_uri += f"{date}/*.json"
 
     table_ref = client.get_table(result_table)
 
+    job_config = bigquery.ExtractJobConfig()
+    job_config.destination_format = "NEWLINE_DELIMITED_JSON"
     extract_job = client.extract_table(
-        table_ref, destination_uri, location="US"  # todo
+        table_ref, destination_uri, location="US", job_config=job_config
     )
     extract_job.result()
 
 
-def write_results_to_temp_table(client, query_file, date):
-    (dataset, table, version) = dataset_table_version_from_file(args.query_file)
+def write_results_to_temp_table(client, project, query_file, date):
+    (dataset, table, version) = dataset_table_version_from_file(query_file)
 
-    temp_table = f"{dataset}.{table}_v{version}_{date}_temp"
+    table_date = date.replace("-", "")
+    temp_table = f"{project}.{dataset}.{table}_{version}_{table_date}_temp"
 
     with open(query_file) as query_stream:
         sql = query_stream.read()
@@ -79,7 +82,7 @@ def write_results_to_temp_table(client, query_file, date):
 
 def dataset_table_version_from_file(file_name):
     # extract dataset, table and version from query file
-    query_file_re = re.search(QUERY_FILE_RE, query_file)
+    query_file_re = re.search(QUERY_FILE_RE, file_name)
     if query_file_re:
         dataset = query_file_re.group(1)
         table = query_file_re.group(2)
@@ -87,12 +90,12 @@ def dataset_table_version_from_file(file_name):
 
         return (dataset, table, version)
     else:
-        print("Invalid file naming format: {}", query_file)
+        print("Invalid file naming format: {}", file_name)
         return None
 
 
 def main():
-    args = parser.parse_args()
+    args, query_arguments = parser.parse_known_args()
 
     try:
         metadata = Metadata.of_sql_file(args.query_file)
@@ -104,31 +107,36 @@ def main():
     if not metadata.is_public_json():
         return
 
-    client = bigquery.Client(args.project)
+    client = bigquery.Client(args.project_id)
     date_search = re.search(SUBMISSION_DATE_RE, args.parameter)
 
     if date_search:
         date = date_search.group(1)
-        date = datetime.strptime(date, "%Y-%m-%d")
+
+    (dataset, table, version) = dataset_table_version_from_file(args.query_file)
 
     if metadata.is_incremental():
-        (dataset, table, version) = dataset_table_version_from_file(args.query_file)
-
         if date is not None:
             temp_result_table = write_results_to_temp_table(
-                client, args.query_file, date
+                client, args.project_id, args.query_file, date
             )
             publish_table_as_json(
-                args.bucket, client, dataset, table, version, temp_result_table, date
+                args.target_bucket,
+                client,
+                dataset,
+                table,
+                version,
+                temp_result_table,
+                date,
             )
-            client.delete_table(f"{dataset}.{table}")
+            client.delete_table(temp_result_table)
         else:
             print("Cannot publish JSON. submission_date needs to be set as parameter.")
             return
     else:
-        result_table = f"{dataset}.{table}_v{version}"
+        result_table = f"{dataset}.{table}_{version}"
         publish_table_as_json(
-            args.bucket, client, dataset, table, version, result_table
+            args.target_bucket, client, dataset, table, version, result_table
         )
 
 

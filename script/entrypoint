@@ -32,7 +32,7 @@ elif [ "$1" = "query" ]; then
     # For queries that have a corresponding metadata file with public_bigquery set to
     # True, the destination_table option will be mapped to the destination table in
     # the public dataset.
-    exec script/run_query --query_file="${@: -1}" ${@:1:$#-1}
+    python script/run_query --query_file="${@: -1}" ${@:1:$#-1}
 
     # For queries with public_json set in the metadata, the results will be
     # exported as JSON to Cloud storage.

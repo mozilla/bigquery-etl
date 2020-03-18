@@ -86,3 +86,7 @@ class Metadata:
     def is_public_bigquery(self):
         """Return true if the public_bigquery flag is set."""
         return "public_bigquery" in self.labels
+
+    def is_public_json(self):
+        """Return true if the public_json flag is set."""
+        return "public_json" in self.labels

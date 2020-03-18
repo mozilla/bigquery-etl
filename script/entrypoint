@@ -33,6 +33,12 @@ elif [ "$1" = "query" ]; then
     # True, the destination_table option will be mapped to the destination table in
     # the public dataset.
     exec script/run_query --query_file="${@: -1}" ${@:1:$#-1}
+elif [ "$1" = "publish_json" ]; then
+    # For an invocation like:
+    #     publish_json [options]
+    # we dispatch to a script that inspects metadata for tables in Bigquery and
+    # publishes stored data as JSON if "publish_json" is set.
+    exec script/publish_public_data_json ${@:2}
 elif [ "$XCOM_PUSH" = "true" ]; then
     # KubernetesPodOperator will extract the contents of /airflow/xcom/return.json as an xcom
     # if the xcom_push parameter is true

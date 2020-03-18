@@ -9,11 +9,11 @@ CREATE TEMP FUNCTION assert_approx_equals(
     ERROR(
       CONCAT(
         'Expected ',
-        TO_JSON_STRING(expected),
-        '+/-',
+        TO_JSON_STRING(ROUND(expected, 2)),
+        ' ± ',
         TO_JSON_STRING(tolerance),
         ' but got ',
-        TO_JSON_STRING(actual)
+        TO_JSON_STRING(ROUND(actual, 2))
       )
     )
   )

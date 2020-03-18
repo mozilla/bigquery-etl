@@ -1,3 +1,4 @@
+-- See: https://github.com/mozilla/telemetry-dashboard/blob/8eae0ca3687aebc9e0d7853384fbcf2d7284b49e/v2/telemetry.js#L90-L121
 CREATE OR REPLACE FUNCTION udf_js.telemetry_percentile(
   percentile FLOAT64,
   histogram ARRAY<STRUCT<key STRING, value FLOAT64>>,
@@ -46,4 +47,33 @@ AS
   }
 ''';
 
--- Tests: TODO
+-- Tests
+-- TODO: refactor to reduce the lines of code
+SELECT
+  -- Determine the halfway point between two buckets
+  assert_equals(
+    5,
+    udf_js.telemetry_percentile(
+      50.0,
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("10", 1)],
+      "histogram-linear"
+    )
+  ),
+  assert_approx_equals(
+    1.5,
+    udf_js.telemetry_percentile(
+      50.0,
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("1", 1), ("2", 1)],
+      "histogram-linear"
+    ),
+    0.01
+  ),
+  assert_approx_equals(
+    50,
+    udf_js.telemetry_percentile(
+      50.0,
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("1", 1), ("100", 1)],
+      "histogram-linear"
+    ),
+    0.01
+  )

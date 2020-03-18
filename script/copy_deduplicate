@@ -370,6 +370,10 @@ def list_live_tables(client, pool, project_id, except_tables, only_tables):
     if except_tables:
         match = compile_glob_patterns(except_tables).match
         live_tables = [t for t in live_tables if not glob_predicate(match, t, "except")]
+
+    # Filter out temporary tables created by the Beam BigQuery sink job.
+    live_tables = [t for t in live_tables if "beam_load_sink" not in t]
+
     return [f"{project_id}.{t}" for t in live_tables]
 
 

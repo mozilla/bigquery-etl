@@ -18,3 +18,12 @@ CREATE TEMP FUNCTION assert_approx_equals(
     )
   )
 );
+
+-- Tests
+SELECT
+  assert_approx_equals(1, 1, 0),
+  assert_approx_equals(1, 2, 1);
+  
+#xfail
+SELECT
+  assert_approx_equals(1,2,0.9);

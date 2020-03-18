@@ -45,6 +45,7 @@ parser.add_argument("--query_file", help="File path to query to be executed")
 def publish_table_as_json(
     bucket, client, dataset, table, version, result_table, date=None
 ):
+    """Export the `result_table` data as JSON to Cloud Storage."""
     # "*" makes sure that files larger than 1GB get split up into multiple JSON files
     destination_uri = f"gs://{bucket}/{dataset}/{table}/{version}/files/"
 
@@ -66,6 +67,10 @@ def publish_table_as_json(
 
 
 def write_results_to_temp_table(client, project, query_file, date):
+    """
+    Write the results of the query to a temporary table and return the table
+    name.
+    """
     (dataset, table, version) = dataset_table_version_from_file(query_file)
 
     table_date = date.replace("-", "")
@@ -81,7 +86,8 @@ def write_results_to_temp_table(client, project, query_file, date):
 
 
 def dataset_table_version_from_file(file_name):
-    # extract dataset, table and version from query file
+    """Extract the dataset, table and version from the provided file name."""
+
     query_file_re = re.search(QUERY_FILE_RE, file_name)
     if query_file_re:
         dataset = query_file_re.group(1)
@@ -117,6 +123,8 @@ def main():
 
     if metadata.is_incremental():
         if date is not None:
+            # if it is an incremental query, then the query result needs to be
+            # written to a temporary table to get exported as JSON
             temp_result_table = write_results_to_temp_table(
                 client, args.project_id, args.query_file, date
             )
@@ -129,11 +137,14 @@ def main():
                 temp_result_table,
                 date,
             )
+
+            # remove the temporary table after it has been exported
             client.delete_table(temp_result_table)
         else:
             print("Cannot publish JSON. submission_date needs to be set as parameter.")
             return
     else:
+        # for non-incremental queries, the entire destination table is exported
         result_table = f"{dataset}.{table}_{version}"
         publish_table_as_json(
             args.target_bucket, client, dataset, table, version, result_table

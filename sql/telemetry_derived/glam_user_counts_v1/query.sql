@@ -16,6 +16,7 @@ WITH all_clients AS (
     app_build_id,
     channel
   FROM clients_histogram_aggregates_v1
+  WHERE submission_date = @submission_date
 )
 
 SELECT

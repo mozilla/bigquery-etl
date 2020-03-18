@@ -3,6 +3,7 @@
 """Update metadata of BigQuery tables and views."""
 
 from argparse import ArgumentParser
+from fnmatch import fnmatchcase
 import logging
 import os
 import sys
@@ -19,11 +20,25 @@ from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
 METADATA_FILE = "metadata.yaml"
+DEFAULT_PATTERN = "moz-fx-data-shared-prod:*.*"
 
 
-def publish_metadata(client, dataset, table, metadata_file):
+parser = ArgumentParser(description=__doc__)
+parser.add_argument("--project-id", help="Default project")
+parser.add_argument(
+    "patterns",
+    metavar="[project:]dataset[.table]",
+    default=[DEFAULT_PATTERN],
+    nargs="*",
+    help="Table that should have a latest-version view, may use shell-style wildcards,"
+    f" defaults to: {DEFAULT_PATTERN}",
+)
+parser.add_argument("--target", help="File or directory containing metadata files")
+parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
+
+
+def publish_metadata(client, dataset, table, metadata):
     try:
-        metadata = Metadata.from_file(metadata_file)
         table_ref = client.dataset(dataset).table(table)
         table = client.get_table(table_ref)
 
@@ -40,15 +55,53 @@ def publish_metadata(client, dataset, table, metadata_file):
         print(e)
 
 
+def uses_wildcards(pattern: str) -> bool:
+    return bool(set("*?[]") & set(pattern))
+
+
+def get_tables(client, patterns):
+    all_projects = None
+    all_datasets = {}
+    all_tables = {}
+    matching_tables = []
+
+    for pattern in patterns:
+        project, _, dataset_table = pattern.partition(":")
+        dataset, _, table = dataset_table.partition(".")
+        projects = [project or client.project]
+        dataset = dataset or "*"
+        table = table or "*"
+        if uses_wildcards(project):
+            if all_projects is None:
+                all_projects = [p.project_id for p in client.list_projects()]
+            projects = [p for p in all_projects if fnmatchcase(project, p)]
+        for project in projects:
+            datasets = [dataset]
+            if uses_wildcards(dataset):
+                if project not in all_datasets:
+                    all_datasets[project] = [
+                        d.dataset_id for d in client.list_datasets(project)
+                    ]
+                datasets = [d for d in all_datasets[project] if fnmatchcase(d, dataset)]
+            for dataset in datasets:
+                dataset_with_project = f"{project}.{dataset}"
+                tables = [(f"{dataset_with_project}.{table}", None)]
+                if uses_wildcards(table):
+                    if dataset_with_project not in all_tables:
+                        all_tables[dataset_with_project] = list(
+                            client.list_tables(dataset_with_project)
+                        )
+                    tables = [
+                        (dataset, t.table_id)
+                        for t in all_tables[dataset_with_project]
+                        if fnmatchcase(t.table_id, table)
+                    ]
+                    matching_tables += tables
+
+    return matching_tables
+
+
 def main():
-    parser = ArgumentParser(description=__doc__)
-    parser.add_argument("--project-id", help="Default project")
-    parser.add_argument(
-        "--target", nargs="+", help="File or directory containing metadata files"
-    )
-
-    parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
-
     args = parser.parse_args()
     client = bigquery.Client(args.project_id)
 
@@ -58,25 +111,24 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    for target in args.target:
-        if os.path.isdir(target):
-            for root, dirs, files in os.walk(target):
-                if METADATA_FILE in files:
-                    path = os.path.normpath(root)
-                    dataset = path.split(os.sep)[-2]
-                    table = path.split(os.sep)[-1]
-                    metadata_file = os.path.join(root, METADATA_FILE)
+    if os.path.isdir(args.target):
+        for (dataset, table) in get_tables(client, args.patterns):
+            metadata_file = os.path.join(args.target, dataset, table, METADATA_FILE)
 
-                    publish_metadata(client, dataset, table, metadata_file)
-        else:
-            print(
-                """
-                Invalid target: {}, target must be a directory with
-                structure /<dataset>/<table>/metadata.yaml.
-                """.format(
-                    args.target
-                )
+            try:
+                metadata = Metadata.from_file(metadata_file)
+                publish_metadata(client, dataset, table, metadata)
+            except FileNotFoundError:
+                print("No metadata file for: {}.{}".format(dataset, table))
+    else:
+        print(
+            """
+            Invalid target: {}, target must be a directory with
+            structure /<dataset>/<table>/metadata.yaml.
+            """.format(
+                args.target
             )
+        )
 
 
 if __name__ == "__main__":

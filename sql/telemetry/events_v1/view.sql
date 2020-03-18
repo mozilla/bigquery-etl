@@ -45,7 +45,8 @@ WITH parquet_events AS (
       END
       AS `timestamp`,
       SAFE.TIMESTAMP_MILLIS(session_start_time) AS session_start_time
-    )
+    ),
+    CAST(NULL AS STRING) AS build_id
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.events_v1`
   WHERE
@@ -76,7 +77,8 @@ main_events AS (
     event_process,
     subsession_id,
     session_start_time,
-    session_id
+    session_id,
+    build_id
   FROM
     `moz-fx-data-shared-prod`.telemetry_derived.main_events_v1
   WHERE
@@ -107,7 +109,8 @@ event_events AS (
     event_process,
     subsession_id,
     session_start_time,
-    session_id
+    session_id,
+    build_id
   FROM
     `moz-fx-data-shared-prod`.telemetry_derived.event_events_v1
   WHERE

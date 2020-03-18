@@ -18,6 +18,7 @@ from google.cloud import bigquery
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.table_filter import add_table_filter_arguments, get_table_filter
+from ..util.exceptions import BigQueryInsertError
 from .config import DELETE_TARGETS
 
 
@@ -128,17 +129,20 @@ def record_state(client, task_id, job, dry_run, start_date, end_date, state_tabl
         insert_tense = "Would insert" if dry_run else "Inserting"
         logging.info(f"{insert_tense} {job_id} in {state_table} for task: {task_id}")
         if not dry_run:
-            client.insert_rows_json(
-                state_table,
-                [
-                    {
-                        "job_id": job_id,
-                        "task_id": task_id,
-                        "job_created": job.created.isoformat(),
-                        "start_date": start_date.isoformat(),
-                        "end_date": end_date.isoformat(),
-                    }
-                ],
+            BigQueryInsertError.raise_if_present(
+                errors=client.insert_rows_json(
+                    state_table,
+                    [
+                        {
+                            "task_id": task_id,
+                            "job_id": job_id,
+                            "job_created": job.created.isoformat(),
+                            "start_date": start_date.isoformat(),
+                            "end_date": end_date.isoformat(),
+                        }
+                    ],
+                    skip_invalid_rows=False,
+                )
             )
 
 
@@ -356,10 +360,8 @@ def main():
                         args.state_table,
                         [
                             bigquery.SchemaField("task_id", "STRING"),
-                            bigquery.SchemaField("project_id", "STRING"),
-                            bigquery.SchemaField("location", "STRING"),
                             bigquery.SchemaField("job_id", "STRING"),
-                            bigquery.SchemaField("creation_time", "TIMESTAMP"),
+                            bigquery.SchemaField("job_created", "TIMESTAMP"),
                             bigquery.SchemaField("start_date", "DATE"),
                             bigquery.SchemaField("end_date", "DATE"),
                         ],

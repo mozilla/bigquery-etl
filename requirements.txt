@@ -49,7 +49,8 @@ flake8==3.7.9 \
     --hash=sha256:49356e766643ad15072a789a20915d3c91dc89fd313ccd71802303fd67e4deca \
     # via pytest-flake8
 gcloud==0.18.3 \
-    --hash=sha256:0af2dec59fce20561752f86e42d981c6a255e306a6c5e5d1fa3d358a8857e4fb
+    --hash=sha256:0af2dec59fce20561752f86e42d981c6a255e306a6c5e5d1fa3d358a8857e4fb \
+    # via -r requirements.in
 google-api-core==1.16.0 \
     --hash=sha256:859f7392676761f2b160c6ee030c3422135ada4458f0948c5690a6a7c8d86294 \
     --hash=sha256:92e962a087f1c4b8d1c5c88ade1c1dfd550047dcffb320c57ef6a534a20403e2 \
@@ -57,18 +58,23 @@ google-api-core==1.16.0 \
 google-auth==1.11.0 \
     --hash=sha256:44549e69ac39acf41fdf47f3f39a06e4e68378476806760d94a2c6a361b2bb06 \
     --hash=sha256:b2d83edc02a9deeed9b1b839046671fd9eda223d21bd2dd50051559787032fd8 \
-    # via google-api-core, google-cloud-bigquery
+    # via google-api-core, google-cloud-bigquery, google-cloud-storage
 google-cloud-bigquery==1.24.0 \
     --hash=sha256:23c9180e87f6093eb6f2ae880d7f7697fdab991a4616439ad0f95cd37014f0dd \
-    --hash=sha256:7ffcceed8becea20cb4ce4bdf9b924822780416ff1a9d497f9a1238a3f1442b1
+    --hash=sha256:7ffcceed8becea20cb4ce4bdf9b924822780416ff1a9d497f9a1238a3f1442b1 \
+    # via -r requirements.in
 google-cloud-core==1.3.0 \
     --hash=sha256:6ae5c62931e8345692241ac1939b85a10d6c38dc9e2854bdbacb7e5ac3033229 \
     --hash=sha256:878f9ad080a40cdcec85b92242c4b5819eeb8f120ebc5c9f640935e24fc129d8 \
-    # via google-cloud-bigquery
+    # via google-cloud-bigquery, google-cloud-storage
+google-cloud-storage==1.26.0 \
+    --hash=sha256:22f25d1c627b9b688b8873ea48203f337dd5448a242089e688d99c2fa46a8b89 \
+    --hash=sha256:ffdfaeb319c47deaf5b25c6bf1f1f52a183ba6abb0bb80586509a9b68dc35d31 \
+    # via -r requirements.in
 google-resumable-media==0.5.0 \
     --hash=sha256:2a8fd188afe1cbfd5998bf20602f76b0336aa892de88fe842a806b9a3ed78d2a \
     --hash=sha256:b86140d5a0b6d290084b11bde90ee9aecad357ba0e0d67388d016b8340320927 \
-    # via google-cloud-bigquery
+    # via google-cloud-bigquery, google-cloud-storage
 googleapis-common-protos==1.51.0 \
     --hash=sha256:013c91704279119150e44ef770086fdbba158c1f978a6402167d47d5409e226e \
     # via gcloud, google-api-core
@@ -80,6 +86,10 @@ idna==2.8 \
     --hash=sha256:c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407 \
     --hash=sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c \
     # via requests
+importlib-metadata==1.5.0 \
+    --hash=sha256:06f5b3a99029c7134207dd882428a66992a9de2bef7c2b699b5641f9886c3302 \
+    --hash=sha256:b97607a1a18a5100839aec1dc26a1ea17ee0d93b20b0f008d80a5a050afb200b \
+    # via pluggy, pytest
 jinja2==2.11.1 \
     --hash=sha256:93187ffbc7808079673ef52771baa950426fd664d3aad1d0fa3e95644360e250 \
     --hash=sha256:b0eaf100007721b5c16c1fc1eecb87409464edc10469ddc9a22a27a99123be49
@@ -217,25 +227,31 @@ pyrsistent==0.15.7 \
     --hash=sha256:cdc7b5e3ed77bed61270a47d35434a30617b9becdf2478af76ad2c6ade307280 \
     # via jsonschema
 pytest-black==0.3.8 \
-    --hash=sha256:01a9a7acc69e618ebf3f834932a4d7a81909f6911051d0871b0ed4de3cbe9712
+    --hash=sha256:01a9a7acc69e618ebf3f834932a4d7a81909f6911051d0871b0ed4de3cbe9712 \
+    # via -r requirements.in
 pytest-docstyle==1.5.0 \
-    --hash=sha256:dcc54084b8e8282a83e50c6220c85d1c7d05e3871f74f0e911499b4f3adea756
+    --hash=sha256:dcc54084b8e8282a83e50c6220c85d1c7d05e3871f74f0e911499b4f3adea756 \
+    # via -r requirements.in
 pytest-flake8==1.0.4 \
     --hash=sha256:4d225c13e787471502ff94409dcf6f7927049b2ec251c63b764a4b17447b60c0 \
-    --hash=sha256:d7e2b6b274a255b7ae35e9224c85294b471a83b76ecb6bd53c337ae977a499af
+    --hash=sha256:d7e2b6b274a255b7ae35e9224c85294b471a83b76ecb6bd53c337ae977a499af \
+    # via -r requirements.in
 pytest-forked==1.1.3 \
     --hash=sha256:1805699ed9c9e60cb7a8179b8d4fa2b8898098e82d229b0825d8095f0f261100 \
     --hash=sha256:1ae25dba8ee2e56fb47311c9638f9e58552691da87e82d25b0ce0e4bf52b7d87 \
     # via pytest-xdist
 pytest-mypy==0.4.2 \
     --hash=sha256:3b7b56912d55439d5f447cc609f91caac7f74f0f1c89f1379d04f06bac777c32 \
-    --hash=sha256:5a5338cecff17f005b181546a13e282761754b481225df37f33d37f86ac5b304
+    --hash=sha256:5a5338cecff17f005b181546a13e282761754b481225df37f33d37f86ac5b304 \
+    # via -r requirements.in
 pytest-xdist==1.31.0 \
     --hash=sha256:0f46020d3d9619e6d17a65b5b989c1ebbb58fc7b1da8fb126d70f4bac4dfeed1 \
-    --hash=sha256:7dc0d027d258cd0defc618fb97055fbd1002735ca7a6d17037018cf870e24011
+    --hash=sha256:7dc0d027d258cd0defc618fb97055fbd1002735ca7a6d17037018cf870e24011 \
+    # via -r requirements.in
 pytest==5.3.5 \
     --hash=sha256:0d5fe9189a148acc3c3eb2ac8e1ac0742cb7618c084f3d228baaec0c254b318d \
-    --hash=sha256:ff615c761e25eb25df19edddc0b970302d2a9091fbce0e7213298d85fb61fef6
+    --hash=sha256:ff615c761e25eb25df19edddc0b970302d2a9091fbce0e7213298d85fb61fef6 \
+    # via -r requirements.in, pytest-black, pytest-docstyle, pytest-flake8, pytest-forked, pytest-mypy, pytest-xdist
 pytz==2019.3 \
     --hash=sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d \
     --hash=sha256:b02c06db6cf09c12dd25137e563b31700d3b80fcc4ad23abb7a315f2789819be \
@@ -251,7 +267,8 @@ pyyaml==5.3 \
     --hash=sha256:cb1f2f5e426dc9f07a7681419fe39cee823bb74f723f36f70399123f439e9b20 \
     --hash=sha256:dbbb2379c19ed6042e8f11f2a2c66d39cceb8aeace421bfc29d085d93eda3689 \
     --hash=sha256:e3a057b7a64f1222b56e47bcff5e4b94c4f61faac04c7c4ecb1985e18caa3994 \
-    --hash=sha256:e9f45bd5b92c7974e59bcd2dcc8631a6b6cc380a904725fce7bc08872e691615
+    --hash=sha256:e9f45bd5b92c7974e59bcd2dcc8631a6b6cc380a904725fce7bc08872e691615 \
+    # via -r requirements.in
 requests==2.22.0 \
     --hash=sha256:11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4 \
     --hash=sha256:9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31 \
@@ -270,7 +287,8 @@ snowballstemmer==2.0.0 \
     # via pydocstyle
 sqlparse==0.3.0 \
     --hash=sha256:40afe6b8d4b1117e7dff5504d7a8ce07d9a1b15aeeade8a2d10f130a834f8177 \
-    --hash=sha256:7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873
+    --hash=sha256:7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873 \
+    # via -r requirements.in
 toml==0.10.0 \
     --hash=sha256:229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c \
     --hash=sha256:235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e \
@@ -311,6 +329,10 @@ wcwidth==0.1.8 \
     --hash=sha256:8fd29383f539be45b20bd4df0dc29c20ba48654a41e661925e612311e9f3c603 \
     --hash=sha256:f28b3e8a6483e5d49e7f8949ac1a78314e740333ae305b4ba5defd3e74fb37a8 \
     # via pytest
+zipp==3.1.0 \
+    --hash=sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b \
+    --hash=sha256:c599e4d75c98f6798c509911d08a22e6c021d074469042177c8c86fb92eefd96 \
+    # via importlib-metadata
 
 # WARNING: The following packages were not pinned, but pip requires them to be
 # pinned when the requirements file includes hashes. Consider using the --allow-unsafe flag.

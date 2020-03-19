@@ -8,10 +8,12 @@ the corresponding metadata file.
 """
 
 from argparse import ArgumentParser
+import json
 import os
 import sys
 import re
 
+from google.cloud import storage
 from google.cloud import bigquery
 
 # sys.path needs to be modified to enable package imports from parent
@@ -22,6 +24,7 @@ from bigquery_etl.parse_metadata import Metadata  # noqa E402
 
 
 DEFAULT_BUCKET = "ascholtz-dev-test"  # todo
+DEFAULT_API_VERSION = "v1"
 METADATA_FILE = "metadata.yaml"
 SUBMISSION_DATE_RE = re.compile(r"^submission_date:DATE:(\d\d\d\d-\d\d-\d\d)$")
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
@@ -38,32 +41,54 @@ parser.add_argument(
     default="moz-fx-data-derived-datasets",
     help="Run query in the target project",
 )
+parser.add_argument(
+    "--api_version",
+    "--api-version",
+    default=DEFAULT_API_VERSION,
+    help="API version data is published under in the storage bucket",
+)
 parser.add_argument("--parameter", help="Query parameters, such as submission_date")
-parser.add_argument("--query_file", help="File path to query to be executed")
+parser.add_argument(
+    "--query-file", "--query_file", help="File path to query to be executed"
+)
 
 
 def publish_table_as_json(
-    bucket, client, dataset, table, version, result_table, date=None
+    bucket, client, api_version, dataset, table, version, result_table, date=None
 ):
     """Export the `result_table` data as JSON to Cloud Storage."""
     # "*" makes sure that files larger than 1GB get split up into multiple JSON files
-    destination_uri = f"gs://{bucket}/{dataset}/{table}/{version}/files/"
 
-    if date is None:
-        # if date is not set, then export the entire table and overwrite existing JSON
-        destination_uri += "*.json"
-    else:
+    prefix = f"api/{api_version}/tables/{dataset}/{table}/{version}/files/"
+
+    if date is not None:
         # if date exists, then query is incremental and newest results are exported
-        destination_uri += f"{date}/*.json"
+        prefix += f"{date}/"
 
     table_ref = client.get_table(result_table)
 
     job_config = bigquery.ExtractJobConfig()
     job_config.destination_format = "NEWLINE_DELIMITED_JSON"
+    destination_uri = f"gs://{bucket}/" + prefix + "*.json"
     extract_job = client.extract_table(
         table_ref, destination_uri, location="US", job_config=job_config
     )
     extract_job.result()
+
+    gcp_convert_ndjson_to_json(bucket, prefix)
+
+
+def gcp_convert_ndjson_to_json(bucket, gcp_path):
+    """Converts ndjson files on GCP to json files."""
+    storage_client = storage.Client()
+
+    blobs = storage_client.list_blobs(bucket, prefix=gcp_path)
+
+    for blob in blobs:
+        content = blob.download_as_string().decode("utf-8").strip()
+        json_list = [json.loads(line) for line in content.split("\n")]
+
+        blob.upload_from_string(json.dumps(json_list, indent=2))
 
 
 def write_results_to_temp_table(client, project, query_file, date):
@@ -122,32 +147,39 @@ def main():
     (dataset, table, version) = dataset_table_version_from_file(args.query_file)
 
     if metadata.is_incremental():
-        if date is not None:
-            # if it is an incremental query, then the query result needs to be
-            # written to a temporary table to get exported as JSON
-            temp_result_table = write_results_to_temp_table(
-                client, args.project_id, args.query_file, date
-            )
-            publish_table_as_json(
-                args.target_bucket,
-                client,
-                dataset,
-                table,
-                version,
-                temp_result_table,
-                date,
-            )
-
-            # remove the temporary table after it has been exported
-            client.delete_table(temp_result_table)
-        else:
+        if date is None:
             print("Cannot publish JSON. submission_date needs to be set as parameter.")
-            return
+            sys.exit(1)
+
+        # if it is an incremental query, then the query result needs to be
+        # written to a temporary table to get exported as JSON
+        temp_result_table = write_results_to_temp_table(
+            client, args.project_id, args.query_file, date
+        )
+        publish_table_as_json(
+            args.target_bucket,
+            client,
+            args.api_version,
+            dataset,
+            table,
+            version,
+            temp_result_table,
+            date,
+        )
+
+        # remove the temporary table after it has been exported
+        client.delete_table(temp_result_table)
     else:
         # for non-incremental queries, the entire destination table is exported
         result_table = f"{dataset}.{table}_{version}"
         publish_table_as_json(
-            args.target_bucket, client, dataset, table, version, result_table
+            args.target_bucket,
+            client,
+            args.api_version,
+            dataset,
+            table,
+            version,
+            result_table,
         )
 
 

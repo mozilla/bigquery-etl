@@ -1,5 +1,4 @@
--- See: https://github.com/mozilla/telemetry-dashboard/blob/8eae0ca3687aebc9e0d7853384fbcf2d7284b49e/v2/telemetry.js#L90-L121
-CREATE OR REPLACE FUNCTION udf_js.telemetry_percentile(
+CREATE OR REPLACE FUNCTION udf_js.glean_percentile(
   percentile FLOAT64,
   histogram ARRAY<STRUCT<key STRING, value FLOAT64>>,
   type STRING
@@ -8,47 +7,45 @@ RETURNS FLOAT64
 LANGUAGE js
 AS
   '''
-  function lastBucketUpper(histogram, type) {
-    if (histogram.length == 1) {
-        return histogram[0].key + 1;
-    }
-    if (type !== "custom_distribution_linear") {
-        return Math.pow(histogram[histogram.length - 1].key, 2) / histogram[histogram.length - 2].key
-    } else {
-        // TODO: verify functional bucketing
-        // Determine size of exponential and functional bucketing
-        return 2 * histogram[histogram.length - 1].key - histogram[histogram.length - 2].key;
-    }
+  if (percentile < 0 || percentile > 100) {
+      throw "percentile must be a value between 0 and 100";
   }
 
-  histogram = histogram.concat([{"key": parseInt(lastBucketUpper(histogram, type)), "value": 0}]);
-  let linearTerm =
-      histogram[histogram.length - 1].key - histogram[histogram.length - 2].key;
-  let exponentialFactor =
-      histogram[histogram.length - 1].key / histogram[histogram.length - 2].key;
+  let values = histogram.map(bucket => bucket.value);
+  let total = values.reduce((a, b) => a + b);
+  let normalized = values.map(value => value / total);
 
-  // This is the nth user whose bucket we are interested in for computing the percentile
-  let hitsAtPercentileInBar = histogram.reduce(function (previous, bucket) {
-    return previous + bucket.value;
-  }, 0) * (percentile / 100);
-
-  let percentileBucketIndex = 0;
-  while (hitsAtPercentileInBar >= 0 && histogram.length > percentileBucketIndex) {
-    hitsAtPercentileInBar -= histogram[percentileBucketIndex].value;
-    percentileBucketIndex++;
+  // Find the index into the cumulative distribution function that corresponds
+  // to the percentile. This undershoots the true value of the percentile.
+  let acc = 0;
+  let index = null;
+  for (let i = 0; i < normalized.length; i++) {
+      acc += normalized[i];
+      index = i;
+      if (acc >= percentile / 100) {
+          break;
+      }
   }
-  percentileBucketIndex--;
 
-  //Undo the last loop iteration where we overshot
-  hitsAtPercentileInBar += histogram[percentileBucketIndex].value;
-
-  // The ratio of the hits in the percentile to the hits in the bar containing it - how far we are inside the bar
-  let ratioInBar = hitsAtPercentileInBar / histogram[percentileBucketIndex].value;
-  if (type !== "custom_distribution_linear") {
-      // exponential buckets - geometric interpolation within bar
-      return histogram[percentileBucketIndex].key * Math.pow(exponentialFactor, ratioInBar);
-  } else {
-    // linear buckets - linear interpolation within bar
-    return histogram[percentileBucketIndex].key + linearTerm * ratioInBar;
-  }
+  // NOTE: we do not perform geometric or linear interpolation, but this would
+  // be the place to implement it.
+  return histogram[index].key;
 ''';
+
+SELECT
+  assert_equals(
+    2,
+    udf_js.glean_percentile(
+      50.0,
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1), ("2", 2), ("3", 1)],
+      "timing_distribution"
+    )
+  );
+
+#xfail
+SELECT
+  udf_js.glean_percentile(
+    101.0,
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1), ("2", 2), ("3", 1)],
+    "timing_distribution"
+  );

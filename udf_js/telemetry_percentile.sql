@@ -51,8 +51,6 @@ AS
 """;
 
 -- Tests
--- TODO: refactor to reduce the lines of code
--- TODO: include tests for more than just medians
 SELECT
     -- Tests for linear percentiles, written by hand
   assert_approx_equals(

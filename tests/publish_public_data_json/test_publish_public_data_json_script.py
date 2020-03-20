@@ -7,7 +7,8 @@ from google.cloud import storage
 from google.api_core.exceptions import NotFound
 
 
-class TestPublishJson(object):
+@pytest.mark.publish_json_script
+class TestPublishJsonScript(object):
     test_bucket = "moz-fx-data-stage-bigquery-etl"
     project_id = "moz-fx-data-shar-nonprod-efed"
 
@@ -29,7 +30,7 @@ class TestPublishJson(object):
     storage_client = storage.Client()
     bucket = storage_client.bucket(test_bucket)
 
-    temp_table = f"{project_id}.test.incremental_query_v1_20200315_temp"
+    temp_table = f"{project_id}.tmp.incremental_query_v1_20200315_temp"
     non_incremental_table = f"{project_id}.test.non_incremental_query_v1"
 
     @pytest.fixture(autouse=True)

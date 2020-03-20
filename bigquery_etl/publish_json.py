@@ -23,7 +23,7 @@ QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query
 
 
 class JsonPublisher:
-    def __init__(self, project_id, query_file, api_version, target_bucket, parameter):
+    def __init__(self, project_id, query_file, api_version, target_bucket, parameter=None):
         self.project_id = project_id
         self.query_file = query_file
         self.api_version = api_version

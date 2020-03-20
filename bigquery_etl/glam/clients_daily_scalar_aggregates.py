@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """clients_daily_scalar_aggregates query generator."""
 import argparse
-import json
-import subprocess
+import sys
 from typing import Dict, List
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
+from .utils import get_schema
 
 ATTRIBUTES = ",".join(
     [
@@ -80,24 +80,6 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
     return probes_arr
 
 
-def get_schema(table: str, project: str = "moz-fx-data-shared-prod"):
-    """Return the dictionary representation of the BigQuery table schema.
-
-    This returns types in the legacy SQL format.
-    """
-    process = subprocess.Popen(
-        ["bq", "show", "--schema", "--format=json", f"{project}:{table}"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    stdout, stderr = process.communicate()
-    if process.returncode > 0:
-        raise Exception(
-            f"Call to bq exited non-zero: {process.returncode}", stdout, stderr
-        )
-    return json.loads(stdout)
-
-
 def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
     """Find all scalar probes in a Glean table.
 
@@ -157,15 +139,21 @@ def main():
     schema = get_schema(args.source_table)
     unlabeled_metric_names = get_scalar_metrics(schema, "unlabeled")
     labeled_metric_names = get_scalar_metrics(schema, "labeled")
+    unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
+    labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
 
+    if not unlabeled_metrics and not labeled_metrics:
+        print(header)
+        print("-- Empty query: no probes found!")
+        sys.exit(1)
     print(
         render_main(
             header=header,
             source_table=args.source_table,
             submission_date=submission_date,
             attributes=ATTRIBUTES,
-            unlabeled_metrics=get_unlabeled_metrics_sql(unlabeled_metric_names),
-            labeled_metrics=get_labeled_metrics_sql(labeled_metric_names),
+            unlabeled_metrics=unlabeled_metrics,
+            labeled_metrics=labeled_metrics,
         )
     )
 

@@ -18,6 +18,7 @@ VIEWS_TO_SKIP = (
     "activity_stream/tile_id_types/view.sql",
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
     "glam_etl/fenix_view_clients_daily_scalar_aggregates_v1/view.sql",
+    "glam_etl/fenix_view_clients_daily_histogram_aggregates_v1/view.sql",
 )
 
 

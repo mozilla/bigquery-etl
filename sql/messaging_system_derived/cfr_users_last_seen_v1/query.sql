@@ -1,8 +1,13 @@
 WITH _current AS (
   SELECT
--- In this raw table, we capture the history of activity over the past
--- 28 days as a single 64-bit integer. The rightmost bit represents
--- whether the user was active in the current day.
+    -- One and only one of impression_id or client_id will be null in each row;
+    -- nulls are not considered equivalent in joins, so we explicitly need to
+    -- construct a join key column from the non-null value.
+    COALESCE(impression_id, client_id) AS _join_key,
+    --
+    -- In this raw table, we capture the history of activity over the past
+    -- 28 days as a single 64-bit integer. The rightmost bit represents
+    -- whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
     CAST(seen_whats_new AS INT64) AS days_seen_whats_new_bits,
     * EXCEPT (submission_date)
@@ -14,6 +19,7 @@ WITH _current AS (
 --
 _previous AS (
   SELECT
+    COALESCE(impression_id, client_id) AS _join_key,
     * EXCEPT (submission_date)
   FROM
     cfr_users_last_seen_v1
@@ -24,12 +30,7 @@ _previous AS (
 --
 SELECT
   @submission_date AS submission_date,
-  IF(
-    _current.impression_id IS NOT NULL
-    OR _current.client_id IS NOT NULL,
-    _current,
-    _previous
-  ).* REPLACE (
+  IF(_current._join_key IS NOT NULL, _current, _previous).* EXCEPT (_join_key) REPLACE(
     udf.combine_adjacent_days_28_bits(
       _previous.days_seen_bits,
       _current.days_seen_bits
@@ -44,4 +45,4 @@ FROM
 FULL JOIN
   _previous
 USING
-  (impression_id, client_id)
+  (_join_key)

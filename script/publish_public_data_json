@@ -67,6 +67,8 @@ def publish_table_as_json(
 
     table_ref = client.get_table(result_table)
 
+    print("jsonn")
+
     job_config = bigquery.ExtractJobConfig()
     job_config.destination_format = "NEWLINE_DELIMITED_JSON"
     destination_uri = f"gs://{bucket}/" + prefix + "*.json"
@@ -139,10 +141,12 @@ def main():
         return
 
     client = bigquery.Client(args.project_id)
-    date_search = re.search(SUBMISSION_DATE_RE, args.parameter)
 
-    if date_search:
-        date = date_search.group(1)
+    if args.parameter:
+        date_search = re.search(SUBMISSION_DATE_RE, args.parameter)
+
+        if date_search:
+            date = date_search.group(1)
 
     (dataset, table, version) = dataset_table_version_from_file(args.query_file)
 

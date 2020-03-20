@@ -229,6 +229,9 @@ pyrsistent==0.15.7 \
 pytest-black==0.3.8 \
     --hash=sha256:01a9a7acc69e618ebf3f834932a4d7a81909f6911051d0871b0ed4de3cbe9712 \
     # via -r requirements.in
+pytest-dependency==0.5.1 \
+    --hash=sha256:c2a892906192663f85030a6ab91304e508e546cddfe557d692d61ec57a1d946b \
+    # via -r requirements.in
 pytest-docstyle==1.5.0 \
     --hash=sha256:dcc54084b8e8282a83e50c6220c85d1c7d05e3871f74f0e911499b4f3adea756 \
     # via -r requirements.in
@@ -251,7 +254,7 @@ pytest-xdist==1.31.0 \
 pytest==5.3.5 \
     --hash=sha256:0d5fe9189a148acc3c3eb2ac8e1ac0742cb7618c084f3d228baaec0c254b318d \
     --hash=sha256:ff615c761e25eb25df19edddc0b970302d2a9091fbce0e7213298d85fb61fef6 \
-    # via -r requirements.in, pytest-black, pytest-docstyle, pytest-flake8, pytest-forked, pytest-mypy, pytest-xdist
+    # via -r requirements.in, pytest-black, pytest-dependency, pytest-docstyle, pytest-flake8, pytest-forked, pytest-mypy, pytest-xdist
 pytz==2019.3 \
     --hash=sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d \
     --hash=sha256:b02c06db6cf09c12dd25137e563b31700d3b80fcc4ad23abb7a315f2789819be \

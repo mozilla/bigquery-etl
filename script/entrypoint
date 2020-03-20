@@ -29,6 +29,10 @@ elif [ "$1" = "query" ]; then
     # we dispatch to a script that inspects metadata and emulates the following call:
     #     bq query [options] < FILE 
     exec script/run_query --query_file="${@: -1}" ${@:1:$#-1}
+elif [ "$1" = "publish_json" ]; then
+    # For queries with public_json set in the metadata, the results will be
+    # exported as JSON to Cloud storage.
+    exec script/publish_public_data_json $@
 elif [ "$XCOM_PUSH" = "true" ]; then
     # KubernetesPodOperator will extract the contents of /airflow/xcom/return.json as an xcom
     # if the xcom_push parameter is true

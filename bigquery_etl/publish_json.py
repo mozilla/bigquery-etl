@@ -23,16 +23,26 @@ QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query
 
 
 class JsonPublisher:
-    def __init__(self, project_id, query_file, api_version, target_bucket, parameter=None):
+    def __init__(
+        self,
+        client,
+        storage_client,
+        project_id,
+        query_file,
+        api_version,
+        target_bucket,
+        parameter=None,
+    ):
         self.project_id = project_id
         self.query_file = query_file
         self.api_version = api_version
         self.target_bucket = target_bucket
         self.parameter = parameter
+        self.client = client
+        self.storage_client = storage_client
         self.temp_table = None
         self.date = None
 
-        self.client = bigquery.Client(project_id)
         self.metadata = Metadata.of_sql_file(self.query_file)
 
         if self.parameter:
@@ -63,14 +73,14 @@ class JsonPublisher:
 
             # if it is an incremental query, then the query result needs to be
             # written to a temporary table to get exported as JSON
-            self.write_results_to_temp_table()
-            self.publish_table_as_json(self.temp_table)
+            self._write_results_to_temp_table()
+            self._publish_table_as_json(self.temp_table)
         else:
             # for non-incremental queries, the entire destination table is exported
             result_table = f"{self.dataset}.{self.table}_{self.version}"
-            self.publish_table_as_json(result_table)
+            self._publish_table_as_json(result_table)
 
-    def publish_table_as_json(self, result_table):
+    def _publish_table_as_json(self, result_table):
         """Export the `result_table` data as JSON to Cloud Storage."""
         prefix = (
             f"api/{self.api_version}/tables/{self.dataset}/"
@@ -93,13 +103,11 @@ class JsonPublisher:
         )
         extract_job.result()
 
-        self.gcp_convert_ndjson_to_json(prefix)
+        self._gcp_convert_ndjson_to_json(prefix)
 
-    def gcp_convert_ndjson_to_json(self, gcp_path):
+    def _gcp_convert_ndjson_to_json(self, gcp_path):
         """Converts ndjson files on GCP to json files."""
-        storage_client = storage.Client()
-
-        blobs = storage_client.list_blobs(self.target_bucket, prefix=gcp_path)
+        blobs = self.storage_client.list_blobs(self.target_bucket, prefix=gcp_path)
 
         for blob in blobs:
             content = blob.download_as_string().decode("utf-8").strip()
@@ -107,7 +115,7 @@ class JsonPublisher:
 
             blob.upload_from_string(json.dumps(json_list, indent=2))
 
-    def write_results_to_temp_table(self):
+    def _write_results_to_temp_table(self):
         """
         Write the results of the query to a temporary table and return the table
         name.

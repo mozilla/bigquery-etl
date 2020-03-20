@@ -61,7 +61,12 @@ def main():
     if not metadata.is_public_json():
         return
 
+    storage_client = storage.Client()
+    client = bigquery.Client(args.project_id)
+
     publisher = JsonPublisher(
+        client,
+        storage_client,
         args.project_id,
         args.query_file,
         args.api_version,

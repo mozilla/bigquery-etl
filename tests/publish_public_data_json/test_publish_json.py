@@ -1,18 +1,12 @@
-import json
 import pytest
-import subprocess
-from unittest.mock import patch, Mock, PropertyMock
-
-from google.cloud import bigquery
-from google.cloud import storage
-from google.api_core.exceptions import NotFound
+from unittest.mock import Mock
 
 from bigquery_etl.publish_json import JsonPublisher
 
 
 class TestPublishJson(object):
-    test_bucket = "moz-fx-data-stage-bigquery-etl"
-    project_id = "moz-fx-data-shar-nonprod-efed"
+    test_bucket = "test-bucket"
+    project_id = "test-project-id"
 
     non_incremental_sql_path = (
         "tests/publish_public_data_json/test_sql/test/"
@@ -29,10 +23,12 @@ class TestPublishJson(object):
     )
 
     mock_blob = Mock()
-    mock_blob.download_as_string.return_value = bytes("[]", 'utf-8')
+    mock_blob.download_as_string.return_value = bytes("[]", "utf-8")
+    mock_blob.name = "blob_path"
 
     mock_bucket = Mock()
     mock_bucket.blob.return_value = mock_blob
+    mock_bucket.rename_blob.return_value = None
 
     extract_table_mock = Mock()
     extract_table_mock.result.return_value = None
@@ -122,38 +118,3 @@ class TestPublishJson(object):
 
         assert publisher.temp_table == self.temp_table
         self.mock_client.query.assert_called_once()
-
-    def test_convert_ndjson_to_json(self):
-        publisher = JsonPublisher(
-            self.mock_client,
-            self.mock_storage_client,
-            self.project_id,
-            self.incremental_sql_path,
-            self.api_version,
-            self.test_bucket,
-            "submission_date:DATE:2020-03-15",
-        )
-
-        prefix = f"api/{self.api_version}/tables/test/incremental_query/v1/files/2020-03-15/"
-        publisher._gcp_convert_ndjson_to_json(prefix)
-        self.mock_storage_client.list_blobs.assert_called_with(self.test_bucket, prefix=prefix)
-        self.mock_blob.download_as_string.assert_called_once()
-        # todo
-        self.mock_blob.upload_from_string.assert_called_once()
-
-    def test_publish_table_as_json(self):
-        publisher = JsonPublisher(
-            self.mock_client,
-            self.mock_storage_client,
-            self.project_id,
-            self.incremental_sql_path,
-            self.api_version,
-            self.test_bucket,
-            "submission_date:DATE:2020-03-15",
-        )
-
-        publisher._publish_table_as_json("result_table")
-
-        self.mock_client.get_table.assert_called_with("result_table")
-        self.mock_client.extract_table.assert_called_once()
-        self.extract_table_mock.result.assert_called_once()

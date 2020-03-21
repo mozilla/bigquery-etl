@@ -1,11 +1,8 @@
-"""
-Machinery for exporting query results as JSON to Cloud storage.
-"""
+"""Machinery for exporting query results as JSON to Cloud storage."""
 
-from google.cloud import storage
 from google.cloud import bigquery
+from smart_open import open
 
-import json
 import os
 import sys
 import re
@@ -23,6 +20,8 @@ QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query
 
 
 class JsonPublisher:
+    """Publishes query results as JSON."""
+
     def __init__(
         self,
         client,
@@ -33,6 +32,7 @@ class JsonPublisher:
         target_bucket,
         parameter=None,
     ):
+        """Init JsonPublisher."""
         self.project_id = project_id
         self.query_file = query_file
         self.api_version = api_version
@@ -61,11 +61,12 @@ class JsonPublisher:
             sys.exit(1)
 
     def __exit__(self):
-        # if a temporary table has been created, it should be deleted
+        """Delete temporary tables."""
         if self.temp_table:
             self.client.delete_table(self.temp_table)
 
     def publish_json(self):
+        """Publish query results as JSON to GCP Storage bucket."""
         if self.metadata.is_incremental():
             if self.date is None:
                 print("Cannot publish JSON. submission_date missing in parameter.")
@@ -96,7 +97,7 @@ class JsonPublisher:
         job_config = bigquery.ExtractJobConfig()
         job_config.destination_format = "NEWLINE_DELIMITED_JSON"
 
-        # "*" makes sure that files larger than 1GB get split up into multiple JSON files
+        # "*" makes sure that files larger than 1GB get split up into JSON files
         destination_uri = f"gs://{self.target_bucket}/" + prefix + "*.json"
         extract_job = self.client.extract_table(
             table_ref, destination_uri, location="US", job_config=job_config
@@ -106,20 +107,35 @@ class JsonPublisher:
         self._gcp_convert_ndjson_to_json(prefix)
 
     def _gcp_convert_ndjson_to_json(self, gcp_path):
-        """Converts ndjson files on GCP to json files."""
+        """Convert ndjson files on GCP to json files."""
         blobs = self.storage_client.list_blobs(self.target_bucket, prefix=gcp_path)
+        bucket = self.storage_client.bucket(self.target_bucket)
 
         for blob in blobs:
-            content = blob.download_as_string().decode("utf-8").strip()
-            json_list = [json.loads(line) for line in content.split("\n")]
+            blob_path = f"gs://{self.target_bucket}/{blob.name}"
+            tmp_blob = bucket.blob(blob.name + ".tmp")
+            tmp_blob_name = blob_path + ".tmp"
 
-            blob.upload_from_string(json.dumps(json_list, indent=2))
+            # stream from GCS
+            with open(blob_path) as fin:
+                with open(tmp_blob_name, "w") as fout:
+                    fout.write("[\n")
+
+                    first_line = True
+
+                    for line in fin:
+                        if not first_line:
+                            fout.write(",\n")
+
+                        first_line = False
+                        fout.write(line.replace("\n", ""))
+
+                    fout.write("]")
+
+            bucket.rename_blob(tmp_blob, blob.name)
 
     def _write_results_to_temp_table(self):
-        """
-        Write the results of the query to a temporary table and return the table
-        name.
-        """
+        """Write the query results to a temporary table and return the table name."""
         table_date = self.date.replace("-", "")
         self.temp_table = (
             f"{self.project_id}.tmp.{self.table}_{self.version}_{table_date}_temp"

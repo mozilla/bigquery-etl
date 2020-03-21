@@ -11,6 +11,8 @@ from argparse import ArgumentParser
 import os
 import sys
 
+from google.cloud import storage
+from google.cloud import bigquery
 
 # sys.path needs to be modified to enable package imports from parent
 # and sibling directories. Also see:

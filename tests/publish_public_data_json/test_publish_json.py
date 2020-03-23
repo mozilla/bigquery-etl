@@ -1,5 +1,7 @@
 import pytest
-from unittest.mock import Mock
+import smart_open
+import io
+from unittest.mock import call, Mock, MagicMock
 
 from bigquery_etl.publish_json import JsonPublisher
 
@@ -118,3 +120,36 @@ class TestPublishJson(object):
 
         assert publisher.temp_table == self.temp_table
         self.mock_client.query.assert_called_once()
+
+    def test_gcp_convert_ndjson_to_json(self):
+        publisher = JsonPublisher(
+            self.mock_client,
+            self.mock_storage_client,
+            self.project_id,
+            self.incremental_sql_path,
+            self.api_version,
+            self.test_bucket,
+            "submission_date:DATE:2020-03-15",
+        )
+
+        mock_out = MagicMock(side_effect=[['{"a": 1}', '{"b": "cc"}'], None])
+        mock_out.__iter__ = Mock(return_value=iter(['{"a": 1}', '{"b": "cc"}']))
+        file_handler = MagicMock()
+        file_handler.__enter__.return_value = mock_out
+
+        smart_open.open = MagicMock(return_value=file_handler)
+
+        publisher._gcp_convert_ndjson_to_json("test_path")
+
+        smart_open.open.assert_has_calls(
+            [
+                call("gs://test-bucket/blob_path"),
+                call("gs://test-bucket/blob_path.tmp", "w"),
+            ]
+        )
+
+        mock_out.write.assert_has_calls(
+            [call("[\n"), call('{"a": 1}'), call(",\n"), call('{"b": "cc"}'), call("]")]
+        )
+
+        self.mock_bucket.rename_blob.assert_called_with(self.mock_blob, "blob_path")

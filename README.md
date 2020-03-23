@@ -188,7 +188,7 @@ description: >
   Percentages of page loads Firefox users have performed that were 
   conducted over SSL broken down by country.
 owners:
-  - chutten@mozilla.com
+  - example@mozilla.com
 labels:
   application: firefox
   incremental: false    # incremental queries add data to existing tables

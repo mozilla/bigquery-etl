@@ -144,5 +144,3 @@ class TestPublishJsonScript(object):
             assert len(content) == 3
 
         assert blob_len == 1
-
-    # todo: test splitting of files larger than 1GB

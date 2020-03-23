@@ -1,6 +1,5 @@
 import pytest
 import smart_open
-import io
 from unittest.mock import call, Mock, MagicMock
 
 from bigquery_etl.publish_json import JsonPublisher

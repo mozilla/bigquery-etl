@@ -22,7 +22,7 @@ from bigquery_etl.parse_metadata import Metadata  # noqa E402
 from bigquery_etl.publish_json import JsonPublisher  # noqa E402
 
 
-DEFAULT_BUCKET = "ascholtz-dev-test"  # todo
+DEFAULT_BUCKET = "mozilla-public-data-http"
 DEFAULT_API_VERSION = "v1"
 
 

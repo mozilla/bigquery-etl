@@ -1,7 +1,7 @@
 """Machinery for exporting query results as JSON to Cloud storage."""
 
 from google.cloud import bigquery
-from smart_open import open
+import smart_open
 
 import os
 import sys
@@ -117,8 +117,8 @@ class JsonPublisher:
             tmp_blob_name = blob_path + ".tmp"
 
             # stream from GCS
-            with open(blob_path) as fin:
-                with open(tmp_blob_name, "w") as fout:
+            with smart_open.open(blob_path) as fin:
+                with smart_open.open(tmp_blob_name, "w") as fout:
                     fout.write("[\n")
 
                     first_line = True

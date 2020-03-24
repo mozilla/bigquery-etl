@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS
     app_version INT64,
     app_build_id STRING,
     channel STRING,
+    updated_on_last_run BOOL,
     histogram_aggregates ARRAY <STRUCT<
       first_bucket INT64,
       last_bucket INT64,
@@ -17,11 +18,12 @@ CREATE TABLE IF NOT EXISTS
       key STRING,
       process STRING,
       agg_type STRING,
-      aggregates ARRAY<STRUCT<key STRING, value INT64>>
+      old_aggregates ARRAY<STRUCT<key STRING, value INT64>>,
+      new_aggregates ARRAY<STRUCT<key STRING, value INT64>>
     >>
 )
 PARTITION BY submission_date
-CLUSTER BY sample_id, app_version, channel
+CLUSTER BY updated_on_last_run, sample_id, app_version, channel
 OPTIONS(
   require_partition_filter=true,
   partition_expiration_days=3

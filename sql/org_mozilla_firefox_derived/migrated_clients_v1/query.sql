@@ -30,13 +30,13 @@ clients AS (
 )
 SELECT
   fenix_client_id,
-  COALESCE(CURRENT.fennec_client_id, prev.fennec_client_id) AS fennec_client_id,
-  COALESCE(CURRENT.normalized_channel, prev.normalized_channel) AS normalized_channel,
-  COALESCE(CURRENT.submission_date, prev.submission_date) AS submission_date,
-  prev.migration_ping_count + CURRENT.migration_ping_count AS migration_ping_count
+  COALESCE(_current.fennec_client_id, _previous.fennec_client_id) AS fennec_client_id,
+  COALESCE(_current.normalized_channel, _previous.normalized_channel) AS normalized_channel,
+  COALESCE(_current.submission_date, _previous.submission_date) AS submission_date,
+  _previous.migration_ping_count + _current.migration_ping_count AS migration_ping_count
 FROM
-  clients CURRENT
+  clients _current
 FULL OUTER JOIN
-  org_mozilla_firefox_derived.migrated_clients_v1
+  org_mozilla_firefox_derived.migrated_clients_v1 _previous
 ON
   (fenix_client_id)

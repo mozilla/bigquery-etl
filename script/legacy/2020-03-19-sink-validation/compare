@@ -4,13 +4,10 @@
 
 from argparse import ArgumentParser
 from datetime import datetime
-from difflib import unified_diff
 from multiprocessing.pool import ThreadPool
 from os.path import abspath, dirname
 from textwrap import dedent
-import json
 import logging
-import os
 import sys
 import warnings
 
@@ -173,7 +170,8 @@ def compare(
                     break
         else:
             logging.error(
-                f"{table}: expected {human_readable(abs(diff))} less from fields not found in prod and stage"
+                f"{table}: expected {human_readable(abs(diff))} "
+                "less from fields not found in prod and stage"
             )
     prod_schema, stage_schema = [comparable_schema(t.schema) for t in (prod, stage)]
     if prod_schema != stage_schema:

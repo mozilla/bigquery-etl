@@ -57,15 +57,13 @@ function latest_versions {
 function write_clients_aggregates {
     directory="sql/glam_etl/fenix_clients_scalar_aggregates_v1"
     mkdir -p "$directory"
-    python -m bigquery_etl.glam.scalar_aggregates_incremental \
+    python -m bigquery_etl.glam.clients_scalar_aggregates \
         --init \
-        --ping-type glean \
         --destination glam_etl.fenix_clients_scalar_aggregates_v1 \
         > $directory/init.sql
     echo "generated $directory/init.sql"
 
-    python -m bigquery_etl.glam.scalar_aggregates_incremental \
-        --ping-type glean \
+    python -m bigquery_etl.glam.clients_scalar_aggregates \
         --source glam_etl.fenix_view_clients_daily_scalar_aggregates_v1 \
         --destination glam_etl.fenix_clients_scalar_aggregates_v1 \
         > $directory/query.sql

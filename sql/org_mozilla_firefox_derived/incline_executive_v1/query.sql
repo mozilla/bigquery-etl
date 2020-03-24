@@ -1,13 +1,13 @@
 CREATE TEMP FUNCTION bucket_manufacturer(manufacturer STRING) AS (
   IF(
-    manufacturer IN UNNEST(['samsung', 'huawei', 'xiaomi', 'lge', 'motorola', 'sony', 'google', 'oppo', 'oneplus']),
+    manufacturer IN ('samsung', 'huawei', 'xiaomi', 'lge', 'motorola', 'sony', 'google', 'oppo', 'oneplus'),
     manufacturer,
     'Other')
 );
 
 CREATE TEMP FUNCTION bucket_country(country STRING) AS (
   IF(
-    country IN UNNEST(['US', 'CA', 'DE', 'IN', 'FR', 'CN', 'IR', 'BR', 'IE', 'GB', 'ID']),
+    country IN ('US', 'CA', 'DE', 'IN', 'FR', 'CN', 'IR', 'BR', 'IE', 'GB', 'ID'),
     [country, 'Tier 1'],
     ['Other'])
 );
@@ -32,11 +32,11 @@ WITH
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.core_clients_last_seen_v1` clients_last_seen
   LEFT JOIN
-    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients_v1` migrated_clients
+    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
     ON clients_last_seen.client_id = migrated_clients.fennec_client_id
   WHERE
-    AND clients_last_seen.submission_date = @submission_date
-    AND migrated_clients.submission_date >= @submission_date
+    clients_last_seen.submission_date = @submission_date
+    AND migrated_clients.submission_date = @submission_date
     AND app_name = 'Fennec'
     AND os = 'Android' ),
   fenix_client_info AS (
@@ -45,20 +45,23 @@ WITH
     IF(migrated_clients.fenix_client_id IS NOT NULL, 'Yes', 'No') AS is_migrated,
     'Fenix' as app_name,
     clients_last_seen.normalized_channel AS channel,
-    baseline.device_manufacturer AS manufacturer,
-    baseline.country,
-    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(baseline.days_seen_bits,
+    device_manufacturer AS manufacturer,
+    country,
+    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits,
       0) AS active_this_week,
-    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(baseline.days_seen_bits,
+    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits,
       1) AS active_last_week,
-    DATE_DIFF(clients_last_seen.submission_date, baseline.first_run_date, DAY) BETWEEN 0 AND 6  AS new_this_week,
-    DATE_DIFF(clients_last_seen.submission_date, baseline.first_run_date, DAY) BETWEEN 7 AND 13 AS new_last_week
+    DATE_DIFF(clients_last_seen.submission_date, first_run_date, DAY) BETWEEN 0 AND 6  AS new_this_week,
+    DATE_DIFF(clients_last_seen.submission_date, first_run_date, DAY) BETWEEN 7 AND 13 AS new_last_week
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_derived.clients_last_seen_v1` clients_last_seen
+    `moz-fx-data-shared-prod.org_mozilla_firefox.clients_last_seen` clients_last_seen
   LEFT JOIN
-    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients_v1` migrated_clients
+    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
     ON clients_last_seen.client_id = migrated_clients.fenix_client_id
-    AND clients_last_seen.submission_date >= migrated_clients.submission_date
+    AND clients_last_seen.submission_date <= migrated_clients.submission_date
+  WHERE
+    clients_last_seen.submission_date = @submission_date
+    AND migrated_clients.submission_date <= @submission_date
   ),
   client_info AS (
   SELECT *
@@ -97,6 +100,13 @@ WITH
       AND NOT active_this_week) AS established_churned -- 6
   FROM
     client_info
+  -- These cross joins are a way to represent grouping
+  -- sets for each one of these fields. They create
+  -- a row with 'Overall' for value and NULL for value
+  -- for each row, which allows us to count that row
+  -- for both fields. When we COALESCE the null above,
+  -- we end up grouping on both that rows natural value,
+  -- and 'Overall', which contains all rows.
   CROSS JOIN
     UNNEST(['Overall', NULL]) AS is_migrated_group
   CROSS JOIN
@@ -106,6 +116,8 @@ WITH
   CROSS JOIN
     UNNEST(['Overall', NULL]) AS country_group
   CROSS JOIN
+    -- Rows with Tier 1 countries need to be part of
+    -- both their country and part of Tier 1
     UNNEST(bucket_country(country)) AS bucketed_country
   WHERE
     active_last_week

@@ -176,6 +176,39 @@ Incremental Queries
       preceding the first day was missing because values are only impacted by
       27 preceding days
 
+Query Metadata
+---
+
+- For each query, a `metadata.yaml` file should be created in the same directory
+- This file contains a description, owners and labels. As an example:
+
+```yaml
+friendly_name: SSL Ratios
+description: >
+  Percentages of page loads Firefox users have performed that were 
+  conducted over SSL broken down by country.
+owners:
+  - example@mozilla.com
+labels:
+  application: firefox
+  incremental: false    # incremental queries add data to existing tables
+  schedule: daily       # scheduled in Airflow to run daily
+  public_json: true
+  public_bigquery: true
+```
+
+### Publishing Datasets
+
+- To make query results publicly available, the `public_bigquery` flag must be set in 
+  `metadata.yaml`
+  - Tables will get published in the `mozilla-public-data` GCP project which is accessible 
+    by everyone, also external users
+- To make query results publicly available as JSON, `public_json` flag must be set in 
+  `metadata.yaml`
+  - Data will be accessible under https://public-data.prod.dataops.mozgcp.net
+  - For example: https://public-data.prod.dataops.mozgcp.net/api/v1/tables/telemetry/ssl_ratios/v1/files/0000
+  - This feature is currently under development and not available yet
+
 Scheduling Queries in Airflow
 ---
 

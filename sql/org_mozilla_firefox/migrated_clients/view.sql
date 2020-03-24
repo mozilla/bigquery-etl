@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients`
+  `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients`
 AS
 SELECT
   *

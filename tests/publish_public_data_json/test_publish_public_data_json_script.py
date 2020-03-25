@@ -1,6 +1,7 @@
 import json
 import pytest
 import subprocess
+import zlib
 
 from google.cloud import bigquery
 from google.cloud import storage
@@ -122,25 +123,19 @@ class TestPublishJsonScript(object):
         gcp_path = "api/v1/tables/test/non_incremental_query/v1/files/"
         blobs = self.storage_client.list_blobs(self.test_bucket, prefix=gcp_path)
 
-        blob_len = 0
-
         for blob in blobs:
-            content = json.loads(blob.download_as_string().decode("utf-8").strip())
-            blob_len += 1
+            compressed = blob.download_as_string()
+            uncompressed = zlib.decompress(compressed, 16+zlib.MAX_WBITS)
+            content = json.loads(uncompressed.decode("utf-8").strip())
             assert len(content) == 3
-
-        assert blob_len == 1
 
     @pytest.mark.dependency(depends=["test_script_non_incremental_query"])
     def test_incremental_query_gcs(self):
         gcp_path = "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
         blobs = self.storage_client.list_blobs(self.test_bucket, prefix=gcp_path)
 
-        blob_len = 0
-
         for blob in blobs:
-            content = json.loads(blob.download_as_string().decode("utf-8").strip())
-            blob_len += 1
+            compressed = blob.download_as_string()
+            uncompressed = zlib.decompress(compressed, 16+zlib.MAX_WBITS)
+            content = json.loads(uncompressed.decode("utf-8").strip())
             assert len(content) == 3
-
-        assert blob_len == 1

@@ -7,11 +7,7 @@ import os
 import sys
 import re
 
-# sys.path needs to be modified to enable package imports from parent
-# and sibling directories. Also see:
-# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from bigquery_etl.parse_metadata import Metadata  # noqa E402
+from bigquery_etl.parse_metadata import Metadata
 
 
 METADATA_FILE = "metadata.yaml"
@@ -42,6 +38,7 @@ class JsonPublisher:
         self.storage_client = storage_client
         self.temp_table = None
         self.date = None
+        self.stage_gcs_path = "stage/json/"
 
         self.metadata = Metadata.of_sql_file(self.query_file)
 
@@ -61,9 +58,25 @@ class JsonPublisher:
             sys.exit(1)
 
     def __exit__(self):
-        """Delete temporary tables."""
+        """Delete temporary artifacts."""
+
+        # delete temporary tables
         if self.temp_table:
             self.client.delete_table(self.temp_table)
+
+        self._clear_stage_directory()
+
+    def _clear_stage_directory(self):
+        """Delete files in stage directory."""
+        tmp_blobs = self.storage_client.list_blobs(
+            self.target_bucket, prefix=self.stage_gcs_path
+        )
+
+        for tmp_blob in tmp_blobs:
+            tmp_blob.delete()
+
+    def _handle_xz(file_obj, mode):
+        return lzma.LZMAFile(filename=file_obj, mode=mode, format=lzma.FORMAT_XZ)
 
     def publish_json(self):
         """Publish query results as JSON to GCP Storage bucket."""
@@ -98,7 +111,8 @@ class JsonPublisher:
         job_config.destination_format = "NEWLINE_DELIMITED_JSON"
 
         # "*" makes sure that files larger than 1GB get split up into JSON files
-        destination_uri = f"gs://{self.target_bucket}/" + prefix + "*.json"
+        # files are written to a stage directory first
+        destination_uri = f"gs://{self.target_bucket}/" + self.stage_gcs_path + "*.json"
         extract_job = self.client.extract_table(
             table_ref, destination_uri, location="US", job_config=job_config
         )
@@ -106,25 +120,24 @@ class JsonPublisher:
 
         self._gcp_convert_ndjson_to_json(prefix)
 
-    def _gcp_convert_ndjson_to_json(self, gcp_path):
+    def _gcp_convert_ndjson_to_json(self, gcs_path):
         """Convert ndjson files on GCP to json files."""
-        blobs = self.storage_client.list_blobs(self.target_bucket, prefix=gcp_path)
+        blobs = self.storage_client.list_blobs(
+            self.target_bucket, prefix=self.stage_gcs_path
+        )
         bucket = self.storage_client.bucket(self.target_bucket)
 
         for blob in blobs:
             blob_path = f"gs://{self.target_bucket}/{blob.name}"
-            tmp_blob = bucket.blob(blob.name + ".tmp")
-            tmp_blob_name = blob_path + ".tmp"
+            tmp_blob_name = blob_path + ".tmp.gz"
 
             # stream from GCS
             with smart_open.open(blob_path) as fin:
                 with smart_open.open(tmp_blob_name, "w") as fout:
                     fout.write("[\n")
 
-                    first_line = True
-
-                    for line in fin:
-                        if not first_line:
+                    for i, line in enumerate(fin):
+                        if i > 0:
                             fout.write(",\n")
 
                         first_line = False
@@ -132,7 +145,19 @@ class JsonPublisher:
 
                     fout.write("]")
 
-            bucket.rename_blob(tmp_blob, blob.name)
+        # move all files from stage directory to target directory
+        tmp_blobs = self.storage_client.list_blobs(
+            self.target_bucket, prefix=self.stage_gcs_path
+        )
+
+        for tmp_blob in tmp_blobs:
+            # only copy gzipped files to target directory
+            if "tmp.gz" in tmp_blob.name:
+                # remove .tmp from the final file name
+                file_name = tmp_blob.name.split("/")[-1].replace("tmp.", "")
+                bucket.rename_blob(tmp_blob, gcs_path + file_name)
+
+        self._clear_stage_directory()
 
     def _write_results_to_temp_table(self):
         """Write the query results to a temporary table and return the table name."""

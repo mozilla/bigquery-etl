@@ -1,4 +1,5 @@
 import json
+import os
 import pytest
 import subprocess
 import zlib
@@ -8,10 +9,10 @@ from google.cloud import storage
 from google.api_core.exceptions import NotFound
 
 
-@pytest.mark.publish_json_script
+@pytest.mark.integration
 class TestPublishJsonScript(object):
-    test_bucket = "moz-fx-data-stage-bigquery-etl"
-    project_id = "moz-fx-data-shar-nonprod-efed"
+    test_bucket = "bigquery-etl-integration-test-bucket"
+    project_id = os.environ["GOOGLE_PROJECT_ID"]
 
     non_incremental_sql_path = (
         "tests/publish_public_data_json/test_sql/test/"

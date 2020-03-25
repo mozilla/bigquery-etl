@@ -11,5 +11,5 @@ owners:
 labels:
   application: fenix
   schedule: daily
-  incremental: true
-  depends_on_past: true
+  incremental: false
+  depends_on_past: false

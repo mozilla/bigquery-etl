@@ -54,6 +54,9 @@ SKIP = {
     "sql/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql",
     # Reference table not found
     "sql/monitoring/structured_detailed_error_counts_v1/view.sql",
+    "sql/org_mozilla_firefox_derived/migrated_clients_v1/query.sql",
+    "sql/org_mozilla_firefox_derived/incline_executive_v1/query.sql",
+    "sql/org_mozilla_firefox/migrated_clients/view.sql",
     # Access denied for search
     "sql/search_derived/search_aggregates_v8/query.sql",
     "sql/search/search_aggregates/view.sql",

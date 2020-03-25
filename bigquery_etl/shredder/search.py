@@ -9,7 +9,7 @@ import warnings
 from google.cloud import bigquery
 
 from .config import SHARED_PROD, SEARCH_IGNORE_TABLES, SEARCH_IGNORE_FIELDS
-from ..util.table_filter import add_table_filter_arguments, get_table_filter
+from ..util import standard_args
 
 
 parser = ArgumentParser(description=__doc__)
@@ -21,7 +21,8 @@ parser.add_argument(
     default=SHARED_PROD,
     help=f"ID of the project in which to find tables; defaults to {SHARED_PROD}",
 )
-add_table_filter_arguments(parser)
+standard_args.add_log_level(parser, default=None)
+standard_args.add_table_filter(parser)
 
 ID_PATTERN = re.compile(r"(\b|_)id")
 IGNORE_PATTERN = re.compile(
@@ -106,8 +107,7 @@ def find_target_tables(project, table_filter):
 def main():
     """Print results of find_target_tables."""
     args = parser.parse_args()
-    table_filter = get_table_filter(args)
-    for table, field in find_target_tables(args.project, table_filter):
+    for table, field in find_target_tables(args.project, args.table_filter):
         print(f"table={table!r}, field={field!r}")
 
 

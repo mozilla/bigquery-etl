@@ -45,7 +45,6 @@ def add_dry_run(parser, debug_log_queries=True):
     """Add argument for dry run."""
     add_argument(
         parser,
-        "-n",
         "--dry_run",
         "--dry-run",
         action="store_true",

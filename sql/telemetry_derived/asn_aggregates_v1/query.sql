@@ -3,6 +3,7 @@ RETURNS STRING
 LANGUAGE js
 AS
   """
+  // X-Forwarded-For is a list of IP addresses
   if (xff != null) {
     // Google's load balancer will append the immediate sending client IP and a global
     // forwarding rule IP to any existing content in X-Forwarded-For as documented in:
@@ -13,6 +14,7 @@ AS
     ips = xff.split(",");
 
     if (pipeline_proxy != null) {
+      // Drop extra IP from X-Forwarded-For
       ips = ips.slice(0, -1);
     }
 
@@ -33,6 +35,8 @@ RETURNS STRUCT<start_ip FLOAT64, end_ip FLOAT64>
 LANGUAGE js
 AS
   """
+  // get range of IP addresses for provided network
+
   function ipToInt(ipAddress) 
   {
     var d = ipAddress.split('.');
@@ -48,7 +52,6 @@ AS
   var startIp = ipToInt(subnetIp) & ipMask(subnetMask);
   var endIp = startIp + BigInt(Math.pow(2, (32 - subnetMask))) - 1n;
 
-
   return {
     "start_ip": parseFloat(startIp),
     "end_ip": parseFloat(endIp)
@@ -57,20 +60,27 @@ AS
 
 --
 WITH asn_ip_address_range AS (
+  -- Convert the subnets in dot notation to IP address ranges with ASN.
   SELECT
-    NET.IPV4_FROM_INT64(CAST(cidr_range(network).start_ip AS INT64)) AS start_ip,
-    NET.IPV4_FROM_INT64(CAST(cidr_range(network).end_ip AS INT64)) AS end_ip,
+    NET.IPV4_FROM_INT64(CAST(ip_range.start_ip AS INT64)) AS start_ip,
+    NET.IPV4_FROM_INT64(CAST(ip_range.end_ip AS INT64)) AS end_ip,
     NET.IP_TRUNC(
-      NET.IPV4_FROM_INT64(CAST(cidr_range(network).start_ip AS INT64)),
+      NET.IPV4_FROM_INT64(CAST(ip_range.start_ip AS INT64)),
       CAST(SPLIT(network, "/")[OFFSET(1)] AS INT64)
     ) AS prefix,
     autonomous_system_number
   FROM
-    `static.geoip2_isp_blocks_ipv4`
-  ORDER BY
-    start_ip ASC
+    (
+      SELECT
+        cidr_range(network) AS ip_range,
+        autonomous_system_number,
+        network
+      FROM
+        `static.geoip2_isp_blocks_ipv4`
+    )
 ),
 main_summary_with_ip AS (
+  -- Get IP addresses and client data.
   SELECT
     submission_date,
     client_id,
@@ -94,6 +104,7 @@ main_summary_with_ip AS (
     AND DATE(payload_bytes_raw.submission_timestamp) = @submission_date
 ),
 main_summary_with_asn AS (
+  -- Lookup ASNs for IP addresses.
   SELECT
     submission_date,
     client_id,

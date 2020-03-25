@@ -95,7 +95,6 @@ function write_scalar_probe_counts {
     directory="sql/glam_etl/fenix_clients_scalar_probe_counts_v1"
     mkdir -p "$directory"
     python -m bigquery_etl.glam.probe_counts \
-        --ping-type glean \
         --source-table "glam_etl.fenix_clients_scalar_bucket_counts_v1" \
         > $directory/query.sql
     echo "generated $directory/query.sql"
@@ -105,7 +104,6 @@ function write_scalar_percentiles {
     directory="sql/glam_etl/fenix_scalar_percentiles_v1"
     mkdir -p "$directory"
     python -m bigquery_etl.glam.scalar_percentiles \
-        --ping-type glean \
         > $directory/query.sql
     echo "generated $directory/query.sql"
 }
@@ -122,7 +120,6 @@ function write_histogram_probe_counts {
     directory="sql/glam_etl/fenix_clients_histogram_probe_counts_v1"
     mkdir -p "$directory"
     python -m bigquery_etl.glam.probe_counts \
-        --ping-type glean \
         --source-table "glam_etl.fenix_clients_histogram_bucket_counts_v1" \
         --histogram \
         > $directory/query.sql
@@ -133,7 +130,6 @@ function write_histogram_percentiles {
     directory="sql/glam_etl/fenix_histogram_percentiles_v1"
     mkdir -p "$directory"
     python -m bigquery_etl.glam.histogram_percentiles \
-        --ping-type glean \
         > $directory/query.sql
     echo "generated $directory/query.sql"
 }

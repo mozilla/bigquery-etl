@@ -39,33 +39,6 @@ def render_query(attributes: List[str], **kwargs) -> str:
     return reformat(sql.render(attribute_combinations=attribute_combinations, **kwargs))
 
 
-def telemetry_variables():
-    """Variables for probe_counts."""
-    return dict(
-        attributes=["os", "app_version", "app_build_id", "channel"],
-        aggregate_attributes="""
-            metric,
-            metric_type,
-            key,
-            process
-        """,
-        aggregate_grouping="""
-            client_agg_type,
-            first_bucket,
-            last_bucket,
-            num_buckets
-        """,
-        scalar_metric_types="""
-            "scalars",
-            "keyed-scalars"
-        """,
-        boolean_metric_types="""
-            "boolean",
-            "keyed-scalar-boolean"
-        """,
-    )
-
-
 def glean_variables():
     """Variables for probe_counts."""
     return dict(
@@ -95,12 +68,6 @@ def main():
     """Generate query for counting."""
     parser = ArgumentParser(description=main.__doc__)
     parser.add_argument(
-        "--ping-type",
-        default="glean",
-        choices=["glean", "telemetry"],
-        help="determine attributes and user data types to aggregate",
-    )
-    parser.add_argument(
         "--source-table", default="glam_etl.fenix_clients_scalar_bucket_counts_v1"
     )
     parser.add_argument(
@@ -116,18 +83,12 @@ def main():
     )
     header += "--histogram" if args.histogram else ""
 
-    variables = (
-        telemetry_variables() if args.ping_type == "telemetry" else glean_variables()
-    )
-    if args.ping_type == "telemetry" and args.histogram:
-        raise ValueError("histograms not supported for telemetry")
-
     print(
         render_query(
             header=header,
             is_scalar=not args.histogram,
             source_table=args.source_table,
-            **variables,
+            **glean_variables(),
         )
     )
 

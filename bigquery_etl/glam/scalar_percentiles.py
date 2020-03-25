@@ -25,24 +25,9 @@ def render_query(attributes: List[str], **kwargs) -> str:
     return reformat(sql.render(attribute_combinations=attribute_combinations, **kwargs))
 
 
-def telemetry_variables():
-    """Variables for bucket_counts."""
-    return dict(
-        source_table="telemetry_derived.clients_scalar_aggregates_v1",
-        attributes=["os", "app_version", "app_build_id", "channel"],
-        aggregate_attributes="""
-            metric,
-            metric_type,
-            key,
-            process
-        """,
-    )
-
-
 def glean_variables():
     """Variables for bucket_counts."""
     return dict(
-        source_table="glam_etl.fenix_clients_scalar_aggregates_v1",
         attributes=["ping_type", "os", "app_version", "app_build_id", "channel"],
         aggregate_attributes="""
             metric,
@@ -56,10 +41,8 @@ def main():
     """Generate query."""
     parser = ArgumentParser(description=main.__doc__)
     parser.add_argument(
-        "--ping-type",
-        default="telemetry",
-        choices=["glean", "telemetry"],
-        help="determine attributes and user data types to aggregate",
+        "--source-table",
+        default="glam_etl.fenix_clients_scalar_aggregates_v1",
     )
     args = parser.parse_args()
     module_name = "bigquery_etl.glam.scalar_percentiles"
@@ -67,10 +50,7 @@ def main():
     header += " " + " ".join(
         [f"--{k} {v}" for k, v in vars(args).items() if k != "init"]
     )
-    variables = (
-        telemetry_variables() if args.ping_type == "telemetry" else glean_variables()
-    )
-    print(render_query(header=header, **variables))
+    print(render_query(header=header, source_table=args.source_table, **glean_variables()))
 
 
 if __name__ == "__main__":

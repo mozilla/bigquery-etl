@@ -125,7 +125,7 @@ class TestPublishJsonScript(object):
 
         for blob in blobs:
             compressed = blob.download_as_string()
-            uncompressed = zlib.decompress(compressed, 16+zlib.MAX_WBITS)
+            uncompressed = zlib.decompress(compressed, 16 + zlib.MAX_WBITS)
             content = json.loads(uncompressed.decode("utf-8").strip())
             assert len(content) == 3
 
@@ -136,6 +136,6 @@ class TestPublishJsonScript(object):
 
         for blob in blobs:
             compressed = blob.download_as_string()
-            uncompressed = zlib.decompress(compressed, 16+zlib.MAX_WBITS)
+            uncompressed = zlib.decompress(compressed, 16 + zlib.MAX_WBITS)
             content = json.loads(uncompressed.decode("utf-8").strip())
             assert len(content) == 3

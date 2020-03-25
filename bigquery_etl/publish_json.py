@@ -3,7 +3,6 @@
 from google.cloud import bigquery
 import smart_open
 
-import os
 import sys
 import re
 
@@ -59,8 +58,6 @@ class JsonPublisher:
 
     def __exit__(self):
         """Delete temporary artifacts."""
-
-        # delete temporary tables
         if self.temp_table:
             self.client.delete_table(self.temp_table)
 
@@ -74,9 +71,6 @@ class JsonPublisher:
 
         for tmp_blob in tmp_blobs:
             tmp_blob.delete()
-
-    def _handle_xz(file_obj, mode):
-        return lzma.LZMAFile(filename=file_obj, mode=mode, format=lzma.FORMAT_XZ)
 
     def publish_json(self):
         """Publish query results as JSON to GCP Storage bucket."""
@@ -140,7 +134,6 @@ class JsonPublisher:
                         if i > 0:
                             fout.write(",\n")
 
-                        first_line = False
                         fout.write(line.replace("\n", ""))
 
                     fout.write("]")

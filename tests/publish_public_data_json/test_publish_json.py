@@ -143,12 +143,10 @@ class TestPublishJson(object):
         smart_open.open.assert_has_calls(
             [
                 call("gs://test-bucket/blob_path"),
-                call("gs://test-bucket/blob_path.tmp", "w"),
+                call("gs://test-bucket/blob_path.tmp.gz", "w"),
             ]
         )
 
         mock_out.write.assert_has_calls(
             [call("[\n"), call('{"a": 1}'), call(",\n"), call('{"b": "cc"}'), call("]")]
         )
-
-        self.mock_bucket.rename_blob.assert_called_with(self.mock_blob, "blob_path")

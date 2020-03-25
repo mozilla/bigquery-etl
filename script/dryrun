@@ -42,6 +42,7 @@ SKIP = {
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",
     "sql/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",
+    "sql/org_mozilla_firefox_derived/migrated_clients_v1/init.sql",
     "sql/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql",
     "sql/org_mozilla_vrbrowser_derived/clients_last_seen_v1/init.sql",
     "sql/telemetry_derived/core_clients_last_seen_v1/init.sql",

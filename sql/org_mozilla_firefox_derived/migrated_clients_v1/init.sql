@@ -1,4 +1,4 @@
-CREATE TABLE
+CREATE OR REPLACE TABLE
   `moz-fx-data-shared-prod.org_mozilla_firefox_derived.migrated_clients_v1`
 PARTITION BY
   (submission_date)

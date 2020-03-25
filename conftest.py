@@ -19,10 +19,10 @@ def pytest_collection_modifyitems(config, items):
     if keywordexpr or markexpr:
         return
 
-    skip_publish_json_script = pytest.mark.skip(
-        reason='publish_json_script marker not selected'
+    skip_integration = pytest.mark.skip(
+        reason='integration marker not selected'
     )
 
     for item in items:
-        if 'publish_json_script' in item.keywords:
-            item.add_marker(skip_publish_json_script)
+        if 'integration' in item.keywords:
+            item.add_marker(skip_integration)

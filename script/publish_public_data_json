@@ -35,7 +35,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--project_id",
-    default="moz-fx-data-derived-datasets",
+    default="mozilla-public-data",
     help="Run query in the target project",
 )
 parser.add_argument(

@@ -43,6 +43,30 @@ jobs:
       - run:
           name: Verify that BigQuery validates each query
           command: script/dryrun
+  integration:
+    <<: *build
+    docker:
+    - image: python:3.8
+    steps:
+    - checkout
+    - &skip_forked_pr
+      run:
+        name: Early return if this build is from a forked PR
+        command: |
+          if [ -n "$CIRCLE_PR_NUMBER" ]; then
+            echo "Cannot pass creds to forked PRs, so marking this step successful"
+            circleci step halt
+          fi
+    - &pytest_integration_test
+      run:
+        name: PyTest Integration Test
+        # Google's client libraries will check for GOOGLE_APPLICATION_CREDENTIALS
+        # and use a file in that location for credentials if present;
+        # See https://cloud.google.com/docs/authentication/production
+        command: |
+          export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
+          echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+          PATH="venv/bin:$PATH" script/entrypoint -m integration
   deploy:
     parameters:
       image:

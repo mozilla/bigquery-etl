@@ -16,19 +16,21 @@ WITH base AS (
 ),
   -- use a window function to look within each USER and SERVICE for the first value of service, os, and country.
   -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.
-first_services AS (
-  SELECT
-    ROW_NUMBER() OVER w1_unframed AS _n,
-    user_id,
-    service,
-    -- using mode_last with w1_reversed to get mode_first
-    udf.mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp,
-    udf.mode_last(ARRAY_AGG(os_name) OVER w1_reversed) AS first_service_os,
-    udf.mode_last(ARRAY_AGG(country) OVER w1_reversed) AS first_service_country,
-    udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
-    LOGICAL_OR(IFNULL(event_type = 'fxa_reg - complete', FALSE)) OVER w1_reversed AS did_register
-  FROM
-    base
+  -- [kimmy] the variable first_service_timestamp_last is named so because it is actually the last timestamp recorder in the user's first flow,
+  -- NOT the first timestamp in their first flow.
+  -- it's used later on to order by service, so i'm keeping it here and just renaming it.
+
+  first_services AS (
+    SELECT
+      ROW_NUMBER() OVER w1_unframed AS _n,
+      user_id,
+      service,
+      -- using mode_last with w1_reversed to get mode_first
+      udf.mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp_last,
+      udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
+      LOGICAL_OR(IFNULL(event_type = 'fxa_reg - complete', FALSE)) OVER w1_reversed AS did_register
+    FROM
+      base
   WHERE
     (
       (event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL)
@@ -82,7 +84,34 @@ flows AS (
       ROWS BETWEEN
         UNBOUNDED PRECEDING
         AND UNBOUNDED FOLLOWING
-    ) AS first_service_entrypoint
+    ) AS first_service_entrypoint,
+    FIRST_VALUE(f.timestamp) OVER (
+      PARTITION BY
+        f.flow_id
+      ORDER BY
+        f.`timestamp`
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND UNBOUNDED FOLLOWING
+    ) AS first_service_timestamp,
+    FIRST_VALUE(f.country) OVER (
+      PARTITION BY
+        f.flow_id
+      ORDER BY
+        f.`timestamp`
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND UNBOUNDED FOLLOWING
+    ) AS first_service_country,
+    FIRST_VALUE(f.os_name) OVER (
+      PARTITION BY
+        f.flow_id
+      ORDER BY
+        f.`timestamp`
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND UNBOUNDED FOLLOWING
+    ) AS first_service_os
   FROM
     first_services_g s
   INNER JOIN
@@ -96,13 +125,20 @@ flows AS (
 )
   -- finally take the entrypoint data and join it back on the other information (os, country etc).
   -- also, add a row number that indicates the order in which the user signed up for their services.
-SELECT
-  s.*,
-  f.first_service_entrypoint AS entrypoint,
-  ROW_NUMBER() OVER (PARTITION BY s.user_id ORDER BY first_service_timestamp) AS service_number
-FROM
-  first_services_g s
-LEFT JOIN
-  flows f
-USING
-  (first_service_flow)
+  SELECT
+    s.user_id,
+    s.service,
+    s.first_service_flow,
+    s.did_register,
+    f.first_service_entrypoint AS entrypoint,
+    f.first_service_timestamp,
+    f.first_service_country,
+    f.first_service_os,
+    ROW_NUMBER() OVER (PARTITION BY s.user_id ORDER BY first_service_timestamp_last) AS service_number
+  FROM
+    first_services_g s
+  LEFT JOIN
+    flows f
+  USING
+    (first_service_flow)
+  WHERE first_service_flow IS NOT NULL

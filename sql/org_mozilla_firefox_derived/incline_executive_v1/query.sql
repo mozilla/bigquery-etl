@@ -152,6 +152,7 @@ counts AS (
 )
 SELECT
   * EXCEPT (established_churned, new_churned),
+  -- Churned users are a negative count, since they left the product
   -1 * established_churned AS established_churned,
   -1 * new_churned AS new_churned,
   SAFE_DIVIDE((established_returning + new_returning), active_previous) AS retention_rate,

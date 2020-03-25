@@ -146,7 +146,13 @@ records as (
         bucket
 )
 SELECT
-    *
+    * EXCEPT(metric_type, histogram_type),
+    -- Suffix `custom_distribution` with bucketing type
+    IF(
+      histogram_type IS NOT NULL,
+      CONCAT(metric_type, "_", histogram_type),
+      metric_type
+    ) as metric_type
 FROM
     records
 LEFT OUTER JOIN

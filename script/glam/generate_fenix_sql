@@ -131,14 +131,14 @@ function write_histogram_probe_counts {
     echo "generated $directory/query.sql"
 }
 
-# function write_histogram_percentiles {
-#     directory="sql/glam_etl/fenix_histogram_percentiles_v1"
-#     mkdir -p "$directory"
-#     python -m bigquery_etl.glam.histogram_percentiles \
-#         --ping-type glean \
-#         > $directory/query.sql
-#     echo "generated $directory/query.sql"
-# }
+function write_histogram_percentiles {
+    directory="sql/glam_etl/fenix_histogram_percentiles_v1"
+    mkdir -p "$directory"
+    python -m bigquery_etl.glam.histogram_percentiles \
+        --ping-type glean \
+        > $directory/query.sql
+    echo "generated $directory/query.sql"
+}
 
 
 start_stage=${START_STAGE:-0}
@@ -153,5 +153,5 @@ if ((start_stage <= 1)); then
 
     write_histogram_bucket_counts
     write_histogram_probe_counts
-    # write_histogram_percentiles
+    write_histogram_percentiles
 fi

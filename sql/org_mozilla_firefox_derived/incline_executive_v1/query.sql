@@ -44,7 +44,9 @@ WITH fennec_client_info AS (
     clients_last_seen.client_id = migrated_clients.fennec_client_id
   WHERE
     clients_last_seen.submission_date = @submission_date
-    AND migrated_clients.submission_date = @submission_date
+    AND (
+      migrated_clients.submission_date = @submission_date
+      OR migrated_clients.submission_date IS NULL)
     AND app_name = 'Fennec'
     AND os = 'Android'
 ),
@@ -73,7 +75,9 @@ fenix_client_info AS (
     AND clients_last_seen.submission_date <= migrated_clients.submission_date
   WHERE
     clients_last_seen.submission_date = @submission_date
-    AND migrated_clients.submission_date <= @submission_date
+    AND (
+      migrated_clients.submission_date <= @submission_date
+      OR migrated_clients.submission_date IS NULL)
 ),
 client_info AS (
   SELECT

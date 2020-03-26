@@ -1,3 +1,10 @@
+
+
+-- SELECT autonomous_system_number, network 
+-- FROM `static.geoip2_isp_blocks_ipv4`
+-- WHERE NET.IP_TRUNC(NET.SAFE_IP_FROM_STRING("100.1.0.255"), CAST(SPLIT(network, "/")[OFFSET(1)] AS INT64)) = NET.SAFE_IP_FROM_STRING(SPLIT(network, "/")[OFFSET(0)])
+
+
 CREATE TEMPORARY FUNCTION get_client_ip(xff STRING, remote_address STRING, pipeline_proxy STRING)
 RETURNS STRING
 LANGUAGE js
@@ -30,54 +37,13 @@ AS
   """;
 
 --
-CREATE TEMPORARY FUNCTION cidr_range(network STRING)
-RETURNS STRUCT<start_ip FLOAT64, end_ip FLOAT64>
-LANGUAGE js
-AS
-  """
-  // get range of IP addresses for provided network
-
-  function ipToInt(ipAddress) 
-  {
-    var d = ipAddress.split('.');
-    return BigInt(((((((+d[0])*256)+(+d[1]))*256)+(+d[2]))*256)+(+d[3]));
-  }
-
-  function ipMask(maskSize) {
-    return -1n << (32n - BigInt(parseInt(maskSize)));
-  }
-
-  var subnetIp = network.split("/")[0];
-  var subnetMask = network.split("/")[1];
-  var startIp = ipToInt(subnetIp) & ipMask(subnetMask);
-  var endIp = startIp + BigInt(Math.pow(2, (32 - subnetMask))) - 1n;
-
-  return {
-    "start_ip": parseFloat(startIp),
-    "end_ip": parseFloat(endIp)
-  };
-  """;
-
---
 WITH asn_ip_address_range AS (
-  -- Convert the subnets in dot notation to IP address ranges with ASN.
   SELECT
-    NET.IPV4_FROM_INT64(CAST(ip_range.start_ip AS INT64)) AS start_ip,
-    NET.IPV4_FROM_INT64(CAST(ip_range.end_ip AS INT64)) AS end_ip,
-    NET.IP_TRUNC(
-      NET.IPV4_FROM_INT64(CAST(ip_range.start_ip AS INT64)),
-      CAST(SPLIT(network, "/")[OFFSET(1)] AS INT64)
-    ) AS prefix,
+    NET.SAFE_IP_FROM_STRING(SPLIT(network, "/")[OFFSET(0)]) AS network_ip,
+    CAST(SPLIT(network, "/")[OFFSET(1)] AS INT64) AS mask,
     autonomous_system_number
   FROM
-    (
-      SELECT
-        cidr_range(network) AS ip_range,
-        autonomous_system_number,
-        network
-      FROM
-        `static.geoip2_isp_blocks_ipv4`
-    )
+    `static.geoip2_isp_blocks_ipv4`
 ),
 events_with_doh AS (
   -- Get event data with DoH information.
@@ -126,17 +92,14 @@ events_with_asn AS (
     doh,
     event_category,
     event_object,
-    autonomous_system_number,
-  FROM
-    events_with_ip
-  JOIN
-    asn_ip_address_range AS a
-  ON
-    a.prefix = NET.IP_TRUNC(ip_address, 16)
-  WHERE
-    ip_address
-    BETWEEN a.start_ip
-    AND a.end_ip
+    autonomous_system_number
+  FROM (
+    SELECT *, ip_address & NET.IP_NET_MASK(4, mask) network_ip
+    FROM events_with_ip, UNNEST(GENERATE_ARRAY(9,32)) mask
+    WHERE BYTE_LENGTH(ip_address) = 4
+  )
+  JOIN asn_ip_address_range
+  USING (network_ip, mask)
 )
 SELECT
   submission_date,

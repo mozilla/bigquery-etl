@@ -79,15 +79,31 @@ WITH asn_ip_address_range AS (
         `static.geoip2_isp_blocks_ipv4`
     )
 ),
-main_summary_with_ip AS (
+events_with_doh AS (
+  -- Get event data with DoH information.
+  SELECT
+    submission_date,
+    document_id,
+    client_id,
+    event_object,
+    event_category,
+    udf.get_key(event_map_values, 'canary') AS doh,
+  FROM
+    `moz-fx-data-shared-prod.telemetry.events` AS events
+  WHERE
+    submission_date = @submission_date
+),
+events_with_ip AS (
   -- Get IP addresses and client data.
   SELECT
     submission_date,
     client_id,
-    user_pref_network_trr_mode AS trr,
+    doh,
+    event_category,
+    event_object,
     NET.SAFE_IP_FROM_STRING(ip_address) AS ip_address
   FROM
-    `moz-fx-data-shared-prod.telemetry.main_summary` AS main_summary
+    events_with_doh AS events
   LEFT JOIN
     (
       SELECT
@@ -96,22 +112,23 @@ main_summary_with_ip AS (
         udf.parse_desktop_telemetry_uri(uri).document_id AS document_id
       FROM
         `moz-fx-data-shared-prod.payload_bytes_raw.telemetry`
+      WHERE
+        DATE(submission_timestamp) = @submission_date
     ) AS payload_bytes_raw
   ON
-    payload_bytes_raw.document_id = main_summary.document_id
-  WHERE
-    submission_date = @submission_date
-    AND DATE(payload_bytes_raw.submission_timestamp) = @submission_date
+    payload_bytes_raw.document_id = events.document_id
 ),
-main_summary_with_asn AS (
+events_with_asn AS (
   -- Lookup ASNs for IP addresses.
   SELECT
     submission_date,
     client_id,
-    trr,
+    doh,
+    event_category,
+    event_object,
     autonomous_system_number,
   FROM
-    main_summary_with_ip
+    events_with_ip
   JOIN
     asn_ip_address_range AS a
   ON
@@ -125,10 +142,18 @@ SELECT
   submission_date,
   autonomous_system_number,
   COUNT(DISTINCT client_id) AS n_clients,
-  COUNTIF(trr > 0) AS doh_enabled,
-  COUNTIF(trr = 0) AS doh_disabled
+  COUNTIF(
+    event_category LIKE 'doh'
+    AND event_object LIKE 'heuristics'
+    AND doh LIKE 'enable_doh'
+  ) AS doh_enabled,
+  COUNTIF(
+    event_category LIKE 'doh'
+    AND event_object LIKE 'heuristics'
+    AND doh LIKE 'disable_doh'
+  ) AS doh_disabled
 FROM
-  main_summary_with_asn
+  events_with_asn
 GROUP BY
   submission_date,
   autonomous_system_number

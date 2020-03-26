@@ -204,6 +204,8 @@ def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partiti
             return Partition(f"{partition_expr} < '{end_date}'")
         return Partition("TRUE")
     if id_ == NULL_PARTITION_ID:
+        if table.time_partitioning:
+            return Partition(f"{table.time_partitioning.field} IS NULL", id_)
         return Partition(f"{partition_expr} IS NULL", id_)
     if table.time_partitioning:
         date = datetime.strptime(id_, "%Y%m%d").date()

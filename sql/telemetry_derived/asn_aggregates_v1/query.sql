@@ -1,10 +1,7 @@
 
-
--- SELECT autonomous_system_number, network 
+-- SELECT autonomous_system_number, network
 -- FROM `static.geoip2_isp_blocks_ipv4`
 -- WHERE NET.IP_TRUNC(NET.SAFE_IP_FROM_STRING("100.1.0.255"), CAST(SPLIT(network, "/")[OFFSET(1)] AS INT64)) = NET.SAFE_IP_FROM_STRING(SPLIT(network, "/")[OFFSET(0)])
-
-
 CREATE TEMPORARY FUNCTION get_client_ip(xff STRING, remote_address STRING, pipeline_proxy STRING)
 RETURNS STRING
 LANGUAGE js
@@ -53,7 +50,7 @@ events_with_doh AS (
     client_id,
     event_object,
     event_category,
-    udf.get_key(event_map_values, 'canary') AS doh,
+    udf.get_key(event_map_values, 'canary') AS canary,
   FROM
     `moz-fx-data-shared-prod.telemetry.events` AS events
   WHERE
@@ -64,7 +61,7 @@ events_with_ip AS (
   SELECT
     submission_date,
     client_id,
-    doh,
+    canary,
     event_category,
     event_object,
     NET.SAFE_IP_FROM_STRING(ip_address) AS ip_address
@@ -89,17 +86,25 @@ events_with_asn AS (
   SELECT
     submission_date,
     client_id,
-    doh,
+    canary,
     event_category,
     event_object,
     autonomous_system_number
-  FROM (
-    SELECT *, ip_address & NET.IP_NET_MASK(4, mask) network_ip
-    FROM events_with_ip, UNNEST(GENERATE_ARRAY(9,32)) mask
-    WHERE BYTE_LENGTH(ip_address) = 4
-  )
-  JOIN asn_ip_address_range
-  USING (network_ip, mask)
+  FROM
+    (
+      SELECT
+        *,
+        ip_address & NET.IP_NET_MASK(4, mask) network_ip
+      FROM
+        events_with_ip,
+        UNNEST(GENERATE_ARRAY(9, 32)) mask
+      WHERE
+        BYTE_LENGTH(ip_address) = 4
+    )
+  JOIN
+    asn_ip_address_range
+  USING
+    (network_ip, mask)
 )
 SELECT
   submission_date,
@@ -108,12 +113,12 @@ SELECT
   COUNTIF(
     event_category LIKE 'doh'
     AND event_object LIKE 'heuristics'
-    AND doh LIKE 'enable_doh'
+    AND canary LIKE 'enable_doh'
   ) AS doh_enabled,
   COUNTIF(
     event_category LIKE 'doh'
     AND event_object LIKE 'heuristics'
-    AND doh LIKE 'disable_doh'
+    AND canary LIKE 'disable_doh'
   ) AS doh_disabled
 FROM
   events_with_asn

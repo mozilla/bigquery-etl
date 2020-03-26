@@ -70,8 +70,7 @@ CREATE TEMP FUNCTION udf_get_buckets(
   metric_type STRING,
   range_min INT64,
   range_max INT64,
-  bucket_count INT64,
-  histogram_type STRING
+  bucket_count INT64
 )
 RETURNS ARRAY<INT64> AS (
   (
@@ -89,13 +88,11 @@ RETURNS ARRAY<INT64> AS (
           -- https://mozilla.github.io/glean/book/user/metrics/memory_distribution.html
           udf_functional_buckets(2, 16, range_max)
         WHEN
-          metric_type = 'custom_distribution'
-          AND histogram_type = 'exponential'
+          metric_type = 'custom_distribution_exponential'
         THEN
           udf_exponential_buckets(range_min, range_max, bucket_count)
         WHEN
-          metric_type = 'custom_distribution'
-          AND histogram_type = 'linear'
+          metric_type = 'custom_distribution_linear'
         THEN
           udf_linear_buckets(range_min, range_max, bucket_count)
         ELSE
@@ -177,9 +174,7 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-    udf_to_string_arr(
-      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
-    )
+    udf_to_string_arr(udf_get_buckets(metric_type, range_min, range_max, bucket_count))
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -192,7 +187,6 @@ GROUP BY
   range_min,
   range_max,
   bucket_count,
-  histogram_type,
   metric,
   metric_type,
   key,
@@ -213,9 +207,7 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-    udf_to_string_arr(
-      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
-    )
+    udf_to_string_arr(udf_get_buckets(metric_type, range_min, range_max, bucket_count))
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -227,7 +219,6 @@ GROUP BY
   range_min,
   range_max,
   bucket_count,
-  histogram_type,
   metric,
   metric_type,
   key,
@@ -248,9 +239,7 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-    udf_to_string_arr(
-      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
-    )
+    udf_to_string_arr(udf_get_buckets(metric_type, range_min, range_max, bucket_count))
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -262,7 +251,6 @@ GROUP BY
   range_min,
   range_max,
   bucket_count,
-  histogram_type,
   metric,
   metric_type,
   key,
@@ -283,9 +271,7 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-    udf_to_string_arr(
-      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
-    )
+    udf_to_string_arr(udf_get_buckets(metric_type, range_min, range_max, bucket_count))
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -297,7 +283,6 @@ GROUP BY
   range_min,
   range_max,
   bucket_count,
-  histogram_type,
   metric,
   metric_type,
   key,
@@ -318,9 +303,7 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-    udf_to_string_arr(
-      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
-    )
+    udf_to_string_arr(udf_get_buckets(metric_type, range_min, range_max, bucket_count))
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -331,7 +314,6 @@ GROUP BY
   range_min,
   range_max,
   bucket_count,
-  histogram_type,
   metric,
   metric_type,
   key,
@@ -352,9 +334,7 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-    udf_to_string_arr(
-      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
-    )
+    udf_to_string_arr(udf_get_buckets(metric_type, range_min, range_max, bucket_count))
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -365,7 +345,6 @@ GROUP BY
   range_min,
   range_max,
   bucket_count,
-  histogram_type,
   metric,
   metric_type,
   key,
@@ -386,9 +365,7 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-    udf_to_string_arr(
-      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
-    )
+    udf_to_string_arr(udf_get_buckets(metric_type, range_min, range_max, bucket_count))
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -399,7 +376,6 @@ GROUP BY
   range_min,
   range_max,
   bucket_count,
-  histogram_type,
   metric,
   metric_type,
   key,
@@ -420,9 +396,7 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     udf_dedupe_map_sum(ARRAY_AGG(record)),
-    udf_to_string_arr(
-      udf_get_buckets(metric_type, range_min, range_max, bucket_count, histogram_type)
-    )
+    udf_to_string_arr(udf_get_buckets(metric_type, range_min, range_max, bucket_count))
   ) AS aggregates
 FROM
   glam_etl.fenix_clients_histogram_bucket_counts_v1
@@ -432,7 +406,6 @@ GROUP BY
   range_min,
   range_max,
   bucket_count,
-  histogram_type,
   metric,
   metric_type,
   key,

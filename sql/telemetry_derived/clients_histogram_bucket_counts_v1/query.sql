@@ -51,7 +51,8 @@ CREATE TEMP FUNCTION udf_normalize_histograms (
     key STRING,
     process STRING,
     agg_type STRING,
-    aggregates ARRAY<STRUCT<key STRING, value INT64>>>>)
+    old_aggregates ARRAY<STRUCT<key STRING, value INT64>>,
+    new_aggregates ARRAY<STRUCT<key STRING, value INT64>>>>)
 RETURNS ARRAY<STRUCT<
   first_bucket INT64,
   last_bucket INT64,
@@ -62,7 +63,8 @@ RETURNS ARRAY<STRUCT<
   key STRING,
   process STRING,
   agg_type STRING,
-  aggregates ARRAY<STRUCT<key STRING, value FLOAT64>>>> AS (
+  old_aggregates ARRAY<STRUCT<key STRING, value FLOAT64>>,
+  new_aggregates ARRAY<STRUCT<key STRING, value FLOAT64>>>> AS (
 (
     WITH normalized AS (
       SELECT
@@ -75,10 +77,23 @@ RETURNS ARRAY<STRUCT<
         key,
         process,
         agg_type,
-        udf_normalized_sum(aggregates) AS aggregates
+        udf_normalized_sum(old_aggregates) AS old_aggregates,
+        udf_normalized_sum(new_aggregates) AS new_aggregates
       FROM UNNEST(arrs))
 
-    SELECT ARRAY_AGG((first_bucket, last_bucket, num_buckets, latest_version, metric, metric_type, key, process, agg_type, aggregates))
+    SELECT ARRAY_AGG((
+      first_bucket,
+      last_bucket,
+      num_buckets,
+      latest_version,
+      metric,
+      metric_type,
+      key,
+      process,
+      agg_type,
+      old_aggregates,
+      new_aggregates
+    ))
     FROM normalized
 ));
 
@@ -91,7 +106,8 @@ WITH normalized_histograms AS (
     channel,
     udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
   FROM clients_histogram_aggregates_v1
-  WHERE submission_date = @submission_date),
+  WHERE submission_date = @submission_date
+    AND updated_on_last_run),
 
 unnested AS (
   SELECT
@@ -108,12 +124,104 @@ unnested AS (
     metric_type,
     process,
     agg_type,
+    'old' AS recency,
     histogram_aggregates.key AS key,
     aggregates.key AS bucket,
     aggregates.value
   FROM normalized_histograms
   CROSS JOIN UNNEST(histogram_aggregates) AS histogram_aggregates
-  CROSS JOIN UNNEST(aggregates) AS aggregates)
+  CROSS JOIN UNNEST(old_aggregates) AS aggregates
+
+  UNION ALL
+
+  SELECT
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    latest_version,
+    metric,
+    metric_type,
+    process,
+    agg_type,
+    'new' AS recency,
+    histogram_aggregates.key AS key,
+    aggregates.key AS bucket,
+    aggregates.value
+  FROM normalized_histograms
+  CROSS JOIN UNNEST(histogram_aggregates) AS histogram_aggregates
+  CROSS JOIN UNNEST(new_aggregates) AS aggregates),
+
+buckets_to_update_summed AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    key,
+    process,
+    agg_type,
+    recency,
+    CAST(bucket AS STRING) AS bucket,
+    CASE
+      WHEN recency = 'old' THEN 1.0 * SUM(value)
+      ELSE NULL
+    END AS old_value,
+    CASE
+      WHEN recency = 'new' THEN 1.0 * SUM(value)
+      ELSE NULL
+    END AS new_value
+  FROM unnested
+  GROUP BY
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    key,
+    process,
+    agg_type,
+    recency,
+    bucket),
+
+-- Using `MAX` to get the correct/non-null value while grouping rows
+buckets_to_update AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    key,
+    process,
+    agg_type,
+    bucket,
+    MAX(old_value) AS old_value,
+    MAX(new_value) AS new_value
+  FROM buckets_to_update_summed
+  GROUP BY
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    key,
+    process,
+    agg_type,
+    bucket),
+
+current_buckets AS (
+  SELECT *
+    EXCEPT(record),
+    record.key AS bucket,
+    record.value AS value
+  FROM clients_histogram_bucket_counts_v1
+)
 
 SELECT
   os,
@@ -129,21 +237,13 @@ SELECT
   process,
   agg_type,
   STRUCT<key STRING, value FLOAT64>(
-    CAST(bucket AS STRING),
-    1.0 * SUM(value)
+    bucket,
+    CASE
+      WHEN buckets_to_update.new_value IS NULL
+      THEN current_buckets.value
+      ELSE current_buckets.value - buckets_to_update.old_value + buckets_to_update.new_value
+    END
   ) AS record
-FROM unnested
-GROUP BY
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  first_bucket,
-  last_bucket,
-  num_buckets,
-  metric,
-  metric_type,
-  key,
-  process,
-  agg_type,
-  bucket
+FROM current_buckets
+LEFT JOIN buckets_to_update
+USING (os, app_version, app_build_id, channel, metric, key, process, agg_type, bucket)

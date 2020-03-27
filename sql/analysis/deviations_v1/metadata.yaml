@@ -1,0 +1,10 @@
+friendly_name: Daily Active Users Deviations
+description: >
+  Deviation of DAU (Daily Active Users) from forecast.
+owners:
+  - jmccrosky@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  public_json: true
+  public_bigquery: true

@@ -1,0 +1,2 @@
+"""Generate templated views."""
+

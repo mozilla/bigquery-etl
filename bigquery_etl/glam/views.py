@@ -37,6 +37,7 @@ def main():
 
     write_view(dataset_path, "view_clients_daily_scalar_aggregates_v1", args)
     write_view(dataset_path, "view_clients_daily_histogram_aggregates_v1", args)
+    write_view(dataset_path, "view_client_probe_counts_v1", args)
 
 
 if __name__ == "__main__":

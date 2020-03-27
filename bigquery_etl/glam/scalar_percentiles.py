@@ -41,8 +41,7 @@ def main():
     """Generate query."""
     parser = ArgumentParser(description=main.__doc__)
     parser.add_argument(
-        "--source-table",
-        default="glam_etl.fenix_clients_scalar_aggregates_v1",
+        "--source-table", default="glam_etl.fenix_clients_scalar_aggregates_v1"
     )
     args = parser.parse_args()
     module_name = "bigquery_etl.glam.scalar_percentiles"
@@ -50,7 +49,9 @@ def main():
     header += " " + " ".join(
         [f"--{k} {v}" for k, v in vars(args).items() if k != "init"]
     )
-    print(render_query(header=header, source_table=args.source_table, **glean_variables()))
+    print(
+        render_query(header=header, source_table=args.source_table, **glean_variables())
+    )
 
 
 if __name__ == "__main__":

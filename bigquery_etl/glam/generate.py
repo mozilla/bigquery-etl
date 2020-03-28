@@ -29,6 +29,7 @@ def from_template(
     environment: Environment,
     args: Namespace,
     dataset_path: Path,
+    query_name_prefix=None,
     **kwargs,
 ) -> TemplateResult:
     # load template and get output view name
@@ -38,7 +39,10 @@ def from_template(
     else:
         template = environment.get_template(f"{template_name}.sql")
 
-    table_id = f"{args.prefix}_{template_name}"
+    if query_name_prefix:
+        table_id = f"{args.prefix}_{query_name_prefix}_{template_name}"
+    else:
+        table_id = f"{args.prefix}_{template_name}"
 
     # create the directory for the view
     (dataset_path / table_id).mkdir(exist_ok=True)
@@ -83,34 +87,43 @@ def main():
         ),
         init(
             "clients_scalar_aggregates_v1",
-            **{
-                **dict(
-                    source_table=f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1",
-                    destination_table=f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1",
-                ),
-                **models.clients_scalar_aggregates(),
-            },
+            **models.clients_scalar_aggregates(
+                source_table=f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1",
+                destination_table=f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1",
+            ),
         ),
         table(
             "clients_scalar_aggregates_v1",
-            **{
-                **dict(
-                    source_table=f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1",
-                    destination_table=f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1",
-                ),
-                **models.clients_scalar_aggregates(),
-            },
+            **models.clients_scalar_aggregates(
+                source_table=f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1",
+                destination_table=f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1",
+            ),
         ),
         table(
             "clients_scalar_bucket_counts_v1",
-            **{
-                **dict(source_table="glam_etl.fenix_clients_scalar_aggregates_v1"),
-                **models.clients_scalar_bucket_counts(),
-            },
+            **models.clients_scalar_bucket_counts(
+                source_table="glam_etl.fenix_clients_scalar_aggregates_v1"
+            ),
         ),
         table(
             "clients_histogram_bucket_counts_v1",
             **models.clients_histogram_bucket_counts(),
+        ),
+        table(
+            "probe_counts_v1",
+            query_name_prefix="clients_scalar",
+            **models.probe_counts(
+                source_table="glam_etl.fenix_clients_scalar_bucket_counts_v1",
+                is_scalar=True,
+            ),
+        ),
+        table(
+            "probe_counts_v1",
+            query_name_prefix="clients_histogram",
+            **models.probe_counts(
+                source_table="glam_etl.fenix_clients_histogram_bucket_counts_v1",
+                is_scalar=False,
+            ),
         ),
         view("view_clients_daily_scalar_aggregates_v1"),
         view("view_clients_daily_histogram_aggregates_v1"),

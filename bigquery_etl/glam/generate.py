@@ -19,6 +19,7 @@ class QueryType:
 @dataclass
 class TemplateResult:
     table_id: str
+    query_type: QueryType
     query_text: str
 
 
@@ -31,7 +32,12 @@ def from_template(
     **kwargs,
 ) -> TemplateResult:
     # load template and get output view name
-    template = environment.get_template(f"{template_name}.sql")
+
+    if query_type == QueryType.INIT:
+        template = environment.get_template(f"{template_name}.init.sql")
+    else:
+        template = environment.get_template(f"{template_name}.sql")
+
     table_id = f"{args.prefix}_{template_name}"
 
     # create the directory for the view
@@ -45,7 +51,7 @@ def from_template(
     with view_path.open("w") as fp:
         print(query_text, file=fp)
 
-    return TemplateResult(table_id, query_text)
+    return TemplateResult(table_id, query_type, query_text)
 
 
 def main():
@@ -68,11 +74,32 @@ def main():
     )
     view = partial(template, QueryType.VIEW)
     table = partial(template, QueryType.TABLE)
+    init = partial(template, QueryType.INIT)
 
     [
         table(
             "latest_versions_v1",
             **dict(source_table="org_mozilla_fenix_stable.baseline_v1"),
+        ),
+        init(
+            "clients_scalar_aggregates_v1",
+            **{
+                **dict(
+                    source_table=f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1",
+                    destination_table=f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1",
+                ),
+                **models.clients_scalar_aggregates(),
+            },
+        ),
+        table(
+            "clients_scalar_aggregates_v1",
+            **{
+                **dict(
+                    source_table=f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1",
+                    destination_table=f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1",
+                ),
+                **models.clients_scalar_aggregates(),
+            },
         ),
         table(
             "clients_scalar_bucket_counts_v1",

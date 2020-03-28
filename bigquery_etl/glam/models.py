@@ -38,6 +38,31 @@ def clients_scalar_aggregates(**kwargs):
     )
 
 
+def clients_histogram_aggregates(**kwargs):
+    """Variables for templated SQL."""
+    attributes_list = [
+        "sample_id",
+        "client_id",
+        "ping_type",
+        "os",
+        "app_version",
+        "app_build_id",
+        "channel",
+    ]
+    return dict(
+        attributes_list=attributes_list,
+        attributes=",".join(attributes_list),
+        metric_attributes="""
+            latest_version,
+            metric,
+            metric_type,
+            key,
+            agg_type
+        """,
+        **kwargs,
+    )
+
+
 def clients_scalar_bucket_counts(**kwargs):
     """Variables for bucket_counts."""
     attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]

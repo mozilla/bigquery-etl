@@ -128,3 +128,27 @@ def probe_counts(**kwargs):
         """,
         **kwargs,
     )
+
+
+def scalar_percentiles(**kwargs):
+    """Variables for bucket_counts."""
+    attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+    max_combinations = len(attributes) + 1
+    attribute_combinations = []
+    for subset_size in reversed(range(max_combinations)):
+        for grouping in combinations(attributes, subset_size):
+            select_expr = []
+            for attribute in attributes:
+                select_expr.append((attribute, attribute in grouping))
+            attribute_combinations.append(select_expr)
+
+    return dict(
+        attributes=attributes,
+        attribute_combinations=attribute_combinations,
+        aggregate_attributes="""
+            metric,
+            metric_type,
+            key
+        """,
+        **kwargs,
+    )

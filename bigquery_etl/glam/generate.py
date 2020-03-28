@@ -125,6 +125,12 @@ def main():
                 is_scalar=False,
             ),
         ),
+        table(
+            "scalar_percentiles_v1",
+            **models.scalar_percentiles(
+                source_table="glam_etl.fenix_clients_scalar_aggregates_v1"
+            ),
+        ),
         view("view_clients_daily_scalar_aggregates_v1"),
         view("view_clients_daily_histogram_aggregates_v1"),
         table("histogram_percentiles_v1"),

@@ -4,6 +4,7 @@ from argparse import ArgumentParser, Namespace
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.glam import models
 
 from dataclasses import dataclass
 from functools import partial
@@ -72,6 +73,13 @@ def main():
         table(
             "latest_versions_v1",
             **dict(source_table="org_mozilla_fenix_stable.baseline_v1"),
+        ),
+        table(
+            "clients_scalar_bucket_counts_v1",
+            **{
+                **dict(source_table="glam_etl.fenix_clients_scalar_aggregates_v1"),
+                **models.clients_scalar_bucket_counts(),
+            },
         ),
         view("view_clients_daily_scalar_aggregates_v1"),
         view("view_clients_daily_histogram_aggregates_v1"),

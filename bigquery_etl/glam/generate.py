@@ -51,7 +51,7 @@ def from_template(
     # write the query with appropriate variables
     query_text = reformat(template.render(**{**vars(args), **kwargs}))
 
-    print(f"writing {view_path}")
+    print(f"generated {view_path}")
     with view_path.open("w") as fp:
         print(query_text, file=fp)
 

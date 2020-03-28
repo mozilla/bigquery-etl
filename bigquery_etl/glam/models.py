@@ -1,3 +1,6 @@
+from .utils import get_custom_distribution_metadata
+
+
 def clients_scalar_bucket_counts():
     """Variables for bucket_counts."""
     attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
@@ -21,4 +24,24 @@ def clients_scalar_bucket_counts():
             metric_type STRING,
             key STRING
         """,
+    )
+
+
+def clients_histogram_bucket_counts():
+    """Variables for templated SQL."""
+    attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+    metric_attributes_list = [
+        "latest_version",
+        "metric",
+        "metric_type",
+        "key",
+        "agg_type",
+    ]
+
+    return dict(
+        attributes_list=attributes_list,
+        attributes=",".join(attributes_list),
+        metric_attributes_list=metric_attributes_list,
+        metric_attributes=",".join(metric_attributes_list),
+        custom_distribution_metadata_list=get_custom_distribution_metadata("fenix"),
     )

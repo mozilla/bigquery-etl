@@ -81,6 +81,10 @@ def main():
                 **models.clients_scalar_bucket_counts(),
             },
         ),
+        table(
+            "clients_histogram_bucket_counts_v1",
+            **models.clients_histogram_bucket_counts(),
+        ),
         view("view_clients_daily_scalar_aggregates_v1"),
         view("view_clients_daily_histogram_aggregates_v1"),
         table("histogram_percentiles_v1"),

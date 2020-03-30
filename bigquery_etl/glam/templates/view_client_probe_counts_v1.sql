@@ -6,6 +6,7 @@ WITH all_counts AS (
     *
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_clients_scalar_probe_counts_v1`
+  UNION ALL
   SELECT
     *
   FROM

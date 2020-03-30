@@ -47,7 +47,9 @@ CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
     new_aggregates ARRAY<STRUCT<key STRING, value INT64>>>> AS (
   (
     WITH unnested AS
-      (SELECT * REPLACE(new_aggregates AS old_aggregates)
+      (SELECT
+        * EXCEPT(old_aggregates),
+        new_aggregates AS old_aggregates
       FROM UNNEST(old_aggs)
 
       UNION ALL

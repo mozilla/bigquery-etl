@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v1` (
+    submission_date DATE,
     sample_id INT64,
     client_id STRING,
     os STRING,
@@ -19,5 +20,9 @@ CREATE TABLE IF NOT EXISTS
       aggregates ARRAY<STRUCT<key STRING, value INT64>>
     >>
 )
-PARTITION BY RANGE_BUCKET(sample_id, GENERATE_ARRAY(0, 100, 1))
-CLUSTER BY app_version, channel, client_id
+PARTITION BY submission_date
+CLUSTER BY sample_id, app_version, channel
+OPTIONS(
+  require_partition_filter=true,
+  partition_expiration_days=3
+);

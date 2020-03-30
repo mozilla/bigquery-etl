@@ -1,9 +1,10 @@
+"""Variables for templated SQL."""
 from .utils import get_custom_distribution_metadata
 from itertools import combinations
 
 
 def clients_scalar_aggregates(**kwargs):
-    """Glean/Fenix specific variables."""
+    """Variables for clients scalar aggregation."""
     attributes_list = [
         "client_id",
         "ping_type",
@@ -39,7 +40,7 @@ def clients_scalar_aggregates(**kwargs):
 
 
 def clients_histogram_aggregates(**kwargs):
-    """Variables for templated SQL."""
+    """Variables for clients histogram aggregates."""
     attributes_list = [
         "sample_id",
         "client_id",
@@ -64,7 +65,7 @@ def clients_histogram_aggregates(**kwargs):
 
 
 def clients_scalar_bucket_counts(**kwargs):
-    """Variables for bucket_counts."""
+    """Variables for clients scalar bucket_counts."""
     attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
     return dict(
         attributes=",".join(attributes_list),
@@ -91,7 +92,7 @@ def clients_scalar_bucket_counts(**kwargs):
 
 
 def clients_histogram_bucket_counts(**kwargs):
-    """Variables for templated SQL."""
+    """Variables for clients histogram bucket counts."""
     attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
     metric_attributes_list = [
         "latest_version",
@@ -112,8 +113,7 @@ def clients_histogram_bucket_counts(**kwargs):
 
 
 def probe_counts(**kwargs):
-    """Variables for probe_counts."""
-
+    """Variables for probe counts."""
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
 
     # If the set of attributes grows, the max_combinations can be set only
@@ -156,7 +156,7 @@ def probe_counts(**kwargs):
 
 
 def scalar_percentiles(**kwargs):
-    """Variables for bucket_counts."""
+    """Variables for scalar percentiles."""
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
     max_combinations = len(attributes) + 1
     attribute_combinations = []

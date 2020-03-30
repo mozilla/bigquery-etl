@@ -11,6 +11,8 @@ from functools import partial
 
 
 class QueryType:
+    """Types of queries in the template folder."""
+
     VIEW = "view"
     INIT = "init"
     TABLE = "query"
@@ -18,6 +20,8 @@ class QueryType:
 
 @dataclass
 class TemplateResult:
+    """Results of templating a query."""
+
     table_id: str
     query_type: QueryType
     query_text: str
@@ -32,8 +36,7 @@ def from_template(
     query_name_prefix=None,
     **kwargs,
 ) -> TemplateResult:
-    # load template and get output view name
-
+    """Fill in templates and write them to disk."""
     if query_type == QueryType.INIT:
         template = environment.get_template(f"{template_name}.init.sql")
     else:
@@ -88,15 +91,23 @@ def main():
         init(
             "clients_scalar_aggregates_v1",
             **models.clients_scalar_aggregates(
-                source_table=f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1",
-                destination_table=f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1",
+                source_table=(
+                    f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1"
+                ),
+                destination_table=(
+                    f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1"
+                ),
             ),
         ),
         table(
             "clients_scalar_aggregates_v1",
             **models.clients_scalar_aggregates(
-                source_table=f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1",
-                destination_table=f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1",
+                source_table=(
+                    f"glam_etl.{args.prefix}_view_clients_daily_scalar_aggregates_v1"
+                ),
+                destination_table=(
+                    f"glam_etl.{args.prefix}_clients_scalar_aggregates_v1"
+                ),
             ),
         ),
         init(

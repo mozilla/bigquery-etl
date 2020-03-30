@@ -81,6 +81,7 @@ client_meta AS (
     client_id,
     os,
     country,
+    default_search_engine,
     subsession_hours_sum,
     scalar_parent_browser_engagement_tab_open_event_count_sum,
     scalar_parent_browser_engagement_total_uri_count_sum,

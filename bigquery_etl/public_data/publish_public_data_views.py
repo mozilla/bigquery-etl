@@ -1,4 +1,6 @@
 """
+Generate and publish views for publicly available tables.
+
 Generate view definitions for queries that are written to the
 public data project and execute them. Views are published to
 an internal project so that data is also accessible in private
@@ -9,7 +11,7 @@ from argparse import ArgumentParser
 
 from google.cloud import bigquery
 
-from ..util.get_tables import get_tables_matching_patterns
+from ..util.bigquery_tables import get_tables_matching_patterns
 from ..util import standard_args
 
 DEFAULT_PATTERN = "mozilla-public-data:*.*"
@@ -33,10 +35,7 @@ standard_args.add_dry_run(parser)
 
 
 def generate_and_publish_views(client, tables, target_project, dry_run):
-    """
-    Generates view definitions for public data tables and executes them.
-    """
-
+    """Generate view definitions for public data tables and executes them."""
     for public_table in tables:
         project, dataset, table_name = public_table.split(".")
         full_view_id = f"{target_project}.{dataset}.{table_name}"
@@ -51,6 +50,7 @@ def generate_and_publish_views(client, tables, target_project, dry_run):
 
 
 def main():
+    """Publish public data views."""
     args = parser.parse_args()
 
     client = bigquery.Client(args.target_project)

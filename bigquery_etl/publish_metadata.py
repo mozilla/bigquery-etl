@@ -1,7 +1,6 @@
 """Update metadata of BigQuery tables and views."""
 
 from argparse import ArgumentParser
-from fnmatch import fnmatchcase
 import logging
 import os
 import yaml
@@ -10,7 +9,7 @@ from google.cloud import bigquery
 
 from .parse_metadata import Metadata
 from .util import standard_args
-from .util.get_tables import get_tables_matching_patterns
+from .util.bigquery_tables import get_tables_matching_patterns
 
 
 METADATA_FILE = "metadata.yaml"
@@ -32,6 +31,7 @@ standard_args.add_log_level(parser)
 
 
 def publish_metadata(client, dataset, table, metadata):
+    """Push metadata to BigQuery tables."""
     try:
         table_ref = client.dataset(dataset).table(table)
         table = client.get_table(table_ref)
@@ -50,6 +50,7 @@ def publish_metadata(client, dataset, table, metadata):
 
 
 def main():
+    """Update BigQuery table metadata."""
     args = parser.parse_args()
     client = bigquery.Client(args.project_id)
 

@@ -5,7 +5,7 @@ from fnmatch import fnmatchcase
 from google.cloud import bigquery
 
 
-def uses_wildcards(pattern: str) -> bool:
+def _uses_wildcards(pattern: str) -> bool:
     return bool(set("*?[]") & set(pattern))
 
 
@@ -22,13 +22,13 @@ def get_tables_matching_patterns(client: bigquery.Client, patterns):
         projects = [project or client.project]
         dataset = dataset or "*"
         table = table or "*"
-        if uses_wildcards(project):
+        if _uses_wildcards(project):
             if all_projects is None:
                 all_projects = [p.project_id for p in client.list_projects()]
             projects = [p for p in all_projects if fnmatchcase(project, p)]
         for project in projects:
             datasets = [dataset]
-            if uses_wildcards(dataset):
+            if _uses_wildcards(dataset):
                 if project not in all_datasets:
                     all_datasets[project] = [
                         d.dataset_id for d in client.list_datasets(project)
@@ -37,7 +37,7 @@ def get_tables_matching_patterns(client: bigquery.Client, patterns):
             for dataset in datasets:
                 dataset = f"{project}.{dataset}"
                 tables = [(f"{dataset}.{table}", None)]
-                if uses_wildcards(table):
+                if _uses_wildcards(table):
                     if dataset not in all_tables:
                         all_tables[dataset] = list(client.list_tables(dataset))
                     tables = [

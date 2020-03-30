@@ -13,7 +13,7 @@ from fnmatch import fnmatchcase
 import logging
 import os
 import re
-from .util.get_tables import get_tables_matching_patterns
+from .util.bigquery_tables import get_tables_matching_patterns
 from .util import standard_args
 
 from google.cloud import bigquery
@@ -57,6 +57,7 @@ standard_args.add_log_level(parser)
 
 
 def main():
+    """Generate view definitions."""
     args = parser.parse_args()
 
     # set log level
@@ -79,7 +80,7 @@ def main():
 
 
 def create_views_if_not_exist(client, views, exclude, sql_dir):
-    # create views unless a local file for creating the view exists
+    """Create views unless a local file for creating the view exists."""
     for view, tables in views.items():
         if any(fnmatchcase(pattern, view) for pattern in exclude):
             logging.info("skipping table: matched by exclude pattern: {view}")

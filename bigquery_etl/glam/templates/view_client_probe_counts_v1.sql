@@ -14,12 +14,12 @@ WITH all_counts AS (
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_scalar_probe_counts_v1`
+    `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_scalar_percentiles_v1`
   UNION ALL
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_histogram_probe_counts_v1`
+    `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_histogram_percentiles_v1`
 )
 SELECT
   *

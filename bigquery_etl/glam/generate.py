@@ -108,7 +108,8 @@ def main():
             **models.clients_histogram_aggregates(parameterize=True),
         ),
         table(
-            "clients_scalar_bucket_counts_v1",
+            "bucket_counts_v1",
+            query_name_prefix="clients_scalar",
             **models.clients_scalar_bucket_counts(
                 source_table="glam_etl.fenix_clients_scalar_aggregates_v1"
             ),

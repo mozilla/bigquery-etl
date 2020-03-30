@@ -16,7 +16,8 @@ CREATE TEMP FUNCTION mapSearches(engine STRING, v INT64) AS (
     isoEngine(engine, 'ddg', v) AS ddg,
     isoEngine(engine, 'yandex', v) AS yandex,
     isoEngine(engine, 'amazon', v) AS amazon,
-    isoEngine(engine, 'other', v) AS other
+    isoEngine(engine, 'other', v) AS other,
+    v AS total
   )
 );
 

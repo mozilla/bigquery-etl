@@ -156,7 +156,7 @@ names AS (
 default_search_engines AS (
   SELECT
     addon_id,
-    default_search_engine as most_common_default_search_engine,
+    default_search_engine AS most_common_default_search_engine,
     RANK() OVER (PARTITION BY addon_id ORDER BY n DESC) AS rank
   FROM
     (SELECT addon_id, default_search_engine, COUNT(*) AS n FROM addons_expanded GROUP BY 1, 2)
@@ -176,7 +176,7 @@ engagement AS (
       SUM(sap.amazon) AS amazon,
       SUM(sap.yandex) AS yandex,
       SUM(sap.other) AS other,
-      SUM(sap.total) as total
+      SUM(sap.total) AS total
     ) AS sap_searches,
     STRUCT(
       SUM(tagged_sap.google) AS google,
@@ -185,7 +185,7 @@ engagement AS (
       SUM(tagged_sap.amazon) AS amazon,
       SUM(tagged_sap.yandex) AS yandex,
       SUM(tagged_sap.other) AS other,
-      SUM(tagged_sap.total) as total
+      SUM(tagged_sap.total) AS total
     ) AS tagged_sap_searches,
     STRUCT(
       SUM(tagged_follow_on.google) AS google,
@@ -194,7 +194,7 @@ engagement AS (
       SUM(tagged_follow_on.amazon) AS amazon,
       SUM(tagged_follow_on.yandex) AS yandex,
       SUM(tagged_follow_on.other) AS other,
-      SUM(tagged_follow_on.total) as total
+      SUM(tagged_follow_on.total) AS total
     ) AS tagged_follow_on_searches,
     STRUCT(
       SUM(organic.google) AS google,
@@ -203,7 +203,7 @@ engagement AS (
       SUM(organic.amazon) AS amazon,
       SUM(organic.yandex) AS yandex,
       SUM(organic.other) AS other,
-      SUM(organic.total) as total
+      SUM(organic.total) AS total
     ) AS organic_searches,
     STRUCT(
       SUM(searches_with_ads.google) AS google,
@@ -212,7 +212,7 @@ engagement AS (
       SUM(searches_with_ads.amazon) AS amazon,
       SUM(searches_with_ads.yandex) AS yandex,
       SUM(searches_with_ads.other) AS other,
-      SUM(searches_with_ads.total) as total
+      SUM(searches_with_ads.total) AS total
     ) AS searches_with_ads,
     STRUCT(
       SUM(ad_clicks.google) AS google,
@@ -221,7 +221,7 @@ engagement AS (
       SUM(ad_clicks.amazon) AS amazon,
       SUM(ad_clicks.yandex) AS yandex,
       SUM(ad_clicks.other) AS other,
-      SUM(ad_clicks.total) as total
+      SUM(ad_clicks.total) AS total
     ) AS ad_clicks
   FROM
     addons_expanded

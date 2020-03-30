@@ -1,5 +1,5 @@
 {{ header }}
-{% include "udf_merged_user_data.sql" %}
+{% include "clients_scalar_aggregates_v1.udf.sql" %}
 
 WITH filtered_date_channel AS (
   SELECT

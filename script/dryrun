@@ -36,6 +36,7 @@ SKIP = {
     "sql/telemetry/fxa_auth_bounce_events_v1/query.sql",
     "sql/telemetry/fxa_auth_events_v1/query.sql",
     "sql/telemetry/fxa_oauth_events_v1/query.sql",
+    "sql/telemetry_derived/addons_daily_v1/query.sql",
     "sql/search_derived/search_clients_last_seen_v1/init.sql",
     "sql/search_derived/search_clients_last_seen_v1/query.sql",
     "sql/search/search_rfm/view.sql",

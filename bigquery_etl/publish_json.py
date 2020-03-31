@@ -2,7 +2,7 @@
 
 from google.cloud import bigquery
 import smart_open
-
+import logging
 import sys
 import re
 
@@ -12,6 +12,11 @@ from bigquery_etl.parse_metadata import Metadata
 METADATA_FILE = "metadata.yaml"
 SUBMISSION_DATE_RE = re.compile(r"^submission_date:DATE:(\d\d\d\d-\d\d-\d\d)$")
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
+
+
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s: %(levelname)s: %(message)s"
+)
 
 
 class JsonPublisher:
@@ -99,6 +104,8 @@ class JsonPublisher:
             # if date exists, then query is incremental and newest results are exported
             prefix += f"{self.date}/"
 
+        logging.info(f"""Export JSON for {result_table} to {self.stage_gcs_path}""")
+
         table_ref = self.client.get_table(result_table)
 
         job_config = bigquery.ExtractJobConfig()
@@ -106,7 +113,9 @@ class JsonPublisher:
 
         # "*" makes sure that files larger than 1GB get split up into JSON files
         # files are written to a stage directory first
-        destination_uri = f"gs://{self.target_bucket}/" + self.stage_gcs_path + "*.json"
+        destination_uri = (
+            f"gs://{self.target_bucket}/" + self.stage_gcs_path + "*.ndjson"
+        )
         extract_job = self.client.extract_table(
             table_ref, destination_uri, location="US", job_config=job_config
         )
@@ -125,12 +134,15 @@ class JsonPublisher:
             blob_path = f"gs://{self.target_bucket}/{blob.name}"
             tmp_blob_name = blob_path + ".tmp.gz"
 
+            logging.info(f"""Compress {blob_path} to {tmp_blob_name}""")
+
             # stream from GCS
             with smart_open.open(blob_path) as fin:
                 with smart_open.open(tmp_blob_name, "w") as fout:
                     fout.write("[\n")
 
                     for i, line in enumerate(fin):
+                        # skip the first line, it has no preceding json object
                         if i > 0:
                             fout.write(",\n")
 
@@ -148,6 +160,9 @@ class JsonPublisher:
             if "tmp.gz" in tmp_blob.name:
                 # remove .tmp from the final file name
                 file_name = tmp_blob.name.split("/")[-1].replace("tmp.", "")
+
+                logging.info(f"""Move {tmp_blob.name} to {gcs_path + file_name}""")
+
                 bucket.rename_blob(tmp_blob, gcs_path + file_name)
 
         self._clear_stage_directory()

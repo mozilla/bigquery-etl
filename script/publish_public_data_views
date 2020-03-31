@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# Generate and publish views for publicly available tables.
+# Generate view definitions for queries that are written to the
+# public data project and execute them. Views are published to
+# an internal project so that data is also accessible in private
+# datasets.
+
 cd "$(dirname "$0")/.."
 
 exec python3 -m bigquery_etl.public_data.publish_public_data_views "$@"

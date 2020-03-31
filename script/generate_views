@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# Generate one view definition file per document type in '_stable' tables.
+#
+# If there are existing view definitions in the destination directory then those will be
+# kept instead.
+#
+# Run as:
+#   ./script/generate_views 'moz-fx-data-shared-prod:*_stable.*'
+
 cd "$(dirname "$0")/.."
 
 exec python3 -m bigquery_etl.generate_views "$@"

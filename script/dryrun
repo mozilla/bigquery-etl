@@ -39,6 +39,7 @@ SKIP = {
     "sql/search_derived/search_clients_last_seen_v1/init.sql",
     "sql/search_derived/search_clients_last_seen_v1/query.sql",
     "sql/search/search_rfm/view.sql",
+    "sql/telemetry_derived/deviations_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",
     "sql/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",

@@ -34,15 +34,15 @@ SELECT
   WHEN
     4
   THEN
-    'regular_v1'
+    'regular_users_v1'
   WHEN
     0
   THEN
-    'new_irregular_v1'
+    'new_irregular_users_v1'
   ELSE
-    'semi_regular_v1'
+    'semi_regular_users_v1'
   END
-  AS segment_regular_users_v1,
+  AS segment_usage_regularity_v1,
   * EXCEPT (
     active_experiment_id,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,

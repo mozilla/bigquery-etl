@@ -2,7 +2,7 @@ WITH grouped AS (
   SELECT
     addons.key AS addon_id,
     addons.value.name AS addon_name,
-    COUNT(*) AS occurrences
+    COUNT(DISTINCT client_id) AS occurrences
   FROM
     `moz-fx-data-shared-prod.telemetry.main`
   CROSS JOIN

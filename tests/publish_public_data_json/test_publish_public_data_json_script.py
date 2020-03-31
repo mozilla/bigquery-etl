@@ -67,6 +67,7 @@ class TestPublishJsonScript(object):
             (
                 "./script/publish_public_data_json",
                 "publish_json",
+                "--parameter=a:INT64:9",
                 "--parameter=" + self.incremental_parameter,
                 "--query_file=" + self.incremental_sql_path,
                 "--target_bucket=" + self.test_bucket,

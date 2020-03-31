@@ -44,7 +44,9 @@ parser.add_argument(
     default=DEFAULT_API_VERSION,
     help="API version data is published under in the storage bucket",
 )
-parser.add_argument("--parameter", help="Query parameters, such as submission_date")
+parser.add_argument(
+    "--parameter", action="append", help="Query parameters, such as submission_date"
+)
 parser.add_argument(
     "--query-file", "--query_file", help="File path to query to be executed"
 )

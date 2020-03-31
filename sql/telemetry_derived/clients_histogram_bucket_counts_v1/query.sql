@@ -124,7 +124,7 @@ unnested AS (
     metric_type,
     process,
     agg_type,
-    'old' AS recency,
+    FALSE AS is_new_data,
     histogram_aggregates.key AS key,
     aggregates.key AS bucket,
     aggregates.value
@@ -148,7 +148,7 @@ unnested AS (
     metric_type,
     process,
     agg_type,
-    'new' AS recency,
+    TRUE AS is_new_data,
     histogram_aggregates.key AS key,
     aggregates.key AS bucket,
     aggregates.value
@@ -170,14 +170,14 @@ buckets_to_update_summed AS (
     key,
     process,
     agg_type,
-    recency,
+    is_new_data,
     CAST(bucket AS STRING) AS bucket,
     CASE
-      WHEN recency = 'old' THEN 1.0 * SUM(value)
+      WHEN NOT is_new_data THEN 1.0 * SUM(value)
       ELSE NULL
     END AS old_value,
     CASE
-      WHEN recency = 'new' THEN 1.0 * SUM(value)
+      WHEN is_new_data THEN 1.0 * SUM(value)
       ELSE NULL
     END AS new_value
   FROM unnested
@@ -194,7 +194,7 @@ buckets_to_update_summed AS (
     key,
     process,
     agg_type,
-    recency,
+    is_new_data,
     bucket),
 
 -- Using `MAX` to get the correct/non-null value while grouping rows

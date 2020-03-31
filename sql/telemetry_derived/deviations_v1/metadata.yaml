@@ -1,0 +1,10 @@
+friendly_name: Deviations
+description: >
+  Deviation of different metrics from forecast.
+owners:
+  - jmccrosky@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  public_json: true
+  public_bigquery: true

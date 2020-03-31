@@ -9,6 +9,6 @@ SELECT
   34 AS b
 UNION ALL
 SELECT
-  DATE '2020-03-15' AS d,
+  @submission_date AS d,
   "val3" AS a,
-  8 AS b
+  @a AS b

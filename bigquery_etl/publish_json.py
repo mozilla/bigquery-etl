@@ -47,10 +47,11 @@ class JsonPublisher:
         self.metadata = Metadata.of_sql_file(self.query_file)
 
         if self.parameter:
-            date_search = re.search(SUBMISSION_DATE_RE, self.parameter)
+            for p in self.parameter:
+                date_search = re.search(SUBMISSION_DATE_RE, p)
 
-            if date_search:
-                self.date = date_search.group(1)
+                if date_search:
+                    self.date = date_search.group(1)
 
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
         if query_file_re:
@@ -58,10 +59,10 @@ class JsonPublisher:
             self.table = query_file_re.group(2)
             self.version = query_file_re.group(3)
         else:
-            print("Invalid file naming format: {}", self.query_file)
+            logging.error("Invalid file naming format: {}", self.query_file)
             sys.exit(1)
 
-    def __exit__(self):
+    def __del__(self):
         """Delete temporary artifacts."""
         if self.temp_table:
             self.client.delete_table(self.temp_table)
@@ -81,7 +82,9 @@ class JsonPublisher:
         """Publish query results as JSON to GCP Storage bucket."""
         if self.metadata.is_incremental():
             if self.date is None:
-                print("Cannot publish JSON. submission_date missing in parameter.")
+                logging.error(
+                    "Cannot publish JSON. submission_date missing in parameter."
+                )
                 sys.exit(1)
 
             # if it is an incremental query, then the query result needs to be
@@ -133,6 +136,7 @@ class JsonPublisher:
         for blob in blobs:
             blob_path = f"gs://{self.target_bucket}/{blob.name}"
             tmp_blob_name = blob_path + ".tmp.gz"
+            tmp_blob_name = tmp_blob_name.replace("ndjson", "json")
 
             logging.info(f"""Compress {blob_path} to {tmp_blob_name}""")
 
@@ -176,6 +180,16 @@ class JsonPublisher:
 
         with open(self.query_file) as query_stream:
             sql = query_stream.read()
-            job_config = bigquery.QueryJobConfig(destination=self.temp_table)
+
+            query_parameters = []
+            for p in self.parameter:
+                [name, parameter_type, value] = p.split(":")
+                query_parameters.append(
+                    bigquery.ScalarQueryParameter(name, parameter_type, value)
+                )
+
+            job_config = bigquery.QueryJobConfig(
+                destination=self.temp_table, query_parameters=query_parameters
+            )
             query_job = self.client.query(sql, job_config=job_config)
             query_job.result()

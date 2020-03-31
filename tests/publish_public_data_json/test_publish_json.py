@@ -84,7 +84,7 @@ class TestPublishJson(object):
             self.incremental_sql_path,
             self.api_version,
             self.test_bucket,
-            "submission_date:DATE:2020-11-02",
+            ["submission_date:DATE:2020-11-02"],
         )
 
         assert publisher.date == "2020-11-02"
@@ -113,7 +113,7 @@ class TestPublishJson(object):
             self.incremental_sql_path,
             self.api_version,
             self.test_bucket,
-            "submission_date:DATE:2020-03-15",
+            ["submission_date:DATE:2020-03-15"],
         )
         publisher._write_results_to_temp_table()
 
@@ -128,7 +128,7 @@ class TestPublishJson(object):
             self.incremental_sql_path,
             self.api_version,
             self.test_bucket,
-            "submission_date:DATE:2020-03-15",
+            ["submission_date:DATE:2020-03-15"],
         )
 
         mock_out = MagicMock(side_effect=[['{"a": 1}', '{"b": "cc"}'], None])

@@ -17,8 +17,8 @@ from google.cloud import bigquery
 
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
-from ..util.table_filter import add_table_filter_arguments, get_table_filter
 from ..util.exceptions import BigQueryInsertError
+from ..util import standard_args
 from .config import DELETE_TARGETS
 
 
@@ -26,14 +26,7 @@ NULL_PARTITION_ID = "__NULL__"
 OUTSIDE_RANGE_PARTITION_ID = "__UNPARTITIONED__"
 
 parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "-n",
-    "--dry_run",
-    "--dry-run",
-    action="store_true",
-    help="Do not make changes, only log actions that would be taken; "
-    "use with --log-level=DEBUG to log query contents",
-)
+standard_args.add_dry_run(parser)
 parser.add_argument(
     "--read_only",
     "--read-only",
@@ -41,27 +34,15 @@ parser.add_argument(
     help="Use SELECT * FROM instead of DELETE with dry run queries to prevent errors "
     "due to read-only permissions being insufficient to dry run DELETE dml",
 )
-parser.add_argument(
-    "-l",
-    "--log-level",
-    "--log_level",
-    default=logging.getLevelName(logging.INFO),
-    type=str.upper,
-)
-parser.add_argument(
-    "-P",
-    "--parallelism",
-    default=4,
-    type=int,
-    help="Maximum number of queries to execute concurrently",
-)
+standard_args.add_log_level(parser)
+standard_args.add_parallelism(parser)
 parser.add_argument(
     "-e",
     "--end-date",
     "--end_date",
     default=datetime.utcnow().date(),
     type=lambda x: datetime.strptime(x, "%Y-%m-%d").date(),
-    help="last date of last date of pings to delete; One day after last date of "
+    help="last date of pings to delete; One day after last date of "
     "deletion requests to process; defaults to today in UTC",
 )
 parser.add_argument(
@@ -72,17 +53,7 @@ parser.add_argument(
     help="first date of deletion requests to process; DOES NOT apply to ping date; "
     "defaults to 14 days before --end-date in UTC",
 )
-parser.add_argument(
-    "-p",
-    "--billing-projects",
-    "--billing_projects",
-    "--billing-project",
-    "--billing_project",
-    nargs="+",
-    default=["moz-fx-data-bq-batch-prod"],
-    help="One or more billing projects over which bigquery jobs should be distributed; "
-    "if not specified use the bigquery-batch-prod project",
-)
+standard_args.add_billing_projects(parser, default=["moz-fx-data-bq-batch-prod"])
 parser.add_argument(
     "--source-project",
     "--source_project",
@@ -103,15 +74,7 @@ parser.add_argument(
     "queries; this option prevents queries against large tables from exceeding the "
     "6-hour time limit; defaults to 10 TiB",
 )
-parser.add_argument(
-    "--priority",
-    default=bigquery.QueryPriority.INTERACTIVE,
-    type=str.upper,
-    choices=[bigquery.QueryPriority.BATCH, bigquery.QueryPriority.INTERACTIVE],
-    help="Priority for BigQuery query jobs; BATCH priority may significantly slow "
-    "down queries if reserved slots are not enabled for the billing project; "
-    "INTERACTIVE priority is limited to 100 concurrent queries per project",
-)
+standard_args.add_priority(parser)
 parser.add_argument(
     "--state-table",
     "--state_table",
@@ -119,7 +82,7 @@ parser.add_argument(
     help="Table for recording state; Used to avoid repeating deletes if interrupted; "
     "Create it if it does not exist; By default state is not recorded",
 )
-add_table_filter_arguments(parser)
+standard_args.add_table_filter(parser)
 
 
 def record_state(client, task_id, job, dry_run, start_date, end_date, state_table):
@@ -241,6 +204,8 @@ def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partiti
             return Partition(f"{partition_expr} < '{end_date}'")
         return Partition("TRUE")
     if id_ == NULL_PARTITION_ID:
+        if table.time_partitioning:
+            return Partition(f"{table.time_partitioning.field} IS NULL", id_)
         return Partition(f"{partition_expr} IS NULL", id_)
     if table.time_partitioning:
         date = datetime.strptime(id_, "%Y%m%d").date()
@@ -339,12 +304,10 @@ def main():
     args = parser.parse_args()
     if args.start_date is None:
         args.start_date = args.end_date - timedelta(days=14)
-    logging.root.setLevel(args.log_level)
     source_condition = (
         f"DATE(submission_timestamp) >= '{args.start_date}' "
         f"AND DATE(submission_timestamp) < '{args.end_date}'"
     )
-    table_filter = get_table_filter(args)
     client_q = ClientQueue(args.billing_projects, args.parallelism)
     client = client_q.default_client
     states = {}
@@ -390,7 +353,7 @@ def main():
     tasks = [
         task
         for target, source in DELETE_TARGETS.items()
-        if table_filter(target.table)
+        if args.table_filter(target.table)
         for task in delete_from_table(
             client=client,
             target=replace(target, project=args.target_project or target.project),

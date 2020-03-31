@@ -1,0 +1,3 @@
+INFO:root:Processed 23174697410236 bytes to populate Table(TableReference(DatasetReference('moz-fx-data-shar-nonprod-efed', 'telemetry_stable'), 'main_v4_k8s$20200319'))
+INFO:root:Copied 100 results to populate Table(TableReference(DatasetReference('moz-fx-data-shar-nonprod-efed', 'telemetry_stable'), 'main_v4_k8s$20200319'))
+INFO:root:Deleted 100 temporary tables

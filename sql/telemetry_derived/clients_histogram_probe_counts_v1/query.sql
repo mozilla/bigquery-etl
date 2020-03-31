@@ -127,7 +127,8 @@ SELECT
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+WHERE submission_date = @submission_date
+  AND first_bucket IS NOT NULL
   AND os IS NOT NULL
 GROUP BY
   os,
@@ -161,7 +162,8 @@ SELECT
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+WHERE submission_date = @submission_date
+  AND first_bucket IS NOT NULL
 GROUP BY
   app_version,
   app_build_id,
@@ -193,7 +195,8 @@ SELECT
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+WHERE submission_date = @submission_date
+  AND first_bucket IS NOT NULL
   AND os IS NOT NULL
 GROUP BY
   os,
@@ -226,7 +229,8 @@ SELECT
       ARRAY_AGG(record)
   ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
 FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
+WHERE submission_date = @submission_date
+  AND first_bucket IS NOT NULL
 GROUP BY
   app_version,
   channel,

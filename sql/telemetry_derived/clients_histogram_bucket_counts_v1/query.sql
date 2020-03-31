@@ -237,9 +237,11 @@ current_buckets AS (
     record.key AS bucket,
     record.value AS value
   FROM clients_histogram_bucket_counts_v1
+  WHERE submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
 )
 
 SELECT
+  @submission_date AS submission_date,
   os,
   app_version,
   app_build_id,

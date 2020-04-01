@@ -195,6 +195,7 @@ labels:
   schedule: daily       # scheduled in Airflow to run daily
   public_json: true
   public_bigquery: true
+  review_bug: 1414839   # Bugzilla bug ID of data review
 ```
 
 ### Publishing Datasets
@@ -205,9 +206,9 @@ labels:
     by everyone, also external users
 - To make query results publicly available as JSON, `public_json` flag must be set in 
   `metadata.yaml`
-  - Data will be accessible under https://public-data.prod.dataops.mozgcp.net
-  - For example: https://public-data.prod.dataops.mozgcp.net/api/v1/tables/telemetry/ssl_ratios/v1/files/0000
-  - This feature is currently under development and not available yet
+  - Data will be accessible under https://http.public-data.prod.dataops.mozgcp.net
+  - For example: http://http.public-data.prod.dataops.mozgcp.net/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000000000.json.gz
+  - This feature is currently under development
 
 Scheduling Queries in Airflow
 ---

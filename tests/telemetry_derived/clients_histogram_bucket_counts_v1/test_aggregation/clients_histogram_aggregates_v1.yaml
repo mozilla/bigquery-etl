@@ -1,0 +1,71 @@
+---
+- &base
+  submission_date: '2020-03-25'
+  sample_id: 0
+  client_id: test
+  os: first
+  app_version: 75
+  app_build_id: first
+  channel: nightly
+  histogram_aggregates:
+    {
+      "first_bucket": 1,
+      "last_bucket": 1000,
+      "num_buckets": 100,
+      "latest_version": 75,
+      "metric": "some_metric",
+      "metric_type": "histogram-exponential",
+      "key": "",
+      "process": "parent",
+      "agg_type": "summed_histogram",
+      "aggregates": [
+        {
+          "key": '0',
+          "value": 44
+        },
+        {
+          "key": '10',
+          "value": 324
+        },
+                {
+          "key": '20',
+          "value": 22
+        },
+                {
+          "key": '30',
+          "value": 9
+        }
+      ]
+    }
+- <<: *base
+  app_build_id: second
+  histogram_aggregates:
+    {
+      "first_bucket": 1,
+      "last_bucket": 1000,
+      "num_buckets": 100,
+      "latest_version": 75,
+      "metric": "some_metric",
+      "metric_type": "histogram-exponential",
+      "key": "",
+      "process": "parent",
+      "agg_type": "summed_histogram",
+      "aggregates": [
+        {
+          "key": '0',
+          "value": 44
+        },
+        {
+          "key": '10',
+          "value": 324
+        },
+                {
+          "key": '20',
+          "value": 22
+        },
+                {
+          "key": '30',
+          "value": 9
+        }
+      ]
+    }

@@ -12,7 +12,7 @@ from bigquery_etl.parse_metadata import Metadata
 METADATA_FILE = "metadata.yaml"
 SUBMISSION_DATE_RE = re.compile(r"^submission_date:DATE:(\d\d\d\d-\d\d-\d\d)$")
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
-
+MAX_JSON_SIZE = 1 * 1024 * 1024 * 1024  # 1 GB as max. size of exported JSON files
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s: %(levelname)s: %(message)s"
@@ -64,8 +64,8 @@ class JsonPublisher:
 
     def __del__(self):
         """Delete temporary artifacts."""
-        # if self.temp_table:
-        #     self.client.delete_table(self.temp_table)
+        if self.temp_table:
+            self.client.delete_table(self.temp_table)
 
         self._clear_stage_directory()
 
@@ -90,12 +90,11 @@ class JsonPublisher:
             # if it is an incremental query, then the query result needs to be
             # written to a temporary table to get exported as JSON
             self._write_results_to_temp_table()
+            self._publish_table_as_json(self.temp_table)
         else:
-            # for non-incremental queries, the destination table is needs to be
-            # written to a temporary non-partioned table which gets exported
-            self._export_table_to_temp_table()
-
-        self._publish_table_as_json(self.temp_table)
+            # for non-incremental queries, the entire destination table is exported
+            result_table = f"{self.dataset}.{self.table}_{self.version}"
+            self._publish_table_as_json(result_table)
 
     def _publish_table_as_json(self, result_table):
         """Export the `result_table` data as JSON to Cloud Storage."""
@@ -134,26 +133,50 @@ class JsonPublisher:
         )
         bucket = self.storage_client.bucket(self.target_bucket)
 
+        # keeps track of the number of bytes written to the JSON output file
+        output_size = 0
+        # tracks the current output file name
+        output_file_counter = 0
+        # track if the first JSON object is currently processed
+        first_line = True
+        # output file handler
+        output_file = None
+
         for blob in blobs:
             blob_path = f"gs://{self.target_bucket}/{blob.name}"
-            tmp_blob_name = blob_path + ".tmp.gz"
-            tmp_blob_name = tmp_blob_name.replace("ndjson", "json")
-
-            logging.info(f"""Compress {blob_path} to {tmp_blob_name}""")
 
             # stream from GCS
             with smart_open.open(blob_path) as fin:
-                with smart_open.open(tmp_blob_name, "w") as fout:
-                    fout.write("[\n")
+                for line in fin:
+                    # check if JSON output file reached limit
+                    if output_file is None or output_size >= MAX_JSON_SIZE:
+                        if output_file is not None:
+                            output_file.write("]")
+                            output_file.close()
 
-                    for i, line in enumerate(fin):
-                        # skip the first line, it has no preceding json object
-                        if i > 0:
-                            fout.write(",\n")
+                        tmp_blob_name = "/".join(blob.name.split("/")[:-1])
+                        tmp_blob_name += (
+                            "/" + str(output_file_counter).zfill(12) + ".json.tmp.gz"
+                        )
+                        tmp_blob_path = f"gs://{self.target_bucket}/{tmp_blob_name}"
 
-                        fout.write(line.replace("\n", ""))
+                        logging.info(f"""Write {blob_path} to {tmp_blob_path}""")
 
-                    fout.write("]")
+                        output_file = smart_open.open(tmp_blob_path, "w")
+                        output_file.write("[\n")
+                        first_line = True
+                        output_file_counter += 1
+                        output_size = 3
+
+                    # skip the first line, it has no preceding json object
+                    if not first_line:
+                        output_file.write(",\n")
+                        first_line = False
+
+                    output_file.write(line.replace("\n", ""))
+                    output_size += len(line) + 1
+
+        output_file.close()
 
         # move all files from stage directory to target directory
         tmp_blobs = self.storage_client.list_blobs(
@@ -169,8 +192,6 @@ class JsonPublisher:
                 logging.info(f"""Move {tmp_blob.name} to {gcs_path + file_name}""")
 
                 bucket.rename_blob(tmp_blob, gcs_path + file_name)
-
-        self._clear_stage_directory()
 
     def _write_results_to_temp_table(self):
         """Write the query results to a temporary table and return the table name."""
@@ -194,27 +215,3 @@ class JsonPublisher:
             )
             query_job = self.client.query(sql, job_config=job_config)
             query_job.result()
-
-    def _export_table_to_temp_table(self):
-        """
-        Copy the source table to a non-partitioned temporary table which gets exported.
-
-        This prevents the creation of a large number of files when exporting data as
-        JSON to GCS since files get split up based on the table partition.
-        """
-        self.temp_table = (
-            f"{self.project_id}.tmp.{self.table}_{self.version}_temp"
-        )
-        source_table = f"{self.dataset}.{self.table}_{self.version}"
-
-        print(self.temp_table)
-
-        # create a non-partitioned temporary table
-        tmp_dataset = self.client.dataset("tmp")
-        tmp_table_ref = tmp_dataset.table(f"{self.table}_{self.version}_temp")
-        tmp_table = bigquery.Table(tmp_table_ref)
-        self.client.create_table(tmp_table)
-
-        # copy data from source table to temporary table
-        job = self.client.copy_table(source_table, self.temp_table)
-        job.result() 

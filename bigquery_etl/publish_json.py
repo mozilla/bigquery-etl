@@ -46,7 +46,7 @@ class JsonPublisher:
 
         self.metadata = Metadata.of_sql_file(self.query_file)
 
-        if self.parameter:
+        if self.metadata.is_incremental() and self.parameter:
             for p in self.parameter:
                 date_search = re.search(SUBMISSION_DATE_RE, p)
 
@@ -171,11 +171,12 @@ class JsonPublisher:
                     # skip the first line, it has no preceding json object
                     if not first_line:
                         output_file.write(",\n")
-                        first_line = False
 
                     output_file.write(line.replace("\n", ""))
                     output_size += len(line) + 1
+                    first_line = False
 
+        output_file.write("]")
         output_file.close()
 
         # move all files from stage directory to target directory

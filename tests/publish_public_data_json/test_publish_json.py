@@ -25,7 +25,7 @@ class TestPublishJson(object):
 
     mock_blob = Mock()
     mock_blob.download_as_string.return_value = bytes("[]", "utf-8")
-    mock_blob.name = "blob_path"
+    mock_blob.name = "blob_path/000000000000.ndjson"
 
     mock_bucket = Mock()
     mock_bucket.blob.return_value = mock_blob
@@ -142,11 +142,11 @@ class TestPublishJson(object):
 
         smart_open.open.assert_has_calls(
             [
-                call("gs://test-bucket/blob_path"),
-                call("gs://test-bucket/blob_path.tmp.gz", "w"),
+                call("gs://test-bucket/blob_path/000000000000.ndjson"),
+                call("gs://test-bucket/blob_path/000000000000.json.tmp.gz", "w"),
             ]
         )
 
-        mock_out.write.assert_has_calls(
+        file_handler.write.assert_has_calls(
             [call("[\n"), call('{"a": 1}'), call(",\n"), call('{"b": "cc"}'), call("]")]
         )

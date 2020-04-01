@@ -8,4 +8,4 @@ labels:
   schedule: daily
   public_json: true
   public_bigquery: true
-  review_link: https://bugzilla.mozilla.org/show_bug.cgi?id=1624528
+  review_bug: 1624528

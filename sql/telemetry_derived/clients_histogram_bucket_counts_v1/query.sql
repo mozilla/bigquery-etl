@@ -257,8 +257,8 @@ SELECT
   STRUCT<key STRING, value FLOAT64>(
     bucket,
     CASE
-      WHEN buckets_to_update.new_value IS NULL
-      THEN current_buckets.value
+      WHEN buckets_to_update.new_value IS NULL THEN current_buckets.value
+      WHEN current_buckets.value IS NULL THEN buckets_to_update.new_value
       ELSE current_buckets.value - buckets_to_update.old_value + buckets_to_update.new_value
     END
   ) AS record

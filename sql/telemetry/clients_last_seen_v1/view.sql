@@ -14,33 +14,22 @@ SELECT
     SAFE.LOG(days_created_profile_bits & -days_created_profile_bits, 2) AS INT64
   ) AS days_since_created_profile,
   CASE
-    CAST(
-      BIT_COUNT(
-        days_visited_5_uri_bits & `moz-fx-data-shared-prod.udf.bitmask_range`(2, 6)
-      ) >= 1 AS INT64
-    ) + CAST(
-      BIT_COUNT(
-        days_visited_5_uri_bits & `moz-fx-data-shared-prod.udf.bitmask_range`(8, 7)
-      ) >= 2 AS INT64
-    ) + CAST(
-      BIT_COUNT(
-        days_visited_5_uri_bits & `moz-fx-data-shared-prod.udf.bitmask_range`(15, 7)
-      ) >= 2 AS INT64
-    ) + CAST(
-      BIT_COUNT(
-        days_visited_5_uri_bits & `moz-fx-data-shared-prod.udf.bitmask_range`(22, 7)
-      ) >= 2 AS INT64
-    )
   WHEN
-    4
-  THEN
-    'regular_users_v1'
-  WHEN
-    0
+    BIT_COUNT(days_visited_5_uri_bits) & 0x0FFFFFFE = 0
   THEN
     'new_irregular_users_v1'
-  ELSE
+  WHEN
+    BIT_COUNT(days_visited_5_uri_bits) & 0x0FFFFFFE
+    BETWEEN 1
+    AND 7
+  THEN
     'semi_regular_users_v1'
+  WHEN
+    BIT_COUNT(days_visited_5_uri_bits) & 0x0FFFFFFE
+    BETWEEN 8
+    AND 27
+  THEN
+    'regular_users_v1'
   END
   AS segment_usage_regularity_v1,
   * EXCEPT (

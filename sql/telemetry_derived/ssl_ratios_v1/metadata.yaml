@@ -6,7 +6,8 @@ owners:
   - chutten@mozilla.com
 labels:
   application: firefox
-  incremental: true
+  incremental: false
   schedule: daily
   public_json: true
   public_bigquery: true
+  review_link: https://bugzilla.mozilla.org/show_bug.cgi?id=1414839

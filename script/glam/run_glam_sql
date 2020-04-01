@@ -13,8 +13,8 @@ print(dt.strftime("%Y-%m-%d"))
 EOD
 }
 
-PROJECT="glam-fenix-dev"
-PROD_DATASET="glam_etl"
+PROJECT=${PROJECT:-"glam-fenix-dev"}
+PROD_DATASET=${PROD_DATASET:-"glam_etl"}
 DATASET=${DATASET:-"glam_etl_dev"}
 SUBMISSION_DATE=${SUBMISSION_DATE:-$(yesterday)}
 
@@ -41,7 +41,10 @@ function replace_project_dataset {
 function run_query {
     local destination_table=$1
     local time_partition=${2:-false}
-    local query="sql/glam_etl/$destination_table/query.sql"
+    local min_sample_id=${3:-0}
+    local max_sample_id=${4:-99}
+    local query="sql/$PROD_DATASET/$destination_table/query.sql"
+
     # add an option to write to a time-partitioned table
     if $time_partition; then
         destination_table="${destination_table}\$${SUBMISSION_DATE//-/}"
@@ -58,16 +61,15 @@ function run_query {
         --dataset_id="$DATASET" \
         --destination_table="$destination_table" \
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
-        --parameter="min_sample_id:INT64:0" \
-        --parameter="max_sample_id:INT64:99" \
-        "$(if $time_partition; then echo --time_partitioning_type="DAY"; fi)" \
+        --parameter="min_sample_id:INT64:$min_sample_id" \
+        --parameter="max_sample_id:INT64:$max_sample_id" \
         < "$tmp"
 }
 
 
 function run_init {
     local destination_table=$1
-    local init="sql/glam_etl/$destination_table/init.sql"
+    local init="sql/$PROD_DATASET/$destination_table/init.sql"
     # run if needed
     if ! bq show --quiet "${DATASET}.${destination_table}"; then
         echo "running $init"
@@ -97,28 +99,30 @@ function run_view {
 }
 
 
-function main {
-    cd "$(dirname "$0")/../.."
+function run_desktop_sql {
+    local prod_project="moz-fx-data-shared-prod"
+    local tables_to_copy=(
+        "latest_versions"
+        "clients_histogram_aggregates_new_v1"
+    )
 
+    # TODO - make these computable rather than copying.
+    for table in "${tables_to_copy[@]}"; do
+        echo "Copying table $table"
+        bq cp --no_clobber "${prod_project}:${PROD_DATASET}.$table" "${PROJECT}:${DATASET}.$table";
+    done
+
+    run_init "clients_histogram_aggregates_v1"
+    run_init "clients_histogram_bucket_counts_v1"
+
+    run_query "clients_histogram_aggregates_v1" true 0 0
+    run_query "clients_histogram_bucket_counts_v1" true
+    run_query "clients_histogram_probe_counts_v1"
+}
+
+
+function run_fenix_sql {
     local start_stage=${START_STAGE:-0}
-    local reset=${RESET:-false}
-
-    # revert to the original default project in the environment
-    original_project=$(gcloud config get-value project)
-    function cleanup {
-        gcloud config set project "$original_project"
-    }
-    trap cleanup EXIT
-
-    gcloud config set project $PROJECT
-
-    # force delete the dataset
-    if $reset; then
-        bq rm -r -f "$DATASET"
-    fi
-    if ! bq ls "${PROJECT}:${DATASET}"; then
-        bq mk "$DATASET"
-    fi
 
     if ((start_stage <= 0)); then
         for directory in sql/glam_etl/fenix_clients_daily_scalar_aggregates*/; do
@@ -150,6 +154,40 @@ function main {
         run_query "fenix_clients_histogram_bucket_counts_v1"
         run_query "fenix_clients_histogram_probe_counts_v1"
         run_query "fenix_histogram_percentiles_v1"
+    fi
+}
+
+
+function main {
+    cd "$(dirname "$0")/../.."
+
+    local reset=${RESET:-false}
+    local product=${PRODUCT:-fenix}
+
+    # revert to the original default project in the environment
+    original_project=$(gcloud config get-value project)
+    function cleanup {
+        gcloud config set project "$original_project"
+    }
+    trap cleanup EXIT
+
+    gcloud config set project $PROJECT
+
+    # force delete the dataset
+    if $reset; then
+        bq rm -r -f "$DATASET"
+    fi
+    if ! bq ls "${PROJECT}:${DATASET}"; then
+        bq mk "$DATASET"
+    fi
+
+    if [[ "$product" == "fenix" ]]; then
+        run_fenix_sql
+    elif [[ "$product" = "desktop" ]]; then
+        run_desktop_sql
+    else
+        echo "Error: product must be fenix or desktop"
+        exit 1
     fi
 }
 

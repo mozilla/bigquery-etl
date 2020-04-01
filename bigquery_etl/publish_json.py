@@ -64,8 +64,8 @@ class JsonPublisher:
 
     def __del__(self):
         """Delete temporary artifacts."""
-        if self.temp_table:
-            self.client.delete_table(self.temp_table)
+        # if self.temp_table:
+        #     self.client.delete_table(self.temp_table)
 
         self._clear_stage_directory()
 
@@ -90,11 +90,12 @@ class JsonPublisher:
             # if it is an incremental query, then the query result needs to be
             # written to a temporary table to get exported as JSON
             self._write_results_to_temp_table()
-            self._publish_table_as_json(self.temp_table)
         else:
-            # for non-incremental queries, the entire destination table is exported
-            result_table = f"{self.dataset}.{self.table}_{self.version}"
-            self._publish_table_as_json(result_table)
+            # for non-incremental queries, the destination table is needs to be
+            # written to a temporary non-partioned table which gets exported
+            self._export_table_to_temp_table()
+
+        self._publish_table_as_json(self.temp_table)
 
     def _publish_table_as_json(self, result_table):
         """Export the `result_table` data as JSON to Cloud Storage."""
@@ -193,3 +194,27 @@ class JsonPublisher:
             )
             query_job = self.client.query(sql, job_config=job_config)
             query_job.result()
+
+    def _export_table_to_temp_table(self):
+        """
+        Copy the source table to a non-partitioned temporary table which gets exported.
+
+        This prevents the creation of a large number of files when exporting data as
+        JSON to GCS since files get split up based on the table partition.
+        """
+        self.temp_table = (
+            f"{self.project_id}.tmp.{self.table}_{self.version}_temp"
+        )
+        source_table = f"{self.dataset}.{self.table}_{self.version}"
+
+        print(self.temp_table)
+
+        # create a non-partitioned temporary table
+        tmp_dataset = self.client.dataset("tmp")
+        tmp_table_ref = tmp_dataset.table(f"{self.table}_{self.version}_temp")
+        tmp_table = bigquery.Table(tmp_table_ref)
+        self.client.create_table(tmp_table)
+
+        # copy data from source table to temporary table
+        job = self.client.copy_table(source_table, self.temp_table)
+        job.result() 

@@ -7,4 +7,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-buildhub2-prod-4784:build_metadata.buildhub2`
+  `moz-fx-buildhub2-prod-4784.build_metadata.buildhub2`

@@ -1,12 +1,5 @@
 CREATE TEMP FUNCTION bucket_manufacturer(manufacturer STRING) AS (
-  IF(
-    LOWER(manufacturer) IN (
-      'samsung',
-      'huawei'
-    ),
-    LOWER(manufacturer),
-    'Other'
-  )
+  IF(LOWER(manufacturer) IN ('samsung', 'huawei'), LOWER(manufacturer), 'Other')
 );
 
 CREATE TEMP FUNCTION bucket_country(country STRING) AS (
@@ -26,9 +19,10 @@ WITH fennec_client_info AS (
     SPLIT(device, '-')[OFFSET(0)] AS manufacturer,
     clients_last_seen.country,
     COALESCE(
-        CAST(REGEXP_EXTRACT(metadata_app_version, r"^[0-9]+") AS INT64) >= 68
-            AND SAFE_CAST(osversion AS INT64) >= 21,
-        FALSE) AS can_migrate,
+      CAST(REGEXP_EXTRACT(metadata_app_version, r"^[0-9]+") AS INT64) >= 68
+      AND SAFE_CAST(osversion AS INT64) >= 21,
+      FALSE
+    ) AS can_migrate,
     `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 0) AS active_this_week,
     `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 1) AS active_last_week,
     `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_created_profile_bits, 0) AS new_this_week,
@@ -41,12 +35,14 @@ WITH fennec_client_info AS (
     clients_last_seen.client_id = migrated_clients.fennec_client_id
   WHERE
     clients_last_seen.submission_date IN (
-        @submission_date,
-        DATE_SUB(@submission_date, INTERVAL 1 YEAR),
-        DATE_SUB(DATE_SUB(@submission_date, INTERVAL 1 YEAR), INTERVAL 1 WEEK))
+      @submission_date,
+      DATE_SUB(@submission_date, INTERVAL 1 YEAR),
+      DATE_SUB(DATE_SUB(@submission_date, INTERVAL 1 YEAR), INTERVAL 1 WEEK)
+    )
     AND (
       migrated_clients.submission_date = @submission_date
-      OR migrated_clients.submission_date IS NULL)
+      OR migrated_clients.submission_date IS NULL
+    )
     AND app_name = 'Fennec'
     AND os = 'Android'
 ),
@@ -55,14 +51,23 @@ fenix_client_info AS (
     clients_last_seen.submission_date AS date,
     migrated_clients.fenix_client_id IS NOT NULL AS is_migrated,
     'Fenix' AS app_name,
-    CASE clients_last_seen.normalized_channel
-        WHEN 'aurora nightly' THEN 'nightly'
-        WHEN 'nightly' THEN 'firefox-preview nightly'
-        ELSE clients_last_seen.normalized_channel
-    END AS channel,
+    CASE
+      clients_last_seen.normalized_channel
+    WHEN
+      'aurora nightly'
+    THEN
+      'nightly'
+    WHEN
+      'nightly'
+    THEN
+      'firefox-preview nightly'
+    ELSE
+      clients_last_seen.normalized_channel
+    END
+    AS channel,
     device_manufacturer AS manufacturer,
     clients_last_seen.country,
-    TRUE as can_migrate,
+    TRUE AS can_migrate,
     `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 0) AS active_this_week,
     `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 1) AS active_last_week,
     DATE_DIFF(clients_last_seen.submission_date, first_run_date, DAY)
@@ -82,7 +87,8 @@ fenix_client_info AS (
     clients_last_seen.submission_date = @submission_date
     AND (
       migrated_clients.submission_date <= @submission_date
-      OR migrated_clients.submission_date IS NULL)
+      OR migrated_clients.submission_date IS NULL
+    )
 ),
 client_info AS (
   SELECT
@@ -160,102 +166,110 @@ counts AS (
     channel,
     manufacturer,
     country
-), with_retention AS (
-    SELECT
-      * EXCEPT (established_churned, new_churned),
+),
+with_retention AS (
+  SELECT
+    * EXCEPT (established_churned, new_churned),
       -- Churned users are a negative count, since they left the product
-      -1 * established_churned AS established_churned,
-      -1 * new_churned AS new_churned,
-      SAFE_DIVIDE((established_returning + new_returning), active_previous) AS retention_rate,
-      SAFE_DIVIDE(
-        established_returning,
-        (established_returning + established_churned)
-      ) AS established_returning_retention_rate,
-      SAFE_DIVIDE(new_returning, (new_returning + new_churned)) AS new_returning_retention_rate,
-      SAFE_DIVIDE((established_churned + new_churned), active_previous) AS churn_rate,
-      SAFE_DIVIDE(resurrected, active_current) AS perc_of_active_resurrected,
-      SAFE_DIVIDE(new_users, active_current) AS perc_of_active_new,
-      SAFE_DIVIDE(established_returning, active_current) AS perc_of_active_established_returning,
-      SAFE_DIVIDE(new_returning, active_current) AS perc_of_active_new_returning,
-      SAFE_DIVIDE((new_users + resurrected), (established_churned + new_churned)) AS quick_ratio,
-    FROM
-      counts
-), _current AS (
-    SELECT *
-    FROM with_retention
-    WHERE date = @submission_date
-), last_week AS (
-    SELECT
-        * EXCEPT (date)
-    FROM
-        `moz-fx-data-shared-prod.org_mozilla_firefox_derived.incline_executive_v1`
-    WHERE
-        date = DATE_SUB(@submission_date, INTERVAL 1 WEEK)
-), last_year AS (
-    SELECT
-        a.date,
-        a.is_migrated,
-        a.app_name,
-        a.channel,
-        a.manufacturer,
-        a.country,
-        a.established_returning_retention_rate
-            - b.established_returning_retention_rate AS established_returning_retention_delta
-    FROM
-        with_retention a
-    INNER JOIN
-        with_retention b
-        ON
-            a.date = DATE_ADD(b.date, INTERVAL 7 DAY)
-            AND a.is_migrated = b.is_migrated
-            AND a.app_name = b.app_name
-            AND a.channel = b.channel
-            AND a.manufacturer = b.manufacturer
-            AND a.country = b.country
-    WHERE
-        a.date = DATE_SUB(@submission_date, INTERVAL 1 YEAR)
-), all_migrated_clients AS (
-    SELECT
-        'Fenix' AS app_name,
-        COALESCE(channel_group, normalized_channel) AS channel,
-        COALESCE(manufacturer_group, bucket_manufacturer(manufacturer)) AS manufacturer,
-        COALESCE(country_group, bucketed_country) AS country,
-        COUNT(*) AS cumulative_migration_count
-    FROM
-        `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
-    CROSS JOIN
-        UNNEST(['Overall', NULL]) AS channel_group
-    CROSS JOIN
-        UNNEST(['Overall', NULL]) AS manufacturer_group
-    CROSS JOIN
-        UNNEST(['Overall', NULL]) AS country_group
-    CROSS JOIN
-        UNNEST(bucket_country(country)) AS bucketed_country
-    WHERE
-        submission_date <= @submission_date
-    GROUP BY
-        channel,
-        manufacturer,
-        country
+    -1 * established_churned AS established_churned,
+    -1 * new_churned AS new_churned,
+    SAFE_DIVIDE((established_returning + new_returning), active_previous) AS retention_rate,
+    SAFE_DIVIDE(
+      established_returning,
+      (established_returning + established_churned)
+    ) AS established_returning_retention_rate,
+    SAFE_DIVIDE(new_returning, (new_returning + new_churned)) AS new_returning_retention_rate,
+    SAFE_DIVIDE((established_churned + new_churned), active_previous) AS churn_rate,
+    SAFE_DIVIDE(resurrected, active_current) AS perc_of_active_resurrected,
+    SAFE_DIVIDE(new_users, active_current) AS perc_of_active_new,
+    SAFE_DIVIDE(established_returning, active_current) AS perc_of_active_established_returning,
+    SAFE_DIVIDE(new_returning, active_current) AS perc_of_active_new_returning,
+    SAFE_DIVIDE((new_users + resurrected), (established_churned + new_churned)) AS quick_ratio,
+  FROM
+    counts
+),
+_current AS (
+  SELECT
+    *
+  FROM
+    with_retention
+  WHERE
+    date = @submission_date
+),
+last_week AS (
+  SELECT
+    * EXCEPT (date)
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_derived.incline_executive_v1`
+  WHERE
+    date = DATE_SUB(@submission_date, INTERVAL 1 WEEK)
+),
+last_year AS (
+  SELECT
+    a.date,
+    a.is_migrated,
+    a.app_name,
+    a.channel,
+    a.manufacturer,
+    a.country,
+    a.established_returning_retention_rate - b.established_returning_retention_rate AS established_returning_retention_delta
+  FROM
+    with_retention a
+  INNER JOIN
+    with_retention b
+  ON
+    a.date = DATE_ADD(b.date, INTERVAL 7 DAY)
+    AND a.is_migrated = b.is_migrated
+    AND a.app_name = b.app_name
+    AND a.channel = b.channel
+    AND a.manufacturer = b.manufacturer
+    AND a.country = b.country
+  WHERE
+    a.date = DATE_SUB(@submission_date, INTERVAL 1 YEAR)
+),
+all_migrated_clients AS (
+  SELECT
+    'Fenix' AS app_name,
+    COALESCE(channel_group, normalized_channel) AS channel,
+    COALESCE(manufacturer_group, bucket_manufacturer(manufacturer)) AS manufacturer,
+    COALESCE(country_group, bucketed_country) AS country,
+    COUNT(*) AS cumulative_migration_count
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
+  CROSS JOIN
+    UNNEST(['Overall', NULL]) AS channel_group
+  CROSS JOIN
+    UNNEST(['Overall', NULL]) AS manufacturer_group
+  CROSS JOIN
+    UNNEST(['Overall', NULL]) AS country_group
+  CROSS JOIN
+    UNNEST(bucket_country(country)) AS bucketed_country
+  WHERE
+    submission_date <= @submission_date
+  GROUP BY
+    channel,
+    manufacturer,
+    country
 )
-
 SELECT
   _current.*,
   last_week.retention_rate AS retention_rate_previous,
   last_week.quick_ratio AS quick_ratio_previous,
   last_week.can_migrate AS can_migrate_previous,
-  _current.established_returning_retention_rate
-      - last_week.established_returning_retention_rate AS established_returning_retention_delta,
+  _current.established_returning_retention_rate - last_week.established_returning_retention_rate AS established_returning_retention_delta,
   last_year.established_returning_retention_delta AS established_returning_retention_delta_previous,
   all_migrated_clients.cumulative_migration_count
 FROM
   _current
 LEFT JOIN
   last_week
-    USING (is_migrated, app_name, channel, manufacturer, country)
+USING
+  (is_migrated, app_name, channel, manufacturer, country)
 LEFT JOIN
   last_year
-    USING (is_migrated, app_name, channel, manufacturer, country)
+USING
+  (is_migrated, app_name, channel, manufacturer, country)
 LEFT JOIN
   all_migrated_clients
-    USING (app_name, channel, manufacturer, country)
+USING
+  (app_name, channel, manufacturer, country)

@@ -1,7 +1,7 @@
 CREATE OR REPLACE TABLE
-    `moz-fx-data-shared-prod.org_mozilla_firefox_derived.incline_executive_v1`
+  `moz-fx-data-shared-prod.org_mozilla_firefox_derived.incline_executive_v1`
 PARTITION BY
-    (date)
+  (date)
 AS
 WITH columns AS (
   SELECT
@@ -39,7 +39,9 @@ WITH columns AS (
     CAST(NULL AS FLOAT64) AS established_returning_retention_delta_previous,
     CAST(NULL AS INT64) AS cumulative_migration_count
 )
-
-SELECT *
-FROM columns
-WHERE FALSE
+SELECT
+  *
+FROM
+  columns
+WHERE
+  FALSE

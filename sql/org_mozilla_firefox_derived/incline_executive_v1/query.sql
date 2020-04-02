@@ -24,7 +24,7 @@ WITH fennec_client_info AS (
     app_name,
     clients_last_seen.normalized_channel AS channel,
     SPLIT(device, '-')[OFFSET(0)] AS manufacturer,
-    country,
+    clients_last_seen.country,
     COALESCE(
         CAST(REGEXP_EXTRACT(metadata_app_version, r"^[0-9]+") AS INT64) >= 68
             AND SAFE_CAST(osversion AS INT64) >= 21,
@@ -41,11 +41,11 @@ WITH fennec_client_info AS (
     clients_last_seen.client_id = migrated_clients.fennec_client_id
   WHERE
     clients_last_seen.submission_date IN (
-        '2020-03-30', 
-        DATE_SUB('2020-03-30', INTERVAL 1 YEAR),
-        DATE_SUB(DATE_SUB('2020-03-30', INTERVAL 1 YEAR), INTERVAL 1 WEEK))
+        @submission_date,
+        DATE_SUB(@submission_date, INTERVAL 1 YEAR),
+        DATE_SUB(DATE_SUB(@submission_date, INTERVAL 1 YEAR), INTERVAL 1 WEEK))
     AND (
-      migrated_clients.submission_date = '2020-03-30'
+      migrated_clients.submission_date = @submission_date
       OR migrated_clients.submission_date IS NULL)
     AND app_name = 'Fennec'
     AND os = 'Android'
@@ -55,13 +55,13 @@ fenix_client_info AS (
     clients_last_seen.submission_date AS date,
     migrated_clients.fenix_client_id IS NOT NULL AS is_migrated,
     'Fenix' AS app_name,
-    CASE clients_last_seen.normalized_channel 
+    CASE clients_last_seen.normalized_channel
         WHEN 'aurora nightly' THEN 'nightly'
         WHEN 'nightly' THEN 'firefox-preview nightly'
         ELSE clients_last_seen.normalized_channel
     END AS channel,
     device_manufacturer AS manufacturer,
-    country,
+    clients_last_seen.country,
     TRUE as can_migrate,
     `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 0) AS active_this_week,
     `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 1) AS active_last_week,
@@ -79,9 +79,9 @@ fenix_client_info AS (
     clients_last_seen.client_id = migrated_clients.fenix_client_id
     AND clients_last_seen.submission_date <= migrated_clients.submission_date
   WHERE
-    clients_last_seen.submission_date = '2020-03-30'
+    clients_last_seen.submission_date = @submission_date
     AND (
-      migrated_clients.submission_date <= '2020-03-30'
+      migrated_clients.submission_date <= @submission_date
       OR migrated_clients.submission_date IS NULL)
 ),
 client_info AS (
@@ -183,14 +183,14 @@ counts AS (
 ), _current AS (
     SELECT *
     FROM with_retention
-    WHERE date = '2020-03-30'
+    WHERE date = @submission_date
 ), last_week AS (
     SELECT
         * EXCEPT (date)
     FROM
         `moz-fx-data-shared-prod.org_mozilla_firefox_derived.incline_executive_v1`
     WHERE
-        date = DATE_SUB('2020-03-30', INTERVAL 1 WEEK)
+        date = DATE_SUB(@submission_date, INTERVAL 1 WEEK)
 ), last_year AS (
     SELECT
         a.date,
@@ -213,11 +213,30 @@ counts AS (
             AND a.manufacturer = b.manufacturer
             AND a.country = b.country
     WHERE
-        a.date = DATE_SUB('2020-03-30', INTERVAL 1 YEAR)
+        a.date = DATE_SUB(@submission_date, INTERVAL 1 YEAR)
 ), all_migrated_clients AS (
     SELECT
-        date,
-`moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
+        'Fenix' AS app_name,
+        COALESCE(channel_group, normalized_channel) AS channel,
+        COALESCE(manufacturer_group, bucket_manufacturer(manufacturer)) AS manufacturer,
+        COALESCE(country_group, bucketed_country) AS country,
+        COUNT(*) AS cumulative_migration_count
+    FROM
+        `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
+    CROSS JOIN
+        UNNEST(['Overall', NULL]) AS channel_group
+    CROSS JOIN
+        UNNEST(['Overall', NULL]) AS manufacturer_group
+    CROSS JOIN
+        UNNEST(['Overall', NULL]) AS country_group
+    CROSS JOIN
+        UNNEST(bucket_country(country)) AS bucketed_country
+    WHERE
+        submission_date <= @submission_date
+    GROUP BY
+        channel,
+        manufacturer,
+        country
 )
 
 SELECT
@@ -227,7 +246,8 @@ SELECT
   last_week.can_migrate AS can_migrate_previous,
   _current.established_returning_retention_rate
       - last_week.established_returning_retention_rate AS established_returning_retention_delta,
-  last_year.established_returning_retention_delta AS established_returning_retention_delta_previous
+  last_year.established_returning_retention_delta AS established_returning_retention_delta_previous,
+  all_migrated_clients.cumulative_migration_count
 FROM
   _current
 LEFT JOIN
@@ -236,3 +256,6 @@ LEFT JOIN
 LEFT JOIN
   last_year
     USING (is_migrated, app_name, channel, manufacturer, country)
+LEFT JOIN
+  all_migrated_clients
+    USING (app_name, channel, manufacturer, country)

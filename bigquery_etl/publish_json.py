@@ -154,6 +154,12 @@ class JsonPublisher:
                             output_file.write("]")
                             output_file.close()
 
+                        if output_file_counter >= 1000000000000:
+                            logging.error(
+                                "Maximum number of JSON output files reached."
+                            )
+                            sys.exit(1)
+
                         tmp_blob_name = "/".join(blob.name.split("/")[:-1])
                         tmp_blob_name += (
                             "/" + str(output_file_counter).zfill(12) + ".json.tmp.gz"

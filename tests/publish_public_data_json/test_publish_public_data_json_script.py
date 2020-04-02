@@ -46,7 +46,10 @@ class TestPublishJsonScript(object):
         try:
             self.client.get_table(self.non_incremental_table)
         except NotFound:
-            job_config = bigquery.QueryJobConfig(destination=self.non_incremental_table)
+            date_partition = bigquery.table.TimePartitioning(field="d")
+            job_config = bigquery.QueryJobConfig(
+                destination=self.non_incremental_table, time_partitioning=date_partition
+            )
 
             # create table for non-incremental query
             with open(self.non_incremental_sql_path) as query_stream:

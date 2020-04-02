@@ -6,7 +6,9 @@ owners:
   - chutten@mozilla.com
 labels:
   application: firefox
-  incremental: true
+  # Note: the query is incremental but exported data is treated as non-incremental
+  incremental: false
   schedule: daily
   public_json: true
   public_bigquery: true
+  review_bug: 1414839

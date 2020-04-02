@@ -32,6 +32,7 @@ SKIP = {
     "sql/monitoring/document_sample_nonprod_v1/query.sql",
     "sql/monitoring/schema_error_counts_v1/view.sql",
     "sql/monitoring/structured_error_counts_v1/view.sql",
+    "sql/telemetry/buildhub2/view.sql",
     "sql/telemetry/fxa_content_events_v1/query.sql",
     "sql/telemetry/fxa_auth_bounce_events_v1/query.sql",
     "sql/telemetry/fxa_auth_events_v1/query.sql",

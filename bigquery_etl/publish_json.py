@@ -14,7 +14,9 @@ SUBMISSION_DATE_RE = re.compile(r"^submission_date:DATE:(\d\d\d\d-\d\d-\d\d)$")
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
 MAX_JSON_SIZE = 1 * 1024 * 1024 * 1024  # 1 GB as max. size of exported JSON files
 # maximum number of JSON output files, output file names are only up to 12 characters
-MAX_FILE_COUNT = 999_999_999_999
+MAX_FILE_COUNT = 10_000
+# exported file name format: 000000000000.json.gz, 000000000001.json.gz, ...
+MAX_JSON_NAME_LENGTH = 12
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s: %(levelname)s: %(message)s"
@@ -166,7 +168,9 @@ class JsonPublisher:
 
                         tmp_blob_name = "/".join(blob.name.split("/")[:-1])
                         tmp_blob_name += (
-                            "/" + str(output_file_counter).zfill(12) + ".json.tmp.gz"
+                            "/"
+                            + str(output_file_counter).zfill(MAX_JSON_NAME_LENGTH)
+                            + ".json.tmp.gz"
                         )
                         tmp_blob_path = f"gs://{self.target_bucket}/{tmp_blob_name}"
 
@@ -176,7 +180,7 @@ class JsonPublisher:
                         output_file.write("[")
                         first_line = True
                         output_file_counter += 1
-                        output_size = 3
+                        output_size = 1
 
                     # skip the first line, it has no preceding json object
                     if not first_line:

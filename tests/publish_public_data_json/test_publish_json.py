@@ -148,5 +148,5 @@ class TestPublishJson(object):
         )
 
         file_handler.write.assert_has_calls(
-            [call("[\n"), call('{"a": 1}'), call(",\n"), call('{"b": "cc"}'), call("]")]
+            [call("["), call('{"a": 1}'), call(","), call('{"b": "cc"}'), call("]")]
         )

@@ -52,7 +52,7 @@ class JsonPublisher:
 
         # only for incremental exports files are written into separate directories
         # for each date, ignore date parameters for non-incremental exports
-        if self.metadata.is_incremental() and self.parameter:
+        if self.metadata.is_incremental_export() and self.parameter:
             for p in self.parameter:
                 date_search = re.search(SUBMISSION_DATE_RE, p)
 
@@ -86,7 +86,7 @@ class JsonPublisher:
 
     def publish_json(self):
         """Publish query results as JSON to GCP Storage bucket."""
-        if self.metadata.is_incremental():
+        if self.metadata.is_incremental_export():
             if self.date is None:
                 logging.error(
                     "Cannot publish JSON. submission_date missing in parameter."

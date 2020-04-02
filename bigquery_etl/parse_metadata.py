@@ -94,3 +94,7 @@ class Metadata:
     def is_incremental(self):
         """Return true if the incremental flag is set."""
         return "incremental" in self.labels
+
+    def is_incremental_export(self):
+        """Return true if the incremental_export flag is set."""
+        return "incremental_export" in self.labels

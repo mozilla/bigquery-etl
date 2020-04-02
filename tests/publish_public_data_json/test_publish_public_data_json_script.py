@@ -19,6 +19,11 @@ class TestPublishJsonScript(object):
         "non_incremental_query_v1/query.sql"
     )
 
+    incremental_non_incremental_export_sql_path = (
+        "tests/publish_public_data_json/test_sql/test/"
+        "incremental_query_non_incremental_export_v1/query.sql"
+    )
+
     incremental_sql_path = (
         "tests/publish_public_data_json/test_sql/test/incremental_query_v1/query.sql"
     )
@@ -118,6 +123,21 @@ class TestPublishJsonScript(object):
 
         assert res.returncode == 0
 
+    @pytest.mark.dependency(name="test_script_non_incremental_export")
+    def test_script_non_incremental_export(self):
+        res = subprocess.run(
+            (
+                "./script/publish_public_data_json",
+                "publish_json",
+                "--parameter=a:INT64:9",
+                "--query_file=" + self.incremental_non_incremental_export_sql_path,
+                "--target_bucket=" + self.test_bucket,
+                "--project_id=" + self.project_id,
+                "--parameter=" + self.incremental_parameter,
+            )
+        )
+        assert res.returncode == 0
+
     @pytest.mark.dependency(depends=["test_script_incremental_query"])
     def test_temporary_tables_removed(self):
         with pytest.raises(NotFound):
@@ -128,19 +148,48 @@ class TestPublishJsonScript(object):
         gcp_path = "api/v1/tables/test/non_incremental_query/v1/files/"
         blobs = self.storage_client.list_blobs(self.test_bucket, prefix=gcp_path)
 
+        blob_count = 0
+
         for blob in blobs:
+            blob_count += 1
             compressed = blob.download_as_string()
             uncompressed = zlib.decompress(compressed, 16 + zlib.MAX_WBITS)
             content = json.loads(uncompressed.decode("utf-8").strip())
             assert len(content) == 3
 
-    @pytest.mark.dependency(depends=["test_script_non_incremental_query"])
+        assert blob_count == 1
+
+    @pytest.mark.dependency(depends=["test_script_non_incremental_export"])
+    def test_incremental_query_non_incremental_export_gcs(self):
+        gcp_path = (
+            "api/v1/tables/test/incremental_query_non_incremental_export/v1/files/"
+        )
+
+        blobs = self.storage_client.list_blobs(self.test_bucket, prefix=gcp_path)
+
+        blob_count = 0
+
+        for blob in blobs:
+            blob_count += 1
+            compressed = blob.download_as_string()
+            uncompressed = zlib.decompress(compressed, 16 + zlib.MAX_WBITS)
+            content = json.loads(uncompressed.decode("utf-8").strip())
+            assert len(content) == 3
+
+        assert blob_count == 1
+
+    @pytest.mark.dependency(depends=["test_script_incremental_query"])
     def test_incremental_query_gcs(self):
         gcp_path = "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
         blobs = self.storage_client.list_blobs(self.test_bucket, prefix=gcp_path)
 
+        blob_count = 0
+
         for blob in blobs:
+            blob_count += 1
             compressed = blob.download_as_string()
             uncompressed = zlib.decompress(compressed, 16 + zlib.MAX_WBITS)
             content = json.loads(uncompressed.decode("utf-8").strip())
             assert len(content) == 3
+
+        assert blob_count == 1

@@ -191,11 +191,12 @@ owners:
   - example@mozilla.com
 labels:
   application: firefox
-  incremental: false    # incremental queries add data to existing tables
+  incremental: true     # incremental queries add data to existing tables
   schedule: daily       # scheduled in Airflow to run daily
   public_json: true
   public_bigquery: true
   review_bug: 1414839   # Bugzilla bug ID of data review
+  incremental_export: false  # non-incremental JSON export writes all data to a single location
 ```
 
 ### Publishing Datasets
@@ -208,7 +209,13 @@ labels:
   `metadata.yaml`
   - Data will be accessible under https://http.public-data.prod.dataops.mozgcp.net
   - For example: http://http.public-data.prod.dataops.mozgcp.net/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000000000.json.gz
+  - Output JSON files have a maximum size of 1GB, data can be split up into multiple files (`000000000000.json.gz`, `000000000001.json.gz`, ...)
   - This feature is currently under development
+  - `incremental_export` controls how data should be exported as JSON:
+    - `false`: all data of the source table gets exported to a single location
+      - http://http.public-data.prod.dataops.mozgcp.net/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000000000.json.gz
+    - `true`: only data that matches the `submission_date` parameter is exported as JSON to a separate directory for this date
+      - http://http.public-data.prod.dataops.mozgcp.net/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/2020-03-15/000000000000.json.gz
 
 Scheduling Queries in Airflow
 ---

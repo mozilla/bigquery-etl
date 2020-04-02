@@ -7,3 +7,4 @@ labels:
   schedule: daily
   public_json: true
   incremental: true
+  incremental_export: true

@@ -17,21 +17,21 @@ SELECT
   WHEN
     BIT_COUNT(days_visited_5_uri_bits & 0x0FFFFFFE) = 0
   THEN
-    'new_irregular_users_v1'
+    'new_irregular_users_v2'
   WHEN
     BIT_COUNT(days_visited_5_uri_bits & 0x0FFFFFFE)
     BETWEEN 1
     AND 7
   THEN
-    'semi_regular_users_v1'
+    'semi_regular_users_v2'
   WHEN
     BIT_COUNT(days_visited_5_uri_bits & 0x0FFFFFFE)
     BETWEEN 8
     AND 27
   THEN
-    'regular_users_v1'
+    'regular_users_v2'
   END
-  AS segment_usage_regularity_v1,
+  AS segment_usage_regularity_v2,
   * EXCEPT (
     active_experiment_id,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,

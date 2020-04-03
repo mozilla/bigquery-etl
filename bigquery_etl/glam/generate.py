@@ -154,6 +154,9 @@ def main():
         view("view_clients_daily_histogram_aggregates_v1"),
         table("histogram_percentiles_v1"),
         view("view_client_probe_counts_v1"),
+        table("user_counts_v1", **models.user_counts()),
+        view("view_user_counts_extract_v1"),
+        view("view_client_probe_counts_extract_v1"),
     ]
 
 

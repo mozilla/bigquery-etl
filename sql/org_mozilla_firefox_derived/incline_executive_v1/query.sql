@@ -13,14 +13,14 @@ CREATE TEMP FUNCTION bucket_country(country STRING) AS (
 WITH fennec_client_info AS (
   SELECT
     clients_last_seen.submission_date AS date,
-    migrated_clients.fenix_client_id IS NOT NULL is_migrated,
+    migrated_clients.fenix_client_id IS NOT NULL AS is_migrated,
     migrated_clients.submission_date = clients_last_seen.submission_date AS migrated_today,
     app_name,
     clients_last_seen.normalized_channel AS channel,
     SPLIT(device, '-')[OFFSET(0)] AS manufacturer,
     clients_last_seen.country,
     COALESCE(
-      CAST(REGEXP_EXTRACT(metadata_app_version, r"^[0-9]+") AS INT64) >= 68
+      SAFE_CAST(REGEXP_EXTRACT(metadata_app_version, r"^[0-9]+") AS INT64) >= 68
       AND SAFE_CAST(osversion AS INT64) >= 21,
       FALSE
     ) AS can_migrate,

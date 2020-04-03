@@ -1,6 +1,3 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_view_user_counts_extract_v1`
-AS
 WITH deduped AS (
   SELECT
     *,

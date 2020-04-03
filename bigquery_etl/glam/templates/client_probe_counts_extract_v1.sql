@@ -1,6 +1,3 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_view_client_probe_counts_extract_v1`
-AS
 -- TODO: Remove deduping when dupes are fixed.
 WITH deduped AS (
     SELECT

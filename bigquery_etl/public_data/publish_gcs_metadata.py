@@ -93,13 +93,13 @@ class GcsTableMetadata:
 
                 if date is not None:
                     if date in metadata_json:
-                        metadata_json[date].append(file)
+                        metadata_json[date].append(self.endpoint + file)
                     else:
-                        metadata_json[date] = [file]
+                        metadata_json[date] = [self.endpoint + file]
 
             return metadata_json
         else:
-            return self.files
+            return [self.endpoint + file for file in self.files]
 
 
 def dataset_table_version_from_gcs_path(gcs_path):

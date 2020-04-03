@@ -6,7 +6,7 @@ WITH deduped AS (
         ORDER BY total_users DESC
     ) AS rank
   FROM
-    `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_user_counts_v1`
+    `{{ dataset }}.{{ prefix }}_user_counts_v1`
 )
 
 SELECT

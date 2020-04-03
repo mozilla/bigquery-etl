@@ -18,7 +18,7 @@ WITH deduped AS (
                 total_users DESC
         ) AS rank
     FROM
-        `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_view_client_probe_counts_v1`
+        `{{ dataset }}.{{ prefix }}_view_client_probe_counts_v1`
     WHERE
         app_version IS NOT NULL
         AND total_users > 1000

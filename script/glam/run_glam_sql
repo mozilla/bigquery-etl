@@ -63,6 +63,7 @@ function run_query {
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
         --parameter="min_sample_id:INT64:$min_sample_id" \
         --parameter="max_sample_id:INT64:$max_sample_id" \
+        "$(if $time_partition; then echo --time_partitioning_type="DAY"; fi)" \
         < "$tmp"
 }
 

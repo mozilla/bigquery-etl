@@ -155,6 +155,7 @@ function run_fenix_sql {
         run_query "fenix_clients_histogram_probe_counts_v1"
         run_query "fenix_histogram_percentiles_v1"
     fi
+    run_view "fenix_view_client_probe_counts_v1"
 }
 
 

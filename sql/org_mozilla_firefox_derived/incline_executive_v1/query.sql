@@ -14,6 +14,7 @@ WITH fennec_client_info AS (
   SELECT
     clients_last_seen.submission_date AS date,
     migrated_clients.fenix_client_id IS NOT NULL is_migrated,
+    migrated_clients.submission_date = clients_last_seen.submission_date AS migrated_today,
     app_name,
     clients_last_seen.normalized_channel AS channel,
     SPLIT(device, '-')[OFFSET(0)] AS manufacturer,
@@ -32,16 +33,16 @@ WITH fennec_client_info AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
   ON
+    -- For Fennec, we only want to look at historical migration pings
+    -- to see if this client has migrated. We use this to check if they
+    -- were migrated today as well.
     clients_last_seen.client_id = migrated_clients.fennec_client_id
+    AND clients_last_seen.submission_date >= migrated_clients.submission_date
   WHERE
     clients_last_seen.submission_date IN (
       @submission_date,
       DATE_SUB(@submission_date, INTERVAL 1 YEAR),
       DATE_SUB(DATE_SUB(@submission_date, INTERVAL 1 YEAR), INTERVAL 1 WEEK)
-    )
-    AND (
-      migrated_clients.submission_date = @submission_date
-      OR migrated_clients.submission_date IS NULL
     )
     AND app_name = 'Fennec'
     AND os = 'Android'
@@ -50,6 +51,7 @@ fenix_client_info AS (
   SELECT
     clients_last_seen.submission_date AS date,
     migrated_clients.fenix_client_id IS NOT NULL AS is_migrated,
+    migrated_clients.submission_date = clients_last_seen.submission_date AS migrated_today,
     'Fenix' AS app_name,
     CASE
       clients_last_seen.normalized_channel
@@ -81,14 +83,11 @@ fenix_client_info AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
   ON
+    -- For Fenix, we don't care if there's a delay in the migration ping, we know they
+    -- have been migrated the entire time
     clients_last_seen.client_id = migrated_clients.fenix_client_id
-    AND clients_last_seen.submission_date <= migrated_clients.submission_date
   WHERE
     clients_last_seen.submission_date = @submission_date
-    AND (
-      migrated_clients.submission_date <= @submission_date
-      OR migrated_clients.submission_date IS NULL
-    )
 ),
 client_info AS (
   SELECT
@@ -110,6 +109,7 @@ counts AS (
     COALESCE(manufacturer_group, bucket_manufacturer(manufacturer)) AS manufacturer,
     COALESCE(country_group, bucketed_country) AS country,
     COUNT(*) AS active_count,
+    COUNTIF(active_this_week AND migrated_today) AS new_migrations,
     COUNTIF(active_this_week AND can_migrate) AS can_migrate,
     COUNTIF(active_this_week AND NOT can_migrate) AS cannot_migrate,
     COUNTIF(active_last_week) AS active_previous,
@@ -251,6 +251,7 @@ all_migrated_clients AS (
     manufacturer,
     country
 )
+
 SELECT
   _current.*,
   last_week.retention_rate AS retention_rate_previous,

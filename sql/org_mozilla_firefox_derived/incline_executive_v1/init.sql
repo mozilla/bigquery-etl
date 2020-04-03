@@ -13,6 +13,7 @@ WITH columns AS (
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS INT64) AS active_count,
     CAST(NULL AS INT64) AS is_migrated_count,
+    CAST(NULL AS INT64) AS new_migrations,
     CAST(NULL AS INT64) AS can_migrate,
     CAST(NULL AS INT64) AS cannot_migrate,
     CAST(NULL AS INT64) AS active_previous,

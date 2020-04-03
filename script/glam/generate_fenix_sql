@@ -50,5 +50,5 @@ if ((start_stage <= 0)); then
     write_clients_daily_aggregates;
 fi
 if ((start_stage <= 1)); then
-    python -m bigquery_etl.glam.generate
+    python3 -m bigquery_etl.glam.generate
 fi

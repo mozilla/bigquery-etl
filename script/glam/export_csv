@@ -5,22 +5,18 @@
 set -e
 
 src_project=${SRC_PROJECT:-glam-fenix-dev}
-dst_project=${DST_PROJECT:-glam-dev-bespoke-nonprod-dataops-mozgcp-net}
+# TODO: glam-dev-bespoke-nonprod-dataops-mozgcp-net
+dst_project=${DST_PROJECT:-$src_project}
 dataset=${DATASET:-glam_etl_dev}
 product=${PRODUCT:-fenix}   # TODO: set default to org_mozilla_fenix
 
 bucket="gs://${dst_project}"
 gsutil ls "$bucket" > /dev/null
 
-
-# TODO: BigQuery error in extract operation: Error processing job
-# 'glam-fenix-dev:bqjob_r720e65825158fd25_000001713dbcab2d_1':
-# glam-fenix-dev:glam_etl_dev.fenix_view_client_probe_counts_extract_v1 is not
-# allowed for this operation because it is currently a VIEW.
 bq extract --destination_format CSV \
-    "${src_project}:${dataset}.${product}_view_client_probe_counts_extract_v1" \
+    "${src_project}:${dataset}.${product}_client_probe_counts_extract_v1" \
     "$bucket/glam-extract-${product}-*.csv"
 
 bq extract --destination_format CSV \
-    "${src_project}:${dataset}.${product}_view_user_counts_extract_v1" \
+    "${src_project}:${dataset}.${product}_user_counts_extract_v1" \
     "$bucket/glam-extract-${product}-counts.csv"

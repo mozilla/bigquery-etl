@@ -41,6 +41,8 @@ WITH fennec_client_info AS (
   WHERE
     clients_last_seen.submission_date IN (
       @submission_date,
+      -- We need to compare WoW retention delta YoY, and we don't want to backfill this table for an entire year.
+      -- Workaround is to calculate YoY retention directly, by getting that WoW retention delta here.
       DATE_SUB(@submission_date, INTERVAL 1 YEAR),
       DATE_SUB(DATE_SUB(@submission_date, INTERVAL 1 YEAR), INTERVAL 1 WEEK)
     )
@@ -120,6 +122,7 @@ counts AS (
       AND NOT active_last_week
       AND active_this_week
     ) resurrected,
+    -- New users are only counted if they are active
     COUNTIF(
       new_this_week
       AND active_this_week
@@ -130,11 +133,13 @@ counts AS (
       AND active_last_week
       AND active_this_week
     ) AS established_returning,
+    -- New returning users must have been active last week
     COUNTIF(
       new_last_week
       AND active_this_week
       AND active_last_week
     ) AS new_returning,
+    -- New churned users must have been active last week
     COUNTIF(
       new_last_week
       AND NOT active_this_week
@@ -200,6 +205,8 @@ with_retention AS (
     counts
 ),
 _current AS (
+  -- This is the current day's data. We will join this with the following CTEs
+  -- that we will use for comparison.
   SELECT
     *
   FROM
@@ -208,6 +215,7 @@ _current AS (
     date = @submission_date
 ),
 last_week AS (
+  -- We want WoW for topline metrics, so get this data from last week
   SELECT
     * EXCEPT (date)
   FROM
@@ -216,6 +224,7 @@ last_week AS (
     date = DATE_SUB(@submission_date, INTERVAL 1 WEEK)
 ),
 last_year AS (
+  -- We want YoY change in WoW retention, calculate last year's WoW retention here
   SELECT
     a.date,
     a.is_migrated,
@@ -239,6 +248,7 @@ last_year AS (
     a.date = DATE_SUB(@submission_date, INTERVAL 1 YEAR)
 ),
 all_migrated_clients AS (
+  -- This gives us the cumulative count of migrated clients
   SELECT
     'Fenix' AS app_name,
     COALESCE(channel_group, normalized_channel) AS channel,

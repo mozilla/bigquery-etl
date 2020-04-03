@@ -93,9 +93,29 @@ WITH filtered AS (
     AND normalized_channel IN ("release", "beta", "nightly")
     AND client_id IS NOT NULL
 ),
+sampled_data AS (
+  SELECT
+    *
+  FROM
+    filtered
+  WHERE
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+  UNION ALL
+  SELECT
+    *
+  FROM
+    filtered
+  WHERE
+    channel = 'release'
+    AND os = 'Windows'
+    AND sample_id >= @min_sample_id
+    AND sample_id <= @max_sample_id
+),
 histograms AS (
   SELECT
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -26939,11 +26959,12 @@ histograms AS (
       ('zoomed_view_enabled', 'parent', payload.histograms.zoomed_view_enabled, (1, 2, 3))
     ] AS histogram_aggregates
   FROM
-    filtered
+    sampled_data
 ),
 filtered_aggregates AS (
   SELECT
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -26962,6 +26983,7 @@ filtered_aggregates AS (
 ),
 aggregated AS (
   SELECT
+    sample_id,
     client_id,
     submission_date,
     os,
@@ -26982,9 +27004,11 @@ aggregated AS (
     5,
     6,
     7,
-    8
+    8,
+    9
 )
 SELECT
+  sample_id,
   client_id,
   submission_date,
   os,
@@ -27018,4 +27042,5 @@ GROUP BY
   3,
   4,
   5,
-  6
+  6,
+  7

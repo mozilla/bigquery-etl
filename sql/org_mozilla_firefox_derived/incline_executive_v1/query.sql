@@ -120,15 +120,26 @@ counts AS (
       AND NOT active_last_week
       AND active_this_week
     ) resurrected,
-    COUNTIF(new_this_week) AS new_users,
+    COUNTIF(
+      new_this_week
+      AND active_this_week
+    ) AS new_users,
     COUNTIF(
       NOT new_last_week
       AND NOT new_this_week
       AND active_last_week
       AND active_this_week
     ) AS established_returning,
-    COUNTIF(new_last_week AND active_this_week) AS new_returning,
-    COUNTIF(new_last_week AND NOT active_this_week) AS new_churned,
+    COUNTIF(
+      new_last_week
+      AND active_this_week
+      AND active_last_week
+    ) AS new_returning,
+    COUNTIF(
+      new_last_week
+      AND NOT active_this_week
+      AND active_last_week
+    ) AS new_churned,
     COUNTIF(
       NOT new_last_week
       AND NOT new_this_week

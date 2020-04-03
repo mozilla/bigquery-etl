@@ -7,7 +7,11 @@ import argparse
 import textwrap
 import subprocess
 import urllib.request
+from pathlib import Path
 from time import sleep
+
+sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
+from bigquery_etl.format_sql.formatter import reformat
 
 
 PROBE_INFO_SERVICE = (
@@ -449,14 +453,16 @@ def main(argv, out=print):
 
     sleep(opts['wait_seconds'])
     out(
-        generate_sql(
-            opts["agg_type"],
-            sql_string["probes_string"],
-            sql_string.get("additional_queries", ""),
-            sql_string.get("additional_partitions", ""),
-            sql_string["select_clause"],
-            sql_string.get("querying_table", "filtered"),
-            opts["json_output"],
+        reformat(
+            generate_sql(
+                opts["agg_type"],
+                sql_string["probes_string"],
+                sql_string.get("additional_queries", ""),
+                sql_string.get("additional_partitions", ""),
+                sql_string["select_clause"],
+                sql_string.get("querying_table", "filtered"),
+                opts["json_output"],
+            )
         )
     )
 

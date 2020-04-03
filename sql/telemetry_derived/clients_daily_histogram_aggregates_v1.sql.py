@@ -111,6 +111,26 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
                 )
                 AND client_id IS NOT NULL),
 
+        sampled_data AS (
+          SELECT
+            *
+          FROM
+            filtered
+          WHERE
+            channel IN ("nightly", "beta")
+            OR (channel = "release" AND os != "Windows")
+          UNION ALL
+          SELECT
+            *
+          FROM
+            filtered
+          WHERE
+            channel = 'release'
+            AND os = 'Windows'
+            AND sample_id >= @min_sample_id
+            AND sample_id <= @max_sample_id
+        ),
+
         {additional_queries}
 
         aggregated AS (
@@ -166,8 +186,8 @@ def _get_keyed_histogram_sql(probes_and_buckets):
     additional_queries = f"""
         grouped_metrics AS
           (SELECT
-            submission_timestamp,
             DATE(submission_timestamp) as submission_date,
+            sample_id,
             client_id,
             normalized_os as os,
             SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
@@ -181,12 +201,12 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             >>[
               {probes_arr}
             ] as metrics
-          FROM filtered),
+          FROM sampled_data),
 
           flattened_metrics AS
             (SELECT
-              submission_timestamp,
               submission_date,
+              sample_id,
               client_id,
               os,
               app_version,
@@ -205,6 +225,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
     windowed_clause = f"""
         SELECT
             submission_date,
+            sample_id,
             client_id,
             os,
             app_version,
@@ -214,6 +235,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             {probes_string}
             FROM flattened_metrics
             GROUP BY
+                sample_id,
                 client_id,
                 submission_date,
                 os,
@@ -228,6 +250,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
     select_clause = """
         SELECT
             submission_date,
+            sample_id,
             client_id,
             os,
             app_version,
@@ -256,6 +279,7 @@ def _get_keyed_histogram_sql(probes_and_buckets):
             )) AS histogram_aggregates
         FROM aggregated
         GROUP BY
+            sample_id,
             client_id,
             submission_date,
             os,
@@ -320,6 +344,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
         "select_clause"
     ] = f"""
         SELECT
+          sample_id,
           client_id,
           submission_date,
           os,
@@ -343,7 +368,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
             udf_aggregate_json_sum(value))) AS histogram_aggregates
         FROM aggregated
         GROUP BY
-          1, 2, 3, 4, 5, 6
+          1, 2, 3, 4, 5, 6, 7
 
     """
 
@@ -353,17 +378,19 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
         histograms AS (
             SELECT
                 submission_date,
+                sample_id,
                 client_id,
                 os,
                 app_version,
                 app_build_id,
                 channel,
                 {probes_string}
-            FROM filtered),
+            FROM sampled_data),
 
         filtered_aggregates AS (
           SELECT
             submission_date,
+            sample_id,
             client_id,
             os,
             app_version,
@@ -384,6 +411,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
         "windowed_clause"
     ] = f"""
       SELECT
+        sample_id,
         client_id,
         submission_date,
         os,
@@ -396,7 +424,7 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
         ARRAY_AGG(value) AS value
       FROM filtered_aggregates
       GROUP BY
-        1, 2, 3, 4, 5, 6, 7, 8
+        1, 2, 3, 4, 5, 6, 7, 8, 9
     """
 
     return sql_strings

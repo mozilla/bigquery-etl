@@ -93,10 +93,29 @@ WITH filtered AS (
     AND normalized_channel IN ("release", "beta", "nightly")
     AND client_id IS NOT NULL
 ),
+sampled_data AS (
+  SELECT
+    *
+  FROM
+    filtered
+  WHERE
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+  UNION ALL
+  SELECT
+    *
+  FROM
+    filtered
+  WHERE
+    channel = 'release'
+    AND os = 'Windows'
+    AND sample_id >= @min_sample_id
+    AND sample_id <= @max_sample_id
+),
 grouped_metrics AS (
   SELECT
-    submission_timestamp,
     DATE(submission_timestamp) AS submission_date,
+    sample_id,
     client_id,
     normalized_os AS os,
     SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
@@ -1870,12 +1889,12 @@ grouped_metrics AS (
       )
     ] AS metrics
   FROM
-    filtered
+    sampled_data
 ),
 flattened_metrics AS (
   SELECT
-    submission_timestamp,
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -1896,6 +1915,7 @@ flattened_metrics AS (
 aggregated AS (
   SELECT
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -1909,6 +1929,7 @@ aggregated AS (
   FROM
     flattened_metrics
   GROUP BY
+    sample_id,
     client_id,
     submission_date,
     os,
@@ -1921,6 +1942,7 @@ aggregated AS (
 )
 SELECT
   submission_date,
+  sample_id,
   client_id,
   os,
   app_version,
@@ -1948,6 +1970,7 @@ SELECT
 FROM
   aggregated
 GROUP BY
+  sample_id,
   client_id,
   submission_date,
   os,

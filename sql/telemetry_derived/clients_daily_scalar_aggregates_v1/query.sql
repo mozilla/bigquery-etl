@@ -15,10 +15,30 @@ WITH filtered AS (
     AND normalized_channel IN ("release", "beta", "nightly")
     AND client_id IS NOT NULL
 ),
+sampled_data AS (
+  SELECT
+    *
+  FROM
+    filtered
+  WHERE
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+  UNION ALL
+  SELECT
+    *
+  FROM
+    filtered
+  WHERE
+    channel = 'release'
+    AND os = 'Windows'
+    AND sample_id >= @min_sample_id
+    AND sample_id <= @max_sample_id
+),
 -- Using `min` for when `agg_type` is `count` returns null when all rows are null
 aggregated AS (
   SELECT
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -13118,9 +13138,10 @@ aggregated AS (
       )
     ] AS scalar_aggregates
   FROM
-    filtered
+    sampled_data
   GROUP BY
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,

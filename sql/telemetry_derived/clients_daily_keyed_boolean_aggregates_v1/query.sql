@@ -17,6 +17,7 @@ WITH filtered AS (
 ),
 grouped_metrics AS (
   SELECT
+    sample_id,
     client_id,
     submission_date,
     os,
@@ -62,6 +63,7 @@ grouped_metrics AS (
 ),
 flattened_metrics AS (
   SELECT
+    sample_id,
     client_id,
     submission_date,
     os,
@@ -78,10 +80,30 @@ flattened_metrics AS (
     UNNEST(metrics) AS metrics,
     UNNEST(metrics.value) AS value
 ),
+sampled_data AS (
+  SELECT
+    *
+  FROM
+    flattened_metrics
+  WHERE
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+  UNION ALL
+  SELECT
+    *
+  FROM
+    flattened_metrics
+  WHERE
+    channel = 'release'
+    AND os = 'Windows'
+    AND sample_id >= @min_sample_id
+    AND sample_id <= @max_sample_id
+),
 -- Using `min` for when `agg_type` is `count` returns null when all rows are null
 aggregated AS (
   SELECT
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -93,9 +115,10 @@ aggregated AS (
     SUM(CASE WHEN value = TRUE THEN 1 ELSE 0 END) AS true_col,
     SUM(CASE WHEN value = FALSE THEN 1 ELSE 0 END) AS false_col
   FROM
-    flattened_metrics
+    sampled_data
   GROUP BY
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -106,6 +129,7 @@ aggregated AS (
     key
 )
 SELECT
+  sample_id,
   client_id,
   submission_date,
   os,
@@ -130,6 +154,7 @@ SELECT
 FROM
   aggregated
 GROUP BY
+  sample_id,
   client_id,
   submission_date,
   os,

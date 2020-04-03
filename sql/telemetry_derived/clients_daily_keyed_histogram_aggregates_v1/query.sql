@@ -852,6 +852,18 @@ grouped_metrics AS (
         (100, 30000, 100)
       ),
       (
+        'http3_connecttion_close_code',
+        'content',
+        payload.processes.content.keyed_histograms.http3_connecttion_close_code,
+        (1, 100, 101)
+      ),
+      (
+        'http3_connecttion_close_code',
+        'parent',
+        payload.keyed_histograms.http3_connecttion_close_code,
+        (1, 100, 101)
+      ),
+      (
         'http_cache_disposition_3',
         'content',
         payload.processes.content.keyed_histograms.http_cache_disposition_3,

@@ -84,8 +84,8 @@ class TestPublishGcsMetadata(object):
         result = gcs_table_metadata.table_metadata_to_json()
 
         assert len(result.items()) == 6
-        assert result["description"] == "Test table for a non-incremental query\n"
-        assert result["friendly_name"] == "Test table for a non-incremental query\n"
+        assert result["description"] == "Test table for a non-incremental query"
+        assert result["friendly_name"] == "Test table for a non-incremental query"
         assert result["incremental"] == False
         assert result["incremental_export"] == False
         assert (

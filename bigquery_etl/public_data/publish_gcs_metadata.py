@@ -1,6 +1,4 @@
-"""
-Generate and upload JSON metadata files for public datasets on GCS.
-"""
+"""Generate and upload JSON metadata files for public datasets on GCS."""
 
 from argparse import ArgumentParser
 import json
@@ -8,9 +6,9 @@ import logging
 import os
 import re
 import smart_open
+
 from google.cloud import storage
 from itertools import groupby
-from collections import defaultdict
 
 from ..parse_metadata import Metadata
 from ..util import standard_args
@@ -21,7 +19,8 @@ DEFAULT_API_VERSION = "v1"
 DEFAULT_ENDPOINT = "http.public-data.prod.dataops.mozgcp.net/"
 REVIEW_LINK = "https://bugzilla.mozilla.org/show_bug.cgi?id="
 GCS_FILE_PATH_RE = re.compile(
-    r"api/(?P<api_version>.+)/tables/(?P<dataset>.+)/(?P<table>.+)/(?P<version>.+)/files/(?:(?P<date>.+)/)?(?P<filename>.+\.json\.gz)"
+    r"api/(?P<api_version>.+)/tables/(?P<dataset>.+)/(?P<table>.+)/(?P<version>.+)/"
+    r"files/(?:(?P<date>.+)/)?(?P<filename>.+\.json\.gz)"
 )
 
 parser = ArgumentParser(description=__doc__)
@@ -50,6 +49,8 @@ standard_args.add_log_level(parser)
 
 
 class GcsTableMetadata:
+    """Metadata associated with table data stored on GCS."""
+
     def __init__(self, files, endpoint, target_dir):
         """Initialize container for metadata of a table published on GCS."""
         assert len(files) > 0
@@ -114,7 +115,7 @@ def dataset_table_version_from_gcs_path(gcs_path):
 def get_public_gcs_table_metadata(
     storage_client, bucket, api_version, endpoint, target_dir
 ):
-    """Returns a list of all public tables and their locations on GCS."""
+    """Return a list of metadata of public tables and their locations on GCS."""
     prefix = f"api/{api_version}"
 
     blobs = storage_client.list_blobs(bucket, prefix=prefix)
@@ -128,6 +129,7 @@ def get_public_gcs_table_metadata(
 
 
 def publish_all_datasets_metadata(table_metadata, output_file):
+    """Write metadata about all available public datasets to GCS."""
     metadata_json = {}
 
     for metadata in table_metadata:
@@ -146,14 +148,18 @@ def publish_all_datasets_metadata(table_metadata, output_file):
 
         table[metadata.version] = metadata.table_metadata_to_json()
 
+    logging.info(f"Write metadata to {output_file}")
+
     with smart_open.open(output_file, "w") as fout:
         fout.write(json.dumps(metadata_json))
 
 
 def publish_table_metadata(table_metadata, bucket):
+    """Write metadata for each public table to GCS."""
     for metadata in table_metadata:
         output_file = f"gs://{bucket}/{metadata.files_path}/metadata.json"
 
+        logging.info(f"Write metadata to {output_file}")
         with smart_open.open(output_file, "w") as fout:
             fout.write(json.dumps(metadata.files_metadata_to_json()))
 

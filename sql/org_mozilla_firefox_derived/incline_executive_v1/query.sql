@@ -3,11 +3,11 @@ CREATE TEMP FUNCTION bucket_manufacturer(manufacturer STRING) AS (
 );
 
 CREATE TEMP FUNCTION bucket_country(country STRING) AS (
-  IF(
-    country IN ('US', 'CA', 'DE', 'IN', 'FR', 'CN', 'IR', 'BR', 'IE', 'GB', 'ID'),
-    [country, 'tier-1'],
-    ['non-tier-1']
-  )
+  CASE
+    WHEN country IN ('US', 'CA', 'DE', 'FR', 'GB') THEN [country, 'tier-1']
+    WHEN country IN ('IN', 'CN', 'IR', 'BR', 'IE', 'ID') THEN [country, 'non-tier-1']
+    ELSE ['non-tier-1']
+  END
 );
 
 WITH fennec_client_info AS (
@@ -218,7 +218,7 @@ last_year AS (
   INNER JOIN
     with_retention b
   ON
-    a.date = DATE_ADD(b.date, INTERVAL 7 DAY)
+    DATE_SUB(a.date, INTERVAL 1 WEEK) = b.date
     AND a.is_migrated = b.is_migrated
     AND a.app_name = b.app_name
     AND a.channel = b.channel

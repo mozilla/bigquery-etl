@@ -32,6 +32,19 @@ class Metadata:
         return re.match(r"[\w\d_-]+", label) and len(label) <= 63
 
     @classmethod
+    def of_table(cls, dataset, table, version, target_dir):
+        """
+        Return metadata that is associated with the provided table.
+
+        The provided directory is searched for metadata files and is expected to
+        have the following structure: /<dataset>/<table>_<version>/metadata.yaml.
+        """
+        path = os.path.join(target_dir, dataset, table + "_" + version)
+        metadata_file = os.path.join(path, METADATA_FILE)
+        cls = Metadata.from_file(metadata_file)
+        return cls
+
+    @classmethod
     def from_file(cls, metadata_file):
         """Parse metadata from the provided file and create a new Metadata instance."""
         friendly_name = None
@@ -98,3 +111,7 @@ class Metadata:
     def is_incremental_export(self):
         """Return true if the incremental_export flag is set."""
         return "incremental_export" in self.labels
+
+    def review_bug(self):
+        """Return the bug ID of the data review bug in bugzilla."""
+        return self.labels.get("review_bug", None)

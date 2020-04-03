@@ -86,3 +86,15 @@ class Metadata:
     def is_public_bigquery(self):
         """Return true if the public_bigquery flag is set."""
         return "public_bigquery" in self.labels
+
+    def is_public_json(self):
+        """Return true if the public_json flag is set."""
+        return "public_json" in self.labels
+
+    def is_incremental(self):
+        """Return true if the incremental flag is set."""
+        return "incremental" in self.labels
+
+    def is_incremental_export(self):
+        """Return true if the incremental_export flag is set."""
+        return "incremental_export" in self.labels

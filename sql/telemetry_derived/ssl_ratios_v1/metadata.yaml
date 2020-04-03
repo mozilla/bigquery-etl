@@ -10,3 +10,5 @@ labels:
   schedule: daily
   public_json: true
   public_bigquery: true
+  review_bug: 1414839
+  incremental_export: false

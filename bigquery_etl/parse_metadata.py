@@ -55,8 +55,6 @@ class Metadata:
             try:
                 metadata = yaml.safe_load(yaml_stream)
 
-                print(metadata["friendly_name"])
-
                 friendly_name = metadata.get("friendly_name", None)
                 description = metadata.get("description", None)
 

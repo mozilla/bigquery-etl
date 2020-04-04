@@ -12,7 +12,7 @@ class TestPublishGcsMetadata(object):
     project_id = "test-project-id"
     api_version = "v1"
     endpoint = "http://test.endpoint.mozilla.com/"
-    target_dir = "tests/public_data/test_sql/"
+    sql_dir = "tests/public_data/test_sql/"
 
     mock_blob1 = Mock()
     mock_blob1.name = (
@@ -31,7 +31,10 @@ class TestPublishGcsMetadata(object):
 
     def test_dataset_table_version_from_gcs_path(self):
         result = pgm.dataset_table_version_from_gcs_path(
-            "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/2020-04-01/000000001228.json.gz"
+            (
+                "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/"
+                "2020-04-01/000000001228.json.gz"
+            )
         )
 
         assert result[0] == "telemetry_derived"
@@ -50,7 +53,7 @@ class TestPublishGcsMetadata(object):
             "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/"
         )
 
-        assert result == None
+        assert result is None
 
     def test_gcs_table_metadata_no_files(self):
         with pytest.raises(Exception):
@@ -61,7 +64,7 @@ class TestPublishGcsMetadata(object):
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
         ]
         files_path = "api/v1/tables/test/non_incremental_query/v1/files"
-        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.target_dir)
+        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.sql_dir)
 
         assert gcs_table_metadata.files == files
         assert gcs_table_metadata.endpoint == self.endpoint
@@ -70,8 +73,8 @@ class TestPublishGcsMetadata(object):
         assert gcs_table_metadata.dataset == "test"
         assert gcs_table_metadata.table == "non_incremental_query"
         assert gcs_table_metadata.version == "v1"
-        assert gcs_table_metadata.metadata.is_incremental() == False
-        assert gcs_table_metadata.metadata.is_incremental_export() == False
+        assert gcs_table_metadata.metadata.is_incremental() is False
+        assert gcs_table_metadata.metadata.is_incremental_export() is False
         assert gcs_table_metadata.metadata.review_bug() == "1999999"
 
     def test_gcs_table_metadata_to_json(self):
@@ -79,19 +82,17 @@ class TestPublishGcsMetadata(object):
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
         ]
         files_path = "api/v1/tables/test/non_incremental_query/v1/files"
-        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.target_dir)
+        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.sql_dir)
 
         result = gcs_table_metadata.table_metadata_to_json()
 
         assert len(result.items()) == 6
         assert result["description"] == "Test table for a non-incremental query"
         assert result["friendly_name"] == "Test table for a non-incremental query"
-        assert result["incremental"] == False
-        assert result["incremental_export"] == False
-        assert (
-            result["review_link"]
-            == "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999"
-        )
+        assert result["incremental"] is False
+        assert result["incremental_export"] is False
+        review_link = "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999"
+        assert result["review_link"] == review_link
         assert result["files_uri"] == self.endpoint + files_path
 
     def test_gcs_files_metadata_to_json(self):
@@ -99,11 +100,13 @@ class TestPublishGcsMetadata(object):
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
         ]
         json_expected = [
-            self.endpoint
-            + "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+            (
+                f"{self.endpoint}"
+                "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+            )
         ]
 
-        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.target_dir)
+        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.sql_dir)
 
         result = gcs_table_metadata.files_metadata_to_json()
 
@@ -111,24 +114,42 @@ class TestPublishGcsMetadata(object):
 
     def test_gcs_files_metadata_to_json_incremental(self):
         files = [
-            "api/v1/tables/test/incremental_query/v1/files/2020-03-15/000000000000.json.gz",
-            "api/v1/tables/test/incremental_query/v1/files/2020-03-15/000000000001.json.gz",
-            "api/v1/tables/test/incremental_query/v1/files/2020-03-16/000000000000.json.gz",
+            (
+                "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
+                "000000000000.json.gz"
+            ),
+            (
+                "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
+                "000000000001.json.gz"
+            ),
+            (
+                "api/v1/tables/test/incremental_query/v1/files/2020-03-16/"
+                "000000000000.json.gz"
+            ),
         ]
         json_expected = {
             "2020-03-15": [
-                self.endpoint
-                + "api/v1/tables/test/incremental_query/v1/files/2020-03-15/000000000000.json.gz",
-                self.endpoint
-                + "api/v1/tables/test/incremental_query/v1/files/2020-03-15/000000000001.json.gz",
+                (
+                    f"{self.endpoint}"
+                    "api/v1/tables/test/incremental_query/v1/files/"
+                    "2020-03-15/000000000000.json.gz"
+                ),
+                (
+                    f"{self.endpoint}"
+                    "api/v1/tables/test/incremental_query/v1/files/"
+                    "2020-03-15/000000000001.json.gz"
+                ),
             ],
             "2020-03-16": [
-                self.endpoint
-                + "api/v1/tables/test/incremental_query/v1/files/2020-03-16/000000000000.json.gz"
+                (
+                    f"{self.endpoint}"
+                    "api/v1/tables/test/incremental_query/v1/files/"
+                    "2020-03-16/000000000000.json.gz"
+                )
             ],
         }
 
-        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.target_dir)
+        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.sql_dir)
 
         result = gcs_table_metadata.files_metadata_to_json()
 
@@ -141,26 +162,27 @@ class TestPublishGcsMetadata(object):
                 self.test_bucket,
                 self.api_version,
                 self.endpoint,
-                self.target_dir,
+                self.sql_dir,
             )
         )
 
+        expected = self.endpoint + "api/v1/tables/test/non_incremental_query/v1/files"
         assert len(result) == 1
-        assert (
-            result[0].files_uri
-            == self.endpoint + "api/v1/tables/test/non_incremental_query/v1/files"
-        )
+        assert result[0].files_uri == expected
 
     def test_publish_all_datasets_metadata(self):
         files1 = [
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
         ]
         files2 = [
-            "api/v1/tables/test/incremental_query/v1/files/2020-03-15/000000000001.json.gz"
+            (
+                "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
+                "000000000001.json.gz"
+            )
         ]
         gcs_table_metadata = [
-            pgm.GcsTableMetadata(files1, self.endpoint, self.target_dir),
-            pgm.GcsTableMetadata(files2, self.endpoint, self.target_dir),
+            pgm.GcsTableMetadata(files1, self.endpoint, self.sql_dir),
+            pgm.GcsTableMetadata(files2, self.endpoint, self.sql_dir),
         ]
 
         mock_out = MagicMock()
@@ -179,11 +201,14 @@ class TestPublishGcsMetadata(object):
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
         ]
         files2 = [
-            "api/v1/tables/test/incremental_query/v1/files/2020-03-15/000000000001.json.gz"
+            (
+                "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
+                "000000000001.json.gz"
+            )
         ]
         gcs_table_metadata = [
-            pgm.GcsTableMetadata(files1, self.endpoint, self.target_dir),
-            pgm.GcsTableMetadata(files2, self.endpoint, self.target_dir),
+            pgm.GcsTableMetadata(files1, self.endpoint, self.sql_dir),
+            pgm.GcsTableMetadata(files2, self.endpoint, self.sql_dir),
         ]
 
         mock_out = MagicMock()

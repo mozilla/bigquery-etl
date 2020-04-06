@@ -151,7 +151,7 @@ def publish_all_datasets_metadata(table_metadata, output_file):
     logging.info(f"Write metadata to {output_file}")
 
     with smart_open.open(output_file, "w") as fout:
-        fout.write(json.dumps(metadata_json))
+        fout.write(json.dumps(metadata_json, indent=4))
 
 
 def publish_table_metadata(table_metadata, bucket):
@@ -161,7 +161,7 @@ def publish_table_metadata(table_metadata, bucket):
 
         logging.info(f"Write metadata to {output_file}")
         with smart_open.open(output_file, "w") as fout:
-            fout.write(json.dumps(metadata.files_metadata_to_json()))
+            fout.write(json.dumps(metadata.files_metadata_to_json(), indent=4))
 
 
 def main():
@@ -189,12 +189,8 @@ def main():
         publish_table_metadata(gcs_table_metadata, args.target_bucket)
     else:
         print(
-            """
-            Invalid target: {}, target must be a directory with
-            structure /<dataset>/<table>/metadata.yaml.
-            """.format(
-                args.target
-            )
+            f"Invalid target: {args.target}, target must be a directory with"
+            "structure /<dataset>/<table>/metadata.yaml."
         )
 
 

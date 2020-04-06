@@ -11,7 +11,7 @@ class TestPublishGcsMetadata(object):
     test_bucket = "test-bucket"
     project_id = "test-project-id"
     api_version = "v1"
-    endpoint = "http://test.endpoint.mozilla.com/"
+    endpoint = "https://test.endpoint.mozilla.com/"
     sql_dir = "tests/public_data/test_sql/"
 
     mock_blob1 = Mock()
@@ -194,7 +194,7 @@ class TestPublishGcsMetadata(object):
 
         with open("tests/public_data/all_datasets.json") as f:
             expected_json = json.load(f)
-            mock_out.write.assert_called_with(json.dumps(expected_json))
+            mock_out.write.assert_called_with(json.dumps(expected_json, indent=4))
 
     def test_publish_table_metadata(self):
         files1 = [
@@ -226,7 +226,7 @@ class TestPublishGcsMetadata(object):
 
         mock_out.write.assert_has_calls(
             [
-                call(json.dumps(expected_non_incremental_query_json)),
-                call(json.dumps(expected_incremental_query_json)),
+                call(json.dumps(expected_non_incremental_query_json, indent=4)),
+                call(json.dumps(expected_incremental_query_json, indent=4)),
             ]
         )

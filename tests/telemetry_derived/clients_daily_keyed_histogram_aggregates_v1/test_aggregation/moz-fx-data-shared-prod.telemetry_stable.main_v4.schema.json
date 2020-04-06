@@ -2825,6 +2825,23 @@
                         "mode": "REPEATED",
                         "name": "http_cache_disposition_3",
                         "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
+                        "name": "http3_connecttion_close_code",
+                        "type": "RECORD"
                     }
                 ],
                 "mode": "NULLABLE",
@@ -5181,6 +5198,23 @@
                                         ],
                                         "mode": "REPEATED",
                                         "name": "video_unblackinglisting_dxva_driver_runtime_status",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "http3_connecttion_close_code",
                                         "type": "RECORD"
                                     }
                                 ],

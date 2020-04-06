@@ -20,8 +20,9 @@ WITH deduped AS (
     FROM
         `{{ dataset }}.{{ prefix }}_view_client_probe_counts_v1`
     WHERE
-        app_version IS NOT NULL
-        AND total_users > 1000
+        channel IS NOT NULL
+        AND app_version IS NOT NULL
+        AND total_users >= 100
 )
 
 SELECT
@@ -39,7 +40,7 @@ SELECT
     client_agg_type,
     agg_type,
     total_users,
-    TO_JSON_STRING(aggregates) AS aggregates
+    TO_JSON_STRING(aggregates) AS data
 FROM
     deduped
 WHERE

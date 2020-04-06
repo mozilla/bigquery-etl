@@ -33,12 +33,6 @@ elif [ "$1" = "query" ]; then
     # For queries with public_json set in the metadata, the results will be
     # exported as JSON to Cloud storage.
     python script/publish_public_data_json --query_file="${@: -1}" ${@:1:$#-1}
-elif [ "$1" = "publish_gcs_metadata" ]; then
-    # For an invocation like:
-    #     publish_gcs_metadata [options]
-    # we dispatch to a script that publishes metadata files to GCS for datasets
-    # that have previsously been made public on GCS.
-    exec script/publish_public_data_gcs_metadata ${@:2}
 elif [ "$XCOM_PUSH" = "true" ]; then
     # KubernetesPodOperator will extract the contents of /airflow/xcom/return.json as an xcom
     # if the xcom_push parameter is true

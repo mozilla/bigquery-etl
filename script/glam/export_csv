@@ -13,10 +13,10 @@ product=${PRODUCT:-fenix}   # TODO: set default to org_mozilla_fenix
 bucket="gs://${dst_project}"
 gsutil ls "$bucket" > /dev/null
 
-bq extract --destination_format CSV \
+bq extract --destination_format CSV --noprint_header \
     "${src_project}:${dataset}.${product}_client_probe_counts_extract_v1" \
     "$bucket/glam-extract-${product}-*.csv"
 
-bq extract --destination_format CSV \
+bq extract --destination_format CSV --noprint_header \
     "${src_project}:${dataset}.${product}_user_counts_extract_v1" \
     "$bucket/glam-extract-${product}-counts.csv"

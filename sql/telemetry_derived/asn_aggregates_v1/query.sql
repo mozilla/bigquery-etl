@@ -40,7 +40,7 @@ WITH asn_ip_address_range AS (
     CAST(SPLIT(network, "/")[OFFSET(1)] AS INT64) AS mask,
     autonomous_system_number
   FROM
-    `static.geoip2_isp_blocks_ipv4`
+    `moz-fx-data-shared-prod.static.isp_blocks_ipv4_20200407`
 ),
 events_with_doh AS (
   -- Get event data with DoH information.

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+## Export subsets of the incline_executive_dashboard table to objects in GCS.
+
+set -eo pipefail
+
+if [ "$#" -ne 1 ]; then
+    echo "ERROR: Exactly one parameter is required to specify the date of processing"
+    exit 1
+fi
+
+DS=$1
+BUCKET="gs://moz-fx-data-prod-analysis"
+
+for country in US CA DE FR GB IN CN IR BR IE ID tier-1 non-tier-1; do
+    dest_latest="$BUCKET/incline/executive_dash/latest/${country}.csv.gz"
+    echo "Populating $dest_latest from query"
+    bq query --nouse_legacy_sql --project_id=moz-fx-data-shared-prod \
+      --max_rows=100000 --format=csv -q \
+      "SELECT * FROM org_mozilla_firefox_derived.incline_executive_v1 where country = '$country'" \
+      | gzip \
+      | gsutil -q cp - "$dest_latest"
+    dest_ds="${dest_latest/latest/$DS}"
+    echo "Copying ${dest_latest} to ${dest_ds}"
+    gsutil -q cp "${dest_latest}" "${dest_ds}"
+done

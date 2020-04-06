@@ -106,10 +106,10 @@ counts AS (
   SELECT
     date,
     app_name,
-    COALESCE(is_migrated_group, IF(is_migrated, 'Yes', 'No')) AS is_migrated,
-    COALESCE(channel_group, channel) AS channel,
-    COALESCE(manufacturer_group, bucket_manufacturer(manufacturer)) AS manufacturer,
-    COALESCE(country_group, bucketed_country) AS country,
+    is_migrated_group AS is_migrated,
+    channel_group AS channel,
+    manufacturer_group AS manufacturer,
+    country_group AS country,
     COUNT(*) AS active_count,
     COUNTIF(active_this_week AND migrated_today) AS new_migrations,
     COUNTIF(active_this_week AND can_migrate) AS can_migrate,
@@ -121,7 +121,7 @@ counts AS (
       AND NOT new_this_week
       AND NOT active_last_week
       AND active_this_week
-    ) resurrected,
+    ) AS resurrected,
     -- New users are only counted if they are active
     COUNTIF(
       new_this_week
@@ -150,28 +150,20 @@ counts AS (
       AND NOT new_this_week
       AND active_last_week
       AND NOT active_this_week
-    ) AS established_churned -- 6
+    ) AS established_churned
   FROM
     client_info
   -- These cross joins are a way to represent grouping
   -- sets for each one of these fields. They create
-  -- a row with 'Overall' for value and NULL for value
-  -- for each row, which allows us to count that row
-  -- for both fields. When we COALESCE the null above,
-  -- we end up grouping on both that rows natural value,
-  -- and 'Overall', which contains all rows.
+  -- a row with 'Overall' and that rows value
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS is_migrated_group
+    UNNEST(['Overall', IF(is_migrated, 'Yes', 'No')]) AS is_migrated_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS channel_group
+    UNNEST(['Overall', channel]) AS channel_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS manufacturer_group
+    UNNEST(['Overall', bucket_manufacturer(manufacturer)]) AS manufacturer_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS country_group
-  CROSS JOIN
-    -- Rows with Tier 1 countries need to be part of
-    -- both their country and part of Tier 1
-    UNNEST(bucket_country(country)) AS bucketed_country
+    UNNEST(ARRAY_CONCAT(['Overall'], bucket_country(country))) AS country_group
   WHERE
     active_last_week
     OR active_this_week
@@ -251,20 +243,18 @@ all_migrated_clients AS (
   -- This gives us the cumulative count of migrated clients
   SELECT
     'Fenix' AS app_name,
-    COALESCE(channel_group, normalized_channel) AS channel,
-    COALESCE(manufacturer_group, bucket_manufacturer(manufacturer)) AS manufacturer,
-    COALESCE(country_group, bucketed_country) AS country,
+    channel_group AS channel,
+    manufacturer_group AS manufacturer,
+    country_group AS country,
     COUNT(*) AS cumulative_migration_count
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS channel_group
+    UNNEST(['Overall', normalized_channel]) AS channel_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS manufacturer_group
+    UNNEST(['Overall', bucket_manufacturer(manufacturer)]) AS manufacturer_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS country_group
-  CROSS JOIN
-    UNNEST(bucket_country(country)) AS bucketed_country
+    UNNEST(ARRAY_CONCAT(['Overall'], bucket_country(country))) AS country_group
   WHERE
     submission_date <= @submission_date
   GROUP BY

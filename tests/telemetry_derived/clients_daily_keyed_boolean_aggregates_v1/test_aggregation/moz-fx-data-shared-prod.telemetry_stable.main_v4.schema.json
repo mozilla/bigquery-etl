@@ -1,90 +1,218 @@
 [
-  {
-    "type": "TIMESTAMP",
-    "name": "submission_timestamp",
-    "mode": "REQUIRED"
-  },
-  {
-    "type": "INTEGER",
-    "name": "sample_id",
-    "mode": "REQUIRED"
-  },
-  {
-    "type": "STRING",
-    "name": "document_id",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "client_id",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_channel",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_os",
-    "mode": "NULLABLE"
-  },
-  {
-    "fields": [
-      {
-        "type": "STRING",
-        "name": "version",
-        "mode": "NULLABLE"
-      },
-      {
-        "type": "STRING",
-        "name": "build_id",
-        "mode": "NULLABLE"
-      },
-      {
-        "type": "STRING",
-        "name": "channel",
-        "mode": "NULLABLE"
-      }
-    ],
-    "type": "RECORD",
-    "name": "application",
-    "mode": "NULLABLE"
-  },
-  {
-    "fields": [
-      {
+    {
+        "mode": "REQUIRED",
+        "name": "submission_timestamp",
+        "type": "TIMESTAMP"
+    },
+    {
+        "mode": "REQUIRED",
+        "name": "sample_id",
+        "type": "INTEGER"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "document_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "client_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "normalized_channel",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "normalized_os",
+        "type": "STRING"
+    },
+    {
         "fields": [
-          {
-            "fields": [
-              {
-                "fields": [
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "BOOLEAN", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_tool_registered", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "BOOLEAN", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "sandbox_no_job", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "BOOLEAN", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "widget_ime_name_on_linux", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "BOOLEAN", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "widget_ime_name_on_windows", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "BOOLEAN", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "a11y_theme", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "BOOLEAN", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "widget_ime_name_on_mac", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "BOOLEAN", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "security_pkcs11_modules_loaded", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "BOOLEAN", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "services_sync_sync_login_state_transitions", "mode": "REPEATED"}
-                ],
-                "type": "RECORD",
-                "name": "keyed_scalars",
-                "mode": "NULLABLE"
-              }
-            ],
-            "type": "RECORD",
-            "name": "parent",
-            "mode": "NULLABLE"
-          }
+            {
+                "mode": "NULLABLE",
+                "name": "version",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "build_id",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "channel",
+                "type": "STRING"
+            }
         ],
-        "type": "RECORD",
-        "name": "processes",
-        "mode": "NULLABLE"
-      }
-    ],
-    "type": "RECORD",
-    "name": "payload",
-    "mode": "NULLABLE"
-  }
+        "mode": "NULLABLE",
+        "name": "application",
+        "type": "RECORD"
+    },
+    {
+        "fields": [
+            {
+                "fields": [
+                    {
+                        "fields": [
+                            {
+                                "fields": [
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "BOOLEAN"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "a11y_theme",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "BOOLEAN"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_tool_registered",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "BOOLEAN"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "sandbox_no_job",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "BOOLEAN"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "security_pkcs11_modules_loaded",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "BOOLEAN"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "services_sync_sync_login_state_transitions",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "BOOLEAN"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "widget_ime_name_on_linux",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "BOOLEAN"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "widget_ime_name_on_mac",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "BOOLEAN"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "widget_ime_name_on_windows",
+                                        "type": "RECORD"
+                                    }
+                                ],
+                                "mode": "NULLABLE",
+                                "name": "keyed_scalars",
+                                "type": "RECORD"
+                            }
+                        ],
+                        "mode": "NULLABLE",
+                        "name": "parent",
+                        "type": "RECORD"
+                    }
+                ],
+                "mode": "NULLABLE",
+                "name": "processes",
+                "type": "RECORD"
+            }
+        ],
+        "mode": "NULLABLE",
+        "name": "payload",
+        "type": "RECORD"
+    }
 ]

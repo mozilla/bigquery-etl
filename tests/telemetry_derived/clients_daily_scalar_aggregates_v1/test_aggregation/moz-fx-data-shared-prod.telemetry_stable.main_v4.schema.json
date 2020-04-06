@@ -1,379 +1,1635 @@
 [
-  {
-    "type": "TIMESTAMP",
-    "name": "submission_timestamp",
-    "mode": "REQUIRED"
-  },
-  {
-    "type": "INTEGER",
-    "name": "sample_id",
-    "mode": "REQUIRED"
-  },
-  {
-    "type": "STRING",
-    "name": "document_id",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "client_id",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_channel",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_os",
-    "mode": "NULLABLE"
-  },
-  {
-    "fields": [
-      {
-        "type": "STRING",
-        "name": "version",
-        "mode": "NULLABLE"
-      },
-      {
-        "type": "STRING",
-        "name": "build_id",
-        "mode": "NULLABLE"
-      },
-      {
-        "type": "STRING",
-        "name": "channel",
-        "mode": "NULLABLE"
-      }
-    ],
-    "type": "RECORD",
-    "name": "application",
-    "mode": "NULLABLE"
-  },
-  {
-    "fields": [
-      {
+    {
+        "mode": "REQUIRED",
+        "name": "submission_timestamp",
+        "type": "TIMESTAMP"
+    },
+    {
+        "mode": "REQUIRED",
+        "name": "sample_id",
+        "type": "INTEGER"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "document_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "client_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "normalized_channel",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "normalized_os",
+        "type": "STRING"
+    },
+    {
         "fields": [
-          {
-            "fields": [
-              {
-                "fields": [
-                  {"type": "INTEGER", "name": "gfx_adapter_ram", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "gfx_display_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "gfx_display_primary_height", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "gfx_display_primary_width", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "datasanitization_session_permission_exceptions", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_changesview_copy_rule", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_errors_collected_with_stack_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_intervals_download_internal_partial", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "pwmgr_potentially_breached_passwords", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_webreplay_stop_recording", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_usage_graphite", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "timestamps_about_home_topsites_first_paint", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_max_concurrent_tab_pinned_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_downloads_internal_complete_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "idb_type_persistent_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_mar_complete_size_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_webreplay_load_recording", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_intervals_stage_complete", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "dom_contentprocess_os_priority_raised", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_intervals_download_internal_complete", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_autoplay_would_be_allowed_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "idb_failure_fileinfo_error", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_profile_directory_scans", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "gfx_hdr_windows_display_colorspace_bitfield", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_downloads_internal_complete_seconds", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "contentblocking_trackers_blocked_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_mar_partial_size_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "network_tcp_overlapped_result_delayed", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "networking_http_transactions_captive_portal", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_page_had_media_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_grid_gridinspector_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "screenshots_copy", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_max_concurrent_window_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "networking_ftp_opened_channels_listings", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_intervals_apply_partial", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_nicer_turn_403s", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_copy_unique_css_selector_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_changesview_opened_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_session_restore_worker_restart_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "networking_ftp_opened_channels_files", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_feeds_livebookmark_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "script_preloader_mainthread_recompile", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_promise_stats_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_intervals_download_bits_complete", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_intervals_stage_partial", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_toolbar_eyedropper_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_webreplay_save_recording", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_page_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "identity_fxaccounts_missed_commands_fetched", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_errors_reported_failure_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "contentblocking_exceptions", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_changesview_copy", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "network_tcp_overlapped_io_canceled_before_finished", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "dom_contentprocess_os_priority_lowered", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_intervals_check", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_max_retx_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_accessibility_service_enabled_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_created", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_enabled_failed", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "networking_http_connections_captive_portal", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_rules_gridinspector_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_promise_and_callback_stats_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "sw_alternative_body_used_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_max_retx_and_life_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_intervals_download_bits_partial", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_max_concurrent_tab_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "dom_contentprocess_os_priority_change_considered", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_downloads_internal_partial_seconds", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_blocked_no_metadata_endup_no_audio_track", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_profile_directory_scan_date", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_feeds_preview_loaded", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_feeds_livebookmark_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_rules_flexboxhighlighter_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_downloads_bits_partial_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_restored_pinned_tabs_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_total_uri_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_feeds_feed_subscribed", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_changesview_contextmenu_copy_declaration", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_downloads_bits_partial_seconds", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_nicer_turn_401s", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_unique_domains_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_errors_reported_success_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_intervals_apply_complete", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_window_open_event_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "pdf_viewer_fallback_shown", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_application_opened_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_downloads_bits_complete_seconds", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "sw_cors_res_for_so_req_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "idb_type_temporary_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "security_intermediate_preloading_num_pending", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_accessibility_node_inspected_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_webreplay_reload_recording", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_autoplay_would_not_be_allowed_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "pdf_viewer_print", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_intervals_stage_partial", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_downloads_bits_partial_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_active_ticks", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_downloads_internal_partial_seconds", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "security_tls_delegated_credentials_txn", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_session_restore_browser_tabs_restorebutton", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_changesview_contextmenu", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_downloads_internal_complete_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_mar_complete_size_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_pending_operations_highwatermark_reached", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_intervals_download_internal_complete", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "storage_sync_api_usage_extensions_using", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "navigator_storage_estimate_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_downloads_internal_partial_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "pdf_viewer_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_session_restore_number_of_win", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_connected", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_changesview_contextmenu_copy", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_intervals_apply_partial", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_copy_full_css_selector_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_accessibility_accessible_context_menu_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_downloads_bits_complete_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_blocked_no_metadata", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_nicer_stun_retransmits", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "dom_contentprocess_troubled_due_to_memory", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_session_restore_number_of_tabs", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "navigator_storage_persist_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_intervals_apply_complete", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_session_restore_browser_startup_page", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_aboutdevtools_noinstall_exits", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_changesview_copy_all_changes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_persistence_timer_hit_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_aboutdevtools_installed", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_responsive_toolbox_opened_first", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_timings_last_shutdown", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_webreplay_new_recording", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_process_creation_timestamp_inconsistent", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_aboutdevtools_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_enabled_succeeded", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_inspector_node_selection_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_disabled_failed", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_allowed_autoplay_no_audio_track_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_max_life_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_errors_collected_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_accessibility_picker_used_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "timestamps_first_paint", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_intervals_stage_complete", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_copy_xpath_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "screenshots_upload", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_layout_flexboxhighlighter_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_intervals_download_internal_partial", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_about_telemetry_pageload", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "formautofill_addresses_fill_type_autofill_update", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_tab_pinned_event_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_downloads_bits_complete_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "mediarecorder_recording_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_markup_flexboxhighlighter_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_usage_plugin_instantiated", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "sw_synthesized_res_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_downloads_bits_complete_seconds", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_inspector_element_picker_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_intervals_check", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_feeds_livebookmark_item_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "networking_data_transferred_captive_portal", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_mar_partial_size_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_changesview_contextmenu_copy_rule", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_downloads_internal_partial_bytes", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "contentblocking_category", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_page_had_play_revoked_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_tab_open_event_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_intervals_download_bits_complete", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "screenshots_download", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "security_intermediate_preloading_num_preloaded", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_nicer_turn_438s", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "formautofill_addresses_fill_type_manual", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_downloads_internal_complete_seconds", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_engagement_unfiltered_uri_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_startup_intervals_download_bits_partial", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "update_session_downloads_bits_partial_seconds", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_disabled_succeeded", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_accessibility_opened_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "devtools_markup_gridinspector_opened", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "formautofill_addresses_fill_type_autofill", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_legacy_callback_stats_used", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "devtools_shadowdom_reveal_link_clicked", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "telemetry_data_upload_optin", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "media_autoplay_default_blocked", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "formautofill_availability", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "contentblocking_fingerprinting_blocking_enabled", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "devtools_shadowdom_shadow_root_expanded", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "contentblocking_cryptomining_blocking_enabled", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "os_environment_is_admin_without_uac", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "preferences_read_user_js", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "contentblocking_fastblock_enabled", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "browser_session_restore_tabbar_restore_clicked", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "devtools_onboarding_is_devtools_user", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "browser_searchinit_engines_cache_corrupted", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "telemetry_os_shutting_down", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "startup_is_cold", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "a11y_backplate", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "images_webp_probe_observed", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "corroborate_omnijar_corrupted", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "preferences_prevent_accessibility_services", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "preferences_created_new_user_prefs_file", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "dom_parentprocess_private_window_used", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "browser_session_restore_tabbar_restore_available", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "encoding_override_used", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "images_webp_content_observed", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "a11y_indicator_acted_on", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "contentblocking_enabled", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "preferences_prefs_file_was_invalid", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "corroborate_system_addons_corrupted", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "update_fix_permissions_attempted", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "devtools_shadowdom_shadow_root_displayed", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "gfx_headless", "mode": "NULLABLE"}
-                ],
-                "type": "RECORD",
-                "name": "scalars",
-                "mode": "NULLABLE"
-              }
-            ],
-            "type": "RECORD",
-            "name": "parent",
-            "mode": "NULLABLE"
-          },
-          {
-            "fields": [
-              {
-                "fields": [
-                  {"type": "INTEGER", "name": "browser_feeds_preview_loaded", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_usage_plugin_instantiated", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "gfx_omtp_paint_wait_ratio", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "idb_type_persistent_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "idb_type_temporary_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "mathml_doc_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_allowed_autoplay_no_audio_track_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_autoplay_would_be_allowed_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_autoplay_would_not_be_allowed_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_blocked_no_metadata", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_blocked_no_metadata_endup_no_audio_track", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_page_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_page_had_media_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "media_page_had_play_revoked_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "mediarecorder_recording_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "memoryreporter_max_ghost_windows", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "navigator_storage_estimate_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "navigator_storage_persist_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "script_preloader_mainthread_recompile", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "sw_alternative_body_used_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "sw_cors_res_for_so_req_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "sw_synthesized_res_count", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_process_creation_timestamp_inconsistent", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_nicer_stun_retransmits", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_nicer_turn_401s", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_nicer_turn_403s", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_nicer_turn_438s", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_connected", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_created", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_max_life_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_max_retx_and_life_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_datachannel_max_retx_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_legacy_callback_stats_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_promise_and_callback_stats_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_peerconnection_promise_stats_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "pdf_viewer_fallback_shown", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "pdf_viewer_print", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "pdf_viewer_used", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_disabled_failed", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_disabled_succeeded", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_enabled_failed", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "webrtc_hostnameobfuscation_enabled_succeeded", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "browser_usage_graphite", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_accumulations", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_child_events", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_keyed_accumulations", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_keyed_scalar_actions", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_scalar_actions", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_profile_directory_scans", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "encoding_override_used", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "images_webp_content_observed", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "images_webp_probe_observed", "mode": "NULLABLE"},
-                  {"type": "BOOLEAN", "name": "media_autoplay_default_blocked", "mode": "NULLABLE"}
-                ],
-                "type": "RECORD",
-                "name": "scalars",
-                "mode": "NULLABLE"
-              }
-            ],
-            "type": "RECORD",
-            "name": "content",
-            "mode": "NULLABLE"
-          },
-          {
-            "fields": [
-              {
-                "fields": [
-                  {"type": "INTEGER", "name": "browser_usage_graphite", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_accumulations", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_child_events", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_keyed_accumulations", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_keyed_scalar_actions", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_discarded_scalar_actions", "mode": "NULLABLE"},
-                  {"type": "INTEGER", "name": "telemetry_profile_directory_scans", "mode": "NULLABLE"}
-                ],
-                "type": "RECORD",
-                "name": "scalars",
-                "mode": "NULLABLE"
-              }
-            ],
-            "type": "RECORD",
-            "name": "gpu",
-            "mode": "NULLABLE"
-          }
+            {
+                "mode": "NULLABLE",
+                "name": "version",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "build_id",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "channel",
+                "type": "STRING"
+            }
         ],
-        "type": "RECORD",
-        "name": "processes",
-        "mode": "NULLABLE"
-      }
-    ],
-    "type": "RECORD",
-    "name": "payload",
-    "mode": "NULLABLE"
-  }
+        "mode": "NULLABLE",
+        "name": "application",
+        "type": "RECORD"
+    },
+    {
+        "fields": [
+            {
+                "fields": [
+                    {
+                        "fields": [
+                            {
+                                "fields": [
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_feeds_preview_loaded",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_usage_plugin_instantiated",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "idb_type_persistent_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "idb_type_temporary_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_allowed_autoplay_no_audio_track_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_autoplay_would_be_allowed_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_autoplay_would_not_be_allowed_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_blocked_no_metadata",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_blocked_no_metadata_endup_no_audio_track",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_page_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_page_had_media_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_page_had_play_revoked_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "mediarecorder_recording_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "navigator_storage_estimate_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "navigator_storage_persist_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "script_preloader_mainthread_recompile",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "sw_alternative_body_used_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "sw_cors_res_for_so_req_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "sw_synthesized_res_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_process_creation_timestamp_inconsistent",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_nicer_stun_retransmits",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_nicer_turn_401s",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_nicer_turn_403s",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_nicer_turn_438s",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_connected",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_datachannel_created",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_datachannel_max_life_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_datachannel_max_retx_and_life_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_datachannel_max_retx_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_legacy_callback_stats_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_promise_and_callback_stats_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_promise_stats_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "pdf_viewer_fallback_shown",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "pdf_viewer_print",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "pdf_viewer_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_hostnameobfuscation_disabled_failed",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_hostnameobfuscation_disabled_succeeded",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_hostnameobfuscation_enabled_failed",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_hostnameobfuscation_enabled_succeeded",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_usage_graphite",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_profile_directory_scans",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_active_ticks",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_max_concurrent_tab_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_max_concurrent_tab_pinned_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_max_concurrent_window_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_restored_pinned_tabs_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_tab_open_event_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_tab_pinned_event_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_total_uri_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_unfiltered_uri_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_unique_domains_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_engagement_window_open_event_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_errors_collected_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_errors_collected_with_stack_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_errors_reported_failure_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_errors_reported_success_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_feeds_feed_subscribed",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_feeds_livebookmark_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_feeds_livebookmark_item_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_feeds_livebookmark_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_session_restore_browser_startup_page",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_session_restore_browser_tabs_restorebutton",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_session_restore_number_of_tabs",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_session_restore_number_of_win",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_session_restore_worker_restart_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_timings_last_shutdown",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "contentblocking_category",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "contentblocking_exceptions",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_aboutdevtools_installed",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_aboutdevtools_noinstall_exits",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_aboutdevtools_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_accessibility_accessible_context_menu_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_accessibility_node_inspected_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_accessibility_opened_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_accessibility_picker_used_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_accessibility_service_enabled_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_application_opened_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_changesview_contextmenu",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_changesview_contextmenu_copy",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_changesview_contextmenu_copy_declaration",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_changesview_contextmenu_copy_rule",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_changesview_copy",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_changesview_copy_all_changes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_changesview_copy_rule",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_changesview_opened_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_copy_full_css_selector_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_copy_unique_css_selector_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_copy_xpath_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_grid_gridinspector_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_grid_show_grid_areas_overlay_checked",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_grid_show_grid_line_numbers_checked",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_grid_show_infinite_lines_checked",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_inspector_element_picker_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_inspector_node_selection_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_layout_flexboxhighlighter_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_markup_flexboxhighlighter_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_markup_gridinspector_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_responsive_toolbox_opened_first",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_rules_flexboxhighlighter_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_rules_gridinspector_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_toolbar_eyedropper_opened",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_webreplay_load_recording",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_webreplay_new_recording",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_webreplay_reload_recording",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_webreplay_save_recording",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_webreplay_stop_recording",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "dom_contentprocess_build_id_mismatch",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "dom_contentprocess_os_priority_change_considered",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "dom_contentprocess_os_priority_lowered",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "dom_contentprocess_os_priority_raised",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "dom_contentprocess_troubled_due_to_memory",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "formautofill_addresses_fill_type_autofill",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "formautofill_addresses_fill_type_autofill_update",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "formautofill_addresses_fill_type_manual",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "formautofill_credit_cards_fill_type_autofill",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "formautofill_credit_cards_fill_type_autofill_modified",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "formautofill_credit_cards_fill_type_manual",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gfx_hdr_windows_display_colorspace_bitfield",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "idb_failure_fileinfo_error",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "identity_fxaccounts_missed_commands_fetched",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "network_tcp_overlapped_io_canceled_before_finished",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "network_tcp_overlapped_result_delayed",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "networking_data_transferred_captive_portal",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "networking_http_connections_captive_portal",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "networking_http_transactions_captive_portal",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "screenshots_copy",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "screenshots_download",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "screenshots_upload",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "security_intermediate_preloading_num_pending",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "security_intermediate_preloading_num_preloaded",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "storage_sync_api_usage_extensions_using",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_about_telemetry_pageload",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_pending_operations_highwatermark_reached",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_persistence_timer_hit_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_profile_directory_scan_date",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "timestamps_about_home_topsites_first_paint",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "timestamps_first_paint",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_downloads_bits_complete_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_downloads_bits_complete_seconds",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_downloads_bits_partial_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_downloads_bits_partial_seconds",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_downloads_internal_complete_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_downloads_internal_complete_seconds",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_downloads_internal_partial_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_downloads_internal_partial_seconds",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_intervals_apply_complete",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_intervals_apply_partial",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_intervals_check",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_intervals_download_bits_complete",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_intervals_download_bits_partial",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_intervals_download_internal_complete",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_intervals_download_internal_partial",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_intervals_stage_complete",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_intervals_stage_partial",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_mar_complete_size_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_session_mar_partial_size_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_downloads_bits_complete_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_downloads_bits_complete_seconds",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_downloads_bits_partial_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_downloads_bits_partial_seconds",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_downloads_internal_complete_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_downloads_internal_complete_seconds",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_downloads_internal_partial_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_downloads_internal_partial_seconds",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_intervals_apply_complete",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_intervals_apply_partial",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_intervals_check",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_intervals_download_bits_complete",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_intervals_download_bits_partial",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_intervals_download_internal_complete",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_intervals_download_internal_partial",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_intervals_stage_complete",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_intervals_stage_partial",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_mar_complete_size_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_startup_mar_partial_size_bytes",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "first_startup_status_code",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "pwmgr_potentially_breached_passwords",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "contentblocking_trackers_blocked_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "first_startup_elapsed",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "security_tls_delegated_credentials_txn",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "networking_ftp_opened_channels_files",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "networking_ftp_opened_channels_listings",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_network_cookie_lifetime_policy",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_session_permission_exceptions",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gfx_adapter_ram",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gfx_display_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gfx_display_primary_height",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gfx_display_primary_width",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "policies_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "qm_repositories_initialization_time",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_startup_action",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_startup_average_time",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_startup_recorded_time",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "timestamps_first_paint_two",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "encoding_override_used",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "images_webp_content_observed",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "images_webp_probe_observed",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_autoplay_default_blocked",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "fxr_pc_is_first_run",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "a11y_indicator_acted_on",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_session_restore_tabbar_restore_available",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_session_restore_tabbar_restore_clicked",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "contentblocking_cryptomining_blocking_enabled",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "contentblocking_enabled",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "contentblocking_fastblock_enabled",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "contentblocking_fingerprinting_blocking_enabled",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "corroborate_omnijar_corrupted",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "corroborate_system_addons_corrupted",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_onboarding_is_devtools_user",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_shadowdom_reveal_link_clicked",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_shadowdom_shadow_root_displayed",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_shadowdom_shadow_root_expanded",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "dom_parentprocess_private_window_used",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "formautofill_availability",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "preferences_created_new_user_prefs_file",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "preferences_prefs_file_was_invalid",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "preferences_prevent_accessibility_services",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "preferences_read_user_js",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "startup_is_cold",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_data_upload_optin",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_os_shutting_down",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "blocklist_use_xml",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "os_environment_is_admin_without_uac",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_searchinit_engines_cache_corrupted",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "update_fix_permissions_attempted",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "a11y_backplate",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_clear_on_shutdown_cache",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_clear_on_shutdown_cookies",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_clear_on_shutdown_downloads",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_clear_on_shutdown_formdata",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_clear_on_shutdown_history",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_clear_on_shutdown_offline_apps",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_clear_on_shutdown_open_windows",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_clear_on_shutdown_sessions",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_clear_on_shutdown_site_settings",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "datasanitization_privacy_sanitize_sanitize_on_shutdown",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gfx_headless",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "a11y_sitezoom",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "widget_dark_mode",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "corroborate_omnijar_mismatch",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_startup_slow_startup_notification_disabled",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_startup_slow_startup_notified",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_startup_too_new_for_notification",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gfx_os_compositor",
+                                        "type": "BOOLEAN"
+                                    }
+                                ],
+                                "mode": "NULLABLE",
+                                "name": "scalars",
+                                "type": "RECORD"
+                            }
+                        ],
+                        "mode": "NULLABLE",
+                        "name": "parent",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "fields": [
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_feeds_preview_loaded",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_usage_plugin_instantiated",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gfx_omtp_paint_wait_ratio",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "idb_type_persistent_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "idb_type_temporary_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "mathml_doc_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_allowed_autoplay_no_audio_track_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_autoplay_would_be_allowed_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_autoplay_would_not_be_allowed_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_blocked_no_metadata",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_blocked_no_metadata_endup_no_audio_track",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_page_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_page_had_media_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_page_had_play_revoked_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "mediarecorder_recording_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "memoryreporter_max_ghost_windows",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "navigator_storage_estimate_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "navigator_storage_persist_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "script_preloader_mainthread_recompile",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "sw_alternative_body_used_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "sw_cors_res_for_so_req_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "sw_synthesized_res_count",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_process_creation_timestamp_inconsistent",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_nicer_stun_retransmits",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_nicer_turn_401s",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_nicer_turn_403s",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_nicer_turn_438s",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_connected",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_datachannel_created",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_datachannel_max_life_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_datachannel_max_retx_and_life_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_datachannel_max_retx_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_legacy_callback_stats_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_promise_and_callback_stats_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_peerconnection_promise_stats_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "pdf_viewer_fallback_shown",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "pdf_viewer_print",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "pdf_viewer_used",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_hostnameobfuscation_disabled_failed",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_hostnameobfuscation_disabled_succeeded",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_hostnameobfuscation_enabled_failed",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "webrtc_hostnameobfuscation_enabled_succeeded",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_usage_graphite",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_accumulations",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_child_events",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_keyed_accumulations",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_keyed_scalar_actions",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_scalar_actions",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_profile_directory_scans",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "encoding_override_used",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "images_webp_content_observed",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "images_webp_probe_observed",
+                                        "type": "BOOLEAN"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "media_autoplay_default_blocked",
+                                        "type": "BOOLEAN"
+                                    }
+                                ],
+                                "mode": "NULLABLE",
+                                "name": "scalars",
+                                "type": "RECORD"
+                            }
+                        ],
+                        "mode": "NULLABLE",
+                        "name": "content",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "fields": [
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "browser_usage_graphite",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_accumulations",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_child_events",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_keyed_accumulations",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_keyed_scalar_actions",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_discarded_scalar_actions",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "telemetry_profile_directory_scans",
+                                        "type": "INT64"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "fxr_pc_is_first_run",
+                                        "type": "BOOLEAN"
+                                    }
+                                ],
+                                "mode": "NULLABLE",
+                                "name": "scalars",
+                                "type": "RECORD"
+                            }
+                        ],
+                        "mode": "NULLABLE",
+                        "name": "gpu",
+                        "type": "RECORD"
+                    }
+                ],
+                "mode": "NULLABLE",
+                "name": "processes",
+                "type": "RECORD"
+            }
+        ],
+        "mode": "NULLABLE",
+        "name": "payload",
+        "type": "RECORD"
+    }
 ]

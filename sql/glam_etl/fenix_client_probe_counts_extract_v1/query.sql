@@ -25,18 +25,18 @@ WITH deduped AS (
 )
 SELECT
   channel,
-  app_version,
-  agg_type,
+  app_version AS version,
   COALESCE(ping_type, "*") AS ping_type,
   COALESCE(os, "*") AS os,
-  COALESCE(app_build_id, "*") AS app_build_id,
+  COALESCE(app_build_id, "*") AS build_id,
   metric,
+  metric_type,
     -- BigQuery has some null unicode characters which Postgresql doesn't like,
     -- so we remove those here. Also limit string length to 200 to match column
     -- length.
-  SUBSTR(REPLACE(key, r"\x00", ""), 0, 200) AS key,
+  SUBSTR(REPLACE(key, r"\x00", ""), 0, 200) AS metric_key,
   client_agg_type,
-  metric_type,
+  agg_type,
   total_users,
   TO_JSON_STRING(aggregates) AS aggregates
 FROM

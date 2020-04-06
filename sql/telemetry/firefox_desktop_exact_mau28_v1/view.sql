@@ -14,7 +14,7 @@ WITH
     SUM(visited_5_uri_wau) AS visited_5_uri_wau,
     SUM(visited_5_uri_dau) AS visited_5_uri_dau
   FROM
-    `moz-fx-data-derived-datasets.telemetry_derived.firefox_desktop_exact_mau28_by_dimensions_v1`
+    `moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_exact_mau28_by_dimensions_v1`
   GROUP BY
     submission_date ),
   -- We use imputed values for the period after the Armag-add-on deletion event;

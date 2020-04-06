@@ -4,6 +4,6 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-derived-datasets.telemetry.firefox_desktop_exact_mau28_v1`
+  `moz-fx-data-shared-prod.telemetry.firefox_desktop_exact_mau28_v1`
 GROUP BY
   submission_date

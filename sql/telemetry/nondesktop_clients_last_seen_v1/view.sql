@@ -38,18 +38,6 @@ WITH glean_union AS (
     'VR Browser' AS app_name,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_vrbrowser.baseline_clients_last_seen`
-),
-glean_with_profile_creation AS (
-SELECT
-  *,
-  IF(
-      DATE_DIFF(submission_date, first_run_date, DAY)
-      BETWEEN 0
-      AND 27,
-      DATE_DIFF(submission_date, first_run_date, DAY),
-      NULL
-    ) AS days_since_created_profile
-  FROM glean_union
 )
 SELECT
   submission_date,
@@ -75,7 +63,7 @@ SELECT
   client_id,
   days_seen_bits,
   days_since_seen,
-  (1 << days_since_created_profile) AS days_created_profile_bits,
+  days_created_profile_bits,
   days_since_created_profile,
   app_name,
   normalized_os AS os,
@@ -87,4 +75,4 @@ SELECT
   NULL AS distribution_id,
   app_display_version AS app_version
 FROM
-  glean_with_profile_creation
+  glean_union

@@ -47,7 +47,7 @@ standard_args.add_table_filter(parser)
 TARGET_TABLE_ID = "baseline_clients_last_seen_v1"
 QUERY_FILENAME = f"{TARGET_TABLE_ID}.sql"
 VIEW_FILENAME = f"{TARGET_TABLE_ID[:-3]}.view.sql"
-USAGE_TYPES = ("seen", "seen_session_start", "seen_session_end")
+USAGE_TYPES = ("seen", "created_profile", "seen_session_start", "seen_session_end")
 
 
 def main():

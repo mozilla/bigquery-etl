@@ -84,7 +84,7 @@ events_with_ip AS (
 events_with_asn AS (
   -- Lookup ASNs for IP addresses.
   SELECT
-    submission_date,
+    DISTINCT submission_date,
     client_id,
     canary,
     event_category,
@@ -105,13 +105,6 @@ events_with_asn AS (
     asn_ip_address_range
   USING
     (network_ip, mask)
-  GROUP BY
-    submission_date,
-    client_id,
-    canary,
-    event_category,
-    event_object,
-    autonomous_system_number
 )
 SELECT
   submission_date,

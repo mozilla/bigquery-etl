@@ -25,6 +25,8 @@ WITH
       'Lockbox', -- Lockwise
       'FirefoxConnect', -- Amazon Echo
       'FirefoxForFireTV',
+      'Firefox Preview',
+      'VR Browser',
       'Zerda')) -- Firefox Lite, previously called Rocket
     -- There are also many strange nonsensical entries for os, so we filter here.
     AND os IN ('Android', 'iOS')),
@@ -84,8 +86,8 @@ FROM
   unnested
 WHERE
   -- For the 'Firefox Non-desktop' umbrella, we include only apps that
-  -- are considered for KPIs, so we filter out FireTV and Reality.
-  app_name != 'FirefoxForFireTV'
+  -- are considered for KPIs, so we filter out some.
+  app_name NOT IN ('FirefoxForFireTV', 'VR Browser')
   AND NOT STARTS_WITH(app_name, 'FirefoxReality')
 UNION ALL
 SELECT
@@ -94,3 +96,12 @@ SELECT
   * REPLACE(REPLACE(usage, 'Firefox Non-desktop', app_name) AS usage)
 FROM
   unnested
+UNION ALL
+SELECT
+  -- We also present a single usage criterion that sums together Fenix + Firefox Preview
+  -- as that represents total logic "Fenix" usage.
+  * REPLACE(REPLACE(usage, 'Preview+Fenix', app_name) AS usage)
+FROM
+  unnested
+WHERE
+  app_name IN ('Firefox Preview', 'Fenix')

@@ -23,16 +23,12 @@ sampled_data AS (
   WHERE
     channel IN ("nightly", "beta")
     OR (channel = "release" AND os != "Windows")
-  UNION ALL
-  SELECT
-    *
-  FROM
-    filtered
-  WHERE
-    channel = 'release'
-    AND os = 'Windows'
-    AND sample_id >= @min_sample_id
-    AND sample_id <= @max_sample_id
+    OR (
+      channel = "release"
+      AND os = "Windows"
+      AND sample_id >= @min_sample_id
+      AND sample_id <= @max_sample_id
+    )
 ),
 -- Using `min` for when `agg_type` is `count` returns null when all rows are null
 aggregated AS (

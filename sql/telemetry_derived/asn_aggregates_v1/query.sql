@@ -105,6 +105,13 @@ events_with_asn AS (
     asn_ip_address_range
   USING
     (network_ip, mask)
+  GROUP BY
+    submission_date,
+    client_id,
+    canary,
+    event_category,
+    event_object,
+    autonomous_system_number
 )
 SELECT
   submission_date,

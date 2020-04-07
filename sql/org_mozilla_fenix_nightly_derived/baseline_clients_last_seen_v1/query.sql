@@ -5,6 +5,9 @@ WITH _current AS (
     -- 28 days for each usage criterion as a single 64-bit integer. The
     -- rightmost bit represents whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
+    udf.days_since_created_profile_as_28_bits(
+      DATE_DIFF(submission_date, first_run_date, DAY)
+    ) AS days_created_profile_bits,
     * EXCEPT (submission_date)
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.baseline_clients_daily_v1`
@@ -30,6 +33,10 @@ SELECT
       _previous.days_seen_bits,
       _current.days_seen_bits
     ) AS days_seen_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_created_profile_bits,
+      _current.days_created_profile_bits
+    ) AS days_created_profile_bits,
     udf.combine_adjacent_days_28_bits(
       _previous.days_seen_session_start_bits,
       _current.days_seen_session_start_bits

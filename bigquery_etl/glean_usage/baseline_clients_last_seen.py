@@ -97,7 +97,6 @@ def run_query(client, baseline_table, date, dry_run, output_dir=None):
     """Process a single table, potentially also writing out the generated queries."""
     tables = table_names_from_baseline(baseline_table)
 
-    daily_table = tables["daily_table"]
     last_seen_table = tables["last_seen_table"]
     last_seen_view = tables["last_seen_view"]
     render_kwargs = dict(
@@ -125,7 +124,7 @@ def run_query(client, baseline_table, date, dry_run, output_dir=None):
     else:
         # Table exists, so we will run the incremental query.
         job_kwargs.update(
-            destination_table=f"{daily_table}${date.strftime('%Y%m%d')}",
+            destination=f"{last_seen_table}${date.strftime('%Y%m%d')}",
             write_disposition=WriteDisposition.WRITE_TRUNCATE,
             query_parameters=[ScalarQueryParameter("submission_date", "DATE", date)],
         )

@@ -137,9 +137,9 @@ def worker_entrypoint(sqlfile):
         print(f"{sqlfile:59} OK")
     elif (
         error
-        and error["code"] == 403
+        and error.get("code", None) == 403
         and "does not have bigquery.tables.create permission for dataset"
-        in error["message"]
+        in error.get("message", "")
     ):
         # We want the dryrun service to only have read permissions, so
         # we expect CREATE VIEW and CREATE TABLE to throw specific

@@ -26,7 +26,6 @@ WITH
       'FirefoxConnect', -- Amazon Echo
       'FirefoxForFireTV',
       'Firefox Preview',
-      'VR Browser',
       'Zerda')) -- Firefox Lite, previously called Rocket
     -- There are also many strange nonsensical entries for os, so we filter here.
     AND os IN ('Android', 'iOS')),
@@ -86,8 +85,8 @@ FROM
   unnested
 WHERE
   -- For the 'Firefox Non-desktop' umbrella, we include only apps that
-  -- are considered for KPIs, so we filter out some.
-  app_name NOT IN ('FirefoxForFireTV', 'VR Browser')
+  -- are considered for KPIs, so we filter out FireTV and Reality.
+  app_name != 'FirefoxForFireTV'
   AND NOT STARTS_WITH(app_name, 'FirefoxReality')
 UNION ALL
 SELECT

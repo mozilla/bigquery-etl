@@ -10,20 +10,7 @@ WITH unioned AS (
     country,
     distribution_id
   FROM
-    `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
-  UNION ALL
-  SELECT
-    submission_date,
-    client_id,
-    days_since_seen,
-    app_name,
-    os,
-    normalized_channel,
-    NULL AS campaign,
-    country,
-    NULL AS distribution_id
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix.clients_last_seen`
+    `moz-fx-data-shared-prod.telemetry.nondesktop_clients_last_seen_v1`
 )
 SELECT
   submission_date,
@@ -57,6 +44,7 @@ WHERE
   -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
   app_name IN (
     'Fenix',
+    'Firefox Preview',
     'Fennec', -- Firefox for Android and Firefox for iOS
     'Focus',
     'Lockbox', -- Lockwise

@@ -121,7 +121,7 @@ def run_query(client, baseline_table, date, dry_run, output_dir=None):
     else:
         # Table exists, so we will run the incremental query.
         job_kwargs.update(
-            destination_table=f"{daily_table}${date.strftime('%Y%m%d')}",
+            destination=f"{daily_table}${date.strftime('%Y%m%d')}",
             write_disposition=WriteDisposition.WRITE_TRUNCATE,
             query_parameters=[ScalarQueryParameter("submission_date", "DATE", date)],
         )

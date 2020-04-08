@@ -24,6 +24,11 @@ WITH base AS (
     normalized_os_version,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.baseline_v1`
+  WHERE
+    -- We specifically want to exclude the new 'startup' baseline ping until we've
+    -- fully analyzed its effect and gotten sign off on including it for KPIs.
+    -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1627286
+    (ping_info.reason IN ('background', 'dirty_startup') OR ping_info.reason IS NULL)
 ),
 --
 with_dates AS (

@@ -32,12 +32,6 @@ WITH glean_union AS (
     'Fenix' AS app_name,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    * REPLACE('release' AS normalized_channel),
-    'VR Browser' AS app_name,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_vrbrowser.baseline_clients_last_seen`
 )
 SELECT
   submission_date,

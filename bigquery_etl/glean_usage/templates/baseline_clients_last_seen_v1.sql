@@ -14,8 +14,9 @@ OPTIONS
 AS
 SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
+  CAST(NULL AS INT64) AS days_created_profile_bits,
   -- We make sure to delay * until the end so that as new columns are added
-  -- to clients_daily, we can add those columns in the same order to the end
+  -- to the daily table we can add those columns in the same order to the end
   -- of this schema, which may be necessary for the daily join query between
   -- the two tables to validate.
   *
@@ -33,7 +34,10 @@ WITH _current AS (
     -- 28 days for each usage criterion as a single 64-bit integer. The
     -- rightmost bit represents whether the user was active in the current day.
     CAST(TRUE AS INT64) AS days_seen_bits,
-    * EXCEPT (submission_date)
+    udf.days_since_created_profile_as_28_bits(
+      DATE_DIFF(submission_date, first_run_date, DAY)
+    ) AS days_created_profile_bits,
+    * EXCEPT(submission_date)
   FROM
     `{{ daily_table }}`
   WHERE

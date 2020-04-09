@@ -67,7 +67,6 @@ SKIP = {
     "sql/telemetry/fxa_users_services_first_seen/view.sql",
     "sql/telemetry/fxa_users_services_last_seen/view.sql",
     "sql/telemetry/lockwise_mobile_events_v1/view.sql",
-    "sql/telemetry/nondesktop_clients_last_seen_v1/view.sql",
     "sql/telemetry/origin_content_blocking/view.sql",
     "sql/telemetry/rocket_android_events_v1/view.sql",
     "sql/telemetry/simpleprophet_forecasts/view.sql",

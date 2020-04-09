@@ -18,7 +18,9 @@ WITH
     -- is not normalized and there are many single pings that come in with unique
     -- nonsensical app_name values. App names are documented in
     -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
-    (STARTS_WITH(app_name, 'FirefoxReality') OR app_name IN (
+    (STARTS_WITH(app_name, 'FirefoxReality') OR
+     ENDS_WITH(app_name, 'Baseline') OR
+     app_name IN (
       'Fenix',
       'Fennec', -- Firefox for Android and Firefox for iOS
       'Focus',
@@ -87,6 +89,7 @@ WHERE
   -- For the 'Firefox Non-desktop' umbrella, we include only apps that
   -- are considered for KPIs, so we filter out FireTV and Reality.
   app_name != 'FirefoxForFireTV'
+  AND NOT ENDS_WITH(app_name, 'Baseline')
   AND NOT STARTS_WITH(app_name, 'FirefoxReality')
 UNION ALL
 SELECT

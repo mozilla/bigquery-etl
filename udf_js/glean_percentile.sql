@@ -11,30 +11,17 @@ AS
       throw "percentile must be a value between 0 and 100";
   }
 
+  let keys = histogram.map(bucket => parseInt(bucket.key));
   let values = histogram.map(bucket => bucket.value);
-  let total = values.reduce((a, b) => a + b);
-  let normalized = values.map(value => value / total);
 
-  // Find the index into the cumulative distribution function that corresponds
-  // to the percentile. This undershoots the true value of the percentile.
-  let acc = 0;
-  let index = null;
-  for (let i = 0; i < normalized.length; i++) {
-      acc += normalized[i];
-      index = i;
-      if (acc >= percentile / 100) {
-          break;
-      }
-  }
-
-  // NOTE: we do not perform geometric or linear interpolation, but this would
-  // be the place to implement it.
-  return histogram[index].key;
-''';
+  return weightedQuantile([percentile/100], keys, values)[0];
+'''
+OPTIONS
+  (library = "gs://moz-fx-data-circleci-tests-bigquery-etl/wtdstats.js");
 
 SELECT
   assert_equals(
-    2,
+    2.5,
     udf_js.glean_percentile(
       50.0,
       ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1), ("2", 2), ("3", 1)],

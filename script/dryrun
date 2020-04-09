@@ -44,10 +44,6 @@ SKIP = {
     "sql/search/search_rfm/view.sql",
     "sql/telemetry_derived/deviations_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
-    "sql/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",
-    "sql/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",
-    "sql/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql",
-    "sql/org_mozilla_vrbrowser_derived/clients_last_seen_v1/init.sql",
     "sql/telemetry_derived/core_clients_last_seen_v1/init.sql",
     "sql/telemetry/fxa_users_last_seen_raw_v1/init.sql",
     "sql/telemetry_derived/core_clients_first_seen_v1/init.sql",

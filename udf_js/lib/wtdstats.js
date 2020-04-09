@@ -1,14 +1,15 @@
 // https://github.com/mozilla/glam/blob/e6d345d0e61df23549ece416e2d41e800980de41/src/utils/stats.js
+(function() {
 function sum(vs) { return vs.reduce((a, b) => a + b, 0); }
 
-export function ascending(a, b) {
+ function ascending(a, b) {
   if (a < b) return -1;
   if (a > b) return 1;
   if (a >= b) return 0;
   return NaN;
 }
 
-export function byKey(k) {
+ function byKey(k) {
   return function sortByKey(a, b) {
     if (a[k] < b[k]) return -1;
     if (a[k] > b[k]) return 1;
@@ -17,11 +18,11 @@ export function byKey(k) {
   };
 }
 
-export function orderedNumbers(values, valueof) {
+ function orderedNumbers(values, valueof) {
   return Float64Array.from(values.map(valueof)).sort(ascending);
 }
 
-export function cumSum(values, valueof = (v) => v) {
+ function cumSum(values, valueof = (v) => v) {
   return values.map(valueof).reduce((acc, v, i) => {
     if (i === 0) {
       acc.push(v);
@@ -32,7 +33,7 @@ export function cumSum(values, valueof = (v) => v) {
   }, []);
 }
 
-export function nnInterp(x, y, xOut) {
+ function nnInterp(x, y, xOut) {
   // returns yOut by mapping x -> xOut, finding the index, then applying to y
   // constant (nearest-neighbors) interpolation with f=1 (always right-sided)
   // find ind in x where xOut values should below, then look at y[ind]
@@ -49,13 +50,13 @@ export function nnInterp(x, y, xOut) {
   });
 }
 
-export function nearestBelow(value, neighbors) {
+ function nearestBelow(value, neighbors) {
   const below = neighbors.filter((n) => n <= value);
   if (!below.length) return neighbors[neighbors.length - 1];
   return Math.max(...below);
 }
 
-export function weightedQuantile(probs = [0.05, 0.25, 0.5, 0.75, 0.95],
+ weightedQuantile = function (probs = [0.05, 0.25, 0.5, 0.75, 0.95],
   values,
   weights = values.map(() => 1)) {
   // rough port of Hmisc's wtd.quantile function. https://github.com/harrelfe/Hmisc/blob/master/R/wtd.stats.s
@@ -71,3 +72,4 @@ export function weightedQuantile(probs = [0.05, 0.25, 0.5, 0.75, 0.95],
   const quantiles = modOrder.map((o, i) => (1 - o) * lowStats[i] + o * highStats[i]);
   return quantiles;
 }
+}());

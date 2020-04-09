@@ -93,10 +93,9 @@ def create_views_if_not_exist(client, views, exclude, sql_dir):
             continue
 
         version = max(
-            int(match.group()[2:])
+            int(VERSION_RE.search(table).group()[2:])
             for table in tables
-            for match in VERSION_RE.search(table)
-            if match is not None
+            if VERSION_RE.search(table) is not None
         )
 
         project, dataset, viewname = view.split(".")

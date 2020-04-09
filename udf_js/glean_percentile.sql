@@ -21,6 +21,14 @@ OPTIONS
 
 SELECT
   assert_equals(
+    2.0,
+    udf_js.glean_percentile(
+      50.0,
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1), ("2", 1), ("3", 1)],
+      "timing_distribution"
+    )
+  ),
+  assert_equals(
     2.5,
     udf_js.glean_percentile(
       50.0,

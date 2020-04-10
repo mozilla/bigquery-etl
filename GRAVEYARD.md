@@ -2,6 +2,19 @@
 
 This document records interesting code that we've deleted for the sake of discoverability for the future.
 
+## Fenix and VR Browser `clients_daily` and `clients_last_seen`
+
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/895)
+
+We now dynamically discover Glean baseline tables, creating `baseline_clients_daily`
+and `baseline_clients_last_seen` tables for each Glean application that sends
+baseline pings. We had similar per-app queries defined for Fenix and VR Browser,
+but these are now being removed in favor of the generic baseline ping ETL.
+
+There is some loss of functionality here, because we were previously
+pulling in some fields from metrics pings; we may want to reference these in
+the future if we find need to include metrics or other ping info in this ETL.
+
 ## Smoot Usage v1
 
 - [Removal PR](https://github.com/mozilla/bigquery-etl/pull/460)

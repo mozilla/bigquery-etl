@@ -4,13 +4,47 @@ CREATE TEMP FUNCTION bucket_manufacturer(manufacturer STRING) AS (
 
 CREATE TEMP FUNCTION bucket_country(country STRING) AS (
   CASE
-    WHEN country IN ('US', 'CA', 'DE', 'FR', 'GB') THEN [country, 'tier-1']
-    WHEN country IN ('IN', 'CN', 'IR', 'BR', 'IE', 'ID') THEN [country, 'non-tier-1']
-    ELSE ['non-tier-1']
+  WHEN
+    country IN ('US', 'CA', 'DE', 'FR', 'GB')
+  THEN
+    [country, 'tier-1']
+  WHEN
+    country IN ('IN', 'CN', 'IR', 'BR', 'IE', 'ID')
+  THEN
+    [country, 'non-tier-1']
+  ELSE
+    ['non-tier-1']
   END
 );
 
-WITH fennec_client_info AS (
+WITH fenix_clients_last_seen AS (
+  SELECT
+    * REPLACE ('firefox-preview nightly' AS normalized_channel),
+  FROM
+    org_mozilla_fenix.baseline_clients_last_seen
+  UNION ALL
+  SELECT
+    * REPLACE ('preview nightly' AS normalized_channel),
+  FROM
+    org_mozilla_fenix_nightly.baseline_clients_last_seen
+  UNION ALL
+  SELECT
+    * REPLACE ('release' AS normalized_channel),
+  FROM
+    org_mozilla_firefox.baseline_clients_last_seen
+  UNION ALL
+  SELECT
+    * REPLACE ('beta' AS normalized_channel),
+  FROM
+    org_mozilla_firefox_beta.baseline_clients_last_seen
+  UNION ALL
+  SELECT
+    * REPLACE ('nightly' AS normalized_channel),
+  FROM
+    org_mozilla_fennec_aurora.baseline_clients_last_seen
+),
+--
+fennec_client_info AS (
   SELECT
     clients_last_seen.submission_date AS date,
     migrated_clients.fenix_client_id IS NOT NULL AS is_migrated,
@@ -24,14 +58,14 @@ WITH fennec_client_info AS (
       AND SAFE_CAST(osversion AS INT64) >= 21,
       FALSE
     ) AS can_migrate,
-    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 0) AS active_this_week,
-    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 1) AS active_last_week,
-    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_created_profile_bits, 0) AS new_this_week,
-    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_created_profile_bits, 1) AS new_last_week
+    udf.active_n_weeks_ago(days_seen_bits, 0) AS active_this_week,
+    udf.active_n_weeks_ago(days_seen_bits, 1) AS active_last_week,
+    udf.active_n_weeks_ago(days_created_profile_bits, 0) AS new_this_week,
+    udf.active_n_weeks_ago(days_created_profile_bits, 1) AS new_last_week
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.core_clients_last_seen_v1` clients_last_seen
+    telemetry_derived.core_clients_last_seen_v1 clients_last_seen
   LEFT JOIN
-    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
+    org_mozilla_firefox.migrated_clients migrated_clients
   ON
     -- For Fennec, we only want to look at historical migration pings
     -- to see if this client has migrated. We use this to check if they
@@ -55,25 +89,12 @@ fenix_client_info AS (
     migrated_clients.fenix_client_id IS NOT NULL AS is_migrated,
     migrated_clients.submission_date = clients_last_seen.submission_date AS migrated_today,
     'Fenix' AS app_name,
-    CASE
-      clients_last_seen.normalized_channel
-    WHEN
-      'aurora nightly'
-    THEN
-      'nightly'
-    WHEN
-      'nightly'
-    THEN
-      'firefox-preview nightly'
-    ELSE
-      clients_last_seen.normalized_channel
-    END
-    AS channel,
+    clients_last_seen.normalized_channel AS channel,
     device_manufacturer AS manufacturer,
     clients_last_seen.country,
     TRUE AS can_migrate,
-    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 0) AS active_this_week,
-    `moz-fx-data-shared-prod.udf.active_n_weeks_ago`(days_seen_bits, 1) AS active_last_week,
+    udf.active_n_weeks_ago(days_seen_bits, 0) AS active_this_week,
+    udf.active_n_weeks_ago(days_seen_bits, 1) AS active_last_week,
     DATE_DIFF(clients_last_seen.submission_date, first_run_date, DAY)
     BETWEEN 0
     AND 6 AS new_this_week,
@@ -81,9 +102,9 @@ fenix_client_info AS (
     BETWEEN 7
     AND 13 AS new_last_week
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox.clients_last_seen` clients_last_seen
+    fenix_clients_last_seen clients_last_seen
   LEFT JOIN
-    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
+    org_mozilla_firefox.migrated_clients migrated_clients
   ON
     -- For Fenix, we don't care if there's a delay in the migration ping, we know they
     -- have been migrated the entire time
@@ -106,10 +127,10 @@ counts AS (
   SELECT
     date,
     app_name,
-    COALESCE(is_migrated_group, IF(is_migrated, 'Yes', 'No')) AS is_migrated,
-    COALESCE(channel_group, channel) AS channel,
-    COALESCE(manufacturer_group, bucket_manufacturer(manufacturer)) AS manufacturer,
-    COALESCE(country_group, bucketed_country) AS country,
+    is_migrated_group AS is_migrated,
+    channel_group AS channel,
+    manufacturer_group AS manufacturer,
+    country_group AS country,
     COUNT(*) AS active_count,
     COUNTIF(active_this_week AND migrated_today) AS new_migrations,
     COUNTIF(active_this_week AND can_migrate) AS can_migrate,
@@ -121,12 +142,9 @@ counts AS (
       AND NOT new_this_week
       AND NOT active_last_week
       AND active_this_week
-    ) resurrected,
+    ) AS resurrected,
     -- New users are only counted if they are active
-    COUNTIF(
-      new_this_week
-      AND active_this_week
-    ) AS new_users,
+    COUNTIF(new_this_week AND active_this_week) AS new_users,
     COUNTIF(
       NOT new_last_week
       AND NOT new_this_week
@@ -134,44 +152,28 @@ counts AS (
       AND active_this_week
     ) AS established_returning,
     -- New returning users must have been active last week
-    COUNTIF(
-      new_last_week
-      AND active_this_week
-      AND active_last_week
-    ) AS new_returning,
+    COUNTIF(new_last_week AND active_this_week AND active_last_week) AS new_returning,
     -- New churned users must have been active last week
-    COUNTIF(
-      new_last_week
-      AND NOT active_this_week
-      AND active_last_week
-    ) AS new_churned,
+    COUNTIF(new_last_week AND NOT active_this_week AND active_last_week) AS new_churned,
     COUNTIF(
       NOT new_last_week
       AND NOT new_this_week
       AND active_last_week
       AND NOT active_this_week
-    ) AS established_churned -- 6
+    ) AS established_churned
   FROM
     client_info
   -- These cross joins are a way to represent grouping
   -- sets for each one of these fields. They create
-  -- a row with 'Overall' for value and NULL for value
-  -- for each row, which allows us to count that row
-  -- for both fields. When we COALESCE the null above,
-  -- we end up grouping on both that rows natural value,
-  -- and 'Overall', which contains all rows.
+  -- a row with 'Overall' and that rows value
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS is_migrated_group
+    UNNEST(['Overall', IF(is_migrated, 'Yes', 'No')]) AS is_migrated_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS channel_group
+    UNNEST(['Overall', channel]) AS channel_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS manufacturer_group
+    UNNEST(['Overall', bucket_manufacturer(manufacturer)]) AS manufacturer_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS country_group
-  CROSS JOIN
-    -- Rows with Tier 1 countries need to be part of
-    -- both their country and part of Tier 1
-    UNNEST(bucket_country(country)) AS bucketed_country
+    UNNEST(ARRAY_CONCAT(['Overall'], bucket_country(country))) AS country_group
   WHERE
     active_last_week
     OR active_this_week
@@ -185,10 +187,10 @@ counts AS (
 ),
 with_retention AS (
   SELECT
-    * EXCEPT (established_churned, new_churned),
-      -- Churned users are a negative count, since they left the product
+    * REPLACE (
+    -- Churned users are a negative count, since they left the product
     -1 * established_churned AS established_churned,
-    -1 * new_churned AS new_churned,
+    -1 * new_churned AS new_churned),
     SAFE_DIVIDE((established_returning + new_returning), active_previous) AS retention_rate,
     SAFE_DIVIDE(
       established_returning,
@@ -219,7 +221,7 @@ last_week AS (
   SELECT
     * EXCEPT (date)
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_derived.incline_executive_v1`
+    org_mozilla_firefox_derived.incline_executive_v1
   WHERE
     date = DATE_SUB(@submission_date, INTERVAL 1 WEEK)
 ),
@@ -251,20 +253,18 @@ all_migrated_clients AS (
   -- This gives us the cumulative count of migrated clients
   SELECT
     'Fenix' AS app_name,
-    COALESCE(channel_group, normalized_channel) AS channel,
-    COALESCE(manufacturer_group, bucket_manufacturer(manufacturer)) AS manufacturer,
-    COALESCE(country_group, bucketed_country) AS country,
+    channel_group AS channel,
+    manufacturer_group AS manufacturer,
+    country_group AS country,
     COUNT(*) AS cumulative_migration_count
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox.migrated_clients` migrated_clients
+    org_mozilla_firefox.migrated_clients migrated_clients
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS channel_group
+    UNNEST(['Overall', normalized_channel]) AS channel_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS manufacturer_group
+    UNNEST(['Overall', bucket_manufacturer(manufacturer)]) AS manufacturer_group
   CROSS JOIN
-    UNNEST(['Overall', NULL]) AS country_group
-  CROSS JOIN
-    UNNEST(bucket_country(country)) AS bucketed_country
+    UNNEST(ARRAY_CONCAT(['Overall'], bucket_country(country))) AS country_group
   WHERE
     submission_date <= @submission_date
   GROUP BY
@@ -272,7 +272,6 @@ all_migrated_clients AS (
     manufacturer,
     country
 )
-
 SELECT
   _current.*,
   last_week.retention_rate AS retention_rate_previous,

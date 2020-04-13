@@ -1,30 +1,3 @@
-WITH unioned AS (
-  SELECT
-    submission_date,
-    client_id,
-    days_since_seen,
-    app_name,
-    os,
-    normalized_channel,
-    campaign,
-    country,
-    distribution_id
-  FROM
-    `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
-  UNION ALL
-  SELECT
-    submission_date,
-    client_id,
-    days_since_seen,
-    app_name,
-    os,
-    normalized_channel,
-    NULL AS campaign,
-    country,
-    NULL AS distribution_id
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix.clients_last_seen`
-)
 SELECT
   submission_date,
   COUNTIF(days_since_seen < 28) AS mau,
@@ -48,7 +21,7 @@ SELECT
   country,
   distribution_id
 FROM
-  unioned
+  telemetry.nondesktop_clients_last_seen_v1
 WHERE
   -- This list corresponds to the products considered for 2019 nondesktop KPIs;
   -- we apply this filter here rather than in the live view because this field
@@ -57,6 +30,7 @@ WHERE
   -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
   app_name IN (
     'Fenix',
+    'Firefox Preview',
     'Fennec', -- Firefox for Android and Firefox for iOS
     'Focus',
     'Lockbox', -- Lockwise

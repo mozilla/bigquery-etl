@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_view_client_probe_counts_v1`
+  `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}_view_probe_counts_v1`
 AS
 WITH all_counts AS (
   SELECT

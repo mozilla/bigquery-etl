@@ -31,7 +31,7 @@ parser.add_argument(
     "--target-bucket",
     "--target_bucket",
     default=DEFAULT_BUCKET,
-    help="GCP bucket JSON data is exported to.",
+    help="GCP bucket JSON data is exported to",
 )
 parser.add_argument(
     "--project_id",

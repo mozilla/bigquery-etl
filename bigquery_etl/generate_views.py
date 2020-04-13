@@ -95,7 +95,7 @@ def create_views_if_not_exist(client, views, exclude, sql_dir):
         version = max(
             int(match.group()[2:])
             for table in tables
-            for match in VERSION_RE.search(table)
+            for match in [VERSION_RE.search(table)]
             if match is not None
         )
 

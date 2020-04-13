@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Generate and upload metadata files for public datasets on GCS.
+
+cd "$(dirname "$0")/.."
+
+exec python3 -m bigquery_etl.public_data.publish_gcs_metadata "$@"

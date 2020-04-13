@@ -10,17 +10,16 @@ class TestPublishJson(object):
     project_id = "test-project-id"
 
     non_incremental_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/"
-        "non_incremental_query_v1/query.sql"
+        "tests/public_data/test_sql/test/" "non_incremental_query_v1/query.sql"
     )
 
     incremental_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/incremental_query_v1/query.sql"
+        "tests/public_data/test_sql/test/incremental_query_v1/query.sql"
     )
     incremental_parameter = "submission_date:DATE:2020-03-15"
 
     no_metadata_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/no_metadata_query_v1/query.sql"
+        "tests/public_data/test_sql/test/no_metadata_query_v1/query.sql"
     )
 
     mock_blob = Mock()

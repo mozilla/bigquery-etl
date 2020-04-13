@@ -51,20 +51,24 @@ standard_args.add_log_level(parser)
 class GcsTableMetadata:
     """Metadata associated with table data stored on GCS."""
 
-    def __init__(self, files, endpoint, target_dir):
+    def __init__(self, blobs, endpoint, target_dir):
         """Initialize container for metadata of a table published on GCS."""
-        assert len(files) > 0
-        self.files = files
+        assert len(blobs) > 0
+        self.blobs = blobs
         self.endpoint = endpoint
-        self.files_path = self.files[0].split("files")[0] + "files"
+        self.files_path = self.blobs[0].name.split("files")[0] + "files"
         self.files_uri = endpoint + self.files_path
 
-        (self.dataset, self.table, self.version) = dataset_table_version_from_gcs_path(
-            self.files[0]
+        (self.dataset, self.table, self.version) = dataset_table_version_from_gcs_blob(
+            self.blobs[0]
         )
         self.metadata = Metadata.of_table(
             self.dataset, self.table, self.version, target_dir
         )
+
+        self.last_updated_path = self.blobs[0].name.split("files")[0] + "last_updated"
+        self.last_updated_uri = endpoint + self.last_updated_path
+        self.last_updated = min(self.blobs, key=lambda b: b.updated).updated
 
     def table_metadata_to_json(self):
         """Return a JSON object of the table metadata for GCS."""
@@ -78,7 +82,7 @@ class GcsTableMetadata:
             metadata_json["review_link"] = REVIEW_LINK + self.metadata.review_bug()
 
         metadata_json["files_uri"] = self.files_uri
-        # todo: add last updated
+        metadata_json["last_updated"] = self.last_updated_uri
 
         return metadata_json
 
@@ -87,24 +91,24 @@ class GcsTableMetadata:
         if self.metadata.is_incremental_export():
             metadata_json = {}
 
-            for file in self.files:
-                match = GCS_FILE_PATH_RE.match(file)
+            for blob in self.blobs:
+                match = GCS_FILE_PATH_RE.match(blob.name)
                 date = match.group("date")
 
                 if date is not None:
                     if date in metadata_json:
-                        metadata_json[date].append(self.endpoint + file)
+                        metadata_json[date].append(self.endpoint + blob.name)
                     else:
-                        metadata_json[date] = [self.endpoint + file]
+                        metadata_json[date] = [self.endpoint + blob.name]
 
             return metadata_json
         else:
-            return [self.endpoint + file for file in self.files]
+            return [self.endpoint + blob.name for blob in self.blobs]
 
 
-def dataset_table_version_from_gcs_path(gcs_path):
+def dataset_table_version_from_gcs_blob(gcs_blob):
     """Extract the dataset, table and version from the provided GCS blob path."""
-    match = GCS_FILE_PATH_RE.match(gcs_path)
+    match = GCS_FILE_PATH_RE.match(gcs_blob.name)
 
     if match is not None:
         return (match.group("dataset"), match.group("table"), match.group("version"))
@@ -119,11 +123,10 @@ def get_public_gcs_table_metadata(
     prefix = f"api/{api_version}"
 
     blobs = storage_client.list_blobs(bucket, prefix=prefix)
-    blob_paths = [blob.name for blob in blobs]
 
     return [
-        GcsTableMetadata(list(files), endpoint, target_dir)
-        for table, files in groupby(blob_paths, dataset_table_version_from_gcs_path)
+        GcsTableMetadata(list(blobs), endpoint, target_dir)
+        for table, blobs in groupby(blobs, dataset_table_version_from_gcs_blob)
         if table is not None
     ]
 
@@ -164,6 +167,16 @@ def publish_table_metadata(table_metadata, bucket):
             fout.write(json.dumps(metadata.files_metadata_to_json(), indent=4))
 
 
+def publish_last_modified(table_metadata, bucket):
+    """Write the timestamp when file of the dataset were last modified to GCS."""
+    for metadata in table_metadata:
+        output_file = f"gs://{bucket}/{metadata.last_updated_path}"
+
+        logging.info(f"Write last_updated to {output_file}")
+        with smart_open.open(output_file, "w") as fout:
+            fout.write(metadata.last_updated.strftime("%Y-%m-%d %H:%M:%S"))
+
+
 def main():
     """Generate and upload GCS metadata."""
     args = parser.parse_args()
@@ -187,6 +200,7 @@ def main():
         output_file = f"gs://{args.target_bucket}/all_datasets.json"
         publish_all_datasets_metadata(gcs_table_metadata, output_file)
         publish_table_metadata(gcs_table_metadata, args.target_bucket)
+        publish_last_modified(gcs_table_metadata, args.target_bucket)
     else:
         print(
             f"Invalid target: {args.target}, target must be a directory with"

@@ -3,6 +3,7 @@ import pytest
 import smart_open
 from pathlib import Path
 
+from datetime import datetime
 from unittest.mock import call, Mock, MagicMock
 
 import bigquery_etl.public_data.publish_gcs_metadata as pgm
@@ -22,9 +23,11 @@ class TestPublishGcsMetadata(object):
     mock_blob1.name = (
         "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
     )
+    mock_blob1.updated = datetime(2020, 4, 3, 11, 30, 1)
 
     mock_blob2 = Mock()
     mock_blob2.name = "api/v1/tables/test/non_incremental_query/v1/files"
+    mock_blob2.updated = datetime(2020, 4, 3, 11, 25, 5)
 
     mock_storage_client = Mock()
     mock_storage_client.list_blobs.return_value = [mock_blob1, mock_blob2]
@@ -33,29 +36,32 @@ class TestPublishGcsMetadata(object):
     def setup(self):
         pass
 
-    def test_dataset_table_version_from_gcs_path(self):
-        result = pgm.dataset_table_version_from_gcs_path(
-            (
-                "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/"
-                "2020-04-01/000000001228.json.gz"
-            )
+    def test_dataset_table_version_from_gcs_blob(self):
+        mock_blob = Mock()
+        mock_blob.name = (
+            "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/"
+            "2020-04-01/000000001228.json.gz"
         )
+
+        result = pgm.dataset_table_version_from_gcs_blob(mock_blob)
 
         assert result[0] == "telemetry_derived"
         assert result[1] == "ssl_ratios"
         assert result[2] == "v1"
 
-        result = pgm.dataset_table_version_from_gcs_path(
+        mock_blob.name = (
             "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000001228.json.gz"
         )
 
+        result = pgm.dataset_table_version_from_gcs_blob(mock_blob)
+
         assert result[0] == "telemetry_derived"
         assert result[1] == "ssl_ratios"
         assert result[2] == "v1"
 
-        result = pgm.dataset_table_version_from_gcs_path(
-            "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/"
-        )
+        mock_blob.name = "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/"
+
+        result = pgm.dataset_table_version_from_gcs_blob(mock_blob)
 
         assert result is None
 
@@ -64,13 +70,19 @@ class TestPublishGcsMetadata(object):
             pgm.GcsTableMetadata([], self.endpoint, self.target_dir)
 
     def test_gcs_table_metadata(self):
-        files = [
+        mock_blob = Mock()
+        mock_blob.name = (
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
-        ]
-        files_path = "api/v1/tables/test/non_incremental_query/v1/files"
-        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.sql_dir)
+        )
+        mock_blob.updated = datetime(2020, 4, 3, 11, 30, 1)
 
-        assert gcs_table_metadata.files == files
+        files_path = "api/v1/tables/test/non_incremental_query/v1/files"
+        last_updated_path = "api/v1/tables/test/non_incremental_query/v1/last_updated"
+        gcs_table_metadata = pgm.GcsTableMetadata(
+            [mock_blob], self.endpoint, self.sql_dir
+        )
+
+        assert gcs_table_metadata.blobs == [mock_blob]
         assert gcs_table_metadata.endpoint == self.endpoint
         assert gcs_table_metadata.files_path == files_path
         assert gcs_table_metadata.files_uri == self.endpoint + files_path
@@ -80,17 +92,25 @@ class TestPublishGcsMetadata(object):
         assert gcs_table_metadata.metadata.is_incremental() is False
         assert gcs_table_metadata.metadata.is_incremental_export() is False
         assert gcs_table_metadata.metadata.review_bug() == "1999999"
+        assert gcs_table_metadata.last_updated_path == last_updated_path
+        assert gcs_table_metadata.last_updated_uri == self.endpoint + last_updated_path
+        assert gcs_table_metadata.last_updated == datetime(2020, 4, 3, 11, 30, 1)
 
     def test_gcs_table_metadata_to_json(self):
-        files = [
+        mock_blob = Mock()
+        mock_blob.name = (
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
-        ]
+        )
+        mock_blob.updated = datetime(2020, 4, 3, 11, 25, 5)
         files_path = "api/v1/tables/test/non_incremental_query/v1/files"
-        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.sql_dir)
+        last_updated_path = "api/v1/tables/test/non_incremental_query/v1/last_updated"
+        gcs_table_metadata = pgm.GcsTableMetadata(
+            [mock_blob], self.endpoint, self.sql_dir
+        )
 
         result = gcs_table_metadata.table_metadata_to_json()
 
-        assert len(result.items()) == 6
+        assert len(result.items()) == 7
         assert result["description"] == "Test table for a non-incremental query"
         assert result["friendly_name"] == "Test table for a non-incremental query"
         assert result["incremental"] is False
@@ -98,11 +118,15 @@ class TestPublishGcsMetadata(object):
         review_link = "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999"
         assert result["review_link"] == review_link
         assert result["files_uri"] == self.endpoint + files_path
+        assert result["last_updated"] == self.endpoint + last_updated_path
 
     def test_gcs_files_metadata_to_json(self):
-        files = [
+        mock_blob = Mock()
+        mock_blob.name = (
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
-        ]
+        )
+        mock_blob.updated = datetime(2020, 4, 3, 11, 25, 5)
+
         json_expected = [
             (
                 f"{self.endpoint}"
@@ -110,7 +134,9 @@ class TestPublishGcsMetadata(object):
             )
         ]
 
-        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.sql_dir)
+        gcs_table_metadata = pgm.GcsTableMetadata(
+            [mock_blob], self.endpoint, self.sql_dir
+        )
 
         result = gcs_table_metadata.files_metadata_to_json()
 
@@ -131,6 +157,14 @@ class TestPublishGcsMetadata(object):
                 "000000000000.json.gz"
             ),
         ]
+
+        blobs = []
+        for file in files:
+            mock_blob = Mock()
+            mock_blob.name = file
+            mock_blob.updated = datetime(2020, 4, 3, 11, 25, 5)
+            blobs.append(mock_blob)
+
         json_expected = {
             "2020-03-15": [
                 (
@@ -153,7 +187,7 @@ class TestPublishGcsMetadata(object):
             ],
         }
 
-        gcs_table_metadata = pgm.GcsTableMetadata(files, self.endpoint, self.sql_dir)
+        gcs_table_metadata = pgm.GcsTableMetadata(blobs, self.endpoint, self.sql_dir)
 
         result = gcs_table_metadata.files_metadata_to_json()
 
@@ -175,18 +209,22 @@ class TestPublishGcsMetadata(object):
         assert result[0].files_uri == expected
 
     def test_publish_all_datasets_metadata(self):
-        files1 = [
+        mock_blob1 = Mock()
+        mock_blob1.name = (
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
-        ]
-        files2 = [
-            (
-                "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
-                "000000000001.json.gz"
-            )
-        ]
+        )
+        mock_blob1.updated = datetime(2020, 4, 3, 11, 25, 5)
+
+        mock_blob2 = Mock()
+        mock_blob2.name = (
+            "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
+            "000000000001.json.gz"
+        )
+        mock_blob2.updated = datetime(2020, 4, 3, 11, 25, 5)
+
         gcs_table_metadata = [
-            pgm.GcsTableMetadata(files1, self.endpoint, self.sql_dir),
-            pgm.GcsTableMetadata(files2, self.endpoint, self.sql_dir),
+            pgm.GcsTableMetadata([mock_blob1], self.endpoint, self.sql_dir),
+            pgm.GcsTableMetadata([mock_blob2], self.endpoint, self.sql_dir),
         ]
 
         mock_out = MagicMock()
@@ -202,18 +240,22 @@ class TestPublishGcsMetadata(object):
             mock_out.write.assert_called_with(json.dumps(expected_json, indent=4))
 
     def test_publish_table_metadata(self):
-        files1 = [
+        mock_blob1 = Mock()
+        mock_blob1.name = (
             "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
-        ]
-        files2 = [
-            (
-                "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
-                "000000000001.json.gz"
-            )
-        ]
+        )
+        mock_blob1.updated = datetime(2020, 4, 3, 11, 25, 5)
+
+        mock_blob2 = Mock()
+        mock_blob2.name = (
+            "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
+            "000000000001.json.gz"
+        )
+        mock_blob2.updated = datetime(2020, 4, 3, 11, 25, 5)
+
         gcs_table_metadata = [
-            pgm.GcsTableMetadata(files1, self.endpoint, self.sql_dir),
-            pgm.GcsTableMetadata(files2, self.endpoint, self.sql_dir),
+            pgm.GcsTableMetadata([mock_blob1], self.endpoint, self.sql_dir),
+            pgm.GcsTableMetadata([mock_blob2], self.endpoint, self.sql_dir),
         ]
 
         mock_out = MagicMock()
@@ -237,3 +279,46 @@ class TestPublishGcsMetadata(object):
                 call(json.dumps(expected_incremental_query_json, indent=4)),
             ]
         )
+
+    def test_last_updated(self):
+        mock_blob1 = Mock()
+        mock_blob1.name = (
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+        )
+        mock_blob1.updated = datetime(2020, 4, 3, 11, 25, 5)
+
+        mock_blob2 = Mock()
+        mock_blob2.name = (
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000001.json.gz"
+        )
+        mock_blob2.updated = datetime(2020, 4, 3, 11, 20, 5)
+
+        mock_blob3 = Mock()
+        mock_blob3.name = (
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000002.json.gz"
+        )
+        mock_blob3.updated = datetime(2020, 4, 3, 12, 20, 5)
+
+        gcs_metadata = pgm.GcsTableMetadata(
+            [mock_blob1, mock_blob2, mock_blob3], self.endpoint, self.sql_dir
+        )
+        assert gcs_metadata.last_updated == datetime(2020, 4, 3, 11, 20, 5)
+
+    def test_publish_last_updated_to_gcs(self):
+        mock_blob1 = Mock()
+        mock_blob1.name = (
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+        )
+        mock_blob1.updated = datetime(2020, 4, 3, 11, 25, 5)
+
+        gcs_table_metadata = [
+            pgm.GcsTableMetadata([mock_blob1], self.endpoint, self.sql_dir)
+        ]
+
+        mock_out = MagicMock()
+        file_handler = MagicMock()
+        file_handler.__enter__.return_value = mock_out
+        smart_open.open = MagicMock(return_value=file_handler)
+
+        pgm.publish_last_modified(gcs_table_metadata, self.test_bucket)
+        mock_out.write.assert_called_with("2020-04-03 11:25:05")

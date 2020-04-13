@@ -58,26 +58,6 @@ RETURNS ARRAY<INT64> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf_dedupe_map_sum (map ARRAY<STRUCT<key STRING, value FLOAT64>>)
-RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
-  -- Given a MAP with duplicate keys, de-duplicates by summing the values of duplicate keys
-  (
-    WITH summed_counts AS (
-      SELECT
-        STRUCT<key STRING, value FLOAT64>(e.key, SUM(e.value)) AS record
-      FROM
-        UNNEST(map) AS e
-      GROUP BY
-        e.key
-    )
-
-    SELECT
-       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(record.key, record.value))
-    FROM
-      summed_counts
-  )
-);
-
 CREATE TEMP FUNCTION udf_buckets_to_map (buckets ARRAY<STRING>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given an array of values, transform them into a histogram MAP
@@ -123,112 +103,15 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
+  udf_fill_buckets(
+    ARRAY_AGG(record),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+  ) AS aggregates
 FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
-  AND os IS NOT NULL
 GROUP BY
   os,
   app_version,
   app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
-
-UNION ALL
-
-SELECT
-  CAST(NULL AS STRING) AS os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
-  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
-GROUP BY
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
-
-UNION ALL
-
-SELECT
-  os,
-  app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
-  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
-  AND os IS NOT NULL
-GROUP BY
-  os,
-  app_version,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
-
-UNION ALL
-
-SELECT
-  CAST(NULL AS STRING) AS os,
-  app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
-  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
-GROUP BY
-  app_version,
   channel,
   metric,
   metric_type,

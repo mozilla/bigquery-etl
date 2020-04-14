@@ -2,7 +2,7 @@
 -- a project owned by the Pocket team; if the definition here changes,
 -- it may need to be manually redeployed by Data Ops.
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.pocket_pocket_reach_mau`
+  `moz-fx-data-shared-prod.pocket.pocket_reach_mau`
 AS
 SELECT
   *

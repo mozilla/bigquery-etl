@@ -11,6 +11,31 @@
   key: ''
   process: parent
   agg_type: summed_histogram
+  record: {
+    "key": '0',
+    "value": 0.2,
+  }
+- <<: *base
+  record: {
+    "key": '2',
+    "value": 0.1,
+  }
+- <<: *base
+  record: {
+    "key": '5',
+    "value": 0.2,
+  }
+- <<: *base
+  record: {
+    "key": '9',
+    "value": 0.3,
+  }
+- <<: *base
+  record: {
+    "key": '54',
+    "value": 0.2,
+  }
+- <<: *base
   app_build_id: first
   record: {
     "key": '0',

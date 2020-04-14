@@ -70,14 +70,15 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf_fill_buckets(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>)
+CREATE TEMP FUNCTION udf_fill_buckets(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given a MAP `input_map`, fill in any missing keys with value `0.0`
   (
     WITH total_counts AS (
       SELECT
         key,
-        COALESCE(e.value, 0.0) AS value
+        -- Dirichlet distribution density for each bucket in a histogram
+        SAFE_DIVIDE(COALESCE(e.value, 0.0) + SAFE_DIVIDE(1, ARRAY_LENGTH(buckets)), total_users + 1) AS value
       FROM
         UNNEST(buckets) as key
       LEFT JOIN
@@ -105,7 +106,8 @@ SELECT
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   udf_fill_buckets(
     ARRAY_AGG(record),
-    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type)),
+    CAST(ROUND(SUM(record.value)) AS INT64)
   ) AS aggregates
 FROM clients_histogram_bucket_counts_v1
 GROUP BY

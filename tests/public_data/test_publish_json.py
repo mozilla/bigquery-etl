@@ -2,7 +2,7 @@ import pytest
 import smart_open
 from unittest.mock import call, Mock, MagicMock
 
-from bigquery_etl.publish_json import JsonPublisher
+from bigquery_etl.public_data.publish_json import JsonPublisher
 
 
 class TestPublishJson(object):

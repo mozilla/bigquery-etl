@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION udf_normalized_sum (arrs ARRAY<STRUCT<key STRING, value INT64>>)
+CREATE TEMP FUNCTION udf_normalized_sum (arrs ARRAY<STRUCT<key STRING, value INT64>>, sampled BOOL)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Returns the normalized sum of the input maps.
   -- It returns the total_count[k] / SUM(total_count)
@@ -25,7 +25,8 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
       SELECT
         STRUCT<key STRING, value FLOAT64>(
           k,
-          COALESCE(SAFE_DIVIDE(1.0 * v, total_count), 0)
+          -- Fudge the numbers for the 10% sample.
+          COALESCE(SAFE_DIVIDE(1.0 * v, total_count), 0) * IF(sampled, 10, 1)
         ) AS record
       FROM
         summed_counts
@@ -51,13 +52,13 @@ WITH filtered_data AS (
     first_bucket,
     last_bucket,
     num_buckets,
-    latest_version,
     metric,
     metric_type,
     key,
     process,
     agg_type,
-    aggregates
+    aggregates,
+    os = 'Windows'and channel = 'release' AS sampled
   FROM
     clients_histogram_aggregates_v1
   CROSS JOIN UNNEST(histogram_aggregates)
@@ -75,12 +76,12 @@ aggregated_histograms AS
     first_bucket,
     last_bucket,
     num_buckets,
-    latest_version,
     metric,
     metric_type,
     key,
     process,
     agg_type,
+    sampled,
     aggregates
   FROM filtered_data
   WHERE os IS NOT NULL
@@ -97,12 +98,15 @@ aggregated_histograms AS
     first_bucket,
     last_bucket,
     num_buckets,
-    latest_version,
     metric,
     metric_type,
     key,
     process,
     agg_type,
+    -- This returns true if at least 1 row has sampled=true.
+    -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
+    -- and in this case we treat them as Windows+Release users when fudging numbers
+    MAX(sampled) AS sampled,
     udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates
   FROM filtered_data
   GROUP BY
@@ -118,8 +122,7 @@ aggregated_histograms AS
     metric_type,
     key,
     process,
-    agg_type,
-    latest_version
+    agg_type
 
   UNION ALL
 
@@ -133,12 +136,13 @@ aggregated_histograms AS
     first_bucket,
     last_bucket,
     num_buckets,
-    latest_version,
     metric,
     metric_type,
     key,
     process,
     agg_type,
+    -- This returns true if at least 1 row has sampled=true.
+    MAX(sampled) AS sampled,
     udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates
   FROM filtered_data
   WHERE os IS NOT NULL
@@ -155,8 +159,7 @@ aggregated_histograms AS
     metric_type,
     key,
     process,
-    agg_type,
-    latest_version
+    agg_type
 
   UNION ALL
 
@@ -170,12 +173,15 @@ aggregated_histograms AS
     first_bucket,
     last_bucket,
     num_buckets,
-    latest_version,
     metric,
     metric_type,
     key,
     process,
     agg_type,
+    -- This returns true if at least 1 row has sampled=true.
+    -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
+    -- and in this case we treat them as Windows+Release users when fudging numbers
+    MAX(sampled) AS sampled,
     udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates
   FROM filtered_data
   GROUP BY
@@ -190,8 +196,7 @@ aggregated_histograms AS
     metric_type,
     key,
     process,
-    agg_type,
-    latest_version),
+    agg_type),
 
 normalized_histograms AS (
   SELECT
@@ -204,13 +209,12 @@ normalized_histograms AS (
     first_bucket,
     last_bucket,
     num_buckets,
-    latest_version,
     metric,
     metric_type,
     key,
     process,
     agg_type,
-    udf_normalized_sum(aggregates) AS aggregates
+    udf_normalized_sum(aggregates, sampled) AS aggregates
   FROM aggregated_histograms)
 
 SELECT

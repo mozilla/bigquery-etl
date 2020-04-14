@@ -1,5 +1,7 @@
 """Machinery for exporting query results as JSON to Cloud storage."""
 
+from argparse import ArgumentParser
+from google.cloud import storage
 from google.cloud import bigquery
 import smart_open
 import logging
@@ -16,6 +18,8 @@ MAX_JSON_SIZE = 1 * 1024 * 1024 * 1024  # 1 GB as max. size of exported JSON fil
 MAX_FILE_COUNT = 10_000
 # exported file name format: 000000000000.json.gz, 000000000001.json.gz, ...
 MAX_JSON_NAME_LENGTH = 12
+DEFAULT_BUCKET = "mozilla-public-data-http"
+DEFAULT_API_VERSION = "v1"
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s: %(levelname)s: %(message)s"
@@ -229,3 +233,62 @@ class JsonPublisher:
             )
             query_job = self.client.query(sql, job_config=job_config)
             query_job.result()
+
+
+parser = ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--target-bucket",
+    "--target_bucket",
+    default=DEFAULT_BUCKET,
+    help="GCP bucket JSON data is exported to",
+)
+parser.add_argument(
+    "--project_id",
+    default="mozilla-public-data",
+    help="Run query in the target project",
+)
+parser.add_argument(
+    "--api_version",
+    "--api-version",
+    default=DEFAULT_API_VERSION,
+    help="API version data is published under in the storage bucket",
+)
+parser.add_argument(
+    "--parameter", action="append", help="Query parameters, such as submission_date"
+)
+parser.add_argument(
+    "--query-file", "--query_file", help="File path to query to be executed"
+)
+
+
+def main():
+    """Publish query data as JSON to GCS."""
+    args, query_arguments = parser.parse_known_args()
+
+    try:
+        metadata = Metadata.of_sql_file(args.query_file)
+    except FileNotFoundError:
+        print("No metadata file for: {}".format(args.query_file))
+        return
+
+    # check if the data should be published as JSON
+    if not metadata.is_public_json():
+        return
+
+    storage_client = storage.Client()
+    client = bigquery.Client(args.project_id)
+
+    publisher = JsonPublisher(
+        client,
+        storage_client,
+        args.project_id,
+        args.query_file,
+        args.api_version,
+        args.target_bucket,
+        args.parameter,
+    )
+    publisher.publish_json()
+
+
+if __name__ == "__main__":
+    main()

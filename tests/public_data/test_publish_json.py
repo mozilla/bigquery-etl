@@ -6,16 +6,25 @@ from unittest.mock import call, Mock, MagicMock
 from bigquery_etl.public_data.publish_json import JsonPublisher
 
 
-
 TEST_DIR = Path(__file__).parent.parent
+
 
 class TestPublishJson(object):
     test_bucket = "test-bucket"
     project_id = "test-project-id"
 
-    non_incremental_sql_path = TEST_DIR / "data" / "test_sql" / "test" / "non_incremental_query_v1" / "query.sql"
+    non_incremental_sql_path = (
+        TEST_DIR
+        / "data"
+        / "test_sql"
+        / "test"
+        / "non_incremental_query_v1"
+        / "query.sql"
+    )
 
-    incremental_sql_path = TEST_DIR / "data" / "test_sql" / "test" / "incremental_query_v1" / "query.sql"
+    incremental_sql_path = (
+        TEST_DIR / "data" / "test_sql" / "test" / "incremental_query_v1" / "query.sql"
+    )
 
     incremental_parameter = "submission_date:DATE:2020-03-15"
 

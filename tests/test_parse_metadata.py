@@ -12,10 +12,10 @@ class TestParseMetadata(object):
         assert Metadata.is_valid_label("valid-label1")
         assert Metadata.is_valid_label("a" * 63)
         assert Metadata.is_valid_label("låbel")
-        assert Metadata.is_valid_label("a" * 64) == False
-        assert Metadata.is_valid_label("INVALID") == False
-        assert Metadata.is_valid_label("invalid.label") == False
-        assert Metadata.is_valid_label("") == False
+        assert Metadata.is_valid_label("a" * 64) is False
+        assert Metadata.is_valid_label("INVALID") is False
+        assert Metadata.is_valid_label("invalid.label") is False
+        assert Metadata.is_valid_label("") is False
 
     def test_from_file(self):
         metadata_file = TEST_DIR / "data" / "metadata.yaml"
@@ -37,10 +37,17 @@ class TestParseMetadata(object):
     def test_non_existing_file(self):
         metadata_file = TEST_DIR / "nonexisting_dir" / "metadata.yaml"
         with pytest.raises(FileNotFoundError):
-            metadata = Metadata.from_file(metadata_file)
+            Metadata.from_file(metadata_file)
 
     def test_of_sql_file(self):
-        metadata_file = TEST_DIR / "data" / "test_sql" / "test" / "non_incremental_query_v1" / "query.sql"
+        metadata_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "non_incremental_query_v1"
+            / "query.sql"
+        )
         metadata = Metadata.of_sql_file(metadata_file)
 
         assert metadata.friendly_name == "Test table for a non-incremental query"
@@ -48,12 +55,21 @@ class TestParseMetadata(object):
         assert metadata.review_bug() == "1999999"
 
     def test_of_sql_file_no_metadata(self):
-        metadata_file = TEST_DIR / "data" / "test_sql" / "test" / "no_metadata_query_v1" / "query.sql"
+        metadata_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "no_metadata_query_v1"
+            / "query.sql"
+        )
         with pytest.raises(FileNotFoundError):
-            metadata = Metadata.of_sql_file(metadata_file)
+            Metadata.of_sql_file(metadata_file)
 
     def test_of_table(self):
-        metadata = Metadata.of_table("test", "non_incremental_query", "v1", TEST_DIR / "data" / "test_sql")
+        metadata = Metadata.of_table(
+            "test", "non_incremental_query", "v1", TEST_DIR / "data" / "test_sql"
+        )
 
         assert metadata.friendly_name == "Test table for a non-incremental query"
         assert metadata.description == "Test table for a non-incremental query"
@@ -61,4 +77,6 @@ class TestParseMetadata(object):
 
     def test_of_non_existing_table(self):
         with pytest.raises(FileNotFoundError):
-            metadata = Metadata.of_table("test", "no_metadata", "v1", TEST_DIR / "data" / "test_sql")
+            Metadata.of_table(
+                "test", "no_metadata", "v1", TEST_DIR / "data" / "test_sql"
+            )

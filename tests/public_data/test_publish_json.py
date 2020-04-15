@@ -10,7 +10,7 @@ class TestPublishJson(object):
     project_id = "test-project-id"
 
     non_incremental_sql_path = (
-        "tests/public_data/test_sql/test/" "non_incremental_query_v1/query.sql"
+        "tests/public_data/test_sql/test/non_incremental_query_v1/query.sql"
     )
 
     incremental_sql_path = (

@@ -1,0 +1,10 @@
+friendly_name: "Test metadata file"
+owners:
+  - ascholtz@mozilla.com
+labels:
+  schedule: daily
+  public_json: true
+  incremental: true
+  incremental_export: true
+  invalid.label: foo
+  invalid_value: Fo.

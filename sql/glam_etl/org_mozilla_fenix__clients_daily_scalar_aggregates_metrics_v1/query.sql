@@ -30,6 +30,34 @@ unlabeled_metrics AS (
     channel,
     ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>[
       (
+        'addons_has_enabled_addons',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.addons_has_enabled_addons AS INT64))
+      ),
+      (
+        'addons_has_enabled_addons',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.addons_has_enabled_addons AS INT64))
+      ),
+      (
+        'addons_has_installed_addons',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.addons_has_installed_addons AS INT64))
+      ),
+      (
+        'addons_has_installed_addons',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.addons_has_installed_addons AS INT64))
+      ),
+      (
         'events_total_uri_count',
         'counter',
         '',
@@ -469,6 +497,55 @@ unlabeled_metrics AS (
         '',
         'true',
         SUM(CAST(metrics.boolean.metrics_default_browser AS INT64))
+      ),
+      (
+        'metrics_has_top_sites',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.metrics_has_top_sites AS INT64))
+      ),
+      (
+        'metrics_has_top_sites',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.metrics_has_top_sites AS INT64))
+      ),
+      (
+        'metrics_top_sites_count',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.metrics_top_sites_count AS INT64))
+      ),
+      (
+        'metrics_top_sites_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.metrics_top_sites_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'metrics_top_sites_count',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.metrics_top_sites_count AS INT64))
+      ),
+      (
+        'metrics_top_sites_count',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.metrics_top_sites_count AS INT64))
+      ),
+      (
+        'metrics_top_sites_count',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.metrics_top_sites_count AS INT64))
       )
     ] AS scalar_aggregates
   FROM

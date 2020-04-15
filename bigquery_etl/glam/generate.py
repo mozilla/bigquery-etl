@@ -43,9 +43,9 @@ def from_template(
         template = environment.get_template(f"{template_name}.sql")
 
     if query_name_prefix:
-        table_id = f"{args.prefix}_{query_name_prefix}_{template_name}"
+        table_id = f"{args.prefix}__{query_name_prefix}_{template_name}"
     else:
-        table_id = f"{args.prefix}_{template_name}"
+        table_id = f"{args.prefix}__{template_name}"
 
     # create the directory for the view
     (dataset_path / table_id).mkdir(exist_ok=True)

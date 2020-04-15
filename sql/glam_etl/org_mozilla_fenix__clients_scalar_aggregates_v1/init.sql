@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.glam_etl.fenix_clients_scalar_aggregates_v1`(
+  `moz-fx-data-shared-prod.glam_etl.org_mozilla_fenix_clients_scalar_aggregates_v1`(
     client_id STRING,
     ping_type STRING,
     os STRING,

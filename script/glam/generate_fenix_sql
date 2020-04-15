@@ -12,7 +12,7 @@ tables=$(bq ls --format=json $project:$dataset | \
 
 function write_scalars {
     local table=$1
-    local directory="sql/glam_etl/fenix_clients_daily_scalar_aggregates_${table}"
+    local directory="sql/glam_etl/${dataset/_stable/}__clients_daily_scalar_aggregates_${table}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
         --source-table "$dataset.$table" \
@@ -26,7 +26,7 @@ function write_scalars {
 
 function write_histograms {
     local table=$1
-    local directory="sql/glam_etl/fenix_clients_daily_histogram_aggregates_${table}"
+    local directory="sql/glam_etl/${dataset/_stable/}__clients_daily_histogram_aggregates_${table}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
         --source-table "$dataset.$table" \
@@ -50,5 +50,5 @@ if ((start_stage <= 0)); then
     write_clients_daily_aggregates;
 fi
 if ((start_stage <= 1)); then
-    python3 -m bigquery_etl.glam.generate
+    python3 -m bigquery_etl.glam.generate --prefix "${dataset/_stable/}"
 fi

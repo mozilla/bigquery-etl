@@ -4,10 +4,13 @@ import pytest
 import subprocess
 import zlib
 
+from pathlib import Path
 from google.cloud import bigquery
 from google.cloud import storage
 from google.api_core.exceptions import NotFound
 
+
+TEST_DIR = Path(__file__).parent.parent
 
 @pytest.mark.integration
 class TestPublishJsonScript(object):
@@ -15,22 +18,22 @@ class TestPublishJsonScript(object):
     project_id = os.environ["GOOGLE_PROJECT_ID"]
 
     non_incremental_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/"
+        f"{str(TEST_DIR)}/data/test_sql/test/"
         "non_incremental_query_v1/query.sql"
     )
 
     incremental_non_incremental_export_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/"
+        f"{str(TEST_DIR)}/data/test_sql/test/"
         "incremental_query_non_incremental_export_v1/query.sql"
     )
 
     incremental_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/incremental_query_v1/query.sql"
+        f"{str(TEST_DIR)}/data/test_sql/test/incremental_query_v1/query.sql"
     )
     incremental_parameter = "submission_date:DATE:2020-03-15"
 
     no_metadata_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/no_metadata_query_v1/query.sql"
+        f"{str(TEST_DIR)}/data/test_sql/test/no_metadata_query_v1/query.sql"
     )
 
     client = bigquery.Client(project_id)

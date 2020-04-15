@@ -47,13 +47,13 @@ def main():
     print("Failed with Forbidden error:")
     for result in results:
         status, view = result
-        if status == "NotFound":
-            print(f"  {args.project_id}:{view}")
+        if status == "Forbidden":
+            print(f"  {view}")
     print("\nFailed with NotFound error; run the following commands to remove:")
     for result in results:
         status, view = result
         if status == "NotFound":
-            print(f"  bq rm -f {args.project_id}:{view}")
+            print(f"  bq rm -f {view.replace('.', ':', 1)}")
 
 
 def list_views(client, pool, project_id, only_tables, table_filter):

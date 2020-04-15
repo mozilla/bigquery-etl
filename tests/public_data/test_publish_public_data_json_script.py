@@ -12,14 +12,14 @@ from google.api_core.exceptions import NotFound
 
 TEST_DIR = Path(__file__).parent.parent
 
+
 @pytest.mark.integration
 class TestPublishJsonScript(object):
     test_bucket = "bigquery-etl-integration-test-bucket"
     project_id = os.environ["GOOGLE_PROJECT_ID"]
 
     non_incremental_sql_path = (
-        f"{str(TEST_DIR)}/data/test_sql/test/"
-        "non_incremental_query_v1/query.sql"
+        f"{str(TEST_DIR)}/data/test_sql/test/" "non_incremental_query_v1/query.sql"
     )
 
     incremental_non_incremental_export_sql_path = (
@@ -42,6 +42,9 @@ class TestPublishJsonScript(object):
 
     temp_table = f"{project_id}.tmp.incremental_query_v1_20200315_temp"
     non_incremental_table = f"{project_id}.test.non_incremental_query_v1"
+    incremental_non_incremental_export_table = (
+        f"{project_id}.test.incremental_query_non_incremental_export_v1"
+    )
 
     @pytest.fixture(autouse=True)
     def setup(self):
@@ -61,6 +64,21 @@ class TestPublishJsonScript(object):
 
             # create table for non-incremental query
             with open(self.non_incremental_sql_path) as query_stream:
+                query = query_stream.read()
+                query_job = self.client.query(query, job_config=job_config)
+                query_job.result()
+
+        try:
+            self.client.get_table(self.incremental_non_incremental_export_table)
+        except NotFound:
+            date_partition = bigquery.table.TimePartitioning(field="d")
+            job_config = bigquery.QueryJobConfig(
+                destination=self.incremental_non_incremental_export_table,
+                time_partitioning=date_partition,
+            )
+
+            # create table for non-incremental query
+            with open(self.incremental_non_incremental_export_sql_path) as query_stream:
                 query = query_stream.read()
                 query_job = self.client.query(query, job_config=job_config)
                 query_job.result()
@@ -128,6 +146,8 @@ class TestPublishJsonScript(object):
 
     @pytest.mark.dependency(name="test_script_non_incremental_export")
     def test_script_non_incremental_export(self):
+        print(self.incremental_non_incremental_export_sql_path)
+
         res = subprocess.run(
             (
                 "./script/publish_public_data_json",

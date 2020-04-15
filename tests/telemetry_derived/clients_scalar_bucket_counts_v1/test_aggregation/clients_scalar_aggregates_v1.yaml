@@ -1,0 +1,27 @@
+---
+- &base
+  client_id: test
+  os: first
+  app_version: 75
+  app_build_id: first
+  channel: nightly
+  scalar_aggregates:
+    {
+      "metric": "some_metric",
+      "metric_type": "scalar",
+      "key": "",
+      "process": "parent",
+      "agg_type": "min",
+      "value": 10
+    }
+- <<: *base
+  app_build_id: second
+  scalar_aggregates:
+    {
+      "metric": "some_metric",
+      "metric_type": "scalar",
+      "key": "",
+      "process": "parent",
+      "agg_type": "min",
+      "value": 5
+    }

@@ -1,6 +1,5 @@
 """Variables for templated SQL."""
-from .utils import get_custom_distribution_metadata
-from itertools import combinations
+from .utils import get_custom_distribution_metadata, compute_datacube_groupings
 
 
 def clients_scalar_aggregates(**kwargs):
@@ -116,23 +115,11 @@ def probe_counts(**kwargs):
     """Variables for probe counts."""
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
 
-    # If the set of attributes grows, the max_combinations can be set only
-    # compute a shallow set for less query complexity
-    max_combinations = len(attributes)
-    attribute_combinations = []
-    for subset_size in reversed(range(max_combinations + 1)):
-        for grouping in combinations(attributes, subset_size):
-            # channel and app_version are required in the GLAM frontend
-            if "channel" not in grouping or "app_version" not in grouping:
-                continue
-            select_expr = []
-            for attribute in attributes:
-                select_expr.append((attribute, attribute in grouping))
-            attribute_combinations.append(select_expr)
-
     return dict(
         attributes=attributes,
-        attribute_combinations=attribute_combinations,
+        attribute_combinations=compute_datacube_groupings(
+            attributes, ["app_version", "channel"]
+        ),
         aggregate_attributes="""
             metric,
             metric_type,
@@ -158,22 +145,29 @@ def probe_counts(**kwargs):
 def scalar_percentiles(**kwargs):
     """Variables for scalar percentiles."""
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
-    max_combinations = len(attributes) + 1
-    attribute_combinations = []
-    for subset_size in reversed(range(max_combinations)):
-        for grouping in combinations(attributes, subset_size):
-            select_expr = []
-            for attribute in attributes:
-                select_expr.append((attribute, attribute in grouping))
-            attribute_combinations.append(select_expr)
 
     return dict(
         attributes=attributes,
-        attribute_combinations=attribute_combinations,
+        attribute_combinations=compute_datacube_groupings(
+            attributes, ["app_version", "channel"]
+        ),
         aggregate_attributes="""
             metric,
             metric_type,
             key
         """,
+        **kwargs,
+    )
+
+
+def user_counts(**kwargs):
+    """Variables for user counts."""
+    attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+
+    return dict(
+        attributes=",".join(attributes),
+        attribute_combinations=compute_datacube_groupings(
+            attributes, ["app_version", "channel"]
+        ),
         **kwargs,
     )

@@ -29,7 +29,13 @@ class Metadata:
         63 characters, and cannot be empty. Values can be empty, and have
         a maximum length of 63 characters.
         """
-        return re.match(r"[\w\d_-]+", label) and len(label) <= 63
+        return (
+            len(label) > 0
+            and re.match(r"[\w\d_-]+", label)
+            and len(label) <= 63
+            and (label.isdigit() or label.islower())
+            and not "." in label
+        )
 
     @classmethod
     def of_table(cls, dataset, table, version, target_dir):

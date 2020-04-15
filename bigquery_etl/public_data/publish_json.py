@@ -3,6 +3,7 @@
 from argparse import ArgumentParser
 from google.cloud import storage
 from google.cloud import bigquery
+import datetime
 import smart_open
 import logging
 import sys
@@ -89,6 +90,8 @@ class JsonPublisher:
 
     def publish_json(self):
         """Publish query results as JSON to GCP Storage bucket."""
+        self.last_updated = datetime.datetime.utcnow()
+
         if self.metadata.is_incremental_export():
             if self.date is None:
                 logging.error(
@@ -104,6 +107,8 @@ class JsonPublisher:
             # for non-incremental queries, the entire destination table is exported
             result_table = f"{self.dataset}.{self.table}_{self.version}"
             self._publish_table_as_json(result_table)
+
+        self._publish_last_updated()
 
     def _publish_table_as_json(self, result_table):
         """Export the `result_table` data as JSON to Cloud Storage."""
@@ -233,6 +238,19 @@ class JsonPublisher:
             )
             query_job = self.client.query(sql, job_config=job_config)
             query_job.result()
+
+    def _publish_last_updated(self):
+        """Write the timestamp when file of the dataset were last modified to GCS."""
+        last_updated_path = (
+            f"api/{self.api_version}/tables/{self.dataset}/"
+            f"{self.table}/{self.version}/last_updated"
+        )
+        output_file = f"gs://{self.target_bucket}/{last_updated_path}"
+
+        logging.info(f"Write last_updated to {output_file}")
+
+        with smart_open.open(output_file, "w") as fout:
+            fout.write(self.last_updated.strftime("%Y-%m-%d %H:%M:%S"))
 
 
 parser = ArgumentParser(description=__doc__)

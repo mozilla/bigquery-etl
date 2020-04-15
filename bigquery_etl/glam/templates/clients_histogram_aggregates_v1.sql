@@ -43,8 +43,7 @@ WITH extracted_accumulated AS (
   SELECT
     *
   FROM
-    -- TODO: create parameter
-    glam_etl.fenix_clients_histogram_aggregates_v1
+    glam_etl.{{ prefix }}__clients_histogram_aggregates_v1
   {% if parameterize %}
   WHERE
     sample_id >= @min_sample_id
@@ -58,7 +57,7 @@ filtered_accumulated AS (
   FROM
     extracted_accumulated
   LEFT JOIN
-    glam_etl.fenix_latest_versions_v1
+    glam_etl.{{ prefix }}__latest_versions_v1
   USING
     (channel)
   WHERE
@@ -71,7 +70,7 @@ extracted_daily AS (
     CAST(app_version AS INT64) AS app_version,
     unnested_histogram_aggregates as histogram_aggregates
   FROM
-    glam_etl.fenix_view_clients_daily_histogram_aggregates_v1,
+    glam_etl.{{ prefix }}__view_clients_daily_histogram_aggregates_v1,
     UNNEST(histogram_aggregates) unnested_histogram_aggregates
   WHERE
     {% if parameterize %}
@@ -90,7 +89,7 @@ filtered_daily AS (
   FROM
     extracted_daily
   LEFT JOIN
-    glam_etl.fenix_latest_versions_v1
+    glam_etl.{{ prefix }}__latest_versions_v1
   USING
     (channel)
   WHERE

@@ -35,7 +35,7 @@ version_filtered_new AS (
   FROM
     filtered_aggregates AS scalar_aggs
   LEFT JOIN
-      {{ prefix }}_latest_versions_v1
+      glam_etl.{{ prefix }}__latest_versions_v1
   USING
       (channel)
   WHERE
@@ -82,7 +82,7 @@ filtered_old AS (
   FROM
     {{ destination_table }} AS scalar_aggs
   LEFT JOIN
-      {{ prefix }}_latest_versions_v1
+      glam_etl.{{ prefix }}__latest_versions_v1
   USING
       (channel)
   WHERE

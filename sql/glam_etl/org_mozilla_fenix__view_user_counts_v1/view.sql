@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.glam_etl.org_mozilla_fenix_view_user_counts_v1`
+  `moz-fx-data-shared-prod.glam_etl.org_mozilla_fenix__view_user_counts_v1`
 AS
 WITH all_clients AS (
   SELECT
@@ -10,7 +10,7 @@ WITH all_clients AS (
     app_build_id,
     channel
   FROM
-    `moz-fx-data-shared-prod`.glam_etl.org_mozilla_fenix_clients_scalar_aggregates_v1
+    `moz-fx-data-shared-prod`.glam_etl.org_mozilla_fenix__clients_scalar_aggregates_v1
   UNION ALL
   SELECT
     client_id,
@@ -20,7 +20,7 @@ WITH all_clients AS (
     app_build_id,
     channel
   FROM
-    `moz-fx-data-shared-prod`.glam_etl.org_mozilla_fenix_clients_histogram_aggregates_v1
+    `moz-fx-data-shared-prod`.glam_etl.org_mozilla_fenix__clients_histogram_aggregates_v1
 )
 SELECT
   ping_type,

@@ -88,7 +88,7 @@ WITH normalized_histograms AS (
     channel,
     udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
   FROM
-    glam_etl.fenix_clients_histogram_aggregates_v1
+    glam_etl.org_mozilla_fenix__clients_histogram_aggregates_v1
 ),
 unnested AS (
   SELECT

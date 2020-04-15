@@ -98,7 +98,7 @@ WITH filtered_date_channel AS (
   SELECT
     *
   FROM
-    glam_etl.org_mozilla_fenix_view_clients_daily_scalar_aggregates_v1
+    glam_etl.org_mozilla_fenix__view_clients_daily_scalar_aggregates_v1
   WHERE
     submission_date = @submission_date
 ),
@@ -140,7 +140,7 @@ version_filtered_new AS (
   FROM
     filtered_aggregates AS scalar_aggs
   LEFT JOIN
-    org_mozilla_fenix_latest_versions_v1
+    glam_etl.org_mozilla_fenix__latest_versions_v1
   USING
     (channel)
   WHERE
@@ -211,9 +211,9 @@ filtered_old AS (
     scalar_aggs.channel,
     scalar_aggregates
   FROM
-    glam_etl.org_mozilla_fenix_clients_scalar_aggregates_v1 AS scalar_aggs
+    glam_etl.org_mozilla_fenix__clients_scalar_aggregates_v1 AS scalar_aggs
   LEFT JOIN
-    org_mozilla_fenix_latest_versions_v1
+    glam_etl.org_mozilla_fenix__latest_versions_v1
   USING
     (channel)
   WHERE

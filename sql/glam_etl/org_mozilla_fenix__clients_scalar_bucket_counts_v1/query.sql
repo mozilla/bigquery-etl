@@ -364,7 +364,7 @@ WITH bucketed_booleans AS (
     channel,
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
   FROM
-    glam_etl.fenix_clients_scalar_aggregates_v1
+    glam_etl.org_mozilla_fenix__clients_scalar_aggregates_v1
 ),
 bucketed_scalars AS (
   SELECT
@@ -380,7 +380,7 @@ bucketed_scalars AS (
     agg_type,
     SAFE_CAST(udf_bucket(SAFE_CAST(value AS FLOAT64)) AS STRING) AS bucket
   FROM
-    glam_etl.fenix_clients_scalar_aggregates_v1
+    glam_etl.org_mozilla_fenix__clients_scalar_aggregates_v1
   CROSS JOIN
     UNNEST(scalar_aggregates)
   WHERE

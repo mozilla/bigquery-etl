@@ -21,7 +21,7 @@ WITH flat_clients_scalar_aggregates AS (
   SELECT
     * EXCEPT (scalar_aggregates)
   FROM
-    glam_etl.fenix_clients_scalar_aggregates_v1
+    glam_etl.org_mozilla_fenix__clients_scalar_aggregates_v1
   CROSS JOIN
     UNNEST(scalar_aggregates)
 ),

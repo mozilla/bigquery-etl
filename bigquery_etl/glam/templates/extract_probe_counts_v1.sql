@@ -18,7 +18,7 @@ WITH deduped AS (
                 total_users DESC
         ) AS rank
     FROM
-        `{{ dataset }}.{{ prefix }}_view_probe_counts_v1`
+        `{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
     WHERE
         channel IS NOT NULL
         AND app_version IS NOT NULL

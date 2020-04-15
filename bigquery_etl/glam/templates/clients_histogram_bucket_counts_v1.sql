@@ -80,7 +80,7 @@ WITH normalized_histograms AS (
     {{ attributes }},
     udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
   FROM
-    glam_etl.fenix_clients_histogram_aggregates_v1
+    glam_etl.{{ prefix }}__clients_histogram_aggregates_v1
 ),
 unnested AS (
   SELECT

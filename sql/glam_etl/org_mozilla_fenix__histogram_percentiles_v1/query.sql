@@ -8,4 +8,4 @@ SELECT
     ('95', udf_js.glean_percentile(95, aggregates, metric_type))
   ] AS aggregates
 FROM
-  fenix_clients_histogram_probe_counts_v1
+  glam_etl.org_mozilla_fenix__clients_histogram_probe_counts_v1

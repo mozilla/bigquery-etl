@@ -4,7 +4,7 @@ import pytest
 import subprocess
 import zlib
 
-from pathlib import Path
+from datetime import datetime
 from google.cloud import bigquery
 from google.cloud import storage
 from google.api_core.exceptions import NotFound
@@ -212,5 +212,19 @@ class TestPublishJsonScript(object):
             uncompressed = zlib.decompress(compressed, 16 + zlib.MAX_WBITS)
             content = json.loads(uncompressed.decode("utf-8").strip())
             assert len(content) == 3
+
+        assert blob_count == 1
+
+    @pytest.mark.dependency(depends=["test_script_incremental_query"])
+    def test_last_updated(self):
+        gcp_path = "api/v1/tables/test/incremental_query/v1/last_updated"
+        blobs = self.storage_client.list_blobs(self.test_bucket, prefix=gcp_path)
+
+        blob_count = 0
+
+        for blob in blobs:
+            blob_count += 1
+            last_updated = blob.download_as_string()
+            datetime.strptime(last_updated.decode("utf-8"), "%Y-%m-%d %H:%M:%S")
 
         assert blob_count == 1

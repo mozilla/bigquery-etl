@@ -68,7 +68,6 @@ class GcsTableMetadata:
 
         self.last_updated_path = self.blobs[0].name.split("files")[0] + "last_updated"
         self.last_updated_uri = endpoint + self.last_updated_path
-        self.last_updated = min(self.blobs, key=lambda b: b.updated).updated
 
     def table_metadata_to_json(self):
         """Return a JSON object of the table metadata for GCS."""
@@ -167,16 +166,6 @@ def publish_table_metadata(table_metadata, bucket):
             fout.write(json.dumps(metadata.files_metadata_to_json(), indent=4))
 
 
-def publish_last_modified(table_metadata, bucket):
-    """Write the timestamp when file of the dataset were last modified to GCS."""
-    for metadata in table_metadata:
-        output_file = f"gs://{bucket}/{metadata.last_updated_path}"
-
-        logging.info(f"Write last_updated to {output_file}")
-        with smart_open.open(output_file, "w") as fout:
-            fout.write(metadata.last_updated.strftime("%Y-%m-%d %H:%M:%S"))
-
-
 def main():
     """Generate and upload GCS metadata."""
     args = parser.parse_args()
@@ -200,7 +189,6 @@ def main():
         output_file = f"gs://{args.target_bucket}/all_datasets.json"
         publish_all_datasets_metadata(gcs_table_metadata, output_file)
         publish_table_metadata(gcs_table_metadata, args.target_bucket)
-        publish_last_modified(gcs_table_metadata, args.target_bucket)
     else:
         print(
             f"Invalid target: {args.target}, target must be a directory with"

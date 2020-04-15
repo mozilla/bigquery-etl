@@ -155,3 +155,28 @@ class TestPublishJson(object):
         file_handler.write.assert_has_calls(
             [call("["), call('{"a": 1}'), call(","), call('{"b": "cc"}'), call("]")]
         )
+
+    def test_publish_last_updated_to_gcs(self):
+        publisher = JsonPublisher(
+            self.mock_client,
+            self.mock_storage_client,
+            self.project_id,
+            self.incremental_sql_path,
+            self.api_version,
+            self.test_bucket,
+            ["submission_date:DATE:2020-03-15"],
+        )
+
+        mock_out = MagicMock(side_effect=[['{"a": 1}', '{"b": "cc"}'], None])
+        mock_out.__iter__ = Mock(return_value=iter(['{"a": 1}', '{"b": "cc"}']))
+        file_handler = MagicMock()
+        file_handler.__enter__.return_value = mock_out
+
+        smart_open.open = MagicMock(return_value=file_handler)
+
+        publisher.publish_json()
+
+        assert publisher.last_updated is not None
+        mock_out.write.assert_called_with(
+            publisher.last_updated.strftime("%Y-%m-%d %H:%M:%S")
+        )

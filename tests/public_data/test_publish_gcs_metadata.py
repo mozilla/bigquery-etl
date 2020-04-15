@@ -94,7 +94,6 @@ class TestPublishGcsMetadata(object):
         assert gcs_table_metadata.metadata.review_bug() == "1999999"
         assert gcs_table_metadata.last_updated_path == last_updated_path
         assert gcs_table_metadata.last_updated_uri == self.endpoint + last_updated_path
-        assert gcs_table_metadata.last_updated == datetime(2020, 4, 3, 11, 30, 1)
 
     def test_gcs_table_metadata_to_json(self):
         mock_blob = Mock()
@@ -279,46 +278,3 @@ class TestPublishGcsMetadata(object):
                 call(json.dumps(expected_incremental_query_json, indent=4)),
             ]
         )
-
-    def test_last_updated(self):
-        mock_blob1 = Mock()
-        mock_blob1.name = (
-            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
-        )
-        mock_blob1.updated = datetime(2020, 4, 3, 11, 25, 5)
-
-        mock_blob2 = Mock()
-        mock_blob2.name = (
-            "api/v1/tables/test/non_incremental_query/v1/files/000000000001.json.gz"
-        )
-        mock_blob2.updated = datetime(2020, 4, 3, 11, 20, 5)
-
-        mock_blob3 = Mock()
-        mock_blob3.name = (
-            "api/v1/tables/test/non_incremental_query/v1/files/000000000002.json.gz"
-        )
-        mock_blob3.updated = datetime(2020, 4, 3, 12, 20, 5)
-
-        gcs_metadata = pgm.GcsTableMetadata(
-            [mock_blob1, mock_blob2, mock_blob3], self.endpoint, self.sql_dir
-        )
-        assert gcs_metadata.last_updated == datetime(2020, 4, 3, 11, 20, 5)
-
-    def test_publish_last_updated_to_gcs(self):
-        mock_blob1 = Mock()
-        mock_blob1.name = (
-            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
-        )
-        mock_blob1.updated = datetime(2020, 4, 3, 11, 25, 5)
-
-        gcs_table_metadata = [
-            pgm.GcsTableMetadata([mock_blob1], self.endpoint, self.sql_dir)
-        ]
-
-        mock_out = MagicMock()
-        file_handler = MagicMock()
-        file_handler.__enter__.return_value = mock_out
-        smart_open.open = MagicMock(return_value=file_handler)
-
-        pgm.publish_last_modified(gcs_table_metadata, self.test_bucket)
-        mock_out.write.assert_called_with("2020-04-03 11:25:05")

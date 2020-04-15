@@ -1,2 +1,6 @@
 {"agg_type":"histogram","app_build_id":"first","app_version":75,"bucket":"1","channel":"nightly","client_agg_type":"min","count":1,"key":"","metric":"some_metric","metric_type":"scalar","os":"first","process":"parent"}
+{"agg_type":"histogram","app_build_id":"first","app_version":75,"bucket":"1","channel":"nightly","client_agg_type":"min","count":1,"key":"","metric":"some_metric","metric_type":"scalar","process":"parent"}
 {"agg_type":"histogram","app_build_id":"second","app_version":75,"bucket":"1","channel":"nightly","client_agg_type":"min","count":1,"key":"","metric":"some_metric","metric_type":"scalar","os":"first","process":"parent"}
+{"agg_type":"histogram","app_build_id":"second","app_version":75,"bucket":"1","channel":"nightly","client_agg_type":"min","count":1,"key":"","metric":"some_metric","metric_type":"scalar","process":"parent"}
+{"agg_type":"histogram","app_version":75,"bucket":"1","channel":"nightly","client_agg_type":"min","count":1,"key":"","metric":"some_metric","metric_type":"scalar","os":"first","process":"parent"}
+{"agg_type":"histogram","app_version":75,"bucket":"1","channel":"nightly","client_agg_type":"min","count":1,"key":"","metric":"some_metric","metric_type":"scalar","process":"parent"}

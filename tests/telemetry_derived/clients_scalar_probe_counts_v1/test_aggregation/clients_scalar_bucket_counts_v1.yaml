@@ -2,7 +2,6 @@
 - &base
   os: first
   app_version: 75
-  app_build_id: first
   channel: nightly
   metric: test
   metric_type: scalar
@@ -12,5 +11,7 @@
   agg_type: histogram
   bucket: '646'
   count: 1
+- <<: *base
+  app_build_id: first
 - <<: *base
   app_build_id: second

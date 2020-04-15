@@ -5,12 +5,12 @@ WITH all_counts AS (
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}__clients_scalar_probe_counts_v1`
+    `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}__scalar_probe_counts_v1`
   UNION ALL
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}__clients_histogram_probe_counts_v1`
+    `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}__histogram_probe_counts_v1`
   UNION ALL
   SELECT
     *

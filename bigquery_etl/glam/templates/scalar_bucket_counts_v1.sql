@@ -1,5 +1,5 @@
 {{ header }}
-{% include "clients_scalar_bucket_counts_v1.udf.sql" %}
+{% include "scalar_bucket_counts_v1.udf.sql" %}
 
 WITH bucketed_booleans AS (
   SELECT

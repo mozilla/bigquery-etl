@@ -44,7 +44,6 @@ jobs:
           name: Verify that BigQuery validates each query
           command: script/dryrun
   integration:
-    <<: *build
     docker:
     - image: python:3.8
     steps:
@@ -57,12 +56,7 @@ jobs:
             echo "Cannot pass creds to forked PRs, so marking this step successful"
             circleci step halt
           fi
-    - &build
-      run:
-        name: Build
-        command: |
-          python3.8 -m venv venv/
-          venv/bin/pip install --upgrade -r requirements.txt
+    - *build
     - &pytest_integration_test
       run:
         name: PyTest Integration Test

@@ -119,7 +119,7 @@ Additional Guidelines and Options
    - File extensions `yaml`, `json` and `ndjson` are supported
    - Preferred format is `yaml` for readability
 
-How to Run CircleCI locally
+How to Run CircleCI Locally
 ===
 
 - Install the [CircleCI Local CI](https://circleci.com/docs/2.0/local-cli/)

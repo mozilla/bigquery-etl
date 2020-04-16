@@ -16,7 +16,7 @@ from ..util import standard_args
 
 DEFAULT_BUCKET = "mozilla-public-data-http"
 DEFAULT_API_VERSION = "v1"
-DEFAULT_ENDPOINT = "http.public-data.prod.dataops.mozgcp.net/"
+DEFAULT_ENDPOINT = "https://public-data.telemetry.mozilla.org/"
 REVIEW_LINK = "https://bugzilla.mozilla.org/show_bug.cgi?id="
 GCS_FILE_PATH_RE = re.compile(
     r"api/(?P<api_version>.+)/tables/(?P<dataset>.+)/(?P<table>.+)/(?P<version>.+)/"
@@ -80,6 +80,7 @@ class GcsTableMetadata:
         if self.metadata.review_bug() is not None:
             metadata_json["review_link"] = REVIEW_LINK + self.metadata.review_bug()
 
+        metadata_json["files_metadata"] = self.files_uri + "/metadata.json"
         metadata_json["files_uri"] = self.files_uri
         metadata_json["last_updated"] = self.last_updated_uri
 
@@ -156,7 +157,7 @@ def publish_all_datasets_metadata(table_metadata, output_file):
         fout.write(json.dumps(metadata_json, indent=4))
 
 
-def publish_table_metadata(table_metadata, bucket):
+def publish_table_metadata(storage_client, table_metadata, bucket):
     """Write metadata for each public table to GCS."""
     for metadata in table_metadata:
         output_file = f"gs://{bucket}/{metadata.files_path}/metadata.json"
@@ -164,6 +165,20 @@ def publish_table_metadata(table_metadata, bucket):
         logging.info(f"Write metadata to {output_file}")
         with smart_open.open(output_file, "w") as fout:
             fout.write(json.dumps(metadata.files_metadata_to_json(), indent=4))
+
+        set_content_type(
+            storage_client,
+            bucket,
+            f"{metadata.files_path}/metadata.json",
+            "application/json",
+        )
+
+
+def set_content_type(storage_client, bucket, file, content_type):
+    """Set the file content type."""
+    blob = storage_client.get_bucket(bucket).get_blob(file)
+    blob.content_type = content_type
+    blob.patch()
 
 
 def main():
@@ -186,9 +201,12 @@ def main():
             args.target,
         )
 
-        output_file = f"gs://{args.target_bucket}/all_datasets.json"
+        output_file = f"gs://{args.target_bucket}/all-datasets.json"
         publish_all_datasets_metadata(gcs_table_metadata, output_file)
-        publish_table_metadata(gcs_table_metadata, args.target_bucket)
+        set_content_type(
+            storage_client, args.target_bucket, "all-datasets.json", "application/json"
+        )
+        publish_table_metadata(storage_client, gcs_table_metadata, args.target_bucket)
     else:
         print(
             f"Invalid target: {args.target}, target must be a directory with"

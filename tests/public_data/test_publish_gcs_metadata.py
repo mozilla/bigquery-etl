@@ -109,7 +109,7 @@ class TestPublishGcsMetadata(object):
 
         result = gcs_table_metadata.table_metadata_to_json()
 
-        assert len(result.items()) == 7
+        assert len(result.items()) == 8
         assert result["description"] == "Test table for a non-incremental query"
         assert result["friendly_name"] == "Test table for a non-incremental query"
         assert result["incremental"] is False
@@ -117,6 +117,7 @@ class TestPublishGcsMetadata(object):
         review_link = "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999"
         assert result["review_link"] == review_link
         assert result["files_uri"] == self.endpoint + files_path
+        assert result["files_metadata"] == self.endpoint + files_path + "/metadata.json"
         assert result["last_updated"] == self.endpoint + last_updated_path
 
     def test_gcs_files_metadata_to_json(self):
@@ -262,7 +263,9 @@ class TestPublishGcsMetadata(object):
         file_handler.__enter__.return_value = mock_out
         smart_open.open = MagicMock(return_value=file_handler)
 
-        pgm.publish_table_metadata(gcs_table_metadata, self.test_bucket)
+        pgm.publish_table_metadata(
+            self.mock_storage_client, gcs_table_metadata, self.test_bucket
+        )
 
         metadata_file = TEST_DIR / "data" / "incremental_query_gcs_metadata.json"
         with open(metadata_file) as f:

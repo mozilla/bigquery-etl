@@ -4,6 +4,7 @@ import pytest
 import subprocess
 import zlib
 
+from pathlib import Path
 from datetime import datetime
 from google.cloud import bigquery
 from google.cloud import storage

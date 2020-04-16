@@ -161,7 +161,7 @@ class TestPublishJson(object):
             self.mock_client,
             self.mock_storage_client,
             self.project_id,
-            self.incremental_sql_path,
+            str(self.incremental_sql_path),
             self.api_version,
             self.test_bucket,
             ["submission_date:DATE:2020-03-15"],

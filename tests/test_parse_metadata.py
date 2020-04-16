@@ -10,8 +10,10 @@ class TestParseMetadata(object):
     def test_is_valid_label(self):
         assert Metadata.is_valid_label("valid_label")
         assert Metadata.is_valid_label("valid-label1")
+        assert Metadata.is_valid_label("1231")
+        assert Metadata.is_valid_label("1231-21")
         assert Metadata.is_valid_label("a" * 63)
-        assert Metadata.is_valid_label("låbel")
+        assert Metadata.is_valid_label("låbel") is False
         assert Metadata.is_valid_label("a" * 64) is False
         assert Metadata.is_valid_label("INVALID") is False
         assert Metadata.is_valid_label("invalid.label") is False

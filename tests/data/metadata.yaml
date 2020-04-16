@@ -12,3 +12,4 @@ labels:
   1234_abcd: valid
   number_value: 1234234
   number_string: 1234abcde
+  123-432: valid

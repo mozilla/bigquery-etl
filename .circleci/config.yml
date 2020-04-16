@@ -98,6 +98,7 @@ workflows:
         context: data-eng-circleci-tests
     - verify-format-sql
     - dry-run-sql
+    - integration
     - deploy:
         context: data-eng-bigquery-etl-dockerhub
         requires:

@@ -1,0 +1,15 @@
+friendly_name: "Test metadata file"
+owners:
+  - ascholtz@mozilla.com
+labels:
+  schedule: daily
+  public_json: true
+  incremental: true
+  incremental_export: true
+  invalid.label: foo
+  invalid_value: Fo.
+  1232341234: valid
+  1234_abcd: valid
+  number_value: 1234234
+  number_string: 1234abcde
+  123-432: valid

@@ -4,9 +4,13 @@ import pytest
 import subprocess
 import zlib
 
+from pathlib import Path
 from google.cloud import bigquery
 from google.cloud import storage
 from google.api_core.exceptions import NotFound
+
+
+TEST_DIR = Path(__file__).parent.parent
 
 
 @pytest.mark.integration
@@ -15,22 +19,21 @@ class TestPublishJsonScript(object):
     project_id = os.environ["GOOGLE_PROJECT_ID"]
 
     non_incremental_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/"
-        "non_incremental_query_v1/query.sql"
+        f"{str(TEST_DIR)}/data/test_sql/test/" "non_incremental_query_v1/query.sql"
     )
 
     incremental_non_incremental_export_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/"
+        f"{str(TEST_DIR)}/data/test_sql/test/"
         "incremental_query_non_incremental_export_v1/query.sql"
     )
 
     incremental_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/incremental_query_v1/query.sql"
+        f"{str(TEST_DIR)}/data/test_sql/test/incremental_query_v1/query.sql"
     )
     incremental_parameter = "submission_date:DATE:2020-03-15"
 
     no_metadata_sql_path = (
-        "tests/publish_public_data_json/test_sql/test/no_metadata_query_v1/query.sql"
+        f"{str(TEST_DIR)}/data/test_sql/test/no_metadata_query_v1/query.sql"
     )
 
     client = bigquery.Client(project_id)
@@ -39,6 +42,9 @@ class TestPublishJsonScript(object):
 
     temp_table = f"{project_id}.tmp.incremental_query_v1_20200315_temp"
     non_incremental_table = f"{project_id}.test.non_incremental_query_v1"
+    incremental_non_incremental_export_table = (
+        f"{project_id}.test.incremental_query_non_incremental_export_v1"
+    )
 
     @pytest.fixture(autouse=True)
     def setup(self):
@@ -58,6 +64,21 @@ class TestPublishJsonScript(object):
 
             # create table for non-incremental query
             with open(self.non_incremental_sql_path) as query_stream:
+                query = query_stream.read()
+                query_job = self.client.query(query, job_config=job_config)
+                query_job.result()
+
+        try:
+            self.client.get_table(self.incremental_non_incremental_export_table)
+        except NotFound:
+            date_partition = bigquery.table.TimePartitioning(field="d")
+            job_config = bigquery.QueryJobConfig(
+                destination=self.incremental_non_incremental_export_table,
+                time_partitioning=date_partition,
+            )
+
+            # create table for non-incremental query
+            with open(self.incremental_non_incremental_export_sql_path) as query_stream:
                 query = query_stream.read()
                 query_job = self.client.query(query, job_config=job_config)
                 query_job.result()

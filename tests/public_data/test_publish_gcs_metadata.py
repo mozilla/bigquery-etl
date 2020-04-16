@@ -1,10 +1,14 @@
 import json
 import pytest
 import smart_open
+from pathlib import Path
 
 from unittest.mock import call, Mock, MagicMock
 
 import bigquery_etl.public_data.publish_gcs_metadata as pgm
+
+
+TEST_DIR = Path(__file__).parent.parent
 
 
 class TestPublishGcsMetadata(object):
@@ -12,7 +16,7 @@ class TestPublishGcsMetadata(object):
     project_id = "test-project-id"
     api_version = "v1"
     endpoint = "https://test.endpoint.mozilla.com/"
-    sql_dir = "tests/public_data/test_sql/"
+    sql_dir = TEST_DIR / "data" / "test_sql"
 
     mock_blob1 = Mock()
     mock_blob1.name = (
@@ -192,7 +196,8 @@ class TestPublishGcsMetadata(object):
 
         pgm.publish_all_datasets_metadata(gcs_table_metadata, "output.txt")
 
-        with open("tests/public_data/all_datasets.json") as f:
+        all_datasets = TEST_DIR / "data" / "all_datasets.json"
+        with open(all_datasets) as f:
             expected_json = json.load(f)
             mock_out.write.assert_called_with(json.dumps(expected_json, indent=4))
 
@@ -218,10 +223,12 @@ class TestPublishGcsMetadata(object):
 
         pgm.publish_table_metadata(gcs_table_metadata, self.test_bucket)
 
-        with open("tests/public_data/incremental_query_gcs_metadata.json") as f:
+        metadata_file = TEST_DIR / "data" / "incremental_query_gcs_metadata.json"
+        with open(metadata_file) as f:
             expected_incremental_query_json = json.load(f)
 
-        with open("tests/public_data/non_incremental_query_gcs_metadata.json") as f:
+        metadata_file = TEST_DIR / "data" / "non_incremental_query_gcs_metadata.json"
+        with open(metadata_file) as f:
             expected_non_incremental_query_json = json.load(f)
 
         mock_out.write.assert_has_calls(

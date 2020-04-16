@@ -1,8 +1,12 @@
 import pytest
 import smart_open
+from pathlib import Path
 from unittest.mock import call, Mock, MagicMock
 
 from bigquery_etl.public_data.publish_json import JsonPublisher
+
+
+TEST_DIR = Path(__file__).parent.parent
 
 
 class TestPublishJson(object):
@@ -10,17 +14,19 @@ class TestPublishJson(object):
     project_id = "test-project-id"
 
     non_incremental_sql_path = (
-        "tests/public_data/test_sql/test/" "non_incremental_query_v1/query.sql"
+        TEST_DIR
+        / "data"
+        / "test_sql"
+        / "test"
+        / "non_incremental_query_v1"
+        / "query.sql"
     )
 
     incremental_sql_path = (
-        "tests/public_data/test_sql/test/incremental_query_v1/query.sql"
+        TEST_DIR / "data" / "test_sql" / "test" / "incremental_query_v1" / "query.sql"
     )
-    incremental_parameter = "submission_date:DATE:2020-03-15"
 
-    no_metadata_sql_path = (
-        "tests/public_data/test_sql/test/no_metadata_query_v1/query.sql"
-    )
+    incremental_parameter = "submission_date:DATE:2020-03-15"
 
     mock_blob = Mock()
     mock_blob.download_as_string.return_value = bytes("[]", "utf-8")
@@ -54,7 +60,7 @@ class TestPublishJson(object):
             self.mock_client,
             self.mock_storage_client,
             self.project_id,
-            self.non_incremental_sql_path,
+            str(self.non_incremental_sql_path),
             self.api_version,
             self.test_bucket,
         )
@@ -80,7 +86,7 @@ class TestPublishJson(object):
             self.mock_client,
             self.mock_storage_client,
             self.project_id,
-            self.incremental_sql_path,
+            str(self.incremental_sql_path),
             self.api_version,
             self.test_bucket,
             ["submission_date:DATE:2020-11-02"],
@@ -94,7 +100,7 @@ class TestPublishJson(object):
                 self.mock_client,
                 self.mock_storage_client,
                 self.project_id,
-                self.incremental_sql_path,
+                str(self.incremental_sql_path),
                 self.api_version,
                 self.test_bucket,
                 None,
@@ -109,7 +115,7 @@ class TestPublishJson(object):
             self.mock_client,
             self.mock_storage_client,
             self.project_id,
-            self.incremental_sql_path,
+            str(self.incremental_sql_path),
             self.api_version,
             self.test_bucket,
             ["submission_date:DATE:2020-03-15"],
@@ -124,7 +130,7 @@ class TestPublishJson(object):
             self.mock_client,
             self.mock_storage_client,
             self.project_id,
-            self.incremental_sql_path,
+            str(self.incremental_sql_path),
             self.api_version,
             self.test_bucket,
             ["submission_date:DATE:2020-03-15"],

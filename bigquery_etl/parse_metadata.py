@@ -23,13 +23,13 @@ class Metadata:
         Check if a label has the right format.
 
         Only hyphens (-), underscores (_), lowercase characters, and
-        numbers are allowed. International characters are allowed.
+        numbers are allowed. International characters are not allowed.
 
         Keys have a minimum length of 1 character and a maximum length of
         63 characters, and cannot be empty. Values can be empty, and have
         a maximum length of 63 characters.
         """
-        return re.match(r"[\w\d_-]+", label) and len(label) <= 63
+        return re.fullmatch(r"[0-9a-z-_]{1,63}", label) is not None
 
     @classmethod
     def of_table(cls, dataset, table, version, target_dir):
@@ -78,7 +78,7 @@ class Metadata:
                                 """
                                 Invalid label format: {}: {}. Only hyphens (-),
                                 underscores (_), lowercase characters, and numbers
-                                are allowed. International characters are allowed.
+                                are allowed. International characters are not allowed.
                                 """.format(
                                     key, label
                                 )

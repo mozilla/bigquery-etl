@@ -144,9 +144,7 @@ def get_temporary_dataset(client):
     return temporary_dataset
 
 
-def get_temporary_table(
-    client, schema, clustering_fields, time_partitioning, date, dry_run
-):
+def get_temporary_table(client):
     """Generate a temporary table and return the specified date partition.
 
     Generates a table name that looks similar to, but won't collide with, a
@@ -154,12 +152,15 @@ def get_temporary_table(
     Table expiration can't be set from a query job, so the table is created
     here.
 
-    In order for query results to use time partitioning, and by extension
-    clustering, destination table must be explicitly set. Destination must be
-    generated locally and never collide with server-assigned table names,
-    because server-assigned tables cannot be modified. Server-assigned tables
-    for a dry_run query cannot be detected by client.list_tables and cannot be
-    reused as that constitutes a modification.
+    Query destination must be explicity defined in order for results to use
+    partitioning, and by extension clustering. Additionally, the only way to
+    create a temporary table with both expiration and time partitioning as a
+    result of a query is to use a CREATE TABLE statement.
+
+    Query destination must be generated locally and never collide with
+    server-assigned table names, because server-assigned tables cannot be
+    modified. Server-assigned tables for a dry_run query cannot be detected by
+    client.list_tables and cannot be reused as that constitutes a modification.
 
     Server-assigned tables have names that start with "anon" and follow with
     either 40 hex characters or a uuid replacing "-" with "_", and cannot be
@@ -170,13 +171,7 @@ def get_temporary_table(
     character.
     """
     dataset = get_temporary_dataset(client)
-    table = bigquery.Table(dataset.table(f"anon{uuid4().hex}"), schema)
-    if not dry_run:
-        table.expires = datetime.now() + timedelta(days=1)
-        table.clustering_fields = clustering_fields
-        table.time_partitioning = time_partitioning
-        table = client.create_table(table, exists_ok=False)
-    return f"{sql_table_id(table)}${date:%Y%m%d}"
+    return sql_table_id(dataset.table(f"anon{uuid4().hex}"))
 
 
 def get_query_job_configs(
@@ -188,27 +183,24 @@ def get_query_job_configs(
     start_time = datetime(*date.timetuple()[:6])
     end_time = start_time + timedelta(days=1)
     if slices > 1:
+        # create temporary tables with stable_table's time_partitioning and
+        # clustering_fields, and a 1-day expiration
         stable_table = client.get_table(stable_table)
+        ddl = "CREATE TABLE\n  `{dest}`"
+        ddl += f"\nPARTITION BY\n  DATE({stable_table.time_partitioning.field})"
+        if stable_table.clustering_fields:
+            ddl += f"\nCLUSTER BY\n  {', '.join(stable_table.clustering_fields)}"
+        ddl += "\nOPTIONS\n  (expiration_timestamp = "
+        ddl += "TIMESTAMP_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY))"
         slice_size = (end_time - start_time) / slices
         params = [start_time + slice_size * i for i in range(slices)] + [
             end_time
         ]  # explicitly use end_time to avoid rounding errors
         return [
             (
-                sql,
+                f"{ddl.format(dest=get_temporary_table(client))}\nAS\n{sql.strip()}",
                 stable_table,
                 bigquery.QueryJobConfig(
-                    destination=get_temporary_table(
-                        client=client,
-                        schema=stable_table.schema,
-                        clustering_fields=stable_table.clustering_fields,
-                        time_partitioning=stable_table.time_partitioning,
-                        date=date,
-                        dry_run=dry_run,
-                    ),
-                    # repeat table options for dry run
-                    clustering_fields=stable_table.clustering_fields,
-                    time_partitioning=stable_table.time_partitioning,
                     query_parameters=[
                         bigquery.ScalarQueryParameter(
                             "start_time", "TIMESTAMP", params[i]
@@ -269,15 +261,18 @@ def copy_join_parts(client, stable_table, query_jobs):
     else:
         logging.info(f"Processed {total_bytes} bytes to populate {stable_table}")
         if len(query_jobs) > 1:
-            sources = [job.destination for job in query_jobs]
+            partition_id = stable_table.table_id.split("$", 1)[1]
+            sources = [
+                f"{sql_table_id(job.destination)}${partition_id}" for job in query_jobs
+            ]
             job_config = bigquery.CopyJobConfig(
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
             )
             copy_job = client.copy_table(sources, stable_table, job_config=job_config)
             copy_job.result()
             logging.info(f"Copied {len(query_jobs)} results to populate {stable_table}")
-            for source in sources:
-                client.delete_table(sql_table_id(source).split("$")[0])
+            for job in query_jobs:
+                client.delete_table(job.destination)
             logging.info(f"Deleted {len(query_jobs)} temporary tables")
 
 

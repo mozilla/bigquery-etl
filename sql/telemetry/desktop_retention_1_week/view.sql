@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `desktop_retention_1_week`
+  `moz-fx-data-shared-prod.telemetry.desktop_retention_1_week`
 AS
 SELECT
   client_id,

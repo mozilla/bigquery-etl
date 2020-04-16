@@ -8,3 +8,7 @@ labels:
   incremental_export: true
   invalid.label: foo
   invalid_value: Fo.
+  1232341234: valid
+  1234_abcd: valid
+  number_value: 1234234
+  number_string: 1234abcde

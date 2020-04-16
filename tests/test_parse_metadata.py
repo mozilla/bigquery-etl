@@ -33,6 +33,12 @@ class TestParseMetadata(object):
         assert metadata.review_bug() is None
         assert "invalid_value" not in metadata.labels
         assert "invalid.label" not in metadata.labels
+        assert "1232341234" in metadata.labels
+        assert "1234_abcd" in metadata.labels
+        assert "number_value" in metadata.labels
+        assert metadata.labels["number_value"] == "1234234"
+        assert "number_string" in metadata.labels
+        assert metadata.labels["number_string"] == "1234abcde"
 
     def test_non_existing_file(self):
         metadata_file = TEST_DIR / "nonexisting_dir" / "metadata.yaml"

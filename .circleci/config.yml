@@ -57,6 +57,12 @@ jobs:
             echo "Cannot pass creds to forked PRs, so marking this step successful"
             circleci step halt
           fi
+    - &build
+      run:
+        name: Build
+        command: |
+          python3.8 -m venv venv/
+          venv/bin/pip install --upgrade -r requirements.txt
     - &pytest_integration_test
       run:
         name: PyTest Integration Test

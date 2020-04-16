@@ -33,7 +33,7 @@ class Metadata:
             len(label) > 0
             and re.match(r"[\w\d_-]+", label)
             and len(label) <= 63
-            and (label.isdigit() or label.islower())
+            and label.lower() == label
             and "." not in label
         )
 

@@ -146,8 +146,6 @@ class TestPublishJsonScript(object):
 
     @pytest.mark.dependency(name="test_script_non_incremental_export")
     def test_script_non_incremental_export(self):
-        print(self.incremental_non_incremental_export_sql_path)
-
         res = subprocess.run(
             (
                 "./script/publish_public_data_json",

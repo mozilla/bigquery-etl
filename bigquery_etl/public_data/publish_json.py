@@ -254,7 +254,7 @@ class JsonPublisher:
             last_updated = self.last_updated.strftime("%Y-%m-%d %H:%M:%S")
             fout.write(json.dumps(last_updated))
 
-        # set Content-Type to plain text so that timestamp is displayed in the browser
+        # set Content-Type to json so that timestamp is displayed in the browser
         blob = self.storage_client.get_bucket(self.target_bucket).get_blob(
             last_updated_path
         )

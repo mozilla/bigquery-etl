@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from google.cloud import storage
 from google.cloud import bigquery
 import datetime
+import json
 import smart_open
 import logging
 import sys
@@ -250,13 +251,14 @@ class JsonPublisher:
         logging.info(f"Write last_updated to {output_file}")
 
         with smart_open.open(output_file, "w") as fout:
-            fout.write(self.last_updated.strftime("%Y-%m-%d %H:%M:%S"))
+            last_updated = self.last_updated.strftime("%Y-%m-%d %H:%M:%S")
+            fout.write(json.dumps(last_updated))
 
         # set Content-Type to plain text so that timestamp is displayed in the browser
         blob = self.storage_client.get_bucket(self.target_bucket).get_blob(
             last_updated_path
         )
-        blob.content_type = "text/plain"
+        blob.content_type = "application/json"
         blob.patch()
 
 

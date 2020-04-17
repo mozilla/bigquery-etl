@@ -1,3 +1,4 @@
+import json
 import pytest
 import smart_open
 from pathlib import Path
@@ -178,5 +179,5 @@ class TestPublishJson(object):
 
         assert publisher.last_updated is not None
         mock_out.write.assert_called_with(
-            publisher.last_updated.strftime("%Y-%m-%d %H:%M:%S")
+            json.dumps(publisher.last_updated.strftime("%Y-%m-%d %H:%M:%S"))
         )

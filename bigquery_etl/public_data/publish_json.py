@@ -252,6 +252,13 @@ class JsonPublisher:
         with smart_open.open(output_file, "w") as fout:
             fout.write(self.last_updated.strftime("%Y-%m-%d %H:%M:%S"))
 
+        # set Content-Type to plain text so that timestamp is displayed in the browser
+        blob = self.storage_client.get_bucket(self.target_bucket).get_blob(
+            last_updated_path
+        )
+        blob.content_type = "text/plain"
+        blob.patch()
+
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(

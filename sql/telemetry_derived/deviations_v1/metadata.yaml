@@ -1,5 +1,5 @@
 friendly_name: Deviations
-description: >
+description: >-
   Deviation of different metrics from forecast.
 owners:
   - jmccrosky@mozilla.com

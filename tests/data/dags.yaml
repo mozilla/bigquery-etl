@@ -1,0 +1,12 @@
+bqetl_events:
+  schedule_interval: daily
+  default_args:
+    owner: example@mozilla.org
+    email: ['example@mozilla.org']
+    retries: 2
+bqetl_core:
+  schedule_interval: '* 1 * * *'
+  default_args:
+    owner: example@mozilla.org
+    email: ['example@mozilla.org']
+    retries: 4

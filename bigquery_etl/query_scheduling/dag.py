@@ -5,12 +5,12 @@ import yaml
 class DagParseException(Exception):
     """Raised when DAG config is invalid."""
 
-    def __init__(self, message, errors):
+    def __init__(self, message):
         message = f"""
         {message}
 
         Expected yaml format:
-        name: 
+        name:
             schedule_interval: string,
             default_args: map
         """
@@ -45,15 +45,15 @@ class Dag:
             }
         }
         """
-        if d.keys() != 1:
+        if len(d.keys()) != 1:
             raise DagParseException(f"Invalid DAG name in {d}.")
 
-        name = d.keys()[0]
+        name = list(d.keys())[0]
 
         if "schedule_interval" not in d[name]:
             raise DagParseException(f"schedule_interval missing in {d}.")
 
-        schedule_interval = d[name][schedule_interval]
+        schedule_interval = d[name]["schedule_interval"]
 
         # todo: check format - either cron or daily, ....
         # airflow dag validation might catch that, if not check here
@@ -85,7 +85,7 @@ class Dags:
                 "schedule_interval": string,
                 "default_args": dict
             },
-            ...          
+            ...
         }
         """
 
@@ -117,6 +117,8 @@ class Dags:
                 )
             else:
                 dag.add_tasks(tasks)
+
+        return self
 
     def to_airflow_dags(self):
         """Write DAG representation as Airflow dags to file."""

@@ -9,7 +9,7 @@ QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query
 class TaskParseException(Exception):
     """Raised when task scheduling config is invalid."""
 
-    def __init__(self, message, errors):
+    def __init__(self, message):
         message = f"""
         {message}
 
@@ -59,6 +59,8 @@ class Task:
             )
 
         self.dag_name = scheduling["dag_name"]
+        self.args = scheduling.copy()
+        del self.args["dag_name"]
 
     @classmethod
     def of_query(cls, query_file):

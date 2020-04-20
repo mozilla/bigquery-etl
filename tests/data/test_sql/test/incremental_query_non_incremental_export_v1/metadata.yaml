@@ -8,3 +8,6 @@ labels:
   public_json: true
   incremental: true
   incremental_export: false
+scheduling:
+  dag_name: "bqetl_events"
+  depends_on_past: false

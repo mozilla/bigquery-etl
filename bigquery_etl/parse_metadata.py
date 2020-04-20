@@ -11,11 +11,12 @@ METADATA_FILE = "metadata.yaml"
 class Metadata:
     """Representation of metadata file content."""
 
-    def __init__(self, friendly_name=None, description=None, labels={}):
+    def __init__(self, friendly_name=None, description=None, labels={}, scheduling={}):
         """Create a new Metadata instance."""
         self.friendly_name = friendly_name
         self.description = description
         self.labels = labels
+        self.scheduling = scheduling
 
     @staticmethod
     def is_valid_label(label):
@@ -50,6 +51,7 @@ class Metadata:
         friendly_name = None
         description = None
         labels = {}
+        scheduling = {}
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -84,7 +86,10 @@ class Metadata:
                                 )
                             )
 
-                return cls(friendly_name, description, labels)
+                if "scheduling" in metadata:
+                    scheduling = metadata["scheduling"]
+
+                return cls(friendly_name, description, labels, scheduling)
             except yaml.YAMLError as e:
                 raise e
 

@@ -23,6 +23,12 @@ class TaskParseException(Exception):
         super(TaskParseException, self).__init__(message)
 
 
+class UnscheduledTask(Exception):
+    """Raised when a task is not scheduled"""
+
+    pass
+
+
 class Task:
     """Representation of a task scheduled in Airflow."""
 
@@ -43,6 +49,9 @@ class Task:
             )
 
         scheduling = metadata.scheduling
+
+        if scheduling == {}:
+            raise UnscheduledTask()
 
         if "dag_name" not in scheduling:
             raise TaskParseException(

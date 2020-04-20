@@ -7,7 +7,7 @@ import logging
 import os
 from argparse import ArgumentParser
 from ..util import standard_args
-from bigquery_etl.query_scheduling.dag import Dags
+from bigquery_etl.query_scheduling.dags import Dags
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 
 

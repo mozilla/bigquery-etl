@@ -4,6 +4,7 @@ of queries.
 """
 
 import logging
+import os
 from argparse import ArgumentParser
 from ..util import standard_args
 from bigquery_etl.query_scheduling.dag import Dags
@@ -17,7 +18,7 @@ QUERY_FILE = "query.sql"
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--sql_dir",
-    "sql-dir",
+    "--sql-dir",
     help="File or directory containing query and metadata files",
     default=DEFAULT_SQL_DIR,
 )
@@ -30,41 +31,45 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
+def get_dags(sql_dir, dags_config):
+    """Return all configured DAGs including associated tasks."""
+    tasks = []
+
+    # parse metadata.yaml to retrieve scheduling information
+    if os.path.isdir(sql_dir):
+        for root, dirs, files in os.walk(sql_dir):
+            if QUERY_FILE in files:
+                query_file = os.path.join(root, QUERY_FILE)
+
+                try:
+                    task = Task.of_query(query_file)
+                    tasks.append(task)
+                except FileNotFoundError:
+                    # query has no metadata.yaml file; skip
+                    pass
+                except UnscheduledTask:
+                    logging.info(
+                        f"Warning: no scheduling information for {query_file}."
+                    )
+
+    else:
+        logging.error(
+            """
+            Invalid sql_dir: {}, sql_dir must be a directory with
+            structure /<dataset>/<table>/metadata.yaml.
+            """.format(
+                sql_dir
+            )
+        )
+
+    return Dags.from_file(dags_config).with_tasks(tasks)
+
+
 def main():
     """Generate Airflow DAGs."""
     args = parser.parse_args()
 
-    tasks = []
-
-    # parse metadata.yaml to retrieve scheduling information
-    for target in args.sql_dir:
-        if os.path.isdir(target):
-            for root, dirs, files in os.walk(target):
-                if QUERY_FILE in files:
-                    query_file = os.path.join(root, QUERY_FILE)
-
-                    try:
-                        task = Task.of_query(query_file)
-                        tasks.append(task)
-                    except FileNotFoundError:
-                        # query has no metadata.yaml file; skip
-                        pass
-                    except UnscheduledTask:
-                        logging.info(
-                            f"Warning: no scheduling information for {query_file}."
-                        )
-
-        else:
-            logging.error(
-                """
-                Invalid target: {}, target must be a directory with
-                structure /<dataset>/<table>/metadata.yaml.
-                """.format(
-                    args.sql_dir
-                )
-            )
-
-    dags = Dags.from_file(args.dags_config).with_tasks(tasks)
+    get_dags(args.sql_dir, args.dags_config)
 
     # todo: determine task upstream dependencies
     # todo: convert to Airflow DAG representation

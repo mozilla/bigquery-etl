@@ -1,3 +1,5 @@
+"""Represents a scheduled Airflow task."""
+
 import re
 
 from bigquery_etl.parse_metadata import Metadata
@@ -10,6 +12,7 @@ class TaskParseException(Exception):
     """Raised when task scheduling config is invalid."""
 
     def __init__(self, message):
+        """Throw TaskParseException."""
         message = f"""
         {message}
 
@@ -24,7 +27,7 @@ class TaskParseException(Exception):
 
 
 class UnscheduledTask(Exception):
-    """Raised when a task is not scheduled"""
+    """Raised when a task is not scheduled."""
 
     pass
 
@@ -69,7 +72,6 @@ class Task:
 
         Raises FileNotFoundError if not metadata file exists for query.
         """
-
         metadata = Metadata.of_sql_file(query_file)
         return cls(query_file, metadata)
 

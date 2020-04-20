@@ -1,5 +1,5 @@
 friendly_name: ASN Aggregates
-description: >
+description: >-
   A daily aggregate of clients per ASN (Autonomous System Number) and 
   DoH (DNS over HTTPS) usage, partitioned by day. Only ASNs with more 
   than a critical threshold of clients are considered.

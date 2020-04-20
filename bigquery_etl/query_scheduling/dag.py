@@ -1,7 +1,11 @@
+"""Represents an Airflow DAG."""
+
+
 class DagParseException(Exception):
     """Raised when DAG config is invalid."""
 
     def __init__(self, message):
+        """Throw DagParseException."""
         message = f"""
         {message}
 

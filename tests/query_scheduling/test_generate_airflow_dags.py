@@ -1,4 +1,3 @@
-import pytest
 from pathlib import Path
 
 import bigquery_etl.query_scheduling.generate_airflow_dags as gad

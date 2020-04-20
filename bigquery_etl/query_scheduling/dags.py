@@ -1,3 +1,5 @@
+"""Represents a collection of configured Airflow DAGs."""
+
 from itertools import groupby
 import yaml
 
@@ -29,17 +31,18 @@ class Dags:
             ...
         }
         """
-
         dags = [Dag.from_dict({k: v}) for k, v in d.items()]
         return cls(dags)
 
     @classmethod
     def from_file(cls, config_file):
+        """Instantiate DAGs based on the provided configuration file."""
         with open(config_file, "r") as yaml_stream:
             dags_config = yaml.safe_load(yaml_stream)
             return Dags.from_dict(dags_config)
 
     def dag_by_name(self, name):
+        """Return the DAG with the provided name."""
         for dag in self.dags:
             if dag.name == name:
                 return dag

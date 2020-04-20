@@ -1,7 +1,4 @@
-"""
-Generates Airflow DAGs from dags.yaml and scheduling information in metadata.yaml files
-of queries.
-"""
+"""Generates Airflow DAGs for scheduled queries."""
 
 import logging
 import os

@@ -225,7 +225,7 @@ class TestPublishJsonScript(object):
 
         for blob in blobs:
             blob_count += 1
-            last_updated = blob.download_as_string()
-            datetime.strptime(last_updated.decode("utf-8"), "%Y-%m-%d %H:%M:%S")
+            last_updated = json.loads(blob.download_as_string().decode("utf-8"))
+            datetime.strptime(last_updated, "%Y-%m-%d %H:%M:%S")
 
         assert blob_count == 1

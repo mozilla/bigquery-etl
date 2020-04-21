@@ -37,7 +37,7 @@ class Task:
 
     def __init__(self, query_file, metadata):
         """Instantiate a new task."""
-        self.query_file = query_file
+        self.query_file = str(query_file)
 
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
         if query_file_re:

@@ -4,7 +4,7 @@ import logging
 import os
 from argparse import ArgumentParser
 from ..util import standard_args
-from bigquery_etl.query_scheduling.dags import Dags
+from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 
 
@@ -45,9 +45,12 @@ def get_dags(sql_dir, dags_config):
                     # query has no metadata.yaml file; skip
                     pass
                 except UnscheduledTask:
-                    logging.info(
-                        f"Warning: no scheduling information for {query_file}."
-                    )
+                    # logging.debug(
+                    #     f"No scheduling information for {query_file}."
+                    # )
+                    #
+                    # most tasks lack scheduling information for now
+                    pass
 
     else:
         logging.error(
@@ -59,7 +62,7 @@ def get_dags(sql_dir, dags_config):
             )
         )
 
-    return Dags.from_file(dags_config).with_tasks(tasks)
+    return DagCollection.from_file(dags_config).with_tasks(tasks)
 
 
 def main():

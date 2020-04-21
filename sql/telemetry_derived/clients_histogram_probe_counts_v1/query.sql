@@ -137,8 +137,8 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
-WITH aggregated_histograms AS
-  (SELECT
+WITH filtered_data AS (
+  SELECT
     sample_id,
     client_id,
     os,
@@ -153,121 +153,50 @@ WITH aggregated_histograms AS
     key,
     process,
     agg_type,
-    sampled,
-    aggregates
-  FROM clients_histogram_aggregates_unnested_v1
-  WHERE os IS NOT NULL
+    aggregates,
+    os = 'Windows'and channel = 'release' AS sampled
+  FROM
+    clients_histogram_aggregates_v1
+  CROSS JOIN UNNEST(histogram_aggregates)
+  WHERE submission_date = @submission_date
+    AND first_bucket IS NOT NULL
     AND sample_id >= @min_sample_id
-    AND sample_id <= @max_sample_id
+    AND sample_id <= @max_sample_id),
 
+static_combos as (
+  SELECT null as os, null as app_build_id
   UNION ALL
+  SELECT null as os, '*' as app_build_id
+  UNION ALL
+  SELECT '*' as os, null as app_build_id
+  UNION ALL
+  SELECT '*' as os, '*' as app_build_id
+),
 
+all_combos AS (
   SELECT
-    sample_id,
-    client_id,
-    NULL AS os,
-    app_version,
-    app_build_id,
-    channel,
-    first_bucket,
-    last_bucket,
-    num_buckets,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type,
+    * except(os, app_build_id),
+    COALESCE(combo.os, table.os) as os,
+    COALESCE(combo.app_build_id, table.app_build_id) as app_build_id
+  FROM
+     filtered_data table
+  CROSS JOIN
+     static_combos combo),
+
+aggregated_histograms AS
+  (SELECT * REPLACE(
     -- This returns true if at least 1 row has sampled=true.
     -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
     -- and in this case we treat them as Windows+Release users when fudging numbers
     MAX(sampled) AS sampled,
-    udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates
-  FROM clients_histogram_aggregates_unnested_v1
-  WHERE sample_id >= @min_sample_id
-    AND sample_id <= @max_sample_id
+    udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates)
+  FROM all_combos
   GROUP BY
     sample_id,
     client_id,
+    os,
     app_version,
     app_build_id,
-    channel,
-    first_bucket,
-    last_bucket,
-    num_buckets,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type
-
-  UNION ALL
-
-  SELECT
-    sample_id,
-    client_id,
-    os,
-    app_version,
-    NULL AS app_build_id,
-    channel,
-    first_bucket,
-    last_bucket,
-    num_buckets,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type,
-    -- This returns true if at least 1 row has sampled=true.
-    MAX(sampled) AS sampled,
-    udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates
-  FROM clients_histogram_aggregates_unnested_v1
-  WHERE os IS NOT NULL
-    AND sample_id >= @min_sample_id
-    AND sample_id <= @max_sample_id
-  GROUP BY
-    sample_id,
-    client_id,
-    os,
-    app_version,
-    channel,
-    first_bucket,
-    last_bucket,
-    num_buckets,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type
-
-  UNION ALL
-
-  SELECT
-    sample_id,
-    client_id,
-    NULL AS os,
-    app_version,
-    NULL AS app_build_id,
-    channel,
-    first_bucket,
-    last_bucket,
-    num_buckets,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type,
-    -- This returns true if at least 1 row has sampled=true.
-    -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
-    -- and in this case we treat them as Windows+Release users when fudging numbers
-    MAX(sampled) AS sampled,
-    udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates
-  FROM clients_histogram_aggregates_unnested_v1
-  WHERE sample_id >= @min_sample_id
-    AND sample_id <= @max_sample_id
-  GROUP BY
-    sample_id,
-    client_id,
-    app_version,
     channel,
     first_bucket,
     last_bucket,
@@ -333,9 +262,9 @@ bucket_counts AS (
     aggregates.key)
 
 SELECT
-  os,
+  IF(os = '*', NULL, os) AS os,
   app_version,
-  app_build_id,
+  IF(app_build_id = '*', NULL, app_build_id) AS app_build_id,
   channel,
   metric,
   metric_type,

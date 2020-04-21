@@ -45,6 +45,7 @@ function run_query {
     local max_sample_id=${4:-99}
     local query_location=${5:-$destination_table}
     local additional_arguments="${6:---replace}"
+    local sample_size=${7:-10}
     local query="sql/$PROD_DATASET/$query_location/query.sql"
 
     # add an option to write to a time-partitioned table
@@ -65,6 +66,7 @@ function run_query {
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
         --parameter="min_sample_id:INT64:$min_sample_id" \
         --parameter="max_sample_id:INT64:$max_sample_id" \
+        --parameter="sample_size:INT64:$sample_size" \
         "$(if $time_partition; then echo --time_partitioning_type="DAY"; fi)" \
         < "$tmp"
 }
@@ -89,7 +91,7 @@ function run_init {
 
 function run_view {
     local view_name=$1
-    local view="sql/glam_etl/$view_name/view.sql"
+    local view="sql/$PROD_DATASET/$view_name/view.sql"
     echo "running $view"
     local tmp
     tmp=$(mktemp)
@@ -102,57 +104,58 @@ function run_view {
 }
 
 
-function run_desktop_sql {
-    local NUM_PARTITIONS=4
+function run_partitioned_query {
+    local NUM_PARTITIONS=5
     local NUM_SAMPLE_IDS=100
     local PARTITION_SIZE=$((NUM_SAMPLE_IDS / NUM_PARTITIONS))
+    local table_name=$1
+    local partitioned_result=${2:-true}
 
+    run_query $table_name true 0 19
+    for partition in $(seq 1 $((NUM_PARTITIONS - 1))); do
+        local min_param=$((partition * PARTITION_SIZE))
+        local max_param=$((min_param + PARTITION_SIZE - 1))
+        run_query $table_name $partitioned_result $min_param $max_param \
+            $table_name "--append_table --noreplace"
+    done
+}
+
+
+function run_desktop_sql {
     run_query "latest_versions"
 
     # Run clients_daily_*_scalar_aggregates
     run_init "clients_daily_scalar_aggregates_v1"
-    run_query "clients_daily_scalar_aggregates_v1" true 0 9
+    run_query "clients_daily_scalar_aggregates_v1" true
     run_query "clients_daily_scalar_aggregates_v1" \
-        true 0 9 "clients_daily_keyed_scalar_aggregates_v1" \
+        true 0 0 "clients_daily_keyed_scalar_aggregates_v1" \
         "--append_table --noreplace"
     run_query "clients_daily_scalar_aggregates_v1" \
-        true 0 9 "clients_daily_keyed_boolean_aggregates_v1" \
+        true 0 0 "clients_daily_keyed_boolean_aggregates_v1" \
         "--append_table --noreplace"
 
     # Run clients_daily_*_histogram_aggregates
     run_init "clients_daily_histogram_aggregates_v1"
-    run_query "clients_daily_histogram_aggregates_v1" true 0 9
+    run_query "clients_daily_histogram_aggregates_v1" true 0 0
     run_query "clients_daily_histogram_aggregates_v1" \
-        true 0 9 "clients_daily_keyed_histogram_aggregates_v1" \
+        true 0 0 "clients_daily_keyed_histogram_aggregates_v1" \
         "--append_table --noreplace"
 
     # Run the rest of the clients scalar pipeline
     run_init "clients_scalar_aggregates_v1"
     run_query "clients_scalar_aggregates_v1"
     run_query "clients_scalar_bucket_counts_v1"
-    run_query "client_probe_counts_v1" false 0 0 \
-        "clients_scalar_probe_counts_v1"
+    run_query "clients_scalar_probe_counts_v1"
     run_query "scalar_percentiles_v1"
 
     # Run the rest of the clients histogram pipeline
     run_init "clients_histogram_aggregates_v1"
     run_query "clients_histogram_aggregates_new_v1"
-    run_query "clients_histogram_aggregates_v1" true 0 24 \
-        "clients_histogram_aggregates_v1"
+    run_partitioned_query "clients_histogram_aggregates_v1"
 
-    for partition in $(seq 1 $((NUM_PARTITIONS - 1))); do
-        local min_param=$((partition * PARTITION_SIZE))
-        local max_param=$((min_param + PARTITION_SIZE - 1))
-        run_query "clients_histogram_aggregates_v1" true $min_param $max_param \
-            "clients_histogram_aggregates_v1" "--append_table --noreplace"
-    done
+    run_partitioned_query "clients_histogram_probe_counts_v1" false
 
-    run_query "clients_histogram_bucket_counts_v1"
-    run_query "client_probe_counts_v1" false 0 0 \
-        "clients_histogram_probe_counts_v1" \
-        "--append_table --noreplace"
     run_query "histogram_percentiles_v1"
-
     run_query "glam_user_counts_v1"
 }
 

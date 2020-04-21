@@ -1,9 +1,6 @@
 - name: submission_date
   type: DATE
   value: 2019-01-01
-- name: min_sample_id
+- name: sample_size
   type: INT64
-  value: 0
-- name: max_sample_id
-  type: INT64
-  value: 0
+  value: 10

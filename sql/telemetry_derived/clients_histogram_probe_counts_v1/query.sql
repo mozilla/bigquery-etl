@@ -1,5 +1,6 @@
 CREATE TEMP FUNCTION udf_normalized_sum (arrs ARRAY<STRUCT<key STRING, value INT64>>, sampled BOOL)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
+  -- Input: one histogram for a single client.
   -- Returns the normalized sum of the input maps.
   -- It returns the total_count[k] / SUM(total_count)
   -- for each key k.

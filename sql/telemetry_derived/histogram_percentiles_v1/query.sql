@@ -8,6 +8,4 @@ SELECT
     ('95', udf_js.glean_percentile(95, aggregates, metric_type))
   ] AS aggregates
 FROM
-  client_probe_counts_v1
-WHERE
-  metric_type LIKE "%histogram%"
+  clients_histogram_probe_counts_v1

@@ -75,8 +75,7 @@ def generate_sql(
                 OR (channel = "release" AND os != "Windows")
                 OR (channel = "release" AND
                     os = "Windows" AND
-                    sample_id >= @min_sample_id AND
-                    sample_id <= @max_sample_id)
+                    MOD(sample_id, @sample_size) = 0)
         ),
 
         -- Using `min` for when `agg_type` is `count` returns null when all rows are null

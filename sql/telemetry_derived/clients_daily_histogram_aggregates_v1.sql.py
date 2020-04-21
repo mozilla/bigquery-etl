@@ -119,10 +119,10 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
           WHERE
             channel IN ("nightly", "beta")
             OR (channel = "release" AND os != "Windows")
-            OR (channel = "release" AND
-                    os = "Windows" AND
-                    sample_id >= @min_sample_id AND
-                    sample_id <= @max_sample_id)
+            OR (
+                channel = "release" AND
+                os = "Windows" AND
+                MOD(sample_id, @sample_size) = 0)
         ),
 
         {additional_queries}

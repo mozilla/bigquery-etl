@@ -18,4 +18,7 @@ CREATE TABLE IF NOT EXISTS
     value INT64>>>>)
 PARTITION BY submission_date
 CLUSTER BY app_version, channel
-OPTIONS(require_partition_filter=true)
+OPTIONS(
+    require_partition_filter=true,
+    partition_expiration_days=7
+)

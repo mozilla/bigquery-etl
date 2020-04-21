@@ -17,9 +17,6 @@ cleaned AS (
     *,
     payload.device_id,
     `moz-fx-data-shared-prod`.udf.get_key(event_map_values, 'serverTime') AS server_time,
-    SAFE_CAST(
-    SAFE_CAST(`moz-fx-data-shared-prod`.udf.get_key(event_map_values, 'serverTime') AS FLOAT64) * 1000 AS INT64
-    ) AS time,
     CASE
       event_object
     WHEN
@@ -46,8 +43,14 @@ SELECT
     [device_id, event_category, event_method, event_object, server_time, flow_id],
     '-'
   ) AS insert_id,
-  time,
-  TIMESTAMP_MILLIS(time) AS timestamp,
+  -- Amplitude expects a `time` field in milliseconds since UNIX epoch.
+  COALESCE(
+    -- server_time is in seconds, but with one digit after the decimal place, so we
+    -- have to cast to float, multiply to get milliseconds, then cast to int.
+    SAFE_CAST(SAFE_CAST(server_time AS FLOAT64) * 1000 AS INT64),
+    -- server_time is sometimes null, so we fall back to submission_timestamp
+    UNIX_MILLIS(submission_timestamp)
+  ) AS time,
   event_type,
   metadata.geo.country,
   metadata.geo.city,
@@ -80,7 +83,7 @@ SELECT
         SELECT
           FORMAT('"%t":"%t"', key, value)
         FROM
-          UNNEST([STRUCT('device_id' AS key, device_id AS value), STRUCT('flow_id', flow_id)])
+          UNNEST([STRUCT('flow_id' AS key, flow_id AS value)])
         WHERE
           value IS NOT NULL
       ),

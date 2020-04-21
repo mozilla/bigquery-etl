@@ -1,7 +1,6 @@
 """Represents a collection of configured Airflow DAGs."""
 
 from itertools import groupby
-import logging
 import yaml
 
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag

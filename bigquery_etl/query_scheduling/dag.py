@@ -64,6 +64,6 @@ class Dag:
         # todo: check format - either cron or daily, ....
         # airflow dag validation might catch that, if not check here
 
-        default_args = d.get("default_args", {})
+        default_args = d[name].get("default_args", {})
 
         return cls(name, schedule_interval, default_args)

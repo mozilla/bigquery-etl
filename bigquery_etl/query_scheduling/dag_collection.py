@@ -1,12 +1,13 @@
 """Represents a collection of configured Airflow DAGs."""
 
 from itertools import groupby
+import logging
 import yaml
 
-from bigquery_etl.query_scheduling.dag import Dag
+from bigquery_etl.query_scheduling.dag import Dag, InvalidDag
 
 
-class Dags:
+class DagCollection:
     """Representation of all configured DAGs."""
 
     def __init__(self, dags):
@@ -39,7 +40,7 @@ class Dags:
         """Instantiate DAGs based on the provided configuration file."""
         with open(config_file, "r") as yaml_stream:
             dags_config = yaml.safe_load(yaml_stream)
-            return Dags.from_dict(dags_config)
+            return DagCollection.from_dict(dags_config)
 
     def dag_by_name(self, name):
         """Return the DAG with the provided name."""
@@ -55,8 +56,8 @@ class Dags:
             dag = self.dag_by_name(dag_name)
 
             if dag is None:
-                print(
-                    f"Warning: DAG {dag_name} does not exist in dags.yaml"
+                raise InvalidDag(
+                    f"DAG {dag_name} does not exist in dags.yaml"
                     "but used in task definition {tasks[0].name}."
                 )
             else:

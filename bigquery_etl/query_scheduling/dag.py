@@ -18,6 +18,12 @@ class DagParseException(Exception):
         super(DagParseException, self).__init__(message)
 
 
+class InvalidDag(Exception):
+    """Raised when the resulting DAG is invalid."""
+
+    pass
+
+
 class Dag:
     """Representation of a DAG configuration."""
 

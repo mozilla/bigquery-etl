@@ -37,7 +37,13 @@ CREATE TEMP FUNCTION udf_aggregate_json_sum(histograms ARRAY<STRING>) AS (
   )
 );
 
-WITH filtered AS (
+WITH valid_build_ids AS (
+  SELECT
+    DISTINCT(build.build.id) AS build_id
+  FROM
+    `moz-fx-data-shared-prod.telemetry.buildhub2`
+),
+filtered AS (
   SELECT
     *,
     SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
@@ -47,6 +53,10 @@ WITH filtered AS (
     normalized_channel AS channel
   FROM
     `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+  INNER JOIN
+    valid_build_ids
+  ON
+    (application.build_id = build_id)
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND normalized_channel IN ("release", "beta", "nightly")

@@ -1,5 +1,6 @@
 ---
-- client_id: test
+- &base
+  client_id: test
   document_id: base
   sample_id: 0
   submission_timestamp: '2019-01-01 17:19:39.844336 UTC'
@@ -21,4 +22,11 @@
       "channel": nightly,
       "version": first,
       "build_id": first
+    }
+- <<: *base
+  application:
+    {
+      "channel": nightly,
+      "version": first,
+      "build_id": second
     }

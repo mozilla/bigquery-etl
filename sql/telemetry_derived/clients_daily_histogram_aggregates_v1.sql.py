@@ -80,7 +80,13 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
                 AND JSON_EXTRACT(histogram, "$.values") IS NOT NULL
               GROUP BY key));
 
-        WITH filtered AS (
+        WITH valid_build_ids AS (
+            SELECT
+              DISTINCT(build.build.id) AS build_id
+            FROM
+              `moz-fx-data-shared-prod.telemetry.buildhub2`
+        ),
+        filtered AS (
             SELECT
                 *,
                 SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
@@ -89,12 +95,14 @@ def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_
                 application.build_id AS app_build_id,
                 normalized_channel AS channel
             FROM `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+            INNER JOIN valid_build_ids
+            ON (application.build_id = build_id)
             WHERE DATE(submission_timestamp) = @submission_date
                 AND normalized_channel in (
                   "release", "beta", "nightly"
                 )
-                AND client_id IS NOT NULL),
-
+                AND client_id IS NOT NULL
+        ),
         sampled_data AS (
           SELECT
             *

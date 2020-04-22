@@ -1,0 +1,26 @@
+[
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "mode": "NULLABLE",
+            "name": "id",
+            "type": "STRING"
+          }
+        ],
+        "mode": "NULLABLE",
+        "name": "build",
+        "type": "RECORD"
+      }
+    ],
+    "mode": "NULLABLE",
+    "name": "build",
+    "type": "RECORD"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP"
+  }
+]

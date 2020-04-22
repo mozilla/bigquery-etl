@@ -10,8 +10,8 @@
   histogram_aggregates:
     {
       "first_bucket": 1,
-      "last_bucket": 1000,
-      "num_buckets": 100,
+      "last_bucket": 100,
+      "num_buckets": 10,
       "latest_version": 75,
       "metric": "some_metric",
       "metric_type": "histogram-exponential",
@@ -21,19 +21,19 @@
       "aggregates": [
         {
           "key": '0',
-          "value": 44
-        },
-        {
-          "key": '10',
-          "value": 324
-        },
-                {
-          "key": '20',
-          "value": 22
-        },
-                {
-          "key": '30',
-          "value": 9
+          "value": 2
+        },{
+          "key": '2',
+          "value": 1
+        },{
+          "key": '5',
+          "value": 2
+        },{
+          "key": '9',
+          "value": 3
+        },{
+          "key": '54',
+          "value": 2
         }
       ]
     }
@@ -42,8 +42,8 @@
   histogram_aggregates:
     {
       "first_bucket": 1,
-      "last_bucket": 1000,
-      "num_buckets": 100,
+      "last_bucket": 100,
+      "num_buckets": 10,
       "latest_version": 75,
       "metric": "some_metric",
       "metric_type": "histogram-exponential",
@@ -53,19 +53,19 @@
       "aggregates": [
         {
           "key": '0',
-          "value": 44
-        },
-        {
-          "key": '10',
-          "value": 324
-        },
-                {
-          "key": '20',
-          "value": 22
-        },
-                {
-          "key": '30',
-          "value": 9
+          "value": 2
+        },{
+          "key": '2',
+          "value": 1
+        },{
+          "key": '5',
+          "value": 2
+        },{
+          "key": '9',
+          "value": 3
+        },{
+          "key": '54',
+          "value": 2
         }
       ]
     }

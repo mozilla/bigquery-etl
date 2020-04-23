@@ -116,7 +116,7 @@ function run_partitioned_query {
         local min_param=$((partition * PARTITION_SIZE))
         local max_param=$((min_param + PARTITION_SIZE - 1))
         run_query $table_name $partitioned_result $min_param $max_param \
-            $table_name "--append_table --noreplace"
+            $table_name "--append_table"
     done
 }
 
@@ -129,17 +129,17 @@ function run_desktop_sql {
     run_query "clients_daily_scalar_aggregates_v1" true
     run_query "clients_daily_scalar_aggregates_v1" \
         true 0 0 "clients_daily_keyed_scalar_aggregates_v1" \
-        "--append_table --noreplace"
+        "--append_table"
     run_query "clients_daily_scalar_aggregates_v1" \
         true 0 0 "clients_daily_keyed_boolean_aggregates_v1" \
-        "--append_table --noreplace"
+        "--append_table"
 
     # Run clients_daily_*_histogram_aggregates
     run_init "clients_daily_histogram_aggregates_v1"
     run_query "clients_daily_histogram_aggregates_v1" true 0 0
     run_query "clients_daily_histogram_aggregates_v1" \
         true 0 0 "clients_daily_keyed_histogram_aggregates_v1" \
-        "--append_table --noreplace"
+        "--append_table"
 
     # Run the rest of the clients scalar pipeline
     run_init "clients_scalar_aggregates_v1"

@@ -11,7 +11,7 @@ SELECT
     days_searched_with_ads_bytes
   ) AS days_since_searched_with_ads,
   `moz-fx-data-shared-prod`.udf.bits_to_days_since_seen(
-    days_clicked_ad_bytes
+    days_clicked_ads_bytes
   ) AS days_since_clicked_ad,
   `moz-fx-data-shared-prod`.udf.bits_to_days_since_first_seen(
     days_created_profile_bytes

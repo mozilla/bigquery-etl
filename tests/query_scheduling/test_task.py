@@ -87,3 +87,23 @@ class TestTask:
         assert task.dag_name == "test_dag"
         assert task.args["depends_on_past"]
         assert task.args["param"] == "test_param"
+
+    def test_task_dry_run(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        metadata = Metadata(
+            "test",
+            "test",
+            {},
+            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+        )
+
+        task = Task(query_file, metadata)
+        task._dry_run()

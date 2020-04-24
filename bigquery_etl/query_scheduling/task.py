@@ -1,6 +1,7 @@
 """Represents a scheduled Airflow task."""
 
 import re
+from google.cloud import bigquery
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 
@@ -75,12 +76,33 @@ class Task:
         metadata = Metadata.of_sql_file(query_file)
         return cls(query_file, metadata)
 
-    def get_dependencies(self):
-        """Perfom a dry_run to get upstream dependencies."""
-        # todo
-        pass
+    def _get_referenced_tables(self, client):
+        """Perform a dry_run to get tables the query depends on.
+        
+        Queries that reference more than 50 tables will not have a complete list
+        of dependencies. See https://cloud.google.com/bigquery/docs/reference/
+        rest/v2/Job#JobStatistics2.FIELDS.referenced_tables
+        """
 
-    def to_airflow(self):
+        job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
+
+        with open(self.query_file) as query_stream:
+            query = query_stream.read()
+            query_job = client.query(query, job_config=job_config)
+            return query_job.referenced_tables
+
+    def get_dependencies(self, client, dag_collection):
+        """Perfom a dry_run to get upstream dependencies."""
+        dependencies = []
+
+        for table in self._get_referenced_tables(client):
+            upstream_task = dag_collection.task_for_table()
+
+            if upstream_task is not None:
+                dependencies.append(upstream_task)
+
+    def to_airflow(self, client, dag_collection):
         """Convert the task configuration into the Airflow representation."""
+        dependencies = self.get_dependencies()
+
         # todo
-        pass

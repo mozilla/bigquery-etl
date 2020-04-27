@@ -88,6 +88,9 @@ SKIP = {
     "sql/telemetry_derived/asn_aggregates_v1/query.sql",
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
     *glob.glob("sql/glam_etl/**/*.sql", recursive=True),
+    # Query templates
+    "sql/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",
+    "sql/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa
 }
 
 USE_DERIVED_DATASETS = {

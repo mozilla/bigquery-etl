@@ -55,8 +55,7 @@ class DagCollection:
 
         for dag in self.dags:
             for task in dag.tasks:
-                table_name = f"{task.table}_{task.version}"
-                if task.dataset == dataset and table_name == table:
+                if dataset == task.dataset and table == f"{task.table}_{task.version}":
                     return task
 
         return None

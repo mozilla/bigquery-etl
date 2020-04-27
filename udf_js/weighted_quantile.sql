@@ -1,7 +1,6 @@
 CREATE OR REPLACE FUNCTION udf_js.weighted_quantile(
   percentile FLOAT64,
-  histogram ARRAY<STRUCT<key STRING, value FLOAT64>>,
-  type STRING
+  histogram ARRAY<STRUCT<key STRING, value FLOAT64>>
 )
 RETURNS FLOAT64
 LANGUAGE js
@@ -44,15 +43,6 @@ SELECT
     udf_js.weighted_quantile(
       50.0,
       ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 100), ("1", 10), ("2", 10)],
-      "timing_distribution"
-    )
-  ),
-  -- skew right
-  assert_equals(
-    2,
-    udf_js.weighted_quantile(
-      50.0,
-      ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 10), ("1", 10), ("2", 100)],
       "timing_distribution"
     )
   ),

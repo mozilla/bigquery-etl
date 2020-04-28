@@ -145,7 +145,6 @@ class TestTask:
         )
 
         schema = [bigquery.SchemaField("a", "STRING", mode="NULLABLE")]
-
         table = bigquery.Table(f"{project_id}.test.table1_v1", schema=schema)
         client.create_table(table)
         table = bigquery.Table(f"{project_id}.test.table2_v1", schema=schema)
@@ -160,16 +159,16 @@ class TestTask:
 
         task = Task(query_file, metadata)
 
-        table1_task = Task(
+        table_task1 = Task(
             tmp_path / "sql" / "test" / "table1_v1" / "query.sql", metadata
         )
-        table2_task = Task(
+        table_task2 = Task(
             tmp_path / "sql" / "test" / "table2_v1" / "query.sql", metadata
         )
 
         dags = DagCollection.from_dict(
             {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
-        ).with_tasks([task, table1_task, table2_task])
+        ).with_tasks([task, table_task1, table_task2])
 
         result = task.get_dependencies(client, dags)
 
@@ -181,5 +180,114 @@ class TestTask:
         assert "test__table1__v1" in tables
         assert "test__table2__v1" in tables
 
+    @pytest.mark.integration
+    def test_task_get_view_dependencies(self, tmp_path):
+        project_id = os.environ["GOOGLE_PROJECT_ID"]
+        client = bigquery.Client(os.environ["GOOGLE_PROJECT_ID"])
 
-# todo: test queries with views
+        query_file_path = tmp_path / "sql" / "test" / "query_v1"
+        os.makedirs(query_file_path)
+
+        query_file = query_file_path / "query.sql"
+        query_file.write_text(
+            f"SELECT * FROM {project_id}.test.table1_v1 "
+            + f"UNION ALL SELECT * FROM {project_id}.test.test_view"
+        )
+
+        schema = [bigquery.SchemaField("a", "STRING", mode="NULLABLE")]
+        table = bigquery.Table(f"{project_id}.test.table1_v1", schema=schema)
+        client.create_table(table)
+        table = bigquery.Table(f"{project_id}.test.table2_v1", schema=schema)
+        client.create_table(table)
+        view = bigquery.Table(f"{project_id}.test.test_view")
+        view.view_query = f"SELECT * FROM {project_id}.test.table2_v1"
+        client.create_table(view)
+
+        metadata = Metadata(
+            "test",
+            "test",
+            {},
+            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+        )
+
+        task = Task(query_file, metadata)
+
+        table_task1 = Task(
+            tmp_path / "sql" / "test" / "table1_v1" / "query.sql", metadata
+        )
+        table_task2 = Task(
+            tmp_path / "sql" / "test" / "table2_v1" / "query.sql", metadata
+        )
+
+        dags = DagCollection.from_dict(
+            {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
+        ).with_tasks([task, table_task1, table_task2])
+
+        result = task.get_dependencies(client, dags)
+
+        client.delete_table(f"{project_id}.test.table1_v1")
+        client.delete_table(f"{project_id}.test.table2_v1")
+        client.delete_table(f"{project_id}.test.test_view")
+
+        tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
+
+        assert "test__table1__v1" in tables
+        assert "test__table2__v1" in tables
+
+    @pytest.mark.integration
+    def test_task_get_nested_view_dependencies(self, tmp_path):
+        project_id = os.environ["GOOGLE_PROJECT_ID"]
+        client = bigquery.Client(os.environ["GOOGLE_PROJECT_ID"])
+
+        query_file_path = tmp_path / "sql" / "test" / "query_v1"
+        os.makedirs(query_file_path)
+
+        query_file = query_file_path / "query.sql"
+        query_file.write_text(
+            f"SELECT * FROM {project_id}.test.table1_v1 "
+            + f"UNION ALL SELECT * FROM {project_id}.test.test_view"
+        )
+
+        schema = [bigquery.SchemaField("a", "STRING", mode="NULLABLE")]
+        table = bigquery.Table(f"{project_id}.test.table1_v1", schema=schema)
+        client.create_table(table)
+        table = bigquery.Table(f"{project_id}.test.table2_v1", schema=schema)
+        client.create_table(table)
+        view = bigquery.Table(f"{project_id}.test.test_view2")
+        view.view_query = f"SELECT * FROM {project_id}.test.table2_v1"
+        client.create_table(view)
+        view = bigquery.Table(f"{project_id}.test.test_view")
+        view.view_query = f"SELECT * FROM {project_id}.test.test_view2"
+        client.create_table(view)
+
+        metadata = Metadata(
+            "test",
+            "test",
+            {},
+            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+        )
+
+        task = Task(query_file, metadata)
+
+        table_task1 = Task(
+            tmp_path / "sql" / "test" / "table1_v1" / "query.sql", metadata
+        )
+        table_task2 = Task(
+            tmp_path / "sql" / "test" / "table2_v1" / "query.sql", metadata
+        )
+
+        dags = DagCollection.from_dict(
+            {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
+        ).with_tasks([task, table_task1, table_task2])
+
+        result = task.get_dependencies(client, dags)
+
+        client.delete_table(f"{project_id}.test.table1_v1")
+        client.delete_table(f"{project_id}.test.table2_v1")
+        client.delete_table(f"{project_id}.test.test_view2")
+        client.delete_table(f"{project_id}.test.test_view")
+
+        tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
+
+        assert "test__table1__v1" in tables
+        assert "test__table2__v1" in tables

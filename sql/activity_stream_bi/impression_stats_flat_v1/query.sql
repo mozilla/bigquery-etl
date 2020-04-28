@@ -20,6 +20,7 @@ SELECT
   user_prefs,
   release_channel,
   IFNULL(shield_id, 'n/a') AS shield_id,
+  ANY_VALUE(experiments) AS experiments,
   sample_id
 FROM
   activity_stream_stable.impression_stats_v1

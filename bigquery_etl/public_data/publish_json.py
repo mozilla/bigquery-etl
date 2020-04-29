@@ -10,7 +10,8 @@ import logging
 import sys
 import re
 
-from bigquery_etl.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.validate_metadata import validate_public_data
 
 
 SUBMISSION_DATE_RE = re.compile(r"^submission_date:DATE:(\d\d\d\d-\d\d-\d\d)$")
@@ -301,6 +302,9 @@ def main():
     # check if the data should be published as JSON
     if not metadata.is_public_json():
         return
+
+    if not validate_public_data(metadata, args.query_file):
+        sys.exit(1)
 
     storage_client = storage.Client()
     client = bigquery.Client(args.project_id)

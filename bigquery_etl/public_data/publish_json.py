@@ -302,6 +302,10 @@ def main():
     if not metadata.is_public_json():
         return
 
+    if metadata.review_bug() is None:
+        logging.error(f"No review bug found for {args.query_file}")
+        sys.exit(1)
+
     storage_client = storage.Client()
     client = bigquery.Client(args.project_id)
 

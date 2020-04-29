@@ -2,7 +2,7 @@
 
 import re
 
-from bigquery_etl.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata
 
 
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")

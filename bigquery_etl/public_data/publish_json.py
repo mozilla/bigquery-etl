@@ -10,7 +10,7 @@ import logging
 import sys
 import re
 
-from bigquery_etl.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata
 
 
 SUBMISSION_DATE_RE = re.compile(r"^submission_date:DATE:(\d\d\d\d-\d\d-\d\d)$")

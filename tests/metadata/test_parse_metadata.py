@@ -1,9 +1,9 @@
 import pytest
 from pathlib import Path
 
-from bigquery_etl.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata
 
-TEST_DIR = Path(__file__).parent
+TEST_DIR = Path(__file__).parent.parent
 
 
 class TestParseMetadata(object):

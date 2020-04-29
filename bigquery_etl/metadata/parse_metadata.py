@@ -35,7 +35,7 @@ class Metadata:
     @staticmethod
     def is_metadata_file(file_path):
         """
-        Checks if the provided file is a metadata file.
+        Check if the provided file is a metadata file.
 
         Checks if the name and file format match the metadata file requirements.
         """

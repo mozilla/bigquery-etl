@@ -8,8 +8,8 @@ import yaml
 from google.cloud import bigquery
 
 from .parse_metadata import Metadata
-from .util import standard_args
-from .util.bigquery_tables import get_tables_matching_patterns
+from ..util import standard_args
+from ..util.bigquery_tables import get_tables_matching_patterns
 
 
 METADATA_FILE = "metadata.yaml"

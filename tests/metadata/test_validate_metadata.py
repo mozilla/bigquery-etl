@@ -1,11 +1,5 @@
-import pytest
-from pathlib import Path
-
-from bigquery_etl.parse_metadata import Metadata
-from bigquery_etl.validate_metadata import validate_public_data
-
-
-TEST_DIR = Path(__file__).parent
+from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.validate_metadata import validate_public_data
 
 
 class TestValidateMetadata(object):

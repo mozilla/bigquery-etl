@@ -4,7 +4,7 @@ import pytest
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.dag import InvalidDag, DagParseException
 from bigquery_etl.query_scheduling.task import Task
-from bigquery_etl.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata
 
 TEST_DIR = Path(__file__).parent.parent
 

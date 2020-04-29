@@ -218,6 +218,14 @@ class JsonPublisher:
 
                 bucket.rename_blob(tmp_blob, gcs_path + file_name)
 
+                # set Content-Type to json and encoding to gzip
+                blob = self.storage_client.get_bucket(self.target_bucket).get_blob(
+                    gcs_path + file_name
+                )
+                blob.content_type = "application/json"
+                blob.encoding = "gzip"
+                blob.patch()
+
     def _write_results_to_temp_table(self):
         """Write the query results to a temporary table and return the table name."""
         table_date = self.date.replace("-", "")

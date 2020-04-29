@@ -18,6 +18,18 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
+def validate_public_data(metadata, path):
+    """Checks if the metadata for public data queries is valid"""
+    is_valid = True
+
+    if metadata.is_public_bigquery() or metadata.is_public_json():
+        if metadata.review_bug() is None:
+            logging.error(f"Missing review bug for public data: {path}")
+            is_valid = False
+
+    return is_valid
+
+
 def main():
     """Validates all metadata.yaml files in the provided target directory."""
 
@@ -38,12 +50,8 @@ def main():
                     path = os.path.join(root, *dirs, file)
                     metadata = Metadata.from_file(path)
 
-                    if metadata.is_public_bigquery() or metadata.is_public_json():
-                        if metadata.review_bug() is None:
-                            logging.error(
-                                f"Missing review bug for public data: {path}"
-                            )
-                            failed = True
+                    if validate_public_data(metadata, path) is False:
+                        failed = True
 
                     # todo more validation
                     # e.g. https://github.com/mozilla/bigquery-etl/issues/924

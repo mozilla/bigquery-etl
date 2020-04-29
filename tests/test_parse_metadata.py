@@ -89,3 +89,9 @@ class TestParseMetadata(object):
             Metadata.of_table(
                 "test", "no_metadata", "v1", TEST_DIR / "data" / "test_sql"
             )
+
+    def test_is_metadata_file(self):
+        assert Metadata.is_metadata_file("foo/bar/invalid.json") is False
+        assert Metadata.is_metadata_file("foo/bar/invalid.yaml") is False
+        assert Metadata.is_metadata_file("metadata.yaml")
+        assert Metadata.is_metadata_file("some/path/to/metadata.yaml")

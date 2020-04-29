@@ -5,7 +5,7 @@ WITH
   FROM
     `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
   WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', '2020-04-20')
+    _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)
     AND jsonPayload.fields.event_type IN ( 'fxa_activity - cert_signed',
       'fxa_activity - access_token_checked',
       'fxa_activity - access_token_created' )
@@ -14,11 +14,11 @@ WITH
   SELECT
     -- to prevent weirdness from timestamp field, use provided
     -- submission date parameter as timestamp
-    CAST('2020-04-20' AS DATETIME) AS submission_timestamp,
+    CAST(@submission_date AS DATETIME) AS submission_timestamp,
     -- TODO: JS udf with HMAC
     TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id,
     MIN(CONCAT(insertId, '-user')) AS insert_id,
-    CAST('2020-04-20' AS DATETIME) AS timestamp,
+    CAST(@submission_date AS DATETIME) AS timestamp,
     -- Amplitude properties, scalars
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.region)) AS region,
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.country)) AS country,

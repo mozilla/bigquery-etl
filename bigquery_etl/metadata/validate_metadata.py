@@ -23,7 +23,7 @@ def validate_public_data(metadata, path):
     is_valid = True
 
     if metadata.is_public_bigquery() or metadata.is_public_json():
-        if metadata.review_bug() is None:
+        if not metadata.review_bug():
             logging.error(f"Missing review bug for public data: {path}")
             is_valid = False
 
@@ -49,7 +49,7 @@ def main():
                     path = os.path.join(root, *dirs, file)
                     metadata = Metadata.from_file(path)
 
-                    if validate_public_data(metadata, path) is False:
+                    if not validate_public_data(metadata, path):
                         failed = True
 
                     # todo more validation

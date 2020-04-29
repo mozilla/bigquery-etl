@@ -1,4 +1,4 @@
-"""Validate metadata files"""
+"""Validate metadata files."""
 
 from argparse import ArgumentParser
 import logging
@@ -6,7 +6,7 @@ import os
 import sys
 
 from .parse_metadata import Metadata
-from .util import standard_args
+from ..util import standard_args
 
 DEFAULT_DIR = "sql/"
 
@@ -19,7 +19,7 @@ standard_args.add_log_level(parser)
 
 
 def validate_public_data(metadata, path):
-    """Checks if the metadata for public data queries is valid"""
+    """Check if the metadata for public data queries is valid."""
     is_valid = True
 
     if metadata.is_public_bigquery() or metadata.is_public_json():
@@ -31,8 +31,7 @@ def validate_public_data(metadata, path):
 
 
 def main():
-    """Validates all metadata.yaml files in the provided target directory."""
-
+    """Validate all metadata.yaml files in the provided target directory."""
     args = parser.parse_args()
 
     # set log level

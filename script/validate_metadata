@@ -4,4 +4,4 @@
 
 cd "$(dirname "$0")/.."
 
-exec python3 -m bigquery_etl.validate_metadata "$@"
+exec python3 -m bigquery_etl.metadata.validate_metadata "$@"

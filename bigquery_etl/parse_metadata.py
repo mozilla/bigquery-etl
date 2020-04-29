@@ -39,6 +39,7 @@ class Metadata:
 
         Checks if the name and file format match the metadata file requirements.
         """
+        # todo: we should probably also check if the file actually exists etc.
         return os.path.basename(file_path) == METADATA_FILE
 
     @classmethod

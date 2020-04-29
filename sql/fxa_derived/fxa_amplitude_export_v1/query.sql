@@ -22,7 +22,7 @@ WITH
     -- Amplitude properties, scalars
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.region)) AS region,
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.country)) AS country,
-    `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.LANGUAGE)) AS LANGUAGE,
+    `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.`language`)) AS `language`,
     -- Event properties, arrays
     ARRAY_AGG(DISTINCT JSON_EXTRACT_SCALAR(jsonPayload.fields.event_properties,
         "$.service") IGNORE NULLS) AS services,

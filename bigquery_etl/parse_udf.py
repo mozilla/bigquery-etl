@@ -41,12 +41,31 @@ class RawUdf:
         with open(filepath) as f:
             text = f.read()
 
+        name = basename.replace(".sql", "")
+        dataset = os.path.basename(dirpath)
+
+        try:
+            udf = RawUdf.from_text(text, dataset, name)
+        except ValueError as e:
+            raise ValueError(str(e) + f" in {filepath}")
+
+        udf.filepath = filepath
+        return udf
+
+    @staticmethod
+    def from_text(text, dataset, name, is_defined=True):
+        """Create a RawUdf instance from text.
+
+        If is_defined is False, then the UDF does not
+        need to be defined in the text; it could be
+        just tests.
+        """
         sql = sqlparse.format(text, strip_comments=True)
         statements = [s for s in sqlparse.split(sql) if s.strip()]
 
-        prod_name = basename.replace(".sql", "")
-        persistent_name = os.path.basename(dirpath) + "." + prod_name
-        temp_name = os.path.basename(dirpath) + "_" + prod_name
+        prod_name = name
+        persistent_name = f"{dataset}.{name}"
+        temp_name = f"{dataset}_{name}"
         internal_name = None
 
         definitions = []
@@ -68,10 +87,10 @@ class RawUdf:
                 tests.append(s)
 
         for name in (prod_name, internal_name):
-            if not UDF_NAME_RE.match(name):
+            if is_defined and not UDF_NAME_RE.match(name):
                 raise ValueError(
                     f"Invalid UDF name {name}: Must start with alpha char, "
-                    f"limited to chars {UDF_CHAR}, be at most 256 chars long."
+                    f"limited to chars {UDF_CHAR}, be at most 256 chars long"
                 )
 
         # find usages of both persistent and temporary UDFs
@@ -79,16 +98,17 @@ class RawUdf:
         dependencies = [".".join(t) for t in dependencies]
         dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
 
-        if internal_name is None:
-            raise ValueError(
-                f"Expected a UDF named {persistent_name} or {temp_name} "
-                f"to be defined in {filepath}"
-            )
-        dependencies.remove(internal_name)
+        if is_defined:
+            if internal_name is None:
+                raise ValueError(
+                    f"Expected a UDF named {persistent_name} or {temp_name} "
+                    f"to be defined"
+                )
+            dependencies.remove(internal_name)
 
         return RawUdf(
             internal_name,
-            filepath,
+            None,
             definitions,
             tests,
             # We convert the list to a set to deduplicate entries,

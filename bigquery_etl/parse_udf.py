@@ -45,15 +45,12 @@ class RawUdf:
         dataset = os.path.basename(dirpath)
 
         try:
-            udf = RawUdf.from_text(text, dataset, name)
+            return RawUdf.from_text(text, dataset, name, filepath)
         except ValueError as e:
             raise ValueError(str(e) + f" in {filepath}")
 
-        udf.filepath = filepath
-        return udf
-
     @staticmethod
-    def from_text(text, dataset, name, is_defined=True):
+    def from_text(text, dataset, name, filepath=None, is_defined=True):
         """Create a RawUdf instance from text.
 
         If is_defined is False, then the UDF does not
@@ -108,7 +105,7 @@ class RawUdf:
 
         return RawUdf(
             internal_name,
-            None,
+            filepath,
             definitions,
             tests,
             # We convert the list to a set to deduplicate entries,

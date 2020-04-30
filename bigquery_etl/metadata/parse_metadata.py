@@ -32,6 +32,16 @@ class Metadata:
         """
         return re.fullmatch(r"[0-9a-z-_]{1,63}", label) is not None
 
+    @staticmethod
+    def is_metadata_file(file_path):
+        """
+        Check if the provided file is a metadata file.
+
+        Checks if the name and file format match the metadata file requirements.
+        """
+        # todo: we should probably also check if the file actually exists etc.
+        return os.path.basename(file_path) == METADATA_FILE
+
     @classmethod
     def of_table(cls, dataset, table, version, target_dir):
         """

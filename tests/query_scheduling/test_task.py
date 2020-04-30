@@ -2,7 +2,7 @@ from pathlib import Path
 import pytest
 
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask, TaskParseException
-from bigquery_etl.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata
 
 TEST_DIR = Path(__file__).parent.parent
 

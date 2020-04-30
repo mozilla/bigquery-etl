@@ -43,6 +43,15 @@ jobs:
       - run:
           name: Verify that BigQuery validates each query
           command: script/dryrun
+  validate-metadata:
+    docker:
+      - image: python:3.8
+    steps:
+      - checkout
+      - *build
+      - run:
+          name: Verify that metadata files are valid
+          command: PATH="venv/bin:$PATH" script/validate_metadata
   integration:
     docker:
     - image: python:3.8
@@ -98,6 +107,7 @@ workflows:
         context: data-eng-circleci-tests
     - verify-format-sql
     - dry-run-sql
+    - validate-metadata
     - integration
     - deploy:
         context: data-eng-bigquery-etl-dockerhub

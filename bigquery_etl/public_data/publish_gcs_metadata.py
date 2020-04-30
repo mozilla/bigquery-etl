@@ -10,8 +10,8 @@ import smart_open
 from google.cloud import storage
 from itertools import groupby
 
-from ..parse_metadata import Metadata
-from ..util import standard_args
+from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.util import standard_args
 
 
 DEFAULT_BUCKET = "mozilla-public-data-http"

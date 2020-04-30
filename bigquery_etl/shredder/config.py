@@ -84,9 +84,6 @@ GLEAN_FIREFOX_BETA_SRC = DeleteSource(
 GLEAN_FIREFOX_SRC = DeleteSource(
     table="org_mozilla_firefox_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
 )
-FOGOTYPE_SRC = DeleteSource(
-    table="org_mozilla_fogotype_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
-)
 IOS_LOCKBOX_SRC = DeleteSource(
     table="org_mozilla_ios_lockbox_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
 )
@@ -108,7 +105,6 @@ SOURCES = [
     FENNEC_AURORA_SRC,
     GLEAN_FIREFOX_BETA_SRC,
     GLEAN_FIREFOX_SRC,
-    FOGOTYPE_SRC,
     IOS_LOCKBOX_SRC,
     REFERENCE_BROWSER_SRC,
     TV_FIREFOX_SRC,
@@ -275,10 +271,6 @@ DELETE_TARGETS = {
     glean_target(table="org_mozilla_firefox_stable.history_sync_v1"): GLEAN_FIREFOX_SRC,
     glean_target(table="org_mozilla_firefox_stable.logins_sync_v1"): GLEAN_FIREFOX_SRC,
     glean_target(table="org_mozilla_firefox_stable.metrics_v1"): GLEAN_FIREFOX_SRC,
-    glean_target(table="org_mozilla_fogotype_stable.baseline_v1"): FOGOTYPE_SRC,
-    glean_target(table="org_mozilla_fogotype_stable.events_v1"): FOGOTYPE_SRC,
-    glean_target(table="org_mozilla_fogotype_stable.metrics_v1"): FOGOTYPE_SRC,
-    glean_target(table="org_mozilla_fogotype_stable.prototype_v1"): FOGOTYPE_SRC,
     glean_target(table="org_mozilla_ios_lockbox_stable.baseline_v1"): IOS_LOCKBOX_SRC,
     glean_target(table="org_mozilla_ios_lockbox_stable.events_v1"): IOS_LOCKBOX_SRC,
     glean_target(table="org_mozilla_ios_lockbox_stable.metrics_v1"): IOS_LOCKBOX_SRC,

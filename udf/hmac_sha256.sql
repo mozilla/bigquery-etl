@@ -1,3 +1,9 @@
+/*
+Given a key and message, return the HMAC-SHA256 hash.
+
+This algorithm can be found in Wikipedia:
+https://en.wikipedia.org/wiki/HMAC#Implementation
+*/
 CREATE OR REPLACE FUNCTION udf.hmac_sha256(key BYTES, message BYTES) AS (
   SHA256(
     CONCAT(

@@ -20,7 +20,7 @@ DEFAULT_ENDPOINT = "https://public-data.telemetry.mozilla.org/"
 REVIEW_LINK = "https://bugzilla.mozilla.org/show_bug.cgi?id="
 GCS_FILE_PATH_RE = re.compile(
     r"api/(?P<api_version>.+)/tables/(?P<dataset>.+)/(?P<table>.+)/(?P<version>.+)/"
-    r"files/(?:(?P<date>.+)/)?(?P<filename>.+\.json\.gz)"
+    r"files/(?:(?P<date>.+)/)?(?P<filename>.+\.json(\.gz)?)"
 )
 
 parser = ArgumentParser(description=__doc__)

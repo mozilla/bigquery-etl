@@ -21,7 +21,7 @@ class TestPublishGcsMetadata(object):
 
     mock_blob1 = Mock()
     mock_blob1.name = (
-        "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+        "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json"
     )
     mock_blob1.updated = datetime(2020, 4, 3, 11, 30, 1)
 
@@ -40,7 +40,7 @@ class TestPublishGcsMetadata(object):
         mock_blob = Mock()
         mock_blob.name = (
             "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/"
-            "2020-04-01/000000001228.json.gz"
+            "2020-04-01/000000001228.json"
         )
 
         result = pgm.dataset_table_version_from_gcs_blob(mock_blob)
@@ -50,7 +50,7 @@ class TestPublishGcsMetadata(object):
         assert result[2] == "v1"
 
         mock_blob.name = (
-            "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000001228.json.gz"
+            "api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000001228.json"
         )
 
         result = pgm.dataset_table_version_from_gcs_blob(mock_blob)
@@ -72,7 +72,7 @@ class TestPublishGcsMetadata(object):
     def test_gcs_table_metadata(self):
         mock_blob = Mock()
         mock_blob.name = (
-            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json"
         )
         mock_blob.updated = datetime(2020, 4, 3, 11, 30, 1)
 
@@ -98,7 +98,7 @@ class TestPublishGcsMetadata(object):
     def test_gcs_table_metadata_to_json(self):
         mock_blob = Mock()
         mock_blob.name = (
-            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json"
         )
         mock_blob.updated = datetime(2020, 4, 3, 11, 25, 5)
         files_path = "api/v1/tables/test/non_incremental_query/v1/files"
@@ -123,14 +123,14 @@ class TestPublishGcsMetadata(object):
     def test_gcs_files_metadata_to_json(self):
         mock_blob = Mock()
         mock_blob.name = (
-            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json"
         )
         mock_blob.updated = datetime(2020, 4, 3, 11, 25, 5)
 
         json_expected = [
             (
                 f"{self.endpoint}"
-                "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+                "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json"
             )
         ]
 
@@ -146,15 +146,15 @@ class TestPublishGcsMetadata(object):
         files = [
             (
                 "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
-                "000000000000.json.gz"
+                "000000000000.json"
             ),
             (
                 "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
-                "000000000001.json.gz"
+                "000000000001.json"
             ),
             (
                 "api/v1/tables/test/incremental_query/v1/files/2020-03-16/"
-                "000000000000.json.gz"
+                "000000000000.json"
             ),
         ]
 
@@ -170,19 +170,19 @@ class TestPublishGcsMetadata(object):
                 (
                     f"{self.endpoint}"
                     "api/v1/tables/test/incremental_query/v1/files/"
-                    "2020-03-15/000000000000.json.gz"
+                    "2020-03-15/000000000000.json"
                 ),
                 (
                     f"{self.endpoint}"
                     "api/v1/tables/test/incremental_query/v1/files/"
-                    "2020-03-15/000000000001.json.gz"
+                    "2020-03-15/000000000001.json"
                 ),
             ],
             "2020-03-16": [
                 (
                     f"{self.endpoint}"
                     "api/v1/tables/test/incremental_query/v1/files/"
-                    "2020-03-16/000000000000.json.gz"
+                    "2020-03-16/000000000000.json"
                 )
             ],
         }
@@ -211,14 +211,14 @@ class TestPublishGcsMetadata(object):
     def test_publish_all_datasets_metadata(self):
         mock_blob1 = Mock()
         mock_blob1.name = (
-            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json"
         )
         mock_blob1.updated = datetime(2020, 4, 3, 11, 25, 5)
 
         mock_blob2 = Mock()
         mock_blob2.name = (
             "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
-            "000000000001.json.gz"
+            "000000000001.json"
         )
         mock_blob2.updated = datetime(2020, 4, 3, 11, 25, 5)
 
@@ -242,14 +242,14 @@ class TestPublishGcsMetadata(object):
     def test_publish_table_metadata(self):
         mock_blob1 = Mock()
         mock_blob1.name = (
-            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json.gz"
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json"
         )
         mock_blob1.updated = datetime(2020, 4, 3, 11, 25, 5)
 
         mock_blob2 = Mock()
         mock_blob2.name = (
             "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
-            "000000000001.json.gz"
+            "000000000001.json"
         )
         mock_blob2.updated = datetime(2020, 4, 3, 11, 25, 5)
 

@@ -1,0 +1,9 @@
+friendly_name: Clients daily active hours by country aggregates
+description: >-
+  Mean active hours of daily active clients by country, partitioned by day.
+owners:
+  - jmccrosky@mozilla.com
+  - ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily

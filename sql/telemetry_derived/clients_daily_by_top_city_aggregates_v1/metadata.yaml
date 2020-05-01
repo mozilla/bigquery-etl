@@ -1,0 +1,10 @@
+friendly_name: Clients daily by top cities aggregates
+description: >-
+  Number of daily active clients by city, partitioned by day and
+  restricted to the top 1000 cities according to DAU on an arbitrary day.
+owners:
+  - jmccrosky@mozilla.com
+  - ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily

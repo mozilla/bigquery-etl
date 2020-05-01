@@ -1,0 +1,9 @@
+friendly_name: Clients daily by country aggregates
+description: >-
+  Number of daily active clients by country, partitioned by day.
+owners:
+  - jmccrosky@mozilla.com
+  - ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily

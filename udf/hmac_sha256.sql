@@ -3,6 +3,9 @@ Given a key and message, return the HMAC-SHA256 hash.
 
 This algorithm can be found in Wikipedia:
 https://en.wikipedia.org/wiki/HMAC#Implementation
+
+This implentation is validated against the NIST test vectors.
+See test/validation/hmac_sha256.py for more information.
 */
 CREATE OR REPLACE FUNCTION udf.hmac_sha256(key BYTES, message BYTES) AS (
   SHA256(
@@ -17,5 +20,3 @@ CREATE OR REPLACE FUNCTION udf.hmac_sha256(key BYTES, message BYTES) AS (
     )
   )
 );
-
-/* Validation is done in tests/validation/hmac_sha256.py */

@@ -19,7 +19,7 @@ QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query
 MAX_JSON_SIZE = 1 * 1024 * 1024 * 1024  # 1 GB as max. size of exported JSON files
 # maximum number of JSON output files, output file names are only up to 12 characters
 MAX_FILE_COUNT = 10_000
-# exported file name format: 000000000000.json.gz, 000000000001.json.gz, ...
+# exported file name format: 000000000000.json, 000000000001.json, ...
 MAX_JSON_NAME_LENGTH = 12
 DEFAULT_BUCKET = "mozilla-public-data-http"
 DEFAULT_API_VERSION = "v1"
@@ -212,7 +212,7 @@ class JsonPublisher:
             # only copy gzipped files to target directory
             if "tmp.gz" in tmp_blob.name:
                 # remove .tmp from the final file name
-                file_name = tmp_blob.name.split("/")[-1].replace("tmp.", "")
+                file_name = tmp_blob.name.split("/")[-1].replace(".tmp.gz", "")
 
                 logging.info(f"""Move {tmp_blob.name} to {gcs_path + file_name}""")
 

@@ -17,8 +17,7 @@ CREATE OR REPLACE FUNCTION udf.active_values_from_days_seen_map(
     FROM
       UNNEST(days_seen_bits_map)
     WHERE
-        -- TODO: Use udf.bits28_active_in_range when it's available
-      BIT_COUNT(value << (64 + start_offset - 1) >> (64 - n_bits)) > 0
+      udf.bits28_active_in_range(value, start_offset, n_bits)
   )
 );
 

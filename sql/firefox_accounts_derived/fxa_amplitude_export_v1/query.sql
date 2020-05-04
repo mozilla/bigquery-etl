@@ -104,7 +104,7 @@ _previous AS (
   SELECT
     * EXCEPT (submission_timestamp)
   FROM
-    fxa_derived.fxa_amplitude_export_v1
+    firefox_accounts_derived.fxa_amplitude_export_v1
   WHERE
     DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0

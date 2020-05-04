@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod`.fxa_derived.fxa_amplitude_export_v1
+  `moz-fx-data-shared-prod`.firefox_accounts_derived.fxa_amplitude_export_v1
 PARTITION BY
   (DATE(submission_timestamp))
 CLUSTER BY

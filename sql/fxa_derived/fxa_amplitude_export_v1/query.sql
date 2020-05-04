@@ -54,9 +54,7 @@ grouped_by_user AS (
         "$['$append'].fxa_services_used"
       ) IGNORE NULLS
     ) AS fxa_services_used,
-    ARRAY_AGG(
-      DISTINCT jsonPayload.fields.os_name
-    ) AS os_used_month,
+    ARRAY_AGG(DISTINCT jsonPayload.fields.os_name) AS os_used_month,
     -- User properties, scalars
     MAX(
       CAST(JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_device_count") AS INT64)
@@ -111,7 +109,6 @@ _previous AS (
     DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
 )
-
 SELECT
   CAST(@submission_date AS TIMESTAMP) AS submission_timestamp,
   _current.* REPLACE (
@@ -122,7 +119,14 @@ SELECT
     ) AS days_seen_bits,
     udf.combine_days_seen_maps(
       _previous.os_used_month,
-      ARRAY(SELECT STRUCT(key, CAST(TRUE AS INT64) AS value) FROM _current.os_used_month AS key)
+      ARRAY(
+        SELECT
+          STRUCT(key, CAST(TRUE AS INT64) AS value)
+        FROM
+          _current.os_used_month AS key
+        WHERE
+          key IS NOT NULL
+      )
     ) AS os_used_month
   )
 FROM

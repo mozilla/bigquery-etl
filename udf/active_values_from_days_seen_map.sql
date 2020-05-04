@@ -1,9 +1,10 @@
 /*
 Given a map of representing activity for STRING `key`s, this
 function returns an array of which `key`s were active for the
-time period in question
+time period in question.
 
-Begin and end are both inclusive.
+start_offset should be at most 0.
+n_bits should be at most the remaining bits.
 */
 CREATE OR REPLACE FUNCTION udf.active_values_from_days_seen_map(
   days_seen_bits_map ARRAY<STRUCT<key STRING, value INT64>>,

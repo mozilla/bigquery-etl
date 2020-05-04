@@ -8,7 +8,7 @@ WITH active_users AS (
     `moz-fx-data-shared-prod`.udf.active_values_from_days_seen_map(os_used_month, -27, 28) AS os_used_month,
     * EXCEPT (days_seen_bits, os_used_month)
   FROM
-    `moz-fx-data-shared-prod`.fxa_derived.fxa_amplitude_export_v1
+    `moz-fx-data-shared-prod`.firefox_accounts_derived.fxa_amplitude_export_v1
   WHERE
     `moz-fx-data-shared-prod`.udf.pos_of_trailing_set_bit(days_seen_bits) = 0
 ),

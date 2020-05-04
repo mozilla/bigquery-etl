@@ -28,7 +28,7 @@ AS
     -- to prevent weirdness from timestamp field, use provided
     -- submission date parameter as timestamp
       TO_HEX(
-        udf.hmac_sha256(@fxa_hmac, CAST(jsonPayload.fields.user_id AS BYTES))
+        udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.user_id AS BYTES))
       ) AS user_id,
       MIN(CONCAT(insertId, '-user')) AS insert_id,
       CAST(@submission_date AS DATETIME) AS timestamp,

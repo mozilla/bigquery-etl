@@ -58,7 +58,7 @@ SELECT
       STRUCT("key2" AS key, 6 AS value),
       STRUCT("key3" AS key, 1 AS value)
     ],
-    udf.combine_map_days(
+    udf.combine_days_seen_maps(
       [
         STRUCT("key1" AS key, 1 AS value),
         STRUCT("key2" AS key, 3 AS value),

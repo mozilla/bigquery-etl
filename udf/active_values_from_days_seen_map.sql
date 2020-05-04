@@ -26,7 +26,7 @@ CREATE OR REPLACE FUNCTION udf.active_values_from_days_seen_map(
 SELECT
   assert_array_equals(
     ['a', 'b'],
-    udf.active_values_from_map(
+    udf.active_values_from_days_seen_map(
       [STRUCT('a' AS key, 1 AS value), STRUCT('b' AS key, 3 AS value)],
       0,
       1
@@ -34,7 +34,7 @@ SELECT
   ),
   assert_array_equals(
     ['a'],
-    udf.active_values_from_map(
+    udf.active_values_from_days_seen_map(
       [STRUCT('a' AS key, 2048 AS value), STRUCT('b' AS key, 3 AS value)],
       -14,
       7
@@ -42,7 +42,7 @@ SELECT
   ),
   assert_array_equals(
     ['b'],
-    udf.active_values_from_map(
+    udf.active_values_from_days_seen_map(
       [STRUCT('a' AS key, 2048 AS value), STRUCT('b' AS key, 3 AS value)],
       -6,
       7
@@ -50,7 +50,7 @@ SELECT
   ),
   assert_array_equals(
     ['a', 'b'],
-    udf.active_values_from_map(
+    udf.active_values_from_days_seen_map(
       [STRUCT('a' AS key, 1 AS value), STRUCT('b' AS key, 3 AS value)],
       -27,
       28

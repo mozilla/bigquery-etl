@@ -37,7 +37,9 @@ def generate_raw_udf(test_cases):
     )
     test_sql_stmnts = [test_sql_fixture.format(**test_case) for test_case in test_cases]
 
-    return RawUdf.from_text("\n".join(test_sql_stmnts), "udf", "hmac_sha256", is_defined=False)
+    return RawUdf.from_text(
+        "\n".join(test_sql_stmnts), "udf", "hmac_sha256", is_defined=False
+    )
 
 
 def generate_sql():

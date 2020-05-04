@@ -16,7 +16,7 @@ base_events AS (
   FROM
     `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
   WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)
+    _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', '2020-05-01')
     AND jsonPayload.fields.event_type IN (
       'fxa_activity - cert_signed',
       'fxa_activity - access_token_checked',
@@ -32,7 +32,7 @@ grouped_by_user AS (
       udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.user_id AS BYTES))
     ) AS user_id,
     MIN(CONCAT(insertId, '-user')) AS insert_id,
-    CAST(@submission_date AS DATETIME) AS timestamp,
+    CAST('2020-05-01' AS DATETIME) AS timestamp,
     -- Amplitude properties, scalars
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.region)) AS region,
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.country)) AS country,
@@ -54,9 +54,7 @@ grouped_by_user AS (
         "$['$append'].fxa_services_used"
       ) IGNORE NULLS
     ) AS fxa_services_used,
-    ARRAY_AGG(DISTINCT jsonPayload.fields.os_name IGNORE NULLS) AS os_used_day,
-    CAST([] AS ARRAY<STRUCT<arr ARRAY<STRING>>>) AS os_used_week,
-    CAST([] AS ARRAY<STRUCT<arr ARRAY<STRING>>>) AS os_used_month,
+    ARRAY_AGG(DISTINCT jsonPayload.fields.os_name) AS os_used_month,
     -- User properties, scalars
     MAX(
       CAST(JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_device_count") AS INT64)
@@ -108,26 +106,20 @@ _previous AS (
   FROM
     fxa_derived.fxa_amplitude_export_v1
   WHERE
-    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    DATE(submission_timestamp) = DATE_SUB('2020-05-01', INTERVAL 1 DAY)
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
 )
 SELECT
-  CAST(@submission_date AS TIMESTAMP) AS submission_timestamp,
+  CAST('2020-05-01' AS TIMESTAMP) AS submission_timestamp,
   _current.* REPLACE (
     COALESCE(_current.user_id, _previous.user_id) AS user_id,
     udf.combine_adjacent_days_28_bits(
       _previous.days_seen_bits,
       _current.days_seen_bits
     ) AS days_seen_bits,
-    udf.evicting_queue_append(
-      COALESCE(_previous.os_used_week, _current.os_used_week),
-      7,
-      STRUCT(COALESCE(_current.os_used_day, CAST([] AS ARRAY<STRING>)) AS arr)
-    ) AS os_used_week,
-    udf.evicting_queue_append(
-      COALESCE(_previous.os_used_month, _current.os_used_week),
-      28,
-      STRUCT(COALESCE(_current.os_used_day, CAST([] AS ARRAY<STRING>)) AS arr)
+    udf.combine_map_days(
+      _previous.os_used_month,
+      ARRAY(SELECT STRUCT(key, CAST(TRUE AS INT64) AS value) FROM _current.os_used_month AS key)
     ) AS os_used_month
   )
 FROM

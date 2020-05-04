@@ -1,7 +1,6 @@
 import json
 import pytest
 import subprocess
-import zlib
 
 from pathlib import Path
 from datetime import datetime
@@ -58,9 +57,9 @@ class TestPublishJsonScript(object):
 
         for blob in blobs:
             blob_count += 1
-            compressed = blob.download_as_string()
-            uncompressed = zlib.decompress(compressed, 16 + zlib.MAX_WBITS)
-            content = json.loads(uncompressed.decode("utf-8").strip())
+            content = json.loads(blob.download_as_string().decode("utf-8"))
+            assert blob.content_type == "application/json"
+            assert blob.content_encoding == "gzip"
             assert len(content) == 3
 
         assert blob_count == 1
@@ -170,9 +169,9 @@ class TestPublishJsonScript(object):
 
         for blob in blobs:
             blob_count += 1
-            compressed = blob.download_as_string()
-            uncompressed = zlib.decompress(compressed, 16 + zlib.MAX_WBITS)
-            content = json.loads(uncompressed.decode("utf-8").strip())
+            content = json.loads(blob.download_as_string().decode("utf-8"))
+            assert blob.content_type == "application/json"
+            assert blob.content_encoding == "gzip"
             assert len(content) == 3
 
         assert blob_count == 1
@@ -234,9 +233,9 @@ class TestPublishJsonScript(object):
 
         for blob in blobs:
             blob_count += 1
-            compressed = blob.download_as_string()
-            uncompressed = zlib.decompress(compressed, 16 + zlib.MAX_WBITS)
-            content = json.loads(uncompressed.decode("utf-8").strip())
+            content = json.loads(blob.download_as_string().decode("utf-8"))
+            assert blob.content_type == "application/json"
+            assert blob.content_encoding == "gzip"
             assert len(content) == 3
 
         assert blob_count == 1

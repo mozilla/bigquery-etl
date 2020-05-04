@@ -1,4 +1,13 @@
-WITH base_events
+WITH hmac_key AS (
+  SELECT
+    AEAD.DECRYPT_BYTES(
+      (SELECT keyset FROM `moz-fx-dataops-secrets.airflow_query_keys.fxa_prod`),
+      (SELECT ciphertext FROM `moz-fx-data-shared-prod.firefox_accounts_derived.encrypted_keys_v1`), key_id) AS value 
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts_derived.encrypted_keys_v1`
+  WHERE
+    key_id = 'fxa_hmac_prod'),
+base_events
 AS
   (
     SELECT

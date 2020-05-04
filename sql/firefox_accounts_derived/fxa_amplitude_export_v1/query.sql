@@ -2,8 +2,8 @@ WITH hmac_key AS (
   SELECT
     AEAD.DECRYPT_BYTES(
       (SELECT keyset FROM `moz-fx-dataops-secrets.airflow_query_keys.fxa_prod`),
-      (SELECT ciphertext FROM `moz-fx-data-shared-prod.firefox_accounts_derived.encrypted_keys_v1`),
-      key_id
+      ciphertext,
+      CAST(key_id AS BYTES)
     ) AS value
   FROM
     `moz-fx-data-shared-prod.firefox_accounts_derived.encrypted_keys_v1`

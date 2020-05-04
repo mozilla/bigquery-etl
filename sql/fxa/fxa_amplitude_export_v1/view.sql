@@ -4,9 +4,9 @@ AS
 WITH active_users AS (
   SELECT
     * EXCEPT (days_seen_bits) REPLACE(
-      udf.active_values_from_map(os_used_month, 0, 1) AS os_used_day,
-      udf.active_values_from_map(os_used_month, -6, 7) AS os_used_week,
-      udf.active_values_from_map(os_used_month, -27, 28) AS os_used_month,
+      udf.active_values_from_days_seen_map(os_used_month, 0, 1) AS os_used_day,
+      udf.active_values_from_days_seen_map(os_used_month, -6, 7) AS os_used_week,
+      udf.active_values_from_days_seen_map(os_used_month, -27, 28) AS os_used_month,
     )
   FROM
     fxa_derived.fxa_amplitude_export_v1

@@ -9,7 +9,7 @@ current day, returning a single map.
 
 See `udf.combine_experiment_days` for a more specific example of this approach.
 */
-CREATE OR REPLACE FUNCTION udf.combine_map_days(
+CREATE OR REPLACE FUNCTION udf.combine_days_seen_maps(
     --
   prev ARRAY<STRUCT<key STRING, value INT64>>,
     --

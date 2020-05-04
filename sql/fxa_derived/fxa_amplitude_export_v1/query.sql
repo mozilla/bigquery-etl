@@ -18,9 +18,8 @@ AS
     SELECT
     -- to prevent weirdness from timestamp field, use provided
     -- submission date parameter as timestamp
-      CAST(@submission_date AS DATETIME) AS submission_timestamp,
       TO_HEX(
-        udf.hmac_sha256(CAST(@fxa_hmac AS BYTES), CAST(jsonPayload.fields.user_id AS BYTES))
+        udf.hmac_sha256(@fxa_hmac, CAST(jsonPayload.fields.user_id AS BYTES))
       ) AS user_id,
       MIN(CONCAT(insertId, '-user')) AS insert_id,
       CAST(@submission_date AS DATETIME) AS timestamp,
@@ -48,18 +47,20 @@ AS
         ) IGNORE NULLS
       ) AS fxa_services_used,
       ARRAY_AGG(DISTINCT jsonPayload.fields.os_name IGNORE NULLS) AS os_used_day,
+      CAST([] AS ARRAY<STRUCT<arr ARRAY<STRING>>>) AS os_used_week,
+      CAST([] AS ARRAY<STRUCT<arr ARRAY<STRING>>>) AS os_used_month,
     -- User properties, scalars
       MAX(
-        JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_device_count")
+        CAST(JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_device_count") AS INT64)
       ) AS sync_device_count,
       MAX(
-        JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_active_devices_day")
+        CAST(JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_active_devices_day") AS INT64)
       ) AS sync_active_devices_day,
       MAX(
-        JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_active_devices_week")
+        CAST(JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_active_devices_week") AS INT64)
       ) AS sync_active_devices_week,
       MAX(
-        JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_active_devices_month")
+        CAST(JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.sync_active_devices_month") AS INT64)
       ) AS sync_active_devices_month,
       `moz-fx-data-shared-prod`.udf.mode_last(
         ARRAY_AGG(
@@ -71,68 +72,48 @@ AS
           JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.ua_version") IGNORE NULLS
         )
       ) AS ua_browser,
-      MAX(jsonPayload.fields.app_version) AS app_version,
+      MAX(CAST(jsonPayload.fields.app_version AS FLOAT64)) AS app_version,
+      CAST(TRUE AS INT64) AS days_seen_bits,
     FROM
       base_events
     GROUP BY
       user_id
   ),
-  active_events AS (
+  _previous AS (
     SELECT
-      submission_timestamp,
-      user_id,
-      insert_id,
-      'fxa_activity - active' AS event_type,
-      timestamp,
-      TO_JSON_STRING(STRUCT(services, oauth_client_ids)) AS event_properties,
-      '' AS user_events
+      * EXCEPT (submission_timestamp)
     FROM
-      grouped_by_user
-  ),
-  user_properties AS (
-    SELECT
-      submission_timestamp,
-      user_id,
-      '' AS insert_id,
-      '$identify' AS event_type,
-      timestamp,
-      '' AS event_properties,
-    -- $ is not valid for a column name, so edit it into the json string
-      REPLACE(
-        TO_JSON_STRING(
-          STRUCT(
-            region,
-            country,
-            LANGUAGE,
-            os_used_day,
-            sync_device_count,
-            sync_active_devices_day,
-            sync_active_devices_week,
-            sync_active_devices_month,
-            ua_version,
-            ua_browser,
-            app_version,
-            STRUCT(fxa_services_used) AS str_dollar_sign_postInsert
-          )
-        ),
-        'str_dollar_sign_',
-        '$'
-      )
-    FROM
-      grouped_by_user
-  ),
-  all_events AS (
-    SELECT
-      *
-    FROM
-      active_events
-    UNION ALL
-    SELECT
-      *
-    FROM
-      user_properties
+      fxa_derived.fxa_amplitude_export_v1
+    WHERE
+      DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+      AND udf.shift_28_bits_one_day(days_seen_bits) > 0
   )
+
 SELECT
-  *
+  CAST(@submission_date AS TIMESTAMP) AS submission_timestamp,
+  _current.* REPLACE (
+    COALESCE(
+      _current.user_id,
+      _previous.user_id
+    ) AS user_id,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_seen_bits,
+      _current.days_seen_bits
+    ) AS days_seen_bits,
+    udf.evicting_queue_append(
+      COALESCE(_previous.os_used_week, _current.os_used_week),
+      7,
+      STRUCT(COALESCE(_current.os_used_day, CAST([] AS ARRAY<STRING>)) AS arr)
+    ) AS os_used_week,
+    udf.evicting_queue_append(
+      COALESCE(_previous.os_used_month, _current.os_used_week),
+      28,
+      STRUCT(COALESCE(_current.os_used_day, CAST([] AS ARRAY<STRING>)) AS arr)
+    ) AS os_used_month
+  )
 FROM
-  all_events
+  grouped_by_user _current
+FULL OUTER JOIN
+  _previous
+USING
+  (user_id)

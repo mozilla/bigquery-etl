@@ -223,7 +223,7 @@ class JsonPublisher:
                     gcs_path + file_name
                 )
                 blob.content_type = "application/json"
-                blob.encoding = "gzip"
+                blob.content_encoding = "gzip"
                 blob.patch()
 
     def _write_results_to_temp_table(self):

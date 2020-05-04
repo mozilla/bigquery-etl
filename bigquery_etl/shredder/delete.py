@@ -28,6 +28,13 @@ OUTSIDE_RANGE_PARTITION_ID = "__UNPARTITIONED__"
 parser = ArgumentParser(description=__doc__)
 standard_args.add_dry_run(parser)
 parser.add_argument(
+    "--partition-limit",
+    "--partition_limit",
+    metavar="N",
+    type=int,
+    help="Only use the first N partitions per table; requires --dry-run",
+)
+parser.add_argument(
     "--read_only",
     "--read-only",
     action="store_true",
@@ -228,9 +235,11 @@ def get_partition(table, partition_expr, end_date, id_=None) -> Optional[Partiti
     return Partition(f"{partition_expr} = {id_}", id_)
 
 
-def list_partitions(client, table, partition_expr, end_date, max_single_dml_bytes):
+def list_partitions(
+    client, table, partition_expr, end_date, max_single_dml_bytes, partition_limit
+):
     """List the relevant partitions in a table."""
-    return [
+    partitions = [
         partition
         for partition in (
             [
@@ -252,6 +261,9 @@ def list_partitions(client, table, partition_expr, end_date, max_single_dml_byte
         )
         if partition is not None
     ]
+    if partition_limit:
+        return sorted(partitions, key=attrgetter("id"), reverse=True)[:partition_limit]
+    return partitions
 
 
 @dataclass
@@ -277,13 +289,17 @@ class Task:
 
 
 def delete_from_table(
-    client, target, dry_run, end_date, max_single_dml_bytes, **kwargs
+    client, target, dry_run, end_date, max_single_dml_bytes, partition_limit, **kwargs
 ) -> Iterable[Task]:
     """Yield tasks to handle deletion requests for a target table."""
-    table = client.get_table(sql_table_id(target))
+    try:
+        table = client.get_table(sql_table_id(target))
+    except NotFound:
+        logging.warning(f"Skipping {sql_table_id(target)} due to NotFound exception")
+        return ()
     partition_expr = get_partition_expr(table)
     for partition in list_partitions(
-        client, table, partition_expr, end_date, max_single_dml_bytes
+        client, table, partition_expr, end_date, max_single_dml_bytes, partition_limit
     ):
         yield Task(
             table=table,
@@ -302,6 +318,9 @@ def delete_from_table(
 def main():
     """Process deletion requests."""
     args = parser.parse_args()
+    if args.partition_limit is not None and not args.dry_run:
+        parser.print_help()
+        print("ERROR: --partition-limit specified without --dry-run")
     if args.start_date is None:
         args.start_date = args.end_date - timedelta(days=14)
     source_condition = (
@@ -365,6 +384,7 @@ def main():
             start_date=args.start_date,
             end_date=args.end_date,
             max_single_dml_bytes=args.max_single_dml_bytes,
+            partition_limit=args.partition_limit,
             state_table=args.state_table,
             states=states,
         )

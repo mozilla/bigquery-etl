@@ -175,8 +175,6 @@ DELETE_TARGETS = {
     client_id_target(table="telemetry_stable.update_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.voice_v4"): DESKTOP_SRC,
     # glean
-    client_id_target(table="org_mozilla_fenix_derived.clients_daily_v1"): FENIX_SRC,
-    client_id_target(table="org_mozilla_fenix_derived.clients_last_seen_v1"): FENIX_SRC,
     glean_target(
         table="org_mozilla_fenix_nightly_stable.activation_v1"
     ): FENIX_NIGHTLY_SRC,

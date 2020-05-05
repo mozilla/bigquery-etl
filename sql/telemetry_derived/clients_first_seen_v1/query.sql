@@ -4,7 +4,7 @@ WITH today AS (
     CAST(NULL AS DATE) AS second_seen_date,
     * EXCEPT (submission_date)
   FROM
-    clients_daily_v1
+    clients_daily_v6
   WHERE
     submission_date = @submission_date
 )

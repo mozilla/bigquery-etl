@@ -1,7 +1,7 @@
 WITH today AS (
   SELECT
-    NULL AS first_seen_date,
-    NULL AS second_seen_date,
+    CAST(NULL AS DATE) AS first_seen_date,
+    CAST(NULL AS DATE) AS second_seen_date,
     * EXCEPT (submission_date)
   FROM
     clients_daily_v1
@@ -9,11 +9,36 @@ WITH today AS (
     submission_date = @submission_date
 )
 SELECT
-  IFNULL(cfs.first_seen_date, @submission_date) AS first_seen_date,
-  IFNULL(
-    cfs.second_seen_date,
-    IF(cfs.first_seen_date IS NULL, NULL, @submission_date)
-  ) AS second_seen_date,
+  --
+  -- Logic for first_seen_date
+  CASE
+  WHEN
+    cfs.first_seen_date IS NULL
+  THEN
+    @submission_date
+  ELSE
+    cfs.first_seen_date
+  END
+  AS first_seen_date,
+  --
+  -- Logic for second_seen_date
+  CASE
+  WHEN
+    cfs.first_seen_date IS NULL
+  THEN
+    NULL
+  WHEN
+    cfs.second_seen_date IS NULL
+  THEN
+    @submission_date
+  ELSE
+    cfs.second_seen_date
+  END
+  AS second_seen_date,
+  --
+  -- Only insert dimensions from clients_daily if this is the first time the
+  -- client has been seen; otherwise, we copy over the existing dimensions
+  -- from the first sighting.
   IF(cfs.client_id IS NULL, today, cfs).* EXCEPT (first_seen_date, second_seen_date)
 FROM
   clients_first_seen_v1 AS cfs

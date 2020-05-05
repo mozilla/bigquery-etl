@@ -1,6 +1,6 @@
-CREATE TEMPORARY TABLE client_id_dates_seen
+CREATE TEMPORARY TABLE clients_first_seen_dates
 PARTITION BY
-  submission_date
+  first_seen_date
 AS
 WITH base AS (
   SELECT
@@ -29,15 +29,15 @@ CLUSTER BY
   sample_id
 AS
 SELECT
-  cfs.first_seen_date,
-  cfs.second_seen_date,
+  cfsd.first_seen_date,
+  cfsd.second_seen_date,
   cd.* EXCEPT (submission_date)
 FROM
   clients_daily_v6 AS cd
 LEFT JOIN
-  client_id_first_seen AS cfs
+  clients_first_seen_dates AS cfsd
 ON
-  (cd.submission_date = cfs.first_seen_date AND cd.client_id = cfs.client_id)
+  (cd.submission_date = cfsd.first_seen_date AND cd.client_id = cfsd.client_id)
 WHERE
-  cfs.client_id IS NOT NULL
+  cfsd.client_id IS NOT NULL
   AND cd.submission_date >= DATE('2010-01-01')

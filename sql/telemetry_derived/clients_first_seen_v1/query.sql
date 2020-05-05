@@ -60,5 +60,3 @@ FULL JOIN
   today
 USING
   (client_id)
-WHERE
-  cd.submission_date = @submission_date

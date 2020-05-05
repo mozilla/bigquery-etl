@@ -1,5 +1,5 @@
 friendly_name: Clients first seen
-description: >
+description: >-
   Identical in schema to clients_daily except that each client appears only
   once over all time; includes fields first_seen_date and second_seen_date
   for determining user "activation"
@@ -7,3 +7,5 @@ owners:
   - jklukas@mozilla.com
 labels:
   application: firefox
+  incremental: true
+  schedule: daily

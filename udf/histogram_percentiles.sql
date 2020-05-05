@@ -5,8 +5,6 @@ If the histogram is empty, returns NULL.
 */
 CREATE OR REPLACE FUNCTION udf.histogram_percentiles(histogram ANY TYPE, percentiles ARRAY<FLOAT64>)
 RETURNS ARRAY<INT64> AS (
---   IF(
---     (SELECT SUM(value) FROM UNNEST(histogram.value)) = 0
   ARRAY(
     SELECT
       MIN(key)

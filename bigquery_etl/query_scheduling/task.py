@@ -77,13 +77,13 @@ class Task:
         return cls(query_file, metadata)
 
     def _get_referenced_tables(self, client):
-        """Perform a dry_run to get tables the query depends on.
-        
+        """
+        Perform a dry_run to get tables the query depends on.
+
         Queries that reference more than 50 tables will not have a complete list
         of dependencies. See https://cloud.google.com/bigquery/docs/reference/
         rest/v2/Job#JobStatistics2.FIELDS.referenced_tables
         """
-
         job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
 
         with open(self.query_file) as query_stream:
@@ -107,6 +107,5 @@ class Task:
 
     def to_airflow(self, client, dag_collection):
         """Convert the task configuration into the Airflow representation."""
-        dependencies = self.get_dependencies()
-
+        pass
         # todo

@@ -51,8 +51,6 @@ class DagCollection:
 
     def task_for_table(self, dataset, table):
         """Return the task that schedules the query for the provided table."""
-        # todo: how does this work for views?
-
         for dag in self.dags:
             for task in dag.tasks:
                 if dataset == task.dataset and table == f"{task.table}_{task.version}":

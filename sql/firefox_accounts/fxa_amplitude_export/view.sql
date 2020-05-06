@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_accounts.fxa_amplitude_export_v1`
+  `moz-fx-data-shared-prod.firefox_accounts.fxa_amplitude_export`
 AS
 WITH active_users AS (
   SELECT

@@ -82,13 +82,20 @@ SKIP = {
     "sql/telemetry_derived/latest_versions/query.sql",
     # Query parameter not found
     "sql/telemetry_derived/experiments_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_histogram_aggregates_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",
     "sql/telemetry_derived/clients_histogram_aggregates_v1/query.sql",
-    "sql/telemetry_derived/clients_histogram_aggregates_old_v1/query.sql",
-    "sql/telemetry_derived/clients_histogram_aggregates_merged_v1/query.sql",
+    "sql/telemetry_derived/clients_histogram_probe_counts_v1/query.sql",
     "sql/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",
     "sql/telemetry_derived/asn_aggregates_v1/query.sql",
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
     *glob.glob("sql/glam_etl/**/*.sql", recursive=True),
+    # Query templates
+    "sql/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",
+    "sql/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa
 }
 
 USE_DERIVED_DATASETS = {
@@ -130,7 +137,7 @@ def worker_entrypoint(sqlfile):
         print(f"{sqlfile:59} OK")
     elif (
         error
-        and error.get("code", None) == 403
+        and error.get("code", None) in [400, 403]
         and "does not have bigquery.tables.create permission for dataset"
         in error.get("message", "")
     ):

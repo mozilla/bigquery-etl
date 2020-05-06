@@ -11748,6 +11748,16 @@
                                         "mode": "NULLABLE",
                                         "name": "shared_memory_ua_sheets_mapped_child",
                                         "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "http_saw_quic_alt_protocol_2",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "transaction_wait_time_http3",
+                                        "type": "STRING"
                                     }
                                 ],
                                 "mode": "NULLABLE",
@@ -23959,6 +23969,21 @@
                     {
                         "mode": "NULLABLE",
                         "name": "window_remote_subframes_enabled_status",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "cookie_samesite_set_vs_unset",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "http_saw_quic_alt_protocol_2",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "transaction_wait_time_http3",
                         "type": "STRING"
                     }
                 ],

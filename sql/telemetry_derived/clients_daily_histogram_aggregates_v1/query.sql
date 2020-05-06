@@ -93,9 +93,24 @@ WITH filtered AS (
     AND normalized_channel IN ("release", "beta", "nightly")
     AND client_id IS NOT NULL
 ),
+sampled_data AS (
+  SELECT
+    *
+  FROM
+    filtered
+  WHERE
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+    OR (
+      channel = "release" AND
+      os = "Windows" AND
+      MOD(sample_id, @sample_size) = 0
+    )
+),
 histograms AS (
   SELECT
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -2219,6 +2234,12 @@ histograms AS (
         'parent',
         payload.histograms.cookie_leave_secure_alone,
         (1, 10, 11)
+      ),
+      (
+        'cookie_samesite_set_vs_unset',
+        'parent',
+        payload.histograms.cookie_samesite_set_vs_unset,
+        (1, 2, 3)
       ),
       (
         'cookie_scheme_https',
@@ -8035,6 +8056,18 @@ histograms AS (
         'parent',
         payload.histograms.http_saw_quic_alt_protocol,
         (1, 2, 3)
+      ),
+      (
+        'http_saw_quic_alt_protocol_2',
+        'content',
+        payload.processes.content.histograms.http_saw_quic_alt_protocol_2,
+        (1, 3, 4)
+      ),
+      (
+        'http_saw_quic_alt_protocol_2',
+        'parent',
+        payload.histograms.http_saw_quic_alt_protocol_2,
+        (1, 3, 4)
       ),
       (
         'http_scheme_upgrade',
@@ -15169,6 +15202,18 @@ histograms AS (
         'transaction_wait_time_http',
         'parent',
         payload.histograms.transaction_wait_time_http,
+        (1, 5000, 100)
+      ),
+      (
+        'transaction_wait_time_http3',
+        'content',
+        payload.processes.content.histograms.transaction_wait_time_http3,
+        (1, 5000, 100)
+      ),
+      (
+        'transaction_wait_time_http3',
+        'parent',
+        payload.histograms.transaction_wait_time_http3,
         (1, 5000, 100)
       ),
       (
@@ -26909,11 +26954,12 @@ histograms AS (
       ('zoomed_view_enabled', 'parent', payload.histograms.zoomed_view_enabled, (1, 2, 3))
     ] AS histogram_aggregates
   FROM
-    filtered
+    sampled_data
 ),
 filtered_aggregates AS (
   SELECT
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -26932,6 +26978,7 @@ filtered_aggregates AS (
 ),
 aggregated AS (
   SELECT
+    sample_id,
     client_id,
     submission_date,
     os,
@@ -26952,9 +26999,11 @@ aggregated AS (
     5,
     6,
     7,
-    8
+    8,
+    9
 )
 SELECT
+  sample_id,
   client_id,
   submission_date,
   os,
@@ -26988,4 +27037,5 @@ GROUP BY
   3,
   4,
   5,
-  6
+  6,
+  7

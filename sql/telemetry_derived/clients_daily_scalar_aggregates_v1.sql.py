@@ -7,7 +7,11 @@ import argparse
 import textwrap
 import subprocess
 import urllib.request
+from pathlib import Path
 from time import sleep
+
+sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
+from bigquery_etl.format_sql.formatter import reformat
 
 
 PROBE_INFO_SERVICE = (
@@ -64,19 +68,31 @@ def generate_sql(
 
         {additional_queries}
 
+        sampled_data AS (
+            SELECT *
+            FROM {querying_table}
+            WHERE channel IN ("nightly", "beta")
+                OR (channel = "release" AND os != "Windows")
+                OR (channel = "release" AND
+                    os = "Windows" AND
+                    MOD(sample_id, @sample_size) = 0)
+        ),
+
         -- Using `min` for when `agg_type` is `count` returns null when all rows are null
         aggregated AS (
             SELECT
                 submission_date,
+                sample_id,
                 client_id,
                 os,
                 app_version,
                 app_build_id,
                 channel,
                 {aggregates}
-            FROM {querying_table}
+            FROM sampled_data
             GROUP BY
                 submission_date,
+                sample_id,
                 client_id,
                 os,
                 app_version,
@@ -108,6 +124,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
     additional_queries = f"""
         grouped_metrics AS
           (SELECT
+            sample_id,
             client_id,
             submission_date,
             os,
@@ -125,6 +142,7 @@ def _get_generic_keyed_scalar_sql(probes, value_type):
 
           flattened_metrics AS
             (SELECT
+              sample_id,
               client_id,
               submission_date,
               os,
@@ -172,6 +190,7 @@ def get_keyed_boolean_probes_sql_string(probes):
         "select_clause"
     ] = """
         SELECT
+              sample_id,
               client_id,
               submission_date,
               os,
@@ -193,6 +212,7 @@ def get_keyed_boolean_probes_sql_string(probes):
             ) AS scalar_aggregates
         FROM aggregated
         GROUP BY
+            sample_id,
             client_id,
             submission_date,
             os,
@@ -223,6 +243,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         "select_clause"
     ] = """
         SELECT
+            sample_id,
             client_id,
             submission_date,
             os,
@@ -247,6 +268,7 @@ def get_keyed_scalar_probes_sql_string(probes):
         ) AS scalar_aggregates
         FROM aggregated
         GROUP BY
+            sample_id,
             client_id,
             submission_date,
             os,
@@ -449,14 +471,16 @@ def main(argv, out=print):
 
     sleep(opts['wait_seconds'])
     out(
-        generate_sql(
-            opts["agg_type"],
-            sql_string["probes_string"],
-            sql_string.get("additional_queries", ""),
-            sql_string.get("additional_partitions", ""),
-            sql_string["select_clause"],
-            sql_string.get("querying_table", "filtered"),
-            opts["json_output"],
+        reformat(
+            generate_sql(
+                opts["agg_type"],
+                sql_string["probes_string"],
+                sql_string.get("additional_queries", ""),
+                sql_string.get("additional_partitions", ""),
+                sql_string["select_clause"],
+                sql_string.get("querying_table", "filtered"),
+                opts["json_output"],
+            )
         )
     )
 

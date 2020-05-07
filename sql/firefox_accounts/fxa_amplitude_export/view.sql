@@ -3,10 +3,24 @@ CREATE OR REPLACE VIEW
 AS
 WITH active_users AS (
   SELECT
-    `moz-fx-data-shared-prod`.udf.active_values_from_days_seen_map(os_used_month, 0, 1) AS os_used_day,
-    `moz-fx-data-shared-prod`.udf.active_values_from_days_seen_map(os_used_month, -6, 7) AS os_used_week,
-    `moz-fx-data-shared-prod`.udf.active_values_from_days_seen_map(os_used_month, -27, 28) AS os_used_month,
-    * EXCEPT (days_seen_bits, os_used_month)
+    `moz-fx-data-shared-prod`.udf.active_values_from_days_seen_map(
+      os_used_month,
+      0,
+      1
+    ) AS os_used_day,
+    `moz-fx-data-shared-prod`.udf.active_values_from_days_seen_map(
+      os_used_month,
+      -6,
+      7
+    ) AS os_used_week,
+    `moz-fx-data-shared-prod`.udf.active_values_from_days_seen_map(
+      os_used_month,
+      -27,
+      28
+    ) AS os_used_month,
+    * EXCEPT (days_seen_bits, os_used_month) REPLACE(
+      TIMESTAMP(timestamp, "America/Los_Angeles") AS timestamp
+    )
   FROM
     `moz-fx-data-shared-prod`.firefox_accounts_derived.fxa_amplitude_export_v1
   WHERE

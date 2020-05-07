@@ -99,6 +99,8 @@ SELECT
 FROM
     base_events
 WHERE app_name IN ('Fennec') AND os IN ('iOS')
+  -- bug 1636231 - disable background events in ios amplitude
+    AND event_method != 'background'
 ), all_events_with_insert_ids AS (
 SELECT
   * EXCEPT (event_category, created),

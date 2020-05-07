@@ -218,6 +218,17 @@ labels:
       - https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/2020-03-15/000000000000.json
 - For each dataset, a `metadata.json` gets published listing all available files, for example: https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/metadata.json
 - The timestamp when the dataset was last updated is recorded in `last_updated`, e.g.: https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/last_updated
+- To publish data of queries not scheduled via Airflow, e.g. for static datasets, run: `./script/entrypoint query <path/to/query.sql> --use_legacy_sql=false --parameter=some_parameter:INT:123`
+    - Credentials with permissions to read and write BigQuery data in `moz-fx-data-shared-prod` need to be made available in the current environment, for example by running `gcloud auth application-default login`
+    - It is recommended to set up a [virtual environment](https://docs.python.org/3/library/venv.html) and install all requirements:
+```
+# create a venv
+python3.8 -m venv venv/
+
+# install requirements
+venv/bin/pip install -r requirements.txt
+```
+    - All parameters and options that are offered by the [bq CLI](https://cloud.google.com/bigquery/docs/bq-command-line-tool) can be used when calling `entrypoint`
 
 Scheduling Queries in Airflow
 ---

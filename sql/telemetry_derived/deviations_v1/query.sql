@@ -5,7 +5,7 @@ SELECT
   geography,
   metric
 FROM
-  `moz-fx-data-shared-prod.analysis.deviations`
+  `moz-fx-data-shared-prod.telemetry_derived.deviations_v1`
 WHERE
   -- We explicitly enumerate allowed metric types here so that we do not automatically
   -- publish new metric types publicly without review.

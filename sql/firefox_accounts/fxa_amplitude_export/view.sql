@@ -34,7 +34,11 @@ active_events AS (
     'fxa_activity - active' AS event_type,
     timestamp,
     TO_JSON_STRING(STRUCT(services, oauth_client_ids)) AS event_properties,
-    '' AS user_events
+    region,
+    country,
+    `LANGUAGE`,
+    app_version AS version,
+    '' AS user_properties
   FROM
     active_users
 ),
@@ -108,7 +112,7 @@ user_properties AS (
         ","
       ),
       "}"
-    ) AS used_properties
+    ) AS user_properties
   FROM
     active_users
 ),

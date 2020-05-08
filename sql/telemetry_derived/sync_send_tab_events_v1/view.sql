@@ -17,16 +17,17 @@ cleaned AS (
     *,
     payload.device_id,
     `moz-fx-data-shared-prod`.udf.get_key(event_map_values, 'serverTime') AS server_time,
+    `moz-fx-data-shared-prod`.udf.normalize_os(payload.os.name) AS os_name,
     CASE
       event_object
     WHEN
       'processcommand'
     THEN
-      'tab_received'
+      'sync - tab_received'
     WHEN
       'sendcommand'
     THEN
-      'tab_sent'
+      'sync - tab_sent'
     END
     AS event_type,
     payload.uid AS fxa_uid,
@@ -54,8 +55,9 @@ SELECT
   event_type,
   metadata.geo.country,
   metadata.geo.city,
-  normalized_os AS os_name,
-  normalized_os_version AS os_version,
+  os_name,
+  payload.os.version AS os_version,
+  payload.os.locale AS `language`,
   FORMAT(
     '{%t}',
     ARRAY_TO_STRING(

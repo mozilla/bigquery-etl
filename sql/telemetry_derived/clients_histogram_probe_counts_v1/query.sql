@@ -1,3 +1,47 @@
+CREATE TEMP FUNCTION udf_normalized_sum (arrs ARRAY<STRUCT<key STRING, value INT64>>, sampled BOOL)
+RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
+  -- Input: one histogram for a single client.
+  -- Returns the normalized sum of the input maps.
+  -- It returns the total_count[k] / SUM(total_count)
+  -- for each key k.
+  (
+    WITH total_counts AS (
+      SELECT
+        sum(a.value) AS total_count
+      FROM
+        UNNEST(arrs) AS a
+    ),
+
+    summed_counts AS (
+      SELECT
+        a.key AS k,
+        SUM(a.value) AS v
+      FROM
+        UNNEST(arrs) AS a
+      GROUP BY
+        a.key
+    ),
+
+    final_values AS (
+      SELECT
+        STRUCT<key STRING, value FLOAT64>(
+          k,
+          -- Weight probes from Windows release clients to account for 10% sampling
+          COALESCE(SAFE_DIVIDE(1.0 * v, total_count), 0) * IF(sampled, 10, 1)
+        ) AS record
+      FROM
+        summed_counts
+      CROSS JOIN
+        total_counts
+    )
+
+    SELECT
+        ARRAY_AGG(record)
+    FROM
+      final_values
+  )
+);
+
 CREATE TEMP FUNCTION udf_exponential_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
 RETURNS ARRAY<FLOAT64>
 LANGUAGE js AS
@@ -58,26 +102,6 @@ RETURNS ARRAY<INT64> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf_dedupe_map_sum (map ARRAY<STRUCT<key STRING, value FLOAT64>>)
-RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
-  -- Given a MAP with duplicate keys, de-duplicates by summing the values of duplicate keys
-  (
-    WITH summed_counts AS (
-      SELECT
-        STRUCT<key STRING, value FLOAT64>(e.key, SUM(e.value)) AS record
-      FROM
-        UNNEST(map) AS e
-      GROUP BY
-        e.key
-    )
-
-    SELECT
-       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(record.key, record.value))
-    FROM
-      summed_counts
-  )
-);
-
 CREATE TEMP FUNCTION udf_buckets_to_map (buckets ARRAY<STRING>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given an array of values, transform them into a histogram MAP
@@ -90,14 +114,16 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf_fill_buckets(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>)
+CREATE TEMP FUNCTION udf_fill_buckets(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>, total_users INT64)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given a MAP `input_map`, fill in any missing keys with value `0.0`
   (
     WITH total_counts AS (
       SELECT
         key,
-        COALESCE(e.value, 0.0) AS value
+        -- Dirichlet distribution density for each bucket in a histogram
+        -- https://docs.google.com/document/d/1ipy1oFIKDvHr3R6Ku0goRjS11R1ZH1z2gygOGkSdqUg
+        SAFE_DIVIDE(COALESCE(e.value, 0.0) + SAFE_DIVIDE(1, ARRAY_LENGTH(buckets)), total_users + 1) AS value
       FROM
         UNNEST(buckets) as key
       LEFT JOIN
@@ -111,10 +137,134 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
+WITH filtered_data AS (
+  SELECT
+    sample_id,
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    aggregates,
+    os = 'Windows'and channel = 'release' AS sampled
+  FROM
+    clients_histogram_aggregates_v1
+  CROSS JOIN UNNEST(histogram_aggregates)
+  WHERE submission_date = @submission_date
+    AND first_bucket IS NOT NULL
+    AND sample_id >= @min_sample_id
+    AND sample_id <= @max_sample_id),
+
+static_combos as (
+  SELECT null as os, null as app_build_id
+  UNION ALL
+  SELECT null as os, '*' as app_build_id
+  UNION ALL
+  SELECT '*' as os, null as app_build_id
+  UNION ALL
+  SELECT '*' as os, '*' as app_build_id
+),
+
+all_combos AS (
+  SELECT
+    * except(os, app_build_id),
+    COALESCE(combo.os, table.os) as os,
+    COALESCE(combo.app_build_id, table.app_build_id) as app_build_id
+  FROM
+     filtered_data table
+  CROSS JOIN
+     static_combos combo),
+
+aggregated_histograms AS
+  (SELECT * REPLACE(
+    -- This returns true if at least 1 row has sampled=true.
+    -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
+    -- and in this case we treat them as Windows+Release users when fudging numbers
+    MAX(sampled) AS sampled,
+    udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates)
+  FROM all_combos
+  GROUP BY
+    sample_id,
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type),
+
+normalized_histograms AS (
+  SELECT
+    sample_id,
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    udf_normalized_sum(aggregates, sampled) AS aggregates
+  FROM aggregated_histograms),
+
+bucket_counts AS (
+  SELECT
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    normalized_histograms.key AS key,
+    process,
+    agg_type,
+    STRUCT<key STRING, value FLOAT64>(
+      CAST(aggregates.key AS STRING),
+      1.0 * SUM(aggregates.value)
+    ) AS record
+  FROM normalized_histograms
+  CROSS JOIN UNNEST(aggregates) AS aggregates
+  GROUP BY
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    first_bucket,
+    last_bucket,
+    num_buckets,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    aggregates.key)
+
 SELECT
-  os,
+  IF(os = '*', NULL, os) AS os,
   app_version,
-  app_build_id,
+  IF(app_build_id = '*', NULL, app_build_id) AS app_build_id,
   channel,
   metric,
   metric_type,
@@ -123,112 +273,16 @@ SELECT
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
-  AND os IS NOT NULL
+  udf_fill_buckets(
+    ARRAY_AGG(record),
+    udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type)),
+    CAST(ROUND(SUM(record.value)) AS INT64)
+  ) AS aggregates
+FROM bucket_counts
 GROUP BY
   os,
   app_version,
   app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
-
-UNION ALL
-
-SELECT
-  CAST(NULL AS STRING) AS os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
-  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
-GROUP BY
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
-
-UNION ALL
-
-SELECT
-  os,
-  app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
-  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
-  AND os IS NOT NULL
-GROUP BY
-  os,
-  app_version,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
-
-UNION ALL
-
-SELECT
-  CAST(NULL AS STRING) AS os,
-  app_version,
-  CAST(NULL AS STRING) AS app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  process,
-  agg_type AS client_agg_type,
-  'histogram' AS agg_type,
-  CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-  udf_fill_buckets(udf_dedupe_map_sum(
-      ARRAY_AGG(record)
-  ), udf_to_string_arr(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type))) AS aggregates
-FROM clients_histogram_bucket_counts_v1
-WHERE first_bucket IS NOT NULL
-GROUP BY
-  app_version,
   channel,
   metric,
   metric_type,

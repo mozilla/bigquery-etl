@@ -1,168 +1,1164 @@
 [
-  {
-    "type": "TIMESTAMP",
-    "name": "submission_timestamp",
-    "mode": "REQUIRED"
-  },
-  {
-    "type": "INTEGER",
-    "name": "sample_id",
-    "mode": "REQUIRED"
-  },
-  {
-    "type": "STRING",
-    "name": "document_id",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "client_id",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_channel",
-    "mode": "NULLABLE"
-  },
-  {
-    "type": "STRING",
-    "name": "normalized_os",
-    "mode": "NULLABLE"
-  },
-  {
-    "fields": [
-      {
-        "type": "STRING",
-        "name": "version",
-        "mode": "NULLABLE"
-      },
-      {
-        "type": "STRING",
-        "name": "build_id",
-        "mode": "NULLABLE"
-      },
-      {
-        "type": "STRING",
-        "name": "channel",
-        "mode": "NULLABLE"
-      }
-    ],
-    "type": "RECORD",
-    "name": "application",
-    "mode": "NULLABLE"
-  },
-  {
-    "fields": [
-      {
+    {
+        "mode": "REQUIRED",
+        "name": "submission_timestamp",
+        "type": "TIMESTAMP"
+    },
+    {
+        "mode": "REQUIRED",
+        "name": "sample_id",
+        "type": "INTEGER"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "document_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "client_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "normalized_channel",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "normalized_os",
+        "type": "STRING"
+    },
+    {
         "fields": [
-          {
-            "fields": [
-              {
-                "fields": [
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_keyed_scalars_unknown_keys", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "images_webp_content_frequency", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_accumulate_unknown_histogram_keys", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_event_counts", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "browser_engagement_navigation_about_home", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "browser_engagement_navigation_about_newtab", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "browser_engagement_navigation_contextmenu", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "browser_engagement_navigation_searchbar", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "browser_engagement_navigation_urlbar", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "browser_engagement_navigation_webextension", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "browser_errors_collected_count_by_filename", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "browser_search_ad_clicks", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "browser_search_with_ads", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_accessibility_accessible_context_menu_item_activated", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_accessibility_audit_activated", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_accessibility_select_accessible_for_node", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_current_theme", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_inspector_three_pane_enabled", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_responsive_open_trigger", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_toolbox_tabs_reordered", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_tooltip_shown", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "extensions_updates_rdf", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "gfx_advanced_layers_failure_id", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "networking_data_transferred_kb", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "networking_data_transferred_v3_kb", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "normandy_recipe_freshness", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "pictureinpicture_closed_method", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "preferences_browser_home_page_change", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "preferences_browser_home_page_count", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "preferences_search_query", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "preferences_use_bookmark", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "preferences_use_current_page", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "qm_origin_directory_unexpected_filename", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "resistfingerprinting_content_window_size", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "security_client_cert", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "security_webauthn_used", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "storage_sync_api_usage_items_stored", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "storage_sync_api_usage_storage_consumed", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_accumulate_clamped_values", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_keyed_scalars_exceed_limit", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "update_binarytransparencyresult", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "update_bitshresult", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "devtools_accessibility_simulation_activated", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "security_contentblocker_permissions", "mode": "REPEATED"}
-                ],
-                "type": "RECORD",
-                "name": "keyed_scalars",
-                "mode": "NULLABLE"
-              }
-            ],
-            "type": "RECORD",
-            "name": "parent",
-            "mode": "NULLABLE"
-          },
-          {
-            "fields": [
-              {
-                "fields": [
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_keyed_scalars_unknown_keys", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "dom_event_confluence_load_count", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "dom_event_office_online_load_count", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "gfx_small_paint_phase_weight", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "images_webp_content_frequency", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "pictureinpicture_opened_method", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "webrtc_sdp_parser_diff", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "webrtc_video_recv_codec_used", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "webrtc_video_send_codec_used", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_accumulate_unknown_histogram_keys", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_event_counts", "mode": "REPEATED"}
-                ],
-                "type": "RECORD",
-                "name": "keyed_scalars",
-                "mode": "NULLABLE"
-              }
-            ],
-            "type": "RECORD",
-            "name": "content",
-            "mode": "NULLABLE"
-          },
-          {
-            "fields": [
-              {
-                "fields": [
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_keyed_scalars_unknown_keys", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_accumulate_unknown_histogram_keys", "mode": "REPEATED"},
-                  {"fields": [{"type": "STRING", "name": "key", "mode": "NULLABLE"}, {"type": "INTEGER", "name": "value", "mode": "NULLABLE"}], "type": "RECORD", "name": "telemetry_event_counts", "mode": "REPEATED"}
-                ],
-                "type": "RECORD",
-                "name": "keyed_scalars",
-                "mode": "NULLABLE"
-              }
-            ],
-            "type": "RECORD",
-            "name": "gpu",
-            "mode": "NULLABLE"
-          }
+            {
+                "mode": "NULLABLE",
+                "name": "version",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "build_id",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "channel",
+                "type": "STRING"
+            }
         ],
-        "type": "RECORD",
-        "name": "processes",
-        "mode": "NULLABLE"
-      }
-    ],
-    "type": "RECORD",
-    "name": "payload",
-    "mode": "NULLABLE"
-  }
+        "mode": "NULLABLE",
+        "name": "application",
+        "type": "RECORD"
+    },
+    {
+        "fields": [
+            {
+                "fields": [
+                    {
+                        "fields": [
+                            {
+                                "fields": [
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "images_webp_content_frequency",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_accumulate_unknown_histogram_keys",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_event_counts",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_keyed_scalars_unknown_keys",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "dom_ipc_rejected_window_actor_message",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_engagement_navigation_about_home",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_engagement_navigation_about_newtab",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_engagement_navigation_contextmenu",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_engagement_navigation_searchbar",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_engagement_navigation_urlbar",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_engagement_navigation_webextension",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_errors_collected_count_by_filename",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_search_ad_clicks",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_search_with_ads",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_accessibility_accessible_context_menu_item_activated",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_accessibility_audit_activated",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_accessibility_select_accessible_for_node",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_current_theme",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_inspector_three_pane_enabled",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_responsive_open_trigger",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_toolbox_tabs_reordered",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_tooltip_shown",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "extensions_updates_rdf",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "gfx_advanced_layers_failure_id",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "networking_data_transferred_kb",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "networking_data_transferred_v3_kb",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "normandy_recipe_freshness",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "pictureinpicture_closed_method",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "preferences_browser_home_page_change",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "preferences_browser_home_page_count",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "preferences_search_query",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "preferences_use_bookmark",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "preferences_use_current_page",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "qm_origin_directory_unexpected_filename",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "resistfingerprinting_content_window_size",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "security_client_cert",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "security_webauthn_used",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "storage_sync_api_usage_items_stored",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "storage_sync_api_usage_storage_consumed",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_accumulate_clamped_values",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_keyed_scalars_exceed_limit",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "update_binarytransparencyresult",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "update_bitshresult",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "devtools_accessibility_simulation_activated",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "security_contentblocker_permissions",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "browser_search_data_transferred",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "urlbar_tips",
+                                        "type": "RECORD"
+                                    }
+                                ],
+                                "mode": "NULLABLE",
+                                "name": "keyed_scalars",
+                                "type": "RECORD"
+                            }
+                        ],
+                        "mode": "NULLABLE",
+                        "name": "parent",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "fields": [
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "dom_event_confluence_load_count",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "dom_event_office_online_load_count",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "gfx_small_paint_phase_weight",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "images_webp_content_frequency",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "pictureinpicture_opened_method",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "webrtc_sdp_parser_diff",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "webrtc_video_recv_codec_used",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "webrtc_video_send_codec_used",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_accumulate_unknown_histogram_keys",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_event_counts",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_keyed_scalars_unknown_keys",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "dom_ipc_rejected_window_actor_message",
+                                        "type": "RECORD"
+                                    }
+                                ],
+                                "mode": "NULLABLE",
+                                "name": "keyed_scalars",
+                                "type": "RECORD"
+                            }
+                        ],
+                        "mode": "NULLABLE",
+                        "name": "content",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "fields": [
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_accumulate_unknown_histogram_keys",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_event_counts",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "INTEGER"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "telemetry_keyed_scalars_unknown_keys",
+                                        "type": "RECORD"
+                                    }
+                                ],
+                                "mode": "NULLABLE",
+                                "name": "keyed_scalars",
+                                "type": "RECORD"
+                            }
+                        ],
+                        "mode": "NULLABLE",
+                        "name": "gpu",
+                        "type": "RECORD"
+                    }
+                ],
+                "mode": "NULLABLE",
+                "name": "processes",
+                "type": "RECORD"
+            }
+        ],
+        "mode": "NULLABLE",
+        "name": "payload",
+        "type": "RECORD"
+    }
 ]

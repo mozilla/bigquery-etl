@@ -1,5 +1,5 @@
 friendly_name: SSL Ratios
-description: >
+description: >-
   Percentages of page loads Firefox users have performed that were 
   conducted over SSL broken down by country.
 owners:
@@ -10,3 +10,5 @@ labels:
   schedule: daily
   public_json: true
   public_bigquery: true
+  review_bug: 1414839
+  incremental_export: false

@@ -72,6 +72,7 @@ WITH bucketed_booleans AS (
     app_version,
     app_build_id,
     channel,
+    os = 'Windows' and channel = 'release' AS sampled,
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
   FROM
     clients_scalar_aggregates_v1),
@@ -83,6 +84,7 @@ bucketed_scalars AS (
     app_version,
     app_build_id,
     channel,
+    os = 'Windows' and channel = 'release' AS sampled,
     metric,
     metric_type,
     key,
@@ -103,7 +105,129 @@ booleans_and_scalars AS (
   UNION ALL
 
   SELECT *
-  FROM bucketed_scalars)
+  FROM bucketed_scalars),
+
+aggregated_scalars AS (
+  SELECT
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    bucket,
+    -- Fudge the numbers for the 10% sample.
+    -- MAX(sampled) returns true if at least 1 row has sampled=true.
+    COUNT(*) * IF(MAX(sampled), 10, 1) AS count
+  FROM booleans_and_scalars
+  WHERE os IS NOT NULL
+  GROUP BY
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    bucket
+
+  UNION ALL
+
+  SELECT
+    client_id,
+    NULL AS os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    bucket,
+    -- Fudge the numbers for the 10% sample.
+    -- MAX(sampled) returns true if at least 1 row has sampled=true.
+    COUNT(*) * IF(MAX(sampled), 10, 1) AS count
+  FROM booleans_and_scalars
+  GROUP BY
+    client_id,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    bucket
+
+  UNION ALL
+
+  SELECT
+    client_id,
+    os,
+    app_version,
+    NULL AS app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    bucket,
+    -- Fudge the numbers for the 10% sample.
+    -- MAX(sampled) returns true if at least 1 row has sampled=true.
+    COUNT(*) * IF(MAX(sampled), 10, 1) AS count
+  FROM booleans_and_scalars
+  WHERE os IS NOT NULL
+  GROUP BY
+    client_id,
+    os,
+    app_version,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    bucket
+
+  UNION ALL
+
+  SELECT
+    client_id,
+    NULL AS os,
+    app_version,
+    NULL AS app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    bucket,
+    -- Fudge the numbers for the 10% sample.
+    -- MAX(sampled) returns true if at least 1 row has sampled=true.
+    COUNT(*) * IF(MAX(sampled), 10, 1) AS count
+  FROM booleans_and_scalars
+  GROUP BY
+    client_id,
+    app_version,
+    channel,
+    metric,
+    metric_type,
+    key,
+    process,
+    agg_type,
+    bucket
+)
 
 SELECT
   os,
@@ -118,8 +242,7 @@ SELECT
   'histogram' AS agg_type,
   bucket,
   COUNT(*) AS count
-FROM
-  booleans_and_scalars
+FROM aggregated_scalars
 GROUP BY
   os,
   app_version,

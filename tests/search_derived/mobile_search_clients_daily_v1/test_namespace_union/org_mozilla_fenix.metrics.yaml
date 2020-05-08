@@ -1,0 +1,15 @@
+---
+- submission_timestamp: 2020-05-01 09:13:09.842719 UTC
+  normalized_channel: Other
+  normalized_os: Android
+  sample_id: 1
+  client_info:
+    android_sdk_version: '29'
+    app_display_version: Nightly 191124 06:01
+    client_id: a
+  normalized_country_code: US
+  metrics:
+    labeled_counter:
+      metrics_search_count:
+      - key: engine1.actionbar
+        value: '10'

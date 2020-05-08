@@ -1,0 +1,16 @@
+---
+- &base
+  submission_timestamp: 2019-12-01 10:06:01.757971 UTC
+  client_info:
+    client_id: a
+    locale: en-US
+- <<: *base
+  submission_timestamp: 2019-12-01 08:06:01.123455 UTC
+  client_info:
+    client_id: b
+    locale: en-CA
+- <<: *base
+  submission_timestamp: 2019-12-01 23:59:01.757971 UTC
+  client_info:
+    client_id: c
+    locale: ar-EG

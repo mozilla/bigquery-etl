@@ -93,10 +93,24 @@ WITH filtered AS (
     AND normalized_channel IN ("release", "beta", "nightly")
     AND client_id IS NOT NULL
 ),
+sampled_data AS (
+  SELECT
+    *
+  FROM
+    filtered
+  WHERE
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+    OR (
+      channel = "release" AND
+      os = "Windows" AND
+      MOD(sample_id, @sample_size) = 0
+    )
+),
 grouped_metrics AS (
   SELECT
-    submission_timestamp,
     DATE(submission_timestamp) AS submission_date,
+    sample_id,
     client_id,
     normalized_os AS os,
     SPLIT(application.version, '.')[OFFSET(0)] AS app_version,
@@ -850,6 +864,18 @@ grouped_metrics AS (
         'parent',
         payload.keyed_histograms.hsts_priming_request_duration,
         (100, 30000, 100)
+      ),
+      (
+        'http3_connecttion_close_code',
+        'content',
+        payload.processes.content.keyed_histograms.http3_connecttion_close_code,
+        (1, 100, 101)
+      ),
+      (
+        'http3_connecttion_close_code',
+        'parent',
+        payload.keyed_histograms.http3_connecttion_close_code,
+        (1, 100, 101)
       ),
       (
         'http_cache_disposition_3',
@@ -1858,12 +1884,12 @@ grouped_metrics AS (
       )
     ] AS metrics
   FROM
-    filtered
+    sampled_data
 ),
 flattened_metrics AS (
   SELECT
-    submission_timestamp,
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -1884,6 +1910,7 @@ flattened_metrics AS (
 aggregated AS (
   SELECT
     submission_date,
+    sample_id,
     client_id,
     os,
     app_version,
@@ -1897,6 +1924,7 @@ aggregated AS (
   FROM
     flattened_metrics
   GROUP BY
+    sample_id,
     client_id,
     submission_date,
     os,
@@ -1909,6 +1937,7 @@ aggregated AS (
 )
 SELECT
   submission_date,
+  sample_id,
   client_id,
   os,
   app_version,
@@ -1936,6 +1965,7 @@ SELECT
 FROM
   aggregated
 GROUP BY
+  sample_id,
   client_id,
   submission_date,
   os,

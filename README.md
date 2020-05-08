@@ -191,10 +191,12 @@ owners:
   - example@mozilla.com
 labels:
   application: firefox
-  incremental: false    # incremental queries add data to existing tables
+  incremental: true     # incremental queries add data to existing tables
   schedule: daily       # scheduled in Airflow to run daily
   public_json: true
   public_bigquery: true
+  review_bug: 1414839   # Bugzilla bug ID of data review
+  incremental_export: false  # non-incremental JSON export writes all data to a single location
 ```
 
 ### Publishing Datasets
@@ -205,9 +207,17 @@ labels:
     by everyone, also external users
 - To make query results publicly available as JSON, `public_json` flag must be set in 
   `metadata.yaml`
-  - Data will be accessible under https://public-data.prod.dataops.mozgcp.net
-  - For example: https://public-data.prod.dataops.mozgcp.net/api/v1/tables/telemetry/ssl_ratios/v1/files/0000
-  - This feature is currently under development and not available yet
+  - Data will be accessible under https://public-data.telemetry.mozilla.org
+    - A list of all available datasets is published under https://public-data.telemetry.mozilla.org/all-datasets.json
+  - For example: https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000000000.json
+  - Output JSON files have a maximum size of 1GB, data can be split up into multiple files (`000000000000.json`, `000000000001.json`, ...)
+  - `incremental_export` controls how data should be exported as JSON:
+    - `false`: all data of the source table gets exported to a single location
+      - https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/000000000000.json
+    - `true`: only data that matches the `submission_date` parameter is exported as JSON to a separate directory for this date
+      - https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/2020-03-15/000000000000.json
+- For each dataset, a `metadata.json` gets published listing all available files, for example: https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/metadata.json
+- The timestamp when the dataset was last updated is recorded in `last_updated`, e.g.: https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/last_updated
 
 Scheduling Queries in Airflow
 ---

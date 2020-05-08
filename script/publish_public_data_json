@@ -1,84 +1,11 @@
-#!/usr/bin/env python3
+#!/bin/sh
 
-"""
-Export query result data as JSON to a publicly accessible bucket.
-
-Data of the query is exported if "json_export" is set in
-the corresponding metadata file.
-"""
-
-from argparse import ArgumentParser
-import os
-import sys
-
-from google.cloud import storage
-from google.cloud import bigquery
-
-# sys.path needs to be modified to enable package imports from parent
-# and sibling directories. Also see:
-# https://stackoverflow.com/questions/6323860/sibling-package-imports/23542795#23542795
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from bigquery_etl.parse_metadata import Metadata  # noqa E402
-from bigquery_etl.publish_json import JsonPublisher  # noqa E402
+# Export query result data as JSON to a publicly accessible bucket.
+#
+# Data of the query is exported if "json_export" is set in
+# the corresponding metadata file.
 
 
-DEFAULT_BUCKET = "mozilla-public-data-http"
-DEFAULT_API_VERSION = "v1"
+cd "$(dirname "$0")/.."
 
-
-parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "--target-bucket",
-    "--target_bucket",
-    default=DEFAULT_BUCKET,
-    help="GCP bucket JSON data is exported to.",
-)
-parser.add_argument(
-    "--project_id",
-    default="mozilla-public-data",
-    help="Run query in the target project",
-)
-parser.add_argument(
-    "--api_version",
-    "--api-version",
-    default=DEFAULT_API_VERSION,
-    help="API version data is published under in the storage bucket",
-)
-parser.add_argument(
-    "--parameter", action="append", help="Query parameters, such as submission_date"
-)
-parser.add_argument(
-    "--query-file", "--query_file", help="File path to query to be executed"
-)
-
-
-def main():
-    args, query_arguments = parser.parse_known_args()
-
-    try:
-        metadata = Metadata.of_sql_file(args.query_file)
-    except FileNotFoundError:
-        print("No metadata file for: {}".format(args.query_file))
-        return
-
-    # check if the data should be published as JSON
-    if not metadata.is_public_json():
-        return
-
-    storage_client = storage.Client()
-    client = bigquery.Client(args.project_id)
-
-    publisher = JsonPublisher(
-        client,
-        storage_client,
-        args.project_id,
-        args.query_file,
-        args.api_version,
-        args.target_bucket,
-        args.parameter,
-    )
-    publisher.publish_json()
-
-
-if __name__ == "__main__":
-    main()
+exec python3 -m bigquery_etl.public_data.publish_json "$@"

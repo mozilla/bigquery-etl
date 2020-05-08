@@ -1,0 +1,237 @@
+#!/bin/bash
+# Run the scalars sql job against all Glean pings in a product. Assumes that
+# generate_fenix_sql has already been run.
+
+set -e
+
+# `date` is not consistent across MacOS and GNU/Linux
+function yesterday {
+    python3 - <<EOD
+from datetime import date, timedelta
+dt = date.today() - timedelta(1)
+print(dt.strftime("%Y-%m-%d"))
+EOD
+}
+
+PROJECT=${PROJECT:-"glam-fenix-dev"}
+PROD_DATASET=${PROD_DATASET:-"glam_etl"}
+DATASET=${DATASET:-"glam_etl_dev"}
+SUBMISSION_DATE=${SUBMISSION_DATE:-$(yesterday)}
+
+
+# Replace PROD_DATASET with DATASET in order to run the entire pipeline within a
+# separate dataset. This is effectively a hack for what should be generated
+# queries in the correct location. However, this provides a mechanism for
+# changing the dataset location for testing.
+function replace_dataset {
+    local sql_path=$1
+    sed "s/$PROD_DATASET/$DATASET/g" < "$sql_path"
+}
+
+
+# replace project and dataset in an init or view file
+function replace_project_dataset {
+    local sql_path=$1
+    local prod="moz-fx-data-shared-prod"
+    sed "s/$prod/$PROJECT/g" < "$sql_path" | \
+        sed "s/$PROD_DATASET/$DATASET/g"
+}
+
+
+function run_query {
+    local destination_table=$1
+    local time_partition=${2:-false}
+    local min_sample_id=${3:-0}
+    local max_sample_id=${4:-99}
+    local query_location=${5:-$destination_table}
+    local additional_arguments="${6:---replace}"
+    local sample_size=${7:-10}
+    local query="sql/$PROD_DATASET/$query_location/query.sql"
+
+    # add an option to write to a time-partitioned table
+    if $time_partition; then
+        destination_table="${destination_table}\$${SUBMISSION_DATE//-/}"
+    fi
+    echo "running $query"
+    local tmp
+    tmp=$(mktemp)
+    replace_dataset "$query" > "$tmp"
+    bq query \
+        --max_rows=0 \
+        --use_legacy_sql=false \
+        $additional_arguments \
+        --project_id="$PROJECT" \
+        --dataset_id="$DATASET" \
+        --destination_table="$destination_table" \
+        --parameter="submission_date:DATE:$SUBMISSION_DATE" \
+        --parameter="min_sample_id:INT64:$min_sample_id" \
+        --parameter="max_sample_id:INT64:$max_sample_id" \
+        --parameter="sample_size:INT64:$sample_size" \
+        "$(if $time_partition; then echo --time_partitioning_type="DAY"; fi)" \
+        < "$tmp"
+}
+
+
+function run_init {
+    local destination_table=$1
+    local init="sql/$PROD_DATASET/$destination_table/init.sql"
+    # run if needed
+    if ! bq show --quiet "${DATASET}.${destination_table}"; then
+        echo "running $init"
+        local tmp
+        tmp=$(mktemp)
+        replace_project_dataset "$init" > "$tmp"
+        bq query \
+            --use_legacy_sql=false \
+            --project_id="$PROJECT" \
+            < "$tmp"
+    fi
+}
+
+
+function run_view {
+    local view_name=$1
+    local view="sql/$PROD_DATASET/$view_name/view.sql"
+    echo "running $view"
+    local tmp
+    tmp=$(mktemp)
+    replace_project_dataset "$view" > "$tmp"
+    bq query \
+        --use_legacy_sql=false \
+        --project_id="$PROJECT" \
+        --dataset_id="$DATASET" \
+        < "$tmp"
+}
+
+
+function run_partitioned_query {
+    local NUM_PARTITIONS=5
+    local NUM_SAMPLE_IDS=100
+    local PARTITION_SIZE=$((NUM_SAMPLE_IDS / NUM_PARTITIONS))
+    local table_name=$1
+    local partitioned_result=${2:-true}
+
+    run_query $table_name true 0 19
+    for partition in $(seq 1 $((NUM_PARTITIONS - 1))); do
+        local min_param=$((partition * PARTITION_SIZE))
+        local max_param=$((min_param + PARTITION_SIZE - 1))
+        run_query $table_name $partitioned_result $min_param $max_param \
+            $table_name "--append_table"
+    done
+}
+
+
+function run_desktop_sql {
+    run_query "latest_versions"
+
+    # Run clients_daily_*_scalar_aggregates
+    run_init "clients_daily_scalar_aggregates_v1"
+    run_query "clients_daily_scalar_aggregates_v1" true
+    run_query "clients_daily_scalar_aggregates_v1" \
+        true 0 0 "clients_daily_keyed_scalar_aggregates_v1" \
+        "--append_table"
+    run_query "clients_daily_scalar_aggregates_v1" \
+        true 0 0 "clients_daily_keyed_boolean_aggregates_v1" \
+        "--append_table"
+
+    # Run clients_daily_*_histogram_aggregates
+    run_init "clients_daily_histogram_aggregates_v1"
+    run_query "clients_daily_histogram_aggregates_v1" true 0 0
+    run_query "clients_daily_histogram_aggregates_v1" \
+        true 0 0 "clients_daily_keyed_histogram_aggregates_v1" \
+        "--append_table"
+
+    # Run the rest of the clients scalar pipeline
+    run_init "clients_scalar_aggregates_v1"
+    run_query "clients_scalar_aggregates_v1"
+    run_query "clients_scalar_bucket_counts_v1"
+    run_query "clients_scalar_probe_counts_v1"
+    run_query "scalar_percentiles_v1"
+
+    # Run the rest of the clients histogram pipeline
+    run_init "clients_histogram_aggregates_v1"
+    run_query "clients_histogram_aggregates_new_v1"
+    run_partitioned_query "clients_histogram_aggregates_v1"
+
+    run_partitioned_query "clients_histogram_probe_counts_v1" false
+
+    run_query "histogram_percentiles_v1"
+    run_query "glam_user_counts_v1"
+}
+
+
+function run_fenix_sql {
+    local start_stage=${START_STAGE:-0}
+
+    if ((start_stage <= 0)); then
+        for directory in sql/glam_etl/fenix_clients_daily_scalar_aggregates*/; do
+            run_query "$(basename "$directory")" true
+        done
+        for directory in sql/glam_etl/fenix_clients_daily_histogram_aggregates*/; do
+            run_query "$(basename "$directory")" true
+        done
+    fi
+    # NOTE: there isn't a mechanism to test the incremental query here
+    if ((start_stage <= 1)); then
+        run_query "fenix_latest_versions_v1"
+
+        run_view "fenix_view_clients_daily_scalar_aggregates_v1"
+        run_init "fenix_clients_scalar_aggregates_v1"
+        run_query "fenix_clients_scalar_aggregates_v1"
+    fi
+    if ((start_stage <= 2)); then
+        run_query "fenix_clients_scalar_bucket_counts_v1"
+        run_query "fenix_clients_scalar_probe_counts_v1"
+        run_query "fenix_scalar_percentiles_v1"
+    fi
+    if ((start_stage <= 3)); then
+        run_view "fenix_view_clients_daily_histogram_aggregates_v1"
+        run_init "fenix_clients_histogram_aggregates_v1"
+        run_query "fenix_clients_histogram_aggregates_v1"
+    fi
+    if ((start_stage <= 4)); then
+        run_query "fenix_clients_histogram_bucket_counts_v1"
+        run_query "fenix_clients_histogram_probe_counts_v1"
+        run_query "fenix_histogram_percentiles_v1"
+    fi
+    run_view "fenix_view_probe_counts_v1"
+    run_view "fenix_view_user_counts_v1"
+    run_query "fenix_extract_user_counts_v1"
+    run_query "fenix_extract_probe_counts_v1"
+}
+
+
+function main {
+    cd "$(dirname "$0")/../.."
+
+    local reset=${RESET:-false}
+    local product=${PRODUCT:-fenix}
+
+    # revert to the original default project in the environment
+    original_project=$(gcloud config get-value project)
+    function cleanup {
+        gcloud config set project "$original_project"
+    }
+    trap cleanup EXIT
+
+    gcloud config set project $PROJECT
+
+    # force delete the dataset
+    if $reset; then
+        bq rm -r -f "$DATASET"
+    fi
+    if ! bq ls "${PROJECT}:${DATASET}"; then
+        bq mk "$DATASET"
+    fi
+
+    if [[ "$product" == "fenix" ]]; then
+        run_fenix_sql
+    elif [[ "$product" = "desktop" ]]; then
+        run_desktop_sql
+    else
+        echo "Error: product must be fenix or desktop"
+        exit 1
+    fi
+}
+
+main

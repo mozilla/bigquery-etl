@@ -1,5 +1,7 @@
 /*
 
+Identical to bits28_days_since_seen.
+
 Returns a 0-based index of the rightmost set bit in the passed bit pattern
 or null if no bits are set (bits = 0).
 

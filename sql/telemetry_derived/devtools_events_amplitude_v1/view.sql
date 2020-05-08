@@ -164,8 +164,7 @@ SELECT
 FROM
     base_events
 WHERE 
-    (doc_type IN ('main', 'event') AND app_name = 'Firefox' AND normalized_channel IN ('nightly', 'beta', 'aurora'))
-    OR (doc_type = 'event' AND app_name = 'Firefox' AND normalized_channel = 'release' AND sample_id < 50)
+    (doc_type IN ('main', 'event') AND app_name = 'Firefox' AND normalized_channel IN ('nightly', 'aurora'))
     AND event_category = 'devtools.main'
     AND event_method NOT IN ('edit_rule', 'tool_timer')
 ), all_events_with_insert_ids AS (

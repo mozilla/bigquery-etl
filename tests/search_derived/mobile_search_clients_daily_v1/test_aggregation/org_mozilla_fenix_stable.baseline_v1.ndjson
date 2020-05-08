@@ -1,3 +1,0 @@
-{"submission_timestamp": "2019-12-01 10:06:01.757971 UTC", "client_info": {"client_id": "a"}, "metrics": {"string": {"glean_baseline_locale": "en-US"}}}
-{"submission_timestamp": "2019-12-01 08:06:01.123455 UTC", "client_info": {"client_id": "b"}, "metrics": {"string": {"glean_baseline_locale": "en-CA"}}}
-{"submission_timestamp": "2019-12-01 23:59:01.757971 UTC", "client_info": {"client_id": "c"}, "metrics": {"string": {"glean_baseline_locale": "ar-EG"}}}

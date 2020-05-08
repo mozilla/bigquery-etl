@@ -103,6 +103,7 @@ user_properties AS (
             )
           WHERE
             value != "null"
+            AND value != "[]"
         ),
         ","
       ),

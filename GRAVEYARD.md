@@ -2,6 +2,14 @@
 
 This document records interesting code that we've deleted for the sake of discoverability for the future.
 
+## 2020-04 Fenix baseline_daily and clients_last_seen
+
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/925)
+
+We are now using dynamically generated queries for generic Glean
+ETL on top of baseline pings, so we have deprecated previous versions
+of daily and last_seen tables.
+
 ## Smoot Usage v1
 
 - [Removal PR](https://github.com/mozilla/bigquery-etl/pull/460)

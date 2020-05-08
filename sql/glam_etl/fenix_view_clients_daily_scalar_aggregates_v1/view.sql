@@ -1,4 +1,4 @@
--- Manually written view that handles time-partitioning
+-- View to union daily scalar aggregates with date partitioning
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.glam_etl.fenix_view_clients_daily_scalar_aggregates_v1`
 AS

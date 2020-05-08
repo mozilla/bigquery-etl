@@ -1,0 +1,28 @@
+{
+    "test": {
+        "non_incremental_query": {
+            "v1": {
+                "friendly_name": "Test table for a non-incremental query",
+                "description": "Test table for a non-incremental query",
+                "incremental": false,
+                "incremental_export": false,
+                "review_link": "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999",
+                "files_metadata": "https://test.endpoint.mozilla.com/api/v1/tables/test/non_incremental_query/v1/files/metadata.json",
+                "files_uri": "https://test.endpoint.mozilla.com/api/v1/tables/test/non_incremental_query/v1/files",
+                "last_updated": "https://test.endpoint.mozilla.com/api/v1/tables/test/non_incremental_query/v1/last_updated"
+            }
+        }, 
+        "incremental_query": {
+            "v1": {
+                "friendly_name": "Test table for an incremental query",
+                "description": "Test table for an incremental query",
+                "incremental": true,
+                "incremental_export": true,
+                "review_link": "https://bugzilla.mozilla.org/show_bug.cgi?id=123456",
+                "files_metadata": "https://test.endpoint.mozilla.com/api/v1/tables/test/incremental_query/v1/files/metadata.json",
+                "files_uri": "https://test.endpoint.mozilla.com/api/v1/tables/test/incremental_query/v1/files",
+                "last_updated": "https://test.endpoint.mozilla.com/api/v1/tables/test/incremental_query/v1/last_updated"
+            }
+        }
+    }
+}

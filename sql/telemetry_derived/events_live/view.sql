@@ -10,6 +10,7 @@ AS (
     environment.settings.locale AS locale,
     normalized_app_name AS app_name,
     metadata.uri.app_version AS app_version,
+    environment.build.build_id AS build_id,
     normalized_os AS os,
     normalized_os_version AS os_version,
     environment.experiments AS experiments,

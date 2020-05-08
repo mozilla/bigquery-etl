@@ -1,0 +1,13 @@
+friendly_name: "Test table for a non-incremental query"
+description: "Test table for a non-incremental query"
+owners:
+  - ascholtz@mozilla.com
+labels:
+  schedule: daily
+  public_json: true
+  incremental: false
+  incremental_export: false
+  review_bug: 1999999
+scheduling:
+  dag_name: "bqetl_core"
+  depends_on_past: true

@@ -17,36 +17,7 @@ cleaned AS (
     *,
     payload.device_id,
     `moz-fx-data-shared-prod`.udf.get_key(event_map_values, 'serverTime') AS server_time,
-    CASE
-    WHEN
-      payload.os.name LIKE 'Windows%'
-      OR payload.os.name LIKE 'WINNT%'
-    THEN
-      'Windows'
-    WHEN
-      payload.os.name LIKE 'Darwin%'
-    THEN
-      'Mac'
-    WHEN
-      payload.os.name LIKE '%Linux%'
-      OR payload.os.name LIKE '%BSD%'
-      OR payload.os.name LIKE '%SunOS%'
-      OR payload.os.name LIKE '%Solaris%'
-    THEN
-      'Linux'
-    WHEN
-      payload.os.name LIKE 'iOS%'
-      OR payload.os.name LIKE 'iPhone%'
-    THEN
-      'iOS'
-    WHEN
-      payload.os.name LIKE 'Android%'
-    THEN
-      'Android'
-    ELSE
-      payload.os.name
-    END
-    AS os_name,
+    `moz-fx-data-shared-prod`.udf.normalize_os(payload.os.name) AS os_name,
     CASE
       event_object
     WHEN

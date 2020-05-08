@@ -37,35 +37,46 @@ LANGUAGE js AS """
         var next_val = next_keypath.reduce((obj, k) => obj[k], parsed);
 
         var is_node = true;
-        if(typeof next_val === 'object' && next_val !== null && !Array.isArray(next_val)) {
+        if(typeof next_val === 'object' && next_val !== null) {
             is_node = false;
-            var keys = Object.keys(next_val);
 
-            if(known_nodes.indexOf(next_keypath[next_keypath.length - 1]) > -1){
-                is_node = true;
-            }
+            if (Array.isArray(next_val)) {
+              next_val.forEach(function (item, index) {
+                remaining_paths.push(next_keypath.concat([index]))
+              });
+            } else {
+              var keys = Object.keys(next_val);
 
-            var keys_indicating_node = keys.filter(
-              e => indicates_node.indexOf(e) > -1
-            )
+              if(known_nodes.indexOf(next_keypath[next_keypath.length - 1]) > -1){
+                  is_node = true;
+              }
 
-            if(keys_indicating_node.length > 0){
-                is_node = true;
-            }
+              var keys_indicating_node = keys.filter(
+                e => indicates_node.indexOf(e) > -1
+              )
 
-            if(!is_node){
-                Object.keys(next_val).map(k =>
-                    remaining_paths.push(next_keypath.concat([k]))
-                );
+              if(keys_indicating_node.length > 0){
+                  is_node = true;
+              }
+
+              if(!is_node){
+                  Object.keys(next_val).map(k =>
+                      remaining_paths.push(next_keypath.concat([k]))
+                  );
+              }
             }
         }
 
         if(is_node) {
-            key_paths.push(next_keypath.map(k => '`' + String(k) + '`').join('.'));
+            key_path_str = next_keypath.map(k => '`' + String(k) + '`').join('.');
+            array_index_regex = /\`[0-9]+\`/gi;
+            key_path_str = key_path_str.replace(array_index_regex, "[...]")
+            key_paths.push(key_path_str);
         }
     }
 
-    return key_paths;
+    unique_key_paths = key_paths.filter((v, i, a) => a.indexOf(v) === i);
+    return unique_key_paths;
 """;
 
 -- Tests
@@ -73,7 +84,12 @@ LANGUAGE js AS """
 WITH
   addl_properties AS (
     SELECT
-      '{"first": {"second": {"third": "hello world"}, "other-second": "value"}}' AS additional_properties ),
+      '''
+      {"first": {"second": {"third": "hello world"}, "other-second": "value",
+      "array": [{"array-element": "value", "another-array-element": "value"},
+        {"array-element": "value", "nested-array-element": {"nested": "value"}}
+      ]}}
+      ''' AS additional_properties  ),
     --
   extracted AS (
     SELECT
@@ -84,8 +100,12 @@ WITH
       addl_properties )
     --
     SELECT
-      assert_array_equals_any_order(no_args, ARRAY['`first`.`second`.`third`', '`first`.`other-second`']),
-      assert_array_equals_any_order(indicates_node_arg, ARRAY['`first`.`second`', '`first`.`other-second`']),
+      assert_array_equals_any_order(no_args, ARRAY['`first`.`second`.`third`', '`first`.`other-second`',
+        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`array-element`', 
+        '`first`.`array`.[...].`another-array-element`']),
+      assert_array_equals_any_order(indicates_node_arg, ARRAY['`first`.`second`', '`first`.`other-second`', 
+        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`array-element`',
+        '`first`.`array`.[...].`another-array-element`']),
       assert_array_equals_any_order(is_node_arg, ARRAY['`first`'])
   FROM
     extracted

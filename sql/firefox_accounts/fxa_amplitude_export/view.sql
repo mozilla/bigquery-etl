@@ -46,6 +46,11 @@ user_properties AS (
     '$identify' AS event_type,
     timestamp,
     '' AS event_properties,
+    -- Some Amplitude properties are top level
+    region,
+    country,
+    `LANGUAGE`,
+    app_version AS version,
     -- We don't want to include user_properties if they are null, so we need
     -- to list them out explicitly and filter with WHERE
     CONCAT(
@@ -56,18 +61,6 @@ user_properties AS (
             CONCAT(TO_JSON_STRING(key), ":", value)
           FROM
             (
-              SELECT AS STRUCT
-                "region" AS key,
-                TO_JSON_STRING(region) AS value,
-              UNION ALL
-              SELECT AS STRUCT
-                "country" AS key,
-                TO_JSON_STRING(country) AS value,
-              UNION ALL
-              SELECT AS STRUCT
-                "LANGUAGE" AS key,
-                TO_JSON_STRING(LANGUAGE) AS value,
-              UNION ALL
               SELECT AS STRUCT
                 "os_used_day" AS key,
                 TO_JSON_STRING(os_used_day) AS value,
@@ -103,10 +96,6 @@ user_properties AS (
               SELECT AS STRUCT
                 "ua_browser" AS key,
                 TO_JSON_STRING(ua_browser) AS value,
-              UNION ALL
-              SELECT AS STRUCT
-                "app_version" AS key,
-                TO_JSON_STRING(app_version) AS value,
               UNION ALL
               SELECT AS STRUCT
                 "$postInsert",

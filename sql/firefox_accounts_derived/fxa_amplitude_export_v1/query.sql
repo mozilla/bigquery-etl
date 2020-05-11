@@ -41,7 +41,6 @@ grouped_by_user AS (
       udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.user_id AS BYTES))
     ) AS user_id,
     MIN(CONCAT(insertId, '-user')) AS insert_id,
-    TIMESTAMP(@submission_date, "America/Los_Angeles") AS timestamp,
     -- Amplitude properties, scalars
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.region)) AS region,
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.country)) AS country,
@@ -111,15 +110,15 @@ grouped_by_user AS (
 ),
 _previous AS (
   SELECT
-    * EXCEPT (submission_timestamp)
+    * EXCEPT (submission_date_pacific)
   FROM
     firefox_accounts_derived.fxa_amplitude_export_v1
   WHERE
-    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    submission_date_pacific = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
 )
 SELECT
-  TIMESTAMP(@submission_date, "America/Los_Angeles") AS submission_timestamp,
+  @submission_date AS submission_date_pacific,
   _current.* REPLACE (
     COALESCE(_current.user_id, _previous.user_id) AS user_id,
     udf.combine_adjacent_days_28_bits(

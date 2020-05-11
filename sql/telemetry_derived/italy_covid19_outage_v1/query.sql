@@ -1,12 +1,3 @@
-DECLARE country_code STRING DEFAULT "IT";
-
-DECLARE fromdate DATE DEFAULT '2020-01-01';
-
-DECLARE todate DATE DEFAULT '2020-03-31';
-
--- The minimum size of a bucket for it to be published.
-DECLARE MIN_NUMBER_CLIENTS INT64 DEFAULT 5000;
-
 -- Note: udf.udf_json_extract_int_map map doesn't work in this case as it expects an INT -> INT
 -- map, while we have a STRING->int map
 CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
@@ -31,13 +22,14 @@ WITH DAUs AS (
   FROM
     telemetry.clients_daily
   WHERE
-    submission_date >= fromdate
-    AND submission_date <= todate
-    AND country = country_code
+    submission_date >= '2020-01-01'
+    AND submission_date <= '2020-03-31'
+    AND country = 'IT'
   GROUP BY
     1
   HAVING
-    COUNT(*) > MIN_NUMBER_CLIENTS
+    -- The minimum size of a bucket for it to be published.
+    COUNT(*) > 5000
 ),
 -- Compute aggregates for the health data.
 health_data_sample AS (
@@ -80,9 +72,9 @@ health_data_sample AS (
   FROM
     telemetry.health
   WHERE
-    date(submission_timestamp) >= fromdate
-    AND date(submission_timestamp) <= todate
-    AND normalized_country_code = country_code
+    date(submission_timestamp) >= '2020-01-01'
+    AND date(submission_timestamp) <= '2020-03-31'
+    AND normalized_country_code = 'IT'
   GROUP BY
     1,
     2
@@ -101,7 +93,7 @@ health_data_aggregates AS (
   GROUP BY
     date
   HAVING
-    COUNT(*) > MIN_NUMBER_CLIENTS
+    COUNT(*) > 5000
 ),
 final_health_data AS (
   SELECT
@@ -140,12 +132,12 @@ histogram_data_sample AS (
   FROM
     telemetry.main
   WHERE
-    DATE(submission_timestamp) >= fromdate
-    AND DATE(submission_timestamp) <= todate
+    DATE(submission_timestamp) >= '2020-01-01'
+    AND DATE(submission_timestamp) <= '2020-03-31'
     -- Additionally limit the creation date.
-    AND DATE(SAFE_CAST(creation_date AS TIMESTAMP)) >= fromdate
-    AND DATE(SAFE_CAST(creation_date AS TIMESTAMP)) <= todate
-    AND metadata.geo.country = country_code
+    AND DATE(SAFE_CAST(creation_date AS TIMESTAMP)) >= '2020-01-01'
+    AND DATE(SAFE_CAST(creation_date AS TIMESTAMP)) <= '2020-03-31'
+    AND metadata.geo.country = 'IT'
     -- Restrict to Firefox.
     AND normalized_app_name = 'Firefox'
     -- Only to pings who seem to represent an active session.
@@ -177,7 +169,7 @@ dns_success_time AS (
   GROUP BY
     1
   HAVING
-    count(DISTINCT(client_id)) > MIN_NUMBER_CLIENTS
+    count(DISTINCT(client_id)) > 5000
 ),
 -- A shared source for the DNS_FAIL histogram
 dns_failure_src AS (
@@ -207,7 +199,7 @@ dns_failure_time AS (
   GROUP BY
     1
   HAVING
-    count(DISTINCT(client_id)) > MIN_NUMBER_CLIENTS
+    count(DISTINCT(client_id)) > 5000
 ),
 -- DNS_FAIL counts
 dns_failure_counts AS (
@@ -229,7 +221,7 @@ dns_failure_counts AS (
   GROUP BY
     time_slot
   HAVING
-    count(DISTINCT(client_id)) > MIN_NUMBER_CLIENTS
+    count(DISTINCT(client_id)) > 5000
 ),
 -- TLS_HANDSHAKE histogram
 tls_handshake_time AS (
@@ -257,7 +249,7 @@ tls_handshake_time AS (
   GROUP BY
     1
   HAVING
-    count(DISTINCT(client_id)) > MIN_NUMBER_CLIENTS
+    count(DISTINCT(client_id)) > 5000
 )
 SELECT
   DAUs.date AS date,

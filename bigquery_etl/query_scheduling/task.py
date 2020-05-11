@@ -1,6 +1,7 @@
 """Represents a scheduled Airflow task."""
 
 import re
+import logging
 from google.cloud import bigquery
 
 from bigquery_etl.metadata.parse_metadata import Metadata
@@ -90,6 +91,13 @@ class Task:
             query = query_stream.read()
             query_job = client.query(query, job_config=job_config)
             referenced_tables = query_job.referenced_tables
+
+            if len(referenced_tables) >= 50:
+                logging.warn(
+                    "Query has 50 or more tables. Queries that reference more than"
+                    "50 tables will not have a complete list of dependencies."
+                )
+
             table_names = [(t.dataset_id, t.table_id) for t in referenced_tables]
             return table_names
 

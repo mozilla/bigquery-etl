@@ -2,7 +2,7 @@
 
 Extract missing columns from additional properties.
 
-More generally, get a list of nodes from a JSON blob.
+More generally, get a list of nodes from a JSON blob. Array elements are indicated as [...].
 
 param input: The JSON blob to explode
 param indicates_node: An array of strings. If a key's value is an object, and contains one of these values,
@@ -14,7 +14,6 @@ Notes:
   histogram will be returned as a missing node, rather than the subvalues within the histogram
   (e.g. values, sum, etc.)
 - Use known_nodes if you're aware of a missing section, like ['simpleMeasurements']
-- This doesn't support Arrays of structs, the array itself will be returned as a node
 
 See here for an example usage
 https://sql.telemetry.mozilla.org/queries/64460/source
@@ -40,30 +39,24 @@ LANGUAGE js AS """
         if(typeof next_val === 'object' && next_val !== null) {
             is_node = false;
 
-            if (Array.isArray(next_val)) {
-              next_val.forEach(function (item, index) {
-                remaining_paths.push(next_keypath.concat([index]))
-              });
-            } else {
-              var keys = Object.keys(next_val);
+            var keys = Object.keys(next_val);
 
-              if(known_nodes.indexOf(next_keypath[next_keypath.length - 1]) > -1){
-                  is_node = true;
-              }
+            if(known_nodes.indexOf(next_keypath[next_keypath.length - 1]) > -1){
+                is_node = true;
+            }
 
-              var keys_indicating_node = keys.filter(
+            var keys_indicating_node = keys.filter(
                 e => indicates_node.indexOf(e) > -1
-              )
+            )
 
-              if(keys_indicating_node.length > 0){
-                  is_node = true;
-              }
+            if(keys_indicating_node.length > 0){
+                is_node = true;
+            }
 
-              if(!is_node){
-                  Object.keys(next_val).map(k =>
-                      remaining_paths.push(next_keypath.concat([k]))
-                  );
-              }
+            if(!is_node){
+                Object.keys(next_val).map(k =>
+                    remaining_paths.push(next_keypath.concat([k]))
+                );
             }
         }
 
@@ -85,10 +78,24 @@ WITH
   addl_properties AS (
     SELECT
       '''
-      {"first": {"second": {"third": "hello world"}, "other-second": "value",
-      "array": [{"array-element": "value", "another-array-element": "value"},
-        {"array-element": "value", "nested-array-element": {"nested": "value"}}
-      ]}}
+      {
+        "first": {
+          "second": {
+            "third": "hello world"
+          }, 
+          "other-second": "value",
+          "array": [
+            {
+              "array-element": "value",
+              "another-array-element": "value"
+            },
+            {
+              "array-element": "value", 
+              "nested-array-element": {"nested": "value"}
+            }
+          ]
+        }
+      }
       ''' AS additional_properties  ),
     --
   extracted AS (

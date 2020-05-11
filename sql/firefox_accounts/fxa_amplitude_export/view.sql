@@ -18,9 +18,7 @@ WITH active_users AS (
       -27,
       28
     ) AS os_used_month,
-    * EXCEPT (days_seen_bits, os_used_month) REPLACE(
-      TIMESTAMP(timestamp, "America/Los_Angeles") AS timestamp
-    )
+    * EXCEPT (days_seen_bits, os_used_month)
   FROM
     `moz-fx-data-shared-prod`.firefox_accounts_derived.fxa_amplitude_export_v1
   WHERE

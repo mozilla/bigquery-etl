@@ -16,7 +16,16 @@ base_events AS (
   FROM
     `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
   WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)
+    -- @submission_date is PDT, so we need two days of UTC-based
+    -- data. We assume that we run immediately at the end of
+    -- @submission_date, so we need data from the _next_ UTC-based
+    -- submission date.
+    -- See https://console.cloud.google.com/bigquery?sq=768515352537:e63d2d2faa85431dbf0e5440021af837
+    (
+      _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)
+      OR _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
+    )
+    AND DATE(`timestamp`, "America/Los_Angeles") = @submission_date
     AND jsonPayload.fields.event_type IN (
       'fxa_activity - cert_signed',
       'fxa_activity - access_token_checked',
@@ -32,7 +41,7 @@ grouped_by_user AS (
       udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.user_id AS BYTES))
     ) AS user_id,
     MIN(CONCAT(insertId, '-user')) AS insert_id,
-    CAST(@submission_date AS DATETIME) AS timestamp,
+    TIMESTAMP(@submission_date, "America/Los_Angeles") AS timestamp,
     -- Amplitude properties, scalars
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.region)) AS region,
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(jsonPayload.fields.country)) AS country,
@@ -110,7 +119,7 @@ _previous AS (
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
 )
 SELECT
-  CAST(@submission_date AS TIMESTAMP) AS submission_timestamp,
+  TIMESTAMP(@submission_date, "America/Los_Angeles") AS submission_timestamp,
   _current.* REPLACE (
     COALESCE(_current.user_id, _previous.user_id) AS user_id,
     udf.combine_adjacent_days_28_bits(

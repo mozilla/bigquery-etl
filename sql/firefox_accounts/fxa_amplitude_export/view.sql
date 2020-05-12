@@ -4,6 +4,7 @@ AS
 WITH active_users AS (
   SELECT
     TIMESTAMP(submission_date_pacific, "America/Los_Angeles") AS submission_timestamp,
+    TIMESTAMP(submission_date_pacific, "America/Los_Angeles") AS timestamp,
     `moz-fx-data-shared-prod`.udf.active_values_from_days_seen_map(
       os_used_month,
       0,

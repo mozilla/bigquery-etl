@@ -21,7 +21,7 @@ WITH base AS (
     ELSE
       app_name
     END
-    AS product_name,
+    AS product,
     app_name,
     SPLIT(app_version, '.')[offset(0)] AS app_version,
     os,

@@ -3,7 +3,9 @@
 import logging
 import os
 from argparse import ArgumentParser
+from google.cloud import bigquery
 from ..util import standard_args
+
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 
@@ -11,6 +13,7 @@ from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 DEFAULT_SQL_DIR = "sql/"
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
+DAGS_DIR = "dags/"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -24,6 +27,12 @@ parser.add_argument(
     "--dags-config",
     help="File with DAGs configuration",
     default=DEFAULT_DAGS_FILE,
+)
+parser.add_argument(
+    "--project_id",
+    "--project-id",
+    default="moz-fx-data-shared-prod",
+    help="Dry run queries in this project to determine task dependencies.",
 )
 standard_args.add_log_level(parser)
 
@@ -68,10 +77,11 @@ def get_dags(sql_dir, dags_config):
 def main():
     """Generate Airflow DAGs."""
     args = parser.parse_args()
+    client = bigquery.Client(args.project_id)
 
-    get_dags(args.sql_dir, args.dags_config)
+    dags = get_dags(args.sql_dir, args.dags_config)
+    dags.to_airflow_dags(DAGS_DIR, client)
 
-    # todo: determine task upstream dependencies
     # todo: convert to Airflow DAG representation
     # todo: validate generated Airflow python
     # todo: write generated code to files

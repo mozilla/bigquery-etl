@@ -80,7 +80,7 @@ class GcsTableMetadata:
         if self.metadata.review_bug() is not None:
             metadata_json["review_link"] = REVIEW_LINK + self.metadata.review_bug()
 
-        metadata_json["files"] = self.files_uri
+        metadata_json["files_uri"] = self.files_uri
         metadata_json["last_updated"] = self.last_updated_uri
 
         return metadata_json

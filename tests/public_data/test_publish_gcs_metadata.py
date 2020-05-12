@@ -116,7 +116,7 @@ class TestPublishGcsMetadata(object):
         assert result["incremental_export"] is False
         review_link = "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999"
         assert result["review_link"] == review_link
-        assert result["files"] == self.endpoint + files_path
+        assert result["files_uri"] == self.endpoint + files_path
         assert result["last_updated"] == self.endpoint + last_updated_path
 
     def test_gcs_files_metadata_to_json(self):

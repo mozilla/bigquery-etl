@@ -36,7 +36,7 @@ WITH base AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.nondesktop_clients_last_seen_v1`
   GROUP BY
-    product_name,
+    product,
     app_name,
     app_version,
     submission_date,
@@ -50,7 +50,7 @@ FROM
   base
 WHERE
   cohort_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
-  AND product_name IN (
+  AND product IN (
     'Fennec Android',
     'Focus Android',
     'Fennec iOS',

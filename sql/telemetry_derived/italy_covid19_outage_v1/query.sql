@@ -115,7 +115,6 @@ final_health_data AS (
 histogram_data_sample AS (
   SELECT
     client_id,
-    document_id,
     DATE(SAFE_CAST(creation_date AS TIMESTAMP)) AS time_slot,
     udf.json_extract_int_map(
       JSON_EXTRACT(payload.histograms.dns_failed_lookup_time, '$.values')

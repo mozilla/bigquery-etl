@@ -1,7 +1,7 @@
 -- Sampled view on send tab metrics intended for sending to Amplitude;
 -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1628740
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry_derived.sync_send_tab_events_v1`
+  `moz-fx-data-shared-prod.firefox_accounts.sync_send_tab_export`
 AS
 WITH events AS (
   SELECT
@@ -38,7 +38,7 @@ cleaned AS (
 )
 SELECT
   cleaned.submission_timestamp,
-  e.user_id,
+  ids.user_id,
   device_id,
   ARRAY_TO_STRING(
     [device_id, event_category, event_method, event_object, server_time, flow_id],
@@ -67,7 +67,7 @@ SELECT
         FROM
           UNNEST(
             [
-              STRUCT('fxa_uid' AS key, e.user_id AS value),
+              STRUCT('fxa_uid' AS key, ids.user_id AS value),
               STRUCT('ua_browser', metadata.user_agent.browser),
               STRUCT('ua_version', metadata.user_agent.version)
             ]
@@ -98,12 +98,9 @@ FROM
 -- first 32 characters of the 64-character hash sent to Amplitude by other producers;
 -- we join based on the prefix to recover the full 64-character hash.
 LEFT JOIN
-  `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_amplitude_export_v1` AS e
+  `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_amplitude_user_ids_v1` AS ids
 ON
-  (
-    cleaned.payload.uid = SUBSTR(e.user_id, 1, 32)
-    AND DATE(cleaned.submission_timestamp) = DATE(e.submission_timestamp)
-  )
+  cleaned.payload.uid = SUBSTR(ids.user_id, 1, 32)
 WHERE
   -- To save on Amplitude budget, we take a 10% sample based on user ID.
   MOD(ABS(FARM_FINGERPRINT(payload.uid)), 100) < 10

@@ -49,8 +49,7 @@ SELECT
 FROM
   base
 WHERE
-  cohort_date >= start_load_date
-  AND cohort_date <= end_load_date
+  cohort_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
   AND product_name IN (
     'Fennec Android',
     'Focus Android',

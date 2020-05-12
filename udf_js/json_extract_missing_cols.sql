@@ -86,11 +86,11 @@ WITH
           "other-second": "value",
           "array": [
             {
-              "array-element": "value",
-              "another-array-element": "value"
+              "duplicate-array-element": "value",
+              "unique-array-element": "value"
             },
             {
-              "array-element": "value", 
+              "duplicate-array-element": "value", 
               "nested-array-element": {"nested": "value"}
             }
           ]
@@ -108,11 +108,11 @@ WITH
     --
     SELECT
       assert_array_equals_any_order(no_args, ARRAY['`first`.`second`.`third`', '`first`.`other-second`',
-        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`array-element`', 
-        '`first`.`array`.[...].`another-array-element`']),
+        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`duplicate-array-element`', 
+        '`first`.`array`.[...].`unique-array-element`']),
       assert_array_equals_any_order(indicates_node_arg, ARRAY['`first`.`second`', '`first`.`other-second`', 
-        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`array-element`',
-        '`first`.`array`.[...].`another-array-element`']),
+        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`duplicate-array-element`',
+        '`first`.`array`.[...].`unique-array-element`']),
       assert_array_equals_any_order(is_node_arg, ARRAY['`first`'])
   FROM
     extracted

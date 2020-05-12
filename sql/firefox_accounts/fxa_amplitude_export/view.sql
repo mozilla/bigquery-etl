@@ -4,7 +4,6 @@ AS
 WITH active_users AS (
   SELECT
     TIMESTAMP(submission_date_pacific, "America/Los_Angeles") AS submission_timestamp,
-    TIMESTAMP(submission_date_pacific, "America/Los_Angeles") AS timestamp,
     `moz-fx-data-shared-prod`.udf.active_values_from_days_seen_map(
       os_used_month,
       0,
@@ -20,7 +19,9 @@ WITH active_users AS (
       -27,
       28
     ) AS os_used_month,
-    * EXCEPT (days_seen_bits, os_used_month, submission_date_pacific)
+    * EXCEPT (days_seen_bits, os_used_month, submission_date_pacific) REPLACE(
+      TIMESTAMP(submission_date_pacific, "America/Los_Angeles") AS timestamp
+    )
   FROM
     `moz-fx-data-shared-prod`.firefox_accounts_derived.fxa_amplitude_export_v1
   WHERE

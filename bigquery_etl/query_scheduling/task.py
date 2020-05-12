@@ -3,8 +3,12 @@
 import re
 import logging
 from google.cloud import bigquery
+from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.metadata.parse_metadata import Metadata
+
+
+AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 
 
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
@@ -113,7 +117,14 @@ class Task:
 
         return dependencies
 
-    def to_airflow(self, client, dag_collection):
+    def to_airflow_task(self, client, dag_collection):
         """Convert the task configuration into the Airflow representation."""
-        pass
-        # todo
+        env = Environment(
+            loader=PackageLoader("bigquery_etl", "query_scheduling/templates")
+        )
+        task_template = env.get_template(AIRFLOW_TASK_TEMPLATE)
+
+        args = self.__dict__
+        args["dependencies"] = self.get_dependencies(client, dag_collection)
+
+        return task_template.render(args)

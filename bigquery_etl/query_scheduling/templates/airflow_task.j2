@@ -1,0 +1,16 @@
+{{ task_name }} = bigquery_etl_query(
+    destination_table="{{ table }}",
+    dataset_id="{{ dataset }}",
+    dag=dag,
+)
+
+{% for dependency in dependencies %}
+    wait_for_{{ dependency.task_name }} = ExternalTaskSensor(
+        task_id="wait_for_{{ dependency.task_name }}",
+        external_dag_id="{{ dependency.dag_name }}",
+        external_task_id="{{ dependency.task_name }}",    
+        dag=dag,
+    )
+    
+    {{ task_name }}.set_upstream(wait_for_{{ dependency.task_name }})
+{% endfor %}

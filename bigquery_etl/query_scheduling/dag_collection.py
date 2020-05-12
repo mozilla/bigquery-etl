@@ -73,7 +73,10 @@ class DagCollection:
 
         return self
 
-    def to_airflow_dags(self):
+    def to_airflow_dags(self, output_dir, client):
         """Write DAG representation as Airflow dags to file."""
-        # todo
-        pass
+        for dag in self.dags:
+            output_file = output_dir / dag.name + ".py"
+
+            with open(output_file) as out:
+                out.write(dag.to_airflow_dag(client))

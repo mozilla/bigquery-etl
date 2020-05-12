@@ -1,5 +1,10 @@
 """Represents an Airflow DAG."""
 
+from jinja2 import Environment, PackageLoader
+
+
+AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
+
 
 class DagParseException(Exception):
     """Raised when DAG config is invalid."""
@@ -67,3 +72,17 @@ class Dag:
         default_args = d[name].get("default_args", {})
 
         return cls(name, schedule_interval, default_args)
+
+    def to_airflow_dag(self, client):
+        """Convert the DAG to its Airflow representation and return the python code."""
+        env = Environment(
+            loader=PackageLoader("bigquery_etl", "query_scheduling/templates")
+        )
+        dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
+
+        args = self.__dict__
+        args["rendered_tasks"] = [
+            task.to_airflow_task(client, self) for task in self.tasks
+        ]
+
+        return dag_template.render(args)

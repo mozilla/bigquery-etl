@@ -1,13 +1,13 @@
 CREATE OR REPLACE TABLE
   `moz-fx-data-shared-prod`.firefox_accounts_derived.fxa_amplitude_export_v1
 PARTITION BY
-  (DATE(submission_timestamp))
+  (submission_date_pacific)
 CLUSTER BY
   (user_id)
 AS
 WITH columns AS (
   SELECT
-    CAST(NULL AS TIMESTAMP) AS submission_timestamp,
+    CAST(NULL AS DATE) AS submission_date_pacific,
     CAST(NULL AS STRING) AS user_id,
     CAST(NULL AS STRING) AS insert_id,
     CAST(NULL AS DATETIME) AS timestamp,

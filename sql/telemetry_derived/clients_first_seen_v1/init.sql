@@ -28,7 +28,6 @@ individually. During initial testing with on-demand query slots, each iteration
 completes in ~3 minutes and scans ~3 TB of data.
 
 */
-
 LOOP
   CREATE OR REPLACE TEMPORARY TABLE clients_first_seen_dates
   PARTITION BY
@@ -37,7 +36,7 @@ LOOP
   WITH base AS (
     SELECT
       client_id,
-      ARRAY_AGG(submission_date) AS dates_seen,
+      ARRAY_AGG(submission_date ORDER BY submission_date) AS dates_seen,
     FROM
       telemetry_derived.clients_daily_v6
     WHERE

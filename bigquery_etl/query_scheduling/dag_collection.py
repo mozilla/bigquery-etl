@@ -49,6 +49,15 @@ class DagCollection:
 
         return None
 
+    def task_for_table(self, dataset, table):
+        """Return the task that schedules the query for the provided table."""
+        for dag in self.dags:
+            for task in dag.tasks:
+                if dataset == task.dataset and table == f"{task.table}_{task.version}":
+                    return task
+
+        return None
+
     def with_tasks(self, tasks):
         """Assign tasks to their corresponding DAGs."""
         for dag_name, tasks in groupby(tasks, lambda t: t.dag_name):

@@ -17,19 +17,19 @@ cleaned AS (
     *,
     payload.device_id,
     `moz-fx-data-shared-prod`.udf.get_key(event_map_values, 'serverTime') AS server_time,
+    `moz-fx-data-shared-prod`.udf.normalize_os(payload.os.name) AS os_name,
     CASE
       event_object
     WHEN
       'processcommand'
     THEN
-      'tab_received'
+      'sync - tab_received'
     WHEN
       'sendcommand'
     THEN
-      'tab_sent'
+      'sync - tab_sent'
     END
     AS event_type,
-    payload.uid AS fxa_uid,
     `moz-fx-data-shared-prod`.udf.get_key(event_map_values, 'flowID') AS flow_id,
   FROM
     events
@@ -37,7 +37,8 @@ cleaned AS (
     event_method = 'displayURI'
 )
 SELECT
-  submission_timestamp,
+  cleaned.submission_timestamp,
+  e.user_id,
   device_id,
   ARRAY_TO_STRING(
     [device_id, event_category, event_method, event_object, server_time, flow_id],
@@ -49,13 +50,14 @@ SELECT
     -- have to cast to float, multiply to get milliseconds, then cast to int.
     SAFE_CAST(SAFE_CAST(server_time AS FLOAT64) * 1000 AS INT64),
     -- server_time is sometimes null, so we fall back to submission_timestamp
-    UNIX_MILLIS(submission_timestamp)
+    UNIX_MILLIS(cleaned.submission_timestamp)
   ) AS time,
   event_type,
   metadata.geo.country,
   metadata.geo.city,
-  normalized_os AS os_name,
-  normalized_os_version AS os_version,
+  os_name,
+  payload.os.version AS os_version,
+  payload.os.locale AS `language`,
   FORMAT(
     '{%t}',
     ARRAY_TO_STRING(
@@ -65,7 +67,7 @@ SELECT
         FROM
           UNNEST(
             [
-              STRUCT('fxa_uid' AS key, fxa_uid AS value),
+              STRUCT('fxa_uid' AS key, e.user_id AS value),
               STRUCT('ua_browser', metadata.user_agent.browser),
               STRUCT('ua_version', metadata.user_agent.version)
             ]
@@ -92,6 +94,16 @@ SELECT
   ) AS event_properties,
 FROM
   cleaned
+-- We need this join because sync pings contain a truncated ID that is just the
+-- first 32 characters of the 64-character hash sent to Amplitude by other producers;
+-- we join based on the prefix to recover the full 64-character hash.
+LEFT JOIN
+  `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_amplitude_export_v1` AS e
+ON
+  (
+    cleaned.payload.uid = SUBSTR(e.user_id, 1, 32)
+    AND DATE(cleaned.submission_timestamp) = DATE(e.submission_timestamp)
+  )
 WHERE
-  -- To save on Amplitude budget, we take a 10% sample based on fxa_uid
-  MOD(ABS(FARM_FINGERPRINT(fxa_uid)), 100) < 10
+  -- To save on Amplitude budget, we take a 10% sample based on user ID.
+  MOD(ABS(FARM_FINGERPRINT(payload.uid)), 100) < 10

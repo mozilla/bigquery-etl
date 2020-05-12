@@ -1,6 +1,8 @@
 """Represents a scheduled Airflow task."""
 
 import re
+import logging
+from google.cloud import bigquery
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 
@@ -75,12 +77,43 @@ class Task:
         metadata = Metadata.of_sql_file(query_file)
         return cls(query_file, metadata)
 
-    def get_dependencies(self):
-        """Perfom a dry_run to get upstream dependencies."""
-        # todo
-        pass
+    def _get_referenced_tables(self, client):
+        """
+        Perform a dry_run to get tables the query depends on.
 
-    def to_airflow(self):
+        Queries that reference more than 50 tables will not have a complete list
+        of dependencies. See https://cloud.google.com/bigquery/docs/reference/
+        rest/v2/Job#JobStatistics2.FIELDS.referenced_tables
+        """
+        job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
+
+        with open(self.query_file) as query_stream:
+            query = query_stream.read()
+            query_job = client.query(query, job_config=job_config)
+            referenced_tables = query_job.referenced_tables
+
+            if len(referenced_tables) >= 50:
+                logging.warn(
+                    "Query has 50 or more tables. Queries that reference more than"
+                    "50 tables will not have a complete list of dependencies."
+                )
+
+            table_names = [(t.dataset_id, t.table_id) for t in referenced_tables]
+            return table_names
+
+    def get_dependencies(self, client, dag_collection):
+        """Perfom a dry_run to get upstream dependencies."""
+        dependencies = []
+
+        for table in self._get_referenced_tables(client):
+            upstream_task = dag_collection.task_for_table(table[0], table[1])
+
+            if upstream_task is not None:
+                dependencies.append(upstream_task)
+
+        return dependencies
+
+    def to_airflow(self, client, dag_collection):
         """Convert the task configuration into the Airflow representation."""
-        # todo
         pass
+        # todo

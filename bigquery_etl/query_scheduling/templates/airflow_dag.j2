@@ -5,9 +5,22 @@ from airflow.operators.sensors import ExternalTaskSensor
 from datetime import datetime, timedelta
 from utils.gcp import bigquery_etl_query
 
-default_args = 
-
 with DAG("{{ name }}", default_args={{ default_args }}, schedule_interval="{{ schedule_interval }}") as dag:
-{% for rendered_task in rendered_tasks %}
-    {{ rendered_task | indent(4, False)}}
+{% for task in tasks %}
+    {{ task.task_name }} = bigquery_etl_query(
+        destination_table="{{ task.table }}",
+        dataset_id="{{ task.dataset }}",
+        dag=dag,
+    )
+
+    {% for dependency in task.dependencies %}
+        wait_for_{{ dependency.task_name }} = ExternalTaskSensor(
+            task_id="wait_for_{{ dependency.task_name }}",
+            external_dag_id="{{ dependency.dag_name }}",
+            external_task_id="{{ dependency.task_name }}",    
+            dag=dag,
+        )
+        
+        {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_name }})
+    {% endfor %}
 {% endfor %}

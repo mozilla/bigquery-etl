@@ -73,7 +73,7 @@ class Dag:
 
         return cls(name, schedule_interval, default_args)
 
-    def to_airflow_dag(self, client):
+    def to_airflow_dag(self, client, dag_collection):
         """Convert the DAG to its Airflow representation and return the python code."""
         env = Environment(
             loader=PackageLoader("bigquery_etl", "query_scheduling/templates")
@@ -81,8 +81,8 @@ class Dag:
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
 
         args = self.__dict__
-        args["rendered_tasks"] = [
-            task.to_airflow_task(client, self) for task in self.tasks
-        ]
+
+        for task in args["tasks"]:
+            task.with_dependencies(client, dag_collection)
 
         return dag_template.render(args)

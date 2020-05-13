@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 import pytest
 
@@ -123,3 +124,33 @@ class TestDagCollection:
             DagCollection.from_dict(
                 {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
             ).with_tasks(tasks)
+
+    @pytest.mark.integration
+    def test_to_airflow(self, tmp_path, bigquery_client):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "non_incremental_query_v1"
+            / "query.sql"
+        )
+
+        metadata = Metadata(
+            "test",
+            "test",
+            {},
+            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+        )
+
+        tasks = [Task(query_file, metadata)]
+
+        default_args = {"depends_on_past": False, "start_date": datetime(2019, 7, 20)}
+        dags = DagCollection.from_dict(
+            {"test_dag": {"schedule_interval": "daily", "default_args": default_args}}
+        ).with_tasks(tasks)
+
+        dags.to_airflow_dags(tmp_path, bigquery_client)
+        result = (tmp_path / "test_dag.py").read_text()
+
+        assert result

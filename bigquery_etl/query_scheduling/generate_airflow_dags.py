@@ -13,7 +13,7 @@ from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 DEFAULT_SQL_DIR = "sql/"
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
-DAGS_DIR = "dags/"
+DEFAULT_DAGS_DIR = "dags/"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -33,6 +33,12 @@ parser.add_argument(
     "--project-id",
     default="moz-fx-data-shared-prod",
     help="Dry run queries in this project to determine task dependencies.",
+)
+parser.add_argument(
+    "--output_dir",
+    "--output-dir",
+    default=DEFAULT_DAGS_DIR,
+    help="Generated DAGs are written to this output directory.",
 )
 standard_args.add_log_level(parser)
 
@@ -80,11 +86,7 @@ def main():
     client = bigquery.Client(args.project_id)
 
     dags = get_dags(args.sql_dir, args.dags_config)
-    dags.to_airflow_dags(DAGS_DIR, client)
-
-    # todo: convert to Airflow DAG representation
-    # todo: validate generated Airflow python
-    # todo: write generated code to files
+    dags.to_airflow_dags(args.output_dir, client)
 
 
 if __name__ == "__main__":

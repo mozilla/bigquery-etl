@@ -3,7 +3,6 @@
 import re
 import logging
 from google.cloud import bigquery
-from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 
@@ -105,7 +104,7 @@ class Task:
             table_names = [(t.dataset_id, t.table_id) for t in referenced_tables]
             return table_names
 
-    def get_dependencies(self, client, dag_collection):
+    def with_dependencies(self, client, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""
         dependencies = []
 
@@ -115,16 +114,4 @@ class Task:
             if upstream_task is not None:
                 dependencies.append(upstream_task)
 
-        return dependencies
-
-    def to_airflow_task(self, client, dag_collection):
-        """Convert the task configuration into the Airflow representation."""
-        env = Environment(
-            loader=PackageLoader("bigquery_etl", "query_scheduling/templates")
-        )
-        task_template = env.get_template(AIRFLOW_TASK_TEMPLATE)
-
-        args = self.__dict__
-        args["dependencies"] = self.get_dependencies(client, dag_collection)
-
-        return task_template.render(args)
+        self.dependencies = dependencies

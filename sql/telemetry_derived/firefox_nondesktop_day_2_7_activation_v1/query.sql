@@ -1,5 +1,6 @@
 WITH base AS (
   SELECT
+    submission_date,
     CASE
       app_name
     WHEN
@@ -27,7 +28,6 @@ WITH base AS (
     os,
     normalized_channel,
     country,
-    DATE_SUB(submission_date, INTERVAL 6 DAY) AS cohort_date,
     COUNTIF(udf.pos_of_trailing_set_bit(days_created_profile_bits) = 6) AS new_profiles,
     COUNTIF(
       udf.pos_of_trailing_set_bit(days_created_profile_bits) = 6
@@ -49,7 +49,7 @@ SELECT
 FROM
   base
 WHERE
-  cohort_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
+  submission_date = @submission_date
   AND product IN (
     -- Fenix and Firefox Preview are excluded for now pending validation.
     -- 'Fenix',

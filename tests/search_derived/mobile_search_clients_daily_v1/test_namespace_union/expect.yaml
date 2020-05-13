@@ -12,14 +12,17 @@
   client_id: a
   app_version: 68.2.1
   app_name: Fennec
+  normalized_app_name: Fennec
   channel: release
 - <<: *base
   client_id: a
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   channel: beta
 - <<: *base
   client_id: a
   app_version: Unknown
   app_name: Fenix
+  normalized_app_name: Fenix
   channel: release

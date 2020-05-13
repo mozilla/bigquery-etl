@@ -46,6 +46,11 @@
   },
   {
     "type": "STRING",
+    "name": "normalized_app_name",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
     "name": "app_version",
     "mode": "NULLABLE"
   },

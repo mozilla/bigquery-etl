@@ -14,6 +14,7 @@ metrics_{namespace} AS (
     client_info.client_id,
     normalized_country_code,
     '{app_name}' AS app_name,
+    'Fenix' AS normalized_app_name,
     client_info.app_display_version,
     '{channel}' AS channel,
     normalized_os,

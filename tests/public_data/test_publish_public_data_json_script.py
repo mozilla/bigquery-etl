@@ -38,7 +38,7 @@ class TestPublishJsonScript(object):
                 "--parameter=submission_date:DATE:2020-03-15",
                 "--query_file=" + str(incremental_sql_path),
                 "--target_bucket=" + test_bucket.name,
-                "--project_id=" + project_id,
+                "--public_project_id=" + project_id,
             )
         )
 
@@ -94,7 +94,7 @@ class TestPublishJsonScript(object):
                 "publish_json",
                 "--query_file=" + str(incremental_sql_path),
                 "--target_bucket=" + test_bucket.name,
-                "--project_id=" + project_id,
+                "--public_project_id=" + project_id,
             )
         )
 
@@ -156,7 +156,7 @@ class TestPublishJsonScript(object):
                 "publish_json",
                 "--query_file=" + str(non_incremental_sql_path),
                 "--target_bucket=" + test_bucket.name,
-                "--project_id=" + project_id,
+                "--public_project_id=" + project_id,
             )
         )
 
@@ -217,7 +217,7 @@ class TestPublishJsonScript(object):
                 "--parameter=a:INT64:9",
                 "--query_file=" + str(incremental_non_incremental_export_sql_path),
                 "--target_bucket=" + test_bucket.name,
-                "--project_id=" + project_id,
+                "--public_project_id=" + project_id,
                 "--parameter=submission_date:DATE:2020-03-15",
             )
         )

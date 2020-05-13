@@ -7,7 +7,6 @@
                 "incremental": false,
                 "incremental_export": false,
                 "review_link": "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999",
-                "files_metadata": "https://test.endpoint.mozilla.com/api/v1/tables/test/non_incremental_query/v1/files/metadata.json",
                 "files_uri": "https://test.endpoint.mozilla.com/api/v1/tables/test/non_incremental_query/v1/files",
                 "last_updated": "https://test.endpoint.mozilla.com/api/v1/tables/test/non_incremental_query/v1/last_updated"
             }
@@ -19,7 +18,6 @@
                 "incremental": true,
                 "incremental_export": true,
                 "review_link": "https://bugzilla.mozilla.org/show_bug.cgi?id=123456",
-                "files_metadata": "https://test.endpoint.mozilla.com/api/v1/tables/test/incremental_query/v1/files/metadata.json",
                 "files_uri": "https://test.endpoint.mozilla.com/api/v1/tables/test/incremental_query/v1/files",
                 "last_updated": "https://test.endpoint.mozilla.com/api/v1/tables/test/incremental_query/v1/last_updated"
             }

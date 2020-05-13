@@ -1,7 +1,7 @@
 -- Sampled view on send tab metrics intended for sending to Amplitude;
 -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1628740
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_accounts_derived.sync_send_tab_export`
+  `moz-fx-data-shared-prod.firefox_accounts.sync_send_tab_export`
 AS
 WITH events AS (
   SELECT

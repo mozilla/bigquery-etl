@@ -80,7 +80,6 @@ class GcsTableMetadata:
         if self.metadata.review_bug() is not None:
             metadata_json["review_link"] = REVIEW_LINK + self.metadata.review_bug()
 
-        metadata_json["files_metadata"] = self.files_uri + "/metadata.json"
         metadata_json["files_uri"] = self.files_uri
         metadata_json["last_updated"] = self.last_updated_uri
 
@@ -160,17 +159,14 @@ def publish_all_datasets_metadata(table_metadata, output_file):
 def publish_table_metadata(storage_client, table_metadata, bucket):
     """Write metadata for each public table to GCS."""
     for metadata in table_metadata:
-        output_file = f"gs://{bucket}/{metadata.files_path}/metadata.json"
+        output_file = f"gs://{bucket}/{metadata.files_path}"
 
         logging.info(f"Write metadata to {output_file}")
         with smart_open.open(output_file, "w") as fout:
             fout.write(json.dumps(metadata.files_metadata_to_json(), indent=4))
 
         set_content_type(
-            storage_client,
-            bucket,
-            f"{metadata.files_path}/metadata.json",
-            "application/json",
+            storage_client, bucket, f"{metadata.files_path}", "application/json"
         )
 
 

@@ -279,7 +279,8 @@ parser.add_argument(
     help="GCP bucket JSON data is exported to",
 )
 parser.add_argument(
-    "--project_id",
+    "--public_project_id",
+    "--public-project-id",
     default="mozilla-public-data",
     help="Run query in the target project",
 )
@@ -315,12 +316,12 @@ def main():
         sys.exit(1)
 
     storage_client = storage.Client()
-    client = bigquery.Client(args.project_id)
+    client = bigquery.Client(args.public_project_id)
 
     publisher = JsonPublisher(
         client,
         storage_client,
-        args.project_id,
+        args.public_project_id,
         args.query_file,
         args.api_version,
         args.target_bucket,

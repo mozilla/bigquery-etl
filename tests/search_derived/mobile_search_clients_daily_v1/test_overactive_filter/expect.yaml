@@ -5,6 +5,7 @@
   locale: fr-FR
   app_version: 68.2.1
   app_name: Fennec
+  normalized_app_name: Fennec
   country: FR
   os: Android
   os_version: '23'
@@ -21,6 +22,7 @@
   locale: en-CA
   app_version: 68.2.1
   app_name: Fennec
+  normalized_app_name: Fennec
   country: CA
   os: Android
   os_version: '26'
@@ -34,6 +36,7 @@
   locale: en-CA
   app_version: 68.2.1
   app_name: Fennec
+  normalized_app_name: Fennec
   country: CA
   os: Android
   os_version: '26'
@@ -46,6 +49,7 @@
   search_count: 0
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   country: US
   os: Android
   os_version: '29'
@@ -61,6 +65,7 @@
   search_count: 3
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   country: CA
   os: Android
   os_version: '29'
@@ -73,6 +78,7 @@
   search_count: 0
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   country: CA
   os: Android
   os_version: '29'

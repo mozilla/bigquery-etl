@@ -51,6 +51,9 @@ FROM
 WHERE
   cohort_date = DATE_SUB(@submission_date, INTERVAL 6 DAY)
   AND product IN (
+    -- Fenix and Firefox Preview are excluded for now pending validation.
+    -- 'Fenix',
+    -- 'Firefox Preview',
     'Fennec Android',
     'Focus Android',
     'Fennec iOS',

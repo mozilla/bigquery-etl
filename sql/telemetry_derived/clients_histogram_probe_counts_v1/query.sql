@@ -183,13 +183,12 @@ all_combos AS (
   CROSS JOIN
      static_combos combo),
 
-aggregated_histograms AS
-  (SELECT * REPLACE(
+normalized_histograms AS
+  (SELECT * EXCEPT(sampled) REPLACE(
     -- This returns true if at least 1 row has sampled=true.
     -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
     -- and in this case we treat them as Windows+Release users when fudging numbers
-    MAX(sampled) AS sampled,
-    udf.map_sum(ARRAY_CONCAT_AGG(aggregates)) AS aggregates)
+    udf_normalized_sum(udf.map_sum(ARRAY_CONCAT_AGG(aggregates)), MAX(sampled)) AS aggregates)
   FROM all_combos
   GROUP BY
     sample_id,
@@ -206,25 +205,6 @@ aggregated_histograms AS
     key,
     process,
     agg_type),
-
-normalized_histograms AS (
-  SELECT
-    sample_id,
-    client_id,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    first_bucket,
-    last_bucket,
-    num_buckets,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type,
-    udf_normalized_sum(aggregates, sampled) AS aggregates
-  FROM aggregated_histograms),
 
 bucket_counts AS (
   SELECT

@@ -31,6 +31,9 @@ class DagCollection:
             ...
         }
         """
+        if d is None:
+            return cls([])
+
         dags = [Dag.from_dict({k: v}) for k, v in d.items()]
         return cls(dags)
 

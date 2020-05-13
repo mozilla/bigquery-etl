@@ -7,6 +7,7 @@
   search_count: 0
   app_version: 68.2.1
   app_name: Fennec
+  normalized_app_name: Fennec
   country: FR
   os_version: '23'
   profile_creation_date: 16606
@@ -21,6 +22,7 @@
   locale: en-CA
   app_version: 68.2.1
   app_name: Fennec
+  normalized_app_name: Fennec
   country: CA
   os_version: '26'
   profile_creation_date: 17332
@@ -35,6 +37,7 @@
   locale: en-CA
   app_version: 68.2.1
   app_name: Fennec
+  normalized_app_name: Fennec
   country: CA
   os_version: '26'
   profile_creation_date: 17332
@@ -46,6 +49,7 @@
   locale: en-CA
   app_version: 68.2.1
   app_name: Fennec
+  normalized_app_name: Fennec
   country: CA
   os_version: '26'
   profile_creation_date: 17653
@@ -57,6 +61,7 @@
   locale: en-US
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   country: US
   os_version: '29'
   profile_creation_date: 18201
@@ -73,6 +78,7 @@
   locale: en-CA
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   country: CA
   os_version: '29'
   profile_creation_date: 18201
@@ -87,6 +93,7 @@
   locale: en-CA
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   country: CA
   os_version: '29'
   profile_creation_date: 18201
@@ -101,6 +108,7 @@
   locale: en-CA
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   country: CA
   os_version: '29'
   profile_creation_date: 18201
@@ -112,6 +120,7 @@
   locale: ar-EG
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   country: EG
   os_version: '29'
   profile_creation_date: 18201
@@ -125,6 +134,7 @@
   search_count: 3
   app_version: Nightly 191124 06:01
   app_name: Firefox Preview
+  normalized_app_name: Fenix
   country: US
   os_version: '29'
   profile_creation_date: 18201

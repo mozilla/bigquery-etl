@@ -70,6 +70,7 @@ metrics_org_mozilla_fenix AS (
     client_info.client_id,
     normalized_country_code,
     'Firefox Preview' AS app_name,
+    'Fenix' AS normalized_app_name,
     client_info.app_display_version,
     'beta' AS channel,
     normalized_os,
@@ -100,6 +101,7 @@ metrics_org_mozilla_fenix_nightly AS (
     client_info.client_id,
     normalized_country_code,
     'Firefox Preview' AS app_name,
+    'Fenix' AS normalized_app_name,
     client_info.app_display_version,
     'nightly' AS channel,
     normalized_os,
@@ -130,6 +132,7 @@ metrics_org_mozilla_fennec_aurora AS (
     client_info.client_id,
     normalized_country_code,
     'Fenix' AS app_name,
+    'Fenix' AS normalized_app_name,
     client_info.app_display_version,
     'nightly' AS channel,
     normalized_os,
@@ -160,6 +163,7 @@ metrics_org_mozilla_firefox_beta AS (
     client_info.client_id,
     normalized_country_code,
     'Fenix' AS app_name,
+    'Fenix' AS normalized_app_name,
     client_info.app_display_version,
     'beta' AS channel,
     normalized_os,
@@ -190,6 +194,7 @@ metrics_org_mozilla_firefox AS (
     client_info.client_id,
     normalized_country_code,
     'Fenix' AS app_name,
+    'Fenix' AS normalized_app_name,
     client_info.app_display_version,
     'release' AS channel,
     normalized_os,
@@ -300,6 +305,7 @@ combined_search_clients AS (
     normalized_country_code AS country,
     locale,
     normalized_app_name AS app_name,
+    normalized_app_name,
     metadata.uri.app_version AS app_version,
     normalized_channel AS channel,
     normalized_os AS os,
@@ -321,6 +327,7 @@ combined_search_clients AS (
     normalized_country_code AS country,
     locale,
     app_name,
+    normalized_app_name,
     app_display_version AS app_version,
     channel,
     normalized_os AS os,
@@ -341,6 +348,7 @@ unfiltered_search_clients AS (
     IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(0)]) AS engine,
     IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(1)]) AS source,
     app_name,
+    normalized_app_name,
     SUM(
       IF(ARRAY_LENGTH(normalized_search_key) = 0 OR search_count > 10000, 0, search_count)
     ) AS search_count,
@@ -367,7 +375,8 @@ unfiltered_search_clients AS (
     client_id,
     engine,
     source,
-    app_name
+    app_name,
+    normalized_app_name
 )
 SELECT
   *,

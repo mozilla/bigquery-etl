@@ -5,6 +5,6 @@ description: >
 owners:
   - frank@mozilla.com
 labels:
-  application: FxA
+  application: fxa
   incremental: true
   schedule: daily

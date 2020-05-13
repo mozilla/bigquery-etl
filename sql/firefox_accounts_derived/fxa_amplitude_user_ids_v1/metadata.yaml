@@ -6,6 +6,6 @@ description: >
 owners:
   - jklukas@mozilla.com
 labels:
-  application: FxA
+  application: fxa
   incremental: true
   schedule: daily

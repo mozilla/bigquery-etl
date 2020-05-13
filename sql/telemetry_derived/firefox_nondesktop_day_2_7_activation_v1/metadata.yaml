@@ -1,0 +1,14 @@
+friendly_name: Nondesktop Day 2-7 Activation
+description: >
+  Table to calculate the Day 2-7 activation rate of nondesktop products. Cohorts calculated based on profile_creation
+  date + 6 day window.
+owners:
+  - gkaberere@mozilla.com
+labels:
+  application: firefox nondesktop products
+  incremental: true     # incremental queries add data to existing tables
+  schedule: daily       # scheduled in Airflow to run daily
+  public_json:
+  public_bigquery:
+  review_bug: NA        # Bugzilla bug ID of data review
+  incremental_export:   # non-incremental JSON export writes all data to a single location

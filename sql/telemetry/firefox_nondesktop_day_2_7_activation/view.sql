@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.firefox_nondesktop_day_2_7_activation_v1`
+  `moz-fx-data-shared-prod.telemetry.firefox_nondesktop_day_2_7_activation`
 AS
 SELECT
   *

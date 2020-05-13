@@ -5,10 +5,6 @@ description: >
 owners:
   - gkaberere@mozilla.com
 labels:
-  application: firefox nondesktop products
-  incremental: true     # incremental queries add data to existing tables
-  schedule: daily       # scheduled in Airflow to run daily
-  public_json:
-  public_bigquery:
-  review_bug: NA        # Bugzilla bug ID of data review
-  incremental_export:   # non-incremental JSON export writes all data to a single location
+  application: nondesktop
+  incremental: true
+  schedule: daily

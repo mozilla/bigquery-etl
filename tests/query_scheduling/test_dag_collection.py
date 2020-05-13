@@ -26,6 +26,13 @@ class TestDagCollection:
         core_dag = dags.dag_by_name("bqetl_core")
         assert len(core_dag.tasks) == 0
 
+    def test_dags_from_empty_file(self, tmp_path):
+        dags_file = tmp_path / "dags.yaml"
+        dags_file.write_text("")
+        dags = DagCollection.from_file(dags_file)
+
+        assert len(dags.dags) == 0
+
     def test_dags_from_dict(self):
         dags = DagCollection.from_dict(
             {

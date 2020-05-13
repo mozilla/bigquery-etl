@@ -1,10 +1,14 @@
 """Generates Airflow DAGs for scheduled queries."""
 
+import glob
 import logging
 import os
+from git import Repo
 from argparse import ArgumentParser
 from google.cloud import bigquery
 from ..util import standard_args
+import shutil
+import tempfile
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
@@ -14,6 +18,7 @@ DEFAULT_SQL_DIR = "sql/"
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
 DEFAULT_DAGS_DIR = "dags/"
+TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -41,6 +46,22 @@ parser.add_argument(
     help="Generated DAGs are written to this output directory.",
 )
 standard_args.add_log_level(parser)
+
+
+def setup_telemetry_airflow(local_dags_dir):
+    """
+    Download the telemetry-airflow repository to a temporary directory and
+    copy generated DAGs to dags/ folder.
+    """
+    tmp_dir = tempfile.gettempdir() + "/telemetry-airflow/"
+
+    # the repository can only be cloned into an empty directory
+    shutil.rmtree(tmp_dir)
+
+    Repo.clone_from(TELEMETRY_AIRFLOW_GITHUB, tmp_dir)
+
+    for filename in glob.glob(os.path.join(local_dags_dir, "*.py")):
+        shutil.copy(filename, tmp_dir + "/dags")
 
 
 def get_dags(sql_dir, dags_config):
@@ -87,6 +108,8 @@ def main():
 
     dags = get_dags(args.sql_dir, args.dags_config)
     dags.to_airflow_dags(args.output_dir, client)
+
+    setup_telemetry_airflow(args.output_dir)
 
 
 if __name__ == "__main__":

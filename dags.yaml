@@ -1,0 +1,7 @@
+bqetl_error_aggregates:
+  schedule_interval: hourly      # todo: datetime.timedelta(hours=3)
+  default_args:
+    owner: bewu@mozilla.com
+    email: ['telemetry-alerts@mozilla.com', 'bewu@mozilla.com', 'wlachance@mozilla.com']
+    start_date: '2019-11-01'
+    retries: 1

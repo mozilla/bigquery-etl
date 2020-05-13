@@ -88,7 +88,16 @@ class Task:
         of dependencies. See https://cloud.google.com/bigquery/docs/reference/
         rest/v2/Job#JobStatistics2.FIELDS.referenced_tables
         """
-        job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
+        logging.info(f"Get dependencies for {self.task_name}")
+
+        # the submission_date parameter needs to be set to make the dry run faster
+        job_config = bigquery.QueryJobConfig(
+            dry_run=True,
+            use_query_cache=False,
+            query_parameters=[
+                bigquery.ScalarQueryParameter("submission_date", "DATE", "2019-01-01")
+            ],
+        )
 
         with open(self.query_file) as query_stream:
             query = query_stream.read()

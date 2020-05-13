@@ -108,7 +108,8 @@ class TestTask:
 
         task = Task(query_file, metadata)
         dags = DagCollection.from_dict({})
-        assert task.get_dependencies(bigquery_client, dags) == []
+        task.with_dependencies(bigquery_client, dags)
+        assert task.dependencies == []
 
     @pytest.mark.integration
     def test_task_get_multiple_dependencies(
@@ -153,7 +154,8 @@ class TestTask:
             {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
         ).with_tasks([task, table_task1, table_task2])
 
-        result = task.get_dependencies(bigquery_client, dags)
+        task.with_dependencies(bigquery_client, dags)
+        result = task.dependencies
 
         tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
 
@@ -206,7 +208,8 @@ class TestTask:
             {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
         ).with_tasks([task, table_task1, table_task2])
 
-        result = task.get_dependencies(bigquery_client, dags)
+        task.with_dependencies(bigquery_client, dags)
+        result = task.dependencies
 
         tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
 
@@ -262,7 +265,8 @@ class TestTask:
             {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
         ).with_tasks([task, table_task1, table_task2])
 
-        result = task.get_dependencies(bigquery_client, dags)
+        task.with_dependencies(bigquery_client, dags)
+        result = task.dependencies
         tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
 
         assert f"{temporary_dataset}__table1__v1" in tables

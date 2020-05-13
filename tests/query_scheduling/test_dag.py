@@ -1,4 +1,3 @@
-from datetime import datetime
 from pathlib import Path
 import pytest
 
@@ -65,23 +64,3 @@ class TestDag:
     def test_from_dict_without_scheduling_interval(self):
         with pytest.raises(DagParseException):
             Dag.from_dict({"test_dag": {}})
-
-    @pytest.mark.integration
-    def test_to_airflow(self, bigquery_client):
-        default_args = {"depends_on_past": False, "start_date": datetime(2019, 7, 20)}
-
-        dag = Dag("test_dag", "daily", default_args)
-
-        query_file = (
-            TEST_DIR
-            / "data"
-            / "test_sql"
-            / "test"
-            / "non_incremental_query_v1"
-            / "query.sql"
-        )
-
-        tasks = [Task.of_query(query_file)]
-        dag.add_tasks(tasks)
-
-        assert dag.to_airflow_dag(bigquery_client)

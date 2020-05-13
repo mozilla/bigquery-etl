@@ -10,6 +10,7 @@ with DAG("{{ name }}", default_args={{ default_args }}, schedule_interval="{{ sc
     {{ task.task_name }} = bigquery_etl_query(
         destination_table="{{ task.table }}",
         dataset_id="{{ task.dataset }}",
+        project_id='moz-fx-data-shared-prod',
         dag=dag,
     )
 
@@ -17,7 +18,7 @@ with DAG("{{ name }}", default_args={{ default_args }}, schedule_interval="{{ sc
         wait_for_{{ dependency.task_name }} = ExternalTaskSensor(
             task_id="wait_for_{{ dependency.task_name }}",
             external_dag_id="{{ dependency.dag_name }}",
-            external_task_id="{{ dependency.task_name }}",    
+            external_task_id="{{ dependency.task_name }}",
             dag=dag,
         )
         

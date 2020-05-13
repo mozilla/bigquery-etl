@@ -9,6 +9,7 @@ from google.cloud import bigquery
 from ..util import standard_args
 import shutil
 import tempfile
+from pathlib import Path
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
@@ -17,7 +18,7 @@ from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 DEFAULT_SQL_DIR = "sql/"
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
-DEFAULT_DAGS_DIR = "dags/"
+DEFAULT_DAGS_DIR = "dags"
 TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
 
 parser = ArgumentParser(description=__doc__)
@@ -105,11 +106,12 @@ def main():
     """Generate Airflow DAGs."""
     args = parser.parse_args()
     client = bigquery.Client(args.project_id)
+    dags_output_dir = Path(args.output_dir)
 
     dags = get_dags(args.sql_dir, args.dags_config)
-    dags.to_airflow_dags(args.output_dir, client)
+    dags.to_airflow_dags(dags_output_dir, client)
 
-    setup_telemetry_airflow(args.output_dir)
+    setup_telemetry_airflow(dags_output_dir)
 
 
 if __name__ == "__main__":

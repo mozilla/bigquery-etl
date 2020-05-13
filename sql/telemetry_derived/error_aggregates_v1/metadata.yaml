@@ -1,0 +1,11 @@
+friendly_name: Error aggregates
+description: >-
+  Counts of various error measures aggregated across each unique set of dimensions.
+owners:
+  - bewu@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly      # todo: datetime.timedelta(hours=3)
+scheduling:
+  dag_name: bqetl_error_aggregates
+  depends_on_past: false

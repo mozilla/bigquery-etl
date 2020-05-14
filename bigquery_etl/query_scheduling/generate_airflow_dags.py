@@ -4,6 +4,7 @@ import glob
 import logging
 import os
 from git import Repo
+from airflow.models import DagBag
 from argparse import ArgumentParser
 from google.cloud import bigquery
 from ..util import standard_args
@@ -53,6 +54,8 @@ def setup_telemetry_airflow(local_dags_dir):
     """
     Download the telemetry-airflow repository to a temporary directory and
     copy generated DAGs to dags/ folder.
+
+    Returns the directory all Airflow DAGs are stored in locally.
     """
     tmp_dir = tempfile.gettempdir() + "/telemetry-airflow/"
 
@@ -61,8 +64,27 @@ def setup_telemetry_airflow(local_dags_dir):
 
     Repo.clone_from(TELEMETRY_AIRFLOW_GITHUB, tmp_dir)
 
-    for filename in glob.glob(os.path.join(local_dags_dir, "*.py")):
-        shutil.copy(filename, tmp_dir + "/dags")
+    airflow_dag_dir = tmp_dir + "/dags"
+
+    # remove existing DAGs to speed up testing
+    filelist = glob.glob(os.path.join(airflow_dag_dir, "*.py"))
+    for f in filelist:
+        os.remove(f)
+
+    # for filename in glob.glob(os.path.join(local_dags_dir, "*.py")):
+    #     shutil.copy(filename, airflow_dag_dir)
+
+    return airflow_dag_dir
+
+
+def validate_airflow_dag(dag_dir, dags_collection):
+    """Validate generated Airflow DAGs."""
+    dagbag = DagBag(dag_dir)
+
+    for dag in dags_collection.dags:
+        airflow_dag = dagbag.get_dag(dag_id=dag.name)
+        assert dagbag.import_errors == {}
+        assert airflow_dag is not None
 
 
 def get_dags(sql_dir, dags_config):
@@ -111,7 +133,8 @@ def main():
     dags = get_dags(args.sql_dir, args.dags_config)
     dags.to_airflow_dags(dags_output_dir, client)
 
-    setup_telemetry_airflow(dags_output_dir)
+    airflow_dag_dir = setup_telemetry_airflow(dags_output_dir)
+    validate_airflow_dag(args.output_dir, dags)
 
 
 if __name__ == "__main__":

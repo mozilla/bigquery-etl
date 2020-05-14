@@ -1,0 +1,6518 @@
+---
+- submission_date: '2019-01-01'
+  sample_id: 0
+  client_id: test
+  os: first
+  app_version: first
+  app_build_id: second
+  channel: nightly
+  scalar_aggregates:
+  - metric: a11y_backplate
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: a11y_backplate
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: a11y_indicator_acted_on
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: a11y_indicator_acted_on
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: a11y_sitezoom
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: a11y_sitezoom
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: browser_engagement_active_ticks
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_active_ticks
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_active_ticks
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_active_ticks
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_active_ticks
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_max_concurrent_tab_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_max_concurrent_tab_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_max_concurrent_tab_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_max_concurrent_tab_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_max_concurrent_tab_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_max_concurrent_tab_pinned_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_max_concurrent_tab_pinned_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_max_concurrent_tab_pinned_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_max_concurrent_tab_pinned_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_max_concurrent_tab_pinned_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_max_concurrent_window_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_max_concurrent_window_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_max_concurrent_window_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_max_concurrent_window_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_max_concurrent_window_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_restored_pinned_tabs_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_restored_pinned_tabs_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_restored_pinned_tabs_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_restored_pinned_tabs_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_restored_pinned_tabs_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_tab_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_tab_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_tab_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_tab_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_tab_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_tab_pinned_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_tab_pinned_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_tab_pinned_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_tab_pinned_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_tab_pinned_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_total_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_total_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_total_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_total_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_total_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_unfiltered_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_unfiltered_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_unfiltered_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_unfiltered_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_unfiltered_uri_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_unique_domains_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_unique_domains_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_unique_domains_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_unique_domains_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_unique_domains_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_engagement_window_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_engagement_window_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_engagement_window_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_engagement_window_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_engagement_window_open_event_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_errors_collected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_errors_collected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_errors_collected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_errors_collected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_errors_collected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_errors_collected_with_stack_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_errors_collected_with_stack_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_errors_collected_with_stack_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_errors_collected_with_stack_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_errors_collected_with_stack_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_errors_reported_failure_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_errors_reported_failure_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_errors_reported_failure_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_errors_reported_failure_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_errors_reported_failure_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_errors_reported_success_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_errors_reported_success_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_errors_reported_success_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_errors_reported_success_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_errors_reported_success_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_feeds_feed_subscribed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_feeds_feed_subscribed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_feeds_feed_subscribed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_feeds_feed_subscribed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_feeds_feed_subscribed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_feeds_livebookmark_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_feeds_livebookmark_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_feeds_livebookmark_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_feeds_livebookmark_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_feeds_livebookmark_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_feeds_livebookmark_item_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_feeds_livebookmark_item_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_feeds_livebookmark_item_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_feeds_livebookmark_item_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_feeds_livebookmark_item_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_feeds_livebookmark_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_feeds_livebookmark_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_feeds_livebookmark_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_feeds_livebookmark_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_feeds_livebookmark_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_feeds_preview_loaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_searchinit_engines_cache_corrupted
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: browser_searchinit_engines_cache_corrupted
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: browser_session_restore_browser_startup_page
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_session_restore_browser_startup_page
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_session_restore_browser_startup_page
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_session_restore_browser_startup_page
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_session_restore_browser_startup_page
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_session_restore_browser_tabs_restorebutton
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_session_restore_browser_tabs_restorebutton
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_session_restore_browser_tabs_restorebutton
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_session_restore_browser_tabs_restorebutton
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_session_restore_browser_tabs_restorebutton
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_session_restore_number_of_tabs
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_session_restore_number_of_tabs
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_session_restore_number_of_tabs
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_session_restore_number_of_tabs
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_session_restore_number_of_tabs
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_session_restore_number_of_win
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_session_restore_number_of_win
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_session_restore_number_of_win
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_session_restore_number_of_win
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_session_restore_number_of_win
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_session_restore_tabbar_restore_available
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: browser_session_restore_tabbar_restore_available
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: browser_session_restore_tabbar_restore_clicked
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: browser_session_restore_tabbar_restore_clicked
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: browser_session_restore_worker_restart_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_session_restore_worker_restart_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_session_restore_worker_restart_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_session_restore_worker_restart_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_session_restore_worker_restart_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_startup_action
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_startup_action
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_startup_action
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_startup_action
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_startup_action
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_startup_average_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_startup_average_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_startup_average_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_startup_average_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_startup_average_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_startup_recorded_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_startup_recorded_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_startup_recorded_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_startup_recorded_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_startup_recorded_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_startup_slow_startup_notification_disabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: browser_startup_slow_startup_notification_disabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: browser_startup_slow_startup_notified
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: browser_startup_slow_startup_notified
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: browser_startup_too_new_for_notification
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: browser_startup_too_new_for_notification
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: browser_timings_last_shutdown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_timings_last_shutdown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_timings_last_shutdown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_timings_last_shutdown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_timings_last_shutdown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: avg
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: count
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: max
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: min
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: sum
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_usage_graphite
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: browser_usage_plugin_instantiated
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: contentblocking_category
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: contentblocking_category
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: contentblocking_category
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: contentblocking_category
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: contentblocking_category
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: contentblocking_cryptomining_blocking_enabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: contentblocking_cryptomining_blocking_enabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: contentblocking_enabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: contentblocking_enabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: contentblocking_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: contentblocking_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: contentblocking_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: contentblocking_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: contentblocking_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: contentblocking_fastblock_enabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: contentblocking_fastblock_enabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: contentblocking_fingerprinting_blocking_enabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: contentblocking_fingerprinting_blocking_enabled
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: contentblocking_trackers_blocked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: contentblocking_trackers_blocked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: contentblocking_trackers_blocked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: contentblocking_trackers_blocked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: contentblocking_trackers_blocked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: corroborate_omnijar_corrupted
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: corroborate_omnijar_corrupted
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: corroborate_omnijar_mismatch
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: corroborate_omnijar_mismatch
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: corroborate_system_addons_corrupted
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: corroborate_system_addons_corrupted
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: datasanitization_session_permission_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: datasanitization_session_permission_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: datasanitization_session_permission_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: datasanitization_session_permission_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: datasanitization_session_permission_exceptions
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_aboutdevtools_installed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_aboutdevtools_installed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_aboutdevtools_installed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_aboutdevtools_installed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_aboutdevtools_installed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_aboutdevtools_noinstall_exits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_aboutdevtools_noinstall_exits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_aboutdevtools_noinstall_exits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_aboutdevtools_noinstall_exits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_aboutdevtools_noinstall_exits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_aboutdevtools_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_aboutdevtools_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_aboutdevtools_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_aboutdevtools_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_aboutdevtools_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_accessibility_accessible_context_menu_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_accessibility_accessible_context_menu_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_accessibility_accessible_context_menu_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_accessibility_accessible_context_menu_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_accessibility_accessible_context_menu_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_accessibility_node_inspected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_accessibility_node_inspected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_accessibility_node_inspected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_accessibility_node_inspected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_accessibility_node_inspected_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_accessibility_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_accessibility_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_accessibility_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_accessibility_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_accessibility_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_accessibility_picker_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_accessibility_picker_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_accessibility_picker_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_accessibility_picker_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_accessibility_picker_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_accessibility_service_enabled_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_accessibility_service_enabled_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_accessibility_service_enabled_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_accessibility_service_enabled_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_accessibility_service_enabled_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_application_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_application_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_application_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_application_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_application_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_changesview_contextmenu
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_changesview_contextmenu
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_changesview_contextmenu
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_changesview_contextmenu
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_changesview_contextmenu
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_changesview_contextmenu_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_changesview_contextmenu_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_changesview_contextmenu_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_changesview_contextmenu_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_changesview_contextmenu_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_changesview_contextmenu_copy_declaration
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_changesview_contextmenu_copy_declaration
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_changesview_contextmenu_copy_declaration
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_changesview_contextmenu_copy_declaration
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_changesview_contextmenu_copy_declaration
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_changesview_contextmenu_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_changesview_contextmenu_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_changesview_contextmenu_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_changesview_contextmenu_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_changesview_contextmenu_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_changesview_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_changesview_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_changesview_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_changesview_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_changesview_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_changesview_copy_all_changes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_changesview_copy_all_changes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_changesview_copy_all_changes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_changesview_copy_all_changes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_changesview_copy_all_changes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_changesview_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_changesview_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_changesview_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_changesview_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_changesview_copy_rule
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_changesview_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_changesview_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_changesview_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_changesview_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_changesview_opened_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_copy_full_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_copy_full_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_copy_full_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_copy_full_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_copy_full_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_copy_unique_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_copy_unique_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_copy_unique_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_copy_unique_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_copy_unique_css_selector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_copy_xpath_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_copy_xpath_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_copy_xpath_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_copy_xpath_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_copy_xpath_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_grid_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_grid_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_grid_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_grid_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_grid_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_inspector_element_picker_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_inspector_element_picker_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_inspector_element_picker_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_inspector_element_picker_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_inspector_element_picker_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_inspector_node_selection_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_inspector_node_selection_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_inspector_node_selection_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_inspector_node_selection_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_inspector_node_selection_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_layout_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_layout_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_layout_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_layout_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_layout_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_markup_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_markup_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_markup_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_markup_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_markup_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_markup_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_markup_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_markup_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_markup_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_markup_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_onboarding_is_devtools_user
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: devtools_onboarding_is_devtools_user
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: devtools_responsive_toolbox_opened_first
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_responsive_toolbox_opened_first
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_responsive_toolbox_opened_first
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_responsive_toolbox_opened_first
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_responsive_toolbox_opened_first
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_rules_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_rules_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_rules_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_rules_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_rules_flexboxhighlighter_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_rules_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_rules_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_rules_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_rules_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_rules_gridinspector_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_shadowdom_reveal_link_clicked
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: devtools_shadowdom_reveal_link_clicked
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: devtools_shadowdom_shadow_root_displayed
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: devtools_shadowdom_shadow_root_displayed
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: devtools_shadowdom_shadow_root_expanded
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: devtools_shadowdom_shadow_root_expanded
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: devtools_toolbar_eyedropper_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_toolbar_eyedropper_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_toolbar_eyedropper_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_toolbar_eyedropper_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_toolbar_eyedropper_opened
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_webreplay_load_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_webreplay_load_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_webreplay_load_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_webreplay_load_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_webreplay_load_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_webreplay_new_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_webreplay_new_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_webreplay_new_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_webreplay_new_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_webreplay_new_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_webreplay_reload_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_webreplay_reload_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_webreplay_reload_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_webreplay_reload_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_webreplay_reload_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_webreplay_save_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_webreplay_save_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_webreplay_save_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_webreplay_save_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_webreplay_save_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: devtools_webreplay_stop_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: devtools_webreplay_stop_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: devtools_webreplay_stop_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: devtools_webreplay_stop_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: devtools_webreplay_stop_recording
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: dom_contentprocess_os_priority_change_considered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: dom_contentprocess_os_priority_change_considered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: dom_contentprocess_os_priority_change_considered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: dom_contentprocess_os_priority_change_considered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: dom_contentprocess_os_priority_change_considered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: dom_contentprocess_os_priority_lowered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: dom_contentprocess_os_priority_lowered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: dom_contentprocess_os_priority_lowered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: dom_contentprocess_os_priority_lowered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: dom_contentprocess_os_priority_lowered
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: dom_contentprocess_os_priority_raised
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: dom_contentprocess_os_priority_raised
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: dom_contentprocess_os_priority_raised
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: dom_contentprocess_os_priority_raised
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: dom_contentprocess_os_priority_raised
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: dom_contentprocess_troubled_due_to_memory
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: dom_contentprocess_troubled_due_to_memory
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: dom_contentprocess_troubled_due_to_memory
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: dom_contentprocess_troubled_due_to_memory
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: dom_contentprocess_troubled_due_to_memory
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: dom_parentprocess_private_window_used
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: dom_parentprocess_private_window_used
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: encoding_override_used
+    metric_type: boolean
+    key: ''
+    process: content
+    agg_type: 'false'
+    value: 0
+  - metric: encoding_override_used
+    metric_type: boolean
+    key: ''
+    process: content
+    agg_type: 'true'
+    value: 0
+  - metric: encoding_override_used
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: encoding_override_used
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: formautofill_addresses_fill_type_autofill
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: formautofill_addresses_fill_type_autofill
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: formautofill_addresses_fill_type_autofill
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: formautofill_addresses_fill_type_autofill
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: formautofill_addresses_fill_type_autofill
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: formautofill_addresses_fill_type_autofill_update
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: formautofill_addresses_fill_type_autofill_update
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: formautofill_addresses_fill_type_autofill_update
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: formautofill_addresses_fill_type_autofill_update
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: formautofill_addresses_fill_type_autofill_update
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: formautofill_addresses_fill_type_manual
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: formautofill_addresses_fill_type_manual
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: formautofill_addresses_fill_type_manual
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: formautofill_addresses_fill_type_manual
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: formautofill_addresses_fill_type_manual
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: formautofill_availability
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: formautofill_availability
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: gfx_adapter_ram
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: gfx_adapter_ram
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: gfx_adapter_ram
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: gfx_adapter_ram
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: gfx_adapter_ram
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: gfx_display_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: gfx_display_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: gfx_display_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: gfx_display_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: gfx_display_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: gfx_display_primary_height
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: gfx_display_primary_height
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: gfx_display_primary_height
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: gfx_display_primary_height
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: gfx_display_primary_height
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: gfx_display_primary_width
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: gfx_display_primary_width
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: gfx_display_primary_width
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: gfx_display_primary_width
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: gfx_display_primary_width
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: gfx_hdr_windows_display_colorspace_bitfield
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: gfx_hdr_windows_display_colorspace_bitfield
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: gfx_hdr_windows_display_colorspace_bitfield
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: gfx_hdr_windows_display_colorspace_bitfield
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: gfx_hdr_windows_display_colorspace_bitfield
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: gfx_headless
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: gfx_headless
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: gfx_omtp_paint_wait_ratio
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: gfx_omtp_paint_wait_ratio
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: gfx_omtp_paint_wait_ratio
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: gfx_omtp_paint_wait_ratio
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: gfx_omtp_paint_wait_ratio
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: gfx_os_compositor
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: gfx_os_compositor
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: idb_failure_fileinfo_error
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: idb_failure_fileinfo_error
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: idb_failure_fileinfo_error
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: idb_failure_fileinfo_error
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: idb_failure_fileinfo_error
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: idb_type_persistent_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: idb_type_temporary_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: identity_fxaccounts_missed_commands_fetched
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: identity_fxaccounts_missed_commands_fetched
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: identity_fxaccounts_missed_commands_fetched
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: identity_fxaccounts_missed_commands_fetched
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: identity_fxaccounts_missed_commands_fetched
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: images_webp_content_observed
+    metric_type: boolean
+    key: ''
+    process: content
+    agg_type: 'false'
+    value: 0
+  - metric: images_webp_content_observed
+    metric_type: boolean
+    key: ''
+    process: content
+    agg_type: 'true'
+    value: 0
+  - metric: images_webp_content_observed
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: images_webp_content_observed
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: images_webp_probe_observed
+    metric_type: boolean
+    key: ''
+    process: content
+    agg_type: 'false'
+    value: 0
+  - metric: images_webp_probe_observed
+    metric_type: boolean
+    key: ''
+    process: content
+    agg_type: 'true'
+    value: 0
+  - metric: images_webp_probe_observed
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: images_webp_probe_observed
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: mathml_doc_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: mathml_doc_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: mathml_doc_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: mathml_doc_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: mathml_doc_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: media_allowed_autoplay_no_audio_track_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: media_autoplay_default_blocked
+    metric_type: boolean
+    key: ''
+    process: content
+    agg_type: 'false'
+    value: 0
+  - metric: media_autoplay_default_blocked
+    metric_type: boolean
+    key: ''
+    process: content
+    agg_type: 'true'
+    value: 0
+  - metric: media_autoplay_default_blocked
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: media_autoplay_default_blocked
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: media_autoplay_would_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: media_autoplay_would_not_be_allowed_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: media_blocked_no_metadata
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: media_blocked_no_metadata_endup_no_audio_track
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: media_page_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: media_page_had_media_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: media_page_had_play_revoked_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: mediarecorder_recording_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: memoryreporter_max_ghost_windows
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: memoryreporter_max_ghost_windows
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: memoryreporter_max_ghost_windows
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: memoryreporter_max_ghost_windows
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: memoryreporter_max_ghost_windows
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: navigator_storage_estimate_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: navigator_storage_persist_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: network_tcp_overlapped_io_canceled_before_finished
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: network_tcp_overlapped_io_canceled_before_finished
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: network_tcp_overlapped_io_canceled_before_finished
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: network_tcp_overlapped_io_canceled_before_finished
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: network_tcp_overlapped_io_canceled_before_finished
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: network_tcp_overlapped_result_delayed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: network_tcp_overlapped_result_delayed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: network_tcp_overlapped_result_delayed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: network_tcp_overlapped_result_delayed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: network_tcp_overlapped_result_delayed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: networking_data_transferred_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: networking_data_transferred_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: networking_data_transferred_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: networking_data_transferred_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: networking_data_transferred_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: networking_ftp_opened_channels_files
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: networking_ftp_opened_channels_files
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: networking_ftp_opened_channels_files
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: networking_ftp_opened_channels_files
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: networking_ftp_opened_channels_files
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: networking_ftp_opened_channels_listings
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: networking_ftp_opened_channels_listings
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: networking_ftp_opened_channels_listings
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: networking_ftp_opened_channels_listings
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: networking_ftp_opened_channels_listings
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: networking_http_connections_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: networking_http_connections_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: networking_http_connections_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: networking_http_connections_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: networking_http_connections_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: networking_http_transactions_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: networking_http_transactions_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: networking_http_transactions_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: networking_http_transactions_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: networking_http_transactions_captive_portal
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: os_environment_is_admin_without_uac
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: os_environment_is_admin_without_uac
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: pdf_viewer_fallback_shown
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: pdf_viewer_print
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: pdf_viewer_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: policies_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: policies_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: policies_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: policies_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: policies_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: preferences_created_new_user_prefs_file
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: preferences_created_new_user_prefs_file
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: preferences_prefs_file_was_invalid
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: preferences_prefs_file_was_invalid
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: preferences_prevent_accessibility_services
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: preferences_prevent_accessibility_services
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: preferences_read_user_js
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: preferences_read_user_js
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: pwmgr_potentially_breached_passwords
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: pwmgr_potentially_breached_passwords
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: pwmgr_potentially_breached_passwords
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: pwmgr_potentially_breached_passwords
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: pwmgr_potentially_breached_passwords
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: qm_repositories_initialization_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: qm_repositories_initialization_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: qm_repositories_initialization_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: qm_repositories_initialization_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: qm_repositories_initialization_time
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: screenshots_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: screenshots_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: screenshots_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: screenshots_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: screenshots_copy
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: screenshots_download
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: screenshots_download
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: screenshots_download
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: screenshots_download
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: screenshots_download
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: screenshots_upload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: screenshots_upload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: screenshots_upload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: screenshots_upload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: screenshots_upload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: script_preloader_mainthread_recompile
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: security_intermediate_preloading_num_pending
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: security_intermediate_preloading_num_pending
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: security_intermediate_preloading_num_pending
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: security_intermediate_preloading_num_pending
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: security_intermediate_preloading_num_pending
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: security_intermediate_preloading_num_preloaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: security_intermediate_preloading_num_preloaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: security_intermediate_preloading_num_preloaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: security_intermediate_preloading_num_preloaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: security_intermediate_preloading_num_preloaded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: security_tls_delegated_credentials_txn
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: security_tls_delegated_credentials_txn
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: security_tls_delegated_credentials_txn
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: security_tls_delegated_credentials_txn
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: security_tls_delegated_credentials_txn
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: startup_is_cold
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: startup_is_cold
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: storage_sync_api_usage_extensions_using
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: storage_sync_api_usage_extensions_using
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: storage_sync_api_usage_extensions_using
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: storage_sync_api_usage_extensions_using
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: storage_sync_api_usage_extensions_using
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: sw_alternative_body_used_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: sw_cors_res_for_so_req_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: sw_synthesized_res_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: telemetry_about_telemetry_pageload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: telemetry_about_telemetry_pageload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: telemetry_about_telemetry_pageload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: telemetry_about_telemetry_pageload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: telemetry_about_telemetry_pageload
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: telemetry_data_upload_optin
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: telemetry_data_upload_optin
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: avg
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: count
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: max
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: min
+  - metric: telemetry_discarded_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: sum
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: avg
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: count
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: max
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: min
+  - metric: telemetry_discarded_child_events
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: sum
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: avg
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: count
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: max
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: min
+  - metric: telemetry_discarded_keyed_accumulations
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: sum
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: avg
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: count
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: max
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: min
+  - metric: telemetry_discarded_keyed_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: sum
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: avg
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: count
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: max
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: min
+  - metric: telemetry_discarded_scalar_actions
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: sum
+  - metric: telemetry_os_shutting_down
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: telemetry_os_shutting_down
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: telemetry_pending_operations_highwatermark_reached
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: telemetry_pending_operations_highwatermark_reached
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: telemetry_pending_operations_highwatermark_reached
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: telemetry_pending_operations_highwatermark_reached
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: telemetry_pending_operations_highwatermark_reached
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: telemetry_persistence_timer_hit_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: telemetry_persistence_timer_hit_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: telemetry_persistence_timer_hit_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: telemetry_persistence_timer_hit_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: telemetry_persistence_timer_hit_count
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: telemetry_process_creation_timestamp_inconsistent
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: telemetry_profile_directory_scan_date
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: telemetry_profile_directory_scan_date
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: telemetry_profile_directory_scan_date
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: telemetry_profile_directory_scan_date
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: telemetry_profile_directory_scan_date
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: avg
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: count
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: max
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: min
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: gpu
+    agg_type: sum
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: telemetry_profile_directory_scans
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: timestamps_about_home_topsites_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: timestamps_about_home_topsites_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: timestamps_about_home_topsites_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: timestamps_about_home_topsites_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: timestamps_about_home_topsites_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: timestamps_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: timestamps_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: timestamps_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: timestamps_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: timestamps_first_paint
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: timestamps_first_paint_two
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: timestamps_first_paint_two
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: timestamps_first_paint_two
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: timestamps_first_paint_two
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: timestamps_first_paint_two
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_fix_permissions_attempted
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: update_fix_permissions_attempted
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0
+  - metric: update_session_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+    value: 400
+  - metric: update_session_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+    value: 1
+  - metric: update_session_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+    value: 400
+  - metric: update_session_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+    value: 400
+  - metric: update_session_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+    value: 400
+  - metric: update_session_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_session_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_session_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_session_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_session_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_session_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_downloads_bits_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_downloads_bits_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_downloads_bits_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_downloads_bits_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_downloads_internal_complete_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_downloads_internal_complete_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_downloads_internal_partial_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_downloads_internal_partial_seconds
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_intervals_apply_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_intervals_apply_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_intervals_check
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_intervals_download_bits_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_intervals_download_bits_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_intervals_download_internal_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_intervals_download_internal_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_intervals_stage_complete
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_intervals_stage_partial
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_mar_complete_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: update_startup_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: update_startup_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: update_startup_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: update_startup_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: update_startup_mar_partial_size_bytes
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_hostnameobfuscation_disabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_hostnameobfuscation_disabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_hostnameobfuscation_enabled_failed
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_hostnameobfuscation_enabled_succeeded
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_nicer_stun_retransmits
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_nicer_turn_401s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_nicer_turn_403s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_nicer_turn_438s
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_peerconnection_connected
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_peerconnection_datachannel_created
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_peerconnection_datachannel_max_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_peerconnection_datachannel_max_retx_and_life_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_peerconnection_datachannel_max_retx_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_peerconnection_legacy_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_peerconnection_promise_and_callback_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: avg
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: count
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: max
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: min
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: content
+    agg_type: sum
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: avg
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: count
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: max
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: min
+  - metric: webrtc_peerconnection_promise_stats_used
+    metric_type: scalar
+    key: ''
+    process: parent
+    agg_type: sum
+  - metric: widget_dark_mode
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'false'
+    value: 0
+  - metric: widget_dark_mode
+    metric_type: boolean
+    key: ''
+    process: parent
+    agg_type: 'true'
+    value: 0

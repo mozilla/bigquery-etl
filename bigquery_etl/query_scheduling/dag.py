@@ -1,6 +1,11 @@
 """Represents an Airflow DAG."""
 
+import attr
+import cattr
 from jinja2 import Environment, PackageLoader
+from typing import List
+
+from bigquery_etl.query_scheduling.task import Task
 
 
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
@@ -29,15 +34,24 @@ class InvalidDag(Exception):
     pass
 
 
+@attr.s(auto_attribs=True)
+class DagDefaultArgs:
+    owner: str
+    email: List[str]
+    depends_on_past: bool = False
+    # todo: more attributes and validation
+
+
+@attr.s(auto_attribs=True)
 class Dag:
     """Representation of a DAG configuration."""
 
-    def __init__(self, name, schedule_interval, default_args):
-        """Instantiate new DAG representation."""
-        self.name = name
-        self.schedule_interval = schedule_interval
-        self.default_args = default_args
-        self.tasks = []
+    name: str
+    schedule_interval: str
+    default_args: DagDefaultArgs
+    tasks: List[Task] = []
+
+    # todo validate dag naming
 
     def add_tasks(self, tasks):
         """Add tasks to be scheduled as part of the DAG."""
@@ -57,21 +71,14 @@ class Dag:
         }
         """
         if len(d.keys()) != 1:
-            raise DagParseException(f"Invalid DAG name in {d}.")
+            raise DagParseException(f"Invalid DAG configuration format in {d}")
 
-        name = list(d.keys())[0]
-
-        if "schedule_interval" not in d[name]:
-            raise DagParseException(f"schedule_interval missing in {d}.")
-
-        schedule_interval = d[name]["schedule_interval"]
-
-        # todo: check format - either cron or daily, ....
-        # airflow dag validation might catch that, if not check here
-
-        default_args = d[name].get("default_args", {})
-
-        return cls(name, schedule_interval, default_args)
+        converter = cattr.Converter()
+        try:
+            name = list(d.keys())[0]
+            return converter.structure({"name": name, **d[name]}, cls)
+        except TypeError as e:
+            raise DagParseException(f"Invalid DAG configuration format in {d}: {e}")
 
     def to_airflow_dag(self, client, dag_collection):
         """Convert the DAG to its Airflow representation and return the python code."""

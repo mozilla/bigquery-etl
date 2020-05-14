@@ -5,7 +5,6 @@ import cattr
 import re
 import logging
 from google.cloud import bigquery
-from typing import Dict
 
 
 from bigquery_etl.metadata.parse_metadata import Metadata

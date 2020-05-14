@@ -8,16 +8,22 @@ TEST_DIR = Path(__file__).parent.parent
 
 
 class TestDag:
+    default_args = {
+        "owner": "test@example.org",
+        "email": ["test@example.org"],
+        "depends_on_past": False,
+    }
+
     def test_dag_instantiation(self):
-        dag = Dag("test_dag", "daily", {})
+        dag = Dag("test_dag", "daily", self.default_args)
 
         assert dag.name == "test_dag"
         assert dag.schedule_interval == "daily"
         assert dag.tasks == []
-        assert dag.default_args == {}
+        assert dag.default_args == self.default_args
 
     def test_add_tasks(self):
-        dag = Dag("test_dag", "daily", {})
+        dag = Dag("test_dag", "daily", self.default_args)
 
         query_file = (
             TEST_DIR
@@ -43,7 +49,7 @@ class TestDag:
                     "schedule_interval": "daily",
                     "default_args": {
                         "owner": "test@example.com",
-                        "param": "test_param",
+                        "email": ["test@example.com"],
                     },
                 }
             }
@@ -51,7 +57,9 @@ class TestDag:
 
         assert dag.name == "test_dag"
         assert dag.schedule_interval == "daily"
-        assert dag.default_args == {"owner": "test@example.com", "param": "test_param"}
+        assert dag.default_args.owner == "test@example.com"
+        assert dag.default_args.email == ["test@example.com"]
+        assert dag.default_args.depends_on_past is False
 
     def test_from_empty_dict(self):
         with pytest.raises(DagParseException):

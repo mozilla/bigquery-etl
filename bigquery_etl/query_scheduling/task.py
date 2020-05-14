@@ -1,15 +1,17 @@
 """Represents a scheduled Airflow task."""
 
+import attr
+import cattr
 import re
 import logging
 from google.cloud import bigquery
+from typing import Dict
+
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
-
-
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
 
 
@@ -37,13 +39,21 @@ class UnscheduledTask(Exception):
     pass
 
 
+@attr.s(auto_attribs=True)
 class Task:
     """Representation of a task scheduled in Airflow."""
 
-    def __init__(self, query_file, metadata):
-        """Instantiate a new task."""
-        self.query_file = str(query_file)
+    dag_name: str
+    query_file: str
+    dataset: str = attr.ib(init=False)
+    table: str = attr.ib(init=False)
+    version: str = attr.ib(init=False)
+    task_name: str = attr.ib(init=False)
+    depends_on_past: bool = False
+    # todo: more fields
 
+    def __attrs_post_init__(self):
+        """Extract information from the query file name."""
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
         if query_file_re:
             self.dataset = query_file_re.group(1)
@@ -56,29 +66,33 @@ class Task:
                 "../<dataset>/<table>_<version>/query.sql"
             )
 
-        scheduling = metadata.scheduling
-
-        if scheduling == {}:
-            raise UnscheduledTask()
-
-        if "dag_name" not in scheduling:
-            raise TaskParseException(
-                f"dag_name not defined in task config for {self.query_file}"
-            )
-
-        self.dag_name = scheduling["dag_name"]
-        self.args = scheduling.copy()
-        del self.args["dag_name"]
-
     @classmethod
-    def of_query(cls, query_file):
+    def of_query(cls, query_file, metadata=None):
         """
         Create task that schedules the corresponding query in Airflow.
 
         Raises FileNotFoundError if not metadata file exists for query.
+        If `metadata` is set, then it is used instead of the metadata.yaml
+        file that might exist alongside the query file.
         """
-        metadata = Metadata.of_sql_file(query_file)
-        return cls(query_file, metadata)
+        converter = cattr.Converter()
+        if metadata is None:
+            metadata = Metadata.of_sql_file(query_file)
+
+        if metadata.scheduling == {}:
+            raise UnscheduledTask(
+                f"Metadata for {query_file} does not contain scheduling information."
+            )
+
+        task_config = {"query_file": str(query_file)}
+        task_config.update(metadata.scheduling)
+
+        try:
+            return converter.structure(task_config, cls)
+        except TypeError as e:
+            raise TaskParseException(
+                f"Invalid scheduling information format for {query_file}: {e}"
+            )
 
     def _get_referenced_tables(self, client):
         """

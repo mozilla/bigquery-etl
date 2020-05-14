@@ -9,9 +9,11 @@ pytest-mypy==0.4.2
 pytest-xdist==1.31.0
 pytest-dependency==0.5.1
 pytest==5.4.1
-PyYAML==5.3.1
-smart_open==1.10.0
+PyYAML==5.3
+smart_open==2.0.0
 sqlparse==0.3.1
 mozilla_schema_generator==0.1.4
-apache-airflow==1.10.10
 GitPython==3.1.2
+cattrs==1.0.0
+attrs==19.3.0
+typing==3.7.4.1

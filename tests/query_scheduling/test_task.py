@@ -29,17 +29,18 @@ class TestTask:
         assert task.version == "v1"
         assert task.task_name == "test__incremental_query__v1"
         assert task.dag_name == "bqetl_events"
-        assert task.args == {"depends_on_past": False}
+        assert task.depends_on_past is False
 
     def test_of_non_existing_query(self):
         with pytest.raises(FileNotFoundError):
             Task.of_query("non_existing_query/query.sql")
 
     def test_invalid_path_format(self):
-        with pytest.raises(ValueError):
-            Task.of_query(TEST_DIR / "data" / "query.sql")
+        with pytest.raises(TaskParseException):
+            metadata = Metadata("test", "test", {}, {"foo": "bar"})
+            Task.of_query(TEST_DIR / "data" / "query.sql", metadata)
 
-    def test_unscheduled_task(self):
+    def test_unscheduled_task(self, tmp_path):
         query_file = (
             TEST_DIR
             / "data"
@@ -52,7 +53,7 @@ class TestTask:
         metadata = Metadata("test", "test", {}, {})
 
         with pytest.raises(UnscheduledTask):
-            Task(query_file, metadata)
+            Task.of_query(query_file, metadata)
 
     def test_no_dag_name(self):
         query_file = (
@@ -67,7 +68,7 @@ class TestTask:
         metadata = Metadata("test", "test", {}, {"foo": "bar"})
 
         with pytest.raises(TaskParseException):
-            Task(query_file, metadata)
+            Task.of_query(query_file, metadata)
 
     def test_task_instantiation(self):
         query_file = (
@@ -80,16 +81,12 @@ class TestTask:
         )
 
         metadata = Metadata(
-            "test",
-            "test",
-            {},
-            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
         )
 
-        task = Task(query_file, metadata)
+        task = Task.of_query(query_file, metadata)
         assert task.dag_name == "test_dag"
-        assert task.args["depends_on_past"]
-        assert task.args["param"] == "test_param"
+        assert task.depends_on_past
 
     @pytest.mark.integration
     def test_task_get_dependencies_none(self, tmp_path, bigquery_client):
@@ -100,13 +97,10 @@ class TestTask:
         query_file.write_text("SELECT 123423")
 
         metadata = Metadata(
-            "test",
-            "test",
-            {},
-            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
         )
 
-        task = Task(query_file, metadata)
+        task = Task.of_query(query_file, metadata)
         dags = DagCollection.from_dict({})
         task.with_dependencies(bigquery_client, dags)
         assert task.dependencies == []
@@ -135,18 +129,15 @@ class TestTask:
         bigquery_client.create_table(table)
 
         metadata = Metadata(
-            "test",
-            "test",
-            {},
-            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
         )
 
-        task = Task(query_file, metadata)
+        task = Task.of_query(query_file, metadata)
 
-        table_task1 = Task(
+        table_task1 = Task.of_query(
             tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata
         )
-        table_task2 = Task(
+        table_task2 = Task.of_query(
             tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql", metadata
         )
 
@@ -189,18 +180,15 @@ class TestTask:
         bigquery_client.create_table(view)
 
         metadata = Metadata(
-            "test",
-            "test",
-            {},
-            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
         )
 
-        task = Task(query_file, metadata)
+        task = Task.of_query(query_file, metadata)
 
-        table_task1 = Task(
+        table_task1 = Task.of_query(
             tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata
         )
-        table_task2 = Task(
+        table_task2 = Task.of_query(
             tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql", metadata
         )
 
@@ -246,18 +234,15 @@ class TestTask:
         bigquery_client.create_table(view)
 
         metadata = Metadata(
-            "test",
-            "test",
-            {},
-            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
         )
 
-        task = Task(query_file, metadata)
+        task = Task.of_query(query_file, metadata)
 
-        table_task1 = Task(
+        table_task1 = Task.of_query(
             tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata
         )
-        table_task2 = Task(
+        table_task2 = Task.of_query(
             tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql", metadata
         )
 

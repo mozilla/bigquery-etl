@@ -92,7 +92,7 @@ class TestDagCollection:
             {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
         )
 
-        tasks = [Task(query_file, metadata)]
+        tasks = [Task.of_query(query_file, metadata)]
 
         dags = DagCollection.from_dict(
             {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
@@ -126,7 +126,7 @@ class TestDagCollection:
                 },
             )
 
-            tasks = [Task(query_file, metadata)]
+            tasks = [Task.of_query(query_file, metadata)]
 
             DagCollection.from_dict(
                 {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
@@ -150,7 +150,7 @@ class TestDagCollection:
             {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
         )
 
-        tasks = [Task(query_file, metadata)]
+        tasks = [Task.of_query(query_file, metadata)]
 
         default_args = {"depends_on_past": False, "start_date": datetime(2019, 7, 20)}
         dags = DagCollection.from_dict(

@@ -11,6 +11,12 @@ TEST_DIR = Path(__file__).parent.parent
 
 
 class TestDagCollection:
+    default_args = {
+        "owner": "test@example.org",
+        "email": ["test@example.org"],
+        "depends_on_past": False,
+    }
+
     def test_dags_from_file(self):
         dags_file = TEST_DIR / "data" / "dags.yaml"
         dags = DagCollection.from_file(dags_file)
@@ -36,24 +42,27 @@ class TestDagCollection:
     def test_dags_from_dict(self):
         dags = DagCollection.from_dict(
             {
-                "test_dag1": {
+                "bqetl_test_dag1": {
                     "schedule_interval": "daily",
-                    "default_args": {"owner": "test@example.org"},
+                    "default_args": self.default_args,
                 },
-                "test_dag2": {"schedule_interval": "daily", "default_args": {}},
+                "bqetl_test_dag2": {
+                    "schedule_interval": "daily",
+                    "default_args": self.default_args,
+                },
             }
         )
 
         assert len(dags.dags) == 2
-        assert dags.dag_by_name("test_dag1") is not None
-        assert dags.dag_by_name("test_dag2") is not None
+        assert dags.dag_by_name("bqetl_test_dag1") is not None
+        assert dags.dag_by_name("bqetl_test_dag2") is not None
 
-        dag1 = dags.dag_by_name("test_dag1")
+        dag1 = dags.dag_by_name("bqetl_test_dag1")
         assert len(dag1.tasks) == 0
         assert dag1.schedule_interval == "daily"
         assert dag1.default_args == {"owner": "test@example.org"}
 
-        dag2 = dags.dag_by_name("test_dag2")
+        dag2 = dags.dag_by_name("bqetl_test_dag2")
         assert len(dag2.tasks) == 0
         assert dag2.schedule_interval == "daily"
         assert dag2.default_args == {}
@@ -68,7 +77,12 @@ class TestDagCollection:
 
     def test_dag_by_name(self):
         dags = DagCollection.from_dict(
-            {"test_dag1": {"schedule_interval": "daily", "default_args": {}}}
+            {
+                "bqetl_test_dag1": {
+                    "schedule_interval": "daily",
+                    "default_args": self.default_args,
+                }
+            }
         )
 
         assert dags.dag_by_name("test_dag1") is not None
@@ -86,23 +100,25 @@ class TestDagCollection:
         )
 
         metadata = Metadata(
-            "test",
-            "test",
-            {},
-            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+            "test", "test", {}, {"dag_name": "bqetl_test_dag", "depends_on_past": True}
         )
 
         tasks = [Task.of_query(query_file, metadata)]
 
         dags = DagCollection.from_dict(
-            {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": self.default_args,
+                }
+            }
         ).with_tasks(tasks)
 
         assert len(dags.dags) == 1
 
-        dag = dags.dag_by_name("test_dag")
+        dag = dags.dag_by_name("bqetl_test_dag")
         assert len(dag.tasks) == 1
-        assert dag.tasks[0].dag_name == "test_dag"
+        assert dag.tasks[0].dag_name == "bqetl_test_dag"
 
     def test_dags_with_invalid_tasks(self):
         with pytest.raises(InvalidDag):
@@ -120,7 +136,7 @@ class TestDagCollection:
                 "test",
                 {},
                 {
-                    "dag_name": "non_exisiting_dag",
+                    "dag_name": "bqetl_non_exisiting_dag",
                     "depends_on_past": True,
                     "param": "test_param",
                 },
@@ -129,7 +145,12 @@ class TestDagCollection:
             tasks = [Task.of_query(query_file, metadata)]
 
             DagCollection.from_dict(
-                {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
+                {
+                    "bqetl_test_dag": {
+                        "schedule_interval": "daily",
+                        "default_args": self.default_args,
+                    }
+                }
             ).with_tasks(tasks)
 
     @pytest.mark.integration
@@ -147,7 +168,11 @@ class TestDagCollection:
             "test",
             "test",
             {},
-            {"dag_name": "test_dag", "depends_on_past": True, "param": "test_param"},
+            {
+                "dag_name": "bqetl_test_dag",
+                "depends_on_past": True,
+                "param": "test_param",
+            },
         )
 
         tasks = [Task.of_query(query_file, metadata)]

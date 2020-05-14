@@ -68,12 +68,15 @@ merged AS (
     histograms
 )
 SELECT
-  assert_equals(5, h.bucket_count),
-  assert_equals(60, h.`sum`),
-  assert_equals(1, h.histogram_type),
-  assert_array_equals([0, 100], h.`range`),
-  assert_equals(0, udf.get_key(h.values, 0)),
-  assert_equals(1, udf.get_key(h.values, 20)),
-  assert_equals(1, udf.get_key(h.values, 40)),
+  assert_histogram_equals(
+    STRUCT(
+      5 AS bucket_count,
+      60  AS `sum`,
+      1 AS histogram_type,
+      [0, 100] AS `range`,
+      [STRUCT(0 AS key, 0 AS value), STRUCT(20, 1), STRUCT(40, 1)] AS values
+    ),
+    h
+  )
 FROM
   merged;

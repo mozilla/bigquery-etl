@@ -114,12 +114,12 @@ def histogram_bucket_counts(**kwargs):
 def probe_counts(**kwargs):
     """Variables for probe counts."""
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
-
+    fixed_attributes = ["app_version", "channel"]
+    cubed_attributes = [x for x in attributes if x not in fixed_attributes]
     return dict(
         attributes=attributes,
-        attribute_combinations=compute_datacube_groupings(
-            attributes, ["app_version", "channel"]
-        ),
+        cubed_attributes=cubed_attributes,
+        attribute_combinations=compute_datacube_groupings(cubed_attributes),
         aggregate_attributes="""
             metric,
             metric_type,
@@ -145,12 +145,14 @@ def probe_counts(**kwargs):
 def scalar_percentiles(**kwargs):
     """Variables for scalar percentiles."""
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+    fixed_attributes = ["app_version", "channel"]
+    cubed_attributes = [x for x in attributes if x not in fixed_attributes]
 
     return dict(
+        # TODO: be consistent with naming of attributes (e.g. attributes_list)
         attributes=attributes,
-        attribute_combinations=compute_datacube_groupings(
-            attributes, ["app_version", "channel"]
-        ),
+        cubed_attributes=cubed_attributes,
+        attribute_combinations=compute_datacube_groupings(cubed_attributes),
         aggregate_attributes="""
             metric,
             metric_type,
@@ -163,11 +165,12 @@ def scalar_percentiles(**kwargs):
 def user_counts(**kwargs):
     """Variables for user counts."""
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+    fixed_attributes = ["app_version", "channel"]
+    cubed_attributes = [x for x in attributes if x not in fixed_attributes]
 
     return dict(
         attributes=",".join(attributes),
-        attribute_combinations=compute_datacube_groupings(
-            attributes, ["app_version", "channel"]
-        ),
+        cubed_attributes=cubed_attributes,
+        attribute_combinations=compute_datacube_groupings(cubed_attributes),
         **kwargs,
     )

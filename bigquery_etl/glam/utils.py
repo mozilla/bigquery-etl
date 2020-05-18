@@ -64,7 +64,7 @@ def get_custom_distribution_metadata(product_name) -> List[CustomDistributionMet
 
 
 def compute_datacube_groupings(
-    attributes: List[str], fixed_attributes: List[str]
+    attributes: List[str], fixed_attributes: List[str] = []
 ) -> List[List[Tuple[str, bool]]]:
     """Generate the combinations of attributes to be computed.
 

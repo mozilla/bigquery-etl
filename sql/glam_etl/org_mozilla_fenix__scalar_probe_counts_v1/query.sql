@@ -306,6 +306,40 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
+WITH
+-- Cross join with the attribute combinations to reduce the query complexity
+-- with respect to the number of operations. A table with n rows cross joined
+-- with a combination of m attributes will generate a new table with n*m rows.
+-- The glob ("*") symbol can be understood as selecting all of values belonging
+-- to that group.
+static_combos AS (
+  SELECT
+    combos.*
+  FROM
+    UNNEST(
+      ARRAY<STRUCT<ping_type STRING, os STRING, app_build_id STRING>>[
+        (NULL, NULL, NULL),
+        (NULL, NULL, "*"),
+        (NULL, "*", NULL),
+        ("*", NULL, NULL),
+        (NULL, "*", "*"),
+        ("*", NULL, "*"),
+        ("*", "*", NULL),
+        ("*", "*", "*")
+      ]
+    ) AS combos
+),
+all_combos AS (
+  SELECT
+    table.* EXCEPT (ping_type, os, app_build_id),
+    COALESCE(combo.ping_type, table.ping_type) AS ping_type,
+    COALESCE(combo.os, table.os) AS os,
+    COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
+  FROM
+    glam_etl.org_mozilla_fenix__clients_scalar_bucket_counts_v1 table
+  CROSS JOIN
+    static_combos combo
+)
 SELECT
   ping_type,
   os,
@@ -342,295 +376,6 @@ GROUP BY
   os,
   app_version,
   app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  ping_type,
-  os,
-  app_version,
-  NULL AS app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ("boolean")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  glam_etl.org_mozilla_fenix__clients_scalar_bucket_counts_v1
-GROUP BY
-  ping_type,
-  os,
-  app_version,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  ping_type,
-  NULL AS os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ("boolean")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  glam_etl.org_mozilla_fenix__clients_scalar_bucket_counts_v1
-GROUP BY
-  ping_type,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  NULL AS ping_type,
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ("boolean")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  glam_etl.org_mozilla_fenix__clients_scalar_bucket_counts_v1
-GROUP BY
-  os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  ping_type,
-  NULL AS os,
-  app_version,
-  NULL AS app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ("boolean")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  glam_etl.org_mozilla_fenix__clients_scalar_bucket_counts_v1
-GROUP BY
-  ping_type,
-  app_version,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  NULL AS ping_type,
-  os,
-  app_version,
-  NULL AS app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ("boolean")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  glam_etl.org_mozilla_fenix__clients_scalar_bucket_counts_v1
-GROUP BY
-  os,
-  app_version,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  NULL AS ping_type,
-  NULL AS os,
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ("boolean")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  glam_etl.org_mozilla_fenix__clients_scalar_bucket_counts_v1
-GROUP BY
-  app_version,
-  app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type
-UNION ALL
-SELECT
-  NULL AS ping_type,
-  NULL AS os,
-  app_version,
-  NULL AS app_build_id,
-  channel,
-  metric,
-  metric_type,
-  key,
-  client_agg_type,
-  agg_type,
-  SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ("boolean")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
-FROM
-  glam_etl.org_mozilla_fenix__clients_scalar_bucket_counts_v1
-GROUP BY
-  app_version,
   channel,
   metric,
   metric_type,

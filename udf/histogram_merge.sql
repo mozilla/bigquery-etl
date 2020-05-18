@@ -1,25 +1,8 @@
 /*
 */
 CREATE OR REPLACE FUNCTION udf.histogram_merge(
-  histogram_list ARRAY<
-    STRUCT<
-      bucket_count INT64,
-      `sum` INT64,
-      histogram_type INT64,
-      `range` ARRAY<INT64>,
-      VALUES
-        ARRAY<STRUCT<key INT64, value INT64>>
-    >
-  >
-)
-RETURNS STRUCT<
-  bucket_count INT64,
-  `sum` INT64,
-  histogram_type INT64,
-  `range` ARRAY<INT64>,
-  VALUES
-    ARRAY<STRUCT<key INT64, value INT64>>
-> AS (
+  histogram_list ANY TYPE
+) AS (
   STRUCT(
     udf.mode_last(ARRAY(SELECT bucket_count FROM UNNEST(histogram_list))) AS bucket_count,
     (SELECT SUM(`sum`) FROM UNNEST(histogram_list)) AS `sum`,
@@ -31,13 +14,13 @@ RETURNS STRUCT<
     ARRAY(
       SELECT AS STRUCT
         key,
-        SUM(value)
+        SUM(value) AS value
       FROM
         UNNEST(histogram_list) AS histogram,
-        UNNEST(VALUES)
+        UNNEST(values)
       GROUP BY
         key
-    ) AS VALUES
+    ) AS values
   )
 );
 

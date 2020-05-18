@@ -201,6 +201,41 @@ histograms AS (
         metrics.timing_distribution.network_tls_handshake.values
       ),
       (
+        "perf_awesomebar_bookmark_suggestions",
+        "timing_distribution",
+        metrics.timing_distribution.perf_awesomebar_bookmark_suggestions.values
+      ),
+      (
+        "perf_awesomebar_clipboard_suggestions",
+        "timing_distribution",
+        metrics.timing_distribution.perf_awesomebar_clipboard_suggestions.values
+      ),
+      (
+        "perf_awesomebar_history_suggestions",
+        "timing_distribution",
+        metrics.timing_distribution.perf_awesomebar_history_suggestions.values
+      ),
+      (
+        "perf_awesomebar_search_engine_suggestions",
+        "timing_distribution",
+        metrics.timing_distribution.perf_awesomebar_search_engine_suggestions.values
+      ),
+      (
+        "perf_awesomebar_session_suggestions",
+        "timing_distribution",
+        metrics.timing_distribution.perf_awesomebar_session_suggestions.values
+      ),
+      (
+        "perf_awesomebar_shortcuts_suggestions",
+        "timing_distribution",
+        metrics.timing_distribution.perf_awesomebar_shortcuts_suggestions.values
+      ),
+      (
+        "perf_awesomebar_synced_tabs_suggestions",
+        "timing_distribution",
+        metrics.timing_distribution.perf_awesomebar_synced_tabs_suggestions.values
+      ),
+      (
         "performance_interaction_keypress_present_latency",
         "timing_distribution",
         metrics.timing_distribution.performance_interaction_keypress_present_latency.values

@@ -570,6 +570,21 @@ grouped_labeled_metrics AS (
     channel,
     ARRAY<STRUCT<name STRING, type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
       (
+        'browser_search_ad_clicks',
+        'labeled_counter',
+        metrics.labeled_counter.browser_search_ad_clicks
+      ),
+      (
+        'browser_search_in_content',
+        'labeled_counter',
+        metrics.labeled_counter.browser_search_in_content
+      ),
+      (
+        'browser_search_with_ads',
+        'labeled_counter',
+        metrics.labeled_counter.browser_search_with_ads
+      ),
+      (
         'crash_metrics_crash_count',
         'labeled_counter',
         metrics.labeled_counter.crash_metrics_crash_count

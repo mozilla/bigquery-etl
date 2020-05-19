@@ -5,6 +5,7 @@ from collections import defaultdict
 from dataclasses import dataclass, replace
 from datetime import datetime, timedelta
 from functools import partial
+from itertools import chain
 from multiprocessing.pool import ThreadPool
 from operator import attrgetter
 from textwrap import dedent
@@ -19,7 +20,7 @@ from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.exceptions import BigQueryInsertError
 from ..util import standard_args
-from .config import DELETE_TARGETS
+from .config import DELETE_TARGETS, find_glean_targets
 
 
 NULL_PARTITION_ID = "__NULL__"
@@ -369,9 +370,11 @@ def main():
                     ).strip()
                 ).result()
             )
+    with ThreadPool(args.parallelism) as pool:
+        glean_targets = find_glean_targets(pool, client)
     tasks = [
         task
-        for target, source in DELETE_TARGETS.items()
+        for target, source in chain(DELETE_TARGETS.items(), glean_targets.items())
         if args.table_filter(target.table)
         for task in delete_from_table(
             client=client,

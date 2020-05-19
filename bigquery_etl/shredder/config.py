@@ -44,12 +44,12 @@ class DeleteTarget:
     @property
     def table_id(self):
         """Table Id."""
-        return self.table.split(".", 1)[-1]
+        return self.table.partition(".")[2]
 
     @property
     def dataset_id(self):
         """Dataset Id."""
-        return self.table.split(".", 1)[0]
+        return self.table.partition(".")[0]
 
 
 CLIENT_ID = "client_id"
@@ -61,6 +61,7 @@ SHIELD_ID = "shield_id"
 ECOSYSTEM_CLIENT_ID = "payload.ecosystem_client_id"
 PIONEER_ID = "payload.pioneer_id"
 ID = "id"
+CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -68,6 +69,12 @@ DESKTOP_SRC = DeleteSource(
 IMPRESSION_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_impression_id",
+)
+CFR_SRC = DeleteSource(
+    # inject sql via f"`{sql_table_id(source)}`" to select client_id and impression_id
+    table="telemetry_stable.deletion_request_v4`,"
+    f" UNNEST([{CLIENT_ID}, {IMPRESSION_SRC.field}]) AS `_",
+    field="_",
 )
 FENIX_NIGHTLY_SRC = DeleteSource(
     table="org_mozilla_fenix_nightly_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
@@ -115,6 +122,7 @@ SOURCES = [
 client_id_target = partial(DeleteTarget, field=CLIENT_ID)
 glean_target = partial(DeleteTarget, field=GLEAN_CLIENT_ID)
 impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
+cfr_id_target = partial(DeleteTarget, field=CFR_ID)
 
 DELETE_TARGETS = {
     client_id_target(
@@ -272,6 +280,36 @@ DELETE_TARGETS = {
     glean_target(table="org_mozilla_ios_lockbox_stable.baseline_v1"): IOS_LOCKBOX_SRC,
     glean_target(table="org_mozilla_ios_lockbox_stable.events_v1"): IOS_LOCKBOX_SRC,
     glean_target(table="org_mozilla_ios_lockbox_stable.metrics_v1"): IOS_LOCKBOX_SRC,
+    # activity stream
+    cfr_id_target(table="messaging_system_stable.cfr_v1"): CFR_SRC,
+    cfr_id_target(table="messaging_system_derived.cfr_users_daily_v1"): CFR_SRC,
+    cfr_id_target(table="messaging_system_derived.cfr_users_last_seen_v1"): CFR_SRC,
+    client_id_target(table="activity_stream_stable.events_v1"): DESKTOP_SRC,
+    client_id_target(table="messaging_system_stable.onboarding_v1"): DESKTOP_SRC,
+    client_id_target(table="messaging_system_stable.snippets_v1"): DESKTOP_SRC,
+    client_id_target(table="activity_stream_stable.sessions_v1"): DESKTOP_SRC,
+    client_id_target(
+        table="messaging_system_derived.onboarding_users_daily_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="messaging_system_derived.onboarding_users_last_seen_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="messaging_system_derived.snippets_users_daily_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="messaging_system_derived.snippets_users_last_seen_v1"
+    ): DESKTOP_SRC,
+    impression_id_target(
+        table="activity_stream_stable.impression_stats_v1"
+    ): IMPRESSION_SRC,
+    impression_id_target(table="activity_stream_stable.spoc_fills_v1"): IMPRESSION_SRC,
+    impression_id_target(
+        table="messaging_system_stable.undesired_events_v1"
+    ): IMPRESSION_SRC,
+    impression_id_target(
+        table="messaging_system_stable.personalization_experiment_v1"
+    ): IMPRESSION_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
@@ -287,10 +325,6 @@ SEARCH_IGNORE_TABLES |= {
         glean_target(table="org_mozilla_fennec_aurora_stable.migration_v1"),
         glean_target(table="org_mozilla_firefox_beta_stable.migration_v1"),
         glean_target(table="org_mozilla_firefox_stable.migration_v1"),
-        # activity stream
-        impression_id_target(table="activity_stream_stable.impression_stats_v1"),
-        impression_id_target(table="activity_stream_stable.spoc_fills_v1"),
-        impression_id_target(table="messaging_system_stable.undesired_events_v1"),
         # pocket
         DeleteTarget(table="pocket_stable.fire_tv_events_v1", field=POCKET_ID),
         # fxa
@@ -315,11 +349,7 @@ SEARCH_IGNORE_TABLES |= {
         client_id_target(table="telemetry_stable.mobile_event_v1"),
         client_id_target(table="telemetry_stable.mobile_metrics_v1"),
         # internal
-        client_id_target(table="activity_stream_stable.events_v1"),
         client_id_target(table="eng_workflow_stable.build_v1"),
-        client_id_target(table="messaging_system_stable.cfr_v1"),
-        client_id_target(table="messaging_system_stable.onboarding_v1"),
-        client_id_target(table="messaging_system_stable.snippets_v1"),
         # other
         DeleteTarget(table="telemetry_stable.pioneer_study_v4", field=PIONEER_ID),
         DeleteTarget(

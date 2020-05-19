@@ -167,7 +167,7 @@ def delete_from_partition(
               `{sql_table_id(target)}`
             WHERE
               {target.field} IN (
-                SELECT DISTINCT
+                SELECT
                   {source.field}
                 FROM
                   `{sql_table_id(source)}`

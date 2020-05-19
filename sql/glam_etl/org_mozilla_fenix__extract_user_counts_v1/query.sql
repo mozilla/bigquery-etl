@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__extract_user_counts_v1;
 WITH deduped AS (
   SELECT
     *,

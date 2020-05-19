@@ -47,6 +47,9 @@ def from_template(
     else:
         table_id = f"{args.prefix}__{template_name}"
 
+    # replaces the header, if it exists
+    kwargs["header"] = f"-- {query_type} for {table_id};"
+
     # create the directory for the view
     (dataset_path / table_id).mkdir(exist_ok=True)
     view_path = dataset_path / table_id / f"{query_type}.sql"

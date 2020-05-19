@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__scalar_probe_counts_v1;
 CREATE TEMP FUNCTION udf_get_buckets()
 RETURNS ARRAY<STRING> AS (
   (

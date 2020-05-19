@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__latest_versions_v1;
 WITH extracted AS (
   SELECT
     client_info.client_id,

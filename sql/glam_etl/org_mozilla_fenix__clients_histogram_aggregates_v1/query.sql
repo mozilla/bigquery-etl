@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__clients_histogram_aggregates_v1;
 CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
 RETURNS ARRAY<
   STRUCT<

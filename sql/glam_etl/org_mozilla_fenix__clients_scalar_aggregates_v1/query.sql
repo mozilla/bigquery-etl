@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__clients_scalar_aggregates_v1;
 CREATE TEMP FUNCTION udf_merged_user_data(
   old_aggs ARRAY<
     STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>

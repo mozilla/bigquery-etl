@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__extract_probe_counts_v1;
 -- TODO: Remove deduping when dupes are fixed.
 WITH deduped AS (
   SELECT

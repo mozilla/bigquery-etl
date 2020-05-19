@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__scalar_bucket_counts_v1;
 CREATE TEMP FUNCTION udf_bucket(val FLOAT64)
 RETURNS FLOAT64 AS (
   -- Bucket `value` into a histogram with min_bucket, max_bucket and num_buckets

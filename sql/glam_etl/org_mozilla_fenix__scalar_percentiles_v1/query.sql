@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__scalar_percentiles_v1;
 CREATE TEMP FUNCTION udf_get_values(required ARRAY<FLOAT64>, VALUES ARRAY<FLOAT64>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   (

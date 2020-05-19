@@ -1,3 +1,4 @@
+{{ header }}
 -- View for histogram aggregates that handles time-partitioning
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}__view_clients_daily_histogram_aggregates_v1`

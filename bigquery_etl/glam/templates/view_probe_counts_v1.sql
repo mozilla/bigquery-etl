@@ -1,3 +1,4 @@
+{{ header }}
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
 AS

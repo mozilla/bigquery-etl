@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__histogram_percentiles_v1;
 SELECT
   * EXCEPT (aggregates) REPLACE('percentiles' AS agg_type),
   ARRAY<STRUCT<key STRING, value FLOAT64>>[

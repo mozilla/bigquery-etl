@@ -1,3 +1,4 @@
+{{ header }}
 -- TODO: Remove deduping when dupes are fixed.
 WITH deduped AS (
     SELECT

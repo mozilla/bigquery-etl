@@ -1,3 +1,4 @@
+{{ header }}
 WITH deduped AS (
   SELECT
     *,

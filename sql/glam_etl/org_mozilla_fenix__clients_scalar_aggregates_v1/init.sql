@@ -1,3 +1,4 @@
+-- init for org_mozilla_fenix__clients_scalar_aggregates_v1;
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod.glam_etl.org_mozilla_fenix__clients_scalar_aggregates_v1`(
     client_id STRING,

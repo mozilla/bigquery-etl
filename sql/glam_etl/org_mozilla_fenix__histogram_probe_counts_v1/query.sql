@@ -1,3 +1,4 @@
+-- query for org_mozilla_fenix__histogram_probe_counts_v1;
 CREATE TEMP FUNCTION udf_exponential_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
 RETURNS ARRAY<FLOAT64>
 LANGUAGE js

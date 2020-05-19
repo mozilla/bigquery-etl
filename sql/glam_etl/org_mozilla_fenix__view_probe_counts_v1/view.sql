@@ -1,3 +1,4 @@
+-- view for org_mozilla_fenix__view_probe_counts_v1;
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.glam_etl.org_mozilla_fenix__view_probe_counts_v1`
 AS

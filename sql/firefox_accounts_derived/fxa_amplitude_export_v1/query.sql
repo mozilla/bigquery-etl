@@ -98,7 +98,7 @@ grouped_by_user AS (
     ) AS ua_version,
     `moz-fx-data-shared-prod`.udf.mode_last(
       ARRAY_AGG(
-        JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.ua_version") IGNORE NULLS
+        JSON_EXTRACT_SCALAR(jsonPayload.fields.user_properties, "$.ua_browser") IGNORE NULLS
       )
     ) AS ua_browser,
     MAX(CAST(jsonPayload.fields.app_version AS FLOAT64)) AS app_version,

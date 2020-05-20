@@ -181,6 +181,8 @@ class TestDagCollection:
             "start_date": datetime(2019, 7, 20),
             "owner": "test@example.org",
             "email": [],
+            "start_date": "2020-01-01",
+            "retry_delay": "1h"
         }
         dags = DagCollection.from_dict(
             {

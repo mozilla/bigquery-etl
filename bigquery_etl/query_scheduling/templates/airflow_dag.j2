@@ -5,7 +5,7 @@ from airflow.operators.sensors import ExternalTaskSensor
 from datetime import datetime, timedelta
 from utils.gcp import bigquery_etl_query
 
-with DAG("{{ name }}", default_args={{ default_args }}, schedule_interval="{{ schedule_interval }}") as dag:
+with DAG("{{ name }}", default_args={{ default_args }}, schedule_interval="{{ schedule_interval | format_schedule_interval }}") as dag:
 {% for task in tasks %}
     {{ task.task_name }} = bigquery_etl_query(
         destination_table="{{ task.table }}",

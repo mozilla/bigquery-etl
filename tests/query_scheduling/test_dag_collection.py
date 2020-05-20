@@ -60,12 +60,11 @@ class TestDagCollection:
         dag1 = dags.dag_by_name("bqetl_test_dag1")
         assert len(dag1.tasks) == 0
         assert dag1.schedule_interval == "daily"
-        assert dag1.default_args == {"owner": "test@example.org"}
+        assert dag1.default_args.owner == "test@example.org"
 
         dag2 = dags.dag_by_name("bqetl_test_dag2")
         assert len(dag2.tasks) == 0
         assert dag2.schedule_interval == "daily"
-        assert dag2.default_args == {}
 
     def test_dags_from_empty_dict(self):
         dags = DagCollection.from_dict({})
@@ -85,8 +84,8 @@ class TestDagCollection:
             }
         )
 
-        assert dags.dag_by_name("test_dag1") is not None
-        assert dags.dag_by_name("test_dag1").name == "test_dag1"
+        assert dags.dag_by_name("bqetl_test_dag1") is not None
+        assert dags.dag_by_name("bqetl_test_dag1").name == "bqetl_test_dag1"
         assert dags.dag_by_name("non_existing") is None
 
     def test_dags_with_tasks(self):
@@ -177,12 +176,24 @@ class TestDagCollection:
 
         tasks = [Task.of_query(query_file, metadata)]
 
-        default_args = {"depends_on_past": False, "start_date": datetime(2019, 7, 20)}
+        default_args = {
+            "depends_on_past": False,
+            "start_date": datetime(2019, 7, 20),
+            "owner": "test@example.org",
+            "email": [],
+        }
         dags = DagCollection.from_dict(
-            {"test_dag": {"schedule_interval": "daily", "default_args": default_args}}
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                }
+            }
         ).with_tasks(tasks)
 
         dags.to_airflow_dags(tmp_path, bigquery_client)
-        result = (tmp_path / "test_dag.py").read_text()
+        result = (tmp_path / "bqetl_test_dag.py").read_text()
+
+        print(result)
 
         assert result

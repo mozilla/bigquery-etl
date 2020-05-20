@@ -7,6 +7,7 @@ import re
 from typing import List
 
 from bigquery_etl.query_scheduling.task import Task
+from bigquery_etl.query_scheduling import formatters
 
 
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
@@ -108,6 +109,15 @@ class Dag:
         env = Environment(
             loader=PackageLoader("bigquery_etl", "query_scheduling/templates")
         )
+
+        # load custom formatters into Jinja env
+        for name in dir(formatters):
+            func = getattr(formatters, name)
+            if not callable(func):
+                continue
+
+            env.filters[name] = func
+
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
 
         args = self.__dict__

@@ -4,7 +4,7 @@ import attr
 import cattr
 from jinja2 import Environment, PackageLoader
 import re
-from typing import List
+from typing import List, Optional
 
 from bigquery_etl.query_scheduling.task import Task
 from bigquery_etl.query_scheduling import formatters
@@ -41,7 +41,12 @@ class DagDefaultArgs:
     owner: str
     email: List[str]
     depends_on_past: bool = False
+    start_date: Optional[str] = None
+    retry_delay: str = "30m"
     # todo: more attributes and validation
+
+    def to_dict(self):
+        return self.__dict__
 
 
 @attr.s(auto_attribs=True)

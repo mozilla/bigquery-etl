@@ -2,10 +2,16 @@
 
 from airflow import DAG
 from airflow.operators.sensors import ExternalTaskSensor
-from datetime import datetime, timedelta
+import datetime
 from utils.gcp import bigquery_etl_query
 
-with DAG("{{ name }}", default_args={{ default_args }}, schedule_interval="{{ schedule_interval | format_schedule_interval }}") as dag:
+default_args = {{ 
+    default_args.to_dict() | 
+    format_attr("start_date", "format_date") | 
+    format_attr("retry_delay", "format_timedelta") 
+}}
+
+with DAG("{{ name }}", default_args=default_args, schedule_interval="{{ schedule_interval | format_schedule_interval }}") as dag:
 {% for task in tasks %}
     {{ task.task_name }} = bigquery_etl_query(
         destination_table="{{ task.table }}",

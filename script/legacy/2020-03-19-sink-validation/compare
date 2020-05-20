@@ -85,7 +85,7 @@ def deep_del_matching_keys(*items):
 
 
 def lines(string):
-    return [l + "\n" for l in string.split("\n")]
+    return [line + "\n" for line in string.split("\n")]
 
 
 def human_readable(

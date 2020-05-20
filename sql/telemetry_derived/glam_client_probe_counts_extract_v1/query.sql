@@ -24,7 +24,7 @@ SELECT
     SUBSTR(REPLACE(key, r"\x00", ""), 0, 200) AS key,
     client_agg_type,
     metric_type,
-    total_users,
+    MAX(total_users) AS total_users,
     -- Using MAX instead of COALESCE since this is not in the GROUP BY.
     MAX(IF(agg_type="histogram", udf_js_flatten(aggregates), NULL)) AS histogram,
     MAX(IF(agg_type="percentiles", udf_js_flatten(aggregates), NULL)) AS percentiles
@@ -36,4 +36,4 @@ WHERE
     AND total_users > 1000
 GROUP BY
     channel, app_version, app_build_id, os, metric, metric_type, key,
-    process, client_agg_type, total_users
+    process, client_agg_type

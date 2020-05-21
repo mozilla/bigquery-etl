@@ -1,3 +1,4 @@
+{{ header }}
 WITH deduped AS (
   SELECT
     *,
@@ -6,7 +7,7 @@ WITH deduped AS (
         ORDER BY total_users DESC
     ) AS rank
   FROM
-    `{{ dataset }}.{{ prefix }}_view_user_counts_v1`
+    `{{ dataset }}.{{ prefix }}__view_user_counts_v1`
 )
 
 SELECT

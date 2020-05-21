@@ -1,4 +1,4 @@
-{{ header }}
+-- query for org_mozilla_fenix__histogram_percentiles_v1;
 SELECT
   * EXCEPT (aggregates) REPLACE('percentiles' AS agg_type),
   ARRAY<STRUCT<key STRING, value FLOAT64>>[
@@ -9,4 +9,4 @@ SELECT
     ('95', udf_js.glean_percentile(95, aggregates, metric_type))
   ] AS aggregates
 FROM
-  glam_etl.{{ prefix }}__histogram_probe_counts_v1
+  glam_etl.org_mozilla_fenix__histogram_probe_counts_v1

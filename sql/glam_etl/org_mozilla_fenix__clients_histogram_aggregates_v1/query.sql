@@ -1,4 +1,4 @@
-{{ header }}
+-- query for org_mozilla_fenix__clients_histogram_aggregates_v1;
 CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
 RETURNS ARRAY<
   STRUCT<
@@ -24,16 +24,24 @@ RETURNS ARRAY<
     ),
     aggregated_data AS (
       SELECT AS STRUCT
-        {{ metric_attributes }},
+        latest_version,
+        metric,
+        metric_type,
+        key,
+        agg_type,
         `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
       FROM
         unnested
       GROUP BY
         latest_version,
-        {{ metric_attributes }}
+        latest_version,
+        metric,
+        metric_type,
+        key,
+        agg_type
     )
     SELECT
-      ARRAY_AGG(({{ metric_attributes }}, value))
+      ARRAY_AGG((latest_version, metric, metric_type, key, agg_type, value))
     FROM
       aggregated_data
   )
@@ -43,21 +51,25 @@ WITH extracted_accumulated AS (
   SELECT
     *
   FROM
-    glam_etl.{{ prefix }}__clients_histogram_aggregates_v1
-  {% if parameterize %}
+    glam_etl.org_mozilla_fenix__clients_histogram_aggregates_v1
   WHERE
     sample_id >= @min_sample_id
     AND sample_id <= @max_sample_id
-  {% endif %}
 ),
 filtered_accumulated AS (
   SELECT
-    {{ attributes }},
+    sample_id,
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
     histogram_aggregates
   FROM
     extracted_accumulated
   LEFT JOIN
-    glam_etl.{{ prefix }}__latest_versions_v1
+    glam_etl.org_mozilla_fenix__latest_versions_v1
   USING
     (channel)
   WHERE
@@ -68,28 +80,30 @@ extracted_daily AS (
   SELECT
     * EXCEPT (app_version, histogram_aggregates),
     CAST(app_version AS INT64) AS app_version,
-    unnested_histogram_aggregates as histogram_aggregates
+    unnested_histogram_aggregates AS histogram_aggregates
   FROM
-    glam_etl.{{ prefix }}__view_clients_daily_histogram_aggregates_v1,
+    glam_etl.org_mozilla_fenix__view_clients_daily_histogram_aggregates_v1,
     UNNEST(histogram_aggregates) unnested_histogram_aggregates
   WHERE
-    {% if parameterize %}
-      submission_date = @submission_date
-    {% else %}
-      submission_date = DATE_SUB(current_date, interval 2 day)
-    {% endif %}
+    submission_date = @submission_date
     AND value IS NOT NULL
     AND ARRAY_LENGTH(value) > 0
 ),
 filtered_daily AS (
   SELECT
-    {{ attributes }},
+    sample_id,
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
     latest_version,
     histogram_aggregates.*
   FROM
     extracted_daily
   LEFT JOIN
-    glam_etl.{{ prefix }}__latest_versions_v1
+    glam_etl.org_mozilla_fenix__latest_versions_v1
   USING
     (channel)
   WHERE
@@ -98,19 +112,45 @@ filtered_daily AS (
 -- re-aggregate based on the latest version
 aggregated_daily AS (
   SELECT
-    {{ attributes }},
-    {{ metric_attributes }},
+    sample_id,
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    latest_version,
+    metric,
+    metric_type,
+    key,
+    agg_type,
     `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
   FROM
     filtered_daily
   GROUP BY
-    {{ attributes }},
-    {{ metric_attributes }}
+    sample_id,
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    latest_version,
+    metric,
+    metric_type,
+    key,
+    agg_type
 ),
 -- note: this seems costly, if it's just going to be unnested again
 transformed_daily AS (
   SELECT
-    {{ attributes }},
+    sample_id,
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
     ARRAY_AGG(
       STRUCT<
         latest_version INT64,
@@ -119,17 +159,27 @@ transformed_daily AS (
         key STRING,
         agg_type STRING,
         aggregates ARRAY<STRUCT<key STRING, value INT64>>
-      >({{ metric_attributes }}, value)
+      >(latest_version, metric, metric_type, key, agg_type, value)
     ) AS histogram_aggregates
   FROM
     aggregated_daily
   GROUP BY
-    {{ attributes }}
+    sample_id,
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel
 )
 SELECT
-  {% for attribute in attributes_list %}
-    COALESCE(accumulated.{{ attribute }}, daily.{{ attribute }}) AS {{ attribute }},
-  {% endfor %}
+  COALESCE(accumulated.sample_id, daily.sample_id) AS sample_id,
+  COALESCE(accumulated.client_id, daily.client_id) AS client_id,
+  COALESCE(accumulated.ping_type, daily.ping_type) AS ping_type,
+  COALESCE(accumulated.os, daily.os) AS os,
+  COALESCE(accumulated.app_version, daily.app_version) AS app_version,
+  COALESCE(accumulated.app_build_id, daily.app_build_id) AS app_build_id,
+  COALESCE(accumulated.channel, daily.channel) AS channel,
   udf_merged_user_data(
     accumulated.histogram_aggregates,
     daily.histogram_aggregates
@@ -139,4 +189,4 @@ FROM
 FULL OUTER JOIN
   transformed_daily AS daily
 USING
-  ({{ attributes }})
+  (sample_id, client_id, ping_type, os, app_version, app_build_id, channel)

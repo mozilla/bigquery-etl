@@ -5,11 +5,11 @@ NULL is also valid for `input`.
 
 Examples:
 
-  udf_kv_array_append_to_json_string('{"foo":"bar"}', [STRUCT("baz" AS key, "boo" AS value)])
+  udf.kv_array_append_to_json_string('{"foo":"bar"}', [STRUCT("baz" AS key, "boo" AS value)])
 
   '{"foo":"bar","baz":"boo"}'
 
-  udf_kv_array_append_to_json_string('{}', [STRUCT("baz" AS key, "boo" AS value)])
+  udf.kv_array_append_to_json_string('{}', [STRUCT("baz" AS key, "boo" AS value)])
 
   '{"baz": "boo"}'
 
@@ -17,7 +17,7 @@ Examples:
 CREATE OR REPLACE FUNCTION udf.kv_array_append_to_json_string(input STRING, arr ANY TYPE) AS (
   CONCAT(
     IF(input IS NULL OR input = "{}", "{", CONCAT(RTRIM(input, "}"), ",")),
-    TRIM(udf.kv_array_to_json_string(arr), "{")
+    LTRIM(udf.kv_array_to_json_string(arr), "{")
   )
 );
 

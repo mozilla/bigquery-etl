@@ -5,12 +5,11 @@ RETURNS STRING
 LANGUAGE js
 AS
 '''
-    let data = histogram.map(function(r) {
-        let obj = {};
+    let obj = {};
+    histogram.map(function(r) {
         obj[r.key] = parseFloat(r.value.toFixed(4));
-        return obj;
     });
-    return JSON.stringify(data);
+    return JSON.stringify(obj);
 ''';
 
 SELECT

@@ -5,7 +5,7 @@ owners:
   - bewu@mozilla.com
 labels:
   incremental: true
-  schedule: hourly      # todo: datetime.timedelta(hours=3)
+  schedule: 3h
 scheduling:
   dag_name: bqetl_error_aggregates
   depends_on_past: false

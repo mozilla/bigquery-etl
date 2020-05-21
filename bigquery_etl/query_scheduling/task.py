@@ -44,7 +44,7 @@ class UnscheduledTask(Exception):
 class Task:
     """Representation of a task scheduled in Airflow."""
 
-    dag_name: str
+    dag_name: str = attr.ib()
     query_file: str
     owner: str = attr.ib()
     email: List[str] = attr.ib([])
@@ -71,6 +71,15 @@ class Task:
             raise ValueError(
                 f"Invalid date definition for {attribute}: {value}."
                 "Dates should be specified as YYYY-MM-DD."
+            )
+
+    @dag_name.validator
+    def validate_dag_name(self, attribute, value):
+        """Validate the DAG name."""
+        dag_name_pattern = re.compile("^bqetl_.+$")
+        if not dag_name_pattern.match(value):
+            raise ValueError(
+                f"Invalid DAG name {value} for task. Name must start with 'bqetl_'."
             )
 
     def __attrs_post_init__(self):
@@ -100,7 +109,7 @@ class Task:
         if metadata is None:
             metadata = Metadata.of_sql_file(query_file)
 
-        if metadata.scheduling == {}:
+        if metadata.scheduling == {} or "dag_name" not in metadata.scheduling:
             raise UnscheduledTask(
                 f"Metadata for {query_file} does not contain scheduling information."
             )

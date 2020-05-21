@@ -109,11 +109,13 @@ class Dag:
         Validate the schedule_interval format.
         Schedule intervals can be either in CRON format or one of:
         @once, @hourly, @daily, @weekly, @monthly, @yearly
+        or a timedelta []d[]h[]m
         """
         # https://stackoverflow.com/questions/14203122/create-a-regular-expression-for-cron-statement
         pattern = re.compile(
             r"^(once|hourly|daily|weekly|monthly|yearly|"
-            r"((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7}))$"
+            r"((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})|"
+            r"((\d+h)?(\d+m)?(\d+s)?))$"
         )
         if not pattern.match(value):
             raise ValueError(f"Invalid schedule_interval {value}.")

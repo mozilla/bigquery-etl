@@ -48,22 +48,24 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
-def setup_telemetry_airflow():
-    """
-    Download the telemetry-airflow repository to a temporary directory and
-    copy generated DAGs to dags/ folder.
+# This will be needed later for determining external dependencies
+#
+# def setup_telemetry_airflow():
+#     """
+#     Download the telemetry-airflow repository to a temporary directory and
+#     copy generated DAGs to dags/ folder.
 
-    Returns the directory all Airflow DAGs are stored in locally.
-    """
-    tmp_dir = tempfile.gettempdir() + "/telemetry-airflow/"
+#     Returns the directory all Airflow DAGs are stored in locally.
+#     """
+#     tmp_dir = tempfile.gettempdir() + "/telemetry-airflow/"
 
-    # the repository can only be cloned into an empty directory
-    shutil.rmtree(tmp_dir)
+#     # the repository can only be cloned into an empty directory
+#     shutil.rmtree(tmp_dir)
 
-    Repo.clone_from(TELEMETRY_AIRFLOW_GITHUB, tmp_dir)
+#     Repo.clone_from(TELEMETRY_AIRFLOW_GITHUB, tmp_dir)
 
-    airflow_dag_dir = tmp_dir + "/dags"
-    return airflow_dag_dir
+#     airflow_dag_dir = tmp_dir + "/dags"
+#     return airflow_dag_dir
 
 
 def get_dags(sql_dir, dags_config):
@@ -111,8 +113,6 @@ def main():
 
     dags = get_dags(args.sql_dir, args.dags_config)
     dags.to_airflow_dags(dags_output_dir, client)
-
-    setup_telemetry_airflow()
 
 
 if __name__ == "__main__":

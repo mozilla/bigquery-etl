@@ -143,7 +143,9 @@ def main():
             "probe_counts_v1",
             query_name_prefix="histogram",
             **models.probe_counts(
-                source_table=f"glam_etl.{args.prefix}__clients_histogram_bucket_counts_v1",
+                source_table=(
+                    f"glam_etl.{args.prefix}__clients_histogram_bucket_counts_v1"
+                ),
                 is_scalar=False,
             ),
         ),

@@ -1,4 +1,4 @@
--- query for org_mozilla_fenix__scalar_bucket_counts_v1;
+-- query for org_mozilla_fenix__clients_scalar_bucket_counts_v1;
 CREATE TEMP FUNCTION udf_bucket(val FLOAT64)
 RETURNS FLOAT64 AS (
   -- Bucket `value` into a histogram with min_bucket, max_bucket and num_buckets
@@ -401,6 +401,7 @@ booleans_and_scalars AS (
     bucketed_scalars
 )
 SELECT
+  client_id,
   ping_type,
   os,
   app_version,
@@ -416,6 +417,7 @@ SELECT
 FROM
   booleans_and_scalars
 GROUP BY
+  client_id,
   ping_type,
   os,
   app_version,

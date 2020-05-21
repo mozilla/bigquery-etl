@@ -63,9 +63,16 @@ def clients_histogram_aggregates(**kwargs):
     )
 
 
-def scalar_bucket_counts(**kwargs):
-    """Variables for scalar bucket_counts."""
-    attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+def clients_scalar_bucket_counts(**kwargs):
+    """Variables for clients scalar bucket_counts."""
+    attributes_list = [
+        "client_id",
+        "ping_type",
+        "os",
+        "app_version",
+        "app_build_id",
+        "channel",
+    ]
     return dict(
         attributes=",".join(attributes_list),
         scalar_metric_types="""
@@ -90,9 +97,16 @@ def scalar_bucket_counts(**kwargs):
     )
 
 
-def histogram_bucket_counts(**kwargs):
+def clients_histogram_bucket_counts(**kwargs):
     """Variables for clients histogram bucket counts."""
-    attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+    attributes_list = [
+        "client_id",
+        "ping_type",
+        "os",
+        "app_version",
+        "app_build_id",
+        "channel",
+    ]
     metric_attributes_list = [
         "latest_version",
         "metric",

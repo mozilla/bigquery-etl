@@ -122,17 +122,20 @@ def main():
             **models.clients_histogram_aggregates(parameterize=True),
         ),
         table(
-            "scalar_bucket_counts_v1",
-            **models.scalar_bucket_counts(
+            "clients_scalar_bucket_counts_v1",
+            **models.clients_scalar_bucket_counts(
                 source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
             ),
         ),
-        table("histogram_bucket_counts_v1", **models.histogram_bucket_counts()),
+        table(
+            "clients_histogram_bucket_counts_v1",
+            **models.clients_histogram_bucket_counts(),
+        ),
         table(
             "probe_counts_v1",
             query_name_prefix="scalar",
             **models.probe_counts(
-                source_table=f"glam_etl.{args.prefix}__scalar_bucket_counts_v1",
+                source_table=f"glam_etl.{args.prefix}__clients_scalar_bucket_counts_v1",
                 is_scalar=True,
             ),
         ),
@@ -140,7 +143,7 @@ def main():
             "probe_counts_v1",
             query_name_prefix="histogram",
             **models.probe_counts(
-                source_table=f"glam_etl.{args.prefix}__histogram_bucket_counts_v1",
+                source_table=f"glam_etl.{args.prefix}__clients_histogram_bucket_counts_v1",
                 is_scalar=False,
             ),
         ),

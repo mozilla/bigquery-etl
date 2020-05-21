@@ -1,9 +1,8 @@
 {{ header }}
-{% include "scalar_bucket_counts_v1.udf.sql" %}
+{% include "clients_scalar_bucket_counts_v1.udf.sql" %}
 
 WITH bucketed_booleans AS (
   SELECT
-    client_id,
     {{ attributes }},
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
   FROM
@@ -11,7 +10,6 @@ WITH bucketed_booleans AS (
 ),
 bucketed_scalars AS (
   SELECT
-    client_id,
     {{ attributes }},
     {{ aggregate_attributes }},
     agg_type,

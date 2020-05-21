@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import re
 
 from bigquery_etl import query_scheduling
+from bigquery_etl.query_scheduling.utils import is_timedelta_string
 
 
 def format_schedule_interval(interval):
@@ -15,10 +16,10 @@ def format_schedule_interval(interval):
     presets = ["once", "hourly", "daily", "weekly", "monthly", "yearly"]
 
     if interval in presets:
-        return "@" + interval
+        return "'@" + interval + "'"
 
     # the interval should be a CRON expression
-    return interval
+    return "'" + interval + "'"
 
 
 def format_attr(d, attribute, formatter_name):
@@ -54,4 +55,4 @@ def format_timedelta(timdelta_string):
         if param:
             time_params[name] = int(param)
 
-    return timedelta(**time_params)
+    return repr(timedelta(**time_params))

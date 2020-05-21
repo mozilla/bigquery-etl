@@ -31,6 +31,12 @@ def get_schema(table: str, project: str = "moz-fx-data-shared-prod"):
     return json.loads(stdout)
 
 
+def ping_type_from_table(qualified_table):
+    table_id = qualified_table.split(".")[-1]
+    ping_name = table_id.rsplit("_", 1)[0]
+    return ping_name.replace("_", "-")
+
+
 def get_custom_distribution_metadata(product_name) -> List[CustomDistributionMeta]:
     """Get metadata for reconstructing custom distribution buckets in Glean metrics."""
     # GleanPing.get_repos -> List[Tuple[name: str, app_id: str]]

@@ -12,7 +12,6 @@ Example:
   '{"baz": "boo"}'
 */
 CREATE TEMP FUNCTION udf_kv_array_append_to_json_string(input STRING, arr ANY TYPE) AS (
-  --  CONCAT(RTRIM(input, "}"), IF(input = "{}", "", ","), pair, "}")
   CONCAT(
     RTRIM(input, "}"),
     IF(input = "{}", "", ","),

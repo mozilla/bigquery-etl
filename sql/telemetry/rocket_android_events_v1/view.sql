@@ -221,6 +221,7 @@ SELECT
         WHEN (event_category IN ('action') ) AND (event_method IN ('click') ) AND (event_object IN ('message') ) AND (event_value IN ('travel_search_result') ) THEN 'Rocket -  Click Travel Search Result Message' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('message') ) AND (event_value IN ('setdefault_travel_search') ) THEN 'Rocket -  Show Set-default Travel Search Message' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('click') ) AND (event_object IN ('message') ) AND (event_value IN ('setdefault_travel_search') ) THEN 'Rocket -  Click Set-default Travel Search Message' 
+        WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('toast') ) AND (event_value IN ('exit_warning') ) THEN 'Rocket -  Show Exit Warning Toast' 
 
     END AS event_name,
     event_timestamp AS timestamp,

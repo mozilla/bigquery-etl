@@ -14,22 +14,25 @@ Example:
 */
 CREATE OR REPLACE FUNCTION udf.kv_array_append_to_json_string(input STRING, arr ANY TYPE) AS (
   CONCAT(
-    RTRIM(input, "}"),
-    IF(input = "{}", "", ","),
-    TRIM(`moz-fx-data-shared-prod.udf.kv_array_to_json_string`(arr), "{")
+    IF(input IS NULL OR input = "{}", "{", CONCAT(RTRIM(input, "}"), ",")),
+    TRIM(udf.kv_array_to_json_string(arr), "{")
   )
 );
 
 -- Test
 SELECT
   assert_equals(
-    '{"hello":"1","world":"2","foo":"bar"}',
+    '{"hello":"world","foo":"bar","baz":"boo"}',
     udf.kv_array_append_to_json_string(
-      '{"hello":"1"}',
-      [STRUCT('world' AS key, 2 AS value), STRUCT('foo' AS key, "bar" AS value)]
+      '{"hello":"world"}',
+      [STRUCT("foo" AS key, "bar" AS value), STRUCT("baz" AS key, "boo" AS value)]
     )
   ),
   assert_equals(
     '{"foo":"bar"}',
-    udf.kv_array_append_to_json_string('{}', [STRUCT('foo' AS key, 'bar' AS value)])
+    udf.kv_array_append_to_json_string(NULL, [STRUCT("foo" AS key, "bar" AS value)])
+  ),
+  assert_equals(
+    '{"foo":"bar"}',
+    udf.kv_array_append_to_json_string('{}', [STRUCT("foo" AS key, "bar" AS value)])
   );

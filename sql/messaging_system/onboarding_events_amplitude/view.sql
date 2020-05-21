@@ -19,7 +19,7 @@ SELECT
   ( -- `event_context` should already be a JSON string, the IFNULL guard is only
     -- for the old Firefox versions.
     `moz-fx-data-shared-prod.udf.kv_array_append_to_json_string`(
-      IFNULL(event_context, "{}"),
+      event_context,
       [STRUCT("message_id" AS key, message_id AS value)]
     )
   ) AS event_properties,
@@ -34,3 +34,6 @@ SELECT
   ) AS user_properties
 FROM
   `moz-fx-data-shared-prod.messaging_system_stable.onboarding_v1`
+WHERE
+  -- Fetch events on about:welcome only to minimize the event volume
+  event_context LIKE "%about:welcome%"

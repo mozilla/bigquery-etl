@@ -8,6 +8,7 @@ import re
 
 from bigquery_etl import query_scheduling
 
+
 def format_schedule_interval(interval):
     """Format the input value to a Airflow schedule_interval value."""
 
@@ -19,6 +20,7 @@ def format_schedule_interval(interval):
     # the interval should be a CRON expression
     return interval
 
+
 def format_attr(d, attribute, formatter_name):
     """Apply a formatter to a dict attribute."""
     for name in dir(query_scheduling.formatters):
@@ -26,18 +28,22 @@ def format_attr(d, attribute, formatter_name):
         if callable(formatter_func) and name == formatter_name:
             if attribute in d:
                 d[attribute] = formatter_func(d[attribute])
-    
+
     return d
+
 
 def format_date(date_string):
     """Formats a date string to a datetime object."""
     return datetime.strptime(date_string, "%Y-%m-%d")
 
+
 # based on https://stackoverflow.com/questions/4628122/how-to-construct-a-timedelta-object-from-a-simple-string
 def format_timedelta(timdelta_string):
     """Formats a timedelta object."""
 
-    timedelta_regex = re.compile(r'((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?')
+    timedelta_regex = re.compile(
+        r"((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?"
+    )
     parts = timedelta_regex.match(timdelta_string)
     if not parts:
         return timdelta_string

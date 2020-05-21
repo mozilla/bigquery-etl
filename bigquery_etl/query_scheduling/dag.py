@@ -8,6 +8,11 @@ from typing import List, Optional
 
 from bigquery_etl.query_scheduling.task import Task
 from bigquery_etl.query_scheduling import formatters
+from bigquery_etl.query_scheduling.utils import (
+    is_timedelta_string,
+    is_date_string,
+    is_email,
+)
 
 
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
@@ -38,14 +43,45 @@ class InvalidDag(Exception):
 
 @attr.s(auto_attribs=True)
 class DagDefaultArgs:
-    owner: str
-    email: List[str]
-    depends_on_past: bool = False
-    start_date: Optional[str] = None
-    retry_delay: str = "30m"
-    # todo: more attributes and validation
+    """Representation of Airflow DAG default_args."""
+
+    owner: str = attr.ib()
+    email: List[str] = attr.ib([])
+    depends_on_past: bool = attr.ib(False)
+    start_date: Optional[str] = attr.ib(None)
+    retry_delay: str = attr.ib("30m")
+    email_on_failure: bool = attr.ib(True)
+    email_on_retry: bool = attr.ib(True)
+    retries: int = attr.ib(2)
+
+    @owner.validator
+    def validate_owner(self, attribute, value):
+        if not is_email(value):
+            raise ValueError(f"Invalid email for DAG owner: {value}.")
+
+    @email.validator
+    def validate_email(self, attribute, value):
+        if not all(map(lambda e: is_email(e), value)):
+            raise ValueError(f"Invalid email in DAG email: {value}.")
+
+    @retry_delay.validator
+    def validate_retry_delay(self, attribute, value):
+        if not is_timedelta_string(value):
+            raise ValueError(
+                f"Invalid timedelta definition for {attribute}: {value}."
+                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
+            )
+
+    @start_date.validator
+    def validate_start_date(self, attribute, value):
+        if not is_date_string(value):
+            raise ValueError(
+                f"Invalid date definition for {attribute}: {value}."
+                "Dates should be specified as YYYY-MM-DD."
+            )
 
     def to_dict(self):
+        """Return class as a dict."""
         return self.__dict__
 
 

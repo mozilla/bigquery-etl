@@ -5,9 +5,11 @@ import cattr
 import re
 import logging
 from google.cloud import bigquery
+from typing import List, Optional
 
 
 from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.query_scheduling.utils import is_date_string, is_email
 
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
@@ -44,12 +46,32 @@ class Task:
 
     dag_name: str
     query_file: str
+    owner: str = attr.ib()
+    email: List[str] = attr.ib([])
     dataset: str = attr.ib(init=False)
     table: str = attr.ib(init=False)
     version: str = attr.ib(init=False)
     task_name: str = attr.ib(init=False)
-    depends_on_past: bool = False
-    # todo: more fields
+    depends_on_past: bool = attr.ib(False)
+    start_date: Optional[str] = attr.ib(None)
+
+    @owner.validator
+    def validate_owner(self, attribute, value):
+        if not is_email(value):
+            raise ValueError(f"Invalid email for task owner: {value}.")
+
+    @email.validator
+    def validate_email(self, attribute, value):
+        if not all(map(lambda e: is_email(e), value)):
+            raise ValueError(f"Invalid email in DAG email: {value}.")
+
+    @start_date.validator
+    def validate_start_date(self, attribute, value):
+        if value is not None and not is_date_string(value):
+            raise ValueError(
+                f"Invalid date definition for {attribute}: {value}."
+                "Dates should be specified as YYYY-MM-DD."
+            )
 
     def __attrs_post_init__(self):
         """Extract information from the query file name."""
@@ -85,6 +107,20 @@ class Task:
 
         task_config = {"query_file": str(query_file)}
         task_config.update(metadata.scheduling)
+
+        if len(metadata.owners) <= 0:
+            raise TaskParseException(
+                f"No owner specified in metadata for {query_file}."
+            )
+
+        # Airflow only allows to set one owner, so we just take the first
+        task_config["owner"] = metadata.owners[0]
+
+        # owners get added to the email list
+        if "email" not in task_config:
+            task_config["email"] = []
+
+        task_config["email"] = list(set(task_config["email"] + metadata.owners))
 
         try:
             return converter.structure(task_config, cls)

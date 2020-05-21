@@ -1,7 +1,7 @@
 friendly_name: "Test table for a non-incremental query"
 description: "Test table for a non-incremental query"
 owners:
-  - ascholtz@mozilla.com
+  - test@mozilla.com
 labels:
   schedule: daily
   public_json: true

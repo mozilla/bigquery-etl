@@ -1,6 +1,7 @@
 friendly_name: "Test metadata file"
 owners:
-  - ascholtz@mozilla.com
+  - test1@mozilla.com
+  - test2@example.com
 labels:
   schedule: daily
   public_json: true

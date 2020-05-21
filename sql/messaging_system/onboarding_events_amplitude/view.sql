@@ -1,24 +1,3 @@
-/*
-
-Returns a JSON string which has the `pair` appended to the provided `input` JSON string.
-
-Example:
-  udf_kv_array_append_to_json_string('{"foo":"bar"}', [STRUCT("baz" AS key, "boo" AS value)])
-
-  '{"foo":"bar","baz":"boo"}'
-
-  udf_kv_array_append_to_json_string('{}', [STRUCT("baz" AS key, "boo" AS value)])
-
-  '{"baz": "boo"}'
-*/
-CREATE TEMP FUNCTION udf_kv_array_append_to_json_string(input STRING, arr ANY TYPE) AS (
-  CONCAT(
-    RTRIM(input, "}"),
-    IF(input = "{}", "", ","),
-    TRIM(`moz-fx-data-shared-prod.udf.kv_array_to_json_string`(arr), "{")
-  )
-);
-
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.messaging_system.onboarding_events_amplitude`
 AS
@@ -39,7 +18,7 @@ SELECT
   metadata.geo.city AS city,
   ( -- `event_context` should already be a JSON string, the IFNULL guard is only
     -- for the old Firefox versions.
-    udf_kv_array_append_to_json_string(
+    `moz-fx-data-shared-prod.udf.kv_array_append_to_json_string`(
       IFNULL(event_context, "{}"),
       [STRUCT("message_id" AS key, message_id AS value)]
     )

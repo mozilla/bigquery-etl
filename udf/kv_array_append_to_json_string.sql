@@ -1,8 +1,10 @@
 /*
 
 Returns a JSON string which has the `pair` appended to the provided `input` JSON string.
+NULL is also valid for `input`.
 
-Example:
+Examples:
+
   udf_kv_array_append_to_json_string('{"foo":"bar"}', [STRUCT("baz" AS key, "boo" AS value)])
 
   '{"foo":"bar","baz":"boo"}'
@@ -30,7 +32,7 @@ SELECT
   ),
   assert_equals(
     '{"foo":"bar"}',
-    udf.kv_array_append_to_json_string(NULL, [STRUCT("foo" AS key, "bar" AS value)])
+    udf.kv_array_append_to_json_string(CAST(NULL AS STRING), [STRUCT("foo" AS key, "bar" AS value)])
   ),
   assert_equals(
     '{"foo":"bar"}',

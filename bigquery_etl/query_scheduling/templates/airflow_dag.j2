@@ -24,17 +24,21 @@ with DAG('{{ name }}', default_args=default_args, schedule_interval={{ schedule_
         {%+ if task.start_date -%}
         start_date={{ task.start_date | format_date }},
         {%+ endif -%}
+        {%+ if task.date_partition_parameter == None or task.date_partition_parameter is string -%}
+        date_partition_parameter={{ task.date_partition_parameter | format_optional_string }},
+        {%+ endif -%}
         depends_on_past={{ task.depends_on_past }},
         dag=dag,
     )
-    {% for dependency in task.dependencies -%}
-        wait_for_{{ dependency.task_name }} = ExternalTaskSensor(
-            task_id='wait_for_{{ dependency.task_name }}',
-            external_dag_id='{{ dependency.dag_name }}',
-            external_task_id='{{ dependency.task_name }}',
-            dag=dag,
-        )
+    
+    {% for dependency in task.dependencies %}
+    wait_for_{{ dependency.task_name }} = ExternalTaskSensor(
+        task_id='wait_for_{{ dependency.task_name }}',
+        external_dag_id='{{ dependency.dag_name }}',
+        external_task_id='{{ dependency.task_name }}',
+        dag=dag,
+    )
         
-        {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_name }})
+    {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_name }})
     {% endfor -%}
 {% endfor -%}

@@ -92,7 +92,7 @@ class Dag:
     name: str = attr.ib()
     schedule_interval: str = attr.ib()
     default_args: DagDefaultArgs
-    tasks: List[Task] = []
+    tasks: List[Task] = attr.ib([])
 
     @name.validator
     def validate_dag_name(self, attribute, value):
@@ -122,7 +122,7 @@ class Dag:
 
     def add_tasks(self, tasks):
         """Add tasks to be scheduled as part of the DAG."""
-        self.tasks += tasks
+        self.tasks = self.tasks.copy() + tasks
 
     @classmethod
     def from_dict(cls, d):

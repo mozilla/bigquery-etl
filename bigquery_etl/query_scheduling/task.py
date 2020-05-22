@@ -5,7 +5,7 @@ import cattr
 import re
 import logging
 from google.cloud import bigquery
-from typing import List, Optional
+from typing import List, Optional, Union, NewType
 
 
 from bigquery_etl.metadata.parse_metadata import Metadata
@@ -14,6 +14,7 @@ from bigquery_etl.query_scheduling.utils import is_date_string, is_email
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
+DEFAULT_PROJECT = "moz-fx-data-shared-prod"
 
 
 class TaskParseException(Exception):
@@ -40,6 +41,11 @@ class UnscheduledTask(Exception):
     pass
 
 
+# date_partition_parameter can be overriden with None or a string
+# this type indicates that date_partition_parameter should not be changed
+Ignore = NewType("Ignore", None)
+
+
 @attr.s(auto_attribs=True)
 class Task:
     """Representation of a task scheduled in Airflow."""
@@ -54,6 +60,7 @@ class Task:
     task_name: str = attr.ib(init=False)
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
+    date_partition_parameter: Union[Optional[str], Ignore] = attr.ib(Ignore)
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -152,6 +159,7 @@ class Task:
         job_config = bigquery.QueryJobConfig(
             dry_run=True,
             use_query_cache=False,
+            default_dataset=f"{DEFAULT_PROJECT}.{self.dataset}",
             query_parameters=[
                 bigquery.ScalarQueryParameter("submission_date", "DATE", "2019-01-01")
             ],

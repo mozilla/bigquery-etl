@@ -56,16 +56,19 @@ class DagDefaultArgs:
 
     @owner.validator
     def validate_owner(self, attribute, value):
+        """Check that owner is a valid email address."""
         if not is_email(value):
             raise ValueError(f"Invalid email for DAG owner: {value}.")
 
     @email.validator
     def validate_email(self, attribute, value):
+        """Check that provided email addresses are valid."""
         if not all(map(lambda e: is_email(e), value)):
             raise ValueError(f"Invalid email in DAG email: {value}.")
 
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):
+        """Check that retry_delay is in a valid timedelta format."""
         if not is_timedelta_string(value):
             raise ValueError(
                 f"Invalid timedelta definition for {attribute}: {value}."
@@ -74,7 +77,8 @@ class DagDefaultArgs:
 
     @start_date.validator
     def validate_start_date(self, attribute, value):
-        if not is_date_string(value):
+        """Check that start_date has YYYY-MM-DD format."""
+        if value is not None and not is_date_string(value):
             raise ValueError(
                 f"Invalid date definition for {attribute}: {value}."
                 "Dates should be specified as YYYY-MM-DD."
@@ -107,6 +111,7 @@ class Dag:
     def validate_schedule_interval(self, attribute, value):
         """
         Validate the schedule_interval format.
+
         Schedule intervals can be either in CRON format or one of:
         @once, @hourly, @daily, @weekly, @monthly, @yearly
         or a timedelta []d[]h[]m

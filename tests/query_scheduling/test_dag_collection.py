@@ -1,4 +1,3 @@
-from datetime import datetime
 from pathlib import Path
 import pytest
 
@@ -99,7 +98,11 @@ class TestDagCollection:
         )
 
         metadata = Metadata(
-            "test", "test", {}, {"dag_name": "bqetl_test_dag", "depends_on_past": True}
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {"dag_name": "bqetl_test_dag", "depends_on_past": True},
         )
 
         tasks = [Task.of_query(query_file, metadata)]
@@ -133,6 +136,7 @@ class TestDagCollection:
             metadata = Metadata(
                 "test",
                 "test",
+                ["test@example.org"],
                 {},
                 {
                     "dag_name": "bqetl_non_exisiting_dag",
@@ -179,7 +183,6 @@ class TestDagCollection:
 
         default_args = {
             "depends_on_past": False,
-            "start_date": datetime(2019, 7, 20),
             "owner": "test@example.org",
             "email": ["test@example.org"],
             "start_date": "2020-01-01",
@@ -195,8 +198,9 @@ class TestDagCollection:
         ).with_tasks(tasks)
 
         dags.to_airflow_dags(tmp_path, bigquery_client)
-        result = (tmp_path / "bqetl_test_dag.py").read_text()
+        result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
+        expected = (
+            (TEST_DIR / "data" / "dags" / "valid_test_dag.py").read_text().strip()
+        )
 
-        print(result)
-
-        assert result
+        assert result == expected

@@ -10,6 +10,7 @@ class TestValidateMetadata(object):
         metadata_valid_public = Metadata(
             "Public json data",
             "Public json data",
+            [],
             {"public_json": True, "review_bug": 123456},
             {},
         )
@@ -18,6 +19,7 @@ class TestValidateMetadata(object):
         metadata_valid_public = Metadata(
             "Public BigQuery data",
             "Public BigQuery data",
+            [],
             {"public_bigquery": True, "review_bug": 123456},
             {},
         )
@@ -26,6 +28,7 @@ class TestValidateMetadata(object):
         metadata_invalid_public = Metadata(
             "Public BigQuery data",
             "Public BigQuery data",
+            [],
             {"public_bigquery": True},
             {},
         )

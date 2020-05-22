@@ -1,18 +1,13 @@
-"""
-This file contains custom Jinja filters for formatting
-certain data types in Jinja templates.
-"""
+"""This file contains custom filters for formatting data types in Jinja templates."""
 
 from datetime import datetime, timedelta
 import re
 
 from bigquery_etl import query_scheduling
-from bigquery_etl.query_scheduling.utils import is_timedelta_string
 
 
 def format_schedule_interval(interval):
     """Format the input value to a Airflow schedule_interval value."""
-
     presets = ["once", "hourly", "daily", "weekly", "monthly", "yearly"]
 
     if interval in presets:
@@ -33,14 +28,14 @@ def format_attr(d, attribute, formatter_name):
 
 
 def format_date(date_string):
-    """Formats a date string to a datetime object."""
+    """Format a date string to a datetime object."""
     return datetime.strptime(date_string, "%Y-%m-%d")
 
 
-# based on https://stackoverflow.com/questions/4628122/how-to-construct-a-timedelta-object-from-a-simple-string
+# based on https://stackoverflow.com/questions/4628122/how-to-construct-a
+# -timedelta-object-from-a-simple-string
 def format_timedelta(timdelta_string):
-    """Formats a timedelta object."""
-
+    """Format a timedelta object."""
     timedelta_regex = re.compile(
         r"^((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?$"
     )
@@ -58,7 +53,7 @@ def format_timedelta(timdelta_string):
 
 
 def format_optional_string(val):
-    """Formats a value that is either None or a string."""
+    """Format a value that is either None or a string."""
     if val is None:
         return "None"
     else:

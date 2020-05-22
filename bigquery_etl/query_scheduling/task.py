@@ -64,16 +64,19 @@ class Task:
 
     @owner.validator
     def validate_owner(self, attribute, value):
+        """Check that owner is a valid email address."""
         if not is_email(value):
             raise ValueError(f"Invalid email for task owner: {value}.")
 
     @email.validator
     def validate_email(self, attribute, value):
+        """Check that provided email addresses are valid."""
         if not all(map(lambda e: is_email(e), value)):
             raise ValueError(f"Invalid email in DAG email: {value}.")
 
     @start_date.validator
     def validate_start_date(self, attribute, value):
+        """Check that start_date has YYYY-MM-DD format."""
         if value is not None and not is_date_string(value):
             raise ValueError(
                 f"Invalid date definition for {attribute}: {value}."

@@ -54,12 +54,11 @@ WITH core_flattened_searches AS (
       IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
     ) AS searches
 ),
-{baseline_and_metrics_by_namespace}
-fenix_baseline AS (
-  {fenix_baseline}
+{baseline_and_metrics_by_namespace } fenix_baseline AS (
+  {fenix_baseline }
 ),
 fenix_metrics AS (
-  {fenix_metrics}
+  {fenix_metrics }
 ),
 --  older fenix clients don't send locale in the metrics ping
 fenix_client_locales AS (
@@ -93,11 +92,7 @@ fenix_flattened_searches AS (
   CROSS JOIN
     UNNEST(
       -- Add a null search to pings that have no searches
-      IF(
-        ARRAY_LENGTH(metrics_search_count) = 0,
-        null_search(),
-        metrics_search_count
-      )
+      IF(ARRAY_LENGTH(metrics_search_count) = 0, null_search(), metrics_search_count)
     ) AS searches
 ),
 combined_search_clients AS (

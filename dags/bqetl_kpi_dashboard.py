@@ -7,7 +7,7 @@ from utils.gcp import bigquery_etl_query
 
 default_args = {'owner': 'jklukas@mozilla.com', 'email': ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com'], 'depends_on_past': False, 'start_date': datetime.datetime(2020, 5, 12, 0, 0), 'retry_delay': 'datetime.timedelta(seconds=600)', 'email_on_failure': True, 'email_on_retry': True, 'retries': 1}
 
-with DAG('bqetl_kpi_dashboard', default_args=default_args, schedule_interval=datetime.timedelta(0)) as dag:
+with DAG('bqetl_kpi_dashboard', default_args=default_args, schedule_interval='45 15 * * *') as dag:
 
     telemetry_derived__smoot_usage_new_profiles__v2 = bigquery_etl_query(
         destination_table='smoot_usage_new_profiles',
@@ -18,7 +18,7 @@ with DAG('bqetl_kpi_dashboard', default_args=default_args, schedule_interval=dat
         depends_on_past=False,
         dag=dag,
     )
-    
+
     
     telemetry_derived__smoot_usage_new_profiles_compressed__v2 = bigquery_etl_query(
         destination_table='smoot_usage_new_profiles_compressed',
@@ -29,7 +29,7 @@ with DAG('bqetl_kpi_dashboard', default_args=default_args, schedule_interval=dat
         depends_on_past=False,
         dag=dag,
     )
-    
+
     
     wait_for_telemetry_derived__smoot_usage_new_profiles__v2 = ExternalTaskSensor(
         task_id='wait_for_telemetry_derived__smoot_usage_new_profiles__v2',
@@ -45,10 +45,10 @@ with DAG('bqetl_kpi_dashboard', default_args=default_args, schedule_interval=dat
         dataset_id='telemetry',
         project_id='moz-fx-data-shared-prod',
         owner='jklukas@mozilla.com',
-        email=['jklukas@mozilla.com', 'telemetry-alerts@mozilla.com'],
+        email=['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com'],
         date_partition_parameter=None,
         depends_on_past=False,
         dag=dag,
     )
-    
+
     

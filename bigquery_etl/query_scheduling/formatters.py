@@ -18,8 +18,11 @@ def format_schedule_interval(interval):
     if interval in presets:
         return "'@" + interval + "'"
 
-    # the interval should be a CRON expression
-    return "'" + interval + "'"
+    if re.match(r"^((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})$", interval):
+        # the interval should is a CRON expression
+        return "'" + interval + "'"
+
+    return interval
 
 
 def format_attr(d, attribute, formatter_name):
@@ -43,7 +46,7 @@ def format_timedelta(timdelta_string):
     """Formats a timedelta object."""
 
     timedelta_regex = re.compile(
-        r"((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?"
+        r"^((?P<hours>\d+?)h)?((?P<minutes>\d+?)m)?((?P<seconds>\d+?)s)?$"
     )
     parts = timedelta_regex.match(timdelta_string)
     if not parts:

@@ -129,13 +129,7 @@ SELECT
         `timestamp`
     )
   ).*,
-  udf.json_mode_last(
-    ARRAY_AGG(
-      STRUCT(isp_name, isp_organization)
-      ORDER BY
-        `timestamp`
-    )
-  ).*,
+  udf.json_mode_last(ARRAY_AGG(STRUCT(isp_name, isp_organization) ORDER BY `timestamp`)).*,
   udf.mode_last(
     ARRAY_AGG(gfx_features_advanced_layers_status ORDER BY `timestamp`)
   ) AS gfx_features_advanced_layers_status,

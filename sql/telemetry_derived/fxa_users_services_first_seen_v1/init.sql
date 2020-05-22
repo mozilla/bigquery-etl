@@ -19,18 +19,17 @@ WITH base AS (
   -- [kimmy] the variable first_service_timestamp_last is named so because it is actually the last timestamp recorder in the user's first flow,
   -- NOT the first timestamp in their first flow.
   -- it's used later on to order by service, so i'm keeping it here and just renaming it.
-
-  first_services AS (
-    SELECT
-      ROW_NUMBER() OVER w1_unframed AS _n,
-      user_id,
-      service,
+first_services AS (
+  SELECT
+    ROW_NUMBER() OVER w1_unframed AS _n,
+    user_id,
+    service,
       -- using mode_last with w1_reversed to get mode_first
-      udf.mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp_last,
-      udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
-      LOGICAL_OR(IFNULL(event_type = 'fxa_reg - complete', FALSE)) OVER w1_reversed AS did_register
-    FROM
-      base
+    udf.mode_last(ARRAY_AGG(`timestamp`) OVER w1_reversed) AS first_service_timestamp_last,
+    udf.mode_last(ARRAY_AGG(flow_id) OVER w1_reversed) AS first_service_flow,
+    LOGICAL_OR(IFNULL(event_type = 'fxa_reg - complete', FALSE)) OVER w1_reversed AS did_register
+  FROM
+    base
   WHERE
     (
       (event_type IN ('fxa_login - complete', 'fxa_reg - complete') AND service IS NOT NULL)
@@ -125,20 +124,21 @@ flows AS (
 )
   -- finally take the entrypoint data and join it back on the other information (os, country etc).
   -- also, add a row number that indicates the order in which the user signed up for their services.
-  SELECT
-    s.user_id,
-    s.service,
-    s.first_service_flow,
-    s.did_register,
-    f.first_service_entrypoint AS entrypoint,
-    f.first_service_timestamp,
-    f.first_service_country,
-    f.first_service_os,
-    ROW_NUMBER() OVER (PARTITION BY s.user_id ORDER BY first_service_timestamp_last) AS service_number
-  FROM
-    first_services_g s
-  LEFT JOIN
-    flows f
-  USING
-    (first_service_flow)
-  WHERE first_service_flow IS NOT NULL
+SELECT
+  s.user_id,
+  s.service,
+  s.first_service_flow,
+  s.did_register,
+  f.first_service_entrypoint AS entrypoint,
+  f.first_service_timestamp,
+  f.first_service_country,
+  f.first_service_os,
+  ROW_NUMBER() OVER (PARTITION BY s.user_id ORDER BY first_service_timestamp_last) AS service_number
+FROM
+  first_services_g s
+LEFT JOIN
+  flows f
+USING
+  (first_service_flow)
+WHERE
+  first_service_flow IS NOT NULL

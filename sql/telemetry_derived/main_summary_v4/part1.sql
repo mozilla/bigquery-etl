@@ -7,6 +7,8 @@ SELECT
   normalized_os_version,
   metadata.geo.country,
   metadata.geo.city,
+  metadata.isp.name AS isp_name,
+  metadata.isp.organization AS isp_organization,
   metadata.geo.subdivision1 AS geo_subdivision1,
   metadata.geo.subdivision2 AS geo_subdivision2,
   environment.system.os.name AS os,

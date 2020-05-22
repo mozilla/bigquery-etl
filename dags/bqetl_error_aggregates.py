@@ -27,7 +27,7 @@ with DAG(
 ) as dag:
 
     telemetry_derived__error_aggregates__v1 = bigquery_etl_query(
-        destination_table="error_aggregates",
+        destination_table="error_aggregates_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="bewu@mozilla.com",

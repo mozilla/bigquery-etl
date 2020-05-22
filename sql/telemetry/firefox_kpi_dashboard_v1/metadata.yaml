@@ -4,7 +4,6 @@ owners:
   - jklukas@mozilla.com
 labels:
   incremental: true
-  schedule: 45 15 * * *
 scheduling:
   dag_name: bqetl_kpi_dashboard
   depends_on_past: false

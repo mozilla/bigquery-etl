@@ -21,7 +21,7 @@ with DAG(
 ) as dag:
 
     telemetry_derived__smoot_usage_new_profiles__v2 = bigquery_etl_query(
-        destination_table="smoot_usage_new_profiles",
+        destination_table="smoot_usage_new_profiles_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
@@ -31,7 +31,7 @@ with DAG(
     )
 
     telemetry_derived__smoot_usage_new_profiles_compressed__v2 = bigquery_etl_query(
-        destination_table="smoot_usage_new_profiles_compressed",
+        destination_table="smoot_usage_new_profiles_compressed_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
@@ -45,7 +45,7 @@ with DAG(
     )
 
     telemetry__firefox_kpi_dashboard__v1 = bigquery_etl_query(
-        destination_table="firefox_kpi_dashboard",
+        destination_table="firefox_kpi_dashboard_v1",
         dataset_id="telemetry",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",

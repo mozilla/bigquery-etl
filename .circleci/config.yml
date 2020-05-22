@@ -76,6 +76,29 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
           echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
           PATH="venv/bin:$PATH" script/entrypoint -m integration
+  validate-dags:
+    machine:
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+          name: Pull telemetry-airflow
+          command: |
+            git clone https://github.com/mozilla/telemetry-airflow.git
+            cp -a dags/. telemetry-airflow/dags/
+      - run:
+          command: |
+            cd telemetry-airflow
+            docker-compose pull
+            docker-compose build
+            # now take ownership of the folder
+            sudo chown -R 10001:10001 .
+      - run:
+          name: Test if dag scripts can be parsed
+          command: |
+            cd telemetry-airflow
+            bash bin/test-parse
   deploy:
     parameters:
       image:
@@ -109,6 +132,7 @@ workflows:
     - dry-run-sql
     - validate-metadata
     - integration
+    - validate-dags
     - deploy:
         context: data-eng-bigquery-etl-dockerhub
         requires:

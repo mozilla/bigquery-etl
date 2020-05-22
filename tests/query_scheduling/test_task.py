@@ -11,6 +11,12 @@ TEST_DIR = Path(__file__).parent.parent
 
 
 class TestTask:
+    default_scheduling = {
+        "dag_name": "bqetl_test_dag",
+        "schedule_interval": "daily",
+        "default_args": {"owner": "test@example.org"},
+    }
+
     def test_of_query(self):
         query_file = (
             TEST_DIR
@@ -37,7 +43,7 @@ class TestTask:
 
     def test_invalid_path_format(self):
         with pytest.raises(TaskParseException):
-            metadata = Metadata("test", "test", {}, {"foo": "bar"})
+            metadata = Metadata("test", "test", [], {}, self.default_scheduling)
             Task.of_query(TEST_DIR / "data" / "query.sql", metadata)
 
     def test_unscheduled_task(self, tmp_path):
@@ -50,7 +56,7 @@ class TestTask:
             / "query.sql"
         )
 
-        metadata = Metadata("test", "test", {}, {})
+        metadata = Metadata("test", "test", [], {}, {})
 
         with pytest.raises(UnscheduledTask):
             Task.of_query(query_file, metadata)
@@ -65,7 +71,7 @@ class TestTask:
             / "query.sql"
         )
 
-        metadata = Metadata("test", "test", {}, {"foo": "bar"})
+        metadata = Metadata("test", "test", [], {}, self.default_scheduling)
 
         with pytest.raises(TaskParseException):
             Task.of_query(query_file, metadata)
@@ -81,12 +87,12 @@ class TestTask:
         )
 
         metadata = Metadata(
-            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
         )
 
         task = Task.of_query(query_file, metadata)
-        assert task.dag_name == "test_dag"
-        assert task.depends_on_past
+        assert task.dag_name == "bqetl_test_dag"
+        assert task.depends_on_past is False
 
     @pytest.mark.integration
     def test_task_get_dependencies_none(self, tmp_path, bigquery_client):
@@ -97,7 +103,7 @@ class TestTask:
         query_file.write_text("SELECT 123423")
 
         metadata = Metadata(
-            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
         )
 
         task = Task.of_query(query_file, metadata)
@@ -129,7 +135,7 @@ class TestTask:
         bigquery_client.create_table(table)
 
         metadata = Metadata(
-            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
         )
 
         task = Task.of_query(query_file, metadata)
@@ -142,7 +148,12 @@ class TestTask:
         )
 
         dags = DagCollection.from_dict(
-            {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {"owner": "test@example.org"},
+                }
+            }
         ).with_tasks([task, table_task1, table_task2])
 
         task.with_dependencies(bigquery_client, dags)
@@ -180,7 +191,7 @@ class TestTask:
         bigquery_client.create_table(view)
 
         metadata = Metadata(
-            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
         )
 
         task = Task.of_query(query_file, metadata)
@@ -193,7 +204,12 @@ class TestTask:
         )
 
         dags = DagCollection.from_dict(
-            {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {"owner": "test@example.org"},
+                }
+            }
         ).with_tasks([task, table_task1, table_task2])
 
         task.with_dependencies(bigquery_client, dags)
@@ -234,7 +250,7 @@ class TestTask:
         bigquery_client.create_table(view)
 
         metadata = Metadata(
-            "test", "test", {}, {"dag_name": "test_dag", "depends_on_past": True}
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
         )
 
         task = Task.of_query(query_file, metadata)
@@ -247,7 +263,12 @@ class TestTask:
         )
 
         dags = DagCollection.from_dict(
-            {"test_dag": {"schedule_interval": "daily", "default_args": {}}}
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {"owner": "test@example.org"},
+                }
+            }
         ).with_tasks([task, table_task1, table_task2])
 
         task.with_dependencies(bigquery_client, dags)

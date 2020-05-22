@@ -1,0 +1,20 @@
+# Generated via query_scheduling/generate_airflow_dags
+
+from airflow import DAG
+from airflow.operators.sensors import ExternalTaskSensor
+import datetime
+from utils.gcp import bigquery_etl_query
+
+default_args = {'owner': 'test@example.org', 'email': ['test@example.org'], 'depends_on_past': False, 'start_date': datetime.datetime(2020, 1, 1, 0, 0), 'retry_delay': datetime.timedelta(seconds=3600), 'email_on_failure': True, 'email_on_retry': True, 'retries': 2}
+
+with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily') as dag:
+
+    test__non_incremental_query__v1 = bigquery_etl_query(
+        destination_table='non_incremental_query_v1',
+        dataset_id='test',
+        project_id='moz-fx-data-shared-prod',
+        owner='test@example.com',
+        email=['test@example.com'],
+        depends_on_past=True,
+        dag=dag,
+    )

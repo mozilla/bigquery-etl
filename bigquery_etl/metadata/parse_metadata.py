@@ -11,7 +11,9 @@ METADATA_FILE = "metadata.yaml"
 class Metadata:
     """Representation of metadata file content."""
 
-    def __init__(self, friendly_name=None, description=None, owners=[], labels={}, scheduling={}):
+    def __init__(
+        self, friendly_name=None, description=None, owners=[], labels={}, scheduling={}
+    ):
         """Create a new Metadata instance."""
         self.friendly_name = friendly_name
         self.description = description

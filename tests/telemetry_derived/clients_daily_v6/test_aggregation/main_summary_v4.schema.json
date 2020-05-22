@@ -993,5 +993,15 @@
     "type": "STRING",
     "name": "environment_settings_intl_system_locales",
     "mode": "REPEATED"
+  },
+  {
+    "type": "STRING",
+    "name": "isp_name",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "isp_organization",
+    "mode": "NULLABLE"
   }
 ]

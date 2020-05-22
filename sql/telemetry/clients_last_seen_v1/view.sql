@@ -13,6 +13,8 @@ SELECT
   CAST(
     SAFE.LOG(days_created_profile_bits & -days_created_profile_bits, 2) AS INT64
   ) AS days_since_created_profile,
+  BIT_COUNT(days_seen_bits & 0x0FFFFFFE) >= 14 AS regular_users_v3,
+  days_seen_bits & 0x0FFFFFFE = 0 AS new_or_resurrected_v3,
   * EXCEPT (
     active_experiment_id,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,

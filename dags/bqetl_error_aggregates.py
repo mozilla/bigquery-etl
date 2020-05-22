@@ -18,3 +18,5 @@ with DAG('bqetl_error_aggregates', default_args=default_args, schedule_interval=
         depends_on_past=False,
         dag=dag,
     )
+    
+    

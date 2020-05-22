@@ -7,3 +7,13 @@ bqetl_error_aggregates:
     retries: 1
     retry_delay: 20m
     depends_on_past: false
+
+bqetl_kpi_dashboard:
+  schedule_interval: 45 15 * * *
+  default_args:
+    owner: jklukas@mozilla.com
+    start_date: '2020-05-12'
+    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+    depends_on_past: false
+    retry_delay: 10m
+    retries: 1

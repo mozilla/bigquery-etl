@@ -56,3 +56,11 @@ def format_timedelta(timdelta_string):
             time_params[name] = int(param)
 
     return repr(timedelta(**time_params))
+
+
+def format_optional_string(val):
+    """Formats a value that is either None or a string."""
+    if val is None:
+        return "None"
+    else:
+        return "'" + val + "'"

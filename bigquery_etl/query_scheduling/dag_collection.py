@@ -63,16 +63,14 @@ class DagCollection:
 
     def with_tasks(self, tasks):
         """Assign tasks to their corresponding DAGs."""
-        for dag_name, tasks in groupby(tasks, lambda t: t.dag_name):
-            dag = self.dag_by_name(dag_name)
-
-            if dag is None:
+        for task in tasks:
+            if self.dag_by_name(task.dag_name) is None:
                 raise InvalidDag(
-                    f"DAG {dag_name} does not exist in dags.yaml"
-                    "but used in task definition {tasks[0].name}."
+                    f"DAG {task.dag_name} does not exist in dags.yaml"
+                    "but used in task definition {dag_tasks[0].name}."
                 )
             else:
-                dag.add_tasks(tasks)
+                self.dag_by_name(task.dag_name).add_tasks([task])
 
         return self
 

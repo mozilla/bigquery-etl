@@ -30,15 +30,7 @@ with DAG('bqetl_kpi_dashboard', default_args=default_args, schedule_interval='45
         dag=dag,
     )
 
-    
-    wait_for_telemetry_derived__smoot_usage_new_profiles__v2 = ExternalTaskSensor(
-        task_id='wait_for_telemetry_derived__smoot_usage_new_profiles__v2',
-        external_dag_id='bqetl_kpi_dashboard',
-        external_task_id='telemetry_derived__smoot_usage_new_profiles__v2',
-        dag=dag,
-    )
-        
-    telemetry_derived__smoot_usage_new_profiles_compressed__v2.set_upstream(wait_for_telemetry_derived__smoot_usage_new_profiles__v2)
+    telemetry_derived__smoot_usage_new_profiles_compressed__v2.set_upstream(telemetry_derived__smoot_usage_new_profiles__v2)
     
     telemetry__firefox_kpi_dashboard__v1 = bigquery_etl_query(
         destination_table='firefox_kpi_dashboard',

@@ -31,7 +31,10 @@ with DAG('{{ name }}', default_args=default_args, schedule_interval={{ schedule_
         dag=dag,
     )
 
-    {% for dependency in task.dependencies %}
+    {% for dependency in task.dependencies -%}
+    {% if dependency.dag_name == name -%}
+    {{ task.task_name }}.set_upstream({{ dependency.task_name }})
+    {% else -%}
     wait_for_{{ dependency.task_name }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_name }}',
         external_dag_id='{{ dependency.dag_name }}',
@@ -40,5 +43,6 @@ with DAG('{{ name }}', default_args=default_args, schedule_interval={{ schedule_
     )
         
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_name }})
+    {% endif -%}
     {% endfor -%}
-{% endfor -%}
+{% endfor %}

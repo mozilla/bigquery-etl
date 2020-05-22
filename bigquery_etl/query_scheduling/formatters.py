@@ -18,11 +18,7 @@ def format_schedule_interval(interval):
     if interval in presets:
         return "'@" + interval + "'"
 
-    if re.match(r"^((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})$", interval):
-        # the interval should is a CRON expression
-        return "'" + interval + "'"
-
-    return interval
+    return repr(interval)
 
 
 def format_attr(d, attribute, formatter_name):
@@ -58,7 +54,7 @@ def format_timedelta(timdelta_string):
         if param:
             time_params[name] = int(param)
 
-    return repr(timedelta(**time_params))
+    return timedelta(**time_params)
 
 
 def format_optional_string(val):

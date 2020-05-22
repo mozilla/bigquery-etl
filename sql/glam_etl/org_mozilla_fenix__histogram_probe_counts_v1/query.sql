@@ -160,40 +160,6 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   )
 );
 
-WITH
--- Cross join with the attribute combinations to reduce the query complexity
--- with respect to the number of operations. A table with n rows cross joined
--- with a combination of m attributes will generate a new table with n*m rows.
--- The glob ("*") symbol can be understood as selecting all of values belonging
--- to that group.
-static_combos AS (
-  SELECT
-    combos.*
-  FROM
-    UNNEST(
-      ARRAY<STRUCT<ping_type STRING, os STRING, app_build_id STRING>>[
-        (NULL, NULL, NULL),
-        (NULL, NULL, "*"),
-        (NULL, "*", NULL),
-        ("*", NULL, NULL),
-        (NULL, "*", "*"),
-        ("*", NULL, "*"),
-        ("*", "*", NULL),
-        ("*", "*", "*")
-      ]
-    ) AS combos
-),
-all_combos AS (
-  SELECT
-    table.* EXCEPT (ping_type, os, app_build_id),
-    COALESCE(combo.ping_type, table.ping_type) AS ping_type,
-    COALESCE(combo.os, table.os) AS os,
-    COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
-  FROM
-    glam_etl.org_mozilla_fenix__histogram_bucket_counts_v1 table
-  CROSS JOIN
-    static_combos combo
-)
 SELECT
   ping_type,
   os,

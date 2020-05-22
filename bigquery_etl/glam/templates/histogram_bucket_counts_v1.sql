@@ -1,4 +1,6 @@
 {{ header }}
+{% from 'macros.sql' import enumerate_table_combinations %}
+
 CREATE TEMP FUNCTION udf_normalized_sum(arrs ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Returns the normalized sum of the input maps.
@@ -76,12 +78,21 @@ RETURNS ARRAY<
   )
 );
 
-WITH normalized_histograms AS (
+WITH
+{{
+    enumerate_table_combinations(
+        source_table,
+        "all_combos",
+        cubed_attributes,
+        attribute_combinations
+    )
+}},
+normalized_histograms AS (
   SELECT
     {{ attributes }},
     udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
   FROM
-    glam_etl.{{ prefix }}__clients_histogram_aggregates_v1
+    all_combos
 ),
 unnested AS (
   SELECT

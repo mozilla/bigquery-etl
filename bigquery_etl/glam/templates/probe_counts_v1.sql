@@ -5,19 +5,8 @@
     {% include "probe_counts_v1.udf.histogram.sql" %}
 {% endif %}
 
-{% from 'macros.sql' import enumerate_table_combinations %}
-
-WITH
-{{
-    enumerate_table_combinations(
-        source_table,
-        "all_combos",
-        cubed_attributes,
-        attribute_combinations
-    )
-}}
 SELECT
-    {{ attributes | join(",") }},
+    {{ attributes }},
     {{ aggregate_attributes }},
     {% if is_scalar %}
         client_agg_type,
@@ -54,7 +43,7 @@ SELECT
 FROM
     {{ source_table }}
 GROUP BY
-    {{ attributes | join(",") }},
+    {{ attributes }},
     {% if not is_scalar %}
         range_min,
         range_max,

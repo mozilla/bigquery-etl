@@ -1,7 +1,9 @@
 {{ header }}
 {% include "scalar_bucket_counts_v1.udf.sql" %}
+{% from 'macros.sql' import enumerate_table_combinations %}
 
-WITH bucketed_booleans AS (
+WITH
+bucketed_booleans AS (
   SELECT
     client_id,
     {{ attributes }},
@@ -35,7 +37,15 @@ booleans_and_scalars AS (
     *
   FROM
     bucketed_scalars
-)
+),
+{{
+    enumerate_table_combinations(
+        "booleans_and_scalars",
+        "all_combos",
+        cubed_attributes,
+        attribute_combinations
+    )
+}}
 SELECT
   {{ attributes }},
   {{ aggregate_attributes }},
@@ -44,7 +54,7 @@ SELECT
   bucket,
   COUNT(*) AS count
 FROM
-  booleans_and_scalars
+  all_combos
 GROUP BY
   {{ attributes }},
   {{ aggregate_attributes }},

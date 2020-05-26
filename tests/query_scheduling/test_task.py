@@ -291,7 +291,10 @@ class TestTask:
             {
                 "bqetl_test_dag": {
                     "schedule_interval": "daily",
-                    "default_args": {"owner": "test@example.org"},
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
                 }
             }
         ).with_tasks([task, table_task1, table_task2])
@@ -347,7 +350,10 @@ class TestTask:
             {
                 "bqetl_test_dag": {
                     "schedule_interval": "daily",
-                    "default_args": {"owner": "test@example.org"},
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
                 }
             }
         ).with_tasks([task, table_task1, table_task2])
@@ -406,7 +412,10 @@ class TestTask:
             {
                 "bqetl_test_dag": {
                     "schedule_interval": "daily",
-                    "default_args": {"owner": "test@example.org"},
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
                 }
             }
         ).with_tasks([task, table_task1, table_task2])

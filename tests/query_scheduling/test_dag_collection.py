@@ -91,6 +91,52 @@ class TestDagCollection:
         assert dags.dag_by_name("bqetl_test_dag1").name == "bqetl_test_dag1"
         assert dags.dag_by_name("non_existing") is None
 
+    def test_task_for_table(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.org"],
+            {},
+            {"dag_name": "bqetl_test_dag", "depends_on_past": True},
+        )
+
+        tasks = [Task.of_query(query_file, metadata)]
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": self.default_args,
+                }
+            }
+        ).with_tasks(tasks)
+
+        task = dags.task_for_table("test", "incremental_query_v1")
+
+        assert task
+        assert task.dag_name == "bqetl_test_dag"
+
+    def test_task_for_non_existing_table(self):
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": self.default_args,
+                }
+            }
+        ).with_tasks([])
+
+        assert dags.task_for_table("test", "non_existing_table") is None
+
     def test_dags_with_tasks(self):
         query_file = (
             TEST_DIR

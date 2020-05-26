@@ -1,7 +1,7 @@
 from pathlib import Path
 import pytest
 
-from bigquery_etl.query_scheduling.dag import Dag, DagParseException
+from bigquery_etl.query_scheduling.dag import Dag, DagParseException, DagDefaultArgs
 from bigquery_etl.query_scheduling.task import Task
 
 TEST_DIR = Path(__file__).parent.parent
@@ -48,6 +48,7 @@ class TestDag:
                 "bqetl_test_dag": {
                     "schedule_interval": "daily",
                     "default_args": {
+                        "start_date": "2020-05-12",
                         "owner": "test@example.com",
                         "email": ["test@example.com"],
                     },
@@ -90,3 +91,65 @@ class TestDag:
 
         with pytest.raises(TypeError):
             assert Dag("bqetl_test_dag", 323, self.default_args)
+
+    def test_empty_dag_default_args(self):
+        with pytest.raises(TypeError):
+            assert DagDefaultArgs()
+
+    def test_dag_default_args_owner_validation(self):
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(owner="invalid_email", start_date="2020-12-12")
+
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(owner="test@example-com.", start_date="2020-12-12")
+
+        with pytest.raises(TypeError):
+            assert DagDefaultArgs(owner=None, start_date="2020-12-12")
+
+        assert DagDefaultArgs(owner="test@example.org", start_date="2020-12-12")
+
+    def test_dag_default_args_email_validation(self):
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(
+                owner="test@example.com",
+                start_date="2020-12-12",
+                email=["valid@example.com", "invalid", "valid2@example.com"],
+            )
+
+        assert DagDefaultArgs(
+            owner="test@example.com", start_date="2020-12-12", email=[]
+        )
+
+        assert DagDefaultArgs(
+            owner="test@example.com",
+            start_date="2020-12-12",
+            email=["test@example.org", "test2@example.org"],
+        )
+
+    def test_dag_default_args_start_date_validation(self):
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(
+                owner="test@example.com", start_date="March 12th 2020"
+            )
+
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(owner="test@example.com", start_date="foo")
+
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(owner="test@example.com", start_date="2020-13-01")
+
+        assert DagDefaultArgs(owner="test@example.com", start_date="2020-12-12")
+
+    def test_dag_default_args_retry_delay_validation(self):
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(
+                owner="test@example.com", start_date="March 12th 2020", retry_delay="90"
+            )
+
+        assert DagDefaultArgs(
+            owner="test@example.com", start_date="2020-12-12", retry_delay="1d3h15m"
+        )
+
+        assert DagDefaultArgs(
+            owner="test@example.com", start_date="2020-12-12", retry_delay="3h"
+        )

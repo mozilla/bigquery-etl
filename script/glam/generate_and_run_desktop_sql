@@ -8,7 +8,6 @@ function generate_and_run_sql {
     local probe_type=$1
     local windows_release_sample_percent=$2
     local script_type
-    local query_name
     local destination_table
     local write_disposition
 
@@ -38,7 +37,7 @@ function generate_and_run_sql {
     fi
 
     if [[ -n $APPEND ]]; then
-        write_disposition="--append_table"
+        write_disposition="--append_table --noreplace"
     else
         write_disposition="--replace"
     fi

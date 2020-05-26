@@ -115,7 +115,7 @@ function run_partitioned_query {
     local NUM_SAMPLE_IDS=100
     local PARTITION_SIZE=$((NUM_SAMPLE_IDS / num_partitions))
 
-    run_query $table_name true 0 $((PARTITION_SIZE - 1)) \
+    run_query $table_name $partitioned_result 0 $((PARTITION_SIZE - 1)) \
         $table_name "$additional_arguments"
 
     for partition in $(seq 1 $((num_partitions - 1))); do
@@ -163,7 +163,7 @@ function run_desktop_sql {
     if ((start_stage <= 3)); then
         run_init "clients_scalar_aggregates_v1"
         run_query "clients_scalar_aggregates_v1"
-        run_query "clients_scalar_probe_counts_v1"
+        run_partitioned_query "clients_scalar_probe_counts_v1" 5 false
     fi
 
     # Run the rest of the clients histogram pipeline

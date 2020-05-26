@@ -113,7 +113,9 @@ CREATE TEMP FUNCTION udf_boolean_buckets(
 WITH flat_clients_scalar_aggregates AS (
   SELECT *,
     os = 'Windows' and channel = 'release' AS sampled,
-  FROM clients_scalar_aggregates_v1),
+  FROM clients_scalar_aggregates_v1
+  WHERE udf_js.sample_id(client_id) >= @min_sample_id
+    AND udf_js.sample_id(client_id) <= @max_sample_id),
 
 static_combos as (
   SELECT null as os, null as app_build_id

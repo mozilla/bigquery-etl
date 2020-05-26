@@ -1,6 +1,6 @@
 ---
 - &base
-  client_id: test
+  client_id: 001dde74-9201-4d06-ab73-578f02b8a436
   os: first
   app_version: 75
   app_build_id: first

@@ -264,7 +264,7 @@ class TestDagCollection:
         query_file.write_text(
             f"SELECT * FROM {project_id}.{temporary_dataset}.table1_v1 "
             + f"UNION ALL SELECT * FROM {project_id}.{temporary_dataset}.table2_v1 "
-            + f"UNION ALL SELECT * FROM "
+            + "UNION ALL SELECT * FROM "
             + f"{project_id}.{temporary_dataset}.external_table_v1"
         )
 

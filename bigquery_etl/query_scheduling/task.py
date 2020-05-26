@@ -180,6 +180,10 @@ class Task:
                 )
 
             table_names = [(t.dataset_id, t.table_id) for t in referenced_tables]
+
+            # the order of table dependencies changes between requests
+            # sort to maintain same order between DAG generation runs
+            table_names.sort()
             return table_names
 
     def with_dependencies(self, client, dag_collection):

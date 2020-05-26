@@ -19,11 +19,11 @@ class DagCollection:
 
         Expected dict format:
         {
-            "dag_name1": {
+            "bqetl_dag_name1": {
                 "schedule_interval": string,
                 "default_args": dict
             },
-            "dag_name2": {
+            "bqetl_dag_name2": {
                 "schedule_interval": string,
                 "default_args": dict
             },

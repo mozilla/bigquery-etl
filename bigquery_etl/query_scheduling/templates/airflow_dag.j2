@@ -11,9 +11,10 @@ default_args = {{
     format_attr("retry_delay", "format_timedelta") 
 }}
 
-with DAG('{{ name }}', default_args=default_args, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}) as dag:
+with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}) as dag:
 {% for task in tasks %}
     {{ task.task_name }} = bigquery_etl_query(
+        task_id='{{ task.task_name }}',
         destination_table='{{ task.table }}_{{ task.version }}',
         dataset_id='{{ task.dataset }}',
         project_id='moz-fx-data-shared-prod',
@@ -30,7 +31,9 @@ with DAG('{{ name }}', default_args=default_args, schedule_interval={{ schedule_
         depends_on_past={{ task.depends_on_past }},
         dag=dag,
     )
+{% endfor -%}
 
+{% for task in tasks %}
     {% for dependency in task.dependencies -%}
     {% if dependency.dag_name == name -%}
     {{ task.task_name }}.set_upstream({{ dependency.task_name }})
@@ -45,4 +48,4 @@ with DAG('{{ name }}', default_args=default_args, schedule_interval={{ schedule_
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_name }})
     {% endif -%}
     {% endfor -%}
-{% endfor %}
+{% endfor -%}

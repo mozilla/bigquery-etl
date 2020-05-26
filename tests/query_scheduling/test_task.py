@@ -13,7 +13,6 @@ TEST_DIR = Path(__file__).parent.parent
 class TestTask:
     default_scheduling = {
         "dag_name": "bqetl_test_dag",
-        "schedule_interval": "daily",
         "default_args": {"owner": "test@example.org"},
     }
 

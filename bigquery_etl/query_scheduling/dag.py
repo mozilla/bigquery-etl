@@ -46,9 +46,9 @@ class DagDefaultArgs:
     """Representation of Airflow DAG default_args."""
 
     owner: str = attr.ib()
+    start_date: str = attr.ib()
     email: List[str] = attr.ib([])
     depends_on_past: bool = attr.ib(False)
-    start_date: Optional[str] = attr.ib(None)
     retry_delay: str = attr.ib("30m")
     email_on_failure: bool = attr.ib(True)
     email_on_retry: bool = attr.ib(True)

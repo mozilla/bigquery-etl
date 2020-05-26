@@ -21,11 +21,19 @@ class DagCollection:
         {
             "bqetl_dag_name1": {
                 "schedule_interval": string,
-                "default_args": dict
+                "default_args": {
+                    "owner": string,
+                    "start_date": "YYYY-MM-DD",
+                    ...
+                }
             },
             "bqetl_dag_name2": {
                 "schedule_interval": string,
-                "default_args": dict
+                "default_args": {
+                    "owner": string,
+                    "start_date": "YYYY-MM-DD",
+                    ...
+                }
             },
             ...
         }

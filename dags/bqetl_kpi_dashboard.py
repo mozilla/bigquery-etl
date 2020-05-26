@@ -7,9 +7,9 @@ from utils.gcp import bigquery_etl_query
 
 default_args = {
     "owner": "jklukas@mozilla.com",
+    "start_date": datetime.datetime(2020, 5, 12, 0, 0),
     "email": ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"],
     "depends_on_past": False,
-    "start_date": datetime.datetime(2020, 5, 12, 0, 0),
     "retry_delay": datetime.timedelta(seconds=600),
     "email_on_failure": True,
     "email_on_retry": True,
@@ -21,6 +21,7 @@ with DAG(
 ) as dag:
 
     telemetry_derived__smoot_usage_new_profiles__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_new_profiles__v2",
         destination_table="smoot_usage_new_profiles_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
@@ -31,6 +32,7 @@ with DAG(
     )
 
     telemetry_derived__smoot_usage_new_profiles_compressed__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_new_profiles_compressed__v2",
         destination_table="smoot_usage_new_profiles_compressed_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
@@ -40,11 +42,8 @@ with DAG(
         dag=dag,
     )
 
-    telemetry_derived__smoot_usage_new_profiles_compressed__v2.set_upstream(
-        telemetry_derived__smoot_usage_new_profiles__v2
-    )
-
     telemetry__firefox_kpi_dashboard__v1 = bigquery_etl_query(
+        task_id="telemetry__firefox_kpi_dashboard__v1",
         destination_table="firefox_kpi_dashboard_v1",
         dataset_id="telemetry",
         project_id="moz-fx-data-shared-prod",
@@ -53,4 +52,8 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         dag=dag,
+    )
+
+    telemetry_derived__smoot_usage_new_profiles_compressed__v2.set_upstream(
+        telemetry_derived__smoot_usage_new_profiles__v2
     )

@@ -29,7 +29,10 @@ class DagParseException(Exception):
         Expected yaml format:
         name:
             schedule_interval: string,
-            default_args: map
+            default_args:
+                owner: string
+                start_date: 'YYYY-MM-DD'
+                ...
         """
 
         super(DagParseException, self).__init__(message)

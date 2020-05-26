@@ -108,51 +108,73 @@ function run_partitioned_query {
     local table_name=$1
     local num_partitions=${2:-5}
     local partitioned_result=${3:-true}
+    local partitioning_field="$(if [ -n "$4" ]; then echo --time_partitioning_field=$4; fi)"
+    local clustering_fields="$(if [ -n "$5" ]; then echo --clustering_fields=$5; fi)"
+    local additional_arguments="--append_table ${partitioning_field} ${clustering_fields}"
 
     local NUM_SAMPLE_IDS=100
     local PARTITION_SIZE=$((NUM_SAMPLE_IDS / num_partitions))
 
-    run_query $table_name true 0 $((PARTITION_SIZE - 1))
+    run_query $table_name true 0 $((PARTITION_SIZE - 1)) \
+        $table_name "$additional_arguments"
+
     for partition in $(seq 1 $((num_partitions - 1))); do
         local min_param=$((partition * PARTITION_SIZE))
         local max_param=$((min_param + PARTITION_SIZE - 1))
         run_query $table_name $partitioned_result $min_param $max_param \
-            $table_name "--append_table"
+            $table_name "$additional_arguments"
     done
 }
 
 
 function run_desktop_sql {
-    run_query "latest_versions"
+    local start_stage=${START_STAGE:-0}
+
+    if ((start_stage <= 0)); then
+        run_query "latest_versions"
+    fi
 
     # Run clients_daily_*_scalar_aggregates
-    run_init "clients_daily_scalar_aggregates_v1"
-    run_query "clients_daily_scalar_aggregates_v1" true
-    run_query "clients_daily_scalar_aggregates_v1" \
-        true 0 0 "clients_daily_keyed_scalar_aggregates_v1" \
-        "--append_table"
-    run_query "clients_daily_scalar_aggregates_v1" \
-        true 0 0 "clients_daily_keyed_boolean_aggregates_v1" \
-        "--append_table"
+    if ((start_stage <= 1)); then
+        run_init "clients_daily_scalar_aggregates_v1"
+        run_query "clients_daily_scalar_aggregates_v1" \
+            true 0 0 "clients_daily_scalar_aggregates_v1" \
+            "--replace --clustering_fields=app_version,channel --time_partitioning_field=submission_date"
+        run_query "clients_daily_scalar_aggregates_v1" \
+            true 0 0 "clients_daily_keyed_scalar_aggregates_v1" \
+            "--append_table --clustering_fields=app_version,channel --time_partitioning_field=submission_date"
+        run_query "clients_daily_scalar_aggregates_v1" \
+            true 0 0 "clients_daily_keyed_boolean_aggregates_v1" \
+            "--append_table --clustering_fields=app_version,channel --time_partitioning_field=submission_date"
+    fi
 
     # Run clients_daily_*_histogram_aggregates
-    run_init "clients_daily_histogram_aggregates_v1"
-    run_query "clients_daily_histogram_aggregates_v1" true 0 0
-    run_query "clients_daily_histogram_aggregates_v1" \
-        true 0 0 "clients_daily_keyed_histogram_aggregates_v1" \
-        "--append_table"
+    if ((start_stage <= 2)); then
+        run_init "clients_daily_histogram_aggregates_v1"
+        run_query "clients_daily_histogram_aggregates_v1" \
+            true 0 0 "clients_daily_histogram_aggregates_v1" \
+            "--replace --clustering_fields=app_version,channel --time_partitioning_field=submission_date"
+        run_query "clients_daily_histogram_aggregates_v1" \
+            true 0 0 "clients_daily_keyed_histogram_aggregates_v1" \
+            "--append_table --clustering_fields=app_version,channel --time_partitioning_field=submission_date"
+    fi
 
     # Run the rest of the clients scalar pipeline
-    run_init "clients_scalar_aggregates_v1"
-    run_query "clients_scalar_aggregates_v1"
-    run_query "clients_scalar_bucket_counts_v1"
-    run_query "clients_scalar_probe_counts_v1"
-    run_query "scalar_percentiles_v1"
+    if ((start_stage <= 3)); then
+        run_init "clients_scalar_aggregates_v1"
+        run_query "clients_scalar_aggregates_v1"
+        run_query "clients_scalar_bucket_counts_v1"
+        run_query "clients_scalar_probe_counts_v1"
+        run_query "scalar_percentiles_v1"
+    fi
 
     # Run the rest of the clients histogram pipeline
-    run_init "clients_histogram_aggregates_v1"
-    run_query "clients_histogram_aggregates_new_v1"
-    run_partitioned_query "clients_histogram_aggregates_v1"
+    if ((start_stage <= 4)); then
+        run_init "clients_histogram_aggregates_v1"
+        run_query "clients_histogram_aggregates_new_v1"
+        run_partitioned_query "clients_histogram_aggregates_v1" \
+            true "submission_date" "sample_id,app_version,channel"
+    fi
 
     run_partitioned_query "clients_histogram_bucket_counts_v1" 10 false
     run_query "clients_histogram_probe_counts_v1"
@@ -162,44 +184,45 @@ function run_desktop_sql {
 }
 
 
-function run_fenix_sql {
+function run_glean_sql {
+    local product=$1
     local start_stage=${START_STAGE:-0}
 
     if ((start_stage <= 0)); then
-        for directory in sql/glam_etl/fenix_clients_daily_scalar_aggregates*/; do
+        for directory in sql/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
             run_query "$(basename "$directory")" true
         done
-        for directory in sql/glam_etl/fenix_clients_daily_histogram_aggregates*/; do
+        for directory in sql/glam_etl/"${product}"__clients_daily_histogram_aggregates*/; do
             run_query "$(basename "$directory")" true
         done
     fi
     # NOTE: there isn't a mechanism to test the incremental query here
     if ((start_stage <= 1)); then
-        run_query "fenix_latest_versions_v1"
+        run_query "${product}__latest_versions_v1"
 
-        run_view "fenix_view_clients_daily_scalar_aggregates_v1"
-        run_init "fenix_clients_scalar_aggregates_v1"
-        run_query "fenix_clients_scalar_aggregates_v1"
+        run_view "${product}__view_clients_daily_scalar_aggregates_v1"
+        run_init "${product}__clients_scalar_aggregates_v1"
+        run_query "${product}__clients_scalar_aggregates_v1"
     fi
     if ((start_stage <= 2)); then
-        run_query "fenix_clients_scalar_bucket_counts_v1"
-        run_query "fenix_clients_scalar_probe_counts_v1"
-        run_query "fenix_scalar_percentiles_v1"
+        run_query "${product}__scalar_bucket_counts_v1"
+        run_query "${product}__scalar_probe_counts_v1"
+        run_query "${product}__scalar_percentiles_v1"
     fi
     if ((start_stage <= 3)); then
-        run_view "fenix_view_clients_daily_histogram_aggregates_v1"
-        run_init "fenix_clients_histogram_aggregates_v1"
-        run_query "fenix_clients_histogram_aggregates_v1"
+        run_view "${product}__view_clients_daily_histogram_aggregates_v1"
+        run_init "${product}__clients_histogram_aggregates_v1"
+        run_query "${product}__clients_histogram_aggregates_v1"
     fi
     if ((start_stage <= 4)); then
-        run_query "fenix_clients_histogram_bucket_counts_v1"
-        run_query "fenix_clients_histogram_probe_counts_v1"
-        run_query "fenix_histogram_percentiles_v1"
+        run_query "${product}__histogram_bucket_counts_v1"
+        run_query "${product}__histogram_probe_counts_v1"
+        run_query "${product}__histogram_percentiles_v1"
     fi
-    run_view "fenix_view_probe_counts_v1"
-    run_view "fenix_view_user_counts_v1"
-    run_query "fenix_extract_user_counts_v1"
-    run_query "fenix_extract_probe_counts_v1"
+    run_view "${product}__view_probe_counts_v1"
+    run_view "${product}__view_user_counts_v1"
+    run_query "${product}__extract_user_counts_v1"
+    run_query "${product}__extract_probe_counts_v1"
 }
 
 
@@ -207,7 +230,7 @@ function main {
     cd "$(dirname "$0")/../.."
 
     local reset=${RESET:-false}
-    local product=${PRODUCT:-fenix}
+    local product=${PRODUCT:-org_mozilla_fenix}
 
     # revert to the original default project in the environment
     original_project=$(gcloud config get-value project)
@@ -226,14 +249,14 @@ function main {
         bq mk "$DATASET"
     fi
 
-    if [[ "$product" == "fenix" ]]; then
-        run_fenix_sql
-    elif [[ "$product" = "desktop" ]]; then
+
+    if [[ "$product" = "desktop" ]]; then
         run_desktop_sql
     else
-        echo "Error: product must be fenix or desktop"
-        exit 1
+        run_glean_sql "$product"
     fi
 }
 
-main
+if [[ -z "$IMPORT" ]]; then
+    main
+fi

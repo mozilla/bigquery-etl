@@ -15,7 +15,7 @@ from ..util.bigquery_id import sql_table_id
 from ..util import standard_args
 
 
-JOBS_QUERY = f"""
+JOBS_QUERY = """
 SELECT
   SUM(total_bytes_processed) AS total_bytes_processed,
   SUM(total_slot_ms) AS slot_millis,
@@ -51,7 +51,7 @@ TABLES_QUERY = (
             (target.project, target.dataset_id) for target in DELETE_TARGETS
         }
     )
-    + f"""
+    + """
 )
 SELECT
   project_id AS project,

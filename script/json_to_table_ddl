@@ -115,7 +115,7 @@ def main(argv):
 
     clustering_obj = orig.get("clustering")
     if clustering_obj:
-        clustering_string = f"\nCLUSTER BY " + ", ".join(clustering_obj["fields"])
+        clustering_string = "\nCLUSTER BY " + ", ".join(clustering_obj["fields"])
 
     if len(table_options_list) > 0:
         table_options_string = (

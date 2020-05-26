@@ -1,0 +1,84 @@
+#!/bin/bash
+
+set -e
+
+function write_scalars {
+    local product=$1
+    local dataset=$2
+    local table=$3
+    local directory="sql/glam_etl/${product}__clients_daily_scalar_aggregates_${table}"
+    mkdir -p "$directory"
+    if ! python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
+        --source-table "$dataset.$table" \
+        > "$directory/query.sql"; then
+            echo "skipping $directory/query.sql: no probes found"
+            rm -r "$directory"
+    else
+        echo "generated $directory/query.sql"
+    fi
+}
+
+function write_histograms {
+    local product=$1
+    local dataset=$2
+    local table=$3
+    local directory="sql/glam_etl/${product}__clients_daily_histogram_aggregates_${table}"
+    mkdir -p "$directory"
+    if ! python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
+        --source-table "$dataset.$table" \
+        > "$directory/query.sql"; then
+            echo "skipping $directory/query.sql: no probes found"
+            rm -r "$directory"
+    else
+        echo "generated $directory/query.sql"
+    fi
+}
+
+function write_clients_daily_aggregates {
+    local product=$1
+    local project=$2
+
+    local dataset="${product}_stable"
+    local qualified="$project:$dataset"
+    # validate inputs with set -e, however note that this will fail silently
+    if ! bq ls "$qualified" &> /dev/null; then
+        echo "could not list $qualified"
+        exit 1
+    fi
+    if ! bq show "$qualified.baseline_v1" &> /dev/null; then
+        echo "could not find $qualified.baseline_v1"
+        exit 1
+    fi
+
+    # e.g. baseline_v1
+    local tables;
+    tables=$(
+        bq ls --format=json "$project:$dataset" | \
+        jq -r '.[] | .tableReference.tableId'
+    )
+    # generate all of the schemas in parallel
+    for table in $tables; do
+        write_scalars "$product" "$dataset" "$table" &
+        write_histograms "$product" "$dataset" "$table" &
+    done
+
+    # wait for all of the processes before continuing
+    wait
+}
+
+function main() {
+    cd "$(dirname "$0")/../.."
+
+    local project=${PROJECT:-moz-fx-data-shared-prod}
+    local product=${PRODUCT:-org_mozilla_fenix}
+    local start_stage=${START_STAGE:-0}
+
+    if ((start_stage <= 0)); then
+        write_clients_daily_aggregates "$product" "$project"
+    fi
+    if ((start_stage <= 1)); then
+        python3 -m bigquery_etl.glam.generate --prefix "${product}"
+    fi
+}
+
+main

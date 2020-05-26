@@ -11,13 +11,10 @@ SELECT
   metadata.user_agent.os AS platform,
   metadata.user_agent.os AS os_name,
   normalized_os_version AS os_version,
-  NULL AS device_manufacturer,
-  NULL AS device_model,
   metadata.geo.country AS country,
   metadata.geo.subdivision1 AS region,
   metadata.geo.city AS city,
-  ( -- `event_context` should already be a JSON string, the IFNULL guard is only
-    -- for the old Firefox versions.
+  (
     `moz-fx-data-shared-prod.udf.kv_array_append_to_json_string`(
       event_context,
       [STRUCT("message_id" AS key, message_id AS value)]

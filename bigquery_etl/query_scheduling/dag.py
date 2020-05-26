@@ -4,7 +4,7 @@ import attr
 import cattr
 from jinja2 import Environment, PackageLoader
 import re
-from typing import List, Optional
+from typing import List
 
 from bigquery_etl.query_scheduling.task import Task
 from bigquery_etl.query_scheduling import formatters

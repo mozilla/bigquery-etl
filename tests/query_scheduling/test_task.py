@@ -2,6 +2,7 @@ from google.cloud import bigquery
 from pathlib import Path
 import os
 import pytest
+from typing import NewType
 
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask, TaskParseException
 from bigquery_etl.metadata.parse_metadata import Metadata
@@ -92,6 +93,146 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
         assert task.dag_name == "bqetl_test_dag"
         assert task.depends_on_past is False
+
+    def test_dag_name_validation(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        with pytest.raises(ValueError):
+            Task(
+                dag_name="test_dag",
+                query_file=str(query_file),
+                owner="test@example.com",
+            )
+
+        assert Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+        )
+
+    def test_owner_validation(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        with pytest.raises(ValueError):
+            assert Task(
+                dag_name="bqetl_test_dag", query_file=str(query_file), owner="invalid"
+            )
+
+        assert Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+        )
+
+    def test_email_validation(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        with pytest.raises(ValueError):
+            assert Task(
+                dag_name="bqetl_test_dag",
+                query_file=str(query_file),
+                owner="test@example.com",
+                email=["valid@example.com", "invalid", "valid2@example.com"],
+            )
+
+        assert Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+            email=[],
+        )
+
+        assert Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+            email=["test@example.org", "test2@example.org"],
+        )
+
+    def test_start_date_validation(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        with pytest.raises(ValueError):
+            assert Task(
+                dag_name="bqetl_test_dag",
+                query_file=str(query_file),
+                owner="test@example.com",
+                start_date="March 12th 2020",
+            )
+
+        with pytest.raises(ValueError):
+            assert Task(
+                dag_name="bqetl_test_dag",
+                query_file=str(query_file),
+                owner="test@example.com",
+                start_date="2020-13-12",
+            )
+
+        assert Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+            start_date="2020-01-01",
+        )
+
+    def test_date_partition_parameter(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        assert Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+            date_partition_parameter=NewType("Ignore", None),
+        )
+
+        assert Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+            date_partition_parameter=None,
+        )
+
+        assert Task(
+            dag_name="bqetl_test_dag",
+            query_file=str(query_file),
+            owner="test@example.com",
+            date_partition_parameter="import_date",
+        )
 
     @pytest.mark.integration
     def test_task_get_dependencies_none(self, tmp_path, bigquery_client):

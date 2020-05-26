@@ -22,7 +22,7 @@ p = argparse.ArgumentParser()
 p.add_argument(
     "--agg-type",
     type=str,
-    help="One of scalar/keyed-scalar/keyed-boolean",
+    help="One of scalars/keyed_scalars/keyed_booleans",
     required=True,
 )
 p.add_argument(
@@ -72,7 +72,7 @@ def generate_sql(
                 AND normalized_channel in (
                   "release", "beta", "nightly"
                 )
-                AND client_id IS NOT NULL)
+                AND client_id IS NOT NULL),
 
         {additional_queries}
 

@@ -32,6 +32,8 @@ FROM
   base
 WHERE
   install_date = target_install_date
-  AND submission_date BETWEEN target_install_date AND @submission_date
+  AND submission_date
+  BETWEEN target_install_date
+  AND @submission_date
 GROUP BY
   addon_id

@@ -1,6 +1,0 @@
-- name: min_sample_id
-  type: INT64
-  value: 0
-- name: max_sample_id
-  type: INT64
-  value: 99

@@ -5,6 +5,7 @@ from git import Repo
 import os
 from os.path import isfile, join
 from pathlib import Path
+import re
 import shutil
 import tempfile
 
@@ -28,50 +29,33 @@ def download_repository():
 
 def _extract_dag_name(dag_content):
     """Extracts the DAG name for an Airflow DAG definition."""
-    dag_ast = ast.parse(dag_content)
+    dag_name_regex = [
+        # DAG name inline with DAG definition
+        re.compile(
+            r"DAG\([\n\r\s]*['\"](?P<dag>[^'\"]*)['\"][\n\r\s]*,.*\)", re.DOTALL
+        ),
+        # dag_name defined in variable
+        re.compile(r"dag_name[\n\r\s]*=[\n\r\s]*['\"](?P<dag>[^'\"]*)['\"]", re.DOTALL),
+    ]
 
-    dag_name = None
+    dag_name_matches = [re.findall(regex, dag_content) for regex in dag_name_regex]
 
-    for el in dag_ast.body:
-        if el.__class__ == ast.Assign:
-            if el.targets[0].__class__ == ast.Name:
-                assignment = el.targets[0]
+    for match in dag_name_matches:
+        if len(match) > 0:
+            return match[0]
 
-                # dag_name defined in variable
-                if assignment.id == "dag_name":
-                    dag_name = el.value.s
-
-                # DAG defined using assignment
-                if (
-                    el.value.__class__ == ast.Call
-                    and el.value.func.__class__ == ast.Name
-                    and el.value.func.id == "DAG"
-                ):
-                    if el.value.args[0].__class__ == ast.Str:
-                        dag_name = el.value.args[0].s
-
-        # DAG defined using with statement
-        if el.__class__ == ast.With:
-            with_expr = el.items[0].context_expr
-
-            if with_expr.func.__class__ == ast.Name and with_expr.func.id == "DAG":
-                # check if DAG name defined inline as string
-                if with_expr.args[0].__class__ == ast.Str:
-                    dag_name = with_expr.args[0].s
-            elif (
-                with_expr.func.__class__ == ast.Attribute
-                and with_expr.func.value.id == "models"
-                and with_expr.func.attr == "DAG"
-            ):
-                if with_expr.args[0].__class__ == ast.Str:
-                    dag_name = with_expr.args[0].s
-
-    return dag_name
+    return None
 
 
 def _extract_tables_with_tasks(dag_content):
     """Extract BigQuery destination tables and corresponding tasks from an Airflow DAG definition."""
-    pass
+    dag_ast = ast.parse(dag_content)
+    table_with_task = {}
+
+    for el in dag_ast.body:
+        print(ast.dump(el))
+
+    return table_with_task
 
 
 def get_tasks_for_tables(dag_dir):
@@ -94,6 +78,11 @@ def get_tasks_for_tables(dag_dir):
             dag_content = (Path(dag_dir) / Path(dag_file)).read_text().strip()
 
             dag_name = _extract_dag_name(dag_content)
-            tables_with_tasks = _extract_tables_with_tasks(dag_content)
+
+            print(dag_file)
+            print(dag_name)
+            print()
+
+            # tables_with_tasks = _extract_tables_with_tasks(dag_content)
 
     return tasks_for_tables

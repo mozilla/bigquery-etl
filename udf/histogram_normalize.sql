@@ -1,14 +1,12 @@
 /*
 */
 CREATE OR REPLACE FUNCTION udf.histogram_normalize(
-  histogram 
-    STRUCT<
-      bucket_count INT64,
-      `sum` INT64,
-      histogram_type INT64,
-      `range` ARRAY<INT64>,
-      `values`
-        ARRAY<STRUCT<key INT64, value INT64>>
+  histogram STRUCT<
+    bucket_count INT64,
+    `sum` INT64,
+    histogram_type INT64,
+    `range` ARRAY<INT64>,
+    `values` ARRAY<STRUCT<key INT64, value INT64>>
   >
 )
 RETURNS STRUCT<
@@ -16,8 +14,7 @@ RETURNS STRUCT<
   `sum` INT64,
   histogram_type INT64,
   `range` ARRAY<INT64>,
-  `values`
-    ARRAY<STRUCT<key INT64, value FLOAT64>>
+  `values` ARRAY<STRUCT<key INT64, value FLOAT64>>
 > AS (
   STRUCT(
     histogram.bucket_count AS bucket_count,
@@ -27,10 +24,7 @@ RETURNS STRUCT<
     ARRAY(
       SELECT AS STRUCT
         key,
-        SAFE_DIVIDE(
-          value,
-          SUM(value) OVER ()
-        )
+        SAFE_DIVIDE(value, SUM(value) OVER ())
       FROM
         UNNEST(histogram.`values`)
     ) AS `values`

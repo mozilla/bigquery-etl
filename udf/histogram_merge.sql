@@ -1,8 +1,6 @@
 /*
 */
-CREATE OR REPLACE FUNCTION udf.histogram_merge(
-  histogram_list ANY TYPE
-) AS (
+CREATE OR REPLACE FUNCTION udf.histogram_merge(histogram_list ANY TYPE) AS (
   STRUCT(
     udf.mode_last(ARRAY(SELECT bucket_count FROM UNNEST(histogram_list))) AS bucket_count,
     (SELECT SUM(`sum`) FROM UNNEST(histogram_list)) AS `sum`,
@@ -17,7 +15,7 @@ CREATE OR REPLACE FUNCTION udf.histogram_merge(
         SUM(value) AS value
       FROM
         UNNEST(histogram_list) AS histogram,
-        UNNEST(values)
+        UNNEST(VALUES)
       GROUP BY
         key
     ) AS values
@@ -54,7 +52,7 @@ SELECT
   assert_histogram_equals(
     STRUCT(
       5 AS bucket_count,
-      60  AS `sum`,
+      60 AS `sum`,
       1 AS histogram_type,
       [0, 100] AS `range`,
       [STRUCT(0 AS key, 0 AS value), STRUCT(20, 1), STRUCT(40, 1)] AS values

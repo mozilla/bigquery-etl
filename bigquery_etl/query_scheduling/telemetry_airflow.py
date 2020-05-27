@@ -1,6 +1,5 @@
 """Contains helper methods to interface with the telemetry-airflow repository."""
 
-import ast
 from git import Repo
 import os
 from os.path import isfile, join
@@ -49,11 +48,33 @@ def _extract_dag_name(dag_content):
 
 def _extract_tables_with_tasks(dag_content):
     """Extract BigQuery destination tables and corresponding tasks from an Airflow DAG definition."""
-    dag_ast = ast.parse(dag_content)
+    airflow_functions_re = (
+        "bigquery_etl_query|bigquery_etl_copy_deduplicate|bigquery_xcom_query"
+    )
+
+    function_calls = re.findall(
+        re.compile(f"(?:{airflow_functions_re})\((.+?(?=\)\n))\)\n", re.DOTALL),
+        dag_content,
+    )
+
     table_with_task = {}
 
-    for el in dag_ast.body:
-        print(ast.dump(el))
+    for fn in function_calls:
+        task_id = re.findall(
+            r"task_id[\n\r\s]*=[\n\r\s]*['\"](?P<task>[^'\"]*)['\"][\n\r\s]*,", fn
+        )
+        table = re.findall(
+            r"destination_table[\n\r\s]*=[\n\r\s]*['\"](?P<table>[^'\"]*)['\"][\n\r\s]*,",
+            fn,
+        )
+
+        dataset_id = re.findall(
+            r"dataset_id[\n\r\s]*=[\n\r\s]*['\"](?P<dataset>[^'\"]*)['\"][\n\r\s]*,",
+            fn,
+        )
+
+        if len(table) > 0 and len(task_id) > 0 and len(dataset_id) > 0:
+            table_with_task[dataset_id[0] + "." + table[0]] = task_id[0]
 
     return table_with_task
 
@@ -78,11 +99,13 @@ def get_tasks_for_tables(dag_dir):
             dag_content = (Path(dag_dir) / Path(dag_file)).read_text().strip()
 
             dag_name = _extract_dag_name(dag_content)
+            tables_with_tasks = _extract_tables_with_tasks(dag_content)
 
-            print(dag_file)
-            print(dag_name)
-            print()
+            tables_with_dag_tasks = {
+                table: {"task": task, "dag": dag_name}
+                for table, task in tables_with_tasks.items()
+            }
 
-            # tables_with_tasks = _extract_tables_with_tasks(dag_content)
+            print(tables_with_dag_tasks)
 
     return tasks_for_tables

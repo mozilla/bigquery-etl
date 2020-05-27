@@ -1,4 +1,47 @@
 -- query for org_mozilla_fenix__histogram_bucket_counts_v1;
+CREATE TEMP FUNCTION udf_merged_user_data(aggs ANY TYPE)
+RETURNS ARRAY<
+  STRUCT<
+    latest_version INT64,
+    metric STRING,
+    metric_type STRING,
+    key STRING,
+    agg_type STRING,
+    value ARRAY<STRUCT<key STRING, value INT64>>
+  >
+> AS (
+  (
+    WITH unnested AS (
+      SELECT
+        *
+      FROM
+        UNNEST(aggs)
+    ),
+    aggregated_data AS (
+      SELECT AS STRUCT
+        latest_version,
+        metric,
+        metric_type,
+        key,
+        agg_type,
+        `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
+      FROM
+        unnested
+      GROUP BY
+        latest_version,
+        latest_version,
+        metric,
+        metric_type,
+        key,
+        agg_type
+    )
+    SELECT
+      ARRAY_AGG((latest_version, metric, metric_type, key, agg_type, value))
+    FROM
+      aggregated_data
+  )
+);
+
 CREATE TEMP FUNCTION udf_normalized_sum(arrs ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Returns the normalized sum of the input maps.
@@ -114,6 +157,26 @@ all_combos AS (
   CROSS JOIN
     static_combos combo
 ),
+-- Ensure there is a single record per client id
+deduplicated_combos AS (
+  SELECT
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    udf_merged_user_data(ARRAY_CONCAT_AGG(histogram_aggregates)) AS histogram_aggregates
+  FROM
+    all_combos
+  GROUP BY
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel
+),
 normalized_histograms AS (
   SELECT
     ping_type,
@@ -123,7 +186,7 @@ normalized_histograms AS (
     channel,
     udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
   FROM
-    all_combos
+    deduplicated_combos
 ),
 unnested AS (
   SELECT

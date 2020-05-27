@@ -2,14 +2,40 @@
 {% include "scalar_bucket_counts_v1.udf.sql" %}
 {% from 'macros.sql' import enumerate_table_combinations %}
 
+{# TODO: remove this import by factoring it out as a proper udf #}
+{% include "clients_scalar_aggregates_v1.udf.sql" %}
+
 WITH
+{{
+    enumerate_table_combinations(
+        source_table,
+        "all_combos",
+        cubed_attributes,
+        attribute_combinations
+    )
+}},
+-- Ensure there is a single record per client id
+deduplicated_combos AS (
+  SELECT
+    client_id,
+    {{ attributes }},
+    udf_merged_user_data(
+      ARRAY_CONCAT_AGG(scalar_aggregates)
+    ) AS scalar_aggregates
+  FROM
+    all_combos
+  GROUP BY
+    client_id,
+    {{ attributes }}
+
+),
 bucketed_booleans AS (
   SELECT
     client_id,
     {{ attributes }},
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
   FROM
-    {{ source_table }}
+    deduplicated_combos
 ),
 bucketed_scalars AS (
   SELECT
@@ -19,7 +45,7 @@ bucketed_scalars AS (
     agg_type,
     SAFE_CAST(udf_bucket(SAFE_CAST(value AS FLOAT64)) AS STRING) AS bucket
   FROM
-    {{ source_table }}
+    deduplicated_combos
   CROSS JOIN
     UNNEST(scalar_aggregates)
   WHERE
@@ -37,15 +63,7 @@ booleans_and_scalars AS (
     *
   FROM
     bucketed_scalars
-),
-{{
-    enumerate_table_combinations(
-        "booleans_and_scalars",
-        "all_combos",
-        cubed_attributes,
-        attribute_combinations
-    )
-}}
+)
 SELECT
   {{ attributes }},
   {{ aggregate_attributes }},
@@ -54,7 +72,7 @@ SELECT
   bucket,
   COUNT(*) AS count
 FROM
-  all_combos
+  booleans_and_scalars
 GROUP BY
   {{ attributes }},
   {{ aggregate_attributes }},

@@ -22,7 +22,6 @@ def clients_scalar_aggregates(**kwargs):
             for name, dtype in zip(attributes_list, attributes_type_list)
         ),
         user_data_attributes=",".join(user_data_attributes_list),
-        user_data_attributes_list=user_data_attributes_list,
         user_data_type="""
             ARRAY<
                 STRUCT<
@@ -94,6 +93,11 @@ def scalar_bucket_counts(**kwargs):
             metric_type STRING,
             key STRING
         """,
+        **{
+            # re-use variables from previous query
+            key: clients_scalar_aggregates()[key]
+            for key in ["user_data_attributes", "user_data_type"]
+        },
         **kwargs,
     )
 

@@ -355,51 +355,93 @@ RETURNS ARRAY<
   )
 );
 
-WITH bucketed_booleans AS (
-  SELECT
-    client_id,
-    ping_type,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
-  FROM
-    glam_etl.org_mozilla_fenix__clients_scalar_aggregates_v1
-),
-bucketed_scalars AS (
-  SELECT
-    client_id,
-    ping_type,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type,
-    SAFE_CAST(udf_bucket(SAFE_CAST(value AS FLOAT64)) AS STRING) AS bucket
-  FROM
-    glam_etl.org_mozilla_fenix__clients_scalar_aggregates_v1
-  CROSS JOIN
-    UNNEST(scalar_aggregates)
-  WHERE
-    metric_type IN ("counter", "quantity", "labeled_counter")
-),
-booleans_and_scalars AS (
-  SELECT
-    * EXCEPT (scalar_aggregates)
-  FROM
-    bucketed_booleans
-  CROSS JOIN
-    UNNEST(scalar_aggregates)
-  UNION ALL
-  SELECT
-    *
-  FROM
-    bucketed_scalars
-),
+CREATE TEMP FUNCTION udf_merged_user_data(
+  aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>
+)
+RETURNS ARRAY<
+  STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>
+> AS (
+  (
+    WITH unnested AS (
+      SELECT
+        *
+      FROM
+        UNNEST(aggs)
+      WHERE
+        agg_type != "avg"
+    ),
+    aggregated AS (
+      SELECT
+        metric,
+        metric_type,
+        key,
+        agg_type,
+        --format:off
+        CASE agg_type
+          WHEN 'max' THEN max(value)
+          WHEN 'min' THEN min(value)
+          WHEN 'count' THEN sum(value)
+          WHEN 'sum' THEN sum(value)
+          WHEN 'false' THEN sum(value)
+          WHEN 'true' THEN sum(value)
+        END AS value
+        --format:on
+      FROM
+        unnested
+      WHERE
+        value IS NOT NULL
+      GROUP BY
+        metric,
+        metric_type,
+        key,
+        agg_type
+    ),
+    scalar_count_and_sum AS (
+      SELECT
+        metric,
+        metric_type,
+        key,
+        'avg' AS agg_type,
+        --format:off
+        CASE WHEN agg_type = 'count' THEN value ELSE 0 END AS count,
+        CASE WHEN agg_type = 'sum' THEN value ELSE 0 END AS sum
+        --format:on
+      FROM
+        aggregated
+      WHERE
+        agg_type IN ('sum', 'count')
+    ),
+    scalar_averages AS (
+      SELECT
+        * EXCEPT (count, sum),
+        SUM(sum) / SUM(count) AS agg_value
+      FROM
+        scalar_count_and_sum
+      GROUP BY
+        metric,
+        metric_type,
+        key,
+        agg_type
+    ),
+    merged_data AS (
+      SELECT
+        *
+      FROM
+        aggregated
+      UNION ALL
+      SELECT
+        *
+      FROM
+        scalar_averages
+    )
+    SELECT
+      ARRAY_AGG((metric, metric_type, key, agg_type, value))
+    FROM
+      merged_data
+  )
+);
+
+WITH
 -- Cross join with the attribute combinations to reduce the query complexity
 -- with respect to the number of operations. A table with n rows cross joined
 -- with a combination of m attributes will generate a new table with n*m rows.
@@ -429,9 +471,74 @@ all_combos AS (
     COALESCE(combo.os, table.os) AS os,
     COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
   FROM
-    booleans_and_scalars table
+    glam_etl.org_mozilla_fenix__clients_scalar_aggregates_v1 table
   CROSS JOIN
     static_combos combo
+),
+-- Ensure there is a single record per client id
+deduplicated_combos AS (
+  SELECT
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    udf_merged_user_data(ARRAY_CONCAT_AGG(scalar_aggregates)) AS scalar_aggregates
+  FROM
+    all_combos
+  GROUP BY
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel
+),
+bucketed_booleans AS (
+  SELECT
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
+  FROM
+    deduplicated_combos
+),
+bucketed_scalars AS (
+  SELECT
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    metric,
+    metric_type,
+    key,
+    agg_type,
+    SAFE_CAST(udf_bucket(SAFE_CAST(value AS FLOAT64)) AS STRING) AS bucket
+  FROM
+    deduplicated_combos
+  CROSS JOIN
+    UNNEST(scalar_aggregates)
+  WHERE
+    metric_type IN ("counter", "quantity", "labeled_counter")
+),
+booleans_and_scalars AS (
+  SELECT
+    * EXCEPT (scalar_aggregates)
+  FROM
+    bucketed_booleans
+  CROSS JOIN
+    UNNEST(scalar_aggregates)
+  UNION ALL
+  SELECT
+    *
+  FROM
+    bucketed_scalars
 )
 SELECT
   ping_type,
@@ -447,7 +554,7 @@ SELECT
   bucket,
   COUNT(*) AS count
 FROM
-  all_combos
+  booleans_and_scalars
 GROUP BY
   ping_type,
   os,

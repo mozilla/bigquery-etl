@@ -1,3 +1,7 @@
+/*
+Given an array of scalar metric data that might have
+duplicate values for a metric, merge them into one value.
+*/
 CREATE OR REPLACE FUNCTION udf.merge_scalar_user_data(
   aggs ARRAY<
     STRUCT<
@@ -103,3 +107,105 @@ RETURNS ARRAY<
       merged_data
   )
 );
+
+-- Tests
+WITH user_scalar_data AS (
+  SELECT
+    ARRAY<
+      STRUCT<
+        metric STRING,
+        metric_type STRING,
+        key STRING,
+        process STRING,
+        agg_type STRING,
+        value FLOAT64
+      >
+    >[
+      ("name1", "type", "", "parent", "max", 5.0),
+      ("name1", "type", "", "parent", "max", 15.0),
+      ("name1", "type", "", "parent", "max", 20.0),
+      ("name1", "type", "", "parent", "min", 5.0),
+      ("name1", "type", "", "parent", "min", 15.0),
+      ("name1", "type", "", "parent", "min", 20.0),
+      ("name1", "type", "", "parent", "count", 5.0),
+      ("name1", "type", "", "parent", "count", 15.0),
+      ("name1", "type", "", "parent", "count", 20.0),
+      ("name1", "type", "", "parent", "sum", 105.0),
+      ("name1", "type", "", "parent", "sum", 15.0),
+      ("name1", "type", "", "parent", "sum", 20.0)
+    ] AS scalar_aggs
+),
+applied_function AS (
+  SELECT
+    udf.merge_scalar_user_data(scalar_aggs) AS scalar_aggs
+  FROM
+    user_scalar_data
+),
+expected AS (
+  SELECT
+    [
+      STRUCT(
+        "name1" AS metric,
+        "type" AS metric_type,
+        "" AS key,
+        "parent" AS process,
+        "max" AS agg_type,
+        20 AS value
+      ),
+      STRUCT(
+        "name1" AS metric,
+        "type" AS metric_type,
+        "" AS key,
+        "parent" AS process,
+        "min" AS agg_type,
+        5 AS value
+      ),
+      STRUCT(
+        "name1" AS metric,
+        "type" AS metric_type,
+        "" AS key,
+        "parent" AS process,
+        "count" AS agg_type,
+        40 AS value
+      ),
+      STRUCT(
+        "name1" AS metric,
+        "type" AS metric_type,
+        "" AS key,
+        "parent" AS process,
+        "sum" AS agg_type,
+        140 AS value
+      ),
+      STRUCT(
+        "name1" AS metric,
+        "type" AS metric_type,
+        "" AS key,
+        "parent" AS process,
+        "avg" AS agg_type,
+        3.5 AS value
+      )
+    ] AS arr
+),
+merged_expected_actual AS (
+  SELECT
+    ANY_VALUE(expected) AS expected,
+    ANY_VALUE(actual) AS actual
+  FROM
+    (
+      SELECT
+        arr AS expected,
+        NULL AS actual
+      FROM
+        expected
+      UNION ALL
+      SELECT
+        NULL AS expected,
+        scalar_aggs AS actual
+      FROM
+        applied_function
+    )
+)
+SELECT
+  assert_array_equals(expected, actual)
+FROM
+  merged_expected_actual

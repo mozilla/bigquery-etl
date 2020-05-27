@@ -1,4 +1,6 @@
 /*
+Normalize a histogram. Set sum to 1, and normalize to 1
+the histogram bucket counts.
 */
 CREATE OR REPLACE FUNCTION udf.histogram_normalize(
   histogram STRUCT<

@@ -1,4 +1,8 @@
 /*
+Merge an array of histograms into a single histogram.
+- The histogram values will be summed per-bucket
+- The count will be summed
+- Other fields will take the mode_last
 */
 CREATE OR REPLACE FUNCTION udf.histogram_merge(histogram_list ANY TYPE) AS (
   STRUCT(

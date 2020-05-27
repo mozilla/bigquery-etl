@@ -1,21 +1,14 @@
-CREATE TEMP FUNCTION udf_merged_user_data(
-  old_aggs {{ user_data_type }},
-  new_aggs {{ user_data_type }}
-)
+{# Accepts: user_data_type, user_data_attributes #}
+CREATE TEMP FUNCTION udf_merged_user_data(aggs {{ user_data_type }})
 RETURNS {{ user_data_type }} AS (
   (
     WITH unnested AS (
       SELECT
         *
       FROM
-        UNNEST(old_aggs)
+        UNNEST(aggs)
       WHERE
         agg_type != "avg"
-      UNION ALL
-      SELECT
-        *
-      FROM
-        UNNEST(new_aggs)
     ),
     aggregated AS (
       SELECT

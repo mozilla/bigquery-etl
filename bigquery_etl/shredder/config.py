@@ -68,6 +68,7 @@ ECOSYSTEM_CLIENT_ID = "payload.ecosystem_client_id"
 PIONEER_ID = "payload.pioneer_id"
 ID = "id"
 CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
+SYNC_ID = "SUBSTR(payload.device_id, 0, 32)"
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -82,7 +83,11 @@ CFR_SRC = DeleteSource(
     f" UNNEST([{CLIENT_ID}, {IMPRESSION_SRC.field}]) AS `_",
     field="_",
 )
-SOURCES = [DESKTOP_SRC, IMPRESSION_SRC]
+SYNC_SRC = DeleteSource(
+    table="telemetry_stable.deletion_request_v4",
+    field="payload.scalars.parent.deletion_request_sync_device_id",
+)
+SOURCES = [DESKTOP_SRC, IMPRESSION_SRC, CFR_SRC, SYNC_SRC]
 
 
 client_id_target = partial(DeleteTarget, field=CLIENT_ID)
@@ -178,6 +183,9 @@ DELETE_TARGETS = {
     impression_id_target(
         table="messaging_system_stable.personalization_experiment_v1"
     ): IMPRESSION_SRC,
+    # sync
+    DeleteTarget(table="telemetry_stable.sync_v4", field=SYNC_ID): SYNC_SRC,
+    DeleteTarget(table="telemetry_stable.sync_v5", field=SYNC_ID): SYNC_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
@@ -236,8 +244,6 @@ SEARCH_IGNORE_FIELDS = {
     ("telemetry_stable.optout_v4", ID),
     ("telemetry_stable.pre_account_v4", ID),
     ("telemetry_stable.prio_v4", ID),
-    ("telemetry_stable.sync_v4", ID),
-    ("telemetry_stable.sync_v5", ID),
 }
 
 

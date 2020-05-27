@@ -15,6 +15,11 @@ WITH all_counts AS (
   SELECT
     *
   FROM
+    `moz-fx-data-shared-prod.telemetry_derived.scalar_percentiles_v1`
+  UNION ALL
+  SELECT
+    *
+  FROM
     `moz-fx-data-shared-prod.telemetry_derived.histogram_percentiles_v1`
 )
 SELECT

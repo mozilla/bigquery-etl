@@ -108,6 +108,7 @@ SKIP = {
     "sql/telemetry_derived/latest_versions/query.sql",
     "sql/telemetry_derived/main_events_v1/init.sql",
     "sql/telemetry_derived/main_events_v1/query.sql",
+    "sql/telemetry_derived/scalar_percentiles_v1/query.sql",
     "sql/telemetry_derived/smoot_usage_desktop_v2/query.sql",
     "sql/telemetry_derived/smoot_usage_fxa_v2/query.sql",
     "sql/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",

@@ -113,9 +113,7 @@ CREATE TEMP FUNCTION udf_boolean_buckets(
 WITH flat_clients_scalar_aggregates AS (
   SELECT *,
     os = 'Windows' and channel = 'release' AS sampled,
-  FROM clients_scalar_aggregates_v1
-  WHERE udf_js.sample_id(client_id) >= @min_sample_id
-    AND udf_js.sample_id(client_id) <= @max_sample_id),
+  FROM clients_scalar_aggregates_v1),
 
 static_combos as (
   SELECT null as os, null as app_build_id
@@ -154,34 +152,6 @@ user_aggregates AS (
     app_version,
     app_build_id,
     channel),
-
-percentiles AS (
-  SELECT
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    SUM(user_count) AS total_users,
-    APPROX_QUANTILES(value, 100)  AS aggregates
-  FROM
-    user_aggregates
-  CROSS JOIN UNNEST(scalar_aggregates)
-  GROUP BY
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
-    client_agg_type),
 
 bucketed_booleans AS (
   SELECT
@@ -290,12 +260,3 @@ GROUP BY
   process,
   client_agg_type,
   agg_type
-
-UNION ALL
-
-SELECT *
-REPLACE(udf_get_values(
-  [5.0, 25.0, 50.0, 75.0, 95.0],
-  aggregates
-) AS aggregates)
-FROM percentiles

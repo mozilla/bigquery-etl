@@ -194,14 +194,22 @@ class Task:
             table_names.sort()
             return table_names
 
-    def with_dependencies(self, client, dag_collection):
+    def with_dependencies(self, client, dag_collection, external_task_refs):
         """Perfom a dry_run to get upstream dependencies."""
         dependencies = []
+        telemetry_airflow_dependencies = []
 
-        for table in self._get_referenced_tables(client):
-            upstream_task = dag_collection.task_for_table(table[0], table[1])
+        for dataset, table_name in self._get_referenced_tables(client):
+            upstream_task = dag_collection.task_for_table(dataset, table_name)
 
             if upstream_task is not None:
                 dependencies.append(upstream_task)
+            
+            # check if there are telemetry-airflow dependencies
 
+            for task_ref in external_task_refs:
+                if task_ref.dataset == dataset and task_ref.destination_table == table_name:
+                    telemetry_airflow_dependencies.append(task_ref)
+
+        self.telemetry_airflow_dependencies = telemetry_airflow_dependencies
         self.dependencies = dependencies

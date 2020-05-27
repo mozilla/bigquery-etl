@@ -159,7 +159,7 @@ class Dag:
         except TypeError as e:
             raise DagParseException(f"Invalid DAG configuration format in {d}: {e}")
 
-    def to_airflow_dag(self, client, dag_collection):
+    def to_airflow_dag(self, client, dag_collection, external_task_refs):
         """Convert the DAG to its Airflow representation and return the python code."""
         env = Environment(
             loader=PackageLoader("bigquery_etl", "query_scheduling/templates")
@@ -178,6 +178,6 @@ class Dag:
         args = self.__dict__
 
         for task in args["tasks"]:
-            task.with_dependencies(client, dag_collection)
+            task.with_dependencies(client, dag_collection, external_task_refs)
 
         return dag_template.render(args)

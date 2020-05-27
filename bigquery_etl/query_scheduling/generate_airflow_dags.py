@@ -89,10 +89,12 @@ def main():
     dags_output_dir = Path(args.output_dir)
 
     telemetry_airflow_dags = telemetry_airflow.download_repository()
-    print(telemetry_airflow.get_tasks_for_tables(telemetry_airflow_dags))
+    airflow_task_refs = telemetry_airflow.get_airflow_task_references(
+        telemetry_airflow_dags
+    )
 
     dags = get_dags(args.sql_dir, args.dags_config)
-    dags.to_airflow_dags(dags_output_dir, client)
+    dags.to_airflow_dags(dags_output_dir, client, airflow_task_refs)
 
 
 if __name__ == "__main__":

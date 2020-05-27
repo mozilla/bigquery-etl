@@ -1,5 +1,7 @@
 """Contains helper methods to interface with the telemetry-airflow repository."""
 
+import attr
+import cattr
 from git import Repo
 import os
 from os.path import isfile, join
@@ -10,6 +12,17 @@ import tempfile
 
 
 TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
+
+
+@attr.s(auto_attribs=True)
+class TelemetryAirflowTaskRef:
+    """Reference to a task defined in telemetry-airflow."""
+
+    dag_name: str = attr.ib()
+    task_name: str = attr.ib()
+    dataset: str = attr.ib()
+    # consists of the table name including version
+    destination_table: str = attr.ib()
 
 
 def download_repository():
@@ -46,8 +59,10 @@ def _extract_dag_name(dag_content):
     return None
 
 
-def _extract_tables_with_tasks(dag_content):
-    """Extract BigQuery destination tables and corresponding tasks from an Airflow DAG definition."""
+def _extract_task_references(dag_content):
+    """Extract destination tables and corresponding tasks from an Airflow DAGs."""
+    dag_name = _extract_dag_name(dag_content)
+
     airflow_functions_re = (
         "bigquery_etl_query|bigquery_etl_copy_deduplicate|bigquery_xcom_query"
     )
@@ -57,7 +72,7 @@ def _extract_tables_with_tasks(dag_content):
         dag_content,
     )
 
-    table_with_task = {}
+    task_refs = []
 
     for fn in function_calls:
         task_id = re.findall(
@@ -74,19 +89,21 @@ def _extract_tables_with_tasks(dag_content):
         )
 
         if len(table) > 0 and len(task_id) > 0 and len(dataset_id) > 0:
-            table_with_task[dataset_id[0] + "." + table[0]] = task_id[0]
+            task_refs.append(
+                TelemetryAirflowTaskRef(
+                    dag_name=dag_name,
+                    task_name=task_id[0],
+                    destination_table=table[0],
+                    dataset=dataset_id[0],
+                )
+            )
 
-    return table_with_task
+    return task_refs
 
 
-def get_tasks_for_tables(dag_dir):
-    """
-    Retrieve tasks and BigQuery destination tables from telemetry-airflow DAGs.
-
-    Returns a Hashmap that the BigQuery table as the key and the DAG and task
-    names as the values for which the table is set as destination_table.
-    """
-    tasks_for_tables = {}
+def get_airflow_task_references(dag_dir):
+    """Retrieve telemetry-airflow task references."""
+    airflow_task_refs = []
 
     if os.path.isdir(dag_dir):
         dag_files = [
@@ -98,14 +115,8 @@ def get_tasks_for_tables(dag_dir):
         for dag_file in dag_files:
             dag_content = (Path(dag_dir) / Path(dag_file)).read_text().strip()
 
-            dag_name = _extract_dag_name(dag_content)
-            tables_with_tasks = _extract_tables_with_tasks(dag_content)
+            task_refs = _extract_task_references(dag_content)
 
-            tables_with_dag_tasks = {
-                table: {"task": task, "dag": dag_name}
-                for table, task in tables_with_tasks.items()
-            }
+            airflow_task_refs += task_refs
 
-            print(tables_with_dag_tasks)
-
-    return tasks_for_tables
+    return airflow_task_refs

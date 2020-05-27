@@ -47,4 +47,13 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_name }})
     {% endif -%}
     {% endfor -%}
+
+    {% for telemetry_airflow_dependency in task.telemetry_airflow_dependencies -%}
+    wait_for_{{ telemetry_airflow_dependency.task_name }} = ExternalTaskSensor(
+        task_id='wait_for_{{ telemetry_airflow_dependency.task_name }}',
+        external_dag_id='{{ telemetry_airflow_dependency.dag_name }}',
+        external_task_id='{{ telemetry_airflow_dependency.task_name }}',
+        dag=dag,
+    )
+    {% endfor -%}
 {% endfor -%}

@@ -1,7 +1,6 @@
 """Contains helper methods to interface with the telemetry-airflow repository."""
 
 import attr
-import cattr
 from git import Repo
 import os
 from os.path import isfile, join
@@ -40,7 +39,7 @@ def download_repository():
 
 
 def _extract_dag_name(dag_content):
-    """Extracts the DAG name for an Airflow DAG definition."""
+    """Extract the DAG name for an Airflow DAG definition."""
     dag_name_regex = [
         # DAG name inline with DAG definition
         re.compile(
@@ -68,7 +67,7 @@ def _extract_task_references(dag_content):
     )
 
     function_calls = re.findall(
-        re.compile(f"(?:{airflow_functions_re})\((.+?(?=\)\n))\)\n", re.DOTALL),
+        re.compile(fr"(?:{airflow_functions_re})\((.+?(?=\)\n))\)\n", re.DOTALL),
         dag_content,
     )
 
@@ -79,7 +78,7 @@ def _extract_task_references(dag_content):
             r"task_id[\n\r\s]*=[\n\r\s]*['\"](?P<task>[^'\"]*)['\"][\n\r\s]*,", fn
         )
         table = re.findall(
-            r"destination_table[\n\r\s]*=[\n\r\s]*['\"](?P<table>[^'\"]*)['\"][\n\r\s]*,",
+            r"destination_table[\n\r\s]*=[\n\r\s]*['\"](?P<tab>[^'\"]*)['\"][\n\r\s]*,",
             fn,
         )
 

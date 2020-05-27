@@ -204,12 +204,14 @@ class Task:
 
             if upstream_task is not None:
                 dependencies.append(upstream_task)
-            
-            # check if there are telemetry-airflow dependencies
-
-            for task_ref in external_task_refs:
-                if task_ref.dataset == dataset and task_ref.destination_table == table_name:
-                    telemetry_airflow_dependencies.append(task_ref)
+            else:
+                # check if there are telemetry-airflow dependencies
+                for task_ref in external_task_refs:
+                    if (
+                        task_ref.dataset == dataset
+                        and task_ref.destination_table == table_name
+                    ):
+                        telemetry_airflow_dependencies.append(task_ref)
 
         self.telemetry_airflow_dependencies = telemetry_airflow_dependencies
         self.dependencies = dependencies

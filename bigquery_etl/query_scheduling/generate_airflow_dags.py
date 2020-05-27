@@ -2,23 +2,20 @@
 
 import logging
 import os
-from git import Repo
 from argparse import ArgumentParser
 from google.cloud import bigquery
 from ..util import standard_args
-import shutil
-import tempfile
 from pathlib import Path
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
+from bigquery_etl.query_scheduling import telemetry_airflow
 
 
 DEFAULT_SQL_DIR = "sql/"
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
 DEFAULT_DAGS_DIR = "dags"
-TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -46,21 +43,6 @@ parser.add_argument(
     help="Generated DAGs are written to this output directory.",
 )
 standard_args.add_log_level(parser)
-
-
-# This will be needed later for determining external dependencies
-#
-def setup_telemetry_airflow():
-    """Download the telemetry-airflow repository to a temporary directory."""
-    tmp_dir = tempfile.gettempdir() + "/telemetry-airflow/"
-
-    # the repository can only be cloned into an empty directory
-    shutil.rmtree(tmp_dir)
-
-    Repo.clone_from(TELEMETRY_AIRFLOW_GITHUB, tmp_dir)
-
-    airflow_dag_dir = tmp_dir + "/dags"
-    return airflow_dag_dir
 
 
 def get_dags(sql_dir, dags_config):
@@ -105,6 +87,9 @@ def main():
     args = parser.parse_args()
     client = bigquery.Client(args.project_id)
     dags_output_dir = Path(args.output_dir)
+
+    telemetry_airflow_dags = telemetry_airflow.download_repository()
+    print(telemetry_airflow.get_tasks_for_tables(telemetry_airflow_dags))
 
     dags = get_dags(args.sql_dir, args.dags_config)
     dags.to_airflow_dags(dags_output_dir, client)

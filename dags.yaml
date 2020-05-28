@@ -24,6 +24,15 @@ bqetl_ssl_ratios:
   default_args:
       owner: chutten@mozilla.com
       start_date: '2019-07-20'
-      email: ["telemetry-alerts@mozilla.com", "chutten@mozilla.com"]
+      email: ['telemetry-alerts@mozilla.com', 'chutten@mozilla.com']
       retries: 2
+      retry_delay: 30m
+
+bqetl_addons_daily:
+  schedule_interval: 0 1 * * *
+  default_args:
+      owner: bmiroglio@mozilla.com
+      start_date: '2020-03-16'
+      email: ['telemetry-alerts@mozilla.com', 'bmiroglio@mozilla.com']
+      retries: 1
       retry_delay: 30m

@@ -1,0 +1,9 @@
+friendly_name: Addons daily
+description: >-
+  A daily aggregate of addons.
+owners:
+  - bmiroglio@mozilla.com
+labels:
+  incremental: true
+scheduling:
+    dag_name: bqetl_addons_daily

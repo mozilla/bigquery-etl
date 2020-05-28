@@ -8,15 +8,15 @@ src_project=${SRC_PROJECT:-glam-fenix-dev}
 # TODO: glam-dev-bespoke-nonprod-dataops-mozgcp-net
 dst_project=${DST_PROJECT:-$src_project}
 dataset=${DATASET:-glam_etl_dev}
-product=${PRODUCT:-fenix}   # TODO: set default to org_mozilla_fenix
+product=${PRODUCT:-org_mozilla_fenix}
 
 bucket="gs://${dst_project}"
 gsutil ls "$bucket" > /dev/null
 
 bq extract --destination_format CSV --noprint_header \
-    "${src_project}:${dataset}.${product}_extract_probe_counts_v1" \
+    "${src_project}:${dataset}.${product}__extract_probe_counts_v1" \
     "$bucket/glam-extract-${product}-*.csv"
 
 bq extract --destination_format CSV --noprint_header \
-    "${src_project}:${dataset}.${product}_extract_user_counts_v1" \
+    "${src_project}:${dataset}.${product}__extract_user_counts_v1" \
     "$bucket/glam-extract-${product}-counts.csv"

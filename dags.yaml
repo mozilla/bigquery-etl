@@ -18,3 +18,12 @@ bqetl_kpi_dashboard:
     depends_on_past: false
     retry_delay: 10m
     retries: 1
+
+bqetl_ssl_ratios:
+  schedule_interval: daily
+  default_args:
+      owner: chutten@mozilla.com
+      start_date: '2019-07-20'
+      email: ["telemetry-alerts@mozilla.com", "chutten@mozilla.com"]
+      retries: 2
+      retry_delay: 30m

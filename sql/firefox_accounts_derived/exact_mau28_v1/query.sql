@@ -22,7 +22,7 @@ WITH
       days_since_seen_in_tier1_country,
       country
     FROM
-      fxa_users_last_seen_v1
+      firefox_accounts.fxa_users_last_seen
     WHERE
       submission_date >= DATE '2019-03-28' ),
   unioned AS (

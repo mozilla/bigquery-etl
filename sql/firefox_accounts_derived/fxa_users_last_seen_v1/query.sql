@@ -24,7 +24,7 @@ WITH
     * EXCEPT (submission_date)
     REPLACE (IF(submission_date < '2019-11-25', days_seen_bits, days_seen_no_monitor_bits) AS days_seen_no_monitor_bits)
   FROM
-    fxa_users_last_seen_raw_v1
+    fxa_users_last_seen_v1
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

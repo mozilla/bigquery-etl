@@ -5,6 +5,7 @@ owners:
   - bewu@mozilla.com
 labels:
   incremental: true
-scheduling:
-  dag_name: bqetl_error_aggregates
-  depends_on_past: false
+# scheduling:
+#   todo: requires renaming query to error_aggregates_v1
+#   dag_name: bqetl_error_aggregates
+#   depends_on_past: false

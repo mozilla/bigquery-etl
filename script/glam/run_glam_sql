@@ -187,6 +187,18 @@ function run_desktop_sql {
 function run_glean_sql {
     local product=$1
     local start_stage=${START_STAGE:-0}
+    local reset=${RESET:-false}
+    local backfill_only=${BACKFILL_ONLY:-false}
+    local export_only=${EXPORT_ONLY:-false}
+
+    if [[ $backfill_only = true && $export_only = true ]]; then
+        echo "BACKFILL_ONLY and EXPORT_ONLY are mutually exclusive"
+        exit 1
+    fi
+    if [[ $reset = true && $export_only = true ]]; then
+        echo "RESET and EXPORT_ONLY are mutually exclusive"
+        exit 1
+    fi
 
     if ((start_stage <= 0)); then
         for directory in sql/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
@@ -197,8 +209,7 @@ function run_glean_sql {
         done
         wait
     fi
-    # TODO: testing mechanism
-    if ((start_stage <= 1)); then
+    if ((start_stage <= 1)) && [[ $export_only = false ]]; then
         run_query "${product}__latest_versions_v1" &
         run_view "${product}__view_clients_daily_scalar_aggregates_v1" &
         run_view "${product}__view_clients_daily_histogram_aggregates_v1" &
@@ -208,6 +219,9 @@ function run_glean_sql {
         run_query "${product}__clients_scalar_aggregates_v1" &
         run_query "${product}__clients_histogram_aggregates_v1" &
         wait
+    fi
+    if [[ $backfill_only = true ]]; then
+        return
     fi
     if ((start_stage <= 2)); then
         run_query "${product}__scalar_bucket_counts_v1" &

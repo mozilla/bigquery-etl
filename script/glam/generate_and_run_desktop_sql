@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# import run_query procedure from run_glam_sql without running the script
+IMPORT=true source script/glam/run_glam_sql
+
+
+function generate_and_run_sql {
+    local probe_type=$1
+    local windows_release_sample_percent=$2
+    local script_type
+    local destination_table
+    local write_disposition
+
+    echo "generating sql for ${probe_type}"
+
+    case $probe_type in
+        histogram | keyed_histogram)
+            script_type="histogram"
+            ;;
+        scalar | keyed_scalar | keyed_boolean)
+            script_type="scalar"
+            ;;
+        *)
+            echo "probe probe_type must be one of { histogram | keyed_histogram | scalar | keyed_scalar | keyed_boolean }"
+            exit 1
+            ;;
+    esac
+
+    python3 "sql/telemetry_derived/clients_daily_${script_type}_aggregates_v1.sql.py" \
+        "--agg-type=${probe_type}s" \
+        > "sql/telemetry_derived/clients_daily_${probe_type}_aggregates_v1/query.sql"
+
+    echo "generated sql/telemetry_derived/clients_daily_${probe_type}_aggregates_v1/query.sql"
+
+    if [[ -z $RUN_QUERY ]]; then
+        return
+    fi
+
+    if [[ -n $APPEND ]]; then
+        write_disposition="--append_table --noreplace"
+    else
+        write_disposition="--replace"
+    fi
+
+    run_query "clients_daily_${script_type}_aggregates_v1" \
+        true 0 99 "clients_daily_${probe_type}_aggregates_v1" \
+        "$write_disposition --clustering_fields=app_version,channel --time_partitioning_field=submission_date" \
+        "$(if [[ -n $windows_release_sample_percent ]]; then echo $windows_release_sample_percent; fi)"
+
+}
+
+probe_types=${1:-"scalar" "keyed_boolean" "keyed_scalar" "histogram" "keyed_histogram"}
+
+for probe_type in ${probe_types[@]}; do
+    generate_and_run_sql $probe_type $2
+done

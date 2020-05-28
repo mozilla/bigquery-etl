@@ -115,6 +115,8 @@ SKIP = {
     "sql/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",
     "sql/telemetry_derived/smoot_usage_nondesktop_v2/query.sql",
     "sql/telemetry_derived/surveygizmo_daily_attitudes/init.sql",
+    "sql/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",
+    "sql/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501
     "udf/active_n_weeks_ago.sql",
     "udf/add_monthly_engine_searches.sql",
     "udf/add_monthly_searches.sql",

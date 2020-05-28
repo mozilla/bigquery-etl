@@ -10,9 +10,9 @@ WITH
     CAST(NULL AS STRING) AS channel,
     CAST(NULL AS BOOLEAN) AS attributed,
   FROM
-    `moz-fx-data-derived-datasets.telemetry.fxa_users_last_seen_raw_v1` fxa
+    `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_last_seen_v1` AS fxa
   LEFT JOIN
-    `moz-fx-data-shared-prod.static.country_names_v1` country_names
+    `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
   ON
     fxa.country = country_names.`name` ),
   --

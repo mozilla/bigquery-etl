@@ -1,4 +1,9 @@
 {{ header }}
+{% from 'macros.sql' import enumerate_table_combinations %}
+
+{# TODO: remove this import by factoring it out as a proper udf #}
+{% include "clients_histogram_aggregates_v1.udf.sql" %}
+
 CREATE TEMP FUNCTION udf_normalized_sum(arrs ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Returns the normalized sum of the input maps.
@@ -76,12 +81,35 @@ RETURNS ARRAY<
   )
 );
 
-WITH normalized_histograms AS (
+WITH
+{{
+    enumerate_table_combinations(
+        source_table,
+        "all_combos",
+        cubed_attributes,
+        attribute_combinations
+    )
+}},
+-- Ensure there is a single record per client id
+deduplicated_combos AS (
+  SELECT
+    client_id,
+    {{ attributes }},
+    udf_merged_user_data(
+      ARRAY_CONCAT_AGG(histogram_aggregates)
+    ) AS histogram_aggregates
+  FROM
+    all_combos
+  GROUP BY
+    client_id,
+    {{ attributes }}
+),
+normalized_histograms AS (
   SELECT
     {{ attributes }},
     udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
   FROM
-    glam_etl.{{ prefix }}__clients_histogram_aggregates_v1
+    deduplicated_combos
 ),
 unnested AS (
   SELECT

@@ -22,7 +22,6 @@ def clients_scalar_aggregates(**kwargs):
             for name, dtype in zip(attributes_list, attributes_type_list)
         ),
         user_data_attributes=",".join(user_data_attributes_list),
-        user_data_attributes_list=user_data_attributes_list,
         user_data_type="""
             ARRAY<
                 STRUCT<
@@ -49,9 +48,13 @@ def clients_histogram_aggregates(**kwargs):
         "app_build_id",
         "channel",
     ]
+    fixed_attributes = ["app_version", "channel"]
+    cubed_attributes = [x for x in attributes_list if x not in fixed_attributes]
     return dict(
         attributes_list=attributes_list,
         attributes=",".join(attributes_list),
+        cubed_attributes=cubed_attributes,
+        attribute_combinations=compute_datacube_groupings(cubed_attributes),
         metric_attributes="""
             latest_version,
             metric,
@@ -66,8 +69,12 @@ def clients_histogram_aggregates(**kwargs):
 def scalar_bucket_counts(**kwargs):
     """Variables for scalar bucket_counts."""
     attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+    fixed_attributes = ["app_version", "channel"]
+    cubed_attributes = [x for x in attributes_list if x not in fixed_attributes]
     return dict(
         attributes=",".join(attributes_list),
+        cubed_attributes=cubed_attributes,
+        attribute_combinations=compute_datacube_groupings(cubed_attributes),
         scalar_metric_types="""
             "counter",
             "quantity",
@@ -86,6 +93,11 @@ def scalar_bucket_counts(**kwargs):
             metric_type STRING,
             key STRING
         """,
+        **{
+            # re-use variables from previous query
+            key: clients_scalar_aggregates()[key]
+            for key in ["user_data_attributes", "user_data_type"]
+        },
         **kwargs,
     )
 
@@ -100,10 +112,13 @@ def histogram_bucket_counts(**kwargs):
         "key",
         "agg_type",
     ]
-
+    fixed_attributes = ["app_version", "channel"]
+    cubed_attributes = [x for x in attributes_list if x not in fixed_attributes]
     return dict(
         attributes_list=attributes_list,
         attributes=",".join(attributes_list),
+        cubed_attributes=cubed_attributes,
+        attribute_combinations=compute_datacube_groupings(cubed_attributes),
         metric_attributes_list=metric_attributes_list,
         metric_attributes=",".join(metric_attributes_list),
         custom_distribution_metadata_list=get_custom_distribution_metadata("fenix"),
@@ -116,10 +131,7 @@ def probe_counts(**kwargs):
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
 
     return dict(
-        attributes=attributes,
-        attribute_combinations=compute_datacube_groupings(
-            attributes, ["app_version", "channel"]
-        ),
+        attributes=",".join(attributes),
         aggregate_attributes="""
             metric,
             metric_type,
@@ -145,12 +157,14 @@ def probe_counts(**kwargs):
 def scalar_percentiles(**kwargs):
     """Variables for scalar percentiles."""
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+    fixed_attributes = ["app_version", "channel"]
+    cubed_attributes = [x for x in attributes if x not in fixed_attributes]
 
     return dict(
+        # TODO: be consistent with naming of attributes (e.g. attributes_list)
         attributes=attributes,
-        attribute_combinations=compute_datacube_groupings(
-            attributes, ["app_version", "channel"]
-        ),
+        cubed_attributes=cubed_attributes,
+        attribute_combinations=compute_datacube_groupings(cubed_attributes),
         aggregate_attributes="""
             metric,
             metric_type,
@@ -163,11 +177,12 @@ def scalar_percentiles(**kwargs):
 def user_counts(**kwargs):
     """Variables for user counts."""
     attributes = ["ping_type", "os", "app_version", "app_build_id", "channel"]
+    fixed_attributes = ["app_version", "channel"]
+    cubed_attributes = [x for x in attributes if x not in fixed_attributes]
 
     return dict(
         attributes=",".join(attributes),
-        attribute_combinations=compute_datacube_groupings(
-            attributes, ["app_version", "channel"]
-        ),
+        cubed_attributes=cubed_attributes,
+        attribute_combinations=compute_datacube_groupings(cubed_attributes),
         **kwargs,
     )

@@ -1,4 +1,47 @@
 -- query for org_mozilla_fenix__histogram_bucket_counts_v1;
+CREATE TEMP FUNCTION udf_merged_user_data(aggs ANY TYPE)
+RETURNS ARRAY<
+  STRUCT<
+    latest_version INT64,
+    metric STRING,
+    metric_type STRING,
+    key STRING,
+    agg_type STRING,
+    value ARRAY<STRUCT<key STRING, value INT64>>
+  >
+> AS (
+  (
+    WITH unnested AS (
+      SELECT
+        *
+      FROM
+        UNNEST(aggs)
+    ),
+    aggregated_data AS (
+      SELECT AS STRUCT
+        latest_version,
+        metric,
+        metric_type,
+        key,
+        agg_type,
+        `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
+      FROM
+        unnested
+      GROUP BY
+        latest_version,
+        latest_version,
+        metric,
+        metric_type,
+        key,
+        agg_type
+    )
+    SELECT
+      ARRAY_AGG((latest_version, metric, metric_type, key, agg_type, value))
+    FROM
+      aggregated_data
+  )
+);
+
 CREATE TEMP FUNCTION udf_normalized_sum(arrs ARRAY<STRUCT<key STRING, value INT64>>)
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Returns the normalized sum of the input maps.
@@ -80,7 +123,61 @@ RETURNS ARRAY<
   )
 );
 
-WITH normalized_histograms AS (
+WITH
+-- Cross join with the attribute combinations to reduce the query complexity
+-- with respect to the number of operations. A table with n rows cross joined
+-- with a combination of m attributes will generate a new table with n*m rows.
+-- The glob ("*") symbol can be understood as selecting all of values belonging
+-- to that group.
+static_combos AS (
+  SELECT
+    combos.*
+  FROM
+    UNNEST(
+      ARRAY<STRUCT<ping_type STRING, os STRING, app_build_id STRING>>[
+        (NULL, NULL, NULL),
+        (NULL, NULL, "*"),
+        (NULL, "*", NULL),
+        ("*", NULL, NULL),
+        (NULL, "*", "*"),
+        ("*", NULL, "*"),
+        ("*", "*", NULL),
+        ("*", "*", "*")
+      ]
+    ) AS combos
+),
+all_combos AS (
+  SELECT
+    table.* EXCEPT (ping_type, os, app_build_id),
+    COALESCE(combo.ping_type, table.ping_type) AS ping_type,
+    COALESCE(combo.os, table.os) AS os,
+    COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
+  FROM
+    glam_etl.org_mozilla_fenix__clients_histogram_aggregates_v1 table
+  CROSS JOIN
+    static_combos combo
+),
+-- Ensure there is a single record per client id
+deduplicated_combos AS (
+  SELECT
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    udf_merged_user_data(ARRAY_CONCAT_AGG(histogram_aggregates)) AS histogram_aggregates
+  FROM
+    all_combos
+  GROUP BY
+    client_id,
+    ping_type,
+    os,
+    app_version,
+    app_build_id,
+    channel
+),
+normalized_histograms AS (
   SELECT
     ping_type,
     os,
@@ -89,7 +186,7 @@ WITH normalized_histograms AS (
     channel,
     udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
   FROM
-    glam_etl.org_mozilla_fenix__clients_histogram_aggregates_v1
+    deduplicated_combos
 ),
 unnested AS (
   SELECT

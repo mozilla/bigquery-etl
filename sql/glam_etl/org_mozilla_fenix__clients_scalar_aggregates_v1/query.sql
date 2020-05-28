@@ -1,11 +1,6 @@
 -- query for org_mozilla_fenix__clients_scalar_aggregates_v1;
 CREATE TEMP FUNCTION udf_merged_user_data(
-  old_aggs ARRAY<
-    STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>
-  >,
-  new_aggs ARRAY<
-    STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>
-  >
+  aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>
 )
 RETURNS ARRAY<
   STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>
@@ -15,14 +10,9 @@ RETURNS ARRAY<
       SELECT
         *
       FROM
-        UNNEST(old_aggs)
+        UNNEST(aggs)
       WHERE
         agg_type != "avg"
-      UNION ALL
-      SELECT
-        *
-      FROM
-        UNNEST(new_aggs)
     ),
     aggregated AS (
       SELECT
@@ -228,8 +218,8 @@ joined_new_old AS (
     COALESCE(old_data.app_version, new_data.app_version) AS app_version,
     COALESCE(old_data.app_build_id, new_data.app_build_id) AS app_build_id,
     COALESCE(old_data.channel, new_data.channel) AS channel,
-    old_data.scalar_aggregates AS old_aggs,
-    new_data.scalar_aggregates AS new_aggs
+    COALESCE(old_data.scalar_aggregates, []) AS old_aggs,
+    COALESCE(new_data.scalar_aggregates, []) AS new_aggs
   FROM
     filtered_new AS new_data
   FULL OUTER JOIN
@@ -244,6 +234,6 @@ SELECT
   app_version,
   app_build_id,
   channel,
-  udf_merged_user_data(old_aggs, new_aggs) AS scalar_aggregates
+  udf_merged_user_data(ARRAY_CONCAT(old_aggs, new_aggs)) AS scalar_aggregates
 FROM
   joined_new_old

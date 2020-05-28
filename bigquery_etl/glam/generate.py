@@ -127,7 +127,12 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
             ),
         ),
-        table("histogram_bucket_counts_v1", **models.histogram_bucket_counts()),
+        table(
+            "histogram_bucket_counts_v1",
+            **models.histogram_bucket_counts(
+                source_table=f"glam_etl.{args.prefix}__clients_histogram_aggregates_v1"
+            ),
+        ),
         table(
             "probe_counts_v1",
             query_name_prefix="scalar",

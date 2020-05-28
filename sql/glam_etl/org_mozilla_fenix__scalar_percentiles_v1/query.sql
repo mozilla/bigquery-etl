@@ -26,6 +26,39 @@ WITH flat_clients_scalar_aggregates AS (
   CROSS JOIN
     UNNEST(scalar_aggregates)
 ),
+-- Cross join with the attribute combinations to reduce the query complexity
+-- with respect to the number of operations. A table with n rows cross joined
+-- with a combination of m attributes will generate a new table with n*m rows.
+-- The glob ("*") symbol can be understood as selecting all of values belonging
+-- to that group.
+static_combos AS (
+  SELECT
+    combos.*
+  FROM
+    UNNEST(
+      ARRAY<STRUCT<ping_type STRING, os STRING, app_build_id STRING>>[
+        (NULL, NULL, NULL),
+        (NULL, NULL, "*"),
+        (NULL, "*", NULL),
+        ("*", NULL, NULL),
+        (NULL, "*", "*"),
+        ("*", NULL, "*"),
+        ("*", "*", NULL),
+        ("*", "*", "*")
+      ]
+    ) AS combos
+),
+all_combos AS (
+  SELECT
+    table.* EXCEPT (ping_type, os, app_build_id),
+    COALESCE(combo.ping_type, table.ping_type) AS ping_type,
+    COALESCE(combo.os, table.os) AS os,
+    COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
+  FROM
+    flat_clients_scalar_aggregates table
+  CROSS JOIN
+    static_combos combo
+),
 percentiles AS (
   SELECT
     ping_type,
@@ -41,182 +74,12 @@ percentiles AS (
     COUNT(*) AS total_users,
     APPROX_QUANTILES(value, 100) AS aggregates
   FROM
-    flat_clients_scalar_aggregates
+    all_combos
   GROUP BY
     ping_type,
     os,
     app_version,
     app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    client_agg_type
-  UNION ALL
-  SELECT
-    ping_type,
-    os,
-    app_version,
-    NULL AS app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100) AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  GROUP BY
-    ping_type,
-    os,
-    app_version,
-    channel,
-    metric,
-    metric_type,
-    key,
-    client_agg_type
-  UNION ALL
-  SELECT
-    ping_type,
-    NULL AS os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100) AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  GROUP BY
-    ping_type,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    client_agg_type
-  UNION ALL
-  SELECT
-    NULL AS ping_type,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100) AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  GROUP BY
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    client_agg_type
-  UNION ALL
-  SELECT
-    ping_type,
-    NULL AS os,
-    app_version,
-    NULL AS app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100) AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  GROUP BY
-    ping_type,
-    app_version,
-    channel,
-    metric,
-    metric_type,
-    key,
-    client_agg_type
-  UNION ALL
-  SELECT
-    NULL AS ping_type,
-    os,
-    app_version,
-    NULL AS app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100) AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  GROUP BY
-    os,
-    app_version,
-    channel,
-    metric,
-    metric_type,
-    key,
-    client_agg_type
-  UNION ALL
-  SELECT
-    NULL AS ping_type,
-    NULL AS os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100) AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  GROUP BY
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    client_agg_type
-  UNION ALL
-  SELECT
-    NULL AS ping_type,
-    NULL AS os,
-    app_version,
-    NULL AS app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100) AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  GROUP BY
-    app_version,
     channel,
     metric,
     metric_type,

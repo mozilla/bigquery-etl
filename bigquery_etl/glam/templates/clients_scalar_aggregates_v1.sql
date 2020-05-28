@@ -93,8 +93,8 @@ joined_new_old AS (
     {% for attribute in attributes_list %}
       COALESCE(old_data.{{attribute}}, new_data.{{attribute}}) as {{attribute}},
     {% endfor %}
-    old_data.scalar_aggregates AS old_aggs,
-    new_data.scalar_aggregates AS new_aggs
+    COALESCE(old_data.scalar_aggregates, []) AS old_aggs,
+    COALESCE(new_data.scalar_aggregates, []) AS new_aggs
   FROM
     filtered_new AS new_data
   FULL OUTER JOIN
@@ -104,6 +104,8 @@ joined_new_old AS (
 )
 SELECT
   {{ attributes }},
-  udf_merged_user_data(old_aggs, new_aggs) AS scalar_aggregates
+  udf_merged_user_data(
+    ARRAY_CONCAT(old_aggs, new_aggs)
+  ) AS scalar_aggregates
 FROM
   joined_new_old

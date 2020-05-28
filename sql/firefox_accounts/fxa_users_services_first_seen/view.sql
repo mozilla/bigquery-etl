@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_accounts.fxa_users_services_first_seen` AS
+  `moz-fx-data-shared-prod.firefox_accounts.fxa_users_services_first_seen`
+AS
 SELECT
   *
 FROM

@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Verify that SQL is correctly formatted
           # check all directories owned by git except sql
-          command: script/format_sql --check $(git ls-tree -d HEAD --name-only)
+          command: script/format_sql --check $(git ls-tree -d HEAD --name-only | grep -vx sql)
   dry-run-sql:
     docker:
       - image: python:3.8
@@ -77,6 +77,7 @@ jobs:
           echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
           PATH="venv/bin:$PATH" script/entrypoint -m integration
   validate-dags:
+    # based on https://github.com/mozilla/telemetry-airflow/blob/master/.circleci/config.yml
     machine:
       image: ubuntu-1604:201903-01
       docker_layer_caching: true

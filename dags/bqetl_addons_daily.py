@@ -35,7 +35,6 @@ with DAG(
         task_id="wait_for_search_clients_daily_bigquery",
         external_dag_id="main_summary",
         external_task_id="search_clients_daily_bigquery",
-        dag=dag,
     )
 
     telemetry_derived__addons_daily__v1.set_upstream(
@@ -46,7 +45,6 @@ with DAG(
         task_id="wait_for_clients_last_seen",
         external_dag_id="main_summary",
         external_task_id="clients_last_seen",
-        dag=dag,
     )
 
     telemetry_derived__addons_daily__v1.set_upstream(wait_for_clients_last_seen)

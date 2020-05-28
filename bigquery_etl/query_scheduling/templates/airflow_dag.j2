@@ -53,7 +53,6 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         task_id='wait_for_{{ telemetry_airflow_dependency.task_name }}',
         external_dag_id='{{ telemetry_airflow_dependency.dag_name }}',
         external_task_id='{{ telemetry_airflow_dependency.task_name }}',
-        dag=dag,
     )
 
     {{ task.task_name }}.set_upstream(wait_for_{{ telemetry_airflow_dependency.task_name }})

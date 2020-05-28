@@ -58,7 +58,6 @@ with DAG(
         task_id="wait_for_smoot_usage_desktop_v2",
         external_dag_id="main_summary",
         external_task_id="smoot_usage_desktop_v2",
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
@@ -69,7 +68,6 @@ with DAG(
         task_id="wait_for_smoot_usage_fxa_v2",
         external_dag_id="fxa_events",
         external_task_id="smoot_usage_fxa_v2",
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
@@ -80,7 +78,6 @@ with DAG(
         task_id="wait_for_smoot_usage_nondesktop_v2",
         external_dag_id="copy_deduplicate",
         external_task_id="smoot_usage_nondesktop_v2",
-        dag=dag,
     )
 
     telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
@@ -95,7 +92,6 @@ with DAG(
         task_id="wait_for_firefox_accounts_exact_mau28_raw",
         external_dag_id="fxa_events",
         external_task_id="firefox_accounts_exact_mau28_raw",
-        dag=dag,
     )
 
     telemetry__firefox_kpi_dashboard__v1.set_upstream(
@@ -106,7 +102,6 @@ with DAG(
         task_id="wait_for_exact_mau_by_dimensions",
         external_dag_id="main_summary",
         external_task_id="exact_mau_by_dimensions",
-        dag=dag,
     )
 
     telemetry__firefox_kpi_dashboard__v1.set_upstream(wait_for_exact_mau_by_dimensions)
@@ -115,7 +110,6 @@ with DAG(
         task_id="wait_for_firefox_nondesktop_exact_mau28",
         external_dag_id="copy_deduplicate",
         external_task_id="firefox_nondesktop_exact_mau28",
-        dag=dag,
     )
 
     telemetry__firefox_kpi_dashboard__v1.set_upstream(

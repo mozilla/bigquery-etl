@@ -1,34 +1,47 @@
 WITH
   -- We have a one-time backfill of FxA data extracted from Amplitude that
   -- runs through EOD 2019-03-27.
-  backfill AS (
-    SELECT
+backfill AS (
+  SELECT
+    submission_date,
+    user_id,
+    DATE_DIFF(submission_date, date_last_seen, DAY) AS days_since_seen,
+    DATE_DIFF(
       submission_date,
-      user_id,
-      DATE_DIFF(submission_date, date_last_seen, DAY) AS days_since_seen,
-      DATE_DIFF(submission_date, date_last_seen_in_tier1_country, DAY) AS days_since_seen_in_tier1_country,
-      country
-    FROM
-      static.fxa_amplitude_export_users_last_seen
-    WHERE
-      submission_date < DATE '2019-03-28' ),
+      date_last_seen_in_tier1_country,
+      DAY
+    ) AS days_since_seen_in_tier1_country,
+    country
+  FROM
+    static.fxa_amplitude_export_users_last_seen
+  WHERE
+    submission_date < DATE '2019-03-28'
+),
   -- "Live" FxA data gets to BigQuery via a Stackdriver pipeline that had its
   -- first stable day on 2019-03-01, so first valid day for MAU is 2019-03-28.
-  live AS (
-    SELECT
-      submission_date,
-      user_id,
-      days_since_seen,
-      days_since_seen_in_tier1_country,
-      country
-    FROM
-      firefox_accounts.fxa_users_last_seen
-    WHERE
-      submission_date >= DATE '2019-03-28' ),
-  unioned AS (
-    SELECT * FROM backfill
-    UNION ALL
-    SELECT * FROM live )
+live AS (
+  SELECT
+    submission_date,
+    user_id,
+    days_since_seen,
+    days_since_seen_in_tier1_country,
+    country
+  FROM
+    firefox_accounts.fxa_users_last_seen
+  WHERE
+    submission_date >= DATE '2019-03-28'
+),
+unioned AS (
+  SELECT
+    *
+  FROM
+    backfill
+  UNION ALL
+  SELECT
+    *
+  FROM
+    live
+)
   --
 SELECT
   submission_date,

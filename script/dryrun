@@ -35,10 +35,10 @@ SKIP = {
     "sql/monitoring/structured_error_counts_v1/view.sql",
     "sql/pocket/pocket_reach_mau/view.sql",
     "sql/telemetry/buildhub2/view.sql",
-    "sql/telemetry/fxa_content_events_v1/query.sql",
-    "sql/telemetry/fxa_auth_bounce_events_v1/query.sql",
-    "sql/telemetry/fxa_auth_events_v1/query.sql",
-    "sql/telemetry/fxa_oauth_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_content_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_auth_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_oauth_events_v1/query.sql",
     "sql/telemetry_derived/addons_daily_v1/query.sql",
     "sql/search_derived/search_clients_last_seen_v1/init.sql",
     "sql/search_derived/search_clients_last_seen_v1/query.sql",
@@ -100,8 +100,6 @@ SKIP = {
 }
 
 USE_DERIVED_DATASETS = {
-    "sql/telemetry/fxa_users_last_seen_raw_v1/query.sql",
-    "sql/telemetry/firefox_accounts_exact_mau28_raw_v1/query.sql",
     "sql/telemetry/core_clients_daily_v1/query.sql",
     "sql/telemetry/firefox_kpi_dashboard_v1/query.sql",
     "sql/telemetry/core_clients_last_seen_raw_v1/query.sql",

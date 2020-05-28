@@ -1,5 +1,5 @@
 -- query for org_mozilla_fenix__clients_histogram_aggregates_v1;
-CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
+CREATE TEMP FUNCTION udf_merged_user_data(aggs ANY TYPE)
 RETURNS ARRAY<
   STRUCT<
     latest_version INT64,
@@ -15,12 +15,7 @@ RETURNS ARRAY<
       SELECT
         *
       FROM
-        UNNEST(old_aggs)
-      UNION ALL
-      SELECT
-        *
-      FROM
-        UNNEST(new_aggs)
+        UNNEST(aggs)
     ),
     aggregated_data AS (
       SELECT AS STRUCT
@@ -181,8 +176,7 @@ SELECT
   COALESCE(accumulated.app_build_id, daily.app_build_id) AS app_build_id,
   COALESCE(accumulated.channel, daily.channel) AS channel,
   udf_merged_user_data(
-    accumulated.histogram_aggregates,
-    daily.histogram_aggregates
+    ARRAY_CONCAT(accumulated.histogram_aggregates, daily.histogram_aggregates)
   ) AS histogram_aggregates
 FROM
   filtered_accumulated AS accumulated

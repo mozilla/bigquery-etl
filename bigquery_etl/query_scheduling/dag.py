@@ -3,7 +3,6 @@
 import attr
 import cattr
 from jinja2 import Environment, PackageLoader
-import re
 from typing import List
 
 from bigquery_etl.query_scheduling.task import Task
@@ -12,6 +11,8 @@ from bigquery_etl.query_scheduling.utils import (
     is_timedelta_string,
     is_date_string,
     is_email,
+    is_schedule_interval,
+    is_valid_dag_name,
 )
 
 
@@ -46,7 +47,12 @@ class InvalidDag(Exception):
 
 @attr.s(auto_attribs=True)
 class DagDefaultArgs:
-    """Representation of Airflow DAG default_args."""
+    """
+    Representation of Airflow DAG default_args.
+
+    Uses attrs to simplify the class definition and provide validation.
+    Docs: https://www.attrs.org
+    """
 
     owner: str = attr.ib()
     start_date: str = attr.ib()
@@ -94,7 +100,12 @@ class DagDefaultArgs:
 
 @attr.s(auto_attribs=True)
 class Dag:
-    """Representation of a DAG configuration."""
+    """
+    Representation of a DAG configuration.
+
+    Uses attrs to simplify the class definition and provide validation.
+    Docs: https://www.attrs.org
+    """
 
     name: str = attr.ib()
     schedule_interval: str = attr.ib()
@@ -104,8 +115,7 @@ class Dag:
     @name.validator
     def validate_dag_name(self, attribute, value):
         """Validate the DAG name."""
-        dag_name_pattern = re.compile("^bqetl_.+$")
-        if not dag_name_pattern.match(value):
+        if not is_valid_dag_name(value):
             raise ValueError(
                 f"Invalid DAG name {value}. Name must start with 'bqetl_'."
             )
@@ -119,13 +129,7 @@ class Dag:
         @once, @hourly, @daily, @weekly, @monthly, @yearly
         or a timedelta []d[]h[]m
         """
-        # https://stackoverflow.com/questions/14203122/create-a-regular-expression-for-cron-statement
-        pattern = re.compile(
-            r"^(once|hourly|daily|weekly|monthly|yearly|"
-            r"((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})|"
-            r"((\d+h)?(\d+m)?(\d+s)?))$"
-        )
-        if not pattern.match(value):
+        if not is_schedule_interval(value):
             raise ValueError(f"Invalid schedule_interval {value}.")
 
     def add_tasks(self, tasks):

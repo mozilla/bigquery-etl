@@ -9,7 +9,11 @@ from typing import List, Optional, Union, NewType
 
 
 from bigquery_etl.metadata.parse_metadata import Metadata
-from bigquery_etl.query_scheduling.utils import is_date_string, is_email
+from bigquery_etl.query_scheduling.utils import (
+    is_date_string,
+    is_email,
+    is_valid_dag_name,
+)
 
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
@@ -48,7 +52,12 @@ Ignore = NewType("Ignore", None)
 
 @attr.s(auto_attribs=True)
 class Task:
-    """Representation of a task scheduled in Airflow."""
+    """
+    Representation of a task scheduled in Airflow.
+
+    Uses attrs to simplify the class definition and provide validation.
+    Docs: https://www.attrs.org
+    """
 
     dag_name: str = attr.ib()
     query_file: str
@@ -86,8 +95,7 @@ class Task:
     @dag_name.validator
     def validate_dag_name(self, attribute, value):
         """Validate the DAG name."""
-        dag_name_pattern = re.compile("^bqetl_.+$")
-        if not dag_name_pattern.match(value):
+        if not is_valid_dag_name(value):
             raise ValueError(
                 f"Invalid DAG name {value} for task. Name must start with 'bqetl_'."
             )

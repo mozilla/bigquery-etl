@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod.telemetry_derived.fxa_users_services_first_seen_v1`
+  fxa_users_services_first_seen_v1
 PARTITION BY
   DATE(first_service_timestamp)
 CLUSTER BY
@@ -12,7 +12,7 @@ WITH base AS (
       IF(service IS NULL AND event_type = 'fxa_activity - cert_signed', 'sync', service) AS service
     )
   FROM
-    `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1`
+    firefox_accounts.fxa_content_auth_oauth_events
 ),
   -- use a window function to look within each USER and SERVICE for the first value of service, os, and country.
   -- also, get the first value of flow_id for later use and create a boolean column that is true if the first instance of a service usage includes a registration.
@@ -114,7 +114,7 @@ flows AS (
   FROM
     first_services_g s
   INNER JOIN
-    `moz-fx-data-derived-datasets.telemetry.fxa_content_auth_oauth_events_v1` AS f
+    firefox_accounts.fxa_content_auth_oauth_events AS f
   ON
     s.first_service_flow = f.flow_id
   WHERE

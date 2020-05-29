@@ -5,7 +5,7 @@ import cattr
 import re
 import logging
 from google.cloud import bigquery
-from typing import List, Optional, Union, NewType
+from typing import List, Optional
 
 
 from bigquery_etl.metadata.parse_metadata import Metadata

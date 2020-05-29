@@ -16,6 +16,7 @@ with DAG('bqetl_external_test_dag', default_args=default_args, schedule_interval
         project_id='moz-fx-data-shared-prod',
         owner='test@example.org',
         email=['test@example.org'],
+        date_partition_parameter='submission_date',
         depends_on_past=False,
         dag=dag,
     )

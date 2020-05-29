@@ -42,8 +42,8 @@ with DAG(
         dag=dag,
     )
 
-    telemetry__firefox_kpi_dashboard__v1 = bigquery_etl_query(
-        task_id="telemetry__firefox_kpi_dashboard__v1",
+    kpi_dashboard = bigquery_etl_query(
+        task_id="kpi_dashboard",
         destination_table="firefox_kpi_dashboard_v1",
         dataset_id="telemetry",
         project_id="moz-fx-data-shared-prod",

@@ -9,3 +9,4 @@ scheduling:
   depends_on_past: false
   date_partition_parameter: null
   email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+  task_name: kpi_dashboard

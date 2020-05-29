@@ -2,7 +2,7 @@
 
 import yaml
 
-from bigquery_etl.query_scheduling.dag import Dag, InvalidDag
+from bigquery_etl.query_scheduling.dag import Dag, InvalidDag, PublicDataDag
 
 
 class DagCollection:
@@ -70,6 +70,12 @@ class DagCollection:
 
     def with_tasks(self, tasks):
         """Assign tasks to their corresponding DAGs."""
+        public_data_dag = None
+
+        for dag in self.dags:
+            if dag.__class__ == PublicDataDag:
+                public_data_dag = dag
+
         for task in tasks:
             if self.dag_by_name(task.dag_name) is None:
                 raise InvalidDag(
@@ -78,6 +84,9 @@ class DagCollection:
                 )
             else:
                 self.dag_by_name(task.dag_name).add_tasks([task])
+
+            if task.public_data and public_data_dag:
+                public_data_dag.add_export_task(task)
 
         return self
 

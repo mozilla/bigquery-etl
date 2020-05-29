@@ -93,6 +93,29 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
         assert task.dag_name == "bqetl_test_dag"
         assert task.depends_on_past is False
+        assert task.task_name == "test__incremental_query__v1"
+
+    def test_task_instantiation_custom_name(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        scheduling = {
+            "dag_name": "bqetl_test_dag",
+            "default_args": {"owner": "test@example.org"},
+            "task_name": "custom_task_name",
+        }
+
+        metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
+
+        task = Task.of_query(query_file, metadata)
+        assert task.dag_name == "bqetl_test_dag"
+        assert task.task_name == "custom_task_name"
 
     def test_dag_name_validation(self):
         query_file = (

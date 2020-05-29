@@ -3,6 +3,7 @@
 from airflow import DAG
 from airflow.operators.sensors import ExternalTaskSensor
 import datetime
+from operators.gcp_container_operator import GKEPodOperator
 from utils.gcp import gke_command
 
 default_args = {
@@ -21,15 +22,16 @@ with DAG(
 ) as dag:
     docker_image = "mozilla/bigquery-etl:latest"
 
-    export_public_data_telemetry_derived__ssl_ratios__v1 = gke_command(
+    export_public_data_telemetry_derived__ssl_ratios__v1 = GKEPodOperator(
         task_id="export_public_data_telemetry_derived__ssl_ratios__v1",
-        command=["/script/publish_public_data_json"],
-        arguments=["--query_file=sql/telemetry_derived/ssl_ratios_v1/query.sql"]
-        + ["--destination_table=ssl_ratios$"]
+        name="export_public_data_telemetry_derived__ssl_ratios__v1",
+        arguments=["/script/publish_public_data_json"]
+        + ["--query_file=sql/telemetry_derived/ssl_ratios_v1/query.sql"]
+        + ["--destination_table=ssl_ratios${{ds_nodash}}"]
         + ["--dataset_id=telemetry_derived"]
         + ["--project_id=moz-fx-data-shared-prod"]
-        + ["--parameter=submission_date:DATE:"],
-        docker_image=docker_image,
+        + ["--parameter=submission_date:DATE:{{ds}}"],
+        image=docker_image,
         dag=dag,
     )
 

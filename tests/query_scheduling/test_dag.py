@@ -2,6 +2,7 @@ from pathlib import Path
 import pytest
 
 from bigquery_etl.query_scheduling.dag import Dag, DagParseException, DagDefaultArgs
+from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.task import Task
 
 TEST_DIR = Path(__file__).parent.parent
@@ -34,13 +35,46 @@ class TestDag:
             / "query.sql"
         )
 
-        tasks = [Task.of_query(query_file), Task.of_query(query_file)]
+        scheduling = {
+            "dag_name": "bqetl_test_dag",
+            "default_args": {"owner": "test@example.org"},
+            "task_name": "custom_task_name",
+        }
+
+        metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
+
+        task1 = Task.of_query(query_file)
+        task2 = Task.of_query(query_file, metadata)
 
         assert dag.tasks == []
 
-        dag.add_tasks(tasks)
+        dag.add_tasks([task1, task2])
 
         assert len(dag.tasks) == 2
+
+    def test_add_tasks_duplicate_names(self):
+        dag = Dag("bqetl_test_dag", "daily", self.default_args)
+
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        scheduling = {
+            "dag_name": "bqetl_test_dag",
+            "default_args": {"owner": "test@example.org"},
+            "task_name": "duplicate_task_name",
+        }
+
+        metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
+        task = Task.of_query(query_file, metadata)
+
+        with pytest.raises(ValueError):
+            dag.add_tasks([task, task])
 
     def test_from_dict(self):
         dag = Dag.from_dict(

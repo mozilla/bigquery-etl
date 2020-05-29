@@ -63,10 +63,10 @@ class Task:
     query_file: str
     owner: str = attr.ib()
     email: List[str] = attr.ib([])
+    task_name: Optional[str] = attr.ib(None)
     dataset: str = attr.ib(init=False)
     table: str = attr.ib(init=False)
     version: str = attr.ib(init=False)
-    task_name: str = attr.ib(init=False)
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Union[Optional[str], Ignore] = attr.ib(Ignore)
@@ -107,7 +107,9 @@ class Task:
             self.dataset = query_file_re.group(1)
             self.table = query_file_re.group(2)
             self.version = query_file_re.group(3)
-            self.task_name = f"{self.dataset}__{self.table}__{self.version}"
+
+            if self.task_name is None:
+                self.task_name = f"{self.dataset}__{self.table}__{self.version}"
         else:
             raise ValueError(
                 "query_file must be a path with format:"

@@ -120,6 +120,19 @@ class Dag:
                 f"Invalid DAG name {value}. Name must start with 'bqetl_'."
             )
 
+    @tasks.validator
+    def validate_tasks(self, attribute, value):
+        """Validate tasks."""
+        task_names = list(map(lambda t: t.task_name, value))
+        duplicate_task_names = set(
+            [task_name for task_name in task_names if task_names.count(task_name) > 1]
+        )
+
+        if len(duplicate_task_names) > 0:
+            raise ValueError(
+                f"Duplicate task names encountered: {duplicate_task_names}."
+            )
+
     @schedule_interval.validator
     def validate_schedule_interval(self, attribute, value):
         """
@@ -135,6 +148,7 @@ class Dag:
     def add_tasks(self, tasks):
         """Add tasks to be scheduled as part of the DAG."""
         self.tasks = self.tasks.copy() + tasks
+        self.validate_tasks(None, self.tasks)
 
     @classmethod
     def from_dict(cls, d):

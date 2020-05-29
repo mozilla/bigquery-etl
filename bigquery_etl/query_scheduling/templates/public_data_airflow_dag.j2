@@ -1,0 +1,62 @@
+# Generated via query_scheduling/generate_airflow_dags
+
+from airflow import DAG
+from airflow.operators.sensors import ExternalTaskSensor
+import datetime
+from utils.gcp import gke_command
+
+default_args = {{ 
+    default_args.to_dict() | 
+    format_attr("start_date", "format_date") | 
+    format_attr("retry_delay", "format_timedelta") 
+}}
+
+with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}) as dag:
+    docker_image = "mozilla/bigquery-etl:latest"
+
+{% for task in tasks %}
+    {{ task.task_name }} = gke_command(
+        task_id="{{ task.task_name }}",
+        command=["/script/publish_public_data_json"],
+        arguments=["--query_file={{ task.query_file }}"]
+        + ["--destination_table={{ task.table }}{% if task.date_partition_parameter %}${{ds_nodash}}{% endif %}"]
+        + ["--dataset_id={{ task.dataset }}"]
+        + ["--project_id=moz-fx-data-shared-prod"]
+        {% if task.date_partition_parameter %}
+        + ["--parameter={{ task.date_partition_parameter }}:DATE:{{ds}}"]
+        {% endif %},
+        docker_image=docker_image,
+        dag=dag
+    )
+{% endfor -%}
+
+{% for task in tasks %}
+    {% for dependency in task.dependencies -%}
+    {% if dependency.dag_name == name -%}
+    {{ task.task_name }}.set_upstream({{ dependency.task_name }})
+    {% else -%}
+    wait_for_{{ dependency.task_name }} = ExternalTaskSensor(
+        task_id='wait_for_{{ dependency.task_name }}',
+        external_dag_id='{{ dependency.dag_name }}',
+        external_task_id='{{ dependency.task_name }}',
+    )
+        
+    {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_name }})
+    {% endif -%}
+    {% endfor -%}
+{% endfor %}
+
+    public_data_gcs_metadata = gke_command(
+        task_id="public_data_gcs_metadata",
+        command=["script/publish_public_data_gcs_metadata"],
+        docker_image=docker_image,
+        dag=dag
+    )
+
+    public_data_gcs_metadata.set_upstream(
+        [
+        {% for task in tasks %}
+            {{ task.task_name }},
+        {% endfor -%}
+        ]
+    )

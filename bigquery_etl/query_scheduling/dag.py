@@ -3,6 +3,7 @@
 import attr
 import cattr
 from jinja2 import Environment, PackageLoader
+import logging
 from typing import List
 
 from bigquery_etl.query_scheduling.task import Task
@@ -17,6 +18,8 @@ from bigquery_etl.query_scheduling.utils import (
 
 
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
+PUBLIC_DATA_DAG_TEMPLATE = "public_data_airflow_dag.j2"
+PUBLIC_DATA_DAG = "bqetl_public_data"
 
 
 class DagParseException(Exception):
@@ -169,12 +172,16 @@ class Dag:
         converter = cattr.Converter()
         try:
             name = list(d.keys())[0]
-            return converter.structure({"name": name, **d[name]}, cls)
+
+            if name == PUBLIC_DATA_DAG:
+                return converter.structure({"name": name, **d[name]}, PublicDataDag)
+            else:
+                return converter.structure({"name": name, **d[name]}, cls)
         except TypeError as e:
             raise DagParseException(f"Invalid DAG configuration format in {d}: {e}")
 
-    def to_airflow_dag(self, client, dag_collection):
-        """Convert the DAG to its Airflow representation and return the python code."""
+    def _jinja_env(self):
+        """Prepare and load custom formatters into the jinja environment."""
         env = Environment(
             loader=PackageLoader("bigquery_etl", "query_scheduling/templates")
         )
@@ -187,6 +194,11 @@ class Dag:
 
             env.filters[name] = func
 
+        return env
+
+    def to_airflow_dag(self, client, dag_collection):
+        """Convert the DAG to its Airflow representation and return the python code."""
+        env = self._jinja_env()
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
 
         args = self.__dict__
@@ -195,3 +207,38 @@ class Dag:
             task.with_dependencies(client, dag_collection)
 
         return dag_template.render(args)
+
+
+class PublicDataDag(Dag):
+    """Special DAG with tasks exporting public data to GCS."""
+
+    def to_airflow_dag(self, client, dag_collection):
+        """Convert the DAG to its Airflow representation and return the python code."""
+        env = self._jinja_env()
+        dag_template = env.get_template(PUBLIC_DATA_DAG_TEMPLATE)
+        args = self.__dict__
+
+        return dag_template.render(args)
+
+    def add_export_task(self, task):
+        """
+        For a provided tasks, create and add a new task to the DAG for exporting
+        data to GCS.
+        """
+        if not task.public_data:
+            logging.warn(f"Task {task.task_name} not marked as public.")
+            return
+
+        # clone original task and make sure it's not accidentally modified
+        converter = cattr.Converter()
+        task_dict = task.__dict__.copy()
+        del task_dict["dataset"]
+        del task_dict["table"]
+        del task_dict["version"]
+
+        export_task = converter.structure(task_dict, Task)
+        export_task.dag_name = PUBLIC_DATA_DAG
+        export_task.task_name = f"export_public_data_{export_task.task_name}"
+        export_task.dependencies = [task]
+
+        self.add_tasks([export_task])

@@ -32,6 +32,7 @@ elif [ "$1" = "query" ]; then
 
     # For queries with public_json set in the metadata, the results will be
     # exported as JSON to Cloud storage.
+    # todo: remove once lower-friction scheduled queries are executed in Airflow
     ./script/publish_public_data_json --query_file="${@: -1}" ${@:1:$#-1}
 elif [ "$XCOM_PUSH" = "true" ]; then
     # KubernetesPodOperator will extract the contents of /airflow/xcom/return.json as an xcom

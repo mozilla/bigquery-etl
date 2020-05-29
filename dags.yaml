@@ -18,3 +18,23 @@ bqetl_kpi_dashboard:
     depends_on_past: false
     retry_delay: 10m
     retries: 1
+
+bqetl_ssl_ratios:
+  schedule_interval: daily
+  default_args:
+      owner: chutten@mozilla.com
+      start_date: '2019-07-20'
+      email: ['telemetry-alerts@mozilla.com', 'chutten@mozilla.com']
+      retries: 2
+      retry_delay: 30m
+
+# DAG for exporting query data marked as public to GCS
+# queries should not be explicitly assigned to this DAG (it's done automatically)
+bqetl_public_data:
+  schedule_interval: daily
+  default_args:
+    owner: ascholtz@mozilla.com
+    start_date: '2020-04-14'
+    email: ['telemetry-alerts@mozilla.com', 'ascholtz@mozilla.com']
+    retries: 2
+    retry_delay: 30m

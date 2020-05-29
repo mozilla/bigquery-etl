@@ -7,8 +7,9 @@ owners:
 labels:
   application: firefox
   incremental: true
-  schedule: daily
   public_json: true
   public_bigquery: true
   review_bug: 1414839
   incremental_export: false
+scheduling:
+  dag_name: bqetl_ssl_ratios

@@ -1,0 +1,8 @@
+friendly_name: Smoot usage new profiles
+description: Smoot usage new profiles
+owners:
+  - jklukas@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_kpi_dashboard

@@ -28,7 +28,7 @@ unnested AS (
   SELECT
     * EXCEPT (active_addons, version, os),
     version AS addon_version,
-    os AS app_os,
+    udf.normalize_os(os) AS app_os,
   FROM
     cd
   CROSS JOIN

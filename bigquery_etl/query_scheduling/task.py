@@ -1,13 +1,24 @@
 """Represents a scheduled Airflow task."""
 
+import attr
+import cattr
 import re
 import logging
 from google.cloud import bigquery
+from typing import List, Optional, Union, NewType
+
 
 from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.query_scheduling.utils import (
+    is_date_string,
+    is_email,
+    is_valid_dag_name,
+)
 
 
+AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
+DEFAULT_PROJECT = "moz-fx-data-shared-prod"
 
 
 class TaskParseException(Exception):
@@ -34,13 +45,63 @@ class UnscheduledTask(Exception):
     pass
 
 
+# date_partition_parameter can be overriden with None or a string
+# this type indicates that date_partition_parameter should not be changed
+Ignore = NewType("Ignore", None)
+
+
+@attr.s(auto_attribs=True)
 class Task:
-    """Representation of a task scheduled in Airflow."""
+    """
+    Representation of a task scheduled in Airflow.
 
-    def __init__(self, query_file, metadata):
-        """Instantiate a new task."""
-        self.query_file = str(query_file)
+    Uses attrs to simplify the class definition and provide validation.
+    Docs: https://www.attrs.org
+    """
 
+    dag_name: str = attr.ib()
+    query_file: str
+    owner: str = attr.ib()
+    email: List[str] = attr.ib([])
+    dataset: str = attr.ib(init=False)
+    table: str = attr.ib(init=False)
+    version: str = attr.ib(init=False)
+    task_name: str = attr.ib(init=False)
+    depends_on_past: bool = attr.ib(False)
+    start_date: Optional[str] = attr.ib(None)
+    date_partition_parameter: Union[Optional[str], Ignore] = attr.ib(Ignore)
+
+    @owner.validator
+    def validate_owner(self, attribute, value):
+        """Check that owner is a valid email address."""
+        if not is_email(value):
+            raise ValueError(f"Invalid email for task owner: {value}.")
+
+    @email.validator
+    def validate_email(self, attribute, value):
+        """Check that provided email addresses are valid."""
+        if not all(map(lambda e: is_email(e), value)):
+            raise ValueError(f"Invalid email in DAG email: {value}.")
+
+    @start_date.validator
+    def validate_start_date(self, attribute, value):
+        """Check that start_date has YYYY-MM-DD format."""
+        if value is not None and not is_date_string(value):
+            raise ValueError(
+                f"Invalid date definition for {attribute}: {value}."
+                "Dates should be specified as YYYY-MM-DD."
+            )
+
+    @dag_name.validator
+    def validate_dag_name(self, attribute, value):
+        """Validate the DAG name."""
+        if not is_valid_dag_name(value):
+            raise ValueError(
+                f"Invalid DAG name {value} for task. Name must start with 'bqetl_'."
+            )
+
+    def __attrs_post_init__(self):
+        """Extract information from the query file name."""
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
         if query_file_re:
             self.dataset = query_file_re.group(1)
@@ -53,29 +114,47 @@ class Task:
                 "../<dataset>/<table>_<version>/query.sql"
             )
 
-        scheduling = metadata.scheduling
-
-        if scheduling == {}:
-            raise UnscheduledTask()
-
-        if "dag_name" not in scheduling:
-            raise TaskParseException(
-                f"dag_name not defined in task config for {self.query_file}"
-            )
-
-        self.dag_name = scheduling["dag_name"]
-        self.args = scheduling.copy()
-        del self.args["dag_name"]
-
     @classmethod
-    def of_query(cls, query_file):
+    def of_query(cls, query_file, metadata=None):
         """
         Create task that schedules the corresponding query in Airflow.
 
         Raises FileNotFoundError if not metadata file exists for query.
+        If `metadata` is set, then it is used instead of the metadata.yaml
+        file that might exist alongside the query file.
         """
-        metadata = Metadata.of_sql_file(query_file)
-        return cls(query_file, metadata)
+        converter = cattr.Converter()
+        if metadata is None:
+            metadata = Metadata.of_sql_file(query_file)
+
+        if metadata.scheduling == {} or "dag_name" not in metadata.scheduling:
+            raise UnscheduledTask(
+                f"Metadata for {query_file} does not contain scheduling information."
+            )
+
+        task_config = {"query_file": str(query_file)}
+        task_config.update(metadata.scheduling)
+
+        if len(metadata.owners) <= 0:
+            raise TaskParseException(
+                f"No owner specified in metadata for {query_file}."
+            )
+
+        # Airflow only allows to set one owner, so we just take the first
+        task_config["owner"] = metadata.owners[0]
+
+        # owners get added to the email list
+        if "email" not in task_config:
+            task_config["email"] = []
+
+        task_config["email"] = list(set(task_config["email"] + metadata.owners))
+
+        try:
+            return converter.structure(task_config, cls)
+        except TypeError as e:
+            raise TaskParseException(
+                f"Invalid scheduling information format for {query_file}: {e}"
+            )
 
     def _get_referenced_tables(self, client):
         """
@@ -85,7 +164,17 @@ class Task:
         of dependencies. See https://cloud.google.com/bigquery/docs/reference/
         rest/v2/Job#JobStatistics2.FIELDS.referenced_tables
         """
-        job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
+        logging.info(f"Get dependencies for {self.task_name}")
+
+        # the submission_date parameter needs to be set to make the dry run faster
+        job_config = bigquery.QueryJobConfig(
+            dry_run=True,
+            use_query_cache=False,
+            default_dataset=f"{DEFAULT_PROJECT}.{self.dataset}",
+            query_parameters=[
+                bigquery.ScalarQueryParameter("submission_date", "DATE", "2019-01-01")
+            ],
+        )
 
         with open(self.query_file) as query_stream:
             query = query_stream.read()
@@ -99,9 +188,13 @@ class Task:
                 )
 
             table_names = [(t.dataset_id, t.table_id) for t in referenced_tables]
+
+            # the order of table dependencies changes between requests
+            # sort to maintain same order between DAG generation runs
+            table_names.sort()
             return table_names
 
-    def get_dependencies(self, client, dag_collection):
+    def with_dependencies(self, client, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""
         dependencies = []
 
@@ -111,9 +204,4 @@ class Task:
             if upstream_task is not None:
                 dependencies.append(upstream_task)
 
-        return dependencies
-
-    def to_airflow(self, client, dag_collection):
-        """Convert the task configuration into the Airflow representation."""
-        pass
-        # todo
+        self.dependencies = dependencies

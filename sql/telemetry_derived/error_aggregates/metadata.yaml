@@ -1,0 +1,11 @@
+friendly_name: Error aggregates
+description: >-
+  Counts of various error measures aggregated across each unique set of dimensions.
+owners:
+  - bewu@mozilla.com
+labels:
+  incremental: true
+# scheduling:
+#   todo: requires renaming query to error_aggregates_v1
+#   dag_name: bqetl_error_aggregates
+#   depends_on_past: false

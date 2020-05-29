@@ -1,6 +1,5 @@
 """Represents a collection of configured Airflow DAGs."""
 
-from itertools import groupby
 import yaml
 
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag
@@ -20,17 +19,28 @@ class DagCollection:
 
         Expected dict format:
         {
-            "dag_name1": {
+            "bqetl_dag_name1": {
                 "schedule_interval": string,
-                "default_args": dict
+                "default_args": {
+                    "owner": string,
+                    "start_date": "YYYY-MM-DD",
+                    ...
+                }
             },
-            "dag_name2": {
+            "bqetl_dag_name2": {
                 "schedule_interval": string,
-                "default_args": dict
+                "default_args": {
+                    "owner": string,
+                    "start_date": "YYYY-MM-DD",
+                    ...
+                }
             },
             ...
         }
         """
+        if d is None:
+            return cls([])
+
         dags = [Dag.from_dict({k: v}) for k, v in d.items()]
         return cls(dags)
 
@@ -60,20 +70,19 @@ class DagCollection:
 
     def with_tasks(self, tasks):
         """Assign tasks to their corresponding DAGs."""
-        for dag_name, tasks in groupby(tasks, lambda t: t.dag_name):
-            dag = self.dag_by_name(dag_name)
-
-            if dag is None:
+        for task in tasks:
+            if self.dag_by_name(task.dag_name) is None:
                 raise InvalidDag(
-                    f"DAG {dag_name} does not exist in dags.yaml"
-                    "but used in task definition {tasks[0].name}."
+                    f"DAG {task.dag_name} does not exist in dags.yaml"
+                    "but used in task definition {dag_tasks[0].name}."
                 )
             else:
-                dag.add_tasks(tasks)
+                self.dag_by_name(task.dag_name).add_tasks([task])
 
         return self
 
-    def to_airflow_dags(self):
+    def to_airflow_dags(self, output_dir, client):
         """Write DAG representation as Airflow dags to file."""
-        # todo
-        pass
+        for dag in self.dags:
+            output_file = output_dir / (dag.name + ".py")
+            output_file.write_text(dag.to_airflow_dag(client, self))

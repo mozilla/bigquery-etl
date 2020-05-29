@@ -1,23 +1,29 @@
 from pathlib import Path
 import pytest
 
-from bigquery_etl.query_scheduling.dag import Dag, DagParseException
+from bigquery_etl.query_scheduling.dag import Dag, DagParseException, DagDefaultArgs
 from bigquery_etl.query_scheduling.task import Task
 
 TEST_DIR = Path(__file__).parent.parent
 
 
 class TestDag:
-    def test_dag_instantiation(self):
-        dag = Dag("test_dag", "daily", {})
+    default_args = {
+        "owner": "test@example.org",
+        "email": ["test@example.org"],
+        "depends_on_past": False,
+    }
 
-        assert dag.name == "test_dag"
+    def test_dag_instantiation(self):
+        dag = Dag("bqetl_test_dag", "daily", self.default_args)
+
+        assert dag.name == "bqetl_test_dag"
         assert dag.schedule_interval == "daily"
         assert dag.tasks == []
-        assert dag.default_args == {}
+        assert dag.default_args == self.default_args
 
     def test_add_tasks(self):
-        dag = Dag("test_dag", "daily", {})
+        dag = Dag("bqetl_test_dag", "daily", self.default_args)
 
         query_file = (
             TEST_DIR
@@ -39,19 +45,22 @@ class TestDag:
     def test_from_dict(self):
         dag = Dag.from_dict(
             {
-                "test_dag": {
+                "bqetl_test_dag": {
                     "schedule_interval": "daily",
                     "default_args": {
+                        "start_date": "2020-05-12",
                         "owner": "test@example.com",
-                        "param": "test_param",
+                        "email": ["test@example.com"],
                     },
                 }
             }
         )
 
-        assert dag.name == "test_dag"
+        assert dag.name == "bqetl_test_dag"
         assert dag.schedule_interval == "daily"
-        assert dag.default_args == {"owner": "test@example.com", "param": "test_param"}
+        assert dag.default_args.owner == "test@example.com"
+        assert dag.default_args.email == ["test@example.com"]
+        assert dag.default_args.depends_on_past is False
 
     def test_from_empty_dict(self):
         with pytest.raises(DagParseException):
@@ -59,8 +68,88 @@ class TestDag:
 
     def test_from_dict_multiple_dags(self):
         with pytest.raises(DagParseException):
-            Dag.from_dict({"test_dag1": {}, "test_dag2": {}})
+            Dag.from_dict({"bqetl_test_dag1": {}, "bqetl_test_dag2": {}})
 
     def test_from_dict_without_scheduling_interval(self):
         with pytest.raises(DagParseException):
-            Dag.from_dict({"test_dag": {}})
+            Dag.from_dict({"bqetl_test_dag": {}})
+
+    def test_invalid_dag_name(self):
+        with pytest.raises(ValueError):
+            Dag("test_dag", "daily", self.default_args)
+
+    def test_schedule_interval_format(self):
+        assert Dag("bqetl_test_dag", "daily", self.default_args)
+        assert Dag("bqetl_test_dag", "weekly", self.default_args)
+        assert Dag("bqetl_test_dag", "once", self.default_args)
+
+        with pytest.raises(ValueError):
+            assert Dag("bqetl_test_dag", "never", self.default_args)
+
+        assert Dag("bqetl_test_dag", "* * * * *", self.default_args)
+        assert Dag("bqetl_test_dag", "1 * * * *", self.default_args)
+
+        with pytest.raises(TypeError):
+            assert Dag("bqetl_test_dag", 323, self.default_args)
+
+    def test_empty_dag_default_args(self):
+        with pytest.raises(TypeError):
+            assert DagDefaultArgs()
+
+    def test_dag_default_args_owner_validation(self):
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(owner="invalid_email", start_date="2020-12-12")
+
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(owner="test@example-com.", start_date="2020-12-12")
+
+        with pytest.raises(TypeError):
+            assert DagDefaultArgs(owner=None, start_date="2020-12-12")
+
+        assert DagDefaultArgs(owner="test@example.org", start_date="2020-12-12")
+
+    def test_dag_default_args_email_validation(self):
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(
+                owner="test@example.com",
+                start_date="2020-12-12",
+                email=["valid@example.com", "invalid", "valid2@example.com"],
+            )
+
+        assert DagDefaultArgs(
+            owner="test@example.com", start_date="2020-12-12", email=[]
+        )
+
+        assert DagDefaultArgs(
+            owner="test@example.com",
+            start_date="2020-12-12",
+            email=["test@example.org", "test2@example.org"],
+        )
+
+    def test_dag_default_args_start_date_validation(self):
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(
+                owner="test@example.com", start_date="March 12th 2020"
+            )
+
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(owner="test@example.com", start_date="foo")
+
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(owner="test@example.com", start_date="2020-13-01")
+
+        assert DagDefaultArgs(owner="test@example.com", start_date="2020-12-12")
+
+    def test_dag_default_args_retry_delay_validation(self):
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(
+                owner="test@example.com", start_date="March 12th 2020", retry_delay="90"
+            )
+
+        assert DagDefaultArgs(
+            owner="test@example.com", start_date="2020-12-12", retry_delay="1d3h15m"
+        )
+
+        assert DagDefaultArgs(
+            owner="test@example.com", start_date="2020-12-12", retry_delay="3h"
+        )

@@ -221,10 +221,7 @@ class PublicDataDag(Dag):
         return dag_template.render(args)
 
     def add_export_task(self, task):
-        """
-        For a provided tasks, create and add a new task to the DAG for exporting
-        data to GCS.
-        """
+        """Add a new task to the DAG for exporting data of the original query to GCS."""
         if not task.public_data:
             logging.warn(f"Task {task.task_name} not marked as public.")
             return

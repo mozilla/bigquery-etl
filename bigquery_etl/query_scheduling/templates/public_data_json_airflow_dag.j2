@@ -19,7 +19,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         task_id="{{ task.task_name }}",
         name="{{ task.task_name }}",
         arguments=["/script/publish_public_data_json"]
-        + ["--query_file={{ task.query_file }}"]
+        + ["--query_file=sql/{{ task.dataset }}/{{ task.table }}_{{ task.version }}/query.sql"]
         + ["--destination_table={{ task.table }}{% if task.date_partition_parameter %}${% raw %}{{ds_nodash}}{% endraw %}{% endif %}"]
         + ["--dataset_id={{ task.dataset }}"]
         + ["--project_id=moz-fx-data-shared-prod"]

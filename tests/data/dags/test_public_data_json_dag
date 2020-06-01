@@ -15,7 +15,7 @@ with DAG('bqetl_public_data_json', default_args=default_args, schedule_interval=
         task_id="export_public_data_json_test__non_incremental_query__v1",
         name="export_public_data_json_test__non_incremental_query__v1",
         arguments=["/script/publish_public_data_json"]
-        + ["--query_file=/Users/annascholtz/mydata/bigquery-etl/tests/data/test_sql/test/non_incremental_query_v1/query.sql"]
+        + ["--query_file=sql/test/non_incremental_query_v1/query.sql"]
         + ["--destination_table=non_incremental_query${{ds_nodash}}"]
         + ["--dataset_id=test"]
         + ["--project_id=moz-fx-data-shared-prod"]

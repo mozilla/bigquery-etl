@@ -46,6 +46,20 @@ class UnscheduledTask(Exception):
 
 
 @attr.s(auto_attribs=True)
+class TaskRef:
+    """
+    Representation of a reference to another task.
+
+    The task can be defined in bigquery-etl or in telemetry-airflow.
+    Uses attrs to simplify the class definition and provide validation.
+    Docs: https://www.attrs.org
+    """
+
+    dag_name: str = attr.ib()
+    task_id: str = attr.ib()
+
+
+@attr.s(auto_attribs=True)
 class Task:
     """
     Representation of a task scheduled in Airflow.
@@ -67,6 +81,7 @@ class Task:
     date_partition_parameter: Optional[str] = "submission_date"
     # indicate whether data should be published as JSON
     public_json: bool = attr.ib(False)
+    depends_on: List[TaskRef] = attr.ib([])
 
     @owner.validator
     def validate_owner(self, attribute, value):

@@ -226,9 +226,9 @@ class PublicDataJsonDag(Dag):
             logging.warn(f"Task {task.task_name} not marked as public JSON.")
             return
 
-        # clone original task and make sure it's not accidentally modified
         converter = cattr.Converter()
-        task_dict = task.__dict__.copy()
+        task_dict = converter.unstructure(task)
+
         del task_dict["dataset"]
         del task_dict["table"]
         del task_dict["version"]

@@ -375,3 +375,47 @@ class TestDagCollection:
 
         assert dag_with_dependencies == expected_dag_with_dependencies
         assert dag_external_dependency == expected_dag_external_dependency
+
+    @pytest.mark.integration
+    def test_public_json_dag_to_airflow(self, tmp_path, bigquery_client):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "non_incremental_query_v1"
+            / "query.sql"
+        )
+
+        tasks = [Task.of_query(query_file)]
+
+        default_args = {
+            "depends_on_past": False,
+            "owner": "test@example.org",
+            "email": ["test@example.org"],
+            "start_date": "2020-01-01",
+            "retry_delay": "1h",
+        }
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_public_data_json": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                },
+                "bqetl_core": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                },
+            }
+        ).with_tasks(tasks)
+
+        dags.to_airflow_dags(tmp_path, bigquery_client)
+        result = (tmp_path / "bqetl_public_data_json.py").read_text().strip()
+        expected_dag = (
+            (TEST_DIR / "data" / "dags" / "test_public_data_json_dag")
+            .read_text()
+            .strip()
+        )
+
+        assert result == expected_dag

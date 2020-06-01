@@ -18,8 +18,8 @@ from bigquery_etl.query_scheduling.utils import (
 
 
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
-PUBLIC_DATA_DAG_TEMPLATE = "public_data_airflow_dag.j2"
-PUBLIC_DATA_DAG = "bqetl_public_data"
+PUBLIC_DATA_JSON_DAG_TEMPLATE = "public_data_json_airflow_dag.j2"
+PUBLIC_DATA_JSON_DAG = "bqetl_public_data_json"
 
 
 class DagParseException(Exception):
@@ -173,8 +173,8 @@ class Dag:
         try:
             name = list(d.keys())[0]
 
-            if name == PUBLIC_DATA_DAG:
-                return converter.structure({"name": name, **d[name]}, PublicDataDag)
+            if name == PUBLIC_DATA_JSON_DAG:
+                return converter.structure({"name": name, **d[name]}, PublicDataJsonDag)
             else:
                 return converter.structure({"name": name, **d[name]}, cls)
         except TypeError as e:
@@ -209,21 +209,21 @@ class Dag:
         return dag_template.render(args)
 
 
-class PublicDataDag(Dag):
-    """Special DAG with tasks exporting public data to GCS."""
+class PublicDataJsonDag(Dag):
+    """Special DAG with tasks exporting public json data to GCS."""
 
     def to_airflow_dag(self, client, dag_collection):
         """Convert the DAG to its Airflow representation and return the python code."""
         env = self._jinja_env()
-        dag_template = env.get_template(PUBLIC_DATA_DAG_TEMPLATE)
+        dag_template = env.get_template(PUBLIC_DATA_JSON_DAG_TEMPLATE)
         args = self.__dict__
 
         return dag_template.render(args)
 
     def add_export_task(self, task):
         """Add a new task to the DAG for exporting data of the original query to GCS."""
-        if not task.public_data:
-            logging.warn(f"Task {task.task_name} not marked as public.")
+        if not task.public_json:
+            logging.warn(f"Task {task.task_name} not marked as public JSON.")
             return
 
         # clone original task and make sure it's not accidentally modified
@@ -234,8 +234,8 @@ class PublicDataDag(Dag):
         del task_dict["version"]
 
         export_task = converter.structure(task_dict, Task)
-        export_task.dag_name = PUBLIC_DATA_DAG
-        export_task.task_name = f"export_public_data_{export_task.task_name}"
+        export_task.dag_name = PUBLIC_DATA_JSON_DAG
+        export_task.task_name = f"export_public_data_json_{export_task.task_name}"
         export_task.dependencies = [task]
 
         self.add_tasks([export_task])

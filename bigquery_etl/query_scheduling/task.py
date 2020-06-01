@@ -65,8 +65,8 @@ class Task:
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
-    # indicate whether data should be published
-    public_data: bool = attr.ib(False)
+    # indicate whether data should be published as JSON
+    public_json: bool = attr.ib(False)
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -149,8 +149,8 @@ class Task:
         task_config["email"] = list(set(task_config["email"] + metadata.owners))
 
         # data processed in task should be published
-        if metadata.is_public_bigquery() or metadata.is_public_json():
-            task_config["public_data"] = True
+        if metadata.is_public_json():
+            task_config["public_json"] = True
 
         try:
             return converter.structure(task_config, cls)

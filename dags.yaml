@@ -30,7 +30,7 @@ bqetl_ssl_ratios:
 
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (it's done automatically)
-bqetl_public_data:
+bqetl_public_data_json:
   schedule_interval: daily
   default_args:
     owner: ascholtz@mozilla.com

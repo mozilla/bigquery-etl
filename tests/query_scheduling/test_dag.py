@@ -1,7 +1,12 @@
 from pathlib import Path
 import pytest
 
-from bigquery_etl.query_scheduling.dag import Dag, DagParseException, DagDefaultArgs
+from bigquery_etl.query_scheduling.dag import (
+    Dag,
+    DagParseException,
+    DagDefaultArgs,
+    PublicDataJsonDag,
+)
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.task import Task
 
@@ -187,3 +192,30 @@ class TestDag:
         assert DagDefaultArgs(
             owner="test@example.com", start_date="2020-12-12", retry_delay="3h"
         )
+
+    def test_public_data_json_dag_add_task(self):
+        public_json_dag = PublicDataJsonDag(
+            "bqetl_public_data_json_dag", "daily", self.default_args
+        )
+
+        assert len(public_json_dag.tasks) == 0
+
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        task = Task.of_query(query_file)
+        public_json_dag.add_export_task(task)
+
+        assert len(public_json_dag.tasks) == 1
+        assert (
+            public_json_dag.tasks[0].task_name
+            == "export_public_data_json_test__incremental_query__v1"
+        )
+        assert public_json_dag.tasks[0].dag_name == "bqetl_public_data_json_dag"
+        assert public_json_dag.tasks[0].dependencies == [task]

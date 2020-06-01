@@ -234,7 +234,7 @@ class PublicDataJsonDag(Dag):
         del task_dict["version"]
 
         export_task = converter.structure(task_dict, Task)
-        export_task.dag_name = PUBLIC_DATA_JSON_DAG
+        export_task.dag_name = self.name
         export_task.task_name = f"export_public_data_json_{export_task.task_name}"
         export_task.dependencies = [task]
 

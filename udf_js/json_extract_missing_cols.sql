@@ -2,7 +2,7 @@
 
 Extract missing columns from additional properties.
 
-More generally, get a list of nodes from a JSON blob.
+More generally, get a list of nodes from a JSON blob. Array elements are indicated as [...].
 
 param input: The JSON blob to explode
 param indicates_node: An array of strings. If a key's value is an object, and contains one of these values,
@@ -14,7 +14,6 @@ Notes:
   histogram will be returned as a missing node, rather than the subvalues within the histogram
   (e.g. values, sum, etc.)
 - Use known_nodes if you're aware of a missing section, like ['simpleMeasurements']
-- This doesn't support Arrays of structs, the array itself will be returned as a node
 
 See here for an example usage
 https://sql.telemetry.mozilla.org/queries/64460/source
@@ -37,8 +36,9 @@ LANGUAGE js AS """
         var next_val = next_keypath.reduce((obj, k) => obj[k], parsed);
 
         var is_node = true;
-        if(typeof next_val === 'object' && next_val !== null && !Array.isArray(next_val)) {
+        if(typeof next_val === 'object' && next_val !== null) {
             is_node = false;
+
             var keys = Object.keys(next_val);
 
             if(known_nodes.indexOf(next_keypath[next_keypath.length - 1]) > -1){
@@ -46,7 +46,7 @@ LANGUAGE js AS """
             }
 
             var keys_indicating_node = keys.filter(
-              e => indicates_node.indexOf(e) > -1
+                e => indicates_node.indexOf(e) > -1
             )
 
             if(keys_indicating_node.length > 0){
@@ -61,11 +61,15 @@ LANGUAGE js AS """
         }
 
         if(is_node) {
-            key_paths.push(next_keypath.map(k => '`' + String(k) + '`').join('.'));
+            key_path_str = next_keypath.map(k => '`' + String(k) + '`').join('.');
+            array_index_regex = /\`[0-9]+\`/gi;
+            key_path_str = key_path_str.replace(array_index_regex, "[...]")
+            key_paths.push(key_path_str);
         }
     }
 
-    return key_paths;
+    unique_key_paths = key_paths.filter((v, i, a) => a.indexOf(v) === i);
+    return unique_key_paths;
 """;
 
 -- Tests
@@ -73,7 +77,26 @@ LANGUAGE js AS """
 WITH
   addl_properties AS (
     SELECT
-      '{"first": {"second": {"third": "hello world"}, "other-second": "value"}}' AS additional_properties ),
+      '''
+      {
+        "first": {
+          "second": {
+            "third": "hello world"
+          }, 
+          "other-second": "value",
+          "array": [
+            {
+              "duplicate-array-element": "value",
+              "unique-array-element": "value"
+            },
+            {
+              "duplicate-array-element": "value", 
+              "nested-array-element": {"nested": "value"}
+            }
+          ]
+        }
+      }
+      ''' AS additional_properties  ),
     --
   extracted AS (
     SELECT
@@ -84,8 +107,12 @@ WITH
       addl_properties )
     --
     SELECT
-      assert_array_equals_any_order(no_args, ARRAY['`first`.`second`.`third`', '`first`.`other-second`']),
-      assert_array_equals_any_order(indicates_node_arg, ARRAY['`first`.`second`', '`first`.`other-second`']),
+      assert_array_equals_any_order(no_args, ARRAY['`first`.`second`.`third`', '`first`.`other-second`',
+        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`duplicate-array-element`', 
+        '`first`.`array`.[...].`unique-array-element`']),
+      assert_array_equals_any_order(indicates_node_arg, ARRAY['`first`.`second`', '`first`.`other-second`', 
+        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`duplicate-array-element`',
+        '`first`.`array`.[...].`unique-array-element`']),
       assert_array_equals_any_order(is_node_arg, ARRAY['`first`'])
   FROM
     extracted

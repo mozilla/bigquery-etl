@@ -1,50 +1,11 @@
 {{ header }}
-CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
-RETURNS ARRAY<
-  STRUCT<
-    latest_version INT64,
-    metric STRING,
-    metric_type STRING,
-    key STRING,
-    agg_type STRING,
-    value ARRAY<STRUCT<key STRING, value INT64>>
-  >
-> AS (
-  (
-    WITH unnested AS (
-      SELECT
-        *
-      FROM
-        UNNEST(old_aggs)
-      UNION ALL
-      SELECT
-        *
-      FROM
-        UNNEST(new_aggs)
-    ),
-    aggregated_data AS (
-      SELECT AS STRUCT
-        {{ metric_attributes }},
-        `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
-      FROM
-        unnested
-      GROUP BY
-        latest_version,
-        {{ metric_attributes }}
-    )
-    SELECT
-      ARRAY_AGG(({{ metric_attributes }}, value))
-    FROM
-      aggregated_data
-  )
-);
+{% include "clients_histogram_aggregates_v1.udf.sql" %}
 
 WITH extracted_accumulated AS (
   SELECT
     *
   FROM
-    -- TODO: create parameter
-    glam_etl.fenix_clients_histogram_aggregates_v1
+    glam_etl.{{ prefix }}__clients_histogram_aggregates_v1
   {% if parameterize %}
   WHERE
     sample_id >= @min_sample_id
@@ -58,7 +19,7 @@ filtered_accumulated AS (
   FROM
     extracted_accumulated
   LEFT JOIN
-    glam_etl.fenix_latest_versions_v1
+    glam_etl.{{ prefix }}__latest_versions_v1
   USING
     (channel)
   WHERE
@@ -71,7 +32,7 @@ extracted_daily AS (
     CAST(app_version AS INT64) AS app_version,
     unnested_histogram_aggregates as histogram_aggregates
   FROM
-    glam_etl.fenix_view_clients_daily_histogram_aggregates_v1,
+    glam_etl.{{ prefix }}__view_clients_daily_histogram_aggregates_v1,
     UNNEST(histogram_aggregates) unnested_histogram_aggregates
   WHERE
     {% if parameterize %}
@@ -90,7 +51,7 @@ filtered_daily AS (
   FROM
     extracted_daily
   LEFT JOIN
-    glam_etl.fenix_latest_versions_v1
+    glam_etl.{{ prefix }}__latest_versions_v1
   USING
     (channel)
   WHERE
@@ -132,8 +93,7 @@ SELECT
     COALESCE(accumulated.{{ attribute }}, daily.{{ attribute }}) AS {{ attribute }},
   {% endfor %}
   udf_merged_user_data(
-    accumulated.histogram_aggregates,
-    daily.histogram_aggregates
+    ARRAY_CONCAT(accumulated.histogram_aggregates, daily.histogram_aggregates)
   ) AS histogram_aggregates
 FROM
   filtered_accumulated AS accumulated

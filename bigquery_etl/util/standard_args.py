@@ -17,7 +17,7 @@ def add_argument(parser, *args, **kwargs):
             if kwargs.get("nargs") in ("*", "+"):
                 # unnest a single default for printing, if possible
                 try:
-                    default, = default
+                    (default,) = default
                 except ValueError:
                     pass
             kwargs["help"] += f"; Defaults to {default}"

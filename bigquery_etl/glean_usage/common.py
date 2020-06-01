@@ -68,8 +68,7 @@ def list_baseline_tables(client, pool, project_id, only_tables, table_filter):
         for t in tables
         if table_filter(f"{t.dataset_id}.{t.table_id}")
         and t.table_id == "baseline_v1"
-        and client.get_table(sql_table_id(t)).labels.get("schema_id", None)
-        == "glean_ping_1"
+        and t.labels.get("schema_id") == "glean_ping_1"
     ]
 
 

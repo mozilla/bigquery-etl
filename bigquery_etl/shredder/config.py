@@ -4,9 +4,15 @@
 
 from dataclasses import dataclass
 from functools import partial
+import re
+
+from google.cloud import bigquery
+
+from ..util.bigquery_id import qualified_table_id
 
 
 SHARED_PROD = "moz-fx-data-shared-prod"
+GLEAN_SCHEMA_ID = "glean_ping_1"
 
 
 @dataclass(frozen=True)
@@ -44,12 +50,12 @@ class DeleteTarget:
     @property
     def table_id(self):
         """Table Id."""
-        return self.table.split(".", 1)[-1]
+        return self.table.partition(".")[2]
 
     @property
     def dataset_id(self):
         """Dataset Id."""
-        return self.table.split(".", 1)[0]
+        return self.table.partition(".")[0]
 
 
 CLIENT_ID = "client_id"
@@ -61,6 +67,8 @@ SHIELD_ID = "shield_id"
 ECOSYSTEM_CLIENT_ID = "payload.ecosystem_client_id"
 PIONEER_ID = "payload.pioneer_id"
 ID = "id"
+CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
+SYNC_ID = "SUBSTR(payload.device_id, 0, 32)"
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -69,56 +77,23 @@ IMPRESSION_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_impression_id",
 )
-FENIX_NIGHTLY_SRC = DeleteSource(
-    table="org_mozilla_fenix_nightly_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+CFR_SRC = DeleteSource(
+    # inject sql via f"`{sql_table_id(source)}`" to select client_id and impression_id
+    table="telemetry_stable.deletion_request_v4`,"
+    f" UNNEST([{CLIENT_ID}, {IMPRESSION_SRC.field}]) AS `_",
+    field="_",
 )
-FENIX_SRC = DeleteSource(
-    table="org_mozilla_fenix_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+SYNC_SRC = DeleteSource(
+    table="telemetry_stable.deletion_request_v4",
+    field="payload.scalars.parent.deletion_request_sync_device_id",
 )
-FENNEC_AURORA_SRC = DeleteSource(
-    table="org_mozilla_fennec_aurora_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
-)
-GLEAN_FIREFOX_BETA_SRC = DeleteSource(
-    table="org_mozilla_firefox_beta_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
-)
-GLEAN_FIREFOX_SRC = DeleteSource(
-    table="org_mozilla_firefox_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
-)
-FOGOTYPE_SRC = DeleteSource(
-    table="org_mozilla_fogotype_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
-)
-IOS_LOCKBOX_SRC = DeleteSource(
-    table="org_mozilla_ios_lockbox_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
-)
-REFERENCE_BROWSER_SRC = DeleteSource(
-    table="org_mozilla_reference_browser_stable.deletion_request_v1",
-    field=GLEAN_CLIENT_ID,
-)
-TV_FIREFOX_SRC = DeleteSource(
-    table="org_mozilla_tv_firefox_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
-)
-VRBROWSER_SRC = DeleteSource(
-    table="org_mozilla_vrbrowser_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
-)
-SOURCES = [
-    DESKTOP_SRC,
-    IMPRESSION_SRC,
-    FENIX_NIGHTLY_SRC,
-    FENIX_SRC,
-    FENNEC_AURORA_SRC,
-    GLEAN_FIREFOX_BETA_SRC,
-    GLEAN_FIREFOX_SRC,
-    FOGOTYPE_SRC,
-    IOS_LOCKBOX_SRC,
-    REFERENCE_BROWSER_SRC,
-    TV_FIREFOX_SRC,
-    VRBROWSER_SRC,
-]
+SOURCES = [DESKTOP_SRC, IMPRESSION_SRC, CFR_SRC, SYNC_SRC]
 
 
 client_id_target = partial(DeleteTarget, field=CLIENT_ID)
 glean_target = partial(DeleteTarget, field=GLEAN_CLIENT_ID)
 impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
+cfr_id_target = partial(DeleteTarget, field=CFR_ID)
 
 DELETE_TARGETS = {
     client_id_target(
@@ -178,110 +153,39 @@ DELETE_TARGETS = {
     client_id_target(table="telemetry_stable.untrusted_modules_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.update_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.voice_v4"): DESKTOP_SRC,
-    # glean
-    client_id_target(table="org_mozilla_fenix_derived.clients_daily_v1"): FENIX_SRC,
-    client_id_target(table="org_mozilla_fenix_derived.clients_last_seen_v1"): FENIX_SRC,
-    glean_target(
-        table="org_mozilla_fenix_nightly_stable.activation_v1"
-    ): FENIX_NIGHTLY_SRC,
-    glean_target(
-        table="org_mozilla_fenix_nightly_stable.baseline_v1"
-    ): FENIX_NIGHTLY_SRC,
-    glean_target(
-        table="org_mozilla_fenix_nightly_stable.bookmarks_sync_v1"
-    ): FENIX_NIGHTLY_SRC,
-    glean_target(table="org_mozilla_fenix_nightly_stable.events_v1"): FENIX_NIGHTLY_SRC,
-    glean_target(
-        table="org_mozilla_fenix_nightly_stable.history_sync_v1"
-    ): FENIX_NIGHTLY_SRC,
-    glean_target(
-        table="org_mozilla_fenix_nightly_stable.logins_sync_v1"
-    ): FENIX_NIGHTLY_SRC,
-    glean_target(
-        table="org_mozilla_fenix_nightly_stable.metrics_v1"
-    ): FENIX_NIGHTLY_SRC,
-    glean_target(table="org_mozilla_fenix_stable.activation_v1"): FENIX_SRC,
-    glean_target(table="org_mozilla_fenix_stable.baseline_v1"): FENIX_SRC,
-    glean_target(table="org_mozilla_fenix_stable.bookmarks_sync_v1"): FENIX_SRC,
-    glean_target(table="org_mozilla_fenix_stable.events_v1"): FENIX_SRC,
-    glean_target(table="org_mozilla_fenix_stable.history_sync_v1"): FENIX_SRC,
-    glean_target(table="org_mozilla_fenix_stable.logins_sync_v1"): FENIX_SRC,
-    glean_target(table="org_mozilla_fenix_stable.metrics_v1"): FENIX_SRC,
-    glean_target(
-        table="org_mozilla_reference_browser_stable.baseline_v1"
-    ): REFERENCE_BROWSER_SRC,
-    glean_target(
-        table="org_mozilla_reference_browser_stable.events_v1"
-    ): REFERENCE_BROWSER_SRC,
-    glean_target(
-        table="org_mozilla_reference_browser_stable.metrics_v1"
-    ): REFERENCE_BROWSER_SRC,
-    glean_target(table="org_mozilla_tv_firefox_stable.baseline_v1"): TV_FIREFOX_SRC,
-    glean_target(table="org_mozilla_tv_firefox_stable.events_v1"): TV_FIREFOX_SRC,
-    glean_target(table="org_mozilla_tv_firefox_stable.metrics_v1"): TV_FIREFOX_SRC,
-    glean_target(table="org_mozilla_vrbrowser_stable.baseline_v1"): VRBROWSER_SRC,
-    glean_target(table="org_mozilla_vrbrowser_stable.bookmarks_sync_v1"): VRBROWSER_SRC,
-    glean_target(table="org_mozilla_vrbrowser_stable.events_v1"): VRBROWSER_SRC,
-    glean_target(table="org_mozilla_vrbrowser_stable.history_sync_v1"): VRBROWSER_SRC,
-    glean_target(table="org_mozilla_vrbrowser_stable.logins_sync_v1"): VRBROWSER_SRC,
-    glean_target(table="org_mozilla_vrbrowser_stable.metrics_v1"): VRBROWSER_SRC,
-    glean_target(table="org_mozilla_vrbrowser_stable.session_end_v1"): VRBROWSER_SRC,
-    glean_target(
-        table="org_mozilla_fennec_aurora_stable.activation_v1"
-    ): FENNEC_AURORA_SRC,
-    glean_target(
-        table="org_mozilla_fennec_aurora_stable.baseline_v1"
-    ): FENNEC_AURORA_SRC,
-    glean_target(
-        table="org_mozilla_fennec_aurora_stable.bookmarks_sync_v1"
-    ): FENNEC_AURORA_SRC,
-    glean_target(table="org_mozilla_fennec_aurora_stable.events_v1"): FENNEC_AURORA_SRC,
-    glean_target(
-        table="org_mozilla_fennec_aurora_stable.history_sync_v1"
-    ): FENNEC_AURORA_SRC,
-    glean_target(
-        table="org_mozilla_fennec_aurora_stable.logins_sync_v1"
-    ): FENNEC_AURORA_SRC,
-    glean_target(
-        table="org_mozilla_fennec_aurora_stable.metrics_v1"
-    ): FENNEC_AURORA_SRC,
-    glean_target(
-        table="org_mozilla_firefox_beta_stable.activation_v1"
-    ): GLEAN_FIREFOX_BETA_SRC,
-    glean_target(
-        table="org_mozilla_firefox_beta_stable.baseline_v1"
-    ): GLEAN_FIREFOX_BETA_SRC,
-    glean_target(
-        table="org_mozilla_firefox_beta_stable.bookmarks_sync_v1"
-    ): GLEAN_FIREFOX_BETA_SRC,
-    glean_target(
-        table="org_mozilla_firefox_beta_stable.events_v1"
-    ): GLEAN_FIREFOX_BETA_SRC,
-    glean_target(
-        table="org_mozilla_firefox_beta_stable.history_sync_v1"
-    ): GLEAN_FIREFOX_BETA_SRC,
-    glean_target(
-        table="org_mozilla_firefox_beta_stable.logins_sync_v1"
-    ): GLEAN_FIREFOX_BETA_SRC,
-    glean_target(
-        table="org_mozilla_firefox_beta_stable.metrics_v1"
-    ): GLEAN_FIREFOX_BETA_SRC,
-    glean_target(table="org_mozilla_firefox_stable.activation_v1"): GLEAN_FIREFOX_SRC,
-    glean_target(table="org_mozilla_firefox_stable.baseline_v1"): GLEAN_FIREFOX_SRC,
-    glean_target(
-        table="org_mozilla_firefox_stable.bookmarks_sync_v1"
-    ): GLEAN_FIREFOX_SRC,
-    glean_target(table="org_mozilla_firefox_stable.events_v1"): GLEAN_FIREFOX_SRC,
-    glean_target(table="org_mozilla_firefox_stable.history_sync_v1"): GLEAN_FIREFOX_SRC,
-    glean_target(table="org_mozilla_firefox_stable.logins_sync_v1"): GLEAN_FIREFOX_SRC,
-    glean_target(table="org_mozilla_firefox_stable.metrics_v1"): GLEAN_FIREFOX_SRC,
-    glean_target(table="org_mozilla_fogotype_stable.baseline_v1"): FOGOTYPE_SRC,
-    glean_target(table="org_mozilla_fogotype_stable.events_v1"): FOGOTYPE_SRC,
-    glean_target(table="org_mozilla_fogotype_stable.metrics_v1"): FOGOTYPE_SRC,
-    glean_target(table="org_mozilla_fogotype_stable.prototype_v1"): FOGOTYPE_SRC,
-    glean_target(table="org_mozilla_ios_lockbox_stable.baseline_v1"): IOS_LOCKBOX_SRC,
-    glean_target(table="org_mozilla_ios_lockbox_stable.events_v1"): IOS_LOCKBOX_SRC,
-    glean_target(table="org_mozilla_ios_lockbox_stable.metrics_v1"): IOS_LOCKBOX_SRC,
+    # activity stream
+    cfr_id_target(table="messaging_system_stable.cfr_v1"): CFR_SRC,
+    cfr_id_target(table="messaging_system_derived.cfr_users_daily_v1"): CFR_SRC,
+    cfr_id_target(table="messaging_system_derived.cfr_users_last_seen_v1"): CFR_SRC,
+    client_id_target(table="activity_stream_stable.events_v1"): DESKTOP_SRC,
+    client_id_target(table="messaging_system_stable.onboarding_v1"): DESKTOP_SRC,
+    client_id_target(table="messaging_system_stable.snippets_v1"): DESKTOP_SRC,
+    client_id_target(table="activity_stream_stable.sessions_v1"): DESKTOP_SRC,
+    client_id_target(
+        table="messaging_system_derived.onboarding_users_daily_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="messaging_system_derived.onboarding_users_last_seen_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="messaging_system_derived.snippets_users_daily_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="messaging_system_derived.snippets_users_last_seen_v1"
+    ): DESKTOP_SRC,
+    impression_id_target(
+        table="activity_stream_stable.impression_stats_v1"
+    ): IMPRESSION_SRC,
+    impression_id_target(table="activity_stream_stable.spoc_fills_v1"): IMPRESSION_SRC,
+    impression_id_target(
+        table="messaging_system_stable.undesired_events_v1"
+    ): IMPRESSION_SRC,
+    impression_id_target(
+        table="messaging_system_stable.personalization_experiment_v1"
+    ): IMPRESSION_SRC,
+    # sync
+    DeleteTarget(table="telemetry_stable.sync_v4", field=SYNC_ID): SYNC_SRC,
+    DeleteTarget(table="telemetry_stable.sync_v5", field=SYNC_ID): SYNC_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
@@ -297,10 +201,6 @@ SEARCH_IGNORE_TABLES |= {
         glean_target(table="org_mozilla_fennec_aurora_stable.migration_v1"),
         glean_target(table="org_mozilla_firefox_beta_stable.migration_v1"),
         glean_target(table="org_mozilla_firefox_stable.migration_v1"),
-        # activity stream
-        impression_id_target(table="activity_stream_stable.impression_stats_v1"),
-        impression_id_target(table="activity_stream_stable.spoc_fills_v1"),
-        impression_id_target(table="messaging_system_stable.undesired_events_v1"),
         # pocket
         DeleteTarget(table="pocket_stable.fire_tv_events_v1", field=POCKET_ID),
         # fxa
@@ -325,11 +225,7 @@ SEARCH_IGNORE_TABLES |= {
         client_id_target(table="telemetry_stable.mobile_event_v1"),
         client_id_target(table="telemetry_stable.mobile_metrics_v1"),
         # internal
-        client_id_target(table="activity_stream_stable.events_v1"),
         client_id_target(table="eng_workflow_stable.build_v1"),
-        client_id_target(table="messaging_system_stable.cfr_v1"),
-        client_id_target(table="messaging_system_stable.onboarding_v1"),
-        client_id_target(table="messaging_system_stable.snippets_v1"),
         # other
         DeleteTarget(table="telemetry_stable.pioneer_study_v4", field=PIONEER_ID),
         DeleteTarget(
@@ -348,6 +244,70 @@ SEARCH_IGNORE_FIELDS = {
     ("telemetry_stable.optout_v4", ID),
     ("telemetry_stable.pre_account_v4", ID),
     ("telemetry_stable.prio_v4", ID),
-    ("telemetry_stable.sync_v4", ID),
-    ("telemetry_stable.sync_v5", ID),
 }
+
+
+def find_glean_targets(pool, client, project=SHARED_PROD):
+    """Return a dict like DELETE_TARGETS for glean tables."""
+    datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
+    glean_stable_tables = [
+        table
+        for tables in pool.map(
+            client.list_tables,
+            [
+                bigquery.DatasetReference(project, dataset_id)
+                for dataset_id in datasets
+                if dataset_id.endswith("_stable")
+            ],
+            chunksize=1,
+        )
+        for table in tables
+        if table.labels.get("schema_id") == GLEAN_SCHEMA_ID
+    ]
+    source_doctype = "deletion_request"
+    sources = {
+        dataset_id: DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
+        # dict comprehension will only keep the last value for a given key, so
+        # sort by table_id to use the latest version
+        for table in sorted(glean_stable_tables, key=lambda t: t.table_id)
+        if table.table_id.startswith(source_doctype)
+        # re-use source for derived tables
+        for dataset_id in [
+            table.dataset_id,
+            re.sub("_stable$", "_derived", table.dataset_id),
+        ]
+        if dataset_id in datasets
+    }
+    return {
+        **{
+            # glean stable tables that have a source
+            glean_target(qualified_table_id(table)): sources[table.dataset_id]
+            for table in glean_stable_tables
+            if table.dataset_id in sources
+            and not table.table_id.startswith(source_doctype)
+            # migration tables not yet supported
+            and not table.table_id.startswith("migration")
+        },
+        **{
+            # glean derived tables that contain client_id
+            client_id_target(table=qualified_table_id(table)): sources[table.dataset_id]
+            for table in pool.map(
+                client.get_table,
+                [
+                    table
+                    for tables in pool.map(
+                        client.list_tables,
+                        [
+                            bigquery.DatasetReference(project, dataset_id)
+                            for dataset_id in sources
+                            if not dataset_id.endswith("_stable")
+                        ],
+                        chunksize=1,
+                    )
+                    for table in tables
+                ],
+                chunksize=1,
+            )
+            if any(field.name == CLIENT_ID for field in table.schema)
+        },
+    }

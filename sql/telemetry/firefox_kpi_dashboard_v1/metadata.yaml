@@ -1,0 +1,12 @@
+friendly_name: Firefox KPI dashboard
+description: Firefox KPI dashboard
+owners:
+  - jklukas@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_kpi_dashboard
+  depends_on_past: false
+  date_partition_parameter: null
+  email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+  task_name: kpi_dashboard

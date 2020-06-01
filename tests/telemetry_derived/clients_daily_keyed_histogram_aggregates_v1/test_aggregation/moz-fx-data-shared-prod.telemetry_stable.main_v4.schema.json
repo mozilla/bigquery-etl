@@ -1106,6 +1106,23 @@
                             }
                         ],
                         "mode": "REPEATED",
+                        "name": "fx_tab_remote_navigation_delay_ms",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
                         "name": "fx_tabletmode_page_load",
                         "type": "RECORD"
                     },
@@ -1157,6 +1174,40 @@
                             }
                         ],
                         "mode": "REPEATED",
+                        "name": "http3_connecttion_close_code",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
+                        "name": "http_cache_disposition_3",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
                         "name": "http_channel_disposition_upgrade",
                         "type": "RECORD"
                     },
@@ -1192,6 +1243,23 @@
                         ],
                         "mode": "REPEATED",
                         "name": "http_traffic_analysis_3",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
+                        "name": "https_only_mode_upgrade_time_ms",
                         "type": "RECORD"
                     },
                     {
@@ -1735,6 +1803,57 @@
                             }
                         ],
                         "mode": "REPEATED",
+                        "name": "presshell_flushes_per_tick",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
+                        "name": "presshell_layout_total_ms_per_tick",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
+                        "name": "presshell_reqs_per_layout_flush",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
                         "name": "print_count",
                         "type": "RECORD"
                     },
@@ -1820,7 +1939,41 @@
                             }
                         ],
                         "mode": "REPEATED",
+                        "name": "qm_first_initialization_attempt",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
                         "name": "qm_init_telemetry_error",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
+                        "name": "refresh_driver_tick_phase_weight",
                         "type": "RECORD"
                     },
                     {
@@ -2229,6 +2382,23 @@
                         ],
                         "mode": "REPEATED",
                         "name": "update_check_extended_error_notify",
+                        "type": "RECORD"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "key",
+                                "type": "STRING"
+                            },
+                            {
+                                "mode": "NULLABLE",
+                                "name": "value",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
+                        "name": "uptake_remote_content_result_1",
                         "type": "RECORD"
                     },
                     {
@@ -2688,142 +2858,6 @@
                         ],
                         "mode": "REPEATED",
                         "name": "webext_user_script_injection_ms_by_addonid",
-                        "type": "RECORD"
-                    },
-                    {
-                        "fields": [
-                            {
-                                "mode": "NULLABLE",
-                                "name": "key",
-                                "type": "STRING"
-                            },
-                            {
-                                "mode": "NULLABLE",
-                                "name": "value",
-                                "type": "STRING"
-                            }
-                        ],
-                        "mode": "REPEATED",
-                        "name": "refresh_driver_tick_phase_weight",
-                        "type": "RECORD"
-                    },
-                    {
-                        "fields": [
-                            {
-                                "mode": "NULLABLE",
-                                "name": "key",
-                                "type": "STRING"
-                            },
-                            {
-                                "mode": "NULLABLE",
-                                "name": "value",
-                                "type": "STRING"
-                            }
-                        ],
-                        "mode": "REPEATED",
-                        "name": "fx_tab_remote_navigation_delay_ms",
-                        "type": "RECORD"
-                    },
-                    {
-                        "fields": [
-                            {
-                                "mode": "NULLABLE",
-                                "name": "key",
-                                "type": "STRING"
-                            },
-                            {
-                                "mode": "NULLABLE",
-                                "name": "value",
-                                "type": "STRING"
-                            }
-                        ],
-                        "mode": "REPEATED",
-                        "name": "presshell_flushes_per_tick",
-                        "type": "RECORD"
-                    },
-                    {
-                        "fields": [
-                            {
-                                "mode": "NULLABLE",
-                                "name": "key",
-                                "type": "STRING"
-                            },
-                            {
-                                "mode": "NULLABLE",
-                                "name": "value",
-                                "type": "STRING"
-                            }
-                        ],
-                        "mode": "REPEATED",
-                        "name": "presshell_reqs_per_layout_flush",
-                        "type": "RECORD"
-                    },
-                    {
-                        "fields": [
-                            {
-                                "mode": "NULLABLE",
-                                "name": "key",
-                                "type": "STRING"
-                            },
-                            {
-                                "mode": "NULLABLE",
-                                "name": "value",
-                                "type": "STRING"
-                            }
-                        ],
-                        "mode": "REPEATED",
-                        "name": "uptake_remote_content_result_1",
-                        "type": "RECORD"
-                    },
-                    {
-                        "fields": [
-                            {
-                                "mode": "NULLABLE",
-                                "name": "key",
-                                "type": "STRING"
-                            },
-                            {
-                                "mode": "NULLABLE",
-                                "name": "value",
-                                "type": "STRING"
-                            }
-                        ],
-                        "mode": "REPEATED",
-                        "name": "presshell_layout_total_ms_per_tick",
-                        "type": "RECORD"
-                    },
-                    {
-                        "fields": [
-                            {
-                                "mode": "NULLABLE",
-                                "name": "key",
-                                "type": "STRING"
-                            },
-                            {
-                                "mode": "NULLABLE",
-                                "name": "value",
-                                "type": "STRING"
-                            }
-                        ],
-                        "mode": "REPEATED",
-                        "name": "qm_first_initialization_attempt",
-                        "type": "RECORD"
-                    },
-                    {
-                        "fields": [
-                            {
-                                "mode": "NULLABLE",
-                                "name": "key",
-                                "type": "STRING"
-                            },
-                            {
-                                "mode": "NULLABLE",
-                                "name": "value",
-                                "type": "STRING"
-                            }
-                        ],
-                        "mode": "REPEATED",
-                        "name": "http_cache_disposition_3",
                         "type": "RECORD"
                     }
                 ],
@@ -3820,6 +3854,23 @@
                                             }
                                         ],
                                         "mode": "REPEATED",
+                                        "name": "fx_tab_remote_navigation_delay_ms",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
                                         "name": "fx_tabletmode_page_load",
                                         "type": "RECORD"
                                     },
@@ -3855,6 +3906,57 @@
                                         ],
                                         "mode": "REPEATED",
                                         "name": "hsts_priming_request_duration",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "http3_connecttion_close_code",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "http_cache_disposition_3",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "http_child_omt_stats",
                                         "type": "RECORD"
                                     },
                                     {
@@ -4211,6 +4313,57 @@
                                             }
                                         ],
                                         "mode": "REPEATED",
+                                        "name": "presshell_flushes_per_tick",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "presshell_layout_total_ms_per_tick",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "presshell_reqs_per_layout_flush",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
                                         "name": "print_count",
                                         "type": "RECORD"
                                     },
@@ -4280,6 +4433,23 @@
                                         ],
                                         "mode": "REPEATED",
                                         "name": "pwmgr_manage_sorted",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
+                                        "name": "refresh_driver_tick_phase_weight",
                                         "type": "RECORD"
                                     },
                                     {
@@ -4670,6 +4840,23 @@
                                             }
                                         ],
                                         "mode": "REPEATED",
+                                        "name": "uptake_remote_content_result_1",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
                                         "name": "urlclassifier_cl_keyed_update_time",
                                         "type": "RECORD"
                                     },
@@ -4908,6 +5095,23 @@
                                             }
                                         ],
                                         "mode": "REPEATED",
+                                        "name": "video_unblackinglisting_dxva_driver_runtime_status",
+                                        "type": "RECORD"
+                                    },
+                                    {
+                                        "fields": [
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "key",
+                                                "type": "STRING"
+                                            },
+                                            {
+                                                "mode": "NULLABLE",
+                                                "name": "value",
+                                                "type": "STRING"
+                                            }
+                                        ],
+                                        "mode": "REPEATED",
                                         "name": "weave_engine_sync_errors",
                                         "type": "RECORD"
                                     },
@@ -5028,159 +5232,6 @@
                                         ],
                                         "mode": "REPEATED",
                                         "name": "webext_user_script_injection_ms_by_addonid",
-                                        "type": "RECORD"
-                                    },
-                                    {
-                                        "fields": [
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "key",
-                                                "type": "STRING"
-                                            },
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "value",
-                                                "type": "STRING"
-                                            }
-                                        ],
-                                        "mode": "REPEATED",
-                                        "name": "refresh_driver_tick_phase_weight",
-                                        "type": "RECORD"
-                                    },
-                                    {
-                                        "fields": [
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "key",
-                                                "type": "STRING"
-                                            },
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "value",
-                                                "type": "STRING"
-                                            }
-                                        ],
-                                        "mode": "REPEATED",
-                                        "name": "fx_tab_remote_navigation_delay_ms",
-                                        "type": "RECORD"
-                                    },
-                                    {
-                                        "fields": [
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "key",
-                                                "type": "STRING"
-                                            },
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "value",
-                                                "type": "STRING"
-                                            }
-                                        ],
-                                        "mode": "REPEATED",
-                                        "name": "presshell_flushes_per_tick",
-                                        "type": "RECORD"
-                                    },
-                                    {
-                                        "fields": [
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "key",
-                                                "type": "STRING"
-                                            },
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "value",
-                                                "type": "STRING"
-                                            }
-                                        ],
-                                        "mode": "REPEATED",
-                                        "name": "presshell_reqs_per_layout_flush",
-                                        "type": "RECORD"
-                                    },
-                                    {
-                                        "fields": [
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "key",
-                                                "type": "STRING"
-                                            },
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "value",
-                                                "type": "STRING"
-                                            }
-                                        ],
-                                        "mode": "REPEATED",
-                                        "name": "uptake_remote_content_result_1",
-                                        "type": "RECORD"
-                                    },
-                                    {
-                                        "fields": [
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "key",
-                                                "type": "STRING"
-                                            },
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "value",
-                                                "type": "STRING"
-                                            }
-                                        ],
-                                        "mode": "REPEATED",
-                                        "name": "presshell_layout_total_ms_per_tick",
-                                        "type": "RECORD"
-                                    },
-                                    {
-                                        "fields": [
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "key",
-                                                "type": "STRING"
-                                            },
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "value",
-                                                "type": "STRING"
-                                            }
-                                        ],
-                                        "mode": "REPEATED",
-                                        "name": "http_cache_disposition_3",
-                                        "type": "RECORD"
-                                    },
-                                    {
-                                        "fields": [
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "key",
-                                                "type": "STRING"
-                                            },
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "value",
-                                                "type": "STRING"
-                                            }
-                                        ],
-                                        "mode": "REPEATED",
-                                        "name": "http_child_omt_stats",
-                                        "type": "RECORD"
-                                    },
-                                    {
-                                        "fields": [
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "key",
-                                                "type": "STRING"
-                                            },
-                                            {
-                                                "mode": "NULLABLE",
-                                                "name": "value",
-                                                "type": "STRING"
-                                            }
-                                        ],
-                                        "mode": "REPEATED",
-                                        "name": "video_unblackinglisting_dxva_driver_runtime_status",
                                         "type": "RECORD"
                                     }
                                 ],

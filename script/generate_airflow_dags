@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Generate Airflow DAGs.
+#
+# Generated DAGs are by default written to the dags/ directory.
+
+
+cd "$(dirname "$0")/.."
+
+# todo: check if user is logged in to GCP, otherwise prompt login
+
+python3 -m bigquery_etl.query_scheduling.generate_airflow_dags "$@"
+
+black dags/

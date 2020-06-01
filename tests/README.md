@@ -15,6 +15,11 @@ venv/bin/pytest --black --docstyle --flake8 --mypy-ignore-missing-imports -n 4
 
 # use -k to selectively run a set of tests that matches the expression `udf`
 venv/bin/pytest -k udf
+
+# run integration tests with 4 workers in parallel
+gcloud auth application-default login # or set GOOGLE_APPLICATION_CREDENTIALS
+export GOOGLE_PROJECT_ID="bigquery-etl-integration-test"
+venv/bin/pytest -m integration -n 4
 ```
 
 To provide [authentication credentials for the Google Cloud API](https://cloud.google.com/docs/authentication/getting-started) the `GOOGLE_APPLICATION_CREDENTIALS` environment variable must be set to the file path of the JSON file that contains the service account key.
@@ -118,3 +123,27 @@ Additional Guidelines and Options
      they are mutually exclusive
    - File extensions `yaml`, `json` and `ndjson` are supported
    - Preferred format is `yaml` for readability
+
+How to Run CircleCI Locally
+===
+
+- Install the [CircleCI Local CI](https://circleci.com/docs/2.0/local-cli/)
+- Download GCP [service account](https://cloud.google.com/iam/docs/service-accounts) keys
+   - Integration tests will only successfully run with service account keys
+     that belong to the `circleci` service account in the `biguqery-etl-integration-test` project
+- Run `circleci build` and set required environment variables `GOOGLE_PROJECT_ID` and
+  `GCLOUD_SERVICE_KEY`:
+
+```
+gcloud_service_key=`cat /path/to/key_file.json`
+
+# to run a specific job, e.g. integration:
+circleci build --job integration \
+  --env GOOGLE_PROJECT_ID=bigquery-etl-integration-test \
+  --env GCLOUD_SERVICE_KEY=$gcloud_service_key
+
+# to run all jobs
+circleci build \
+  --env GOOGLE_PROJECT_ID=bigquery-etl-integration-test \
+  --env GCLOUD_SERVICE_KEY=$gcloud_service_key
+```

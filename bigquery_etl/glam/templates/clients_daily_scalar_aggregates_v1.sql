@@ -5,7 +5,7 @@ WITH extracted AS (
     *,
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
-    REPLACE(ping_info.ping_type, "_", "-") AS ping_type,
+    "{{ ping_type }}" AS ping_type,
     COALESCE(
       SAFE_CAST(SPLIT(client_info.app_display_version, '.')[OFFSET(0)] AS INT64),
       0
@@ -17,7 +17,6 @@ WITH extracted AS (
     `moz-fx-data-shared-prod.{{ source_table }}`
   WHERE
     DATE(submission_timestamp) = {{ submission_date }}
-    AND client_info.app_channel IN ("release", "fenixProduction")
     AND client_info.client_id IS NOT NULL
 ),
 unlabeled_metrics AS (

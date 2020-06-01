@@ -5,7 +5,7 @@ from typing import Dict, List
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
-from .utils import get_schema
+from .utils import get_schema, ping_type_from_table
 
 ATTRIBUTES = ",".join(
     [
@@ -115,6 +115,7 @@ def main():
             submission_date=submission_date,
             attributes=ATTRIBUTES,
             histograms=metrics_sql,
+            ping_type=ping_type_from_table(args.source_table),
         )
     )
 

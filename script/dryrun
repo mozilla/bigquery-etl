@@ -33,16 +33,21 @@ SKIP = {
     "sql/monitoring/document_sample_nonprod_v1/query.sql",
     "sql/monitoring/schema_error_counts_v1/view.sql",
     "sql/monitoring/structured_error_counts_v1/view.sql",
+    "sql/pocket/pocket_reach_mau/view.sql",
     "sql/telemetry/buildhub2/view.sql",
-    "sql/telemetry/fxa_content_events_v1/query.sql",
-    "sql/telemetry/fxa_auth_bounce_events_v1/query.sql",
-    "sql/telemetry/fxa_auth_events_v1/query.sql",
-    "sql/telemetry/fxa_oauth_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_content_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_auth_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_oauth_events_v1/query.sql",
     "sql/telemetry_derived/addons_daily_v1/query.sql",
     "sql/search_derived/search_clients_last_seen_v1/init.sql",
     "sql/search_derived/search_clients_last_seen_v1/query.sql",
     "sql/search/search_rfm/view.sql",
-    "sql/telemetry_derived/deviations_v1/query.sql",
+    "sql/search/search_clients_last_seen_v1/view.sql",
+    "sql/search/search_clients_last_seen/view.sql",
+    "sql/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",
     "sql/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",
@@ -78,30 +83,23 @@ SKIP = {
     "sql/telemetry_derived/latest_versions/query.sql",
     # Query parameter not found
     "sql/telemetry_derived/experiments_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_histogram_aggregates_v1/query.sql",
+    "sql/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",
     "sql/telemetry_derived/clients_histogram_aggregates_v1/query.sql",
-    "sql/telemetry_derived/clients_histogram_aggregates_old_v1/query.sql",
-    "sql/telemetry_derived/clients_histogram_aggregates_merged_v1/query.sql",
+    "sql/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql",
     "sql/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",
     "sql/telemetry_derived/asn_aggregates_v1/query.sql",
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
-    "sql/glam_etl/fenix_clients_scalar_aggregates_v1/query.sql",
-    "sql/glam_etl/fenix_clients_scalar_aggregates_v1/init.sql",
-    "sql/glam_etl/fenix_clients_scalar_bucket_counts_v1/query.sql",
-    "sql/glam_etl/fenix_clients_scalar_probe_counts_v1/query.sql",
-    "sql/glam_etl/fenix_scalar_percentiles_v1/query.sql",
-    "sql/glam_etl/fenix_histogram_percentiles_v1/query.sql",
-    "sql/glam_etl/fenix_view_clients_daily_scalar_aggregates_v1/view.sql",
-    "sql/glam_etl/fenix_clients_histogram_aggregates_v1/init.sql",
-    "sql/glam_etl/fenix_clients_histogram_aggregates_v1/query.sql",
-    "sql/glam_etl/fenix_clients_histogram_bucket_counts_v1/query.sql",
-    "sql/glam_etl/fenix_view_clients_daily_histogram_aggregates_v1/view.sql",
-    "sql/glam_etl/fenix_clients_histogram_probe_counts_v1/query.sql",
-    "sql/glam_etl/fenix_view_client_probe_counts_v1/view.sql",
+    *glob.glob("sql/glam_etl/**/*.sql", recursive=True),
+    # Query templates
+    "sql/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",
+    "sql/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa
 }
 
 USE_DERIVED_DATASETS = {
-    "sql/telemetry/fxa_users_last_seen_raw_v1/query.sql",
-    "sql/telemetry/firefox_accounts_exact_mau28_raw_v1/query.sql",
     "sql/telemetry/core_clients_daily_v1/query.sql",
     "sql/telemetry/firefox_kpi_dashboard_v1/query.sql",
     "sql/telemetry/core_clients_last_seen_raw_v1/query.sql",
@@ -138,7 +136,7 @@ def worker_entrypoint(sqlfile):
         print(f"{sqlfile:59} OK")
     elif (
         error
-        and error.get("code", None) == 403
+        and error.get("code", None) in [400, 403]
         and "does not have bigquery.tables.create permission for dataset"
         in error.get("message", "")
     ):

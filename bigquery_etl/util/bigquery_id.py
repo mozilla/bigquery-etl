@@ -13,3 +13,8 @@ def full_job_id(job):
 def sql_table_id(table):
     """Get the standard sql format fully qualified id for a table."""
     return f"{table.project}.{table.dataset_id}.{table.table_id}"
+
+
+def qualified_table_id(table):
+    """Get the partially qualified id for a table."""
+    return f"{table.dataset_id}.{table.table_id}"

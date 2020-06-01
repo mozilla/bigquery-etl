@@ -15,9 +15,47 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
 );
 
 WITH flat_clients_scalar_aggregates AS (
-  SELECT * EXCEPT(scalar_aggregates)
-  FROM clients_scalar_aggregates_v1
-  CROSS JOIN UNNEST(scalar_aggregates)),
+  SELECT *,
+    os = 'Windows' and channel = 'release' AS sampled,
+  FROM clients_scalar_aggregates_v1),
+
+static_combos as (
+  SELECT null as os, null as app_build_id
+  UNION ALL
+  SELECT null as os, '*' as app_build_id
+  UNION ALL
+  SELECT '*' as os, null as app_build_id
+  UNION ALL
+  SELECT '*' as os, '*' as app_build_id
+),
+
+all_combos AS (
+  SELECT
+    * EXCEPT(os, app_build_id),
+    COALESCE(combos.os, flat_table.os) as os,
+    COALESCE(combos.app_build_id, flat_table.app_build_id) as app_build_id
+  FROM
+     flat_clients_scalar_aggregates flat_table
+  CROSS JOIN
+     static_combos combos),
+
+user_aggregates AS (
+  SELECT
+    client_id,
+    IF(os = '*', NULL, os) AS os,
+    app_version,
+    IF(app_build_id = '*', NULL, app_build_id) AS app_build_id,
+    channel,
+    IF(MAX(sampled), 10, 1) AS user_count,
+    udf.merge_scalar_user_data(ARRAY_CONCAT_AGG(scalar_aggregates)) AS scalar_aggregates
+  FROM
+    all_combos
+  GROUP BY
+    client_id,
+    os,
+    app_version,
+    app_build_id,
+    channel),
 
 percentiles AS (
   SELECT
@@ -31,96 +69,15 @@ percentiles AS (
     process,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
+    SUM(user_count) AS total_users,
     APPROX_QUANTILES(value, 100)  AS aggregates
   FROM
-    flat_clients_scalar_aggregates
-  WHERE os IS NOT NULL
+    user_aggregates
+  CROSS JOIN UNNEST(scalar_aggregates)
   GROUP BY
     os,
     app_version,
     app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
-    client_agg_type
-
-  UNION ALL
-
-  SELECT
-    CAST(NULL AS STRING) as os,
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100)  AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  GROUP BY
-    app_version,
-    app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
-    client_agg_type
-
-  UNION ALL
-
-  SELECT
-    os,
-    app_version,
-    CAST(NULL AS STRING) AS app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100)  AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  WHERE os IS NOT NULL
-  GROUP BY
-    os,
-    app_version,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
-    client_agg_type
-
-  UNION ALL
-
-  SELECT
-    CAST(NULL AS STRING) AS os,
-    app_version,
-    CAST(NULL AS STRING) AS app_build_id,
-    channel,
-    metric,
-    metric_type,
-    key,
-    process,
-    agg_type AS client_agg_type,
-    'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
-    APPROX_QUANTILES(value, 100)  AS aggregates
-  FROM
-    flat_clients_scalar_aggregates
-  GROUP BY
-    app_version,
     channel,
     metric,
     metric_type,

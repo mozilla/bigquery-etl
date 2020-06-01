@@ -1,0 +1,32 @@
+---
+- &base
+  client_id: test
+  document_id: base
+  sample_id: 0
+  submission_timestamp: '2019-01-01 17:19:39.844336 UTC'
+  normalized_os: first
+  normalized_channel: nightly
+  payload:
+    {
+      "processes": {
+        "content": {},
+        "parent": {
+          "scalars": {
+            "update_session_downloads_bits_partial_seconds": 400
+          }
+        }
+      }
+    }
+  application:
+    {
+      "channel": nightly,
+      "version": first,
+      "build_id": first
+    }
+- <<: *base
+  application:
+    {
+      "channel": nightly,
+      "version": first,
+      "build_id": second
+    }

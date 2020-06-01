@@ -54,43 +54,246 @@ WITH core_flattened_searches AS (
       IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
     ) AS searches
 ),
--- baseline has locale but not default search engine, metrics has default search engine but not locale
+-- baseline for org_mozilla_fenix (Firefox Preview beta)
+baseline_org_mozilla_fenix AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    client_info.locale
+  FROM
+    org_mozilla_fenix.baseline
+),
+-- baseline for org_mozilla_fenix (Firefox Preview beta)
+metrics_org_mozilla_fenix AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code,
+    'Firefox Preview' AS app_name,
+    'Fenix' AS normalized_app_name,
+    client_info.app_display_version,
+    'beta' AS channel,
+    normalized_os,
+    client_info.android_sdk_version,
+    metrics.string.search_default_engine_code,
+    metrics.string.search_default_engine_submission_url,
+    sample_id,
+    CAST(NULL AS STRING) AS distribution_id,
+    metrics.labeled_counter.metrics_search_count,
+    client_info.first_run_date,
+    ping_info.end_time
+  FROM
+    org_mozilla_fenix.metrics AS org_mozilla_fenix_metrics
+),
+-- baseline for org_mozilla_fenix_nightly (Firefox Preview nightly)
+baseline_org_mozilla_fenix_nightly AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    client_info.locale
+  FROM
+    org_mozilla_fenix_nightly.baseline
+),
+-- baseline for org_mozilla_fenix_nightly (Firefox Preview nightly)
+metrics_org_mozilla_fenix_nightly AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code,
+    'Firefox Preview' AS app_name,
+    'Fenix' AS normalized_app_name,
+    client_info.app_display_version,
+    'nightly' AS channel,
+    normalized_os,
+    client_info.android_sdk_version,
+    metrics.string.search_default_engine_code,
+    metrics.string.search_default_engine_submission_url,
+    sample_id,
+    CAST(NULL AS STRING) AS distribution_id,
+    metrics.labeled_counter.metrics_search_count,
+    client_info.first_run_date,
+    ping_info.end_time
+  FROM
+    org_mozilla_fenix_nightly.metrics AS org_mozilla_fenix_nightly_metrics
+),
+-- baseline for org_mozilla_fennec_aurora (Fenix nightly)
+baseline_org_mozilla_fennec_aurora AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    client_info.locale
+  FROM
+    org_mozilla_fennec_aurora.baseline
+),
+-- baseline for org_mozilla_fennec_aurora (Fenix nightly)
+metrics_org_mozilla_fennec_aurora AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code,
+    'Fenix' AS app_name,
+    'Fenix' AS normalized_app_name,
+    client_info.app_display_version,
+    'nightly' AS channel,
+    normalized_os,
+    client_info.android_sdk_version,
+    metrics.string.search_default_engine_code,
+    metrics.string.search_default_engine_submission_url,
+    sample_id,
+    CAST(NULL AS STRING) AS distribution_id,
+    metrics.labeled_counter.metrics_search_count,
+    client_info.first_run_date,
+    ping_info.end_time
+  FROM
+    org_mozilla_fennec_aurora.metrics AS org_mozilla_fennec_aurora_metrics
+),
+-- baseline for org_mozilla_firefox_beta (Fenix beta)
+baseline_org_mozilla_firefox_beta AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    client_info.locale
+  FROM
+    org_mozilla_firefox_beta.baseline
+),
+-- baseline for org_mozilla_firefox_beta (Fenix beta)
+metrics_org_mozilla_firefox_beta AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code,
+    'Fenix' AS app_name,
+    'Fenix' AS normalized_app_name,
+    client_info.app_display_version,
+    'beta' AS channel,
+    normalized_os,
+    client_info.android_sdk_version,
+    metrics.string.search_default_engine_code,
+    metrics.string.search_default_engine_submission_url,
+    sample_id,
+    CAST(NULL AS STRING) AS distribution_id,
+    metrics.labeled_counter.metrics_search_count,
+    client_info.first_run_date,
+    ping_info.end_time
+  FROM
+    org_mozilla_firefox_beta.metrics AS org_mozilla_firefox_beta_metrics
+),
+-- baseline for org_mozilla_firefox (Fenix release)
+baseline_org_mozilla_firefox AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    client_info.locale
+  FROM
+    org_mozilla_firefox.baseline
+),
+-- baseline for org_mozilla_firefox (Fenix release)
+metrics_org_mozilla_firefox AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code,
+    'Fenix' AS app_name,
+    'Fenix' AS normalized_app_name,
+    client_info.app_display_version,
+    'release' AS channel,
+    normalized_os,
+    client_info.android_sdk_version,
+    metrics.string.search_default_engine_code,
+    metrics.string.search_default_engine_submission_url,
+    sample_id,
+    CAST(NULL AS STRING) AS distribution_id,
+    metrics.labeled_counter.metrics_search_count,
+    client_info.first_run_date,
+    ping_info.end_time
+  FROM
+    org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+),
+fenix_baseline AS (
+  SELECT
+    *
+  FROM
+    baseline_org_mozilla_fenix
+  UNION ALL
+  SELECT
+    *
+  FROM
+    baseline_org_mozilla_fenix_nightly
+  UNION ALL
+  SELECT
+    *
+  FROM
+    baseline_org_mozilla_fennec_aurora
+  UNION ALL
+  SELECT
+    *
+  FROM
+    baseline_org_mozilla_firefox_beta
+  UNION ALL
+  SELECT
+    *
+  FROM
+    baseline_org_mozilla_firefox
+),
+fenix_metrics AS (
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_fenix
+  UNION ALL
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_fenix_nightly
+  UNION ALL
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_fennec_aurora
+  UNION ALL
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_firefox_beta
+  UNION ALL
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_firefox
+),
+--  older fenix clients don't send locale in the metrics ping
 fenix_client_locales AS (
   SELECT
-    client_info.client_id,
-    udf.mode_last(ARRAY_AGG(metrics.string.glean_baseline_locale)) AS locale
+    client_id,
+    udf.mode_last(ARRAY_AGG(locale)) AS locale
   FROM
-    org_mozilla_fenix_stable.baseline_v1
+    fenix_baseline
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    submission_date = @submission_date
   GROUP BY
-    client_info.client_id
+    client_id
 ),
 fenix_flattened_searches AS (
   SELECT
     *,
     normalize_fenix_search_key(searches.key) AS normalized_search_key,
     searches.value AS search_count,
-    UNIX_DATE(udf.parse_iso8601_date(client_info.first_run_date)) AS profile_creation_date,
+    UNIX_DATE(udf.parse_iso8601_date(first_run_date)) AS profile_creation_date,
     SAFE.DATE_DIFF(
-      udf.parse_iso8601_date(ping_info.end_time),
-      udf.parse_iso8601_date(client_info.first_run_date),
+      udf.parse_iso8601_date(end_time),
+      udf.parse_iso8601_date(first_run_date),
       DAY
     ) AS profile_age_in_days
   FROM
-    org_mozilla_fenix_stable.metrics_v1
+    fenix_metrics
   LEFT JOIN
     fenix_client_locales
-  ON
-    client_id = client_info.client_id
+  USING
+    (client_id)
   CROSS JOIN
     UNNEST(
       -- Add a null search to pings that have no searches
-      IF(
-        ARRAY_LENGTH(metrics.labeled_counter.metrics_search_count) = 0,
-        null_search(),
-        metrics.labeled_counter.metrics_search_count
-      )
+      IF(ARRAY_LENGTH(metrics_search_count) = 0, null_search(), metrics_search_count)
     ) AS searches
 ),
 combined_search_clients AS (
@@ -102,6 +305,7 @@ combined_search_clients AS (
     normalized_country_code AS country,
     locale,
     normalized_app_name AS app_name,
+    normalized_app_name,
     metadata.uri.app_version AS app_version,
     normalized_channel AS channel,
     normalized_os AS os,
@@ -116,19 +320,20 @@ combined_search_clients AS (
     core_flattened_searches
   UNION ALL
   SELECT
-    DATE(submission_timestamp) AS submission_date,
-    client_info.client_id AS client_id,
+    submission_date,
+    client_id,
     normalized_search_key,
     search_count,
     normalized_country_code AS country,
     locale,
-    'Fenix' AS app_name,
-    client_info.app_display_version AS app_version,
-    normalized_channel AS channel,
+    app_name,
+    normalized_app_name,
+    app_display_version AS app_version,
+    channel,
     normalized_os AS os,
-    client_info.android_sdk_version AS os_version,
-    metrics.string.search_default_engine_code AS default_search_engine,
-    metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
+    android_sdk_version AS os_version,
+    search_default_engine_code AS default_search_engine,
+    search_default_engine_submission_url AS default_search_engine_submission_url,
     CAST(NULL AS STRING) AS distribution_id,
     profile_creation_date,
     profile_age_in_days,
@@ -143,6 +348,7 @@ unfiltered_search_clients AS (
     IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(0)]) AS engine,
     IF(search_count > 10000, NULL, normalized_search_key[SAFE_OFFSET(1)]) AS source,
     app_name,
+    normalized_app_name,
     SUM(
       IF(ARRAY_LENGTH(normalized_search_key) = 0 OR search_count > 10000, 0, search_count)
     ) AS search_count,
@@ -169,7 +375,8 @@ unfiltered_search_clients AS (
     client_id,
     engine,
     source,
-    app_name
+    app_name,
+    normalized_app_name
 )
 SELECT
   *,

@@ -3,6 +3,7 @@
 """Format SQL."""
 
 from argparse import ArgumentParser
+import glob
 import os
 import os.path
 import sys
@@ -16,26 +17,7 @@ from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 
 SKIP = {
     # files that existed before we started to enforce this script
-    "bigquery_etl/glam/templates/clients_histogram_aggregates_v1.init.sql",
-    "bigquery_etl/glam/templates/clients_daily_histogram_aggregates_v1.sql",
-    "bigquery_etl/glam/templates/clients_histogram_bucket_counts_v1.sql",
-    "bigquery_etl/glam/templates/view_clients_daily_scalar_aggregates_v1.sql",
-    "bigquery_etl/glam/templates/probe_counts_v1.sql",
-    "bigquery_etl/glam/templates/scalar_percentiles_v1.udf.sql",
-    "bigquery_etl/glam/templates/latest_versions_v1.sql",
-    "bigquery_etl/glam/templates/clients_daily_scalar_aggregates_v1.sql",
-    "bigquery_etl/glam/templates/clients_scalar_aggregates_v1.udf.sql",
-    "bigquery_etl/glam/templates/clients_scalar_bucket_counts_v1.sql",
-    "bigquery_etl/glam/templates/clients_scalar_aggregates_v1.sql",
-    "bigquery_etl/glam/templates/clients_histogram_aggregates_v1.sql",
-    "bigquery_etl/glam/templates/clients_scalar_bucket_counts_v1.udf.sql",
-    "bigquery_etl/glam/templates/probe_counts_v1.udf.scalar.sql",
-    "bigquery_etl/glam/templates/probe_counts_v1.udf.histogram.sql",
-    "bigquery_etl/glam/templates/histogram_percentiles_v1.sql",
-    "bigquery_etl/glam/templates/scalar_percentiles_v1.sql",
-    "bigquery_etl/glam/templates/clients_scalar_aggregates_v1.init.sql",
-    "bigquery_etl/glam/templates/view_clients_daily_histogram_aggregates_v1.sql",
-    "bigquery_etl/glam/templates/view_client_probe_counts_v1.sql",
+    *glob.glob("bigquery_etl/glam/templates/*.sql"),
     "bigquery_etl/glean_usage/templates/baseline_clients_daily.view.sql",
     "bigquery_etl/glean_usage/templates/baseline_clients_daily_v1.sql",
     "bigquery_etl/glean_usage/templates/baseline_clients_last_seen.view.sql",
@@ -67,7 +49,6 @@ SKIP = {
     "sql/telemetry/fxa_users_services_first_seen/view.sql",
     "sql/telemetry/fxa_users_services_last_seen/view.sql",
     "sql/telemetry/lockwise_mobile_events_v1/view.sql",
-    "sql/telemetry/nondesktop_clients_last_seen_v1/view.sql",
     "sql/telemetry/origin_content_blocking/view.sql",
     "sql/telemetry/rocket_android_events_v1/view.sql",
     "sql/telemetry/simpleprophet_forecasts/view.sql",
@@ -106,9 +87,7 @@ SKIP = {
     "sql/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",
     "sql/telemetry_derived/clients_histogram_aggregates_v1/init.sql",
     "sql/telemetry_derived/clients_histogram_aggregates_v1/query.sql",
-    "sql/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql",
     "sql/telemetry_derived/clients_histogram_probe_counts_v1/query.sql",
-    "sql/telemetry_derived/clients_scalar_bucket_counts_v1/query.sql",
     "sql/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",
     "sql/telemetry_derived/core_clients_daily_v1/query.sql",
     "sql/telemetry_derived/core_clients_last_seen_v1/init.sql",
@@ -135,6 +114,8 @@ SKIP = {
     "sql/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",
     "sql/telemetry_derived/smoot_usage_nondesktop_v2/query.sql",
     "sql/telemetry_derived/surveygizmo_daily_attitudes/init.sql",
+    "sql/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",
+    "sql/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501
     "udf/active_n_weeks_ago.sql",
     "udf/add_monthly_engine_searches.sql",
     "udf/add_monthly_searches.sql",

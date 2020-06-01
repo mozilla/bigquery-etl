@@ -1,0 +1,141 @@
+---
+- &base
+  submission_date: '2019-12-01'
+  os: Android
+  sample_id: 1
+  client_id: a
+  search_count: 0
+  app_version: 68.2.1
+  app_name: Fennec
+  normalized_app_name: Fennec
+  country: FR
+  os_version: '23'
+  profile_creation_date: 16606
+  profile_age_in_days: 1625
+- <<: *base
+  client_id: b
+  engine: engine1
+  normalized_engine: Other
+  source: actionbar
+  search_count: 3
+  default_search_engine: engine1
+  locale: en-CA
+  app_version: 68.2.1
+  app_name: Fennec
+  normalized_app_name: Fennec
+  country: CA
+  os_version: '26'
+  profile_creation_date: 17332
+  profile_age_in_days: 899
+- <<: *base
+  client_id: b
+  engine: engine2
+  normalized_engine: Other
+  source: actionbar
+  search_count: 1
+  default_search_engine: engine1
+  locale: en-CA
+  app_version: 68.2.1
+  app_name: Fennec
+  normalized_app_name: Fennec
+  country: CA
+  os_version: '26'
+  profile_creation_date: 17332
+  profile_age_in_days: 899
+- <<: *base
+  client_id: c
+  search_count: 0
+  default_search_engine: engine2
+  locale: en-CA
+  app_version: 68.2.1
+  app_name: Fennec
+  normalized_app_name: Fennec
+  country: CA
+  os_version: '26'
+  profile_creation_date: 17653
+  profile_age_in_days: 578
+- <<: *base
+  client_id: a
+  channel: beta
+  search_count: 0
+  locale: en-US
+  app_version: Nightly 191124 06:01
+  app_name: Firefox Preview
+  normalized_app_name: Fenix
+  country: US
+  os_version: '29'
+  profile_creation_date: 18201
+  profile_age_in_days: 30
+  default_search_engine: engine1
+  default_search_engine_submission_url: engine1.url
+- <<: *base
+  client_id: b
+  channel: beta
+  engine: engine1
+  normalized_engine: Other
+  source: action
+  search_count: 5
+  locale: en-CA
+  app_version: Nightly 191124 06:01
+  app_name: Firefox Preview
+  normalized_app_name: Fenix
+  country: CA
+  os_version: '29'
+  profile_creation_date: 18201
+  profile_age_in_days: 30
+- <<: *base
+  client_id: b
+  channel: beta
+  engine: engine1
+  normalized_engine: Other
+  source: suggestion
+  search_count: 1
+  locale: en-CA
+  app_version: Nightly 191124 06:01
+  app_name: Firefox Preview
+  normalized_app_name: Fenix
+  country: CA
+  os_version: '29'
+  profile_creation_date: 18201
+  profile_age_in_days: 30
+- <<: *base
+  client_id: b
+  channel: beta
+  engine: engine2
+  normalized_engine: Other
+  source: suggestion
+  search_count: 5
+  locale: en-CA
+  app_version: Nightly 191124 06:01
+  app_name: Firefox Preview
+  normalized_app_name: Fenix
+  country: CA
+  os_version: '29'
+  profile_creation_date: 18201
+  profile_age_in_days: 30
+- <<: *base
+  client_id: c
+  channel: beta
+  search_count: 0
+  locale: ar-EG
+  app_version: Nightly 191124 06:01
+  app_name: Firefox Preview
+  normalized_app_name: Fenix
+  country: EG
+  os_version: '29'
+  profile_creation_date: 18201
+  profile_age_in_days: 30
+- <<: *base
+  client_id: d
+  channel: beta
+  engine: engine2
+  normalized_engine: Other
+  source: suggestion
+  search_count: 3
+  app_version: Nightly 191124 06:01
+  app_name: Firefox Preview
+  normalized_app_name: Fenix
+  country: US
+  os_version: '29'
+  profile_creation_date: 18201
+  profile_age_in_days: 30

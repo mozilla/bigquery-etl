@@ -1,0 +1,72 @@
+---
+- &base
+  os: first
+  app_version: 75
+  channel: nightly
+  first_bucket: 1
+  last_bucket: 100
+  num_buckets: 10
+  metric: test
+  metric_type: histogram-exponential
+  key: ''
+  process: parent
+  agg_type: summed_histogram
+  app_build_id: first
+  record: {
+    "key": '0',
+    "value": 0.1,
+  }
+- <<: *base
+  app_build_id: first
+  record: {
+    "key": '2',
+    "value": 0.0,
+  }
+- <<: *base
+  app_build_id: first
+  record: {
+    "key": '5',
+    "value": 0.3,
+  }
+- <<: *base
+  app_build_id: first
+  record: {
+    "key": '9',
+    "value": 0.3,
+  }
+- <<: *base
+  app_build_id: first
+  record: {
+    "key": '54',
+    "value": 0.3,
+  }
+- <<: *base
+  app_build_id: second
+  record: {
+    "key": '0',
+    "value": 0.1,
+  }
+- <<: *base
+  app_build_id: second
+  record: {
+    "key": '2',
+    "value": 0.0,
+  }
+- <<: *base
+  app_build_id: second
+  record: {
+    "key": '5',
+    "value": 0.3,
+  }
+- <<: *base
+  app_build_id: second
+  record: {
+    "key": '9',
+    "value": 0.3,
+  }
+- <<: *base
+  app_build_id: second
+  record: {
+    "key": '54',
+    "value": 0.3,
+  }

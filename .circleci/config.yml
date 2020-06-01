@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    docker:
+    docker: &docker
     - image: python:3.8
     steps:
     - checkout
@@ -18,7 +18,8 @@ jobs:
         name: Build
         command: |
           python3.8 -m venv venv/
-          venv/bin/pip install --upgrade -r requirements.txt
+          venv/bin/pip install pip-tools
+          venv/bin/pip-sync
     - run:
         name: PyTest with linters
         command: PATH="venv/bin:$PATH" script/entrypoint
@@ -27,25 +28,31 @@ jobs:
         - venv/
         key: *cache_key
   verify-format-sql:
-    docker:
-      - image: python:3.8
+    docker: *docker
     steps:
       - checkout
       - run:
           name: Verify that SQL is correctly formatted
-          # check all directories owned by git except sql
           command: script/format_sql --check $(git ls-tree -d HEAD --name-only)
+  verify-requirements:
+    docker: *docker
+    steps:
+      - checkout
+      - run:
+          name: Verify that requirements.txt contains the right dependencies for this python version
+          command: |
+            pip install pip-tools
+            pip-compile --quiet --generate-hashes requirements.in
+            git diff --exit-code requirements.txt
   dry-run-sql:
-    docker:
-      - image: python:3.8
+    docker: *docker
     steps:
       - checkout
       - run:
           name: Verify that BigQuery validates each query
           command: script/dryrun
   validate-metadata:
-    docker:
-      - image: python:3.8
+    docker: *docker
     steps:
       - checkout
       - *build
@@ -53,8 +60,7 @@ jobs:
           name: Verify that metadata files are valid
           command: PATH="venv/bin:$PATH" script/validate_metadata
   integration:
-    docker:
-    - image: python:3.8
+    docker: *docker
     steps:
     - checkout
     - &skip_forked_pr
@@ -130,6 +136,7 @@ workflows:
     - build:
         context: data-eng-circleci-tests
     - verify-format-sql
+    - verify-requirements
     - dry-run-sql
     - validate-metadata
     - integration

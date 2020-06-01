@@ -10,3 +10,8 @@ labels:
   public_bigquery: true
   review_bug: 1624528
   incremental_export: false
+scheduling:
+  dag_name: bqetl_deviations
+  depends_on:
+    - task_id: anomdtct
+      dag_name: public_analysis

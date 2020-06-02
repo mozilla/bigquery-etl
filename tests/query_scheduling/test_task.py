@@ -4,7 +4,12 @@ import os
 import pytest
 from typing import NewType
 
-from bigquery_etl.query_scheduling.task import Task, UnscheduledTask, TaskParseException
+from bigquery_etl.query_scheduling.task import (
+    Task,
+    UnscheduledTask,
+    TaskParseException,
+    TaskRef,
+)
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 
@@ -451,3 +456,55 @@ class TestTask:
 
         assert f"{temporary_dataset}__table1__v1" in tables
         assert f"{temporary_dataset}__table2__v1" in tables
+
+    def test_task_depends_on(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        scheduling = {
+            "dag_name": "bqetl_test_dag",
+            "default_args": {"owner": "test@example.org"},
+            "depends_on": [
+                {"dag_name": "external_dag", "task_id": "external_task"},
+                {
+                    "dag_name": "external_dag2",
+                    "task_id": "external_task2",
+                    "execution_delta": "15m",
+                },
+            ],
+        }
+
+        metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
+
+        task = Task.of_query(query_file, metadata)
+        assert task.dag_name == "bqetl_test_dag"
+        assert len(task.depends_on) == 2
+        assert task.depends_on[0].dag_name == "external_dag"
+        assert task.depends_on[0].task_id == "external_task"
+
+        assert task.depends_on[1].dag_name == "external_dag2"
+        assert task.depends_on[1].task_id == "external_task2"
+        assert task.depends_on[1].execution_delta == "15m"
+
+    def test_task_ref(self):
+        task_ref = TaskRef(dag_name="test_dag", task_id="task")
+
+        assert task_ref.dag_name == "test_dag"
+        assert task_ref.task_id == "task"
+        assert task_ref.execution_delta is None
+
+        task_ref = TaskRef(dag_name="test_dag", task_id="task", execution_delta="15m")
+
+        assert task_ref.execution_delta == "15m"
+
+    def test_task_ref_execution_delta_validation(self):
+        with pytest.raises(ValueError):
+            TaskRef(dag_name="test_dag", task_id="task", execution_delta="invalid")
+
+        assert TaskRef(dag_name="test_dag", task_id="task", execution_delta="1h15m")

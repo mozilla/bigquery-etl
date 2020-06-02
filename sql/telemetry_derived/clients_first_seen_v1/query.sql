@@ -24,30 +24,18 @@ SELECT
   -- client has been seen; otherwise, we copy over the existing dimensions
   -- from the first sighting.
   IF(previous.client_id IS NULL, today, previous).* REPLACE (
-    -- Logic for first_seen_date
-    CASE
-    WHEN
-      previous.first_seen_date IS NULL
-    THEN
-      @submission_date
-    ELSE
+    IF(
+      previous.first_seen_date IS NULL,
+      @submission_date,
       previous.first_seen_date
-    END
-    AS first_seen_date,
-    -- Logic for second_seen_date
-    CASE
-    WHEN
-      previous.first_seen_date IS NULL
-    THEN
-      NULL
-    WHEN
+    ) AS first_seen_date,
+    IF(
       previous.second_seen_date IS NULL
-    THEN
-      @submission_date
-    ELSE
+      AND previous.first_seen_date IS NOT NULL
+      AND today.client_id IS NOT NULL,
+      @submission_date,
       previous.second_seen_date
-    END
-    AS second_seen_date
+    ) AS second_seen_date
   )
 FROM
   previous

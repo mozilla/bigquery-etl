@@ -53,6 +53,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         task_id="wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }}",
         external_dag_id="{{ task_ref.dag_name }}",
         external_task_id="{{ task_ref.task_id }}",
+        {% if task_ref.execution_delta -%}
+        execution_delta={{ task_ref.execution_delta | format_timedelta | format_repr }},
+        {% endif -%}
         dag=dag,
     )
 

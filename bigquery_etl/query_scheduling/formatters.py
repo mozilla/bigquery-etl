@@ -58,3 +58,8 @@ def format_optional_string(val):
         return "None"
     else:
         return "'" + val + "'"
+
+
+def format_repr(val):
+    """Return representation of a object."""
+    return repr(val)

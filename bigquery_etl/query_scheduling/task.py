@@ -13,6 +13,7 @@ from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email,
     is_valid_dag_name,
+    is_timedelta_string,
 )
 
 
@@ -57,6 +58,16 @@ class TaskRef:
 
     dag_name: str = attr.ib()
     task_id: str = attr.ib()
+    execution_delta: Optional[str] = attr.ib(None)
+
+    @execution_delta.validator
+    def validate_execution_delta(self, attribute, value):
+        """Check that execution_delta is in a valid timedelta format."""
+        if value is not None and not is_timedelta_string(value):
+            raise ValueError(
+                f"Invalid timedelta definition for {attribute}: {value}."
+                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
+            )
 
 
 @attr.s(auto_attribs=True)
@@ -220,6 +231,13 @@ class Task:
             upstream_task = dag_collection.task_for_table(table[0], table[1])
 
             if upstream_task is not None:
-                dependencies.append(upstream_task)
+                # ensure there are no duplicate dependencies
+                # manual dependency definitions overwrite automatically detected ones
+                if not any(
+                    d.dag_name == upstream_task.dag_name
+                    and d.task_id == upstream_task.task_name
+                    for d in self.depends_on
+                ):
+                    dependencies.append(upstream_task)
 
         self.dependencies = dependencies

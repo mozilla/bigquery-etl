@@ -42,6 +42,12 @@ SELECT
       NULL
     WHEN
       previous.second_seen_date IS NULL
+      AND today.client_id IS NULL
+    THEN
+      NULL
+    WHEN
+      previous.second_seen_date IS NULL
+      AND today.client_id IS NOT NULL
     THEN
       @submission_date
     ELSE

@@ -20,7 +20,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         project_id='moz-fx-data-shared-prod',
         owner='{{ task.owner }}',
         {%+ if task.email | length > 0 -%}
-        email={{ task.email }},
+        email={{ task.email | sort }},
         {%+ endif -%}
         {%+ if task.start_date -%}
         start_date={{ task.start_date | format_date }},

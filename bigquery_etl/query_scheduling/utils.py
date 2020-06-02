@@ -10,7 +10,7 @@ def is_timedelta_string(s):
 
     Timedeltas in configs are specified like: 1h, 30m, 1h15m, ...
     """
-    timedelta_regex = re.compile(r"(\d+h)?(\d+m)?(\d+s)?")
+    timedelta_regex = re.compile(r"^(\d+h)?(\d+m)?(\d+s)?$")
     return timedelta_regex.match(s)
 
 

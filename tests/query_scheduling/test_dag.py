@@ -182,11 +182,16 @@ class TestDag:
     def test_dag_default_args_retry_delay_validation(self):
         with pytest.raises(ValueError):
             assert DagDefaultArgs(
-                owner="test@example.com", start_date="March 12th 2020", retry_delay="90"
+                owner="test@example.com", start_date="2020-12-12", retry_delay="90"
+            )
+
+        with pytest.raises(ValueError):
+            assert DagDefaultArgs(
+                owner="test@example.com", start_date="2020-12-12", retry_delay="1d1h1m"
             )
 
         assert DagDefaultArgs(
-            owner="test@example.com", start_date="2020-12-12", retry_delay="1d3h15m"
+            owner="test@example.com", start_date="2020-12-12", retry_delay="3h15m1s"
         )
 
         assert DagDefaultArgs(

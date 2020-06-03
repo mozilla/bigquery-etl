@@ -419,3 +419,63 @@ class TestDagCollection:
         )
 
         assert result == expected_dag
+
+    @pytest.mark.integration
+    def test_to_airflow_duplicate_dependencies(self, tmp_path, bigquery_client):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "non_incremental_query_v1"
+            / "query.sql"
+        )
+
+        query_file2 = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "no_metadata_query_v1"
+            / "query.sql"
+        )
+
+        metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.com"],
+            {},
+            {
+                "dag_name": "bqetl_test_dag",
+                "depends_on_past": True,
+                "depends_on": [{"dag_name": "external", "task_id": "task1"}],
+            },
+        )
+
+        tasks = [
+            Task.of_query(query_file, metadata),
+            Task.of_query(query_file2, metadata),
+        ]
+
+        default_args = {
+            "owner": "test@example.org",
+            "start_date": "2020-01-01",
+        }
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                }
+            }
+        ).with_tasks(tasks)
+
+        dags.to_airflow_dags(tmp_path, bigquery_client)
+        result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
+        expected = (
+            (TEST_DIR / "data" / "dags" / "test_dag_duplicate_dependencies")
+            .read_text()
+            .strip()
+        )
+
+        assert result == expected

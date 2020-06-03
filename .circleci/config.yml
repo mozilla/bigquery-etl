@@ -59,6 +59,35 @@ jobs:
       - run:
           name: Verify that metadata files are valid
           command: PATH="venv/bin:$PATH" script/validate_metadata
+  verify-dags:
+    docker:
+      - image: python:3.8
+    steps:
+    - checkout
+    - &skip_forked_pr
+      run:
+        name: Early return if this build is from a forked PR
+        command: |
+          if [ -n "$CIRCLE_PR_NUMBER" ]; then
+            echo "Cannot pass creds to forked PRs, so marking this step successful"
+            circleci step halt
+          fi
+    - *build
+    - run:
+        name: Verify that DAGs were correctly generated
+        command: |
+          export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
+          echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
+
+          mv dags/ generated_dags/
+          mkdir dags
+          PATH="venv/bin:$PATH" script/generate_airflow_dags
+          dag_diff=`diff -aq generated_dags/ dags/`
+          if [ dag_diff != "" ]; then
+            echo "Generated DAGs differ from pushed DAGs."
+            echo $dag_diff
+            exit 1
+          fi
   integration:
     docker: *docker
     steps:
@@ -140,6 +169,7 @@ workflows:
     - dry-run-sql
     - validate-metadata
     - integration
+    - verify-dags
     - validate-dags
     - deploy:
         context: data-eng-bigquery-etl-dockerhub

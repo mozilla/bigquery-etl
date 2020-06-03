@@ -33,19 +33,19 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     )
 {% endfor -%}
 
-{% set dependencies_seen = [] -%}
+{% set wait_for_seen = [] -%}
 {% for task in tasks %}
     {% for dependency in task.dependencies -%}
     {% if dependency.dag_name == name -%}
     {{ task.task_name }}.set_upstream({{ dependency.task_name }})
     {% else -%}
-    {% if (dependency.dag_name, dependency.task_name) not in dependencies_seen -%}
+    {% if (dependency.dag_name, dependency.task_name) not in wait_for_seen -%}
     wait_for_{{ dependency.task_name }} = ExternalTaskSensor(
         task_id='wait_for_{{ dependency.task_name }}',
         external_dag_id='{{ dependency.dag_name }}',
         external_task_id='{{ dependency.task_name }}',
     )
-    {{ dependencies_seen.append((dependency.dag_name, dependency.task_name)) or "" }}
+    {{ wait_for_seen.append((dependency.dag_name, dependency.task_name)) or "" }}
     {% endif -%}
 
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_name }})
@@ -54,7 +54,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     
     {% for task_ref in task.depends_on -%}
-    {% if (task_ref.dag_name, task_ref.task_id) not in dependencies_seen -%}
+    {% if (task_ref.dag_name, task_ref.task_id) not in wait_for_seen -%}
     wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }} = ExternalTaskSensor(
         task_id="wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }}",
         external_dag_id="{{ task_ref.dag_name }}",
@@ -64,7 +64,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% endif -%}
         dag=dag,
     )
-    {{ dependencies_seen.append((task_ref.dag_name, task_ref.task_id)) or "" }}
+    {{ wait_for_seen.append((task_ref.dag_name, task_ref.task_id)) or "" }}
     {%+ endif -%}
 
     {{ task.task_name }}.set_upstream(wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }})

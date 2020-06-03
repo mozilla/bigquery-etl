@@ -3,16 +3,14 @@
 
 import itertools
 import json
-import re
+import sys
 import os.path
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent.resolve()))
+from bigquery_etl.util.common import snake_case  # noqa E402
 
 SCALAR_TYPES = {"uint": "INT64", "string": "STRING", "boolean": "BOOL"}
-
-
-def convert_camel_case(name):
-    """Convert camel case to snake case."""
-    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
 
 def collect_probes(probes, schema_fields):
@@ -39,7 +37,7 @@ def collect_probes(probes, schema_fields):
         for p in record_in_processes:
             collection[p].append(
                 (
-                    convert_camel_case(probe["name"]).replace(".", "_"),
+                    snake_case(probe["name"]).replace(".", "_"),
                     SCALAR_TYPES.get(
                         history[0]["details"]["kind"], history[0]["details"]["kind"]
                     ),

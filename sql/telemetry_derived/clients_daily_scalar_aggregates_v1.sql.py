@@ -12,6 +12,7 @@ from time import sleep
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.util.common import snake_case
 
 
 PROBE_INFO_SERVICE = (
@@ -447,7 +448,7 @@ def get_scalar_probes(scalar_type):
         data = json.loads(gzip.decompress(url.read()).decode())
         scalar_probes = set(
             [
-                x.replace("scalar/", "").replace(".", "_")
+                snake_case(x.replace("scalar/", ""))
                 for x in data.keys()
                 if x.startswith("scalar/")
             ]

@@ -29,6 +29,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         date_partition_parameter={{ task.date_partition_parameter | format_optional_string }},
         {%+ endif -%}
         depends_on_past={{ task.depends_on_past }},
+        {%+ if task.arguments | length > 0 -%}
+        arguments={{ task.arguments | format_as_tuple }},
+        {%+ endif -%}
         dag=dag,
     )
 {% endfor -%}

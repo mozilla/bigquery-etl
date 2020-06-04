@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.default_browser_agent.default_browser`
+AS
 SELECT
   * EXCEPT (
     client_id  -- This field is deprecated and was never actually sent.

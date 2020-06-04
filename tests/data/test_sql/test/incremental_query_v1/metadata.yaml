@@ -11,4 +11,4 @@ labels:
 scheduling:
   dag_name: "bqetl_events"
   depends_on_past: false
-  arguments: ["--append"]
+  arguments: ["--append_table"]

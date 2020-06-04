@@ -226,7 +226,7 @@ class TestDagCollection:
                 "dag_name": "bqetl_test_dag",
                 "depends_on_past": True,
                 "param": "test_param",
-                "arguments": ["--append"],
+                "arguments": ["--append_table"],
             },
         )
 

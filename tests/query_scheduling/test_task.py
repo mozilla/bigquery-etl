@@ -42,7 +42,7 @@ class TestTask:
         assert task.dag_name == "bqetl_events"
         assert task.depends_on_past is False
         assert task.public_json
-        assert task.arguments == ["--append"]
+        assert task.arguments == ["--append_table"]
 
     def test_of_non_existing_query(self):
         with pytest.raises(FileNotFoundError):

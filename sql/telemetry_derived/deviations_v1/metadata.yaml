@@ -14,4 +14,4 @@ scheduling:
   dag_name: bqetl_deviations
   depends_on:
     - task_id: anomdtct
-      dag_name: public_analysis
+      dag_name: anomdtct

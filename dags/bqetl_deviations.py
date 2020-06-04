@@ -36,11 +36,11 @@ with DAG(
         dag=dag,
     )
 
-    wait_for_public_analysis_anomdtct = ExternalTaskSensor(
-        task_id="wait_for_public_analysis_anomdtct",
-        external_dag_id="public_analysis",
+    wait_for_anomdtct_anomdtct = ExternalTaskSensor(
+        task_id="wait_for_anomdtct_anomdtct",
+        external_dag_id="anomdtct",
         external_task_id="anomdtct",
         dag=dag,
     )
 
-    telemetry_derived__deviations__v1.set_upstream(wait_for_public_analysis_anomdtct)
+    telemetry_derived__deviations__v1.set_upstream(wait_for_anomdtct_anomdtct)

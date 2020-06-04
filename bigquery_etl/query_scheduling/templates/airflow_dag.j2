@@ -30,7 +30,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {%+ endif -%}
         depends_on_past={{ task.depends_on_past }},
         {%+ if task.arguments | length > 0 -%}
-        arguments={{ task.arguments | format_as_tuple }},
+        arguments={{ task.arguments }},
         {%+ endif -%}
         dag=dag,
     )

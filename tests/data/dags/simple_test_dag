@@ -18,5 +18,6 @@ with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily'
         email=['test@example.com'],
         date_partition_parameter='submission_date',
         depends_on_past=True,
+        arguments=('--append',),
         dag=dag,
     )

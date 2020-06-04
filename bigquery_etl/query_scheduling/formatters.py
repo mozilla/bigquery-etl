@@ -64,6 +64,7 @@ def format_repr(val):
     """Return representation of a object."""
     return repr(val)
 
+
 def format_as_tuple(val):
     """Return tuple representation of the provided value."""
     return tuple(val)

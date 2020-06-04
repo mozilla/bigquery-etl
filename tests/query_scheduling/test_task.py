@@ -42,6 +42,7 @@ class TestTask:
         assert task.dag_name == "bqetl_events"
         assert task.depends_on_past is False
         assert task.public_json
+        assert task.arguments == ["--append"]
 
     def test_of_non_existing_query(self):
         with pytest.raises(FileNotFoundError):
@@ -101,6 +102,7 @@ class TestTask:
         assert task.depends_on_past is False
         assert task.task_name == "test__incremental_query__v1"
         assert task.public_json is False
+        assert task.arguments == []
 
     def test_task_instantiation_custom_name(self):
         query_file = (

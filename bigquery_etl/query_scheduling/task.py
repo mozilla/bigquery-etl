@@ -93,6 +93,7 @@ class Task:
     # indicate whether data should be published as JSON
     public_json: bool = attr.ib(False)
     depends_on: List[TaskRef] = attr.ib([])
+    arguments: List[str] = attr.ib([])
 
     @owner.validator
     def validate_owner(self, attribute, value):

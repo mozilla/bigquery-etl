@@ -1,3 +1,10 @@
+/*
+Only for use by the LTV Revenue join.
+
+Maps country codes to the codes we have in the revenue dataset.
+Buckets small Bing countries into "other".
+*/
+
 CREATE OR REPLACE FUNCTION udf.map_revenue_country(engine STRING, country STRING) AS (
   CASE
     engine

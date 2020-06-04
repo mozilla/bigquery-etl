@@ -4,7 +4,6 @@ from bigquery_etl.query_scheduling.formatters import (
     format_date,
     format_timedelta,
     format_optional_string,
-    format_as_tuple,
 )
 import datetime
 import pytest
@@ -56,12 +55,3 @@ class TestFormatters:
             assert format_optional_string(123)
 
         assert format_optional_string("test") == "'test'"
-
-    def test_format_as_tuple(self):
-        assert format_as_tuple(["a"]) == ("a",)
-        assert format_as_tuple(["a", "b", "c"]) == ("a", "b", "c")
-        assert format_as_tuple([]) == ()
-        assert format_as_tuple((1, 2)) == (1, 2)
-
-        with pytest.raises(TypeError):
-            assert format_as_tuple(123)

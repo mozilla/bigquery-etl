@@ -81,6 +81,7 @@ SKIP = {
     "sql/telemetry_derived/clients_last_seen_v1/init.sql",
     # HTTP Error 408: Request Time-out
     "sql/telemetry_derived/latest_versions/query.sql",
+    "sql/telemetry_derived/italy_covid19_outage_v1/query.sql",
     # Query parameter not found
     "sql/telemetry_derived/experiments_v1/query.sql",
     "sql/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",

@@ -123,7 +123,6 @@ SELECT
         WHEN (event_category IN ('action') ) AND (event_method IN ('get') ) AND (event_object IN ('firstrun_push') ) AND event_value IS NULL THEN 'Rocket -  Receive Firstrun Push config' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('firstrun_push') ) AND event_value IS NULL THEN 'Rocket -  Firstrun Push notification shown' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('click') ) AND (event_object IN ('default_browser') ) AND event_value IS NULL THEN 'Rocket -  Default Browser Notification Clicked' 
-        WHEN (event_category IN ('action') ) AND (event_method IN ('change') ) AND (event_object IN ('default_browser') ) AND event_value IS NULL THEN 'Rocket -  Default Browser Service Failed' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('click') ) AND (event_object IN ('promote_share') ) AND (event_value IN ('dismiss', 'share') ) THEN 'Rocket -  Promote Share Dialog Clicked' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('promote_share') ) AND event_value IS NULL THEN 'Rocket -  Promote Share Dialog shown' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('change') ) AND (event_object IN ('themetoy') ) AND event_value IS NULL THEN 'Rocket -  Change Theme To' 
@@ -222,6 +221,13 @@ SELECT
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('message') ) AND (event_value IN ('setdefault_travel_search') ) THEN 'Rocket -  Show Set-default Travel Search Message' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('click') ) AND (event_object IN ('message') ) AND (event_value IN ('setdefault_travel_search') ) THEN 'Rocket -  Click Set-default Travel Search Message' 
         WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('toast') ) AND (event_value IN ('exit_warning') ) THEN 'Rocket -  Show Exit Warning Toast' 
+        WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('message') ) AND (event_value IN ('set_default_by_settings') ) THEN 'Rocket -  Show Set-Default by Settings Message' 
+        WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('message') ) AND (event_value IN ('set_default_by_link') ) THEN 'Rocket -  Show Set-Default by Link Message' 
+        WHEN (event_category IN ('action') ) AND (event_method IN ('click') ) AND (event_object IN ('message') ) AND (event_value IN ('set_default_by_settings') ) THEN 'Rocket -  Click Set-Default by Settings Message' 
+        WHEN (event_category IN ('action') ) AND (event_method IN ('click') ) AND (event_object IN ('message') ) AND (event_value IN ('set_default_by_link') ) THEN 'Rocket -  Click Set-Default by Link Message' 
+        WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('toast') ) AND (event_value IN ('set_default_success') ) THEN 'Rocket -  Show Set-Default Success Toast' 
+        WHEN (event_category IN ('action') ) AND (event_method IN ('show') ) AND (event_object IN ('snackbar') ) AND (event_value IN ('set_default_try_again') ) THEN 'Rocket -  Show Set-Default Try-again Snackbar' 
+        WHEN (event_category IN ('action') ) AND (event_method IN ('click') ) AND (event_object IN ('snackbar') ) AND (event_value IN ('set_default_try_again') ) THEN 'Rocket -  Click Set-Default Try-again Snackbar' 
 
     END AS event_name,
     event_timestamp AS timestamp,

@@ -76,6 +76,7 @@ with DAG(
         task_id="wait_for_main_summary_clients_daily",
         external_dag_id="main_summary",
         external_task_id="clients_daily",
+        check_existence=True,
         dag=dag,
     )
 

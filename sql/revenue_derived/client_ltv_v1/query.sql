@@ -6,7 +6,7 @@ WITH with_exploded_history AS (
     `moz-fx-data-shared-prod.analysis.ltv_daily`,
     UNNEST(engine_searches.list) AS history
   WHERE
-    submission_date = '2020-05-20'
+    submission_date = @submission_date
     AND channel != 'esr'
     AND history.element.key IS NOT NULL
 ),
@@ -202,7 +202,8 @@ with_caps AS (
     cutoffs
   USING
     (engine, country)
-), with_ltv AS (
+),
+with_ltv AS (
   SELECT
     *,
     ad_click_days * ad_clicks_per_day_capped * avg_client_ad_click_value AS ltv_ad_clicks_current,
@@ -216,15 +217,29 @@ with_caps AS (
   FROM
     with_caps
 ),
-
 SELECT
   *,
-  SAFE_DIVIDE(ltv_ad_clicks_current, SUM(ltv_ad_clicks_current) OVER ()) AS normalized_ltv_ad_clicks_current,
-  SAFE_DIVIDE(ltv_search_with_ads_current, SUM(ltv_search_with_ads_current) OVER ()) AS normalized_ltv_search_with_ads_current,
+  SAFE_DIVIDE(
+    ltv_ad_clicks_current,
+    SUM(ltv_ad_clicks_current) OVER ()
+  ) AS normalized_ltv_ad_clicks_current,
+  SAFE_DIVIDE(
+    ltv_search_with_ads_current,
+    SUM(ltv_search_with_ads_current) OVER ()
+  ) AS normalized_ltv_search_with_ads_current,
   SAFE_DIVIDE(ltv_search_current, SUM(ltv_search_current) OVER ()) AS normalized_ltv_search_current,
-  SAFE_DIVIDE(ltv_ad_clicks_future, SUM(ltv_ad_clicks_future) OVER ()) AS normalized_ltv_ad_clicks_future,
-  SAFE_DIVIDE(ltv_search_with_ads_future, SUM(ltv_search_with_ads_future) OVER ()) AS normalized_ltv_search_with_ads_future,
+  SAFE_DIVIDE(
+    ltv_ad_clicks_future,
+    SUM(ltv_ad_clicks_future) OVER ()
+  ) AS normalized_ltv_ad_clicks_future,
+  SAFE_DIVIDE(
+    ltv_search_with_ads_future,
+    SUM(ltv_search_with_ads_future) OVER ()
+  ) AS normalized_ltv_search_with_ads_future,
   SAFE_DIVIDE(ltv_search_future, SUM(ltv_search_future) OVER ()) AS normalized_ltv_search_future,
-  SAFE_DIVIDE(ltv_tagged_search_future, SUM(ltv_tagged_search_future) OVER ()) AS normalized_ltv_tagged_search_future
+  SAFE_DIVIDE(
+    ltv_tagged_search_future,
+    SUM(ltv_tagged_search_future) OVER ()
+  ) AS normalized_ltv_tagged_search_future
 FROM
   with_ltv

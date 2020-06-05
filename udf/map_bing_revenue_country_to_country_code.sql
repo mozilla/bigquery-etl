@@ -4,7 +4,6 @@ For use by LTV revenue join only.
 Maps the Bing country to a country code.
 Only keeps the country codes we want to aggregate on.
 */
-
 CREATE OR REPLACE FUNCTION udf.map_bing_revenue_country_to_country_code(country STRING) AS (
   CASE
     country

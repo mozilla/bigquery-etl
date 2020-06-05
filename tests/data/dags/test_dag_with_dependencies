@@ -53,5 +53,7 @@ with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily'
     )
     
     {{ temporary_dataset }}__query__v1.set_upstream(wait_for_{{ temporary_dataset }}__external_table__v1)
+    
     {{ temporary_dataset }}__query__v1.set_upstream({{ temporary_dataset }}__table1__v1)
+    
     {{ temporary_dataset }}__query__v1.set_upstream({{ temporary_dataset }}__table2__v1)

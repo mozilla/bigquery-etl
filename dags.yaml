@@ -45,6 +45,15 @@ bqetl_amo_stats:
       retries: 2
       retry_delay: 30m
 
+bqetl_vrbrowser:
+  schedule_interval: 0 1 * * *
+  default_args:
+    owner: jklukas@mozilla.com
+    start_date: '2019-07-25'
+    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com', 'ascholtz@mozilla.com']
+    retries: 1
+    retry_delay: 5m
+
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (it's done automatically)
 bqetl_public_data_json:

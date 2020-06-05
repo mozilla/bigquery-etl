@@ -40,7 +40,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 {% for task in tasks %}
     {% for dependency in task.dependencies -%}
     {% if dependency.dag_name == name -%}
+    {% if dependency.task_name != task.task_name %}
     {{ task.task_name }}.set_upstream({{ dependency.task_name }})
+    {% endif -%}
     {% else -%}
     {% if (dependency.dag_name, dependency.task_name) not in wait_for_seen -%}
     wait_for_{{ dependency.task_name }} = ExternalTaskSensor(

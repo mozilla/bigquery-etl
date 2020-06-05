@@ -8,3 +8,8 @@ owners:
 labels:
   application: firefox-reality
   schedule: daily
+scheduling:
+  dag_name: bqetl_vrbrowser
+  depends_on:
+    - dag_name: copy_deduplicate
+      task_id: copy_deduplicate_all

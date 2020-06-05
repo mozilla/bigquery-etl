@@ -56,7 +56,7 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=["ascholtz@mozilla.com", "jklukas@mozilla.com"],
         date_partition_parameter="submission_date",
-        depends_on_past=False,
+        depends_on_past=True,
         dag=dag,
     )
 

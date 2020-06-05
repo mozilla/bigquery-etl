@@ -10,3 +10,4 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_vrbrowser
+  depends_on_past: true

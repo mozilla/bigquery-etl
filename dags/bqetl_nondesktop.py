@@ -90,6 +90,17 @@ with DAG(
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
+    wait_for_copy_deduplicate_baseline_clients_last_seen = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_baseline_clients_last_seen",
+        external_dag_id="copy_deduplicate",
+        external_task_id="baseline_clients_last_seen",
+        check_existence=True,
+        dag=dag,
+    )
+
+    telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
+        wait_for_copy_deduplicate_baseline_clients_last_seen
+    )
 
     telemetry_derived__smoot_usage_nondesktop_compressed__v2.set_upstream(
         telemetry_derived__smoot_usage_nondesktop__v2
@@ -98,11 +109,20 @@ with DAG(
     telemetry_derived__firefox_nondesktop_exact_mau28_by_client_count_dimensions__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
+    telemetry_derived__firefox_nondesktop_exact_mau28_by_client_count_dimensions__v1.set_upstream(
+        wait_for_copy_deduplicate_baseline_clients_last_seen
+    )
 
     telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
+    telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
+        wait_for_copy_deduplicate_baseline_clients_last_seen
+    )
 
     telemetry__firefox_nondesktop_exact_mau28_raw__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
+    )
+    telemetry__firefox_nondesktop_exact_mau28_raw__v1.set_upstream(
+        wait_for_copy_deduplicate_baseline_clients_last_seen
     )

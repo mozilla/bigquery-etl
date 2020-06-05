@@ -126,6 +126,64 @@ class TestTask:
         assert task.dag_name == "bqetl_test_dag"
         assert task.task_name == "custom_task_name"
 
+    def test_validate_custom_task_name(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        scheduling = {
+            "dag_name": "bqetl_test_dag",
+            "default_args": {"owner": "test@example.org"},
+            "task_name": "a" * 63,
+        }
+
+        metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
+
+        with pytest.raises(ValueError):
+            Task.of_query(query_file, metadata)
+
+        scheduling = {
+            "dag_name": "bqetl_test_dag",
+            "default_args": {"owner": "test@example.org"},
+            "task_name": "",
+        }
+
+        metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
+
+        with pytest.raises(ValueError):
+            Task.of_query(query_file, metadata)
+
+        scheduling = {
+            "dag_name": "bqetl_test_dag",
+            "default_args": {"owner": "test@example.org"},
+            "task_name": "a" * 62,
+        }
+
+        metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
+
+        task = Task.of_query(query_file, metadata)
+        assert task.task_name == "a" * 62
+
+    def test_validate_task_name(self):
+        query_file = (
+            TEST_DIR / "data" / "test_sql" / "test" / (("a" * 63) + "_v1") / "query.sql"
+        )
+
+        scheduling = {
+            "dag_name": "bqetl_test_dag",
+            "default_args": {"owner": "test@example.org"},
+        }
+
+        metadata = Metadata("test", "test", ["test@example.org"], {}, scheduling)
+
+        with pytest.raises(ValueError):
+            Task.of_query(query_file, metadata)
+
     def test_dag_name_validation(self):
         query_file = (
             TEST_DIR

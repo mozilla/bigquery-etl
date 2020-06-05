@@ -44,8 +44,8 @@ with DAG(
         dag=dag,
     )
 
-    telemetry_derived__firefox_nondesktop_exact_mau28_by_client_count_dimensions__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__firefox_nondesktop_exact_mau28_by_client_count_dimensions__v1",
+    firefox_nondesktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
+        task_id="firefox_nondesktop_exact_mau28_by_client_count_dimensions",
         destination_table="firefox_nondesktop_exact_mau28_by_client_count_dimensions_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
@@ -106,10 +106,10 @@ with DAG(
         telemetry_derived__smoot_usage_nondesktop__v2
     )
 
-    telemetry_derived__firefox_nondesktop_exact_mau28_by_client_count_dimensions__v1.set_upstream(
+    firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
-    telemetry_derived__firefox_nondesktop_exact_mau28_by_client_count_dimensions__v1.set_upstream(
+    firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
         wait_for_copy_deduplicate_baseline_clients_last_seen
     )
 

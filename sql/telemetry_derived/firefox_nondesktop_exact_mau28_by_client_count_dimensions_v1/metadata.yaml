@@ -9,6 +9,7 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_nondesktop
+  task_name: firefox_nondesktop_exact_mau28_by_client_count_dimensions
   depends_on:
     - dag_name: copy_deduplicate
       task_id: baseline_clients_last_seen

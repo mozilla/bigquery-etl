@@ -124,6 +124,16 @@ class Task:
                 f"Invalid DAG name {value} for task. Name must start with 'bqetl_'."
             )
 
+    @task_name.validator
+    def validate_task_name(self, attribute, value):
+        """Validate the task name."""
+        if value is not None:
+            if len(value) < 1 or len(value) > 62:
+                raise ValueError(
+                    f"Invalid task name {value}. "
+                    + "The task name has to be 1 to 62 characters long."
+                )
+
     def __attrs_post_init__(self):
         """Extract information from the query file name."""
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
@@ -134,6 +144,7 @@ class Task:
 
             if self.task_name is None:
                 self.task_name = f"{self.dataset}__{self.table}__{self.version}"
+                self.validate_task_name(None, self.task_name)
         else:
             raise ValueError(
                 "query_file must be a path with format:"

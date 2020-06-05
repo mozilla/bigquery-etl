@@ -28,6 +28,7 @@ with DAG('bqetl_public_data_json', default_args=default_args, schedule_interval=
         task_id='wait_for_test__non_incremental_query__v1',
         external_dag_id='bqetl_core',
         external_task_id='test__non_incremental_query__v1',
+        check_existence=True,
     )
         
     export_public_data_json_test__non_incremental_query__v1.set_upstream(wait_for_test__non_incremental_query__v1)

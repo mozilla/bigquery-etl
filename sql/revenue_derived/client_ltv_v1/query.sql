@@ -40,7 +40,7 @@ monthly_activity AS (
   SELECT
     engine,
     month,
-    udf.mapCountry(engine, country) AS country,
+    udf.map_revenue_country(engine, country) AS country,
     SUM(ad_clicks) AS ad_clicks,
     SUM(search_with_ads) AS search_with_ads,
     SUM(sap) AS sap,
@@ -57,7 +57,7 @@ past_year_revenue AS (
   SELECT
     partner_name AS engine,
     DATE(month_year) AS month,
-    IF(partner_name = 'Bing', udf.mapBingRevenueCountryToTelemetry(country), country) AS country,
+    IF(partner_name = 'Bing', udf.map_bing_revenue_country_to_country_code(country), country) AS country,
     SUM(revenue_paid_to_mozilla) AS revenue
   FROM
     `dp2-prod`.revenue.revenue_data
@@ -216,7 +216,7 @@ with_ltv AS (
     pred_num_days_tagged_searching * tagged_searches_per_day_capped * avg_client_tagged_search_value AS ltv_tagged_search_future,
   FROM
     with_caps
-),
+)
 SELECT
   *,
   SAFE_DIVIDE(

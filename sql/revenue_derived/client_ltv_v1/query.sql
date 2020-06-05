@@ -57,7 +57,11 @@ past_year_revenue AS (
   SELECT
     partner_name AS engine,
     DATE(month_year) AS month,
-    IF(partner_name = 'Bing', udf.map_bing_revenue_country_to_country_code(country), country) AS country,
+    IF(
+      partner_name = 'Bing',
+      udf.map_bing_revenue_country_to_country_code(country),
+      country
+    ) AS country,
     SUM(revenue_paid_to_mozilla) AS revenue
   FROM
     `dp2-prod`.revenue.revenue_data

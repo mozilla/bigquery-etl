@@ -8,3 +8,6 @@ labels:
   application: nondesktop
   incremental: true
   schedule: daily
+scheduling:
+  dag_name: bqetl_nondesktop
+  email: ['jklukas@mozilla.com']

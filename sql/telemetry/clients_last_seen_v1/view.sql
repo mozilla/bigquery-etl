@@ -23,22 +23,22 @@ SELECT
   AND (
     (
       BIT_COUNT(
-        cls.days_seen_bits & 0x0FFFFFFE & (
-          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date))
+        days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM submission_date))
         )
       ) <= 1
     )
     OR (
       BIT_COUNT(
-        cls.days_seen_bits & 0x0FFFFFFE & (
-          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date) - 1)
+        days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM submission_date) - 1)
         )
       ) <= 1
     )
     OR (
       BIT_COUNT(
-        cls.days_seen_bits & 0x0FFFFFFE & (
-          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date) + 1)
+        days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM submission_date) + 1)
         )
       ) <= 1
     )
@@ -47,22 +47,22 @@ SELECT
   AND NOT (
     (
       BIT_COUNT(
-        cls.days_seen_bits & 0x0FFFFFFE & (
-          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date))
+        days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM submission_date))
         )
       ) <= 1
     )
     OR (
       BIT_COUNT(
-        cls.days_seen_bits & 0x0FFFFFFE & (
-          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date) - 1)
+        days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM submission_date) - 1)
         )
       ) <= 1
     )
     OR (
       BIT_COUNT(
-        cls.days_seen_bits & 0x0FFFFFFE & (
-          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date) + 1)
+        days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM submission_date) + 1)
         )
       ) <= 1
     )

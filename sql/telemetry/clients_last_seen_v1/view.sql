@@ -15,8 +15,58 @@ SELECT
   ) AS days_since_created_profile,
   -- Segment definitions; see https://docs.telemetry.mozilla.org/concepts/segments.html
   -- 0x0FFFFFFE is a bitmask that accepts the previous 27 days, excluding the current day (rightmost bit)
+  -- 0x183060C183 == 0b000001100000110000011000001100000110000011 is a bit mask that accepts a pair of
+  -- consecutive days each week for six weeks; the current day and previous day are accepted.
   BIT_COUNT(days_seen_bits & 0x0FFFFFFE) >= 14 AS is_regular_user_v3,
   days_seen_bits & 0x0FFFFFFE = 0 AS is_new_or_resurrected_v3,
+  BIT_COUNT(days_seen_bits & 0x0FFFFFFE) >= 14
+  AND (
+    (
+      BIT_COUNT(
+        cls.days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date))
+        )
+      ) <= 1
+    )
+    OR (
+      BIT_COUNT(
+        cls.days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date) - 1)
+        )
+      ) <= 1
+    )
+    OR (
+      BIT_COUNT(
+        cls.days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date) + 1)
+        )
+      ) <= 1
+    )
+  ) AS is_weekday_regular_v1,
+  BIT_COUNT(days_seen_bits & 0x0FFFFFFE) >= 14
+  AND NOT (
+    (
+      BIT_COUNT(
+        cls.days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date))
+        )
+      ) <= 1
+    )
+    OR (
+      BIT_COUNT(
+        cls.days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date) - 1)
+        )
+      ) <= 1
+    )
+    OR (
+      BIT_COUNT(
+        cls.days_seen_bits & 0x0FFFFFFE & (
+          0x183060C183 >> (8 - EXTRACT(DAYOFWEEK FROM cls.submission_date) + 1)
+        )
+      ) <= 1
+    )
+  ) AS is_allweek_regular_v1,
   * EXCEPT (
     active_experiment_id,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,

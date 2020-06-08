@@ -5,4 +5,4 @@ owners:
 labels:
   incremental: true
 scheduling:
-  dag_name: bqetl_kpi_dashboard
+  dag_name: bqetl_gud

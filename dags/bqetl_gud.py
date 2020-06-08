@@ -16,25 +16,11 @@ default_args = {
     "retries": 1,
 }
 
-with DAG(
-    "bqetl_nondesktop", default_args=default_args, schedule_interval="0 1 * * *"
-) as dag:
+with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 1 * * *") as dag:
 
-    telemetry_derived__firefox_nondesktop_day_2_7_activation__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__firefox_nondesktop_day_2_7_activation__v1",
-        destination_table="firefox_nondesktop_day_2_7_activation_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="gkaberere@mozilla.com",
-        email=["gkaberere@mozilla.com", "jklukas@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    firefox_nondesktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
-        task_id="firefox_nondesktop_exact_mau28_by_client_count_dimensions",
-        destination_table="firefox_nondesktop_exact_mau28_by_client_count_dimensions_v1",
+    telemetry_derived__smoot_usage_new_profiles__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_new_profiles__v2",
+        destination_table="smoot_usage_new_profiles_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
@@ -44,9 +30,9 @@ with DAG(
         dag=dag,
     )
 
-    telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1",
-        destination_table="firefox_nondesktop_exact_mau28_raw_v1",
+    telemetry_derived__smoot_usage_new_profiles_compressed__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_new_profiles_compressed__v2",
+        destination_table="smoot_usage_new_profiles_compressed_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
@@ -54,6 +40,42 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
+    )
+
+    telemetry_derived__smoot_usage_nondesktop_compressed__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_nondesktop_compressed__v2",
+        destination_table="smoot_usage_nondesktop_compressed_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    telemetry_derived__smoot_usage_nondesktop__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_nondesktop__v2",
+        destination_table="smoot_usage_nondesktop_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
+        telemetry_derived__smoot_usage_nondesktop__v2
+    )
+
+    telemetry_derived__smoot_usage_new_profiles_compressed__v2.set_upstream(
+        telemetry_derived__smoot_usage_new_profiles__v2
+    )
+
+    telemetry_derived__smoot_usage_nondesktop_compressed__v2.set_upstream(
+        telemetry_derived__smoot_usage_nondesktop__v2
     )
 
     wait_for_telemetry_derived__core_clients_last_seen__v1 = ExternalTaskSensor(
@@ -63,7 +85,7 @@ with DAG(
         check_existence=True,
     )
 
-    telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
+    telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
     wait_for_copy_deduplicate_baseline_clients_last_seen = ExternalTaskSensor(
@@ -74,20 +96,6 @@ with DAG(
         dag=dag,
     )
 
-    telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
-        wait_for_copy_deduplicate_baseline_clients_last_seen
-    )
-
-    firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
-        wait_for_telemetry_derived__core_clients_last_seen__v1
-    )
-    firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
-        wait_for_copy_deduplicate_baseline_clients_last_seen
-    )
-
-    telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_last_seen__v1
-    )
-    telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1.set_upstream(
+    telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
         wait_for_copy_deduplicate_baseline_clients_last_seen
     )

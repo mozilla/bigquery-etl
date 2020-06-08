@@ -8,4 +8,4 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_nondesktop
+  dag_name: bqetl_gud

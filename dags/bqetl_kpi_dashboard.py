@@ -71,13 +71,13 @@ with DAG(
         telemetry_derived__smoot_usage_new_profiles__v2
     )
 
-    wait_for_telemetry__firefox_nondesktop_exact_mau28_raw__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry__firefox_nondesktop_exact_mau28_raw__v1",
+    wait_for_telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1",
         external_dag_id="bqetl_nondesktop",
-        external_task_id="telemetry__firefox_nondesktop_exact_mau28_raw__v1",
+        external_task_id="telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1",
         check_existence=True,
     )
 
     kpi_dashboard.set_upstream(
-        wait_for_telemetry__firefox_nondesktop_exact_mau28_raw__v1
+        wait_for_telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1
     )

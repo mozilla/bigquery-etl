@@ -68,10 +68,10 @@ with DAG(
         dag=dag,
     )
 
-    telemetry__firefox_nondesktop_exact_mau28_raw__v1 = bigquery_etl_query(
-        task_id="telemetry__firefox_nondesktop_exact_mau28_raw__v1",
+    telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1",
         destination_table="firefox_nondesktop_exact_mau28_raw_v1",
-        dataset_id="telemetry",
+        dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
         email=["jklukas@mozilla.com"],
@@ -120,9 +120,9 @@ with DAG(
         wait_for_copy_deduplicate_baseline_clients_last_seen
     )
 
-    telemetry__firefox_nondesktop_exact_mau28_raw__v1.set_upstream(
+    telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
-    telemetry__firefox_nondesktop_exact_mau28_raw__v1.set_upstream(
+    telemetry_derived__firefox_nondesktop_exact_mau28_raw__v1.set_upstream(
         wait_for_copy_deduplicate_baseline_clients_last_seen
     )

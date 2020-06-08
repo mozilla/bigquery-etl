@@ -16,11 +16,12 @@ import warnings
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 
+from ..format_sql.formatter import reformat
+from ..util import standard_args
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.exceptions import BigQueryInsertError
-from ..util import standard_args
-from .config import DELETE_TARGETS, find_glean_targets
+from .config import DeleteSource, DELETE_TARGETS, find_glean_targets
 
 
 NULL_PARTITION_ID = "__NULL__"
@@ -89,6 +90,13 @@ parser.add_argument(
     metavar="TABLE",
     help="Table for recording state; Used to avoid repeating deletes if interrupted; "
     "Create it if it does not exist; By default state is not recorded",
+)
+parser.add_argument(
+    "--task-table",
+    "--task_table",
+    metavar="TABLE",
+    help="Table for recording tasks; Used along with --state-table to determine "
+    "progress; Create it if it does not exist; By default tasks are not recorded",
 )
 standard_args.add_table_filter(parser)
 
@@ -272,6 +280,7 @@ class Task:
     """Return type for delete_from_table."""
 
     table: bigquery.Table
+    source: DeleteSource
     partition_id: Optional[str]
     func: Callable[[bigquery.Client], bigquery.QueryJob]
 
@@ -290,7 +299,14 @@ class Task:
 
 
 def delete_from_table(
-    client, target, dry_run, end_date, max_single_dml_bytes, partition_limit, **kwargs
+    client,
+    target,
+    source,
+    dry_run,
+    end_date,
+    max_single_dml_bytes,
+    partition_limit,
+    **kwargs,
 ) -> Iterable[Task]:
     """Yield tasks to handle deletion requests for a target table."""
     try:
@@ -304,11 +320,13 @@ def delete_from_table(
     ):
         yield Task(
             table=table,
+            source=source,
             partition_id=partition.id,
             func=delete_from_partition(
                 dry_run=dry_run,
                 partition_condition=partition.condition,
                 target=target,
+                source=source,
                 task_id=get_task_id(target, partition.id),
                 end_date=end_date,
                 **kwargs,
@@ -400,29 +418,98 @@ def main():
     tasks.sort(key=lambda task: sql_table_id(task.table))
     tasks.sort(key=attrgetter("partition_sort_key"), reverse=True)
     with ThreadPool(args.parallelism) as pool:
+        if args.task_table and not args.dry_run:
+            # record task information
+            try:
+                client.get_table(args.task_table)
+            except NotFound:
+                table = bigquery.Table(
+                    args.task_table,
+                    [
+                        bigquery.SchemaField("task_id", "STRING"),
+                        bigquery.SchemaField("start_date", "DATE"),
+                        bigquery.SchemaField("end_date", "DATE"),
+                        bigquery.SchemaField("target", "STRING"),
+                        bigquery.SchemaField("target_rows", "INT64"),
+                        bigquery.SchemaField("target_bytes", "INT64"),
+                        bigquery.SchemaField("source_bytes", "INT64"),
+                    ],
+                )
+                table.time_partitioning = bigquery.TimePartitioning()
+                client.create_table(table)
+            sources = list(set(task.source for task in tasks))
+            source_bytes = {
+                source: job.total_bytes_processed
+                for source, job in zip(
+                    sources,
+                    pool.starmap(
+                        client.query,
+                        [
+                            (
+                                reformat(
+                                    f"""
+                                    SELECT
+                                      {source.field}
+                                    FROM
+                                      `{sql_table_id(source)}`
+                                    WHERE
+                                      {source_condition}
+                                    """
+                                ),
+                                bigquery.QueryJobConfig(dry_run=True),
+                            )
+                            for source in sources
+                        ],
+                        chunksize=1,
+                    ),
+                )
+            }
+            step = 10000  # max 10K rows per insert
+            for start in range(0, len(tasks), step):
+                end = start + step
+                BigQueryInsertError.raise_if_present(
+                    errors=client.insert_rows_json(
+                        args.task_table,
+                        [
+                            {
+                                "task_id": get_task_id(task.table, task.partition_id),
+                                "start_date": args.start_date.isoformat(),
+                                "end_date": args.end_date.isoformat(),
+                                "target": sql_table_id(task.table),
+                                "target_rows": task.table.num_rows,
+                                "target_bytes": task.table.num_bytes,
+                                "source_bytes": source_bytes[task.source],
+                            }
+                            for task in tasks[start:end]
+                        ],
+                    )
+                )
         results = pool.map(
             client_q.with_client, (task.func for task in tasks), chunksize=1
         )
-    bytes_processed_by_table = defaultdict(lambda: 0)
+    jobs_by_table = defaultdict(list)
     for i, job in enumerate(results):
-        bytes_processed_by_table[tasks[i].table] += job.total_bytes_processed
-    bytes_processed = bytes_deleted = 0
-    for table, table_bytes_processed in bytes_processed_by_table.items():
+        jobs_by_table[tasks[i].table].append(job)
+    bytes_processed = rows_deleted = 0
+    for table, jobs in jobs_by_table.items():
+        table_bytes_processed = sum(job.total_bytes_processed for job in jobs)
         bytes_processed += table_bytes_processed
         table_id = sql_table_id(table)
         if args.dry_run:
             logging.info(f"Would scan {table_bytes_processed} bytes from {table_id}")
         else:
-            table_bytes_deleted = table.num_bytes - client.get_table(table).num_bytes
-            bytes_deleted += table_bytes_deleted
+            table_rows_deleted = sum(job.num_dml_affected_rows for job in jobs)
+            rows_deleted += table_rows_deleted
             logging.info(
                 f"Scanned {table_bytes_processed} bytes and "
-                f"deleted {table_bytes_deleted} from {table_id}"
+                f"deleted {table_rows_deleted} rows from {table_id}"
             )
     if args.dry_run:
         logging.info(f"Would scan {bytes_processed} in total")
     else:
-        logging.info(f"Scanned {bytes_processed} and deleted {bytes_deleted} in total")
+        logging.info(
+            f"Scanned {bytes_processed} and deleted {rows_deleted} rows in total"
+        )
 
 
 if __name__ == "__main__":

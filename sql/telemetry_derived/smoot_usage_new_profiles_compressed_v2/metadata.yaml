@@ -1,5 +1,5 @@
-friendly_name: Smoot usage new profiles compressed
-description: Smoot usage new profiles compressed
+friendly_name: Smoot Usage New Profiles Compressed
+description: Compressed usage metrics for new profiles.
 owners:
   - jklukas@mozilla.com
 labels:

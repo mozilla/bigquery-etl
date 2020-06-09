@@ -50,6 +50,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         external_dag_id='{{ dependency.dag_name }}',
         external_task_id='{{ dependency.task_name }}',
         check_existence=True,
+        mode='reschedule',
     )
     {{ wait_for_seen.append((dependency.dag_name, dependency.task_name)) or "" }}
     {% endif -%}
@@ -69,6 +70,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         execution_delta={{ task_ref.execution_delta | format_timedelta | format_repr }},
         {% endif -%}
         check_existence=True,
+        mode='reschedule',
         dag=dag,
     )
     {{ wait_for_seen.append((task_ref.dag_name, task_ref.task_id)) or "" }}

@@ -95,6 +95,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 1 * * *") 
         external_dag_id="main_summary",
         external_task_id="clients_last_seen",
         check_existence=True,
+        mode="reschedule",
         dag=dag,
     )
 
@@ -127,6 +128,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 1 * * *") 
         external_dag_id="bqetl_core",
         external_task_id="telemetry_derived__core_clients_last_seen__v1",
         check_existence=True,
+        mode="reschedule",
     )
 
     telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
@@ -137,6 +139,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 1 * * *") 
         external_dag_id="copy_deduplicate",
         external_task_id="baseline_clients_last_seen",
         check_existence=True,
+        mode="reschedule",
         dag=dag,
     )
 

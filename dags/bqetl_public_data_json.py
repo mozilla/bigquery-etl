@@ -53,6 +53,7 @@ with DAG(
         external_dag_id="bqetl_ssl_ratios",
         external_task_id="telemetry_derived__ssl_ratios__v1",
         check_existence=True,
+        mode="reschedule",
     )
 
     export_public_data_json_telemetry_derived__ssl_ratios__v1.set_upstream(
@@ -64,6 +65,7 @@ with DAG(
         external_dag_id="bqetl_deviations",
         external_task_id="telemetry_derived__deviations__v1",
         check_existence=True,
+        mode="reschedule",
     )
 
     export_public_data_json_telemetry_derived__deviations__v1.set_upstream(

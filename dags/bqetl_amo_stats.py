@@ -77,6 +77,7 @@ with DAG(
         external_dag_id="main_summary",
         external_task_id="clients_daily",
         check_existence=True,
+        mode="reschedule",
         dag=dag,
     )
 

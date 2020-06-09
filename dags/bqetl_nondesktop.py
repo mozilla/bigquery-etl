@@ -61,6 +61,7 @@ with DAG(
         external_dag_id="bqetl_core",
         external_task_id="telemetry_derived__core_clients_last_seen__v1",
         check_existence=True,
+        mode="reschedule",
     )
 
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
@@ -71,6 +72,7 @@ with DAG(
         external_dag_id="copy_deduplicate",
         external_task_id="baseline_clients_last_seen",
         check_existence=True,
+        mode="reschedule",
         dag=dag,
     )
 

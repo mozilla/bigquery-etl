@@ -14,8 +14,8 @@ CREATE OR REPLACE FUNCTION
       WHEN STARTS_WITH(LOWER(engine), 'bing') THEN 'Bing'
       WHEN STARTS_WITH(LOWER(engine), 'yandex')
       OR STARTS_WITH(LOWER(engine), 'yasearch') THEN 'Yandex'
-      WHEN STARTS_WITH(LOWER(engine, 'amazon')) THEN 'Amazon'
-      WHEN STARTS_WITH(LOWER(engine, 'ebay')) THEN 'Ebay'
+      WHEN STARTS_WITH(LOWER(engine), 'amazon') THEN 'Amazon'
+      WHEN STARTS_WITH(LOWER(engine), 'ebay') THEN 'Ebay'
       ELSE 'Other'
     END
   );
@@ -29,4 +29,3 @@ SELECT
   assert_equals('Other', udf.normalize_search_engine('other-Google')),
   assert_equals('Other', udf.normalize_search_engine('engine')),
   assert_null(udf.normalize_search_engine(NULL))
-t

@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   submission_timestamp,
+  client_id AS user_id,
   client_id AS device_id,
   document_id AS insert_id,
   event AS event_type,

@@ -2,6 +2,7 @@ CREATE OR REPLACE VIEW
     `moz-fx-data-shared-prod.telemetry.fenix_events_v1` AS
 SELECT
     submission_timestamp,
+    client_info.client_id AS user_id,
     client_info.client_id AS device_id,
     CONCAT(document_id, CAST(event.timestamp AS STRING)) AS insert_id,
     CONCAT(event.category, '.', event.name) AS event_type,

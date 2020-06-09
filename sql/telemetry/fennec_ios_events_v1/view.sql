@@ -24,6 +24,7 @@ WITH base_events AS (
 all_events AS (
   SELECT
     submission_timestamp,
+    client_id AS user_id,
     client_id AS device_id,
     (
       created + COALESCE(

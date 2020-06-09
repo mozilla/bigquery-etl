@@ -24,7 +24,7 @@ WITH
   SELECT
     *
   FROM
-    `moz-fx-data-derived-datasets.telemetry.firefox_nondesktop_exact_mau28_by_dimensions_v1`
+    `moz-fx-data-shared-prod.telemetry.firefox_nondesktop_exact_mau28_by_dimensions_v1`
   WHERE
     product != 'FirefoxForFireTV' ),
   --
@@ -32,7 +32,7 @@ WITH
   SELECT
     *
   FROM
-    `moz-fx-data-derived-datasets.telemetry.firefox_accounts_exact_mau28_by_dimensions_v1` ),
+    `moz-fx-data-shared-prod.telemetry.firefox_accounts_exact_mau28_by_dimensions_v1` ),
   --
   --
   per_bucket AS (

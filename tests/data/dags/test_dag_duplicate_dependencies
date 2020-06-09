@@ -38,6 +38,7 @@ with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily'
         external_dag_id="external",
         external_task_id="task1",
         check_existence=True,
+        mode='reschedule',
         dag=dag,
     )
     

@@ -191,6 +191,16 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "apz_zoom_activity",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "apz_zoom_activity_rdm",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "async_animation_content_too_large_frame_size",
                                         "type": "STRING"
                                     },
@@ -1472,6 +1482,16 @@
                                     {
                                         "mode": "NULLABLE",
                                         "name": "devtools_changesview_time_active_seconds",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_compatibilityview_opened_count",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "devtools_compatibilityview_time_active_seconds",
                                         "type": "STRING"
                                     },
                                     {
@@ -2866,6 +2886,11 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "fx_urlbar_selected_result_type_2",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "fxa_configured",
                                         "type": "STRING"
                                     },
@@ -2877,6 +2902,11 @@
                                     {
                                         "mode": "NULLABLE",
                                         "name": "gc_budget_ms",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gc_budget_ms_2",
                                         "type": "STRING"
                                     },
                                     {
@@ -2916,6 +2946,11 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "gc_mark_gray_ms_2",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "gc_mark_ms",
                                         "type": "STRING"
                                     },
@@ -2926,7 +2961,22 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "gc_mark_rate_2",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "gc_mark_roots_ms",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gc_mark_roots_us",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gc_mark_weak_ms",
                                         "type": "STRING"
                                     },
                                     {
@@ -2991,7 +3041,17 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "gc_prepare_ms",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "gc_pretenure_count",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "gc_pretenure_count_2",
                                         "type": "STRING"
                                     },
                                     {
@@ -4196,6 +4256,11 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "media_hls_canplay_supported",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "media_hls_decoder_success",
                                         "type": "STRING"
                                     },
@@ -4966,6 +5031,11 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "pdf_viewer_fallback_reason",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "pdf_viewer_fallback_shown",
                                         "type": "STRING"
                                     },
@@ -5631,6 +5701,11 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "region_location_services_difference",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "requests_of_original_content",
                                         "type": "STRING"
                                     },
@@ -5992,6 +6067,11 @@
                                     {
                                         "mode": "NULLABLE",
                                         "name": "spdy_request_per_conn",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "spdy_request_per_conn_2",
                                         "type": "STRING"
                                     },
                                     {
@@ -7272,6 +7352,566 @@
                                     {
                                         "mode": "NULLABLE",
                                         "name": "urlclassifier_vlps_metadata_corrupt",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_button_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_button_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_checkbox_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_checkbox_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_innerspinbutton_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_innerspinbutton_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_listbox_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_listbox_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_menulist_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_menulist_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_menulistbutton_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_menulistbutton_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_meter_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_meter_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_numberinput_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_numberinput_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_progressbar_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_progressbar_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_progressbarvertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_progressbarvertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_radio_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_radio_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_range_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_range_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_rangethumb_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_rangethumb_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalehorizontal_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalehorizontal_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbend_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbend_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbhorizontal_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbhorizontal_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbstart_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbstart_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbtick_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbtick_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbvertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalethumbvertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalevertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scalevertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scrollbarthumbhorizontal_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scrollbarthumbhorizontal_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scrollbarthumbvertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scrollbarthumbvertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scrollbartrackhorizontal_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scrollbartrackhorizontal_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scrollbartrackvertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_scrollbartrackvertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_searchfield_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_searchfield_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_textarea_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_textarea_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_textfield_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_nonwidget_textfield_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_overridden_numberinput_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_overridden_numberinput_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_overridden_range_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_overridden_range_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_button_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_button_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_checkbox_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_checkbox_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_innerspinbutton_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_innerspinbutton_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_listbox_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_listbox_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_menulist_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_menulist_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_menulistbutton_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_menulistbutton_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_meter_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_meter_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_numberinput_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_numberinput_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_progressbar_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_progressbar_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_progressbarvertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_progressbarvertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_radio_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_radio_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_range_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_range_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_rangethumb_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_rangethumb_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalehorizontal_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalehorizontal_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbend_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbend_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbhorizontal_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbhorizontal_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbstart_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbstart_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbtick_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbtick_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbvertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalethumbvertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalevertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scalevertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scrollbarthumbhorizontal_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scrollbarthumbhorizontal_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scrollbarthumbvertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scrollbarthumbvertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scrollbartrackhorizontal_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scrollbartrackhorizontal_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scrollbartrackvertical_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_scrollbartrackvertical_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_searchfield_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_searchfield_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_textarea_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_textarea_page",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_textfield_document",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "use_counter2_appearance_widget_textfield_page",
                                         "type": "STRING"
                                     },
                                     {
@@ -11806,6 +12446,11 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "webxr_api_mode",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "window_open_outer_size",
                                         "type": "STRING"
                                     },
@@ -11984,6 +12629,11 @@
                     {
                         "mode": "NULLABLE",
                         "name": "apz_aware_mousemove_listeners",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "apz_zoom_pinchsource",
                         "type": "STRING"
                     },
                     {
@@ -12848,6 +13498,31 @@
                     },
                     {
                         "mode": "NULLABLE",
+                        "name": "cookie_purging_duration_ms",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "cookie_purging_interval_hours",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "cookie_purging_origins_purged",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "cookie_purging_trackers_user_interaction_remaining_days",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "cookie_purging_trackers_with_user_interaction",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
                         "name": "cookie_samesite_set_vs_unset",
                         "type": "STRING"
                     },
@@ -13359,6 +14034,16 @@
                     {
                         "mode": "NULLABLE",
                         "name": "devtools_changesview_time_active_seconds",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "devtools_compatibilityview_opened_count",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "devtools_compatibilityview_time_active_seconds",
                         "type": "STRING"
                     },
                     {
@@ -14518,6 +15203,11 @@
                     },
                     {
                         "mode": "NULLABLE",
+                        "name": "fx_number_of_unique_site_origins_per_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
                         "name": "fx_page_action_added",
                         "type": "STRING"
                     },
@@ -14908,6 +15598,11 @@
                     },
                     {
                         "mode": "NULLABLE",
+                        "name": "fx_urlbar_selected_result_type_2",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
                         "name": "fxa_configured",
                         "type": "STRING"
                     },
@@ -14929,6 +15624,11 @@
                     {
                         "mode": "NULLABLE",
                         "name": "gc_budget_ms",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "gc_budget_ms_2",
                         "type": "STRING"
                     },
                     {
@@ -14968,6 +15668,11 @@
                     },
                     {
                         "mode": "NULLABLE",
+                        "name": "gc_mark_gray_ms_2",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
                         "name": "gc_mark_ms",
                         "type": "STRING"
                     },
@@ -14978,7 +15683,22 @@
                     },
                     {
                         "mode": "NULLABLE",
+                        "name": "gc_mark_rate_2",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
                         "name": "gc_mark_roots_ms",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "gc_mark_roots_us",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "gc_mark_weak_ms",
                         "type": "STRING"
                     },
                     {
@@ -15043,7 +15763,17 @@
                     },
                     {
                         "mode": "NULLABLE",
+                        "name": "gc_prepare_ms",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
                         "name": "gc_pretenure_count",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "gc_pretenure_count_2",
                         "type": "STRING"
                     },
                     {
@@ -15229,6 +15959,11 @@
                     {
                         "mode": "NULLABLE",
                         "name": "graphics_sanity_test_reason",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "gv_content_process_lifetime_ms",
                         "type": "STRING"
                     },
                     {
@@ -16109,6 +16844,11 @@
                     {
                         "mode": "NULLABLE",
                         "name": "load_input_event_response_ms",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "loaded_tab_count",
                         "type": "STRING"
                     },
                     {
@@ -17098,6 +17838,11 @@
                     },
                     {
                         "mode": "NULLABLE",
+                        "name": "pdf_viewer_fallback_reason",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
                         "name": "pdf_viewer_fallback_shown",
                         "type": "STRING"
                     },
@@ -17818,6 +18563,11 @@
                     },
                     {
                         "mode": "NULLABLE",
+                        "name": "region_location_services_difference",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
                         "name": "requests_of_original_content",
                         "type": "STRING"
                     },
@@ -18058,6 +18808,11 @@
                     },
                     {
                         "mode": "NULLABLE",
+                        "name": "shared_memory_ua_sheets_toshmem_succeeded",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
                         "name": "shared_worker_count",
                         "type": "STRING"
                     },
@@ -18204,6 +18959,11 @@
                     {
                         "mode": "NULLABLE",
                         "name": "spdy_request_per_conn",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "spdy_request_per_conn_2",
                         "type": "STRING"
                     },
                     {
@@ -19519,6 +20279,566 @@
                     {
                         "mode": "NULLABLE",
                         "name": "urlclassifier_vlps_metadata_corrupt",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_button_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_button_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_checkbox_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_checkbox_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_innerspinbutton_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_innerspinbutton_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_listbox_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_listbox_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_menulist_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_menulist_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_menulistbutton_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_menulistbutton_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_meter_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_meter_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_numberinput_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_numberinput_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_progressbar_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_progressbar_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_progressbarvertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_progressbarvertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_radio_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_radio_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_range_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_range_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_rangethumb_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_rangethumb_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalehorizontal_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalehorizontal_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbend_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbend_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbhorizontal_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbhorizontal_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbstart_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbstart_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbtick_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbtick_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbvertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalethumbvertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalevertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scalevertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scrollbarthumbhorizontal_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scrollbarthumbhorizontal_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scrollbarthumbvertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scrollbarthumbvertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scrollbartrackhorizontal_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scrollbartrackhorizontal_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scrollbartrackvertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_scrollbartrackvertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_searchfield_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_searchfield_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_textarea_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_textarea_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_textfield_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_nonwidget_textfield_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_overridden_numberinput_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_overridden_numberinput_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_overridden_range_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_overridden_range_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_button_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_button_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_checkbox_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_checkbox_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_innerspinbutton_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_innerspinbutton_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_listbox_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_listbox_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_menulist_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_menulist_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_menulistbutton_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_menulistbutton_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_meter_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_meter_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_numberinput_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_numberinput_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_progressbar_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_progressbar_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_progressbarvertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_progressbarvertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_radio_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_radio_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_range_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_range_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_rangethumb_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_rangethumb_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalehorizontal_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalehorizontal_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbend_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbend_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbhorizontal_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbhorizontal_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbstart_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbstart_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbtick_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbtick_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbvertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalethumbvertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalevertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scalevertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scrollbarthumbhorizontal_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scrollbarthumbhorizontal_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scrollbarthumbvertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scrollbarthumbvertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scrollbartrackhorizontal_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scrollbartrackhorizontal_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scrollbartrackvertical_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_scrollbartrackvertical_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_searchfield_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_searchfield_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_textarea_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_textarea_page",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_textfield_document",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "use_counter2_appearance_widget_textfield_page",
                         "type": "STRING"
                     },
                     {
@@ -24089,6 +25409,21 @@
                     {
                         "mode": "NULLABLE",
                         "name": "webvtt_used_vtt_cues",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "webxr_api_mode",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "wheel_action",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "wheel_index",
                         "type": "STRING"
                     },
                     {

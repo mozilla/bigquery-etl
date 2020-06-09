@@ -41,6 +41,7 @@ with DAG(
         external_dag_id="anomdtct",
         external_task_id="anomdtct",
         check_existence=True,
+        mode="reschedule",
         dag=dag,
     )
 

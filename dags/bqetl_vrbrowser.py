@@ -77,6 +77,7 @@ with DAG(
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
         check_existence=True,
+        mode="reschedule",
         dag=dag,
     )
 

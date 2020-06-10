@@ -1,0 +1,15 @@
+friendly_name: Desktop addons by client
+description: >
+  Clients_daily-like table that records only the dimensions and addon info
+  necessary to power daily the amo_stats_dau_v2 query.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: amo
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_amo_stats
+  depends_on:
+    - task_id: copy_deduplicate_main_ping
+      dag_name: main_summary

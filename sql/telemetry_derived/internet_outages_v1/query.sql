@@ -27,6 +27,12 @@ WITH DAUs AS (
     telemetry.clients_daily
   WHERE
     submission_date = @submission_date
+    -- Country can be null if geoip lookup failed.
+    -- There's no point in adding these to the analyses.
+    AND country IS NOT NULL
+    -- Due to a bug, `telemetry.clients_daily` has '??' values
+    -- even though it is supposed to not have them and just have nulls.
+    AND country != '??'
   GROUP BY
     1, 2
 ),
@@ -90,6 +96,10 @@ health_data_aggregates AS (
     COUNTIF(eChannelOpen > 0) AS num_clients_eChannelOpen,
   FROM
     health_data_sample
+  WHERE
+    -- Country can be null if geoip lookup failed.
+    -- There's no point in adding these to the analyses.
+    country IS NOT NULL
   GROUP BY
     country, date
 ),
@@ -116,7 +126,7 @@ histogram_data_sample AS (
   SELECT
     udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).country,
     client_id,
-    DATE(SAFE_CAST(creation_date AS TIMESTAMP)) AS time_slot,
+    DATE(submission_timestamp) AS time_slot,
     udf.json_extract_int_map(
       JSON_EXTRACT(payload.histograms.dns_failed_lookup_time, '$.values')
     ) AS dns_fail,
@@ -137,6 +147,9 @@ histogram_data_sample AS (
     AND normalized_app_name = 'Firefox'
     -- Only to pings who seem to represent an active session.
     AND payload.info.subsession_length >= 0
+    -- Country can be null if geoip lookup failed.
+    -- There's no point in adding these to the analyses.
+    AND udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).country IS NOT NULL
 ),
 -- DNS_SUCCESS histogram
 dns_success_time AS (
@@ -252,8 +265,8 @@ tls_handshake_time AS (
     1, 2
 )
 SELECT
-  DAUs.date AS date,
   DAUs.country AS country,
+  DAUs.date AS date,
   hd.* EXCEPT (date, country),
   ds.value AS avg_dns_success_time,
   df.value AS avg_dns_failure_time,
@@ -261,27 +274,34 @@ SELECT
   tls.value AS avg_tls_handshake_time
 FROM
   final_health_data AS hd
-FULL OUTER JOIN
+-- We apply LEFT JOIN here and in the other places instead
+-- of a FULL OUTER JOIN. Since LEFT is DAUs, which should contain
+-- all the countries and all the days, it should always have matches
+-- with whatever we pass on the RIGHT.
+-- When doing a FULL OUTER JOIN, we end up sometimes with nulls on the
+-- left because there are a few samples coming from telemetry.main that
+-- are not accounted for in telemetry.clients_daily
+LEFT JOIN
   DAUs
 ON
   DAUs.date = hd.date
   AND DAUs.country = hd.country
-FULL OUTER JOIN
+LEFT JOIN
   dns_success_time AS ds
 ON
   DAUs.date = ds.date
   AND DAUs.country = ds.country
-FULL OUTER JOIN
+LEFT JOIN
   dns_failure_time AS df
 ON
   DAUs.date = df.date
   AND DAUs.country = df.country
-FULL OUTER JOIN
+LEFT JOIN
   dns_failure_counts AS dfc
 ON
   DAUs.date = dfc.date
   AND DAUs.country = dfc.country
-FULL OUTER JOIN
+LEFT JOIN
   tls_handshake_time AS tls
 ON
   DAUs.date = tls.date

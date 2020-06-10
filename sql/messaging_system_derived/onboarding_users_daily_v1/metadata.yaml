@@ -1,0 +1,11 @@
+friendly_name: Messaging System Onboarding Users Daily
+description: Daily users of Onboarding, partitioned by day
+owners:
+  - najiang@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_messaging_system
+  depends_on:
+    - dag_name: copy_deduplicate
+      task_id: copy_deduplicate_all

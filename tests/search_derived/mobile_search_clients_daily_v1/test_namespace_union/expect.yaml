@@ -6,7 +6,6 @@
   country: US
   os_version: '29'
   engine: engine1
-  normalized_engine: Other
   source: actionbar
   search_count: 10
   client_id: a

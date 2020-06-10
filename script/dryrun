@@ -66,13 +66,6 @@ SKIP = {
     "sql/org_mozilla_firefox_derived/migrated_clients_v1/query.sql",
     "sql/org_mozilla_firefox_derived/incline_executive_v1/query.sql",
     "sql/org_mozilla_firefox/migrated_clients/view.sql",
-    # Access denied for search
-    "sql/search_derived/search_aggregates_v8/query.sql",
-    "sql/search/search_aggregates/view.sql",
-    "sql/search/search_clients_daily/view.sql",
-    "sql/search_derived/mobile_search_aggregates_v1/query.sql",
-    "sql/search/mobile_search_aggregates/view.sql",
-    "sql/search/mobile_search_clients_daily/view.sql",
     # No matching signature for function IF
     "sql/static/fxa_amplitude_export_users_last_seen/query.sql",
     # Duplicate UDF
@@ -152,7 +145,7 @@ def worker_entrypoint(sqlfile):
 
 
 def main():
-    sql_files = [f for f in glob.glob("sql/**/*.sql", recursive=True) if f not in SKIP]
+    sql_files = [f for f in glob.glob("sql/search*/**/*.sql", recursive=True) if f not in SKIP]
     with ThreadPool(8) as p:
         result = p.map(worker_entrypoint, sql_files, chunksize=1)
     if all(result):

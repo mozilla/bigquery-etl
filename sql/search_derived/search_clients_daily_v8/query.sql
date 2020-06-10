@@ -164,7 +164,6 @@ windowed AS (
     submission_date,
     client_id,
     engine,
-    udf.normalize_search_engine(engine) AS normalized_engine,
     source,
     udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
     udf.mode_last(ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1) AS addon_version,

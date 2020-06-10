@@ -1,0 +1,13 @@
+friendly_name: Internet Outages
+description: |-
+  TODO
+owners:
+  - aplacitelli@mozilla.com
+  - sguha@mozilla.com
+labels:
+  incremental: true
+  public_json: true
+  public_bigquery: false
+  review_bug: 1640204
+  incremental_export: false
+  schedule: daily

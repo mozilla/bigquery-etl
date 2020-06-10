@@ -17,23 +17,23 @@ CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
 -- Get a stable source for DAUs.
 WITH DAUs AS (
   SELECT
+    -- Given the `telemetry.clients_daily` implementation we don't expect
+    -- ?? to be in the data (https://github.com/mozilla/bigquery-etl/blob/3f1cb398fa3eb162c232480d8cfa97b8952ee658/sql/telemetry_derived/clients_daily_v6/query.sql#L127).
+    -- But reality defies expectations.
+    NULLIF(country, '??') AS country,
     submission_date AS date,
     COUNT(*) AS client_count
   FROM
     telemetry.clients_daily
   WHERE
-    submission_date >= '2020-01-01'
-    AND submission_date <= '2020-03-31'
-    AND country = 'IT'
+    submission_date = @submission_date
   GROUP BY
-    1
-  HAVING
-    -- The minimum size of a bucket for it to be published.
-    COUNT(*) > 5000
+    1, 2
 ),
 -- Compute aggregates for the health data.
 health_data_sample AS (
   SELECT
+    normalized_country_code AS country,
     DATE(SAFE_CAST(creation_date AS TIMESTAMP)) AS date,
     client_id,
     SUM(
@@ -72,15 +72,15 @@ health_data_sample AS (
   FROM
     telemetry.health
   WHERE
-    date(submission_timestamp) >= '2020-01-01'
-    AND date(submission_timestamp) <= '2020-03-31'
-    AND normalized_country_code = 'IT'
+    date(submission_timestamp) = @submission_date
   GROUP BY
     1,
-    2
+    2,
+    3
 ),
 health_data_aggregates AS (
   SELECT
+    country,
     date,
     COUNTIF(eUndefined > 0) AS num_clients_eUndefined,
     COUNTIF(eTimeOut > 0) AS num_clients_eTimeOut,
@@ -91,12 +91,11 @@ health_data_aggregates AS (
   FROM
     health_data_sample
   GROUP BY
-    date
-  HAVING
-    COUNT(*) > 5000
+    country, date
 ),
 final_health_data AS (
   SELECT
+    h.country,
     h.date,
     (num_clients_eUndefined / DAUs.client_count) AS proportion_undefined,
     (num_clients_eTimeOut / DAUs.client_count) AS proportion_timeout,
@@ -110,10 +109,12 @@ final_health_data AS (
     DAUs
   ON
     DAUs.date = h.date
+    AND DAUs.country = h.country
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
   SELECT
+    udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).country,
     client_id,
     DATE(SAFE_CAST(creation_date AS TIMESTAMP)) AS time_slot,
     udf.json_extract_int_map(
@@ -131,12 +132,7 @@ histogram_data_sample AS (
   FROM
     telemetry.main
   WHERE
-    DATE(submission_timestamp) >= '2020-01-01'
-    AND DATE(submission_timestamp) <= '2020-03-31'
-    -- Additionally limit the creation date.
-    AND DATE(SAFE_CAST(creation_date AS TIMESTAMP)) >= '2020-01-01'
-    AND DATE(SAFE_CAST(creation_date AS TIMESTAMP)) <= '2020-03-31'
-    AND metadata.geo.country = 'IT'
+    DATE(submission_timestamp) = @submission_date
     -- Restrict to Firefox.
     AND normalized_app_name = 'Firefox'
     -- Only to pings who seem to represent an active session.
@@ -145,11 +141,13 @@ histogram_data_sample AS (
 -- DNS_SUCCESS histogram
 dns_success_time AS (
   SELECT
+    country,
     time_slot AS date,
     exp(sum(log(key) * count) / sum(count)) AS value
   FROM
     (
       SELECT
+        country,
         client_id,
         time_slot,
         key,
@@ -159,6 +157,7 @@ dns_success_time AS (
       CROSS JOIN
         UNNEST(histogram_data_sample.dns_success)
       GROUP BY
+        country,
         time_slot,
         client_id,
         key
@@ -166,13 +165,12 @@ dns_success_time AS (
   WHERE
     key > 0
   GROUP BY
-    1
-  HAVING
-    count(DISTINCT(client_id)) > 5000
+    1, 2
 ),
 -- A shared source for the DNS_FAIL histogram
 dns_failure_src AS (
   SELECT
+    country,
     client_id,
     time_slot,
     key,
@@ -182,6 +180,7 @@ dns_failure_src AS (
   CROSS JOIN
     UNNEST(histogram_data_sample.dns_fail)
   GROUP BY
+    country,
     time_slot,
     client_id,
     key
@@ -189,6 +188,7 @@ dns_failure_src AS (
 -- DNS_FAIL histogram
 dns_failure_time AS (
   SELECT
+    country,
     time_slot AS date,
     exp(sum(log(key) * count) / sum(count)) AS value
   FROM
@@ -196,40 +196,42 @@ dns_failure_time AS (
   WHERE
     key > 0
   GROUP BY
-    1
-  HAVING
-    count(DISTINCT(client_id)) > 5000
+    1, 2
 ),
 -- DNS_FAIL counts
 dns_failure_counts AS (
   SELECT
+    country,
     time_slot AS date,
     avg(count) AS value
   FROM
     (
       SELECT
+        country,
         client_id,
         time_slot,
         sum(count) AS count
       FROM
         dns_failure_src
       GROUP BY
+        country,
         time_slot,
         client_id
     )
   GROUP BY
+    country,
     time_slot
-  HAVING
-    count(DISTINCT(client_id)) > 5000
 ),
 -- TLS_HANDSHAKE histogram
 tls_handshake_time AS (
   SELECT
+    country,
     time_slot AS date,
     exp(sum(log(key) * count) / sum(count)) AS value
   FROM
     (
       SELECT
+        country,
         client_id,
         time_slot,
         key,
@@ -239,6 +241,7 @@ tls_handshake_time AS (
       CROSS JOIN
         UNNEST(histogram_data_sample.tls_handshake)
       GROUP BY
+        country,
         time_slot,
         client_id,
         key
@@ -246,13 +249,12 @@ tls_handshake_time AS (
   WHERE
     key > 0
   GROUP BY
-    1
-  HAVING
-    count(DISTINCT(client_id)) > 5000
+    1, 2
 )
 SELECT
   DAUs.date AS date,
-  hd.* EXCEPT (date),
+  DAUs.country AS country,
+  hd.* EXCEPT (date, country),
   ds.value AS avg_dns_success_time,
   df.value AS avg_dns_failure_time,
   dfc.value AS count_dns_failure,
@@ -263,21 +265,26 @@ FULL OUTER JOIN
   DAUs
 ON
   DAUs.date = hd.date
+  AND DAUs.country = hd.country
 FULL OUTER JOIN
   dns_success_time AS ds
 ON
   DAUs.date = ds.date
+  AND DAUs.country = ds.country
 FULL OUTER JOIN
   dns_failure_time AS df
 ON
   DAUs.date = df.date
+  AND DAUs.country = df.country
 FULL OUTER JOIN
   dns_failure_counts AS dfc
 ON
   DAUs.date = dfc.date
+  AND DAUs.country = dfc.country
 FULL OUTER JOIN
   tls_handshake_time AS tls
 ON
   DAUs.date = tls.date
+  AND DAUs.country = tls.country
 ORDER BY
   1

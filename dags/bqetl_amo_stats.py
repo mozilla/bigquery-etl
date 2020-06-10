@@ -44,6 +44,18 @@ with DAG(
         dag=dag,
     )
 
+    amo_dev__amo_stats_dau__v2 = bigquery_etl_query(
+        task_id="amo_dev__amo_stats_dau__v2",
+        destination_table="amo_stats_dau_v2",
+        dataset_id="amo_dev",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     amo_prod__amo_stats_dau__v1 = bigquery_etl_query(
         task_id="amo_prod__amo_stats_dau__v1",
         destination_table="amo_stats_dau_v1",
@@ -68,9 +80,35 @@ with DAG(
         dag=dag,
     )
 
+    amo_prod__amo_stats_dau__v2 = bigquery_etl_query(
+        task_id="amo_prod__amo_stats_dau__v2",
+        destination_table="amo_stats_dau_v2",
+        dataset_id="amo_prod",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    amo_prod__desktop_addons_by_client__v1 = bigquery_etl_query(
+        task_id="amo_prod__desktop_addons_by_client__v1",
+        destination_table="desktop_addons_by_client_v1",
+        dataset_id="amo_prod",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     amo_dev__amo_stats_dau__v1.set_upstream(amo_prod__amo_stats_dau__v1)
 
     amo_dev__amo_stats_installs__v1.set_upstream(amo_prod__amo_stats_installs__v1)
+
+    amo_dev__amo_stats_dau__v2.set_upstream(amo_prod__amo_stats_dau__v2)
 
     wait_for_main_summary_clients_daily = ExternalTaskSensor(
         task_id="wait_for_main_summary_clients_daily",
@@ -84,3 +122,18 @@ with DAG(
     amo_prod__amo_stats_dau__v1.set_upstream(wait_for_main_summary_clients_daily)
 
     amo_prod__amo_stats_installs__v1.set_upstream(wait_for_main_summary_clients_daily)
+
+    amo_prod__amo_stats_dau__v2.set_upstream(amo_prod__desktop_addons_by_client__v1)
+
+    wait_for_main_summary_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_main_summary_copy_deduplicate_main_ping",
+        external_dag_id="main_summary",
+        external_task_id="copy_deduplicate_main_ping",
+        check_existence=True,
+        mode="reschedule",
+        dag=dag,
+    )
+
+    amo_prod__desktop_addons_by_client__v1.set_upstream(
+        wait_for_main_summary_copy_deduplicate_main_ping
+    )

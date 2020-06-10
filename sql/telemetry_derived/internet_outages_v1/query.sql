@@ -21,6 +21,9 @@ WITH DAUs AS (
     -- ?? to be in the data (https://github.com/mozilla/bigquery-etl/blob/3f1cb398fa3eb162c232480d8cfa97b8952ee658/sql/telemetry_derived/clients_daily_v6/query.sql#L127).
     -- But reality defies expectations.
     NULLIF(country, '??') AS country,
+    -- If cities are either '??' or NULL then it's from cities we either don't
+    -- know about or have less than 15k people. Just rename to 'unknown'.
+    IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
     submission_date AS date,
     COUNT(*) AS client_count
   FROM
@@ -29,17 +32,22 @@ WITH DAUs AS (
     submission_date = @submission_date
     -- Country can be null if geoip lookup failed.
     -- There's no point in adding these to the analyses.
+    -- Due to a bug in `telemetry.clients_daily` we need to
+    -- check for '??' as well in addition to null.
     AND country IS NOT NULL
-    -- Due to a bug, `telemetry.clients_daily` has '??' values
-    -- even though it is supposed to not have them and just have nulls.
     AND country != '??'
   GROUP BY
-    1, 2
+    1, 2, 3
+  -- Filter filter out cities for which we have less than 1000 daily active
+  -- users. This will make sure data won't end up in the final table.
+  HAVING
+    COUNT(*) > 1000
 ),
 -- Compute aggregates for the health data.
 health_data_sample AS (
   SELECT
-    normalized_country_code AS country,
+    -- `city` is processed in `health_data_aggregates`.
+    udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).* EXCEPT(geo_subdivision1, geo_subdivision2),
     DATE(SAFE_CAST(creation_date AS TIMESTAMP)) AS date,
     client_id,
     SUM(
@@ -82,11 +90,15 @@ health_data_sample AS (
   GROUP BY
     1,
     2,
-    3
+    3,
+    4
 ),
 health_data_aggregates AS (
   SELECT
     country,
+    -- If cities are either '??' or NULL then it's from cities we either don't
+    -- know about or have less than 15k people. Just rename to 'unknown'.
+    IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
     date,
     COUNTIF(eUndefined > 0) AS num_clients_eUndefined,
     COUNTIF(eTimeOut > 0) AS num_clients_eTimeOut,
@@ -101,11 +113,14 @@ health_data_aggregates AS (
     -- There's no point in adding these to the analyses.
     country IS NOT NULL
   GROUP BY
-    country, date
+    country, city, date
+  HAVING
+    COUNT(*) > 100
 ),
 final_health_data AS (
   SELECT
     h.country,
+    h.city,
     h.date,
     (num_clients_eUndefined / DAUs.client_count) AS proportion_undefined,
     (num_clients_eTimeOut / DAUs.client_count) AS proportion_timeout,
@@ -120,11 +135,15 @@ final_health_data AS (
   ON
     DAUs.date = h.date
     AND DAUs.country = h.country
+    AND DAUs.city = h.city
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
   SELECT
     udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).country,
+    -- If cities are NULL then it's from cities we either don't
+    -- know about or have less than 15k people. Just rename to 'unknown'.
+    IFNULL(udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).city, 'unknown') AS city,
     client_id,
     DATE(submission_timestamp) AS time_slot,
     udf.json_extract_int_map(
@@ -155,12 +174,14 @@ histogram_data_sample AS (
 dns_success_time AS (
   SELECT
     country,
+    city,
     time_slot AS date,
     exp(sum(log(key) * count) / sum(count)) AS value
   FROM
     (
       SELECT
         country,
+        city,
         client_id,
         time_slot,
         key,
@@ -171,6 +192,7 @@ dns_success_time AS (
         UNNEST(histogram_data_sample.dns_success)
       GROUP BY
         country,
+        city,
         time_slot,
         client_id,
         key
@@ -178,12 +200,15 @@ dns_success_time AS (
   WHERE
     key > 0
   GROUP BY
-    1, 2
+    1, 2, 3
+  HAVING
+    COUNT(*) > 100
 ),
 -- A shared source for the DNS_FAIL histogram
 dns_failure_src AS (
   SELECT
     country,
+    city,
     client_id,
     time_slot,
     key,
@@ -194,6 +219,7 @@ dns_failure_src AS (
     UNNEST(histogram_data_sample.dns_fail)
   GROUP BY
     country,
+    city,
     time_slot,
     client_id,
     key
@@ -202,6 +228,7 @@ dns_failure_src AS (
 dns_failure_time AS (
   SELECT
     country,
+    city,
     time_slot AS date,
     exp(sum(log(key) * count) / sum(count)) AS value
   FROM
@@ -209,18 +236,22 @@ dns_failure_time AS (
   WHERE
     key > 0
   GROUP BY
-    1, 2
+    1, 2, 3
+  HAVING
+    COUNT(*) > 100
 ),
 -- DNS_FAIL counts
 dns_failure_counts AS (
   SELECT
     country,
+    city,
     time_slot AS date,
     avg(count) AS value
   FROM
     (
       SELECT
         country,
+        city,
         client_id,
         time_slot,
         sum(count) AS count
@@ -228,23 +259,29 @@ dns_failure_counts AS (
         dns_failure_src
       GROUP BY
         country,
+        city,
         time_slot,
         client_id
     )
   GROUP BY
     country,
+    city,
     time_slot
+  HAVING
+    COUNT(*) > 100
 ),
 -- TLS_HANDSHAKE histogram
 tls_handshake_time AS (
   SELECT
     country,
+    city,
     time_slot AS date,
     exp(sum(log(key) * count) / sum(count)) AS value
   FROM
     (
       SELECT
         country,
+        city,
         client_id,
         time_slot,
         key,
@@ -255,6 +292,7 @@ tls_handshake_time AS (
         UNNEST(histogram_data_sample.tls_handshake)
       GROUP BY
         country,
+        city,
         time_slot,
         client_id,
         key
@@ -262,12 +300,15 @@ tls_handshake_time AS (
   WHERE
     key > 0
   GROUP BY
-    1, 2
+    1, 2, 3
+  HAVING
+    COUNT(*) > 100
 )
 SELECT
   DAUs.country AS country,
+  DAUs.city AS city,
   DAUs.date AS date,
-  hd.* EXCEPT (date, country),
+  hd.* EXCEPT (date, country, city),
   ds.value AS avg_dns_success_time,
   df.value AS avg_dns_failure_time,
   dfc.value AS count_dns_failure,
@@ -286,25 +327,30 @@ LEFT JOIN
 ON
   DAUs.date = hd.date
   AND DAUs.country = hd.country
+  AND DAUs.city = hd.city
 LEFT JOIN
   dns_success_time AS ds
 ON
   DAUs.date = ds.date
   AND DAUs.country = ds.country
+  AND DAUs.city = ds.city
 LEFT JOIN
   dns_failure_time AS df
 ON
   DAUs.date = df.date
   AND DAUs.country = df.country
+  AND DAUs.city = df.city
 LEFT JOIN
   dns_failure_counts AS dfc
 ON
   DAUs.date = dfc.date
   AND DAUs.country = dfc.country
+  AND DAUs.city = dfc.city
 LEFT JOIN
   tls_handshake_time AS tls
 ON
   DAUs.date = tls.date
   AND DAUs.country = tls.country
+  AND DAUs.city = tls.city
 ORDER BY
-  1
+  1, 2

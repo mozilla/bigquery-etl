@@ -12,8 +12,8 @@ Full example of usage:
 WITH base AS (
   SELECT
     *,
-    udf.bits28_retention(days_seen_bits, submission_date) AS retention,
-    udf.bits28_days_since_seen(days_created_profile_bits) = 13 AS is_new_profile
+    bits28.retention(days_seen_bits, submission_date) AS retention,
+    bits28.days_since_seen(days_created_profile_bits) = 13 AS is_new_profile
   FROM
     telemetry.clients_last_seen )
 SELECT
@@ -39,41 +39,41 @@ See detailed docs for the bits28 suite of functions:
 https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference
 
 */
-CREATE OR REPLACE FUNCTION udf.bits28_retention(bits INT64, submission_date DATE) AS (
+CREATE OR REPLACE FUNCTION bits28.retention(bits INT64, submission_date DATE) AS (
   STRUCT(
     STRUCT(
       submission_date AS metric_date,
-      udf.bits28_active_in_range(bits, 0, 1) AS active_on_metric_date
+      bits28.active_in_range(bits, 0, 1) AS active_on_metric_date
     ) AS day_0,
     STRUCT(
       DATE_SUB(submission_date, INTERVAL 6 DAY) AS metric_date,
-      udf.bits28_active_in_range(bits, -6, 1) AS active_on_metric_date,
-      udf.bits28_active_in_range(bits, -6, 7) AS active_in_week_0,
-      udf.bits28_active_in_range(bits, -5, 6) AS active_in_week_0_after_metric_date
+      bits28.active_in_range(bits, -6, 1) AS active_on_metric_date,
+      bits28.active_in_range(bits, -6, 7) AS active_in_week_0,
+      bits28.active_in_range(bits, -5, 6) AS active_in_week_0_after_metric_date
     ) AS day_6,
     STRUCT(
       DATE_SUB(submission_date, INTERVAL 13 DAY) AS metric_date,
-      udf.bits28_active_in_range(bits, -13, 1) AS active_on_metric_date,
-      udf.bits28_active_in_range(bits, -13, 7) AS active_in_week_0,
-      udf.bits28_active_in_range(bits, -12, 6) AS active_in_week_0_after_metric_date,
-      udf.bits28_active_in_range(bits, -6, 7) AS active_in_week_1
+      bits28.active_in_range(bits, -13, 1) AS active_on_metric_date,
+      bits28.active_in_range(bits, -13, 7) AS active_in_week_0,
+      bits28.active_in_range(bits, -12, 6) AS active_in_week_0_after_metric_date,
+      bits28.active_in_range(bits, -6, 7) AS active_in_week_1
     ) AS day_13,
     STRUCT(
       DATE_SUB(submission_date, INTERVAL 20 DAY) AS metric_date,
-      udf.bits28_active_in_range(bits, -20, 1) AS active_on_metric_date,
-      udf.bits28_active_in_range(bits, -20, 7) AS active_in_week_0,
-      udf.bits28_active_in_range(bits, -19, 6) AS active_in_week_0_after_metric_date,
-      udf.bits28_active_in_range(bits, -13, 7) AS active_in_week_1,
-      udf.bits28_active_in_range(bits, -6, 7) AS active_in_week_2
+      bits28.active_in_range(bits, -20, 1) AS active_on_metric_date,
+      bits28.active_in_range(bits, -20, 7) AS active_in_week_0,
+      bits28.active_in_range(bits, -19, 6) AS active_in_week_0_after_metric_date,
+      bits28.active_in_range(bits, -13, 7) AS active_in_week_1,
+      bits28.active_in_range(bits, -6, 7) AS active_in_week_2
     ) AS day_20,
     STRUCT(
       DATE_SUB(submission_date, INTERVAL 27 DAY) AS metric_date,
-      udf.bits28_active_in_range(bits, -27, 1) AS active_on_metric_date,
-      udf.bits28_active_in_range(bits, -27, 7) AS active_in_week_0,
-      udf.bits28_active_in_range(bits, -26, 6) AS active_in_week_0_after_metric_date,
-      udf.bits28_active_in_range(bits, -20, 7) AS active_in_week_1,
-      udf.bits28_active_in_range(bits, -13, 7) AS active_in_week_2,
-      udf.bits28_active_in_range(bits, -6, 7) AS active_in_week_3
+      bits28.active_in_range(bits, -27, 1) AS active_on_metric_date,
+      bits28.active_in_range(bits, -27, 7) AS active_in_week_0,
+      bits28.active_in_range(bits, -26, 6) AS active_in_week_0_after_metric_date,
+      bits28.active_in_range(bits, -20, 7) AS active_in_week_1,
+      bits28.active_in_range(bits, -13, 7) AS active_in_week_2,
+      bits28.active_in_range(bits, -6, 7) AS active_in_week_3
     ) AS day_27
   )
 );
@@ -81,7 +81,7 @@ CREATE OR REPLACE FUNCTION udf.bits28_retention(bits INT64, submission_date DATE
 -- Tests
 WITH test_data AS (
   SELECT
-    udf.bits28_retention((1 << 13) | (1 << 10) | 1, DATE('2020-01-28')) AS retention
+    bits28.retention((1 << 13) | (1 << 10) | 1, DATE('2020-01-28')) AS retention
 )
 SELECT
   assert_equals(DATE('2020-01-28'), retention.day_0.metric_date),

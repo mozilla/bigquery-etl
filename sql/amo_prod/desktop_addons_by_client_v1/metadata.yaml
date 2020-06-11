@@ -1,5 +1,5 @@
 friendly_name: Desktop addons by client
-description: >
+description: >-
   Clients_daily-like table that records only the dimensions and addon info
   necessary to power daily the amo_stats_dau_v2 query.
 owners:

@@ -22,7 +22,7 @@ WITH DAUs AS (
     -- But reality defies expectations.
     NULLIF(country, '??') AS country,
     -- If cities are either '??' or NULL then it's from cities we either don't
-    -- know about or have less than 15k people. Just rename to 'unknown'.
+    -- know about or have a population less than 15k. Just rename to 'unknown'.
     IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
     -- Truncate the submission timestamp to the hour.
     TIMESTAMP_TRUNC(submission_timestamp_min, HOUR) AS datetime,
@@ -38,52 +38,67 @@ WITH DAUs AS (
     AND country IS NOT NULL
     AND country != '??'
   GROUP BY
-    1, 2, 3
-  -- Filter filter out cities for which we have less than 1000 daily active
-  -- users. This will make sure data won't end up in the final table.
+    1,
+    2,
+    3
+  -- Filter filter out cities for which we have less than or equal to
+  -- 100 hourly active users. This will make sure data won't end up in
+  -- the final table.
   HAVING
-    COUNT(*) > 1000
+    client_count > 100
 ),
 -- Compute aggregates for the health data.
 health_data_sample AS (
   SELECT
     -- `city` is processed in `health_data_aggregates`.
-    udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).* EXCEPT(geo_subdivision1, geo_subdivision2),
+    udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).* EXCEPT (
+      geo_subdivision1,
+      geo_subdivision2
+    ),
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS datetime,
     client_id,
     SUM(
       coalesce(
-        CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.undefined') AS INT64),
+        SAFE_CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.undefined') AS INT64),
         0
       )
-    ) AS eUndefined,
+    ) AS e_undefined,
     SUM(
       coalesce(
-        CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.timeout') AS INT64),
+        SAFE_CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.timeout') AS INT64),
         0
       )
-    ) AS eTimeOut,
-    SUM(
-      coalesce(CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.abort') AS INT64), 0)
-    ) AS eAbort,
+    ) AS e_timeout,
     SUM(
       coalesce(
-        CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eUnreachable') AS INT64),
+        SAFE_CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.abort') AS INT64),
         0
       )
-    ) AS eUnreachable,
+    ) AS e_abort,
     SUM(
       coalesce(
-        CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eTerminated') AS INT64),
+        SAFE_CAST(
+          JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eUnreachable') AS INT64
+        ),
         0
       )
-    ) AS eTerminated,
+    ) AS e_unreachable,
     SUM(
       coalesce(
-        CAST(JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eChannelOpen') AS INT64),
+        SAFE_CAST(
+          JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eTerminated') AS INT64
+        ),
         0
       )
-    ) AS eChannelOpen,
+    ) AS e_terminated,
+    SUM(
+      coalesce(
+        SAFE_CAST(
+          JSON_EXTRACT(additional_properties, '$.payload.sendFailure.eChannelOpen') AS INT64
+        ),
+        0
+      )
+    ) AS e_channel_open,
   FROM
     telemetry.health
   WHERE
@@ -98,15 +113,15 @@ health_data_aggregates AS (
   SELECT
     country,
     -- If cities are either '??' or NULL then it's from cities we either don't
-    -- know about or have less than 15k people. Just rename to 'unknown'.
+    -- know about or have a population less than 15k. Just rename to 'unknown'.
     IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
     datetime,
-    COUNTIF(eUndefined > 0) AS num_clients_eUndefined,
-    COUNTIF(eTimeOut > 0) AS num_clients_eTimeOut,
-    COUNTIF(eAbort > 0) AS num_clients_eAbort,
-    COUNTIF(eUnreachable > 0) AS num_clients_eUnreachable,
-    COUNTIF(eTerminated > 0) AS num_clients_eTerminated,
-    COUNTIF(eChannelOpen > 0) AS num_clients_eChannelOpen,
+    COUNTIF(e_undefined > 0) AS num_clients_e_undefined,
+    COUNTIF(e_timeout > 0) AS num_clients_e_timeout,
+    COUNTIF(e_abort > 0) AS num_clients_e_abort,
+    COUNTIF(e_unreachable > 0) AS num_clients_e_unreachable,
+    COUNTIF(e_terminated > 0) AS num_clients_e_terminated,
+    COUNTIF(e_channel_open > 0) AS num_clients_e_channel_open,
   FROM
     health_data_sample
   WHERE
@@ -114,7 +129,9 @@ health_data_aggregates AS (
     -- There's no point in adding these to the analyses.
     country IS NOT NULL
   GROUP BY
-    country, city, datetime
+    country,
+    city,
+    datetime
   HAVING
     COUNT(*) > 100
 ),
@@ -123,28 +140,28 @@ final_health_data AS (
     h.country,
     h.city,
     h.datetime,
-    (num_clients_eUndefined / DAUs.client_count) AS proportion_undefined,
-    (num_clients_eTimeOut / DAUs.client_count) AS proportion_timeout,
-    (num_clients_eAbort / DAUs.client_count) AS proportion_abort,
-    (num_clients_eUnreachable / DAUs.client_count) AS proportion_unreachable,
-    (num_clients_eTerminated / DAUs.client_count) AS proportion_terminated,
-    (num_clients_eChannelOpen / DAUs.client_count) AS proportion_channel_open,
+    (num_clients_e_undefined / DAUs.client_count) AS proportion_undefined,
+    (num_clients_e_timeout / DAUs.client_count) AS proportion_timeout,
+    (num_clients_e_abort / DAUs.client_count) AS proportion_abort,
+    (num_clients_e_unreachable / DAUs.client_count) AS proportion_unreachable,
+    (num_clients_e_terminated / DAUs.client_count) AS proportion_terminated,
+    (num_clients_e_channel_open / DAUs.client_count) AS proportion_channel_open,
   FROM
     health_data_aggregates AS h
   INNER JOIN
     DAUs
-  ON
-    DAUs.datetime = h.datetime
-    AND DAUs.country = h.country
-    AND DAUs.city = h.city
+  USING
+    (datetime, country, city)
 ),
 -- Compute aggregates for histograms coming from the health ping.
 histogram_data_sample AS (
   SELECT
-    udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).country,
+    -- We don't need to use udf.geo_struct here since `telemetry.main` won't
+    -- have '??' values. It only has nulls, which we can handle.
+    metadata.geo.country AS country,
     -- If cities are NULL then it's from cities we either don't
-    -- know about or have less than 15k people. Just rename to 'unknown'.
-    IFNULL(udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).city, 'unknown') AS city,
+    -- know about or have a population less than 15k. Just rename to 'unknown'.
+    IFNULL(metadata.geo.city, 'unknown') AS city,
     client_id,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS time_slot,
     udf.json_extract_int_map(
@@ -153,9 +170,6 @@ histogram_data_sample AS (
     udf.json_extract_int_map(
       JSON_EXTRACT(payload.histograms.dns_lookup_time, '$.values')
     ) AS dns_success,
-    udf.json_extract_int_map(
-      JSON_EXTRACT(payload.histograms.ssl_cert_verification_errors, '$.values')
-    ) AS ssl_cert_errors,
     udf.json_extract_int_map(
       JSON_EXTRACT(payload.processes.content.histograms.http_page_tls_handshake, '$.values')
     ) AS tls_handshake,
@@ -169,7 +183,7 @@ histogram_data_sample AS (
     AND payload.info.subsession_length >= 0
     -- Country can be null if geoip lookup failed.
     -- There's no point in adding these to the analyses.
-    AND udf.geo_struct(metadata.geo.country, metadata.geo.city, NULL, NULL).country IS NOT NULL
+    AND metadata.geo.country IS NOT NULL
 ),
 -- DNS_SUCCESS histogram
 dns_success_time AS (
@@ -201,7 +215,9 @@ dns_success_time AS (
   WHERE
     key > 0
   GROUP BY
-    1, 2, 3
+    1,
+    2,
+    3
   HAVING
     COUNT(*) > 100
 ),
@@ -237,7 +253,9 @@ dns_failure_time AS (
   WHERE
     key > 0
   GROUP BY
-    1, 2, 3
+    1,
+    2,
+    3
   HAVING
     COUNT(*) > 100
 ),
@@ -301,7 +319,9 @@ tls_handshake_time AS (
   WHERE
     key > 0
   GROUP BY
-    1, 2, 3
+    1,
+    2,
+    3
   HAVING
     COUNT(*) > 100
 )
@@ -325,33 +345,24 @@ FROM
 -- are not accounted for in telemetry.clients_daily
 LEFT JOIN
   DAUs
-ON
-  DAUs.datetime = hd.datetime
-  AND DAUs.country = hd.country
-  AND DAUs.city = hd.city
+USING
+  (datetime, country, city)
 LEFT JOIN
   dns_success_time AS ds
-ON
-  DAUs.datetime = ds.datetime
-  AND DAUs.country = ds.country
-  AND DAUs.city = ds.city
+USING
+  (datetime, country, city)
 LEFT JOIN
   dns_failure_time AS df
-ON
-  DAUs.datetime = df.datetime
-  AND DAUs.country = df.country
-  AND DAUs.city = df.city
+USING
+  (datetime, country, city)
 LEFT JOIN
   dns_failure_counts AS dfc
-ON
-  DAUs.datetime = dfc.datetime
-  AND DAUs.country = dfc.country
-  AND DAUs.city = dfc.city
+USING
+  (datetime, country, city)
 LEFT JOIN
   tls_handshake_time AS tls
-ON
-  DAUs.datetime = tls.datetime
-  AND DAUs.country = tls.country
-  AND DAUs.city = tls.city
+USING
+  (datetime, country, city)
 ORDER BY
-  1, 2
+  1,
+  2

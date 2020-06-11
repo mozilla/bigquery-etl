@@ -17,7 +17,7 @@ WITH per_client AS (
       -- themes
       ARRAY_AGG(STRUCT(environment.addons.theme.id, environment.addons.theme.version))
     ) AS addons,
-    udf.mode_last(array_agg(normalized_os_version)) AS app_version,
+    udf.mode_last(array_agg(application.version)) AS app_version,
     udf.mode_last(array_agg(normalized_country_code)) AS country,
     udf.mode_last(array_agg(environment.settings.locale)) AS locale,
     udf.mode_last(array_agg(normalized_os)) AS app_os,

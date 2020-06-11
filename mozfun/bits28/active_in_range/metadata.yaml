@@ -1,2 +1,2 @@
-friendly_name: Bits28 Days Since Seen
+friendly_name: Bits28 Days Active in Range
 description: Return the position of the rightmost set bit in an INT64 bit pattern.

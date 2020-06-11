@@ -8,7 +8,7 @@ See detailed docs for the bits28 suite of functions:
 https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference
 
 */
-CREATE OR REPLACE FUNCTION udf.bits28_from_string(s STRING) AS (
+CREATE OR REPLACE FUNCTION bits28.from_string(s STRING) AS (
   IF(
     REGEXP_CONTAINS(s, r"^[01]{1,28}$"),
     (
@@ -24,8 +24,8 @@ CREATE OR REPLACE FUNCTION udf.bits28_from_string(s STRING) AS (
 
 -- Tests
 SELECT
-  assert_equals(1, udf.bits28_from_string('1')),
-  assert_equals(1, udf.bits28_from_string('01')),
-  assert_equals(1, udf.bits28_from_string('0000000000000000000000000001')),
-  assert_equals(2, udf.bits28_from_string('10')),
-  assert_equals(5, udf.bits28_from_string('101'));
+  assert_equals(1, bits28.from_string('1')),
+  assert_equals(1, bits28.from_string('01')),
+  assert_equals(1, bits28.from_string('0000000000000000000000000001')),
+  assert_equals(2, bits28.from_string('10')),
+  assert_equals(5, bits28.from_string('101'));

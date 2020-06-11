@@ -8,7 +8,7 @@ See detailed docs for the bits28 suite of functions:
 https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference
 
 */
-CREATE OR REPLACE FUNCTION udf.bits28_to_string(bits INT64) AS (
+CREATE OR REPLACE FUNCTION bits28.to_string(bits INT64) AS (
   (
     SELECT
       STRING_AGG(CAST(bits >> bit & 0x1 AS STRING), '' ORDER BY bit DESC)
@@ -19,4 +19,4 @@ CREATE OR REPLACE FUNCTION udf.bits28_to_string(bits INT64) AS (
 
 -- Tests
 SELECT
-  assert_equals('0100000000000000000000000010', udf.bits28_to_string((1 << 1) | (1 << 26)))
+  assert_equals('0100000000000000000000000010', bits28.to_string((1 << 1) | (1 << 26)))

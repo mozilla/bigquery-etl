@@ -1,2 +1,2 @@
 friendly_name: Bits28 Days Active in Range
-description: Return the position of the rightmost set bit in an INT64 bit pattern.
+description: Return a boolean indicating if any bits are set in the specified range of a bit pattern.

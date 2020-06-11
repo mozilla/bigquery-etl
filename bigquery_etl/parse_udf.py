@@ -33,6 +33,7 @@ MOZFUN_UDFS = {
     if not filename.startswith(".") and filename.endswith(".sql")
 }
 
+
 @dataclass
 class RawUdf:
     """Representation of the content of a single UDF sql file."""
@@ -113,8 +114,9 @@ class RawUdf:
         dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
 
         if filepath:
-            # for public UDFs dependencies can live in arbitrary dataset
-            # we can check if some known dependency is part of the UDF definition instead
+            # for public UDFs dependencies can live in arbitrary dataset;
+            # we can check if some known dependency is part of the UDF
+            # definition instead
             _, basename = os.path.split(filepath)
             if basename == "udf.sql":
                 for udf in MOZFUN_UDFS:
@@ -163,6 +165,7 @@ def read_udf_dirs(*udf_dirs):
         if not filename.startswith(".") and filename.endswith(".sql")
         for raw_udf in (RawUdf.from_file(os.path.join(root, filename)),)
     }
+
 
 def parse_udf_dirs(*udf_dirs):
     """Read contents of udf_dirs into ParsedUdf instances."""

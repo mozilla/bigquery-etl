@@ -1,10 +1,8 @@
 """Publish UDFs and resources to the public mozfun GCP project."""
 
 from argparse import ArgumentParser
-import logging
 import os
 import re
-import yaml
 
 from google.cloud import bigquery
 from google.cloud import storage
@@ -89,6 +87,7 @@ def main():
 
 
 def publish_udf(raw_udf, client, project_id, gcs_bucket, gcs_path, known_udfs):
+    """Publish a specific UDF to BigQuery."""
     # create new dataset for UDF if necessary
     client.create_dataset(raw_udf.dataset, exists_ok=True)
 

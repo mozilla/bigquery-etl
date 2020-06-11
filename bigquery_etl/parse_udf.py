@@ -14,7 +14,7 @@ import sqlparse
 
 
 UDF_DIRS = ("udf", "udf_js")
-MOZFUN_DIR = ("mozfun")
+MOZFUN_DIR = ("mozfun",)
 UDF_CHAR = "[a-zA-z0-9_]"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
@@ -24,6 +24,14 @@ PERSISTENT_UDF_PREFIX = re.compile(
 )
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 
+# UDFs defined in mozfun
+MOZFUN_UDFS = {
+    root.split("/")[-2] + "." + root.split("/")[-1]
+    for udf_dir in MOZFUN_DIR
+    for root, dirs, files in os.walk(udf_dir)
+    for filename in files
+    if not filename.startswith(".") and filename.endswith(".sql")
+}
 
 @dataclass
 class RawUdf:
@@ -101,9 +109,17 @@ class RawUdf:
 
         # find usages of both persistent and temporary UDFs
         dependencies = re.findall(PERSISTENT_UDF_RE, "\n".join(definitions))
-        dependencies.extend(re.findall(MOZFUN_UDF_RE, "\n".join(definitions)))
         dependencies = [".".join(t) for t in dependencies]
         dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
+
+        if filepath:
+            # for public UDFs dependencies can live in arbitrary dataset
+            # we can check if some known dependency is part of the UDF definition instead
+            _, basename = os.path.split(filepath)
+            if basename == "udf.sql":
+                for udf in MOZFUN_UDFS:
+                    if udf in "\n".join(definitions):
+                        dependencies.append(udf)
 
         if is_defined:
             if internal_name is None:
@@ -145,7 +161,7 @@ def read_udf_dirs(*udf_dirs):
         for root, dirs, files in os.walk(udf_dir)
         for filename in files
         if not filename.startswith(".") and filename.endswith(".sql")
-        for raw_udf in (RawUdf.from_file(os.path.join(root, filename)),)    # todo
+        for raw_udf in (RawUdf.from_file(os.path.join(root, filename)),)
     }
 
 def parse_udf_dirs(*udf_dirs):

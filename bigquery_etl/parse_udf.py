@@ -14,6 +14,7 @@ import sqlparse
 
 
 UDF_DIRS = ("udf", "udf_js")
+MOZFUN_DIR = ("mozfun")
 UDF_CHAR = "[a-zA-z0-9_]"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")

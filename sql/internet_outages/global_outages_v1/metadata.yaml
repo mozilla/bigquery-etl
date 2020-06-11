@@ -10,4 +10,5 @@ labels:
   public_bigquery: false
   review_bug: 1640204
   incremental_export: false
-  schedule: daily
+scheduling:
+  dag_name: bqetl_internet_outages

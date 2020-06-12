@@ -15,7 +15,6 @@
 - <<: *base
   client_id: b
   engine: engine1
-  normalized_engine: Other
   source: actionbar
   search_count: 3
   default_search_engine: engine1
@@ -30,7 +29,6 @@
 - <<: *base
   client_id: b
   engine: engine2
-  normalized_engine: Other
   source: actionbar
   search_count: 1
   default_search_engine: engine1
@@ -72,7 +70,6 @@
   client_id: b
   channel: beta
   engine: engine1
-  normalized_engine: Other
   source: action
   search_count: 5
   locale: en-CA
@@ -87,7 +84,6 @@
   client_id: b
   channel: beta
   engine: engine1
-  normalized_engine: Other
   source: suggestion
   search_count: 1
   locale: en-CA
@@ -102,7 +98,6 @@
   client_id: b
   channel: beta
   engine: engine2
-  normalized_engine: Other
   source: suggestion
   search_count: 5
   locale: en-CA
@@ -129,7 +124,6 @@
   client_id: d
   channel: beta
   engine: engine2
-  normalized_engine: Other
   source: suggestion
   search_count: 3
   app_version: Nightly 191124 06:01

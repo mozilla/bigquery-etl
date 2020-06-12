@@ -5,5 +5,3 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_log_auth_events_v1`
-WHERE
-  NOT STARTS_WITH(event, 'flow.performance')

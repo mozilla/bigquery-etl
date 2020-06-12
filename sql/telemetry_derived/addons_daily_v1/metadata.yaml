@@ -1,0 +1,13 @@
+friendly_name: Addons Daily
+description: A daily aggregate of addon usages, partitioned by day
+owners:
+  - bmiroglio@mozilla.com
+labels:
+  application: addons
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_addons
+  depends_on:
+    - dag_name: main_summary
+      task_id: clients_last_seen

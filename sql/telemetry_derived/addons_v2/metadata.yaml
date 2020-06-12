@@ -1,0 +1,13 @@
+friendly_name: Addons
+description: Addon usage by client, partitioned by day
+owners:
+  - bmiroglio@mozilla.com
+labels:
+  application: addons
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_addons
+  depends_on:
+    - dag_name: main_summary
+      task_id: copy_deduplicate_main_ping

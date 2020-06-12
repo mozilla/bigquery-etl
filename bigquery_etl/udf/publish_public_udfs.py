@@ -89,7 +89,14 @@ def main():
 def publish_udf(raw_udf, client, project_id, gcs_bucket, gcs_path, known_udfs):
     """Publish a specific UDF to BigQuery."""
     # create new dataset for UDF if necessary
-    client.create_dataset(raw_udf.dataset, exists_ok=True)
+    dataset = client.create_dataset(raw_udf.dataset, exists_ok=True)
+
+    # set permissions for dataset, public for everyone
+    entry = bigquery.AccessEntry("READER", "specialGroup", "allAuthenticatedUsers")
+    entries = list(dataset.access_entries)
+    entries.append(entry)
+    dataset.access_entries = entries
+    dataset = client.update_dataset(dataset, ["access_entries"])
 
     # transforms temporary UDF to persistent UDFs and publishes them
     for definition in raw_udf.definitions:

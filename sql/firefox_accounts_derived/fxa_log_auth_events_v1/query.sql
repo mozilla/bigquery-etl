@@ -3,7 +3,6 @@ SELECT
   jsonPayload.fields.event,
   jsonPayload.fields.flow_id,
   jsonPayload.fields.entrypoint,
-  jsonPayload.fields.device_id,
   jsonPayload.fields.service,
   jsonPayload.fields.useragent,
   jsonPayload.fields.os_version,
@@ -32,4 +31,5 @@ WHERE
       'account.verified',
       'sms.installFirefox.sent'
     )
-    AND _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)
+  )
+  AND _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)

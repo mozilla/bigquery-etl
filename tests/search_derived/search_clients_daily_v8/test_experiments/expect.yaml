@@ -12,7 +12,6 @@
   unknown: 0
   client_id: a
   engine: bing
-  normalized_engine: Bing
   experiments:
   - key: exp1
     value: active
@@ -22,7 +21,6 @@
   client_id: a
   sap: 4
   engine: yahoo
-  normalized_engine: Other
   experiments:
   - key: exp1
     value: active
@@ -32,7 +30,6 @@
   client_id: a
   sap: 8
   engine: google
-  normalized_engine: Google
   experiments:
   - key: exp1
     value: active
@@ -42,7 +39,6 @@
   client_id: b
   sap: 4
   engine: google
-  normalized_engine: Google
   experiments:
   - key: exp1
     value: active

@@ -183,7 +183,6 @@ unfiltered_search_clients AS (
     normalized_app_name
 )
 SELECT
-  *,
-  udf.normalize_search_engine(engine) AS normalized_engine
+  *
 FROM
   unfiltered_search_clients

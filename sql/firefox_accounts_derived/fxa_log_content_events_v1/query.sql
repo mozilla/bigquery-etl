@@ -68,7 +68,4 @@ WHERE
       'flow.rp.engage' -- also caught by regex above
     )
   )
-  -- Performance events are captured in fxa_log_content_performance_events_v1,
-  -- so we filter them out here.
-  AND NOT REGEXP_CONTAINS(event, r"^flow\.performance.[\w-]+")
   AND DATE(`timestamp`) = @submission_timestamp

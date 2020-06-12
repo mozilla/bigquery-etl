@@ -1,0 +1,2 @@
+friendly_name: Bit28 To String
+description: Convert an INT64 field into a 28-character string representing the individual bits.

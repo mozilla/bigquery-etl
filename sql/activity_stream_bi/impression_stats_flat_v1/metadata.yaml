@@ -1,5 +1,5 @@
 friendly_name: Impression Stats Flat
-description: Flattened impression stats.
+description: Unnested representation of tile impression statistics
 owners:
   - jklukas@mozilla.com
 labels:

@@ -68,4 +68,4 @@ WHERE
       'flow.rp.engage' -- also caught by regex above
     )
   )
-  AND DATE(`timestamp`) = @submission_timestamp
+  AND DATE(`timestamp`) = @submission_date

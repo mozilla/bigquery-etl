@@ -1,0 +1,9 @@
+friendly_name: Search Metric Contribution
+description: >
+  A table shows how much of one metric is contributed by another metric.
+owners:
+  - 
+labels:
+  schedule: daily
+scheduling:
+  dag_name: 

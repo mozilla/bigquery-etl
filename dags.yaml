@@ -79,6 +79,33 @@ bqetl_gud:
     email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
     retries: 1
     retry_delay: 5m
+
+bqetl_messaging_system:
+  schedule_interval: 0 1 * * *
+  default_args:
+    owner: najiang@mozilla.com
+    start_date: '2019-07-25'
+    email: ['telemetry-alerts@mozilla.com', 'najiang@mozilla.com']
+    retries: 1
+    retry_delay: 5m
+
+bqetl_activity_stream:
+  schedule_interval: 0 1 * * *
+  default_args:
+    owner: jklukas@mozilla.com
+    start_date: '2019-07-25'
+    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+    retries: 1
+    retry_delay: 5m
+
+bqetl_search:
+  schedule_interval: 0 1 * * *
+  default_args:
+    owner: bewu@mozilla.com
+    start_date: '2018-11-27'
+    email: ['telemetry-alerts@mozilla.com', 'bewu@mozilla.com', 'frank@mozilla.com']
+    retries: 2
+    retry_delay: 30m
     
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (it's done automatically)

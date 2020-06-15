@@ -1,7 +1,6 @@
 SELECT
   submission_date,
   engine,
-  normalized_engine,
   source,
   app_name,
   normalized_app_name,
@@ -23,7 +22,6 @@ WHERE
 GROUP BY
   submission_date,
   engine,
-  normalized_engine,
   source,
   app_name,
   normalized_app_name,

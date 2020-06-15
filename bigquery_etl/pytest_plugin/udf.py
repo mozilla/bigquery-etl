@@ -4,9 +4,9 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 import pytest
 
-from ..parse_udf import UDF_DIRS, parse_udf_dirs
+from ..parse_udf import UDF_DIRS, MOZFUN_DIR, parse_udf_dirs
 
-TEST_UDF_DIRS = {"assert"}.union(UDF_DIRS)
+TEST_UDF_DIRS = {"assert"}.union(UDF_DIRS).union(MOZFUN_DIR)
 _parsed_udfs = None
 
 

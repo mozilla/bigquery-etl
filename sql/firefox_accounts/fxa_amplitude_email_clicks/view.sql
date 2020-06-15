@@ -18,18 +18,36 @@ WITH hmac_key AS (
   WHERE
     key_id = 'fxa_hmac_prod'
 ),
+-- sendjobs.EmailName is parsed via regex;
+-- see format definition in https://docs.google.com/spreadsheets/d/11rvrVdF4fj5GaKOvlnLcNjnWB7U7yKV_MHmlBwRE-WA/edit#gid=1818828873
+-- and original regex in https://github.com/mozilla/fxa-amplitude-send/blob/89bfaef20a1d978fce2dccddc0155699a17ac172/marketing.js#L109
+email_name_regex AS (
+  SELECT AS VALUE
+    r"^([^_]+)_([^_]+)(?:_([^_]+))?_(?:[0-9]{4})(?:_(?:[A-Z]+))?(?:_([A-Z]+))?_([^_]+).*"
+),
 -- The sendjobs table is tiny (< 1 GB) and a given sendjob can appear in
 -- multiple snapshots, so we deduplicate over all history, taking the newest.
 sendjobs_numbered AS (
   SELECT
     *,
+    SPLIT(
+      REGEXP_REPLACE(EmailName, (SELECT * FROM email_name_regex), r"\1;\2;\3;\4;\5"),
+      ';'
+    ) AS parsed,
     ROW_NUMBER() OVER (PARTITION BY SendID ORDER BY snapshot_date DESC) AS _n
   FROM
     `mozilla-cdp-prod.sfmc.sendjobs`
+  WHERE
+    REGEXP_CONTAINS(EmailName, (SELECT * FROM email_name_regex))
 ),
 sendjobs AS (
   SELECT
-    * EXCEPT (_n)
+    * EXCEPT (_n, parsed),
+    parsed[ORDINAL(1)] AS email_sender,
+    parsed[ORDINAL(2)] AS email_region,
+    parsed[ORDINAL(3)] AS email_focus,
+    parsed[ORDINAL(4)] AS email_format,
+    parsed[ORDINAL(5)] AS email_id,
   FROM
     sendjobs_numbered
   WHERE
@@ -145,72 +163,11 @@ SELECT
               STRUCT('service' AS key, customers.service AS value),
               STRUCT('email_alias' AS key, clicks.alias AS value),
               STRUCT('email_type' AS key, clicks.EventType AS value),
-              -- sendjobs.EmailName is parsed via regex; each regex differs only
-              -- in which group is doing the capturing (no ?: prefix);
-              -- see original regex in https://github.com/mozilla/fxa-amplitude-send/blob/89bfaef20a1d978fce2dccddc0155699a17ac172/marketing.js#L109
-              STRUCT(
-                'email_sender' AS key,
-                REGEXP_EXTRACT(
-                  sendjobs.EmailName,
-                  r"([A-Za-z]+)_(?:[A-Z]+)_[A-Z]*_[0-9]{4}_[A-Z]+_(?:[A-Z]+|DESK[_ ][A-Z]+)_(?:.+?)_(?:ALL|[A-Z]{2})_(?:[A-Z]{2,4})_(?:[A-Z-]+)(?:_[A-Za-z0-9]*)?"
-                ) AS value
-              ),
-              STRUCT(
-                'email_region' AS key,
-                REGEXP_EXTRACT(
-                  sendjobs.EmailName,
-                  r"(?:[A-Za-z]+)_([A-Z]+)_[A-Z]*_[0-9]{4}_[A-Z]+_(?:[A-Z]+|DESK[_ ][A-Z]+)_(?:.+?)_(?:ALL|[A-Z]{2})_(?:[A-Z]{2,4})_(?:[A-Z-]+)(?:_[A-Za-z0-9]*)?"
-                ) AS value
-              ),
-              STRUCT(
-                'email_focus' AS key,
-                REGEXP_EXTRACT(
-                  sendjobs.EmailName,
-                  r"(?:[A-Za-z]+)_(?:[A-Z]+)_([A-Z]*)_[0-9]{4}_[A-Z]+_(?:[A-Z]+|DESK[_ ][A-Z]+)_(?:.+?)_(?:ALL|[A-Z]{2})_(?:[A-Z]{2,4})_(?:[A-Z-]+)(?:_[A-Za-z0-9]*)?"
-                ) AS value
-              ),
-              STRUCT(
-                'email_format' AS key,
-                REGEXP_EXTRACT(
-                  sendjobs.EmailName,
-                  r"(?:[A-Za-z]+)_(?:[A-Z]+)_[A-Z]*_[0-9]{4}_[A-Z]+_([A-Z]+|DESK[_ ][A-Z]+)_(?:.+?)_(?:ALL|[A-Z]{2})_(?:[A-Z]{2,4})_(?:[A-Z-]+)(?:_[A-Za-z0-9]*)?"
-                ) AS value
-              ),
-              STRUCT(
-                'email_id' AS key,
-                REGEXP_EXTRACT(
-                  sendjobs.EmailName,
-                  r"(?:[A-Za-z]+)_(?:[A-Z]+)_[A-Z]*_[0-9]{4}_[A-Z]+_(?:[A-Z]+|DESK[_ ][A-Z]+)_(.+?)_(?:ALL|[A-Z]{2})_(?:[A-Z]{2,4})_(?:[A-Z-]+)(?:_[A-Za-z0-9]*)?"
-                ) AS value
-              ),
-              STRUCT(
-                'email_country' AS key,
-                REGEXP_EXTRACT(
-                  sendjobs.EmailName,
-                  r"(?:[A-Za-z]+)_(?:[A-Z]+)_[A-Z]*_[0-9]{4}_[A-Z]+_(?:[A-Z]+|DESK[_ ][A-Z]+)_(?:.+?)_(ALL|[A-Z]{2})_(?:[A-Z]{2,4})_(?:[A-Z-]+)(?:_[A-Za-z0-9]*)?"
-                ) AS value
-              ),
-              STRUCT(
-                'email_language' AS key,
-                REGEXP_EXTRACT(
-                  sendjobs.EmailName,
-                  r"(?:[A-Za-z]+)_(?:[A-Z]+)_[A-Z]*_[0-9]{4}_[A-Z]+_(?:[A-Z]+|DESK[_ ][A-Z]+)_(?:.+?)_(?:ALL|[A-Z]{2})_([A-Z]{2,4})_(?:[A-Z-]+)(?:_[A-Za-z0-9]*)?"
-                ) AS value
-              ),
-              STRUCT(
-                'email_channel' AS key,
-                REGEXP_EXTRACT(
-                  sendjobs.EmailName,
-                  r"(?:[A-Za-z]+)_(?:[A-Z]+)_[A-Z]*_[0-9]{4}_[A-Z]+_(?:[A-Z]+|DESK[_ ][A-Z]+)_(?:.+?)_(?:ALL|[A-Z]{2})_(?:[A-Z]{2,4})_([A-Z-]+)(?:_[A-Za-z0-9]*)?"
-                ) AS value
-              ),
-              STRUCT(
-                'email_version' AS key,
-                REGEXP_EXTRACT(
-                  sendjobs.EmailName,
-                  r"(?:[A-Za-z]+)_(?:[A-Z]+)_[A-Z]*_[0-9]{4}_[A-Z]+_(?:[A-Z]+|DESK[_ ][A-Z]+)_(?:.+?)_(?:ALL|[A-Z]{2})_(?:[A-Z]{2,4})_(?:[A-Z-]+)(?:_([A-Za-z0-9]*))?"
-                ) AS value
-              )
+              STRUCT('email_sender' AS key, email_sender AS value),
+              STRUCT('email_region' AS key, email_region AS value),
+              STRUCT('email_focus' AS key, email_focus AS value),
+              STRUCT('email_format' AS key, email_format AS value),
+              STRUCT('email_id' AS key, email_id AS value)
             ]
           )
         WHERE

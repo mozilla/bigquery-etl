@@ -1,3 +1,8 @@
+/*
+
+See https://bugzilla.mozilla.org/show_bug.cgi?id=1633918
+
+*/
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_amplitude_email_clicks`
 AS
@@ -13,6 +18,8 @@ WITH hmac_key AS (
   WHERE
     key_id = 'fxa_hmac_prod'
 ),
+-- The sendjobs table is tiny (< 1 GB) and a given sendjob can appear in
+-- multiple snapshots, so we deduplicate over all history, taking the newest.
 sendjobs_numbered AS (
   SELECT
     *,
@@ -28,6 +35,8 @@ sendjobs AS (
   WHERE
     _n = 1
 ),
+-- Likewise, the customer_record table is fairly small (~10 GB), so it is feasible
+-- to deduplicate over all history on the fly.
 customers_numbered AS (
   SELECT
     *,
@@ -39,10 +48,13 @@ customers_deduped AS (
   SELECT
     * EXCEPT (_n),
     IF(
-      net.public_suffix(email) IS NULL,
+      NET.PUBLIC_SUFFIX(email) IS NULL,
       NULL,
-      rtrim(
-        substr(net.host(email), 1, length(net.host(email)) - length(net.public_suffix(email))),
+      -- We construct an "email_provider" field that is a simple name like "gmail", "outlook", etc.
+      -- We use some BQ NET functions and string munging to get the hostname and
+      -- remove common suffixes ".com", ".net", ".co.uk", etc.
+      RTRIM(
+        SUBSTR(NET.HOST(email), 1, LENGTH(NET.HOST(email)) - LENGTH(NET.PUBLIC_SUFFIX(email))),
         '.'
       )
     ) AS email_provider

@@ -79,6 +79,7 @@ customers AS (
     (email_provider)
 )
 SELECT
+  clicks.EventDate AS submission_timestamp,
   UNIX_MILLIS(clicks.EventDate) AS `time`,
   customers.user_id,
   ARRAY_TO_STRING([customers.user_id, clicks.SendId, string(clicks.EventDate)], '-') AS insert_id,

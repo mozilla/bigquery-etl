@@ -1,13 +1,15 @@
 import json
 from pathlib import Path
 
-from .utils import ensure_folder, print_json, run, run_query
+from .utils import ensure_folder, print_json, run, run_query, ndjson_load
+from .config import *
 
 
 def fetch_dataset_listing(project: str, data_root: Path):
     return run_query(
         f"select * from `{project}`.INFORMATION_SCHEMA.SCHEMATA",
-        ensure_folder(data_root / project) / "dataset_listing.json",
+        "dataset_listing",
+        ensure_folder(data_root / project),
     )
 
 
@@ -39,19 +41,45 @@ def fetch_table_listing(
     name = f"{table_type.lower()}_listing"
     with (project_root / f"{name}.sql").open("w") as fp:
         fp.write(sql)
-    return run_query(sql, project_root / f"{name}.json")
+    return run_query(sql, name, project_root)
 
+
+def resolve_view_references(view_listing, project_root):
+    view_root = ensure_folder(project_root / "views")
+    for view in view_listing:
+        result = run(
+            [
+                "bq",
+                "query",
+                "--format=json",
+                "--use_legacy_sql=false",
+                "--dry_run",
+                view["view_definition"],
+            ]
+        )
+        # see NOTES.md for examples of the full response
+        # NOTE: this could be done with a format string too...
+        filename = ".".join([view["table_schema"], view["table_name"], "json"])
+        # TODO: maybe an ndjson file instead?
+        with (view_root / filename).open("w") as fp:
+            json.dumps(view_root, indent=2)
+
+
+run(f"gsutil ls gs://{BUCKET}")
+run(f"bq ls {PROJECT}:{DATASET}")
 
 data_root = ensure_folder(Path(__file__).parent.parent / "data")
 project = "moz-fx-data-shared-prod"
-dataset_listing = fetch_dataset_listing(project, data_root)
-table_listing = fetch_table_listing(
-    dataset_listing, TableType.TABLE, data_root / project
-)
-view_listing = fetch_table_listing(dataset_listing, TableType.VIEW, data_root / project)
+# dataset_listing = fetch_dataset_listing(project, data_root)
+# table_listing = fetch_table_listing(
+#     dataset_listing, TableType.TABLE, data_root / project
+# )
+# view_listing = fetch_table_listing(dataset_listing, TableType.VIEW, data_root / project)
 
-print_json(table_listing[:5])
-print_json(view_listing[:5])
+# unnecessary complexity :(, the view listing wasnt needed
+view_listing = ndjson_load(data_root / project / "views_listing.ndjson")
+
+resolve_view_references(view_listing, data_root / project)
 
 # fetch tables
 # fetch views

@@ -152,3 +152,15 @@ In order to fully realize edges between views and tables, we'll have to
 enumerate all of the nodes and do the globbing ourselves. Thankfully the
 globbing rules here are straightforward -- star globs may only be used for the
 table suffix.
+
+This problem is tricky because we do not have information about the underylying
+tables. They may require partition filters. We try various combinations of
+queries to over come this. Here are some example errors.
+
+```bash
+bq query --use_legacy_sql=false --dry_run --format=json 'select * from `moz-fx-data-shared-prod`.mozza.event'
+Error in query string: Cannot query over table 'moz-fx-data-shared-prod.mozza_stable.event_v1' without a filter over column(s) 'submission_timestamp' that can be used for partition elimination
+
+bq query --use_legacy_sql=false --dry_run --format=json 'select * from `moz-fx-data-shared-prod`.mozza.event where submission_date = date_sub(current_date, interval 1 day)'
+Error in query string: Unrecognized name: submission_date at [1:59]
+```

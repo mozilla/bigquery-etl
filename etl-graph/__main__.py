@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import tqdm
+
 from .utils import ensure_folder, print_json, run, run_query, ndjson_load
 from .config import *
 
@@ -46,23 +48,44 @@ def fetch_table_listing(
 
 def resolve_view_references(view_listing, project_root):
     view_root = ensure_folder(project_root / "views")
-    for view in view_listing:
-        result = run(
-            [
-                "bq",
-                "query",
-                "--format=json",
-                "--use_legacy_sql=false",
-                "--dry_run",
-                view["view_definition"],
-            ]
-        )
-        # see NOTES.md for examples of the full response
-        # NOTE: this could be done with a format string too...
-        filename = ".".join([view["table_schema"], view["table_name"], "json"])
-        # TODO: maybe an ndjson file instead?
-        with (view_root / filename).open("w") as fp:
-            json.dumps(view_root, indent=2)
+
+    for view in tqdm.tqdm(view_listing):
+        # hope that we are lucky and there isn't a date partitioning field
+        project = view["table_catalog"]
+        table_name = f'{view["table_schema"]}.{view["table_name"]}'
+        base_query = f"SELECT * from `{project}`.{table_name}"
+        where_clauses = [
+            "where date(submission_timestamp) = date_sub(current_date, interval 1 day)",
+            "where submission_date = date_sub(current_date, interval 1 day)",
+        ]
+        queries = [f"{base_query} {clause}" for clause in where_clauses] + [base_query]
+        data = None
+        for query in queries:
+            try:
+                # see NOTES.md for examples of the full response
+                result = run(
+                    [
+                        "bq",
+                        "query",
+                        "--format=json",
+                        "--use_legacy_sql=false",
+                        "--dry_run",
+                        query,
+                    ]
+                )
+                data = json.loads(result)
+                break
+            except:
+                # Error in query string: ...
+                continue
+        if not data:
+            print(f"unable to resolve {project}:{table_name}")
+            continue
+        with (view_root / f"{table_name}.json").open("w") as fp:
+            subset = data["statistics"]
+            # takes up space, so remove it before writing to disk
+            del subset["query"]["schema"]
+            json.dump(subset, fp, indent=2)
 
 
 run(f"gsutil ls gs://{BUCKET}")
@@ -79,7 +102,7 @@ project = "moz-fx-data-shared-prod"
 # unnecessary complexity :(, the view listing wasnt needed
 view_listing = ndjson_load(data_root / project / "views_listing.ndjson")
 
-resolve_view_references(view_listing, data_root / project)
+resolve_view_references(view_listing[:100], data_root / project)
 
 # fetch tables
 # fetch views

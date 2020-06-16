@@ -2,6 +2,9 @@
 
 See https://bugzilla.mozilla.org/show_bug.cgi?id=1633918
 
+Due to permissions issues, this view is published via the fxa_export_to_amplitude DAG
+rather than the schema deployment pipeline.
+
 */
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_amplitude_email_clicks`
@@ -114,7 +117,9 @@ SELECT
   customers.user_id,
   ARRAY_TO_STRING([customers.user_id, clicks.SendId, string(clicks.EventDate)], '-') AS insert_id,
   FORMAT(
-    '{%t}',
+    -- We use CONCAT here to avoid '{%' which will be interpreted as opening a
+    -- Jinja statement when run via Airflow's BigQueryOperator.
+    CONCAT('{', '%t', '}'),
     ARRAY_TO_STRING(
       ARRAY(
         SELECT
@@ -152,7 +157,7 @@ SELECT
     )
   ) AS user_properties,
   FORMAT(
-    '{%t}',
+    CONCAT('{', '%t', '}'),
     ARRAY_TO_STRING(
       ARRAY(
         SELECT

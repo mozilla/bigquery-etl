@@ -3,6 +3,7 @@ import multiprocessing
 from functools import partial
 from pathlib import Path
 import shutil
+import tempfile
 
 import tqdm
 
@@ -97,7 +98,8 @@ def _view_dryrun(view_root, view):
 
 
 def resolve_view_references(view_listing, project_root):
-    view_root = ensure_folder(project_root / "views")
+    # we don't really care about intermediate files
+    view_root = Path(tempfile.mkdtemp())
 
     pool = multiprocessing.Pool(MAX_CONCURRENCY)
     for _ in tqdm.tqdm(

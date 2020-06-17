@@ -79,3 +79,7 @@ def run_query(sql: str, dest_table: str, output: Path = None, project=PROJECT) -
     )
     run(f"gsutil cp {blob} {output}")
     return ndjson_load(output / filename)
+
+
+def qualify(project, dataset, table):
+    return f"{project}:{dataset}.{table}"

@@ -53,14 +53,13 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
 SELECT
   assert_equals(
     STRUCT(
-      6 AS search_count_all,
       5 AS search_count_abouthome,
       1 AS search_count_contextmenu,
       0 AS search_count_newtab,
       0 AS search_count_searchbar,
       0 AS search_count_system,
       0 AS search_count_urlbar,
-      6 AS search_count_sap,
+      6 AS search_count_all
       0 AS search_count_tagged_sap,
       0 AS search_count_tagged_follow_on,
       0 AS search_count_organic
@@ -83,7 +82,6 @@ SELECT
       0 AS search_count_searchbar,
       0 AS search_count_system,
       0 AS search_count_urlbar,
-      0 AS search_count_sap,
       0 AS search_count_tagged_sap,
       0 AS search_count_tagged_follow_on,
       0 AS search_count_organic

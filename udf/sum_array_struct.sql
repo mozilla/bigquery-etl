@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION udf.sum_array_struct(
 
 SELECT
   assert_equals(
-    STRUCT(6 AS array_metric,),
+    STRUCT(6 AS array_metric),
     udf.sum_array_struct(
       [
         STRUCT('foo' AS key, 3 AS value),

@@ -8,7 +8,8 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
       COALESCE(SUM(IF(source = "newtab", count, 0)), 0) AS search_count_newtab,
       COALESCE(SUM(IF(source = "searchbar", count, 0)), 0) AS search_count_searchbar,
       COALESCE(SUM(IF(source = "system", count, 0)), 0) AS search_count_system,
-      COALESCE(SUM(IF(source = "urlbar", count, 0)), 0) AS search_count_urlbar COALESCE(
+      COALESCE(SUM(IF(source = "urlbar", count, 0)), 0) AS search_count_urlbar,
+      COALESCE(
         SUM(
           IF(
             source IN (

@@ -374,6 +374,34 @@ dns_failure_counts AS (
   HAVING
     COUNT(*) > 100
 ),
+-- Oddness: active sessions without DNS_FAILED_LOOKUP_TIME
+dns_no_dns_failure_time AS (
+  SELECT
+    country,
+    city,
+    time_slot AS datetime,
+    SUM(IF(subsession_length > 0 AND is_empty = 1, 1, 0)) / (
+      1 + SUM(IF(subsession_length > 0, 1, 0))
+    ) AS value
+  FROM
+    (
+      SELECT
+        country,
+        city,
+        client_id,
+        time_slot,
+        subsession_length,
+        empty(dns_fail) AS is_empty
+      FROM
+        histogram_data_sample
+    )
+  GROUP BY
+    1,
+    2,
+    3
+  HAVING
+    COUNT(*) > 100
+),
 -- SSL_CERT_VERIFICATION_ERRORS histograms
 ssl_error_prop_src AS (
   SELECT
@@ -449,6 +477,7 @@ SELECT
   ds.value AS avg_dns_success_time,
   ds_missing.value AS missing_dns_success,
   df.value AS avg_dns_failure_time,
+  df_missing.value AS missing_dns_failure,
   dfc.value AS count_dns_failure,
   ssl.value AS ssl_error_prop,
   tls.value AS avg_tls_handshake_time
@@ -479,6 +508,10 @@ USING
   (datetime, country, city)
 LEFT JOIN
   dns_failure_counts AS dfc
+USING
+  (datetime, country, city)
+LEFT JOIN
+  dns_no_dns_failure_time AS df_missing
 USING
   (datetime, country, city)
 LEFT JOIN

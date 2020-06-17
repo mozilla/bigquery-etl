@@ -6,7 +6,6 @@ CREATE TEMP FUNCTION get_quantile(metric1 FLOAT64, metric2 FLOAT64, quantile FLO
 WITH monthly_client_aggregates AS (
   SELECT
     client_id,
-    DATE_TRUNC(submission_date, MONTH) AS month,
     SUM(sap) AS sap,
     SUM(search_with_ads) AS search_with_ads,
     SUM(active_hours_sum) AS active_hours_sum,
@@ -14,39 +13,31 @@ WITH monthly_client_aggregates AS (
   FROM
     `moz-fx-data-shared-prod.search.search_clients_daily`
   WHERE
-    submission_date = @submission_date
+    submission_date >= DATE_SUB(@submission_date, INTERVAL 27 DAY)
   GROUP BY
-    1,
-    2
+    1
 ),
 monthly_aggregates AS (
   SELECT
-    month,
     SUM(sap) AS sap,
     SUM(search_with_ads) AS search_with_ads,
     SUM(active_hours_sum) AS active_hours_sum,
     SUM(ad_click) AS ad_click
   FROM
     monthly_client_aggregates
-  GROUP BY
-    month
 ),
 metric_percentile_cut AS (
   SELECT
-    month,
     APPROX_QUANTILES(ad_click, 10) AS ad_click_percentiles,
     APPROX_QUANTILES(search_with_ads, 10) AS search_with_ads_percentiles,
     APPROX_QUANTILES(active_hours_sum, 10) AS active_hours_percentiles,
     APPROX_QUANTILES(sap, 10) AS sap_percentiles
   FROM
     monthly_client_aggregates
-  GROUP BY
-    month
 ),
 -- metric aggregates from metric
 metric_aggregates_from_metric AS (
   SELECT
-    month,
     SUM(
       get_quantile(sap, search_with_ads, sap_percentiles[OFFSET(9)])
     ) AS search_with_ads_from_sap_top_10,
@@ -144,18 +135,13 @@ metric_aggregates_from_metric AS (
       get_quantile(active_hours_sum, sap, active_hours_percentiles[OFFSET(7)])
     ) AS sap_from_active_hours_top_30
   FROM
-    monthly_client_aggregates
-  JOIN
+    monthly_client_aggregates,
     metric_percentile_cut
-  USING
-    (month)
-  GROUP BY
-    MONTH
 ),
 -- metrics percentage calculation
 metric_from_metric_pct AS (
   SELECT
-    month,
+    @submission_date AS submission_date,
     STRUCT(
       search_with_ads_from_sap_top_10 / search_with_ads AS top_10,
       search_with_ads_from_sap_top_20 / search_with_ads AS top_20,
@@ -217,13 +203,8 @@ metric_from_metric_pct AS (
       sap_from_active_hours_top_30 / sap AS top_30
     ) AS sap_from_active_hours
   FROM
-    monthly_aggregates
-  JOIN
+    monthly_aggregates,
     metric_aggregates_from_metric
-  USING
-    (month)
-  ORDER BY
-    month
 )
 -- final query
 SELECT

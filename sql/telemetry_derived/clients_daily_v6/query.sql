@@ -370,12 +370,8 @@ SELECT
   udf.mode_last(ARRAY_AGG(fxa_configured ORDER BY `timestamp`)) AS fxa_configured,
   SUM(scalar_parent_contentblocking_trackers_blocked_count) AS trackers_blocked_sum,
   TIMESTAMP_MICROS(DIV(MIN(`timestamp`), 1000)) AS submission_timestamp_min,
-  udf.sum_array_struct(
-    ARRAY_CONCAT_AGG(scalar_parent_browser_search_ad_clicks ORDER BY `timestamp`)
-  ) AS ad_clicks_count_all,
-  udf.sum_array_struct(
-    ARRAY_CONCAT_AGG(scalar_parent_browser_search_with_ads ORDER BY `timestamp`)
-  ) AS search_with_ads_count_all
+  SUM((SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_ad_clicks))) AS ad_clicks_count_all,
+  SUM((SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_with_ads))) AS search_with_ads_count_all
 FROM
   main_summary_v4
 LEFT JOIN

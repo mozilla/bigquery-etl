@@ -164,3 +164,38 @@ Error in query string: Cannot query over table 'moz-fx-data-shared-prod.mozza_st
 bq query --use_legacy_sql=false --dry_run --format=json 'select * from `moz-fx-data-shared-prod`.mozza.event where submission_date = date_sub(current_date, interval 1 day)'
 Error in query string: Unrecognized name: submission_date at [1:59]
 ```
+
+## Resolving Queries
+
+Now that we have most of the tables and views resolved, we can start to look at
+the relationships between them. One way to this is to assume `bigquery-etl` as
+the source. While this approach is feasible, there are some quirks related to
+the behavior of backticks being used as substitition in the shell.
+
+The approach taken here is to take advantage of bigquery metadata.
+
+```sql
+SELECT
+  creation_time,
+  destination_table,
+  referenced_tables
+FROM
+  `region-us`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+WHERE
+  error_result IS NULL
+  AND state="DONE"
+  -- dont care about destination tables without references at the moment
+  AND referenced_tables IS NOT NULL
+  -- filter out queries without a real destination
+  AND NOT (destination_table.table_id LIKE "anon%"
+    AND destination_table.dataset_id LIKE "_%")
+LIMIT
+  100
+```
+
+This looks great, but there are a couple of quirks that need to be filtered out
+here to build a proper edgelist. First, we'll remove any of the partition
+filters (e.g. `baseline_clients_daily_v1$20200511`). We also take care to remove
+suffixes added by the bigquery-spark connector (e.g.
+`active_profiles_v1_2020_04_19_80b09a`) Then we'll flatten out this list and
+deduplicate any of the edges while retaining the most recent creation date.

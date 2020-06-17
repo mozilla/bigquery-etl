@@ -46,6 +46,7 @@ transformed AS (
   WHERE
     NOT STARTS_WITH(referenced_table.dataset_id, "_")
 )
+-- TODO: include edge weight by counting the number of times it has been referenced
 SELECT
   creation_time,
   destination_table,

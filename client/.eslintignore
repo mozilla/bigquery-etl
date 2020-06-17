@@ -1,4 +1,0 @@
-# Inverse matches (i.e., DO NOT ignore these)
-!.prettierrc.js
-
-public/build/bundle.js

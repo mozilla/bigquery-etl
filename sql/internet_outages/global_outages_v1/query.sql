@@ -14,6 +14,29 @@ CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
   )
 );
 
+-- TODO: add docs
+CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
+  (
+    WITH a AS (
+      SELECT
+        IF(array_length(x) > 0, 1, 0) AS isPres1
+    ),
+    b AS (
+      SELECT
+        sum(value) AS t
+      FROM
+        UNNEST(x)
+      WHERE
+        key > 0
+    )
+    SELECT
+      coalesce(isPres1 * t, 0)
+    FROM
+      a,
+      b
+  )
+);
+
 -- Get a stable source for DAUs.
 WITH DAUs AS (
   SELECT
@@ -163,13 +186,18 @@ histogram_data_sample AS (
     -- know about or have a population less than 15k. Just rename to 'unknown'.
     IFNULL(metadata.geo.city, 'unknown') AS city,
     client_id,
+    document_id,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS time_slot,
+    payload.info.subsession_length AS subsession_length,
     udf.json_extract_int_map(
       JSON_EXTRACT(payload.histograms.dns_failed_lookup_time, '$.values')
     ) AS dns_fail,
     udf.json_extract_int_map(
       JSON_EXTRACT(payload.histograms.dns_lookup_time, '$.values')
     ) AS dns_success,
+    udf.json_extract_int_map(
+      JSON_EXTRACT(payload.histograms.ssl_cert_verification_errors, '$.values')
+    ) AS ssl_cert_errors,
     udf.json_extract_int_map(
       JSON_EXTRACT(payload.processes.content.histograms.http_page_tls_handshake, '$.values')
     ) AS tls_handshake,
@@ -289,6 +317,37 @@ dns_failure_counts AS (
   HAVING
     COUNT(*) > 100
 ),
+-- SSL_CERT_VERIFICATION_ERRORS histograms
+ssl_error_prop_src AS (
+  SELECT
+    country,
+    city,
+    time_slot,
+    client_id,
+    document_id,
+    subsession_length,
+    sum_values(ssl_cert_errors) AS ssl_sum_vals
+  FROM
+    histogram_data_sample
+),
+ssl_error_prop AS (
+  SELECT
+    country,
+    city,
+    time_slot AS datetime,
+    SUM(IF(subsession_length > 0 AND ssl_sum_vals > 0, 1, 0)) / (
+      1 + SUM(IF(subsession_length > 0, 1, 0))
+    ) AS value
+  FROM
+    ssl_error_prop_src
+  GROUP BY
+    country,
+    city,
+    time_slot,
+    client_id
+  HAVING
+    COUNT(*) > 100
+),
 -- TLS_HANDSHAKE histogram
 tls_handshake_time AS (
   SELECT
@@ -333,6 +392,7 @@ SELECT
   ds.value AS avg_dns_success_time,
   df.value AS avg_dns_failure_time,
   dfc.value AS count_dns_failure,
+  ssl.value AS ssl_error_prop,
   tls.value AS avg_tls_handshake_time
 FROM
   final_health_data AS hd
@@ -361,6 +421,10 @@ USING
   (datetime, country, city)
 LEFT JOIN
   tls_handshake_time AS tls
+USING
+  (datetime, country, city)
+LEFT JOIN
+  ssl_error_prop AS ssl
 USING
   (datetime, country, city)
 ORDER BY

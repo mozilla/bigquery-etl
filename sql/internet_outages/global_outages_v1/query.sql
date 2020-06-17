@@ -14,7 +14,7 @@ CREATE TEMP FUNCTION udf_json_extract_string_to_int_map(input STRING) AS (
   )
 );
 
--- TODO: add docs
+-- This sums the values reported by an histogram.
 CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
   (
     WITH a AS (
@@ -34,6 +34,35 @@ CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
     FROM
       a,
       b
+  )
+);
+
+-- This counts how many times an histogram is not present.
+-- It checks if the histogram is present at all and whether or not it recorded
+-- any non-zero value.
+CREATE TEMP FUNCTION empty(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
+  (
+    WITH a AS (
+      SELECT
+        IF(array_length(x) = 0, 1, 0) AS isEmpty1
+    ),
+    b AS (
+      SELECT
+        IF(max(value) = 0, 1, 0) isEmpty2
+      FROM
+        UNNEST(x)
+    ),
+    c AS (
+      SELECT
+        IF(isEmpty2 = 1 OR isEmpty1 = 1, 1, 0) AS Empty
+      FROM
+        a,
+        b
+    )
+    SELECT
+      Empty
+    FROM
+      C
   )
 );
 
@@ -249,6 +278,34 @@ dns_success_time AS (
   HAVING
     COUNT(*) > 100
 ),
+-- Oddness: active sessions without DNS_LOOKUP_TIME
+dns_no_dns_lookup_time AS (
+  SELECT
+    country,
+    city,
+    time_slot AS datetime,
+    SUM(IF(subsession_length > 0 AND is_empty = 1, 1, 0)) / (
+      1 + SUM(IF(subsession_length > 0, 1, 0))
+    ) AS value
+  FROM
+    (
+      SELECT
+        country,
+        city,
+        client_id,
+        time_slot,
+        subsession_length,
+        empty(dns_success) AS is_empty
+      FROM
+        histogram_data_sample
+    )
+  GROUP BY
+    1,
+    2,
+    3
+  HAVING
+    COUNT(*) > 100
+),
 -- A shared source for the DNS_FAIL histogram
 dns_failure_src AS (
   SELECT
@@ -390,6 +447,7 @@ SELECT
   DAUs.datetime AS datetime,
   hd.* EXCEPT (datetime, country, city),
   ds.value AS avg_dns_success_time,
+  ds_missing.value AS missing_dns_success,
   df.value AS avg_dns_failure_time,
   dfc.value AS count_dns_failure,
   ssl.value AS ssl_error_prop,
@@ -409,6 +467,10 @@ USING
   (datetime, country, city)
 LEFT JOIN
   dns_success_time AS ds
+USING
+  (datetime, country, city)
+LEFT JOIN
+  dns_no_dns_lookup_time AS ds_missing
 USING
   (datetime, country, city)
 LEFT JOIN

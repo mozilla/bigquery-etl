@@ -48,7 +48,8 @@ def run(command: Union[str, List[str]], **kwargs) -> str:
 
 # NOTE: I could use the google-cloud-bigquery package, but most of my
 # development happens in bash.
-def run_query(sql: str, dest_table: str, output: Path = None) -> dict:
+def run_query(sql: str, dest_table: str, output: Path = None, project=PROJECT) -> dict:
+    # project is the project where the query takes place
     qualified_name = f"{PROJECT}:{DATASET}.{dest_table}"
     filename = f"{dest_table}.ndjson"
     blob = f"gs://{BUCKET}/{DATASET}/{filename}"
@@ -57,8 +58,10 @@ def run_query(sql: str, dest_table: str, output: Path = None) -> dict:
         [
             "bq",
             "query",
+            f"--project_id={project}",
             "--format=json",
             "--use_legacy_sql=false",
+            # ignore the results since we'll extract them from an intermediate table
             "--max_rows=0",
             f"--destination_table={qualified_name}",
             "--replace",

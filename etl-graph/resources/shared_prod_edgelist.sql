@@ -47,7 +47,7 @@ transformed AS (
     NOT STARTS_WITH(referenced_table.dataset_id, "_")
 )
 SELECT
-  creation_date,
+  creation_time,
   destination_table,
   referenced_table,
 FROM

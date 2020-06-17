@@ -9,7 +9,7 @@ from .crawler import (
     resolve_view_references,
     resolve_bigquery_etl_references,
 )
-from .utils import ensure_folder, ndjson_load, print_json, run
+from .utils import ensure_folder, ndjson_load, print_json, run, run_query
 
 ROOT = Path(__file__).parent.parent
 
@@ -41,6 +41,19 @@ def etl():
     # this is basically dryrun, but with some data collection baked in.
     resolve_bigquery_etl_references(
         ROOT / "bigquery-etl", ensure_folder(ROOT / "data" / "bigquery_etl")
+    )
+
+
+@cli.command()
+def query_logs():
+    """Create edgelist from jobs by project query logs."""
+    sql = Path(__file__).parent / "resources" / "shared_prod_edgelist.sql"
+    project = "moz-fx-data-shared-prod"
+    run_query(
+        sql.read_text(),
+        dest_table="shared_prod_edgelist",
+        output=ensure_folder(ROOT / "data" / project),
+        project=project,
     )
 
 

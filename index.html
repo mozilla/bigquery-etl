@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Network</title>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+    ></script>
+    <style type="text/css">
+      #container {
+        width: 800px;
+        margin: 0 auto;
+      }
+      #mynetwork {
+        width: 800px;
+        height: 600px;
+        margin: 0 auto;
+        border: 1px solid lightgray;
+      }
+    </style>
+    <script type="text/javascript">
+      // view-source:https://visjs.github.io/vis-network/examples/network/exampleApplications/loadingBar.html
+      async function main() {
+        let edges = await fetch("data/edges.json").then((resp) => resp.json());
+        var nodes = new Set();
+        for (i = 0; i < edges.length; i++) {
+          nodes.add(edges[i].destination);
+          nodes.add(edges[i].referenced);
+        }
+        let nodeMap = new Map([...nodes].map((el, idx) => [el, idx]));
+
+        let data = {
+          nodes: new vis.DataSet(
+            [...nodes].map((el) => ({
+              id: nodeMap.get(el),
+              label: el,
+            }))
+          ),
+          edges: new vis.DataSet(
+            edges.map((el) => ({
+              from: nodeMap.get(el.referenced),
+              to: nodeMap.get(el.destination),
+            }))
+          ),
+        };
+        // create a network
+        var container = document.getElementById("mynetwork");
+        var options = {
+          nodes: {
+            shape: "dot",
+            size: 16,
+          },
+          physics: {
+            forceAtlas2Based: {
+              gravitationalConstant: -26,
+              centralGravity: 0.005,
+              springLength: 230,
+              springConstant: 0.18,
+            },
+            maxVelocity: 146,
+            solver: "forceAtlas2Based",
+            timestep: 0.35,
+            stabilization: {
+              enabled: true,
+              iterations: 200,
+              updateInterval: 25,
+            },
+          },
+          layout: {
+            improvedLayout: false,
+          },
+          interaction: {
+            tooltipDelay: 200,
+            hideEdgesOnDrag: true,
+          },
+          edges: {
+            smooth: true,
+            arrows: { to: true },
+          },
+        };
+        var network = new vis.Network(container, data, options);
+        network.on("stabilizationProgress", function (params) {
+          document.getElementById("progress").innerHTML =
+            Math.round((params.iterations / params.total) * 100) + "%";
+        });
+        network.once("stabilizationIterationsDone", function () {
+          document.getElementById("progress").innerHTML = "100%";
+          setTimeout(function () {
+            document.getElementById("status").style.display = "none";
+          }, 500);
+        });
+      }
+    </script>
+  </head>
+  <body onload="main()">
+    <div id="container">
+      <div id="mynetwork"></div>
+      <p id="status">Loading <span id="progress">0%</span></p>
+    </div>
+  </body>
+</html>

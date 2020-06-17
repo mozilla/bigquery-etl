@@ -59,7 +59,7 @@ SELECT
       0 AS search_count_searchbar,
       0 AS search_count_system,
       0 AS search_count_urlbar,
-      6 AS search_count_all
+      6 AS search_count_all,
       0 AS search_count_tagged_sap,
       0 AS search_count_tagged_follow_on,
       0 AS search_count_organic

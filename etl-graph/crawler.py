@@ -97,6 +97,46 @@ def _view_dryrun(view_root, view):
         json.dump(subset, fp, indent=2)
 
 
+def _bigquery_etl_dryrun(output_root: Path, query: Path):
+    # this makes the assumption that the query writes to a destination table
+    # relative to the path in the repository
+    project_id = "moz-fx-data-shared-prod"
+    dataset_id = query.parent.parent.name
+    table_id = query.parent.name
+    base_query = query.read_text()
+    data = None
+    # TODO: set the following parameters
+    # submission_date, n_clients, sample_size, min_sample_id, max_sample_id
+    try:
+        result = run(
+            [
+                "bq",
+                "query",
+                f"--project_id={project_id}",
+                "--format=json",
+                "--use_legacy_sql=false",
+                "--dry_run",
+                base_query,
+            ]
+        )
+        data = json.loads(result)
+    except Exception as e:
+        print(e)
+    if not data:
+        print(
+            f"unable to resolve query {query.relative_to(query.parent.parent.parent)}"
+        )
+        return
+    with (output_root / f"{dataset_id}.{table_id}.json").open("w") as fp:
+        subset = data["statistics"]
+        del subset["query"]["schema"]
+        subset = {
+            **dict(projectId=project_id, tableId=table_id, datasetId=dataset_id),
+            **subset,
+        }
+        json.dump(subset, fp, indent=2)
+
+
 def resolve_view_references(view_listing, project_root):
     # we don't really care about intermediate files
     view_root = Path(tempfile.mkdtemp())
@@ -114,3 +154,10 @@ def resolve_view_references(view_listing, project_root):
             data = json.load(view.open())
             fp.write(json.dumps(data))
             fp.write("\n")
+
+
+def resolve_bigquery_etl_references(bigquery_etl_root: Path, output_root: Path):
+    queries = list(bigquery_etl_root.glob("sql/**/query.sql"))
+    query_root = ensure_folder(output_root / "query")
+    for query in queries:
+        _bigquery_etl_dryrun(query_root, query)

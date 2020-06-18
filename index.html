@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ETL reference graph</title>
+    <title>BigQuery ETL Query Network</title>
     <script
       type="text/javascript"
       src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
@@ -46,6 +46,7 @@
             [...nodes]
               .map((el) => ({
                 id: nodeMap.get(el),
+                // we show the name without the project prefix to reduce clutter
                 label: el.split(":")[1],
                 group: 0,
                 title: el,
@@ -65,7 +66,7 @@
                 from: nodeMap.get(el.referenced),
                 to: nodeMap.get(el.destination),
               }))
-              //.slice(0, 100)
+              // .slice(0, 100)
               .concat(
                 [...nodes].map((el) => ({
                   from: nodeMap.get(getDatasetId(el)),
@@ -134,10 +135,10 @@
           console.log(parents);
           // pretty output
           let output = {
-            root: root.label,
+            root: root.title,
             links: {
-              references: parents.map((node) => node.label),
-              destination: children.map((node) => node.label),
+              references: parents.map((node) => node.title),
+              destinations: children.map((node) => node.title),
             },
           };
 
@@ -155,6 +156,7 @@
           document.getElementById("progress").innerHTML = "100%";
           setTimeout(function () {
             document.getElementById("status").style.display = "none";
+            // set a default summary
             setSummary(
               data.nodes.get(
                 nodeMap.get("moz-fx-data-shared-prod:telemetry_stable.main_v4")
@@ -167,6 +169,21 @@
   </head>
   <body onload="main()">
     <div id="container">
+      <h1>BigQuery ETL Query Network</h1>
+      <p>
+        This network represents the relationships between tables in BigQuery.
+        Each blue node represents a table, while each orange node represents a
+        dataset. The network was created by scraping the BigQuery TABLES and
+        JOBS_BY_PROJECT tables in the INFORMATION_SCHEMA dataset. Views are
+        resolved using bq with --dry_run.
+      </p>
+      <p>
+        Scroll and drag to navigate the network. Selecting a node by double
+        clicking will show summary information about the table or dataset.
+      </p>
+      <p>
+        The source can be found at <a href=https://github.com/acmiyaguchi/etl-graph>acmiyaguchi/etl-graph</a>.
+      </p>
       <div id="mynetwork"></div>
       <p id="status">Loading <span id="progress">0%</span></p>
       <div id="summary"></div>

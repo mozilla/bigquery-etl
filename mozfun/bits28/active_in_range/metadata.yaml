@@ -1,0 +1,2 @@
+friendly_name: Bits28 Days Active in Range
+description: Return a boolean indicating if any bits are set in the specified range of a bit pattern.

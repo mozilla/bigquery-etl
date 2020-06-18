@@ -10,6 +10,6 @@ SELECT
   SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), wau, 0)) AS tier1_wau,
   SUM(IF(country IN ('US', 'FR', 'DE', 'GB', 'CA'), dau, 0)) AS tier1_dau
 FROM
-  `moz-fx-data-derived-datasets.telemetry.firefox_nondesktop_exact_mau28_by_dimensions_v1`
+  `moz-fx-data-shared-prod.telemetry.firefox_nondesktop_exact_mau28_by_dimensions_v1`
 GROUP BY
   submission_date

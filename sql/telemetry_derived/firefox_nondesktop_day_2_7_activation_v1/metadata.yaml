@@ -8,3 +8,9 @@ labels:
   application: nondesktop
   incremental: true
   schedule: daily
+scheduling:
+  dag_name: bqetl_nondesktop
+  email: ['jklukas@mozilla.com']
+  depends_on:
+    - dag_name: copy_deduplicate
+      task_id: baseline_clients_last_seen

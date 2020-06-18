@@ -469,6 +469,27 @@ histograms AS (
         (1, 2, 3)
       ),
       (
+        'apz_zoom_activity',
+        'histogram-boolean',
+        'content',
+        payload.processes.content.histograms.apz_zoom_activity,
+        (1, 2, 3)
+      ),
+      (
+        'apz_zoom_activity_rdm',
+        'histogram-boolean',
+        'content',
+        payload.processes.content.histograms.apz_zoom_activity_rdm,
+        (1, 2, 3)
+      ),
+      (
+        'apz_zoom_pinchsource',
+        'histogram-enumerated',
+        'parent',
+        payload.histograms.apz_zoom_pinchsource,
+        (1, 5, 6)
+      ),
+      (
         'async_animation_content_too_large_frame_size',
         'histogram-exponential',
         'content',
@@ -2786,6 +2807,41 @@ histograms AS (
         (1, 10, 11)
       ),
       (
+        'cookie_purging_duration_ms',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.cookie_purging_duration_ms,
+        (1, 600000, 30)
+      ),
+      (
+        'cookie_purging_interval_hours',
+        'histogram-linear',
+        'parent',
+        payload.histograms.cookie_purging_interval_hours,
+        (1, 168, 56)
+      ),
+      (
+        'cookie_purging_origins_purged',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.cookie_purging_origins_purged,
+        (1, 500, 30)
+      ),
+      (
+        'cookie_purging_trackers_user_interaction_remaining_days',
+        'histogram-linear',
+        'parent',
+        payload.histograms.cookie_purging_trackers_user_interaction_remaining_days,
+        (1, 100, 60)
+      ),
+      (
+        'cookie_purging_trackers_with_user_interaction',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.cookie_purging_trackers_with_user_interaction,
+        (1, 500, 30)
+      ),
+      (
         'cookie_samesite_set_vs_unset',
         'histogram-boolean',
         'parent',
@@ -4190,6 +4246,34 @@ histograms AS (
         'histogram-exponential',
         'parent',
         payload.histograms.devtools_changesview_time_active_seconds,
+        (1, 10000000, 100)
+      ),
+      (
+        'devtools_compatibilityview_opened_count',
+        'histogram-count',
+        'content',
+        payload.processes.content.histograms.devtools_compatibilityview_opened_count,
+        (1, 2, 3)
+      ),
+      (
+        'devtools_compatibilityview_opened_count',
+        'histogram-count',
+        'parent',
+        payload.histograms.devtools_compatibilityview_opened_count,
+        (1, 2, 3)
+      ),
+      (
+        'devtools_compatibilityview_time_active_seconds',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.devtools_compatibilityview_time_active_seconds,
+        (1, 10000000, 100)
+      ),
+      (
+        'devtools_compatibilityview_time_active_seconds',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.devtools_compatibilityview_time_active_seconds,
         (1, 10000000, 100)
       ),
       (
@@ -7289,6 +7373,13 @@ histograms AS (
         (1, 100, 50)
       ),
       (
+        'fx_number_of_unique_site_origins_per_document',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.fx_number_of_unique_site_origins_per_document,
+        (1, 100, 50)
+      ),
+      (
         'fx_page_action_added',
         'histogram-categorical',
         'parent',
@@ -8284,6 +8375,20 @@ histograms AS (
         (1, 14, 15)
       ),
       (
+        'fx_urlbar_selected_result_type_2',
+        'histogram-enumerated',
+        'content',
+        payload.processes.content.histograms.fx_urlbar_selected_result_type_2,
+        (1, 32, 33)
+      ),
+      (
+        'fx_urlbar_selected_result_type_2',
+        'histogram-enumerated',
+        'parent',
+        payload.histograms.fx_urlbar_selected_result_type_2,
+        (1, 32, 33)
+      ),
+      (
         'fxa_configured',
         'histogram-flag',
         'content',
@@ -8327,6 +8432,20 @@ histograms AS (
         (1, 100, 10)
       ),
       ('gc_budget_ms', 'histogram-linear', 'parent', payload.histograms.gc_budget_ms, (1, 100, 10)),
+      (
+        'gc_budget_ms_2',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.gc_budget_ms_2,
+        (1, 200, 50)
+      ),
+      (
+        'gc_budget_ms_2',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.gc_budget_ms_2,
+        (1, 200, 50)
+      ),
       (
         'gc_budget_overrun',
         'histogram-exponential',
@@ -8426,6 +8545,20 @@ histograms AS (
         (1, 200, 50)
       ),
       (
+        'gc_mark_gray_ms_2',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.gc_mark_gray_ms_2,
+        (1, 10000, 50)
+      ),
+      (
+        'gc_mark_gray_ms_2',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.gc_mark_gray_ms_2,
+        (1, 10000, 50)
+      ),
+      (
         'gc_mark_ms',
         'histogram-exponential',
         'content',
@@ -8454,6 +8587,20 @@ histograms AS (
         (1000, 1000000, 100)
       ),
       (
+        'gc_mark_rate_2',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.gc_mark_rate_2,
+        (1000, 300000, 50)
+      ),
+      (
+        'gc_mark_rate_2',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.gc_mark_rate_2,
+        (1000, 300000, 50)
+      ),
+      (
         'gc_mark_roots_ms',
         'histogram-linear',
         'content',
@@ -8466,6 +8613,34 @@ histograms AS (
         'parent',
         payload.histograms.gc_mark_roots_ms,
         (1, 200, 50)
+      ),
+      (
+        'gc_mark_roots_us',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.gc_mark_roots_us,
+        (1, 150000, 50)
+      ),
+      (
+        'gc_mark_roots_us',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.gc_mark_roots_us,
+        (1, 150000, 50)
+      ),
+      (
+        'gc_mark_weak_ms',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.gc_mark_weak_ms,
+        (1, 10000, 50)
+      ),
+      (
+        'gc_mark_weak_ms',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.gc_mark_weak_ms,
+        (1, 10000, 50)
       ),
       (
         'gc_max_pause_ms',
@@ -8624,6 +8799,20 @@ histograms AS (
         (1, 100, 50)
       ),
       (
+        'gc_prepare_ms',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.gc_prepare_ms,
+        (1, 1000, 50)
+      ),
+      (
+        'gc_prepare_ms',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.gc_prepare_ms,
+        (1, 1000, 50)
+      ),
+      (
         'gc_pretenure_count',
         'histogram-enumerated',
         'content',
@@ -8636,6 +8825,20 @@ histograms AS (
         'parent',
         payload.histograms.gc_pretenure_count,
         (1, 32, 33)
+      ),
+      (
+        'gc_pretenure_count_2',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.gc_pretenure_count_2,
+        (1, 100, 20)
+      ),
+      (
+        'gc_pretenure_count_2',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.gc_pretenure_count_2,
+        (1, 100, 20)
       ),
       (
         'gc_reason_2',
@@ -9156,6 +9359,13 @@ histograms AS (
         'parent',
         payload.histograms.graphics_sanity_test_reason,
         (1, 20, 21)
+      ),
+      (
+        'gv_content_process_lifetime_ms',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.gv_content_process_lifetime_ms,
+        (1, 3600000, 100)
       ),
       (
         'gv_page_load_ms',
@@ -11622,6 +11832,13 @@ histograms AS (
         (1, 10000, 50)
       ),
       (
+        'loaded_tab_count',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.loaded_tab_count,
+        (1, 1000, 100)
+      ),
+      (
         'localdomstorage_clear_blocking_ms',
         'histogram-exponential',
         'content',
@@ -11969,6 +12186,13 @@ histograms AS (
         'histogram-boolean',
         'parent',
         payload.histograms.media_hls_canplay_requested,
+        (1, 2, 3)
+      ),
+      (
+        'media_hls_canplay_supported',
+        'histogram-boolean',
+        'content',
+        payload.processes.content.histograms.media_hls_canplay_supported,
         (1, 2, 3)
       ),
       (
@@ -14236,6 +14460,20 @@ histograms AS (
         (1, 50, 51)
       ),
       (
+        'pdf_viewer_fallback_reason',
+        'histogram-categorical',
+        'content',
+        payload.processes.content.histograms.pdf_viewer_fallback_reason,
+        (1, 50, 51)
+      ),
+      (
+        'pdf_viewer_fallback_reason',
+        'histogram-categorical',
+        'parent',
+        payload.histograms.pdf_viewer_fallback_reason,
+        (1, 50, 51)
+      ),
+      (
         'pdf_viewer_fallback_shown',
         'histogram-boolean',
         'content',
@@ -16175,6 +16413,20 @@ histograms AS (
         (1, 1000, 50)
       ),
       (
+        'region_location_services_difference',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.region_location_services_difference,
+        (1, 12742000, 20)
+      ),
+      (
+        'region_location_services_difference',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.region_location_services_difference,
+        (1, 12742000, 20)
+      ),
+      (
         'requests_of_original_content',
         'histogram-count',
         'content',
@@ -16812,6 +17064,13 @@ histograms AS (
         (1, 2, 3)
       ),
       (
+        'shared_memory_ua_sheets_toshmem_succeeded',
+        'histogram-boolean',
+        'parent',
+        payload.histograms.shared_memory_ua_sheets_toshmem_succeeded,
+        (1, 2, 3)
+      ),
+      (
         'shared_worker_count',
         'histogram-count',
         'content',
@@ -17217,6 +17476,20 @@ histograms AS (
         'histogram-exponential',
         'parent',
         payload.histograms.spdy_request_per_conn,
+        (1, 1000, 50)
+      ),
+      (
+        'spdy_request_per_conn_2',
+        'histogram-exponential',
+        'content',
+        payload.processes.content.histograms.spdy_request_per_conn_2,
+        (1, 1000, 50)
+      ),
+      (
+        'spdy_request_per_conn_2',
+        'histogram-exponential',
+        'parent',
+        payload.histograms.spdy_request_per_conn_2,
         (1, 1000, 50)
       ),
       (
@@ -33586,6 +33859,28 @@ histograms AS (
         payload.histograms.webvtt_used_vtt_cues,
         (1, 2, 3)
       ),
+      (
+        'webxr_api_mode',
+        'histogram-categorical',
+        'content',
+        payload.processes.content.histograms.webxr_api_mode,
+        (1, 50, 51)
+      ),
+      (
+        'webxr_api_mode',
+        'histogram-categorical',
+        'parent',
+        payload.histograms.webxr_api_mode,
+        (1, 50, 51)
+      ),
+      (
+        'wheel_action',
+        'histogram-enumerated',
+        'parent',
+        payload.histograms.wheel_action,
+        (1, 10, 11)
+      ),
+      ('wheel_index', 'histogram-enumerated', 'parent', payload.histograms.wheel_index, (1, 7, 8)),
       (
         'window_open_outer_size',
         'histogram-boolean',

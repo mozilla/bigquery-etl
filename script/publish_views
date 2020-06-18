@@ -16,6 +16,7 @@ import sqlparse
 VIEWS_TO_SKIP = (
     # Access Denied
     "activity_stream/tile_id_types/view.sql",
+    "firefox_accounts/fxa_amplitude_email_clicks/view.sql",
     "pocket/pocket_reach_mau/view.sql",
     "telemetry/buildhub2/view.sql",
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
@@ -23,6 +24,8 @@ VIEWS_TO_SKIP = (
     "glam_etl/org_mozilla_fenix__view_clients_daily_histogram_aggregates_v1/view.sql",
     "glam_etl/org_mozilla_fenix__view_probe_counts_v1/view.sql",
     "glam_etl/org_mozilla_fenix__view_user_counts_v1/view.sql",
+    # View in project other than prod
+    "sql/shredder_state/progress/view.sql",
 )
 
 

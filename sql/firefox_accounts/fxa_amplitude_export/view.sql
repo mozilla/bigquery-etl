@@ -34,7 +34,7 @@ active_events AS (
     insert_id,
     'fxa_activity - active' AS event_type,
     timestamp,
-    TO_JSON_STRING(STRUCT(services, oauth_client_ids)) AS event_properties,
+    TO_JSON_STRING(STRUCT(services AS service, oauth_client_ids)) AS event_properties,
     region,
     country,
     `LANGUAGE`,
@@ -66,6 +66,10 @@ user_properties AS (
             CONCAT(TO_JSON_STRING(key), ":", value)
           FROM
             (
+              SELECT AS STRUCT
+                "os" AS key,
+                TO_JSON_STRING(os_used_day) AS value
+              UNION ALL
               SELECT AS STRUCT
                 "os_used_day" AS key,
                 TO_JSON_STRING(os_used_day) AS value,

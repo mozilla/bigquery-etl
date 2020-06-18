@@ -1,0 +1,11 @@
+friendly_name: Search Clients Daily
+description: A daily aggregate of search clients, partitioned by day
+owners:
+  - bewu@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_search
+  depends_on:
+    - dag_name: main_summary
+      task_id: main_summary

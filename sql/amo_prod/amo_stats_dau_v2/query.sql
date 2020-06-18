@@ -8,31 +8,17 @@ and provides all the information needed to populate the various
 
 */
 --
-WITH cd AS (
+WITH unnested AS (
   SELECT
-    submission_date,
-    client_id,
-    active_addons,
-    app_version,
-    country,
-    locale,
-    os
+    dd.* EXCEPT (addons),
+    addon.id AS addon_id,
+    addon.version AS addon_version,
   FROM
-    telemetry.clients_daily
-  WHERE
-    ARRAY_LENGTH(active_addons) > 0
-    AND submission_date = @submission_date
-),
---
-unnested AS (
-  SELECT
-    * EXCEPT (active_addons, version, os),
-    version AS addon_version,
-    udf.normalize_os(os) AS app_os,
-  FROM
-    cd
+    amo_prod.desktop_addons_by_client_v1 AS dd
   CROSS JOIN
-    UNNEST(active_addons) AS addon
+    UNNEST(addons) AS addon
+  WHERE
+    submission_date = @submission_date
 ),
 --
 per_addon_version AS (

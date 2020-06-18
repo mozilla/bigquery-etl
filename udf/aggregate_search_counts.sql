@@ -27,10 +27,12 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
             count,
             0
           )
-        ), 0
+        ),
+        0
       ) AS search_count_all,
       COALESCE(
-        SUM(IF(STARTS_WITH(source, 'in-content:sap:') OR STARTS_WITH(source, 'sap:'), count, 0)), 0
+        SUM(IF(STARTS_WITH(source, 'in-content:sap:') OR STARTS_WITH(source, 'sap:'), count, 0)),
+        0
       ) AS search_count_tagged_sap,
       COALESCE(
         SUM(
@@ -40,10 +42,12 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
             count,
             0
           )
-        ), 0
+        ),
+        0
       ) AS search_count_tagged_follow_on,
       COALESCE(
-        SUM(IF(STARTS_WITH(source, 'in-content:organic:'), count, 0)), 0
+        SUM(IF(STARTS_WITH(source, 'in-content:organic:'), count, 0)),
+        0
       ) AS search_count_organic
     FROM
       UNNEST(search_counts)

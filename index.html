@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Network</title>
+    <title>ETL reference graph</title>
     <script
       type="text/javascript"
       src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
@@ -65,6 +65,7 @@
                 from: nodeMap.get(el.referenced),
                 to: nodeMap.get(el.destination),
               }))
+              //.slice(0, 100)
               .concat(
                 [...nodes].map((el) => ({
                   from: nodeMap.get(getDatasetId(el)),
@@ -93,7 +94,7 @@
             stabilization: {
               enabled: true,
               iterations: 200,
-              updateInterval: 25,
+              updateInterval: 10,
             },
           },
           layout: {
@@ -113,10 +114,52 @@
           document.getElementById("progress").innerHTML =
             Math.round((params.iterations / params.total) * 100) + "%";
         });
+
+        function setSummary(root) {
+          if (root.label == null) {
+            console.log("did not set summary");
+            return;
+          }
+          let div = document.getElementById("summary");
+          // clear the summary
+          div.innerHTML = "";
+          // dump stringified json into the summary
+          let parents = data.nodes.get(
+            network.getConnectedNodes(root.id, "from")
+          );
+          let children = data.nodes.get(
+            network.getConnectedNodes(root.id, "to")
+          );
+          console.log(root);
+          console.log(parents);
+          // pretty output
+          let output = {
+            root: root.label,
+            links: {
+              references: parents.map((node) => node.label),
+              destination: children.map((node) => node.label),
+            },
+          };
+
+          div.innerHTML =
+            `<h3>Summary of ${root.label} </h3><pre>` +
+            JSON.stringify(output, null, 2) +
+            "</pre>";
+        }
+
+        network.on("selectNode", (obj) => {
+          let root = data.nodes.get(obj.nodes)[0];
+          setSummary(root);
+        });
         network.once("stabilizationIterationsDone", function () {
           document.getElementById("progress").innerHTML = "100%";
           setTimeout(function () {
             document.getElementById("status").style.display = "none";
+            setSummary(
+              data.nodes.get(
+                nodeMap.get("moz-fx-data-shared-prod:telemetry_stable.main_v4")
+              )
+            );
           }, 500);
         });
       }
@@ -126,6 +169,7 @@
     <div id="container">
       <div id="mynetwork"></div>
       <p id="status">Loading <span id="progress">0%</span></p>
+      <div id="summary"></div>
     </div>
   </body>
 </html>

@@ -31,27 +31,46 @@
           nodes.add(edges[i].destination);
           nodes.add(edges[i].referenced);
         }
+        // datasets are nodes too now, but assigned to a different group
         var datasets = new Set();
         nodes.forEach((name) => {
           datasets.add(getDatasetId(name));
         });
 
-        let nodeMap = new Map([...nodes].map((el, idx) => [el, idx]));
+        let nodeMap = new Map(
+          [...nodes, ...datasets].map((el, idx) => [el, idx])
+        );
 
         let data = {
           nodes: new vis.DataSet(
-            [...nodes].map((el) => ({
-              id: nodeMap.get(el),
-              label: el.split(":")[1],
-              group: el.split(":")[0],
-              title: el,
-            }))
+            [...nodes]
+              .map((el) => ({
+                id: nodeMap.get(el),
+                label: el.split(":")[1],
+                group: 0,
+                title: el,
+              }))
+              .concat(
+                [...datasets].map((el) => ({
+                  id: nodeMap.get(el),
+                  label: el,
+                  group: 1,
+                  title: el,
+                }))
+              )
           ),
           edges: new vis.DataSet(
-            edges.map((el) => ({
-              from: nodeMap.get(el.referenced),
-              to: nodeMap.get(el.destination),
-            }))
+            edges
+              .map((el) => ({
+                from: nodeMap.get(el.referenced),
+                to: nodeMap.get(el.destination),
+              }))
+              .concat(
+                [...nodes].map((el) => ({
+                  from: nodeMap.get(getDatasetId(el)),
+                  to: nodeMap.get(el),
+                }))
+              )
           ),
         };
         // create a network

@@ -20,6 +20,10 @@
     </style>
     <script type="text/javascript">
       // view-source:https://visjs.github.io/vis-network/examples/network/exampleApplications/loadingBar.html
+      function getDatasetId(name) {
+        return name.split(".")[0];
+      }
+
       async function main() {
         let edges = await fetch("data/edges.json").then((resp) => resp.json());
         var nodes = new Set();
@@ -27,13 +31,20 @@
           nodes.add(edges[i].destination);
           nodes.add(edges[i].referenced);
         }
+        var datasets = new Set();
+        nodes.forEach((name) => {
+          datasets.add(getDatasetId(name));
+        });
+
         let nodeMap = new Map([...nodes].map((el, idx) => [el, idx]));
 
         let data = {
           nodes: new vis.DataSet(
             [...nodes].map((el) => ({
               id: nodeMap.get(el),
-              label: el,
+              label: el.split(":")[1],
+              group: el.split(":")[0],
+              title: el,
             }))
           ),
           edges: new vis.DataSet(

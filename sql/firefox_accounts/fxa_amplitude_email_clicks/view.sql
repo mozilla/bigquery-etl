@@ -117,8 +117,8 @@ SELECT
   customers.user_id,
   ARRAY_TO_STRING([customers.user_id, clicks.SendId, string(clicks.EventDate)], '-') AS insert_id,
   FORMAT(
-    -- We use CONCAT here to avoid '{%' which will be interpreted as opening a
-    -- Jinja statement when run via Airflow's BigQueryOperator.
+    -- We use CONCAT here to avoid '{' directly followed by '%' which will be
+    -- interpreted as opening a Jinja statement when run via Airflow's BigQueryOperator.
     CONCAT('{', '%t', '}'),
     ARRAY_TO_STRING(
       ARRAY(

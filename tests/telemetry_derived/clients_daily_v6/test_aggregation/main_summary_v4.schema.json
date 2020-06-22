@@ -1037,6 +1037,5 @@
     "type": "RECORD",
     "name": "scalar_parent_browser_search_with_ads",
     "mode": "REPEATED"
-   }
- ]
+  }
 ]

@@ -1003,5 +1003,40 @@
     "type": "STRING",
     "name": "isp_organization",
     "mode": "NULLABLE"
-  }
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+       "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_search_ad_clicks",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_browser_search_with_ads",
+    "mode": "REPEATED"
+   }
+ ]
 ]

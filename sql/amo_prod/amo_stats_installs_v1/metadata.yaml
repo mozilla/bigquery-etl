@@ -16,6 +16,3 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_amo_stats
-  depends_on:
-    - task_id: clients_daily
-      dag_name: main_summary

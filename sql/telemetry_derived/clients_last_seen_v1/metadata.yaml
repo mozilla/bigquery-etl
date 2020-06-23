@@ -1,0 +1,14 @@
+friendly_name: Clients Last Seen
+description: >
+  Captures history of activity of each client in 28 day
+  windows for each submission date.
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: firefox
+  schedule: daily
+scheduling:
+  dag_name: bqetl_clients
+  start_date: '2019-04-15'
+  email: ['dthorn@mozilla.com', 'jklukas@mozilla.com']
+  depends_on_past: true

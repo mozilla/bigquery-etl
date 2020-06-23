@@ -8,6 +8,3 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_addons
-  depends_on:
-    - dag_name: main_summary
-      task_id: clients_last_seen

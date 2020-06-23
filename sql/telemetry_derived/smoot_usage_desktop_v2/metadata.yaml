@@ -8,6 +8,3 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_gud
-  depends_on:
-    - dag_name: main_summary
-      task_id: clients_last_seen

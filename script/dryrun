@@ -47,6 +47,7 @@ SKIP = {
     "sql/search/search_rfm/view.sql",
     "sql/search/search_clients_last_seen_v1/view.sql",
     "sql/search/search_clients_last_seen/view.sql",
+    "sql/firefox_accounts/fxa_amplitude_email_clicks/view.sql",
     "sql/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",

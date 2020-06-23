@@ -18,4 +18,4 @@ SELECT
   assert_equals(1.0, udf.quantile_search_metric_contribution(73, 1, 60)),
   assert_null(udf.quantile_search_metric_contribution(29, 9, 60)),
   assert_equals(8.0, udf.quantile_search_metric_contribution(118, 8, 21)),
-  assert_null(udf.quantile_search_metric_contribution(58, 5, 21));
+  assert_null(udf.quantile_search_metric_contribution(10, 5, 21));

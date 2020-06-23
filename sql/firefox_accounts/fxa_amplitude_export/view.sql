@@ -39,6 +39,7 @@ active_events AS (
     country,
     `LANGUAGE`,
     app_version AS version,
+    TO_JSON_STRING(os_used_day) AS os,
     '' AS user_properties
   FROM
     active_users
@@ -56,6 +57,7 @@ user_properties AS (
     country,
     `LANGUAGE`,
     app_version AS version,
+    TO_JSON_STRING(os_used_day) AS os,
     -- We don't want to include user_properties if they are null, so we need
     -- to list them out explicitly and filter with WHERE
     CONCAT(
@@ -66,10 +68,6 @@ user_properties AS (
             CONCAT(TO_JSON_STRING(key), ":", value)
           FROM
             (
-              SELECT AS STRUCT
-                "os" AS key,
-                TO_JSON_STRING(os_used_day) AS value
-              UNION ALL
               SELECT AS STRUCT
                 "os_used_day" AS key,
                 TO_JSON_STRING(os_used_day) AS value,

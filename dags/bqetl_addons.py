@@ -80,17 +80,16 @@ with DAG(
     telemetry_derived__addons_daily__v1.set_upstream(
         wait_for_search_derived__search_clients_daily__v8
     )
-    wait_for_main_summary_clients_last_seen = ExternalTaskSensor(
-        task_id="wait_for_main_summary_clients_last_seen",
-        external_dag_id="main_summary",
-        external_task_id="clients_last_seen",
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        external_dag_id="bqetl_clients",
+        external_task_id="telemetry_derived__clients_last_seen__v1",
         check_existence=True,
         mode="reschedule",
-        dag=dag,
     )
 
     telemetry_derived__addons_daily__v1.set_upstream(
-        wait_for_main_summary_clients_last_seen
+        wait_for_telemetry_derived__clients_last_seen__v1
     )
 
     wait_for_main_summary_copy_deduplicate_main_ping = ExternalTaskSensor(

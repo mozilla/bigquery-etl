@@ -23,7 +23,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         email={{ task.email | sort }},
         {%+ endif -%}
         {%+ if task.start_date -%}
-        start_date={{ task.start_date | format_date }},
+        start_date={{ task.start_date | format_date | format_repr }},
         {%+ endif -%}
         {%+ if task.date_partition_parameter == None or task.date_partition_parameter is string -%}
         date_partition_parameter={{ task.date_partition_parameter | format_optional_string }},

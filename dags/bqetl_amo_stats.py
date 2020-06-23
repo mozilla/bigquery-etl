@@ -84,16 +84,17 @@ with DAG(
 
     amo_dev__amo_stats_dau__v2.set_upstream(amo_prod__amo_stats_dau__v2)
 
-    wait_for_main_summary_clients_daily = ExternalTaskSensor(
-        task_id="wait_for_main_summary_clients_daily",
-        external_dag_id="main_summary",
-        external_task_id="clients_daily",
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_clients",
+        external_task_id="telemetry_derived__clients_daily__v6",
         check_existence=True,
         mode="reschedule",
-        dag=dag,
     )
 
-    amo_prod__amo_stats_installs__v1.set_upstream(wait_for_main_summary_clients_daily)
+    amo_prod__amo_stats_installs__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily__v6
+    )
 
     amo_prod__amo_stats_dau__v2.set_upstream(amo_prod__desktop_addons_by_client__v1)
 

@@ -7,3 +7,9 @@ owners:
 labels:
   application: firefox
   schedule: daily
+scheduling:
+  dag_name: bqetl_clients
+  start_date: '2019-11-05'
+  depends_on:
+    - dag_name: main_summary
+      task_id: main_summary

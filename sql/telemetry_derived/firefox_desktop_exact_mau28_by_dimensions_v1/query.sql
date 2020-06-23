@@ -23,7 +23,7 @@ SELECT
   COALESCE(cc.name, cls.country) AS country_name,
   distribution_id
 FROM
-  clients_last_seen_v1 cls
+  telemetry.clients_last_seen_v1 cls
 LEFT JOIN
   static.country_codes_v1 cc
 ON

@@ -2,6 +2,8 @@
 
 import attr
 import cattr
+import glob
+import os
 import re
 import logging
 from google.cloud import bigquery
@@ -18,7 +20,9 @@ from bigquery_etl.query_scheduling.utils import (
 
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
-QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")
+QUERY_FILE_RE = re.compile(
+    r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql)$"
+)
 DEFAULT_PROJECT = "moz-fx-data-shared-prod"
 
 
@@ -95,6 +99,8 @@ class Task:
     depends_on: List[TaskRef] = attr.ib([])
     arguments: List[str] = attr.ib([])
     parameters: List[str] = attr.ib([])
+    multipart: bool = attr.ib(False)
+    sql_file_path: Optional[str] = None
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -149,7 +155,7 @@ class Task:
         else:
             raise ValueError(
                 "query_file must be a path with format:"
-                " ../<dataset>/<table>_<version>/query.sql"
+                " ../<dataset>/<table>_<version>/(query.sql|part1.sql)"
                 f" but is {self.query_file}"
             )
 
@@ -199,6 +205,20 @@ class Task:
                 f"Invalid scheduling information format for {query_file}: {e}"
             )
 
+    @classmethod
+    def of_multipart_query(cls, query_file, metadata=None):
+        """
+        Create task that schedules the corresponding multipart query in Airflow.
+
+        Raises FileNotFoundError if not metadata file exists for query.
+        If `metadata` is set, then it is used instead of the metadata.yaml
+        file that might exist alongside the query file.
+        """
+        task = cls.of_query(query_file, metadata)
+        task.multipart = True
+        task.sql_file_path = os.path.dirname(query_file)
+        return task
+
     def _get_referenced_tables(self, client):
         """
         Perform a dry_run to get tables the query depends on.
@@ -219,23 +239,33 @@ class Task:
             ],
         )
 
-        with open(self.query_file) as query_stream:
-            query = query_stream.read()
-            query_job = client.query(query, job_config=job_config)
-            referenced_tables = query_job.referenced_tables
+        table_names = set()
+        query_files = [self.query_file]
 
-            if len(referenced_tables) >= 50:
-                logging.warn(
-                    "Query has 50 or more tables. Queries that reference more than"
-                    "50 tables will not have a complete list of dependencies."
-                )
+        if self.multipart:
+            # dry_run all files if query is split into multiple parts
+            query_files = glob.glob(self.sql_file_path + "/*.sql")
 
-            table_names = [(t.dataset_id, t.table_id) for t in referenced_tables]
+        for query_file in query_files:
+            with open(query_file) as query_stream:
+                query = query_stream.read()
+                query_job = client.query(query, job_config=job_config)
+                referenced_tables = query_job.referenced_tables
 
-            # the order of table dependencies changes between requests
-            # sort to maintain same order between DAG generation runs
-            table_names.sort()
-            return table_names
+                if len(referenced_tables) >= 50:
+                    logging.warn(
+                        "Query has 50 or more tables. Queries that reference more than"
+                        "50 tables will not have a complete list of dependencies."
+                    )
+
+                for t in referenced_tables:
+                    table_names.add((t.dataset_id, t.table_id))
+
+        # the order of table dependencies changes between requests
+        # sort to maintain same order between DAG generation runs
+        sorted_table_names = list(table_names)
+        sorted_table_names.sort()
+        return sorted_table_names
 
     def with_dependencies(self, client, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""

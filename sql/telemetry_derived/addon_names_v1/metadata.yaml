@@ -8,6 +8,9 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_addons
+  # This is an unpartitioned table that we recreate each day based on the
+  # previous day's addon data in main pings, thus the odd combination of
+  # parameters below.
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
   depends_on:

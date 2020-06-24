@@ -8,7 +8,7 @@ labels:
   application: firefox
   schedule: daily
 scheduling:
-  dag_name: bqetl_clients
+  dag_name: bqetl_clients_daily
   start_date: '2019-04-15'
   email: ['dthorn@mozilla.com', 'jklukas@mozilla.com']
   depends_on_past: true

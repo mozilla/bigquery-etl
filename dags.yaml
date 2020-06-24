@@ -116,16 +116,7 @@ bqetl_addons:
     retries: 2
     retry_delay: 30m
     
-bqetl_clients:
-  schedule_interval: 0 1 * * *
-  default_args:
-    owner: dthorn@mozilla.com
-    start_date: '2018-11-27'
-    email: ['telemetry-alerts@mozilla.com', 'dthorn@mozilla.com', 'jklukas@mozilla.com', 'frank@mozilla.com']
-    retries: 2
-    retry_delay: 30m
-
-bqetl_desktop:
+bqetl_clients_daily:
   schedule_interval: 0 1 * * *
   default_args:
     owner: dthorn@mozilla.com

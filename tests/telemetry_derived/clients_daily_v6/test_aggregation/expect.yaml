@@ -137,8 +137,11 @@
   search_count_all: 0
   search_count_contextmenu: 0
   search_count_newtab: 0
+  search_count_organic: 0
   search_count_searchbar: 0
   search_count_system: 0
+  search_count_tagged_follow_on: 0
+  search_count_tagged_sap: 0
   search_count_urlbar: 0
   session_restored_mean: 2
   sessions_started_on_this_day: 0

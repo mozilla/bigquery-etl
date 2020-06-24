@@ -11,7 +11,7 @@ WITH
         device,
         metadata.app_build_id,
         e.*
-    FROM `moz-fx-data-derived-datasets.telemetry.telemetry_mobile_event_parquet_v2`, UNNEST(events) AS e
+    FROM `moz-fx-data-shared-prod.telemetry.telemetry_mobile_event_parquet_v2`, UNNEST(events) AS e
     WHERE metadata.app_name = 'Lockbox'
     AND os = 'Android'
     -- Filter out test data before the Android launch date.
@@ -28,7 +28,7 @@ WITH
         metadata.app_build_id,
         e.*
     FROM
-    `moz-fx-data-derived-datasets.telemetry.telemetry_focus_event_parquet_v1`, UNNEST(events) AS e
+    `moz-fx-data-shared-prod.telemetry.telemetry_focus_event_parquet_v1`, UNNEST(events) AS e
     WHERE metadata.app_name = 'Lockbox'
     AND os = 'iOS'
     -- Filter out test data before the iOS launch date.

@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-derived-datasets.telemetry.ssl_ratios_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1`

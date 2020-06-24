@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-derived-datasets.telemetry.crash_summary_v2`
+  `moz-fx-data-shared-prod.telemetry_derived.crash_summary_v2`

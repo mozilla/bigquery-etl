@@ -22,16 +22,14 @@ SELECT
   ) AS event_properties,
   (
     `moz-fx-data-shared-prod.udf.kv_array_to_json_string`(
-      ARRAY_CONCAT(
-        [STRUCT("locale" AS key, locale AS value)],
-        [STRUCT("release_channel" AS key, release_channel AS value)],
-        [
-          STRUCT(
-            "experiments" AS key,
-            TO_JSON_STRING(ARRAY(SELECT CONCAT(key, " - ", value.branch) FROM UNNEST(experiments)))
-          )
-        ]
-      )
+      [
+        STRUCT("locale" AS key, locale AS value),
+        STRUCT("release_channel" AS key, release_channel AS value),
+        STRUCT(
+          "experiments" AS key,
+          TO_JSON_STRING(ARRAY(SELECT CONCAT(key, " - ", value.branch) FROM UNNEST(experiments)))
+        )
+      ]
     )
   ) AS user_properties
 FROM

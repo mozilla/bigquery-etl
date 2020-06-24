@@ -35,7 +35,7 @@ with DAG(
 
     wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily__v6",
-        external_dag_id="bqetl_clients",
+        external_dag_id="bqetl_clients_daily",
         external_task_id="telemetry_derived__clients_daily__v6",
         check_existence=True,
         mode="reschedule",

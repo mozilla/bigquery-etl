@@ -22,7 +22,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_clients", default_args=default_args, schedule_interval="0 1 * * *"
+    "bqetl_clients_daily", default_args=default_args, schedule_interval="0 1 * * *"
 ) as dag:
 
     telemetry_derived__clients_first_seen__v1 = bigquery_etl_query(
@@ -36,6 +36,18 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
+    firefox_desktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
+        task_id="firefox_desktop_exact_mau28_by_client_count_dimensions",
+        destination_table="firefox_desktop_exact_mau28_by_client_count_dimensions_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
         dag=dag,
     )
 
@@ -65,8 +77,24 @@ with DAG(
         dag=dag,
     )
 
+    firefox_desktop_exact_mau28_by_dimensions = bigquery_etl_query(
+        task_id="firefox_desktop_exact_mau28_by_dimensions",
+        destination_table="firefox_desktop_exact_mau28_by_dimensions_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="relud@mozilla.com",
+        email=["relud@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     telemetry_derived__clients_first_seen__v1.set_upstream(
         telemetry_derived__clients_daily__v6
+    )
+
+    firefox_desktop_exact_mau28_by_client_count_dimensions.set_upstream(
+        telemetry_derived__clients_last_seen__v1
     )
 
     wait_for_main_summary_main_summary = ExternalTaskSensor(
@@ -84,4 +112,8 @@ with DAG(
 
     telemetry_derived__clients_last_seen__v1.set_upstream(
         telemetry_derived__clients_daily__v6
+    )
+
+    firefox_desktop_exact_mau28_by_dimensions.set_upstream(
+        telemetry_derived__clients_last_seen__v1
     )

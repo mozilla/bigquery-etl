@@ -82,7 +82,7 @@ with DAG(
     )
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",
-        external_dag_id="bqetl_clients",
+        external_dag_id="bqetl_clients_daily",
         external_task_id="telemetry_derived__clients_last_seen__v1",
         check_existence=True,
         mode="reschedule",

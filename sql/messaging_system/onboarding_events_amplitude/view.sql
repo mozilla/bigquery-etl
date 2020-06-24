@@ -8,7 +8,7 @@ SELECT
   event AS event_type,
   submission_timestamp AS timestamp,
   version AS app_version,
-  metadata.user_agent.os AS platform,
+  REGEXP_EXTRACT(metadata.user_agent.os, '^\\w+') AS platform,
   metadata.user_agent.os AS os_name,
   normalized_os_version AS os_version,
   metadata.geo.country AS country,
@@ -25,7 +25,7 @@ SELECT
       ARRAY_CONCAT(
         [STRUCT("locale" AS key, locale AS value)],
         [STRUCT("release_channel" AS key, release_channel AS value)],
-        ARRAY(SELECT STRUCT(key AS key, value.branch AS value) FROM UNNEST(experiments))
+        [STRUCT("experiments" AS key, TO_JSON_STRING(ARRAY(SELECT CONCAT(key, " - ", value.branch) FROM UNNEST(experiments))))]
       )
     )
   ) AS user_properties

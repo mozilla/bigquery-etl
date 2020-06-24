@@ -80,6 +80,17 @@ with DAG(
         search_derived__search_clients_daily__v8
     )
 
+    wait_for_telemetry_derived__main_summary__v4 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__main_summary__v4",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__main_summary__v4",
+        check_existence=True,
+        mode="reschedule",
+    )
+
+    search_derived__search_clients_daily__v8.set_upstream(
+        wait_for_telemetry_derived__main_summary__v4
+    )
     wait_for_main_summary_main_summary = ExternalTaskSensor(
         task_id="wait_for_main_summary_main_summary",
         external_dag_id="main_summary",

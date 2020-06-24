@@ -35,6 +35,12 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {%+ if task.parameters | length > 0 -%}
         parameters={{ task.parameters }},
         {%+ endif -%}
+        {%+ if task.multipart -%}
+        mulitpart={{ task.multipart }},
+        {%+ endif -%}
+        {%+ if task.sql_file_path -%}
+        sql_file_path={{ task.sql_file_path | format_repr }},
+        {%+ endif -%}
         dag=dag,
     )
 {% endfor -%}

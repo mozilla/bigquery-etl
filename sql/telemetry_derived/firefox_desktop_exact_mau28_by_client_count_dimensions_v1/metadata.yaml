@@ -8,5 +8,5 @@ labels:
   schedule: daily
   incremental: true
 scheduling:
-  dag_name: bqetl_desktop
+  dag_name: bqetl_clients_daily
   task_name: firefox_desktop_exact_mau28_by_client_count_dimensions

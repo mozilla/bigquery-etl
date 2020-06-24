@@ -25,7 +25,12 @@ SELECT
       ARRAY_CONCAT(
         [STRUCT("locale" AS key, locale AS value)],
         [STRUCT("release_channel" AS key, release_channel AS value)],
-        [STRUCT("experiments" AS key, TO_JSON_STRING(ARRAY(SELECT CONCAT(key, " - ", value.branch) FROM UNNEST(experiments))))]
+        [
+          STRUCT(
+            "experiments" AS key,
+            TO_JSON_STRING(ARRAY(SELECT CONCAT(key, " - ", value.branch) FROM UNNEST(experiments)))
+          )
+        ]
       )
     )
   ) AS user_properties

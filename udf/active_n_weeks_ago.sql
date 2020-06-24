@@ -1,12 +1,9 @@
-CREATE OR REPLACE FUNCTION
-  udf.active_n_weeks_ago(x INT64, n INT64)
-  RETURNS BOOLEAN
-  AS (
-    BIT_COUNT(x >> (7 * n) & udf.bitmask_lowest_7()) > 0
-  );
+CREATE OR REPLACE FUNCTION udf.active_n_weeks_ago(x INT64, n INT64)
+RETURNS BOOLEAN AS (
+  BIT_COUNT(x >> (7 * n) & udf.bitmask_lowest_7()) > 0
+);
 
 -- Tests
-
 SELECT
   assert_true(udf.active_n_weeks_ago(1 << 0, 0)),
   assert_true(udf.active_n_weeks_ago(1 << 6, 0)),
@@ -26,4 +23,4 @@ SELECT
   assert_false(udf.active_n_weeks_ago(1 << 21, 2)),
   assert_false(udf.active_n_weeks_ago(1 << 27, 4)),
   assert_null(udf.active_n_weeks_ago(NULL, 0)),
-  true
+  TRUE

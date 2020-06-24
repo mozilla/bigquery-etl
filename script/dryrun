@@ -51,6 +51,7 @@ SKIP = {
     "sql/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",
+    "sql/revenue_derived/client_ltv_v1/query.sql",
     "sql/shredder_state/progress/view.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",

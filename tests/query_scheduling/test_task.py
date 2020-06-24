@@ -44,6 +44,23 @@ class TestTask:
         assert task.public_json
         assert task.arguments == ["--append_table"]
 
+    def test_of_multipart_query(self):
+        query_file = (
+            TEST_DIR / "data" / "test_sql" / "test" / "multipart_query_v1" / "part1.sql"
+        )
+
+        task = Task.of_multipart_query(query_file)
+
+        assert task.query_file == str(query_file)
+        assert task.dataset == "test"
+        assert task.table == "multipart_query"
+        assert task.version == "v1"
+        assert task.task_name == "test__multipart_query__v1"
+        assert task.dag_name == "bqetl_core"
+        assert task.depends_on_past is False
+        assert task.multipart
+        assert task.sql_file_path == os.path.dirname(query_file)
+
     def test_of_non_existing_query(self):
         with pytest.raises(FileNotFoundError):
             Task.of_query("non_existing_query/query.sql")
@@ -369,6 +386,66 @@ class TestTask:
         )
 
         task = Task.of_query(query_file, metadata)
+
+        table_task1 = Task.of_query(
+            tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata
+        )
+        table_task2 = Task.of_query(
+            tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql", metadata
+        )
+
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": {
+                        "owner": "test@example.org",
+                        "start_date": "2020-01-01",
+                    },
+                }
+            }
+        ).with_tasks([task, table_task1, table_task2])
+
+        task.with_dependencies(bigquery_client, dags)
+        result = task.dependencies
+
+        tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
+
+        assert f"{temporary_dataset}__table1__v1" in tables
+        assert f"{temporary_dataset}__table2__v1" in tables
+
+    @pytest.mark.integration
+    def test_muultipart_task_get_dependencies(
+        self, tmp_path, bigquery_client, project_id, temporary_dataset
+    ):
+        query_file_path = tmp_path / "sql" / temporary_dataset / "query_v1"
+        os.makedirs(query_file_path)
+
+        query_file_part1 = query_file_path / "part1.sql"
+        query_file_part1.write_text(
+            f"SELECT * FROM {project_id}.{temporary_dataset}.table1_v1"
+        )
+
+        query_file_part2 = query_file_path / "part2.sql"
+        query_file_part2.write_text(
+            f"SELECT * FROM {project_id}.{temporary_dataset}.table2_v1"
+        )
+
+        schema = [bigquery.SchemaField("a", "STRING", mode="NULLABLE")]
+        table = bigquery.Table(
+            f"{project_id}.{temporary_dataset}.table1_v1", schema=schema
+        )
+        bigquery_client.create_table(table)
+        table = bigquery.Table(
+            f"{project_id}.{temporary_dataset}.table2_v1", schema=schema
+        )
+        bigquery_client.create_table(table)
+
+        metadata = Metadata(
+            "test", "test", ["test@example.org"], {}, self.default_scheduling
+        )
+
+        task = Task.of_multipart_query(query_file_part1, metadata)
 
         table_task1 = Task.of_query(
             tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata

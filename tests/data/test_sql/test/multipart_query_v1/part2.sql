@@ -1,1 +1,2 @@
-SELECT "part2"
+SELECT
+  "part2"

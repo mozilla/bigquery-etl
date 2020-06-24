@@ -6,6 +6,3 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_search
-  depends_on:
-    - dag_name: main_summary
-      task_id: main_summary

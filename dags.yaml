@@ -143,6 +143,15 @@ bqetl_main_summary:
     retries: 2
     retry_delay: 30m
 
+bqetl_experiments:
+  schedule_interval: 0 1 * * *
+  default_args:
+    owner: ssuh@mozilla.com
+    start_date: '2018-11-27'
+    email: ['telemetry-alerts@mozilla.com', 'ssuh@mozilla.com']
+    retries: 2
+    retry_delay: 30m
+
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (it's done automatically)
 bqetl_public_data_json:

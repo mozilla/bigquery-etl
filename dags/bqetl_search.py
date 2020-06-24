@@ -20,6 +20,18 @@ with DAG(
     "bqetl_search", default_args=default_args, schedule_interval="0 1 * * *"
 ) as dag:
 
+    search_derived__search_metric_contribution__v1 = bigquery_etl_query(
+        task_id="search_derived__search_metric_contribution__v1",
+        destination_table="search_metric_contribution_v1",
+        dataset_id="search_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="bmiroglio@mozilla.com",
+        email=["bmiroglio@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     search_derived__search_aggregates__v8 = bigquery_etl_query(
         task_id="search_derived__search_aggregates__v8",
         destination_table="search_aggregates_v8",
@@ -54,6 +66,10 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
+    )
+
+    search_derived__search_metric_contribution__v1.set_upstream(
+        search_derived__search_clients_daily__v8
     )
 
     search_derived__search_aggregates__v8.set_upstream(

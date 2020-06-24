@@ -34,11 +34,12 @@ active_events AS (
     insert_id,
     'fxa_activity - active' AS event_type,
     timestamp,
-    TO_JSON_STRING(STRUCT(services, oauth_client_ids)) AS event_properties,
+    TO_JSON_STRING(STRUCT(services AS service, oauth_client_ids)) AS event_properties,
     region,
     country,
     `LANGUAGE`,
     app_version AS version,
+    TO_JSON_STRING(os_used_day) AS os,
     '' AS user_properties
   FROM
     active_users
@@ -56,6 +57,7 @@ user_properties AS (
     country,
     `LANGUAGE`,
     app_version AS version,
+    TO_JSON_STRING(os_used_day) AS os,
     -- We don't want to include user_properties if they are null, so we need
     -- to list them out explicitly and filter with WHERE
     CONCAT(

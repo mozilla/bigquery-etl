@@ -3,6 +3,6 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * EXCEPT (normalized_engine),
-  udf.normalize_search_engine(engine) AS normalized_engine,
+  `moz-fx-data-shared-prod`.udf.normalize_search_engine(engine) AS normalized_engine,
 FROM
   `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1`

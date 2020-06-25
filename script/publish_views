@@ -69,6 +69,8 @@ def process_file(client, args, filepath):
                     # extra try in this situation.
                     time.sleep(1)
                     client.query(sql, job_config).result()
+                else:
+                    raise
             print(f"Published view {target_view}")
     else:
         print(

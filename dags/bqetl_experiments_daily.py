@@ -17,7 +17,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_experiments", default_args=default_args, schedule_interval="0 1 * * *"
+    "bqetl_experiments_daily", default_args=default_args, schedule_interval="0 1 * * *"
 ) as dag:
 
     telemetry_derived__experiments_daily_active_clients__v1 = bigquery_etl_query(

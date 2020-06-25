@@ -415,7 +415,7 @@ class TestTask:
         assert f"{temporary_dataset}__table2__v1" in tables
 
     @pytest.mark.integration
-    def test_muultipart_task_get_dependencies(
+    def test_multipart_task_get_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
         query_file_path = tmp_path / "sql" / temporary_dataset / "query_v1"

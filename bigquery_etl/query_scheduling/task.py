@@ -263,9 +263,7 @@ class Task:
 
         # the order of table dependencies changes between requests
         # sort to maintain same order between DAG generation runs
-        sorted_table_names = list(table_names)
-        sorted_table_names.sort()
-        return sorted_table_names
+        return sorted(table_names)
 
     def with_dependencies(self, client, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""

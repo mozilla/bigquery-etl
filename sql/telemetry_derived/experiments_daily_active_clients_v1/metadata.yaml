@@ -7,4 +7,4 @@ labels:
   application: experiments
   schedule: daily
 scheduling:
-  dag_name: bqetl_experiments
+  dag_name: bqetl_experiments_daily

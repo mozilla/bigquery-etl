@@ -130,7 +130,9 @@ past_year_metric_sums AS (
     `moz-fx-data-shared-prod`.udf.parquet_array_sum(
       history.element.value.tagged_searches.list
     ) AS total_client_tagged_searches_past_year,
-    `moz-fx-data-shared-prod`.udf.parquet_array_sum(history.element.value.ad_click.list) AS total_client_ad_clicks_past_year,
+    `moz-fx-data-shared-prod`.udf.parquet_array_sum(
+      history.element.value.ad_click.list
+    ) AS total_client_ad_clicks_past_year,
     `moz-fx-data-shared-prod`.udf.parquet_array_sum(
       history.element.value.search_with_ads.list
     ) AS total_client_searches_with_ads_past_year,
@@ -149,7 +151,10 @@ past_year_metric_sums AS (
       `moz-fx-data-shared-prod`.udf.get_key(predictions.key_value, 'days_searched_with_ads'),
       0
     ) AS pred_num_days_seeing_ads,
-    COALESCE(`moz-fx-data-shared-prod`.udf.get_key(predictions.key_value, 'days_searched'), 0) AS pred_num_days_searching,
+    COALESCE(
+      `moz-fx-data-shared-prod`.udf.get_key(predictions.key_value, 'days_searched'),
+      0
+    ) AS pred_num_days_searching,
     COALESCE(
       `moz-fx-data-shared-prod`.udf.get_key(predictions.key_value, 'days_tagged_searched'),
       0

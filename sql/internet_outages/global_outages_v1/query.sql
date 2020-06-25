@@ -94,10 +94,10 @@ WITH DAUs AS (
     2,
     3
   -- Filter filter out cities for which we have less than or equal to
-  -- 100 hourly active users. This will make sure data won't end up in
+  -- 50 hourly active users. This will make sure data won't end up in
   -- the final table.
   HAVING
-    client_count > 100
+    client_count > 50
 ),
 -- Compute aggregates for the health data.
 health_data_sample AS (
@@ -185,7 +185,7 @@ health_data_aggregates AS (
     city,
     datetime
   HAVING
-    COUNT(*) > 100
+    COUNT(*) > 50
 ),
 final_health_data AS (
   SELECT
@@ -276,7 +276,7 @@ dns_success_time AS (
     2,
     3
   HAVING
-    COUNT(*) > 100
+    COUNT(*) > 50
 ),
 -- Oddness: active sessions without DNS_LOOKUP_TIME
 dns_no_dns_lookup_time AS (
@@ -304,7 +304,7 @@ dns_no_dns_lookup_time AS (
     2,
     3
   HAVING
-    COUNT(*) > 100
+    COUNT(*) > 50
 ),
 -- A shared source for the DNS_FAIL histogram
 dns_failure_src AS (
@@ -342,7 +342,7 @@ dns_failure_time AS (
     2,
     3
   HAVING
-    COUNT(*) > 100
+    COUNT(*) > 50
 ),
 -- DNS_FAIL counts
 dns_failure_counts AS (
@@ -372,7 +372,7 @@ dns_failure_counts AS (
     city,
     time_slot
   HAVING
-    COUNT(*) > 100
+    COUNT(*) > 50
 ),
 -- Oddness: active sessions without DNS_FAILED_LOOKUP_TIME
 dns_no_dns_failure_time AS (
@@ -400,7 +400,7 @@ dns_no_dns_failure_time AS (
     2,
     3
   HAVING
-    COUNT(*) > 100
+    COUNT(*) > 50
 ),
 -- SSL_CERT_VERIFICATION_ERRORS histograms
 ssl_error_prop_src AS (
@@ -431,7 +431,7 @@ ssl_error_prop AS (
     time_slot,
     client_id
   HAVING
-    COUNT(*) > 100
+    COUNT(*) > 50
 ),
 -- TLS_HANDSHAKE histogram
 tls_handshake_time AS (
@@ -467,7 +467,7 @@ tls_handshake_time AS (
     2,
     3
   HAVING
-    COUNT(*) > 100
+    COUNT(*) > 50
 )
 SELECT
   DAUs.country AS country,

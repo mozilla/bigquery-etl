@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.telemetry_shield_study_parquet_v1`
+  `moz-fx-data-shared-prod.telemetry.telemetry_shield_study_parquet_v1`

@@ -76,7 +76,9 @@ WITH DAUs AS (
     -- If cities are either '??' or NULL then it's from cities we either don't
     -- know about or have a population less than 15k. Just rename to 'unknown'.
     IF(city = '??' OR city IS NULL, 'unknown', city) AS city,
-    -- Truncate the submission timestamp to the hour.
+    -- Truncate the submission timestamp to the hour. Note that this filed was
+    -- introduced on the 16th December 2019, so it will be `null` for queries
+    -- before that day. See https://github.com/mozilla/bigquery-etl/pull/603 .
     TIMESTAMP_TRUNC(submission_timestamp_min, HOUR) AS datetime,
     COUNT(*) AS client_count
   FROM

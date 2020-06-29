@@ -12,13 +12,13 @@ class TestGenerateDocs:
         input = TEST_DIR / "data" / "test_docs" / "test_dataset1" / "udf1" / "README.md"
         result = load_with_examples(str(input)).strip()
 
-        assert result == "# udf1\n\n```sql\nSELECT * FROM test\n```"
+        assert result == "# udf1\n\n```sql\nSELECT\n  *\nFROM\n  test\n\n```"
 
     def test_load_with_examples_dataset(self):
         input = TEST_DIR / "data" / "test_docs" / "test_dataset1" / "README.md"
         result = load_with_examples(str(input)).strip()
 
-        assert result == "# test_dataset1\n\n```sql\nSELECT * FROM test\n```"
+        assert result == "# test_dataset1\n\n```sql\nSELECT\n  *\nFROM\n  test\n\n```"
 
     def test_load_with_missing_example(self, tmp_path):
         file_path = tmp_path / "ds" / "udf"

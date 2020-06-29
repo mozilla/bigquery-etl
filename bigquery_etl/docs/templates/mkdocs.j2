@@ -1,0 +1,28 @@
+site_name: BigQuery ETL
+site_description: Mozilla BigQuery ETL
+site_author: Mozilla Data Platform Team
+
+repo_url: https://github.com/mozilla/bigquery-etl/
+
+nav:
+  - Home: index.md
+  {% for project, datasets in dir_structure.items() -%}
+  - {{ project }}: {{ project }}/index.md
+    {% if datasets | length > 0 -%}
+    {% for dataset, artifacts in datasets.items() -%}
+    {% if dataset != "" -%}
+    - {{ dataset }}: {{ dataset }}/index.md
+      {% if artifacts | length > 0 -%}
+      {% for artifact, _ in artifacts.items() -%}
+      {% if artifact != "" -%}
+      - {{ artifact }}: {{ artifact }}/index.md
+      {% endif -%}
+      {% endfor -%}
+      {% endif -%}
+    {% endif -%}
+    {% endfor -%}  
+    {% endif -%}
+  {% endfor %}
+
+theme:
+    name: mkdocs

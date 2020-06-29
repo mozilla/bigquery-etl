@@ -8,14 +8,14 @@ docs_dir: {{ project }}
 
 nav:
   - Home: index.md
-  {% for dataset, artifacts in datasets.items() -%}
+  {% for dataset, artifacts in datasets.items() | sort(attribute='0') -%}
   {% if dataset != "" -%}
   {% if artifacts | length == 0 -%}
   - {{ dataset }}: {{ dataset }}/index.md
   {% else %}
   - {{ dataset }}:
     - Overview: {{ dataset }}/index.md
-    {% for artifact, _ in artifacts.items() -%}
+    {% for artifact, _ in artifacts.items() | sort(attribute='0') -%}
     {% if artifact != "" -%}
     - {{ artifact }}: {{ dataset }}/{{ artifact }}/index.md
     {% endif -%}

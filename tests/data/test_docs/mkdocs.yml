@@ -8,15 +8,15 @@ docs_dir: test_docs
 nav:
   - Home: index.md
   
-  - test_dataset2:
-    - Overview: test_dataset2/index.md
-    - udf2: test_dataset2/udf2/index.md
-    - udf1: test_dataset2/udf1/index.md
-    
   - test_dataset1:
     - Overview: test_dataset1/index.md
-    - udf2: test_dataset1/udf2/index.md
     - udf1: test_dataset1/udf1/index.md
+    - udf2: test_dataset1/udf2/index.md
+    
+  - test_dataset2:
+    - Overview: test_dataset2/index.md
+    - udf1: test_dataset2/udf1/index.md
+    - udf2: test_dataset2/udf2/index.md
     
 
 theme:

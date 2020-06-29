@@ -11,7 +11,7 @@ from bigquery_etl.util import standard_args
 DEFAULT_PROJECT = "mozfun/"
 DOCS_FILE = "README.md"
 MKDOCS_CONFIG_TEMPLATE = "mkdocs.j2"
-SQL_REF_RE = "@sql\((.+)\)"
+SQL_REF_RE = r"@sql\((.+)\)"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -34,8 +34,6 @@ def load_with_examples(file):
     with open(file) as doc_file:
         file_content = doc_file.read()
 
-        path_parts = file.split(os.sep)
-
         path, _ = os.path.split(file)
 
         for sql_ref in re.findall(SQL_REF_RE, file_content):
@@ -47,14 +45,8 @@ def load_with_examples(file):
     return file_content
 
 
-def main():
+def generate_docs(out_dir, project_dir):
     """Generate documentation for project."""
-    args = parser.parse_args()
-    out_dir = args.output_dir
-    project_dir = args.project_dir
-
-    Path(out_dir).mkdir(parents=True, exist_ok=True)
-
     dir_structure = {}
 
     if os.path.isdir(project_dir):
@@ -69,7 +61,7 @@ def main():
 
                 # parse the doc directory structure
                 # used in Jinja template to generate nav
-                path_parts = root.split(os.sep)
+                path_parts = os.path.relpath(root, project_dir.parent).split(os.sep)
                 config = dir_structure
 
                 for part in path_parts:
@@ -81,6 +73,14 @@ def main():
     mkdocs_file = Path(out_dir) / "mkdocs.yml"
 
     mkdocs_file.write_text(mkdocs_template.render({"dir_structure": dir_structure}))
+
+
+def main():
+    """Generate documentation for project."""
+    args = parser.parse_args()
+    out_dir = args.output_dir
+    Path(out_dir).mkdir(parents=True, exist_ok=True)
+    generate_docs(out_dir, args.project_dir)
 
 
 if __name__ == "__main__":

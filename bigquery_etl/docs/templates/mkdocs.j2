@@ -3,26 +3,27 @@ site_description: Mozilla BigQuery ETL
 site_author: Mozilla Data Platform Team
 
 repo_url: https://github.com/mozilla/bigquery-etl/
+{% for project, datasets in dir_structure.items() -%}
+docs_dir: {{ project }}
 
 nav:
   - Home: index.md
-  {% for project, datasets in dir_structure.items() -%}
-  - {{ project }}: {{ project }}/index.md
-    {% if datasets | length > 0 -%}
-    {% for dataset, artifacts in datasets.items() -%}
-    {% if dataset != "" -%}
-    - {{ dataset }}: {{ dataset }}/index.md
-      {% if artifacts | length > 0 -%}
-      {% for artifact, _ in artifacts.items() -%}
-      {% if artifact != "" -%}
-      - {{ artifact }}: {{ artifact }}/index.md
-      {% endif -%}
-      {% endfor -%}
-      {% endif -%}
+  {% for dataset, artifacts in datasets.items() -%}
+  {% if dataset != "" -%}
+  {% if artifacts | length == 0 -%}
+  - {{ dataset }}: {{ dataset }}/index.md
+  {% else %}
+  - {{ dataset }}:
+    - Overview: {{ dataset }}/index.md
+    {% for artifact, _ in artifacts.items() -%}
+    {% if artifact != "" -%}
+    - {{ artifact }}: {{ dataset }}/{{ artifact }}/index.md
     {% endif -%}
-    {% endfor -%}  
-    {% endif -%}
-  {% endfor %}
+    {% endfor -%}
+  {% endif -%}
+  {% endif -%}
+  {% endfor -%}
+{% endfor %}
 
 theme:
     name: mkdocs

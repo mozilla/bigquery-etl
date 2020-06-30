@@ -55,7 +55,7 @@ def load_with_examples(file):
 
 
 def generate_docs(out_dir, project_dirs, mkdocs_file):
-    """Generate documentation for project."""
+    """Generate documentation for project and returns mkdocs config."""
 
     with open(mkdocs_file, "r") as yaml_stream:
         mkdocs = yaml.safe_load(yaml_stream)
@@ -97,8 +97,9 @@ def generate_docs(out_dir, project_dirs, mkdocs_file):
 
             for dataset, artifacts in datasets.items():
                 if dataset != "":
+                    dataset_entry = []
                     if len(artifacts) == 0:
-                        dataset_entries.append(
+                        dataset_entry.append(
                             {dataset: f"{project}/{dataset}/{INDEX_MD}"}
                         )
                     else:
@@ -111,17 +112,17 @@ def generate_docs(out_dir, project_dirs, mkdocs_file):
                             )
 
                         for artifact, _ in artifacts.items():
-                            artifact.append(
+                            artifact_entries.append(
                                 {artifact: f"{project}/{dataset}/{artifact}/{INDEX_MD}"}
                             )
 
-                        dataset_entries += artifact_entries
+                        dataset_entry += artifact_entries
+
+                    dataset_entries.append({dataset: dataset_entry})
 
             mkdocs["nav"].append({project: dataset_entries})
 
-    # write to mkdocs.yml
-    with open(mkdocs_file, "w") as yaml_stream:
-        yaml.dump(mkdocs, yaml_stream)
+    return mkdocs
 
 
 def main():
@@ -135,7 +136,11 @@ def main():
     # move mkdocs.yml out of docs/
     mkdocs_path = os.path.join(args.output_dir, "mkdocs.yml")
     shutil.move(os.path.join(out_dir, "mkdocs.yml"), mkdocs_path)
-    generate_docs(out_dir, args.project_dirs, mkdocs_path)
+    mkdocs = generate_docs(out_dir, args.project_dirs, mkdocs_path)
+
+    # write to mkdocs.yml
+    with open(mkdocs_path, "w") as yaml_stream:
+        yaml.dump(mkdocs, yaml_stream)
 
 
 if __name__ == "__main__":

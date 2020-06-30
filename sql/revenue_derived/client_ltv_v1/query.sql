@@ -227,6 +227,7 @@ with_ltv AS (
     with_caps
 )
 SELECT
+  @submission_date AS submission_date,
   *,
   SAFE_DIVIDE(
     ltv_ad_clicks_current,

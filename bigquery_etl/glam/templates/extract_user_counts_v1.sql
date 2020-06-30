@@ -14,7 +14,7 @@ SELECT
   channel,
   app_version,
   coalesce(ping_type, "*") as ping_type,
-  COALESCE(app_build_id, "*") AS app_build_id,
+  COALESCE(CAST({{ build_date_udf }}(app_build_id) AS STRING), "*") AS app_build_id,
   COALESCE(os, "*") AS os,
   total_users
 FROM deduped

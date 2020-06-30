@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 import pytest
-import shutil
 
 from bigquery_etl.docs.generate_docs import load_with_examples, generate_docs
 
@@ -48,10 +47,6 @@ class TestGenerateDocs:
     def test_generate_docs(self, tmp_path):
         os.chdir(TEST_DIR / "data" / "test_docs")
 
-        if os.path.exists(tmp_path):
-            shutil.rmtree(tmp_path)
-        shutil.copytree("generated_docs", tmp_path)
-
         mkdocs = generate_docs(tmp_path, ["generated_docs"], "docs/mkdocs.yml")
 
         expected_mkdocs = {
@@ -67,17 +62,17 @@ class TestGenerateDocs:
                     "generated_docs": [
                         {"Overview": "generated_docs/index.md"},
                         {
-                            "test_dataset2": [
-                                {"Overview": "generated_docs/test_dataset2/index.md"},
-                                {"udf2": "generated_docs/test_dataset2/udf2/index.md"},
-                                {"udf1": "generated_docs/test_dataset2/udf1/index.md"},
+                            "test_dataset1": [
+                                {"Overview": "generated_docs/test_dataset1/index.md"},
+                                {"udf1": "generated_docs/test_dataset1/udf1/index.md"},
+                                {"udf2": "generated_docs/test_dataset1/udf2/index.md"},
                             ]
                         },
                         {
-                            "test_dataset1": [
-                                {"Overview": "generated_docs/test_dataset1/index.md"},
-                                {"udf2": "generated_docs/test_dataset1/udf2/index.md"},
-                                {"udf1": "generated_docs/test_dataset1/udf1/index.md"},
+                            "test_dataset2": [
+                                {"Overview": "generated_docs/test_dataset2/index.md"},
+                                {"udf1": "generated_docs/test_dataset2/udf1/index.md"},
+                                {"udf2": "generated_docs/test_dataset2/udf2/index.md"},
                             ]
                         },
                     ]

@@ -1,24 +1,33 @@
 """Generates documentation for a project."""
 
 from argparse import ArgumentParser
-from jinja2 import Environment, PackageLoader
 import os
 from pathlib import Path
 import re
+import shutil
+import yaml
 
 from bigquery_etl.util import standard_args
 
-DEFAULT_PROJECT = "mozfun/"
+DEFAULT_PROJECTS = ["mozfun/"]
 DOCS_FILE = "README.md"
-MKDOCS_CONFIG_TEMPLATE = "mkdocs.j2"
+DOCS_DIR = "docs/"
+INDEX_MD = "index.md"
 SQL_REF_RE = r"@sql\((.+)\)"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
-    "--project_dir",
-    "--project-dir",
-    help="Directory of project documentation is generated for.",
-    default=DEFAULT_PROJECT,
+    "--project_dirs",
+    "--project-dirs",
+    help="Directories of projects documentation is generated for.",
+    nargs="+",
+    default=DEFAULT_PROJECTS,
+)
+parser.add_argument(
+    "--docs_dir",
+    "--docs-dir",
+    default=DOCS_DIR,
+    help="Directory containing static documentation.",
 )
 parser.add_argument(
     "--output_dir",
@@ -45,42 +54,88 @@ def load_with_examples(file):
     return file_content
 
 
-def generate_docs(out_dir, project_dir):
+def generate_docs(out_dir, project_dirs, mkdocs_file):
     """Generate documentation for project."""
-    dir_structure = {}
 
-    if os.path.isdir(project_dir):
-        for root, dirs, files in os.walk(project_dir):
-            if DOCS_FILE in files:
-                Path(os.path.join(out_dir, root)).mkdir(parents=True, exist_ok=True)
+    with open(mkdocs_file, "r") as yaml_stream:
+        mkdocs = yaml.safe_load(yaml_stream)
 
-                # copy doc file to output and replace example references
-                src = os.path.join(root, DOCS_FILE)
-                dest = Path(os.path.join(out_dir, root)) / "index.md"
-                dest.write_text(load_with_examples(src))
+        dir_structure = {}
 
-                # parse the doc directory structure
-                # used in Jinja template to generate nav
-                path_parts = os.path.relpath(root, project_dir.parent).split(os.sep)
-                config = dir_structure
+        for project_dir in project_dirs:
+            if os.path.isdir(project_dir):
+                for root, dirs, files in os.walk(project_dir):
+                    if DOCS_FILE in files:
+                        Path(os.path.join(out_dir, root)).mkdir(
+                            parents=True, exist_ok=True
+                        )
 
-                for part in path_parts:
-                    config = config.setdefault(part, {})
+                        # copy doc file to output and replace example references
+                        src = os.path.join(root, DOCS_FILE)
+                        dest = Path(os.path.join(out_dir, root)) / INDEX_MD
+                        dest.write_text(load_with_examples(src))
 
-    # generate mkdocs.yml
-    env = Environment(loader=PackageLoader("bigquery_etl", "docs/templates"))
-    mkdocs_template = env.get_template(MKDOCS_CONFIG_TEMPLATE)
-    mkdocs_file = Path(out_dir) / "mkdocs.yml"
+                        # parse the doc directory structure
+                        # used in mkdocs.yml
+                        path_parts = root.split(os.sep)
+                        config = dir_structure
 
-    mkdocs_file.write_text(mkdocs_template.render({"dir_structure": dir_structure}))
+                        for part in path_parts:
+                            config = config.setdefault(part, {})
+
+    # convert directory structure to mkdocs compatible format
+    if "nav" not in mkdocs:
+        mkdocs["nav"] = []
+
+    for project, datasets in dir_structure.items():
+        if len(datasets) == 0:
+            mkdocs["nav"].append({project: f"{project}/{INDEX_MD}"})
+        else:
+            dataset_entries = []
+            if os.path.isfile(os.path.join(out_dir, project, INDEX_MD)):
+                dataset_entries.append({"Overview": f"{project}/{INDEX_MD}"})
+
+            for dataset, artifacts in datasets.items():
+                if dataset != "":
+                    if len(artifacts) == 0:
+                        dataset_entries.append(
+                            {dataset: f"{project}/{dataset}/{INDEX_MD}"}
+                        )
+                    else:
+                        artifact_entries = []
+                        if os.path.isfile(
+                            os.path.join(out_dir, project, dataset, INDEX_MD)
+                        ):
+                            artifact_entries.append(
+                                {"Overview": f"{project}/{dataset}/{INDEX_MD}"}
+                            )
+
+                        for artifact, _ in artifacts.items():
+                            artifact.append(
+                                {artifact: f"{project}/{dataset}/{artifact}/{INDEX_MD}"}
+                            )
+
+                        dataset_entries += artifact_entries
+
+            mkdocs["nav"].append({project: dataset_entries})
+
+    # write to mkdocs.yml
+    with open(mkdocs_file, "w") as yaml_stream:
+        yaml.dump(mkdocs, yaml_stream)
 
 
 def main():
     """Generate documentation for project."""
     args = parser.parse_args()
-    out_dir = args.output_dir
-    Path(out_dir).mkdir(parents=True, exist_ok=True)
-    generate_docs(out_dir, args.project_dir)
+    out_dir = os.path.join(args.output_dir, "docs")
+    if os.path.exists(out_dir):
+        shutil.rmtree(out_dir)
+    shutil.copytree(args.docs_dir, out_dir)
+
+    # move mkdocs.yml out of docs/
+    mkdocs_path = os.path.join(args.output_dir, "mkdocs.yml")
+    shutil.move(os.path.join(out_dir, "mkdocs.yml"), mkdocs_path)
+    generate_docs(out_dir, args.project_dirs, mkdocs_path)
 
 
 if __name__ == "__main__":

@@ -228,6 +228,14 @@ distribution_metadata AS (
         ),
         STRUCT(
           "custom_distribution" AS metric_type,
+          "geckoview_per_document_site_origins" AS metric,
+          0 AS range_min,
+          100 AS range_max,
+          50 AS bucket_count,
+          "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
           "gfx_checkerboard_peak_pixel_count" AS metric,
           1 AS range_min,
           66355200 AS range_max,

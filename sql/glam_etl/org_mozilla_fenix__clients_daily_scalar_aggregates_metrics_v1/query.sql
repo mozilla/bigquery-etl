@@ -498,6 +498,34 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.metrics_default_browser AS INT64))
       ),
       (
+        'metrics_has_open_tabs',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.metrics_has_open_tabs AS INT64))
+      ),
+      (
+        'metrics_has_open_tabs',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.metrics_has_open_tabs AS INT64))
+      ),
+      (
+        'metrics_has_recent_pwas',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.metrics_has_recent_pwas AS INT64))
+      ),
+      (
+        'metrics_has_recent_pwas',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.metrics_has_recent_pwas AS INT64))
+      ),
+      (
         'metrics_has_top_sites',
         'boolean',
         '',
@@ -510,6 +538,90 @@ unlabeled_metrics AS (
         '',
         'true',
         SUM(CAST(metrics.boolean.metrics_has_top_sites AS INT64))
+      ),
+      (
+        'metrics_recently_used_pwa_count',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
+      ),
+      (
+        'metrics_recently_used_pwa_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.metrics_recently_used_pwa_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'metrics_recently_used_pwa_count',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
+      ),
+      (
+        'metrics_recently_used_pwa_count',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
+      ),
+      (
+        'metrics_recently_used_pwa_count',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.metrics_recently_used_pwa_count AS INT64))
+      ),
+      (
+        'metrics_search_widget_installed',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.metrics_search_widget_installed AS INT64))
+      ),
+      (
+        'metrics_search_widget_installed',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.metrics_search_widget_installed AS INT64))
+      ),
+      (
+        'metrics_tabs_open_count',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
+      ),
+      (
+        'metrics_tabs_open_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.metrics_tabs_open_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'metrics_tabs_open_count',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
+      ),
+      (
+        'metrics_tabs_open_count',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
+      ),
+      (
+        'metrics_tabs_open_count',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.metrics_tabs_open_count AS INT64))
       ),
       (
         'metrics_top_sites_count',
@@ -545,6 +657,76 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.metrics_top_sites_count AS INT64))
+      ),
+      (
+        'places_manager_read_query_count',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.places_manager_read_query_count AS INT64))
+      ),
+      (
+        'places_manager_read_query_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.places_manager_read_query_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'places_manager_read_query_count',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.places_manager_read_query_count AS INT64))
+      ),
+      (
+        'places_manager_read_query_count',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.places_manager_read_query_count AS INT64))
+      ),
+      (
+        'places_manager_read_query_count',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.places_manager_read_query_count AS INT64))
+      ),
+      (
+        'places_manager_write_query_count',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.places_manager_write_query_count AS INT64))
+      ),
+      (
+        'places_manager_write_query_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.places_manager_write_query_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'places_manager_write_query_count',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.places_manager_write_query_count AS INT64))
+      ),
+      (
+        'places_manager_write_query_count',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.places_manager_write_query_count AS INT64))
+      ),
+      (
+        'places_manager_write_query_count',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.places_manager_write_query_count AS INT64))
       )
     ] AS scalar_aggregates
   FROM
@@ -614,6 +796,11 @@ grouped_labeled_metrics AS (
         metrics.labeled_counter.glean_error_invalid_value
       ),
       (
+        'glean_upload_ping_upload_failure',
+        'labeled_counter',
+        metrics.labeled_counter.glean_upload_ping_upload_failure
+      ),
+      (
         'logins_store_read_query_error_count',
         'labeled_counter',
         metrics.labeled_counter.logins_store_read_query_error_count
@@ -628,7 +815,17 @@ grouped_labeled_metrics AS (
         'labeled_counter',
         metrics.labeled_counter.logins_store_write_query_error_count
       ),
-      ('metrics_search_count', 'labeled_counter', metrics.labeled_counter.metrics_search_count)
+      ('metrics_search_count', 'labeled_counter', metrics.labeled_counter.metrics_search_count),
+      (
+        'places_manager_read_query_error_count',
+        'labeled_counter',
+        metrics.labeled_counter.places_manager_read_query_error_count
+      ),
+      (
+        'places_manager_write_query_error_count',
+        'labeled_counter',
+        metrics.labeled_counter.places_manager_write_query_error_count
+      )
     ] AS metrics
   FROM
     extracted

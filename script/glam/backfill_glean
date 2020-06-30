@@ -19,6 +19,8 @@ print("\n".join(dates))
 EOD
 }
 
+export DATASET=${DATASET:-glam_etl_dev}
+
 START_DATE=${START_DATE?}
 END_DATE=${END_DATE?}
 PRODUCT=${PRODUCT?}
@@ -26,7 +28,7 @@ PRODUCT=${PRODUCT?}
 for ds in $(ds_range "$START_DATE" "$END_DATE"); do
         echo $ds
         BACKFILL_ONLY=true \
-        PRODUCT=org_mozilla_fenix_nightly \
+        PRODUCT=$PRODUCT \
         SUBMISSION_DATE=$ds \
             script/glam/run_glam_sql
 done

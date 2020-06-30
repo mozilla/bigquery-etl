@@ -56,7 +56,6 @@ def load_with_examples(file):
 
 def generate_docs(out_dir, project_dirs, mkdocs_file):
     """Generate documentation for project and returns mkdocs config."""
-
     with open(mkdocs_file, "r") as yaml_stream:
         mkdocs = yaml.safe_load(yaml_stream)
 
@@ -87,7 +86,7 @@ def generate_docs(out_dir, project_dirs, mkdocs_file):
     if "nav" not in mkdocs:
         mkdocs["nav"] = []
 
-    for project, datasets in dir_structure.items():
+    for project, datasets in sorted(dir_structure.items()):
         if len(datasets) == 0:
             mkdocs["nav"].append({project: f"{project}/{INDEX_MD}"})
         else:
@@ -95,7 +94,7 @@ def generate_docs(out_dir, project_dirs, mkdocs_file):
             if os.path.isfile(os.path.join(out_dir, project, INDEX_MD)):
                 dataset_entries.append({"Overview": f"{project}/{INDEX_MD}"})
 
-            for dataset, artifacts in datasets.items():
+            for dataset, artifacts in sorted(datasets.items()):
                 if dataset != "":
                     dataset_entry = []
                     if len(artifacts) == 0:
@@ -111,7 +110,7 @@ def generate_docs(out_dir, project_dirs, mkdocs_file):
                                 {"Overview": f"{project}/{dataset}/{INDEX_MD}"}
                             )
 
-                        for artifact, _ in artifacts.items():
+                        for artifact, _ in sorted(artifacts.items()):
                             artifact_entries.append(
                                 {artifact: f"{project}/{dataset}/{artifact}/{INDEX_MD}"}
                             )

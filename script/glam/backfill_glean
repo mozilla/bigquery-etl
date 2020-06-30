@@ -1,0 +1,35 @@
+#!/bin/bash
+# example: START_DATE=2020-04-01 END_DATE=2020-07-01 backfill_glean
+
+set -ex
+
+function ds_range {
+    DS_START=$1 DS_END=$2 python3 - <<EOD
+from datetime import date, timedelta, datetime
+from os import environ
+def parse(ds):
+    return datetime.strptime(ds, "%Y-%m-%d")
+start_date = parse(environ["DS_START"])
+end_date = parse(environ["DS_END"])
+dates = []
+for i in range((end_date - start_date).days):
+    dt = start_date + timedelta(i)
+    dates.append(dt.strftime("%Y-%m-%d"))
+print("\n".join(dates))
+EOD
+}
+
+START_DATE=${START_DATE?}
+END_DATE=${END_DATE?}
+PRODUCT=${PRODUCT?}
+
+for ds in $(ds_range "$START_DATE" "$END_DATE"); do
+        echo $ds
+        BACKFILL_ONLY=true \
+        PRODUCT=org_mozilla_fenix_nightly \
+        SUBMISSION_DATE=$ds \
+            script/glam/run_glam_sql
+done
+
+EXPORT_ONLY=true PRODUCT=$PRODUCT script/glam/run_glam_sql
+PRODUCT=$PRODUCT script/glam/export_csv

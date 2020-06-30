@@ -106,6 +106,20 @@ jobs:
           command: |
             cd telemetry-airflow
             bash bin/test-parse
+  docs:
+    docker: *docker
+    steps:
+    - checkout
+    - *build
+    - run:
+        name: Install dependencies
+        command: pip install mkdocs markdown-include
+    - run:
+        name: Build and deploy docs
+        command: |
+          PATH="venv/bin:$PATH" script/generate_docs --output_dir=/tmp/generated_docs
+          cd /tmp/generated_docs
+          mkdocs gh-deploy -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
   deploy:
     parameters:
       image:
@@ -141,6 +155,10 @@ workflows:
     - validate-metadata
     - integration
     - validate-dags
+    - docs:
+        filters:
+          branches:
+            only: master
     - deploy:
         context: data-eng-bigquery-etl-dockerhub
         requires:

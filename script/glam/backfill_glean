@@ -1,5 +1,9 @@
 #!/bin/bash
-# example: START_DATE=2020-04-01 END_DATE=2020-07-01 backfill_glean
+# example:
+#   START_DATE=2020-04-01 \
+#   END_DATE=2020-07-01 \
+#   PRODUCT=org_mozilla_fenix \
+#       backfill_glean
 
 set -ex
 

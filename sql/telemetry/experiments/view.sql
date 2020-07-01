@@ -188,4 +188,4 @@ SELECT
     scalar_parent_webrtc_peerconnection_connected
   )
 FROM
-  `moz-fx-data-derived-datasets.telemetry.experiments_v1`
+  `moz-fx-data-shared-prod.telemetry.experiments_v1`

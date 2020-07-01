@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-derived-datasets.telemetry.events_v1`
+  `moz-fx-data-shared-prod.telemetry.events_v1`

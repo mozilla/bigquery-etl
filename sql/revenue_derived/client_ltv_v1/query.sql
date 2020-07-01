@@ -40,7 +40,7 @@ monthly_activity AS (
   SELECT
     engine,
     month,
-    udf.map_revenue_country(engine, country) AS country,
+    `moz-fx-data-shared-prod`.udf.map_revenue_country(engine, country) AS country,
     SUM(ad_clicks) AS ad_clicks,
     SUM(search_with_ads) AS search_with_ads,
     SUM(sap) AS sap,
@@ -59,7 +59,7 @@ past_year_revenue AS (
     DATE(month_year) AS month,
     IF(
       partner_name = 'Bing',
-      udf.map_bing_revenue_country_to_country_code(country),
+      `moz-fx-data-shared-prod`.udf.map_bing_revenue_country_to_country_code(country),
       country
     ) AS country,
     SUM(revenue_paid_to_mozilla) AS revenue
@@ -124,14 +124,16 @@ past_year_metric_sums AS (
   -- One entry per-engine
     history.element.key AS engine,
   --Sum historical metrics
-    udf.parquet_array_sum(
+    `moz-fx-data-shared-prod`.udf.parquet_array_sum(
       history.element.value.total_searches.list
     ) AS total_client_searches_past_year,
-    udf.parquet_array_sum(
+    `moz-fx-data-shared-prod`.udf.parquet_array_sum(
       history.element.value.tagged_searches.list
     ) AS total_client_tagged_searches_past_year,
-    udf.parquet_array_sum(history.element.value.ad_click.list) AS total_client_ad_clicks_past_year,
-    udf.parquet_array_sum(
+    `moz-fx-data-shared-prod`.udf.parquet_array_sum(
+      history.element.value.ad_click.list
+    ) AS total_client_ad_clicks_past_year,
+    `moz-fx-data-shared-prod`.udf.parquet_array_sum(
       history.element.value.search_with_ads.list
     ) AS total_client_searches_with_ads_past_year,
   -- Frequency for every metric
@@ -142,16 +144,19 @@ past_year_metric_sums AS (
     COALESCE(days_seen.frequency, 0) AS active_days,
   -- Predictions for each metric
     COALESCE(
-      udf.get_key(predictions.key_value, 'days_clicked_ads'),
+      `moz-fx-data-shared-prod`.udf.get_key(predictions.key_value, 'days_clicked_ads'),
       0
     ) AS pred_num_days_clicking_ads,
     COALESCE(
-      udf.get_key(predictions.key_value, 'days_searched_with_ads'),
+      `moz-fx-data-shared-prod`.udf.get_key(predictions.key_value, 'days_searched_with_ads'),
       0
     ) AS pred_num_days_seeing_ads,
-    COALESCE(udf.get_key(predictions.key_value, 'days_searched'), 0) AS pred_num_days_searching,
     COALESCE(
-      udf.get_key(predictions.key_value, 'days_tagged_searched'),
+      `moz-fx-data-shared-prod`.udf.get_key(predictions.key_value, 'days_searched'),
+      0
+    ) AS pred_num_days_searching,
+    COALESCE(
+      `moz-fx-data-shared-prod`.udf.get_key(predictions.key_value, 'days_tagged_searched'),
       0
     ) AS pred_num_days_tagged_searching,
   FROM
@@ -222,6 +227,7 @@ with_ltv AS (
     with_caps
 )
 SELECT
+  @submission_date AS submission_date,
   *,
   SAFE_DIVIDE(
     ltv_ad_clicks_current,

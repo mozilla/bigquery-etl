@@ -22,11 +22,11 @@ WITH hmac_key AS (
     key_id = 'fxa_hmac_prod'
 ),
 -- sendjobs.EmailName is parsed via regex;
--- see format definition in https://docs.google.com/spreadsheets/d/11rvrVdF4fj5GaKOvlnLcNjnWB7U7yKV_MHmlBwRE-WA/edit#gid=1818828873
+-- see format definition in https://docs.google.com/spreadsheets/d/1mHpXSoDcfYK8XSX4bf-CHSfdn8XY5svDAw8ik5FhPrs/edit#gid=1626564614
 -- and original regex in https://github.com/mozilla/fxa-amplitude-send/blob/89bfaef20a1d978fce2dccddc0155699a17ac172/marketing.js#L109
 email_name_regex AS (
   SELECT AS VALUE
-    r"^([^_]+)_([^_]+)(?:_([^_]+))?_(?:[0-9]{4})(?:_(?:[A-Z]+))?(?:_([A-Z]+))?_([^_]+).*"
+    r"^\w*(MoCo|MoFo|PKT)_([A-Z]+)_([A-Za-z-]+)_(20[0-9][0-9])(?:_([A-Za-z-]+))?_(?:HTML|TEXT)_([^_]+)(?:_(ALL|[A-Z]{2}))?_([A-Za-z-]+)_EML(?:_(.*))?"
 ),
 -- The sendjobs table is tiny (< 1 GB) and a given sendjob can appear in
 -- multiple snapshots, so we deduplicate over all history, taking the newest.
@@ -34,7 +34,7 @@ sendjobs_numbered AS (
   SELECT
     *,
     SPLIT(
-      REGEXP_REPLACE(EmailName, (SELECT * FROM email_name_regex), r"\1;\2;\3;\4;\5"),
+      REGEXP_REPLACE(EmailName, (SELECT * FROM email_name_regex), r"\1;\2;\3;\4;\5;\6;\7;\8;\9"),
       ';'
     ) AS parsed,
     ROW_NUMBER() OVER (PARTITION BY SendID ORDER BY snapshot_date DESC) AS _n
@@ -48,9 +48,13 @@ sendjobs AS (
     * EXCEPT (_n, parsed),
     parsed[ORDINAL(1)] AS email_sender,
     parsed[ORDINAL(2)] AS email_region,
-    parsed[ORDINAL(3)] AS email_focus,
-    parsed[ORDINAL(4)] AS email_format,
-    parsed[ORDINAL(5)] AS email_id,
+    parsed[ORDINAL(3)] AS email_audience,
+    parsed[ORDINAL(4)] AS email_year,
+    parsed[ORDINAL(5)] AS email_category,
+    parsed[ORDINAL(6)] AS email_id,
+    parsed[ORDINAL(7)] AS email_country,
+    parsed[ORDINAL(8)] AS email_language,
+    parsed[ORDINAL(9)] AS email_push_number,
   FROM
     sendjobs_numbered
   WHERE
@@ -171,13 +175,18 @@ SELECT
               STRUCT('email_type' AS key, clicks.EventType AS value),
               STRUCT('email_sender' AS key, email_sender AS value),
               STRUCT('email_region' AS key, email_region AS value),
-              STRUCT('email_focus' AS key, email_focus AS value),
-              STRUCT('email_format' AS key, email_format AS value),
-              STRUCT('email_id' AS key, email_id AS value)
+              STRUCT('email_audience' AS key, email_audience AS value),
+              STRUCT('email_year' AS key, email_year AS value),
+              STRUCT('email_category' AS key, email_category AS value),
+              STRUCT('email_id' AS key, email_id AS value),
+              STRUCT('email_country' AS key, email_country AS value),
+              STRUCT('email_language' AS key, email_language AS value),
+              STRUCT('email_push_number' AS key, email_push_number AS value)
             ]
           )
         WHERE
           value IS NOT NULL
+          AND value != ''
       ),
       ','
     )

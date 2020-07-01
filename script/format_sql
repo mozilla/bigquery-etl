@@ -131,6 +131,7 @@ SKIP = {
     "udf/glean_timespan_seconds.sql",
     "udf/int_to_365_bits.sql",
     "udf/int_to_hex_string.sql",
+    "udf/json_extract_histogram.sql",
     "udf/keyed_histogram_get_sum.sql",
     "udf/kv_array_to_json_string.sql",
     "udf/mode_last.sql",

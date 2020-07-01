@@ -65,10 +65,8 @@ CREATE OR REPLACE FUNCTION hist.extract(input STRING) AS (
       CAST(SPLIT(input, ',')[OFFSET(0)] AS INT64) AS `sum`,
       [1, 2] AS `range`,
       [
-        STRUCT(0 AS key, CAST(SPLIT(input, ',')[OFFSET(0)] AS INT64) AS value) STRUCT(
-          1 AS key,
-          0 AS INT64
-        ) AS value
+        STRUCT(0 AS key, CAST(SPLIT(input, ',')[OFFSET(0)] AS INT64) AS value),
+        STRUCT(1 AS key, 0 AS INT64) AS value
       )
     ] AS `values`
 )

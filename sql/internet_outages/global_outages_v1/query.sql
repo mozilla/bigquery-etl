@@ -524,6 +524,3 @@ LEFT JOIN
   ssl_error_prop AS ssl
 USING
   (datetime, country, city)
-ORDER BY
-  1,
-  2

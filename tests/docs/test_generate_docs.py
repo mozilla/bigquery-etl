@@ -45,6 +45,7 @@ class TestGenerateDocs:
             load_with_examples(str(input)).strip()
 
     def test_generate_docs(self, tmp_path):
+        owd = os.getcwd()
         os.chdir(TEST_DIR / "data" / "test_docs")
 
         mkdocs = generate_docs(tmp_path, ["generated_docs"], "docs/mkdocs.yml")
@@ -82,3 +83,5 @@ class TestGenerateDocs:
         }
 
         assert expected_mkdocs == mkdocs
+
+        os.chdir(owd)

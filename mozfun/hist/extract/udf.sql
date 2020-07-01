@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION hist.extract(input STRING) AS (
         FROM
           UNNEST(JSON_EXTRACT_ARRAY(input, '$.range')) AS bound
       ) AS `range`,
-      mozfun.json.extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values`
+      udf.json_extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values`
     )
   WHEN
     ARRAY_LENGTH(SPLIT(input, ';')) = 5
@@ -64,13 +64,9 @@ CREATE OR REPLACE FUNCTION hist.extract(input STRING) AS (
       4 AS histogram_type,
       CAST(SPLIT(input, ',')[OFFSET(0)] AS INT64) AS `sum`,
       [1, 2] AS `range`,
-      [
-        STRUCT(0 AS key, CAST(SPLIT(input, ',')[OFFSET(0)] AS INT64) AS value),
-        STRUCT(1 AS key, 0 AS INT64) AS value
-      )
-    ] AS `values`
-)
-END
+      [STRUCT(0 AS key, CAST(input AS INT64) AS value), STRUCT(1 AS key, 0 AS value)] AS `values`
+    )
+  END
 );
 
 -- Tests
@@ -143,7 +139,7 @@ SELECT
   assert_equals(4, histogram_type),
   assert_equals(37, `sum`),
   assert_array_equals([1, 2], `range`),
-  assert_array_equals([STRUCT(0 AS key, 37 AS value)], `values`)
+  assert_array_equals([STRUCT(0 AS key, 37 AS value), STRUCT(1 AS key, 0 AS value)], `values`)
 FROM
   extracted;
 

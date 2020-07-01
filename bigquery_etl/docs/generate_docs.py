@@ -1,11 +1,11 @@
 """Generates documentation for a project."""
 
 from argparse import ArgumentParser
+import glob
 import os
 from pathlib import Path
 import re
 import shutil
-import yaml
 
 from bigquery_etl.util import standard_args
 
@@ -54,76 +54,6 @@ def load_with_examples(file):
     return file_content
 
 
-def generate_docs(out_dir, project_dirs, mkdocs_file):
-    """Generate documentation for project and returns mkdocs config."""
-    with open(mkdocs_file, "r") as yaml_stream:
-        mkdocs = yaml.safe_load(yaml_stream)
-
-        dir_structure = {}
-
-        for project_dir in project_dirs:
-            if os.path.isdir(project_dir):
-                for root, dirs, files in os.walk(project_dir):
-                    if DOCS_FILE in files:
-                        Path(os.path.join(out_dir, root)).mkdir(
-                            parents=True, exist_ok=True
-                        )
-
-                        # copy doc file to output and replace example references
-                        src = os.path.join(root, DOCS_FILE)
-                        dest = Path(os.path.join(out_dir, root)) / INDEX_MD
-                        dest.write_text(load_with_examples(src))
-
-                        # parse the doc directory structure
-                        # used in mkdocs.yml
-                        path_parts = root.split(os.sep)
-                        config = dir_structure
-
-                        for part in path_parts:
-                            config = config.setdefault(part, {})
-
-    # convert directory structure to mkdocs compatible format
-    if "nav" not in mkdocs:
-        mkdocs["nav"] = []
-
-    for project, datasets in sorted(dir_structure.items()):
-        if len(datasets) == 0:
-            mkdocs["nav"].append({project: f"{project}/{INDEX_MD}"})
-        else:
-            dataset_entries = []
-            if os.path.isfile(os.path.join(out_dir, project, INDEX_MD)):
-                dataset_entries.append({"Overview": f"{project}/{INDEX_MD}"})
-
-            for dataset, artifacts in sorted(datasets.items()):
-                if dataset != "":
-                    dataset_entry = []
-                    if len(artifacts) == 0:
-                        dataset_entry.append(
-                            {dataset: f"{project}/{dataset}/{INDEX_MD}"}
-                        )
-                    else:
-                        artifact_entries = []
-                        if os.path.isfile(
-                            os.path.join(out_dir, project, dataset, INDEX_MD)
-                        ):
-                            artifact_entries.append(
-                                {"Overview": f"{project}/{dataset}/{INDEX_MD}"}
-                            )
-
-                        for artifact, _ in sorted(artifacts.items()):
-                            artifact_entries.append(
-                                {artifact: f"{project}/{dataset}/{artifact}/{INDEX_MD}"}
-                            )
-
-                        dataset_entry += artifact_entries
-
-                    dataset_entries.append({dataset: dataset_entry})
-
-            mkdocs["nav"].append({project: dataset_entries})
-
-    return mkdocs
-
-
 def main():
     """Generate documentation for project."""
     args = parser.parse_args()
@@ -135,11 +65,34 @@ def main():
     # move mkdocs.yml out of docs/
     mkdocs_path = os.path.join(args.output_dir, "mkdocs.yml")
     shutil.move(os.path.join(out_dir, "mkdocs.yml"), mkdocs_path)
-    mkdocs = generate_docs(out_dir, args.project_dirs, mkdocs_path)
 
-    # write to mkdocs.yml
-    with open(mkdocs_path, "w") as yaml_stream:
-        yaml.dump(mkdocs, yaml_stream)
+    # move files to docs/
+    for project_dir in args.project_dirs:
+        if os.path.isdir(project_dir):
+            for root, dirs, files in os.walk(project_dir):
+                if DOCS_FILE in files:
+                    # copy doc file to output and replace example references
+                    src = os.path.join(root, DOCS_FILE)
+
+                    # remove empty strings
+                    name = list(filter(None, root.split(os.sep)))[-1]
+
+                    # check if there are README.md in subdirectories
+                    nested_docs = glob.glob(root + "/*/" + DOCS_FILE, recursive=True)
+
+                    # write doc files
+                    if len(nested_docs) > 0:
+                        # create a folder that contains more doc files
+                        path = "/".join(list(filter(None, root.split(os.sep))))
+                    else:
+                        # no doc files in subdirectories, so just create a single file
+                        path = "/".join(list(filter(None, root.split(os.sep)))[:-1])
+
+                    path = Path(os.path.join(out_dir, path))
+                    path.mkdir(parents=True, exist_ok=True)
+                    dest = path / f"{name}.md"
+
+                    dest.write_text(load_with_examples(src))
 
 
 if __name__ == "__main__":

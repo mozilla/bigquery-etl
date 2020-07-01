@@ -4,8 +4,5 @@ site_author: Mozilla Data Platform Team
 
 repo_url: https://github.com/mozilla/bigquery-etl/
 
-nav:
-  - Home: index.md
-
 theme:
     name: mkdocs

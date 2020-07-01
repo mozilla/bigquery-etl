@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import pytest
 
-from bigquery_etl.docs.generate_docs import load_with_examples, generate_docs
+from bigquery_etl.docs.generate_docs import load_with_examples
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -43,45 +43,3 @@ class TestGenerateDocs:
 
         with pytest.raises(FileNotFoundError):
             load_with_examples(str(input)).strip()
-
-    def test_generate_docs(self, tmp_path):
-        owd = os.getcwd()
-        os.chdir(TEST_DIR / "data" / "test_docs")
-
-        mkdocs = generate_docs(tmp_path, ["generated_docs"], "docs/mkdocs.yml")
-
-        expected_mkdocs = {
-            "repo_url": "https://github.com/mozilla/bigquery-etl/",
-            "site_author": "Mozilla Data Platform Team",
-            "site_description": "Mozilla BigQuery ETL",
-            "site_name": "BigQuery ETL",
-            "docs_dir": "test_docs",
-            "nav": [
-                {"Home": "index.md"},
-                {"Static": [{"Page1": "index.md"}]},
-                {
-                    "generated_docs": [
-                        {"Overview": "generated_docs/index.md"},
-                        {
-                            "test_dataset1": [
-                                {"Overview": "generated_docs/test_dataset1/index.md"},
-                                {"udf1": "generated_docs/test_dataset1/udf1/index.md"},
-                                {"udf2": "generated_docs/test_dataset1/udf2/index.md"},
-                            ]
-                        },
-                        {
-                            "test_dataset2": [
-                                {"Overview": "generated_docs/test_dataset2/index.md"},
-                                {"udf1": "generated_docs/test_dataset2/udf1/index.md"},
-                                {"udf2": "generated_docs/test_dataset2/udf2/index.md"},
-                            ]
-                        },
-                    ]
-                },
-            ],
-            "theme": {"name": "mkdocs"},
-        }
-
-        assert expected_mkdocs == mkdocs
-
-        os.chdir(owd)

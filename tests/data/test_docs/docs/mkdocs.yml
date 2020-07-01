@@ -4,10 +4,7 @@ site_description: Mozilla BigQuery ETL
 site_name: BigQuery ETL
 
 docs_dir: test_docs
-nav:
-- Home: index.md
-- Static:
-  - Page1: index.md
+
 
 theme:
   name: mkdocs

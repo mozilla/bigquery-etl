@@ -1,36 +1,4 @@
-/*
-
-Returns an array of key/value structs from a string representing a JSON map.
-
-Used by udf.json_extract_histogram.
-
-*/
+-- Legacy wrapper around a function moved to mozfun.
 CREATE OR REPLACE FUNCTION udf.json_extract_int_map(input STRING) AS (
-  ARRAY(
-    SELECT
-      STRUCT(
-        SAFE_CAST(SPLIT(entry, ':')[OFFSET(0)] AS INT64) AS key,
-        SAFE_CAST(SPLIT(entry, ':')[OFFSET(1)] AS INT64) AS value
-      )
-    FROM
-      UNNEST(SPLIT(REPLACE(TRIM(input, '{}'), '"', ''), ',')) AS entry
-    WHERE
-      LENGTH(entry) > 0
-  )
+  mozfun.json.extract_int_map(input)
 );
-
--- Tests
-SELECT
-  assert_array_equals(
-    [
-      STRUCT(0 AS key, 12434 AS value),
-      STRUCT(1 AS key, 297 AS value),
-      STRUCT(13 AS key, 8 AS value)
-    ],
-    udf.json_extract_int_map('{"0":12434,"1":297,"13":8}')
-  ),
-  assert_equals(0, ARRAY_LENGTH(udf.json_extract_int_map('{}'))),
-  assert_array_equals(
-    [STRUCT(1 AS key, NULL AS value)],
-    udf.json_extract_int_map('{"1":147573952589676410000}')
-  );

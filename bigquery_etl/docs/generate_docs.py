@@ -1,7 +1,6 @@
 """Generates documentation for a project."""
 
 from argparse import ArgumentParser
-import glob
 import os
 from pathlib import Path
 import re
@@ -11,6 +10,7 @@ from bigquery_etl.util import standard_args
 
 DEFAULT_PROJECTS = ["mozfun/"]
 DOCS_FILE = "README.md"
+UDF_FILE = "udf.sql"
 DOCS_DIR = "docs/"
 INDEX_MD = "index.md"
 SQL_REF_RE = r"@sql\((.+)\)"
@@ -74,25 +74,30 @@ def main():
                     # copy doc file to output and replace example references
                     src = os.path.join(root, DOCS_FILE)
 
-                    # remove empty strings
-                    name = list(filter(None, root.split(os.sep)))[-1]
+                    # remove empty strings from path parts
+                    path_parts = list(filter(None, root.split(os.sep)))
+                    name = path_parts[-1]
+                    path = Path(os.sep.join(path_parts[:-1]))
 
-                    # check if there are README.md in subdirectories
-                    nested_docs = glob.glob(root + "/*/" + DOCS_FILE, recursive=True)
-
-                    # write doc files
-                    if len(nested_docs) > 0:
-                        # create a folder that contains more doc files
-                        path = "/".join(list(filter(None, root.split(os.sep))))
+                    if os.path.split(root)[1] == "":
+                        # project level-doc file
+                        project_doc_dir = out_dir / path / name
+                        project_doc_dir.mkdir(parents=True, exist_ok=True)
+                        dest = project_doc_dir / "overview.md"
+                        dest.write_text(load_with_examples(src))
                     else:
-                        # no doc files in subdirectories, so just create a single file
-                        path = "/".join(list(filter(None, root.split(os.sep)))[:-1])
-
-                    path = Path(os.path.join(out_dir, path))
-                    path.mkdir(parents=True, exist_ok=True)
-                    dest = path / f"{name}.md"
-
-                    dest.write_text(load_with_examples(src))
+                        # dataset or UDF level doc file
+                        if UDF_FILE in files:
+                            # UDF-level doc; append to dataset doc
+                            dataset_name = os.path.basename(path)
+                            dataset_doc = out_dir / path.parent / f"{dataset_name}.md"
+                            with open(dataset_doc, "a") as dataset_doc_file:
+                                dataset_doc_file.write("\n\n")
+                                dataset_doc_file.write(load_with_examples(src))
+                        else:
+                            # dataset-level doc; create a new doc file
+                            dest = out_dir / path / f"{name}.md"
+                            dest.write_text(load_with_examples(src))
 
 
 if __name__ == "__main__":

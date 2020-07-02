@@ -31,6 +31,13 @@ SELECT
       IFNULL(key, 'Unknown') AS key,
       value
     FROM
+      UNNEST(dau_by_fenix_build)
+  ) AS dau_by_fenix_build,
+  ARRAY(
+    SELECT AS STRUCT
+      IFNULL(key, 'Unknown') AS key,
+      value
+    FROM
       UNNEST(dau_by_country)
   ) AS dau_by_country,
   ARRAY(

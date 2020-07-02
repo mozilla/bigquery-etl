@@ -31,7 +31,7 @@ SELECT
       IFNULL(key, 'Unknown') AS key,
       value
     FROM
-      UNNEST(dau_by_app_version)
+      UNNEST(dau_by_fenix_build)
   ) AS dau_by_fenix_build,
   ARRAY(
     SELECT AS STRUCT

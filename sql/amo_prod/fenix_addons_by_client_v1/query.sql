@@ -1,4 +1,4 @@
-CREATE TEMP function get_fields(m ANY TYPE) AS (
+CREATE TEMP FUNCTION get_fields(m ANY TYPE) AS (
   STRUCT(
     m.submission_timestamp,
     m.client_info.client_id,
@@ -43,6 +43,8 @@ per_client AS (
     client_id,
     sample_id,
     array_concat_agg(addons_enabled_addons) AS addons,
+    -- app_build is the Fenix equivalent of app_version; we use app_version as the name for
+    -- compatibility with the desktop table schema.
     udf.mode_last(array_agg(app_build)) AS app_version,
     udf.mode_last(array_agg(normalized_country_code)) AS country,
     udf.mode_last(array_agg(locale)) AS locale,

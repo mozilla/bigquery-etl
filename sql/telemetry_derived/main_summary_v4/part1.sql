@@ -112,20 +112,20 @@ SELECT
   payload.info.reason,
   payload.info.timezone_offset,
   -- Different types of crashes / hangs; format:off
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'pluginhang')).sum AS plugin_hangs,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'plugin')).sum AS aborts_plugin,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'content')).sum AS aborts_content,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'gmplugin')).sum AS aborts_gmplugin,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin')).sum AS crashes_detected_plugin,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'content')).sum AS crashes_detected_content,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin')).sum AS crashes_detected_gmplugin,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'main-crash')).sum AS crash_submit_attempt_main,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'content-crash')).sum AS crash_submit_attempt_content,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'plugin-crash')).sum AS crash_submit_attempt_plugin,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'main-crash')).sum AS crash_submit_success_main,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'content-crash')).sum AS crash_submit_success_content,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash')).sum AS crash_submit_success_plugin,
-  udf.json_extract_histogram(udf.get_key(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')).sum AS shutdown_kill,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'pluginhang')) AS plugin_hangs,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'plugin')) AS aborts_plugin,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'content')) AS aborts_content,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'gmplugin')) AS aborts_gmplugin,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin')) AS crashes_detected_plugin,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'content')) AS crashes_detected_content,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin')) AS crashes_detected_gmplugin,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'main-crash')) AS crash_submit_attempt_main,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'content-crash')) AS crash_submit_attempt_content,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'plugin-crash')) AS crash_submit_attempt_plugin,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'main-crash')) AS crash_submit_success_main,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'content-crash')) AS crash_submit_success_content,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash')) AS crash_submit_success_plugin,
+  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')) AS shutdown_kill,
   -- format:on
   ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
   -- See https://github.com/mozilla-services/data-pipeline/blob/master/hindsight/modules/fx/ping.lua#L82
@@ -158,9 +158,9 @@ SELECT
   environment.settings.default_private_search_engine_data.submission_url AS default_private_search_engine_data_submission_url,
   environment.settings.default_private_search_engine,
   -- DevTools usage per bug 1262478
-  udf.json_extract_histogram(
+  udf.extract_histogram_sum(
     payload.histograms.devtools_toolbox_opened_count
-  ).sum AS devtools_toolbox_opened_count,
+  ) AS devtools_toolbox_opened_count,
   -- client date per bug 1270505
   metadata.header.date AS client_submission_date, -- the HTTP Date header sent by the client
   -- clock skew per bug 1270183
@@ -180,16 +180,14 @@ SELECT
   -- buckets for these particular histograms is not fine enough for the median
   -- to give a more accurate value than the mean.
   udf.histogram_to_mean(
-    udf.json_extract_histogram(payload.histograms.places_bookmarks_count)
+    mozfun.hist.extract(payload.histograms.places_bookmarks_count)
   ) AS places_bookmarks_count,
   udf.histogram_to_mean(
-    udf.json_extract_histogram(payload.histograms.places_pages_count)
+    mozfun.hist.extract(payload.histograms.places_pages_count)
   ) AS places_pages_count,
   -- Push metrics per bug 1270482 and bug 1311174
-  udf.json_extract_histogram(payload.histograms.push_api_notify).sum AS push_api_notify,
-  udf.json_extract_histogram(
-    payload.histograms.web_notification_shown
-  ).sum AS web_notification_shown,
+  udf.extract_histogram_sum(payload.histograms.push_api_notify) AS push_api_notify,
+  udf.extract_histogram_sum(payload.histograms.web_notification_shown) AS web_notification_shown,
   -- Info from POPUP_NOTIFICATION_STATS keyed histogram
   ARRAY(
     SELECT AS STRUCT
@@ -229,7 +227,7 @@ SELECT
     SELECT AS STRUCT
       SUBSTR(_key, 0, pos - 2) AS engine,
       SUBSTR(_key, pos) AS source,
-      udf.json_extract_histogram(value).sum AS `count`
+      udf.extract_histogram_sum(value) AS `count`
     FROM
       UNNEST(payload.keyed_histograms.search_counts),
       UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
@@ -341,7 +339,7 @@ SELECT
     SELECT
       IFNULL(SUM(value), 0)
     FROM
-      UNNEST(udf.json_extract_histogram(payload.histograms.ssl_handshake_result).values)
+      UNNEST(mozfun.hist.extract(payload.histograms.ssl_handshake_result).values)
     WHERE
       key
       BETWEEN 1
@@ -352,7 +350,7 @@ SELECT
       CAST(key AS STRING) AS key,
       value
     FROM
-      UNNEST(udf.json_extract_histogram(payload.histograms.ssl_handshake_result).values)
+      UNNEST(mozfun.hist.extract(payload.histograms.ssl_handshake_result).values)
     WHERE
       key
       BETWEEN 0
@@ -434,12 +432,12 @@ SELECT
       ) AS INT64
     ) AS block
   ) AS plugins_notification_user_action,
-  udf.json_extract_histogram(payload.histograms.plugins_infobar_shown).sum AS plugins_infobar_shown,
-  udf.json_extract_histogram(payload.histograms.plugins_infobar_block).sum AS plugins_infobar_block,
-  udf.json_extract_histogram(payload.histograms.plugins_infobar_allow).sum AS plugins_infobar_allow,
-  udf.json_extract_histogram(
+  udf.extract_histogram_sum(payload.histograms.plugins_infobar_shown) AS plugins_infobar_shown,
+  udf.extract_histogram_sum(payload.histograms.plugins_infobar_block) AS plugins_infobar_block,
+  udf.extract_histogram_sum(payload.histograms.plugins_infobar_allow) AS plugins_infobar_allow,
+  udf.extract_histogram_sum(
     payload.histograms.plugins_infobar_dismissed
-  ).sum AS plugins_infobar_dismissed,
+  ) AS plugins_infobar_dismissed,
   -- bug 1366253 - active experiments
   ARRAY(
     SELECT AS STRUCT

@@ -11,13 +11,6 @@ CREATE TEMP function get_fields(m ANY TYPE) AS (
   )
 );
 
-CREATE TABLE
-  amo_prod.fenix_addons_by_client_v1
-PARTITION BY
-  submission_date
-CLUSTER BY
-  sample_id
-AS
 WITH unioned AS (
   SELECT
     get_fields(m1).*
@@ -57,7 +50,7 @@ per_client AS (
   FROM
     unioned
   WHERE
-    DATE(submission_timestamp) = @submission_timestamp
+    DATE(submission_timestamp) = @submission_date
     AND client_id IS NOT NULL
   GROUP BY
     submission_date,

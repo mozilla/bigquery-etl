@@ -44,4 +44,8 @@ extracted AS (
 SELECT
   assert_equals(7, hsum)
 FROM
-  extracted
+  extracted;
+
+--
+SELECT
+  assert_null(udf.extract_histogram_sum('foo'));

@@ -6,7 +6,7 @@ https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/
 
 */
 CREATE OR REPLACE FUNCTION udf.histogram_max_key_with_nonzero_value(histogram STRING) AS (
-  (SELECT MAX(key) FROM UNNEST(udf.json_extract_histogram(histogram).values) WHERE value > 0)
+  (SELECT MAX(key) FROM UNNEST(mozfun.hist.extract(histogram).values) WHERE value > 0)
 );
 
 -- Tests

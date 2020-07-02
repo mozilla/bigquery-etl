@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION udf.histogram_to_threshold_count(histogram STRING, th
     SELECT
       IFNULL(SUM(value), 0)
     FROM
-      UNNEST(udf.json_extract_histogram(histogram).values)
+      UNNEST(mozfun.hist.extract(histogram).values)
     WHERE
       key >= threshold
   )

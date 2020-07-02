@@ -5,7 +5,7 @@ extract the histogram of the given key, and return the sum value
 
  */
 CREATE OR REPLACE FUNCTION udf.keyed_histogram_get_sum(keyed_histogram ANY TYPE, target_key STRING) AS (
-  udf.json_extract_histogram(udf.get_key(keyed_histogram, target_key)).sum
+  udf.extract_histogram_sum(udf.get_key(keyed_histogram, target_key))
 );
 -- Test
 WITH histograms AS (

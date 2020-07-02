@@ -144,3 +144,13 @@ bqetl_public_data_json:
     email: ['telemetry-alerts@mozilla.com', 'ascholtz@mozilla.com']
     retries: 2
     retry_delay: 30m
+
+# DAG for building the internet outages datasets. See bug 1640204.
+bqetl_internet_outages:
+  schedule_interval: 0 1 * * *
+  default_args:
+    owner: aplacitelli@mozilla.com
+    start_date: '2020-01-01'
+    email: ['aplacitelli@mozilla.com', 'sguha@mozilla.com']
+    retries: 2
+    retry_delay: 30m

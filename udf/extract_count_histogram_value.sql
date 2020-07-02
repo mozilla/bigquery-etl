@@ -2,7 +2,7 @@
 -- count histograms record a single value into the 0 bucket
 CREATE OR REPLACE FUNCTION
   udf.extract_count_histogram_value(input STRING) AS (
-    udf.get_key(udf.json_extract_histogram(input).values, 0)
+    udf.get_key(mozfun.hist.extract(input).values, 0)
   );
 
 -- Tests

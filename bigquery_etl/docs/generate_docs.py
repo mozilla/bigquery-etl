@@ -1,4 +1,4 @@
-"""Generates documentation for a project."""
+"""Generates documentations for provided projects."""
 
 from argparse import ArgumentParser
 import os

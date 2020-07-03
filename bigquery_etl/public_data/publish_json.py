@@ -41,18 +41,20 @@ class JsonPublisher:
         api_version,
         target_bucket,
         parameter=None,
+        gcs_path="",
     ):
         """Init JsonPublisher."""
         self.project_id = project_id
         self.query_file = query_file
         self.api_version = api_version
         self.target_bucket = target_bucket
+        self.gcs_path = gcs_path
         self.parameter = parameter
         self.client = client
         self.storage_client = storage_client
         self.temp_table = None
         self.date = None
-        self.stage_gcs_path = "stage/json/"
+        self.stage_gcs_path = self.gcs_path + "stage/json/"
 
         self.metadata = Metadata.of_sql_file(self.query_file)
 
@@ -115,7 +117,7 @@ class JsonPublisher:
     def _publish_table_as_json(self, result_table):
         """Export the `result_table` data as JSON to Cloud Storage."""
         prefix = (
-            f"api/{self.api_version}/tables/{self.dataset}/"
+            f"{self.gcs_path}api/{self.api_version}/tables/{self.dataset}/"
             f"{self.table}/{self.version}/files/"
         )
 
@@ -132,9 +134,7 @@ class JsonPublisher:
 
         # "*" makes sure that files larger than 1GB get split up into JSON files
         # files are written to a stage directory first
-        destination_uri = (
-            f"gs://{self.target_bucket}/" + self.stage_gcs_path + "*.ndjson"
-        )
+        destination_uri = f"gs://{self.target_bucket}/{self.stage_gcs_path}*.ndjson"
         extract_job = self.client.extract_table(
             table_ref, destination_uri, location="US", job_config=job_config
         )
@@ -252,7 +252,7 @@ class JsonPublisher:
     def _publish_last_updated(self):
         """Write the timestamp when file of the dataset were last modified to GCS."""
         last_updated_path = (
-            f"api/{self.api_version}/tables/{self.dataset}/"
+            f"{self.gcs_path}api/{self.api_version}/tables/{self.dataset}/"
             f"{self.table}/{self.version}/last_updated"
         )
         output_file = f"gs://{self.target_bucket}/{last_updated_path}"
@@ -296,6 +296,9 @@ parser.add_argument(
 parser.add_argument(
     "--query-file", "--query_file", help="File path to query to be executed"
 )
+parser.add_argument(
+    "--gcs-path", "--gcs_path", default="", help="GCS path data is exported to"
+)
 
 
 def main():
@@ -326,6 +329,7 @@ def main():
         args.api_version,
         args.target_bucket,
         args.parameter,
+        args.gcs_path,
     )
     publisher.publish_json()
 

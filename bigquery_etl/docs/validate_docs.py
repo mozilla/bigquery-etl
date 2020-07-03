@@ -2,8 +2,11 @@
 
 from argparse import ArgumentParser
 import os
+from pathlib import Path
 import re
+import tempfile
 
+from bigquery_etl.dryrun import dry_run_sql_file
 from bigquery_etl.parse_udf import read_udf_dirs, persistent_udf_as_temp
 from bigquery_etl.util import standard_args
 
@@ -24,12 +27,33 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
-def udfs_as_temp_functions(dir):
-    """Return a single SQL string with all UDFs as temporary functions."""
-    if os.path.isdir(dir):
-        for root, dirs, files in os.walk(dir):
-            if UDF_FILE in files:
-                pass
+def sql_for_dry_run(file, parsed_udfs, project_dir):
+    """
+    Return the example SQL used for the dry run.
+    
+    Injects all UDFs the example depends on as temporary functions.
+    """
+    dry_run_sql = ""
+
+    with open(file) as sql:
+        example_sql = sql.read()
+
+        # add UDFs that example depends on as temporary functions
+        for udf, raw_udf in parsed_udfs.items():
+            if udf in example_sql:
+                query = "".join(raw_udf.definitions)
+                dry_run_sql += persistent_udf_as_temp(query, parsed_udfs)
+
+        dry_run_sql += example_sql
+
+        for udf, _ in parsed_udfs.items():
+            # temporary UDFs cannot contain dots, rename UDFS
+            dry_run_sql = dry_run_sql.replace(udf, udf.replace(".", "_"))
+
+        # remove explicit project references
+        dry_run_sql = dry_run_sql.replace(project_dir + ".", "")
+
+    return dry_run_sql
 
 
 def main():
@@ -38,32 +62,23 @@ def main():
 
     # parse UDFs
     parsed_udfs = read_udf_dirs(*args.project_dirs)
-   
+
     for project_dir in args.project_dirs:
         if os.path.isdir(project_dir):
             for root, dirs, files in os.walk(project_dir):
                 if os.path.basename(root) == EXAMPLE_DIR:
                     for file in files:
-                        with open(os.path.join(root, file)) as sql:
-                            dry_run_sql = ""
-                            example_sql = sql.read()
+                        dry_run_sql = sql_for_dry_run(
+                            os.path.join(root, file), parsed_udfs, project_dir
+                        )
 
-                            for udf, raw_udf in parsed_udfs.items():
-                                if udf in example_sql:
-                                    query = "".join(raw_udf.definitions)
-                                    dry_run_sql += persistent_udf_as_temp(query, parsed_udfs)
+                        # store sql in temporary file for dry_run
+                        tmp_dir = Path(tempfile.mkdtemp()) / Path(root)
+                        tmp_dir.mkdir(parents=True, exist_ok=True)
+                        tmp_example_file = tmp_dir / file
+                        tmp_example_file.write_text(dry_run_sql)
 
-                            dry_run_sql += example_sql
-
-                            for udf, _ in parsed_udfs.items():
-                                # temporary UDFs cannot contain dots
-                                dry_run_sql = dry_run_sql.replace(udf, udf.replace(".", "_"))
-
-                            # remove explicit project references
-                            dry_run_sql = dry_run_sql.replace(project_dir + ".", "")
-
-
-                            print(dry_run_sql)
+                        dry_run_sql_file(str(tmp_example_file))
 
 
 if __name__ == "__main__":

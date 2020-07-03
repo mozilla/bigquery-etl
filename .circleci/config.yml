@@ -106,6 +106,14 @@ jobs:
           command: |
             cd telemetry-airflow
             bash bin/test-parse
+  validate-docs:
+    docker: *docker
+    steps:
+    - checkout
+    - *build
+    - run:
+        name: Validate doc examples
+        command: PATH="venv/bin:$PATH" script/validate_docs
   docs:
     docker: *docker
     steps:
@@ -166,6 +174,7 @@ workflows:
     - validate-metadata
     - integration
     - validate-dags
+    - validate-docs
     - docs:
         filters:
           branches:

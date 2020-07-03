@@ -5031,6 +5031,11 @@
                                     },
                                     {
                                         "mode": "NULLABLE",
+                                        "name": "pdf_viewer_fallback_error",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
                                         "name": "pdf_viewer_fallback_reason",
                                         "type": "STRING"
                                     },
@@ -5082,6 +5087,11 @@
                                     {
                                         "mode": "NULLABLE",
                                         "name": "pdf_viewer_used",
+                                        "type": "STRING"
+                                    },
+                                    {
+                                        "mode": "NULLABLE",
+                                        "name": "pending_critical_input_when_timeout",
                                         "type": "STRING"
                                     },
                                     {
@@ -17834,6 +17844,11 @@
                     {
                         "mode": "NULLABLE",
                         "name": "pdf_viewer_embed_2",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "pdf_viewer_fallback_error",
                         "type": "STRING"
                     },
                     {

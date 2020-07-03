@@ -1,0 +1,43 @@
+---
+- &base
+  sample_id: 0
+  client_id: a
+  submission_date: "2019-07-17"
+  os: os
+  app_version: "1"
+  app_build_id: "2020"
+  channel: nightly
+  histogram_aggregates:
+    - metric: metric_c
+      metric_type: histogram-boolean
+      process: parent
+      agg_type: summed_histogram
+      bucket_range:
+        first_bucket: 1
+        last_bucket: 2
+        num_buckets: 3
+      value:
+        - key: '0'
+          value: 3
+        - key: '1'
+          value: 3
+        - key: '2'
+          value: 3
+- <<: *base
+  client_id: c
+  histogram_aggregates:
+    - metric: metric_d
+      metric_type: histogram-boolean
+      process: parent
+      agg_type: summed_histogram
+      bucket_range:
+        first_bucket: 1
+        last_bucket: 2
+        num_buckets: 3
+      value:
+        - key: '0'
+          value: 4
+        - key: '1'
+          value: 4
+        - key: '2'
+          value: 4

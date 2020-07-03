@@ -7,6 +7,7 @@ IMPORT=true source script/glam/run_glam_sql
 function generate_and_run_sql {
     local probe_type=$1
     local windows_release_sample_percent=$2
+    local process=$3
     local script_type
     local destination_table
     local write_disposition
@@ -26,11 +27,21 @@ function generate_and_run_sql {
             ;;
     esac
 
+    if [[ -z $process ]]; then
+        processes_argument=""
+        table_name_suffix=""
+    else
+        processes_argument="--processes=${process}"
+        table_name_suffix=$(echo ${process} | sed "s/ /_/g")
+        table_name_suffix+="_"
+    fi
+
     python3 "sql/telemetry_derived/clients_daily_${script_type}_aggregates_v1.sql.py" \
         "--agg-type=${probe_type}s" \
-        > "sql/telemetry_derived/clients_daily_${probe_type}_aggregates_v1/query.sql"
+        $processes_argument \
+        > "sql/telemetry_derived/clients_daily_${probe_type}_aggregates_${table_name_suffix}v1/query.sql"
 
-    echo "generated sql/telemetry_derived/clients_daily_${probe_type}_aggregates_v1/query.sql"
+    echo "generated sql/telemetry_derived/clients_daily_${probe_type}aggregates_${table_name_suffix}v1/query.sql"
 
     if [[ -z $RUN_QUERY ]]; then
         return
@@ -42,8 +53,8 @@ function generate_and_run_sql {
         write_disposition="--replace"
     fi
 
-    run_query "clients_daily_${script_type}_aggregates_v1" \
-        true 0 99 "clients_daily_${probe_type}_aggregates_v1" \
+    run_query "clients_daily_${script_type}_aggregates_${table_name_suffix}v1" \
+        true 0 99 "clients_daily_${probe_type}_aggregates_${table_name_suffix}v1" \
         "$write_disposition --clustering_fields=app_version,channel --time_partitioning_field=submission_date" \
         "$(if [[ -n $windows_release_sample_percent ]]; then echo $windows_release_sample_percent; fi)"
 
@@ -52,5 +63,5 @@ function generate_and_run_sql {
 probe_types=${1:-"scalar" "keyed_boolean" "keyed_scalar" "histogram" "keyed_histogram"}
 
 for probe_type in ${probe_types[@]}; do
-    generate_and_run_sql $probe_type $2
+    generate_and_run_sql $probe_type $2 $3
 done

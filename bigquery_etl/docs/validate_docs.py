@@ -3,7 +3,6 @@
 from argparse import ArgumentParser
 import os
 from pathlib import Path
-import re
 import tempfile
 
 from bigquery_etl.dryrun import dry_run_sql_file
@@ -30,7 +29,7 @@ standard_args.add_log_level(parser)
 def sql_for_dry_run(file, parsed_udfs, project_dir):
     """
     Return the example SQL used for the dry run.
-    
+
     Injects all UDFs the example depends on as temporary functions.
     """
     dry_run_sql = ""

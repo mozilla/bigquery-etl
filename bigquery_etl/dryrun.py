@@ -1,4 +1,6 @@
 """
+Dry run query files.
+
 Passes all queries defined under sql/ to a Cloud Function that will run the
 queries with the dry_run option enabled.
 

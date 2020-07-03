@@ -17,6 +17,7 @@ class TestPublishJsonScript(object):
         self,
         storage_client,
         test_bucket,
+        temporary_gcs_folder,
         project_id,
         temporary_dataset,
         bigquery_client,
@@ -38,6 +39,7 @@ class TestPublishJsonScript(object):
                 "--parameter=submission_date:DATE:2020-03-15",
                 "--query_file=" + str(incremental_sql_path),
                 "--target_bucket=" + test_bucket.name,
+                "--gcs_path=" + temporary_gcs_folder,
                 "--public_project_id=" + project_id,
             )
         )
@@ -50,7 +52,10 @@ class TestPublishJsonScript(object):
             )
             bigquery_client.get_table(temp_table)
 
-        gcp_path = "api/v1/tables/test/incremental_query/v1/files/2020-03-15/"
+        gcp_path = (
+            f"{temporary_gcs_folder}api/v1/tables/"
+            + "test/incremental_query/v1/files/2020-03-15/"
+        )
         blobs = storage_client.list_blobs(test_bucket, prefix=gcp_path)
 
         blob_count = 0
@@ -64,7 +69,10 @@ class TestPublishJsonScript(object):
 
         assert blob_count == 1
 
-        gcp_path = "api/v1/tables/test/incremental_query/v1/last_updated"
+        gcp_path = (
+            f"{temporary_gcs_folder}api/v1/tables/test/"
+            + "incremental_query/v1/last_updated"
+        )
         blobs = storage_client.list_blobs(test_bucket, prefix=gcp_path)
 
         blob_count = 0
@@ -77,7 +85,12 @@ class TestPublishJsonScript(object):
         assert blob_count == 1
 
     def test_script_incremental_query_no_parameter(
-        self, test_bucket, project_id, temporary_dataset, bigquery_client
+        self,
+        test_bucket,
+        temporary_gcs_folder,
+        project_id,
+        temporary_dataset,
+        bigquery_client,
     ):
         incremental_sql_path = (
             TEST_DIR
@@ -94,6 +107,7 @@ class TestPublishJsonScript(object):
                 "publish_json",
                 "--query_file=" + str(incremental_sql_path),
                 "--target_bucket=" + test_bucket.name,
+                "--gcs_path=" + temporary_gcs_folder,
                 "--public_project_id=" + project_id,
             )
         )
@@ -125,6 +139,7 @@ class TestPublishJsonScript(object):
         bigquery_client,
         storage_client,
         test_bucket,
+        temporary_gcs_folder,
         project_id,
         temporary_dataset,
     ):
@@ -156,13 +171,17 @@ class TestPublishJsonScript(object):
                 "publish_json",
                 "--query_file=" + str(non_incremental_sql_path),
                 "--target_bucket=" + test_bucket.name,
+                "--gcs_path=" + temporary_gcs_folder,
                 "--public_project_id=" + project_id,
             )
         )
 
         assert res.returncode == 0
 
-        gcp_path = "api/v1/tables/test/non_incremental_query/v1/files/"
+        gcp_path = (
+            f"{temporary_gcs_folder}api/v1/tables/test/"
+            + "non_incremental_query/v1/files/"
+        )
         blobs = storage_client.list_blobs(test_bucket, prefix=gcp_path)
 
         blob_count = 0
@@ -182,6 +201,7 @@ class TestPublishJsonScript(object):
         test_bucket,
         project_id,
         bigquery_client,
+        temporary_gcs_folder,
         temporary_dataset,
     ):
         incremental_non_incremental_export_sql_path = (
@@ -217,6 +237,7 @@ class TestPublishJsonScript(object):
                 "--parameter=a:INT64:9",
                 "--query_file=" + str(incremental_non_incremental_export_sql_path),
                 "--target_bucket=" + test_bucket.name,
+                "--gcs_path=" + temporary_gcs_folder,
                 "--public_project_id=" + project_id,
                 "--parameter=submission_date:DATE:2020-03-15",
             )
@@ -224,7 +245,8 @@ class TestPublishJsonScript(object):
         assert res.returncode == 0
 
         gcp_path = (
-            "api/v1/tables/test/incremental_query_non_incremental_export/v1/files/"
+            f"{temporary_gcs_folder}api/v1/tables/test/"
+            + "incremental_query_non_incremental_export/v1/files/"
         )
 
         blobs = storage_client.list_blobs(test_bucket, prefix=gcp_path)

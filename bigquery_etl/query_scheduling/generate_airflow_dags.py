@@ -2,12 +2,9 @@
 
 import logging
 import os
-from git import Repo
 from argparse import ArgumentParser
 from google.cloud import bigquery
 from ..util import standard_args
-import shutil
-import tempfile
 from pathlib import Path
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
@@ -17,6 +14,7 @@ from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 DEFAULT_SQL_DIR = "sql/"
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
+QUERY_PART_FILE = "part1.sql"
 DEFAULT_DAGS_DIR = "dags"
 TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
 
@@ -48,21 +46,6 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
-# This will be needed later for determining external dependencies
-#
-def setup_telemetry_airflow():
-    """Download the telemetry-airflow repository to a temporary directory."""
-    tmp_dir = tempfile.gettempdir() + "/telemetry-airflow/"
-
-    # the repository can only be cloned into an empty directory
-    shutil.rmtree(tmp_dir)
-
-    Repo.clone_from(TELEMETRY_AIRFLOW_GITHUB, tmp_dir)
-
-    airflow_dag_dir = tmp_dir + "/dags"
-    return airflow_dag_dir
-
-
 def get_dags(sql_dir, dags_config):
     """Return all configured DAGs including associated tasks."""
     tasks = []
@@ -85,6 +68,18 @@ def get_dags(sql_dir, dags_config):
                     # )
                     #
                     # most tasks lack scheduling information for now
+                    pass
+            elif QUERY_PART_FILE in files:
+                # multipart query
+                query_file = os.path.join(root, QUERY_PART_FILE)
+
+                try:
+                    task = Task.of_multipart_query(query_file)
+                    tasks.append(task)
+                except FileNotFoundError:
+                    # query has no metadata.yaml file; skip
+                    pass
+                except UnscheduledTask:
                     pass
 
     else:

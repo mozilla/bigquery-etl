@@ -12,4 +12,4 @@ scheduling:
   dag_name: bqetl_amo_stats
   depends_on:
     - task_id: copy_deduplicate_main_ping
-      dag_name: main_summary
+      dag_name: copy_deduplicate

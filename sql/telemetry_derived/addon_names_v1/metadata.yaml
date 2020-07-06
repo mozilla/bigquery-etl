@@ -14,5 +14,5 @@ scheduling:
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
   depends_on:
-    - dag_name: main_summary
+    - dag_name: copy_deduplicate
       task_id: copy_deduplicate_main_ping

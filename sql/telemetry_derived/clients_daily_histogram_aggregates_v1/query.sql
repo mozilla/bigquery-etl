@@ -11,4 +11,5 @@ FULL JOIN
 USING
   (sample_id, client_id, submission_date, os, app_version, app_build_id, channel)
 WHERE
-  submission_date = @submission_date
+  parent.submission_date = @submission_date
+  AND content.submission_date = @submission_date

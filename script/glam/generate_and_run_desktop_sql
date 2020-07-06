@@ -41,7 +41,7 @@ function generate_and_run_sql {
         $processes_argument \
         > "sql/telemetry_derived/clients_daily_${probe_type}_aggregates_${table_name_suffix}v1/query.sql"
 
-    echo "generated sql/telemetry_derived/clients_daily_${probe_type}aggregates_${table_name_suffix}v1/query.sql"
+    echo "generated sql/telemetry_derived/clients_daily_${probe_type}_aggregates_${table_name_suffix}v1/query.sql"
 
     if [[ -z $RUN_QUERY ]]; then
         return
@@ -53,7 +53,7 @@ function generate_and_run_sql {
         write_disposition="--replace"
     fi
 
-    run_query "clients_daily_${script_type}_aggregates_${table_name_suffix}v1" \
+    run_query "clients_daily_${script_type}_aggregates_v1" \
         true 0 99 "clients_daily_${probe_type}_aggregates_${table_name_suffix}v1" \
         "$write_disposition --clustering_fields=app_version,channel --time_partitioning_field=submission_date" \
         "$(if [[ -n $windows_release_sample_percent ]]; then echo $windows_release_sample_percent; fi)"

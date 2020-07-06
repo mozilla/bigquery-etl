@@ -1,6 +1,0 @@
-- name: submission_date
-  type: DATE
-  value: 2019-07-17
-- name: sample_size
-  type: INT64
-  value: 10

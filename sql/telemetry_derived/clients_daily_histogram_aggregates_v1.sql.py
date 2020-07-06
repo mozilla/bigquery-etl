@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 """clients_daily_histogram_aggregates query generator."""
-import os
 import sys
 import gzip
 import json
 import argparse
 import textwrap
-import subprocess
 import urllib.request
 from pathlib import Path
 from time import sleep

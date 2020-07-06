@@ -35,7 +35,7 @@ with DAG(
         start_date=datetime.datetime(2019, 10, 25, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        mulitpart=True,
+        multipart=True,
         sql_file_path="sql/telemetry_derived/main_summary_v4",
         dag=dag,
     )

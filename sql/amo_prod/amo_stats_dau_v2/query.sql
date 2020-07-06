@@ -32,6 +32,7 @@ unnested AS (
     UNNEST(addons) AS addon
   WHERE
     submission_date = @submission_date
+    AND addon.id IS NOT NULL
 ),
 --
 per_addon_version AS (

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """clients_daily_histogram_aggregates query generator."""
-import os
 import sys
 import gzip
 import json
 import argparse
 import textwrap
-import subprocess
 import urllib.request
 from pathlib import Path
 from time import sleep
+
+from google.cloud import bigquery
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
@@ -34,6 +34,13 @@ p.add_argument(
     default=0,
     help="Add a delay before executing the script to allow time for the xcom sidecar to complete startup",
 )
+p.add_argument(
+    "--processes",
+    type=str,
+    nargs="*",
+    help="Processes to include in the output.  Defaults to all processes.",
+)
+
 
 def generate_sql(opts, additional_queries, windowed_clause, select_clause, json_output):
     """Create a SQL query for the clients_daily_histogram_aggregates dataset."""
@@ -425,27 +432,14 @@ def get_histogram_probes_sql_strings(probes_and_buckets, histogram_type):
     return sql_strings
 
 
-def get_histogram_probes_and_buckets(histogram_type):
+def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
     """Return relevant histogram probes."""
     project = "moz-fx-data-shared-prod"
     main_summary_histograms = {}
-    process = subprocess.Popen(
-        [
-            "bq",
-            "show",
-            "--schema",
-            "--format=json",
-            f"{project}:telemetry_stable.main_v4",
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    stdout, stderr = process.communicate()
-    if process.returncode > 0:
-        raise Exception(
-            f"Call to bq exited non-zero: {process.returncode}", stdout, stderr
-        )
-    main_summary_schema = json.loads(stdout)
+
+    client = bigquery.Client(project)
+    table = client.get_table("telemetry_stable.main_v4")
+    main_summary_schema = [field.to_api_repr() for field in table.schema]
 
     # Fetch the histograms field
     histograms_field = []
@@ -481,7 +475,8 @@ def get_histogram_probes_and_buckets(histogram_type):
                 continue
 
             processes = main_summary_histograms.setdefault(histogram["name"], set())
-            processes.add(histograms_and_process["process"])
+            if processes_to_output is None or histograms_and_process["process"] in processes_to_output:
+                processes.add(histograms_and_process["process"])
             main_summary_histograms[histogram["name"]] = processes
 
     with urllib.request.urlopen(PROBE_INFO_SERVICE) as url:
@@ -533,7 +528,7 @@ def main(argv, out=print):
     sql_string = ""
 
     if opts["agg_type"] in ("histograms", "keyed_histograms"):
-        probes_and_buckets = get_histogram_probes_and_buckets(opts["agg_type"])
+        probes_and_buckets = get_histogram_probes_and_buckets(opts["agg_type"], opts["processes"])
         sql_string = get_histogram_probes_sql_strings(
             probes_and_buckets, opts["agg_type"]
         )

@@ -106,38 +106,38 @@ fenix_flattened_searches AS (
     *,
 
     CASE
-      WHEN
-        search.search_type = 'sap'
-      THEN
-        normalize_fenix_search_key(search.key)[SAFE_OFFSET(0)]
-      WHEN
-        search.search_type = 'in-content'
-      THEN
-        SPLIT(search.key, '.')[SAFE_OFFSET(0)]
-      WHEN
-        search.search_type = 'ad-click' OR search.search_type = 'search-with-ads'
-      THEN
-        search.key
-      ELSE
-        NULL
-      END AS engine,
+    WHEN
+      search.search_type = 'sap'
+    THEN
+      normalize_fenix_search_key(search.key)[SAFE_OFFSET(0)]
+    WHEN
+      search.search_type = 'in-content'
+    THEN
+      SPLIT(search.key, '.')[SAFE_OFFSET(0)]
+    WHEN
+      search.search_type = 'ad-click' OR search.search_type = 'search-with-ads'
+    THEN
+      search.key
+    ELSE
+      NULL
+    END AS engine,
 
     CASE
-      WHEN
-        search.search_type = 'sap'
-      THEN
-        normalize_fenix_search_key(search.key)[SAFE_OFFSET(1)]
-      WHEN
-        search.search_type = 'in-content'
-      THEN
+    WHEN
+      search.search_type = 'sap'
+    THEN
+      normalize_fenix_search_key(search.key)[SAFE_OFFSET(1)]
+    WHEN
+      search.search_type = 'in-content'
+    THEN
+      IF(
+        ARRAY_LENGTH(SPLIT(search.key, '.')) < 2,
+        NULL,
         ARRAY_TO_STRING(udf.array_slice(SPLIT(search.key, '.'), 1, 3), '.')
-      WHEN
-        search.search_type = 'ad-click' OR search.search_type = 'search-with-ads'
-      THEN
-        search.search_type
-      ELSE
-        NULL
-      END AS source,
+      )
+    ELSE
+      search.search_type
+    END AS source,
 
     search.value AS search_count,
     UNIX_DATE(udf.parse_iso8601_date(first_run_date)) AS profile_creation_date,
@@ -168,6 +168,7 @@ combined_search_clients AS (
     client_id,
     normalized_search_key[SAFE_OFFSET(0)] AS engine,
     normalized_search_key[SAFE_OFFSET(1)] AS source,
+    'sap' AS search_type,
     search_count,
     normalized_country_code AS country,
     locale,
@@ -191,6 +192,30 @@ combined_search_clients AS (
     client_id,
     engine,
     source,
+
+    CASE
+    WHEN
+      STARTS_WITH(source, 'in-content.sap.')
+    THEN
+      'tagged-sap'
+    WHEN
+      STARTS_WITH(source, 'in-content.sap-follow-on.')
+    THEN
+      'tagged-follow-on'
+    WHEN
+      STARTS_WITH(source, 'in-content.organic')
+    THEN
+        'organic'
+    WHEN
+      search_type = 'ad-click'
+      OR search_type = 'search-with-ads'
+      OR search_type = 'sap'
+    THEN
+      search_type
+    ELSE
+      'unknown'
+    END AS search_type,
+
     search_count,
     normalized_country_code AS country,
     locale,
@@ -218,8 +243,26 @@ unfiltered_search_clients AS (
     app_name,
     normalized_app_name,
     SUM(
-      IF(engine IS NULL OR search_count > 10000, 0, search_count)
+      IF(search_type != 'sap' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS search_count,
+    SUM(
+      IF(search_type != 'organic' OR engine IS NULL OR search_count > 10000, 0, search_count)
+    ) AS organic,
+    SUM(
+      IF(search_type != 'tagged-sap' OR engine IS NULL OR search_count > 10000, 0, search_count)
+    ) AS tagged_sap,
+    SUM(
+      IF(search_type != 'tagged-follow-on' OR engine IS NULL OR search_count > 10000, 0, search_count)
+    ) AS tagged_follow_on,
+    SUM(
+      IF(search_type != 'ad-click' OR engine IS NULL OR search_count > 10000, 0, search_count)
+    ) AS ad_click,
+    SUM(
+      IF(search_type != 'search-with-ads' OR engine IS NULL OR search_count > 10000, 0, search_count)
+    ) AS search_with_ads,
+    SUM(
+      IF(search_type != 'unknown' OR engine IS NULL OR search_count > 10000, 0, search_count)
+    ) AS unknown,
     udf.mode_last(ARRAY_AGG(country)) AS country,
     udf.mode_last(ARRAY_AGG(locale)) AS locale,
     udf.mode_last(ARRAY_AGG(app_version)) AS app_version,
@@ -243,6 +286,7 @@ unfiltered_search_clients AS (
     client_id,
     engine,
     source,
+    search_type,
     app_name,
     normalized_app_name
 )

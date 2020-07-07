@@ -30,6 +30,11 @@ histograms AS (
     channel,
     ARRAY<STRUCT<metric STRING, metric_type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
       (
+        "geckoview_content_process_lifetime",
+        "timing_distribution",
+        metrics.timing_distribution.geckoview_content_process_lifetime.values
+      ),
+      (
         "geckoview_document_site_origins",
         "custom_distribution",
         metrics.custom_distribution.geckoview_document_site_origins.values
@@ -48,6 +53,11 @@ histograms AS (
         "geckoview_page_reload_time",
         "timing_distribution",
         metrics.timing_distribution.geckoview_page_reload_time.values
+      ),
+      (
+        "geckoview_per_document_site_origins",
+        "custom_distribution",
+        metrics.custom_distribution.geckoview_per_document_site_origins.values
       ),
       (
         "geckoview_startup_runtime",
@@ -148,6 +158,46 @@ histograms AS (
         "gfx_webrender_sceneswap_time",
         "timing_distribution",
         metrics.timing_distribution.gfx_webrender_sceneswap_time.values
+      ),
+      (
+        "javascript_gc_compact_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_gc_compact_time.values
+      ),
+      (
+        "javascript_gc_mark_roots_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_gc_mark_roots_time.values
+      ),
+      (
+        "javascript_gc_mark_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_gc_mark_time.values
+      ),
+      (
+        "javascript_gc_minor_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_gc_minor_time.values
+      ),
+      (
+        "javascript_gc_prepare_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_gc_prepare_time.values
+      ),
+      (
+        "javascript_gc_slice_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_gc_slice_time.values
+      ),
+      (
+        "javascript_gc_sweep_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_gc_sweep_time.values
+      ),
+      (
+        "javascript_gc_total_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_gc_total_time.values
       ),
       (
         "logins_store_read_query_time",
@@ -288,6 +338,21 @@ histograms AS (
         "performance_time_response_start",
         "timing_distribution",
         metrics.timing_distribution.performance_time_response_start.values
+      ),
+      (
+        "places_manager_read_query_time",
+        "timing_distribution",
+        metrics.timing_distribution.places_manager_read_query_time.values
+      ),
+      (
+        "places_manager_scan_query_time",
+        "timing_distribution",
+        metrics.timing_distribution.places_manager_scan_query_time.values
+      ),
+      (
+        "places_manager_write_query_time",
+        "timing_distribution",
+        metrics.timing_distribution.places_manager_write_query_time.values
       )
     ] AS metadata
   FROM

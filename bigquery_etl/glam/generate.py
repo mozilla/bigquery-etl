@@ -67,7 +67,7 @@ def from_template(
 def main():
     """Generate GLAM ETL queries."""
     parser = ArgumentParser(description=main.__doc__)
-    parser.add_argument("--prefix", default="fenix")
+    parser.add_argument("--prefix", default="org_mozilla_fenix")
     parser.add_argument("--dataset", default="glam_etl")
     parser.add_argument("--sql-root", default="sql/")
     args = parser.parse_args()
@@ -77,6 +77,12 @@ def main():
     dataset_path = Path(args.sql_root) / args.dataset
     if not dataset_path.is_dir():
         raise NotADirectoryError(f"path to {dataset_path} not found")
+
+    build_date_udf_mapping = dict(
+        org_mozilla_fenix="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime"
+    )
+    if not build_date_udf_mapping.get(args.prefix):
+        raise ValueError(f"build date udf for {args.prefix} was not found")
 
     # curry functions for convenience
     template = partial(
@@ -160,8 +166,13 @@ def main():
         table("histogram_percentiles_v1"),
         view("view_probe_counts_v1"),
         view("view_user_counts_v1", **models.user_counts()),
-        table("extract_user_counts_v1"),
-        table("extract_probe_counts_v1"),
+        table(
+            "extract_user_counts_v1", build_date_udf=build_date_udf_mapping[args.prefix]
+        ),
+        table(
+            "extract_probe_counts_v1",
+            build_date_udf=build_date_udf_mapping[args.prefix],
+        ),
     ]
 
 

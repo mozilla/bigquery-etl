@@ -105,8 +105,7 @@ def main():
                             with open(dataset_doc, "a") as dataset_doc_file:
                                 dataset_doc_file.write("\n\n")
                                 # Inject a level-2 header with the UDF name
-                                if not docfile_content.strip().startswith("#"):
-                                    dataset_doc_file.write(f"## {name}\n\n")
+                                dataset_doc_file.write(f"## {name}\n\n")
                                 # Inject the "description" from metadata.yaml
                                 if description:
                                     dataset_doc_file.write(f"{description}\n\n")

@@ -15,8 +15,6 @@ from google.cloud import bigquery
 import sqlparse
 
 
-SHARED_PROD = "moz-fx-data-shared-prod"
-
 VIEWS_TO_SKIP = (
     # Access Denied
     "activity_stream/tile_id_types/view.sql",
@@ -52,23 +50,11 @@ def process_file(client, args, filepath):
     if is_view_statement:
         target_view_orig = str(tokens[2]).strip().split()[0]
         target_view = target_view_orig
-        project_id = target_view_orig.strip("`").split(".", 1)[0]
-        if project_id != SHARED_PROD:
-            print(
-                f"ERROR: {filepath} contains a CREATE VIEW statement that"
-                " does not target {SHARED_PROD}! Quitting..."
-            )
-            return False
-        if args.target_project != project_id:
+        if args.target_project:
+            project_id = target_view_orig.strip("`").split(".", 1)[0]
             target_view = target_view_orig.replace(project_id, args.target_project, 1)
-            # When republishing to a different project, we reference the view in
-            # shared-prod rather than repeating the contents, since the view may
-            # contain tables references that are not fully-qualified, thus breaking
-            # the view when published to a different project.
-            sql = (
-                f"CREATE OR REPLACE VIEW {target_view}"
-                f" AS SELECT * FROM {target_view_orig}"
-            )
+            # We only change the first occurrence, which is in the target view name.
+            sql = sql.replace(project_id, args.target_project, 1)
         job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=args.dry_run)
         query_job = client.query(sql, job_config)
         if args.dry_run:
@@ -104,8 +90,10 @@ def main():
     )
     parser.add_argument(
         "--target-project",
-        default=SHARED_PROD,
-        help=("Project in which to publish views"),
+        help=(
+            "If specified, create views in the target project rather than"
+            " the project specified in the file"
+        ),
     )
     parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
     parser.add_argument(

@@ -92,9 +92,9 @@ with DAG(
         wait_for_telemetry_derived__clients_last_seen__v1
     )
 
-    wait_for_main_summary_copy_deduplicate_main_ping = ExternalTaskSensor(
-        task_id="wait_for_main_summary_copy_deduplicate_main_ping",
-        external_dag_id="main_summary",
+    wait_for_copy_deduplicate_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_copy_deduplicate_main_ping",
+        external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_main_ping",
         check_existence=True,
         mode="reschedule",
@@ -102,13 +102,13 @@ with DAG(
     )
 
     telemetry_derived__addons__v2.set_upstream(
-        wait_for_main_summary_copy_deduplicate_main_ping
+        wait_for_copy_deduplicate_copy_deduplicate_main_ping
     )
 
     telemetry_derived__addon_aggregates__v2.set_upstream(
-        wait_for_main_summary_copy_deduplicate_main_ping
+        wait_for_copy_deduplicate_copy_deduplicate_main_ping
     )
 
     telemetry_derived__addon_names__v1.set_upstream(
-        wait_for_main_summary_copy_deduplicate_main_ping
+        wait_for_copy_deduplicate_copy_deduplicate_main_ping
     )

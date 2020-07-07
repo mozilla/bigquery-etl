@@ -29,7 +29,8 @@ base_events AS (
     AND jsonPayload.fields.event_type IN (
       'fxa_activity - cert_signed',
       'fxa_activity - access_token_checked',
-      'fxa_activity - access_token_created'
+      'fxa_activity - access_token_created',
+      'fxa_activity - oauth_access_token_created'
     )
     AND jsonPayload.fields.user_id IS NOT NULL
 ),

@@ -16,6 +16,8 @@ import sqlparse
 UDF_DIRS = ("udf", "udf_js")
 MOZFUN_DIR = ("mozfun",)
 UDF_CHAR = "[a-zA-z0-9_]"
+UDF_FILE = "udf.sql"
+EXAMPLE_DIR = "examples"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
 MOZFUN_UDF_RE = re.compile(fr"({UDF_CHAR}+)\.({UDF_CHAR}+)")
@@ -30,7 +32,7 @@ MOZFUN_UDFS = {
     for udf_dir in MOZFUN_DIR
     for root, dirs, files in os.walk(udf_dir)
     for filename in files
-    if not filename.startswith(".") and filename.endswith(".sql")
+    if filename == UDF_FILE
 }
 
 
@@ -161,6 +163,7 @@ def read_udf_dirs(*udf_dirs):
         raw_udf.name: raw_udf
         for udf_dir in (udf_dirs or UDF_DIRS)
         for root, dirs, files in os.walk(udf_dir)
+        if os.path.basename(root) != EXAMPLE_DIR
         for filename in files
         if not filename.startswith(".") and filename.endswith(".sql")
         for raw_udf in (RawUdf.from_file(os.path.join(root, filename)),)

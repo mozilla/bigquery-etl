@@ -1,0 +1,10 @@
+repo_url: https://github.com/mozilla/bigquery-etl/
+site_author: Mozilla Data Platform Team
+site_description: Mozilla BigQuery ETL
+site_name: BigQuery ETL
+
+docs_dir: test_docs
+
+
+theme:
+  name: mkdocs

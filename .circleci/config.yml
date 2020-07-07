@@ -106,6 +106,39 @@ jobs:
           command: |
             cd telemetry-airflow
             bash bin/test-parse
+  validate-docs:
+    docker: *docker
+    steps:
+    - checkout
+    - *build
+    - run:
+        name: Validate doc examples
+        command: PATH="venv/bin:$PATH" script/validate_docs
+  docs:
+    docker: *docker
+    steps:
+    - checkout
+    - &skip_forked_pr
+      run:
+        name: Early return if this build is from a forked PR
+        command: |
+          if [ -n "$CIRCLE_PR_NUMBER" ]; then
+            echo "Cannot pass creds to forked PRs, so marking this step successful"
+            circleci step halt
+          fi
+    - *build
+    - run:
+        name: Install dependencies
+        command: pip install mkdocs markdown-include
+    - add_ssh_keys:
+        fingerprints:
+          "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
+    - run:
+        name: Build and deploy docs
+        command: |
+          PATH="venv/bin:$PATH" script/generate_docs --output_dir=generated_docs/
+          cd generated_docs/
+          mkdocs gh-deploy -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
   deploy:
     parameters:
       image:
@@ -141,6 +174,11 @@ workflows:
     - validate-metadata
     - integration
     - validate-dags
+    - validate-docs
+    - docs:
+        filters:
+          branches:
+            only: master
     - deploy:
         context: data-eng-bigquery-etl-dockerhub
         requires:

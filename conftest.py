@@ -81,6 +81,27 @@ def test_bucket():
 
 
 @pytest.fixture
+def temporary_gcs_folder():
+    """Provide a temporary folder in the GCS test bucket."""
+    test_folder = (
+        "test_"
+        + "".join(random.choice(string.ascii_lowercase) for i in range(12))
+        + "/"
+    )
+
+    yield test_folder
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(TEST_BUCKET)
+
+    # delete test folder
+    blobs = bucket.list_blobs(prefix=test_folder)
+
+    for blob in blobs:
+        blob.delete()
+
+
+@pytest.fixture
 def storage_client():
     """Provide a client instance for cloud storage."""
     yield storage.Client()

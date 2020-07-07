@@ -212,6 +212,11 @@ def udf_usages_in_text(text):
     udf_usages = PERSISTENT_UDF_RE.findall(sql)
     udf_usages = list(map(lambda t: ".".join(t), udf_usages))
     udf_usages.extend(TEMP_UDF_RE.findall(sql))
+
+    for udf in MOZFUN_UDFS:
+        if udf in sql:
+            udf_usages.append(udf)
+
     return sorted(set(udf_usages))
 
 
@@ -231,6 +236,12 @@ def persistent_udf_as_temp(raw_udf, raw_udfs=None):
     """Transform persistent UDF into temporary UDF."""
     sql = prepend_udf_usage_definitions(raw_udf, raw_udfs)
     sql = sub_persistent_udf_names_as_temp(sql)
+
+    for udf in MOZFUN_UDFS:
+        if udf in sql:
+            sql = sql.replace(udf, udf.replace(".", "_"))
+    sql = sql.replace("mozfun.", "")
+
     sql = PERSISTENT_UDF_PREFIX.sub("CREATE TEMP FUNCTION", sql)
     return sql
 

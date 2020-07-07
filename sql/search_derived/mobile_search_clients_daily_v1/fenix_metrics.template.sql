@@ -24,6 +24,9 @@ metrics_{namespace} AS (
     sample_id,
     CAST(NULL AS STRING) AS distribution_id,
     metrics.labeled_counter.metrics_search_count,
+    metrics.labeled_counter.browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content,
+    metrics.labeled_counter.browser_search_with_ads,
     client_info.first_run_date,
     ping_info.end_time
   FROM

@@ -16,7 +16,9 @@ sample AS (
     days_seen_bits,
     days_created_profile_bits,
     client_id,
-    app_version
+    app_version,
+    locale,
+    active_addons
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_last_seen`,
     UNNEST([country, 'Worldwide']) AS country_group
@@ -43,17 +45,43 @@ sample AS (
     AND submission_date >= @submission_date
     AND submission_date < DATE_ADD(@submission_date, INTERVAL 7 DAY)
     AND subsession_hours_sum < 24 --remove outliers
+    AND sample_id = 1
 ),
-mau AS (
+sample_addons AS (
+  SELECT
+    week_start,
+    is_last_day_of_week,
+    country_name,
+    client_id,
+    locale,
+    addons.is_system,
+    addons.foreign_install,
+    addons.addon_id,
+    addons.name AS addon_name
+  FROM
+    sample,
+    UNNEST(
+      IF(
+        ARRAY_LENGTH(active_addons) > 0,
+        active_addons,
+            -- include a null addon if there were none (either null or an empty list)
+        [active_addons[SAFE_OFFSET(0)]]
+      )
+    ) AS addons
+  WHERE
+    days_since_seen < 7
+    AND is_last_day_of_week
+),
+mau_wau AS (
   SELECT
     week_start,
     country_name,
-    count(*) AS MAU
+    COUNT(DISTINCT IF(days_since_seen < 28, client_id, NULL)) AS mau,
+    COUNT(DISTINCT IF(days_since_seen < 7, client_id, NULL)) AS wau
   FROM
     sample
   WHERE
     is_last_day_of_week
-    AND days_since_seen < 28
   GROUP BY
     week_start,
     country_name
@@ -107,7 +135,7 @@ new_profile_rate AS (
   SELECT
     country_name,
     SAFE_DIVIDE(
-      100 * COUNTIF(
+      COUNTIF(
         `moz-fx-data-shared-prod.udf.pos_of_trailing_set_bit`(days_created_profile_bits) < 7
       ), -- new profiles
       COUNTIF(`moz-fx-data-shared-prod.udf.pos_of_trailing_set_bit`(days_seen_bits) < 7)
@@ -177,17 +205,148 @@ latest_version_ratio AS (
   GROUP BY
     country_name,
     week_start
+),
+addon_counts AS (
+  SELECT
+    week_start,
+    country_name,
+    addon_id,
+    addon_name,
+    COUNT(
+      DISTINCT IF(
+        is_system = FALSE
+        AND foreign_install = FALSE
+        AND addon_id NOT LIKE '%@mozilla%'
+        AND addon_id NOT LIKE '%@shield.mozilla%'
+        AND addon_ID NOT LIKE '%@unified-urlbar-shield-study-%'
+        AND addon_id NOT LIKE '%@testpilot-addon%'
+        AND addon_id NOT LIKE '%@testpilot-addon%'
+        AND addon_id NOT LIKE '%@activity-streams%'
+        AND addon_id NOT LIKE '%support@laserlike.com%'
+        AND addon_id NOT LIKE '%testpilot@cliqz.com%'
+        AND addon_id NOT LIKE '%@testpilot-containers%'
+        AND addon_id NOT LIKE '%@sloth%'
+        AND addon_id NOT LIKE '%@min-vid%'
+        AND addon_id NOT LIKE '%jid1-NeEaf3sAHdKHPA@jetpack%',
+        client_id,
+        NULL
+      )
+    ) AS user_count
+  FROM
+    sample_addons
+  GROUP BY
+    week_start,
+    country_name,
+    addon_id,
+    addon_name
+),
+addon_ratios AS (
+  SELECT
+    week_start,
+    country_name,
+    addon_name,
+    user_count / wau AS ratio
+  FROM
+    addon_counts
+  JOIN
+    mau_wau
+  USING
+    (week_start, country_name)
+),
+top_addons AS (
+  SELECT
+    week_start,
+    country_name,
+    ARRAY_AGG(STRUCT(addon_name, ratio) ORDER BY ratio DESC LIMIT 10) AS top_addons
+  FROM
+    addon_ratios
+  GROUP BY
+    week_start,
+    country_name
+),
+has_addon AS (
+  SELECT
+    week_start,
+    country_name,
+    COUNT(
+      DISTINCT IF(
+        is_system = FALSE
+        AND foreign_install = FALSE
+        AND addon_id NOT LIKE '%@mozilla%'
+        AND addon_id NOT LIKE '%@shield.mozilla%'
+        AND addon_ID NOT LIKE '%@unified-urlbar-shield-study-%'
+        AND addon_id NOT LIKE '%@testpilot-addon%'
+        AND addon_id NOT LIKE '%@testpilot-addon%'
+        AND addon_id NOT LIKE '%@activity-streams%'
+        AND addon_id NOT LIKE '%support@laserlike.com%'
+        AND addon_id NOT LIKE '%testpilot@cliqz.com%'
+        AND addon_id NOT LIKE '%@testpilot-containers%'
+        AND addon_id NOT LIKE '%@sloth%'
+        AND addon_id NOT LIKE '%@min-vid%'
+        AND addon_id NOT LIKE '%jid1-NeEaf3sAHdKHPA@jetpack%',
+        client_id,
+        NULL
+      )
+    ) / COUNT(DISTINCT client_id) AS has_addon_ratio
+  FROM
+    sample_addons
+  GROUP BY
+    week_start,
+    country_name
+),
+locale_counts AS (
+  SELECT
+    week_start,
+    country_name,
+    locale,
+    COUNT(DISTINCT client_id) AS user_count
+  FROM
+    sample
+  WHERE
+    days_since_seen < 7
+    AND is_last_day_of_week
+  GROUP BY
+    week_start,
+    country_name,
+    locale
+),
+locale_ratios AS (
+  SELECT
+    week_start,
+    country_name,
+    locale,
+    user_count / wau AS ratio
+  FROM
+    locale_counts
+  JOIN
+    mau_wau
+  USING
+    (week_start, country_name)
+),
+top_locales AS (
+  SELECT
+    week_start,
+    country_name,
+    ARRAY_AGG(STRUCT(locale, ratio) ORDER BY ratio DESC LIMIT 5) AS top_locales
+  FROM
+    locale_ratios
+  GROUP BY
+    week_start,
+    country_name
 )
 SELECT
-  mau.week_start,
-  mau.country_name,
-  mau.mau,
+  mau_wau.week_start,
+  mau_wau.country_name,
+  mau_wau.mau,
   daily_usage.avg_hours_usage_daily,
   intensity.intensity,
   new_profile_rate.new_profile_rate,
-  latest_version_ratio.latest_version_ratio
+  latest_version_ratio.latest_version_ratio,
+  top_addons.top_addons,
+  has_addon.has_addon_ratio,
+  top_locales.top_locales
 FROM
-  mau
+  mau_wau
 JOIN
   daily_usage
 USING
@@ -202,6 +361,18 @@ USING
   (week_start, country_name)
 JOIN
   latest_version_ratio
+USING
+  (week_start, country_name)
+JOIN
+  top_addons
+USING
+  (week_start, country_name)
+JOIN
+  top_locales
+USING
+  (week_start, country_name)
+JOIN
+  has_addon
 USING
   (week_start, country_name)
 ORDER BY

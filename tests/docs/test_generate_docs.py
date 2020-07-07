@@ -20,7 +20,7 @@ class TestGenerateDocs:
         )
         result = load_with_examples(str(input)).strip()
 
-        assert result == "# udf1\n\n```sql\nSELECT\n  *\nFROM\n  test\n\n```"
+        assert result == "```sql\nSELECT\n  *\nFROM\n  test\n```"
 
     def test_load_with_examples_dataset(self):
         input = (
@@ -33,7 +33,7 @@ class TestGenerateDocs:
         )
         result = load_with_examples(str(input)).strip()
 
-        assert result == "# test_dataset1\n\n```sql\nSELECT\n  *\nFROM\n  test\n\n```"
+        assert result == "# test_dataset1\n\n```sql\nSELECT\n  *\nFROM\n  test\n```"
 
     def test_load_with_missing_example(self, tmp_path):
         file_path = tmp_path / "ds" / "udf"

@@ -102,6 +102,34 @@
             
             <li class="nav-item" data-level="1"><a href="#bits28" class="nav-link">bits28</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#retention" class="nav-link">retention</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#to_string" class="nav-link">to_string</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#to_dates" class="nav-link">to_dates</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#range" class="nav-link">range</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#from_string" class="nav-link">from_string</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#days_since_seen" class="nav-link">days_since_seen</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#active_in_range" class="nav-link">active_in_range</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -109,7 +137,56 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="bits28">bits28</h1></div>
+<h1 id="bits28">bits28</h1>
+<p>The <code>bits28</code> functions provide an API for working with "bit pattern" INT64
+fields, as used in the <a href="https://docs.telemetry.mozilla.org/datasets/bigquery/clients_last_seen/reference.html"><code>clients_last_seen</code> dataset</a>
+for desktop Firefox and similar datasets for other applications.</p>
+<p>A powerful feature of the <code>clients_last_seen</code> methodology is that it doesn't
+record specific metrics like MAU and WAU directly, but rather each row stores
+a history of the discrete days on which a client was active in the past 28 days.
+We could calculate active users in a 10 day or 25 day window just as efficiently
+as a 7 day (WAU) or 28 day (MAU) window. But we can also define completely new
+metrics based on these usage histories, such as various retention definitions.</p>
+<p>The usage history is encoded as a "bit pattern" where the physical
+type of the field is a BigQuery INT64, but logically the integer
+represents an array of bits, with each 1 indicating a day where the given clients
+was active and each 0 indicating a day where the client was inactive.</p>
+<h2 id="retention">retention</h2>
+<p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p>
+<h2 id="to_string">to_string</h2>
+<p>Convert an INT64 field into a 28-character string representing the individual bits.</p>
+<pre><code class="sql">SELECT
+  [mozfun.bits28.to_string(1), mozfun.bits28.to_string(2), mozfun.bits28.to_string(3)]
+-- &gt;&gt;&gt; ['0000000000000000000000000001',
+--      '0000000000000000000000000010',
+--      '0000000000000000000000000011']
+</code></pre>
+
+<h2 id="to_dates">to_dates</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<h2 id="range">range</h2>
+<p>Return an INT64 representing a range of bits from a source bit pattern.</p>
+<pre><code class="sql">SELECT
+  -- Signature is bits28.range(offset_to_day_0, start_bit, number_of_bits)
+  mozfun.bits28.range(days_seen_bits, -13 + 0, 7) AS week_0_bits,
+  mozfun.bits28.range(days_seen_bits, -13 + 7, 7) AS week_1_bits
+FROM
+  telemetry.clients_last_seen
+WHERE
+  submission_date &gt; '2020-01-01'
+</code></pre>
+
+<h2 id="from_string">from_string</h2>
+<p>Convert a string representing individual bits into an INT64.</p>
+<h2 id="days_since_seen">days_since_seen</h2>
+<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
+<pre><code class="sql">SELECT
+  mozfun.bits28.days_since_seen(18)
+-- &gt;&gt; 1
+</code></pre>
+
+<h2 id="active_in_range">active_in_range</h2>
+<p>Return a boolean indicating if any bits are set in the specified range of a bit pattern.</p></div>
             </div>
         </div>
 

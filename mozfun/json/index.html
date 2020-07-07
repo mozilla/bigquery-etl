@@ -102,6 +102,10 @@
             
             <li class="nav-item" data-level="1"><a href="#json" class="nav-link">json</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#extract_int_map" class="nav-link">extract_int_map</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -110,7 +114,10 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="json">json</h1>
-<p>Functions for parsing Mozilla-specific JSON data types.</p></div>
+<p>Functions for parsing Mozilla-specific JSON data types.</p>
+<h2 id="extract_int_map">extract_int_map</h2>
+<p>Returns an array of key/value structs from a string representing a JSON map. Both keys and values are cast to integers.
+This is the format for the "values" field in the desktop telemetry histogram JSON representation.</p></div>
             </div>
         </div>
 

@@ -18,6 +18,7 @@ def parsed_udfs():
             udf.filepath: udf
             for udf in parse_udf_dirs("tests/assert", *UDF_DIRS, *MOZFUN_DIR)
         }
+
     return _parsed_udfs
 
 
@@ -29,7 +30,9 @@ def pytest_configure(config):
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
     if path.basename.endswith(".sql"):
-        if path.dirpath().basename in TEST_UDF_DIRS or path.basename == "udf.sql":
+        if path.dirpath().basename in TEST_UDF_DIRS or (
+            "mozfun" in str(path.dirpath()) and path.basename == "udf.sql"
+        ):
             return UdfFile(path, parent)
 
 

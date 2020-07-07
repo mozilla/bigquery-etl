@@ -120,10 +120,9 @@ class RawUdf:
             # we can check if some known dependency is part of the UDF
             # definition instead
             _, basename = os.path.split(filepath)
-            if basename == "udf.sql":
-                for udf in MOZFUN_UDFS:
-                    if udf in "\n".join(definitions):
-                        dependencies.append(udf)
+            for udf in MOZFUN_UDFS:
+                if udf in "\n".join(definitions):
+                    dependencies.append(udf)
 
         if is_defined:
             if internal_name is None:
@@ -174,6 +173,7 @@ def parse_udf_dirs(*udf_dirs):
     """Read contents of udf_dirs into ParsedUdf instances."""
     # collect udfs to parse
     raw_udfs = read_udf_dirs(*udf_dirs)
+
     # prepend udf definitions to tests
     for raw_udf in raw_udfs.values():
         tests_full_sql = udf_tests_sql(raw_udf, raw_udfs)

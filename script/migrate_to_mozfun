@@ -75,6 +75,7 @@ def migrate_udf(udf_file):
         if len(comment) > 0:
             description = comment[0][0].replace("/*", "")
             description = description.replace("*/", "").strip()
+            description = description.replace("\n", " ").strip()
 
         # write files to mozfun/
         mozfun_udf_dir = Path(MOZFUN_DIR) / dataset / udf_name

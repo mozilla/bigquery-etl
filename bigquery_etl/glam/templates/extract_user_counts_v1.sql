@@ -15,7 +15,7 @@ SELECT
   app_version,
   coalesce(ping_type, "*") as ping_type,
   COALESCE(app_build_id, "*") as app_build_id,
-  COALESCE(CAST({{ build_date_udf }}(app_build_id) AS STRING), "*") AS build_date,
+  SAFE_CAST({{ build_date_udf }}(app_build_id) AS STRING) AS build_date,
   COALESCE(os, "*") AS os,
   total_users
 FROM deduped

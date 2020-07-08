@@ -205,6 +205,7 @@ combined_search_clients AS (
     profile_age_in_days,
     sample_id,
     normalize_core_experiments(experiments) AS experiments,
+    CAST(NULL AS INT64) AS total_uri_count,
   FROM
     core_flattened_searches
   UNION ALL
@@ -238,21 +239,22 @@ combined_search_clients AS (
     END AS search_type,
 
     search_count,
-    normalized_country_code AS country,
+    country,
     locale,
     app_name,
     normalized_app_name,
-    app_display_version AS app_version,
+    app_version,
     channel,
-    normalized_os AS os,
-    android_sdk_version AS os_version,
-    search_default_engine_code AS default_search_engine,
-    search_default_engine_submission_url AS default_search_engine_submission_url,
+    os,
+    os_version,
+    default_search_engine,
+    default_search_engine_submission_url,
     CAST(NULL AS STRING) AS distribution_id,
     profile_creation_date,
     profile_age_in_days,
     sample_id,
     normalize_fenix_experiments(experiments) AS experiments,
+    total_uri_count,
   FROM
     fenix_flattened_searches
 ),
@@ -300,6 +302,7 @@ unfiltered_search_clients AS (
     udf.mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
     udf.mode_last(ARRAY_AGG(sample_id)) AS sample_id,
     udf.map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
+    SUM(total_uri_count) AS total_uri_count,
   FROM
     combined_search_clients
   WHERE

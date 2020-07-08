@@ -18,7 +18,7 @@ SELECT
     ping_type,
     os,
     app_build_id as build_id,
-    COALESCE(CAST({{ build_date_udf }}(app_build_id) AS STRING), "*") as build_date,
+    SAFE_CAST({{ build_date_udf }}(app_build_id) AS STRING) as build_date,
     metric,
     metric_type,
     -- BigQuery has some null unicode characters which Postgresql doesn't like,

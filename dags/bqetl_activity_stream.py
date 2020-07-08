@@ -17,7 +17,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_activity_stream", default_args=default_args, schedule_interval="0 1 * * *"
+    "bqetl_activity_stream", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
     activity_stream_bi__impression_stats_flat__v1 = bigquery_etl_query(
@@ -36,6 +36,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(days=-1, seconds=82800),
         check_existence=True,
         mode="reschedule",
         dag=dag,

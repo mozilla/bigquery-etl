@@ -138,7 +138,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 2 * * *") 
         task_id="wait_for_copy_deduplicate_baseline_clients_last_seen",
         external_dag_id="copy_deduplicate",
         external_task_id="baseline_clients_last_seen",
-        execution_delta=datetime.timedelta(days=-1, seconds=82800),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         dag=dag,

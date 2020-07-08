@@ -90,9 +90,9 @@ def schedule_interval_delta(schedule_interval1, schedule_interval2):
     parts2 = cron_regex.match(si2).groupdict()
     # delta in seconds
     delta = 0
-    delta += (int(parts1["hours"]) - int(parts2["hours"])) * 60 * 60
-    delta += (int(parts1["minutes"]) - int(parts2["minutes"])) * 60
-    delta += (int(parts1["day"]) - int(parts2["day"])) * 24 * 60 * 60
+    delta += (int(parts2["hours"]) - int(parts1["hours"])) * 60 * 60
+    delta += (int(parts2["minutes"]) - int(parts1["minutes"])) * 60
+    delta += (int(parts2["day"]) - int(parts1["day"])) * 24 * 60 * 60
 
     # todo handle month and day of week
 

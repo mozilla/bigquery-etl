@@ -36,6 +36,26 @@ CREATE TEMP FUNCTION normalize_core_search_key(key STRING) AS (
   END
 );
 
+CREATE TEMP FUNCTION normalize_fenix_experiments(experiments ANY TYPE) AS (
+  ARRAY(
+    SELECT AS STRUCT
+      key,
+      value.branch AS value,
+    FROM
+      UNNEST(experiments)
+  )
+);
+
+CREATE TEMP FUNCTION normalize_core_experiments(experiments ANY TYPE) AS (
+  ARRAY(
+    SELECT AS STRUCT
+      key,
+      CAST(NULL AS STRING) AS value,
+    FROM
+      UNNEST(experiments) AS key
+  )
+);
+
 -- Add search type value to each element of an array
 CREATE TEMP FUNCTION
   add_search_type(list ANY TYPE, search_type STRING) AS (
@@ -183,7 +203,8 @@ combined_search_clients AS (
     distribution_id,
     profile_date AS profile_creation_date,
     profile_age_in_days,
-    sample_id
+    sample_id,
+    normalize_core_experiments(experiments) AS experiments,
   FROM
     core_flattened_searches
   UNION ALL
@@ -230,7 +251,8 @@ combined_search_clients AS (
     CAST(NULL AS STRING) AS distribution_id,
     profile_creation_date,
     profile_age_in_days,
-    sample_id
+    sample_id,
+    normalize_fenix_experiments(experiments) AS experiments,
   FROM
     fenix_flattened_searches
 ),
@@ -276,7 +298,8 @@ unfiltered_search_clients AS (
     udf.mode_last(ARRAY_AGG(distribution_id)) AS distribution_id,
     udf.mode_last(ARRAY_AGG(profile_creation_date)) AS profile_creation_date,
     udf.mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
-    udf.mode_last(ARRAY_AGG(sample_id)) AS sample_id
+    udf.mode_last(ARRAY_AGG(sample_id)) AS sample_id,
+    udf.map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
   FROM
     combined_search_clients
   WHERE

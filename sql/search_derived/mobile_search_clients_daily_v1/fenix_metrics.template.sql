@@ -28,7 +28,8 @@ metrics_{namespace} AS (
     metrics.labeled_counter.browser_search_in_content,
     metrics.labeled_counter.browser_search_with_ads,
     client_info.first_run_date,
-    ping_info.end_time
+    ping_info.end_time,
+    ping_info.experiments,
   FROM
     {namespace}.metrics AS {namespace}_metrics
 ),

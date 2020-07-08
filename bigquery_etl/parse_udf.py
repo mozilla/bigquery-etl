@@ -160,7 +160,7 @@ def read_udf_dirs(*udf_dirs):
     """Read contents of udf_dirs into dict of RawUdf instances."""
     return {
         raw_udf.name: raw_udf
-        for udf_dir in (udf_dirs or UDF_DIRS)
+        for udf_dir in (udf_dirs or UDF_DIRS + MOZFUN_DIR)
         for root, dirs, files in os.walk(udf_dir)
         if os.path.basename(root) != EXAMPLE_DIR
         for filename in files

@@ -11,7 +11,11 @@ See detailed docs for the bits28 suite of functions:
 https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference
 
 */
-CREATE OR REPLACE FUNCTION bits28.active_in_range(bits INT64, start_offset INT64, n_bits INT64)
+CREATE OR REPLACE FUNCTION mozfun.bits28.active_in_range(
+  bits INT64,
+  start_offset INT64,
+  n_bits INT64
+)
 RETURNS BOOLEAN AS (
   CASE
   WHEN
@@ -46,7 +50,7 @@ RETURNS BOOLEAN AS (
 
 -- Tests
 SELECT
-  assert_true(bits28.active_in_range(1 << 10, -13, 7)),
-  assert_false(bits28.active_in_range(1 << 10, -6, 7)),
-  assert_true(bits28.active_in_range(1, 0, 1)),
-  assert_false(bits28.active_in_range(0, 0, 1));
+  assert_true(mozfun.bits28.active_in_range(1 << 10, -13, 7)),
+  assert_false(mozfun.bits28.active_in_range(1 << 10, -6, 7)),
+  assert_true(mozfun.bits28.active_in_range(1, 0, 1)),
+  assert_false(mozfun.bits28.active_in_range(0, 0, 1));

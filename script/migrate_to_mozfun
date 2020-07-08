@@ -12,14 +12,13 @@ import yaml
 UDF_DIRS = ("udf/", "udf_js/")
 UDF_DATASETS = ["udf", "udf_js"]
 MOZFUN_DIR = "mozfun"
-DESCRIPTION_RE = re.compile("(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|(//.*)")
-UDF_RE = "((:?udf|udf_js)\.[a-zA-z0-9_]+)"
-UDF_DEFINITION = "((:?udf|udf_js)\.[a-zA-z0-9_]+\(.*\))"
+DESCRIPTION_RE = re.compile(r"(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|(//.*)")
+UDF_RE = r"((:?udf|udf_js)\.[a-zA-z0-9_]+)"
+UDF_DEFINITION = r"((:?udf|udf_js)\.[a-zA-z0-9_]+\(.*\))"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
-    "--udf",
-    help="Migrate the specified UDF to mozfun.",
+    "--udf", help="Migrate the specified UDF to mozfun.",
 )
 parser.add_argument(
     "--udf-dirs",
@@ -28,6 +27,7 @@ parser.add_argument(
     default=UDF_DIRS,
     help="Directories containing UDFs to migrate",
 )
+
 
 def migrate_udf(udf_file):
     """Migrates a single UDF to mozfun."""
@@ -55,14 +55,20 @@ def migrate_udf(udf_file):
         for udf_dataset in UDF_DATASETS:
             # replace shared-prod UDF references
             # we'll assume that referenced UDFs are also getting exported to mozfun
-            udf_content = udf_content.replace(f"{udf_dataset}.{old_udf_name}", f"mozfun.{dataset}.{udf_name}")
+            udf_content = udf_content.replace(
+                f"{udf_dataset}.{old_udf_name}", f"mozfun.{dataset}.{udf_name}"
+            )
 
             udf_references = re.findall(UDF_RE, udf_content)
             for udf_reference in set(udf_references):
-                custom_udf_reference = input(f"Referenced {udf_reference[0]} should be: ")
+                custom_udf_reference = input(
+                    f"Referenced {udf_reference[0]} should be: "
+                )
 
                 if custom_udf_reference != "":
-                    udf_content = udf_content.replace(udf_reference[0], custom_udf_reference)
+                    udf_content = udf_content.replace(
+                        udf_reference[0], custom_udf_reference
+                    )
 
         comment = re.findall(DESCRIPTION_RE, udf_content)
 
@@ -87,13 +93,16 @@ def migrate_udf(udf_file):
         mozfun_udf = old_udf_definition
 
         for udf_dataset in UDF_DATASETS:
-            mozfun_udf = mozfun_udf.replace(f"{udf_dataset}.{old_udf_name}", f"mozfun.{dataset}.{udf_name}")
+            mozfun_udf = mozfun_udf.replace(
+                f"{udf_dataset}.{old_udf_name}", f"mozfun.{dataset}.{udf_name}"
+            )
 
         wrapper_content = (
             "-- Legacy wrapper around a function moved to mozfun.\n"
             + f"CREATE OR REPLACE FUNCTION {old_udf_definition} AS (\n"
             + f"  {mozfun_udf}\n"
-            + ");\n")
+            + ");\n"
+        )
 
         wrapper_udf.write(wrapper_content)
         wrapper_udf.close()
@@ -114,7 +123,10 @@ def main():
                 for udf_file in files:
                     if udf_file.endswith(".sql"):
                         with open(os.path.join(root, udf_file)) as udf:
-                            if "Legacy wrapper around a function moved to mozfun" not in udf.read():
+                            if (
+                                "Legacy wrapper around a function moved to mozfun"
+                                not in udf.read()
+                            ):
                                 resp = input(f"Migrate {udf_file}? [y/n] ")
 
                                 if resp == "y" or resp == "yes":

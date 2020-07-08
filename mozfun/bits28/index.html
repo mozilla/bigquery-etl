@@ -110,7 +110,15 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#range" class="nav-link">range</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#to_dates" class="nav-link">to_dates</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#to_string" class="nav-link">to_string</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -119,14 +127,6 @@
               </ul>
             </li>
             <li class="nav-item" data-level="2"><a href="#days_since_seen" class="nav-link">days_since_seen</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#to_string" class="nav-link">to_string</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#range" class="nav-link">range</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -155,26 +155,6 @@ was active and each 0 indicating a day where the client was inactive.</p>
 <p>Return a boolean indicating if any bits are set in the specified range of a bit pattern.</p>
 <h2 id="from_string">from_string</h2>
 <p>Convert a string representing individual bits into an INT64.</p>
-<h2 id="to_dates">to_dates</h2>
-<p>Convert a bit pattern into an array of the dates is represents.</p>
-<h2 id="retention">retention</h2>
-<p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p>
-<h2 id="days_since_seen">days_since_seen</h2>
-<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
-<pre><code class="sql">SELECT
-  mozfun.bits28.days_since_seen(18)
--- &gt;&gt; 1
-</code></pre>
-
-<h2 id="to_string">to_string</h2>
-<p>Convert an INT64 field into a 28-character string representing the individual bits.</p>
-<pre><code class="sql">SELECT
-  [mozfun.bits28.to_string(1), mozfun.bits28.to_string(2), mozfun.bits28.to_string(3)]
--- &gt;&gt;&gt; ['0000000000000000000000000001',
---      '0000000000000000000000000010',
---      '0000000000000000000000000011']
-</code></pre>
-
 <h2 id="range">range</h2>
 <p>Return an INT64 representing a range of bits from a source bit pattern.</p>
 <pre><code class="sql">SELECT
@@ -185,6 +165,26 @@ FROM
   telemetry.clients_last_seen
 WHERE
   submission_date &gt; '2020-01-01'
+</code></pre>
+
+<h2 id="to_dates">to_dates</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<h2 id="to_string">to_string</h2>
+<p>Convert an INT64 field into a 28-character string representing the individual bits.</p>
+<pre><code class="sql">SELECT
+  [mozfun.bits28.to_string(1), mozfun.bits28.to_string(2), mozfun.bits28.to_string(3)]
+-- &gt;&gt;&gt; ['0000000000000000000000000001',
+--      '0000000000000000000000000010',
+--      '0000000000000000000000000011']
+</code></pre>
+
+<h2 id="retention">retention</h2>
+<p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p>
+<h2 id="days_since_seen">days_since_seen</h2>
+<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
+<pre><code class="sql">SELECT
+  mozfun.bits28.days_since_seen(18)
+-- &gt;&gt; 1
 </code></pre></div>
             </div>
         </div>

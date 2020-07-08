@@ -132,7 +132,7 @@ def main():
                 "user_ids": ids[start:end],
                 "requester": "shredder",
                 "ignore_invalid_id": "True",
-                "delete_from_org": "True",
+                "delete_from_org": "False",
             },
         ).raise_for_status()
         # sleep to match api speed limit if necessary

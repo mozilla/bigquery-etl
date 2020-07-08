@@ -20,9 +20,8 @@ SELECT
   app_version,
   coalesce(ping_type, "*") AS ping_type,
   COALESCE(app_build_id, "*") AS app_build_id,
-  COALESCE(
-    CAST(`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build_id) AS STRING),
-    "*"
+  SAFE_CAST(
+    `moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build_id) AS STRING
   ) AS build_date,
   COALESCE(os, "*") AS os,
   total_users

@@ -9,7 +9,7 @@ from itertools import chain
 from multiprocessing.pool import ThreadPool
 from operator import attrgetter
 from textwrap import dedent
-from typing import Callable, Iterable, Optional
+from typing import Callable, Iterable, Optional, Tuple
 import logging
 import warnings
 
@@ -161,7 +161,7 @@ def delete_from_partition(
     partition_condition,
     priority,
     read_only,
-    source,
+    sources,
     source_condition,
     target,
     **wait_for_job_kwargs,
@@ -170,22 +170,28 @@ def delete_from_partition(
     # noqa: D202
 
     def create_job(client):
-        query = dedent(
+        field_condition = " OR ".join(
+            f"""
+             {field} IN (
+               SELECT
+                 {source.field}
+               FROM
+                 `{sql_table_id(source)}`
+               WHERE
+                 {source_condition}
+             )
+            """
+            for field, source in zip(target.fields, sources)
+        )
+        query = reformat(
             f"""
             {"SELECT * FROM" if dry_run and read_only else "DELETE"}
               `{sql_table_id(target)}`
             WHERE
-              {target.field} IN (
-                SELECT
-                  {source.field}
-                FROM
-                  `{sql_table_id(source)}`
-                WHERE
-                  {source_condition}
-              )
+              ({field_condition})
               AND {partition_condition}
             """
-        ).strip()
+        )
         run_tense = "Would run" if dry_run else "Running"
         logging.debug(f"{run_tense} query: {query}")
         return client.query(
@@ -265,7 +271,7 @@ def list_partitions(
                     bigquery.QueryJobConfig(use_legacy_sql=True),
                 ).result()
             ]
-            if table.num_bytes > max_single_dml_bytes or partition_expr is None
+            if table.num_bytes > max_single_dml_bytes and partition_expr is not None
             else [get_partition(table, partition_expr, end_date)]
         )
         if partition is not None
@@ -280,7 +286,7 @@ class Task:
     """Return type for delete_from_table."""
 
     table: bigquery.Table
-    source: DeleteSource
+    sources: Tuple[DeleteSource]
     partition_id: Optional[str]
     func: Callable[[bigquery.Client], bigquery.QueryJob]
 
@@ -301,7 +307,7 @@ class Task:
 def delete_from_table(
     client,
     target,
-    source,
+    sources,
     dry_run,
     end_date,
     max_single_dml_bytes,
@@ -320,13 +326,13 @@ def delete_from_table(
     ):
         yield Task(
             table=table,
-            source=source,
+            sources=sources,
             partition_id=partition.id,
             func=delete_from_partition(
                 dry_run=dry_run,
                 partition_condition=partition.condition,
                 target=target,
-                source=source,
+                sources=sources,
                 task_id=get_task_id(target, partition.id),
                 end_date=end_date,
                 **kwargs,
@@ -372,7 +378,7 @@ def main():
         if state_table_exists:
             states = dict(
                 client.query(
-                    dedent(
+                    reformat(
                         f"""
                         SELECT
                           task_id,
@@ -385,19 +391,22 @@ def main():
                         ORDER BY
                           job_created
                         """
-                    ).strip()
+                    )
                 ).result()
             )
     with ThreadPool(args.parallelism) as pool:
         glean_targets = find_glean_targets(pool, client)
     tasks = [
         task
-        for target, source in chain(DELETE_TARGETS.items(), glean_targets.items())
+        for target, sources in chain(DELETE_TARGETS.items(), glean_targets.items())
         if args.table_filter(target.table)
         for task in delete_from_table(
             client=client,
             target=replace(target, project=args.target_project or target.project),
-            source=replace(source, project=args.source_project or source.project),
+            sources=[
+                replace(source, project=args.source_project or source.project)
+                for source in (sources if isinstance(sources, tuple) else (sources,))
+            ],
             source_condition=source_condition,
             dry_run=args.dry_run,
             read_only=args.read_only,
@@ -437,7 +446,7 @@ def main():
                 )
                 table.time_partitioning = bigquery.TimePartitioning()
                 client.create_table(table)
-            sources = list(set(task.source for task in tasks))
+            sources = list(set(source for task in tasks for source in task.sources))
             source_bytes = {
                 source: job.total_bytes_processed
                 for source, job in zip(
@@ -478,7 +487,9 @@ def main():
                                 "target": sql_table_id(task.table),
                                 "target_rows": task.table.num_rows,
                                 "target_bytes": task.table.num_bytes,
-                                "source_bytes": source_bytes[task.source],
+                                "source_bytes": sum(
+                                    map(source_bytes.get, task.sources)
+                                ),
                             }
                             for task in tasks[start:end]
                         ],

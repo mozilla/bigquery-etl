@@ -34,6 +34,8 @@ SKIP = {
     "sql/firefox_accounts_derived/fxa_content_events_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_auth_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_delete_events_v1/init.sql",
+    "sql/firefox_accounts_derived/fxa_delete_events_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_oauth_events_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_log_auth_events_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_log_content_events_v1/query.sql",

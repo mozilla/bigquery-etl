@@ -17,6 +17,10 @@ SELECT
   ping_type,
   os,
   app_build_id AS build_id,
+  COALESCE(
+    CAST(`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build_id) AS STRING),
+    "*"
+  ) AS build_date,
   metric,
   metric_type,
     -- BigQuery has some null unicode characters which Postgresql doesn't like,

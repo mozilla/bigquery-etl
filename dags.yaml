@@ -90,7 +90,7 @@ bqetl_messaging_system:
     retry_delay: 5m
 
 bqetl_activity_stream:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2019-07-25'
@@ -144,7 +144,7 @@ bqetl_main_summary:
     retry_delay: 30m
 
 bqetl_experiments_daily:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: ssuh@mozilla.com
     start_date: '2018-11-27'

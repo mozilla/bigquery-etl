@@ -17,7 +17,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_amo_stats", default_args=default_args, schedule_interval="0 1 * * *"
+    "bqetl_amo_stats", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
     amo_dev__amo_stats_installs__v1 = bigquery_etl_query(
@@ -100,6 +100,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__clients_daily__v6",
         external_dag_id="bqetl_clients_daily",
         external_task_id="telemetry_derived__clients_daily__v6",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
     )
@@ -112,6 +113,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         dag=dag,
@@ -129,6 +131,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_main_ping",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         dag=dag,

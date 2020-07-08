@@ -409,7 +409,7 @@ class TestTask:
         task.with_dependencies(bigquery_client, dags)
         result = task.dependencies
 
-        tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
+        tables = [t.task_id for t in result]
 
         assert f"{temporary_dataset}__table1__v1" in tables
         assert f"{temporary_dataset}__table2__v1" in tables
@@ -469,7 +469,7 @@ class TestTask:
         task.with_dependencies(bigquery_client, dags)
         result = task.dependencies
 
-        tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
+        tables = [t.task_id for t in result]
 
         assert f"{temporary_dataset}__table1__v1" in tables
         assert f"{temporary_dataset}__table2__v1" in tables
@@ -528,7 +528,7 @@ class TestTask:
         task.with_dependencies(bigquery_client, dags)
         result = task.dependencies
 
-        tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
+        tables = [t.task_id for t in result]
 
         assert f"{temporary_dataset}__table1__v1" in tables
         assert f"{temporary_dataset}__table2__v1" in tables
@@ -589,7 +589,7 @@ class TestTask:
 
         task.with_dependencies(bigquery_client, dags)
         result = task.dependencies
-        tables = [f"{t.dataset}__{t.table}__{t.version}" for t in result]
+        tables = [t.task_id for t in result]
 
         assert f"{temporary_dataset}__table1__v1" in tables
         assert f"{temporary_dataset}__table2__v1" in tables

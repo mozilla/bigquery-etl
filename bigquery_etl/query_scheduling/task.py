@@ -16,6 +16,7 @@ from bigquery_etl.query_scheduling.utils import (
     is_email,
     is_valid_dag_name,
     is_timedelta_string,
+    schedule_interval_delta,
 )
 
 
@@ -280,6 +281,25 @@ class Task:
                     and d.task_id == upstream_task.task_name
                     for d in self.depends_on
                 ):
-                    dependencies.append(upstream_task)
+                    upstream_schedule_interval = dag_collection.dag_by_name(
+                        upstream_task.dag_name
+                    ).schedule_interval
+                    task_schedule_interval = dag_collection.dag_by_name(
+                        self.dag_name
+                    ).schedule_interval
+                    execution_delta = schedule_interval_delta(
+                        upstream_schedule_interval, task_schedule_interval
+                    )
+
+                    if execution_delta == "0s":
+                        execution_delta = None
+
+                    dependencies.append(
+                        TaskRef(
+                            dag_name=upstream_task.dag_name,
+                            task_id=upstream_task.task_name,
+                            execution_delta=execution_delta,
+                        )
+                    )
 
         self.dependencies = dependencies

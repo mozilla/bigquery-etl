@@ -36,6 +36,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
+        priority_weight=80,
         dag=dag,
     )
 
@@ -74,6 +75,7 @@ with DAG(
         start_date=datetime.datetime(2019, 4, 15, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=True,
+        priority_weight=85,
         dag=dag,
     )
 

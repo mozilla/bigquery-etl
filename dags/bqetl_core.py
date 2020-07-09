@@ -16,7 +16,7 @@ default_args = {
     "retries": 1,
 }
 
-with DAG("bqetl_core", default_args=default_args, schedule_interval="0 2 * * *") as dag:
+with DAG("bqetl_core", default_args=default_args, schedule_interval="0 3 * * *") as dag:
 
     telemetry_derived__core_clients_daily__v1 = bigquery_etl_query(
         task_id="telemetry_derived__core_clients_daily__v1",
@@ -27,6 +27,7 @@ with DAG("bqetl_core", default_args=default_args, schedule_interval="0 2 * * *")
         email=["jklukas@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        priority_weight=75,
         dag=dag,
     )
 
@@ -39,6 +40,7 @@ with DAG("bqetl_core", default_args=default_args, schedule_interval="0 2 * * *")
         email=["jklukas@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
+        priority_weight=70,
         dag=dag,
     )
 
@@ -46,7 +48,7 @@ with DAG("bqetl_core", default_args=default_args, schedule_interval="0 2 * * *")
         task_id="wait_for_copy_deduplicate_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
         dag=dag,

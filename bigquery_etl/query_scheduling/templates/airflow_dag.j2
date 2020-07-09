@@ -64,6 +64,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% if dependency.execution_delta -%}
         execution_delta={{ dependency.execution_delta | format_timedelta | format_repr }},
         {% endif -%}
+        pool='sensor_pool',
         check_existence=True,
         mode='reschedule',
     )
@@ -84,6 +85,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% if task_ref.execution_delta -%}
         execution_delta={{ task_ref.execution_delta | format_timedelta | format_repr }},
         {% endif -%}
+        pool='sensor_pool',
         check_existence=True,
         mode='reschedule',
         dag=dag,

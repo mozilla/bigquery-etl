@@ -8,4 +8,5 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_core
+  priority: 70
   depends_on_past: true

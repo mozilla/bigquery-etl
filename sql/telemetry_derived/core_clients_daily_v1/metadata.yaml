@@ -8,6 +8,7 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_core
+  priority: 75
   depends_on:
     - dag_name: copy_deduplicate
       task_id: copy_deduplicate_all

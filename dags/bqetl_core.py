@@ -27,6 +27,7 @@ with DAG("bqetl_core", default_args=default_args, schedule_interval="0 3 * * *")
         email=["jklukas@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        priority_weight=75,
         dag=dag,
     )
 
@@ -39,6 +40,7 @@ with DAG("bqetl_core", default_args=default_args, schedule_interval="0 3 * * *")
         email=["jklukas@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
+        priority_weight=70,
         dag=dag,
     )
 

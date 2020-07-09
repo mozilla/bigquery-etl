@@ -12,6 +12,7 @@ labels:
 scheduling:
   dag_name: bqetl_clients_daily
   start_date: '2020-05-05'
+  priority: 80
   depends_on_past: true
   # This query updates the entire existing table every day rather than appending
   # a new partition, so we need to disable date_partition_parameter and instead

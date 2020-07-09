@@ -102,6 +102,7 @@ class Task:
     parameters: List[str] = attr.ib([])
     multipart: bool = attr.ib(False)
     sql_file_path: Optional[str] = None
+    priority: Optional[int] = None
 
     @owner.validator
     def validate_owner(self, attribute, value):

@@ -9,7 +9,8 @@ labels:
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2019-10-25'
+  priority: 90
   depends_on:
     - dag_name: copy_deduplicate
       task_id: copy_deduplicate_main_ping
-      execution_delta: 1h
+      execution_delta: 2h

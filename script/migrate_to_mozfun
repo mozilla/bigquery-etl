@@ -14,7 +14,7 @@ UDF_DATASETS = ["udf", "udf_js"]
 MOZFUN_DIR = "mozfun"
 DESCRIPTION_RE = re.compile(r"(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|(//.*)")
 UDF_RE = r"((:?udf|udf_js)\.[a-zA-z0-9_]+)"
-UDF_DEFINITION = r"((:?udf|udf_js)\.[a-zA-z0-9_]+\(.*\))"
+UDF_DEFINITION = r"((:?udf|udf_js)\.[a-zA-z0-9_]+\([^\)]*\))"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -54,6 +54,8 @@ def migrate_udf(udf_file):
         old_udf_definition = re.findall(UDF_DEFINITION, udf_content.replace("\n", ""))[
             0
         ][0]
+
+        print(old_udf_definition)
 
         for udf_dataset in UDF_DATASETS:
             # replace shared-prod UDF references
@@ -98,7 +100,7 @@ def migrate_udf(udf_file):
 
         for udf_dataset in UDF_DATASETS:
             mozfun_udf = mozfun_udf.replace(
-                f"{udf_dataset}.{old_udf_name}", f"mozfun.{dataset}.{udf_name}"
+                f"{udf_dataset}.{old_udf_name}", f"{dataset}.{udf_name}"
             )
             mozfun_udf = re.sub(r"[^\s-]+,", ",", mozfun_udf)
             mozfun_udf = re.sub(r"[^\s-]+\)", ")", mozfun_udf)
@@ -106,7 +108,7 @@ def migrate_udf(udf_file):
         wrapper_content = (
             "-- Legacy wrapper around a function moved to mozfun.\n"
             + f"CREATE OR REPLACE FUNCTION {old_udf_definition} AS (\n"
-            + f"  {mozfun_udf}\n"
+            + f"  mozfun.{mozfun_udf}\n"
             + ");\n"
         )
 

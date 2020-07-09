@@ -15,5 +15,5 @@ RETURNS STRUCT<
   `range` ARRAY<INT64>,
   `values` ARRAY<STRUCT<key INT64, value FLOAT64>>
 > AS (
-  mozfun.hist.normalize()
+  mozfun.hist.normalize(histogram)
 );

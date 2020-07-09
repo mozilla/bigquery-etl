@@ -3,6 +3,8 @@
 import yaml
 
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag, PublicDataJsonDag
+from functools import partial
+from multiprocessing.pool import ThreadPool
 
 
 class DagCollection:
@@ -90,8 +92,14 @@ class DagCollection:
 
         return self
 
+    def dag_to_airflow(self, output_dir, client, dag):
+        """Generate the Airflow DAG representation for the provided DAG."""
+        output_file = output_dir / (dag.name + ".py")
+        output_file.write_text(dag.to_airflow_dag(client, self))
+
     def to_airflow_dags(self, output_dir, client):
         """Write DAG representation as Airflow dags to file."""
-        for dag in self.dags:
-            output_file = output_dir / (dag.name + ".py")
-            output_file.write_text(dag.to_airflow_dag(client, self))
+        with ThreadPool(8) as p:
+            p.map(
+                partial(self.dag_to_airflow, output_dir, client), self.dags, chunksize=1
+            )

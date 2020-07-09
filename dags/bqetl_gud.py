@@ -95,7 +95,6 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         external_dag_id="bqetl_clients_daily",
         external_task_id="telemetry_derived__clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=7200),
-        pool="sensor_pool",
         check_existence=True,
         mode="reschedule",
     )
@@ -128,7 +127,6 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
         external_dag_id="bqetl_core",
         external_task_id="telemetry_derived__core_clients_last_seen__v1",
-        pool="sensor_pool",
         check_existence=True,
         mode="reschedule",
     )
@@ -141,7 +139,6 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         external_dag_id="copy_deduplicate",
         external_task_id="baseline_clients_last_seen",
         execution_delta=datetime.timedelta(seconds=7200),
-        pool="sensor_pool",
         check_existence=True,
         mode="reschedule",
         dag=dag,

@@ -38,7 +38,6 @@ with DAG(
         external_dag_id="bqetl_clients_daily",
         external_task_id="telemetry_derived__clients_daily__v6",
         execution_delta=datetime.timedelta(seconds=7200),
-        pool="sensor_pool",
         check_existence=True,
         mode="reschedule",
     )

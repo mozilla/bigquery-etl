@@ -103,7 +103,6 @@ with DAG(
         task_id="wait_for_telemetry_derived__main_summary__v4",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__main_summary__v4",
-        pool="sensor_pool",
         check_existence=True,
         mode="reschedule",
     )

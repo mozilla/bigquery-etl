@@ -40,7 +40,6 @@ with DAG(
         task_id="wait_for_anomdtct_anomdtct",
         external_dag_id="anomdtct",
         external_task_id="anomdtct",
-        pool="sensor_pool",
         check_existence=True,
         mode="reschedule",
         dag=dag,

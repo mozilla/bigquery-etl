@@ -37,7 +37,6 @@ with DAG(
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
         execution_delta=datetime.timedelta(seconds=7200),
-        pool="sensor_pool",
         check_existence=True,
         mode="reschedule",
         dag=dag,

@@ -41,16 +41,19 @@ def migrate_udf(udf_file):
 
     custom_udf_name = input(f"Custom UDF name (default: {udf_name}): ")
 
+    friendly_name = string.capwords(udf_name.replace("_", " "))
+
     if custom_udf_name != "":
         udf_name = custom_udf_name
 
-    friendly_name = string.capwords(udf_name.replace("_", " "))
     description = ""
     old_udf_definition = ""
 
     with open(udf_file) as udf:
         udf_content = udf.read()
-        old_udf_definition = re.findall(UDF_DEFINITION, udf_content)[0][0]
+        old_udf_definition = re.findall(UDF_DEFINITION, udf_content.replace("\n", ""))[
+            0
+        ][0]
 
         for udf_dataset in UDF_DATASETS:
             # replace shared-prod UDF references
@@ -97,6 +100,8 @@ def migrate_udf(udf_file):
             mozfun_udf = mozfun_udf.replace(
                 f"{udf_dataset}.{old_udf_name}", f"mozfun.{dataset}.{udf_name}"
             )
+            mozfun_udf = re.sub(r"[^\s-]+,", ",", mozfun_udf)
+            mozfun_udf = re.sub(r"[^\s-]+\)", ")", mozfun_udf)
 
         wrapper_content = (
             "-- Legacy wrapper around a function moved to mozfun.\n"

@@ -1,0 +1,3 @@
+description: Given histogram and list of percentiles, calculate what those percentiles
+  are for the histogram.  If the histogram is empty, returns NULL.
+friendly_name: Histogram Percentiles

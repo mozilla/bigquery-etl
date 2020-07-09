@@ -1,0 +1,5 @@
+description: 'Return the number of recorded observations greater than threshold for
+  the histogram.  CAUTION: Does not count any buckets that have any values less than
+  the threshold. For example, a bucket with range (1, 10) will not be counted for
+  a threshold of 2. Use threshold that are not bucket boundaries with caution.  https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239'
+friendly_name: Histogram To Threshold Count

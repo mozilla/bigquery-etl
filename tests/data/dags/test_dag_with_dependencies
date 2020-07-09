@@ -49,6 +49,7 @@ with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily'
         task_id='wait_for_{{ temporary_dataset }}__external_table__v1',
         external_dag_id='bqetl_external_test_dag',
         external_task_id='{{ temporary_dataset }}__external_table__v1',
+        pool='sensor_pool',
         check_existence=True,
         mode='reschedule',
     )

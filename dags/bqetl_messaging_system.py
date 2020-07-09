@@ -17,7 +17,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_messaging_system", default_args=default_args, schedule_interval="0 1 * * *"
+    "bqetl_messaging_system", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
     messaging_system_derived__onboarding_users_daily__v1 = bigquery_etl_query(
@@ -132,6 +132,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         dag=dag,

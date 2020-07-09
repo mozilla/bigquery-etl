@@ -120,10 +120,9 @@ class RawUdf:
             # we can check if some known dependency is part of the UDF
             # definition instead
             _, basename = os.path.split(filepath)
-            if basename == "udf.sql":
-                for udf in MOZFUN_UDFS:
-                    if udf in "\n".join(definitions):
-                        dependencies.append(udf)
+            for udf in MOZFUN_UDFS:
+                if udf in "\n".join(definitions):
+                    dependencies.append(udf)
 
         if is_defined:
             if internal_name is None:
@@ -161,7 +160,7 @@ def read_udf_dirs(*udf_dirs):
     """Read contents of udf_dirs into dict of RawUdf instances."""
     return {
         raw_udf.name: raw_udf
-        for udf_dir in (udf_dirs or UDF_DIRS)
+        for udf_dir in (udf_dirs or UDF_DIRS + MOZFUN_DIR)
         for root, dirs, files in os.walk(udf_dir)
         if os.path.basename(root) != EXAMPLE_DIR
         for filename in files
@@ -174,6 +173,7 @@ def parse_udf_dirs(*udf_dirs):
     """Read contents of udf_dirs into ParsedUdf instances."""
     # collect udfs to parse
     raw_udfs = read_udf_dirs(*udf_dirs)
+
     # prepend udf definitions to tests
     for raw_udf in raw_udfs.values():
         tests_full_sql = udf_tests_sql(raw_udf, raw_udfs)
@@ -212,6 +212,11 @@ def udf_usages_in_text(text):
     udf_usages = PERSISTENT_UDF_RE.findall(sql)
     udf_usages = list(map(lambda t: ".".join(t), udf_usages))
     udf_usages.extend(TEMP_UDF_RE.findall(sql))
+
+    for udf in MOZFUN_UDFS:
+        if udf in sql:
+            udf_usages.append(udf)
+
     return sorted(set(udf_usages))
 
 
@@ -231,6 +236,12 @@ def persistent_udf_as_temp(raw_udf, raw_udfs=None):
     """Transform persistent UDF into temporary UDF."""
     sql = prepend_udf_usage_definitions(raw_udf, raw_udfs)
     sql = sub_persistent_udf_names_as_temp(sql)
+
+    for udf in MOZFUN_UDFS:
+        if udf in sql:
+            sql = sql.replace(udf, udf.replace(".", "_"))
+    sql = sql.replace("mozfun.", "")
+
     sql = PERSISTENT_UDF_PREFIX.sub("CREATE TEMP FUNCTION", sql)
     return sql
 

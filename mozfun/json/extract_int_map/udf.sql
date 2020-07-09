@@ -29,8 +29,8 @@ SELECT
     ],
     json.extract_int_map('{"0":12434,"1":297,"13":8}')
   ),
-  assert_equals(0, ARRAY_LENGTH(udf.json_extract_int_map('{}'))),
+  assert_equals(0, ARRAY_LENGTH(json.extract_int_map('{}'))),
   assert_array_equals(
     [STRUCT(1 AS key, NULL AS value)],
-    udf.json_extract_int_map('{"1":147573952589676410000}')
+    json.extract_int_map('{"1":147573952589676410000}')
   );

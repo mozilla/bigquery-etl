@@ -27,7 +27,7 @@ bqetl_deviations:
       retry_delay: 30m
 
 bqetl_amo_stats:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
       owner: jklukas@mozilla.com
       start_date: '2020-06-01'
@@ -36,7 +36,7 @@ bqetl_amo_stats:
       retry_delay: 30m
 
 bqetl_vrbrowser:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2019-07-25'
@@ -45,7 +45,7 @@ bqetl_vrbrowser:
     retry_delay: 5m
 
 bqetl_core:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2019-07-25'
@@ -54,7 +54,7 @@ bqetl_core:
     retry_delay: 5m
 
 bqetl_nondesktop:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2019-07-25'
@@ -63,7 +63,7 @@ bqetl_nondesktop:
     retry_delay: 5m
 
 bqetl_mobile_search:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: bewu@mozilla.com
     start_date: '2019-07-25'
@@ -72,7 +72,7 @@ bqetl_mobile_search:
     retry_delay: 5m
 
 bqetl_gud:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2019-07-25'
@@ -81,7 +81,7 @@ bqetl_gud:
     retry_delay: 5m
 
 bqetl_messaging_system:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: najiang@mozilla.com
     start_date: '2019-07-25'
@@ -90,7 +90,7 @@ bqetl_messaging_system:
     retry_delay: 5m
 
 bqetl_activity_stream:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2019-07-25'
@@ -99,7 +99,7 @@ bqetl_activity_stream:
     retry_delay: 5m
 
 bqetl_search:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: bewu@mozilla.com
     start_date: '2018-11-27'
@@ -108,7 +108,7 @@ bqetl_search:
     retry_delay: 30m
 
 bqetl_addons:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: bmiroglio@mozilla.com
     start_date: '2018-11-27'
@@ -126,7 +126,7 @@ bqetl_clients_daily:
     retry_delay: 30m
 
 bqetl_devtools:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2018-11-27'
@@ -144,7 +144,7 @@ bqetl_main_summary:
     retry_delay: 30m
 
 bqetl_experiments_daily:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: ssuh@mozilla.com
     start_date: '2018-11-27'
@@ -165,7 +165,7 @@ bqetl_public_data_json:
 
 # DAG for building the internet outages datasets. See bug 1640204.
 bqetl_internet_outages:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: aplacitelli@mozilla.com
     start_date: '2020-01-01'

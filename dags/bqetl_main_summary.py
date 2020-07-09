@@ -37,6 +37,7 @@ with DAG(
         depends_on_past=False,
         multipart=True,
         sql_file_path="sql/telemetry_derived/main_summary_v4",
+        priority_weight=90,
         dag=dag,
     )
 
@@ -44,7 +45,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_main_ping",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
         dag=dag,

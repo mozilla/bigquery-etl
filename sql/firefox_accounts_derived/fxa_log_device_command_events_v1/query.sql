@@ -1,0 +1,39 @@
+WITH hmac_key AS (
+  SELECT
+    AEAD.DECRYPT_BYTES(
+      (SELECT keyset FROM `moz-fx-dataops-secrets.airflow_query_keys.fxa_prod`),
+      ciphertext,
+      CAST(key_id AS BYTES)
+    ) AS value
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts_derived.encrypted_keys_v1`
+  WHERE
+    key_id = 'fxa_hmac_prod'
+)
+--
+SELECT
+  `timestamp`,
+  jsonPayload.type,
+  TO_HEX(
+    udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.uid AS BYTES))
+  ) AS user_id,
+  jsonPayload.fields.index,
+  jsonPayload.fields.command,
+  jsonPayload.fields.target,
+  jsonPayload.fields.targetOS AS target_os,
+  jsonPayload.fields.targetType AS target_type,
+  jsonPayload.fields.sender,
+  jsonPayload.fields.sender AS sender_os,
+  jsonPayload.fields.senderType AS sender_type,
+FROM
+  `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
+WHERE
+  jsonPayload.type IN (
+    "device.command.invoked",
+    "device.command.notified",
+    "device.command.retrieved"
+  )
+  -- Device command metrics were first deployed and stable on 2020-07-08;
+  -- there is some data for earlier dates but it's from a failed deployment so we don't count it.
+  AND _TABLE_SUFFIX >= '200708'
+  AND _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)

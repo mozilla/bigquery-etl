@@ -7,6 +7,7 @@ from time import time, sleep
 from os import environ
 import warnings
 import logging
+import json
 
 from google.cloud import bigquery
 from requests.adapters import HTTPAdapter
@@ -88,7 +89,7 @@ def main():
     ids = [
         row[0]
         for row in bigquery.Client().query(
-            f"SELECT {args.user_id_field or args.device_id_field} FROM {args.table}"
+            f"SELECT {args.user_id_field or args.device_id_field} FROM {args.table_id}"
             f" WHERE DATE(submission_timestamp) = DATE '{args.date}'"
         )
     ]
@@ -106,9 +107,9 @@ def main():
                 "https://api2.amplitude.com/identify",
                 data={
                     "api_key": args.api_key,
-                    "identification": [
-                        {"device_id": id, "user_id": id} for id in ids[start:end]
-                    ],
+                    "identification": json.dumps(
+                        [{"device_id": id, "user_id": id} for id in ids[start:end]]
+                    ),
                 },
             ).raise_for_status()
             # sleep to match api speed limit if necessary
@@ -128,7 +129,7 @@ def main():
         requests_session.post(
             "https://amplitude.com/api/2/deletions/users",
             auth=(args.api_key, args.secret_key),
-            data={
+            json={
                 "user_ids": ids[start:end],
                 "requester": "shredder",
                 "ignore_invalid_id": "True",

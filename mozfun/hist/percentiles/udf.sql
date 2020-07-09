@@ -3,7 +3,7 @@ Given histogram and list of percentiles, calculate what those percentiles are fo
 
 If the histogram is empty, returns NULL.
 */
-CREATE OR REPLACE FUNCTION mozfun.hist.percentiles(histogram ANY TYPE, percentiles ARRAY<FLOAT64>)
+CREATE OR REPLACE FUNCTION hist.percentiles(histogram ANY TYPE, percentiles ARRAY<FLOAT64>)
 RETURNS ARRAY<STRUCT<percentile FLOAT64, value INT64>> AS (
   ARRAY(
     SELECT AS STRUCT
@@ -39,7 +39,7 @@ SELECT
         value
       FROM
         UNNEST(
-          mozfun.hist.percentiles(
+          hist.percentiles(
             STRUCT(
               ARRAY(
                 SELECT
@@ -60,7 +60,7 @@ SELECT
         value
       FROM
         UNNEST(
-          mozfun.hist.percentiles(
+          hist.percentiles(
             STRUCT([STRUCT(99 AS key, 100 AS value), STRUCT(100, 101)] AS values),
             [.5]
           )
@@ -69,5 +69,5 @@ SELECT
   ),
   assert_array_equals(
     CAST(NULL AS ARRAY<STRUCT<percentile FLOAT64, value INT64>>),
-    mozfun.hist.percentiles(STRUCT([STRUCT(0 AS key, 0 AS value)] AS values), [.2, .5])
+    hist.percentiles(STRUCT([STRUCT(0 AS key, 0 AS value)] AS values), [.2, .5])
   );

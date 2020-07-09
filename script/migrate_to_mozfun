@@ -55,13 +55,11 @@ def migrate_udf(udf_file):
             0
         ][0]
 
-        print(old_udf_definition)
-
         for udf_dataset in UDF_DATASETS:
             # replace shared-prod UDF references
             # we'll assume that referenced UDFs are also getting exported to mozfun
             udf_content = udf_content.replace(
-                f"{udf_dataset}.{old_udf_name}", f"mozfun.{dataset}.{udf_name}"
+                f"{udf_dataset}.{old_udf_name}", f"{dataset}.{udf_name}"
             )
 
             udf_references = re.findall(UDF_RE, udf_content)

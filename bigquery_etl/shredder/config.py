@@ -4,6 +4,7 @@
 
 from dataclasses import dataclass
 from functools import partial
+from typing import Tuple, Union
 import re
 
 from google.cloud import bigquery
@@ -44,7 +45,7 @@ class DeleteTarget:
     """
 
     table: str
-    field: str
+    field: Union[str, Tuple[str]]
     project: str = SHARED_PROD
 
     @property
@@ -57,6 +58,13 @@ class DeleteTarget:
         """Dataset Id."""
         return self.table.partition(".")[0]
 
+    @property
+    def fields(self) -> Tuple[str]:
+        """Fields."""
+        if isinstance(self.field, tuple):
+            return self.field
+        return (self.field,)
+
 
 CLIENT_ID = "client_id"
 GLEAN_CLIENT_ID = "client_info.client_id"
@@ -68,7 +76,9 @@ ECOSYSTEM_CLIENT_ID = "payload.ecosystem_client_id"
 PIONEER_ID = "payload.pioneer_id"
 ID = "id"
 CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
-SYNC_ID = "SUBSTR(payload.device_id, 0, 32)"
+FXA_USER_ID = "jsonPayload.fields.user_id"
+# these must be in the same order as SYNC_SRCS
+SYNC_IDS = ("SUBSTR(payload.device_id, 0, 32)", "payload.uid")
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -83,17 +93,34 @@ CFR_SRC = DeleteSource(
     f" UNNEST([{CLIENT_ID}, {IMPRESSION_SRC.field}]) AS `_",
     field="_",
 )
-SYNC_SRC = DeleteSource(
-    table="telemetry_stable.deletion_request_v4",
-    field="payload.scalars.parent.deletion_request_sync_device_id",
+FXA_HMAC_SRC = DeleteSource(
+    table="firefox_accounts_derived.fxa_delete_events_v1", field="hmac_user_id"
 )
-SOURCES = [DESKTOP_SRC, IMPRESSION_SRC, CFR_SRC, SYNC_SRC]
+FXA_SRC = DeleteSource(
+    table="firefox_accounts_derived.fxa_delete_events_v1", field=USER_ID
+)
+# these must be in the same order as SYNC_IDS
+SYNC_SOURCES = (
+    DeleteSource(
+        table="telemetry_stable.deletion_request_v4",
+        field="payload.scalars.parent.deletion_request_sync_device_id",
+    ),
+    DeleteSource(
+        table="firefox_accounts_derived.fxa_delete_events_v1",
+        field="SUBSTR(hmac_user_id, 0, 32)",
+    ),
+)
+SOURCES = [DESKTOP_SRC, IMPRESSION_SRC, CFR_SRC, FXA_HMAC_SRC, FXA_SRC] + list(
+    SYNC_SOURCES
+)
 
 
 client_id_target = partial(DeleteTarget, field=CLIENT_ID)
 glean_target = partial(DeleteTarget, field=GLEAN_CLIENT_ID)
 impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 cfr_id_target = partial(DeleteTarget, field=CFR_ID)
+fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
+user_id_target = partial(DeleteTarget, field=USER_ID)
 
 DELETE_TARGETS = {
     client_id_target(
@@ -184,8 +211,32 @@ DELETE_TARGETS = {
         table="messaging_system_stable.personalization_experiment_v1"
     ): IMPRESSION_SRC,
     # sync
-    DeleteTarget(table="telemetry_stable.sync_v4", field=SYNC_ID): SYNC_SRC,
-    DeleteTarget(table="telemetry_stable.sync_v5", field=SYNC_ID): SYNC_SRC,
+    DeleteTarget(table="telemetry_stable.sync_v4", field=SYNC_IDS): SYNC_SOURCES,
+    DeleteTarget(table="telemetry_stable.sync_v5", field=SYNC_IDS): SYNC_SOURCES,
+    # fxa
+    user_id_target(
+        table="firefox_accounts_derived.fxa_amplitude_export_v1"
+    ): FXA_HMAC_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_amplitude_user_ids_v1"
+    ): FXA_HMAC_SRC,
+    fxa_user_id_target(
+        table="firefox_accounts_derived.fxa_auth_bounce_events_v1"
+    ): FXA_SRC,
+    fxa_user_id_target(table="firefox_accounts_derived.fxa_auth_events_v1"): FXA_SRC,
+    fxa_user_id_target(table="firefox_accounts_derived.fxa_content_events_v1"): FXA_SRC,
+    fxa_user_id_target(table="firefox_accounts_derived.fxa_oauth_events_v1"): FXA_SRC,
+    user_id_target(table="firefox_accounts_derived.fxa_users_daily_v1"): FXA_SRC,
+    user_id_target(table="firefox_accounts_derived.fxa_users_last_seen_v1"): FXA_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_daily_v1"
+    ): FXA_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_first_seen_v1"
+    ): FXA_SRC,
+    user_id_target(
+        table="firefox_accounts_derived.fxa_users_services_last_seen_v1"
+    ): FXA_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
@@ -203,13 +254,6 @@ SEARCH_IGNORE_TABLES |= {
         glean_target(table="org_mozilla_firefox_stable.migration_v1"),
         # pocket
         DeleteTarget(table="pocket_stable.fire_tv_events_v1", field=POCKET_ID),
-        # fxa
-        DeleteTarget(table="fxa_users_services_daily_v1", field=USER_ID),
-        DeleteTarget(table="fxa_users_services_first_seen_v1", field=USER_ID),
-        DeleteTarget(table="fxa_users_services_last_seen_v1", field=USER_ID),
-        DeleteTarget(
-            table="telemetry_derived.devtools_events_amplitude_v1", field=USER_ID
-        ),
         # mobile
         client_id_target(table="mobile_stable.activation_v1"),
         client_id_target(table="telemetry_stable.core_v1"),

@@ -5,10 +5,10 @@ Returns the most frequently occuring element in an array.
 In the case of multiple values tied for the highest count, it returns the value
 that appears latest in the array. Nulls are ignored.
 
-See also: `mozfun.mode.last_retain_nulls`, which retains nulls.
+See also: `mode.last_retain_nulls`, which retains nulls.
 
 */
-CREATE OR REPLACE FUNCTION mozfun.mode.last(list ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION mode.last(list ANY TYPE) AS (
   (
     SELECT
       _value
@@ -27,6 +27,6 @@ CREATE OR REPLACE FUNCTION mozfun.mode.last(list ANY TYPE) AS (
 
 -- Test
 SELECT
-  assert_equals('bar', mozfun.mode.last(['foo', 'bar', 'baz', 'bar', 'fred'])),
-  assert_equals('baz', mozfun.mode.last(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
-  assert_equals('foo', mozfun.mode.last([NULL, 'foo', NULL]));
+  assert_equals('bar', mode.last(['foo', 'bar', 'baz', 'bar', 'fred'])),
+  assert_equals('baz', mode.last(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
+  assert_equals('foo', mode.last([NULL, 'foo', NULL]));

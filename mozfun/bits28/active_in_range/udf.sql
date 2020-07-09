@@ -1,10 +1,15 @@
 /*
+
 Return a boolean indicating if any bits are set in the specified range of a bit pattern.
+
 The start_offset must be zero or a negative number indicating an offset from
 the rightmost bit in the pattern.
+
 n_bits is the number of bits to consider, counting right from the bit at start_offset.
+
 See detailed docs for the bits28 suite of functions:
 https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference
+
 */
 CREATE OR REPLACE FUNCTION bits28.active_in_range(bits INT64, start_offset INT64, n_bits INT64)
 RETURNS BOOLEAN AS (

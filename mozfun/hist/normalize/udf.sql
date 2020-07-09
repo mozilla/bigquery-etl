@@ -2,7 +2,7 @@
 Normalize a histogram. Set sum to 1, and normalize to 1
 the histogram bucket counts.
 */
-CREATE OR REPLACE FUNCTION mozfun.hist.normalize(
+CREATE OR REPLACE FUNCTION hist.normalize(
   histogram STRUCT<
     bucket_count INT64,
     `sum` INT64,
@@ -43,7 +43,7 @@ SELECT
       [0, 10] AS `range`,
       [STRUCT(1 AS key, 0.5 AS value), STRUCT(2 AS key, 0.5 AS value)] AS `values`
     ),
-    mozfun.hist.normalize(
+    hist.normalize(
       STRUCT(
         10 AS bucket_count,
         6 AS `sum`,

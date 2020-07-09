@@ -8,7 +8,7 @@ that appears latest in the array. Nulls are retained.
 See also: `mode.last, which ignores nulls.
 
 */
-CREATE OR REPLACE FUNCTION mozfun.mode.last_retain_nulls(list ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION mode.last_retain_nulls(list ANY TYPE) AS (
   (
     SELECT
       _value
@@ -27,6 +27,6 @@ CREATE OR REPLACE FUNCTION mozfun.mode.last_retain_nulls(list ANY TYPE) AS (
 
 -- Test
 SELECT
-  assert_equals('bar', mozfun.mode.last_retain_nulls(['foo', 'bar', 'baz', 'bar', 'fred'])),
-  assert_equals('baz', mozfun.mode.last_retain_nulls(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
-  assert_equals(CAST(NULL AS STRING), mozfun.mode.last_retain_nulls([NULL, 'foo', NULL]));
+  assert_equals('bar', mode.last_retain_nulls(['foo', 'bar', 'baz', 'bar', 'fred'])),
+  assert_equals('baz', mode.last_retain_nulls(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
+  assert_equals(CAST(NULL AS STRING), mode.last_retain_nulls([NULL, 'foo', NULL]));

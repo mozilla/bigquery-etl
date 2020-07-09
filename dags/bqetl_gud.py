@@ -16,7 +16,7 @@ default_args = {
     "retries": 1,
 }
 
-with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 2 * * *") as dag:
+with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") as dag:
 
     telemetry_derived__smoot_usage_desktop__v2 = bigquery_etl_query(
         task_id="telemetry_derived__smoot_usage_desktop__v2",
@@ -94,7 +94,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 2 * * *") 
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",
         external_dag_id="bqetl_clients_daily",
         external_task_id="telemetry_derived__clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
     )
@@ -138,7 +138,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 2 * * *") 
         task_id="wait_for_copy_deduplicate_baseline_clients_last_seen",
         external_dag_id="copy_deduplicate",
         external_task_id="baseline_clients_last_seen",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
         dag=dag,

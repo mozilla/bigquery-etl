@@ -17,7 +17,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_internet_outages", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_internet_outages", default_args=default_args, schedule_interval="0 3 * * *"
 ) as dag:
 
     internet_outages__global_outages__v1 = bigquery_etl_query(
@@ -36,7 +36,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__clients_daily__v6",
         external_dag_id="bqetl_clients_daily",
         external_task_id="telemetry_derived__clients_daily__v6",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
     )

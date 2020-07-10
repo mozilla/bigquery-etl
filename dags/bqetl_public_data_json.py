@@ -18,7 +18,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_public_data_json", default_args=default_args, schedule_interval="@daily"
+    "bqetl_public_data_json", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
     docker_image = "mozilla/bigquery-etl:latest"
 

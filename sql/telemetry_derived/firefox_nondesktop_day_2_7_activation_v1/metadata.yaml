@@ -14,4 +14,4 @@ scheduling:
   depends_on:
     - dag_name: copy_deduplicate
       task_id: baseline_clients_last_seen
-      execution_delta: 2h
+      execution_delta: 1h

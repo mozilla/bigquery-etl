@@ -17,7 +17,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_ssl_ratios", default_args=default_args, schedule_interval="@daily"
+    "bqetl_ssl_ratios", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
     telemetry_derived__ssl_ratios__v1 = bigquery_etl_query(
@@ -30,4 +30,18 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
+    )
+
+    wait_for_copy_deduplicate_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_copy_deduplicate_main_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_main_ping",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        dag=dag,
+    )
+
+    telemetry_derived__ssl_ratios__v1.set_upstream(
+        wait_for_copy_deduplicate_copy_deduplicate_main_ping
     )

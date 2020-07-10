@@ -26,7 +26,7 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ssuh@mozilla.com",
-        email=["ssuh@mozilla.com"],
+        email=["ssuh@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

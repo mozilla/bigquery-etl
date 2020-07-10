@@ -15,6 +15,7 @@ class DagCollection:
     def __init__(self, dags):
         """Instantiate DAGs."""
         self.dags = dags
+        self.dags_by_name = {dag.name: dag for dag in dags}
 
     @classmethod
     def from_dict(cls, d):
@@ -57,11 +58,7 @@ class DagCollection:
 
     def dag_by_name(self, name):
         """Return the DAG with the provided name."""
-        for dag in self.dags:
-            if dag.name == name:
-                return dag
-
-        return None
+        return self.dags_by_name.get(name)
 
     def task_for_table(self, dataset, table):
         """Return the task that schedules the query for the provided table."""

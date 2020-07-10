@@ -2,7 +2,7 @@ friendly_name: Firefox Desktop Exact MAU by Dimensions
 description: >
   Monthly active users with desktop clients aggregated across unique sets of dimensions.
 owners:
-  - relud@mozilla.com
+  - dthorn@mozilla.com
 labels:
   application: desktop
   schedule: daily

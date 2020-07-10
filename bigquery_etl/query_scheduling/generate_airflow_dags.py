@@ -49,38 +49,35 @@ standard_args.add_log_level(parser)
 def get_dags(sql_dir, dags_config):
     """Return all configured DAGs including associated tasks."""
     tasks = []
+    dag_collection = DagCollection.from_file(dags_config)
 
     # parse metadata.yaml to retrieve scheduling information
     if os.path.isdir(sql_dir):
         for root, dirs, files in os.walk(sql_dir):
-            if QUERY_FILE in files:
-                query_file = os.path.join(root, QUERY_FILE)
-
-                try:
-                    task = Task.of_query(query_file)
-                    tasks.append(task)
-                except FileNotFoundError:
-                    # query has no metadata.yaml file; skip
-                    pass
-                except UnscheduledTask:
-                    # logging.debug(
-                    #     f"No scheduling information for {query_file}."
-                    # )
-                    #
-                    # most tasks lack scheduling information for now
-                    pass
-            elif QUERY_PART_FILE in files:
-                # multipart query
-                query_file = os.path.join(root, QUERY_PART_FILE)
-
-                try:
-                    task = Task.of_multipart_query(query_file)
-                    tasks.append(task)
-                except FileNotFoundError:
-                    # query has no metadata.yaml file; skip
-                    pass
-                except UnscheduledTask:
-                    pass
+            try:
+                if QUERY_FILE in files:
+                    query_file = os.path.join(root, QUERY_FILE)
+                    task = Task.of_query(query_file, dag_collection=dag_collection)
+                elif QUERY_PART_FILE in files:
+                    # multipart query
+                    query_file = os.path.join(root, QUERY_PART_FILE)
+                    task = Task.of_multipart_query(
+                        query_file, dag_collection=dag_collection
+                    )
+                else:
+                    continue
+            except FileNotFoundError:
+                # query has no metadata.yaml file; skip
+                pass
+            except UnscheduledTask:
+                # logging.debug(
+                #     f"No scheduling information for {query_file}."
+                # )
+                #
+                # most tasks lack scheduling information for now
+                pass
+            else:
+                tasks.append(task)
 
     else:
         logging.error(
@@ -92,7 +89,7 @@ def get_dags(sql_dir, dags_config):
             )
         )
 
-    return DagCollection.from_file(dags_config).with_tasks(tasks)
+    return dag_collection.with_tasks(tasks)
 
 
 def main():

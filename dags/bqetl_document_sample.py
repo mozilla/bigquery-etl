@@ -26,7 +26,7 @@ with DAG(
         dataset_id="monitoring",
         project_id="moz-fx-data-shared-prod",
         owner="amiyaguchi@mozilla.com",
-        email=["amiyaguchi@mozilla.com"],
+        email=["amiyaguchi@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         arguments=["--append_table"],

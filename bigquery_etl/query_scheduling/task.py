@@ -163,7 +163,7 @@ class Task:
             )
 
     @classmethod
-    def of_query(cls, query_file, metadata=None):
+    def of_query(cls, query_file, metadata=None, dag_collection=None):
         """
         Create task that schedules the corresponding query in Airflow.
 
@@ -175,7 +175,8 @@ class Task:
         if metadata is None:
             metadata = Metadata.of_sql_file(query_file)
 
-        if metadata.scheduling == {} or "dag_name" not in metadata.scheduling:
+        dag_name = metadata.scheduling.get("dag_name")
+        if dag_name is None:
             raise UnscheduledTask(
                 f"Metadata for {query_file} does not contain scheduling information."
             )
@@ -191,11 +192,15 @@ class Task:
         # Airflow only allows to set one owner, so we just take the first
         task_config["owner"] = metadata.owners[0]
 
+        # Get default email from default_args if available
+        default_email = []
+        if dag_collection is not None:
+            dag = dag_collection.dag_by_name(dag_name)
+            if dag is not None:
+                default_email = dag.default_args.email
+        email = task_config.get("email", default_email)
         # owners get added to the email list
-        if "email" not in task_config:
-            task_config["email"] = []
-
-        task_config["email"] = list(set(task_config["email"] + metadata.owners))
+        task_config["email"] = list(set(email + metadata.owners))
 
         # data processed in task should be published
         if metadata.is_public_json():
@@ -209,7 +214,7 @@ class Task:
             )
 
     @classmethod
-    def of_multipart_query(cls, query_file, metadata=None):
+    def of_multipart_query(cls, query_file, metadata=None, dag_collection=None):
         """
         Create task that schedules the corresponding multipart query in Airflow.
 
@@ -217,7 +222,7 @@ class Task:
         If `metadata` is set, then it is used instead of the metadata.yaml
         file that might exist alongside the query file.
         """
-        task = cls.of_query(query_file, metadata)
+        task = cls.of_query(query_file, metadata, dag_collection)
         task.multipart = True
         task.sql_file_path = os.path.dirname(query_file)
         return task

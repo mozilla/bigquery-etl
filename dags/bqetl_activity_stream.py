@@ -26,7 +26,7 @@ with DAG(
         dataset_id="activity_stream_bi",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com"],
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

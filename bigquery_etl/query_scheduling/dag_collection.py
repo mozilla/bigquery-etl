@@ -88,7 +88,7 @@ class DagCollection:
                 self.dag_by_name(task.dag_name).add_tasks([task])
 
             if task.public_json and public_data_json_dag:
-                public_data_json_dag.add_export_task(task)
+                public_data_json_dag.add_export_task(task, self)
 
         return self
 

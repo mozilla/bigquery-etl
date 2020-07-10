@@ -6,7 +6,7 @@ from jinja2 import Environment, PackageLoader
 import logging
 from typing import List
 
-from bigquery_etl.query_scheduling.task import Task
+from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling import formatters
 from bigquery_etl.query_scheduling.utils import (
     is_timedelta_string,
@@ -14,6 +14,7 @@ from bigquery_etl.query_scheduling.utils import (
     is_email,
     is_schedule_interval,
     is_valid_dag_name,
+    schedule_interval_delta,
 )
 
 
@@ -220,7 +221,7 @@ class PublicDataJsonDag(Dag):
 
         return dag_template.render(args)
 
-    def add_export_task(self, task):
+    def add_export_task(self, task, dag_collection):
         """Add a new task to the DAG for exporting data of the original query to GCS."""
         if not task.public_json:
             logging.warn(f"Task {task.task_name} not marked as public JSON.")
@@ -236,6 +237,24 @@ class PublicDataJsonDag(Dag):
         export_task = converter.structure(task_dict, Task)
         export_task.dag_name = self.name
         export_task.task_name = f"export_public_data_json_{export_task.task_name}"
-        export_task.dependencies = [task]
+
+        task_schedule_interval = dag_collection.dag_by_name(
+            task.dag_name
+        ).schedule_interval
+
+        execution_delta = schedule_interval_delta(
+            task_schedule_interval, self.schedule_interval
+        )
+
+        if execution_delta == "0s":
+            execution_delta = None
+
+        export_task.dependencies = [
+            TaskRef(
+                dag_name=task.dag_name,
+                task_id=task.task_name,
+                execution_delta=execution_delta,
+            )
+        ]
 
         self.add_tasks([export_task])

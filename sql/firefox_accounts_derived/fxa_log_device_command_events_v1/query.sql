@@ -17,21 +17,30 @@ SELECT
   TO_HEX(
     udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.uid AS BYTES))
   ) AS user_id,
-  jsonPayload.fields.index,
+  TO_HEX(
+    udf.hmac_sha256(
+      (SELECT * FROM hmac_key),
+      CAST(FORMAT('%d', CAST(jsonPayload.fields.index AS INT64)) AS BYTES)
+    )
+  ) AS index,
   jsonPayload.fields.command,
-  jsonPayload.fields.target,
+  TO_HEX(
+    udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.target AS BYTES))
+  ) AS target,
   jsonPayload.fields.targetOS AS target_os,
   jsonPayload.fields.targetType AS target_type,
-  jsonPayload.fields.sender,
-  jsonPayload.fields.sender AS sender_os,
+  TO_HEX(
+    udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.sender AS BYTES))
+  ) AS sender,
+  jsonPayload.fields.senderOS AS sender_os,
   jsonPayload.fields.senderType AS sender_type,
 FROM
   `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
 WHERE
   jsonPayload.type IN (
-    "device.command.invoked",
-    "device.command.notified",
-    "device.command.retrieved"
+    'device.command.invoked',
+    'device.command.notified',
+    'device.command.retrieved'
   )
   -- Device command metrics were first deployed and stable on 2020-07-08;
   -- there is some data for earlier dates but it's from a failed deployment so we don't count it.

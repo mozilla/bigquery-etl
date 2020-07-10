@@ -9,6 +9,7 @@ from bigquery_etl.query_scheduling.dag import (
 )
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.task import Task
+from bigquery_etl.query_scheduling.dag_collection import DagCollection
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -215,7 +216,13 @@ class TestDag:
         )
 
         task = Task.of_query(query_file)
-        public_json_dag.add_export_task(task)
+        dag = Dag(
+            "bqetl_events",
+            "0 1 * * *",
+            DagDefaultArgs("test@example.org", "2020-01-01"),
+            [task],
+        )
+        public_json_dag.add_export_task(task, DagCollection([dag]))
 
         assert len(public_json_dag.tasks) == 1
         assert (
@@ -223,4 +230,4 @@ class TestDag:
             == "export_public_data_json_test__incremental_query__v1"
         )
         assert public_json_dag.tasks[0].dag_name == "bqetl_public_data_json_dag"
-        assert public_json_dag.tasks[0].dependencies == [task]
+        assert len(public_json_dag.tasks[0].dependencies) == 1

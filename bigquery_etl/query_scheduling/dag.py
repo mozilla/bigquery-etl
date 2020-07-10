@@ -3,7 +3,6 @@
 import attr
 import cattr
 from jinja2 import Environment, PackageLoader
-import logging
 from typing import List
 
 from bigquery_etl.query_scheduling.task import Task, TaskRef
@@ -221,11 +220,9 @@ class PublicDataJsonDag(Dag):
 
         return dag_template.render(args)
 
-    def add_export_task(self, task, dag_collection):
-        """Add a new task to the DAG for exporting data of the original query to GCS."""
+    def _create_export_task(self, task, dag_collection):
         if not task.public_json:
-            logging.warn(f"Task {task.task_name} not marked as public JSON.")
-            return
+            raise ValueError(f"Task {task.task_name} not marked as public JSON.")
 
         converter = cattr.Converter()
         task_dict = converter.unstructure(task)
@@ -257,4 +254,10 @@ class PublicDataJsonDag(Dag):
             )
         ]
 
-        self.add_tasks([export_task])
+        return export_task
+
+    def add_export_tasks(self, tasks, dag_collection):
+        """Add new tasks for exporting data of the original queries to GCS."""
+        self.add_tasks(
+            [self._create_export_task(task, dag_collection) for task in tasks]
+        )

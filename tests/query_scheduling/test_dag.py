@@ -222,7 +222,7 @@ class TestDag:
             DagDefaultArgs("test@example.org", "2020-01-01"),
             [task],
         )
-        public_json_dag.add_export_task(task, DagCollection([dag]))
+        public_json_dag.add_export_tasks([task], DagCollection([dag]))
 
         assert len(public_json_dag.tasks) == 1
         assert (

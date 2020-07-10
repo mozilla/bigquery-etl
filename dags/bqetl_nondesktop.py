@@ -17,7 +17,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_nondesktop", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_nondesktop", default_args=default_args, schedule_interval="0 3 * * *"
 ) as dag:
 
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1 = bigquery_etl_query(
@@ -60,6 +60,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
         external_dag_id="bqetl_core",
         external_task_id="telemetry_derived__core_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
     )
@@ -71,7 +72,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_baseline_clients_last_seen",
         external_dag_id="copy_deduplicate",
         external_task_id="baseline_clients_last_seen",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
         dag=dag,

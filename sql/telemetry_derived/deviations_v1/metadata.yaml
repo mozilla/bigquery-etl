@@ -15,3 +15,4 @@ scheduling:
   depends_on:
     - task_id: anomdtct
       dag_name: anomdtct
+      execution_delta: 1h

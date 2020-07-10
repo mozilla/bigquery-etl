@@ -9,3 +9,14 @@ owners:
 labels:
   incremental: true
   schedule: daily
+scheduling:
+  dag_name: bqetl_asn_aggregates
+  parameters: ["n_clients:INT64:500"]
+  skip_dry_run: true   # query accesses payload_bytes_raw.telemetry
+  depends_on:
+    - dag_name: copy_deduplicate
+      task_id: event_events
+      exectuion_delta: 1h
+    - dag_name: copy_deduplicate
+      task_id: bq_main_events
+      exectuion_delta: 1h

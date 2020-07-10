@@ -10,7 +10,7 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_clients_daily
+  dag_name: bqetl_main_summary
   start_date: '2020-05-05'
   priority: 80
   depends_on_past: true

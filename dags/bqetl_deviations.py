@@ -21,7 +21,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_deviations", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_deviations", default_args=default_args, schedule_interval="0 4 * * *"
 ) as dag:
 
     telemetry_derived__deviations__v1 = bigquery_etl_query(
@@ -40,6 +40,7 @@ with DAG(
         task_id="wait_for_anomdtct_anomdtct",
         external_dag_id="anomdtct",
         external_task_id="anomdtct",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         dag=dag,

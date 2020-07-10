@@ -18,7 +18,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_public_data_json", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_public_data_json", default_args=default_args, schedule_interval="0 4 * * *"
 ) as dag:
     docker_image = "mozilla/bigquery-etl:latest"
 
@@ -52,6 +52,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__ssl_ratios__v1",
         external_dag_id="bqetl_ssl_ratios",
         external_task_id="telemetry_derived__ssl_ratios__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
     )

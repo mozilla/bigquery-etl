@@ -21,7 +21,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_vrbrowser", default_args=default_args, schedule_interval="0 3 * * *"
+    "bqetl_vrbrowser", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
     org_mozilla_vrbrowser_derived__baseline_daily__v1 = bigquery_etl_query(
@@ -76,7 +76,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=7200),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         dag=dag,

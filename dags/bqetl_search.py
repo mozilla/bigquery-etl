@@ -84,7 +84,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__main_summary__v4",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__main_summary__v4",
-        execution_delta=datetime.timedelta(seconds=7200),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
     )

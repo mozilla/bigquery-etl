@@ -8,5 +8,5 @@ labels:
   application: firefox
   schedule: daily
 scheduling:
-  dag_name: bqetl_clients_daily
+  dag_name: bqetl_main_summary
   start_date: '2019-11-05'

@@ -103,6 +103,7 @@ class Task:
     multipart: bool = attr.ib(False)
     sql_file_path: Optional[str] = None
     priority: Optional[int] = None
+    skip_dry_run: bool = attr.ib(False)
     referenced_tables: Optional[List[Tuple[str, str]]] = attr.ib(None)
 
     @owner.validator
@@ -235,7 +236,42 @@ class Task:
         of dependencies. See https://cloud.google.com/bigquery/docs/reference/
         rest/v2/Job#JobStatistics2.FIELDS.referenced_tables
         """
+        if self.skip_dry_run:
+            logging.info(f"Skip getting dependencies for {self.task_name}")
+            return []
+
         logging.info(f"Get dependencies for {self.task_name}")
+
+        # check if there are any query parameters that need to be set for dry-running
+        query_parameters = [
+            bigquery.ScalarQueryParameter(*(param.split(":")))
+            for param in self.parameters
+            if "submission_date" not in param
+        ]
+
+        # the submission_date parameter needs to be set to make the dry run faster
+        job_config = bigquery.QueryJobConfig(
+            dry_run=True,
+            use_query_cache=False,
+            default_dataset=f"{DEFAULT_PROJECT}.{self.dataset}",
+            query_parameters=[
+                bigquery.ScalarQueryParameter("submission_date", "DATE", "2019-01-01")
+            ]
+            + query_parameters,
+        )
+
+        table_names = set()
+        query_files = [self.query_file]
+
+        if self.multipart:
+            # dry_run all files if query is split into multiple parts
+            query_files = glob.glob(self.sql_file_path + "/*.sql")
+
+        for query_file in query_files:
+            with open(query_file) as query_stream:
+                query = query_stream.read()
+                query_job = client.query(query, job_config=job_config)
+                referenced_tables = query_job.referenced_tables
 
         if self.referenced_tables is None:
             # the submission_date parameter needs to be set to make the dry run faster

@@ -335,7 +335,7 @@ top_locales AS (
     country_name
 )
 SELECT
-  mau_wau.week_start,
+  mau_wau.week_start AS submission_date,
   mau_wau.country_name,
   mau_wau.mau,
   daily_usage.avg_hours_usage_daily,
@@ -375,6 +375,3 @@ JOIN
   has_addon
 USING
   (week_start, country_name)
-ORDER BY
-  week_start,
-  country_name

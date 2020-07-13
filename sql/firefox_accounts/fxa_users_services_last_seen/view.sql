@@ -2,13 +2,12 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_accounts.fxa_users_services_last_seen`
 AS
 SELECT
-  -- We cannot use UDFs in a view, so we paste the body of udf.bitpos(bits) literally here.
-  CAST(SAFE.LOG(days_seen_bits & -days_seen_bits, 2) AS INT64) AS days_since_seen,
-  CAST(
-    SAFE.LOG(days_seen_in_tier1_country_bits & -days_seen_in_tier1_country_bits, 2) AS INT64
+  mozfun.bits28.days_since_seen(days_seen_bits) AS days_since_seen,
+  mozfun.bits28.days_since_seen(
+    days_seen_in_tier1_country_bits
   ) AS days_since_seen_in_tier1_country,
-  CAST(SAFE.LOG(days_registered_bits & -days_registered_bits, 2) AS INT64) AS days_since_registered,
-  * REPLACE (cn.code AS country),
+  mozfun.bits28.days_since_seen(days_registered_bits) AS days_since_registered,
+  fxa.* REPLACE (cn.code AS country),
   fxa.country AS country_name
 FROM
   `moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_last_seen_v1` AS fxa

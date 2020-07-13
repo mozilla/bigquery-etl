@@ -2,7 +2,7 @@
 
 Returns an array of key/value structs from a string representing a JSON map.
 
-Used by udf.json_extract_histogram.
+Used by mozfun.hist.extract.
 
 */
 CREATE OR REPLACE FUNCTION json.extract_int_map(input STRING) AS (

@@ -8,9 +8,7 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_fxa_events
-  # This query updates the entire existing table every day rather than appending
-  # a new partition, so we need to disable date_partition_parameter and instead
-  # pass submission_date as a generic param.
+  # We completely recreate this table every day;
+  # making it incremental is possible but nuanced since it windows over
+  # events that may cross the midnight boundary.
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
-  sql_file_path: sql/firefox_accounts_derived/fxa_users_services_first_seen_v1/init.sql

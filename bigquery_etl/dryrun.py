@@ -40,6 +40,7 @@ SKIP = {
     "sql/firefox_accounts_derived/fxa_oauth_events_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_log_auth_events_v1/query.sql",
     "sql/firefox_accounts_derived/fxa_log_content_events_v1/query.sql",
+    "sql/firefox_accounts_derived/fxa_log_device_command_events_v1/query.sql",
     "sql/telemetry_derived/addons_daily_v1/query.sql",
     "sql/search_derived/search_clients_last_seen_v1/init.sql",
     "sql/search_derived/search_clients_last_seen_v1/query.sql",

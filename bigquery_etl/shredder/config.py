@@ -121,6 +121,7 @@ impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 cfr_id_target = partial(DeleteTarget, field=CFR_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
+experiment_analysis_target = partial(DeleteTarget, field=CLIENT_ID)
 
 DELETE_TARGETS = {
     client_id_target(
@@ -354,4 +355,27 @@ def find_glean_targets(pool, client, project=SHARED_PROD):
             )
             if any(field.name == CLIENT_ID for field in table.schema)
         },
+    }
+
+
+EXPERIMENT_ANALYSIS = "moz-fx-data-experiments"
+
+
+def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
+    """Return a dict like DELETE_TARGETS for experiment analysis tables."""
+    datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
+
+    tables = [
+        table
+        for tables in pool.map(
+            client.list_tables,
+            [bigquery.DatasetReference(project, dataset_id) for dataset_id in datasets],
+        )
+        for table in tables
+        if table.table_type != "VIEW" and not table.table_id.startswith("statistics_")
+    ]
+
+    return {
+        experiment_analysis_target(qualified_table_id(table)): DESKTOP_SRC
+        for table in tables
     }

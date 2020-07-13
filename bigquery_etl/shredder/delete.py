@@ -21,7 +21,12 @@ from ..util import standard_args
 from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.exceptions import BigQueryInsertError
-from .config import DeleteSource, DELETE_TARGETS, find_glean_targets
+from .config import (
+    DeleteSource,
+    DELETE_TARGETS,
+    find_glean_targets,
+    find_experiment_analysis_targets,
+)
 
 
 NULL_PARTITION_ID = "__NULL__"
@@ -396,9 +401,15 @@ def main():
             )
     with ThreadPool(args.parallelism) as pool:
         glean_targets = find_glean_targets(pool, client)
+    with ThreadPool(args.parallelism) as pool:
+        experiment_analysis_targets = find_experiment_analysis_targets(pool, client)
     tasks = [
         task
-        for target, sources in chain(DELETE_TARGETS.items(), glean_targets.items())
+        for target, sources in chain(
+            DELETE_TARGETS.items(),
+            glean_targets.items(),
+            experiment_analysis_targets.items(),
+        )
         if args.table_filter(target.table)
         for task in delete_from_table(
             client=client,

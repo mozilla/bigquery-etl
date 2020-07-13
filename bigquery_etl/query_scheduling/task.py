@@ -238,6 +238,13 @@ class Task:
         logging.info(f"Get dependencies for {self.task_name}")
 
         if self.referenced_tables is None:
+            # check if there are query parameters that need to be set for dry-running
+            query_parameters = [
+                bigquery.ScalarQueryParameter(*(param.split(":")))
+                for param in self.parameters
+                if "submission_date" not in param
+            ]
+
             # the submission_date parameter needs to be set to make the dry run faster
             job_config = bigquery.QueryJobConfig(
                 dry_run=True,
@@ -247,7 +254,8 @@ class Task:
                     bigquery.ScalarQueryParameter(
                         "submission_date", "DATE", "2019-01-01"
                     )
-                ],
+                ]
+                + query_parameters,
             )
 
             table_names = set()

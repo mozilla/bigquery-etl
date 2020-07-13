@@ -1,0 +1,16 @@
+friendly_name: FxA Users Services First Seen
+description: Usage aggregations describing when each FxA user was first seen
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  # This query updates the entire existing table every day rather than appending
+  # a new partition, so we need to disable date_partition_parameter and instead
+  # pass submission_date as a generic param.
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+  sql_file_path: sql/firefox_accounts_derived/fxa_users_services_first_seen_v1/init.sql

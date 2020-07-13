@@ -71,6 +71,15 @@ bqetl_mobile_search:
     retries: 1
     retry_delay: 5m
 
+bqetl_fxa_events:
+  schedule_interval: 30 1 * * *
+  default_args:
+    owner: jklukas@mozilla.com
+    start_date: '2019-03-01'
+    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+    retries: 1
+    retry_delay: 10m
+
 bqetl_gud:
   schedule_interval: 0 3 * * *
   default_args:

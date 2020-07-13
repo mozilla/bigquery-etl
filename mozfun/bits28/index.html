@@ -114,6 +114,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#to_string" class="nav-link">to_string</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#to_dates" class="nav-link">to_dates</a>
               <ul class="nav flex-column">
               </ul>
@@ -123,10 +127,6 @@
               </ul>
             </li>
             <li class="nav-item" data-level="2"><a href="#range" class="nav-link">range</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#to_string" class="nav-link">to_string</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -162,6 +162,15 @@ was active and each 0 indicating a day where the client was inactive.</p>
 <p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p>
 <h2 id="from_string">from_string</h2>
 <p>Convert a string representing individual bits into an INT64.</p>
+<h2 id="to_string">to_string</h2>
+<p>Convert an INT64 field into a 28-character string representing the individual bits.</p>
+<pre><code class="sql">SELECT
+  [mozfun.bits28.to_string(1), mozfun.bits28.to_string(2), mozfun.bits28.to_string(3)]
+-- &gt;&gt;&gt; ['0000000000000000000000000001',
+--      '0000000000000000000000000010',
+--      '0000000000000000000000000011']
+</code></pre>
+
 <h2 id="to_dates">to_dates</h2>
 <p>Convert a bit pattern into an array of the dates is represents.</p>
 <h2 id="active_in_range">active_in_range</h2>
@@ -176,15 +185,6 @@ FROM
   telemetry.clients_last_seen
 WHERE
   submission_date &gt; '2020-01-01'
-</code></pre>
-
-<h2 id="to_string">to_string</h2>
-<p>Convert an INT64 field into a 28-character string representing the individual bits.</p>
-<pre><code class="sql">SELECT
-  [mozfun.bits28.to_string(1), mozfun.bits28.to_string(2), mozfun.bits28.to_string(3)]
--- &gt;&gt;&gt; ['0000000000000000000000000001',
---      '0000000000000000000000000010',
---      '0000000000000000000000000011']
 </code></pre></div>
             </div>
         </div>

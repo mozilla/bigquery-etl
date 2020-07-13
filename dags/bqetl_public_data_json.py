@@ -25,7 +25,7 @@ with DAG(
     export_public_data_json_telemetry_derived__ssl_ratios__v1 = GKEPodOperator(
         task_id="export_public_data_json_telemetry_derived__ssl_ratios__v1",
         name="export_public_data_json_telemetry_derived__ssl_ratios__v1",
-        arguments=["/script/publish_public_data_json"]
+        arguments=["script/publish_public_data_json"]
         + ["--query_file=sql/telemetry_derived/ssl_ratios_v1/query.sql"]
         + ["--destination_table=ssl_ratios${{ds_nodash}}"]
         + ["--dataset_id=telemetry_derived"]
@@ -38,7 +38,7 @@ with DAG(
     export_public_data_json_telemetry_derived__deviations__v1 = GKEPodOperator(
         task_id="export_public_data_json_telemetry_derived__deviations__v1",
         name="export_public_data_json_telemetry_derived__deviations__v1",
-        arguments=["/script/publish_public_data_json"]
+        arguments=["script/publish_public_data_json"]
         + ["--query_file=sql/telemetry_derived/deviations_v1/query.sql"]
         + ["--destination_table=deviations${{ds_nodash}}"]
         + ["--dataset_id=telemetry_derived"]

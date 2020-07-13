@@ -12,7 +12,12 @@ labels:
 scheduling:
   dag_name: bqetl_asn_aggregates
   parameters: ["n_clients:INT64:500"]
-  skip_dry_run: true   # query accesses payload_bytes_raw.telemetry
+  referenced_tables:
+  - ['static', 'isp_blocks_ipv4_20200407']
+  - ['telemetry_derived', 'events_v1']
+  - ['telemetry_derived', 'main_events_v1']
+  - ['telemetry_derived', 'events_events_v1']
+  - ['payload_bytes_raw', 'telemetry']
   depends_on:
     - dag_name: copy_deduplicate
       task_id: event_events

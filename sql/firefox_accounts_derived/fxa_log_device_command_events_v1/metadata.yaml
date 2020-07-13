@@ -1,0 +1,11 @@
+friendly_name: FxA Log Device Command Events
+description: >-
+  A subset of FxA auth server logs related to "send tab" activity.
+
+  See https://bugzilla.mozilla.org/show_bug.cgi?id=1649074
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily

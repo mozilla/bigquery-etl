@@ -3,11 +3,8 @@ CREATE OR REPLACE VIEW
 AS
 WITH with_days_since AS (
   SELECT
-    -- We cannot use UDFs in a view, so we paste the body of udf.bitpos(bits) literally here.
-    CAST(SAFE.LOG(days_seen_bits & -days_seen_bits, 2) AS INT64) AS days_since_seen,
-    CAST(
-      SAFE.LOG(days_created_profile_bits & -days_created_profile_bits, 2) AS INT64
-    ) AS days_since_created_profile,
+    mozfun.bits28.days_since_seen(days_seen_bits) AS days_since_seen,
+    mozfun.bits28.days_since_seen(days_created_profile_bits) AS days_since_created_profile,
     *
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.core_clients_last_seen_v1`

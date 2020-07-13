@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION bits28.days_since_seen(bits INT64) AS (
 );
 
 SELECT
-  assert_null(udf.bits28_days_since_seen(0)),
+  assert_null(bits28.days_since_seen(0)),
   assert_equals(0, bits28.days_since_seen(1)),
   assert_equals(3, bits28.days_since_seen(8)),
   assert_equals(0, bits28.days_since_seen(8 + 1))

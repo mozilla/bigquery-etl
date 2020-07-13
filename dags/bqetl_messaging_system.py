@@ -17,7 +17,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_messaging_system", default_args=default_args, schedule_interval="0 3 * * *"
+    "bqetl_messaging_system", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
     messaging_system_derived__onboarding_users_daily__v1 = bigquery_etl_query(
@@ -26,7 +26,7 @@ with DAG(
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com"],
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -38,7 +38,7 @@ with DAG(
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com"],
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -50,7 +50,7 @@ with DAG(
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com"],
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -62,7 +62,7 @@ with DAG(
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com"],
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -74,7 +74,7 @@ with DAG(
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com"],
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -86,7 +86,7 @@ with DAG(
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com"],
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -98,7 +98,7 @@ with DAG(
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com"],
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -110,7 +110,7 @@ with DAG(
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com"],
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -122,7 +122,7 @@ with DAG(
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com"],
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -132,7 +132,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=7200),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         dag=dag,

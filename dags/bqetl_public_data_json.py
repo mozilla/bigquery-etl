@@ -18,14 +18,14 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_public_data_json", default_args=default_args, schedule_interval="@daily"
+    "bqetl_public_data_json", default_args=default_args, schedule_interval="0 4 * * *"
 ) as dag:
     docker_image = "mozilla/bigquery-etl:latest"
 
     export_public_data_json_telemetry_derived__ssl_ratios__v1 = GKEPodOperator(
         task_id="export_public_data_json_telemetry_derived__ssl_ratios__v1",
         name="export_public_data_json_telemetry_derived__ssl_ratios__v1",
-        arguments=["/script/publish_public_data_json"]
+        arguments=["script/publish_public_data_json"]
         + ["--query_file=sql/telemetry_derived/ssl_ratios_v1/query.sql"]
         + ["--destination_table=ssl_ratios${{ds_nodash}}"]
         + ["--dataset_id=telemetry_derived"]
@@ -38,7 +38,7 @@ with DAG(
     export_public_data_json_telemetry_derived__deviations__v1 = GKEPodOperator(
         task_id="export_public_data_json_telemetry_derived__deviations__v1",
         name="export_public_data_json_telemetry_derived__deviations__v1",
-        arguments=["/script/publish_public_data_json"]
+        arguments=["script/publish_public_data_json"]
         + ["--query_file=sql/telemetry_derived/deviations_v1/query.sql"]
         + ["--destination_table=deviations${{ds_nodash}}"]
         + ["--dataset_id=telemetry_derived"]
@@ -52,6 +52,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__ssl_ratios__v1",
         external_dag_id="bqetl_ssl_ratios",
         external_task_id="telemetry_derived__ssl_ratios__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
     )

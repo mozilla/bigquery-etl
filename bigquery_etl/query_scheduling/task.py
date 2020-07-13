@@ -7,7 +7,7 @@ import os
 import re
 import logging
 from google.cloud import bigquery
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 
 from bigquery_etl.metadata.parse_metadata import Metadata
@@ -103,6 +103,7 @@ class Task:
     multipart: bool = attr.ib(False)
     sql_file_path: Optional[str] = None
     priority: Optional[int] = None
+    referenced_tables: Optional[List[Tuple[str, str]]] = attr.ib(None)
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -162,7 +163,7 @@ class Task:
             )
 
     @classmethod
-    def of_query(cls, query_file, metadata=None):
+    def of_query(cls, query_file, metadata=None, dag_collection=None):
         """
         Create task that schedules the corresponding query in Airflow.
 
@@ -174,7 +175,8 @@ class Task:
         if metadata is None:
             metadata = Metadata.of_sql_file(query_file)
 
-        if metadata.scheduling == {} or "dag_name" not in metadata.scheduling:
+        dag_name = metadata.scheduling.get("dag_name")
+        if dag_name is None:
             raise UnscheduledTask(
                 f"Metadata for {query_file} does not contain scheduling information."
             )
@@ -190,11 +192,15 @@ class Task:
         # Airflow only allows to set one owner, so we just take the first
         task_config["owner"] = metadata.owners[0]
 
+        # Get default email from default_args if available
+        default_email = []
+        if dag_collection is not None:
+            dag = dag_collection.dag_by_name(dag_name)
+            if dag is not None:
+                default_email = dag.default_args.email
+        email = task_config.get("email", default_email)
         # owners get added to the email list
-        if "email" not in task_config:
-            task_config["email"] = []
-
-        task_config["email"] = list(set(task_config["email"] + metadata.owners))
+        task_config["email"] = list(set(email + metadata.owners))
 
         # data processed in task should be published
         if metadata.is_public_json():
@@ -208,7 +214,7 @@ class Task:
             )
 
     @classmethod
-    def of_multipart_query(cls, query_file, metadata=None):
+    def of_multipart_query(cls, query_file, metadata=None, dag_collection=None):
         """
         Create task that schedules the corresponding multipart query in Airflow.
 
@@ -216,7 +222,7 @@ class Task:
         If `metadata` is set, then it is used instead of the metadata.yaml
         file that might exist alongside the query file.
         """
-        task = cls.of_query(query_file, metadata)
+        task = cls.of_query(query_file, metadata, dag_collection)
         task.multipart = True
         task.sql_file_path = os.path.dirname(query_file)
         return task
@@ -231,41 +237,46 @@ class Task:
         """
         logging.info(f"Get dependencies for {self.task_name}")
 
-        # the submission_date parameter needs to be set to make the dry run faster
-        job_config = bigquery.QueryJobConfig(
-            dry_run=True,
-            use_query_cache=False,
-            default_dataset=f"{DEFAULT_PROJECT}.{self.dataset}",
-            query_parameters=[
-                bigquery.ScalarQueryParameter("submission_date", "DATE", "2019-01-01")
-            ],
-        )
-
-        table_names = set()
-        query_files = [self.query_file]
-
-        if self.multipart:
-            # dry_run all files if query is split into multiple parts
-            query_files = glob.glob(self.sql_file_path + "/*.sql")
-
-        for query_file in query_files:
-            with open(query_file) as query_stream:
-                query = query_stream.read()
-                query_job = client.query(query, job_config=job_config)
-                referenced_tables = query_job.referenced_tables
-
-                if len(referenced_tables) >= 50:
-                    logging.warn(
-                        "Query has 50 or more tables. Queries that reference more than"
-                        "50 tables will not have a complete list of dependencies."
+        if self.referenced_tables is None:
+            # the submission_date parameter needs to be set to make the dry run faster
+            job_config = bigquery.QueryJobConfig(
+                dry_run=True,
+                use_query_cache=False,
+                default_dataset=f"{DEFAULT_PROJECT}.{self.dataset}",
+                query_parameters=[
+                    bigquery.ScalarQueryParameter(
+                        "submission_date", "DATE", "2019-01-01"
                     )
+                ],
+            )
 
-                for t in referenced_tables:
-                    table_names.add((t.dataset_id, t.table_id))
+            table_names = set()
+            query_files = [self.query_file]
 
-        # the order of table dependencies changes between requests
-        # sort to maintain same order between DAG generation runs
-        return sorted(table_names)
+            if self.multipart:
+                # dry_run all files if query is split into multiple parts
+                query_files = glob.glob(self.sql_file_path + "/*.sql")
+
+            for query_file in query_files:
+                with open(query_file) as query_stream:
+                    query = query_stream.read()
+                    query_job = client.query(query, job_config=job_config)
+                    referenced_tables = query_job.referenced_tables
+
+                    if len(referenced_tables) >= 50:
+                        logging.warn(
+                            "Query has 50 or more tables. Queries that reference more "
+                            "than 50 tables will not have a complete list of "
+                            "dependencies."
+                        )
+
+                    for t in referenced_tables:
+                        table_names.add((t.dataset_id, t.table_id))
+
+            # the order of table dependencies changes between requests
+            # sort to maintain same order between DAG generation runs
+            self.referenced_tables = sorted(table_names)
+        return self.referenced_tables
 
     def with_dependencies(self, client, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""

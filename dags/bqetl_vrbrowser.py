@@ -21,7 +21,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_vrbrowser", default_args=default_args, schedule_interval="0 3 * * *"
+    "bqetl_vrbrowser", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
     org_mozilla_vrbrowser_derived__baseline_daily__v1 = bigquery_etl_query(
@@ -30,7 +30,11 @@ with DAG(
         dataset_id="org_mozilla_vrbrowser_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=["ascholtz@mozilla.com", "jklukas@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -42,7 +46,11 @@ with DAG(
         dataset_id="org_mozilla_vrbrowser_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=["ascholtz@mozilla.com", "jklukas@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -54,7 +62,11 @@ with DAG(
         dataset_id="org_mozilla_vrbrowser_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=["ascholtz@mozilla.com", "jklukas@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -66,7 +78,11 @@ with DAG(
         dataset_id="org_mozilla_vrbrowser_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
-        email=["ascholtz@mozilla.com", "jklukas@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -76,7 +92,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=7200),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         dag=dag,

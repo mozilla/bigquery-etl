@@ -1,6 +1,6 @@
 friendly_name: SSL Ratios
 description: >-
-  Percentages of page loads Firefox users have performed that were 
+  Percentages of page loads Firefox users have performed that were
   conducted over SSL broken down by country.
 owners:
   - chutten@mozilla.com
@@ -13,3 +13,10 @@ labels:
   incremental_export: false
 scheduling:
   dag_name: bqetl_ssl_ratios
+  depends_on:
+    - dag_name: copy_deduplicate
+      task_id: copy_deduplicate_main_ping
+      execution_delta: 1h
+  # provide this value so that DAG generation does not have to dry run the
+  # query to get it, and that would be slow because main_v4 is referenced
+  referenced_tables: [['telemetry_stable', 'main_v4']]

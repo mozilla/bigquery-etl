@@ -1,5 +1,7 @@
 """Represents a collection of configured Airflow DAGs."""
 
+from itertools import groupby
+from operator import attrgetter
 import yaml
 
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag, PublicDataJsonDag
@@ -13,6 +15,7 @@ class DagCollection:
     def __init__(self, dags):
         """Instantiate DAGs."""
         self.dags = dags
+        self.dags_by_name = {dag.name: dag for dag in dags}
 
     @classmethod
     def from_dict(cls, d):
@@ -55,11 +58,7 @@ class DagCollection:
 
     def dag_by_name(self, name):
         """Return the DAG with the provided name."""
-        for dag in self.dags:
-            if dag.name == name:
-                return dag
-
-        return None
+        return self.dags_by_name.get(name)
 
     def task_for_table(self, dataset, table):
         """Return the task that schedules the query for the provided table."""
@@ -74,21 +73,23 @@ class DagCollection:
         """Assign tasks to their corresponding DAGs."""
         public_data_json_dag = None
 
-        for dag in self.dags:
-            if dag.__class__ == PublicDataJsonDag:
-                public_data_json_dag = dag
-
-        for task in tasks:
-            if self.dag_by_name(task.dag_name) is None:
+        get_dag_name = attrgetter("dag_name")
+        for dag_name, group in groupby(sorted(tasks, key=get_dag_name), get_dag_name):
+            dag = self.dag_by_name(dag_name)
+            if dag is None:
                 raise InvalidDag(
-                    f"DAG {task.dag_name} does not exist in dags.yaml"
-                    "but used in task definition {dag_tasks[0].name}."
+                    f"DAG {dag_name} does not exist in dags.yaml"
+                    "but used in task definition {next(group).task_name}."
                 )
-            else:
-                self.dag_by_name(task.dag_name).add_tasks([task])
+            dag.add_tasks(list(group))
 
-            if task.public_json and public_data_json_dag:
-                public_data_json_dag.add_export_task(task)
+        public_json_tasks = [task for task in tasks if task.public_json]
+        if public_json_tasks:
+            for dag in self.dags:
+                if dag.__class__ == PublicDataJsonDag:
+                    public_data_json_dag = dag
+            if public_data_json_dag:
+                public_data_json_dag.add_export_tasks(public_json_tasks, self)
 
         return self
 

@@ -9,7 +9,7 @@ bqetl_error_aggregates:
     depends_on_past: false
 
 bqetl_ssl_ratios:
-  schedule_interval: daily
+  schedule_interval: 0 2 * * *
   default_args:
       owner: chutten@mozilla.com
       start_date: '2019-07-20'
@@ -18,7 +18,7 @@ bqetl_ssl_ratios:
       retry_delay: 30m
 
 bqetl_deviations:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 4 * * *
   default_args:
       owner: ascholtz@mozilla.com
       start_date: '2020-03-29'
@@ -36,7 +36,7 @@ bqetl_amo_stats:
       retry_delay: 30m
 
 bqetl_vrbrowser:
-  schedule_interval: 0 3 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2019-07-25'
@@ -45,7 +45,7 @@ bqetl_vrbrowser:
     retry_delay: 5m
 
 bqetl_core:
-  schedule_interval: 0 3 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2019-07-25'
@@ -63,7 +63,7 @@ bqetl_nondesktop:
     retry_delay: 5m
 
 bqetl_mobile_search:
-  schedule_interval: 0 3 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: bewu@mozilla.com
     start_date: '2019-07-25'
@@ -81,7 +81,7 @@ bqetl_gud:
     retry_delay: 5m
 
 bqetl_messaging_system:
-  schedule_interval: 0 3 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: najiang@mozilla.com
     start_date: '2019-07-25'
@@ -90,7 +90,7 @@ bqetl_messaging_system:
     retry_delay: 5m
 
 bqetl_activity_stream:
-  schedule_interval: 0 3 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
     start_date: '2019-07-25'
@@ -115,15 +115,6 @@ bqetl_addons:
     email: ['telemetry-alerts@mozilla.com', 'bmiroglio@mozilla.com']
     retries: 2
     retry_delay: 30m
-    
-bqetl_clients_daily:
-  schedule_interval: 0 1 * * *
-  default_args:
-    owner: dthorn@mozilla.com
-    start_date: '2018-11-27'
-    email: ['telemetry-alerts@mozilla.com', 'dthorn@mozilla.com', 'jklukas@mozilla.com', 'frank@mozilla.com']
-    retries: 2
-    retry_delay: 30m
 
 bqetl_devtools:
   schedule_interval: 0 3 * * *
@@ -135,7 +126,7 @@ bqetl_devtools:
     retry_delay: 30m
 
 bqetl_main_summary:
-  schedule_interval: 0 1 * * *
+  schedule_interval: 0 2 * * *
   default_args:
     owner: dthorn@mozilla.com
     start_date: '2018-11-27'
@@ -152,10 +143,19 @@ bqetl_experiments_daily:
     retries: 2
     retry_delay: 30m
 
+bqetl_document_sample:
+  schedule_interval: daily
+  default_args:
+    owner: amiyaguchi@mozilla.com
+    start_date: '2020-02-17'
+    email: ['telemetry-alerts@mozilla.com', 'amiyaguchi@mozilla.com']
+    retries: 2
+    retry_delay: 30m
+
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (it's done automatically)
 bqetl_public_data_json:
-  schedule_interval: daily
+  schedule_interval: 0 4 * * *
   default_args:
     owner: ascholtz@mozilla.com
     start_date: '2020-04-14'

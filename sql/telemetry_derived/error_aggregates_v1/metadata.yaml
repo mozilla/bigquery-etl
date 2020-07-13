@@ -7,3 +7,28 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_error_aggregates
+  # provide this value so that DAG generation does not have to dry run the
+  # query to get it, and that would be slow because main_v4 is referenced
+  referenced_tables:
+  - ['telemetry_live', 'core_v2']
+  - ['telemetry_live', 'core_v3']
+  - ['telemetry_live', 'core_v4']
+  - ['telemetry_live', 'core_v5']
+  - ['telemetry_live', 'core_v6']
+  - ['telemetry_live', 'core_v7']
+  - ['telemetry_live', 'core_v8']
+  - ['telemetry_live', 'core_v9']
+  - ['telemetry_live', 'core_v10']
+  - ['telemetry_live', 'crash_v4']
+  - ['telemetry_live', 'main_v4']
+  - ['telemetry_stable', 'core_v2']
+  - ['telemetry_stable', 'core_v3']
+  - ['telemetry_stable', 'core_v4']
+  - ['telemetry_stable', 'core_v5']
+  - ['telemetry_stable', 'core_v6']
+  - ['telemetry_stable', 'core_v7']
+  - ['telemetry_stable', 'core_v8']
+  - ['telemetry_stable', 'core_v9']
+  - ['telemetry_stable', 'core_v10']
+  - ['telemetry_stable', 'crash_v4']
+  - ['telemetry_stable', 'main_v4']

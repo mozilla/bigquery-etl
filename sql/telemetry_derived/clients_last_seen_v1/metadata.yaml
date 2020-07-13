@@ -8,7 +8,7 @@ labels:
   application: firefox
   schedule: daily
 scheduling:
-  dag_name: bqetl_clients_daily
+  dag_name: bqetl_main_summary
   priority: 85
   start_date: '2019-04-15'
   email: ['dthorn@mozilla.com', 'jklukas@mozilla.com']

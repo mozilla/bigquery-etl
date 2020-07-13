@@ -3,10 +3,9 @@
 import attr
 import cattr
 from jinja2 import Environment, PackageLoader
-import logging
 from typing import List
 
-from bigquery_etl.query_scheduling.task import Task
+from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling import formatters
 from bigquery_etl.query_scheduling.utils import (
     is_timedelta_string,
@@ -14,6 +13,7 @@ from bigquery_etl.query_scheduling.utils import (
     is_email,
     is_schedule_interval,
     is_valid_dag_name,
+    schedule_interval_delta,
 )
 
 
@@ -220,11 +220,9 @@ class PublicDataJsonDag(Dag):
 
         return dag_template.render(args)
 
-    def add_export_task(self, task):
-        """Add a new task to the DAG for exporting data of the original query to GCS."""
+    def _create_export_task(self, task, dag_collection):
         if not task.public_json:
-            logging.warn(f"Task {task.task_name} not marked as public JSON.")
-            return
+            raise ValueError(f"Task {task.task_name} not marked as public JSON.")
 
         converter = cattr.Converter()
         task_dict = converter.unstructure(task)
@@ -236,6 +234,30 @@ class PublicDataJsonDag(Dag):
         export_task = converter.structure(task_dict, Task)
         export_task.dag_name = self.name
         export_task.task_name = f"export_public_data_json_{export_task.task_name}"
-        export_task.dependencies = [task]
 
-        self.add_tasks([export_task])
+        task_schedule_interval = dag_collection.dag_by_name(
+            task.dag_name
+        ).schedule_interval
+
+        execution_delta = schedule_interval_delta(
+            task_schedule_interval, self.schedule_interval
+        )
+
+        if execution_delta == "0s":
+            execution_delta = None
+
+        export_task.dependencies = [
+            TaskRef(
+                dag_name=task.dag_name,
+                task_id=task.task_name,
+                execution_delta=execution_delta,
+            )
+        ]
+
+        return export_task
+
+    def add_export_tasks(self, tasks, dag_collection):
+        """Add new tasks for exporting data of the original queries to GCS."""
+        self.add_tasks(
+            [self._create_export_task(task, dag_collection) for task in tasks]
+        )

@@ -366,11 +366,7 @@ def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
 
     tables = [
         table
-        for tables in pool.map(
-            client.list_tables,
-            datasets,
-            chunksize=1,
-        )
+        for tables in pool.map(client.list_tables, datasets, chunksize=1,)
         for table in tables
         if table.table_type != "VIEW" and not table.table_id.startswith("statistics_")
     ]

@@ -1,8 +1,5 @@
-friendly_name: FxA Log Device Command Events
-description: >-
-  A subset of FxA auth server logs related to "send tab" activity.
-
-  See https://bugzilla.mozilla.org/show_bug.cgi?id=1649074
+friendly_name: FxA Delete Events
+description: Deletion events extracted from FxA auth server logs used as signal for Mozilla to delete analysis data associated with the user
 owners:
   - jklukas@mozilla.com
 labels:

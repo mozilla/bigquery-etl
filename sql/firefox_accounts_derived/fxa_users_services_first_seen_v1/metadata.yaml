@@ -1,0 +1,14 @@
+friendly_name: FxA Users Services First Seen
+description: Usage aggregations describing when each FxA user was first seen
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  # We completely recreate this table every day;
+  # making it incremental is possible but nuanced since it windows over
+  # events that may cross the midnight boundary.
+  date_partition_parameter: null

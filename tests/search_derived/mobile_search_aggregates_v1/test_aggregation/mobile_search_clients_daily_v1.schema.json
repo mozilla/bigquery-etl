@@ -35,6 +35,36 @@
     "mode": "NULLABLE"
   },
   {
+    "type": "INTEGER",
+    "name": "organic",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "tagged_sap",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "tagged_follow_on",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "ad_click",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "search_with_ads",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "unknown",
+    "mode": "NULLABLE"
+  },
+  {
     "type": "STRING",
     "name": "locale",
     "mode": "NULLABLE"
@@ -97,6 +127,26 @@
   {
     "type": "INTEGER",
     "name": "sample_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "experiments",
+    "type": "RECORD"
+  },
+  {
+    "type": "INTEGER",
+    "name": "total_uri_count",
     "mode": "NULLABLE"
   }
 ]

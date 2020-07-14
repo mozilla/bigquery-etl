@@ -355,3 +355,23 @@ def find_glean_targets(pool, client, project=SHARED_PROD):
             if any(field.name == CLIENT_ID for field in table.schema)
         },
     }
+
+
+EXPERIMENT_ANALYSIS = "moz-fx-data-experiments"
+
+
+def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
+    """Return a dict like DELETE_TARGETS for experiment analysis tables."""
+    datasets = {dataset.reference for dataset in client.list_datasets(project)}
+
+    tables = [
+        table
+        for tables in pool.map(client.list_tables, datasets, chunksize=1,)
+        for table in tables
+        if table.table_type != "VIEW" and not table.table_id.startswith("statistics_")
+    ]
+
+    return {
+        client_id_target(table=qualified_table_id(table)): DESKTOP_SRC
+        for table in tables
+    }

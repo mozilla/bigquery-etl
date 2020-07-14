@@ -12,7 +12,7 @@ SELECT
   default_search_engine,
   os,
   os_version,
-  COUNT(DISTINCT(client_id)) AS client_count,
+  COUNT(*) AS client_count,
   SUM(search_count) AS search_count,
   SUM(organic) AS organic,
   SUM(tagged_sap) AS tagged_sap,

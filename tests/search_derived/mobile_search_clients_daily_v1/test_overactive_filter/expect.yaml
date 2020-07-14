@@ -46,7 +46,6 @@
   os_version: '26'
   profile_creation_date: 17332
   profile_age_in_days: 899
-  sample_id: 1
 - <<: *base
   client_id: a
   channel: beta
@@ -59,7 +58,6 @@
   os_version: '29'
   profile_creation_date: 18207
   profile_age_in_days: 24
-  sample_id: 1
 - <<: *base
   client_id: b
   channel: beta
@@ -74,7 +72,6 @@
   os_version: '29'
   profile_creation_date: 18201
   profile_age_in_days: 30
-  sample_id: 1
 - <<: *base
   client_id: b
   channel: beta
@@ -87,4 +84,3 @@
   os_version: '29'
   profile_creation_date: 18201
   profile_age_in_days: 30
-  sample_id: 1

@@ -509,7 +509,7 @@ unfiltered_search_clients AS (
     udf.mode_last(ARRAY_AGG(distribution_id)) AS distribution_id,
     udf.mode_last(ARRAY_AGG(profile_creation_date)) AS profile_creation_date,
     udf.mode_last(ARRAY_AGG(profile_age_in_days)) AS profile_age_in_days,
-    udf.mode_last(ARRAY_AGG(sample_id)) AS sample_id,
+    ANY_VALUE(sample_id) AS sample_id,
     udf.map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
     SUM(total_uri_count) AS total_uri_count,
   FROM

@@ -40,7 +40,7 @@
             "name": "metrics_search_count",
             "mode": "REPEATED"
           },
-                    {
+          {
             "description": "Records clicks of adverts on SERP pages.\nThe key format is \u2018<provider-name>\u2019.\n",
             "fields": [
               {
@@ -144,7 +144,7 @@
         "type": "STRING",
         "name": "end_time"
       },
-            {
+      {
         "fields": [
           {
             "name": "key",

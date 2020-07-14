@@ -401,7 +401,6 @@ def main():
             )
     with ThreadPool(args.parallelism) as pool:
         glean_targets = find_glean_targets(pool, client)
-    with ThreadPool(args.parallelism) as pool:
         experiment_analysis_targets = find_experiment_analysis_targets(pool, client)
     tasks = [
         task

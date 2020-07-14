@@ -6,12 +6,11 @@ This implementation relies on the zlib.js library (https://github.com/imaya/zlib
 the atob function for decoding base64.
 
 */
-
-
-CREATE OR REPLACE FUNCTION
-  gzip.decompress (input BYTES)
-  RETURNS STRING
-  LANGUAGE js AS """
+CREATE OR REPLACE FUNCTION gzip.decompress(input BYTES)
+RETURNS STRING
+LANGUAGE js
+AS
+  """
     /*  Input is either:
      *    - A gzipped UTF-8 byte array
      *    - A UTF-8 byte array
@@ -45,32 +44,32 @@ CREATE OR REPLACE FUNCTION
       return binary2String(compressedData);
     }
 """
-OPTIONS (
-  library = "gs://moz-fx-data-circleci-tests-bigquery-etl/gunzip.min.js",
-  library = "gs://moz-fx-data-circleci-tests-bigquery-etl/atob.js"
-);
+OPTIONS
+  (
+    library = "gs://moz-fx-data-circleci-tests-bigquery-etl/gunzip.min.js",
+    library = "gs://moz-fx-data-circleci-tests-bigquery-etl/atob.js"
+  );
 
 -- Tests
-
-WITH
-  input AS (
-    SELECT
-      FROM_BASE64('H4sIAKnBGlwAA6uuBQBDv6ajAgAAAA==') AS test_input,
-      '{}' AS expected
-    UNION ALL
-    SELECT
-      CAST('{"hello": "world"}' AS BYTES),
-      '{"hello": "world"}'
+WITH input AS (
+  SELECT
+    FROM_BASE64('H4sIAKnBGlwAA6uuBQBDv6ajAgAAAA==') AS test_input,
+    '{}' AS expected
+  UNION ALL
+  SELECT
+    CAST('{"hello": "world"}' AS BYTES),
+    '{"hello": "world"}'
 ),
   --
-  unzipped AS (
-    SELECT
-      gzip.decompress(test_input) AS result,
-      expected
-    FROM
-      input )
-  --
+unzipped AS (
   SELECT
-    assert_equals(expected, result)
+    gzip.decompress(test_input) AS result,
+    expected
   FROM
-    unzipped
+    input
+)
+  --
+SELECT
+  assert_equals(expected, result)
+FROM
+  unzipped

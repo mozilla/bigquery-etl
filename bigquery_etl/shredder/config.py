@@ -376,6 +376,6 @@ def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
     ]
 
     return {
-        experiment_analysis_target(qualified_table_id(table)): DESKTOP_SRC
+        client_id_target(table=qualified_table_id(table)): DESKTOP_SRC
         for table in tables
     }

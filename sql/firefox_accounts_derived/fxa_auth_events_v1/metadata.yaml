@@ -9,3 +9,4 @@ labels:
 scheduling:
   dag_name: bqetl_fxa_events
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  referenced_tables: []

@@ -21,7 +21,7 @@ scheduling:
   depends_on:
     - dag_name: copy_deduplicate
       task_id: event_events
-      exectuion_delta: 1h
+      execution_delta: 1h
     - dag_name: copy_deduplicate
       task_id: bq_main_events
-      exectuion_delta: 1h
+      execution_delta: 1h

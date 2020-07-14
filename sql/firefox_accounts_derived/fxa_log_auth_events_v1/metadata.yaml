@@ -11,3 +11,4 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_fxa_events
+  referenced_tables: []

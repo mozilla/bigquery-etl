@@ -41,7 +41,7 @@
   client_id: b
   engine: engine1
   normalized_engine: Other
-  source: actionbar
+  source: in-content.organic.none
   organic: 4
   default_search_engine: engine1
   locale: en-CA
@@ -73,7 +73,7 @@
   client_id: c
   engine: engine2
   normalized_engine: Other
-  source: actionbar
+  source: in-content.sap.none
   tagged_sap: 2
   tagged_follow_on: 3
   ad_click: 4
@@ -90,10 +90,10 @@
   profile_age_in_days: 899
   sample_id: 1
 - <<: *base
-  client_id: c
+  client_id: d
   engine: engine2
   normalized_engine: Other
-  source: actionbar
+  source: in-content.sap.none
   tagged_sap: 3
   tagged_follow_on: 4
   ad_click: 5
@@ -195,7 +195,7 @@
   profile_age_in_days: 30
   sample_id: 1
 - <<: *base
-  client_id: h
+  client_id: j
   engine: engine2
   normalized_engine: Other
   source: suggestion

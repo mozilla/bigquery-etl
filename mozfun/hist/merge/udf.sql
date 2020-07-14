@@ -6,12 +6,12 @@ Merge an array of histograms into a single histogram.
 */
 CREATE OR REPLACE FUNCTION hist.merge(histogram_list ANY TYPE) AS (
   STRUCT(
-    mode.last(ARRAY(SELECT bucket_count FROM UNNEST(histogram_list))) AS bucket_count,
+    stats.mode_last(ARRAY(SELECT bucket_count FROM UNNEST(histogram_list))) AS bucket_count,
     (SELECT SUM(`sum`) FROM UNNEST(histogram_list)) AS `sum`,
-    mode.last(ARRAY(SELECT histogram_type FROM UNNEST(histogram_list))) AS histogram_type,
+    stats.mode_last(ARRAY(SELECT histogram_type FROM UNNEST(histogram_list))) AS histogram_type,
     [
-      mode.last(ARRAY(SELECT `range`[SAFE_OFFSET(0)] FROM UNNEST(histogram_list))),
-      mode.last(ARRAY(SELECT `range`[SAFE_OFFSET(1)] FROM UNNEST(histogram_list)))
+      stats.mode_last(ARRAY(SELECT `range`[SAFE_OFFSET(0)] FROM UNNEST(histogram_list))),
+      stats.mode_last(ARRAY(SELECT `range`[SAFE_OFFSET(1)] FROM UNNEST(histogram_list)))
     ] AS `range`,
     ARRAY(
       SELECT AS STRUCT

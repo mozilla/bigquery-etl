@@ -362,13 +362,14 @@ EXPERIMENT_ANALYSIS = "moz-fx-data-experiments"
 
 def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
     """Return a dict like DELETE_TARGETS for experiment analysis tables."""
-    datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
+    datasets = {dataset.reference for dataset in client.list_datasets(project)}
 
     tables = [
         table
         for tables in pool.map(
             client.list_tables,
-            [bigquery.DatasetReference(project, dataset_id) for dataset_id in datasets],
+            datasets,
+            chunksize=1,
         )
         for table in tables
         if table.table_type != "VIEW" and not table.table_id.startswith("statistics_")

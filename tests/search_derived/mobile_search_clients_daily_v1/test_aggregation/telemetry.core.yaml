@@ -50,3 +50,5 @@
   searches:
   - key: invalid
     value: '2'
+  experiments:
+  - test_experiment

@@ -5,6 +5,12 @@
   sample_id: 1
   client_id: a
   search_count: 0
+  organic: 0
+  tagged_sap: 0
+  tagged_follow_on: 0
+  ad_click: 0
+  search_with_ads: 0
+  unknown: 0
   app_version: 68.2.1
   app_name: Fennec
   normalized_app_name: Fennec
@@ -12,6 +18,7 @@
   os_version: '23'
   profile_creation_date: 16606
   profile_age_in_days: 1625
+  experiments: []
 - <<: *base
   client_id: b
   engine: engine1
@@ -52,6 +59,8 @@
   os_version: '26'
   profile_creation_date: 17653
   profile_age_in_days: 578
+  experiments:
+  - key: test_experiment
 - <<: *base
   client_id: a
   channel: beta
@@ -133,3 +142,78 @@
   os_version: '29'
   profile_creation_date: 18201
   profile_age_in_days: 30
+- &new_field_base
+  <<: *base
+  client_id: e
+  channel: beta
+  engine: engine2
+  source: suggestion
+  search_count: 4
+  app_version: Nightly 191124 06:01
+  app_name: Firefox Preview
+  normalized_app_name: Fenix
+  country: US
+  os_version: '29'
+  profile_creation_date: 18201
+  profile_age_in_days: 30
+  total_uri_count: 22
+  experiments:
+  - key: test_experiment
+    value: test_branch
+  - key: test_experiment_2
+    value: test_branch_2
+- <<: *new_field_base
+  engine: engine3
+  source: ad-click
+  search_count: 0
+  ad_click: 3
+- <<: *new_field_base
+  engine: engine4
+  source: ad-click
+  search_count: 0
+  ad_click: 3
+  total_uri_count: 23
+- <<: *new_field_base
+  engine: engine3
+  source: search-with-ads
+  search_count: 0
+  search_with_ads: 1
+- <<: *new_field_base
+  engine: engine4
+  source: search-with-ads
+  search_count: 0
+  search_with_ads: 5
+  total_uri_count: 23
+- <<: *new_field_base
+  engine: engine1
+  source: in-content.organic.none
+  search_count: 0
+  organic: 3
+  total_uri_count: 23
+- <<: *new_field_base
+  engine: engine1
+  source: in-content.sap.none
+  search_count: 0
+  tagged_sap: 2
+- <<: *new_field_base
+  engine: engine2
+  source: in-content.sap-follow-on.none
+  search_count: 0
+  tagged_follow_on: 3
+- <<: *base
+  client_id: e
+  channel: beta
+  app_version: Nightly 191124 06:01
+  app_name: Firefox Preview
+  normalized_app_name: Fenix
+  country: US
+  os_version: '29'
+  profile_creation_date: 18201
+  profile_age_in_days: 30
+  engine: __other__
+  search_count: 0
+  unknown: 8
+  total_uri_count: 1
+  experiments:
+  - key: test_experiment
+    value: test_branch

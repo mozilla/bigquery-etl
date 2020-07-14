@@ -77,5 +77,10 @@
   {
     "type": "TIMESTAMP",
     "name": "submission_timestamp"
+  },
+  {
+    "type": "STRING",
+    "name": "experiments",
+    "mode": "REPEATED"
   }
 ]

@@ -121,7 +121,6 @@ impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 cfr_id_target = partial(DeleteTarget, field=CFR_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
-experiment_analysis_target = partial(DeleteTarget, field=CLIENT_ID)
 
 DELETE_TARGETS = {
     client_id_target(

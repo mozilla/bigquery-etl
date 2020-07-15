@@ -53,8 +53,9 @@ function write_clients_daily_aggregates {
     # e.g. baseline_v1
     local tables;
     tables=$(
-        bq ls --format=json "$project:$dataset" | \
-        jq -r '.[] | .tableReference.tableId'
+        bq ls "$project:$dataset" \
+        | grep TABLE \
+        | awk '{print $1}'
     )
     # generate all of the schemas in parallel
     for table in $tables; do

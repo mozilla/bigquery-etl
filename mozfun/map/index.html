@@ -45,6 +45,10 @@
 </li>
                                     
 <li>
+    <a href="../glean/" class="dropdown-item">glean</a>
+</li>
+                                    
+<li>
     <a href="../hist/" class="dropdown-item">hist</a>
 </li>
                                     
@@ -57,7 +61,15 @@
 </li>
                                     
 <li>
+    <a href="../norm/" class="dropdown-item">norm</a>
+</li>
+                                    
+<li>
     <a href="../overview/" class="dropdown-item">mozfun</a>
+</li>
+                                    
+<li>
+    <a href="../stats/" class="dropdown-item">stats</a>
 </li>
                                 </ul>
                             </li>
@@ -75,7 +87,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../overview/" class="nav-link">
+                                <a rel="next" href="../norm/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -102,6 +114,18 @@
             
             <li class="nav-item" data-level="1"><a href="#map" class="nav-link">map</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#mode_last" class="nav-link">mode_last</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#get_key_with_null" class="nav-link">get_key_with_null</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#sum" class="nav-link">sum</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#get_key" class="nav-link">get_key</a>
               <ul class="nav flex-column">
               </ul>
@@ -114,6 +138,14 @@
                     <div class="col-md-9" role="main">
 
 <h1 id="map">map</h1>
+<p>Functions for working with arrays of key/value structs.</p>
+<h2 id="mode_last">mode_last</h2>
+<p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
+<h2 id="get_key_with_null">get_key_with_null</h2>
+<p>Fetch the value associated with a given key from an array of key/value structs.
+Because map types aren't available in BigQuery, we model maps as arrays of structs instead, and this function provides map-like access to such fields. This version matches NULL keys as well.</p>
+<h2 id="sum">sum</h2>
+<p>Return the sum of values by key in an array of map entries. The expected schema for entries is ARRAY<STRUCT\<key ANY TYPE, value ANY TYPE>>, where the type for value must be supported by SUM, which allows numeric data types INT64, NUMERIC, and FLOAT64.</p>
 <h2 id="get_key">get_key</h2>
 <p>Fetch the value associated with a given key from an array of key/value structs.
 Because map types aren't available in BigQuery, we model maps as arrays of structs instead, and this function provides map-like access to such fields.</p></div>

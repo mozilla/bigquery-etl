@@ -7,15 +7,15 @@
         
         <meta name="author" content="Mozilla Data Platform Team">
         
-        <link rel="shortcut icon" href="/img/favicon.ico">
-        <title>BigQuery ETL</title>
-        <link href="/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/css/font-awesome.min.css" rel="stylesheet">
-        <link href="/css/base.css" rel="stylesheet">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>stats - BigQuery ETL</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
 
-        <script src="/js/jquery-1.10.2.min.js" defer></script>
-        <script src="/js/bootstrap.min.js" defer></script>
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script> 
     </head>
@@ -23,7 +23,7 @@
     <body>
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href="/.">BigQuery ETL</a>
+                <a class="navbar-brand" href="../..">BigQuery ETL</a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
@@ -34,42 +34,42 @@
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
                             <li class="navitem">
-                                <a href="/." class="nav-link">BigQuery ETL</a>
+                                <a href="../.." class="nav-link">BigQuery ETL</a>
                             </li>
-                            <li class="dropdown">
+                            <li class="dropdown active">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Mozfun <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="/mozfun/bits28/" class="dropdown-item">bits28</a>
+    <a href="../bits28/" class="dropdown-item">bits28</a>
 </li>
                                     
 <li>
-    <a href="/mozfun/glean/" class="dropdown-item">glean</a>
+    <a href="../glean/" class="dropdown-item">glean</a>
 </li>
                                     
 <li>
-    <a href="/mozfun/hist/" class="dropdown-item">hist</a>
+    <a href="../hist/" class="dropdown-item">hist</a>
 </li>
                                     
 <li>
-    <a href="/mozfun/json/" class="dropdown-item">json</a>
+    <a href="../json/" class="dropdown-item">json</a>
 </li>
                                     
 <li>
-    <a href="/mozfun/map/" class="dropdown-item">map</a>
+    <a href="../map/" class="dropdown-item">map</a>
 </li>
                                     
 <li>
-    <a href="/mozfun/norm/" class="dropdown-item">norm</a>
+    <a href="../norm/" class="dropdown-item">norm</a>
 </li>
                                     
 <li>
-    <a href="/mozfun/overview/" class="dropdown-item">mozfun</a>
+    <a href="../overview/" class="dropdown-item">mozfun</a>
 </li>
                                     
 <li>
-    <a href="/mozfun/stats/" class="dropdown-item">stats</a>
+    <a href="./" class="dropdown-item active">stats</a>
 </li>
                                 </ul>
                             </li>
@@ -82,7 +82,17 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a href="https://github.com/mozilla/bigquery-etl/" class="nav-link"><i class="fa fa-github"></i> GitHub</a>
+                                <a rel="prev" href="../overview/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/mozilla/bigquery-etl/edit/master/docs/mozfun/stats.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -91,15 +101,41 @@
 
         <div class="container">
             <div class="row">
-
-    <div class="row-fluid">
-      <div id="main-content" class="span12">
-        <h1 id="404-page-not-found" style="text-align: center">404</h1>
-        <p style="text-align: center"><strong>Page not found</strong></p>
-      </div>
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
     </div>
 
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#stats" class="nav-link">stats</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#mode_last" class="nav-link">mode_last</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#mode_last_retain_nulls" class="nav-link">mode_last_retain_nulls</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
 
+<h1 id="stats">stats</h1>
+<p>Statistics functions.</p>
+<h2 id="mode_last">mode_last</h2>
+<p>Returns the most frequently occuring element in an array.
+In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are ignored. See also: <code>stats.mode_last_retain_nulls</code>, which retains nulls.</p>
+<h2 id="mode_last_retain_nulls">mode_last_retain_nulls</h2>
+<p>Returns the most frequently occuring element in an array. In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are retained. See also: `stats.mode_last, which ignores nulls.</p></div>
             </div>
         </div>
 
@@ -108,11 +144,11 @@
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
         <script>
-            var base_url = "/",
+            var base_url = "../..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="/js/base.js" defer></script>
-        <script src="/search/main.js" defer></script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

@@ -3,5 +3,5 @@ CREATE OR REPLACE FUNCTION udf.normalize_glean_baseline_client_info(
   client_info ANY TYPE,
   metrics ANY TYPE
 ) AS (
-  mozfun.glean.normalize_baseline_client_info(client_info, metrics)
+  mozfun.norm.glean_baseline_client_info(client_info, metrics)
 );

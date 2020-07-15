@@ -71,8 +71,13 @@ function main() {
     cd "$(dirname "$0")/../.."
 
     local project=${PROJECT:-moz-fx-data-shared-prod}
-    local product=${PRODUCT:-org_mozilla_fenix}
+    local product=${PRODUCT}
     local start_stage=${START_STAGE:-0}
+
+    if [[ -z $PRODUCT ]]; then
+        echo "PRODUCT must be defined"
+        exit 1
+    fi
 
     if ((start_stage <= 0)); then
         write_clients_daily_aggregates "$product" "$project"

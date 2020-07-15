@@ -67,7 +67,7 @@ def from_template(
 def main():
     """Generate GLAM ETL queries."""
     parser = ArgumentParser(description=main.__doc__)
-    parser.add_argument("--prefix", default="org_mozilla_fenix")
+    parser.add_argument("--prefix")
     parser.add_argument("--dataset", default="glam_etl")
     parser.add_argument("--sql-root", default="sql/")
     args = parser.parse_args()

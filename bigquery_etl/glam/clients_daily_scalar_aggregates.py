@@ -119,7 +119,6 @@ def main():
         "--source-table",
         type=str,
         help="Name of Glean table",
-        default="org_mozilla_fenix_stable.metrics_v1",
     )
     args = parser.parse_args()
 

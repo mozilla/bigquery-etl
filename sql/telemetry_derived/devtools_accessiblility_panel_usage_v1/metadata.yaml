@@ -1,0 +1,11 @@
+friendly_name: Devtools Panel Usage
+description: >
+  A daily number of usages of different accessibility devtools, partitioned by day.
+owners:
+  - wlachance@mozilla.com
+labels:
+  application: devtools
+  schedule: daily
+scheduling:
+  dag_name: bqetl_devtools
+  start_date: "2020-01-01"

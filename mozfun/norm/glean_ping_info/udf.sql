@@ -4,7 +4,7 @@ Accepts a glean ping_info struct as input and returns a modified struct that
 includes a few parsed or normalized variants of the input fields.
 
 */
-CREATE OR REPLACE FUNCTION glean.normalize_ping_info(ping_info ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION norm.glean_ping_info(ping_info ANY TYPE) AS (
   (
     SELECT AS STRUCT
       ping_info.*,
@@ -17,18 +17,18 @@ CREATE OR REPLACE FUNCTION glean.normalize_ping_info(ping_info ANY TYPE) AS (
 SELECT
   assert_equals(
     TIMESTAMP '2019-12-01 09:22:00',
-    glean.normalize_ping_info(
+    norm.glean_ping_info(
       STRUCT('2019-12-01T20:22+11:00' AS start_time, '2019-12-01T21:24+11:00' AS end_time)
     ).parsed_start_time
   ),
   assert_equals(
     TIMESTAMP '2019-12-01 10:24:00',
-    glean.normalize_ping_info(
+    norm.glean_ping_info(
       STRUCT('2019-12-01T20:22+11:00' AS start_time, '2019-12-01T21:24+11:00' AS end_time)
     ).parsed_end_time
   ),
   assert_null(
-    glean.normalize_ping_info(
+    norm.glean_ping_info(
       STRUCT('2019-12-01T20:22+11:00' AS start_time, '2019-12-01T21:24:00+11:00' AS end_time)
     ).parsed_end_time
   );

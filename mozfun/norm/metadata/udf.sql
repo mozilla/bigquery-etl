@@ -4,7 +4,7 @@ Accepts a pipeline metadata struct as input and returns a modified struct that
 includes a few parsed or normalized variants of the input metadata fields.
 
 */
-CREATE OR REPLACE FUNCTION metadata.normalize(metadata ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION norm.metadata(metadata ANY TYPE) AS (
   (
     SELECT AS STRUCT
       metadata.* REPLACE (
@@ -31,19 +31,19 @@ SELECT
         TIMESTAMP '2019-11-21 22:06:06' AS parsed_date
       ) AS header
     ),
-    metadata.normalize(STRUCT(STRUCT('Thu, 21 Nov 2019 22:06:06 GMT' AS `date`) AS header))
+    norm.metadata(STRUCT(STRUCT('Thu, 21 Nov 2019 22:06:06 GMT' AS `date`) AS header))
   ),
   assert_equals(
     TIMESTAMP '2019-11-21 22:06:06',
-    metadata.normalize(
+    norm.metadata(
       STRUCT(STRUCT('Thu, 21 Nov 2019 22:06:06 GMT+00:00' AS `date`) AS header)
     ).header.parsed_date
   ),
   assert_null(
-    metadata.normalize(
+    norm.metadata(
       STRUCT(STRUCT('Thu, 21 Nov 2019 22:06:06 GMT-05:00' AS `date`) AS header)
     ).header.parsed_date
   ),
   assert_null(
-    metadata.normalize(STRUCT(STRUCT(CAST(NULL AS STRING) AS `date`) AS header)).header.parsed_date
+    norm.metadata(STRUCT(STRUCT(CAST(NULL AS STRING) AS `date`) AS header)).header.parsed_date
   );

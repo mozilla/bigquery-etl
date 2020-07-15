@@ -1,4 +1,4 @@
 -- Legacy wrapper around a function moved to mozfun.
 CREATE OR REPLACE FUNCTION udf.normalize_metadata(metadata ANY TYPE) AS (
-  mozfun.metadata.normalize(metadata)
+  mozfun.norm.metadata(metadata)
 );

@@ -37,11 +37,7 @@ SELECT
 FROM
   `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
 WHERE
-  jsonPayload.type IN (
-    'device.command.invoked',
-    'device.command.notified',
-    'device.command.retrieved'
-  )
+  jsonPayload.type LIKE 'device.command.%'
   -- Device command metrics were first deployed and stable on 2020-07-08;
   -- there is some data for earlier dates but it's from a failed deployment so we don't count it.
   AND _TABLE_SUFFIX >= '200708'

@@ -112,20 +112,20 @@ SELECT
   payload.info.reason,
   payload.info.timezone_offset,
   -- Different types of crashes / hangs; format:off
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'pluginhang')) AS plugin_hangs,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'plugin')) AS aborts_plugin,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'content')) AS aborts_content,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'gmplugin')) AS aborts_gmplugin,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin')) AS crashes_detected_plugin,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'content')) AS crashes_detected_content,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin')) AS crashes_detected_gmplugin,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'main-crash')) AS crash_submit_attempt_main,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'content-crash')) AS crash_submit_attempt_content,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'plugin-crash')) AS crash_submit_attempt_plugin,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'main-crash')) AS crash_submit_success_main,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'content-crash')) AS crash_submit_success_content,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash')) AS crash_submit_success_plugin,
-  udf.extract_histogram_sum(udf.get_key(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')) AS shutdown_kill,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'pluginhang')) AS plugin_hangs,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'plugin')) AS aborts_plugin,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'content')) AS aborts_content,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.subprocess_abnormal_abort, 'gmplugin')) AS aborts_gmplugin,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'plugin')) AS crashes_detected_plugin,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'content')) AS crashes_detected_content,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.subprocess_crashes_with_dump, 'gmplugin')) AS crashes_detected_gmplugin,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'main-crash')) AS crash_submit_attempt_main,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'content-crash')) AS crash_submit_attempt_content,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.process_crash_submit_attempt, 'plugin-crash')) AS crash_submit_attempt_plugin,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.process_crash_submit_success, 'main-crash')) AS crash_submit_success_main,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.process_crash_submit_success, 'content-crash')) AS crash_submit_success_content,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.process_crash_submit_success, 'plugin-crash')) AS crash_submit_success_plugin,
+  udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')) AS shutdown_kill,
   -- format:on
   ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
   -- See https://github.com/mozilla-services/data-pipeline/blob/master/hindsight/modules/fx/ping.lua#L82
@@ -179,10 +179,10 @@ SELECT
   -- histogram would probably be better in general, but the granularity of the
   -- buckets for these particular histograms is not fine enough for the median
   -- to give a more accurate value than the mean.
-  udf.histogram_to_mean(
+  mozfun.hist.mean(
     mozfun.hist.extract(payload.histograms.places_bookmarks_count)
   ) AS places_bookmarks_count,
-  udf.histogram_to_mean(
+  mozfun.hist.mean(
     mozfun.hist.extract(payload.histograms.places_pages_count)
   ) AS places_pages_count,
   -- Push metrics per bug 1270482 and bug 1311174
@@ -476,32 +476,32 @@ SELECT
     )
   ) AS quantum_ready,
   -- threshold counts; format:off
-  udf.histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_main_above_150,
-  udf.histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_main_above_250,
-  udf.histogram_to_threshold_count(payload.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_main_above_2500,
+  mozfun.hist.threshold_count(payload.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_main_above_150,
+  mozfun.hist.threshold_count(payload.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_main_above_250,
+  mozfun.hist.threshold_count(payload.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_main_above_2500,
 
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_content_above_150,
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_content_above_250,
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_content_above_2500,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_content_above_150,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_content_above_250,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_content_above_2500,
 
-  udf.histogram_to_threshold_count(payload.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_main_above_150,
-  udf.histogram_to_threshold_count(payload.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_main_above_250,
-  udf.histogram_to_threshold_count(payload.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_main_above_2500,
+  mozfun.hist.threshold_count(payload.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_main_above_150,
+  mozfun.hist.threshold_count(payload.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_main_above_250,
+  mozfun.hist.threshold_count(payload.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_main_above_2500,
 
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_content_above_150,
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_content_above_250,
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_content_above_2500,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_content_above_150,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_content_above_250,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_content_above_2500,
 
-  udf.histogram_to_threshold_count(payload.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_main_above_150,
-  udf.histogram_to_threshold_count(payload.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_main_above_250,
-  udf.histogram_to_threshold_count(payload.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_main_above_2500,
+  mozfun.hist.threshold_count(payload.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_main_above_150,
+  mozfun.hist.threshold_count(payload.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_main_above_250,
+  mozfun.hist.threshold_count(payload.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_main_above_2500,
 
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_content_above_150,
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_content_above_250,
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_content_above_2500,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_content_above_150,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_content_above_250,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_content_above_2500,
 
-  udf.histogram_to_threshold_count(payload.histograms.ghost_windows, 1) AS ghost_windows_main_above_1,
-  udf.histogram_to_threshold_count(payload.processes.content.histograms.ghost_windows, 1) AS ghost_windows_content_above_1,
+  mozfun.hist.threshold_count(payload.histograms.ghost_windows, 1) AS ghost_windows_main_above_1,
+  mozfun.hist.threshold_count(payload.processes.content.histograms.ghost_windows, 1) AS ghost_windows_content_above_1,
   -- format:on
   udf_js.main_summary_addon_scalars(
     JSON_EXTRACT(additional_properties, '$.payload.processes.dynamic.scalars'),

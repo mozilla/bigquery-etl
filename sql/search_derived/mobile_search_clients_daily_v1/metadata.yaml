@@ -12,3 +12,4 @@ scheduling:
     - dag_name: copy_deduplicate
       task_id: copy_deduplicate_all
       execution_delta: 1h
+  allow_field_addition_on_date: 2020-07-13

@@ -104,6 +104,7 @@ class Task:
     sql_file_path: Optional[str] = None
     priority: Optional[int] = None
     referenced_tables: Optional[List[Tuple[str, str]]] = attr.ib(None)
+    allow_field_addition_on_date: Optional[str] = attr.ib(None)
 
     @owner.validator
     def validate_owner(self, attribute, value):

@@ -44,6 +44,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {%+ if task.priority -%}
         priority_weight={{ task.priority }},
         {%+ endif -%}
+        {%+ if task.allow_field_addition_on_date -%}
+        allow_field_addition_on_date={{ task.allow_field_addition_on_date | format_repr }},
+        {%+ endif -%}
         dag=dag,
     )
 {% endfor -%}

@@ -116,9 +116,7 @@ def main():
         help="Generate a query without parameters",
     )
     parser.add_argument(
-        "--source-table",
-        type=str,
-        help="Name of Glean table",
+        "--source-table", type=str, help="Name of Glean table",
     )
     args = parser.parse_args()
 

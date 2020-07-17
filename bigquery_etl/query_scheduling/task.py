@@ -96,28 +96,28 @@ EXTERNAL_TASKS = {
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="copy_deduplicate_main_ping",
-        schedule_interval="0 1 * * *"
+        schedule_interval="0 1 * * *",
     ): ["telemetry_stable.main_v4"],
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="bq_main_events",
-        schedule_interval="0 1 * * *"
+        schedule_interval="0 1 * * *",
     ): ["telemetry_derived.main_events_v1"],
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="events_events",
-        schedule_interval="0 1 * * *"
+        schedule_interval="0 1 * * *",
     ): ["telemetry_derived.events_events_v1"],
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="baseline_clients_last_seen",
-        schedule_interval="0 1 * * *"
+        schedule_interval="0 1 * * *",
     ): ["*.baseline_clients_last_seen*"],
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="copy_deduplicate_all",
-        schedule_interval="0 1 * * *"
-    ): ["*_stable.*"]
+        schedule_interval="0 1 * * *",
+    ): ["*_stable.*"],
 }
 
 
@@ -374,10 +374,9 @@ class Task:
                 for task, patterns in EXTERNAL_TASKS.items():
                     if any(fnmatchcase(f"{table[0]}.{table[1]}", p) for p in patterns):
                         # ensure there are no duplicate dependencies
-                        # manual dependency definitions overwrite automatically detected ones
+                        # manual dependency definitions overwrite automatically detected
                         if not any(
-                            d.dag_name == task.dag_name
-                            and d.task_id == task.task_id
+                            d.dag_name == task.dag_name and d.task_id == task.task_id
                             for d in self.depends_on + dependencies
                         ):
                             execution_delta = schedule_interval_delta(
@@ -392,6 +391,6 @@ class Task:
                                         execution_delta=execution_delta,
                                     )
                                 )
-                        break   # stop after the first match
+                        break  # stop after the first match
 
         self.dependencies = dependencies

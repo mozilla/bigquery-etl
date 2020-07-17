@@ -70,7 +70,7 @@ function write_clients_daily_aggregates {
 function main() {
     cd "$(dirname "$0")/../.."
 
-    local project=${PROJECT:-moz-fx-data-shared-prod}
+    local project=${SOURCE_PROJECT:-moz-fx-data-shared-prod}
     local product=${PRODUCT}
     local start_stage=${START_STAGE:-0}
 

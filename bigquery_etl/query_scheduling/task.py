@@ -2,6 +2,7 @@
 
 import attr
 import cattr
+from fnmatch import fnmatchcase
 import glob
 import os
 import re
@@ -17,6 +18,7 @@ from bigquery_etl.query_scheduling.utils import (
     is_valid_dag_name,
     is_timedelta_string,
     schedule_interval_delta,
+    is_schedule_interval,
 )
 
 
@@ -51,7 +53,7 @@ class UnscheduledTask(Exception):
     pass
 
 
-@attr.s(auto_attribs=True)
+@attr.s(auto_attribs=True, frozen=True)
 class TaskRef:
     """
     Representation of a reference to another task.
@@ -64,6 +66,7 @@ class TaskRef:
     dag_name: str = attr.ib()
     task_id: str = attr.ib()
     execution_delta: Optional[str] = attr.ib(None)
+    schedule_interval: Optional[str] = attr.ib(None)
 
     @execution_delta.validator
     def validate_execution_delta(self, attribute, value):
@@ -73,6 +76,29 @@ class TaskRef:
                 f"Invalid timedelta definition for {attribute}: {value}."
                 "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
             )
+
+    @schedule_interval.validator
+    def validate_schedule_interval(self, attribute, value):
+        """
+        Validate the schedule_interval format.
+
+        Schedule intervals can be either in CRON format or one of:
+        @once, @hourly, @daily, @weekly, @monthly, @yearly
+        or a timedelta []d[]h[]m
+        """
+        if value is not None and not is_schedule_interval(value):
+            raise ValueError(f"Invalid schedule_interval {value}.")
+
+
+# Know tasks in telemetry-airflow, like stable table tasks
+# https://github.com/mozilla/telemetry-airflow/blob/master/dags/copy_deduplicate.py
+EXTERNAL_TASKS = {
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="copy_deduplicate_main_ping",
+        schedule_interval="0 1 * * *"
+    ): ["telemetry_stable.main_v4"]
+}
 
 
 @attr.s(auto_attribs=True)
@@ -293,6 +319,9 @@ class Task:
 
         for table in self._get_referenced_tables(client):
             upstream_task = dag_collection.task_for_table(table[0], table[1])
+            task_schedule_interval = dag_collection.dag_by_name(
+                self.dag_name
+            ).schedule_interval
 
             if upstream_task is not None:
                 # ensure there are no duplicate dependencies
@@ -305,9 +334,7 @@ class Task:
                     upstream_schedule_interval = dag_collection.dag_by_name(
                         upstream_task.dag_name
                     ).schedule_interval
-                    task_schedule_interval = dag_collection.dag_by_name(
-                        self.dag_name
-                    ).schedule_interval
+
                     execution_delta = schedule_interval_delta(
                         upstream_schedule_interval, task_schedule_interval
                     )
@@ -322,5 +349,28 @@ class Task:
                             execution_delta=execution_delta,
                         )
                     )
+            else:
+                # see if there are some static dependencies
+                for task, patterns in EXTERNAL_TASKS.items():
+                    if any(fnmatchcase(p, f"{table[0]}.{table[1]}") for p in patterns):
+                        # ensure there are no duplicate dependencies
+                        # manual dependency definitions overwrite automatically detected ones
+                        if not any(
+                            d.dag_name == task.dag_name
+                            and d.task_id == task.task_id
+                            for d in self.depends_on
+                        ):
+                            execution_delta = schedule_interval_delta(
+                                task.schedule_interval, task_schedule_interval
+                            )
+
+                            if execution_delta:
+                                dependencies.append(
+                                    TaskRef(
+                                        dag_name=task.dag_name,
+                                        task_id=task.task_id,
+                                        execution_delta=execution_delta,
+                                    )
+                                )
 
         self.dependencies = dependencies

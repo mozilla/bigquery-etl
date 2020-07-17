@@ -86,6 +86,9 @@ def schedule_interval_delta(schedule_interval1, schedule_interval2):
     si1 = schedule_interval1.replace("*", "0")
     si2 = schedule_interval2.replace("*", "0")
 
+    if (cron_regex.match(si2) is None or cron_regex.match(si1) is None):
+        return None
+
     parts1 = cron_regex.match(si1).groupdict()
     parts2 = cron_regex.match(si2).groupdict()
     # delta in seconds

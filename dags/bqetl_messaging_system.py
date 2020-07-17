@@ -128,26 +128,25 @@ with DAG(
         dag=dag,
     )
 
-    wait_for_copy_deduplicate_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_copy_deduplicate_all",
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
-        dag=dag,
     )
 
     messaging_system_derived__onboarding_users_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_copy_deduplicate_all
+        wait_for_copy_deduplicate_all
     )
 
     messaging_system_derived__cfr_users_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_copy_deduplicate_all
+        wait_for_copy_deduplicate_all
     )
 
     messaging_system_derived__snippets_users_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_copy_deduplicate_all
+        wait_for_copy_deduplicate_all
     )
 
     messaging_system_onboarding_exact_mau28_by_dimensions.set_upstream(

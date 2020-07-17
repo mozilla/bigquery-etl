@@ -108,9 +108,7 @@ with DAG(
     )
 
     telemetry_derived__addon_aggregates__v2.set_upstream(
-        wait_for_copy_deduplicate_copy_deduplicate_main_ping
+        wait_for_copy_deduplicate_main_ping
     )
 
-    telemetry_derived__addon_names__v1.set_upstream(
-        wait_for_copy_deduplicate_copy_deduplicate_main_ping
-    )
+    telemetry_derived__addon_names__v1.set_upstream(wait_for_copy_deduplicate_main_ping)

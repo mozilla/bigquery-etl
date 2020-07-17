@@ -105,9 +105,9 @@ EXTERNAL_TASKS = {
     ): ["telemetry_derived.main_events_v1"],
     TaskRef(
         dag_name="copy_deduplicate",
-        task_id="events_events",
+        task_id="event_events",
         schedule_interval="0 1 * * *",
-    ): ["telemetry_derived.events_events_v1"],
+    ): ["telemetry_derived.event_events_v1"],
     TaskRef(
         dag_name="copy_deduplicate",
         task_id="baseline_clients_last_seen",

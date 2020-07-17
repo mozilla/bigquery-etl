@@ -112,7 +112,12 @@ EXTERNAL_TASKS = {
         dag_name="copy_deduplicate",
         task_id="baseline_clients_last_seen",
         schedule_interval="0 1 * * *"
-    ): ["*.baseline_clients_last_seen*"]
+    ): ["*.baseline_clients_last_seen*"],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="copy_deduplicate_all",
+        schedule_interval="0 1 * * *"
+    ): ["*_stable.*"]
 }
 
 
@@ -387,5 +392,6 @@ class Task:
                                         execution_delta=execution_delta,
                                     )
                                 )
+                        break   # stop after the first match
 
         self.dependencies = dependencies

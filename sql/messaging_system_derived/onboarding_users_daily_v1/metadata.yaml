@@ -6,7 +6,3 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_messaging_system
-  depends_on:
-    - dag_name: copy_deduplicate
-      task_id: copy_deduplicate_all
-      execution_delta: 1h

@@ -118,10 +118,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#normalize" class="nav-link">normalize</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-level="2"><a href="#threshold_count" class="nav-link">threshold_count</a>
               <ul class="nav flex-column">
               </ul>
@@ -135,6 +131,10 @@
               </ul>
             </li>
             <li class="nav-item" data-level="2"><a href="#mean" class="nav-link">mean</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#normalize" class="nav-link">normalize</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -176,8 +176,6 @@ formed, which gives us some flexibility.</p>
 -- 5
 </code></pre>
 
-<h2 id="normalize">normalize</h2>
-<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
 <h2 id="threshold_count">threshold_count</h2>
 <p>Return the number of recorded observations greater than threshold for the histogram.  CAUTION: Does not count any buckets that have any values less than the threshold. For example, a bucket with range (1, 10) will not be counted for a threshold of 2. Use threshold that are not bucket boundaries with caution.
 https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239</p>
@@ -188,7 +186,9 @@ https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/
 - The histogram values will be summed per-bucket - The count will be summed - Other fields will take the mode_last</p>
 <h2 id="mean">mean</h2>
 <p>Given histogram h, return floor(mean) of the measurements in the bucket. That is, the histogram sum divided by the number of measurements taken.
-https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</p></div>
+https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</p>
+<h2 id="normalize">normalize</h2>
+<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p></div>
             </div>
         </div>
 

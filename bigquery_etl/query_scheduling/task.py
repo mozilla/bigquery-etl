@@ -107,7 +107,12 @@ EXTERNAL_TASKS = {
         dag_name="copy_deduplicate",
         task_id="events_events",
         schedule_interval="0 1 * * *"
-    ): ["telemetry_derived.events_events_v1"]
+    ): ["telemetry_derived.events_events_v1"],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="baseline_clients_last_seen",
+        schedule_interval="0 1 * * *"
+    ): ["*.baseline_clients_last_seen*"]
 }
 
 
@@ -362,13 +367,13 @@ class Task:
             else:
                 # see if there are some static dependencies
                 for task, patterns in EXTERNAL_TASKS.items():
-                    if any(fnmatchcase(p, f"{table[0]}.{table[1]}") for p in patterns):
+                    if any(fnmatchcase(f"{table[0]}.{table[1]}", p) for p in patterns):
                         # ensure there are no duplicate dependencies
                         # manual dependency definitions overwrite automatically detected ones
                         if not any(
                             d.dag_name == task.dag_name
                             and d.task_id == task.task_id
-                            for d in self.depends_on
+                            for d in self.depends_on + dependencies
                         ):
                             execution_delta = schedule_interval_delta(
                                 task.schedule_interval, task_schedule_interval

@@ -56,6 +56,18 @@ with DAG(
         dag=dag,
     )
 
+    wait_for_baseline_clients_last_seen = ExternalTaskSensor(
+        task_id="wait_for_baseline_clients_last_seen",
+        external_dag_id="copy_deduplicate",
+        external_task_id="baseline_clients_last_seen",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+    )
+
+    telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
+        wait_for_baseline_clients_last_seen
+    )
     wait_for_telemetry_derived__core_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
         external_dag_id="bqetl_core",
@@ -68,30 +80,14 @@ with DAG(
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
-    wait_for_copy_deduplicate_baseline_clients_last_seen = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_baseline_clients_last_seen",
-        external_dag_id="copy_deduplicate",
-        external_task_id="baseline_clients_last_seen",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        dag=dag,
-    )
 
-    telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
-        wait_for_copy_deduplicate_baseline_clients_last_seen
+    telemetry_derived__firefox_nondesktop_exact_mau28__v1.set_upstream(
+        wait_for_baseline_clients_last_seen
     )
-
     telemetry_derived__firefox_nondesktop_exact_mau28__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
-    )
-    telemetry_derived__firefox_nondesktop_exact_mau28__v1.set_upstream(
-        wait_for_copy_deduplicate_baseline_clients_last_seen
     )
 
     firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
-    )
-    firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
-        wait_for_copy_deduplicate_baseline_clients_last_seen
     )

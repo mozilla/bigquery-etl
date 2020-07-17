@@ -168,6 +168,18 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         telemetry_derived__smoot_usage_fxa__v2
     )
 
+    wait_for_baseline_clients_last_seen = ExternalTaskSensor(
+        task_id="wait_for_baseline_clients_last_seen",
+        external_dag_id="copy_deduplicate",
+        external_task_id="baseline_clients_last_seen",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+    )
+
+    telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
+        wait_for_baseline_clients_last_seen
+    )
     wait_for_telemetry_derived__core_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
         external_dag_id="bqetl_core",
@@ -179,17 +191,4 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
 
     telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
-    )
-    wait_for_copy_deduplicate_baseline_clients_last_seen = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_baseline_clients_last_seen",
-        external_dag_id="copy_deduplicate",
-        external_task_id="baseline_clients_last_seen",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        dag=dag,
-    )
-
-    telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
-        wait_for_copy_deduplicate_baseline_clients_last_seen
     )

@@ -33,29 +33,23 @@ with DAG(
         dag=dag,
     )
 
-    wait_for_copy_deduplicate_event_events = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_event_events",
-        external_dag_id="copy_deduplicate",
-        external_task_id="event_events",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        dag=dag,
-    )
-
-    telemetry_derived__asn_aggregates__v1.set_upstream(
-        wait_for_copy_deduplicate_event_events
-    )
-    wait_for_copy_deduplicate_bq_main_events = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_bq_main_events",
+    wait_for_bq_main_events = ExternalTaskSensor(
+        task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
         external_task_id="bq_main_events",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
-        dag=dag,
     )
 
-    telemetry_derived__asn_aggregates__v1.set_upstream(
-        wait_for_copy_deduplicate_bq_main_events
+    telemetry_derived__asn_aggregates__v1.set_upstream(wait_for_bq_main_events)
+    wait_for_events_events = ExternalTaskSensor(
+        task_id="wait_for_events_events",
+        external_dag_id="copy_deduplicate",
+        external_task_id="events_events",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
     )
+
+    telemetry_derived__asn_aggregates__v1.set_upstream(wait_for_events_events)

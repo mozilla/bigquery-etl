@@ -97,7 +97,17 @@ EXTERNAL_TASKS = {
         dag_name="copy_deduplicate",
         task_id="copy_deduplicate_main_ping",
         schedule_interval="0 1 * * *"
-    ): ["telemetry_stable.main_v4"]
+    ): ["telemetry_stable.main_v4"],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="bq_main_events",
+        schedule_interval="0 1 * * *"
+    ): ["telemetry_derived.main_events_v1"],
+    TaskRef(
+        dag_name="copy_deduplicate",
+        task_id="events_events",
+        schedule_interval="0 1 * * *"
+    ): ["telemetry_derived.events_events_v1"]
 }
 
 

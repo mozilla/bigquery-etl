@@ -81,8 +81,8 @@ def main():
     build_date_udf_mapping = dict(
         org_mozilla_fenix="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
         org_mozilla_firefox="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
-        org_mozilla_firefox_beta="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
-        org_mozilla_fennec_aurora="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+        org_mozilla_firefox_beta="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa
+        org_mozilla_fennec_aurora="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa
     )
     if not build_date_udf_mapping.get(args.prefix):
         raise ValueError(f"build date udf for {args.prefix} was not found")

@@ -242,12 +242,7 @@ function main {
 
     local reset=${RESET:-false}
     local export_only=${EXPORT_ONLY:-false}
-    local product=${PRODUCT}
-
-    if [[ -z $PRODUCT ]]; then
-        echo "PRODUCT must be defined"
-        exit 1
-    fi
+    local product=${PRODUCT?PRODUCT must be defined}
 
     if [[ $reset = true && $export_only = true ]]; then
         echo "RESET and EXPORT_ONLY are mutually exclusive"

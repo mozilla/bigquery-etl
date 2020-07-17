@@ -78,9 +78,12 @@ def main():
     if not dataset_path.is_dir():
         raise NotADirectoryError(f"path to {dataset_path} not found")
 
-    build_date_udf_mapping = {
-        args.prefix: "`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime"
-    }
+    build_date_udf_mapping = dict(
+        org_mozilla_fenix="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+        org_mozilla_firefox="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+        org_mozilla_firefox_beta="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+        org_mozilla_fennec_aurora="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+    )
     if not build_date_udf_mapping.get(args.prefix):
         raise ValueError(f"build date udf for {args.prefix} was not found")
 

@@ -67,7 +67,7 @@ def from_template(
 def main():
     """Generate GLAM ETL queries."""
     parser = ArgumentParser(description=main.__doc__)
-    parser.add_argument("--prefix", default="org_mozilla_fenix")
+    parser.add_argument("--prefix")
     parser.add_argument("--dataset", default="glam_etl")
     parser.add_argument("--sql-root", default="sql/")
     args = parser.parse_args()
@@ -79,7 +79,10 @@ def main():
         raise NotADirectoryError(f"path to {dataset_path} not found")
 
     build_date_udf_mapping = dict(
-        org_mozilla_fenix="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime"
+        org_mozilla_fenix="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+        org_mozilla_firefox="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+        org_mozilla_firefox_beta="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa
+        org_mozilla_fennec_aurora="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa
     )
     if not build_date_udf_mapping.get(args.prefix):
         raise ValueError(f"build date udf for {args.prefix} was not found")

@@ -362,9 +362,7 @@ WITH histogram_lists AS (
     udf_main_summary_scalars(payload.processes).*,
     ARRAY(
       SELECT AS STRUCT
-        udf_null_if_empty_list(
-          udf.json_extract_int_map(JSON_EXTRACT(histogram, '$.values'))
-        ) AS list
+        udf_null_if_empty_list(mozfun.hist.extract(histogram).values) AS list
       FROM
         UNNEST(
           [
@@ -572,7 +570,7 @@ WITH histogram_lists AS (
           ARRAY(
             SELECT AS STRUCT
               key,
-              udf.json_extract_int_map(JSON_EXTRACT(value, '$.values')) AS value
+              mozfun.hist.extract(value).values AS value
             FROM
               UNNEST(histogram)
           )
@@ -594,7 +592,7 @@ WITH histogram_lists AS (
     ) AS keyed_values_histograms,
     ARRAY(
       SELECT AS STRUCT
-        SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, '$.values.0') AS INT64) AS histogram
+        udf.get_key(mozfun.hist.extract(histogram).values, 0) AS histogram
       FROM
         UNNEST(
           [

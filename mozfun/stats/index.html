@@ -114,11 +114,11 @@
             
             <li class="nav-item" data-level="1"><a href="#stats" class="nav-link">stats</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#mode_last" class="nav-link">mode_last</a>
+            <li class="nav-item" data-level="2"><a href="#mode_last_retain_nulls" class="nav-link">mode_last_retain_nulls</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#mode_last_retain_nulls" class="nav-link">mode_last_retain_nulls</a>
+            <li class="nav-item" data-level="2"><a href="#mode_last" class="nav-link">mode_last</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -131,11 +131,11 @@
 
 <h1 id="stats">stats</h1>
 <p>Statistics functions.</p>
+<h2 id="mode_last_retain_nulls">mode_last_retain_nulls</h2>
+<p>Returns the most frequently occuring element in an array. In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are retained. See also: `stats.mode_last, which ignores nulls.</p>
 <h2 id="mode_last">mode_last</h2>
 <p>Returns the most frequently occuring element in an array.
-In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are ignored. See also: <code>stats.mode_last_retain_nulls</code>, which retains nulls.</p>
-<h2 id="mode_last_retain_nulls">mode_last_retain_nulls</h2>
-<p>Returns the most frequently occuring element in an array. In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are retained. See also: `stats.mode_last, which ignores nulls.</p></div>
+In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are ignored. See also: <code>stats.mode_last_retain_nulls</code>, which retains nulls.</p></div>
             </div>
         </div>
 

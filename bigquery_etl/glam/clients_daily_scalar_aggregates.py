@@ -116,10 +116,7 @@ def main():
         help="Generate a query without parameters",
     )
     parser.add_argument(
-        "--source-table",
-        type=str,
-        help="Name of Glean table",
-        default="org_mozilla_fenix_stable.metrics_v1",
+        "--source-table", type=str, help="Name of Glean table",
     )
     args = parser.parse_args()
 

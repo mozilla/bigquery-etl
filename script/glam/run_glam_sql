@@ -242,7 +242,7 @@ function main {
 
     local reset=${RESET:-false}
     local export_only=${EXPORT_ONLY:-false}
-    local product=${PRODUCT:-org_mozilla_fenix}
+    local product=${PRODUCT?PRODUCT must be defined}
 
     if [[ $reset = true && $export_only = true ]]; then
         echo "RESET and EXPORT_ONLY are mutually exclusive"

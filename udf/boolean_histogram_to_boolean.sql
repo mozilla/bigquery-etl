@@ -9,7 +9,10 @@ https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/
 CREATE OR REPLACE FUNCTION udf.boolean_histogram_to_boolean(histogram STRING) AS (
   COALESCE(
     SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, "$.values.1") AS INT64) > 0,
-    NOT SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, "$.values.0") AS INT64) > 0
+    NOT SAFE_CAST(JSON_EXTRACT_SCALAR(histogram, "$.values.0") AS INT64) > 0,
+    -- If the above don't work, the histogram may be in compact boolean encoding like "0,5"
+    SAFE_CAST(SPLIT(histogram, ',')[SAFE_OFFSET(1)] AS INT64) > 0,
+    NOT SAFE_CAST(SPLIT(histogram, ',')[SAFE_OFFSET(0)] AS INT64) > 0
   )
 );
 
@@ -18,4 +21,6 @@ SELECT
   assert_equals(TRUE, udf.boolean_histogram_to_boolean('{"values":{"0":1,"1":1}}')),
   assert_null(udf.boolean_histogram_to_boolean('{}')),
   assert_equals(FALSE, udf.boolean_histogram_to_boolean('{"values":{"0":1}}')),
-  assert_equals(TRUE, udf.boolean_histogram_to_boolean('{"values":{"1":1}}'))
+  assert_equals(TRUE, udf.boolean_histogram_to_boolean('0,1')),
+  assert_equals(TRUE, udf.boolean_histogram_to_boolean('1,1')),
+  assert_equals(FALSE, udf.boolean_histogram_to_boolean('1,0'))

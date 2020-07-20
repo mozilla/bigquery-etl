@@ -23,3 +23,4 @@ WHERE
     'notes@mozilla.com',
     '1b2383b324c8520974ee097e46301d5ca4e076de387c02886f1c6b1503671586@pokeinthe.io' -- Laboratory
   )
+  OR addon_id LIKE 'langpack-%@firefox.mozilla.org'

@@ -38,6 +38,8 @@ CREATE OR REPLACE FUNCTION hist.extract(input STRING) AS (
           )
         FROM
           UNNEST(SPLIT(SPLIT(input, ';')[SAFE_OFFSET(4)], ',')) AS entry
+        WHERE
+          LENGTH(entry) >= 3
       ) AS `values`
     )
   WHEN
@@ -194,5 +196,26 @@ SELECT
     [STRUCT(0 AS key, 0 AS value), STRUCT(1 AS key, 5 AS value), STRUCT(2 AS key, 0 AS value)],
     `values`
   )
+FROM
+  extracted;
+
+WITH histogram AS (
+  SELECT AS VALUE
+    '51;1;0;1,50;'
+),
+--
+extracted AS (
+  SELECT
+    hist.extract(histogram).*
+  FROM
+    histogram
+)
+--
+SELECT
+  assert_equals(51, bucket_count),
+  assert_equals(1, histogram_type),
+  assert_equals(0, `sum`),
+  assert_array_equals([1, 50], `range`),
+  assert_array_empty(`values`)
 FROM
   extracted;

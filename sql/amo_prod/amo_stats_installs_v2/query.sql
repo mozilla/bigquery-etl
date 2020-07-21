@@ -8,11 +8,6 @@ WITH installs AS (
     udf.get_key(event_map_values, 'step') AS extra_step,
     -- We need to filter out installs not initiated from AMO (or DISCO).
     udf.get_key(event_map_values, 'source') AS extra_source,
-    -- We retain `method` here to show how we could retrieve
-    -- attribution data instead (this isn't collected yet).
-    -- For AMO, we do NOT need this field. We'll have something
-    -- like `extra_attribution` or `extra_utm_params` probably.
-    udf.get_key(event_map_values, 'method') AS extra_method,
   FROM
     telemetry.events
   WHERE
@@ -28,11 +23,10 @@ SELECT
   [STRUCT('unknown' AS key, count(*) AS value)] AS downloads_per_medium,
   [STRUCT('unknown' AS key, count(*) AS value)] AS downloads_per_content,
   [STRUCT('unknown' AS key, count(*) AS value)] AS downloads_per_campaign,
-  ARRAY_AGG(DISTINCT extra_method IGNORE NULLS) AS extra_methods
 FROM
   installs
 WHERE
-  submission_date = '2020-06-30'
+  submission_date = @submission_date
   -- install is successful
   AND extra_step = 'completed'
   -- only surface "listed" add-ons (add-ons listed on AMO)

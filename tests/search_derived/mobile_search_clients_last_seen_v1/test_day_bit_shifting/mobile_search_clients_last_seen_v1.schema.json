@@ -1,0 +1,163 @@
+[
+  {
+    "name": "submission_date",
+    "type": "DATE"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING"
+  },
+  {
+    "name": "sample_id",
+    "type": "INTEGER"
+  },
+  {
+    "name": "app_name",
+    "type": "STRING"
+  },
+  {
+    "name": "normalized_app_name",
+    "type": "STRING"
+  },
+  {
+    "name": "country",
+    "type": "STRING"
+  },
+  {
+    "name": "locale",
+    "type": "STRING"
+  },
+  {
+    "name": "app_version",
+    "type": "STRING"
+  },
+  {
+    "name": "channel",
+    "type": "STRING"
+  },
+  {
+    "name": "os",
+    "type": "STRING"
+  },
+  {
+    "name": "os_version",
+    "type": "STRING"
+  },
+  {
+    "name": "default_search_engine",
+    "type": "STRING"
+  },
+  {
+    "name": "default_search_engine_submission_url",
+    "type": "STRING"
+  },
+  {
+    "name": "distribution_id",
+    "type": "STRING"
+  },
+  {
+    "name": "profile_creation_date",
+    "type": "INTEGER"
+  },
+  {
+    "name": "profile_age_in_days",
+    "type": "INTEGER"
+  },
+  {
+    "name": "organic",
+    "type": "INTEGER"
+  },
+  {
+    "name": "sap",
+    "type": "INTEGER"
+  },
+  {
+    "name": "unknown",
+    "type": "INTEGER"
+  },
+  {
+    "name": "tagged_sap",
+    "type": "INTEGER"
+  },
+  {
+    "name": "tagged_follow_on",
+    "type": "INTEGER"
+  },
+  {
+    "name": "ad_click",
+    "type": "INTEGER"
+  },
+  {
+    "name": "search_with_ads",
+    "type": "INTEGER"
+  },
+  {
+    "name": "total_searches",
+    "type": "INTEGER"
+  },
+  {
+    "name": "tagged_searches",
+    "type": "INTEGER"
+  },
+  {
+    "fields": [
+      {
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "fields": [
+          {
+            "mode": "REPEATED",
+            "name": "total_searches",
+            "type": "INTEGER"
+          },
+          {
+            "mode": "REPEATED",
+            "name": "tagged_searches",
+            "type": "INTEGER"
+          },
+          {
+            "mode": "REPEATED",
+            "name": "search_with_ads",
+            "type": "INTEGER"
+          },
+          {
+            "mode": "REPEATED",
+            "name": "ad_click",
+            "type": "INTEGER"
+          }
+        ],
+        "name": "value",
+        "type": "RECORD"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "engine_searches",
+    "type": "RECORD"
+  },
+  {
+    "name": "days_seen_bytes",
+    "type": "BYTES"
+  },
+  {
+    "name": "days_searched_bytes",
+    "type": "BYTES"
+  },
+  {
+    "name": "days_tagged_searched_bytes",
+    "type": "BYTES"
+  },
+  {
+    "name": "days_searched_with_ads_bytes",
+    "type": "BYTES"
+  },
+  {
+    "name": "days_clicked_ads_bytes",
+    "type": "BYTES"
+  },
+  {
+    "name": "days_created_profile_bytes",
+    "type": "BYTES"
+  }
+]

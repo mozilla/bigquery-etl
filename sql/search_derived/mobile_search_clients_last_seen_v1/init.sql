@@ -1,5 +1,5 @@
 CREATE TABLE
-  mobile_search_clients_last_seen_v1
+  `moz-fx-data-shared-prod`.search_derived.mobile_search_clients_last_seen_v1
 PARTITION BY
   submission_date
 CLUSTER BY
@@ -47,6 +47,6 @@ SELECT
   CAST(NULL AS BYTES) AS days_clicked_ads_bytes,
   CAST(NULL AS BYTES) AS days_created_profile_bytes
 FROM
-  mobile_search_clients_daily_v8
+  `moz-fx-data-shared-prod`.search_derived.mobile_search_clients_daily_v1
 WHERE
   FALSE

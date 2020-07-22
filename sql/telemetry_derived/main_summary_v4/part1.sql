@@ -476,30 +476,37 @@ SELECT
     )
   ) AS quantum_ready,
   -- threshold counts; format:off
-  mozfun.hist.threshold_count(payload.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_main_above_150,
-  mozfun.hist.threshold_count(payload.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_main_above_250,
-  mozfun.hist.threshold_count(payload.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_main_above_2500,
-
-  mozfun.hist.threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_content_above_150,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_content_above_250,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_content_above_2500,
-
-  mozfun.hist.threshold_count(payload.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_main_above_150,
-  mozfun.hist.threshold_count(payload.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_main_above_250,
-  mozfun.hist.threshold_count(payload.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_main_above_2500,
-
-  mozfun.hist.threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_content_above_150,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_content_above_250,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_content_above_2500,
-
-  mozfun.hist.threshold_count(payload.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_main_above_150,
-  mozfun.hist.threshold_count(payload.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_main_above_250,
-  mozfun.hist.threshold_count(payload.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_main_above_2500,
-
-  mozfun.hist.threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_content_above_150,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_content_above_250,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_content_above_2500,
-
+  -- We bundle multiple thresholds to one nested query to reduce query complexity.
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS gc_max_pause_ms_main_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS gc_max_pause_ms_main_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS gc_max_pause_ms_main_above_2500,
+   FROM UNNEST(mozfun.hist.extract(payload.histograms.gc_max_pause_ms_2).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS gc_max_pause_ms_content_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS gc_max_pause_ms_content_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS gc_max_pause_ms_content_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.processes.content.histograms.gc_max_pause_ms_2).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS cycle_collector_max_pause_main_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS cycle_collector_max_pause_main_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS cycle_collector_max_pause_main_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.histograms.cycle_collector_max_pause).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS cycle_collector_max_pause_content_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS cycle_collector_max_pause_content_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS cycle_collector_max_pause_content_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.processes.content.histograms.cycle_collector_max_pause).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS input_event_response_coalesced_ms_main_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS input_event_response_coalesced_ms_main_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS input_event_response_coalesced_ms_main_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.histograms.input_event_response_coalesced_ms).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS input_event_response_coalesced_ms_content_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS input_event_response_coalesced_ms_content_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS input_event_response_coalesced_ms_content_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.processes.content.histograms.input_event_response_coalesced_ms).values)).*,
   mozfun.hist.threshold_count(payload.histograms.ghost_windows, 1) AS ghost_windows_main_above_1,
   mozfun.hist.threshold_count(payload.processes.content.histograms.ghost_windows, 1) AS ghost_windows_content_above_1,
   -- format:on

@@ -55,6 +55,7 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     export_public_data_json_telemetry_derived__ssl_ratios__v1.set_upstream(
@@ -67,6 +68,7 @@ with DAG(
         external_task_id="telemetry_derived__deviations__v1",
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     export_public_data_json_telemetry_derived__deviations__v1.set_upstream(

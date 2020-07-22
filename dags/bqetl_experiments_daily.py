@@ -39,6 +39,7 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__experiments_daily_active_clients__v1.set_upstream(

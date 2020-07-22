@@ -51,6 +51,7 @@ with DAG("bqetl_core", default_args=default_args, schedule_interval="0 2 * * *")
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__core_clients_daily__v1.set_upstream(

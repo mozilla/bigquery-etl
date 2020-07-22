@@ -75,6 +75,7 @@ with DAG(
         external_task_id="search_derived__search_clients_daily__v8",
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__addons_daily__v1.set_upstream(
@@ -87,6 +88,7 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__addons_daily__v1.set_upstream(
@@ -100,6 +102,7 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__addons__v2.set_upstream(wait_for_copy_deduplicate_main_ping)

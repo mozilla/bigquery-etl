@@ -39,6 +39,7 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__ssl_ratios__v1.set_upstream(wait_for_copy_deduplicate_main_ping)

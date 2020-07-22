@@ -1,4 +1,4 @@
-CREATE TABLE
+CREATE OR REPLACE TABLE
   `moz-fx-data-shared-prod`.search_derived.mobile_search_clients_last_seen_v1
 PARTITION BY
   submission_date

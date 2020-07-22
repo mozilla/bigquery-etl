@@ -15,8 +15,8 @@ WITH _derived_search_cols AS (
     submission_date = @submission_date
 ),
 _derived_engine_searches AS (
-    -- From the clients search info, make a struct
-    -- that we will use for aggregation later
+  -- From the clients search info, make a struct
+  -- that we will use for aggregation later
   SELECT
     STRUCT(
       short_engine AS key,
@@ -27,8 +27,8 @@ _derived_engine_searches AS (
     _derived_search_cols
 ),
 _grouped AS (
-    -- Here we get a single row per-client, containing
-    -- info from each engine, as well as overall info
+  -- Here we get a single row per-client, containing
+  -- info from each engine, as well as overall info
   SELECT
     client_id,
     ANY_VALUE(sample_id) AS sample_id,
@@ -68,9 +68,9 @@ _grouped AS (
 _current AS (
   SELECT
     *,
-      -- In this raw table, we capture the history of activity over the past
-      -- 365 days for each usage criterion as an array of bytes. The
-      -- rightmost bit represents whether the user was active in the current day.
+    -- In this raw table, we capture the history of activity over the past
+    -- 365 days for each usage criterion as an array of bytes. The
+    -- rightmost bit represents whether the user was active in the current day.
     udf.bool_to_365_bits(TRUE) AS days_seen_bytes,
     udf.bool_to_365_bits(total_searches > 0) AS days_searched_bytes,
     udf.bool_to_365_bits(tagged_searches > 0) AS days_tagged_searched_bytes,
@@ -91,7 +91,7 @@ _previous AS (
     mobile_search_clients_last_seen_v1
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
-      -- Filter out rows from yesterday that have now fallen outside the 365-day window.
+    -- Filter out rows from yesterday that have now fallen outside the 365-day window.
     AND BIT_COUNT(udf.shift_365_bits_one_day(days_seen_bytes)) > 0
 )
 SELECT

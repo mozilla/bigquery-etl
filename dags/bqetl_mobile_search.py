@@ -45,6 +45,18 @@ with DAG(
         dag=dag,
     )
 
+    search_derived__mobile_search_clients_last_seen__v1 = bigquery_etl_query(
+        task_id="search_derived__mobile_search_clients_last_seen__v1",
+        destination_table="mobile_search_clients_last_seen_v1",
+        dataset_id="search_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        dag=dag,
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -60,5 +72,9 @@ with DAG(
     )
 
     search_derived__mobile_search_aggregates__v1.set_upstream(
+        search_derived__mobile_search_clients_daily__v1
+    )
+
+    search_derived__mobile_search_clients_last_seen__v1.set_upstream(
         search_derived__mobile_search_clients_daily__v1
     )

@@ -17,3 +17,16 @@ CREATE OR REPLACE FUNCTION udf.aggregate_active_addons(active_addons ANY TYPE) A
       element.addon_id
   )
 );
+
+-- Tests
+
+SELECT
+  assert_array_equals([
+      STRUCT('d' AS addon_id),
+      STRUCT('b' AS addon_id),
+      STRUCT('a' AS addon_id)],
+    udf.aggregate_active_addons([
+      STRUCT('d' AS addon_id),
+      STRUCT('b' AS addon_id),
+      STRUCT('a' AS addon_id),
+      STRUCT('b' AS addon_id)]))

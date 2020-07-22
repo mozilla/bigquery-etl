@@ -1,3 +1,8 @@
+/*
+This function adds two vectors. The two vectors can have different length.
+If one vector is null, the other vector will be returned directly.
+*/
+
 CREATE OR REPLACE FUNCTION
   udf.vector_add(a ARRAY<INT64>, b ARRAY<INT64>) AS (ARRAY(
     with a_unnested AS (
@@ -15,7 +20,7 @@ CREATE OR REPLACE FUNCTION
     ORDER BY COALESCE(_a_off, _b_off) ASC
   ));
 
--- 
+-- Tests
 
 SELECT
   assert_array_equals(ARRAY [2, 3, 4], udf.vector_add(ARRAY [1, 2, 3], ARRAY [1, 1, 1])),

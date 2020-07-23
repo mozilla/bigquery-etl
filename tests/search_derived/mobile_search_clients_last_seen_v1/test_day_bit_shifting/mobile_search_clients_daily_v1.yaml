@@ -43,6 +43,6 @@
   tagged_follow_on: 5
 - <<: *base
   client_id: b
-  engine: ddg
+  engine: engine2
   source: ad-click
   ad_click: 6

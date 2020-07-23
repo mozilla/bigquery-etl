@@ -47,13 +47,13 @@
   total_searches: 10
   tagged_searches: 9
   engine_searches:
-  - key: Other
+  - key: engine1
     value:
       total_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12]
       tagged_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11]
       search_with_ads: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5]
       ad_click: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
-  - key: DuckDuckGo
+  - key: engine2
     value:
       total_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       tagged_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

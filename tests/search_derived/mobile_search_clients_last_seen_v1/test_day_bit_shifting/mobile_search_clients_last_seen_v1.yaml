@@ -47,7 +47,7 @@
   total_searches: 0
   tagged_searches: 0
   engine_searches:
-  - key: Other
+  - key: engine1
     value:
       total_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
       tagged_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]

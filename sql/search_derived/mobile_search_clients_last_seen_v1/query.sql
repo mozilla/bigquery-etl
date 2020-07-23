@@ -1,6 +1,5 @@
 WITH _derived_search_cols AS (
   SELECT
-    udf.normalize_search_engine(engine) AS short_engine,
     COALESCE(organic, 0) + COALESCE(search_count, 0) + COALESCE(unknown, 0) + COALESCE(
       tagged_sap,
       0
@@ -19,10 +18,10 @@ _derived_engine_searches AS (
   -- that we will use for aggregation later
   SELECT
     STRUCT(
-      short_engine AS key,
+      engine AS key,
       STRUCT(total_searches, tagged_searches, ad_click, search_with_ads) AS value
     ) AS engine_searches,
-    * EXCEPT (short_engine)
+    *
   FROM
     _derived_search_cols
 ),
@@ -31,7 +30,7 @@ _grouped AS (
   -- info from each engine, as well as overall info
   SELECT
     client_id,
-    ANY_VALUE(sample_id) AS sample_id,
+    sample_id,
     -- Dimensional data
     udf.mode_last(ARRAY_AGG(app_name)) AS app_name,
     udf.mode_last(ARRAY_AGG(normalized_app_name)) AS normalized_app_name,
@@ -63,7 +62,8 @@ _grouped AS (
   FROM
     _derived_engine_searches
   GROUP BY
-    client_id
+    client_id,
+    sample_id
 ),
 _current AS (
   SELECT

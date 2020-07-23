@@ -35,7 +35,9 @@ FULL JOIN
       LOGICAL_OR(environment.settings.is_default_browser) AS default_browser,
       SUM(payload.processes.parent.scalars.browser_engagement_total_uri_count) > 10 AS many_uri,
       SUM(
-        udf.histogram_max_key_with_nonzero_value(payload.histograms.weave_device_count_desktop)
+        `moz-fx-data-shared-prod.udf.histogram_max_key_with_nonzero_value`(
+          payload.histograms.weave_device_count_desktop
+        )
       ) > 0 AS sync_configured,
       LOGICAL_OR(
         0 IN (
@@ -44,12 +46,12 @@ FULL JOIN
           FROM
             UNNEST(
               ARRAY_CONCAT(
-                udf_null_if_empty_list(
+                `moz-fx-data-shared-prod.udf.null_if_empty_list`(
                   mozfun.hist.extract(
                     payload.processes.content.histograms.pwmgr_form_autofill_result
                   ).values
                 ),
-                udf_null_if_empty_list(
+                `moz-fx-data-shared-prod.udf.null_if_empty_list`(
                   mozfun.hist.extract(payload.histograms.pwmgr_form_autofill_result).values
                 )
               )
@@ -62,7 +64,7 @@ FULL JOIN
             key
           FROM
             UNNEST(
-              udf_null_if_empty_list(
+              `moz-fx-data-shared-prod.udf.null_if_empty_list`(
                 mozfun.hist.extract(payload.histograms.pwmgr_prompt_remember_action).values
               )
             )

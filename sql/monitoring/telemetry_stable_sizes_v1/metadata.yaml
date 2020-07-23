@@ -1,0 +1,7 @@
+friendly_name: Telemetry Stable Sizes
+description: >
+  Table sizes of telemetry_stable tables, partitioned by day.
+owners:
+  - ascholtz@mozilla.com
+labels:
+  schedule: daily

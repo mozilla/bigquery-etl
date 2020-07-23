@@ -1,3 +1,50 @@
+-- Allow us to reduce complexity by calling mozfun.hist.extract once
+-- and returning a struct with all 31 extracted fields.
+CREATE TEMP FUNCTION extract_popup_notification_stats(h STRING) AS (
+  (
+    WITH stats AS (
+      SELECT AS VALUE
+        ARRAY(
+          SELECT
+            COALESCE(extracted.value, 0) AS v
+          FROM
+            UNNEST(GENERATE_ARRAY(0, 31)) AS idx
+          LEFT JOIN
+            UNNEST(mozfun.hist.extract(h).values) AS extracted
+          ON
+            (extracted.key = idx)
+          ORDER BY
+            idx
+        )
+    )
+    SELECT AS STRUCT
+      stats[OFFSET(0)] AS offered,
+      stats[OFFSET(1)] AS action_1,
+      stats[OFFSET(2)] AS action_2,
+      stats[OFFSET(3)] AS action_3,
+      stats[OFFSET(4)] AS action_last,
+      stats[OFFSET(5)] AS dismissal_click_elsewhere,
+      stats[OFFSET(6)] AS dismissal_leave_page,
+      stats[OFFSET(7)] AS dismissal_close_button,
+      stats[OFFSET(8)] AS dismissal_not_now,
+      stats[OFFSET(10)] AS open_submenu,
+      stats[OFFSET(11)] AS learn_more,
+      stats[OFFSET(20)] AS reopen_offered,
+      stats[OFFSET(21)] AS reopen_action_1,
+      stats[OFFSET(22)] AS reopen_action_2,
+      stats[OFFSET(23)] AS reopen_action_3,
+      stats[OFFSET(24)] AS reopen_action_last,
+      stats[OFFSET(25)] AS reopen_dismissal_click_elsewhere,
+      stats[OFFSET(26)] AS reopen_dismissal_leave_page,
+      stats[OFFSET(27)] AS reopen_dismissal_close_button,
+      stats[OFFSET(28)] AS reopen_dismissal_not_now,
+      stats[OFFSET(30)] AS reopen_open_submenu,
+      stats[OFFSET(31)] AS reopen_learn_more
+    FROM
+      stats
+  )
+);
+
 SELECT
   document_id,
   client_id,
@@ -192,32 +239,7 @@ SELECT
   ARRAY(
     SELECT AS STRUCT
       key,
-      STRUCT(
-        -- format:off
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.0') AS INT64), 0) AS offered,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.1') AS INT64), 0) AS action_1,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.2') AS INT64), 0) AS action_2,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.3') AS INT64), 0) AS action_3,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.4') AS INT64), 0) AS action_last,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.5') AS INT64), 0) AS dismissal_click_elsewhere,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.6') AS INT64), 0) AS dismissal_leave_page,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.7') AS INT64), 0) AS dismissal_close_button,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.8') AS INT64), 0) AS dismissal_not_now,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.10') AS INT64), 0) AS open_submenu,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.11') AS INT64), 0) AS learn_more,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.20') AS INT64), 0) AS reopen_offered,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.21') AS INT64), 0) AS reopen_action_1,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.22') AS INT64), 0) AS reopen_action_2,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.23') AS INT64), 0) AS reopen_action_3,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.24') AS INT64), 0) AS reopen_action_last,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.25') AS INT64), 0) AS reopen_dismissal_click_elsewhere,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.26') AS INT64), 0) AS reopen_dismissal_leave_page,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.27') AS INT64), 0) AS reopen_dismissal_close_button,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.28') AS INT64), 0) AS reopen_dismissal_not_now,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.30') AS INT64), 0) AS reopen_open_submenu,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.31') AS INT64), 0) AS reopen_learn_more
-        -- format:on
-      ) AS value
+      extract_popup_notification_stats(value) AS value
     FROM
       UNNEST(payload.keyed_histograms.popup_notification_stats)
   ) AS popup_notification_stats,

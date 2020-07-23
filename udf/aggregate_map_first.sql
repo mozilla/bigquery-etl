@@ -2,7 +2,6 @@
 Returns an aggregated map with all the keys and the first corresponding value
 from the given maps
 */
-
 CREATE OR REPLACE FUNCTION udf.aggregate_map_first(maps ANY TYPE) AS (
   STRUCT(
     ARRAY(
@@ -42,19 +41,17 @@ CREATE OR REPLACE FUNCTION udf.aggregate_map_first(maps ANY TYPE) AS (
 );
 
 -- Test
-
 SELECT
-  assert_array_equals([
-      STRUCT('k1' AS key, 'v1-1' AS value),
-      STRUCT('k2' AS key, 'v2-1' AS value)
-    ],
-    udf.aggregate_map_first([
-      STRUCT([STRUCT('k2' AS key, 'v2-1' AS value)] AS key_value),
-      STRUCT([
-          STRUCT('k1' AS key, 'v1-1' AS value),
-          STRUCT('k2' AS key, 'v2-2' AS value)
-        ] AS key_value),
-      STRUCT([STRUCT('k1' AS key, 'v1-2' AS value)] AS key_value),
-      STRUCT([STRUCT('k2' AS key, 'v2-3' AS value)] AS key_value)
-    ]).key_value
+  assert_array_equals(
+    [STRUCT('k1' AS key, 'v1-1' AS value), STRUCT('k2' AS key, 'v2-1' AS value)],
+    udf.aggregate_map_first(
+      [
+        STRUCT([STRUCT('k2' AS key, 'v2-1' AS value)] AS key_value),
+        STRUCT(
+          [STRUCT('k1' AS key, 'v1-1' AS value), STRUCT('k2' AS key, 'v2-2' AS value)] AS key_value
+        ),
+        STRUCT([STRUCT('k1' AS key, 'v1-2' AS value)] AS key_value),
+        STRUCT([STRUCT('k2' AS key, 'v2-3' AS value)] AS key_value)
+      ]
+    ).key_value
   )

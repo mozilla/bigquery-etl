@@ -82,7 +82,7 @@ def main():
         if fnmatchcase(dataset.dataset_id, args.dataset)
     ]
 
-    with ThreadPool(8) as p:
+    with ThreadPool(20) as p:
         stable_tables = p.map(
             partial(get_tables, client, args.project), stable_datasets, chunksize=1,
         )

@@ -27,12 +27,30 @@ FULL JOIN
     SELECT
       client_id,
       submission_date,
-      IF(scalar_parent_browser_engagement_max_concurrent_tab_pinned_count > 0, 1, 0) AS pinned_tab,
+      LOGICAL_OR(
+        IF(scalar_parent_browser_engagement_max_concurrent_tab_pinned_count > 0, 1, 0)
+      ) AS pinned_tab,
+      LOGICAL_OR(
+        0 IN (
+          SELECT
+            key
+          FROM
+            UNNEST(
+              ARRAY_CONCAT(
+                histogram_content_pwmgr_form_autofill_result,
+                histogram_parent_pwmgr_form_autofill_result
+              )
+            )
+        )
+      ) AS filled_password,
     FROM
       `moz-fx-data-shared-prod.telemetry.main_summary`
     WHERE
       submission_date = @submission_date
       AND normalized_channel = "release"
+    GROUP BY
+      submission_date,
+      client_id
   ) ms_t
 ON
   events_t.client_id = ms_t.client_id
@@ -59,7 +77,7 @@ FULL JOIN
     SELECT
       client_id,
       submission_date,
-      1 AS filled_password
+      true AS filled_password
     FROM
       (
         (

@@ -58,6 +58,8 @@ FULL JOIN
                 )
               )
             )
+          WHERE
+            value > 0
         )
       ) AS filled_password,
       LOGICAL_OR(

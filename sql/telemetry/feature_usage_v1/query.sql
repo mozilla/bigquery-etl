@@ -67,9 +67,7 @@ FULL JOIN
           SELECT
             key
           FROM
-            UNNEST(
-              mozfun.hist.extract(payload.histograms.pwmgr_prompt_remember_action).values
-            )
+            UNNEST(mozfun.hist.extract(payload.histograms.pwmgr_prompt_remember_action).values)
         )
       ) AS remember_password,
     FROM

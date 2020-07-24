@@ -21,18 +21,17 @@ CREATE OR REPLACE FUNCTION udf.add_searches_by_index(
         SUM(search.tagged_searches) AS tagged_searches,
         SUM(search.search_with_ads) AS search_with_ads,
         SUM(search.ad_click) AS ad_click,
+        index,
       FROM
         UNNEST(searches) search
       GROUP BY
         index
-      ORDER BY
-        index
     )
     SELECT AS STRUCT
-      ARRAY_AGG(total_searches) total_searches,
-      ARRAY_AGG(tagged_searches) tagged_searches,
-      ARRAY_AGG(search_with_ads) search_with_ads,
-      ARRAY_AGG(ad_click) ad_click,
+      ARRAY_AGG(total_searches ORDER BY index) AS total_searches,
+      ARRAY_AGG(tagged_searches ORDER BY index) AS tagged_searches,
+      ARRAY_AGG(search_with_ads ORDER BY index) AS search_with_ads,
+      ARRAY_AGG(ad_click ORDER BY index) AS ad_click,
     FROM
       summed_by_index
   )

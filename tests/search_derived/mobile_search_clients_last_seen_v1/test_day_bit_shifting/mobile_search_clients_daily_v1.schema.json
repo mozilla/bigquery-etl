@@ -1,0 +1,152 @@
+[
+  {
+    "type": "DATE",
+    "name": "submission_date",
+    "mode": "REQUIRED"
+  },
+  {
+    "type": "STRING",
+    "name": "client_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "engine",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_engine",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "source",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "country",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "search_count",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "organic",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "tagged_sap",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "tagged_follow_on",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "ad_click",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "search_with_ads",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "unknown",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "locale",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "app_name",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_app_name",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "app_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "channel",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "os",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "os_version",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "default_search_engine_submission_url",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "profile_creation_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "profile_age_in_days",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "distribution_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "fields": [
+      {
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "experiments",
+    "type": "RECORD"
+  },
+  {
+    "type": "INTEGER",
+    "name": "total_uri_count",
+    "mode": "NULLABLE"
+  }
+]

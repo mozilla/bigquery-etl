@@ -239,7 +239,7 @@ Scheduling Queries in Airflow
   - `schedule_interval` is either defined as a [CRON expression](https://en.wikipedia.org/wiki/Cron) or alternatively as one of the following [CRON presets](https://airflow.readthedocs.io/en/latest/dag-run.html): `once`, `hourly`, `daily`, `weekly`, `monthly`
   - `start_date` defines the first date for which the query should be executed
   - `email` lists email addresses alerts should be sent to in case of failures when running the query
-- To schedule a specific query, it requires a `metadata.yaml` file that includes a `scheduling` section, for example:
+- To schedule a specific query, add a `metadata.yaml` file that includes a `scheduling` section, for example:
   ```yaml
   friendly_name: SSL ratios
   # ... more metadata, see Query Metadata section above
@@ -268,9 +268,6 @@ Scheduling Queries in Airflow
   - Generated DAGs are located in the `dags/` directory
   - Dependencies between queries scheduled in bigquery-etl and dependencies to stable tables are detected automatically
 - Generated DAGs need to be manually copied to [telemetry-airflow](https://github.com/mozilla/telemetry-airflow) 
-
-More instructions for scheduling queries in Airflow can be found in this
-[cookbook](https://docs.telemetry.mozilla.org/cookbooks/bigquery-airflow.html).
 
 Contributing
 ---

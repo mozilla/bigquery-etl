@@ -1,6 +1,6 @@
 SELECT
-  events_t.client_id AS clients_id,
-  events_t.submission_date AS submission_date,
+  client_id,
+  submission_date,
   COALESCE(protection_report, FALSE) AS protection_report,
   COALESCE(pinned_tab, FALSE) AS pinned_tab,
   COALESCE(default_browser, FALSE) AS default_browser,
@@ -46,13 +46,15 @@ FULL JOIN
           FROM
             UNNEST(
               ARRAY_CONCAT(
-                `moz-fx-data-shared-prod.udf.null_if_empty_list`(
+                IFNULL(
                   mozfun.hist.extract(
                     payload.processes.content.histograms.pwmgr_form_autofill_result
-                  ).values
+                  ).values,
+                  []
                 ),
-                `moz-fx-data-shared-prod.udf.null_if_empty_list`(
-                  mozfun.hist.extract(payload.histograms.pwmgr_form_autofill_result).values
+                IFNULL(
+                  mozfun.hist.extract(payload.histograms.pwmgr_form_autofill_result).values,
+                  []
                 )
               )
             )
@@ -64,9 +66,7 @@ FULL JOIN
             key
           FROM
             UNNEST(
-              `moz-fx-data-shared-prod.udf.null_if_empty_list`(
-                mozfun.hist.extract(payload.histograms.pwmgr_prompt_remember_action).values
-              )
+              mozfun.hist.extract(payload.histograms.pwmgr_prompt_remember_action).values
             )
         )
       ) AS remember_password,
@@ -78,6 +78,5 @@ FULL JOIN
       submission_date,
       client_id
   ) main_t
-ON
-  events_t.client_id = main_t.client_id
-  AND events_t.submission_date = main_t.submission_date
+USING
+  (client_id, submission_date)

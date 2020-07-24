@@ -1,6 +1,7 @@
 import click
 
 from bigquery_etl.cli.query import query_cli
+from bigquery_etl.version import __version__
 
 
 def cli():
@@ -10,7 +11,7 @@ def cli():
     }
 
     @click.group(commands=commands)
-    # todo: version
+    @click.version_option(version=__version__)
     def group():
         "CLI tools for working with bigquery-etl."
 

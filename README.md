@@ -222,8 +222,8 @@ labels:
 Scheduling Queries in Airflow
 ---
 
-- bigquery-etl has tooling to automatically generate Airflow DAGs for scheduling queries.
-- Every query must be scheduled as part of a DAG that is specified in `dags.yaml`.
+- bigquery-etl has tooling to automatically generate Airflow DAGs for scheduling queries
+- To be scheduled, a query must be assigned to a DAG that is specified in `dags.yaml`
   - New DAGs can be configured in `dags.yaml`, e.g., by adding the following:
   ```yaml
   bqetl_ssl_ratios:   # name of the DAG; must start with bqetl_
@@ -238,6 +238,7 @@ Scheduling Queries in Airflow
   - All DAG names need to have `bqetl_` as prefix.
   - `schedule_interval` is either defined as a [CRON expression](https://en.wikipedia.org/wiki/Cron) or alternatively as one of the following [CRON presets](https://airflow.readthedocs.io/en/latest/dag-run.html): `once`, `hourly`, `daily`, `weekly`, `monthly`
   - `start_date` defines the first date for which the query should be executed
+    - Airflow will not automatically backfill older dates if `start_date` is set in the past, backfilling can be done via the Airflow web interface
   - `email` lists email addresses alerts should be sent to in case of failures when running the query
 - To schedule a specific query, add a `metadata.yaml` file that includes a `scheduling` section, for example:
   ```yaml

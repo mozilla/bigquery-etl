@@ -33,7 +33,7 @@ CREATE OR REPLACE FUNCTION udf.normalize_monthly_searches(
     FROM
       UNNEST(engine_searches) AS engine
     CROSS JOIN
-      UNNEST(engine.value.total_searches) total_searches
+      UNNEST(engine.value.total_searches) AS total_searches
       WITH OFFSET AS index
     GROUP BY
       key

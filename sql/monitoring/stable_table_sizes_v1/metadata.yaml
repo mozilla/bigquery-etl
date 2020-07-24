@@ -1,0 +1,8 @@
+friendly_name: Stable Table Sizes
+description: >
+  Table sizes of stable tables, partitioned by day.
+owners:
+  - ascholtz@mozilla.com
+labels:
+  schedule: daily
+  incremental: true

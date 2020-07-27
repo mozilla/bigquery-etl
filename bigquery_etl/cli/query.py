@@ -1,3 +1,5 @@
+"""bigquery-etl CLI query command."""
+
 import click
 import os
 from pathlib import Path
@@ -41,12 +43,6 @@ def create_query_cli_group():
     default="example@mozilla.com",
 )
 @click.option(
-    "--owner",
-    "-o",
-    help="Owner of the query (email address)",
-    default="example@mozilla.com",
-)
-@click.option(
     "--init",
     "-i",
     help="Create an init.sql file to initialize the table",
@@ -54,7 +50,6 @@ def create_query_cli_group():
 )
 def query_create_command(name, path, owner, init):
     """CLI command for creating a new query."""
-
     if not os.path.isdir(path):
         click.echo(f"Invalid path for adding new query: {path}", err=True)
         sys.exit(1)

@@ -118,6 +118,13 @@ class Metadata:
         cls = Metadata.from_file(metadata_file)
         return cls
 
+    def write(self, file):
+        """Write metadata information to the provided file."""
+        metadata_dict = self.__dict__
+        if metadata_dict["scheduling"] == {}:
+            del metadata_dict["scheduling"]
+        file.write_text(yaml.dump(metadata_dict))
+
     def is_public_bigquery(self):
         """Return true if the public_bigquery flag is set."""
         return "public_bigquery" in self.labels

@@ -7,7 +7,7 @@ setup(
     author_email="fx-data-dev@mozilla.org",
     description="Tooling for building derived datasets in BigQuery",
     url="https://github.com/mozilla/bigquery-etl",
-    packages=find_packages(),
+    packages=["bigquery_etl", "bigquery_etl.cli", "bigquery_etl.metadata"],
     package_data={},
     install_requires=[
         "gcloud",

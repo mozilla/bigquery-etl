@@ -121,6 +121,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__smoot_usage_desktop__v2.set_upstream(
@@ -146,6 +147,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         execution_delta=datetime.timedelta(seconds=5400),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__smoot_usage_fxa__v2.set_upstream(
@@ -175,6 +177,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
@@ -187,6 +190,7 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
     telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(

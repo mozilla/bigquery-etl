@@ -1,3 +1,50 @@
+-- Allow us to reduce complexity by calling mozfun.hist.extract once
+-- and returning a struct with all 31 extracted fields.
+CREATE TEMP FUNCTION extract_popup_notification_stats(h STRING) AS (
+  (
+    WITH stats AS (
+      SELECT AS VALUE
+        ARRAY(
+          SELECT
+            COALESCE(extracted.value, 0) AS v
+          FROM
+            UNNEST(GENERATE_ARRAY(0, 31)) AS idx
+          LEFT JOIN
+            UNNEST(mozfun.hist.extract(h).values) AS extracted
+          ON
+            (extracted.key = idx)
+          ORDER BY
+            idx
+        )
+    )
+    SELECT AS STRUCT
+      stats[OFFSET(0)] AS offered,
+      stats[OFFSET(1)] AS action_1,
+      stats[OFFSET(2)] AS action_2,
+      stats[OFFSET(3)] AS action_3,
+      stats[OFFSET(4)] AS action_last,
+      stats[OFFSET(5)] AS dismissal_click_elsewhere,
+      stats[OFFSET(6)] AS dismissal_leave_page,
+      stats[OFFSET(7)] AS dismissal_close_button,
+      stats[OFFSET(8)] AS dismissal_not_now,
+      stats[OFFSET(10)] AS open_submenu,
+      stats[OFFSET(11)] AS learn_more,
+      stats[OFFSET(20)] AS reopen_offered,
+      stats[OFFSET(21)] AS reopen_action_1,
+      stats[OFFSET(22)] AS reopen_action_2,
+      stats[OFFSET(23)] AS reopen_action_3,
+      stats[OFFSET(24)] AS reopen_action_last,
+      stats[OFFSET(25)] AS reopen_dismissal_click_elsewhere,
+      stats[OFFSET(26)] AS reopen_dismissal_leave_page,
+      stats[OFFSET(27)] AS reopen_dismissal_close_button,
+      stats[OFFSET(28)] AS reopen_dismissal_not_now,
+      stats[OFFSET(30)] AS reopen_open_submenu,
+      stats[OFFSET(31)] AS reopen_learn_more
+    FROM
+      stats
+  )
+);
+
 SELECT
   document_id,
   client_id,
@@ -192,32 +239,7 @@ SELECT
   ARRAY(
     SELECT AS STRUCT
       key,
-      STRUCT(
-        -- format:off
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.0') AS INT64), 0) AS offered,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.1') AS INT64), 0) AS action_1,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.2') AS INT64), 0) AS action_2,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.3') AS INT64), 0) AS action_3,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.4') AS INT64), 0) AS action_last,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.5') AS INT64), 0) AS dismissal_click_elsewhere,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.6') AS INT64), 0) AS dismissal_leave_page,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.7') AS INT64), 0) AS dismissal_close_button,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.8') AS INT64), 0) AS dismissal_not_now,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.10') AS INT64), 0) AS open_submenu,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.11') AS INT64), 0) AS learn_more,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.20') AS INT64), 0) AS reopen_offered,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.21') AS INT64), 0) AS reopen_action_1,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.22') AS INT64), 0) AS reopen_action_2,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.23') AS INT64), 0) AS reopen_action_3,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.24') AS INT64), 0) AS reopen_action_last,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.25') AS INT64), 0) AS reopen_dismissal_click_elsewhere,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.26') AS INT64), 0) AS reopen_dismissal_leave_page,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.27') AS INT64), 0) AS reopen_dismissal_close_button,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.28') AS INT64), 0) AS reopen_dismissal_not_now,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.30') AS INT64), 0) AS reopen_open_submenu,
-        IFNULL(SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.31') AS INT64), 0) AS reopen_learn_more
-        -- format:on
-      ) AS value
+      extract_popup_notification_stats(value) AS value
     FROM
       UNNEST(payload.keyed_histograms.popup_notification_stats)
   ) AS popup_notification_stats,
@@ -476,30 +498,37 @@ SELECT
     )
   ) AS quantum_ready,
   -- threshold counts; format:off
-  mozfun.hist.threshold_count(payload.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_main_above_150,
-  mozfun.hist.threshold_count(payload.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_main_above_250,
-  mozfun.hist.threshold_count(payload.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_main_above_2500,
-
-  mozfun.hist.threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 150) AS gc_max_pause_ms_content_above_150,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 250) AS gc_max_pause_ms_content_above_250,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.gc_max_pause_ms_2, 2500) AS gc_max_pause_ms_content_above_2500,
-
-  mozfun.hist.threshold_count(payload.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_main_above_150,
-  mozfun.hist.threshold_count(payload.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_main_above_250,
-  mozfun.hist.threshold_count(payload.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_main_above_2500,
-
-  mozfun.hist.threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 150) AS cycle_collector_max_pause_content_above_150,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 250) AS cycle_collector_max_pause_content_above_250,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.cycle_collector_max_pause, 2500) AS cycle_collector_max_pause_content_above_2500,
-
-  mozfun.hist.threshold_count(payload.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_main_above_150,
-  mozfun.hist.threshold_count(payload.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_main_above_250,
-  mozfun.hist.threshold_count(payload.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_main_above_2500,
-
-  mozfun.hist.threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 150) AS input_event_response_coalesced_ms_content_above_150,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 250) AS input_event_response_coalesced_ms_content_above_250,
-  mozfun.hist.threshold_count(payload.processes.content.histograms.input_event_response_coalesced_ms, 2500) AS input_event_response_coalesced_ms_content_above_2500,
-
+  -- We bundle multiple thresholds to one nested query to reduce query complexity.
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS gc_max_pause_ms_main_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS gc_max_pause_ms_main_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS gc_max_pause_ms_main_above_2500,
+   FROM UNNEST(mozfun.hist.extract(payload.histograms.gc_max_pause_ms_2).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS gc_max_pause_ms_content_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS gc_max_pause_ms_content_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS gc_max_pause_ms_content_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.processes.content.histograms.gc_max_pause_ms_2).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS cycle_collector_max_pause_main_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS cycle_collector_max_pause_main_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS cycle_collector_max_pause_main_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.histograms.cycle_collector_max_pause).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS cycle_collector_max_pause_content_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS cycle_collector_max_pause_content_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS cycle_collector_max_pause_content_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.processes.content.histograms.cycle_collector_max_pause).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS input_event_response_coalesced_ms_main_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS input_event_response_coalesced_ms_main_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS input_event_response_coalesced_ms_main_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.histograms.input_event_response_coalesced_ms).values)).*,
+  (SELECT AS STRUCT
+     IFNULL(SUM(IF(key >= 150, value, 0)), 0) AS input_event_response_coalesced_ms_content_above_150,
+     IFNULL(SUM(IF(key >= 250, value, 0)), 0) AS input_event_response_coalesced_ms_content_above_250,
+     IFNULL(SUM(IF(key >= 2500, value, 0)), 0) AS input_event_response_coalesced_ms_content_above_2500
+   FROM UNNEST(mozfun.hist.extract(payload.processes.content.histograms.input_event_response_coalesced_ms).values)).*,
   mozfun.hist.threshold_count(payload.histograms.ghost_windows, 1) AS ghost_windows_main_above_1,
   mozfun.hist.threshold_count(payload.processes.content.histograms.ghost_windows, 1) AS ghost_windows_content_above_1,
   -- format:on

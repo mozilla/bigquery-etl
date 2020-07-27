@@ -28,6 +28,16 @@ VIEWS_TO_SKIP = (
     "glam_etl/org_mozilla_fenix__view_user_counts_v1/view.sql",
     # View in project other than prod
     "sql/shredder_state/progress/view.sql",
+    "sql/apple_app_store/metrics_by_app_referrer/view.sql",
+    "sql/apple_app_store/metrics_by_app_version/view.sql",
+    "sql/apple_app_store/metrics_by_campaign/view.sql",
+    "sql/apple_app_store/metrics_by_platform/view.sql",
+    "sql/apple_app_store/metrics_by_platform_version/view.sql",
+    "sql/apple_app_store/metrics_by_region/view.sql",
+    "sql/apple_app_store/metrics_by_source/view.sql",
+    "sql/apple_app_store/metrics_by_storefront/view.sql",
+    "sql/apple_app_store/metrics_by_web_referrer/view.sql",
+    "sql/apple_app_store/metrics_total/view.sql",
 )
 
 

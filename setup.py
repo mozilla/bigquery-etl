@@ -1,7 +1,16 @@
-from setuptools import find_packages, setup
+from setuptools import setup
+
+def get_version():
+    version = {}
+    with open('bigquery_etl/version.py') as fp:
+        exec(fp.read(), version)
+
+    return version['__version__']
+
 
 setup(
     name="mozilla-bigquery-etl",
+    version=get_version(),
     use_incremental=True,
     author="Mozilla Corporation",
     author_email="fx-data-dev@mozilla.org",

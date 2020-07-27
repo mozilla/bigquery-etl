@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+from pathlib import Path
+from difflib import get_close_matches
+from types import SimpleNamespace
+
+
+def parse_legacy(path):
+    assert len(path.parts) == 2, path
+    return SimpleNamespace(
+        project="legacy",
+        dataset=path.parts[0],
+        name=path.parts[1].split(".")[0],
+        path=path,
+    )
+
+
+def parse_mozfun(path):
+    assert len(path.parts) == 4
+    return SimpleNamespace(
+        project="mozfun", dataset=path.parts[1], name=path.parts[2], path=path
+    )
+
+
+def main():
+    root = Path(__file__).parent.parent
+
+    legacy = [
+        parse_legacy(path)
+        for path in (
+            list(root.glob("udf/**/*.sql"))
+            + list(root.glob("udf_js/**/*.sql"))
+            + list(root.glob("udf_legacy/**/*.sql"))
+        )
+    ]
+    mozfun = [parse_mozfun(path) for path in root.glob("mozfun/**/udf.sql")]
+
+    legacy_index = {f"{udf.dataset}.{udf.name}": udf for udf in legacy}
+    mozfun_index = {f"{udf.dataset}.{udf.name}": udf for udf in mozfun}
+
+    mapping = []
+    for key, value in mozfun_index.items():
+        matches = get_close_matches(key, legacy_index.keys())
+        match = matches[0] if matches else None
+        mapping.append(SimpleNamespace(mozfun=key, legacy=match))
+
+    def print_two_columns(header, values, size=32):
+        print(f"{header[0]: <{size}}| {header[1]}")
+        print("-" * size + "|" + "-" * size)
+        for value in values:
+            print(f"{value[0]: <{size}}| {value[1]}")
+        print()
+
+    migrated = set([mapped.legacy for mapped in mapping if mapped.legacy])
+    print("## Summary")
+    print()
+    print(f"Migrated {len(migrated)} out of {len(legacy_index.keys())} udfs.")
+    print()
+
+    print("## migrated legacy udfs")
+    print()
+    print_two_columns(
+        ["legacy", "mozfun"],
+        [(item.legacy, item.mozfun) for item in mapping if item.legacy],
+    )
+
+    print("## mozfun only")
+    print()
+    print_two_columns(
+        ["udf", "path"],
+        [
+            (item.mozfun, mozfun_index[item.mozfun].path)
+            for item in mapping
+            if item.legacy is None
+        ],
+    )
+
+    print("## legacy only")
+    print()
+    print_two_columns(
+        ["udf", "path"],
+        [
+            (key, value.path)
+            for key, value in legacy_index.items()
+            if key not in migrated
+        ],
+        size=48,
+    )
+
+
+if __name__ == "__main__":
+    main()

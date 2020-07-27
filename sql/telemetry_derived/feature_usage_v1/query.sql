@@ -23,7 +23,7 @@ main_t AS (
       payload.processes.parent.scalars.browser_engagement_max_concurrent_tab_pinned_count
     ) > 0 AS has_pinned_tab,
     LOGICAL_OR(environment.settings.is_default_browser) AS default_browser,
-    SUM(payload.processes.parent.scalars.browser_engagement_total_uri_count) > 10 AS visited_10_uri,
+    SUM(payload.processes.parent.scalars.browser_engagement_total_uri_count) >= 10 AS visited_10_uri,
     SUM(
       `moz-fx-data-shared-prod.udf.histogram_max_key_with_nonzero_value`(
         payload.histograms.weave_device_count_desktop

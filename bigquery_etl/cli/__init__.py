@@ -2,8 +2,8 @@
 
 import click
 
-from bigquery_etl.cli.query import query_cli
-from bigquery_etl.version import __version__
+from ..cli.query import query_cli
+from .._version import __version__
 
 
 def cli():

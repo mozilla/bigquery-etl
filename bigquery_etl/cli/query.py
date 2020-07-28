@@ -7,7 +7,8 @@ import re
 import sys
 import string
 
-from bigquery_etl.metadata.parse_metadata import Metadata
+from ..metadata.parse_metadata import Metadata
+from ..format_sql.formatter import reformat
 
 
 QUERY_NAME_RE = re.compile(
@@ -24,10 +25,8 @@ def create_query_cli_group():
 
 @click.command(
     name="create",
-    help=(
-        "Create a new query with name "
-        "<dataset>.<query_name>, for example: telemetry_derived.asn_aggregates"
-    ),
+    help="Create a new query with name "
+    "<dataset>.<query_name>, for example: telemetry_derived.asn_aggregates",
 )
 @click.argument("name")
 @click.option(
@@ -99,23 +98,25 @@ def query_create_command(name, path, owner, init):
         view_file = view_path / "view.sql"
         view_dataset = dataset.replace("_derived", "")
         view_file.write_text(
-            (
+            reformat(
                 "CREATE OR REPLACE VIEW\n"
                 f"  `moz-fx-data-shared-prod.{view_dataset}.{name}`\n"
                 "AS SELECT * FROM\n"
-                f"  `moz-fx-data-shared-prod.{dataset}.{name}{version}`\n"
+                f"  `moz-fx-data-shared-prod.{dataset}.{name}{version}`"
             )
+            + "\n"
         )
 
     # create query.sql file
     query_file = derived_path / "query.sql"
     query_file.write_text(
-        (
+        reformat(
             f"-- Query for {dataset}.{name}{version}\n"
             "-- For more information on writing queries see:\n"
             "-- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html\n"
-            "SELECT * FROM table WHERE submission_date = @submission_date\n"
+            "SELECT * FROM table WHERE submission_date = @submission_date"
         )
+        + "\n"
     )
 
     # create default metadata.yaml
@@ -132,12 +133,13 @@ def query_create_command(name, path, owner, init):
     if init:
         init_file = derived_path / "init.sql"
         init_file.write_text(
-            (
+            reformat(
                 "-- SQL for initializing the table query results are written to.\n"
                 "CREATE OR REPLACE TABLE\n"
                 f"  `moz-fx-data-shared-prod.{dataset}.{name}{version}`\n"
-                "AS SELECT * FROM table\n"
+                "AS SELECT * FROM table"
             )
+            + "\n"
         )
 
 

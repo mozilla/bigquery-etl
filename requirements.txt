@@ -110,7 +110,7 @@ idna==2.9 \
 importlib-metadata==1.7.0 \
     --hash=sha256:90bb658cdbbf6d1735b6341ce708fc7024a3e14e99ffdc5783edea9f9b077f83 \
     --hash=sha256:dc15b2969b4ce36305c51eebe62d418ac7791e9a157911d58bfb1f9ccd8e2070 \
-    # via -r requirements.in
+    # via flake8, jsonschema, pluggy, pytest
 jinja2==2.11.2 \
     --hash=sha256:89aab215427ef59c34ad58735269eb58b1a5808103067f7bb9d5836c651b3bb0 \
     --hash=sha256:f0a4641d3cf955324a89c04f3d94663aa4d638abe8f733ecd3582848e1c37035 \
@@ -258,9 +258,6 @@ pyrsistent==0.16.0 \
 pytest-black==0.3.8 \
     --hash=sha256:01a9a7acc69e618ebf3f834932a4d7a81909f6911051d0871b0ed4de3cbe9712 \
     # via -r requirements.in
-pytest-dependency==0.5.1 \
-    --hash=sha256:c2a892906192663f85030a6ab91304e508e546cddfe557d692d61ec57a1d946b \
-    # via -r requirements.in
 pytest-docstyle==1.5.0 \
     --hash=sha256:dcc54084b8e8282a83e50c6220c85d1c7d05e3871f74f0e911499b4f3adea756 \
     # via -r requirements.in
@@ -283,7 +280,7 @@ pytest-xdist==1.31.0 \
 pytest==5.4.1 \
     --hash=sha256:0e5b30f5cb04e887b91b1ee519fa3d89049595f428c1db76e73bd7f17b09b172 \
     --hash=sha256:84dde37075b8805f3d1f392cc47e38a0e59518fb46a431cfdaf7cf1ce805f970 \
-    # via -r requirements.in, pytest-black, pytest-dependency, pytest-docstyle, pytest-flake8, pytest-forked, pytest-mypy, pytest-xdist
+    # via -r requirements.in, pytest-black, pytest-docstyle, pytest-flake8, pytest-forked, pytest-mypy, pytest-xdist
 python-dateutil==2.8.1 \
     --hash=sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c \
     --hash=sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a \
@@ -407,7 +404,7 @@ wcwidth==0.1.9 \
 zipp==3.1.0 \
     --hash=sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b \
     --hash=sha256:c599e4d75c98f6798c509911d08a22e6c021d074469042177c8c86fb92eefd96 \
-    # via -r requirements.in, importlib-metadata
+    # via importlib-metadata
 
 # WARNING: The following packages were not pinned, but pip requires them to be
 # pinned when the requirements file includes hashes. Consider using the --allow-unsafe flag.

@@ -16,15 +16,13 @@ QUERY_NAME_RE = re.compile(
 )
 
 
-def create_query_cli_group():
+@click.group()
+def query():
     """Create the CLI group for the query command."""
-    group = click.Group(name="query", help="Creating/validating/deleting/... queries")
-    group.add_command(query_create_command)
-    return group
+    pass
 
 
-@click.command(
-    name="create",
+@query.command(
     help="Create a new query with name "
     "<dataset>.<query_name>, for example: telemetry_derived.asn_aggregates",
 )
@@ -33,6 +31,7 @@ def create_query_cli_group():
     "--path",
     "-p",
     help="Path to directory in which query should be created",
+    type=click.Path(file_okay=False),
     default="sql/",
 )
 @click.option(
@@ -47,7 +46,7 @@ def create_query_cli_group():
     help="Create an init.sql file to initialize the table",
     default=False,
 )
-def query_create_command(name, path, owner, init):
+def create(name, path, owner, init):
     """CLI command for creating a new query."""
     if not os.path.isdir(path):
         click.echo(f"Invalid path for adding new query: {path}", err=True)
@@ -68,28 +67,29 @@ def query_create_command(name, path, owner, init):
 
     derived_path = None
     view_path = None
+    path = Path(path)
 
     if dataset.endswith("_derived"):
         # create a directory for the corresponding view
-        derived_path = Path(path) / dataset / (name + version)
-        os.makedirs(derived_path)
+        derived_path = path / dataset / (name + version)
+        derived_path.mkdir(parents=True)
 
-        view_path = Path(path) / dataset.replace("_derived", "") / name
-        os.makedirs(view_path)
+        view_path = path / dataset.replace("_derived", "") / name
+        view_path.mkdir(parents=True)
     else:
         # check if there is a corresponding derived dataset
-        if (Path(path) / (dataset + "_derived")).exists():
-            derived_path = Path(path) / (dataset + "_derived") / (name + version)
-            os.makedirs(derived_path)
-            view_path = Path(path) / dataset / name
-            os.makedirs(view_path)
+        if (path / (dataset + "_derived")).exists():
+            derived_path = path / (dataset + "_derived") / (name + version)
+            derived_path.mkdir(parents=True)
+            view_path = path / dataset / name
+            view_path.mkdir(parents=True)
 
             dataset = dataset + "_derived"
         else:
             # some dataset that is not specified as _derived
             # don't automatically create views
-            derived_path = Path(path) / dataset / (name + version)
-            os.makedirs(derived_path)
+            derived_path = path / dataset / (name + version)
+            derived_path.mkdir(parents=True)
 
     click.echo(f"Created query in {derived_path}")
 
@@ -99,10 +99,10 @@ def query_create_command(name, path, owner, init):
         view_dataset = dataset.replace("_derived", "")
         view_file.write_text(
             reformat(
-                "CREATE OR REPLACE VIEW\n"
-                f"  `moz-fx-data-shared-prod.{view_dataset}.{name}`\n"
-                "AS SELECT * FROM\n"
-                f"  `moz-fx-data-shared-prod.{dataset}.{name}{version}`"
+                f"""CREATE OR REPLACE VIEW
+                  `moz-fx-data-shared-prod.{view_dataset}.{name}`
+                AS SELECT * FROM
+                  `moz-fx-data-shared-prod.{dataset}.{name}{version}`"""
             )
             + "\n"
         )
@@ -111,10 +111,10 @@ def query_create_command(name, path, owner, init):
     query_file = derived_path / "query.sql"
     query_file.write_text(
         reformat(
-            f"-- Query for {dataset}.{name}{version}\n"
-            "-- For more information on writing queries see:\n"
-            "-- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html\n"
-            "SELECT * FROM table WHERE submission_date = @submission_date"
+            f"""-- Query for {dataset}.{name}{version}
+            -- For more information on writing queries see:
+            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
+            SELECT * FROM table WHERE submission_date = @submission_date"""
         )
         + "\n"
     )
@@ -134,13 +134,11 @@ def query_create_command(name, path, owner, init):
         init_file = derived_path / "init.sql"
         init_file.write_text(
             reformat(
-                "-- SQL for initializing the table query results are written to.\n"
-                "CREATE OR REPLACE TABLE\n"
-                f"  `moz-fx-data-shared-prod.{dataset}.{name}{version}`\n"
-                "AS SELECT * FROM table"
+                f"""
+                -- SQL for initializing the query destination table.
+                CREATE OR REPLACE TABLE
+                  `moz-fx-data-shared-prod.{dataset}.{name}{version}`
+                AS SELECT * FROM table"""
             )
             + "\n"
         )
-
-
-query_cli = create_query_cli_group()

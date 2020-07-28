@@ -1,8 +1,8 @@
-from setuptools import setup
+from setuptools import setup, find_namespace_packages
 
 def get_version():
     version = {}
-    with open('bigquery_etl/version.py') as fp:
+    with open('bigquery_etl/_version.py') as fp:
         exec(fp.read(), version)
 
     return version['__version__']
@@ -16,7 +16,7 @@ setup(
     author_email="fx-data-dev@mozilla.org",
     description="Tooling for building derived datasets in BigQuery",
     url="https://github.com/mozilla/bigquery-etl",
-    packages=["bigquery_etl", "bigquery_etl.cli", "bigquery_etl.metadata"],
+    packages=find_namespace_packages(include=["bigquery_etl.*", "bigquery_etl"]),
     package_data={},
     install_requires=[
         "gcloud",
@@ -27,8 +27,6 @@ setup(
         "pytest-docstyle",
         "pytest-flake8",
         "pytest-mypy",
-        "pytest-xdist",
-        "pytest-dependency",
         "pytest",
         "PyYAML",
         "smart_open",
@@ -42,7 +40,7 @@ setup(
     ],
     long_description="Tooling for building derived datasets in BigQuery",
     long_description_content_type="text/markdown",
-    python_requires=">=3.6",
+    python_requires="==3.8.*",
     entry_points="""
         [console_scripts]
         bqetl=bigquery_etl.cli:cli

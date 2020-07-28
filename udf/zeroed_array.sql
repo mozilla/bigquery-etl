@@ -12,4 +12,6 @@ CREATE OR REPLACE FUNCTION
 
 SELECT
   assert_array_equals([0,0], udf.zeroed_array(2)),
+  assert_array_equals([0], udf.zeroed_array(1)),
+  assert_array_equals([], udf.zeroed_array(0)),
   assert_array_equals([], udf.zeroed_array(-1));

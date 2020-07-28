@@ -146,7 +146,6 @@ SKIP = {
     "udf/round_timestamp_to_minute.sql",
     "udf/shift_28_bits_one_day.sql",
     "udf/shift_365_bits_one_day.sql",
-    "udf/shift_one_day.sql",
     "udf/smoot_usage_from_28_bits.sql",
     "udf/vector_add.sql",
     "udf/zero_as_365_bits.sql",

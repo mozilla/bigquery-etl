@@ -1,3 +1,7 @@
+/*
+Aggregates the total counts of the given search counters
+*/
+
 CREATE OR REPLACE FUNCTION
   udf.aggregate_search_map(engine_searches_list ANY TYPE)
     AS (
@@ -16,6 +20,9 @@ CREATE OR REPLACE FUNCTION
           v.key
     )
 );
+
+
+-- Tests
 
 WITH output AS (
   SELECT udf.aggregate_search_map(ARRAY [ STRUCT("google" AS key, STRUCT(5 AS total_searches, 0 AS tagged_searches, 0 AS search_with_ads, 0 AS ad_click) AS value),

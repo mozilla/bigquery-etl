@@ -1,6 +1,3 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-marketing-prod.apple_app_store.metrics_by_app_referrer`
-AS
 SELECT
   *
 FROM
@@ -21,7 +18,5 @@ FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.product_page_views_unique_device_by_app_referrer`
 USING
   (date, app_name, app_referrer)
-ORDER BY
-  date,
-  app_name,
-  app_referrer
+WHERE
+  date = @date

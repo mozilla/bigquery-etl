@@ -1,6 +1,3 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-marketing-prod.apple_app_store.metrics_total`
-AS
 SELECT
   * EXCEPT (rate),
   rate AS opt_in_rate
@@ -50,6 +47,5 @@ FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.sessions_total`
 USING
   (date, app_name)
-ORDER BY
-  date,
-  app_name
+WHERE
+  date = @date

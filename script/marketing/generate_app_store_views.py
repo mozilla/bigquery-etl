@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Generate views combining metrics for each dimension in the exported app store data.
+Generate queries combining metrics for each dimension in the exported app store data.
 
 It is expected that exported tables follow a naming convention
 of {metric}_by_{dimension} or {metric}_total.
@@ -14,22 +14,21 @@ from collections import defaultdict
 
 from google.cloud import bigquery
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 
 SQL_DIR = "sql/"
 
-VIEW_TEMPLATE = """
-CREATE OR REPLACE VIEW
-  {view_name}
-AS
+QUERY_TEMPLATE = """
 SELECT
   * {excepted_cols}
 FROM
   {first_table}
 {joined_tables}
-ORDER BY
-  {order_fields}
+WHERE
+  {filter}
 """
 
 JOIN_TEMPLATE = """
@@ -56,17 +55,23 @@ def parse_args():
     parser.add_argument(
         "--destination-dataset",
         default="apple_app_store",
-        help="Dataset to write views to",
+        help="Dataset to write queries to",
     )
     parser.add_argument("--sql-dir", default=SQL_DIR)
     parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--publish", action="store_true")
+    parser.add_argument("--create-table", action="store_true")
+    parser.add_argument(
+        "--backfill",
+        action="store_true",
+        help="If --create-table is set, backfill will populate"
+        " tables with data from eported tables",
+    )
 
     return parser.parse_args()
 
 
-def main(project, source_dataset, destination_dataset, publish, dryrun):
-    """Generate view files and optionally create them in BigQuery."""
+def main(project, source_dataset, destination_dataset, create_table, backfill, dryrun):
+    """Generate queries and optionally create the tables in BigQuery."""
     client = bigquery.Client(project=project)
 
     exported_tables = [
@@ -93,10 +98,10 @@ def main(project, source_dataset, destination_dataset, publish, dryrun):
         if dimension is not None:
             dimension = dimension.replace("opt_in_", "")
             fields = f"date, app_name, {dimension}"
-            view_name = f"metrics_by_{dimension}"
+            table_name = f"metrics_by_{dimension}"
         else:
             fields = "date, app_name"
-            view_name = "metrics_total"
+            table_name = "metrics_total"
 
         join_clauses = [
             JOIN_TEMPLATE.format(table=table_name, fields=fields)
@@ -109,27 +114,45 @@ def main(project, source_dataset, destination_dataset, publish, dryrun):
         else:
             excepted_cols = ""
 
-        view_text = VIEW_TEMPLATE.format(
-            view_name=f"`{project}.{destination_dataset}.{view_name}`",
+        query_text = QUERY_TEMPLATE.format(
             excepted_cols=excepted_cols,
             first_table=qualified_table_names[0],
             joined_tables="\n".join(join_clauses),
-            order_fields=fields,
+            filter="date=@date",
         )
-        view_path = os.path.join(SQL_DIR, destination_dataset, view_name, "view.sql")
+        query_path = os.path.join(SQL_DIR, destination_dataset, table_name, "query.sql")
 
-        if not os.path.exists(os.path.dirname(view_path)):
-            os.makedirs(os.path.dirname(view_path))
+        if not os.path.exists(os.path.dirname(query_path)):
+            os.makedirs(os.path.dirname(query_path))
 
-        with open(view_path, "w") as f:
-            print(f"Writing {view_path}")
-            f.write(reformat(view_text))
+        with open(query_path, "w") as f:
+            print(f"Writing {query_path}")
+            f.write(reformat(query_text))
             f.write("\n")
 
-        if publish:
-            job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dryrun)
-            print(f"Publishing view {view_name}")
-            client.query(view_text, job_config)
+        if create_table:
+            query_text = QUERY_TEMPLATE.format(
+                excepted_cols=excepted_cols,
+                first_table=qualified_table_names[0],
+                joined_tables="\n".join(join_clauses),
+                filter="TRUE" if backfill else "FALSE",
+                order_fields=fields,
+            )
+            schema_update_options = [] if backfill else [bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION]
+            job_config = bigquery.QueryJobConfig(
+                use_legacy_sql=False,
+                dry_run=dryrun,
+                destination=f"{project}.{destination_dataset}.{table_name}",
+                schema_update_options=schema_update_options,
+                time_partitioning=bigquery.TimePartitioning(field="date"),
+                create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
+                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
+                if backfill
+                else bigquery.WriteDisposition.WRITE_APPEND,
+            )
+            print(f"Creating table {table_name}")
+            query_job = client.query(query_text, job_config)
+            query_job.result()
 
 
 if __name__ == "__main__":
@@ -138,6 +161,7 @@ if __name__ == "__main__":
         args.project,
         args.source_dataset,
         args.destination_dataset,
-        args.publish,
+        args.create_table,
+        args.backfill,
         args.dry_run,
     )

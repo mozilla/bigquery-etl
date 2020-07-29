@@ -1,6 +1,3 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-marketing-prod.apple_app_store.metrics_by_app_version`
-AS
 SELECT
   *
 FROM
@@ -25,7 +22,5 @@ FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.sessions_by_opt_in_app_version`
 USING
   (date, app_name, app_version)
-ORDER BY
-  date,
-  app_name,
-  app_version
+WHERE
+  date = @date

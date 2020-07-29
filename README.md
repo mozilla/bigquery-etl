@@ -268,7 +268,8 @@ Scheduling Queries in Airflow
 - To generate all Airflow DAGs run `./script/generate_airflow_dags`
   - Generated DAGs are located in the `dags/` directory
   - Dependencies between queries scheduled in bigquery-etl and dependencies to stable tables are detected automatically
-- Generated DAGs need to be manually copied to [telemetry-airflow](https://github.com/mozilla/telemetry-airflow) 
+- Generated DAGs will be automatically detected and scheduled by Airflow
+  - It might take up to 10 minutes for new DAGs and updates to show up in the Airflow UI
 
 Contributing
 ---

@@ -23,7 +23,8 @@ SQL_DIR = "sql/"
 
 QUERY_TEMPLATE = """
 SELECT
-  * {excepted_cols}
+  * EXCEPT ({excepted_fields}),
+  {additional_fields}
 FROM
   {first_table}
 {joined_tables}
@@ -81,12 +82,17 @@ def main(project, source_dataset, destination_dataset, create_table, backfill, d
     ]
 
     tables_by_dimension = defaultdict(list)
+    opt_in_metrics = set()
 
+    # group table names by the dimension it is grouped by
     for table_name in exported_tables:
         if table_name.endswith("_total"):
             dimension = None
         else:
-            _, dimension = table_name.split("_by_")
+            metric, dimension = table_name.split("_by_")
+            if dimension.startswith("opt_in"):
+                opt_in_metrics.add(metric)
+                dimension = dimension.replace("opt_in_", "")
 
         tables_by_dimension[dimension].append(table_name)
 
@@ -96,26 +102,37 @@ def main(project, source_dataset, destination_dataset, create_table, backfill, d
         ]
 
         if dimension is not None:
-            dimension = dimension.replace("opt_in_", "")
             fields = f"date, app_name, {dimension}"
             table_name = f"metrics_by_{dimension}"
+            metrics = [table_name.split("_by_")[0] for table_name in table_names]
         else:
             fields = "date, app_name"
             table_name = "metrics_total"
+            metrics = [table_name.split("_total")[0] for table_name in table_names]
 
         join_clauses = [
             JOIN_TEMPLATE.format(table=table_name, fields=fields)
             for table_name in qualified_table_names[1:]
         ]
 
-        # rename rate column to opt_in_rate
-        if len(list(filter(lambda name: name.startswith("rate_"), table_names))) > 0:
-            excepted_cols = "EXCEPT (rate), rate AS opt_in_rate"
-        else:
-            excepted_cols = ""
+        # add _opt_in to opt-in metrics
+        fields_to_add_opt_in = [
+            metric for metric in metrics if metric in opt_in_metrics
+        ]
+        excepted_fields = ",".join(fields_to_add_opt_in)
+        additional_fields = [
+            f"{name} AS {name}_opt_in"
+            for name in fields_to_add_opt_in
+            if name != "rate"
+        ]
+
+        # rename rate column to opt_in_rate and
+        if "rate" in metrics:
+            additional_fields.append("rate AS opt_in_rate")
 
         query_text = QUERY_TEMPLATE.format(
-            excepted_cols=excepted_cols,
+            excepted_fields=excepted_fields,
+            additional_fields=", ".join(additional_fields),
             first_table=qualified_table_names[0],
             joined_tables="\n".join(join_clauses),
             filter="date=@date",
@@ -132,13 +149,15 @@ def main(project, source_dataset, destination_dataset, create_table, backfill, d
 
         if create_table:
             query_text = QUERY_TEMPLATE.format(
-                excepted_cols=excepted_cols,
+                excepted_fields=excepted_fields,
+                additional_fields=", ".join(additional_fields),
                 first_table=qualified_table_names[0],
                 joined_tables="\n".join(join_clauses),
                 filter="TRUE" if backfill else "FALSE",
-                order_fields=fields,
             )
-            schema_update_options = [] if backfill else [bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION]
+            schema_update_options = (
+                [] if backfill else [bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION]
+            )
             job_config = bigquery.QueryJobConfig(
                 use_legacy_sql=False,
                 dry_run=dryrun,
@@ -152,7 +171,8 @@ def main(project, source_dataset, destination_dataset, create_table, backfill, d
             )
             print(f"Creating table {table_name}")
             query_job = client.query(query_text, job_config)
-            query_job.result()
+            if not dryrun:
+                query_job.result()
 
 
 if __name__ == "__main__":

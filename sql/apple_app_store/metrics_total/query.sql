@@ -1,5 +1,19 @@
 SELECT
-  * EXCEPT (rate),
+  * EXCEPT (
+    active_devices_last_30_days,
+    active_devices,
+    crashes,
+    deletions,
+    installations,
+    rate,
+    sessions
+  ),
+  active_devices_last_30_days AS active_devices_last_30_days_opt_in,
+  active_devices AS active_devices_opt_in,
+  crashes AS crashes_opt_in,
+  deletions AS deletions_opt_in,
+  installations AS installations_opt_in,
+  sessions AS sessions_opt_in,
   rate AS opt_in_rate
 FROM
   `moz-fx-data-marketing-prod.apple_app_store_exported.active_devices_last_30_days_total`

@@ -215,14 +215,28 @@ with_caps AS (
 with_ltv AS (
   SELECT
     *,
-    ad_click_days * ad_clicks_per_day_capped * avg_client_ad_click_value AS ltv_ad_clicks_current,
-    search_with_ads_days * searches_with_ads_per_day_capped * avg_client_search_with_ads_value AS ltv_search_with_ads_current,
-    search_days * searches_per_day_capped * avg_client_search_value AS ltv_search_current,
-    tagged_search_days * tagged_searches_per_day_capped * avg_client_tagged_search_value AS ltv_tagged_search_current,
-    pred_num_days_clicking_ads * ad_clicks_per_day * avg_client_ad_click_value AS ltv_ad_clicks_future,
-    pred_num_days_seeing_ads * searches_with_ads_per_day_capped * avg_client_search_with_ads_value AS ltv_search_with_ads_future,
-    pred_num_days_searching * searches_per_day_capped * avg_client_search_value AS ltv_search_future,
-    pred_num_days_tagged_searching * tagged_searches_per_day_capped * avg_client_tagged_search_value AS ltv_tagged_search_future,
+    SQRT(
+      ad_click_days * ad_clicks_per_day_capped * avg_client_ad_click_value
+    ) AS ltv_ad_clicks_current,
+    SQRT(
+      search_with_ads_days * searches_with_ads_per_day_capped * avg_client_search_with_ads_value
+    ) AS ltv_search_with_ads_current,
+    SQRT(search_days * searches_per_day_capped * avg_client_search_value) AS ltv_search_current,
+    SQRT(
+      tagged_search_days * tagged_searches_per_day_capped * avg_client_tagged_search_value
+    ) AS ltv_tagged_search_current,
+    SQRT(
+      pred_num_days_clicking_ads * ad_clicks_per_day * avg_client_ad_click_value
+    ) AS ltv_ad_clicks_future,
+    SQRT(
+      pred_num_days_seeing_ads * searches_with_ads_per_day_capped * avg_client_search_with_ads_value
+    ) AS ltv_search_with_ads_future,
+    SQRT(
+      pred_num_days_searching * searches_per_day_capped * avg_client_search_value
+    ) AS ltv_search_future,
+    SQRT(
+      pred_num_days_tagged_searching * tagged_searches_per_day_capped * avg_client_tagged_search_value
+    ) AS ltv_tagged_search_future,
   FROM
     with_caps
 )

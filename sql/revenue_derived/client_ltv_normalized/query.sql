@@ -1,6 +1,3 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.client_ltv`
-AS
 SELECT
   * EXCEPT (
     avg_client_ad_click_value,

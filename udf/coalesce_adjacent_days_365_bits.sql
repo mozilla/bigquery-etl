@@ -19,6 +19,7 @@ CREATE OR REPLACE FUNCTION
         udf.zero_as_365_bits()
     )); 
 
+-- Tests
 
 SELECT
   assert_equals(udf.one_as_365_bits() << 1, udf.coalesce_adjacent_days_365_bits(udf.one_as_365_bits(), udf.one_as_365_bits() << 10)),

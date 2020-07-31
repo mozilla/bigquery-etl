@@ -253,6 +253,10 @@ SELECT
   ) AS normalized_ltv_search_with_ads_current,
   SAFE_DIVIDE(ltv_search_current, SUM(ltv_search_current) OVER ()) AS normalized_ltv_search_current,
   SAFE_DIVIDE(
+    ltv_tagged_search_current,
+    SUM(ltv_tagged_search_current) OVER ()
+  ) AS normalized_ltv_tagged_search_current,
+  SAFE_DIVIDE(
     ltv_ad_clicks_future,
     SUM(ltv_ad_clicks_future) OVER ()
   ) AS normalized_ltv_ad_clicks_future,

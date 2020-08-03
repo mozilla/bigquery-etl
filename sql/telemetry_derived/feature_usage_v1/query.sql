@@ -1,7 +1,8 @@
 WITH events_t AS (
   SELECT
-    client_id,
     submission_date,
+    sample_id,
+    client_id,
     LOGICAL_OR(
       event_method = 'show'
       AND event_object = 'protection_report'
@@ -13,12 +14,14 @@ WITH events_t AS (
     submission_date = @submission_date
   GROUP BY
     submission_date,
+    sample_id,
     client_id
 ),
 main_t AS (
   SELECT
-    client_id,
     DATE(submission_timestamp) AS submission_date,
+    sample_id,
+    client_id,
     SUM(
       payload.processes.parent.scalars.browser_engagement_max_concurrent_tab_pinned_count
     ) > 0 AS has_pinned_tab,
@@ -65,11 +68,13 @@ main_t AS (
     DATE(submission_timestamp) = @submission_date
   GROUP BY
     submission_date,
+    sample_id,
     client_id
 )
 SELECT
-  client_id,
   submission_date,
+  sample_id,
+  client_id,
   COALESCE(viewed_protection_report, FALSE) AS viewed_protection_report,
   COALESCE(has_pinned_tab, FALSE) AS has_pinned_tab,
   COALESCE(default_browser, FALSE) AS default_browser,
@@ -83,4 +88,4 @@ FROM
 FULL JOIN
   main_t
 USING
-  (client_id, submission_date)
+  (submission_date, sample_id, client_id)

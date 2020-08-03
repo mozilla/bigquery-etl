@@ -47,7 +47,7 @@ chardet==3.0.4 \
 click==7.1.2 \
     --hash=sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a \
     --hash=sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc \
-    # via black, mozilla-schema-generator
+    # via -r requirements.in, black, mozilla-schema-generator
 docutils==0.15.2 \
     --hash=sha256:6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0 \
     --hash=sha256:9e4d7ecfc600058e07ba661411a2b7de2fd0fafa17d1a7f7361cd47b1175c827 \
@@ -254,9 +254,6 @@ pyrsistent==0.16.0 \
 pytest-black==0.3.8 \
     --hash=sha256:01a9a7acc69e618ebf3f834932a4d7a81909f6911051d0871b0ed4de3cbe9712 \
     # via -r requirements.in
-pytest-dependency==0.5.1 \
-    --hash=sha256:c2a892906192663f85030a6ab91304e508e546cddfe557d692d61ec57a1d946b \
-    # via -r requirements.in
 pytest-docstyle==1.5.0 \
     --hash=sha256:dcc54084b8e8282a83e50c6220c85d1c7d05e3871f74f0e911499b4f3adea756 \
     # via -r requirements.in
@@ -279,7 +276,7 @@ pytest-xdist==1.31.0 \
 pytest==5.4.1 \
     --hash=sha256:0e5b30f5cb04e887b91b1ee519fa3d89049595f428c1db76e73bd7f17b09b172 \
     --hash=sha256:84dde37075b8805f3d1f392cc47e38a0e59518fb46a431cfdaf7cf1ce805f970 \
-    # via -r requirements.in, pytest-black, pytest-dependency, pytest-docstyle, pytest-flake8, pytest-forked, pytest-mypy, pytest-xdist
+    # via -r requirements.in, pytest-black, pytest-docstyle, pytest-flake8, pytest-forked, pytest-mypy, pytest-xdist
 python-dateutil==2.8.1 \
     --hash=sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c \
     --hash=sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a \

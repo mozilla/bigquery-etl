@@ -222,8 +222,54 @@ labels:
 Scheduling Queries in Airflow
 ---
 
-Instructions for scheduling queries in Airflow can be found in this
-[cookbook](https://docs.telemetry.mozilla.org/cookbooks/bigquery-airflow.html).
+- bigquery-etl has tooling to automatically generate Airflow DAGs for scheduling queries
+- To be scheduled, a query must be assigned to a DAG that is specified in `dags.yaml`
+  - New DAGs can be configured in `dags.yaml`, e.g., by adding the following:
+  ```yaml
+  bqetl_ssl_ratios:   # name of the DAG; must start with bqetl_
+    schedule_interval: 0 2 * * *    # query schedule
+    default_args:
+      owner: example@mozilla.com
+      start_date: '2020-04-05'  # YYYY-MM-DD
+      email: ['example@mozilla.com']
+      retries: 2    # number of retries if the query execution fails
+      retry_delay: 30m  
+  ```
+  - All DAG names need to have `bqetl_` as prefix.
+  - `schedule_interval` is either defined as a [CRON expression](https://en.wikipedia.org/wiki/Cron) or alternatively as one of the following [CRON presets](https://airflow.readthedocs.io/en/latest/dag-run.html): `once`, `hourly`, `daily`, `weekly`, `monthly`
+  - `start_date` defines the first date for which the query should be executed
+    - Airflow will not automatically backfill older dates if `start_date` is set in the past, backfilling can be done via the Airflow web interface
+  - `email` lists email addresses alerts should be sent to in case of failures when running the query
+- To schedule a specific query, add a `metadata.yaml` file that includes a `scheduling` section, for example:
+  ```yaml
+  friendly_name: SSL ratios
+  # ... more metadata, see Query Metadata section above
+  scheduling:
+    dag_name: bqetl_ssl_ratios
+  ```
+  - Additional scheduling options:
+    - `depends_on_past` keeps query from getting executed if the previous schedule for the query hasn't succeeded
+    - `date_partition_parameter` - by default set to `submission_date`; can be set to `null` if query doesn't write to a partitioned table
+    - `parameters` specifies a list of query parameters, e.g. `["n_clients:INT64:500"]`
+    - `arguments` - a list of arguments passed when running the query, for example: `["--append_table"]`
+    - `referenced_tables` - manually curated list of tables the query depends on; used to speed up the DAG generation process or to specify tables that the dry run doesn't have permissions to access, e. g. `[['telemetry_stable', 'main_v4']]`
+    - `multipart` indicates whether a query is split over multiple files `part1.sql`, `part2.sql`, ...
+    - `allow_field_addition_on_date`: date for which new fields are allowed to be added to the existing destination table query results are written to
+    - `depends_on` defines external dependencies in telemetry-airflow that are not detected automatically:
+    ```yaml
+      depends_on:
+        - task_id: anomdtct
+          dag_name: anomdtct
+          execution_delta: 1h
+    ```
+      - `task_id`: name of task query depends on
+      - `dag_name`: name of the DAG the external task is part of
+      - `execution_delta`: time difference between the `schedule_intervals` of the external DAG and the DAG the query is part of
+- To generate all Airflow DAGs run `./script/generate_airflow_dags`
+  - Generated DAGs are located in the `dags/` directory
+  - Dependencies between queries scheduled in bigquery-etl and dependencies to stable tables are detected automatically
+- Generated DAGs will be automatically detected and scheduled by Airflow
+  - It might take up to 10 minutes for new DAGs and updates to show up in the Airflow UI
 
 Contributing
 ---

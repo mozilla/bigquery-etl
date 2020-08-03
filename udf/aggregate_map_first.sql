@@ -1,3 +1,7 @@
+/*
+Returns an aggregated map with all the keys and the first corresponding value
+from the given maps
+*/
 CREATE OR REPLACE FUNCTION udf.aggregate_map_first(maps ANY TYPE) AS (
   STRUCT(
     ARRAY(
@@ -35,3 +39,17 @@ CREATE OR REPLACE FUNCTION udf.aggregate_map_first(maps ANY TYPE) AS (
     ) AS key_value
   )
 );
+
+-- Test
+SELECT
+  assert_array_equals(
+    [STRUCT('A' AS key, '2' AS value), STRUCT('B' AS key, '1' AS value)],
+    udf.aggregate_map_first(
+      [
+        STRUCT([STRUCT('B' AS key, '1' AS value)] AS key_value),
+        STRUCT([STRUCT('A' AS key, '2' AS value), STRUCT('B' AS key, '3' AS value)] AS key_value),
+        STRUCT([STRUCT('A' AS key, '4' AS value)] AS key_value),
+        STRUCT([STRUCT('B' AS key, '5' AS value)] AS key_value)
+      ]
+    ).key_value
+  )

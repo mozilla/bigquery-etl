@@ -54,6 +54,7 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
   )
 );
 
+-- Tests
 SELECT
   assert_equals(
     STRUCT(

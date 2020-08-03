@@ -7,3 +7,11 @@ CREATE OR REPLACE FUNCTION
     ARRAY(
       SELECT 0
       FROM UNNEST(generate_array(1, len))));
+
+-- Tests
+
+SELECT
+  assert_array_equals([0,0], udf.zeroed_array(2)),
+  assert_array_equals([0], udf.zeroed_array(1)),
+  assert_array_equals([], udf.zeroed_array(0)),
+  assert_array_equals([], udf.zeroed_array(-1));

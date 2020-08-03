@@ -126,7 +126,6 @@ SKIP = {
     "udf/extract_count_histogram_value.sql",
     "udf/extract_document_type.sql",
     "udf/extract_document_version.sql",
-    "udf/get_key_with_null.sql",
     "udf/glean_timespan_nanos.sql",
     "udf/glean_timespan_seconds.sql",
     "udf/int_to_365_bits.sql",

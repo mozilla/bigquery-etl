@@ -114,13 +114,46 @@ customers AS (
     email_providers_over_10k
   USING
     (email_provider)
+),
+events AS (
+  SELECT
+    snapshot_date,
+    EventDate,
+    SendId,
+    EmailAddress,
+    EventType,
+    Alias,
+    REGEXP_EXTRACT(URL, r"[?&]utm_source=([^&]+)") AS utm_source,
+    REGEXP_EXTRACT(URL, r"[?&]utm_medium=([^&]+)") AS utm_medium,
+    REGEXP_EXTRACT(URL, r"[?&]utm_campaign=([^&]+)") AS utm_campaign,
+    REGEXP_EXTRACT(URL, r"[?&]utm_content=([^&]+)") AS utm_content,
+    REGEXP_EXTRACT(URL, r"[?&]utm_term=([^&]+)") AS utm_term,
+    'mktg - email_click' AS event_type,
+  FROM
+    `mozilla-cdp-prod.sfmc.clicks`
+  UNION ALL
+  SELECT
+    snapshot_date,
+    EventDate,
+    SendId,
+    EmailAddress,
+    EventType,
+    CAST(NULL AS STRING) AS Alias,
+    CAST(NULL AS STRING) AS utm_source,
+    CAST(NULL AS STRING) AS utm_medium,
+    CAST(NULL AS STRING) AS utm_campaign,
+    CAST(NULL AS STRING) AS utm_content,
+    CAST(NULL AS STRING) AS utm_term,
+    'mktg - email_open' AS event_type,
+  FROM
+    `mozilla-cdp-prod.sfmc.opens`
 )
 SELECT
-  TIMESTAMP(clicks.snapshot_date) AS submission_timestamp,
-  UNIX_MILLIS(clicks.EventDate) AS `time`,
+  TIMESTAMP(events.snapshot_date) AS submission_timestamp,
+  UNIX_MILLIS(events.EventDate) AS `time`,
   customers.user_id,
-  ARRAY_TO_STRING([customers.user_id, clicks.SendId, string(clicks.EventDate)], '-') AS insert_id,
-  'mktg - email_click' AS event_type,
+  ARRAY_TO_STRING([customers.user_id, events.SendId, string(events.EventDate)], '-') AS insert_id,
+  event_type,
   FORMAT(
     -- We use CONCAT here to avoid '{' directly followed by '%' which will be
     -- interpreted as opening a Jinja statement when run via Airflow's BigQueryOperator.
@@ -133,26 +166,11 @@ SELECT
           UNNEST(
             [
               STRUCT('email_provider' AS key, customers.email_provider AS value),
-              STRUCT(
-                'utm_source' AS key,
-                REGEXP_EXTRACT(clicks.URL, r"[?&]utm_source=([^&]+)") AS value
-              ),
-              STRUCT(
-                'utm_medium' AS key,
-                REGEXP_EXTRACT(clicks.URL, r"[?&]utm_medium=([^&]+)") AS value
-              ),
-              STRUCT(
-                'utm_campaign' AS key,
-                REGEXP_EXTRACT(clicks.URL, r"[?&]utm_campaign=([^&]+)") AS value
-              ),
-              STRUCT(
-                'utm_content' AS key,
-                REGEXP_EXTRACT(clicks.URL, r"[?&]utm_content=([^&]+)") AS value
-              ),
-              STRUCT(
-                'utm_term' AS key,
-                REGEXP_EXTRACT(clicks.URL, r"[?&]utm_term=([^&]+)") AS value
-              )
+              STRUCT('utm_source' AS key, utm_source AS value),
+              STRUCT('utm_medium' AS key, utm_medium AS value),
+              STRUCT('utm_campaign' AS key, utm_campaign AS value),
+              STRUCT('utm_content' AS key, utm_content AS value),
+              STRUCT('utm_term' AS key, utm_term AS value)
             ]
           )
         WHERE
@@ -171,8 +189,8 @@ SELECT
           UNNEST(
             [
               STRUCT('service' AS key, customers.service AS value),
-              STRUCT('email_alias' AS key, clicks.alias AS value),
-              STRUCT('email_type' AS key, clicks.EventType AS value),
+              STRUCT('email_alias' AS key, events.Alias AS value),
+              STRUCT('email_type' AS key, events.EventType AS value),
               STRUCT('email_sender' AS key, email_sender AS value),
               STRUCT('email_region' AS key, email_region AS value),
               STRUCT('email_audience' AS key, email_audience AS value),
@@ -192,14 +210,12 @@ SELECT
     )
   ) AS event_properties,
 FROM
-  `mozilla-cdp-prod.sfmc.clicks` AS clicks
-LEFT JOIN
+  events
+JOIN
   customers
 ON
-  (clicks.EmailAddress = customers.email)
+  (events.EmailAddress = customers.email)
 LEFT JOIN
   sendjobs
 USING
   (SendID)
-WHERE
-  user_id IS NOT NULL

@@ -23,7 +23,5 @@ CLUSTER BY
   app_version,
   channel,
   client_id
-OPTIONS(
-  require_partition_filter=true,
-  partition_expiration_days=7
-)
+OPTIONS
+  (require_partition_filter = TRUE, partition_expiration_days = 7)

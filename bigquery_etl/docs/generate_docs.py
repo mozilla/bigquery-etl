@@ -39,10 +39,12 @@ parser.add_argument(
 )
 standard_args.add_log_level(parser)
 
+
 def format_url(doc):
     """Create links for urls in documentation."""
     doc = re.sub(r"(?<!\()(https?://[^\s]+)(?!\))", r"<\1>", doc)
     return doc
+
 
 def load_with_examples(file):
     """Load doc file and replace SQL references with examples."""

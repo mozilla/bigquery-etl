@@ -1,6 +1,11 @@
 [
     {
         "mode": "NULLABLE",
+        "name": "submission_date",
+        "type": "DATE"
+    },
+    {
+        "mode": "NULLABLE",
         "name": "client_id",
         "type": "STRING"
     },

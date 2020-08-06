@@ -9,12 +9,10 @@ set -ex
 
 function ds_range {
     DS_START=$1 DS_END=$2 python3 - <<EOD
-from datetime import date, timedelta, datetime
+from datetime import datetime, date, timedelta, datetime
 from os import environ
-def parse(ds):
-    return datetime.strptime(ds, "%Y-%m-%d")
-start_date = parse(environ["DS_START"])
-end_date = parse(environ["DS_END"])
+start_date = datetime.fromisoformat(environ["DS_START"])
+end_date = datetime.fromisoformat(environ["DS_END"])
 dates = []
 for i in range((end_date - start_date).days):
     dt = start_date + timedelta(i)

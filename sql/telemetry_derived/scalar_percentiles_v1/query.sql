@@ -17,7 +17,11 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
 WITH flat_clients_scalar_aggregates AS (
   SELECT *,
     os = 'Windows' and channel = 'release' AS sampled,
-  FROM clients_scalar_aggregates_v1),
+  FROM
+    clients_scalar_aggregates_v1
+  WHERE
+    submission_date = @submission_date
+),
 
 static_combos as (
   SELECT null as os, null as app_build_id

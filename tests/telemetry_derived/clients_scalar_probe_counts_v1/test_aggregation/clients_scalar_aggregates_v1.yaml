@@ -1,5 +1,6 @@
 ---
 - &base
+  submission_date: "2019-01-01"
   client_id: 001dde74-9201-4d06-ab73-578f02b8a436
   os: first
   app_version: 75

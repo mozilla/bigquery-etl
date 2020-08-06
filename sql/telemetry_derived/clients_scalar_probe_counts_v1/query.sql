@@ -119,7 +119,11 @@ CREATE TEMP FUNCTION udf_boolean_buckets(
 WITH flat_clients_scalar_aggregates AS (
   SELECT *,
     os = 'Windows' and channel = 'release' AS sampled,
-  FROM clients_scalar_aggregates_v1),
+  FROM
+    clients_scalar_aggregates_v1
+  WHERE
+    submission_date = @submission_date
+  ),
 
 log_min_max AS (
   SELECT

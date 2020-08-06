@@ -48,6 +48,10 @@ WITH
         INTERVAL @num_preceding_days DAY
     )
     AND submission_timestamp < @end_time
+    -- Bug 1657360
+    AND 'automation' NOT IN (
+      SELECT TRIM(t) FROM UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
+    )
   GROUP BY
     document_id
   HAVING

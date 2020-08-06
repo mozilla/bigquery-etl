@@ -91,8 +91,7 @@ WITH accessibility_panel_client_days AS (
   FROM
     telemetry.main
   WHERE
-    sample_id = 0
-    AND DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND payload.processes.parent.scalars.devtools_accessibility_opened_count > 0
   GROUP BY
     1,

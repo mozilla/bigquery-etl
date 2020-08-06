@@ -80,6 +80,7 @@ def main():
 
     build_date_udf_mapping = dict(
         org_mozilla_fenix="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+        org_mozilla_fenix_nightly="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa
         org_mozilla_firefox="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
         org_mozilla_firefox_beta="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa
         org_mozilla_fennec_aurora="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa

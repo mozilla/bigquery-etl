@@ -61,43 +61,31 @@ WITH accessibility_panel_client_days AS (
     SUM(
       udf.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
-        "accessibility.simulation.deuteranomaly"
-      )
-    ) AS simulation_deuteranomaly_count,
-    SUM(
-      udf.get_key(
-        payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
-        "accessibility.simulation.protanomaly"
-      )
-    ) AS simulation_protanomaly_count,
-    SUM(
-      udf.get_key(
-        payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
-        "accessibility.simulation.protanopia"
+        "PROTANOPIA"
       )
     ) AS simulation_protanopia_count,
     SUM(
       udf.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
-        "accessibility.simulation.deuteranopia"
+        "DEUTERANOPIA"
       )
     ) AS simulation_deuteranopia_count,
     SUM(
       udf.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
-        "accessibility.simulation.tritanopia"
+        "TRITANOPIA"
       )
     ) AS simulation_tritanopia_count,
     SUM(
       udf.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
-        "accessibility.simulation.tritanomaly"
+        "ACHROMATOPSIA"
       )
-    ) AS simulation_tritanomaly_count,
+    ) AS simulation_achromatopsia_count,
     SUM(
       udf.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
-        "accessibility.simulation.contrastLoss"
+        "CONTRAST_LOSS"
       )
     ) AS simulation_contrast_loss_count
   FROM
@@ -139,13 +127,6 @@ SELECT
   COUNTIF(audit_keyboard_count > 0) AS audit_keyboard_users,
   SAFE_DIVIDE(SUM(audit_text_label_count), COUNT(*)) AS audit_text_label_per_client_day,
   COUNTIF(audit_text_label_count > 0) AS audit_text_label_users,
-  SAFE_DIVIDE(
-    SUM(simulation_deuteranomaly_count),
-    COUNT(*)
-  ) AS simulation_deuteranomaly_per_client_day,
-  COUNTIF(simulation_deuteranomaly_count > 0) AS simulation_deuteranomaly_users,
-  SAFE_DIVIDE(SUM(simulation_protanomaly_count), COUNT(*)) AS simulation_protanomaly_per_client_day,
-  COUNTIF(simulation_protanomaly_count > 0) AS simulation_protanomaly_users,
   SAFE_DIVIDE(SUM(simulation_protanopia_count), COUNT(*)) AS simulation_protanopia_per_client_day,
   COUNTIF(simulation_protanopia_count > 0) AS simulation_protanopia_users,
   SAFE_DIVIDE(
@@ -155,15 +136,18 @@ SELECT
   COUNTIF(simulation_deuteranopia_count > 0) AS simulation_deuteranopia_users,
   SAFE_DIVIDE(SUM(simulation_tritanopia_count), COUNT(*)) AS simulation_tritanopia_per_client_day,
   COUNTIF(simulation_tritanopia_count > 0) AS simulation_tritanopia_users,
-  SAFE_DIVIDE(SUM(simulation_tritanomaly_count), COUNT(*)) AS simulation_tritanomaly_per_client_day,
-  COUNTIF(simulation_tritanomaly_count > 0) AS simulation_tritanomaly_users,
+  SAFE_DIVIDE(
+    SUM(simulation_achromatopsia_count),
+    COUNT(*)
+  ) AS simulation_achromatopsia_per_client_day,
+  COUNTIF(simulation_achromatopsia_count > 0) AS simulation_achromatopsia_users,
   SAFE_DIVIDE(
     SUM(simulation_contrast_loss_count),
     COUNT(*)
   ) AS simulation_contrast_loss_per_client_day,
   COUNTIF(simulation_contrast_loss_count > 0) AS simulation_contrast_loss_users,
   SUM(
-    simulation_deuteranomaly_count + simulation_protanomaly_count + simulation_protanopia_count + simulation_deuteranopia_count + simulation_tritanopia_count + simulation_tritanomaly_count + simulation_contrast_loss_count
+    simulation_protanopia_count + simulation_deuteranopia_count + simulation_tritanopia_count + simulation_achromatopsia_count + simulation_contrast_loss_count
   ) AS simulations
 FROM
   accessibility_panel_client_days

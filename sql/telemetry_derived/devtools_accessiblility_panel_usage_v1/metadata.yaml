@@ -9,4 +9,4 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_devtools
-  start_date: "2020-01-01"
+  start_date: "2018-08-01"

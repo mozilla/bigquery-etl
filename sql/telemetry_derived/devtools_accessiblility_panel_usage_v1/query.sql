@@ -94,9 +94,9 @@ WITH accessibility_panel_client_days AS (
     DATE(submission_timestamp) = @submission_date
     AND payload.processes.parent.scalars.devtools_accessibility_opened_count > 0
   GROUP BY
-    1,
-    2,
-    3
+    submission_date,
+    client_id,
+    normalized_channel
 )
 SELECT
   submission_date,
@@ -151,5 +151,5 @@ SELECT
 FROM
   accessibility_panel_client_days
 GROUP BY
-  1,
-  2
+  submission_date,
+  normalized_channel

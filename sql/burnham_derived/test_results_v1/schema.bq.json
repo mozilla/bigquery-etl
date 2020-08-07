@@ -12,17 +12,17 @@
   {
     "name": "test_name",
     "type": "STRING",
-    "description": "Name of the test run"
+    "description": "Name of the test scenario"
   },
   {
     "name": "test_outcome",
     "type": "STRING",
-    "description": "Outcome of the test run; one of ERROR, FAILED, PASSED, SKIPPED, XFAILED, XPASSED"
+    "description": "Outcome of the test scenario; one of ERROR, FAILED, PASSED, SKIPPED, XFAILED, XPASSED"
   },
   {
     "name": "test_duration_millis",
     "type": "INT64",
-    "description": "Duration of the test run"
+    "description": "Duration of the test scenario"
   },
   {
     "name": "test_log_url",

@@ -120,6 +120,7 @@ filtered_old AS (
     (channel)
   WHERE
     app_version >= (latest_version - 2)
+    AND submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
 ),
 joined_new_old AS (
   SELECT
@@ -138,6 +139,7 @@ joined_new_old AS (
     (client_id, os, app_version, app_build_id, channel)
 )
 SELECT
+  @submission_date AS submission_date,
   client_id,
   os,
   app_version,

@@ -20,9 +20,14 @@
     "description": "Outcome of the test run; one of ERROR, FAILED, PASSED, SKIPPED, XFAILED, XPASSED"
   },
   {
-    "name": "test_duration_seconds",
-    "type": "FLOAT64",
+    "name": "test_duration_millis",
+    "type": "INT64",
     "description": "Duration of the test run"
+  },
+  {
+    "name": "test_log_url",
+    "type": "STRING",
+    "description": "URL for viewing logs of this task instance in Airflow"
   },
   {
     "name": "test_report",

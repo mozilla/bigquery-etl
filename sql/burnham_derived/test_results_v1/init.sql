@@ -1,10 +1,11 @@
 CREATE OR REPLACE TABLE
-  burnham_derived.test_result_v1(
+  burnham_derived.test_results_v1(
     submission_timestamp TIMESTAMP,
     test_run STRING,
     test_name STRING,
     test_outcome STRING,
-    test_duration_seconds FLOAT64,
+    test_duration_millis INT64,
+    test_log_url STRING,
     test_report STRING
   )
 PARTITION BY

@@ -1,7 +1,7 @@
 """Generate templated views."""
 from pathlib import Path
 from argparse import ArgumentParser, Namespace
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, PackageLoader, TemplateNotFound
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.glam import models
@@ -42,10 +42,11 @@ def from_template(
     else:
         template = environment.get_template(f"{template_name}.sql")
 
+    template_filename = template_name.split("__")[-1]
     if query_name_prefix:
-        table_id = f"{args.prefix}__{query_name_prefix}_{template_name}"
+        table_id = f"{args.prefix}__{query_name_prefix}_{template_filename}"
     else:
-        table_id = f"{args.prefix}__{template_name}"
+        table_id = f"{args.prefix}__{template_filename}"
 
     # replaces the header, if it exists
     kwargs["header"] = f"-- {query_type} for {table_id};"
@@ -103,6 +104,24 @@ def main():
     view = partial(template, QueryType.VIEW)
     table = partial(template, QueryType.TABLE)
     init = partial(template, QueryType.INIT)
+
+    # If this is a logical app id, generate it. Assert that the daily view for
+    # the app exists. This assumes is that both scalar and histogram aggregates
+    # exist and will break down in the case where a glean app only contains one
+    # of the scalar or histogram view.
+    for daily_view in [
+        "view_clients_daily_scalar_aggregates_v1",
+        "view_clients_daily_histogram_aggregates_v1",
+    ]:
+        try:
+            view(f"logical_app_id/{args.prefix}__{daily_view}")
+        except TemplateNotFound:
+            print(f"{args.prefix} is not a logical app id")
+            # generate the view for the app id directly
+            view(daily_view)
+
+        if not (dataset_path / f"{args.prefix}__{daily_view}").is_dir():
+            raise ValueError(f"missing {daily_view}")
 
     [
         table(
@@ -173,8 +192,6 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
             ),
         ),
-        view("view_clients_daily_scalar_aggregates_v1"),
-        view("view_clients_daily_histogram_aggregates_v1"),
         table("histogram_percentiles_v1"),
         view("view_probe_counts_v1"),
         view("view_user_counts_v1", **models.user_counts()),

@@ -77,8 +77,8 @@ def get_dags(sql_dir, dags_config):
                 # most tasks lack scheduling information for now
                 pass
             except Exception as e:
-                # in the case that there was some other error, report the query that failed
-                # before exiting
+                # in the case that there was some other error, report the query
+                # that failed before exiting
                 logging.error(f"Error processing task for query {query_file}")
                 raise e
             else:

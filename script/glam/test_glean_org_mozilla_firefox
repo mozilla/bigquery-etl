@@ -1,0 +1,12 @@
+#!/bin/bash
+# generate sql for checking into the repository and for testing the workflow
+
+set -e
+
+app_id="org_mozilla_firefox"
+logical_app_id="org_mozilla_fenix_glam_release"
+
+dir="$(dirname "$0")"
+
+PRODUCT=$app_id STAGE=daily $dir/generate_glean_sql
+PRODUCT=$logical_app_id STAGE=incremental $dir/generate_glean_sql

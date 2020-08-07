@@ -78,12 +78,20 @@ def main():
     if not dataset_path.is_dir():
         raise NotADirectoryError(f"path to {dataset_path} not found")
 
+    # Supported fenix/firefox for android products. These are logical ids that
+    # are formed from the union of several app_ids (sometimes across date
+    # boundaries).
+    fenix_app_ids = [
+        "org_mozilla_fenix_glam_nightly",
+        "org_mozilla_fenix_glam_beta",
+        "org_mozilla_fenix_glam_release",
+    ]
+
     build_date_udf_mapping = dict(
-        org_mozilla_fenix="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
-        org_mozilla_fenix_nightly="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa
-        org_mozilla_firefox="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
-        org_mozilla_firefox_beta="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa
-        org_mozilla_fennec_aurora="`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",  # noqa
+        **{
+            app_id: "`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime"
+            for app_id in fenix_app_ids
+        }
     )
     if not build_date_udf_mapping.get(args.prefix):
         raise ValueError(f"build date udf for {args.prefix} was not found")

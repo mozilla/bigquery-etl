@@ -71,6 +71,7 @@ def main():
     parser.add_argument("--prefix")
     parser.add_argument("--dataset", default="glam_etl")
     parser.add_argument("--sql-root", default="sql/")
+    parser.add_argument("--daily-view-only", action="store_true", default=False)
     args = parser.parse_args()
 
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
@@ -78,24 +79,6 @@ def main():
     dataset_path = Path(args.sql_root) / args.dataset
     if not dataset_path.is_dir():
         raise NotADirectoryError(f"path to {dataset_path} not found")
-
-    # Supported fenix/firefox for android products. These are logical ids that
-    # are formed from the union of several app_ids (sometimes across date
-    # boundaries).
-    fenix_app_ids = [
-        "org_mozilla_fenix_glam_nightly",
-        "org_mozilla_fenix_glam_beta",
-        "org_mozilla_fenix_glam_release",
-    ]
-
-    build_date_udf_mapping = dict(
-        **{
-            app_id: "`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime"
-            for app_id in fenix_app_ids
-        }
-    )
-    if not build_date_udf_mapping.get(args.prefix):
-        raise ValueError(f"build date udf for {args.prefix} was not found")
 
     # curry functions for convenience
     template = partial(
@@ -122,12 +105,30 @@ def main():
 
         if not (dataset_path / f"{args.prefix}__{daily_view}").is_dir():
             raise ValueError(f"missing {daily_view}")
+    
+    # exit early if we're only generating a daily view
+    if args.daily_view_only:
+        return
+
+    # Supported fenix/firefox for android products. These are logical ids that
+    # are formed from the union of several app_ids (sometimes across date
+    # boundaries).
+    fenix_app_ids = [
+        "org_mozilla_fenix_glam_nightly",
+        "org_mozilla_fenix_glam_beta",
+        "org_mozilla_fenix_glam_release",
+    ]
+
+    build_date_udf_mapping = dict(
+        **{
+            app_id: "`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime"
+            for app_id in fenix_app_ids
+        }
+    )
+    if not build_date_udf_mapping.get(args.prefix):
+        raise ValueError(f"build date udf for {args.prefix} was not found")
 
     [
-        table(
-            "latest_versions_v1",
-            **dict(source_table=f"{args.prefix}_stable.baseline_v1"),
-        ),
         init(
             "clients_scalar_aggregates_v1",
             **models.clients_scalar_aggregates(

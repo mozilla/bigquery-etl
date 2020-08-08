@@ -211,9 +211,11 @@ function run_glean_sql {
         fi
     elif [[ $stage == "incremental" ]]; then 
         if ((start_stage <= 1)) && [[ $export_only = false ]]; then
-            run_query "${product}__latest_versions_v1" &
-            run_view "${product}__view_clients_daily_scalar_aggregates_v1" &
-            run_view "${product}__view_clients_daily_histogram_aggregates_v1" &
+            run_view "${product}__view_clients_daily_histogram_aggregates_v1"
+            # latest versions now depends on scalar aggregates
+            run_view "${product}__view_clients_daily_scalar_aggregates_v1"
+            run_query "${product}__latest_versions_v1"
+
             run_init "${product}__clients_scalar_aggregates_v1" &
             run_init "${product}__clients_histogram_aggregates_v1" &
             wait

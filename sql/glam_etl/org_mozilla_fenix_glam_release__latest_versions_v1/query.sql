@@ -1,17 +1,14 @@
 -- query for org_mozilla_fenix_glam_release__latest_versions_v1;
 WITH extracted AS (
   SELECT
-    client_info.client_id,
-    client_info.app_channel AS channel,
-    COALESCE(
-      SAFE_CAST(SPLIT(client_info.app_display_version, '.')[OFFSET(0)] AS INT64),
-      0
-    ) AS app_version,
+    client_id,
+    channel,
+    app_version
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_glam_release_stable.baseline_v1`
+    glam_etl.org_mozilla_fenix_glam_release__view_clients_daily_scalar_aggregates_v1
   WHERE
-    DATE(submission_timestamp) > DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
-    AND client_info.app_channel IS NOT NULL
+    submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+    AND channel IS NOT NULL
 ),
 transformed AS (
   SELECT

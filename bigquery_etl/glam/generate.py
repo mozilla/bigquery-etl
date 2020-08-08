@@ -129,6 +129,10 @@ def main():
         raise ValueError(f"build date udf for {args.prefix} was not found")
 
     [
+        table(
+            "latest_versions_v1",
+            **dict(source_table=f"glam_etl.{args.prefix}__view_clients_daily_scalar_aggregates_v1"),
+        ),
         init(
             "clients_scalar_aggregates_v1",
             **models.clients_scalar_aggregates(

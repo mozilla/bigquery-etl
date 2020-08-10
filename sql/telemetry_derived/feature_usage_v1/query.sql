@@ -8,8 +8,7 @@ WITH events_t AS (
       AND event_object = 'protection_report'
     ) AS viewed_protection_report,
     LOGICAL_OR(event_category = 'pictureinpicture' AND event_method = 'create') AS used_pip,
-    LOGICAL_OR(event_string_value='SEC_ERROR_UNKNOWN_ISSUER') AS had_cert_error,
-
+    LOGICAL_OR(event_string_value = 'SEC_ERROR_UNKNOWN_ISSUER') AS had_cert_error,
   FROM
     `moz-fx-data-shared-prod.telemetry.events`
   WHERE

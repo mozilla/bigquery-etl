@@ -27,7 +27,7 @@ main_t AS (
     SUM(
       payload.processes.parent.scalars.browser_engagement_max_concurrent_tab_pinned_count
     ) > 0 AS has_pinned_tab,
-    SUM(environment.addons.active_addons) > 0 AS has_addon,
+    SUM(ARRAY_LENGTH(environment.addons.active_addons)) > 0 AS has_addon,
     LOGICAL_OR(environment.settings.is_default_browser) AS default_browser,
     SUM(
       payload.processes.parent.scalars.browser_engagement_total_uri_count

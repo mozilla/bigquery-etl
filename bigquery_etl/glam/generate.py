@@ -105,7 +105,7 @@ def main():
 
         if not (dataset_path / f"{args.prefix}__{daily_view}").is_dir():
             raise ValueError(f"missing {daily_view}")
-    
+
     # exit early if we're only generating a daily view
     if args.daily_view_only:
         return
@@ -131,7 +131,9 @@ def main():
     [
         table(
             "latest_versions_v1",
-            **dict(source_table=f"glam_etl.{args.prefix}__view_clients_daily_scalar_aggregates_v1"),
+            **dict(
+                source_table=f"glam_etl.{args.prefix}__view_clients_daily_scalar_aggregates_v1"
+            ),
         ),
         init(
             "clients_scalar_aggregates_v1",

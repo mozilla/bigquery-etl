@@ -22,6 +22,16 @@ WITH install_stats AS (
     utm_source,
     utm_medium
 ),
+-- The addon_id is hashed due to string size limitations in events;
+-- we create a "unhashing" lookup table here from the DAU table, which should
+-- include all the same addon_ids that we see in install_stats events.
+addon_id_lookup AS (
+  SELECT
+    DISTINCT addon_id,
+    TO_HEX(SHA256(addon_id)) AS hashed_addon_id
+  FROM
+    amo_prod.amo_stats_dau_v2
+),
 per_source AS (
   SELECT
     hashed_addon_id,
@@ -149,3 +159,7 @@ LEFT JOIN
   per_campaign
 USING
   (submission_date, hashed_addon_id)
+LEFT JOIN
+  addon_id_lookup
+USING
+  (hashed_addon_id)

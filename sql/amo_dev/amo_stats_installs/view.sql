@@ -3,6 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   submission_date,
+  addon_id,
   hashed_addon_id,
   total_downloads,
   ARRAY(

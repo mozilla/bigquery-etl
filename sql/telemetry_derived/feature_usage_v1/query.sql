@@ -8,6 +8,7 @@ WITH events_t AS (
       AND event_object = 'protection_report'
     ) AS viewed_protection_report,
     LOGICAL_OR(event_category = 'pictureinpicture' AND event_method = 'create') AS used_pip,
+    LOGICAL_OR(event_string_value = 'SEC_ERROR_UNKNOWN_ISSUER') AS had_cert_error,
   FROM
     `moz-fx-data-shared-prod.telemetry.events`
   WHERE
@@ -25,6 +26,7 @@ main_t AS (
     SUM(
       payload.processes.parent.scalars.browser_engagement_max_concurrent_tab_pinned_count
     ) > 0 AS has_pinned_tab,
+    SUM(ARRAY_LENGTH(environment.addons.active_addons)) > 0 AS has_addon,
     LOGICAL_OR(environment.settings.is_default_browser) AS default_browser,
     SUM(
       payload.processes.parent.scalars.browser_engagement_total_uri_count
@@ -84,7 +86,9 @@ SELECT
   COALESCE(used_pip, FALSE) AS used_pip,
   COALESCE(filled_password_automatically, FALSE) AS filled_password_automatically,
   COALESCE(remembered_password, FALSE) AS remembered_password,
-  COALESCE(sync_configured, FALSE) AS sync_configured
+  COALESCE(sync_configured, FALSE) AS sync_configured,
+  COALESCE(had_cert_error, FALSE) AS had_cert_error,
+  COALESCE(has_addon, FALSE) AS has_addon
 FROM
   events_t
 FULL JOIN

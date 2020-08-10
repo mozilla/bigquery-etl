@@ -1,0 +1,11 @@
+friendly_name: AMO Stats DAU
+description: >
+  Daily install statistics to power addons.mozilla.org stats pages. See bug 1654330.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: amo
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_amo_stats

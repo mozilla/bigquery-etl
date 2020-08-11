@@ -23,27 +23,100 @@ GROUP BY
   doc_type,
   submission_date
 ORDER BY
-    namespace,
-    doc_type
+  namespace,
+  doc_type
 """
+
+LIVE_STABLE_QUERY = """
+SELECT
+  DATE(submission_timestamp) AS submission_date,
+  _TABLE_SUFFIX AS doc_type,
+  COUNT(DISTINCT(document_id)) AS docid_count,
+FROM
+  `moz-fx-data-shared-prod.{namespace}_{type}.*`
+WHERE
+  DATE(submission_timestamp) = '{date}'
+GROUP BY
+  doc_type,
+  submission_date
+"""
+
+EXCLUDED_NAMESPACES = {"xfocsp_error_report"}  # restricted access
 
 
 def main(date, project, destination_dataset, destination_table):
     client = bigquery.Client(project=project)
 
-    # key is tuple of (namespace, doc_type), value is dict where
-    # key is table type (live, stable, decoded) and value is docid count
+    # key is tuple of (namespace, doc_type), value is dict where key is
+    # table type (live, stable, decoded) and value is docid count
     docid_counts_by_doc_type_by_table = defaultdict(dict)
 
-    decoded_query_job = client.query(DECODED_QUERY.format(date=date))
-    decoded_query_results = decoded_query_job.result()
+    namespaces = set()
+
+    print("Getting decoded table doc id counts")
+    decoded_query_results = client.query(DECODED_QUERY.format(date=date)).result()
 
     for row in decoded_query_results:
+        if row["namespace"] in EXCLUDED_NAMESPACES:
+            continue
+
+        docid_counts_by_doc_type_by_table[(row["namespace"], row["doc_type"])][
+            "namespace"
+        ] = row["namespace"]
+        docid_counts_by_doc_type_by_table[(row["namespace"], row["doc_type"])][
+            "doc_type"
+        ] = row["doc_type"]
         docid_counts_by_doc_type_by_table[(row["namespace"], row["doc_type"])][
             "decoded"
         ] = row["docid_count"]
 
-    print(1)
+        namespaces.add(row["namespace"])
+
+    # TODO: GENERALIZE
+    for namespace in namespaces:
+        print(f"Getting {namespace} stable doc id counts")
+        stable_query_results = client.query(
+            LIVE_STABLE_QUERY.format(date=date, namespace=namespace, type="stable")
+        ).result()
+
+        for row in stable_query_results:
+            docid_counts_by_doc_type_by_table[(namespace, row["doc_type"])][
+                "stable"
+            ] = row["docid_count"]
+
+        print(f"Getting {namespace} live doc id counts")
+        live_query_results = client.query(
+            LIVE_STABLE_QUERY.format(date=date, namespace=namespace, type="live")
+        ).result()
+
+        for row in live_query_results:
+            docid_counts_by_doc_type_by_table[(namespace, row["doc_type"])][
+                "live"
+            ] = row["docid_count"]
+
+    output_data = []
+
+    for (namespace, doctype), data in docid_counts_by_doc_type_by_table.items():
+        data["submission_date"] = str(date)
+        data["namespace"] = namespace
+        data["doc_type"] = doctype
+
+        output_data.append(data)
+
+    load_config = bigquery.LoadJobConfig(
+        time_partitioning=bigquery.TimePartitioning(field="submission_date"),
+        create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+    )
+
+    load_job = client.load_table_from_json(
+        json_rows=output_data,
+        destination=f"{destination_dataset}.{destination_table}"
+                    f"${date.strftime('%Y%m%d')}",
+        job_config=load_config,
+    )
+
+    load_job.result()
 
 
 def parse_args():

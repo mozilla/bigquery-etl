@@ -1,15 +1,3 @@
-CREATE TEMP FUNCTION array_filter(list ANY TYPE) AS (
-  ARRAY(
-    SELECT AS STRUCT
-      *
-    FROM
-      UNNEST(list)
-    WHERE
-      decoded_docid_count != live_docid_count
-      OR decoded_docid_count != stable_docid_count
-  )
-);
-
 WITH decoded AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -48,39 +36,22 @@ live AS (
   GROUP BY
     doc_type,
     submission_date
-),
-non_matching_doc_counts AS (
-  SELECT
-    submission_date,
-    doc_type,
-    decoded_docid_count,
-    live_docid_count,
-    stable_docid_count,
-  FROM
-    decoded
-  FULL JOIN
-    stable
-  USING
-    (submission_date, doc_type)
-  FULL JOIN
-    live
-  USING
-    (submission_date, doc_type)
-  ORDER BY
-    decoded_docid_count DESC
 )
 SELECT
   submission_date,
-  array_filter(
-    ARRAY_AGG(STRUCT(doc_type, decoded_docid_count, live_docid_count, stable_docid_count))
-  ) AS doc_counts,
-  COUNTIF(
-    decoded_docid_count != live_docid_count
-    OR decoded_docid_count != stable_docid_count
-  ) AS non_matching_count,
+  doc_type,
+  decoded_docid_count,
+  live_docid_count,
+  stable_docid_count,
 FROM
-  non_matching_doc_counts
-GROUP BY
-  submission_date
+  decoded
+FULL JOIN
+  stable
+USING
+  (submission_date, doc_type)
+FULL JOIN
+  live
+USING
+  (submission_date, doc_type)
 ORDER BY
-  submission_date DESC
+  decoded_docid_count DESC

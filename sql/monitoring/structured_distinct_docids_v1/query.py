@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Compare number of document IDs in structured decoded, live, and stable tables"""
+"""Compare number of document IDs in structured decoded, live, and stable tables."""
 
 import datetime
 from argparse import ArgumentParser
@@ -44,7 +44,8 @@ GROUP BY
 EXCLUDED_NAMESPACES = {"xfocsp_error_report"}  # restricted access
 
 
-def main(date, project, destination_dataset, destination_table):
+def get_docid_counts(date, project, destination_dataset, destination_table):
+    """Get distinct docid count for decoded, live, and stable tables, and save to bigquery."""  # noqa
     client = bigquery.Client(project=project)
 
     # key is tuple of (namespace, doc_type), value is dict where key is
@@ -56,23 +57,18 @@ def main(date, project, destination_dataset, destination_table):
     print("Getting decoded table doc id counts")
     decoded_query_results = client.query(DECODED_QUERY.format(date=date)).result()
 
+    # Get docid counts in decoded tables
     for row in decoded_query_results:
         if row["namespace"] in EXCLUDED_NAMESPACES:
             continue
 
-        docid_counts_by_doc_type_by_table[(row["namespace"], row["doc_type"])][
-            "namespace"
-        ] = row["namespace"]
-        docid_counts_by_doc_type_by_table[(row["namespace"], row["doc_type"])][
-            "doc_type"
-        ] = row["doc_type"]
         docid_counts_by_doc_type_by_table[(row["namespace"], row["doc_type"])][
             "decoded"
         ] = row["docid_count"]
 
         namespaces.add(row["namespace"])
 
-    # TODO: GENERALIZE
+    # Get docid counts in stable and live tables
     for namespace in namespaces:
         print(f"Getting {namespace} stable doc id counts")
         stable_query_results = client.query(
@@ -94,13 +90,12 @@ def main(date, project, destination_dataset, destination_table):
                 "live"
             ] = row["docid_count"]
 
+    # Transform into format for bigquery load
     output_data = []
-
     for (namespace, doctype), data in docid_counts_by_doc_type_by_table.items():
         data["submission_date"] = str(date)
         data["namespace"] = namespace
         data["doc_type"] = doctype
-
         output_data.append(data)
 
     load_config = bigquery.LoadJobConfig(
@@ -112,7 +107,7 @@ def main(date, project, destination_dataset, destination_table):
     load_job = client.load_table_from_json(
         json_rows=output_data,
         destination=f"{destination_dataset}.{destination_table}"
-                    f"${date.strftime('%Y%m%d')}",
+        f"${date.strftime('%Y%m%d')}",
         job_config=load_config,
     )
 
@@ -120,6 +115,7 @@ def main(date, project, destination_dataset, destination_table):
 
 
 def parse_args():
+    """Parse command line arguments."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", type=datetime.date.fromisoformat, required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
@@ -130,4 +126,6 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    main(args.date, args.project, args.destination_dataset, args.destination_table)
+    get_docid_counts(
+        args.date, args.project, args.destination_dataset, args.destination_table,
+    )

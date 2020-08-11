@@ -1,22 +1,23 @@
+-- The addon_id is hashed due to string size limitations in events;
+-- we create a "unhashing" lookup table here from the DAU table, which should
+-- include all the same addon_ids that we see in install_stats events.
+WITH addon_id_lookup AS (
+  SELECT
+    DISTINCT addon_id,
+    TO_HEX(SHA256(addon_id)) AS hashed_addon_id
+  FROM
+    amo_dev.amo_stats_dau_v2
+)
 SELECT
-  *
+  installs.*
 FROM
-  amo_prod.amo_stats_installs_v3
+  amo_prod.amo_stats_installs_v3 AS installs
+-- This join will filter out all addon_ids that are not already present
+-- in the dev dau table, so we don't need to duplicate the list of addons
+-- approved for dev here.
+JOIN
+  addon_id_lookup
+USING
+  (hashed_addon_id)
 WHERE
   submission_date = @submission_date
-  AND (
-    addon_id IN (
-      '{db55bb9b-0d9f-407f-9b65-da9dd29c8d32}', -- :willdurand
-      '{7e7eda8f-2e5d-4f43-86a9-07c6139e7a08}', -- :mat
-      'close-tabs-by-pattern@virgule.net',      -- :mat
-      '{46607a7b-1b2a-40ce-9afe-91cda52c46a6}', -- theme owned by :scolville
-      '{0ec56aba-6955-43fb-a5cf-ed3f3ab66e7e}', -- theme owned by :caitmuenster
-      '@contain-facebook',
-      '@testpilot-containers',
-      'FirefoxColor@mozilla.com',
-      'private-relay@firefox.com',
-      'notes@mozilla.com',
-      '1b2383b324c8520974ee097e46301d5ca4e076de387c02886f1c6b1503671586@pokeinthe.io' -- Laboratory
-    )
-    OR addon_id LIKE 'langpack-%@firefox.mozilla.org'
-  )

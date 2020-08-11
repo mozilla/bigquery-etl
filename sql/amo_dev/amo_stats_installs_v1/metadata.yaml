@@ -1,0 +1,9 @@
+friendly_name: AMO Installs dev/stage
+description: >
+  Deprecated version of reduced daily installs table for dev and stage versions of the AMO service.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: amo
+  incremental: true
+  schedule: daily

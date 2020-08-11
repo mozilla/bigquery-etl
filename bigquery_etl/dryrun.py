@@ -110,6 +110,44 @@ SKIP = {
     "sql/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa
 }
 
+def get_referenced_tables(sqlfile):
+    """Return referenced tables by dry running the SQL file"""
+    response = dry_run_sql_file(sqlfile)
+
+    if response and response["valid"] and response["referencedTables"]:
+        return response["referencedTables"]
+
+    return []
+
+def sql_file_valid(sqlfile):
+    """Dry run the provided SQL file and check if valid."""
+    response = dry_run_sql_file(sqlfile)
+
+    if response is None:
+        return False
+
+    if "errors" in response and len(response["errors"]) == 1:
+        error = response["errors"][0]
+    else:
+        error = None
+    
+    if response["valid"]:
+        print(f"{sqlfile:59} OK")
+    elif (
+        error
+        and error.get("code", None) in [400, 403]
+        and "does not have bigquery.tables.create permission for dataset"
+        in error.get("message", "")
+    ):
+        # We want the dryrun service to only have read permissions, so
+        # we expect CREATE VIEW and CREATE TABLE to throw specific
+        # exceptions.
+        print(f"{sqlfile:59} OK")
+    else:
+        print(f"{sqlfile:59} ERROR\n", response["errors"])
+        return False
+    
+    return True
 
 def dry_run_sql_file(sqlfile):
     """Dry run the provided SQL file."""
@@ -128,35 +166,16 @@ def dry_run_sql_file(sqlfile):
         )
     except Exception as e:
         print(f"{sqlfile:59} ERROR\n", e)
-        return False
-    response = json.load(r)
-    if "errors" in response and len(response["errors"]) == 1:
-        error = response["errors"][0]
-    else:
-        error = None
-    if response["valid"]:
-        print(f"{sqlfile:59} OK")
-    elif (
-        error
-        and error.get("code", None) in [400, 403]
-        and "does not have bigquery.tables.create permission for dataset"
-        in error.get("message", "")
-    ):
-        # We want the dryrun service to only have read permissions, so
-        # we expect CREATE VIEW and CREATE TABLE to throw specific
-        # exceptions.
-        print(f"{sqlfile:59} OK")
-    else:
-        print(f"{sqlfile:59} ERROR\n", response["errors"])
-        return False
-    return True
+        return None
+
+    return json.load(r)
 
 
 def main():
     """Dry run all SQL files in the sql/ directory."""
     sql_files = [f for f in glob.glob("sql/**/*.sql", recursive=True) if f not in SKIP]
     with ThreadPool(8) as p:
-        result = p.map(dry_run_sql_file, sql_files, chunksize=1)
+        result = p.map(sql_file_valid, sql_files, chunksize=1)
     if all(result):
         exitcode = 0
     else:

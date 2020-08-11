@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import tempfile
 
-from bigquery_etl.dryrun import dry_run_sql_file
+from bigquery_etl.dryrun import sql_file_valid
 from bigquery_etl.parse_udf import read_udf_dirs, persistent_udf_as_temp
 from bigquery_etl.util import standard_args
 
@@ -77,7 +77,7 @@ def main():
                         tmp_example_file = tmp_dir / file
                         tmp_example_file.write_text(dry_run_sql)
 
-                        dry_run_sql_file(str(tmp_example_file))
+                        sql_file_valid(str(tmp_example_file))
 
 
 if __name__ == "__main__":

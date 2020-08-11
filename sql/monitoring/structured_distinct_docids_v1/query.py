@@ -22,9 +22,6 @@ GROUP BY
   namespace,
   doc_type,
   submission_date
-ORDER BY
-  namespace,
-  doc_type
 """
 
 LIVE_STABLE_QUERY = """

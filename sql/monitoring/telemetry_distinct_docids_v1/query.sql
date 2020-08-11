@@ -1,8 +1,8 @@
-WITH decoded AS (
+WITH decoded_counts AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     _TABLE_SUFFIX AS doc_type,
-    COUNT(DISTINCT(document_id)) AS decoded_docid_count,
+    COUNT(DISTINCT(document_id)) AS decoded,
   FROM
     `moz-fx-data-shared-prod.payload_bytes_decoded.telemetry_telemetry__*`
   WHERE
@@ -11,11 +11,11 @@ WITH decoded AS (
     doc_type,
     submission_date
 ),
-stable AS (
+stable_counts AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     _TABLE_SUFFIX AS doc_type,
-    COUNT(DISTINCT(document_id)) AS stable_docid_count,
+    COUNT(DISTINCT(document_id)) AS stable,
   FROM
     `moz-fx-data-shared-prod.telemetry_stable.*`
   WHERE
@@ -24,11 +24,11 @@ stable AS (
     doc_type,
     submission_date
 ),
-live AS (
+live_counts AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     _TABLE_SUFFIX AS doc_type,
-    COUNT(DISTINCT(document_id)) AS live_docid_count,
+    COUNT(DISTINCT(document_id)) AS live,
   FROM
     `moz-fx-data-shared-prod.telemetry_live.*`
   WHERE
@@ -40,18 +40,16 @@ live AS (
 SELECT
   submission_date,
   doc_type,
-  decoded_docid_count,
-  live_docid_count,
-  stable_docid_count,
+  decoded,
+  live,
+  stable,
 FROM
-  decoded
+  decoded_counts
 FULL JOIN
-  stable
+  stable_counts
 USING
   (submission_date, doc_type)
 FULL JOIN
-  live
+  live_counts
 USING
   (submission_date, doc_type)
-ORDER BY
-  decoded_docid_count DESC

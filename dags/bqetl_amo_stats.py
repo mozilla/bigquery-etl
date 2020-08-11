@@ -94,6 +94,8 @@ with DAG(
 
     amo_dev__amo_stats_dau__v2.set_upstream(amo_prod__amo_stats_dau__v2)
 
+    amo_dev__amo_stats_installs__v3.set_upstream(amo_dev__amo_stats_dau__v2)
+
     amo_dev__amo_stats_installs__v3.set_upstream(amo_prod__amo_stats_installs__v3)
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
@@ -126,7 +128,6 @@ with DAG(
         wait_for_copy_deduplicate_main_ping
     )
 
-    amo_prod__amo_stats_installs__v3.set_upstream(amo_prod__amo_stats_dau__v2)
     wait_for_event_events = ExternalTaskSensor(
         task_id="wait_for_event_events",
         external_dag_id="copy_deduplicate",

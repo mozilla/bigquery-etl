@@ -42,7 +42,11 @@ EXCLUDED_NAMESPACES = {"xfocsp_error_report"}  # restricted access
 
 
 def get_docid_counts(date, project, destination_dataset, destination_table):
-    """Get distinct docid count for decoded, live, and stable tables, and save to bigquery."""  # noqa
+    """Get distinct docid count for decoded, live, and stable tables.
+
+    Results are saved to bigquery where each row contains the decoded, live,
+    and stable docid counts for each namespace and doc type combination.
+    """
     client = bigquery.Client(project=project)
 
     # key is tuple of (namespace, doc_type), value is dict where key is

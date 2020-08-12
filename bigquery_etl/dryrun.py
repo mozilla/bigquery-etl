@@ -110,6 +110,7 @@ SKIP = {
     "sql/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa
 }
 
+
 def get_referenced_tables(sqlfile):
     """Return referenced tables by dry running the SQL file"""
     response = dry_run_sql_file(sqlfile)
@@ -118,6 +119,7 @@ def get_referenced_tables(sqlfile):
         return response["referencedTables"]
 
     return []
+
 
 def sql_file_valid(sqlfile):
     """Dry run the provided SQL file and check if valid."""
@@ -130,7 +132,7 @@ def sql_file_valid(sqlfile):
         error = response["errors"][0]
     else:
         error = None
-    
+
     if response["valid"]:
         print(f"{sqlfile:59} OK")
     elif (
@@ -146,8 +148,9 @@ def sql_file_valid(sqlfile):
     else:
         print(f"{sqlfile:59} ERROR\n", response["errors"])
         return False
-    
+
     return True
+
 
 def dry_run_sql_file(sqlfile):
     """Dry run the provided SQL file."""

@@ -72,29 +72,3 @@ with DAG(
         depends_on_past=False,
         dag=dag,
     )
-
-    search_derived__search_metric_contribution__v1.set_upstream(
-        search_derived__search_clients_daily__v8
-    )
-
-    search_derived__search_aggregates__v8.set_upstream(
-        search_derived__search_clients_daily__v8
-    )
-
-    search_derived__search_clients_last_seen__v1.set_upstream(
-        search_derived__search_clients_daily__v8
-    )
-
-    wait_for_telemetry_derived__main_summary__v4 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__main_summary__v4",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__main_summary__v4",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    search_derived__search_clients_daily__v8.set_upstream(
-        wait_for_telemetry_derived__main_summary__v4
-    )

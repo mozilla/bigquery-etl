@@ -11,6 +11,7 @@ from google.cloud import bigquery
 from typing import List, Optional, Tuple
 
 
+from bigquery_etl import dryrun
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
@@ -274,7 +275,7 @@ class Task:
         task.sql_file_path = os.path.dirname(query_file)
         return task
 
-    def _get_referenced_tables(self, client):
+    def _get_referenced_tables(self):
         """
         Perform a dry_run to get tables the query depends on.
 
@@ -285,26 +286,6 @@ class Task:
         logging.info(f"Get dependencies for {self.task_name}")
 
         if self.referenced_tables is None:
-            # check if there are query parameters that need to be set for dry-running
-            query_parameters = [
-                bigquery.ScalarQueryParameter(*(param.split(":")))
-                for param in self.parameters
-                if "submission_date" not in param
-            ]
-
-            # the submission_date parameter needs to be set to make the dry run faster
-            job_config = bigquery.QueryJobConfig(
-                dry_run=True,
-                use_query_cache=False,
-                default_dataset=f"{DEFAULT_PROJECT}.{self.dataset}",
-                query_parameters=[
-                    bigquery.ScalarQueryParameter(
-                        "submission_date", "DATE", "2019-01-01"
-                    )
-                ]
-                + query_parameters,
-            )
-
             table_names = set()
             query_files = [self.query_file]
 
@@ -313,31 +294,28 @@ class Task:
                 query_files = glob.glob(self.sql_file_path + "/*.sql")
 
             for query_file in query_files:
-                with open(query_file) as query_stream:
-                    query = query_stream.read()
-                    query_job = client.query(query, job_config=job_config)
-                    referenced_tables = query_job.referenced_tables
+                referenced_tables = dryrun.get_referenced_tables(query_file)
 
-                    if len(referenced_tables) >= 50:
-                        logging.warn(
-                            "Query has 50 or more tables. Queries that reference more "
-                            "than 50 tables will not have a complete list of "
-                            "dependencies."
-                        )
+                if len(referenced_tables) >= 50:
+                    logging.warn(
+                        "Query has 50 or more tables. Queries that reference more "
+                        "than 50 tables will not have a complete list of "
+                        "dependencies."
+                    )
 
-                    for t in referenced_tables:
-                        table_names.add((t.dataset_id, t.table_id))
+                for t in referenced_tables:
+                    table_names.add((t["datasetId"], t["tableId"]))
 
             # the order of table dependencies changes between requests
             # sort to maintain same order between DAG generation runs
             self.referenced_tables = sorted(table_names)
         return self.referenced_tables
 
-    def with_dependencies(self, client, dag_collection):
+    def with_dependencies(self, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""
         dependencies = []
 
-        for table in self._get_referenced_tables(client):
+        for table in self._get_referenced_tables():
             upstream_task = dag_collection.task_for_table(table[0], table[1])
             task_schedule_interval = dag_collection.dag_by_name(
                 self.dag_name

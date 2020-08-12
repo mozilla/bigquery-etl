@@ -132,14 +132,6 @@ with DAG(
         dag=dag,
     )
 
-    telemetry_derived__clients_first_seen__v1.set_upstream(
-        telemetry_derived__clients_daily__v6
-    )
-
-    firefox_desktop_exact_mau28_by_client_count_dimensions.set_upstream(
-        telemetry_derived__clients_last_seen__v1
-    )
-
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -152,16 +144,4 @@ with DAG(
 
     telemetry_derived__main_summary__v4.set_upstream(
         wait_for_copy_deduplicate_main_ping
-    )
-
-    telemetry_derived__clients_daily__v6.set_upstream(
-        telemetry_derived__main_summary__v4
-    )
-
-    telemetry_derived__clients_last_seen__v1.set_upstream(
-        telemetry_derived__clients_daily__v6
-    )
-
-    firefox_desktop_exact_mau28_by_dimensions.set_upstream(
-        telemetry_derived__clients_last_seen__v1
     )

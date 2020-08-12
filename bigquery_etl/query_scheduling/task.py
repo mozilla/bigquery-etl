@@ -7,7 +7,6 @@ import glob
 import os
 import re
 import logging
-from google.cloud import bigquery
 from typing import List, Optional, Tuple
 
 

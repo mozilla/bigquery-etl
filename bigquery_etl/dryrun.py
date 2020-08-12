@@ -18,9 +18,7 @@ import glob
 import json
 import sys
 
-DRY_RUN_URL = (
-    "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun"
-)
+DRY_RUN_URL = "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun"
 
 SKIP = {
     # Access Denied
@@ -111,19 +109,24 @@ SKIP = {
 }
 
 
-def get_referenced_tables(sqlfile):
-    """Return referenced tables by dry running the SQL file"""
-    response = dry_run_sql_file(sqlfile)
+def get_referenced_tables(sqlfile, response=None):
+    """Return referenced tables by dry running the SQL file."""
+    if response is None:
+        response = dry_run_sql_file(sqlfile)
 
-    if response and response["valid"] and response["referencedTables"]:
+    if not sql_file_valid(sqlfile, response):
+        raise Exception(f"Error when dry running SQL file {sqlfile}")
+
+    if response and response["valid"] and "referencedTables" in response:
         return response["referencedTables"]
 
     return []
 
 
-def sql_file_valid(sqlfile):
+def sql_file_valid(sqlfile, response=None):
     """Dry run the provided SQL file and check if valid."""
-    response = dry_run_sql_file(sqlfile)
+    if response is None:
+        response = dry_run_sql_file(sqlfile)
 
     if response is None:
         return False

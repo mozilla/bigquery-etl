@@ -93,14 +93,14 @@ class DagCollection:
 
         return self
 
-    def dag_to_airflow(self, output_dir, client, dag):
+    def dag_to_airflow(self, output_dir, dag):
         """Generate the Airflow DAG representation for the provided DAG."""
         output_file = output_dir / (dag.name + ".py")
-        output_file.write_text(dag.to_airflow_dag(client, self))
+        output_file.write_text(dag.to_airflow_dag(self))
 
-    def to_airflow_dags(self, output_dir, client):
+    def to_airflow_dags(self, output_dir):
         """Write DAG representation as Airflow dags to file."""
         with ThreadPool(8) as p:
             p.map(
-                partial(self.dag_to_airflow, output_dir, client), self.dags, chunksize=1
+                partial(self.dag_to_airflow, output_dir), self.dags, chunksize=1
             )

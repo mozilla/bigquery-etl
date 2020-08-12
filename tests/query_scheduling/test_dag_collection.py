@@ -207,7 +207,7 @@ class TestDagCollection:
             ).with_tasks(tasks)
 
     @pytest.mark.integration
-    def test_to_airflow(self, tmp_path, bigquery_client):
+    def test_to_airflow(self, tmp_path):
         query_file = (
             TEST_DIR
             / "data"
@@ -248,7 +248,7 @@ class TestDagCollection:
             }
         ).with_tasks(tasks)
 
-        dags.to_airflow_dags(tmp_path, bigquery_client)
+        dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
         expected = (TEST_DIR / "data" / "dags" / "simple_test_dag").read_text().strip()
 
@@ -354,7 +354,7 @@ class TestDagCollection:
             }
         ).with_tasks([task, table_task1, table_task2, external_table_task])
 
-        dags.to_airflow_dags(tmp_path, bigquery_client)
+        dags.to_airflow_dags(tmp_path)
 
         # we need to use templates since the temporary dataset name changes between runs
         env = Environment(loader=PackageLoader("tests", "data/dags"))
@@ -378,7 +378,7 @@ class TestDagCollection:
         assert dag_external_dependency == expected_dag_external_dependency
 
     @pytest.mark.integration
-    def test_public_json_dag_to_airflow(self, tmp_path, bigquery_client):
+    def test_public_json_dag_to_airflow(self, tmp_path):
         query_file = (
             TEST_DIR
             / "data"
@@ -411,7 +411,7 @@ class TestDagCollection:
             }
         ).with_tasks(tasks)
 
-        dags.to_airflow_dags(tmp_path, bigquery_client)
+        dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_public_data_json.py").read_text().strip()
         expected_dag = (
             (TEST_DIR / "data" / "dags" / "test_public_data_json_dag")
@@ -422,7 +422,7 @@ class TestDagCollection:
         assert result == expected_dag
 
     @pytest.mark.integration
-    def test_to_airflow_duplicate_dependencies(self, tmp_path, bigquery_client):
+    def test_to_airflow_duplicate_dependencies(self, tmp_path):
         query_file = (
             TEST_DIR
             / "data"
@@ -471,7 +471,7 @@ class TestDagCollection:
             }
         ).with_tasks(tasks)
 
-        dags.to_airflow_dags(tmp_path, bigquery_client)
+        dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
         expected = (
             (TEST_DIR / "data" / "dags" / "test_dag_duplicate_dependencies")

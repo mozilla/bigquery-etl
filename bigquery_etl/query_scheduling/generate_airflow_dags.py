@@ -104,7 +104,7 @@ def main():
     dags_output_dir = Path(args.output_dir)
 
     dags = get_dags(args.sql_dir, args.dags_config)
-    dags.to_airflow_dags(dags_output_dir, client)
+    dags.to_airflow_dags(dags_output_dir)
 
 
 if __name__ == "__main__":

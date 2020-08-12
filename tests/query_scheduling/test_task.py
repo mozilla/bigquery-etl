@@ -342,7 +342,7 @@ class TestTask:
         )
 
     @pytest.mark.integration
-    def test_task_get_dependencies_none(self, tmp_path, bigquery_client):
+    def test_task_get_dependencies_none(self, tmp_path):
         query_file_path = tmp_path / "sql" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
@@ -355,7 +355,7 @@ class TestTask:
 
         task = Task.of_query(query_file, metadata)
         dags = DagCollection.from_dict({})
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         assert task.dependencies == []
 
     @pytest.mark.integration
@@ -406,7 +406,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         result = task.dependencies
 
         tables = [t.task_id for t in result]
@@ -466,7 +466,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         result = task.dependencies
 
         tables = [t.task_id for t in result]
@@ -525,7 +525,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         result = task.dependencies
 
         tables = [t.task_id for t in result]
@@ -587,7 +587,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         result = task.dependencies
         tables = [t.task_id for t in result]
 

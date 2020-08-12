@@ -101,6 +101,4 @@ class DagCollection:
     def to_airflow_dags(self, output_dir):
         """Write DAG representation as Airflow dags to file."""
         with ThreadPool(8) as p:
-            p.map(
-                partial(self.dag_to_airflow, output_dir), self.dags, chunksize=1
-            )
+            p.map(partial(self.dag_to_airflow, output_dir), self.dags, chunksize=1)

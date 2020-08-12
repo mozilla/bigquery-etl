@@ -31,3 +31,17 @@ with DAG(
         depends_on_past=False,
         dag=dag,
     )
+
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__experiments_daily_active_clients__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily__v6
+    )

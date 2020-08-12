@@ -180,3 +180,47 @@ with DAG(
         depends_on_past=False,
         dag=dag,
     )
+
+    firefox_accounts_derived__fxa_users_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_auth_bounce_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_auth_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_last_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_users_services_daily__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_last_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_users_services_first_seen__v1
+    )
+
+    firefox_accounts_derived__exact_mau28__v1.set_upstream(
+        firefox_accounts_derived__fxa_users_last_seen__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_first_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_auth_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_first_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_auth_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_services_daily__v1.set_upstream(
+        firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    firefox_accounts_derived__fxa_users_last_seen__v1.set_upstream(
+        firefox_accounts_derived__fxa_users_daily__v1
+    )

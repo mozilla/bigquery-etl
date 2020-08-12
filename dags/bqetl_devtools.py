@@ -50,3 +50,31 @@ with DAG(
         depends_on_past=False,
         dag=dag,
     )
+
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__devtools_panel_usage__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily__v6
+    )
+
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_main_ping",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__devtools_accessiblility_panel_usage__v1.set_upstream(
+        wait_for_copy_deduplicate_main_ping
+    )

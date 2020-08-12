@@ -113,3 +113,86 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         depends_on_past=False,
         dag=dag,
     )
+
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_last_seen__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__smoot_usage_desktop__v2.set_upstream(
+        wait_for_telemetry_derived__clients_last_seen__v1
+    )
+
+    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
+        telemetry_derived__smoot_usage_desktop__v2
+    )
+
+    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
+        telemetry_derived__smoot_usage_fxa__v2
+    )
+
+    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
+        telemetry_derived__smoot_usage_nondesktop__v2
+    )
+
+    wait_for_firefox_accounts_derived__fxa_users_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_users_last_seen__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_users_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=5400),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__smoot_usage_fxa__v2.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_users_last_seen__v1
+    )
+
+    telemetry_derived__smoot_usage_desktop_compressed__v2.set_upstream(
+        telemetry_derived__smoot_usage_desktop__v2
+    )
+
+    telemetry_derived__smoot_usage_new_profiles_compressed__v2.set_upstream(
+        telemetry_derived__smoot_usage_new_profiles__v2
+    )
+
+    telemetry_derived__smoot_usage_nondesktop_compressed__v2.set_upstream(
+        telemetry_derived__smoot_usage_nondesktop__v2
+    )
+
+    telemetry_derived__smoot_usage_fxa_compressed__v2.set_upstream(
+        telemetry_derived__smoot_usage_fxa__v2
+    )
+
+    wait_for_baseline_clients_last_seen = ExternalTaskSensor(
+        task_id="wait_for_baseline_clients_last_seen",
+        external_dag_id="copy_deduplicate",
+        external_task_id="baseline_clients_last_seen",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
+        wait_for_baseline_clients_last_seen
+    )
+    wait_for_telemetry_derived__core_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
+        external_dag_id="bqetl_core",
+        external_task_id="telemetry_derived__core_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
+        wait_for_telemetry_derived__core_clients_last_seen__v1
+    )

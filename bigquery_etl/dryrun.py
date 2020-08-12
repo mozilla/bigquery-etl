@@ -18,7 +18,9 @@ import glob
 import json
 import sys
 
-DRY_RUN_URL = "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun"
+DRY_RUN_URL = (
+    "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun"
+)
 
 SKIP = {
     # Access Denied

@@ -9,3 +9,4 @@ scheduling:
   dag_name: bqetl_document_sample
   date_partition_parameter: null
   arguments: ["--append_table"]
+  referenced_tables: [['payload_bytes_decoded', '*']]

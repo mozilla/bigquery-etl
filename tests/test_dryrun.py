@@ -34,13 +34,16 @@ class TestDryRun:
         query_file = tmp_path / "query.sql"
         query_file.write_text("SELECT 123")
 
-        assert get_referenced_tables(query_file) == []
+        assert get_referenced_tables(str(query_file)) == []
 
     def test_get_referenced_tables(self, tmp_path):
         os.makedirs(tmp_path / "telmetry_derived")
         query_file = tmp_path / "telmetry_derived" / "query.sql"
-        query_file.write_text("SELECT * FROM clients_daily_v6")
-        response = get_referenced_tables(query_file)
+        query_file.write_text(
+            "SELECT * FROM telemetry_derived.clients_daily_v6 "
+            "WHERE submission_date = '2020-01-01'"
+        )
+        response = get_referenced_tables(str(query_file))
 
         assert len(response) == 1
         assert response[0]["datasetId"] == "telemetry_derived"

@@ -18,10 +18,6 @@ import glob
 import json
 import sys
 
-DRY_RUN_URL = (
-    "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun"
-)
-
 SKIP = {
     # Access Denied
     "sql/activity_stream/impression_stats_flat/view.sql",
@@ -111,77 +107,98 @@ SKIP = {
 }
 
 
-def get_referenced_tables(sqlfile, response=None):
-    """Return referenced tables by dry running the SQL file."""
-    if response is None:
-        response = dry_run_sql_file(sqlfile)
+class DryRun:
+    """Dry run SQL files."""
 
-    if not sql_file_valid(sqlfile, response):
-        raise Exception(f"Error when dry running SQL file {sqlfile}")
+    DRY_RUN_URL = (
+        "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/"
+        "bigquery-etl-dryrun"
+    )
 
-    if response and response["valid"] and "referencedTables" in response:
-        return response["referencedTables"]
+    def __init__(self, sqlfile):
+        """Instantiate DryRun class."""
+        self.sqlfile = sqlfile
+        self.dry_run_result = None
 
-    return []
+    def _execute(self):
+        """Dry run the provided SQL file."""
+        if self.dry_run_result:
+            return self.dry_run_result
 
+        sql = open(self.sqlfile).read()
 
-def sql_file_valid(sqlfile, response=None):
-    """Dry run the provided SQL file and check if valid."""
-    if response is None:
-        response = dry_run_sql_file(sqlfile)
-
-    if response is None:
-        return False
-
-    if "errors" in response and len(response["errors"]) == 1:
-        error = response["errors"][0]
-    else:
-        error = None
-
-    if response["valid"]:
-        print(f"{sqlfile:59} OK")
-    elif (
-        error
-        and error.get("code", None) in [400, 403]
-        and "does not have bigquery.tables.create permission for dataset"
-        in error.get("message", "")
-    ):
-        # We want the dryrun service to only have read permissions, so
-        # we expect CREATE VIEW and CREATE TABLE to throw specific
-        # exceptions.
-        print(f"{sqlfile:59} OK")
-    else:
-        print(f"{sqlfile:59} ERROR\n", response["errors"])
-        return False
-
-    return True
-
-
-def dry_run_sql_file(sqlfile):
-    """Dry run the provided SQL file."""
-    sql = open(sqlfile).read()
-
-    try:
-        r = urlopen(
-            Request(
-                DRY_RUN_URL,
-                headers={"Content-Type": "application/json"},
-                data=json.dumps(
-                    {"dataset": basename(dirname(dirname(sqlfile))), "query": sql}
-                ).encode("utf8"),
-                method="POST",
+        try:
+            r = urlopen(
+                Request(
+                    self.DRY_RUN_URL,
+                    headers={"Content-Type": "application/json"},
+                    data=json.dumps(
+                        {
+                            "dataset": basename(dirname(dirname(self.sqlfile))),
+                            "query": sql,
+                        }
+                    ).encode("utf8"),
+                    method="POST",
+                )
             )
-        )
-    except Exception as e:
-        print(f"{sqlfile:59} ERROR\n", e)
-        return None
+        except Exception as e:
+            print(f"{self.sqlfile:59} ERROR\n", e)
+            return None
 
-    return json.load(r)
+        self.dry_run_result = json.load(r)
+        return self.dry_run_result
+
+    def get_referenced_tables(self):
+        """Return referenced tables by dry running the SQL file."""
+        response = self._execute()
+
+        if not self.is_valid():
+            raise Exception(f"Error when dry running SQL file {self.sqlfile}")
+
+        if response and response["valid"] and "referencedTables" in response:
+            return response["referencedTables"]
+
+        return []
+
+    def is_valid(self):
+        """Dry run the provided SQL file and check if valid."""
+        response = self._execute()
+
+        if response is None:
+            return False
+
+        if "errors" in response and len(response["errors"]) == 1:
+            error = response["errors"][0]
+        else:
+            error = None
+
+        if response["valid"]:
+            print(f"{self.sqlfile:59} OK")
+        elif (
+            error
+            and error.get("code", None) in [400, 403]
+            and "does not have bigquery.tables.create permission for dataset"
+            in error.get("message", "")
+        ):
+            # We want the dryrun service to only have read permissions, so
+            # we expect CREATE VIEW and CREATE TABLE to throw specific
+            # exceptions.
+            print(f"{self.sqlfile:59} OK")
+        else:
+            print(f"{self.sqlfile:59} ERROR\n", response["errors"])
+            return False
+
+        return True
 
 
 def main():
     """Dry run all SQL files in the sql/ directory."""
     sql_files = [f for f in glob.glob("sql/**/*.sql", recursive=True) if f not in SKIP]
+
+    def sql_file_valid(sqlfile):
+        """Dry run SQL files."""
+        return DryRun(sqlfile).is_valid()
+
     with ThreadPool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
     if all(result):

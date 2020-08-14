@@ -17,79 +17,79 @@ WITH accessibility_panel_client_days AS (
       payload.processes.parent.scalars.devtools_accessibility_node_inspected_count
     ) AS node_inspected_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_select_accessible_for_node,
         "browser-context-menu"
       )
     ) AS browser_context_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_select_accessible_for_node,
         "inspector-context-menu"
       )
     ) AS inspector_context_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_audit_activated,
         "ALL"
       )
     ) AS audit_all_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_audit_activated,
         "CONTRAST"
       )
     ) AS audit_contrast_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_audit_activated,
         "KEYBOARD"
       )
     ) AS audit_keyboard_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_audit_activated,
         "TEXT_LABEL"
       )
     ) AS audit_text_label_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_accessible_context_menu_item_activated,
         "print-to-json"
       )
     ) AS print_to_json_context_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
         "PROTANOPIA"
       )
     ) AS simulation_protanopia_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
         "DEUTERANOPIA"
       )
     ) AS simulation_deuteranopia_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
         "TRITANOPIA"
       )
     ) AS simulation_tritanopia_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
         "ACHROMATOPSIA"
       )
     ) AS simulation_achromatopsia_count,
     SUM(
-      udf.get_key(
+      mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_simulation_activated,
         "CONTRAST_LOSS"
       )
     ) AS simulation_contrast_loss_count
   FROM
-    telemetry.main
+    `moz-fx-data-shared-prod`.telemetry.main
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND payload.processes.parent.scalars.devtools_accessibility_opened_count > 0

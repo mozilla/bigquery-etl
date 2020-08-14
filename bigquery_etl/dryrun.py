@@ -10,7 +10,7 @@ only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
-
+from functools import cached_property
 from multiprocessing.pool import ThreadPool
 from os.path import basename, dirname
 from urllib.request import urlopen, Request
@@ -118,13 +118,10 @@ class DryRun:
     def __init__(self, sqlfile):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
-        self.dry_run_result = None
 
-    def _execute(self):
+    @cached_property
+    def dry_run_result(self):
         """Dry run the provided SQL file."""
-        if self.dry_run_result:
-            return self.dry_run_result
-
         sql = open(self.sqlfile).read()
 
         try:
@@ -145,34 +142,33 @@ class DryRun:
             print(f"{self.sqlfile:59} ERROR\n", e)
             return None
 
-        self.dry_run_result = json.load(r)
-        return self.dry_run_result
+        return json.load(r)
 
     def get_referenced_tables(self):
         """Return referenced tables by dry running the SQL file."""
-        response = self._execute()
-
         if not self.is_valid():
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
-        if response and response["valid"] and "referencedTables" in response:
-            return response["referencedTables"]
+        if (
+            self.dry_run_result
+            and self.dry_run_result["valid"]
+            and "referencedTables" in self.dry_run_result
+        ):
+            return self.dry_run_result["referencedTables"]
 
         return []
 
     def is_valid(self):
         """Dry run the provided SQL file and check if valid."""
-        response = self._execute()
-
-        if response is None:
+        if self.dry_run_result is None:
             return False
 
-        if "errors" in response and len(response["errors"]) == 1:
-            error = response["errors"][0]
+        if "errors" in self.dry_run_result and len(self.dry_run_result["errors"]) == 1:
+            error = self.dry_run_result["errors"][0]
         else:
             error = None
 
-        if response["valid"]:
+        if self.dry_run_result["valid"]:
             print(f"{self.sqlfile:59} OK")
         elif (
             error
@@ -185,7 +181,7 @@ class DryRun:
             # exceptions.
             print(f"{self.sqlfile:59} OK")
         else:
-            print(f"{self.sqlfile:59} ERROR\n", response["errors"])
+            print(f"{self.sqlfile:59} ERROR\n", self.dry_run_result["errors"])
             return False
 
         return True

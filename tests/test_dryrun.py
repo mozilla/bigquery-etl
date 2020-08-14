@@ -9,7 +9,7 @@ class TestDryRun:
         query_file.write_text("SELECT 123")
 
         dryrun = DryRun(str(query_file))
-        response = dryrun._execute()
+        response = dryrun.dry_run_result
         assert response["valid"]
 
     def test_dry_run_invalid_sql_file(self, tmp_path):
@@ -17,7 +17,7 @@ class TestDryRun:
         query_file.write_text("SELECT INVALID 123")
 
         dryrun = DryRun(str(query_file))
-        response = dryrun._execute()
+        response = dryrun.dry_run_result
         assert response["valid"] is False
 
     def test_sql_file_valid(self, tmp_path):

@@ -12,6 +12,8 @@ from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.dryrun import DryRun
 
 TEST_DIR = Path(__file__).parent.parent
+# This Cloud Function has been manually deployed and might be outdated compared
+# to the shared-prod version
 TEST_DRY_RUN_URL = (
     "https://us-central1-bigquery-etl-integration-test.cloudfunctions.net/dryrun"
 )

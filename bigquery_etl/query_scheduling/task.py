@@ -10,7 +10,7 @@ import logging
 from typing import List, Optional, Tuple
 
 
-from bigquery_etl import dryrun
+from bigquery_etl.dryrun import DryRun
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
@@ -293,7 +293,7 @@ class Task:
                 query_files = glob.glob(self.sql_file_path + "/*.sql")
 
             for query_file in query_files:
-                referenced_tables = dryrun.get_referenced_tables(query_file)
+                referenced_tables = DryRun(query_file).get_referenced_tables()
 
                 if len(referenced_tables) >= 50:
                     logging.warn(

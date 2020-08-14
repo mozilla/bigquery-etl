@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 import pytest
 from typing import NewType
+from unittest import mock
 
 from bigquery_etl.query_scheduling.task import (
     Task,
@@ -12,8 +13,12 @@ from bigquery_etl.query_scheduling.task import (
 )
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
+from bigquery_etl.dryrun import DryRun
 
 TEST_DIR = Path(__file__).parent.parent
+TEST_DRY_RUN_URL = (
+    "https://us-central1-bigquery-etl-integration-test.cloudfunctions.net/dryrun"
+)
 
 
 class TestTask:
@@ -342,6 +347,7 @@ class TestTask:
         )
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_task_get_dependencies_none(self, tmp_path):
         query_file_path = tmp_path / "sql" / "test" / "query_v1"
         os.makedirs(query_file_path)
@@ -359,6 +365,7 @@ class TestTask:
         assert task.dependencies == []
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_task_get_multiple_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
@@ -415,6 +422,7 @@ class TestTask:
         assert f"{temporary_dataset}__table2__v1" in tables
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_multipart_task_get_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
@@ -475,6 +483,7 @@ class TestTask:
         assert f"{temporary_dataset}__table2__v1" in tables
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_task_get_view_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
@@ -534,6 +543,7 @@ class TestTask:
         assert f"{temporary_dataset}__table2__v1" in tables
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_task_get_nested_view_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):

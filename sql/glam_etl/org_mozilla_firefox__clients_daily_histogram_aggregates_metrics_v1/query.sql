@@ -165,6 +165,11 @@ histograms AS (
         metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size.values
       ),
       (
+        "glean_upload_pending_pings_directory_size",
+        "memory_distribution",
+        metrics.memory_distribution.glean_upload_pending_pings_directory_size.values
+      ),
+      (
         "javascript_gc_compact_time",
         "timing_distribution",
         metrics.timing_distribution.javascript_gc_compact_time.values

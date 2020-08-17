@@ -309,6 +309,41 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.glean_error_preinit_tasks_timeout AS INT64))
       ),
       (
+        'glean_upload_deleted_pings_after_quota_hit',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+      ),
+      (
+        'glean_upload_deleted_pings_after_quota_hit',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.glean_upload_deleted_pings_after_quota_hit) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'glean_upload_deleted_pings_after_quota_hit',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+      ),
+      (
+        'glean_upload_deleted_pings_after_quota_hit',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+      ),
+      (
+        'glean_upload_deleted_pings_after_quota_hit',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.glean_upload_deleted_pings_after_quota_hit AS INT64))
+      ),
+      (
         'glean_validation_app_forceclosed_count',
         'counter',
         '',

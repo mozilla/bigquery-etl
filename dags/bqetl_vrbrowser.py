@@ -40,9 +40,9 @@ with DAG(
         dag=dag,
     )
 
-    org_mozilla_vrbrowser_derived__metrics_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_vrbrowser_derived__metrics_daily__v1",
-        destination_table="metrics_daily_v1",
+    org_mozilla_vrbrowser_derived__clients_daily__v1 = bigquery_etl_query(
+        task_id="org_mozilla_vrbrowser_derived__clients_daily__v1",
+        destination_table="clients_daily_v1",
         dataset_id="org_mozilla_vrbrowser_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
@@ -72,9 +72,9 @@ with DAG(
         dag=dag,
     )
 
-    org_mozilla_vrbrowser_derived__clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_vrbrowser_derived__clients_daily__v1",
-        destination_table="clients_daily_v1",
+    org_mozilla_vrbrowser_derived__metrics_daily__v1 = bigquery_etl_query(
+        task_id="org_mozilla_vrbrowser_derived__metrics_daily__v1",
+        destination_table="metrics_daily_v1",
         dataset_id="org_mozilla_vrbrowser_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
@@ -102,18 +102,18 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_vrbrowser_derived__metrics_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_vrbrowser_derived__clients_last_seen__v1.set_upstream(
-        org_mozilla_vrbrowser_derived__clients_daily__v1
-    )
-
     org_mozilla_vrbrowser_derived__clients_daily__v1.set_upstream(
         org_mozilla_vrbrowser_derived__baseline_daily__v1
     )
 
     org_mozilla_vrbrowser_derived__clients_daily__v1.set_upstream(
         org_mozilla_vrbrowser_derived__metrics_daily__v1
+    )
+
+    org_mozilla_vrbrowser_derived__clients_last_seen__v1.set_upstream(
+        org_mozilla_vrbrowser_derived__clients_daily__v1
+    )
+
+    org_mozilla_vrbrowser_derived__metrics_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )

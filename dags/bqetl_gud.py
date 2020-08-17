@@ -30,9 +30,9 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         dag=dag,
     )
 
-    telemetry_derived__smoot_usage_new_profiles__v2 = bigquery_etl_query(
-        task_id="telemetry_derived__smoot_usage_new_profiles__v2",
-        destination_table="smoot_usage_new_profiles_v2",
+    telemetry_derived__smoot_usage_desktop_compressed__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_desktop_compressed__v2",
+        destination_table="smoot_usage_desktop_compressed_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
@@ -54,9 +54,21 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         dag=dag,
     )
 
-    telemetry_derived__smoot_usage_desktop_compressed__v2 = bigquery_etl_query(
-        task_id="telemetry_derived__smoot_usage_desktop_compressed__v2",
-        destination_table="smoot_usage_desktop_compressed_v2",
+    telemetry_derived__smoot_usage_fxa_compressed__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_fxa_compressed__v2",
+        destination_table="smoot_usage_fxa_compressed_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    telemetry_derived__smoot_usage_new_profiles__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_new_profiles__v2",
+        destination_table="smoot_usage_new_profiles_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
@@ -78,33 +90,21 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         dag=dag,
     )
 
-    telemetry_derived__smoot_usage_nondesktop_compressed__v2 = bigquery_etl_query(
-        task_id="telemetry_derived__smoot_usage_nondesktop_compressed__v2",
-        destination_table="smoot_usage_nondesktop_compressed_v2",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    telemetry_derived__smoot_usage_fxa_compressed__v2 = bigquery_etl_query(
-        task_id="telemetry_derived__smoot_usage_fxa_compressed__v2",
-        destination_table="smoot_usage_fxa_compressed_v2",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
     telemetry_derived__smoot_usage_nondesktop__v2 = bigquery_etl_query(
         task_id="telemetry_derived__smoot_usage_nondesktop__v2",
         destination_table="smoot_usage_nondesktop_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    telemetry_derived__smoot_usage_nondesktop_compressed__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__smoot_usage_nondesktop_compressed__v2",
+        destination_table="smoot_usage_nondesktop_compressed_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",
@@ -128,16 +128,8 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         wait_for_telemetry_derived__clients_last_seen__v1
     )
 
-    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
+    telemetry_derived__smoot_usage_desktop_compressed__v2.set_upstream(
         telemetry_derived__smoot_usage_desktop__v2
-    )
-
-    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
-        telemetry_derived__smoot_usage_fxa__v2
-    )
-
-    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
-        telemetry_derived__smoot_usage_nondesktop__v2
     )
 
     wait_for_firefox_accounts_derived__fxa_users_last_seen__v1 = ExternalTaskSensor(
@@ -154,20 +146,24 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
         wait_for_firefox_accounts_derived__fxa_users_last_seen__v1
     )
 
-    telemetry_derived__smoot_usage_desktop_compressed__v2.set_upstream(
+    telemetry_derived__smoot_usage_fxa_compressed__v2.set_upstream(
+        telemetry_derived__smoot_usage_fxa__v2
+    )
+
+    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
         telemetry_derived__smoot_usage_desktop__v2
+    )
+
+    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
+        telemetry_derived__smoot_usage_fxa__v2
+    )
+
+    telemetry_derived__smoot_usage_new_profiles__v2.set_upstream(
+        telemetry_derived__smoot_usage_nondesktop__v2
     )
 
     telemetry_derived__smoot_usage_new_profiles_compressed__v2.set_upstream(
         telemetry_derived__smoot_usage_new_profiles__v2
-    )
-
-    telemetry_derived__smoot_usage_nondesktop_compressed__v2.set_upstream(
-        telemetry_derived__smoot_usage_nondesktop__v2
-    )
-
-    telemetry_derived__smoot_usage_fxa_compressed__v2.set_upstream(
-        telemetry_derived__smoot_usage_fxa__v2
     )
 
     wait_for_baseline_clients_last_seen = ExternalTaskSensor(
@@ -195,4 +191,8 @@ with DAG("bqetl_gud", default_args=default_args, schedule_interval="0 3 * * *") 
 
     telemetry_derived__smoot_usage_nondesktop__v2.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
+    )
+
+    telemetry_derived__smoot_usage_nondesktop_compressed__v2.set_upstream(
+        telemetry_derived__smoot_usage_nondesktop__v2
     )

@@ -20,6 +20,18 @@ with DAG(
     "bqetl_nondesktop", default_args=default_args, schedule_interval="0 3 * * *"
 ) as dag:
 
+    firefox_nondesktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
+        task_id="firefox_nondesktop_exact_mau28_by_client_count_dimensions",
+        destination_table="firefox_nondesktop_exact_mau28_by_client_count_dimensions_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1 = bigquery_etl_query(
         task_id="telemetry_derived__firefox_nondesktop_day_2_7_activation__v1",
         destination_table="firefox_nondesktop_day_2_7_activation_v1",
@@ -44,16 +56,18 @@ with DAG(
         dag=dag,
     )
 
-    firefox_nondesktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
-        task_id="firefox_nondesktop_exact_mau28_by_client_count_dimensions",
-        destination_table="firefox_nondesktop_exact_mau28_by_client_count_dimensions_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
-        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
+    wait_for_telemetry_derived__core_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
+        external_dag_id="bqetl_core",
+        external_task_id="telemetry_derived__core_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
+        wait_for_telemetry_derived__core_clients_last_seen__v1
     )
 
     wait_for_baseline_clients_last_seen = ExternalTaskSensor(
@@ -69,16 +83,6 @@ with DAG(
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
         wait_for_baseline_clients_last_seen
     )
-    wait_for_telemetry_derived__core_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
-        external_dag_id="bqetl_core",
-        external_task_id="telemetry_derived__core_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
@@ -87,9 +91,5 @@ with DAG(
         wait_for_baseline_clients_last_seen
     )
     telemetry_derived__firefox_nondesktop_exact_mau28__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_last_seen__v1
-    )
-
-    firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )

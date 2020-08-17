@@ -20,9 +20,9 @@ with DAG(
     "bqetl_messaging_system", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
-    messaging_system_derived__onboarding_users_daily__v1 = bigquery_etl_query(
-        task_id="messaging_system_derived__onboarding_users_daily__v1",
-        destination_table="onboarding_users_daily_v1",
+    messaging_system_derived__cfr_exact_mau28_by_dimensions__v1 = bigquery_etl_query(
+        task_id="messaging_system_derived__cfr_exact_mau28_by_dimensions__v1",
+        destination_table="cfr_exact_mau28_by_dimensions_v1",
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
@@ -44,30 +44,6 @@ with DAG(
         dag=dag,
     )
 
-    messaging_system_derived__snippets_users_daily__v1 = bigquery_etl_query(
-        task_id="messaging_system_derived__snippets_users_daily__v1",
-        destination_table="snippets_users_daily_v1",
-        dataset_id="messaging_system_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    messaging_system_onboarding_exact_mau28_by_dimensions = bigquery_etl_query(
-        task_id="messaging_system_onboarding_exact_mau28_by_dimensions",
-        destination_table="onboarding_exact_mau28_by_dimensions_v1",
-        dataset_id="messaging_system_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
     messaging_system_derived__cfr_users_last_seen__v1 = bigquery_etl_query(
         task_id="messaging_system_derived__cfr_users_last_seen__v1",
         destination_table="cfr_users_last_seen_v1",
@@ -80,15 +56,15 @@ with DAG(
         dag=dag,
     )
 
-    messaging_system_derived__snippets_users_last_seen__v1 = bigquery_etl_query(
-        task_id="messaging_system_derived__snippets_users_last_seen__v1",
-        destination_table="snippets_users_last_seen_v1",
+    messaging_system_derived__onboarding_users_daily__v1 = bigquery_etl_query(
+        task_id="messaging_system_derived__onboarding_users_daily__v1",
+        destination_table="onboarding_users_daily_v1",
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
         owner="najiang@mozilla.com",
         email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
-        depends_on_past=True,
+        depends_on_past=False,
         dag=dag,
     )
 
@@ -104,6 +80,42 @@ with DAG(
         dag=dag,
     )
 
+    messaging_system_derived__snippets_users_daily__v1 = bigquery_etl_query(
+        task_id="messaging_system_derived__snippets_users_daily__v1",
+        destination_table="snippets_users_daily_v1",
+        dataset_id="messaging_system_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="najiang@mozilla.com",
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    messaging_system_derived__snippets_users_last_seen__v1 = bigquery_etl_query(
+        task_id="messaging_system_derived__snippets_users_last_seen__v1",
+        destination_table="snippets_users_last_seen_v1",
+        dataset_id="messaging_system_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="najiang@mozilla.com",
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        dag=dag,
+    )
+
+    messaging_system_onboarding_exact_mau28_by_dimensions = bigquery_etl_query(
+        task_id="messaging_system_onboarding_exact_mau28_by_dimensions",
+        destination_table="onboarding_exact_mau28_by_dimensions_v1",
+        dataset_id="messaging_system_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="najiang@mozilla.com",
+        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     messaging_system_snippets_exact_mau28_by_dimensions = bigquery_etl_query(
         task_id="messaging_system_snippets_exact_mau28_by_dimensions",
         destination_table="snippets_exact_mau28_by_dimensions_v1",
@@ -116,16 +128,8 @@ with DAG(
         dag=dag,
     )
 
-    messaging_system_derived__cfr_exact_mau28_by_dimensions__v1 = bigquery_etl_query(
-        task_id="messaging_system_derived__cfr_exact_mau28_by_dimensions__v1",
-        destination_table="cfr_exact_mau28_by_dimensions_v1",
-        dataset_id="messaging_system_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="najiang@mozilla.com",
-        email=["najiang@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
+    messaging_system_derived__cfr_exact_mau28_by_dimensions__v1.set_upstream(
+        messaging_system_derived__cfr_users_last_seen__v1
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
@@ -138,38 +142,34 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    messaging_system_derived__onboarding_users_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     messaging_system_derived__cfr_users_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    messaging_system_derived__snippets_users_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    messaging_system_onboarding_exact_mau28_by_dimensions.set_upstream(
-        messaging_system_derived__onboarding_users_last_seen__v1
     )
 
     messaging_system_derived__cfr_users_last_seen__v1.set_upstream(
         messaging_system_derived__cfr_users_daily__v1
     )
 
-    messaging_system_derived__snippets_users_last_seen__v1.set_upstream(
-        messaging_system_derived__snippets_users_daily__v1
+    messaging_system_derived__onboarding_users_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     messaging_system_derived__onboarding_users_last_seen__v1.set_upstream(
         messaging_system_derived__onboarding_users_daily__v1
     )
 
-    messaging_system_snippets_exact_mau28_by_dimensions.set_upstream(
-        messaging_system_derived__snippets_users_last_seen__v1
+    messaging_system_derived__snippets_users_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
-    messaging_system_derived__cfr_exact_mau28_by_dimensions__v1.set_upstream(
-        messaging_system_derived__cfr_users_last_seen__v1
+    messaging_system_derived__snippets_users_last_seen__v1.set_upstream(
+        messaging_system_derived__snippets_users_daily__v1
+    )
+
+    messaging_system_onboarding_exact_mau28_by_dimensions.set_upstream(
+        messaging_system_derived__onboarding_users_last_seen__v1
+    )
+
+    messaging_system_snippets_exact_mau28_by_dimensions.set_upstream(
+        messaging_system_derived__snippets_users_last_seen__v1
     )

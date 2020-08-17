@@ -20,30 +20,6 @@ with DAG(
     "bqetl_addons", default_args=default_args, schedule_interval="0 3 * * *"
 ) as dag:
 
-    telemetry_derived__addons_daily__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__addons_daily__v1",
-        destination_table="addons_daily_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="bmiroglio@mozilla.com",
-        email=["bmiroglio@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    telemetry_derived__addons__v2 = bigquery_etl_query(
-        task_id="telemetry_derived__addons__v2",
-        destination_table="addons_v2",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="bmiroglio@mozilla.com",
-        email=["bmiroglio@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
     telemetry_derived__addon_aggregates__v2 = bigquery_etl_query(
         task_id="telemetry_derived__addon_aggregates__v2",
         destination_table="addon_aggregates_v2",
@@ -68,6 +44,48 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         dag=dag,
     )
+
+    telemetry_derived__addons__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__addons__v2",
+        destination_table="addons_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="bmiroglio@mozilla.com",
+        email=["bmiroglio@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    telemetry_derived__addons_daily__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__addons_daily__v1",
+        destination_table="addons_daily_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="bmiroglio@mozilla.com",
+        email=["bmiroglio@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_main_ping",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__addon_aggregates__v2.set_upstream(
+        wait_for_copy_deduplicate_main_ping
+    )
+
+    telemetry_derived__addon_names__v1.set_upstream(wait_for_copy_deduplicate_main_ping)
+
+    telemetry_derived__addons__v2.set_upstream(wait_for_copy_deduplicate_main_ping)
 
     wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
         task_id="wait_for_search_derived__search_clients_daily__v8",
@@ -94,21 +112,3 @@ with DAG(
     telemetry_derived__addons_daily__v1.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1
     )
-
-    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_main_ping",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_main_ping",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    telemetry_derived__addons__v2.set_upstream(wait_for_copy_deduplicate_main_ping)
-
-    telemetry_derived__addon_aggregates__v2.set_upstream(
-        wait_for_copy_deduplicate_main_ping
-    )
-
-    telemetry_derived__addon_names__v1.set_upstream(wait_for_copy_deduplicate_main_ping)

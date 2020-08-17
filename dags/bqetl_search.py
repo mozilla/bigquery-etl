@@ -20,26 +20,21 @@ with DAG(
     "bqetl_search", default_args=default_args, schedule_interval="0 3 * * *"
 ) as dag:
 
-    search_derived__search_metric_contribution__v1 = bigquery_etl_query(
-        task_id="search_derived__search_metric_contribution__v1",
-        destination_table="search_metric_contribution_v1",
+    search_derived__search_aggregates__v8 = bigquery_etl_query(
+        task_id="search_derived__search_aggregates__v8",
+        destination_table="search_aggregates_v8",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bmiroglio@mozilla.com",
-        email=[
-            "bewu@mozilla.com",
-            "bmiroglio@mozilla.com",
-            "frank@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com", "frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
     )
 
-    search_derived__search_aggregates__v8 = bigquery_etl_query(
-        task_id="search_derived__search_aggregates__v8",
-        destination_table="search_aggregates_v8",
+    search_derived__search_clients_daily__v8 = bigquery_etl_query(
+        task_id="search_derived__search_clients_daily__v8",
+        destination_table="search_clients_daily_v8",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="bewu@mozilla.com",
@@ -61,27 +56,24 @@ with DAG(
         dag=dag,
     )
 
-    search_derived__search_clients_daily__v8 = bigquery_etl_query(
-        task_id="search_derived__search_clients_daily__v8",
-        destination_table="search_clients_daily_v8",
+    search_derived__search_metric_contribution__v1 = bigquery_etl_query(
+        task_id="search_derived__search_metric_contribution__v1",
+        destination_table="search_metric_contribution_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bewu@mozilla.com",
-        email=["bewu@mozilla.com", "frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="bmiroglio@mozilla.com",
+        email=[
+            "bewu@mozilla.com",
+            "bmiroglio@mozilla.com",
+            "frank@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
     )
 
-    search_derived__search_metric_contribution__v1.set_upstream(
-        search_derived__search_clients_daily__v8
-    )
-
     search_derived__search_aggregates__v8.set_upstream(
-        search_derived__search_clients_daily__v8
-    )
-
-    search_derived__search_clients_last_seen__v1.set_upstream(
         search_derived__search_clients_daily__v8
     )
 
@@ -97,4 +89,12 @@ with DAG(
 
     search_derived__search_clients_daily__v8.set_upstream(
         wait_for_telemetry_derived__main_summary__v4
+    )
+
+    search_derived__search_clients_last_seen__v1.set_upstream(
+        search_derived__search_clients_daily__v8
+    )
+
+    search_derived__search_metric_contribution__v1.set_upstream(
+        search_derived__search_clients_daily__v8
     )

@@ -89,7 +89,7 @@ def main():
     init = partial(template, QueryType.INIT)
 
     # If this is a logical app id, generate it. Assert that the daily view for
-    # the app exists. This assumes is that both scalar and histogram aggregates
+    # the app exists. This assumes that both scalar and histogram aggregates
     # exist and will break down in the case where a glean app only contains one
     # of the scalar or histogram view.
     for daily_view in [

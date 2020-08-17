@@ -31,12 +31,6 @@ parser.add_argument(
     default=DEFAULT_DAGS_FILE,
 )
 parser.add_argument(
-    "--project_id",
-    "--project-id",
-    default="moz-fx-data-shared-prod",
-    help="Dry run queries in this project to determine task dependencies.",
-)
-parser.add_argument(
     "--output_dir",
     "--output-dir",
     default=DEFAULT_DAGS_DIR,

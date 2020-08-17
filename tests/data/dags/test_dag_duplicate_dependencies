@@ -9,9 +9,9 @@ default_args = {'owner': 'test@example.org', 'start_date': datetime.datetime(202
 
 with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily') as dag:
 
-    test__non_incremental_query__v1 = bigquery_etl_query(
-        task_id='test__non_incremental_query__v1',
-        destination_table='non_incremental_query_v1',
+    test__no_metadata_query__v1 = bigquery_etl_query(
+        task_id='test__no_metadata_query__v1',
+        destination_table='no_metadata_query_v1',
         dataset_id='test',
         project_id='moz-fx-data-shared-prod',
         owner='test@example.com',
@@ -21,9 +21,9 @@ with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily'
         dag=dag,
     )
 
-    test__no_metadata_query__v1 = bigquery_etl_query(
-        task_id='test__no_metadata_query__v1',
-        destination_table='no_metadata_query_v1',
+    test__non_incremental_query__v1 = bigquery_etl_query(
+        task_id='test__non_incremental_query__v1',
+        destination_table='non_incremental_query_v1',
         dataset_id='test',
         project_id='moz-fx-data-shared-prod',
         owner='test@example.com',
@@ -43,6 +43,6 @@ with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily'
         dag=dag,
     )
     
-    test__non_incremental_query__v1.set_upstream(wait_for_external_task1)
-    
     test__no_metadata_query__v1.set_upstream(wait_for_external_task1)
+    
+    test__non_incremental_query__v1.set_upstream(wait_for_external_task1)

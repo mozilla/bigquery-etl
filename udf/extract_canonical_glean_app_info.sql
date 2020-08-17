@@ -43,7 +43,9 @@ RETURNS STRUCT<app_name STRING, channel STRING, canonical_app_id STRING> AS (
       STRUCT('Fenix', 'nightly', 'org.mozilla.fenix')
     )
   ELSE
-    ERROR("Bad data")
+    ERROR(
+      FORMAT("Given app_id or dataset name does not match any known Glean application: %s", app_id)
+    )
   END
 );
 

@@ -107,24 +107,19 @@ jobs:
             cd telemetry-airflow
             bash bin/test-parse
   verify-dags-up-to-date:
-    docker:
-      - image: python:3.8
+    docker: *docker
     steps:
     - checkout
     - *build
-    - run:
-        name: Verify that DAGs were correctly generated and are up-to-date
+    - run: 
+        name: Generate DAGs
         command: |
           mv dags/ existing_dags/
           mkdir dags
           PATH="venv/bin:$PATH" script/generate_airflow_dags
-          dag_diff=`diff -aq existing_dags/ dags/`
-
-          if [ "$dag_diff" != "" ]; then
-            echo "Generated DAGs differ from pushed DAGs."
-            echo $dag_diff
-            exit 1
-          fi
+    - run:
+        name: Verify that DAGs were correctly generated and are up-to-date
+        command: diff -aq existing_dags/ dags/
   validate-docs:
     docker: *docker
     steps:

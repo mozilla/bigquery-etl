@@ -1,4 +1,5 @@
-description: 'Returns the number of nanoseconds represented by a Glean timespan struct.
+description: |
+  Returns the number of nanoseconds represented by a Glean timespan struct.
 
-  See https://mozilla.github.io/glean/book/user/metrics/timespan.html'
+  See https://mozilla.github.io/glean/book/user/metrics/timespan.html
 friendly_name: Timespan Nanos

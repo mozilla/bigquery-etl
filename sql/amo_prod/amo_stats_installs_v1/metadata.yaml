@@ -1,6 +1,6 @@
 friendly_name: AMO Stats DAU
 description: >
-  Daily install statistics to power addons.mozilla.org stats pages. See bug 1572873.
+  Deprecated version of daily install statistics to power addons.mozilla.org stats pages. See bug 1572873.
 
   This query looks backward in time by two days in order to allow
   some delay in installs actually being reported, which means each
@@ -14,5 +14,3 @@ labels:
   application: amo
   incremental: true
   schedule: daily
-scheduling:
-  dag_name: bqetl_amo_stats

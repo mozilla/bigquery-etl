@@ -3,13 +3,20 @@ from jinja2 import Environment, PackageLoader
 import os
 from pathlib import Path
 import pytest
+from unittest import mock
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.dag import InvalidDag, DagParseException
 from bigquery_etl.query_scheduling.task import Task
 from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.dryrun import DryRun
 
 TEST_DIR = Path(__file__).parent.parent
+# This Cloud Function has been manually deployed and might be outdated compared
+# to the shared-prod version
+TEST_DRY_RUN_URL = (
+    "https://us-central1-bigquery-etl-integration-test.cloudfunctions.net/dryrun"
+)
 
 
 class TestDagCollection:
@@ -207,7 +214,8 @@ class TestDagCollection:
             ).with_tasks(tasks)
 
     @pytest.mark.integration
-    def test_to_airflow(self, tmp_path, bigquery_client):
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
+    def test_to_airflow(self, tmp_path):
         query_file = (
             TEST_DIR
             / "data"
@@ -248,13 +256,14 @@ class TestDagCollection:
             }
         ).with_tasks(tasks)
 
-        dags.to_airflow_dags(tmp_path, bigquery_client)
+        dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
         expected = (TEST_DIR / "data" / "dags" / "simple_test_dag").read_text().strip()
 
         assert result == expected
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_to_airflow_with_dependencies(
         self, tmp_path, project_id, temporary_dataset, bigquery_client
     ):
@@ -354,7 +363,7 @@ class TestDagCollection:
             }
         ).with_tasks([task, table_task1, table_task2, external_table_task])
 
-        dags.to_airflow_dags(tmp_path, bigquery_client)
+        dags.to_airflow_dags(tmp_path)
 
         # we need to use templates since the temporary dataset name changes between runs
         env = Environment(loader=PackageLoader("tests", "data/dags"))
@@ -378,7 +387,8 @@ class TestDagCollection:
         assert dag_external_dependency == expected_dag_external_dependency
 
     @pytest.mark.integration
-    def test_public_json_dag_to_airflow(self, tmp_path, bigquery_client):
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
+    def test_public_json_dag_to_airflow(self, tmp_path):
         query_file = (
             TEST_DIR
             / "data"
@@ -411,7 +421,7 @@ class TestDagCollection:
             }
         ).with_tasks(tasks)
 
-        dags.to_airflow_dags(tmp_path, bigquery_client)
+        dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_public_data_json.py").read_text().strip()
         expected_dag = (
             (TEST_DIR / "data" / "dags" / "test_public_data_json_dag")
@@ -422,7 +432,8 @@ class TestDagCollection:
         assert result == expected_dag
 
     @pytest.mark.integration
-    def test_to_airflow_duplicate_dependencies(self, tmp_path, bigquery_client):
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
+    def test_to_airflow_duplicate_dependencies(self, tmp_path):
         query_file = (
             TEST_DIR
             / "data"
@@ -471,7 +482,7 @@ class TestDagCollection:
             }
         ).with_tasks(tasks)
 
-        dags.to_airflow_dags(tmp_path, bigquery_client)
+        dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
         expected = (
             (TEST_DIR / "data" / "dags" / "test_dag_duplicate_dependencies")

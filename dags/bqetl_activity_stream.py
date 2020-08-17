@@ -32,6 +32,18 @@ with DAG(
         dag=dag,
     )
 
+    activity_stream_bi__impression_stats_by_experiment__v1 = bigquery_etl_query(
+        task_id="activity_stream_bi__impression_stats_by_experiment__v1",
+        destination_table="impression_stats_by_experiment_v1",
+        dataset_id="activity_stream_bi",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -44,4 +56,8 @@ with DAG(
 
     activity_stream_bi__impression_stats_flat__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    activity_stream_bi__impression_stats_by_experiment__v1.set_upstream(
+        activity_stream_bi__impression_stats_flat__v1
     )

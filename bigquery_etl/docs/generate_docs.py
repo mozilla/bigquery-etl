@@ -40,6 +40,12 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
+def format_url(doc):
+    """Create links for urls in documentation."""
+    doc = re.sub(r"(?<!\()(https?://[^\s]+)(?!\))", r"<\1>", doc)
+    return doc
+
+
 def load_with_examples(file):
     """Load doc file and replace SQL references with examples."""
     with open(file) as doc_file:
@@ -108,7 +114,8 @@ def main():
                                 dataset_doc_file.write(f"## {name}\n\n")
                                 # Inject the "description" from metadata.yaml
                                 if description:
-                                    dataset_doc_file.write(f"{description}\n\n")
+                                    formated = format_url(description)
+                                    dataset_doc_file.write(f"{formated}\n\n")
                                 # Inject the contents of the README.md
                                 dataset_doc_file.write(docfile_content)
                         else:

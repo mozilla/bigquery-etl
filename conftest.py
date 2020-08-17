@@ -76,9 +76,6 @@ def test_bucket():
 
     yield bucket
 
-    # cleanup test bucket
-    bucket.delete_blobs(bucket.list_blobs())
-
 
 @pytest.fixture
 def temporary_gcs_folder():

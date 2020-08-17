@@ -68,7 +68,7 @@ function write_clients_daily_aggregates {
 }
 
 cd "$(dirname "$0")/../.."
-error="STAGE must be one of (daily, incremental)"
+error="STAGE must be one of (daily, incremental, all)"
 project=${SRC_PROJECT:-moz-fx-data-shared-prod}
 product=${PRODUCT?PRODUCT must be defined}
 stage=${STAGE?$error}
@@ -77,6 +77,9 @@ if [[ $stage == "daily" ]]; then
     write_clients_daily_aggregates "$product" "$project"
     python3 -m bigquery_etl.glam.generate --prefix "${product}" --daily-view-only
 elif [[ $stage == "incremental" ]]; then
+    python3 -m bigquery_etl.glam.generate --prefix "${product}"
+elif [[ $stage == "all" ]]; then
+    write_clients_daily_aggregates "$product" "$project"
     python3 -m bigquery_etl.glam.generate --prefix "${product}"
 else
     echo "$error"

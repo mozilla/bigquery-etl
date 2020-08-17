@@ -184,7 +184,7 @@ function run_desktop_sql {
 
 
 function run_glean_sql {
-    local error="STAGE must be one of (daily, incremental)"
+    local error="STAGE must be one of (daily, incremental, all)"
     local product=$1
     local stage=${STAGE?$error}
     local start_stage=${START_STAGE:-0}
@@ -196,7 +196,11 @@ function run_glean_sql {
         exit 1
     fi
 
-    if [[ $stage == "daily" ]]; then
+    if ! [[ $stage == "daily" || $stage == "incremental" || $stage == "all" ]]; then
+        echo "$error"
+        exit 1
+    fi
+    if [[ $stage == "daily" || $stage == "all" ]]; then
         if ((start_stage <= 0)) && [[ $export_only = false ]]; then
             for directory in sql/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
                 run_query "$(basename "$directory")" true &
@@ -209,7 +213,8 @@ function run_glean_sql {
             run_view "${product}__view_clients_daily_scalar_aggregates_v1" &
             run_view "${product}__view_clients_daily_histogram_aggregates_v1" &
         fi
-    elif [[ $stage == "incremental" ]]; then 
+    fi
+    if [[ $stage == "incremental" || $stage == "all" ]]; then
         if ((start_stage <= 1)) && [[ $export_only = false ]]; then
             run_view "${product}__view_clients_daily_histogram_aggregates_v1"
             # latest versions now depends on scalar aggregates
@@ -243,9 +248,6 @@ function run_glean_sql {
         run_query "${product}__extract_user_counts_v1" &
         run_query "${product}__extract_probe_counts_v1" &
         wait
-    else
-        echo "$error"
-        exit 1
     fi
 }
 

@@ -9,13 +9,26 @@ from collections import defaultdict
 from google.cloud import bigquery
 
 DECODED_QUERY = """
+WITH decoded AS (
+  SELECT 
+    * EXCEPT (metadata),  -- Some tables have different field order in metadata
+    _TABLE_SUFFIX,
+  FROM
+    `moz-fx-data-shared-prod.payload_bytes_decoded.structured_*`
+  UNION ALL
+  SELECT
+    * EXCEPT (metadata),
+    _TABLE_SUFFIX,
+  FROM
+    `moz-fx-data-shared-prod.payload_bytes_decoded.stub_installer_*` 
+)
 SELECT
   DATE(submission_timestamp) AS submission_date,
   SPLIT(_TABLE_SUFFIX, '__')[OFFSET(0)] AS namespace,
   SPLIT(_TABLE_SUFFIX, '__')[OFFSET(1)] AS doc_type,
   COUNT(DISTINCT(document_id)) AS docid_count,
 FROM
-  `moz-fx-data-shared-prod.payload_bytes_decoded.structured_*`
+  decoded
 WHERE
   DATE(submission_timestamp) = '{date}'
 GROUP BY

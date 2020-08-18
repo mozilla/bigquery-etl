@@ -1,11 +1,11 @@
-{{ header }}
+-- query for org_mozilla_fenix_glam_release__latest_versions_v1;
 WITH extracted AS (
   SELECT
     client_id,
     channel,
     app_version
   FROM
-    {{ source_table }}
+    glam_etl.org_mozilla_fenix_glam_release__view_clients_daily_scalar_aggregates_v1
   WHERE
     submission_date > DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
     AND channel IS NOT NULL

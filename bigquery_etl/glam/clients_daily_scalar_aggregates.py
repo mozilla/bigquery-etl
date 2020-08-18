@@ -115,9 +115,7 @@ def main():
         action="store_true",
         help="Generate a query without parameters",
     )
-    parser.add_argument(
-        "--source-table", type=str, help="Name of Glean table",
-    )
+    parser.add_argument("--source-table", type=str, help="Name of Glean table")
     args = parser.parse_args()
 
     # If set to 1 day, then runs of copy_deduplicate may not be done yet

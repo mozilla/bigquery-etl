@@ -41,23 +41,29 @@ def generate_sql(opts):
               submission_timestamp AS timestamp,
               unnested_experiments,
               unnested_ad_clicks,
-              unnested_search_with_ads
+              unnested_search_with_ads,
               unnested_search_counts
             FROM
               `moz-fx-data-shared-prod.telemetry_live.main_v4`,
-            UNNEST(environment.experiments) AS unnested_experiments,
+            UNNEST(
+              ARRAY(SELECT AS STRUCT key, value.branch AS value FROM UNNEST(environment.experiments))
+            ) AS unnested_experiments,
             UNNEST(payload.processes.parent.keyed_scalars.browser_search_ad_clicks) AS unnested_ad_clicks,
-            UNNEST(payload.processes.parent.keyed_scalars.browser_search_with_ads) AS unnested_search_with_ads,
-            UNNEST(ARRAY(
-              SELECT AS STRUCT
-                SUBSTR(_key, 0, pos - 2) AS engine,
-                SUBSTR(_key, pos) AS source,
-                udf.extract_histogram_sum(value) AS `count`
-              FROM
-                UNNEST(payload.keyed_histograms.search_counts),
-                UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-                UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
-            )) AS search_counts
+            UNNEST(
+              payload.processes.parent.keyed_scalars.browser_search_with_ads
+            ) AS unnested_search_with_ads,
+            UNNEST(
+              ARRAY(
+                SELECT AS STRUCT
+                  SUBSTR(_key, 0, pos - 2) AS engine,
+                  SUBSTR(_key, pos) AS source,
+                  udf.extract_histogram_sum(value) AS `count`
+                FROM
+                  UNNEST(payload.keyed_histograms.search_counts),
+                  UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
+                  UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
+              )
+            ) AS unnested_search_counts
             WHERE
               date(submission_timestamp) > '{submission_date}'
               AND ARRAY_LENGTH(environment.experiments) > 0
@@ -77,7 +83,7 @@ def generate_sql(opts):
               ) AS window_end,
               SUM(unnested_ad_clicks.value) AS ad_clicks_count,
               SUM(unnested_search_with_ads.value) AS search_with_ads_count,
-              SUM(unnested_search_counts.count) AS search_counts
+              SUM(unnested_search_counts.count) AS search_count
             FROM
               all_experiments_searches_live
             GROUP BY
@@ -93,16 +99,35 @@ def generate_sql(opts):
             `moz-fx-data-shared-prod.telemetry_derived.experiment_search_aggregates_v1`
           WHERE
             date(window_start) <= '{submission_date}'
+        ),
+        all_searches AS (
+          SELECT
+            *
+          FROM
+            previous
+          UNION ALL
+          SELECT
+            *
+          FROM
+            live
         )
         SELECT
-          *
+          *,
+          SUM(search_count) OVER previous_rows_window AS cumulative_search_count,
+          SUM(search_with_ads_count) OVER previous_rows_window AS cumulative_search_with_ads_count,
+          SUM(ad_clicks_count) OVER previous_rows_window AS cumulative_ad_clicks_count
         FROM
-          previous
-        UNION ALL
-        SELECT
-          *
-        FROM
-          live
+          all_searches
+        WINDOW previous_rows_window AS (
+          PARTITION BY
+            experiment,
+            branch
+          ORDER BY
+            window_start
+          ROWS BETWEEN
+            UNBOUNDED PRECEDING
+            AND CURRENT ROW
+        )
         """.format(
             **opts
         )

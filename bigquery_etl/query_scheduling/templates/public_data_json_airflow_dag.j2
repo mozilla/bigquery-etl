@@ -62,7 +62,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     public_data_gcs_metadata.set_upstream(
         [
-        {% for task in tasks %}
+        {% for task in tasks | sort(attribute='task_name') %}
             {{ task.task_name }},
         {% endfor -%}
         ]

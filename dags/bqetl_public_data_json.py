@@ -84,7 +84,7 @@ with DAG(
 
     public_data_gcs_metadata.set_upstream(
         [
-            export_public_data_json_telemetry_derived__ssl_ratios__v1,
             export_public_data_json_telemetry_derived__deviations__v1,
+            export_public_data_json_telemetry_derived__ssl_ratios__v1,
         ]
     )

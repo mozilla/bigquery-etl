@@ -57,7 +57,7 @@ def generate_sql(opts):
                 SELECT AS STRUCT
                   SUBSTR(_key, 0, pos - 2) AS engine,
                   SUBSTR(_key, pos) AS source,
-                  udf.extract_histogram_sum(value) AS `count`
+                  `moz-fx-data-shared-prod`.udf.extract_histogram_sum(value) AS `count`
                 FROM
                   UNNEST(payload.keyed_histograms.search_counts),
                   UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,

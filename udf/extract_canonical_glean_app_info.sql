@@ -12,6 +12,9 @@ as well as BigQuery dataset names with suffixes like 'org_mozilla_firefox_beta_s
 
 The second argument (app_build_id) should be the value in client_info.app_build.
 
+For more context on the history of naming for Mozilla's mobile browsers, see:
+https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0
+
 */
 CREATE OR REPLACE FUNCTION udf.extract_canonical_glean_app_info(app_id STRING, app_build_id STRING)
 RETURNS STRUCT<app_name STRING, channel STRING, canonical_app_id STRING> AS (

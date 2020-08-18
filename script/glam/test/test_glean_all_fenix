@@ -5,7 +5,6 @@
 
 set -e
 
-skip_generate=${SKIP_GENERATE:-false}
 app_id="org_mozilla_firefox"
 logical_app_id="org_mozilla_fenix_glam_release"
 

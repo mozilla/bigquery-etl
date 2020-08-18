@@ -1,0 +1,17 @@
+description: >
+  Returns canonical, human-understandable identification info for Fenix sources.
+
+  It should be expected that the output of this function may evolve over time.
+  If we rename a product or channel, we may choose to update the values here so
+  that analyses consistently get the new name.
+
+  The first argument (app_id) can be fairly fuzzy; it is tolerant of actual Google
+  Play Store appId values like 'org.mozilla.firefox_beta' (mix of periods and underscores)
+  as well as BigQuery dataset names with suffixes like 'org_mozilla_firefox_beta_stable'.
+
+  The second argument (app_build_id) should be the value in client_info.app_build.
+
+  For more context on the history of naming for Mozilla's mobile browsers, see:
+  https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0
+
+friendly_name: Normalize Fenix App Info

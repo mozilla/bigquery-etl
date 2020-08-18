@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS
     branch STRING,
     window_start TIMESTAMP,
     window_end TIMESTAMP,
-    search_counts INT64,
+    search_count INT64,
     search_with_ads_count INT64,
     ad_clicks_count INT64
   )

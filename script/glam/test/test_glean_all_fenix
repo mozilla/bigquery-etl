@@ -1,0 +1,44 @@
+#!/bin/bash
+# Script for running all of the normalized channels for glam. Do not check in
+# the results of this script. This is mean to be used for diagnostic purposes.
+# Bash equivalent of: https://github.com/mozilla/telemetry-airflow/pull/1124
+
+set -e
+
+app_id="org_mozilla_firefox"
+logical_app_id="org_mozilla_fenix_glam_release"
+
+dir="$(dirname "$0")/.."
+
+app_ids=(
+    "org_mozilla_fenix"
+    "org_mozilla_fenix_nightly"
+    "org_mozilla_firefox"
+    "org_mozilla_firefox_beta"
+    "org_mozilla_fennec_aurora"
+)
+logical_app_ids=(
+    "org_mozilla_fenix_glam_nightly"
+    "org_mozilla_fenix_glam_beta"
+    "org_mozilla_fenix_glam_release"
+)
+
+for app_id in "${app_ids[@]}"; do
+    PRODUCT=$app_id STAGE=daily $dir/generate_glean_sql &
+done
+for logical_app_id in "${logical_app_ids[@]}"; do
+    PRODUCT=$logical_app_id STAGE=incremental $dir/generate_glean_sql &
+done
+wait
+
+for app_id in "${app_ids[@]}"; do
+    PRODUCT=$app_id STAGE=daily $dir/run_glam_sql &
+done
+
+wait
+for logical_app_id in "${logical_app_ids[@]}"; do
+    PRODUCT=$logical_app_id STAGE=incremental $dir/run_glam_sql &
+done
+wait
+
+

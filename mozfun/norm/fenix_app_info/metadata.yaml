@@ -1,4 +1,4 @@
-description: >
+description: |
   Returns canonical, human-understandable identification info for Fenix sources.
 
   It should be expected that the output of this function may evolve over time.
@@ -11,7 +11,5 @@ description: >
 
   The second argument (app_build_id) should be the value in client_info.app_build.
 
-  For more context on the history of naming for Mozilla's mobile browsers, see:
-  https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0
-
+  See also the [spreadsheet of naming history for Mozilla's mobile browsers](https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0).
 friendly_name: Normalize Fenix App Info

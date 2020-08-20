@@ -212,6 +212,11 @@ def schedule(path, dag, depends_on_past, task_name):
 
     metadata.write(path / METADATA_FILE)
 
+    # re-run DAG generation for the affected DAG
+    print(f"Running DAG generation for {existing_dag.name}")
+    output_dir = sql_dir.parent / "dags"
+    dags.dag_to_airflow(output_dir, existing_dag)
+
     print(
         f"Updated {path / METADATA_FILE} with scheduling information. "
         "For more information about scheduling queries see: "

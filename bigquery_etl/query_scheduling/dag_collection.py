@@ -1,5 +1,6 @@
 """Represents a collection of configured Airflow DAGs."""
 
+from black import format_file_contents, FileMode
 from itertools import groupby
 from operator import attrgetter
 import yaml
@@ -96,7 +97,10 @@ class DagCollection:
     def dag_to_airflow(self, output_dir, dag):
         """Generate the Airflow DAG representation for the provided DAG."""
         output_file = output_dir / (dag.name + ".py")
-        output_file.write_text(dag.to_airflow_dag(self))
+        formatted_dag = format_file_contents(
+            dag.to_airflow_dag(self), fast=False, mode=FileMode()
+        )
+        output_file.write_text(formatted_dag)
 
     def to_airflow_dags(self, output_dir):
         """Write DAG representation as Airflow dags to file."""

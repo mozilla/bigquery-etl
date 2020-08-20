@@ -17,7 +17,8 @@ setup(
     description="Tooling for building derived datasets in BigQuery",
     url="https://github.com/mozilla/bigquery-etl",
     packages=find_namespace_packages(include=["bigquery_etl.*", "bigquery_etl"]),
-    package_data={},
+    package_data={'bigquery_etl': ['query_scheduling/templates/*.j2']},
+    include_package_data=True,
     install_requires=[
         "gcloud",
         "google-cloud-bigquery",

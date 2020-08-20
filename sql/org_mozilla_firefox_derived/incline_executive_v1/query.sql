@@ -22,31 +22,31 @@ WITH fenix_union1 AS (
     *,
     'org_mozilla_fenix' AS _dataset
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix.baseline_clients_last_seen`
+    org_mozilla_fenix.baseline_clients_last_seen
   UNION ALL
   SELECT
     *,
     'org_mozilla_fenix_nightly' AS _dataset
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline_clients_last_seen`
+    org_mozilla_fenix_nightly.baseline_clients_last_seen
   UNION ALL
   SELECT
     *,
     'org_mozilla_firefox' AS _dataset
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox.baseline_clients_last_seen`
+    org_mozilla_firefox.baseline_clients_last_seen
   UNION ALL
   SELECT
     *,
     'org_mozilla_firefox_beta' AS _dataset
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline_clients_last_seen`
+    org_mozilla_firefox_beta.baseline_clients_last_seen
   UNION ALL
   SELECT
     *,
     'org_mozilla_fennec_aurora' AS _dataset
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline_clients_last_seen`
+    org_mozilla_fennec_aurora.baseline_clients_last_seen
 ),
 fenix_union2 AS (
   SELECT

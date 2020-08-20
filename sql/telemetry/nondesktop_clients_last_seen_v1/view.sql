@@ -4,7 +4,6 @@ AS
 -- For context on naming and channels of Fenix apps, see:
 -- https://docs.google.com/document/d/1Ym4eZyS0WngEP6WdwJjmCoxtoQbJSvORxlQwZpuSV2I/edit#heading=h.69hvvg35j8un
 WITH fenix_union1 AS (
-  -- Fenix apps
   SELECT
     *,
     'org_mozilla_fenix' AS _dataset

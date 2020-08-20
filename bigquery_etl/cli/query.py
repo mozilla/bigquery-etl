@@ -7,8 +7,9 @@ import re
 import sys
 import string
 
-from ..metadata.parse_metadata import Metadata
+from ..metadata.parse_metadata import Metadata, METADATA_FILE
 from ..format_sql.formatter import reformat
+from ..query_scheduling.generate_airflow_dags import get_dags
 
 
 QUERY_NAME_RE = re.compile(
@@ -142,3 +143,77 @@ def create(name, path, owner, init):
             )
             + "\n"
         )
+
+
+@query.command(help="Schedule an existing query",)
+@click.argument("path", type=click.Path(file_okay=False))
+@click.option(
+    "--dag",
+    "-d",
+    help=(
+        "Name of the DAG the query should be scheduled under. "
+        "To see available DAGs run `bqetl dag list`. "
+        "To create a new DAG run `bqetl dag create`."
+    ),
+    required=True,
+)
+@click.option(
+    "--depends_on_past",
+    "--depends-on-past",
+    help="Only execute query if previous scheduled run succeeded.",
+    default=False,
+    type=bool,
+)
+@click.option(
+    "--task_name",
+    "--task-name",
+    help=(
+        "Custom name for the Airflow task. By default the task name is a "
+        "combination of the dataset and table name."
+    ),
+)
+def schedule(path, dag, depends_on_past, task_name):
+    """CLI command for scheduling a query."""
+    path = Path(path)
+    if not os.path.isdir(path):
+        click.echo(f"Invalid path for query: {path}", err=True)
+        sys.exit(1)
+
+    if not os.path.isfile(path / "query.sql"):
+        click.echo(f"Path doesn't refer to query: {path}", err=True)
+        sys.exit(1)
+
+    sql_dir = path.parent.parent
+    dags = get_dags(sql_dir, sql_dir.parent / "dags.yaml")
+
+    # check if DAG exists
+    existing_dag = dags.dag_by_name(dag)
+    if not existing_dag:
+        click.echo(
+            (
+                f"DAG {dag} does not exist. "
+                "To see available DAGs run `bqetl dag list`. "
+                "To create a new DAG run `bqetl dag create`."
+            ),
+            err=True,
+        )
+        sys.exit(1)
+
+    # write scheduling information to metadata file
+    metadata = Metadata.of_sql_file(path / "query.sql")
+    metadata.scheduling = {}
+    metadata.scheduling["dag_name"] = dag
+
+    if depends_on_past:
+        metadata.scheduling["depends_on_past"] = depends_on_past
+
+    if task_name:
+        metadata.scheduling["task_name"] = task_name
+
+    metadata.write(path / METADATA_FILE)
+
+    print(
+        f"Updated {path / METADATA_FILE} with scheduling information. "
+        "For more information about scheduling queries see: "
+        "https://github.com/mozilla/bigquery-etl#scheduling-queries-in-airflow"
+    )

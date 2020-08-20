@@ -17,65 +17,31 @@ CREATE TEMP FUNCTION bucket_country(country STRING) AS (
   END
 );
 
-WITH fenix_union1 AS (
+WITH fenix_clients_last_seen AS (
   SELECT
-    *,
-    'org_mozilla_fenix' AS _dataset
+    * REPLACE ('firefox-preview nightly' AS normalized_channel),
   FROM
     org_mozilla_fenix.baseline_clients_last_seen
   UNION ALL
   SELECT
-    *,
-    'org_mozilla_fenix_nightly' AS _dataset
+    * REPLACE ('preview nightly' AS normalized_channel),
   FROM
     org_mozilla_fenix_nightly.baseline_clients_last_seen
   UNION ALL
   SELECT
-    *,
-    'org_mozilla_firefox' AS _dataset
+    * REPLACE ('release' AS normalized_channel),
   FROM
     org_mozilla_firefox.baseline_clients_last_seen
   UNION ALL
   SELECT
-    *,
-    'org_mozilla_firefox_beta' AS _dataset
+    * REPLACE ('beta' AS normalized_channel),
   FROM
     org_mozilla_firefox_beta.baseline_clients_last_seen
   UNION ALL
   SELECT
-    *,
-    'org_mozilla_fennec_aurora' AS _dataset
+    * REPLACE ('nightly' AS normalized_channel),
   FROM
     org_mozilla_fennec_aurora.baseline_clients_last_seen
-),
-fenix_union2 AS (
-  SELECT
-    *,
-    mozfun.norm.fenix_app_info(_dataset, app_build) AS _app_info
-  FROM
-    fenix_union1
-),
-fenix_clients_last_seen AS (
-  -- The channel naming here is wonky, but is necessary to maintain consistent
-  -- with historical structure of Incline dashboard.
-  SELECT
-    * EXCEPT (_dataset, _app_info) REPLACE(
-      CASE
-      WHEN
-        _app_info.app_name = 'Firefox Preview'
-        AND _app_info.channel = 'beta'
-      THEN
-        'firefox-preview nightly'
-      WHEN
-        _app_info.app_name = 'Firefox Preview'
-        AND _app_info.channel = 'nightly'
-      THEN
-        'preview nightly'
-      ELSE
-        _app_info.channel AS normalized_channel
-    ),
-  FROM
-    fenix_union2
 ),
 --
 fennec_client_info AS (

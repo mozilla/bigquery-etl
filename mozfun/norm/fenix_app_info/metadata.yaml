@@ -26,8 +26,11 @@ description: |
   the Play Store `app_id` in the canonical form which would appear in Play Store URLs.
 
   Note that the naming of Fenix applications changed on 2020-07-03, so to get a continuous
-  view of the pings associated with a logical application, you may need to union together
-  tables from two different BigQuery datasets.
+  view of the pings associated with a logical app channel, you may need to union together
+  tables from multiple BigQuery datasets. To see data for all Fenix channels together, it
+  is necessary to union together tables from all 5 datasets. For basic usage information,
+  consider using `telemetry.nondesktop_clients_last_seen` which already handles the union.
+  Otherwise, see the example below as a template for how construct a custom union.
 
   Mapping of channels to datasets:
 

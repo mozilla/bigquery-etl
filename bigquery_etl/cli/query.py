@@ -155,7 +155,6 @@ def create(name, path, owner, init):
         "To see available DAGs run `bqetl dag list`. "
         "To create a new DAG run `bqetl dag create`."
     ),
-    required=True,
 )
 @click.option(
     "--depends_on_past",
@@ -186,39 +185,46 @@ def schedule(path, dag, depends_on_past, task_name):
     sql_dir = path.parent.parent
     dags = get_dags(sql_dir, sql_dir.parent / "dags.yaml")
 
-    # check if DAG exists
-    existing_dag = dags.dag_by_name(dag)
-    if not existing_dag:
-        click.echo(
-            (
-                f"DAG {dag} does not exist. "
-                "To see available DAGs run `bqetl dag list`. "
-                "To create a new DAG run `bqetl dag create`."
-            ),
-            err=True,
-        )
-        sys.exit(1)
-
-    # write scheduling information to metadata file
     metadata = Metadata.of_sql_file(path / "query.sql")
-    metadata.scheduling = {}
-    metadata.scheduling["dag_name"] = dag
 
-    if depends_on_past:
-        metadata.scheduling["depends_on_past"] = depends_on_past
+    if dag:
+        # check if DAG already exists
+        existing_dag = dags.dag_by_name(dag)
+        if not existing_dag:
+            click.echo(
+                (
+                    f"DAG {dag} does not exist. "
+                    "To see available DAGs run `bqetl dag list`. "
+                    "To create a new DAG run `bqetl dag create`."
+                ),
+                err=True,
+            )
+            sys.exit(1)
 
-    if task_name:
-        metadata.scheduling["task_name"] = task_name
+        # write scheduling information to metadata file
+        metadata.scheduling = {}
+        metadata.scheduling["dag_name"] = dag
 
-    metadata.write(path / METADATA_FILE)
+        if depends_on_past:
+            metadata.scheduling["depends_on_past"] = depends_on_past
+
+        if task_name:
+            metadata.scheduling["task_name"] = task_name
+
+        metadata.write(path / METADATA_FILE)
+        print(
+            f"Updated {path / METADATA_FILE} with scheduling information. "
+            "For more information about scheduling queries see: "
+            "https://github.com/mozilla/bigquery-etl#scheduling-queries-in-airflow"
+        )
+    else:
+        if metadata.scheduling == {}:
+            click.echo(f"No scheduling information for: {path}", err=True)
+            sys.exit(1)
+        else:
+            existing_dag = dags.dag_by_name(metadata.scheduling["dag_name"])
 
     # re-run DAG generation for the affected DAG
     print(f"Running DAG generation for {existing_dag.name}")
     output_dir = sql_dir.parent / "dags"
     dags.dag_to_airflow(output_dir, existing_dag)
-
-    print(
-        f"Updated {path / METADATA_FILE} with scheduling information. "
-        "For more information about scheduling queries see: "
-        "https://github.com/mozilla/bigquery-etl#scheduling-queries-in-airflow"
-    )

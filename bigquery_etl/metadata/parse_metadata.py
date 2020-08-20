@@ -123,6 +123,13 @@ class Metadata:
         metadata_dict = self.__dict__
         if metadata_dict["scheduling"] == {}:
             del metadata_dict["scheduling"]
+
+        if metadata_dict["labels"]:
+            for label_key, label_value in metadata_dict["labels"].items():
+                # handle tags
+                if label_value == "":
+                    metadata_dict["labels"][label_key] = True
+
         file.write_text(yaml.dump(metadata_dict))
 
     def is_public_bigquery(self):

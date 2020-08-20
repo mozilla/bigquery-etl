@@ -43,6 +43,6 @@ setup(
     python_requires="==3.8.*",
     entry_points="""
         [console_scripts]
-        bqetl=bigquery_etl.cli:cli
+        bqetl2=bigquery_etl.cli:cli
     """,
 )

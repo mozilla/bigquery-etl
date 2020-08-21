@@ -193,19 +193,23 @@ def remove(name, dags_config, sql_dir, output_dir):
         sys.exit(1)
 
     for task in dag_tbr.tasks:
-        metadata = Metadata.of_sql_file(task.sql_file_path)
-        sql_path = Path(os.path.dirname(task.sql_file_path))
+        metadata = Metadata.of_sql_file(task.query_file)
+        sql_path = Path(os.path.dirname(task.query_file))
         metadata.scheduling = {}
         metadata_file = sql_path / METADATA_FILE
         metadata.write(metadata_file)
 
     # remove from dags.yaml
-    dags_config_dict = yaml.load(dags_config)
-    del dags_config_dict[name]
+    with open(dags_config) as dags_file:
+        dags_config_dict = yaml.full_load(dags_file)
+        del dags_config_dict[name]
 
-    with open(dags_config, "w") as dags_file:
-        dags_file.write(yaml.dump(dags_config_dict))
+        with open(dags_config, "w") as dags_file:
+            dags_file.write(yaml.dump(dags_config_dict))
 
+    output_dir = Path(output_dir)
     # delete generated DAG from dags/
     if os.path.exists(output_dir / (name + ".py")):
         os.remove(output_dir / (name + ".py"))
+
+    click.echo(f"DAG {name} and referenced removed.")

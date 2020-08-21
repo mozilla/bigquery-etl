@@ -28,10 +28,8 @@ class TestQuery:
             assert result.exit_code == 0
             assert os.listdir("sql") == ["test"]
             assert os.listdir("sql/test") == ["test_query_v1"]
-            assert os.listdir("sql/test/test_query_v1") == [
-                "query.sql",
-                "metadata.yaml",
-            ]
+            assert "query.sql" in os.listdir("sql/test/test_query_v1")
+            assert "metadata.yaml" in os.listdir("sql/test/test_query_v1")
 
     def test_create_query_with_version(self, runner):
         with runner.isolated_filesystem():
@@ -46,7 +44,8 @@ class TestQuery:
             os.mkdir("sql/test_derived")
             result = runner.invoke(create, ["test_derived.test_query"])
             assert result.exit_code == 0
-            assert os.listdir("sql") == ["test_derived", "test"]
+            assert "test_derived" in os.listdir("sql")
+            assert "test" in os.listdir("sql")
             assert os.listdir("sql/test_derived") == ["test_query_v1"]
             assert os.listdir("sql/test") == ["test_query"]
             assert os.listdir("sql/test/test_query") == ["view.sql"]
@@ -58,7 +57,8 @@ class TestQuery:
             os.mkdir("sql/test")
             result = runner.invoke(create, ["test.test_query"])
             assert result.exit_code == 0
-            assert os.listdir("sql") == ["test_derived", "test"]
+            assert "test_derived" in os.listdir("sql")
+            assert "test" in os.listdir("sql")
             assert os.listdir("sql/test_derived") == ["test_query_v1"]
             assert os.listdir("sql/test") == ["test_query"]
             assert os.listdir("sql/test/test_query") == ["view.sql"]
@@ -69,11 +69,9 @@ class TestQuery:
             result = runner.invoke(create, ["test.test_query", "--init=True"])
             assert result.exit_code == 0
             assert os.listdir("sql/test") == ["test_query_v1"]
-            assert os.listdir("sql/test/test_query_v1") == [
-                "query.sql",
-                "metadata.yaml",
-                "init.sql",
-            ]
+            assert "query.sql" in os.listdir("sql/test/test_query_v1")
+            assert "metadata.yaml" in os.listdir("sql/test/test_query_v1")
+            assert "init.sql" in os.listdir("sql/test/test_query_v1")
 
     def test_schedule_invalid_path(self, runner):
         with runner.isolated_filesystem():

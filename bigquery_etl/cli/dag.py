@@ -26,7 +26,7 @@ def dag():
 )
 @click.option(
     "--sql-dir",
-    "-sql_dir",
+    "--sql_dir",
     help="Path to directory with queries",
     type=click.Path(file_okay=False),
     default="sql/",
@@ -39,8 +39,8 @@ def dag():
     default=False,
     is_flag=True,
 )
-def list(dags_config, sql_dir, with_tasks):
-    """List all available DAGs."""
+def info(dags_config, sql_dir, with_tasks):
+    """List available DAG information."""
     if not os.path.isfile(dags_config):
         click.echo(f"Invalid DAG config file: {dags_config}.", err=True)
         sys.exit(1)
@@ -147,3 +147,57 @@ def create(
         dags_file.write("\n")
 
     click.echo(f"Added new DAG definition to {dags_config}")
+
+
+@dag.command(help="Generate Airflow DAGs from DAG definitions")
+@click.argument("name", required=False)
+@click.option(
+    "--dags_config",
+    "--dags-config",
+    help="Path to dags.yaml config file",
+    type=click.Path(file_okay=True),
+    default="dags.yaml",
+)
+@click.option(
+    "--sql-dir",
+    "--sql_dir",
+    help="Path to directory with queries",
+    type=click.Path(file_okay=False),
+    default="sql/",
+)
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help="Path directory with generated DAGs",
+    type=click.Path(file_okay=False),
+    default="dags/",
+)
+def generate(name, dags_config, sql_dir, output_dir):
+    """CLI command for generating Airflow DAGs."""
+    if not os.path.isfile(dags_config):
+        click.echo(f"Invalid DAG config file: {dags_config}.", err=True)
+        sys.exit(1)
+
+    if not os.path.isdir(sql_dir):
+        click.echo(f"Invalid path to query files: {sql_dir}.", err=True)
+        sys.exit(1)
+
+    if not os.path.isdir(output_dir):
+        click.echo(f"Invalid path to DAGs output directory: {output_dir}.", err=True)
+        sys.exit(1)
+
+    dags = get_dags(sql_dir, dags_config)
+    if name:
+        # only generate specific DAG
+        dag = dags.dag_by_name(name)
+
+        if not dag:
+            click.echo(f"DAG {name} does not exist.", err=True)
+            sys.exit(1)
+
+        dags.dag_to_airflow(output_dir, dag)
+        click.echo(f"Generated {output_dir}{dag.name}.py")
+    else:
+        # re-generate all DAGs
+        dags.to_airflow_dags(output_dir)
+        click.echo("DAG generation complete.")

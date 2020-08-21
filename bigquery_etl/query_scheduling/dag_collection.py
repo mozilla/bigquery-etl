@@ -3,6 +3,7 @@
 from black import format_file_contents, FileMode
 from itertools import groupby
 from operator import attrgetter
+from pathlib import Path
 import yaml
 
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag, PublicDataJsonDag
@@ -96,7 +97,7 @@ class DagCollection:
 
     def dag_to_airflow(self, output_dir, dag):
         """Generate the Airflow DAG representation for the provided DAG."""
-        output_file = output_dir / (dag.name + ".py")
+        output_file = Path(output_dir) / (dag.name + ".py")
         formatted_dag = format_file_contents(
             dag.to_airflow_dag(self), fast=False, mode=FileMode()
         )

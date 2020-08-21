@@ -45,6 +45,7 @@ def query():
     "-i",
     help="Create an init.sql file to initialize the table",
     default=False,
+    is_flag=True,
 )
 def create(name, path, owner, init):
     """CLI command for creating a new query."""

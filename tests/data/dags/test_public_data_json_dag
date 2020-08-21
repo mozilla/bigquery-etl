@@ -6,9 +6,20 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.gcp import gke_command
 
-default_args = {'owner': 'test@example.org', 'start_date': datetime.datetime(2020, 1, 1, 0, 0), 'email': ['test@example.org'], 'depends_on_past': False, 'retry_delay': datetime.timedelta(seconds=3600), 'email_on_failure': True, 'email_on_retry': True, 'retries': 2}
+default_args = {
+    "owner": "test@example.org",
+    "start_date": datetime.datetime(2020, 1, 1, 0, 0),
+    "email": ["test@example.org"],
+    "depends_on_past": False,
+    "retry_delay": datetime.timedelta(seconds=3600),
+    "email_on_failure": True,
+    "email_on_retry": True,
+    "retries": 2,
+}
 
-with DAG('bqetl_public_data_json', default_args=default_args, schedule_interval='@daily') as dag:
+with DAG(
+    "bqetl_public_data_json", default_args=default_args, schedule_interval="@daily"
+) as dag:
     docker_image = "mozilla/bigquery-etl:latest"
 
     export_public_data_json_test__non_incremental_query__v1 = GKEPodOperator(
@@ -21,31 +32,29 @@ with DAG('bqetl_public_data_json', default_args=default_args, schedule_interval=
         + ["--project_id=moz-fx-data-shared-prod"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
-        dag=dag
+        dag=dag,
     )
 
     wait_for_test__non_incremental_query__v1 = ExternalTaskSensor(
-        task_id='wait_for_test__non_incremental_query__v1',
-        external_dag_id='bqetl_core',
-        external_task_id='test__non_incremental_query__v1',
+        task_id="wait_for_test__non_incremental_query__v1",
+        external_dag_id="bqetl_core",
+        external_task_id="test__non_incremental_query__v1",
         check_existence=True,
-        mode='reschedule',
-        pool='DATA_ENG_EXTERNALTASKSENSOR',
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
-        
-    export_public_data_json_test__non_incremental_query__v1.set_upstream(wait_for_test__non_incremental_query__v1)
-    
+
+    export_public_data_json_test__non_incremental_query__v1.set_upstream(
+        wait_for_test__non_incremental_query__v1
+    )
 
     public_data_gcs_metadata = gke_command(
         task_id="public_data_gcs_metadata",
         command=["script/publish_public_data_gcs_metadata"],
         docker_image=docker_image,
-        dag=dag
+        dag=dag,
     )
 
     public_data_gcs_metadata.set_upstream(
-        [
-        
-            export_public_data_json_test__non_incremental_query__v1,
-        ]
+        [export_public_data_json_test__non_incremental_query__v1,]
     )

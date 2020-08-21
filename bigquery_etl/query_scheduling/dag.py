@@ -214,6 +214,7 @@ class PublicDataJsonDag(Dag):
 
     def to_airflow_dag(self, dag_collection):
         """Convert the DAG to its Airflow representation and return the python code."""
+        print("wwwaawa")
         env = self._jinja_env()
         dag_template = env.get_template(PUBLIC_DATA_JSON_DAG_TEMPLATE)
         args = self.__dict__

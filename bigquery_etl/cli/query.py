@@ -221,6 +221,10 @@ def schedule(path, dag, depends_on_past, task_name):
             "For more information about scheduling queries see: "
             "https://github.com/mozilla/bigquery-etl#scheduling-queries-in-airflow"
         )
+
+        # update dags since new task has been added
+        dags = get_dags(sql_dir, sql_dir.parent / "dags.yaml")
+        existing_dag = dags.dag_by_name(dag)
     else:
         if metadata.scheduling == {}:
             click.echo(f"No scheduling information for: {path}", err=True)

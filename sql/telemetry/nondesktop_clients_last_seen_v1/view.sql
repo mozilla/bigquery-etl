@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 -- For context on naming and channels of Fenix apps, see:
 -- https://docs.google.com/document/d/1Ym4eZyS0WngEP6WdwJjmCoxtoQbJSvORxlQwZpuSV2I/edit#heading=h.69hvvg35j8un
-WITH fenix_union1 AS (
+WITH fenix_union AS (
   SELECT
     *,
     'org_mozilla_fenix' AS _dataset
@@ -34,25 +34,25 @@ WITH fenix_union1 AS (
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline_clients_last_seen`
 ),
-fenix_union2 AS (
+fenix_app_info AS (
   SELECT
     *,
     mozfun.norm.fenix_app_info(_dataset, app_build) AS _app_info
   FROM
-    fenix_union1
+    fenix_union
 ),
-fenix_union AS (
+fenix_normalized AS (
   SELECT
     * EXCEPT (_dataset, _app_info) REPLACE(_app_info.channel AS normalized_channel),
     _app_info.app_name,
   FROM
-    fenix_union2
+    fenix_app_info
 ),
 glean_union AS (
   SELECT
     *
   FROM
-    fenix_union
+    fenix_normalized
   UNION ALL
   SELECT
     *,

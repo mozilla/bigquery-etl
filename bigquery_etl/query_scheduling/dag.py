@@ -153,6 +153,16 @@ class Dag:
         self.tasks = self.tasks.copy() + tasks
         self.validate_tasks(None, self.tasks)
 
+    def to_dict(self):
+        """Return class as a dict."""
+        d = self.__dict__
+        name = d["name"]
+        del d["name"]
+        del d["tasks"]
+        d["default_args"] = self.default_args.to_dict()
+
+        return {name: d}
+
     @classmethod
     def from_dict(cls, d):
         """

@@ -10,6 +10,7 @@ import string
 from ..metadata.parse_metadata import Metadata, METADATA_FILE
 from ..format_sql.formatter import reformat
 from ..query_scheduling.generate_airflow_dags import get_dags
+from ..cli.utils import is_valid_dir
 
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
@@ -33,6 +34,7 @@ def query():
     help="Path to directory in which query should be created",
     type=click.Path(file_okay=False),
     default="sql/",
+    callback=is_valid_dir,
 )
 @click.option(
     "--owner",
@@ -49,10 +51,6 @@ def query():
 )
 def create(name, path, owner, init):
     """CLI command for creating a new query."""
-    if not os.path.isdir(path):
-        click.echo(f"Invalid path for adding new query: {path}", err=True)
-        sys.exit(1)
-
     # create directory structure for query
     try:
         match = QUERY_NAME_RE.match(name)
@@ -151,7 +149,7 @@ def create(name, path, owner, init):
 
 
 @query.command(help="Schedule an existing query",)
-@click.argument("path", type=click.Path(file_okay=False))
+@click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
 @click.option(
     "--dag",
     "-d",
@@ -179,10 +177,6 @@ def create(name, path, owner, init):
 def schedule(path, dag, depends_on_past, task_name):
     """CLI command for scheduling a query."""
     path = Path(path)
-    if not os.path.isdir(path):
-        click.echo(f"Invalid path for query: {path}", err=True)
-        sys.exit(1)
-
     if not os.path.isfile(path / "query.sql"):
         click.echo(f"Path doesn't refer to query: {path}", err=True)
         sys.exit(1)

@@ -2,12 +2,42 @@
 
 import click
 import os
+from pathlib import Path
 import sys
 import yaml
 
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.dag import Dag
 from ..query_scheduling.generate_airflow_dags import get_dags
+from ..cli.utils import is_valid_dir, is_valid_file
+from ..metadata.parse_metadata import Metadata, METADATA_FILE
+
+dags_config_option = click.option(
+    "--dags_config",
+    "--dags-config",
+    help="Path to dags.yaml config file",
+    type=click.Path(file_okay=True),
+    default="dags.yaml",
+    callback=is_valid_file,
+)
+
+sql_dir_option = click.option(
+    "--sql-dir",
+    "--sql_dir",
+    help="Path to directory with queries",
+    type=click.Path(file_okay=False),
+    default="sql/",
+    callback=is_valid_dir,
+)
+
+output_dir_option = click.option(
+    "--output-dir",
+    "--output_dir",
+    help="Path directory with generated DAGs",
+    type=click.Path(file_okay=False),
+    default="dags/",
+    callback=is_valid_dir,
+)
 
 
 @click.group()
@@ -17,20 +47,8 @@ def dag():
 
 
 @dag.command(help="List all available DAGs",)
-@click.option(
-    "--dags_config",
-    "--dags-config",
-    help="Path to dags.yaml config file",
-    type=click.Path(file_okay=True),
-    default="dags.yaml",
-)
-@click.option(
-    "--sql-dir",
-    "--sql_dir",
-    help="Path to directory with queries",
-    type=click.Path(file_okay=False),
-    default="sql/",
-)
+@sql_dir_option
+@dags_config_option
 @click.option(
     "--with_tasks",
     "--with-tasks",
@@ -41,15 +59,7 @@ def dag():
 )
 def info(dags_config, sql_dir, with_tasks):
     """List available DAG information."""
-    if not os.path.isfile(dags_config):
-        click.echo(f"Invalid DAG config file: {dags_config}.", err=True)
-        sys.exit(1)
-
     if with_tasks:
-        if not os.path.isdir(sql_dir):
-            click.echo(f"Invalid path to query files: {sql_dir}.", err=True)
-            sys.exit(1)
-
         dag_collection = get_dags(sql_dir, dags_config)
     else:
         dag_collection = DagCollection.from_file(dags_config)
@@ -73,13 +83,7 @@ def info(dags_config, sql_dir, with_tasks):
     help="Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search"
 )
 @click.argument("name")
-@click.option(
-    "--dags_config",
-    "--dags-config",
-    help="Path to dags.yaml config file",
-    type=click.Path(file_okay=True),
-    default="dags.yaml",
-)
+@dags_config_option
 @click.option(
     "--schedule_interval",
     "--schedule-interval",
@@ -121,10 +125,6 @@ def create(
     name, dags_config, schedule_interval, owner, start_date, email, retries, retry_delay
 ):
     """Create a new DAG."""
-    if not os.path.isfile(dags_config):
-        click.echo(f"Invalid DAG config file: {dags_config}.", err=True)
-        sys.exit(1)
-
     # create a DAG and validate all properties
     new_dag = Dag.from_dict(
         {
@@ -151,41 +151,11 @@ def create(
 
 @dag.command(help="Generate Airflow DAGs from DAG definitions")
 @click.argument("name", required=False)
-@click.option(
-    "--dags_config",
-    "--dags-config",
-    help="Path to dags.yaml config file",
-    type=click.Path(file_okay=True),
-    default="dags.yaml",
-)
-@click.option(
-    "--sql-dir",
-    "--sql_dir",
-    help="Path to directory with queries",
-    type=click.Path(file_okay=False),
-    default="sql/",
-)
-@click.option(
-    "--output-dir",
-    "--output_dir",
-    help="Path directory with generated DAGs",
-    type=click.Path(file_okay=False),
-    default="dags/",
-)
+@dags_config_option
+@sql_dir_option
+@output_dir_option
 def generate(name, dags_config, sql_dir, output_dir):
     """CLI command for generating Airflow DAGs."""
-    if not os.path.isfile(dags_config):
-        click.echo(f"Invalid DAG config file: {dags_config}.", err=True)
-        sys.exit(1)
-
-    if not os.path.isdir(sql_dir):
-        click.echo(f"Invalid path to query files: {sql_dir}.", err=True)
-        sys.exit(1)
-
-    if not os.path.isdir(output_dir):
-        click.echo(f"Invalid path to DAGs output directory: {output_dir}.", err=True)
-        sys.exit(1)
-
     dags = get_dags(sql_dir, dags_config)
     if name:
         # only generate specific DAG
@@ -201,3 +171,41 @@ def generate(name, dags_config, sql_dir, output_dir):
         # re-generate all DAGs
         dags.to_airflow_dags(output_dir)
         click.echo("DAG generation complete.")
+
+
+@dag.command(help="Remove a DAG")
+@click.argument("name", required=False)
+@dags_config_option
+@sql_dir_option
+@output_dir_option
+def remove(name, dags_config, sql_dir, output_dir):
+    """
+    CLI command for removing a DAG.
+
+    Also removes scheduling information from queries that were referring to the DAG.
+    """
+    # remove from task schedulings
+    dags = get_dags(sql_dir, dags_config)
+    dag_tbr = dags.dag_by_name(name)
+
+    if not dag_tbr:
+        click.echo(f"No existing DAG definition for {name}")
+        sys.exit(1)
+
+    for task in dag_tbr.tasks:
+        metadata = Metadata.of_sql_file(task.sql_file_path)
+        sql_path = Path(os.path.dirname(task.sql_file_path))
+        metadata.scheduling = {}
+        metadata_file = sql_path / METADATA_FILE
+        metadata.write(metadata_file)
+
+    # remove from dags.yaml
+    dags_config_dict = yaml.load(dags_config)
+    del dags_config_dict[name]
+
+    with open(dags_config, "w") as dags_file:
+        dags_file.write(yaml.dump(dags_config_dict))
+
+    # delete generated DAG from dags/
+    if os.path.exists(output_dir / (name + ".py")):
+        os.remove(output_dir / (name + ".py"))

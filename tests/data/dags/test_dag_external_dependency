@@ -5,18 +5,29 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query
 
-default_args = {'owner': 'test@example.org', 'start_date': datetime.datetime(2020, 5, 25, 0, 0), 'email': [], 'depends_on_past': False, 'retry_delay': datetime.timedelta(seconds=1800), 'email_on_failure': True, 'email_on_retry': True, 'retries': 2}
+default_args = {
+    "owner": "test@example.org",
+    "start_date": datetime.datetime(2020, 5, 25, 0, 0),
+    "email": [],
+    "depends_on_past": False,
+    "retry_delay": datetime.timedelta(seconds=1800),
+    "email_on_failure": True,
+    "email_on_retry": True,
+    "retries": 2,
+}
 
-with DAG('bqetl_external_test_dag', default_args=default_args, schedule_interval='@daily') as dag:
+with DAG(
+    "bqetl_external_test_dag", default_args=default_args, schedule_interval="@daily"
+) as dag:
 
     {{ temporary_dataset }}__external_table__v1 = bigquery_etl_query(
-        task_id='{{ temporary_dataset }}__external_table__v1',
-        destination_table='external_table_v1',
-        dataset_id='{{ temporary_dataset }}',
-        project_id='moz-fx-data-shared-prod',
-        owner='test@example.org',
-        email=['test@example.org'],
-        date_partition_parameter='submission_date',
+        task_id="{{ temporary_dataset }}__external_table__v1",
+        destination_table="external_table_v1",
+        dataset_id="{{ temporary_dataset }}",
+        project_id="moz-fx-data-shared-prod",
+        owner="test@example.org",
+        email=["test@example.org"],
+        date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
     )

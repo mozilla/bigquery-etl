@@ -6,6 +6,7 @@ import os
 import pytest
 import random
 import string
+import shutil
 
 
 TEST_BUCKET = "bigquery-etl-integration-test-bucket"

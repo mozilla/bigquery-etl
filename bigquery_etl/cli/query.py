@@ -12,9 +12,8 @@ from ..format_sql.formatter import reformat
 from ..query_scheduling.generate_airflow_dags import get_dags
 
 
-QUERY_NAME_RE = re.compile(
-    r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)(?P<ver>_v[0-9]+)?"
-)
+QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
+VERSION_RE = re.compile(r"_v[0-9]+")
 
 
 @click.group()
@@ -58,7 +57,12 @@ def create(name, path, owner, init):
         match = QUERY_NAME_RE.match(name)
         name = match.group("name")
         dataset = match.group("dataset")
-        version = match.group("ver") or "_v1"
+
+        version = "_" + name.split("_")[-1]
+        if not VERSION_RE.match(version):
+            version = "_v1"
+        else:
+            name = "_".join(name.split("_")[:-1])
     except AttributeError:
         click.echo(
             "New queries must be named like:"

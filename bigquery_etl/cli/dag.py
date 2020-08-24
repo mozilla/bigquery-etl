@@ -75,7 +75,7 @@ def info(name, dags_config, sql_dir, with_tasks):
         sorted_dags = sorted(dag_collection.dags, key=lambda d: d.name)
 
     for dag in sorted_dags:
-        click.secho(click.style(dag.name, bold=True))
+        click.secho(dag.name, bold=True)
         click.echo(f"schedule_interval: {dag.schedule_interval}")
         click.echo(f"owner: {dag.default_args.owner}")
 

@@ -13,13 +13,15 @@ class TestQuery:
 
     def test_create_invalid_path(self, runner):
         with runner.isolated_filesystem():
+            with open("foo.txt", "w") as f:
+                f.write("")
             result = runner.invoke(create, ["test.query_v1", "--path=foo.txt"])
-            assert result.exit_code == 1
+            assert result.exit_code == 2
 
     def test_create_invalid_query_name(self, runner):
         with runner.isolated_filesystem():
             result = runner.invoke(create, ["invalid_query_name"])
-            assert result.exit_code == 1
+            assert result.exit_code == 2
 
     def test_create_query(self, runner):
         with runner.isolated_filesystem():
@@ -66,7 +68,7 @@ class TestQuery:
     def test_create_query_with_init(self, runner):
         with runner.isolated_filesystem():
             os.mkdir("sql")
-            result = runner.invoke(create, ["test.test_query", "--init=True"])
+            result = runner.invoke(create, ["test.test_query", "--init"])
             assert result.exit_code == 0
             assert os.listdir("sql/test") == ["test_query_v1"]
             assert "query.sql" in os.listdir("sql/test/test_query_v1")
@@ -76,7 +78,7 @@ class TestQuery:
     def test_schedule_invalid_path(self, runner):
         with runner.isolated_filesystem():
             result = runner.invoke(schedule, ["/test/query_v1"])
-            assert result.exit_code == 1
+            assert result.exit_code == 2
 
     def test_schedule_invalid_query_path(self, runner):
         with runner.isolated_filesystem():
@@ -84,7 +86,7 @@ class TestQuery:
             os.mkdir("sql/test")
             os.mkdir("sql/query_v1")
             result = runner.invoke(schedule, ["/test/query_v1"])
-            assert result.exit_code == 1
+            assert result.exit_code == 2
 
     def test_schedule_query_non_existing_dag(self, runner):
         with runner.isolated_filesystem():

@@ -193,7 +193,7 @@ def schedule(path, dag, depends_on_past, task_name):
             click.echo(
                 (
                     f"DAG {dag} does not exist. "
-                    "To see available DAGs run `bqetl dag list`. "
+                    "To see available DAGs run `bqetl dag info`. "
                     "To create a new DAG run `bqetl dag create`."
                 ),
                 err=True,

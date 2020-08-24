@@ -47,6 +47,7 @@ def dag():
 
 
 @dag.command(help="List all available DAGs",)
+@click.argument("name", required=False)
 @sql_dir_option
 @dags_config_option
 @click.option(
@@ -57,14 +58,21 @@ def dag():
     default=False,
     is_flag=True,
 )
-def info(dags_config, sql_dir, with_tasks):
+def info(name, dags_config, sql_dir, with_tasks):
     """List available DAG information."""
     if with_tasks:
         dag_collection = get_dags(sql_dir, dags_config)
     else:
         dag_collection = DagCollection.from_file(dags_config)
 
-    sorted_dags = sorted(dag_collection.dags, key=lambda d: d.name)
+    if name:
+        dag = dag_collection.dag_by_name(name)
+        if not dag:
+            click.echo(f"DAG {name} does not exist", err=True)
+            sys.exit(1)
+        sorted_dags = [dag]
+    else:
+        sorted_dags = sorted(dag_collection.dags, key=lambda d: d.name)
 
     for dag in sorted_dags:
         click.secho(click.style(dag.name, bold=True))

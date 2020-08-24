@@ -4,7 +4,7 @@ from click.testing import CliRunner
 from pathlib import Path
 import yaml
 
-from bigquery_etl.cli.dag import info, generate, create, remove
+from bigquery_etl.cli.dag import info, create, remove
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -36,6 +36,15 @@ class TestDag:
         assert "bqetl_events" in result.output
         assert "test.multipart_query_v1" in result.output
         assert "test.incremental_query_non_incremental_export_v1" in result.output
+
+    def test_single_dag_info(self, runner):
+        result = runner.invoke(
+            info,
+            ["bqetl_core", "--dags_config=" + str(TEST_DIR / "data" / "dags.yaml")],
+        )
+        assert result.exit_code == 0
+        assert "bqetl_core" in result.output
+        assert "bqetl_events" not in result.output
 
     def test_dag_create_invalid_name(self, runner):
         with runner.isolated_filesystem():

@@ -4,12 +4,13 @@ import click
 
 from ..cli.query import query
 from ..cli.dag import dag
+from ..cli.dryrun import dryrun
 from .._version import __version__
 
 
 def cli():
     """Create the bigquery-etl CLI."""
-    commands = {"query": query, "dag": dag}
+    commands = {"query": query, "dag": dag, "dryrun": dryrun}
 
     @click.group(commands=commands)
     @click.version_option(version=__version__)

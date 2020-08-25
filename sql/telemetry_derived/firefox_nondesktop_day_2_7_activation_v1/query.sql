@@ -51,9 +51,10 @@ FROM
 WHERE
   submission_date = @submission_date
   AND product IN (
-    -- Fenix and Firefox Preview are excluded for now pending validation.
-    -- 'Fenix',
-    -- 'Firefox Preview',
+    -- Fenix and Firefox Preview were previously excluded pending:
+    -- https://jira.mozilla.com/browse/DS-696
+    'Fenix',
+    'Firefox Preview',
     'Fennec Android',
     'Focus Android',
     'Fennec iOS',

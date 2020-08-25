@@ -231,3 +231,45 @@ def schedule(path, dag, depends_on_past, task_name):
     print(f"Running DAG generation for {existing_dag.name}")
     output_dir = sql_dir.parent / "dags"
     dags.dag_to_airflow(output_dir, existing_dag)
+
+
+@query.command(help="Get information about all or specific queries.",)
+@click.argument(
+    "path", default="sql/", type=click.Path(file_okay=False), callback=is_valid_dir
+)
+@click.option("--cost", help="Include information about query costs", is_flag=True)
+@click.option(
+    "--last_updated",
+    help="Include timestamps when destination tables were last updated",
+    is_flag=True,
+)
+def info(path, cost, last_updated):
+    """Return information about all or specific queries."""
+    query_files = Path(path).rglob("query.sql")
+
+    for query_file in query_files:
+        query_file_path = Path(query_file)
+        table = query_file_path.parent.name
+        dataset = query_file_path.parent.parent.name
+
+        try:
+            metadata = Metadata.of_sql_file(query_file)
+        except FileNotFoundError:
+            metadata = None
+
+        click.secho(f"{dataset}.{table}", bold=True)
+        click.echo(f"path: {query_file}")
+
+        if metadata is None:
+            click.echo("No metadata")
+        else:
+            click.echo(f"description: {metadata.description}")
+            click.echo(f"owners: {metadata.owners}")
+
+            if metadata.scheduling == {}:
+                click.echo("scheduling: not scheduled")
+            else:
+                click.echo("scheduling:")
+                click.echo(f"  dag_name: {metadata.scheduling['dag_name']}")
+
+        click.echo("")

@@ -15,3 +15,5 @@ SELECT
   )
 FROM
   `moz-it-eip-revenue-users.ltv_derived.client_ltv_v1`
+WHERE
+  submission_date = @submission_date

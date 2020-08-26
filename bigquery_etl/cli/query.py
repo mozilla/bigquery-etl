@@ -1,6 +1,8 @@
 """bigquery-etl CLI query command."""
 
 import click
+from google.cloud import bigquery
+from datetime import date
 import os
 from pathlib import Path
 import re
@@ -10,7 +12,7 @@ import string
 from ..metadata.parse_metadata import Metadata, METADATA_FILE
 from ..format_sql.formatter import reformat
 from ..query_scheduling.generate_airflow_dags import get_dags
-from ..cli.utils import is_valid_dir
+from ..cli.utils import is_valid_dir, is_authenticated
 
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
@@ -273,3 +275,65 @@ def info(path, cost, last_updated):
                 click.echo(f"  dag_name: {metadata.scheduling['dag_name']}")
 
         click.echo("")
+
+@query.command(help="Run a backfill for a query",)
+@click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
+@click.option(
+    "--start_date",
+    "--start-date",
+    "-s",
+    help="First date to be backfilled",
+    type=click.DateTime,
+    required=True
+)
+@click.option(
+    "--end_date",
+    "--end-date",
+    "-e",
+    help="Last date to be backfilled",
+    type=click.DateTime,
+    default=date.today()
+)
+@click.option(
+    "--exclude",
+    "-x",
+    help="Dates excluded from backfill",
+    type=list,
+    default=[]
+)
+@click.option(
+    "--parameters",
+    "-p",
+    help="Query parameters, e.g. n_clients:INT64:500",
+    type=list,
+    default=[]
+)
+@click.option(
+    "--dry_run/--no_dry_run", help="Dry run the backfill"
+)
+def backfill(path, start_date, end_date, exclude, dry_run):
+    """Run a backfill."""
+    if not is_authenticated():
+        click.echo("Authentication to GCP required. Run `gcloud auth login`.")
+        sys.exit(1)
+
+    client = bigquery.Client()
+    query_files = Path(path).rglob("query.sql")
+
+    for query_file in query_files:
+        query_file_path = Path(query_file)
+        table = query_file_path.parent.name
+        dataset = query_file_path.parent.parent.name
+
+        job_config = bigquery.QueryJobConfig(
+            dry_run=dry_run,
+            default_dataset=f"{project}.{dataset}",
+            query_parameters=[
+                bigquery.ScalarQueryParameter(
+                    "submission_date", "DATE", "2019-01-01"
+                )
+            ],
+        )
+
+        client.query(query_file.read_text()).result()
+

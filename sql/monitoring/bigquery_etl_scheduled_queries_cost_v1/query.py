@@ -24,12 +24,13 @@ def create_query(query_paths, date):
 
     return f"""
       SELECT
-        '{date}' AS submission_date,
+        DATE('{date}') AS submission_date,
         creation_time,
         destination_table.dataset_id AS dataset,
-        destination_table.table_id AS table,
+        -- remove partition from table name
+        REGEXP_REPLACE(destination_table.table_id, r"\$.+", "") AS table,
         total_bytes_processed,
-        total_bytes_processed / 1024 / 1024 / 1024 / 1024 * 5 AS cost
+        total_bytes_processed / 1024 / 1024 / 1024 / 1024 * 5 AS cost_usd
       FROM `region-us`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
       WHERE DATE(creation_time) = '{date}'
         AND destination_table.dataset_id IN ({",".join(datasets)})
@@ -49,10 +50,10 @@ def main():
     query = create_query(query_paths, args.date)
 
     partition = args.date.replace("-", "")
-    destination_table = (
-        f"{args.destination_dataset}.{args.destination_table}${partition}"
+    destination_table = f"{args.project}.{args.destination_dataset}.{args.destination_table}${partition}"
+    job_config = bigquery.QueryJobConfig(
+        destination=destination_table, write_disposition="WRITE_TRUNCATE"
     )
-    job_config = bigquery.QueryJobConfig(destination=destination_table)
     client.query(query, job_config=job_config).result()
 
 

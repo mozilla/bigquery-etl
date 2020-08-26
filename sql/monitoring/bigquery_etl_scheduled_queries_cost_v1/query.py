@@ -24,6 +24,7 @@ def create_query(query_paths, date):
 
     return f"""
       SELECT
+        '{date}' AS submission_date,
         creation_time,
         destination_table.dataset_id AS dataset,
         destination_table.table_id AS table,

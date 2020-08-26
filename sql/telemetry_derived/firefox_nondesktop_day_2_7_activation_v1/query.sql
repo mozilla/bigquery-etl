@@ -51,9 +51,8 @@ FROM
 WHERE
   submission_date = @submission_date
   AND product IN (
-    -- Fenix and Firefox Preview are excluded for now pending validation.
-    -- 'Fenix',
-    -- 'Firefox Preview',
+    'Fenix',
+    'Firefox Preview',
     'Fennec Android',
     'Focus Android',
     'Fennec iOS',

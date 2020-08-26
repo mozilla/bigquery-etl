@@ -2,7 +2,7 @@
 
 import click
 from google.cloud import bigquery
-from datetime import date
+from datetime import date, timedelta
 import os
 from pathlib import Path
 import re
@@ -276,6 +276,7 @@ def info(path, cost, last_updated):
 
         click.echo("")
 
+
 @query.command(help="Run a backfill for a query",)
 @click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
 @click.option(
@@ -283,35 +284,31 @@ def info(path, cost, last_updated):
     "--start-date",
     "-s",
     help="First date to be backfilled",
-    type=click.DateTime,
-    required=True
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    required=True,
 )
 @click.option(
     "--end_date",
     "--end-date",
     "-e",
     help="Last date to be backfilled",
-    type=click.DateTime,
-    default=date.today()
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=str(date.today()),
 )
 @click.option(
-    "--exclude",
-    "-x",
-    help="Dates excluded from backfill",
-    type=list,
-    default=[]
+    "--exclude", "-x", help="Dates excluded from backfill", type=list, default=[]
 )
 @click.option(
-    "--parameters",
+    "--parameters", "-p", help="Query parameters, e.g. n_clients:INT64:500", default=[]
+)
+@click.option(
+    "--project",
     "-p",
-    help="Query parameters, e.g. n_clients:INT64:500",
-    type=list,
-    default=[]
+    help="GCP project to run backfill in",
+    default="mox-fx-data-shared-prod",
 )
-@click.option(
-    "--dry_run/--no_dry_run", help="Dry run the backfill"
-)
-def backfill(path, start_date, end_date, exclude, dry_run):
+@click.option("--dry_run/--no_dry_run", help="Dry run the backfill")
+def backfill(path, start_date, end_date, exclude, parameters, project, dry_run):
     """Run a backfill."""
     if not is_authenticated():
         click.echo("Authentication to GCP required. Run `gcloud auth login`.")
@@ -319,21 +316,30 @@ def backfill(path, start_date, end_date, exclude, dry_run):
 
     client = bigquery.Client()
     query_files = Path(path).rglob("query.sql")
+    dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
 
     for query_file in query_files:
         query_file_path = Path(query_file)
         table = query_file_path.parent.name
         dataset = query_file_path.parent.parent.name
 
-        job_config = bigquery.QueryJobConfig(
-            dry_run=dry_run,
-            default_dataset=f"{project}.{dataset}",
-            query_parameters=[
-                bigquery.ScalarQueryParameter(
-                    "submission_date", "DATE", "2019-01-01"
-                )
-            ],
-        )
+        for date in dates:
+            date = date.strftime("%Y-%m-%d")
+            partition = date.replace("-", "")
+            click.echo(
+                f"Run backfill for {project}.{dataset}.{table}${partition} with submission_date={date}"
+            )
 
-        client.query(query_file.read_text()).result()
+            # todo call run_query
 
+            # job_config = bigquery.QueryJobConfig(
+            #     dry_run=dry_run,
+            #     default_dataset=f"{project}.{dataset}",
+            #     destination_table=
+            #     query_parameters=[
+            #         bigquery.ScalarQueryParameter(
+            #             "submission_date", "DATE", date
+            #         )
+            #     ],
+            # )
+            # client.query(query_file.read_text()).result()

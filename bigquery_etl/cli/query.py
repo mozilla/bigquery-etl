@@ -8,11 +8,13 @@ from pathlib import Path
 import re
 import sys
 import string
+from typing import List
 
 from ..metadata.parse_metadata import Metadata, METADATA_FILE
 from ..format_sql.formatter import reformat
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..cli.utils import is_valid_dir, is_authenticated
+from ..run_query import run
 
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
@@ -277,7 +279,10 @@ def info(path, cost, last_updated):
         click.echo("")
 
 
-@query.command(help="Run a backfill for a query",)
+@query.command(
+    help="Run a backfill for a query. Additional parameters will get passed to bq.",
+    context_settings=dict(ignore_unknown_options=True, allow_extra_args=True,),
+)
 @click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
 @click.option(
     "--start_date",
@@ -296,10 +301,10 @@ def info(path, cost, last_updated):
     default=str(date.today()),
 )
 @click.option(
-    "--exclude", "-x", help="Dates excluded from backfill", type=list, default=[]
-)
-@click.option(
-    "--parameters", "-p", help="Query parameters, e.g. n_clients:INT64:500", default=[]
+    "--exclude",
+    "-x",
+    help="Dates excluded from backfill. Date format: yyyy-mm-dd",
+    default=[],
 )
 @click.option(
     "--project",
@@ -307,8 +312,11 @@ def info(path, cost, last_updated):
     help="GCP project to run backfill in",
     default="mox-fx-data-shared-prod",
 )
-@click.option("--dry_run/--no_dry_run", help="Dry run the backfill")
-def backfill(path, start_date, end_date, exclude, parameters, project, dry_run):
+@click.option(
+    "--dry_run/--no_dry_run", help="Dry run the backfill",
+)
+@click.pass_context
+def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
     """Run a backfill."""
     if not is_authenticated():
         click.echo("Authentication to GCP required. Run `gcloud auth login`.")
@@ -325,21 +333,21 @@ def backfill(path, start_date, end_date, exclude, parameters, project, dry_run):
 
         for date in dates:
             date = date.strftime("%Y-%m-%d")
-            partition = date.replace("-", "")
-            click.echo(
-                f"Run backfill for {project}.{dataset}.{table}${partition} with submission_date={date}"
-            )
+            if date not in exclude:
+                partition = date.replace("-", "")
+                click.echo(
+                    f"Run backfill for {project}.{dataset}.{table}${partition} with @submission_date={date}"
+                )
 
-            # todo call run_query
+                arguments = [
+                    "query",
+                    f"--parameter=submission_date:DATE:{date}",
+                    "--use_legacy_sql=false",
+                    "--replace",
+                ] + ctx.args
+                if dry_run:
+                    arguments += ["--dry_run"]
 
-            # job_config = bigquery.QueryJobConfig(
-            #     dry_run=dry_run,
-            #     default_dataset=f"{project}.{dataset}",
-            #     destination_table=
-            #     query_parameters=[
-            #         bigquery.ScalarQueryParameter(
-            #             "submission_date", "DATE", date
-            #         )
-            #     ],
-            # )
-            # client.query(query_file.read_text()).result()
+                run(query_file_path, dataset, f"{table}${partition}", arguments)
+            else:
+                click.echo(f"Skip {query_file} with @submission_date={date}")

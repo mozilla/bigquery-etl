@@ -176,6 +176,8 @@ parser.add_argument(
     " return code 0 indicates nothing would change;"
     " return code 1 indicates some files would be reformatted",
 )
+
+
 def main():
     args = parser.parse_args()
     format(args.paths, args.check)

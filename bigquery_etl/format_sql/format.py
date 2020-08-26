@@ -179,6 +179,7 @@ parser.add_argument(
 
 
 def main():
+    """Format SQL files."""
     args = parser.parse_args()
     format(args.paths, args.check)
 

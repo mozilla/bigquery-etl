@@ -6,7 +6,6 @@ results should be written to a corresponding public dataset.
 """
 
 from argparse import ArgumentParser
-import os
 import re
 import subprocess
 import sys
@@ -93,6 +92,7 @@ def run(
 
 
 def main():
+    """Run query."""
     args, query_arguments = parser.parse_known_args()
     run(
         args.query_file,

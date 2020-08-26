@@ -8,7 +8,6 @@ from pathlib import Path
 import re
 import sys
 import string
-from typing import List
 
 from ..metadata.parse_metadata import Metadata, METADATA_FILE
 from ..format_sql.formatter import reformat
@@ -276,6 +275,42 @@ def info(path, cost, last_updated):
                 click.echo("scheduling:")
                 click.echo(f"  dag_name: {metadata.scheduling['dag_name']}")
 
+        if cost or last_updated:
+            if not is_authenticated():
+                click.echo(
+                    "Authentication to GCP required for "
+                    "accessing cost and last_updated."
+                )
+            else:
+                client = bigquery.Client()
+                end_date = date.today().strftime("%Y-%m-%d")
+                start_date = (date.today() - timedelta(7)).strftime("%Y-%m-%d")
+                result = client.query(
+                    f"""
+                    SELECT
+                        SUM(cost_usd) AS cost,
+                        MAX(creation_time) AS last_updated
+                    FROM `monitoring.bigquery_etl_scheduled_queries_cost_v1`
+                    WHERE submission_date BETWEEN '{start_date}' AND '{end_date}'
+                        AND dataset = '{dataset}'
+                        AND table = '{table}'
+                """
+                ).result()
+
+                if result.total_rows == 0:
+                    if last_updated:
+                        click.echo("last_updated: never")
+                    if cost:
+                        click.echo("Cost over the last 7 days: none")
+
+                for row in result:
+                    if last_updated:
+                        click.echo(f"  last_updated: {row.last_updated}")
+                    if cost:
+                        click.echo(
+                            f"  Cost over the last 7 days: {round(row.cost, 2)} USD"
+                        )
+
         click.echo("")
 
 
@@ -322,7 +357,6 @@ def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
         click.echo("Authentication to GCP required. Run `gcloud auth login`.")
         sys.exit(1)
 
-    client = bigquery.Client()
     query_files = Path(path).rglob("query.sql")
     dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
 
@@ -331,17 +365,18 @@ def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
         table = query_file_path.parent.name
         dataset = query_file_path.parent.parent.name
 
-        for date in dates:
-            date = date.strftime("%Y-%m-%d")
-            if date not in exclude:
-                partition = date.replace("-", "")
+        for backfill_date in dates:
+            backfill_date = backfill_date.strftime("%Y-%m-%d")
+            if backfill_date not in exclude:
+                partition = backfill_date.replace("-", "")
                 click.echo(
-                    f"Run backfill for {project}.{dataset}.{table}${partition} with @submission_date={date}"
+                    f"Run backfill for {project}.{dataset}.{table}${partition} "
+                    f"with @submission_date={backfill_date}"
                 )
 
                 arguments = [
                     "query",
-                    f"--parameter=submission_date:DATE:{date}",
+                    f"--parameter=submission_date:DATE:{backfill_date}",
                     "--use_legacy_sql=false",
                     "--replace",
                 ] + ctx.args
@@ -350,4 +385,4 @@ def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
 
                 run(query_file_path, dataset, f"{table}${partition}", arguments)
             else:
-                click.echo(f"Skip {query_file} with @submission_date={date}")
+                click.echo(f"Skip {query_file} with @submission_date={backfill_date}")

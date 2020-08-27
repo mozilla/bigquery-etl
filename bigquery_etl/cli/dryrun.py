@@ -44,6 +44,7 @@ def dryrun(path, use_cloud_function, project):
         click.echo(f"Invalid path {path}", err=True)
 
     if use_cloud_function:
+
         def cloud_function_dryrun(sqlfile):
             """Dry run SQL files."""
             return DryRun(sqlfile).is_valid()

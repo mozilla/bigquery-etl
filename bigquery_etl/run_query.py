@@ -98,8 +98,8 @@ def main():
         args.query_file,
         args.dataset_id,
         args.destination_table,
-        args.public_project_id,
         query_arguments,
+        args.public_project_id,
     )
 
 

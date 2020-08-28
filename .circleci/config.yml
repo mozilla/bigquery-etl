@@ -72,6 +72,13 @@ jobs:
             circleci step halt
           fi
     - *build
+    - run:
+        name: Install bq
+        command: |
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+          PATH="venv/bin:$PATH" apt-get update && PATH="venv/bin:$PATH" apt-get install google-cloud-sdk -y
+          cp .bigqueryrc /root/.bigqueryrc
     - &pytest_integration_test
       run:
         name: PyTest Integration Test
@@ -79,8 +86,6 @@ jobs:
         # and use a file in that location for credentials if present;
         # See https://cloud.google.com/docs/authentication/production
         command: |
-          export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-          echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
           PATH="venv/bin:$PATH" script/entrypoint -m integration
   validate-dags:
     # based on https://github.com/mozilla/telemetry-airflow/blob/master/.circleci/config.yml

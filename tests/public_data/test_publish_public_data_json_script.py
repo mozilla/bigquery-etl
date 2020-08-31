@@ -46,12 +46,6 @@ class TestPublishJsonScript(object):
 
         assert res.returncode == 0
 
-        with pytest.raises(NotFound):
-            temp_table = (
-                f"{project_id}.{temporary_dataset}.incremental_query_v1_20200315_temp"
-            )
-            bigquery_client.get_table(temp_table)
-
         gcp_path = (
             f"{temporary_gcs_folder}api/v1/tables/"
             + "test/incremental_query/v1/files/2020-03-15/"

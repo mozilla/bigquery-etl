@@ -31,14 +31,11 @@ GROUP BY
   submission_date
 
 */
-
-CREATE OR REPLACE FUNCTION
-  udf_js.jackknife_sum_ci(n_buckets INT64, counts_per_bucket ARRAY<INT64>)
-  RETURNS STRUCT<total INT64,
-  low INT64,
-  high INT64,
-  pm INT64>
-  LANGUAGE js AS """
+CREATE OR REPLACE FUNCTION udf_js.jackknife_sum_ci(n_buckets INT64, counts_per_bucket ARRAY<INT64>)
+RETURNS STRUCT<total INT64, low INT64, high INT64, pm INT64>
+LANGUAGE js
+AS
+  """
 function erfinv(x){
     var z;
     var a = 0.147;
@@ -116,7 +113,6 @@ return sum_buckets_with_ci(n_buckets, counts_per_bucket);
 """;
 
 -- Tests
-
 SELECT
   -- Make sure a single-element array doesn't throw an error.
   assert_equals(5, udf_js.jackknife_sum_ci(20, [5]).total)

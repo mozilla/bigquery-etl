@@ -11,11 +11,11 @@ Based on https://stackoverflow.com/a/18639999/1260237
 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 
 */
-
-CREATE OR REPLACE FUNCTION
-  udf_js.crc32(data STRING)
-  RETURNS INT64
-  LANGUAGE js AS """
+CREATE OR REPLACE FUNCTION udf_js.crc32(data STRING)
+RETURNS INT64
+LANGUAGE js
+AS
+  """
   var makeCRCTable = function(){
     var c;
     var crcTable = [];
@@ -47,6 +47,5 @@ CREATE OR REPLACE FUNCTION
 """;
 
 -- Tests
-
 SELECT
   assert_equals(308953907, udf_js.crc32("51baf8b4-75d1-3648-b96d-809569b89a12"));

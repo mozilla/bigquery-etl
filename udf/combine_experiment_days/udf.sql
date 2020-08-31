@@ -9,42 +9,35 @@ experiment. We combine the bit patterns for the previous day and the
 current day, returning a single array of experiment structs.
 
 */
-
-CREATE OR REPLACE FUNCTION
-  udf.combine_experiment_days(
+CREATE OR REPLACE FUNCTION udf.combine_experiment_days(
     --
-    prev ARRAY<STRUCT<experiment STRING,
-    branch STRING,
-    bits INT64>>,
+  prev ARRAY<STRUCT<experiment STRING, branch STRING, bits INT64>>,
     --
-    curr ARRAY<STRUCT<experiment STRING,
-    branch STRING,
-    bits INT64>>) AS (
+  curr ARRAY<STRUCT<experiment STRING, branch STRING, bits INT64>>
+) AS (
     -- The below is logically a FULL JOIN, but BigQuery returns error
     -- "Array scan is not allowed with FULL JOIN" so we have to do two
     -- separate scans.
-    ARRAY_CONCAT(
+  ARRAY_CONCAT(
       -- Experiments present in prev (and potentially in curr too)
-      ARRAY(
-      SELECT
-        AS STRUCT experiment,
+    ARRAY(
+      SELECT AS STRUCT
+        experiment,
         branch,
-        udf.combine_adjacent_days_28_bits(prev.bits,
-          curr.bits) AS bits
+        udf.combine_adjacent_days_28_bits(prev.bits, curr.bits) AS bits
       FROM
         UNNEST(prev) AS prev
       LEFT JOIN
         UNNEST(curr) AS curr
       USING
-        (experiment,
-          branch)
+        (experiment, branch)
       WHERE
-        udf.combine_adjacent_days_28_bits(prev.bits,
-          curr.bits) > 0),
+        udf.combine_adjacent_days_28_bits(prev.bits, curr.bits) > 0
+    ),
       -- Experiments present in curr only
-      ARRAY(
-      SELECT
-        AS STRUCT experiment,
+    ARRAY(
+      SELECT AS STRUCT
+        experiment,
         branch,
         curr.bits AS bits
       FROM
@@ -52,21 +45,30 @@ CREATE OR REPLACE FUNCTION
       LEFT JOIN
         UNNEST(prev) AS prev
       USING
-        (experiment,
-          branch)
+        (experiment, branch)
       WHERE
-        prev IS NULL)));
+        prev IS NULL
+    )
+  )
+);
 
 -- Tests
-
 SELECT
   assert_array_equals(
     udf.combine_experiment_days(
-      [STRUCT("exp1" AS experiment, "1a" AS branch, 1 AS bits),
-       STRUCT("exp2" AS experiment, "2b" AS branch, 3 AS bits),
-       STRUCT("filtered_out" AS experiment, "?" AS branch, 1 << 27 AS bits)],
-      [STRUCT("exp1" AS experiment, "1a" AS branch, 1 AS bits),
-       STRUCT("exp3" AS experiment, "3c" AS branch, 1 AS bits)]),
-    [STRUCT("exp1" AS experiment, "1a" AS branch, 3 AS bits),
-     STRUCT("exp2" AS experiment, "2b" AS branch, 6 AS bits),
-     STRUCT("exp3" AS experiment, "3c" AS branch, 1 AS bits)]);
+      [
+        STRUCT("exp1" AS experiment, "1a" AS branch, 1 AS bits),
+        STRUCT("exp2" AS experiment, "2b" AS branch, 3 AS bits),
+        STRUCT("filtered_out" AS experiment, "?" AS branch, 1 << 27 AS bits)
+      ],
+      [
+        STRUCT("exp1" AS experiment, "1a" AS branch, 1 AS bits),
+        STRUCT("exp3" AS experiment, "3c" AS branch, 1 AS bits)
+      ]
+    ),
+    [
+      STRUCT("exp1" AS experiment, "1a" AS branch, 3 AS bits),
+      STRUCT("exp2" AS experiment, "2b" AS branch, 6 AS bits),
+      STRUCT("exp3" AS experiment, "3c" AS branch, 1 AS bits)
+    ]
+  );

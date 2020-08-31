@@ -19,10 +19,15 @@ See here for an example usage
 https://sql.telemetry.mozilla.org/queries/64460/source
 
 */
-
-CREATE OR REPLACE FUNCTION udf_js.json_extract_missing_cols (input STRING, indicates_node ARRAY<STRING>, known_nodes ARRAY<STRING>)
+CREATE OR REPLACE FUNCTION udf_js.json_extract_missing_cols(
+  input STRING,
+  indicates_node ARRAY<STRING>,
+  known_nodes ARRAY<STRING>
+)
 RETURNS ARRAY<STRING>
-LANGUAGE js AS """
+LANGUAGE js
+AS
+  """
     if (input == null || input == '{}') {
       return null;
     }
@@ -73,11 +78,9 @@ LANGUAGE js AS """
 """;
 
 -- Tests
-
-WITH
-  addl_properties AS (
-    SELECT
-      '''
+WITH addl_properties AS (
+  SELECT
+    '''
       {
         "first": {
           "second": {
@@ -96,23 +99,43 @@ WITH
           ]
         }
       }
-      ''' AS additional_properties  ),
+      ''' AS additional_properties
+),
     --
-  extracted AS (
-    SELECT
-      udf_js.json_extract_missing_cols(additional_properties, ARRAY[], ARRAY[]) AS no_args,
-      udf_js.json_extract_missing_cols(additional_properties, ARRAY['third'], ARRAY[]) AS indicates_node_arg,
-      udf_js.json_extract_missing_cols(additional_properties, ARRAY[], ARRAY['first']) AS is_node_arg
-    FROM
-      addl_properties )
-    --
-    SELECT
-      assert_array_equals_any_order(no_args, ARRAY['`first`.`second`.`third`', '`first`.`other-second`',
-        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`duplicate-array-element`', 
-        '`first`.`array`.[...].`unique-array-element`']),
-      assert_array_equals_any_order(indicates_node_arg, ARRAY['`first`.`second`', '`first`.`other-second`', 
-        '`first`.`array`.[...].`nested-array-element`.`nested`', '`first`.`array`.[...].`duplicate-array-element`',
-        '`first`.`array`.[...].`unique-array-element`']),
-      assert_array_equals_any_order(is_node_arg, ARRAY['`first`'])
+extracted AS (
+  SELECT
+    udf_js.json_extract_missing_cols(additional_properties, ARRAY[], ARRAY[]) AS no_args,
+    udf_js.json_extract_missing_cols(
+      additional_properties,
+      ARRAY['third'],
+      ARRAY[]
+    ) AS indicates_node_arg,
+    udf_js.json_extract_missing_cols(additional_properties, ARRAY[], ARRAY['first']) AS is_node_arg
   FROM
-    extracted
+    addl_properties
+)
+    --
+SELECT
+  assert_array_equals_any_order(
+    no_args,
+    ARRAY[
+      '`first`.`second`.`third`',
+      '`first`.`other-second`',
+      '`first`.`array`.[...].`nested-array-element`.`nested`',
+      '`first`.`array`.[...].`duplicate-array-element`',
+      '`first`.`array`.[...].`unique-array-element`'
+    ]
+  ),
+  assert_array_equals_any_order(
+    indicates_node_arg,
+    ARRAY[
+      '`first`.`second`',
+      '`first`.`other-second`',
+      '`first`.`array`.[...].`nested-array-element`.`nested`',
+      '`first`.`array`.[...].`duplicate-array-element`',
+      '`first`.`array`.[...].`unique-array-element`'
+    ]
+  ),
+  assert_array_equals_any_order(is_node_arg, ARRAY['`first`'])
+FROM
+  extracted

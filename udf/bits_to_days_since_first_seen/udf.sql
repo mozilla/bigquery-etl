@@ -15,22 +15,23 @@ CREATE OR REPLACE FUNCTION
 
 See also: bits_to_days_since_seen.sql
 */
-
-CREATE OR REPLACE FUNCTION
-  udf.bits_to_days_since_first_seen(b BYTES) AS ((
+CREATE OR REPLACE FUNCTION udf.bits_to_days_since_first_seen(b BYTES) AS (
+  (
     WITH leading AS (
       -- Extract the leading 0 bytes and first set byte.
       -- Trimming forces NULL for bytes with no set bits.
-      SELECT REGEXP_EXTRACT(RTRIM(b, b'\x00'), CAST('(^\x00*.)' AS BYTES)) AS head
+      SELECT
+        REGEXP_EXTRACT(RTRIM(b, b'\x00'), CAST('(^\x00*.)' AS BYTES)) AS head
     )
-
-    SELECT 
+    SELECT
       -- The remaining bytes in b, after head, are all days after first seen
       (8 * (BYTE_LENGTH(b) - BYTE_LENGTH(head)))
       -- Add the loc of the first set bit in the final byte of tail, for additional days
-          + udf.pos_of_leading_set_bit(TO_CODE_POINTS(SUBSTR(head, -1, 1))[OFFSET(0)])
-    FROM leading
-  ));
+      + udf.pos_of_leading_set_bit(TO_CODE_POINTS(SUBSTR(head, -1, 1))[OFFSET(0)])
+    FROM
+      leading
+  )
+);
 
 -- Tests
 SELECT

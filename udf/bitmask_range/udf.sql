@@ -9,17 +9,16 @@ The arguments were chosen to match the semantics of the SUBSTR function; see
 https://cloud.google.com/bigquery/docs/reference/standard-sql/functions-and-operators#substr
 
 */
-
-CREATE OR REPLACE FUNCTION
-  udf.bitmask_range( start_ordinal INT64,
-    _length INT64) AS ((
+CREATE OR REPLACE FUNCTION udf.bitmask_range(start_ordinal INT64, _length INT64) AS (
+  (
     SELECT
       SUM(1 << (_n - 1))
     FROM
-      UNNEST(GENERATE_ARRAY(start_ordinal, start_ordinal + _length - 1)) AS _n ));
+      UNNEST(GENERATE_ARRAY(start_ordinal, start_ordinal + _length - 1)) AS _n
+  )
+);
 
 -- Tests
-
 SELECT
   assert_equals(1, udf.bitmask_range(1, 1)),
   assert_equals(30, udf.bitmask_range(2, 4)),

@@ -10,17 +10,13 @@ less reliable outside of this range and cannot be used as reliable indicators
 of new profile creation.
 
 */
-
-CREATE OR REPLACE FUNCTION
-  udf.days_since_created_profile_as_28_bits(days_since_created_profile INT64) AS (
-  IF
-    (days_since_created_profile BETWEEN 0
-      AND 6,
-      1 << days_since_created_profile,
-      0));
+CREATE OR REPLACE FUNCTION udf.days_since_created_profile_as_28_bits(
+  days_since_created_profile INT64
+) AS (
+  IF(days_since_created_profile BETWEEN 0 AND 6, 1 << days_since_created_profile, 0)
+);
 
 -- Tests
-
 SELECT
   assert_equals(2, udf.days_since_created_profile_as_28_bits(1)),
   assert_equals(4, udf.days_since_created_profile_as_28_bits(2)),

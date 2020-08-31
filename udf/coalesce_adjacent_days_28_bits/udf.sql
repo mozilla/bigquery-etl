@@ -1,9 +1,6 @@
-CREATE OR REPLACE FUNCTION
-  udf.coalesce_adjacent_days_28_bits(prev INT64,
-    curr INT64) AS ( COALESCE( NULLIF(udf.shift_28_bits_one_day(prev),
-        0),
-      curr,
-      0));
+CREATE OR REPLACE FUNCTION udf.coalesce_adjacent_days_28_bits(prev INT64, curr INT64) AS (
+  COALESCE(NULLIF(udf.shift_28_bits_one_day(prev), 0), curr, 0)
+);
 
 /*
 
@@ -15,9 +12,7 @@ value if non-zero and non-null, the current day value if non-zero and non-null,
 or else 0.
 
 */
-
 -- Test
-
 SELECT
   assert_equals(2, udf.coalesce_adjacent_days_28_bits(1, 64)),
   assert_equals(128, udf.coalesce_adjacent_days_28_bits(64, 1)),

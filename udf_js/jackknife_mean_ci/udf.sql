@@ -12,16 +12,14 @@ Usage generally involves first calculating an aggregate per bucket,
 then aggregating over buckets, passing ARRAY_AGG(metric) to this function.
 
 */
-
-CREATE OR REPLACE FUNCTION
-  udf_js.jackknife_mean_ci(
-    n_buckets INT64,
-    values_per_bucket ARRAY<FLOAT64>)
-  RETURNS STRUCT<
-    low FLOAT64,
-    high FLOAT64,
-    pm FLOAT64>
-  LANGUAGE js AS """
+CREATE OR REPLACE FUNCTION udf_js.jackknife_mean_ci(
+  n_buckets INT64,
+  values_per_bucket ARRAY<FLOAT64>
+)
+RETURNS STRUCT<low FLOAT64, high FLOAT64, pm FLOAT64>
+LANGUAGE js
+AS
+  """
 function erfinv(x){
     var z;
     var a = 0.147;

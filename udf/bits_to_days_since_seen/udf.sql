@@ -14,22 +14,23 @@ CREATE OR REPLACE FUNCTION
 
 See also: bits_to_days_since_first_seen.sql
 */
-
-CREATE OR REPLACE FUNCTION
-  udf.bits_to_days_since_seen(b BYTES) AS ((
+CREATE OR REPLACE FUNCTION udf.bits_to_days_since_seen(b BYTES) AS (
+  (
     WITH trailing AS (
       -- Extract the first set byte with the trailing zeroes
       -- LTRIM forces NULL for bytes with no set bits
-      SELECT REGEXP_EXTRACT(LTRIM(b, b'\x00'), CAST('(.\x00*$)' AS BYTES)) AS tail
+      SELECT
+        REGEXP_EXTRACT(LTRIM(b, b'\x00'), CAST('(.\x00*$)' AS BYTES)) AS tail
     )
-
-    SELECT 
+    SELECT
       -- Sum all trailing zeroes
       (8 * (BYTE_LENGTH(tail) - 1))
       -- Add the loc of the last set bit
-          + udf.pos_of_trailing_set_bit(TO_CODE_POINTS(SUBSTR(tail, 1, 1))[OFFSET(0)])
-    FROM trailing
-  ));
+      + udf.pos_of_trailing_set_bit(TO_CODE_POINTS(SUBSTR(tail, 1, 1))[OFFSET(0)])
+    FROM
+      trailing
+  )
+);
 
 -- Tests
 SELECT

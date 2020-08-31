@@ -7,16 +7,17 @@ see udf/udf_json_extract_histogram for a pure SQL implementation that will likel
 be more usable in practice.
 
 */
-
-CREATE OR REPLACE FUNCTION
-  udf_js.json_extract_histogram (input STRING)
-  RETURNS STRUCT<bucket_count INT64,
+CREATE OR REPLACE FUNCTION udf_js.json_extract_histogram(input STRING)
+RETURNS STRUCT<
+  bucket_count INT64,
   histogram_type INT64,
   `sum` INT64,
   `range` ARRAY<INT64>,
-  `values` ARRAY<STRUCT<key INT64,
-  value INT64>> >
-  LANGUAGE js AS """
+  `values` ARRAY<STRUCT<key INT64, value INT64>>
+>
+LANGUAGE js
+AS
+  """
     if (input == null) {
       return null;
     }
@@ -31,26 +32,30 @@ CREATE OR REPLACE FUNCTION
 """;
 
 -- Tests
-
-WITH
-  histogram AS (
-    SELECT AS VALUE
-      '{"bucket_count":10,"histogram_type":1,"sum":2628,"range":[1,100],"values":{"0":12434,"1":297,"13":8}}' ),
+WITH histogram AS (
+  SELECT AS VALUE
+    '{"bucket_count":10,"histogram_type":1,"sum":2628,"range":[1,100],"values":{"0":12434,"1":297,"13":8}}'
+),
   --
-  extracted AS (
-    SELECT
-      udf_js.json_extract_histogram(histogram).*
-    FROM
-      histogram )
-  --
+extracted AS (
   SELECT
-    assert_equals(10, bucket_count),
-    assert_equals(1, histogram_type),
-    assert_equals(2628, `sum`),
-    assert_array_equals([1, 100], `range`),
-    assert_array_equals([STRUCT(0 AS key, 12434 AS value),
-                         STRUCT(1 AS key, 297 AS value),
-                         STRUCT(13 AS key, 8 AS value)],
-                        `values`)
+    udf_js.json_extract_histogram(histogram).*
   FROM
-    extracted
+    histogram
+)
+  --
+SELECT
+  assert_equals(10, bucket_count),
+  assert_equals(1, histogram_type),
+  assert_equals(2628, `sum`),
+  assert_array_equals([1, 100], `range`),
+  assert_array_equals(
+    [
+      STRUCT(0 AS key, 12434 AS value),
+      STRUCT(1 AS key, 297 AS value),
+      STRUCT(13 AS key, 8 AS value)
+    ],
+    `values`
+  )
+FROM
+  extracted

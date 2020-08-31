@@ -10,12 +10,11 @@ its complement, then we determine the position of the bit via base-2 logarithm;
 see https://stackoverflow.com/a/42747608/1260237
 
 */
-
-CREATE OR REPLACE FUNCTION
-  udf.pos_of_trailing_set_bit( bits INT64 ) AS ( CAST(SAFE.LOG(bits & -bits, 2) AS INT64));
+CREATE OR REPLACE FUNCTION udf.pos_of_trailing_set_bit(bits INT64) AS (
+  CAST(SAFE.LOG(bits & -bits, 2) AS INT64)
+);
 
 -- Tests
-
 SELECT
   assert_null(udf.pos_of_trailing_set_bit(0)),
   assert_equals(0, udf.pos_of_trailing_set_bit(1)),

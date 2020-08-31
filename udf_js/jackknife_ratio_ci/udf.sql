@@ -33,17 +33,14 @@ GROUP BY
   submission_date
 
 */
-
-CREATE OR REPLACE FUNCTION
-  udf_js.jackknife_ratio_ci(
-    n_buckets INT64,
-    values_per_bucket ARRAY<STRUCT<numerator FLOAT64, denominator FLOAT64>>)
-  RETURNS STRUCT<
-    mean FLOAT64,
-    low FLOAT64,
-    high FLOAT64,
-    pm FLOAT64>
-  LANGUAGE js AS """
+CREATE OR REPLACE FUNCTION udf_js.jackknife_ratio_ci(
+  n_buckets INT64,
+  values_per_bucket ARRAY<STRUCT<numerator FLOAT64, denominator FLOAT64>>
+)
+RETURNS STRUCT<mean FLOAT64, low FLOAT64, high FLOAT64, pm FLOAT64>
+LANGUAGE js
+AS
+  """
 function erfinv(x){
     var z;
     var a = 0.147;

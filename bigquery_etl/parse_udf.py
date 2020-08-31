@@ -55,8 +55,14 @@ class RawUdf:
         with open(filepath) as f:
             text = f.read()
 
-        name = os.path.basename(dirpath)
-        dataset = os.path.basename(os.path.split(dirpath)[0])
+        if basename == "udf.sql":
+            # mozfun support, all UDFs are stored in udf.sql files which are nested
+            # into directories denoting the UDF name and dataset
+            name = os.path.basename(dirpath)
+            dataset = os.path.basename(os.path.split(dirpath)[0])
+        else:
+            name = basename.replace(".sql", "")
+            dataset = os.path.basename(dirpath)
 
         try:
             return RawUdf.from_text(text, dataset, name, filepath)
@@ -221,6 +227,9 @@ def udf_usage_definitions(text, raw_udfs=None):
     deps = []
     for udf_usage in udf_usages_in_text(text):
         deps = accumulate_dependencies(deps, raw_udfs, udf_usage)
+
+    print(text)
+    print("===")
     return [
         statement
         for udf_name in deps
@@ -232,6 +241,8 @@ def udf_usage_definitions(text, raw_udfs=None):
 def persistent_udf_as_temp(raw_udf, raw_udfs=None):
     """Transform persistent UDF into temporary UDF."""
     sql = prepend_udf_usage_definitions(raw_udf, raw_udfs)
+
+    print(sql)
     sql = sub_persistent_udf_names_as_temp(sql)
 
     for udf in MOZFUN_UDFS:

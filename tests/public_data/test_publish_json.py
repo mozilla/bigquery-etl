@@ -48,7 +48,7 @@ class TestPublishJson(object):
     mock_storage_client.list_blobs.return_value = [mock_blob]
     mock_storage_client.bucket.return_value = mock_bucket
 
-    temp_table = f"{project_id}.tmp.incremental_query_v1_20200315_temp"
+    temp_table = f"{project_id}.tmp.incremental_query_v1_20200315"
     non_incremental_table = f"{project_id}.test.non_incremental_query_v1"
     api_version = "v1"
 
@@ -123,7 +123,7 @@ class TestPublishJson(object):
         )
         publisher._write_results_to_temp_table()
 
-        assert publisher.temp_table == self.temp_table
+        assert publisher.temp_table.startswith(self.temp_table)
         self.mock_client.query.assert_called_once()
 
     def test_gcp_convert_ndjson_to_json(self):

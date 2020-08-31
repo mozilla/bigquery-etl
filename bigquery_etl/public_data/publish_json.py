@@ -9,6 +9,8 @@ import smart_open
 import logging
 import sys
 import re
+import random
+import string
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import validate_public_data
@@ -228,7 +230,10 @@ class JsonPublisher:
 
     def _write_results_to_temp_table(self):
         """Write the query results to a temporary table and return the table name."""
-        table_date = self.date.replace("-", "")
+        table_date = self.date.replace("-", "") + "".join(
+            random.choice(string.ascii_lowercase) for i in range(12)
+        )
+
         self.temp_table = (
             f"{self.project_id}.tmp.{self.table}_{self.version}_{table_date}_temp"
         )

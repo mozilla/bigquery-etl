@@ -10,14 +10,15 @@ from google.cloud import storage
 from bigquery_etl.util import standard_args
 from bigquery_etl.parse_udf import read_udf_dirs, accumulate_dependencies
 
-DEFAULT_PROJECT_ID = "mozfun"
-DEFAULT_UDF_DIR = "mozfun/"
-DEFAULT_DEPENDENCY_DIR = "lib/"
-DEFAULT_GCS_BUCKET = "mozfun"
+DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
+DEFAULT_UDF_DIR = ["udf/", "udf_js/"]
+DEFAULT_DEPENDENCY_DIR = "udf_js/lib/"
+DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
 DEFAULT_GCS_PATH = ""
 
 OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
 
+SKIP = {"udf/main_summary_scalars/udf.sql"}
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -27,8 +28,9 @@ parser.add_argument(
     help="Project to publish UDFs to",
 )
 parser.add_argument(
-    "--udf-dir",
-    "--udf_dir",
+    "--udf-dirs",
+    "--udf_dirs",
+    nargs="+",
     default=DEFAULT_UDF_DIR,
     help="Directory containing UDF definitions",
 )
@@ -50,6 +52,9 @@ parser.add_argument(
     default=DEFAULT_GCS_PATH,
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
+parser.add_argument(
+    "--public", default=False, help="The published UDFs should be publicly accessible.",
+)
 standard_args.add_log_level(parser)
 
 
@@ -59,12 +64,12 @@ def main():
 
     client = bigquery.Client(args.project_id)
 
-    if args.dependency_dir:
+    if args.dependency_dir and os.path.exists(args.dependency_dir):
         push_dependencies_to_gcs(
             args.gcs_bucket, args.gcs_path, args.dependency_dir, args.project_id
         )
 
-    raw_udfs = read_udf_dirs(args.udf_dir)
+    raw_udfs = read_udf_dirs(*args.udf_dir)
 
     published_udfs = []
 
@@ -74,7 +79,7 @@ def main():
         udfs_to_publish.append(raw_udf)
 
         for dep in udfs_to_publish:
-            if dep not in published_udfs:
+            if dep not in published_udfs and raw_udfs[dep].filepath not in SKIP:
                 publish_udf(
                     raw_udfs[dep],
                     client,
@@ -82,21 +87,25 @@ def main():
                     args.gcs_bucket,
                     args.gcs_path,
                     raw_udfs.keys(),
+                    args.public,
                 )
                 published_udfs.append(dep)
 
 
-def publish_udf(raw_udf, client, project_id, gcs_bucket, gcs_path, known_udfs):
+def publish_udf(
+    raw_udf, client, project_id, gcs_bucket, gcs_path, known_udfs, is_public
+):
     """Publish a specific UDF to BigQuery."""
-    # create new dataset for UDF if necessary
-    dataset = client.create_dataset(raw_udf.dataset, exists_ok=True)
+    if is_public:
+        # create new dataset for UDF if necessary
+        dataset = client.create_dataset(raw_udf.dataset, exists_ok=True)
 
-    # set permissions for dataset, public for everyone
-    entry = bigquery.AccessEntry("READER", "specialGroup", "allAuthenticatedUsers")
-    entries = list(dataset.access_entries)
-    entries.append(entry)
-    dataset.access_entries = entries
-    dataset = client.update_dataset(dataset, ["access_entries"])
+        # set permissions for dataset, public for everyone
+        entry = bigquery.AccessEntry("READER", "specialGroup", "allAuthenticatedUsers")
+        entries = list(dataset.access_entries)
+        entries.append(entry)
+        dataset.access_entries = entries
+        dataset = client.update_dataset(dataset, ["access_entries"])
 
     # transforms temporary UDF to persistent UDFs and publishes them
     for definition in raw_udf.definitions:

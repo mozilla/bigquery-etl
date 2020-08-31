@@ -8,7 +8,7 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 import pytest
 
-from .. import parse_udf
+from ..udf import parse_udf
 from ..util.test_sql import (
     coerce_result,
     dataset,

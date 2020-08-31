@@ -4,4 +4,4 @@
 
 cd "$(dirname "$0")/.."
 
-exec python3 -m "$@"
+exec python3 -m bigquery_etl.udf.publish_udfs "$@"

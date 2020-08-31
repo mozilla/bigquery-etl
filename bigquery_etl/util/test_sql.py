@@ -3,7 +3,7 @@
 # file, you can obtain one at http://mozilla.org/MPL/2.0/.
 """Utilities."""
 
-from bigquery_etl import parse_udf
+from bigquery_etl.udf import parse_udf
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, datetime

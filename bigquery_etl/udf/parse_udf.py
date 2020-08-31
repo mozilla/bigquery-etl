@@ -55,14 +55,8 @@ class RawUdf:
         with open(filepath) as f:
             text = f.read()
 
-        if basename == "udf.sql":
-            # mozfun support, all UDFs are stored in udf.sql files which are nested
-            # into directories denoting the UDF name and dataset
-            name = os.path.basename(dirpath)
-            dataset = os.path.basename(os.path.split(dirpath)[0])
-        else:
-            name = basename.replace(".sql", "")
-            dataset = os.path.basename(dirpath)
+        name = os.path.basename(dirpath)
+        dataset = os.path.basename(os.path.split(dirpath)[0])
 
         try:
             return RawUdf.from_text(text, dataset, name, filepath)

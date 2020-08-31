@@ -1,0 +1,2 @@
+description: Rename struct fields in anonymous event tuples to meaningful names.
+friendly_name: Deanonymize Event

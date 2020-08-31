@@ -1,6 +1,6 @@
 WITH _derived_search_cols AS (
   SELECT
-    udf.normalize_search_engine(engine) AS short_engine,
+    COALESCE(udf.normalize_search_engine(engine), "Other") AS short_engine,
     COALESCE(organic, 0) + COALESCE(sap, 0) + COALESCE(unknown, 0) + COALESCE(
       tagged_sap,
       0

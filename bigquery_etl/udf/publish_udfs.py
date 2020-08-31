@@ -69,7 +69,7 @@ def main():
             args.gcs_bucket, args.gcs_path, args.dependency_dir, args.project_id
         )
 
-    raw_udfs = read_udf_dirs(*args.udf_dir)
+    raw_udfs = read_udf_dirs(*args.udf_dirs)
 
     published_udfs = []
 

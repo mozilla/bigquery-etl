@@ -13,7 +13,6 @@ WITH _derived_search_cols AS (
     search_clients_daily_v8
   WHERE
     submission_date = @submission_date
-    AND sample_id = 84 -- limit to 1%
 ),
 _derived_engine_searches AS (
     -- From the clients search info, make a struct

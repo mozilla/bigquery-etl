@@ -1,0 +1,2 @@
+description: Floor a timestamp object to the given minute interval.
+friendly_name: Round Timestamp To Minute

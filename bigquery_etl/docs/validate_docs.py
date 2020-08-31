@@ -6,7 +6,7 @@ from pathlib import Path
 import tempfile
 
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.parse_udf import read_udf_dirs, persistent_udf_as_temp
+from bigquery_etl.udf.parse_udf import read_udf_dirs, persistent_udf_as_temp
 from bigquery_etl.util import standard_args
 
 DEFAULT_PROJECTS = ["mozfun"]

@@ -4,7 +4,7 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 import pytest
 
-from ..parse_udf import UDF_DIRS, MOZFUN_DIR, parse_udf_dirs
+from ..udf.parse_udf import UDF_DIRS, MOZFUN_DIR, parse_udf_dirs
 
 TEST_UDF_DIRS = {"assert"}.union(UDF_DIRS).union(MOZFUN_DIR)
 _parsed_udfs = None
@@ -29,11 +29,8 @@ def pytest_configure(config):
 
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
-    if path.basename.endswith(".sql"):
-        if path.dirpath().basename in TEST_UDF_DIRS or (
-            "mozfun" in str(path.dirpath()) and path.basename == "udf.sql"
-        ):
-            return UdfFile(path, parent)
+    if path.basename == "udf.sql":
+        return UdfFile(path, parent)
 
 
 class UdfFile(pytest.File):

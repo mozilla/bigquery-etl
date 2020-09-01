@@ -91,29 +91,30 @@ class JsonPublisher:
         """Publish query results as JSON to GCP Storage bucket."""
         self.last_updated = datetime.datetime.utcnow()
 
-        if self.metadata.is_incremental_export():
-            if self.date is None:
-                logging.error(
-                    "Cannot publish JSON. submission_date missing in parameter."
-                )
-                sys.exit(1)
+        try:
+            if self.metadata.is_incremental_export():
+                if self.date is None:
+                    logging.error(
+                        "Cannot publish JSON. submission_date missing in parameter."
+                    )
+                    sys.exit(1)
 
-            # if it is an incremental query, then the query result needs to be
-            # written to a temporary table to get exported as JSON
-            self._write_results_to_temp_table()
-            self._publish_table_as_json(self.temp_table)
-        else:
-            # for non-incremental queries, the entire destination table is exported
-            result_table = f"{self.dataset}.{self.table}_{self.version}"
-            self._publish_table_as_json(result_table)
+                # if it is an incremental query, then the query result needs to be
+                # written to a temporary table to get exported as JSON
+                self._write_results_to_temp_table()
+                self._publish_table_as_json(self.temp_table)
+            else:
+                # for non-incremental queries, the entire destination table is exported
+                result_table = f"{self.dataset}.{self.table}_{self.version}"
+                self._publish_table_as_json(result_table)
 
-        self._publish_last_updated()
+            self._publish_last_updated()
+        finally:
+            # delete temporary artifacts
+            if self.temp_table:
+                self.client.delete_table(self.temp_table)
 
-        # delete temporary artifacts
-        if self.temp_table:
-            self.client.delete_table(self.temp_table)
-
-        self._clear_stage_directory()
+            self._clear_stage_directory()
 
     def _publish_table_as_json(self, result_table):
         """Export the `result_table` data as JSON to Cloud Storage."""

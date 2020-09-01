@@ -24,6 +24,10 @@ boto3==1.13.16 \
     --hash=sha256:2a97c9e8fd2c0f8d8a92262a0ccbd00aad8c4786acb74f620f54164070cb72ff \
     --hash=sha256:650d67b0d47b7bc0d79f04cc944506823dbbc2f76f60e64ce6d7cdd89f60a2eb \
     # via smart-open
+boto==2.49.0 \
+    --hash=sha256:147758d41ae7240dc989f0039f27da8ca0d53734be0eb869ef16e3adcfa462e8 \
+    --hash=sha256:ea0d3b40a2d852767be77ca343b58a9e3a4b00d9db440efb8da74b4e58025e5a \
+    # via smart-open
 botocore==1.16.16 \
     --hash=sha256:0275023d023f0e3f9c27e5f23c437dd09ee715577cc628cf724e8bfbba2b459e \
     --hash=sha256:70d52f606bab2867971c0ea0c7723a769d81aa3cfd09f819d2b56e186e64ea0b \
@@ -91,7 +95,7 @@ google-cloud-core==1.4.1 \
 google-cloud-storage==1.27.0 \
     --hash=sha256:3af167094142a61b1bda3489da4a724e55f2703b236431b27f71c9936d94f8d8 \
     --hash=sha256:62d5efa529fb39ae01504698b7053f2a009877d0d4b3c8f297e3e68c8c38a117 \
-    # via -r requirements.in, smart-open
+    # via -r requirements.in
 google-resumable-media==0.5.0 \
     --hash=sha256:2a8fd188afe1cbfd5998bf20602f76b0336aa892de88fe842a806b9a3ed78d2a \
     --hash=sha256:b86140d5a0b6d290084b11bde90ee9aecad357ba0e0d67388d016b8340320927 \
@@ -341,8 +345,8 @@ six==1.15.0 \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
     --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
     # via gcloud, google-api-core, google-auth, google-cloud-bigquery, google-resumable-media, jsonschema, oauth2client, packaging, protobuf, pyrsistent, pytest-xdist, python-dateutil
-smart_open==1.10.0 \
-    --hash=sha256:bea5624c0c2e49987c227bdf3596573157eccd96fd1d53198856c8d53948fa2c \
+smart_open==2.1.1 \
+    --hash=sha256:51b05acd85ec007e1d4dcdbf2bbf917218a45026f37d559559401114bb5e5840 \
     # via -r requirements.in
 smmap==3.0.4 \
     --hash=sha256:54c44c197c819d5ef1991799a7e30b662d1e520f2ac75c9efbeb54a742214cf4 \

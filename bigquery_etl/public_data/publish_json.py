@@ -78,13 +78,6 @@ class JsonPublisher:
             logging.error("Invalid file naming format: {}", self.query_file)
             sys.exit(1)
 
-    def __del__(self):
-        """Delete temporary artifacts."""
-        if self.temp_table:
-            self.client.delete_table(self.temp_table)
-
-        self._clear_stage_directory()
-
     def _clear_stage_directory(self):
         """Delete files in stage directory."""
         tmp_blobs = self.storage_client.list_blobs(
@@ -115,6 +108,12 @@ class JsonPublisher:
             self._publish_table_as_json(result_table)
 
         self._publish_last_updated()
+
+        # delete temporary artifacts
+        if self.temp_table:
+            self.client.delete_table(self.temp_table)
+
+        self._clear_stage_directory()
 
     def _publish_table_as_json(self, result_table):
         """Export the `result_table` data as JSON to Cloud Storage."""

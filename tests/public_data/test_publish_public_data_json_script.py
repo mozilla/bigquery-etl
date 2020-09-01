@@ -5,7 +5,6 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 from google.cloud import bigquery
-from google.api_core.exceptions import NotFound
 
 
 TEST_DIR = Path(__file__).parent.parent

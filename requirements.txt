@@ -72,21 +72,21 @@ gitpython==3.1.7 \
     --hash=sha256:2db287d71a284e22e5c2846042d0602465c7434d910406990d5b74df4afb0858 \
     --hash=sha256:fa3b92da728a457dd75d62bb5f3eb2816d99a7fe6c67398e260637a40e3fafb5 \
     # via -r requirements.in
-google-api-core==1.17.0 \
-    --hash=sha256:c0e430658ed6be902d7ba7095fb0a9cac810270d71bf7ac4484e76c300407aae \
-    --hash=sha256:e4082a0b479dc2dee2f8d7b80ea8b5d0184885b773caab15ab1836277a01d689 \
+google-api-core==1.22.1 \
+    --hash=sha256:35cba563034d668ae90ffe1f03193a84e745b38f09592f60258358b5e5ee6238 \
+    --hash=sha256:431839101b7edc7b0e6cccca0441cb9015f728fc5f098e146e123bf523e8cf71 \
     # via google-cloud-bigquery, google-cloud-core
-google-auth==1.15.0 \
-    --hash=sha256:73b141d122942afe12e8bfdcb6900d5df35c27d39700f078363ba0b1298ad33b \
-    --hash=sha256:fbf25fee328c0828ef293459d9c649ef84ee44c0b932bb999d19df0ead1b40cf \
-    # via google-api-core, google-cloud-bigquery, google-cloud-storage
-google-cloud-bigquery==1.24.0 \
-    --hash=sha256:23c9180e87f6093eb6f2ae880d7f7697fdab991a4616439ad0f95cd37014f0dd \
-    --hash=sha256:7ffcceed8becea20cb4ce4bdf9b924822780416ff1a9d497f9a1238a3f1442b1 \
+google-auth==1.21.0 \
+    --hash=sha256:982e1f82cace752134660b4c0ff660761b32146a55abb3ad6d225529012af87c \
+    --hash=sha256:f2498ad9cac3d2942d6c509ba18c4639656b366681881a1805f44f2a0c2d46f1 \
+    # via google-api-core, google-cloud-storage
+google-cloud-bigquery==1.27.2 \
+    --hash=sha256:171eb279a43df3e51cefd25542cbb9ab0d59d62949a29a7c33f0020560573a8d \
+    --hash=sha256:8a21cfe5db0c84aca0730197b50ea1649350619849283d0b5e7b506d803a6fa1 \
     # via -r requirements.in
-google-cloud-core==1.3.0 \
-    --hash=sha256:6ae5c62931e8345692241ac1939b85a10d6c38dc9e2854bdbacb7e5ac3033229 \
-    --hash=sha256:878f9ad080a40cdcec85b92242c4b5819eeb8f120ebc5c9f640935e24fc129d8 \
+google-cloud-core==1.4.1 \
+    --hash=sha256:4c9e457fcfc026fdde2e492228f04417d4c717fb0f29f070122fb0ab89e34ebd \
+    --hash=sha256:613e56f164b6bee487dd34f606083a0130f66f42f7b10f99730afdf1630df507 \
     # via google-cloud-bigquery, google-cloud-storage
 google-cloud-storage==1.27.0 \
     --hash=sha256:3af167094142a61b1bda3489da4a724e55f2703b236431b27f71c9936d94f8d8 \
@@ -223,7 +223,7 @@ protobuf==3.12.1 \
     --hash=sha256:eeb7502f59e889a88bcb59f299493e215d1864f3d75335ea04a413004eb4fe24 \
     --hash=sha256:fdb1742f883ee4662e39fcc5916f2725fec36a5191a52123fec60f8c53b70495 \
     --hash=sha256:fe554066c4962c2db0a1d4752655223eb948d2bfa0fb1c4a7f2c00ec07324f1c \
-    # via gcloud, google-api-core, google-cloud-bigquery, googleapis-common-protos
+    # via gcloud, google-api-core, googleapis-common-protos
 py==1.8.1 \
     --hash=sha256:5e27081401262157467ad6e7f851b7aa402c5852dbcb3dae06768434de5752aa \
     --hash=sha256:c20fdd83a5dbc0af9efd622bee9a5564e278f6380fffcacc43ba6f43db2813b0 \

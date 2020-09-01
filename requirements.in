@@ -9,7 +9,7 @@ pytest-mypy==0.4.2
 pytest-xdist==1.31.0
 pytest==5.4.1
 PyYAML==5.3.1
-smart_open==1.10.0
+smart_open==2.1.1
 sqlparse==0.3.1
 mozilla_schema_generator==0.1.4
 GitPython==3.1.7

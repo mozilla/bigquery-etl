@@ -10,9 +10,12 @@ import sys
 import string
 
 from ..metadata.parse_metadata import Metadata, METADATA_FILE
+from ..metadata import validate_metadata
 from ..format_sql.formatter import reformat
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..cli.utils import is_valid_dir, is_authenticated
+from ..cli.format import format
+from ..cli.dryrun import dryrun
 from ..run_query import run
 
 
@@ -345,7 +348,7 @@ def info(path, cost, last_updated):
     "--project",
     "-p",
     help="GCP project to run backfill in",
-    default="mox-fx-data-shared-prod",
+    default="moz-fx-data-shared-prod",
 )
 @click.option(
     "--dry_run/--no_dry_run", help="Dry run the backfill",
@@ -386,3 +389,64 @@ def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
                 run(query_file_path, dataset, f"{table}${partition}", arguments)
             else:
                 click.echo(f"Skip {query_file} with @submission_date={backfill_date}")
+
+
+@query.command(help="Validate a query.",)
+@click.argument("path", default="sql/", type=click.Path(file_okay=True))
+@click.option(
+    "--use_cloud_function",
+    "--use-cloud-function",
+    help=(
+        "Use the Cloud Function for dry running SQL, if set to `True`. "
+        "The Cloud Function can only access tables in shared-prod. "
+        "If set to `False`, use active GCP credentials for the dry run."
+    ),
+    type=bool,
+    default=True,
+)
+@click.option(
+    "--project",
+    help="GCP project to perform dry run in when --use_cloud_function=False",
+    default="moz-fx-data-shared-prod",
+)
+@click.pass_context
+def validate(ctx, path, use_cloud_function, project):
+    """Validate queries by dry running, formatting and checking scheduling configs."""
+    ctx.invoke(format, path=path)
+    ctx.invoke(
+        dryrun, path=path, use_cloud_function=use_cloud_function, project=project
+    )
+    validate_metadata.validate(path)
+
+    # todo: validate if new fields get added
+
+
+@query.command(help="Create and initialize the destination table for the query.",)
+@click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
+@click.option(
+    "--project",
+    "-p",
+    help="GCP project to create destination table in",
+    default="moz-fx-data-shared-prod",
+)
+@click.option(
+    "--dry_run/--no_dry_run", help="Dry run the backfill",
+)
+def initialize(path, project, dry_run):
+    """Create the destination table for the provided query."""
+    if not is_authenticated():
+        click.echo("Authentication required for creating tables.", err=True)
+        sys.exit(1)
+
+    init_files = Path(path).rglob("init.sql")
+    client = bigquery.Client()
+
+    for init_file in init_files:
+        click.echo(f"Create destination table for {init_file}")
+        with open(init_file) as init_file_stream:
+            init_sql = init_file_stream.read()
+            dataset = Path(init_file).parent.parent.name
+            job_config = bigquery.QueryJobConfig(
+                dry_run=dry_run, default_dataset=f"{project}.{dataset}",
+            )
+            client.query(init_sql, job_config=job_config)

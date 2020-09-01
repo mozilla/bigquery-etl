@@ -30,20 +30,12 @@ def validate_public_data(metadata, path):
     return is_valid
 
 
-def main():
-    """Validate all metadata.yaml files in the provided target directory."""
-    args = parser.parse_args()
-
-    # set log level
-    try:
-        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
-    except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
-
+def validate(target):
+    """Validate metadata files."""
     failed = False
 
-    if os.path.isdir(args.target):
-        for root, dirs, files in os.walk(args.target):
+    if os.path.isdir(target):
+        for root, dirs, files in os.walk(target):
             for file in files:
                 if Metadata.is_metadata_file(file):
                     path = os.path.join(root, *dirs, file)
@@ -55,11 +47,24 @@ def main():
                     # todo more validation
                     # e.g. https://github.com/mozilla/bigquery-etl/issues/924
     else:
-        logging.error(f"Invalid target: {args.target}, target must be a directory.")
+        logging.error(f"Invalid target: {target}, target must be a directory.")
         sys.exit(1)
 
     if failed:
         sys.exit(1)
+
+
+def main():
+    """Validate all metadata.yaml files in the provided target directory."""
+    args = parser.parse_args()
+
+    # set log level
+    try:
+        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
+    except ValueError as e:
+        parser.error(f"argument --log-level: {e}")
+
+    validate(args.target)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
+import os
 import pytest
 
 from ..udf.parse_udf import UDF_DIRS, MOZFUN_DIR, parse_udf_dirs
@@ -29,8 +30,12 @@ def pytest_configure(config):
 
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
-    if path.basename.endswith("udf.sql"):
-        return UdfFile(path, parent)
+    if "tests/data" not in str(path.dirpath()):
+        if path.basename.endswith("udf.sql"):
+            if os.path.basename(os.path.dirname(path.dirpath())) in TEST_UDF_DIRS or (
+                "mozfun" in str(path.dirpath()) and path.basename == "udf.sql"
+            ):
+                return UdfFile(path, parent)
 
 
 class UdfFile(pytest.File):

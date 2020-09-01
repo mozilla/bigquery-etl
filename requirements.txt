@@ -316,8 +316,8 @@ pyrsistent==0.16.0 \
 pytest-black==0.3.10 \
     --hash=sha256:5f3c0cfee9b41e6281a9e52e2987f4c90ec4a13a92bbf2f249d26d7b58747437 \
     # via -r requirements.in
-pytest-docstyle==1.5.0 \
-    --hash=sha256:dcc54084b8e8282a83e50c6220c85d1c7d05e3871f74f0e911499b4f3adea756 \
+pytest-docstyle==2.0.1 \
+    --hash=sha256:66b523677d8ed5f5b061ba0d216d46420ec85b492083e8e80bc6ea5fd6164f3b \
     # via -r requirements.in
 pytest-flake8==1.0.6 \
     --hash=sha256:1b82bb58c88eb1db40524018d3fcfd0424575029703b4e2d8e3ee873f2b17027 \

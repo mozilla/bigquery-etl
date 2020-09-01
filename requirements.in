@@ -15,6 +15,6 @@ mozilla_schema_generator==0.1.4
 GitPython==3.1.2
 cattrs==1.0.0
 attrs==19.3.0
-typing==3.7.4.1
+typing==3.7.4.3
 click==7.1.2
 incremental==17.5.0

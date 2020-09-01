@@ -6,6 +6,7 @@ SELECT
   mozfun.bits28.days_since_seen(days_visited_5_uri_bits) AS days_since_visited_5_uri,
   mozfun.bits28.days_since_seen(days_opened_dev_tools_bits) AS days_since_opened_dev_tools,
   mozfun.bits28.days_since_seen(days_created_profile_bits) AS days_since_created_profile,
+  mozfun.bits28.days_since_seen(days_any_interaction_bits) AS days_since_any_interaction,
   -- Segment definitions; see https://docs.telemetry.mozilla.org/concepts/segments.html
   -- 0x0FFFFFFE is a bitmask that accepts the previous 27 days, excluding the current day (rightmost bit)
   -- 0x183060C183 == 0b000001100000110000011000001100000110000011 is a bit mask that accepts a pair of

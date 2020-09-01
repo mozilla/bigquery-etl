@@ -5,7 +5,6 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 from google.cloud import bigquery
-from google.api_core.exceptions import NotFound
 
 
 TEST_DIR = Path(__file__).parent.parent
@@ -45,12 +44,6 @@ class TestPublishJsonScript(object):
         )
 
         assert res.returncode == 0
-
-        with pytest.raises(NotFound):
-            temp_table = (
-                f"{project_id}.{temporary_dataset}.incremental_query_v1_20200315_temp"
-            )
-            bigquery_client.get_table(temp_table)
 
         gcp_path = (
             f"{temporary_gcs_folder}api/v1/tables/"

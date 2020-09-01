@@ -29,7 +29,7 @@ def pytest_configure(config):
 
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
-    if path.basename == "udf.sql":
+    if path.basename.endswith("udf.sql"):
         return UdfFile(path, parent)
 
 

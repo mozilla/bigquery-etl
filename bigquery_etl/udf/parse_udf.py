@@ -205,6 +205,7 @@ def udf_usages_in_text(text):
     udf_usages = list(map(lambda t: ".".join(t), udf_usages))
     # the TEMP_UDF_RE matches udf_js, remove since it's not a valid UDF
     tmp_udfs = list(filter(lambda u: u != "udf_js", TEMP_UDF_RE.findall(sql)))
+    udf_usages.extend(tmp_udfs)
 
     for udf in MOZFUN_UDFS:
         if udf in sql:

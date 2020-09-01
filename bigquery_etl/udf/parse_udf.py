@@ -109,14 +109,12 @@ class RawUdf:
         dependencies = [".".join(t) for t in dependencies]
         dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
 
-        if filepath:
-            # for public UDFs dependencies can live in arbitrary dataset;
-            # we can check if some known dependency is part of the UDF
-            # definition instead
-            _, basename = os.path.split(filepath)
-            for udf in MOZFUN_UDFS:
-                if udf in "\n".join(definitions):
-                    dependencies.append(udf)
+        # for public UDFs dependencies can live in arbitrary dataset;
+        # we can check if some known dependency is part of the UDF
+        # definition instead
+        for udf in MOZFUN_UDFS:
+            if udf in "\n".join(definitions):
+                dependencies.append(udf)
 
         if is_defined:
             if internal_name is None:
@@ -205,7 +203,8 @@ def udf_usages_in_text(text):
     sql = sqlparse.format(text, strip_comments=True)
     udf_usages = PERSISTENT_UDF_RE.findall(sql)
     udf_usages = list(map(lambda t: ".".join(t), udf_usages))
-    udf_usages.extend(TEMP_UDF_RE.findall(sql))
+    # the TEMP_UDF_RE matches udf_js, remove since it's not a valid UDF
+    tmp_udfs = list(filter(lambda u: u != "udf_js", TEMP_UDF_RE.findall(sql)))
 
     for udf in MOZFUN_UDFS:
         if udf in sql:

@@ -13,7 +13,7 @@ SELECT
   CAST(NULL AS INT64) AS days_visited_5_uri_bits,
   CAST(NULL AS INT64) AS days_opened_dev_tools_bits,
   CAST(NULL AS INT64) AS days_created_profile_bits,
-  CAST(NULL AS INT64) AS days_any_interaction_bits,
+  CAST(NULL AS INT64) AS days_interacted_bits,
   ARRAY<STRUCT<experiment STRING, branch STRING, bits INT64>>[] AS days_seen_in_experiment,
   -- We make sure to delay * until the end so that as new columns are added
   -- to clients_daily, we can add those columns in the same order to the end

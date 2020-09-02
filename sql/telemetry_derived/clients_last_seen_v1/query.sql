@@ -18,7 +18,7 @@ WITH _current AS (
     udf.days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, SAFE.PARSE_DATE("%F", SUBSTR(profile_creation_date, 0, 10)), DAY)
     ) AS days_created_profile_bits,
-    CAST(active_hours_sum > 0 AS INT64) AS days_any_interaction_bits,
+    CAST(active_hours_sum > 0 AS INT64) AS days_interacted_bits,
     -- Experiments are an array, so we keep track of a usage bit pattern per experiment.
     ARRAY(
       SELECT AS STRUCT
@@ -66,9 +66,9 @@ SELECT
       _current.days_created_profile_bits
     ) AS days_created_profile_bits,
     udf.coalesce_adjacent_days_28_bits(
-      _previous.days_any_interaction_bits,
-      _current.days_any_interaction_bits
-    ) AS days_any_interaction_bits,
+      _previous.days_interacted_bits,
+      _current.days_interacted_bits
+    ) AS days_interacted_bits,
     udf.combine_experiment_days(
       _previous.days_seen_in_experiment,
       _current.days_seen_in_experiment

@@ -53,7 +53,9 @@ parser.add_argument(
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
 parser.add_argument(
-    "--public", default=False, help="The published UDFs should be publicly accessible.",
+    "--public",
+    default=False,
+    help="The published UDFs should be publicly accessible.",
 )
 standard_args.add_log_level(parser)
 

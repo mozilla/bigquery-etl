@@ -1,6 +1,6 @@
 """PyTest plugin for collecting mypy tests on python scripts."""
 
-from pytest_mypy import mypy_argv, MypyItem
+from pytest_mypy import mypy_argv, MypyFile
 
 from . import is_python_executable
 
@@ -14,10 +14,10 @@ def pytest_configure(config):
 
 
 # adapted from
-# https://github.com/dbader/pytest-mypy/blob/v0.4.1/src/pytest_mypy.py#L36-L43
+# https://github.com/dbader/pytest-mypy/blob/v0.7.0/src/pytest_mypy.py#L100-L111
 def pytest_collect_file(parent, path):
     """Collect mypy tests."""
     if any(
         [parent.config.option.mypy, parent.config.option.mypy_ignore_missing_imports]
     ) and is_python_executable(path):
-        return MypyItem(path, parent)
+        return MypyFile.from_parent(parent=parent, fspath=path)

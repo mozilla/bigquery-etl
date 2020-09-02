@@ -1,24 +1,20 @@
 """PyTest plugin for collecting docstyle tests on python scripts."""
 
-import re
-
-from pytest_docstyle import Item
+from pytest_pydocstyle import _patch_sys_argv, File
+import pydocstyle
 
 from . import is_python_executable
 
 
 # adapted from
-# https://github.com/henry0312/pytest-docstyle/blob/v1.5.0/pytest_docstyle.py#L35-L41
+# https://github.com/henry0312/pytest-docstyle/blob/v2.2.0/src/pytest_pydocstyle.py#L37-L46
 def pytest_collect_file(parent, path):
     """Collect docstyle tests."""
     config = parent.config
-    if (
-        config.getoption("docstyle")
-        and is_python_executable(path)
-        # https://github.com/PyCQA/pydocstyle/blob/2.1.1/src/pydocstyle/config.py#L163
-        and re.match(config.getini("docstyle_match"), path.basename)
-    ):
-        if not any(
-            path.fnmatch(pattern) for pattern in config.getini("docstyle_exclude")
-        ):
-            return Item(path, parent)
+    if config.getoption("pydocstyle") and is_python_executable(path):
+        parser = pydocstyle.config.ConfigurationParser()
+        args = [str(path.basename), "--match", ".*"]
+        with _patch_sys_argv(args):
+            parser.parse()
+        for filename, _, _ in parser.get_files_to_check():
+            return File.from_parent(parent=parent, fspath=path, config_parser=parser)

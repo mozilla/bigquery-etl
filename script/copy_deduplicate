@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Copy a day's data from live ping tables to stable ping tables,
-deduplicating on document_id.
+Copy a day's data from live to stable ping tables, deduplicating on document_id.
 
 By default, the script will process all tables in datasets named
 like *_live, copying data into table of the same name in *_stable
@@ -178,7 +177,7 @@ def get_temporary_table(client):
     return sql_table_id(dataset.table(f"anon{uuid4().hex}"))
 
 
-def get_query_job_configs(
+def _get_query_job_configs(
     client, live_table, date, dry_run, slices, priority, preceding_days
 ):
     sql = QUERY_TEMPLATE.format(live_table=live_table)
@@ -246,14 +245,14 @@ def get_query_job_configs(
         ]
 
 
-def run_deduplication_query(client, sql, stable_table, job_config):
+def _run_deduplication_query(client, sql, stable_table, job_config):
     query_job = client.query(sql, job_config)
     if not query_job.dry_run:
         query_job.result()
     return stable_table, query_job
 
 
-def copy_join_parts(client, stable_table, query_jobs):
+def _copy_join_parts(client, stable_table, query_jobs):
     total_bytes = sum(query.total_bytes_processed for query in query_jobs)
     if query_jobs[0].dry_run:
         api_repr = query_jobs[0].to_api_repr()
@@ -280,21 +279,21 @@ def copy_join_parts(client, stable_table, query_jobs):
             logging.info(f"Deleted {len(query_jobs)} temporary tables")
 
 
-def contains_glob(patterns):
+def _contains_glob(patterns):
     return any(set("*?[").intersection(pattern) for pattern in patterns)
 
 
-def glob_dataset(pattern):
+def _glob_dataset(pattern):
     return pattern.split(".", 1)[0]
 
 
-def list_live_tables(client, pool, project_id, only_tables, table_filter):
-    if only_tables and not contains_glob(only_tables):
+def _list_live_tables(client, pool, project_id, only_tables, table_filter):
+    if only_tables and not _contains_glob(only_tables):
         # skip list calls when only_tables exists and contains no globs
         return [f"{project_id}.{t}" for t in only_tables if table_filter(t)]
-    if only_tables and not contains_glob(glob_dataset(t) for t in only_tables):
+    if only_tables and not _contains_glob(_glob_dataset(t) for t in only_tables):
         # skip list_datasets call when only_tables exists and datasets contain no globs
-        live_datasets = {f"{project_id}.{glob_dataset(t)}" for t in only_tables}
+        live_datasets = {f"{project_id}.{_glob_dataset(t)}" for t in only_tables}
     else:
         live_datasets = [
             d.reference
@@ -310,7 +309,7 @@ def list_live_tables(client, pool, project_id, only_tables, table_filter):
     ]
 
 
-def main():
+def _main():
     args = parser.parse_args()
 
     # create a queue for balancing load across projects
@@ -318,7 +317,7 @@ def main():
 
     with ThreadPool(args.parallelism) as pool:
         with client_q.client() as client:
-            live_tables = list_live_tables(
+            live_tables = _list_live_tables(
                 client=client,
                 pool=pool,
                 project_id=args.project_id,
@@ -327,9 +326,9 @@ def main():
             )
 
             query_jobs = [
-                (run_deduplication_query, *args)
+                (_run_deduplication_query, *args)
                 for jobs in pool.starmap(
-                    get_query_job_configs,
+                    _get_query_job_configs,
                     [
                         (
                             client,  # only use one client to create temp tables
@@ -350,11 +349,11 @@ def main():
         # preserve query_jobs order so results stay sorted by stable_table for groupby
         results = pool.starmap(client_q.with_client, query_jobs, chunksize=1)
         copy_jobs = [
-            (copy_join_parts, stable_table, [query_job for _, query_job in group])
+            (_copy_join_parts, stable_table, [query_job for _, query_job in group])
             for stable_table, group in groupby(results, key=lambda result: result[0])
         ]
         pool.starmap(client_q.with_client, copy_jobs, chunksize=1)
 
 
 if __name__ == "__main__":
-    main()
+    _main()

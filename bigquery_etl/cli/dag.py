@@ -46,7 +46,9 @@ def dag():
     pass
 
 
-@dag.command(help="List all available DAGs",)
+@dag.command(
+    help="List all available DAGs",
+)
 @click.argument("name", required=False)
 @sql_dir_option
 @dags_config_option
@@ -103,7 +105,9 @@ def info(name, dags_config, sql_dir, with_tasks):
     required=True,
 )
 @click.option(
-    "--owner", help=("Email address of the DAG owner"), required=True,
+    "--owner",
+    help=("Email address of the DAG owner"),
+    required=True,
 )
 @click.option(
     "--start_date",

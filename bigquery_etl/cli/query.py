@@ -154,7 +154,9 @@ def create(name, path, owner, init):
         )
 
 
-@query.command(help="Schedule an existing query",)
+@query.command(
+    help="Schedule an existing query",
+)
 @click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
 @click.option(
     "--dag",
@@ -239,7 +241,9 @@ def schedule(path, dag, depends_on_past, task_name):
     dags.dag_to_airflow(output_dir, existing_dag)
 
 
-@query.command(help="Get information about all or specific queries.",)
+@query.command(
+    help="Get information about all or specific queries.",
+)
 @click.argument(
     "path", default="sql/", type=click.Path(file_okay=False), callback=is_valid_dir
 )
@@ -319,7 +323,10 @@ def info(path, cost, last_updated):
 
 @query.command(
     help="Run a backfill for a query. Additional parameters will get passed to bq.",
-    context_settings=dict(ignore_unknown_options=True, allow_extra_args=True,),
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
 )
 @click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
 @click.option(
@@ -351,7 +358,8 @@ def info(path, cost, last_updated):
     default="moz-fx-data-shared-prod",
 )
 @click.option(
-    "--dry_run/--no_dry_run", help="Dry run the backfill",
+    "--dry_run/--no_dry_run",
+    help="Dry run the backfill",
 )
 @click.pass_context
 def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
@@ -391,7 +399,9 @@ def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
                 click.echo(f"Skip {query_file} with @submission_date={backfill_date}")
 
 
-@query.command(help="Validate a query.",)
+@query.command(
+    help="Validate a query.",
+)
 @click.argument("path", default="sql/", type=click.Path(file_okay=True))
 @click.option(
     "--use_cloud_function",
@@ -421,7 +431,9 @@ def validate(ctx, path, use_cloud_function, project):
     # todo: validate if new fields get added
 
 
-@query.command(help="Create and initialize the destination table for the query.",)
+@query.command(
+    help="Create and initialize the destination table for the query.",
+)
 @click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
 @click.option(
     "--project",
@@ -430,7 +442,8 @@ def validate(ctx, path, use_cloud_function, project):
     default="moz-fx-data-shared-prod",
 )
 @click.option(
-    "--dry_run/--no_dry_run", help="Dry run the backfill",
+    "--dry_run/--no_dry_run",
+    help="Dry run the backfill",
 )
 def initialize(path, project, dry_run):
     """Create the destination table for the provided query."""
@@ -447,6 +460,7 @@ def initialize(path, project, dry_run):
             init_sql = init_file_stream.read()
             dataset = Path(init_file).parent.parent.name
             job_config = bigquery.QueryJobConfig(
-                dry_run=dry_run, default_dataset=f"{project}.{dataset}",
+                dry_run=dry_run,
+                default_dataset=f"{project}.{dataset}",
             )
             client.query(init_sql, job_config=job_config)

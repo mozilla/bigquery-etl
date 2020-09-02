@@ -39,7 +39,7 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
         "memory_distribution",
         "custom_distribution",
     }
-    metrics = {metric_type: [] for metric_type in metric_type_set}
+    metrics: Dict[str, List[str]] = {metric_type: [] for metric_type in metric_type_set}
 
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.

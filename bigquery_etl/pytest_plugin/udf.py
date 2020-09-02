@@ -35,22 +35,18 @@ def pytest_collect_file(parent, path):
             if os.path.basename(os.path.dirname(path.dirpath())) in TEST_UDF_DIRS or (
                 "mozfun" in str(path.dirpath()) and path.basename == "udf.sql"
             ):
-                return UdfFile(path, parent)
+                return UdfFile.from_parent(parent, fspath=path)
 
 
 class UdfFile(pytest.File):
     """UDF File."""
 
-    def __init__(self, path, parent):
-        """Initialize."""
-        super().__init__(path, parent)
-        self.add_marker("udf")
-        self.udf = parsed_udfs()[self.name]
-
     def collect(self):
         """Collect."""
+        self.add_marker("udf")
+        self.udf = parsed_udfs()[self.name]
         for i, query in enumerate(self.udf.tests_full_sql):
-            yield UdfTest(f"{self.udf.name}#{i+1}", self, query)
+            yield UdfTest.from_parent(self, name=f"{self.udf.name}#{i+1}", query=query)
 
 
 class UdfTest(pytest.Item):

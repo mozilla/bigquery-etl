@@ -56,5 +56,7 @@ with DAG(
     )
 
     public_data_gcs_metadata.set_upstream(
-        [export_public_data_json_test__non_incremental_query__v1,]
+        [
+            export_public_data_json_test__non_incremental_query__v1,
+        ]
     )

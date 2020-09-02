@@ -7,7 +7,7 @@ recursion does not work.
 Based on https://stackoverflow.com/a/18639999/1260237
 See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 */
-CREATE OR REPLACE FUNCTION udf.crc32_table() AS (
+CREATE OR REPLACE FUNCTION udf.test_crc32_table() AS (
   -- precalculated from this algorithm:
   -- for c in range(256):
   --   for _ in range(8):
@@ -62,39 +62,42 @@ CREATE OR REPLACE FUNCTION udf.crc32_table() AS (
   ]
 );
 
-CREATE OR REPLACE FUNCTION udf.crc32_partial_1(crc INT64, value BYTES) AS (
-  (crc >> 8) ^ udf.crc32_table()[OFFSET((crc ^ TO_CODE_POINTS(value)[SAFE_OFFSET(0)]) & 0xFF)]
+CREATE OR REPLACE FUNCTION udf.test_crc32_partial_1(crc INT64, value BYTES) AS (
+  (crc >> 8) ^ udf.test_crc32_table()[OFFSET((crc ^ TO_CODE_POINTS(value)[SAFE_OFFSET(0)]) & 0xFF)]
 );
 
-CREATE OR REPLACE FUNCTION udf.crc32_partial_2(crc INT64, value BYTES) AS (
-  udf.crc32_partial_1(udf.crc32_partial_1(crc, SUBSTR(value, 1, 1)), SUBSTR(value, 2, 1))
+CREATE OR REPLACE FUNCTION udf.test_crc32_partial_2(crc INT64, value BYTES) AS (
+  udf.test_crc32_partial_1(udf.test_crc32_partial_1(crc, SUBSTR(value, 1, 1)), SUBSTR(value, 2, 1))
 );
 
-CREATE OR REPLACE FUNCTION udf.crc32_partial_4(crc INT64, value BYTES) AS (
-  udf.crc32_partial_2(udf.crc32_partial_2(crc, SUBSTR(value, 1, 2)), SUBSTR(value, 3, 2))
+CREATE OR REPLACE FUNCTION udf.test_crc32_partial_4(crc INT64, value BYTES) AS (
+  udf.test_crc32_partial_2(udf.test_crc32_partial_2(crc, SUBSTR(value, 1, 2)), SUBSTR(value, 3, 2))
 );
 
-CREATE OR REPLACE FUNCTION udf.crc32_partial_8(crc INT64, value BYTES) AS (
-  udf.crc32_partial_4(udf.crc32_partial_4(crc, SUBSTR(value, 1, 4)), SUBSTR(value, 5, 4))
+CREATE OR REPLACE FUNCTION udf.test_crc32_partial_8(crc INT64, value BYTES) AS (
+  udf.test_crc32_partial_4(udf.test_crc32_partial_4(crc, SUBSTR(value, 1, 4)), SUBSTR(value, 5, 4))
 );
 
-CREATE OR REPLACE FUNCTION udf.crc32_partial_16(crc INT64, value BYTES) AS (
-  udf.crc32_partial_8(udf.crc32_partial_8(crc, SUBSTR(value, 1, 8)), SUBSTR(value, 9, 8))
+CREATE OR REPLACE FUNCTION udf.test_crc32_partial_16(crc INT64, value BYTES) AS (
+  udf.test_crc32_partial_8(udf.test_crc32_partial_8(crc, SUBSTR(value, 1, 8)), SUBSTR(value, 9, 8))
 );
 
 CREATE OR REPLACE FUNCTION udf.crc32_partial_32(crc INT64, value BYTES) AS (
-  udf.crc32_partial_16(udf.crc32_partial_16(crc, SUBSTR(value, 1, 16)), SUBSTR(value, 17, 16))
+  udf.test_crc32_partial_16(
+    udf.test_crc32_partial_16(crc, SUBSTR(value, 1, 16)),
+    SUBSTR(value, 17, 16)
+  )
 );
 
-CREATE OR REPLACE FUNCTION udf.crc32_partial_36(crc INT64, value BYTES) AS (
-  udf.crc32_partial_4(udf.crc32_partial_32(crc, SUBSTR(value, 1, 32)), SUBSTR(value, 33, 4))
+CREATE OR REPLACE FUNCTION udf.test_crc32_partial_36(crc INT64, value BYTES) AS (
+  udf.test_crc32_partial_4(udf.crc32_partial_32(crc, SUBSTR(value, 1, 32)), SUBSTR(value, 33, 4))
 );
 
-CREATE OR REPLACE FUNCTION udf.safe_crc32_uuid(value BYTES) AS (
-  IF(LENGTH(value) = 36, udf.crc32_partial_36(0xFFFFFFFF, value) ^ 0xFFFFFFFF, NULL)
+CREATE OR REPLACE FUNCTION udf.test_safe_crc32_uuid(value BYTES) AS (
+  IF(LENGTH(value) = 36, udf.test_crc32_partial_36(0xFFFFFFFF, value) ^ 0xFFFFFFFF, NULL)
 );
 
 --Tests
 SELECT
-  assert_equals(308953907, udf.safe_crc32_uuid(b"51baf8b4-75d1-3648-b96d-809569b89a12")),
-  assert_null(udf.safe_crc32_uuid(b"length != 36"))
+  assert_equals(308953907, udf.test_safe_crc32_uuid(b"51baf8b4-75d1-3648-b96d-809569b89a12")),
+  assert_null(udf.test_safe_crc32_uuid(b"length != 36"))

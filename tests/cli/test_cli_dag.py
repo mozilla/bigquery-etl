@@ -137,7 +137,10 @@ class TestDag:
             with open("dags.yaml", "w") as f:
                 f.write(yaml.dump(dags_conf))
 
-            result = runner.invoke(remove, ["non_existing_dag"],)
+            result = runner.invoke(
+                remove,
+                ["non_existing_dag"],
+            )
             assert result.exit_code == 1
 
     def test_dag_remove(self, runner):
@@ -182,7 +185,10 @@ class TestDag:
             with open("dags/bqetl_test.py", "w") as f:
                 f.write("")
 
-            result = runner.invoke(remove, ["bqetl_test"],)
+            result = runner.invoke(
+                remove,
+                ["bqetl_test"],
+            )
             assert result.exit_code == 0
             assert os.listdir("dags") == []
 

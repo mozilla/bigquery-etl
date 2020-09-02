@@ -4,9 +4,10 @@ from argparse import ArgumentParser
 import os
 from pathlib import Path
 import tempfile
+import sys
 
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.parse_udf import read_udf_dirs, persistent_udf_as_temp
+from bigquery_etl.udf.parse_udf import read_udf_dirs, persistent_udf_as_temp
 from bigquery_etl.util import standard_args
 
 DEFAULT_PROJECTS = ["mozfun"]
@@ -61,6 +62,7 @@ def main():
 
     # parse UDFs
     parsed_udfs = read_udf_dirs(*args.project_dirs)
+    is_valid = True
 
     for project_dir in args.project_dirs:
         if os.path.isdir(project_dir):
@@ -77,7 +79,12 @@ def main():
                         tmp_example_file = tmp_dir / file
                         tmp_example_file.write_text(dry_run_sql)
 
-                        DryRun(str(tmp_example_file)).is_valid()
+                        if not DryRun(str(tmp_example_file)).is_valid():
+                            is_valid = False
+
+    if not is_valid:
+        print("Invalid examples.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

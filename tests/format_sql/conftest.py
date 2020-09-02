@@ -16,16 +16,15 @@ def pytest_collect_file(parent, path):
     """Collect format_sql tests."""
     if path.basename == "expect.sql":
         print(path)
-        return FormatTest(path, parent)
+        return FormatTest.from_parent(parent, fspath=path)
 
 
 class FormatTest(pytest.Item, pytest.File):
     """Test a SQL query."""
 
-    def __init__(self, path, parent):
+    def __init__(self, fspath, parent):
         """Initialize."""
-        super().__init__(path, parent)
-        self._path = path
+        super().__init__(fspath, parent)
         self._nodeid += "::FORMAT_SQL"
         self.add_marker("format_sql")
 

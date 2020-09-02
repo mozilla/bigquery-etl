@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Publish UDFs to the public mozfun project.
-# TODO: consolidate public UDFs and UDFs used internally.
 
 cd "$(dirname "$0")/.."
 
-exec python3 -m bigquery_etl.udf.publish_public_udfs "$@"
+exec python3 -m bigquery_etl.udf.publish_udfs --project_id=mozfun --udf-dirs=mozfun \
+    --dependency_dir=lib/ --gcs-bucket=mozfun --public=True "$@"

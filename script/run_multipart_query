@@ -103,11 +103,11 @@ def get_temporary_dataset(client):
     return temporary_dataset
 
 
-def sql_table_id(table):
+def _sql_table_id(table):
     return f"{table.project}.{table.dataset_id}.{table.table_id}"
 
 
-def run_part(client, part, args):
+def _run_part(client, part, args):
     with open(os.path.join(args.query_dir, part)) as sql_file:
         query = sql_file.read()
     job_config = bigquery.QueryJobConfig(
@@ -128,7 +128,7 @@ def run_part(client, part, args):
     return part, job
 
 
-def main():
+def _main():
     args = parser.parse_args()
     if "." not in args.dataset_id and args.project_id is not None:
         args.dataset_id = f"{args.project_id}.{args.dataset_id}"
@@ -137,7 +137,7 @@ def main():
     client = bigquery.Client(args.project_id)
     with ThreadPool(args.parallelism) as pool:
         parts = pool.starmap(
-            run_part,
+            _run_part,
             [
                 (client, part, args)
                 for part in sorted(next(os.walk(args.query_dir))[2])
@@ -148,9 +148,9 @@ def main():
     if not args.dry_run:
         total_bytes = sum(job.total_bytes_processed for _, job in parts)
         query = (
-            f"SELECT\n  *\nFROM\n  `{sql_table_id(parts[0][1].destination)}`"
+            f"SELECT\n  *\nFROM\n  `{_sql_table_id(parts[0][1].destination)}`"
             + "".join(
-                f"\nFULL JOIN\n  `{sql_table_id(job.destination)}`"
+                f"\nFULL JOIN\n  `{_sql_table_id(job.destination)}`"
                 f"\nUSING\n  ({args.using})"
                 for _, job in parts[1:]
             )
@@ -173,9 +173,9 @@ def main():
             print(f"Processed {total_bytes:,d} bytes in total")
         finally:
             for _, job in parts:
-                client.delete_table(sql_table_id(job.destination).split("$")[0])
+                client.delete_table(_sql_table_id(job.destination).split("$")[0])
             print(f"Deleted {len(parts)} temporary tables")
 
 
 if __name__ == "__main__":
-    main()
+    _main()

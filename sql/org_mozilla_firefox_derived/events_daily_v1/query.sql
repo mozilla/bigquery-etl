@@ -20,7 +20,7 @@ WITH
     DATE(submission_timestamp) = @submission_date OR (@submission_date IS NULL AND @submission_date >= '2020-01-01')
 ), joined AS (
   SELECT
-    CONCAT(pack_event_properties(events.event_properties, event_types_v1.event_properties), index) AS index,
+    CONCAT(udf.pack_event_properties(events.event_properties, event_types_v1.event_properties), index) AS index,
     events.* EXCEPT (
       category, event, event_properties
     )

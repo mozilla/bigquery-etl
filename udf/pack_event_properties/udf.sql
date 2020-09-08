@@ -19,6 +19,7 @@ CREATE OR REPLACE FUNCTION udf.pack_event_properties(event_properties ANY TYPE, 
 
 WITH examples AS (
   SELECT
+    CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS null_property,
     CAST(NULL AS ARRAY<STRUCT<key STRING, value STRING>>) AS no_property,
     [
       STRUCT("property" AS key, "val1" AS value)
@@ -57,9 +58,7 @@ SELECT
   assert_equals('"b', udf.pack_event_properties(single_property, indices)),
   assert_equals('"a', udf.pack_event_properties(duplicate_property, indices)),
   assert_equals('a"', udf.pack_event_properties(secondary_property, indices)),
-  -- We specifically ignore unknown properties. This indicates something went
-  -- wrong, but we'll need to check for this case elsewhere.
-  -- (The event representation will still be correct, it just won't include this property)
+  -- We specifically ignore unknown properties, this gives us flexibility during encoding
   assert_equals('""', udf.pack_event_properties(unknown_property, indices)),
 FROM
   examples

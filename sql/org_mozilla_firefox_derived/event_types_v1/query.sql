@@ -150,7 +150,7 @@ WITH
     event,
     event_property,
     event_property_index,
-    ARRAY_AGG(STRUCT(event_property_value AS key, udf.code_points_to_string_no_comma([event_property_value_index]) AS value, event_property_value_index AS index) ORDER BY event_property_value_index ASC) AS values,
+    ARRAY_AGG(STRUCT(event_property_value AS key, udf.event_code_points_to_string([event_property_value_index]) AS value, event_property_value_index AS index) ORDER BY event_property_value_index ASC) AS values,
   FROM
     all_event_property_value_indices
   INNER JOIN
@@ -168,7 +168,7 @@ WITH
     event,
     first_timestamp,
     numeric_index,
-    udf.code_points_to_string_no_comma([numeric_index]) AS index,
+    udf.event_code_points_to_string([numeric_index]) AS index,
     ARRAY_AGG(STRUCT(event_property AS key, values AS value, event_property_index AS index) ORDER BY event_property_index ASC) AS event_properties
   FROM
     all_primary_event_types

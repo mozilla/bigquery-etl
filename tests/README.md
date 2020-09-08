@@ -95,6 +95,21 @@ How to Configure a Generated Test
 1. Optionally add `query_params.yaml` to define query parameters
    - `query_params` must be a list
 
+Init Tests
+===
+
+Tests of `init.sql` statements are supported, similarly to other generated tests.
+Simply name the test `test_init`. The other guidelines still apply.
+
+*Note*: Init SQL statements must contain a create statement with the dataset
+and table name, like so:
+```
+CREATE OR REPLACE TABLE
+  dataset.table_v1
+AS
+...
+```
+
 Additional Guidelines and Options
 ---
 

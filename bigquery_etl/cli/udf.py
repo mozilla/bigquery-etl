@@ -92,6 +92,62 @@ def create(ctx, name, path):
 
 mozfun.add_command(create)
 
+
+@udf.command(help="Get UDF information")
+@click.argument("path", type=click.Path(file_okay=False), required=False)
+@click.option("--usages", "-u", is_flag=True, help="Show UDF usages", default=False)
+@click.option(
+    "--sql_dir",
+    "--sql-dir",
+    type=click.Path(file_okay=False),
+    callback=is_valid_dir,
+    help="Path to SQL files",
+    default=".",
+)
+@click.pass_context
+def info(ctx, path, usages, sql_dir):
+    """CLI command for returning information about UDFs."""
+    udf_dir = ctx.obj["UDF_DIR"]
+    if path and is_valid_dir(None, None, path):
+        udf_dir = path
+
+    udf_files = Path(udf_dir).rglob("udf.sql")
+    for udf_file in udf_files:
+        udf_file_path = Path(udf_file)
+        udf_name = udf_file_path.parent.name
+        udf_dataset = udf_file_path.parent.parent.name
+
+        try:
+            metadata = yaml.safe_load(open(udf_file_path.parent / "metadata.yaml"))
+        except FileNotFoundError:
+            metadata = None
+
+        click.secho(f"{udf_dataset}.{udf_name}", bold=True)
+        click.echo(f"path: {udf_file_path}")
+
+        if metadata is None:
+            click.echo("No metadata")
+        else:
+            click.echo(f"description: {metadata['description']}")
+
+        no_usages = True
+        if usages:
+            # find UDF usages in SQL files
+            click.echo("usages: ")
+            sql_files = Path(sql_dir).rglob("*.sql")
+            for sql_file in sql_files:
+                if f"{udf_dataset}.{udf_name}" in sql_file.read_text():
+                    no_usages = False
+                    click.echo(f"  {sql_file}")
+
+            if no_usages:
+                click.echo("  No usages.")
+
+        click.echo("")
+
+
+mozfun.add_command(info)
+
 # publish
 
 # info

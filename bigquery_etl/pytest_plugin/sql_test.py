@@ -289,8 +289,13 @@ def get_differences(expected, result, path="", sep="."):
         differences.append(("Result is dict but not Expected", path))
     elif not exp_is_dict and not res_is_dict:
         if exp_is_list and res_is_list:
-            for i, (exp_elem, res_elem) in enumerate(zip(expected, result)):
-                differences += get_differences(exp_elem, res_elem, path + sep + str(i))
+            for i in range(max(len(expected), len(result))):
+              if i >= len(result):
+                differences.append((f"Result missing element {expected[i]}", path + sep + str(i)))
+              elif i >= len(expected):
+                differences.append((f"Result contains extra element {result[i]}", path + sep + str(i)))
+              else:
+                differences += get_differences(expected[i], result[i], path + sep + str(i))
         elif expected != result:
             differences.append((f"Expected={expected}, Result={result}", path))
     else:

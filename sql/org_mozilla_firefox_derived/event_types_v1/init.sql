@@ -78,7 +78,9 @@ WITH
     first_timestamp,
     primary_index AS numeric_index,
     udf.event_code_points_to_string([primary_index]) AS index,
-    ARRAY_AGG(STRUCT(event_property AS key, values AS value, event_property_index AS index) ORDER BY event_property_index ASC) AS event_properties
+    ARRAY_AGG(
+      IF(event_property IS NULL, NULL,
+         STRUCT(event_property AS key, values AS value, event_property_index AS index)) IGNORE NULLS ORDER BY event_property_index ASC ) AS event_properties
   FROM
     primary_event_types
   LEFT JOIN

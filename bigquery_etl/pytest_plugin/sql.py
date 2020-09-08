@@ -64,8 +64,28 @@ class SqlTest(pytest.Item, pytest.File):
 
     def runtest(self):
         """Run."""
+
+        test_name = self.fspath.basename
         query_name = self.fspath.dirpath().basename
+        dataset_name = self.fspath.dirpath().dirpath().basename
+
         query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/query.sql")
+        init_test = False
+
+        # init tests write to dataset_query_test, instead of their
+        # default name
+        # We assume the init sql contains `CREATE TABLE dataset.table`
+        if test_name == 'test_init':
+          init_test = True
+
+          query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/init.sql")
+          original, dest_name = (
+            f"{dataset_name}.{query_name}",
+            f"{dataset_name}_{query_name}_{test_name}"
+          )
+          query = query.replace(original, dest_name)
+          query_name = dest_name
+
         expect = load(self.fspath.strpath, "expect")
 
         tables: Dict[str, Table] = {}
@@ -121,16 +141,29 @@ class SqlTest(pytest.Item, pytest.File):
             # configure job
             res_table = bigquery.TableReference(default_dataset, query_name)
 
-            job_config = bigquery.QueryJobConfig(
-                default_dataset=default_dataset,
-                destination=res_table,
-                query_parameters=get_query_params(self.fspath.strpath),
-                use_legacy_sql=False,
-                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            )
+            if not init_test:
+              job_config = bigquery.QueryJobConfig(
+                  default_dataset=default_dataset,
+                  destination=res_table,
+                  query_parameters=get_query_params(self.fspath.strpath),
+                  use_legacy_sql=False,
+                  write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+              )
 
-            # run query
-            job = bq.query(query, job_config=job_config)
+              # run query
+              job = bq.query(query, job_config=job_config)
+
+            else:
+              job_config = bigquery.QueryJobConfig(
+                  default_dataset=default_dataset,
+                  query_parameters=get_query_params(self.fspath.strpath),
+                  use_legacy_sql=False,
+              )
+
+              bq.query(query, job_config=job_config).result()
+              # retrieve results from new table on init test
+              job = bq.query(f"SELECT * FROM {dataset_id}.{query_name}", job_config=job_config)
+
             result = list(coerce_result(*job.result()))
             result.sort(key=lambda row: json.dumps(row, sort_keys=True))
             expect.sort(key=lambda row: json.dumps(row, sort_keys=True))

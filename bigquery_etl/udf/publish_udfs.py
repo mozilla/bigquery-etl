@@ -113,9 +113,12 @@ def publish_udf(
     for definition in raw_udf.definitions:
         # Within a standard SQL function, references to other entities require
         # explicit project IDs
-
-        for udf in known_udfs:
-            definition.replace(udf, f"`{project_id}`.{udf}")
+        for udf in set(known_udfs):
+            # ensure UDF definitions are not replaced twice as would be the case for
+            # `mozfun`.stats.mode_last and `mozfun`.stats.mode_last_retain_nulls
+            # since one name is a substring of the other
+            definition = definition.replace(f"`{project_id}`.{udf}", udf)
+            definition = definition.replace(udf, f"`{project_id}`.{udf}")
 
         # adjust paths for dependencies stored in GCS
         query = OPTIONS_LIB_RE.sub(

@@ -2,6 +2,7 @@
 
 import click
 from pathlib import Path
+import pytest
 import re
 import string
 import sys
@@ -9,6 +10,7 @@ import yaml
 
 from ..cli.utils import is_valid_dir
 from ..format_sql.formatter import reformat
+from ..cli.format import format
 
 UDF_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 
@@ -148,9 +150,22 @@ def info(ctx, path, usages, sql_dir):
 
 mozfun.add_command(info)
 
+
+@udf.command(
+    help="Validate a UDF.",
+)
+@click.argument("path", type=click.Path(file_okay=False), required=False)
+@click.pass_context
+def validate(ctx, path):
+    """Validate UDFs by formatting and running tests."""
+    udf_dir = ctx.obj["UDF_DIR"]
+    if path and is_valid_dir(None, None, path):
+        udf_dir = path
+    ctx.invoke(format, path=udf_dir)
+    pytest.main([udf_dir])
+
+
+mozfun.add_command(validate)
+
 # publish
 
-# info
-# usages
-
-# validate

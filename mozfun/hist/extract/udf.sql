@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION hist.extract(input STRING) AS (
         FROM
           UNNEST(JSON_EXTRACT_ARRAY(input, '$.range')) AS bound
       ) AS `range`,
-      mozfun.json.extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values`
+      json.extract_int_map(JSON_EXTRACT(input, '$.values')) AS `values`
     )
   WHEN
     ARRAY_LENGTH(SPLIT(input, ';')) = 5

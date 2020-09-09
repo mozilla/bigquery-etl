@@ -2,11 +2,11 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.messaging_system.onboarding_retention_events_amplitude`
 AS
 SELECT
-  submission_timestamp_min AS submission_timestamp,
+  TIMESTAMP(submission_date) AS submission_timestamp,
   client_id AS device_id,
   CONCAT(client_id, submission_date) AS insert_id,
   "RETENTION" AS event_type,
-  submission_timestamp_min AS timestamp,
+  TIMESTAMP(submission_date) AS timestamp,
   app_version,
   REGEXP_EXTRACT(os, '^\\w+') AS platform,
   os AS os_name,

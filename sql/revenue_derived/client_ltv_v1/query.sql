@@ -33,7 +33,7 @@ with_exploded_months AS (
     history.element.value.tagged_searches.list[OFFSET(off)].element AS tagged_sap,
   FROM
     with_exploded_history,
-    UNNEST(GENERATE_ARRAY(0, 11)) AS off
+    UNNEST(GENERATE_ARRAY(0, 10)) AS off
 ),
 monthly_activity AS (
   -- Sum the activity across engine, month, and country

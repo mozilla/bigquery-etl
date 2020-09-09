@@ -34,7 +34,7 @@ active_events AS (
     insert_id,
     'fxa_activity - active' AS event_type,
     timestamp,
-    TO_JSON_STRING(STRUCT(services AS service, oauth_client_ids)) AS event_properties,
+    TO_JSON_STRING(STRUCT(services AS service, oauth_client_ids, rollup_events)) AS event_properties,
     region,
     country,
     `LANGUAGE`,

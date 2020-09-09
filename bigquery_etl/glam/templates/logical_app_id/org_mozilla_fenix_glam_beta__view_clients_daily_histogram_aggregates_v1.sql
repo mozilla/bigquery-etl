@@ -7,7 +7,7 @@ WITH extracted AS (
   FROM
     `moz-fx-data-shared-prod`.glam_etl.org_mozilla_fenix__view_clients_daily_histogram_aggregates_v1
   WHERE
-    `moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build_id) < date "2020-07-03"
+    mozfun.norm.fenix_app_info('org_mozilla_fenix', app_build_id).channel = 'beta'
   UNION ALL
   SELECT
     *

@@ -8,11 +8,16 @@ import string
 import sys
 import yaml
 
-from ..cli.utils import is_valid_dir
+from ..cli.utils import is_valid_dir, is_authenticated
 from ..format_sql.formatter import reformat
 from ..cli.format import format
+from ..udf import publish_udfs
 
 UDF_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
+DEFAULT_DEPENDENCY_DIR = "udf_js/lib/"
+DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
+DEFAULT_GCS_PATH = ""
+DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 
 
 @click.group()
@@ -20,7 +25,7 @@ UDF_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$
 def udf(ctx):
     """Create the CLI group for the UDF command."""
     ctx.ensure_object(dict)
-    ctx.obj["UDF_DIR"] = "udf"
+    ctx.obj["UDF_DIRS"] = ("udf", "udf_js")
 
 
 @click.group()
@@ -28,7 +33,7 @@ def udf(ctx):
 def mozfun(ctx):
     """Create the CLI group for the mozfun command."""
     ctx.ensure_object(dict)
-    ctx.obj["UDF_DIR"] = "mozfun"
+    ctx.obj["UDF_DIRS"] = ("mozfun",)
 
 
 @udf.command(help="Create a new UDF")
@@ -43,7 +48,7 @@ def mozfun(ctx):
 @click.pass_context
 def create(ctx, name, path):
     """CLI command for creating a new UDF."""
-    udf_dir = ctx.obj["UDF_DIR"]
+    udf_dir = ctx.obj["UDF_DIRS"][0]
     if path and is_valid_dir(path):
         udf_dir = path
 
@@ -109,11 +114,14 @@ mozfun.add_command(create)
 @click.pass_context
 def info(ctx, path, usages, sql_dir):
     """CLI command for returning information about UDFs."""
-    udf_dir = ctx.obj["UDF_DIR"]
+    udf_dirs = ctx.obj["UDF_DIRS"]
     if path and is_valid_dir(None, None, path):
-        udf_dir = path
+        udf_dirs = (path,)
 
-    udf_files = Path(udf_dir).rglob("udf.sql")
+    udf_files = [
+        udf_file for udf_dir in udf_dirs for udf_file in Path(udf_dir).rglob("udf.sql")
+    ]
+
     for udf_file in udf_files:
         udf_file_path = Path(udf_file)
         udf_name = udf_file_path.parent.name
@@ -158,14 +166,71 @@ mozfun.add_command(info)
 @click.pass_context
 def validate(ctx, path):
     """Validate UDFs by formatting and running tests."""
-    udf_dir = ctx.obj["UDF_DIR"]
+    udf_dirs = ctx.obj["UDF_DIRS"]
     if path and is_valid_dir(None, None, path):
-        udf_dir = path
-    ctx.invoke(format, path=udf_dir)
-    pytest.main([udf_dir])
+        udf_dirs = (path,)
+
+    for udf_dir in udf_dirs:
+        ctx.invoke(format, path=udf_dir)
+        pytest.main([udf_dir])
 
 
 mozfun.add_command(validate)
 
-# publish
 
+@udf.command(
+    help="Publish UDFs to BigQuery.",
+)
+@click.argument("path", type=click.Path(file_okay=False), required=False)
+@click.option(
+    "--project",
+    "-p",
+    help="GCP project to publish UDFs to. If not set, uses default project.",
+)
+@click.option(
+    "--dependency-dir",
+    "--dependency_dir",
+    default=DEFAULT_DEPENDENCY_DIR,
+    help="The directory JavaScript dependency files for UDFs are stored.",
+)
+@click.option(
+    "--gcs-bucket",
+    "--gcs_bucket",
+    default=DEFAULT_GCS_BUCKET,
+    help="The GCS bucket where dependency files are uploaded to.",
+)
+@click.option(
+    "--gcs-path",
+    "--gcs_path",
+    default=DEFAULT_GCS_PATH,
+    help="The GCS path in the bucket where dependency files are uploaded to.",
+)
+@click.pass_context
+def publish(ctx, path, project, dependency_dir, gcs_bucket, gcs_path):
+    """Publish UDFs."""
+    public = False
+    if project:
+        project_id = project
+    else:
+        if ctx.obj["UDF_DIRS"] == ("mozfun",):
+            project_id = "mozfun"
+            public = True
+        else:
+            project_id = DEFAULT_PROJECT_ID
+
+    if not is_authenticated(project_id):
+        click.echo("User needs to be authenticated to publish UDFs.", err=True)
+        sys.exit(1)
+
+    udf_dirs = ctx.obj["UDF_DIRS"]
+    if path and is_valid_dir(path):
+        udf_dirs = path
+
+    click.echo(f"Publish UDFs to {project_id}")
+    publish_udfs.publish(
+        udf_dirs, project_id, dependency_dir, gcs_bucket, gcs_path, public
+    )
+    click.echo(f"Published UDFs to {project_id}")
+
+
+mozfun.add_command(publish)

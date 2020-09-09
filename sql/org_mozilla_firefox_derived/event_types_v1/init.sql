@@ -11,9 +11,9 @@ WITH sample AS (
     name AS event,
     * EXCEPT (name)
   FROM
-    org_mozilla_firefox.events
+    org_mozilla_firefox.events e
   CROSS JOIN
-    UNNEST(events) AS event
+    UNNEST(e.events) AS event
   WHERE
     DATE(submission_timestamp) >= '2020-01-01'
 ),

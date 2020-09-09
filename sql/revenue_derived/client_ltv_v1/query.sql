@@ -8,7 +8,7 @@ WITH with_exploded_history AS (
     `moz-fx-data-shared-prod.analysis.ltv_daily`,
     UNNEST(engine_searches.list) AS history
   WHERE
-    submission_date = '2020-07-01'
+    submission_date = @submission_date
     AND channel != 'esr'
     AND history.element.key IS NOT NULL
 ),
@@ -68,8 +68,8 @@ past_year_revenue AS (
   WHERE
    -- Filter to data before the current month, and 12 months ago from the 1st of the current month
     DATE(month_year)
-    BETWEEN DATE_SUB(DATE_TRUNC('2020-07-01', month), INTERVAL 12 MONTH)
-    AND DATE_TRUNC('2020-07-01', month)
+    BETWEEN DATE_SUB(DATE_TRUNC(@submission_date, month), INTERVAL 12 MONTH)
+    AND DATE_TRUNC(@submission_date, month)
     AND (
       (partner_name = 'Google' AND device = 'desktop' AND channel = 'personal')
       OR (
@@ -278,7 +278,7 @@ totals AS (
     with_ltv
 )
 SELECT
-  '2020-07-01' AS submission_date,
+  @submission_date AS submission_date,
   *,
   SAFE_DIVIDE(
     ltv_ad_clicks_current,

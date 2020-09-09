@@ -1,12 +1,14 @@
 WITH with_exploded_history AS (
   SELECT
+    * EXCEPT (country),
     history,
-    *
+    history.element.key AS engine,
+    `moz-fx-data-shared-prod`.udf.map_revenue_country(history.element.key, country) AS country
   FROM
     `moz-fx-data-shared-prod.analysis.ltv_daily`,
     UNNEST(engine_searches.list) AS history
   WHERE
-    submission_date = @submission_date
+    submission_date = '2020-07-01'
     AND channel != 'esr'
     AND history.element.key IS NOT NULL
 ),
@@ -16,10 +18,8 @@ with_exploded_months AS (
   search engines. We first unnest the engines to get the engine and its
   associated activity; we then unnest that activity to get individual
   counts per-month.
-
   The cruft of element/list is because of the Spark connector
   creating these tables.
-
   This will have 1-row per-client-engine-month.
   */
   SELECT
@@ -68,8 +68,8 @@ past_year_revenue AS (
   WHERE
    -- Filter to data before the current month, and 12 months ago from the 1st of the current month
     DATE(month_year)
-    BETWEEN DATE_SUB(DATE_TRUNC(@submission_date, month), INTERVAL 12 MONTH)
-    AND DATE_TRUNC(@submission_date, month)
+    BETWEEN DATE_SUB(DATE_TRUNC('2020-07-01', month), INTERVAL 12 MONTH)
+    AND DATE_TRUNC('2020-07-01', month)
     AND (
       (partner_name = 'Google' AND device = 'desktop' AND channel = 'personal')
       OR (
@@ -97,16 +97,15 @@ engine_action_values AS (
     (engine, month, country)
 ),
 history_join AS (
-  -- Get the average value of every action for that client
+  -- Get the total value of every action for that client
   -- Based on their historical values
   SELECT
     client_id,
-    country,
     engine,
-    AVG(h.ad_clicks * ad_click_value) AS avg_client_ad_click_value,
-    AVG(h.search_with_ads * search_with_ads_value) AS avg_client_search_with_ads_value,
-    AVG(h.sap * sap_value) AS avg_client_search_value,
-    AVG(h.tagged_sap * tagged_sap_value) AS avg_client_tagged_search_value
+    SUM(h.ad_clicks * ad_click_value) AS client_ad_click_value,
+    SUM(h.search_with_ads * search_with_ads_value) AS client_search_with_ads_value,
+    SUM(h.sap * sap_value) AS client_search_value,
+    SUM(h.tagged_sap * tagged_sap_value) AS client_tagged_search_value
   FROM
     with_exploded_months h
   INNER JOIN
@@ -115,14 +114,14 @@ history_join AS (
     (engine, month, country)
   GROUP BY
     client_id,
-    country,
     engine
 ),
 past_year_metric_sums AS (
   SELECT
     client_id,
-  -- One entry per-engine
+  -- One entry per-engine, and the client's associated country
     history.element.key AS engine,
+    country,
   --Sum historical metrics
     `moz-fx-data-shared-prod`.udf.parquet_array_sum(
       history.element.value.total_searches.list
@@ -187,7 +186,6 @@ cutoffs AS (
   -- 99.5% cutoffs
   SELECT
     engine,
-    country,
     APPROX_QUANTILES(ad_clicks_per_day, 1000)[OFFSET(995)] AS ad_clicks_cutoff,
     APPROX_QUANTILES(searches_with_ads_per_day, 1000)[OFFSET(995)] AS searches_with_ads_cutoff,
     APPROX_QUANTILES(searches_per_day, 1000)[OFFSET(995)] AS searches_cutoff,
@@ -195,8 +193,7 @@ cutoffs AS (
   FROM
     with_actions_per_day
   GROUP BY
-    engine,
-    country
+    engine
 ),
 with_caps AS (
   SELECT
@@ -210,64 +207,104 @@ with_caps AS (
   INNER JOIN
     cutoffs
   USING
+    (engine)
+),
+total_engine_values AS (
+  SELECT
+    engine,
+    country,
+    SUM(ad_clicks) AS total_ad_clicks,
+    SUM(search_with_ads) AS total_searches_with_ads,
+    SUM(sap) AS total_sap,
+    SUM(tagged_sap) AS total_tagged_sap
+  FROM
+    engine_action_values
+  GROUP BY
+    engine,
+    country
+),
+future_values AS (
+  -- For each engine-country, this gives the expected future value of each action
+  SELECT
+    engine,
+    country,
+    SUM(revenue) AS revenue,
+    SUM(ad_clicks) AS total_ad_clicks,
+    SUM(ad_click_value * (ad_clicks / total_ad_clicks)) AS ad_click_value,
+    SUM(
+      search_with_ads_value * (search_with_ads / total_searches_with_ads)
+    ) AS search_with_ads_value,
+    SUM(sap_value * (sap / total_sap)) AS sap_value,
+    SUM(tagged_sap_value * (tagged_sap / total_tagged_sap)) AS tagged_sap_value,
+  FROM
+    engine_action_values
+  JOIN
+    total_engine_values
+  USING
     (engine, country)
+  GROUP BY
+    engine,
+    country
 ),
 with_ltv AS (
   SELECT
     *,
-    SQRT(
-      ad_click_days * ad_clicks_per_day_capped * avg_client_ad_click_value
-    ) AS ltv_ad_clicks_current,
-    SQRT(
-      search_with_ads_days * searches_with_ads_per_day_capped * avg_client_search_with_ads_value
-    ) AS ltv_search_with_ads_current,
-    SQRT(search_days * searches_per_day_capped * avg_client_search_value) AS ltv_search_current,
-    SQRT(
-      tagged_search_days * tagged_searches_per_day_capped * avg_client_tagged_search_value
-    ) AS ltv_tagged_search_current,
-    SQRT(
-      pred_num_days_clicking_ads * ad_clicks_per_day * avg_client_ad_click_value
-    ) AS ltv_ad_clicks_future,
-    SQRT(
-      pred_num_days_seeing_ads * searches_with_ads_per_day_capped * avg_client_search_with_ads_value
-    ) AS ltv_search_with_ads_future,
-    SQRT(
-      pred_num_days_searching * searches_per_day_capped * avg_client_search_value
-    ) AS ltv_search_future,
-    SQRT(
-      pred_num_days_tagged_searching * tagged_searches_per_day_capped * avg_client_tagged_search_value
-    ) AS ltv_tagged_search_future,
+    ad_click_days * ad_clicks_per_day_capped * ad_click_value AS ltv_ad_clicks_current,
+    search_with_ads_days * searches_with_ads_per_day_capped * search_with_ads_value AS ltv_search_with_ads_current,
+    search_days * searches_per_day_capped * sap_value AS ltv_search_current,
+    tagged_search_days * tagged_searches_per_day_capped * tagged_sap_value AS ltv_tagged_search_current,
+    pred_num_days_clicking_ads * ad_clicks_per_day_capped * ad_click_value AS ltv_ad_clicks_future,
+    pred_num_days_seeing_ads * searches_with_ads_per_day_capped * search_with_ads_value AS ltv_search_with_ads_future,
+    pred_num_days_searching * searches_per_day_capped * sap_value AS ltv_search_future,
+    pred_num_days_tagged_searching * tagged_searches_per_day_capped * tagged_sap_value AS ltv_tagged_search_future,
   FROM
     with_caps
+  JOIN
+    future_values
+  USING
+    (engine, country)
+),
+totals AS (
+  SELECT
+    SUM(ltv_ad_clicks_current) AS ltv_ad_clicks_current_total,
+    SUM(ltv_search_with_ads_current) AS ltv_search_with_ads_current_total,
+    SUM(ltv_search_current) AS ltv_search_current_total,
+    SUM(ltv_tagged_search_current) AS ltv_tagged_search_current_total,
+    SUM(ltv_ad_clicks_future) AS ltv_ad_clicks_future_total,
+    SUM(ltv_search_with_ads_future) AS ltv_search_with_ads_future_total,
+    SUM(ltv_search_future) AS ltv_search_future_total,
+    SUM(ltv_tagged_search_future) AS ltv_tagged_search_future_total
+  FROM
+    with_ltv
 )
 SELECT
-  @submission_date AS submission_date,
+  '2020-07-01' AS submission_date,
   *,
   SAFE_DIVIDE(
     ltv_ad_clicks_current,
-    SUM(ltv_ad_clicks_current) OVER ()
+    ltv_ad_clicks_current_total
   ) AS normalized_ltv_ad_clicks_current,
   SAFE_DIVIDE(
     ltv_search_with_ads_current,
-    SUM(ltv_search_with_ads_current) OVER ()
+    ltv_search_with_ads_current_total
   ) AS normalized_ltv_search_with_ads_current,
-  SAFE_DIVIDE(ltv_search_current, SUM(ltv_search_current) OVER ()) AS normalized_ltv_search_current,
+  SAFE_DIVIDE(ltv_search_current, ltv_search_current_total) AS normalized_ltv_search_current,
   SAFE_DIVIDE(
     ltv_tagged_search_current,
-    SUM(ltv_tagged_search_current) OVER ()
+    ltv_tagged_search_current_total
   ) AS normalized_ltv_tagged_search_current,
-  SAFE_DIVIDE(
-    ltv_ad_clicks_future,
-    SUM(ltv_ad_clicks_future) OVER ()
-  ) AS normalized_ltv_ad_clicks_future,
+  SAFE_DIVIDE(ltv_ad_clicks_future, ltv_ad_clicks_future_total) AS normalized_ltv_ad_clicks_future,
   SAFE_DIVIDE(
     ltv_search_with_ads_future,
-    SUM(ltv_search_with_ads_future) OVER ()
+    ltv_search_with_ads_future_total
   ) AS normalized_ltv_search_with_ads_future,
-  SAFE_DIVIDE(ltv_search_future, SUM(ltv_search_future) OVER ()) AS normalized_ltv_search_future,
+  SAFE_DIVIDE(ltv_search_future, ltv_search_future_total) AS normalized_ltv_search_future,
   SAFE_DIVIDE(
     ltv_tagged_search_future,
-    SUM(ltv_tagged_search_future) OVER ()
+    ltv_tagged_search_future_total
   ) AS normalized_ltv_tagged_search_future
 FROM
-  with_ltv
+  with_ltv,
+  totals
+ORDER BY
+  normalized_ltv_ad_clicks_current DESC

@@ -1,5 +1,10 @@
 CREATE OR REPLACE TABLE
   org_mozilla_firefox_derived.event_types_v1
+PARTITION BY
+  submission_date
+CLUSTER BY
+  category,
+  event
 AS
 WITH sample AS (
   SELECT
@@ -123,10 +128,15 @@ per_event AS (
     event,
     first_timestamp,
     primary_index
+),
+max_date AS (
+  SELECT
+    MAX(DATE(submission_timestamp)) AS submission_date
+  FROM
+    sample
 )
 SELECT
   *
 FROM
-  per_event
-ORDER BY
-  numeric_index ASC
+  per_event,
+  max_date

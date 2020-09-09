@@ -64,7 +64,6 @@ class SqlTest(pytest.Item, pytest.File):
 
     def runtest(self):
         """Run."""
-
         test_name = self.fspath.basename
         query_name = self.fspath.dirpath().basename
         dataset_name = self.fspath.dirpath().dirpath().basename

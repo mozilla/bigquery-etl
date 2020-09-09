@@ -60,6 +60,7 @@ SKIP = {
     "sql/apple_app_store/metrics_by_web_referrer/query.sql",
     "sql/apple_app_store/metrics_total/query.sql",
     "sql/monitoring/telemetry_distinct_docids_v1/query.sql",
+    "sql/revenue_derived/client_ltv_normalized/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",
     "sql/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",

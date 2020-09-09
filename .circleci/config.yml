@@ -106,6 +106,17 @@ jobs:
           command: |
             cd telemetry-airflow
             bash bin/test-parse
+  verify-dags-up-to-date:
+    docker: *docker
+    steps:
+    - checkout
+    - *build
+    - run: 
+        name: Generate DAGs
+        command: PATH="venv/bin:$PATH" script/generate_airflow_dags
+    - run:
+        name: Verify that DAGs were correctly generated and are up-to-date
+        command: git diff --exit-code
   validate-docs:
     docker: *docker
     steps:
@@ -174,6 +185,7 @@ workflows:
     - validate-metadata
     - integration
     - validate-dags
+    - verify-dags-up-to-date
     - validate-docs
     - docs:
         filters:

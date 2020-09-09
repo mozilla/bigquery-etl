@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+
+"""Migrate legacy UDFs to the new UDF structure."""
+
+from argparse import ArgumentParser
+import os
+from pathlib import Path
+import re
+import shutil
+import string
+import yaml
+
+
+UDF_DIRS = ("udf/", "udf_js/")
+DESCRIPTION_RE = re.compile(r"(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|(//.*)")
+
+parser = ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--udf", help="Migrate the specified UDF.",
+)
+parser.add_argument(
+    "--udf-dirs",
+    "--udf_dirs",
+    nargs="+",
+    default=UDF_DIRS,
+    help="Directories containing UDFs to migrate",
+)
+
+
+def migrate_udf(udf_file):
+    """Migrate a speficif UDF to the new format."""
+    udf_file = Path(udf_file)
+    print(f"Migrate {udf_file}")
+
+    udf_name = udf_file.name.replace(".sql", "")
+    friendly_name = string.capwords(udf_name.replace("_", " "))
+
+    description = ""
+    with open(udf_file) as udf:
+        udf_content = udf.read()
+        comment = re.findall(DESCRIPTION_RE, udf_content)
+
+        if len(comment) > 0:
+            description = comment[0][0].replace("/*", "")
+            description = description.replace("*/", "").strip()
+            description = description.replace("\n", " ").strip()
+
+    # move files to directory
+    migrated_udf_dir = udf_file.parent / udf_name
+    migrated_udf_dir.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(udf_file), str(migrated_udf_dir / "udf.sql"))
+
+    # create metdata file
+    metadata_file = migrated_udf_dir / "metadata.yaml"
+    metadata = {"friendly_name": friendly_name, "description": description}
+    metadata_file.write_text(yaml.dump(metadata))
+
+
+def main():
+    """Run the UDF migration"""
+    args = parser.parse_args()
+
+    if args.udf:
+        # migrate a single UDF
+        migrate_udf(args.udf)
+        return
+
+    # iterate through udfs and migrate one by one
+    for udf_dir in args.udf_dirs:
+        if os.path.isdir(udf_dir):
+            for root, dirs, files in os.walk(udf_dir):
+                for udf_file in files:
+                    if udf_file.endswith(".sql") and not udf_file.endswith("udf.sql"):
+                        migrate_udf(os.path.join(root, udf_file))
+
+
+if __name__ == "__main__":
+    main()

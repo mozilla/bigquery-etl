@@ -1,0 +1,6 @@
+description: 'Convert the Fenix client_info.app_build-format string to a DATETIME.
+  May return NULL on failure.  The Fenix app_build format is documented here: https://github.com/mozilla-mobile/fenix/blob/c72834479eb3e13ee91f82b529e59aa08392a92d/automation/gradle/versionCode.gradle#L13  In
+  short it is yDDDHHmm  * y is years since 2018  * DDD is day of year, 0-padded, 001-366  *
+  HH is hour of day, 00-23  * mm is minute of hour, 00-59  After using this you may
+  wish to DATETIME_TRUNC(result, DAY) for grouping by build date.'
+friendly_name: Fenix Build To Datetime

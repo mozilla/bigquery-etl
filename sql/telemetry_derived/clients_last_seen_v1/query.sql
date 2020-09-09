@@ -13,6 +13,7 @@ WITH _current AS (
       scalar_parent_browser_engagement_total_uri_count_sum >= 5 AS INT64
     ) AS days_visited_5_uri_bits,
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
+    CAST(active_hours_sum > 0 AS INT64) AS days_interacted_bits,
     -- We only trust profile_date if it is within one week of the ping submission,
     -- so we ignore any value more than seven days old.
     udf.days_since_created_profile_as_28_bits(
@@ -36,7 +37,21 @@ WITH _current AS (
   --
 _previous AS (
   SELECT
-    * EXCEPT (submission_date)
+    days_seen_bits,
+    days_visited_5_uri_bits,
+    days_opened_dev_tools_bits,
+    days_interacted_bits,
+    days_created_profile_bits,
+    days_seen_in_experiment,
+    * EXCEPT (
+      days_seen_bits,
+      days_visited_5_uri_bits,
+      days_opened_dev_tools_bits,
+      days_interacted_bits,
+      days_created_profile_bits,
+      days_seen_in_experiment,
+      submission_date
+    )
   FROM
     clients_last_seen_v1
   WHERE
@@ -60,6 +75,10 @@ SELECT
       _previous.days_opened_dev_tools_bits,
       _current.days_opened_dev_tools_bits
     ) AS days_opened_dev_tools_bits,
+    udf.coalesce_adjacent_days_28_bits(
+      _previous.days_interacted_bits,
+      _current.days_interacted_bits
+    ) AS days_interacted_bits,
     udf.coalesce_adjacent_days_28_bits(
       _previous.days_created_profile_bits,
       _current.days_created_profile_bits

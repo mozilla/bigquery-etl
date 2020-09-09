@@ -1,6 +1,6 @@
 WITH _derived_search_cols AS (
   SELECT
-    udf.normalize_search_engine(engine) AS short_engine,
+    COALESCE(udf.normalize_search_engine(engine), "Other") AS short_engine,
     COALESCE(organic, 0) + COALESCE(sap, 0) + COALESCE(unknown, 0) + COALESCE(
       tagged_sap,
       0
@@ -13,7 +13,6 @@ WITH _derived_search_cols AS (
     search_clients_daily_v8
   WHERE
     submission_date = @submission_date
-    AND sample_id = 84 -- limit to 1%
 ),
 _derived_engine_searches AS (
     -- From the clients search info, make a struct

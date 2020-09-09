@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+"""Publish csv files as BigQuery tables."""
+
 import os
 import json
 from argparse import ArgumentParser
@@ -11,8 +13,8 @@ SCHEMA_FILENAME = "schema.json"
 DESCRIPTION_FILENAME = "description.txt"
 
 
-def parse_args():
-    parser = ArgumentParser()
+def _parse_args():
+    parser = ArgumentParser(__doc__)
     parser.add_argument(
         "--data-dir",
         default="sql/",
@@ -22,7 +24,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def load_table(
+def _load_table(
     data_file_path, schema_file_path=None, description_file_path=None, project=None
 ):
     client = bigquery.Client()
@@ -72,8 +74,8 @@ def load_table(
             client.update_table(table, ["description"])
 
 
-def main():
-    args = parse_args()
+def _main():
+    args = _parse_args()
 
     for root, dirs, files in os.walk(args.data_dir):
         for filename in files:
@@ -88,7 +90,7 @@ def main():
                     if DESCRIPTION_FILENAME in files
                     else None
                 )
-                load_table(
+                _load_table(
                     os.path.join(root, filename),
                     schema_file_path,
                     description_file_path,
@@ -97,4 +99,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _main()

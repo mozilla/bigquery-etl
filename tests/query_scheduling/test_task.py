@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 import pytest
 from typing import NewType
+from unittest import mock
 
 from bigquery_etl.query_scheduling.task import (
     Task,
@@ -12,8 +13,14 @@ from bigquery_etl.query_scheduling.task import (
 )
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
+from bigquery_etl.dryrun import DryRun
 
 TEST_DIR = Path(__file__).parent.parent
+# This Cloud Function has been manually deployed and might be outdated compared
+# to the shared-prod version
+TEST_DRY_RUN_URL = (
+    "https://us-central1-bigquery-etl-integration-test.cloudfunctions.net/dryrun"
+)
 
 
 class TestTask:
@@ -342,7 +349,8 @@ class TestTask:
         )
 
     @pytest.mark.integration
-    def test_task_get_dependencies_none(self, tmp_path, bigquery_client):
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
+    def test_task_get_dependencies_none(self, tmp_path):
         query_file_path = tmp_path / "sql" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
@@ -355,10 +363,11 @@ class TestTask:
 
         task = Task.of_query(query_file, metadata)
         dags = DagCollection.from_dict({})
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         assert task.dependencies == []
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_task_get_multiple_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
@@ -406,7 +415,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         result = task.dependencies
 
         tables = [t.task_id for t in result]
@@ -415,6 +424,7 @@ class TestTask:
         assert f"{temporary_dataset}__table2__v1" in tables
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_multipart_task_get_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
@@ -466,7 +476,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         result = task.dependencies
 
         tables = [t.task_id for t in result]
@@ -475,6 +485,7 @@ class TestTask:
         assert f"{temporary_dataset}__table2__v1" in tables
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_task_get_view_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
@@ -525,7 +536,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         result = task.dependencies
 
         tables = [t.task_id for t in result]
@@ -534,6 +545,7 @@ class TestTask:
         assert f"{temporary_dataset}__table2__v1" in tables
 
     @pytest.mark.integration
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_task_get_nested_view_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
@@ -587,7 +599,7 @@ class TestTask:
             }
         ).with_tasks([task, table_task1, table_task2])
 
-        task.with_dependencies(bigquery_client, dags)
+        task.with_dependencies(dags)
         result = task.dependencies
         tables = [t.task_id for t in result]
 

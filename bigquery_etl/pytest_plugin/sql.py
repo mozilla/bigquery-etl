@@ -8,8 +8,8 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 import pytest
 
-from .. import parse_udf
-from ..util.test_sql import (
+from ..udf import parse_udf
+from .sql_test import (
     coerce_result,
     dataset,
     get_query_params,
@@ -33,15 +33,15 @@ def pytest_configure(config):
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
     if path.basename in expect_names:
-        return SqlTest(path.parts()[-2], parent)
+        return SqlTest.from_parent(parent, fspath=path.parts()[-2])
 
 
 class SqlTest(pytest.Item, pytest.File):
     """Test a SQL query."""
 
-    def __init__(self, path, parent):
+    def __init__(self, fspath, parent):
         """Initialize."""
-        super().__init__(path, parent)
+        super().__init__(fspath, parent)
         self._nodeid += "::SQL"
         self.add_marker("sql")
 

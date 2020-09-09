@@ -12,7 +12,7 @@ default_args = {{
 }}
 
 with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}) as dag:
-{% for task in tasks %}
+{% for task in tasks | sort(attribute='task_name') %}
     {{ task.task_name }} = bigquery_etl_query(
         task_id='{{ task.task_name }}',
         destination_table='{{ task.table }}_{{ task.version }}',
@@ -52,8 +52,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 {% endfor -%}
 
 {% set wait_for_seen = [] -%}
-{% for task in tasks %}
-    {% for dependency in task.dependencies -%}
+{% for task in tasks | sort(attribute='task_name') %}
+    {% for dependency in task.dependencies | sort(attribute='task_id') -%}
     {% if dependency.dag_name == name -%}
     {% if dependency.task_id != task.task_name %}
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
@@ -79,7 +79,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {% endfor -%}
 
     
-    {% for task_ref in task.depends_on -%}
+    {% for task_ref in task.depends_on | sort(attribute='task_id') -%}
     {% if (task_ref.dag_name, task_ref.task_id) not in wait_for_seen -%}
     wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }} = ExternalTaskSensor(
         task_id="wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }}",

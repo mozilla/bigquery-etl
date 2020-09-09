@@ -22,6 +22,19 @@ with DAG(
 ) as dag:
     docker_image = "mozilla/bigquery-etl:latest"
 
+    export_public_data_json_telemetry_derived__deviations__v1 = GKEPodOperator(
+        task_id="export_public_data_json_telemetry_derived__deviations__v1",
+        name="export_public_data_json_telemetry_derived__deviations__v1",
+        arguments=["script/publish_public_data_json"]
+        + ["--query_file=sql/telemetry_derived/deviations_v1/query.sql"]
+        + ["--destination_table=deviations${{ds_nodash}}"]
+        + ["--dataset_id=telemetry_derived"]
+        + ["--project_id=moz-fx-data-shared-prod"]
+        + ["--parameter=submission_date:DATE:{{ds}}"],
+        image=docker_image,
+        dag=dag,
+    )
+
     export_public_data_json_telemetry_derived__ssl_ratios__v1 = GKEPodOperator(
         task_id="export_public_data_json_telemetry_derived__ssl_ratios__v1",
         name="export_public_data_json_telemetry_derived__ssl_ratios__v1",
@@ -35,17 +48,17 @@ with DAG(
         dag=dag,
     )
 
-    export_public_data_json_telemetry_derived__deviations__v1 = GKEPodOperator(
-        task_id="export_public_data_json_telemetry_derived__deviations__v1",
-        name="export_public_data_json_telemetry_derived__deviations__v1",
-        arguments=["script/publish_public_data_json"]
-        + ["--query_file=sql/telemetry_derived/deviations_v1/query.sql"]
-        + ["--destination_table=deviations${{ds_nodash}}"]
-        + ["--dataset_id=telemetry_derived"]
-        + ["--project_id=moz-fx-data-shared-prod"]
-        + ["--parameter=submission_date:DATE:{{ds}}"],
-        image=docker_image,
-        dag=dag,
+    wait_for_telemetry_derived__deviations__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__deviations__v1",
+        external_dag_id="bqetl_deviations",
+        external_task_id="telemetry_derived__deviations__v1",
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    export_public_data_json_telemetry_derived__deviations__v1.set_upstream(
+        wait_for_telemetry_derived__deviations__v1
     )
 
     wait_for_telemetry_derived__ssl_ratios__v1 = ExternalTaskSensor(
@@ -62,19 +75,6 @@ with DAG(
         wait_for_telemetry_derived__ssl_ratios__v1
     )
 
-    wait_for_telemetry_derived__deviations__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__deviations__v1",
-        external_dag_id="bqetl_deviations",
-        external_task_id="telemetry_derived__deviations__v1",
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    export_public_data_json_telemetry_derived__deviations__v1.set_upstream(
-        wait_for_telemetry_derived__deviations__v1
-    )
-
     public_data_gcs_metadata = gke_command(
         task_id="public_data_gcs_metadata",
         command=["script/publish_public_data_gcs_metadata"],
@@ -84,7 +84,7 @@ with DAG(
 
     public_data_gcs_metadata.set_upstream(
         [
-            export_public_data_json_telemetry_derived__ssl_ratios__v1,
             export_public_data_json_telemetry_derived__deviations__v1,
+            export_public_data_json_telemetry_derived__ssl_ratios__v1,
         ]
     )

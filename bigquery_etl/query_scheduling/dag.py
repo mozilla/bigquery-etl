@@ -153,6 +153,16 @@ class Dag:
         self.tasks = self.tasks.copy() + tasks
         self.validate_tasks(None, self.tasks)
 
+    def to_dict(self):
+        """Return class as a dict."""
+        d = self.__dict__
+        name = d["name"]
+        del d["name"]
+        del d["tasks"]
+        d["default_args"] = self.default_args.to_dict()
+
+        return {name: d}
+
     @classmethod
     def from_dict(cls, d):
         """
@@ -196,7 +206,7 @@ class Dag:
 
         return env
 
-    def to_airflow_dag(self, client, dag_collection):
+    def to_airflow_dag(self, dag_collection):
         """Convert the DAG to its Airflow representation and return the python code."""
         env = self._jinja_env()
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
@@ -204,7 +214,7 @@ class Dag:
         args = self.__dict__
 
         for task in args["tasks"]:
-            task.with_dependencies(client, dag_collection)
+            task.with_dependencies(dag_collection)
 
         return dag_template.render(args)
 
@@ -212,7 +222,7 @@ class Dag:
 class PublicDataJsonDag(Dag):
     """Special DAG with tasks exporting public json data to GCS."""
 
-    def to_airflow_dag(self, client, dag_collection):
+    def to_airflow_dag(self, dag_collection):
         """Convert the DAG to its Airflow representation and return the python code."""
         env = self._jinja_env()
         dag_template = env.get_template(PUBLIC_DATA_JSON_DAG_TEMPLATE)

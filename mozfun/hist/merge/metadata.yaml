@@ -1,6 +1,7 @@
-description: 'Merge an array of histograms into a single histogram.
+description: |
+  Merge an array of histograms into a single histogram.
 
   - The histogram values will be summed per-bucket 
   - The count will be summed 
-  - Other fields will take the mode_last'
+  - Other fields will take the mode_last
 friendly_name: Histogram Merge

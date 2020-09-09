@@ -20,6 +20,11 @@
     "mode": "NULLABLE"
   },
   {
+    "name": "days_interacted_bits",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
     "name": "days_seen_in_experiment",
     "type": "RECORD",
     "mode": "REPEATED",

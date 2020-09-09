@@ -33,8 +33,8 @@ def get_labeled_metrics_sql(
 ) -> str:
     """Get the SQL for labeled scalar metrics."""
     probes_struct = []
-    for metric_type, probes in probes.items():
-        for probe in probes:
+    for metric_type, _probes in probes.items():
+        for probe in _probes:
             probes_struct.append(
                 f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe})"
             )
@@ -61,8 +61,8 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
             )
         )
 
-    for metric_type, probes in probes.items():
-        for probe in probes:
+    for metric_type, _probes in probes.items():
+        for probe in _probes:
             for agg_func in ["max", "avg", "min", "sum"]:
                 probe_structs.append(
                     (
@@ -91,7 +91,9 @@ def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
         "unlabeled": ["boolean", "counter", "quantity"],
         "labeled": ["labeled_counter"],
     }
-    scalars = {metric_type: [] for metric_type in metric_type_set[scalar_type]}
+    scalars: Dict[str, List[str]] = {
+        metric_type: [] for metric_type in metric_type_set[scalar_type]
+    }
 
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.
@@ -115,9 +117,7 @@ def main():
         action="store_true",
         help="Generate a query without parameters",
     )
-    parser.add_argument(
-        "--source-table", type=str, help="Name of Glean table",
-    )
+    parser.add_argument("--source-table", type=str, help="Name of Glean table")
     args = parser.parse_args()
 
     # If set to 1 day, then runs of copy_deduplicate may not be done yet

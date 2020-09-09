@@ -5,30 +5,41 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query
 
-default_args = {'owner': 'test@example.org', 'start_date': datetime.datetime(2020, 1, 1, 0, 0), 'email': [], 'depends_on_past': False, 'retry_delay': datetime.timedelta(seconds=1800), 'email_on_failure': True, 'email_on_retry': True, 'retries': 2}
+default_args = {
+    "owner": "test@example.org",
+    "start_date": datetime.datetime(2020, 1, 1, 0, 0),
+    "email": [],
+    "depends_on_past": False,
+    "retry_delay": datetime.timedelta(seconds=1800),
+    "email_on_failure": True,
+    "email_on_retry": True,
+    "retries": 2,
+}
 
-with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily') as dag:
+with DAG(
+    "bqetl_test_dag", default_args=default_args, schedule_interval="@daily"
+) as dag:
 
-    test__non_incremental_query__v1 = bigquery_etl_query(
-        task_id='test__non_incremental_query__v1',
-        destination_table='non_incremental_query_v1',
-        dataset_id='test',
-        project_id='moz-fx-data-shared-prod',
-        owner='test@example.com',
-        email=['test@example.com'],
-        date_partition_parameter='submission_date',
+    test__no_metadata_query__v1 = bigquery_etl_query(
+        task_id="test__no_metadata_query__v1",
+        destination_table="no_metadata_query_v1",
+        dataset_id="test",
+        project_id="moz-fx-data-shared-prod",
+        owner="test@example.com",
+        email=["test@example.com"],
+        date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
     )
 
-    test__no_metadata_query__v1 = bigquery_etl_query(
-        task_id='test__no_metadata_query__v1',
-        destination_table='no_metadata_query_v1',
-        dataset_id='test',
-        project_id='moz-fx-data-shared-prod',
-        owner='test@example.com',
-        email=['test@example.com'],
-        date_partition_parameter='submission_date',
+    test__non_incremental_query__v1 = bigquery_etl_query(
+        task_id="test__non_incremental_query__v1",
+        destination_table="non_incremental_query_v1",
+        dataset_id="test",
+        project_id="moz-fx-data-shared-prod",
+        owner="test@example.com",
+        email=["test@example.com"],
+        date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
     )
@@ -38,11 +49,11 @@ with DAG('bqetl_test_dag', default_args=default_args, schedule_interval='@daily'
         external_dag_id="external",
         external_task_id="task1",
         check_existence=True,
-        mode='reschedule',
-        pool='DATA_ENG_EXTERNALTASKSENSOR',
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
         dag=dag,
     )
-    
-    test__non_incremental_query__v1.set_upstream(wait_for_external_task1)
-    
+
     test__no_metadata_query__v1.set_upstream(wait_for_external_task1)
+
+    test__non_incremental_query__v1.set_upstream(wait_for_external_task1)

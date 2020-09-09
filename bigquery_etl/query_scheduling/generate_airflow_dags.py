@@ -3,7 +3,6 @@
 import logging
 import os
 from argparse import ArgumentParser
-from google.cloud import bigquery
 from ..util import standard_args
 from pathlib import Path
 
@@ -30,12 +29,6 @@ parser.add_argument(
     "--dags-config",
     help="File with DAGs configuration",
     default=DEFAULT_DAGS_FILE,
-)
-parser.add_argument(
-    "--project_id",
-    "--project-id",
-    default="moz-fx-data-shared-prod",
-    help="Dry run queries in this project to determine task dependencies.",
 )
 parser.add_argument(
     "--output_dir",
@@ -76,6 +69,11 @@ def get_dags(sql_dir, dags_config):
                 #
                 # most tasks lack scheduling information for now
                 pass
+            except Exception as e:
+                # in the case that there was some other error, report the query
+                # that failed before exiting
+                logging.error(f"Error processing task for query {query_file}")
+                raise e
             else:
                 tasks.append(task)
 
@@ -95,11 +93,10 @@ def get_dags(sql_dir, dags_config):
 def main():
     """Generate Airflow DAGs."""
     args = parser.parse_args()
-    client = bigquery.Client(args.project_id)
     dags_output_dir = Path(args.output_dir)
 
     dags = get_dags(args.sql_dir, args.dags_config)
-    dags.to_airflow_dags(dags_output_dir, client)
+    dags.to_airflow_dags(dags_output_dir)
 
 
 if __name__ == "__main__":

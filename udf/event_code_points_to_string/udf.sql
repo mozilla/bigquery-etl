@@ -10,6 +10,12 @@ CREATE OR REPLACE FUNCTION udf.event_code_points_to_string(code_points ANY TYPE)
             i IS NULL
           THEN
             NULL
+            -- Skip invalid chars
+            -- https://en.wikibooks.org/wiki/Unicode/Character_reference/D000-DFFF#endnote_SURROGATE
+          WHEN
+            i >= 55294
+          THEN
+            i + 2 + 2048
             -- Skip commas
           WHEN
             i >= 43
@@ -40,4 +46,9 @@ SELECT
     udf.event_code_points_to_string(CAST(NULL AS ARRAY<INT64>))
   ),
   assert_equals(CODE_POINTS_TO_STRING([NULL]), udf.event_code_points_to_string([NULL])),
-  assert_equals(CODE_POINTS_TO_STRING([]), udf.event_code_points_to_string([])),
+  assert_equals(CODE_POINTS_TO_STRING([]), udf.event_code_points_to_string([]));
+
+SELECT
+  assert_not_null(udf.event_code_points_to_string([n]))
+FROM
+  UNNEST(GENERATE_ARRAY(1, 1000000)) AS n

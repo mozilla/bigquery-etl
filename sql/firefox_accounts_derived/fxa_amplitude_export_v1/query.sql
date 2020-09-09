@@ -104,6 +104,7 @@ grouped_by_user AS (
     ) AS ua_browser,
     MAX(CAST(jsonPayload.fields.app_version AS FLOAT64)) AS app_version,
     CAST(TRUE AS INT64) AS days_seen_bits,
+    ARRAY_AGG(DISTINCT jsonPayload.fields.event_type) AS rollup_events
   FROM
     base_events
   GROUP BY

@@ -69,7 +69,6 @@ class SqlTest(pytest.Item, pytest.File):
         query_name = self.fspath.dirpath().basename
         dataset_name = self.fspath.dirpath().dirpath().basename
 
-        query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/query.sql")
         init_test = False
 
         # init tests write to dataset_query_test, instead of their
@@ -85,6 +84,8 @@ class SqlTest(pytest.Item, pytest.File):
             )
             query = query.replace(original, dest_name)
             query_name = dest_name
+        else:
+            query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/query.sql")
 
         expect = load(self.fspath.strpath, "expect")
 

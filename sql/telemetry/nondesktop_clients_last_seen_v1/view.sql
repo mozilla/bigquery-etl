@@ -3,38 +3,56 @@ CREATE OR REPLACE VIEW
 AS
 -- For context on naming and channels of Fenix apps, see:
 -- https://docs.google.com/document/d/1Ym4eZyS0WngEP6WdwJjmCoxtoQbJSvORxlQwZpuSV2I/edit#heading=h.69hvvg35j8un
-WITH glean_union AS (
-  -- Fenix apps
+WITH fenix_union AS (
   SELECT
-    * REPLACE ('beta' AS normalized_channel),
-    'Firefox Preview' AS app_name,
+    *,
+    'org_mozilla_fenix' AS _dataset
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix.baseline_clients_last_seen`
   UNION ALL
   SELECT
-    * REPLACE ('nightly' AS normalized_channel),
-    'Firefox Preview' AS app_name,
+    *,
+    'org_mozilla_fenix_nightly' AS _dataset
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline_clients_last_seen`
   UNION ALL
   SELECT
-    * REPLACE ('release' AS normalized_channel),
-    'Fenix' AS app_name,
+    *,
+    'org_mozilla_firefox' AS _dataset
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox.baseline_clients_last_seen`
   UNION ALL
   SELECT
-    * REPLACE ('beta' AS normalized_channel),
-    'Fenix' AS app_name,
+    *,
+    'org_mozilla_firefox_beta' AS _dataset
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline_clients_last_seen`
   UNION ALL
   SELECT
-    * REPLACE ('nightly' AS normalized_channel),
-    'Fenix' AS app_name,
+    *,
+    'org_mozilla_fennec_aurora' AS _dataset
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline_clients_last_seen`
-  -- Other apps that send Glean telemetry
+),
+fenix_app_info AS (
+  SELECT
+    *,
+    mozfun.norm.fenix_app_info(_dataset, app_build) AS _app_info
+  FROM
+    fenix_union
+),
+fenix_normalized AS (
+  SELECT
+    * EXCEPT (_dataset, _app_info) REPLACE(_app_info.channel AS normalized_channel),
+    _app_info.app_name,
+  FROM
+    fenix_app_info
+),
+glean_union AS (
+  SELECT
+    *
+  FROM
+    fenix_normalized
   UNION ALL
   SELECT
     *,

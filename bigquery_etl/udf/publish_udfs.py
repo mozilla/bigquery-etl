@@ -63,15 +63,24 @@ standard_args.add_log_level(parser)
 def main():
     """Publish UDFs."""
     args = parser.parse_args()
+    publish(
+        args.udf_dirs,
+        args.project_id,
+        args.dependency_dir,
+        args.gcs_bucket,
+        args.gcs_path,
+        args.public,
+    )
 
-    client = bigquery.Client(args.project_id)
 
-    if args.dependency_dir and os.path.exists(args.dependency_dir):
-        push_dependencies_to_gcs(
-            args.gcs_bucket, args.gcs_path, args.dependency_dir, args.project_id
-        )
+def publish(udf_dirs, project_id, dependency_dir, gcs_bucket, gcs_path, public):
+    """Publish UDFs in the provided directory."""
+    client = bigquery.Client(project_id)
 
-    raw_udfs = read_udf_dirs(*args.udf_dirs)
+    if dependency_dir and os.path.exists(dependency_dir):
+        push_dependencies_to_gcs(gcs_bucket, gcs_path, dependency_dir, project_id)
+
+    raw_udfs = read_udf_dirs(*udf_dirs)
 
     published_udfs = []
 
@@ -85,11 +94,11 @@ def main():
                 publish_udf(
                     raw_udfs[dep],
                     client,
-                    args.project_id,
-                    args.gcs_bucket,
-                    args.gcs_path,
+                    project_id,
+                    gcs_bucket,
+                    gcs_path,
                     raw_udfs.keys(),
-                    args.public,
+                    public,
                 )
                 published_udfs.append(dep)
 
@@ -125,6 +134,7 @@ def publish_udf(
             fr'library = "gs://{gcs_bucket}/{gcs_path}\1"', definition
         )
 
+        print(f"Publish {raw_udf.name}")
         client.query(query).result()
 
 

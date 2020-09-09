@@ -12,6 +12,7 @@ from ..cli.utils import is_valid_dir, is_authenticated
 from ..format_sql.formatter import reformat
 from ..cli.format import format
 from ..udf import publish_udfs
+from ..docs import validate_docs
 
 UDF_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 DEFAULT_DEPENDENCY_DIR = "udf_js/lib/"
@@ -160,7 +161,7 @@ mozfun.add_command(info)
 
 
 @udf.command(
-    help="Validate a UDF.",
+    help="Validate UDFs.",
 )
 @click.argument("path", type=click.Path(file_okay=False), required=False)
 @click.pass_context
@@ -170,6 +171,7 @@ def validate(ctx, path):
     if path and is_valid_dir(None, None, path):
         udf_dirs = (path,)
 
+    validate_docs.validate(udf_dirs)
     for udf_dir in udf_dirs:
         ctx.invoke(format, path=udf_dir)
         pytest.main([udf_dir])

@@ -14,7 +14,7 @@ sqlparse==0.3.1
 mozilla_schema_generator==0.1.4
 GitPython==3.1.8
 cattrs==1.0.0
-attrs==20.1.0
+attrs==20.2.0
 typing==3.7.4.3
 click==7.1.2
 incremental==17.5.0

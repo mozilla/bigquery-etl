@@ -34,7 +34,7 @@ VIEWS_TO_SKIP = (
 )
 
 
-def process_file(client, args, filepath):
+def _process_file(client, args, filepath):
     if any(filepath.endswith(p) for p in VIEWS_TO_SKIP):
         print(f"Skipping authorized view definition {filepath}")
         return True
@@ -84,7 +84,7 @@ def process_file(client, args, filepath):
     return True
 
 
-def main():
+def _main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument(
         "target",
@@ -122,7 +122,7 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    worker_entrypoint = partial(process_file, client, args)
+    worker_entrypoint = partial(_process_file, client, args)
     sql_files = []
 
     for target in args.target:
@@ -143,4 +143,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _main()

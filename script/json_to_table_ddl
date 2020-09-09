@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 """
+Creates a Standard SQL DDL statement that recreates a table.
+
 Takes in input json from a bigquery api or bq command line table
-description and returns a Standard SQL DDL statement that recreates that table.
+description.
 
 See help for arguments. Currently does not implement field options or
 table options besides require_partition_filter.
@@ -52,11 +54,11 @@ parser.add_argument(
 )
 
 
-def field_to_string(field, nest_level):
+def _field_to_string(field, nest_level):
     tabs = "\t" * nest_level
     if field["type"] == "RECORD":
         subfields = ",\n".join(
-            [field_to_string(f, nest_level + 1) for f in field["fields"]]
+            [_field_to_string(f, nest_level + 1) for f in field["fields"]]
         )
         definition = f"STRUCT<\n{subfields}>"
     else:
@@ -72,7 +74,7 @@ def field_to_string(field, nest_level):
     return tabs + field["name"] + " " + definition
 
 
-def main(argv):
+def _main(argv):
     args = parser.parse_args(argv[1:])
     if args.input:
         in_json = args.input
@@ -86,7 +88,7 @@ def main(argv):
     dataset = args.dataset if args.dataset else orig["tableReference"]["datasetId"]
     table_name = args.table if args.table else orig["tableReference"]["tableId"]
     columns_string = ",\n".join(
-        [field_to_string(column, 1) for column in orig["schema"]["fields"]]
+        [_field_to_string(column, 1) for column in orig["schema"]["fields"]]
     )
 
     partition_string = ""
@@ -126,4 +128,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    _main(sys.argv)

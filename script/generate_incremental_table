@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+"""Run a query with a series of @submission_date values."""
+
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from functools import partial
@@ -10,7 +12,7 @@ import sys
 
 
 def fromisoformat(string):
-    """Construct a date from the output of date.isoformat()"""
+    """Construct a date from the output of date.isoformat()."""
     return datetime.strptime(string, "%Y-%m-%d").date()
 
 
@@ -57,7 +59,7 @@ parser.add_argument(
 )
 
 
-def date_range(start=None, end=None, step=None):
+def _date_range(start=None, end=None, step=None):
     """Generate dates from START to END, in steps of STEP days."""
     if step is None:
         if end is not None and start is not None and end < start:
@@ -74,7 +76,7 @@ def date_range(start=None, end=None, step=None):
         yield start + (offset * step)
 
 
-def query(day, entrypoint, destination_table, query_options, query_file):
+def _query(day, entrypoint, destination_table, query_options, query_file):
     proc = subprocess.Popen(
         [
             entrypoint,
@@ -106,25 +108,25 @@ def query(day, entrypoint, destination_table, query_options, query_file):
     return proc.returncode
 
 
-def main():
+def _main():
     args, unknown_args = parser.parse_known_args()
     # Unknown args should be passed as query_options.
     args.query_options.extend(unknown_args)
     target = partial(
-        query,
+        _query,
         entrypoint=os.path.join(os.path.dirname(sys.argv[0]), "entrypoint"),
         destination_table=args.destination_table,
         query_options=args.query_options,
         query_file=args.query_file,
     )
     if args.max_procs == 1:
-        for day in date_range(args.start, args.end):
+        for day in _date_range(args.start, args.end):
             target(day)
     else:
         Pool(processes=args.max_procs).map(
-            target, date_range(args.start, args.end), chunksize=1
+            target, _date_range(args.start, args.end), chunksize=1
         )
 
 
 if __name__ == "__main__":
-    main()
+    _main()

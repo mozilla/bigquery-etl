@@ -3,7 +3,7 @@ import pytest
 from click.testing import CliRunner
 import yaml
 
-from bigquery_etl.cli.query import create, schedule
+from bigquery_etl.cli.query import create, schedule, info
 
 
 class TestQuery:
@@ -173,3 +173,32 @@ class TestQuery:
             result = runner.invoke(schedule, ["sql/telemetry_derived/query_v1"])
 
             assert result.exit_code == 0
+
+    def test_query_info(self, runner):
+        with runner.isolated_filesystem():
+            os.mkdir("sql")
+            os.mkdir("sql/telemetry_derived")
+            os.mkdir("sql/telemetry_derived/query_v1")
+            with open("sql/telemetry_derived/query_v1/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            result = runner.invoke(info, ["sql/telemetry_derived/query_v1"])
+            assert result.exit_code == 0
+            assert "No metadata" in result.output
+            assert "path:" in result.output
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+            }
+
+            with open("sql/telemetry_derived/query_v1/metadata.yaml", "w") as f:
+                f.write(yaml.dump(metadata_conf))
+
+            result = runner.invoke(info, ["sql/telemetry_derived/query_v1"])
+            assert result.exit_code == 0
+            assert "No metadata" not in result.output
+            assert "description" in result.output
+            assert "dag_name: bqetl_test" in result.output

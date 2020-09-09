@@ -2,9 +2,10 @@
 
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
+import os
 import pytest
 
-from ..parse_udf import UDF_DIRS, MOZFUN_DIR, parse_udf_dirs
+from ..udf.parse_udf import UDF_DIRS, MOZFUN_DIR, parse_udf_dirs
 
 TEST_UDF_DIRS = {"assert"}.union(UDF_DIRS).union(MOZFUN_DIR)
 _parsed_udfs = None
@@ -29,26 +30,23 @@ def pytest_configure(config):
 
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
-    if path.basename.endswith(".sql"):
-        if path.dirpath().basename in TEST_UDF_DIRS or (
-            "mozfun" in str(path.dirpath()) and path.basename == "udf.sql"
-        ):
-            return UdfFile(path, parent)
+    if "tests/data" not in str(path.dirpath()):
+        if path.basename.endswith("udf.sql"):
+            if os.path.basename(os.path.dirname(path.dirpath())) in TEST_UDF_DIRS or (
+                "mozfun" in str(path.dirpath()) and path.basename == "udf.sql"
+            ):
+                return UdfFile.from_parent(parent, fspath=path)
 
 
 class UdfFile(pytest.File):
     """UDF File."""
 
-    def __init__(self, path, parent):
-        """Initialize."""
-        super().__init__(path, parent)
-        self.add_marker("udf")
-        self.udf = parsed_udfs()[self.name]
-
     def collect(self):
         """Collect."""
+        self.add_marker("udf")
+        self.udf = parsed_udfs()[self.name]
         for i, query in enumerate(self.udf.tests_full_sql):
-            yield UdfTest(f"{self.udf.name}#{i+1}", self, query)
+            yield UdfTest.from_parent(self, name=f"{self.udf.name}#{i+1}", query=query)
 
 
 class UdfTest(pytest.Item):

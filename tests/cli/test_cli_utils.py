@@ -1,7 +1,7 @@
 from pathlib import Path
 import pytest
 from click.exceptions import BadParameter
-from bigquery_etl.cli.utils import is_valid_dir, is_valid_file
+from bigquery_etl.cli.utils import is_valid_dir, is_valid_file, is_authenticated
 
 
 TEST_DIR = Path(__file__).parent.parent
@@ -23,3 +23,6 @@ class TestUtils:
         assert is_valid_file(None, None, str(TEST_DIR / "data" / "dags.yaml")) == str(
             TEST_DIR / "data" / "dags.yaml"
         )
+
+    def test_is_authenticated(self):
+        assert is_authenticated("non-existing-project") is False

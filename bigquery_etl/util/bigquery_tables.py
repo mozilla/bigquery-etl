@@ -1,6 +1,7 @@
 """Helper methods to fetch BigQuery tables."""
 
 from fnmatch import fnmatchcase
+from typing import List
 
 from google.cloud import bigquery
 
@@ -9,7 +10,9 @@ def _uses_wildcards(pattern: str) -> bool:
     return bool(set("*?[]") & set(pattern))
 
 
-def get_tables_matching_patterns(client: bigquery.Client, patterns):
+def get_tables_matching_patterns(
+    client: bigquery.Client, patterns: List[str]
+) -> List[str]:
     """Get BigQuery tables matching the provided patterns."""
     all_projects = None
     all_datasets = {}
@@ -36,7 +39,7 @@ def get_tables_matching_patterns(client: bigquery.Client, patterns):
                 datasets = [d for d in all_datasets[project] if fnmatchcase(d, dataset)]
             for dataset in datasets:
                 dataset = f"{project}.{dataset}"
-                tables = [(f"{dataset}.{table}", None)]
+                tables = [f"{dataset}.{table}"]
                 if _uses_wildcards(table):
                     if dataset not in all_tables:
                         all_tables[dataset] = list(client.list_tables(dataset))
@@ -45,6 +48,6 @@ def get_tables_matching_patterns(client: bigquery.Client, patterns):
                         for t in all_tables[dataset]
                         if fnmatchcase(t.table_id, table)
                     ]
-                    matching_tables += tables
+                matching_tables += tables
 
     return matching_tables

@@ -12,9 +12,13 @@ from ..dryrun import DryRun, SKIP
 from ..cli.utils import is_authenticated
 
 
-@click.command(help="Dry run SQL.",)
+@click.command(
+    help="Dry run SQL.",
+)
 @click.argument(
-    "path", default="sql/", type=click.Path(file_okay=True),
+    "path",
+    default="sql/",
+    type=click.Path(file_okay=True),
 )
 @click.option(
     "--use_cloud_function",

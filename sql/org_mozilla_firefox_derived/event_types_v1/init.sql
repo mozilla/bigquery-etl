@@ -45,6 +45,12 @@ event_property_indices AS (
   FROM
     sample,
     UNNEST(extra) AS event_property
+  LEFT JOIN
+    UNNEST(['time_ms']) skipped_property
+  ON
+    skipped_property = event_property.key
+  WHERE
+    skipped_property IS NULL
   GROUP BY
     category,
     event,

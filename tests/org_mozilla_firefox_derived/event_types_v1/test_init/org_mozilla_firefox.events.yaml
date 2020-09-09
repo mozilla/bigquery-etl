@@ -10,6 +10,9 @@
         -
           key: first_property
           value: first_property_value_1
+        -
+          key: time_ms
+          value: "1000"
     -
       timestamp: '2020-01-01 00:00:02'
       name: second_event

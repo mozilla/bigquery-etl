@@ -12,7 +12,12 @@ WITH events AS (
     normalized_channel AS channel,
     normalized_os AS os,
     normalized_os_version AS os_version,
-    ping_info.experiments,
+    (
+      SELECT
+        ARRAY_AGG(STRUCT(key, value.branch AS value))
+      FROM
+        UNNEST(ping_info.experiments)
+    ) AS experiments,
   FROM
     org_mozilla_firefox.events,
     UNNEST(events)

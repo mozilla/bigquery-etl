@@ -19,8 +19,8 @@ WITH events AS (
         UNNEST(ping_info.experiments)
     ) AS experiments,
   FROM
-    org_mozilla_firefox.events,
-    UNNEST(events)
+    org_mozilla_firefox.events e,
+    UNNEST(e.events)
   WHERE
     DATE(submission_timestamp) = @submission_date
     OR (@submission_date IS NULL AND DATE(submission_timestamp) >= '2020-01-01')

@@ -6,3 +6,6 @@ labels:
   application: firefox-android
   incremental: false
   schedule: daily
+scheduling:
+  dag_name: bqetl_fenix_event_rollup
+  depends_on_past: true

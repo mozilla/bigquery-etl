@@ -199,3 +199,12 @@ bqetl_deletion_request_volume:
     email: ['telemetry-alerts@mozilla.com', 'dthorn@mozilla.com']
     retries: 2
     retry_delay: 30m
+
+bqetl_fenix_event_rollup:   # name of the DAG; must start with bqetl_
+  schedule_interval: 0 2 * * *    # query schedule
+  default_args:
+    owner: frank@mozilla.com
+    start_date: '2020-09-09'  # YYYY-MM-DD
+    email: ['frank@mozilla.com']
+    retries: 2    # number of retries if the query execution fails
+    retry_delay: 30m

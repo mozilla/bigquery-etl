@@ -64,17 +64,18 @@ WITH examples AS (
     ) AS empty_indices,
 )
 SELECT
+  assert_equals('""', udf.pack_event_properties(null_property, indices)),
   assert_equals('""', udf.pack_event_properties(no_property, indices)),
   assert_equals('"b', udf.pack_event_properties(single_property, indices)),
   assert_equals('"a', udf.pack_event_properties(duplicate_property, indices)),
   assert_equals('a"', udf.pack_event_properties(secondary_property, indices)),
   -- We specifically ignore unknown properties, this gives us flexibility during encoding
   assert_equals('""', udf.pack_event_properties(unknown_property, indices)),
+  assert_equals('', udf.pack_event_properties(null_property, empty_indices)),
   assert_equals('', udf.pack_event_properties(no_property, empty_indices)),
   assert_equals('', udf.pack_event_properties(single_property, empty_indices)),
   assert_equals('', udf.pack_event_properties(duplicate_property, empty_indices)),
   assert_equals('', udf.pack_event_properties(secondary_property, empty_indices)),
-  -- We specifically ignore unknown properties, this gives us flexibility during encoding
   assert_equals('', udf.pack_event_properties(unknown_property, empty_indices)),
 FROM
   examples

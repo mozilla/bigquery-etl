@@ -6,6 +6,5 @@ labels:
   application: fenix
   schedule: daily
   incremental: true
-  schedule: daily
 scheduling:
   dag_name: bqetl_fenix_event_rollup

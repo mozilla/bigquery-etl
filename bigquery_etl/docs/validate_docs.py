@@ -56,15 +56,13 @@ def sql_for_dry_run(file, parsed_udfs, project_dir):
     return dry_run_sql
 
 
-def main():
-    """Validate SQL examples."""
-    args = parser.parse_args()
-
+def validate(project_dirs):
+    """Validate UDF docs."""
     # parse UDFs
-    parsed_udfs = read_udf_dirs(*args.project_dirs)
+    parsed_udfs = read_udf_dirs(*project_dirs)
     is_valid = True
 
-    for project_dir in args.project_dirs:
+    for project_dir in project_dirs:
         if os.path.isdir(project_dir):
             for root, dirs, files in os.walk(project_dir):
                 if os.path.basename(root) == EXAMPLE_DIR:
@@ -85,6 +83,12 @@ def main():
     if not is_valid:
         print("Invalid examples.")
         sys.exit(1)
+
+
+def main():
+    """Validate SQL examples."""
+    args = parser.parse_args()
+    validate(args.project_dirs)
 
 
 if __name__ == "__main__":

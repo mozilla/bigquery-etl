@@ -23,7 +23,7 @@ WITH events AS (
     UNNEST(events)
   WHERE
     DATE(submission_timestamp) = @submission_date
-    OR (@submission_date IS NULL AND submission_date >= '2020-01-01')
+    OR (@submission_date IS NULL AND DATE(submission_timestamp) >= '2020-01-01')
 ),
 joined AS (
   SELECT

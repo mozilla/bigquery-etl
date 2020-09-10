@@ -9,7 +9,9 @@ AS
 WITH sample AS (
   SELECT
     name AS event,
-    * EXCEPT (name)
+    * EXCEPT (name) REPLACE(
+      TIMESTAMP_ADD(submission_timestamp, INTERVAL timestamp MILLISECOND) AS timestamp
+    )
   FROM
     org_mozilla_firefox.events e
   CROSS JOIN

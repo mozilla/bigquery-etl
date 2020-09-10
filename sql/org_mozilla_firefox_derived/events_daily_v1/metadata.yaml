@@ -1,0 +1,8 @@
+friendly_name: Events Daily
+description: Packed event representation with one-row per-client
+owners:
+  - frank@mozilla.com
+labels:
+  application: fenix
+  schedule: daily
+  incremental: true

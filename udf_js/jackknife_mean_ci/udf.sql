@@ -16,7 +16,7 @@ CREATE OR REPLACE FUNCTION udf_js.jackknife_mean_ci(
   n_buckets INT64,
   values_per_bucket ARRAY<FLOAT64>
 )
-RETURNS STRUCT<low FLOAT64, high FLOAT64, pm FLOAT64>
+RETURNS STRUCT<low FLOAT64, high FLOAT64, pm FLOAT64> DETERMINISTIC
 LANGUAGE js
 AS
   """

@@ -1,6 +1,6 @@
 -- query for org_mozilla_fenix_glam_release__extract_probe_counts_v1;
 CREATE TEMP FUNCTION udf_js_flatten(histogram ARRAY<STRUCT<key STRING, value FLOAT64>>)
-RETURNS STRING
+RETURNS STRING DETERMINISTIC
 LANGUAGE js
 AS
   '''

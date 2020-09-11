@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION udf_js.main_summary_disabled_addons(
   active_addon_ids ARRAY<STRING>,
   addon_details_json STRING
 )
-RETURNS ARRAY<STRING>
+RETURNS ARRAY<STRING> DETERMINISTIC
 LANGUAGE js
 AS
   """

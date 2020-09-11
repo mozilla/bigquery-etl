@@ -3,7 +3,7 @@
 -- FROM `static.geoip2_isp_blocks_ipv4`
 -- WHERE NET.IP_TRUNC(NET.SAFE_IP_FROM_STRING("100.1.0.255"), CAST(SPLIT(network, "/")[OFFSET(1)] AS INT64)) = NET.SAFE_IP_FROM_STRING(SPLIT(network, "/")[OFFSET(0)])
 CREATE TEMPORARY FUNCTION get_client_ip(xff STRING, remote_address STRING, pipeline_proxy STRING)
-RETURNS STRING
+RETURNS STRING DETERMINISTIC
 LANGUAGE js
 AS
   """

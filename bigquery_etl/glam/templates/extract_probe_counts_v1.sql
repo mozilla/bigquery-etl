@@ -2,7 +2,7 @@
 
 CREATE TEMP FUNCTION udf_js_flatten(histogram ARRAY<STRUCT<key STRING, value FLOAT64>>)
 RETURNS STRING
-LANGUAGE js
+DETERMINISTIC LANGUAGE js
 AS
   '''
     let obj = {};

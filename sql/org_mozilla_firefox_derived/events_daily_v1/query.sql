@@ -36,7 +36,7 @@ joined AS (
   FROM
     events
   INNER JOIN
-    org_mozilla_firefox.event_types
+    org_mozilla_firefox.event_types event_types
   USING
     (category, event)
 )

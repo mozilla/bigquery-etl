@@ -23,7 +23,7 @@ QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)
 VERSION_RE = re.compile(r"_v[0-9]+")
 
 
-@click.group()
+@click.group(help="Commands for managing queries.")
 def query():
     """Create the CLI group for the query command."""
     pass
@@ -163,7 +163,7 @@ def create(name, path, owner, init):
     "-d",
     help=(
         "Name of the DAG the query should be scheduled under. "
-        "To see available DAGs run `bqetl dag list`. "
+        "To see available DAGs run `bqetl dag info`. "
         "To create a new DAG run `bqetl dag create`."
     ),
 )

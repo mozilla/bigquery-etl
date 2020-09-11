@@ -59,6 +59,7 @@ RETURNS ARRAY<
     multiprocess_compatible BOOL
   >
 >
+DETERMINISTIC
 LANGUAGE js
 AS
   """

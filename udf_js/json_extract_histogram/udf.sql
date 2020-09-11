@@ -14,7 +14,7 @@ RETURNS STRUCT<
   `sum` INT64,
   `range` ARRAY<INT64>,
   `values` ARRAY<STRUCT<key INT64, value INT64>>
->
+> DETERMINISTIC
 LANGUAGE js
 AS
   """

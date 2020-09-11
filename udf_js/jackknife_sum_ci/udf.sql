@@ -32,7 +32,7 @@ GROUP BY
 
 */
 CREATE OR REPLACE FUNCTION udf_js.jackknife_sum_ci(n_buckets INT64, counts_per_bucket ARRAY<INT64>)
-RETURNS STRUCT<total INT64, low INT64, high INT64, pm INT64>
+RETURNS STRUCT<total INT64, low INT64, high INT64, pm INT64> DETERMINISTIC
 LANGUAGE js
 AS
   """

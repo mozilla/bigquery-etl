@@ -7,7 +7,7 @@ the atob function for decoding base64.
 
 */
 CREATE OR REPLACE FUNCTION udf_js.gunzip(input BYTES)
-RETURNS STRING
+RETURNS STRING DETERMINISTIC
 LANGUAGE js
 AS
   """

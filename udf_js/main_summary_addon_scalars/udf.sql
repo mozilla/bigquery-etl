@@ -20,7 +20,7 @@ RETURNS STRUCT<
   >,
   uint_addon_scalars ARRAY<STRUCT<key STRING, value INT64>>,
   boolean_addon_scalars ARRAY<STRUCT<key STRING, value BOOL>>
->
+> DETERMINISTIC
 LANGUAGE js
 AS
   """

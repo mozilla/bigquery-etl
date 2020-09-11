@@ -24,7 +24,7 @@ CREATE OR REPLACE FUNCTION udf_js.json_extract_missing_cols(
   indicates_node ARRAY<STRING>,
   known_nodes ARRAY<STRING>
 )
-RETURNS ARRAY<STRING>
+RETURNS ARRAY<STRING> DETERMINISTIC
 LANGUAGE js
 AS
   """

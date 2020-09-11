@@ -1,6 +1,6 @@
 -- query for org_mozilla_fenix_glam_release__histogram_probe_counts_v1;
 CREATE TEMP FUNCTION udf_exponential_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
-RETURNS ARRAY<FLOAT64>
+RETURNS ARRAY<FLOAT64> DETERMINISTIC
 LANGUAGE js
 AS
   '''
@@ -22,7 +22,7 @@ AS
 ''';
 
 CREATE TEMP FUNCTION udf_linear_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
-RETURNS ARRAY<FLOAT64>
+RETURNS ARRAY<FLOAT64> DETERMINISTIC
 LANGUAGE js
 AS
   '''
@@ -39,7 +39,7 @@ CREATE TEMP FUNCTION udf_functional_buckets(
   buckets_per_magnitude INT64,
   range_max INT64
 )
-RETURNS ARRAY<FLOAT64>
+RETURNS ARRAY<FLOAT64> DETERMINISTIC
 LANGUAGE js
 AS
   '''

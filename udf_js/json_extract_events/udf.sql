@@ -9,7 +9,7 @@ RETURNS ARRAY<
     event_string_value STRING,
     event_map_values ARRAY<STRUCT<key STRING, value STRING>>
   >
->
+> DETERMINISTIC
 LANGUAGE js
 AS
   """

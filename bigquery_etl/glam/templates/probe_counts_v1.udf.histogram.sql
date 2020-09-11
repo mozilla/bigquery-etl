@@ -1,6 +1,6 @@
 CREATE TEMP FUNCTION udf_exponential_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
 RETURNS ARRAY<FLOAT64>
-LANGUAGE js
+DETERMINISTIC LANGUAGE js
 AS
   '''
   let logMax = Math.log(max);
@@ -22,7 +22,7 @@ AS
 
 CREATE TEMP FUNCTION udf_linear_buckets(min FLOAT64, max FLOAT64, nBuckets FLOAT64)
 RETURNS ARRAY<FLOAT64>
-LANGUAGE js
+DETERMINISTIC LANGUAGE js
 AS
   '''
   let result = [0];
@@ -39,7 +39,7 @@ CREATE TEMP FUNCTION udf_functional_buckets(
   range_max INT64
 )
 RETURNS ARRAY<FLOAT64>
-LANGUAGE js
+DETERMINISTIC LANGUAGE js
 AS
   '''
   function sample_to_bucket_index(sample) {

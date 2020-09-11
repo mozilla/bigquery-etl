@@ -12,7 +12,7 @@ See https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 
 */
 CREATE OR REPLACE FUNCTION udf_js.crc32(data STRING)
-RETURNS INT64
+RETURNS INT64 DETERMINISTIC
 LANGUAGE js
 AS
   """

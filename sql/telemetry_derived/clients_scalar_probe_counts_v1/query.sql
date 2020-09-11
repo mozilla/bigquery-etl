@@ -21,7 +21,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
 
 CREATE TEMPORARY FUNCTION udf_generate_buckets(min_bucket FLOAT64, max_bucket FLOAT64, num_buckets INT64)
 RETURNS ARRAY<STRING>
-LANGUAGE js
+DETERMINISTIC LANGUAGE js
 AS
 '''
   let bucket_size = (max_bucket - min_bucket) / num_buckets;

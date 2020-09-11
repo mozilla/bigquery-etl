@@ -37,7 +37,7 @@ CREATE OR REPLACE FUNCTION udf_js.jackknife_ratio_ci(
   n_buckets INT64,
   values_per_bucket ARRAY<STRUCT<numerator FLOAT64, denominator FLOAT64>>
 )
-RETURNS STRUCT<mean FLOAT64, low FLOAT64, high FLOAT64, pm FLOAT64>
+RETURNS STRUCT<mean FLOAT64, low FLOAT64, high FLOAT64, pm FLOAT64> DETERMINISTIC
 LANGUAGE js
 AS
   """

@@ -1,7 +1,7 @@
 -- See https://stackoverflow.com/a/44885334/1260237
 -- and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent
 CREATE TEMPORARY FUNCTION decode_uri_component(path STRING)
-RETURNS STRING
+RETURNS STRING DETERMINISTIC
 LANGUAGE js
 AS
   """

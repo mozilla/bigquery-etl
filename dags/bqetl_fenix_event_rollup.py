@@ -22,7 +22,7 @@ with DAG(
 
     org_mozilla_firefox__event_types__v1 = bigquery_etl_query(
         task_id="org_mozilla_firefox__event_types__v1",
-        destination_table="event_types_v1",
+        destination_table=None,
         dataset_id="org_mozilla_firefox",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",

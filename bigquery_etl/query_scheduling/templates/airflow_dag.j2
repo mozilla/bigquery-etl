@@ -15,9 +15,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 {% for task in tasks | sort(attribute='task_name') %}
     {{ task.task_name }} = bigquery_etl_query(
         task_id='{{ task.task_name }}',
-        {%+ if task.destination_table -%}
-        destination_table='{{ task.destination_table }}',
-        {%+ endif -%}
+        destination_table={%+ if task.destination_table -%}'{{ task.destination_table }}'
+                          {%+ else -%}None
+                          {%+ endif -%},
         dataset_id='{{ task.dataset }}',
         project_id='moz-fx-data-shared-prod',
         owner='{{ task.owner }}',

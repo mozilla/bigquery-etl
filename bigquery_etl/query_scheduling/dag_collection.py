@@ -106,7 +106,7 @@ class DagCollection:
     def to_airflow_dags(self, output_dir, dag_to_generate=None):
         """Write DAG representation as Airflow dags to file."""
         if dag_to_generate is None:
-          with ThreadPool(8) as p:
-              p.map(partial(self.dag_to_airflow, output_dir), self.dags, chunksize=1)
+            with ThreadPool(8) as p:
+                p.map(partial(self.dag_to_airflow, output_dir), self.dags, chunksize=1)
         else:
-          self.dag_to_airflow(output_dir, self.dag_by_name(dag_to_generate))
+            self.dag_to_airflow(output_dir, self.dag_by_name(dag_to_generate))

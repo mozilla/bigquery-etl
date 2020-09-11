@@ -6,9 +6,11 @@ CLUSTER BY
   sample_id
 OPTIONS
   (require_partition_filter = TRUE)
+AS
 SELECT
   CAST(NULL AS date) AS submission_date,
   CAST(NULL AS STRING) AS client_id,
+  CAST(NULL AS INT64) AS sample_id,
   CAST(NULL AS STRING) AS events,
   -- client info
   CAST(NULL AS STRING) AS android_sdk_version,

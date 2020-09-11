@@ -29,14 +29,14 @@ WITH events AS (
 joined AS (
   SELECT
     CONCAT(
-      udf.pack_event_properties(events.event_properties, event_types_v1.event_properties),
+      udf.pack_event_properties(events.event_properties, event_types.event_properties),
       index
     ) AS index,
     events.* EXCEPT (category, event, event_properties)
   FROM
     events
   INNER JOIN
-    org_mozilla_firefox.event_types event_types_v1
+    org_mozilla_firefox.event_types
   USING
     (category, event)
 )

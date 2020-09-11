@@ -36,9 +36,9 @@ joined AS (
   FROM
     events
   INNER JOIN
-    org_mozilla_firefox_derived.event_types_v1 event_types_v1
+    org_mozilla_firefox.event_types event_types_v1
   USING
-    (submission_date, category, event)
+    (category, event)
 )
 SELECT
   submission_date,

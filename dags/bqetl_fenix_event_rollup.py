@@ -79,5 +79,5 @@ with DAG(
     )
 
     org_mozilla_firefox_derived__events_daily__v1.set_upstream(
-        org_mozilla_firefox_derived__event_types__v1
+        org_mozilla_firefox__event_types__v1
     )

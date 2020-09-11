@@ -21,7 +21,7 @@ DEFAULT_GCS_PATH = ""
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 
 
-@click.group()
+@click.group(help="Commands for managing UDFs.")
 @click.pass_context
 def udf(ctx):
     """Create the CLI group for the UDF command."""
@@ -29,7 +29,7 @@ def udf(ctx):
     ctx.obj["UDF_DIRS"] = ("udf", "udf_js")
 
 
-@click.group()
+@click.group(help="Commands for managing mozfun UDFs.")
 @click.pass_context
 def mozfun(ctx):
     """Create the CLI group for the mozfun command."""

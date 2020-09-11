@@ -40,7 +40,7 @@ output_dir_option = click.option(
 )
 
 
-@click.group()
+@click.group(help="Commands for managing DAGs.")
 def dag():
     """Create the CLI group for the dag command."""
     pass

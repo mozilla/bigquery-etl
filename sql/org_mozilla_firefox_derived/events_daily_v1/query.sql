@@ -1,6 +1,6 @@
 WITH events AS (
   SELECT
-    submission_timestamp,
+    DATE(submission_timestamp) AS submission_date,
     timestamp,
     category,
     name AS event,
@@ -37,10 +37,10 @@ joined AS (
   INNER JOIN
     org_mozilla_firefox_derived.event_types_v1 event_types_v1
   USING
-    (category, event)
+    (submission_date, category, event)
 )
 SELECT
-  DATE(submission_timestamp) AS submission_date,
+  submission_date,
   client_id,
   CONCAT(STRING_AGG(index, ',' ORDER BY timestamp ASC), ',') AS events,
   -- client info

@@ -1,7 +1,6 @@
 DECLARE submission_date DATE DEFAULT @submission_date;
 
-EXECUTE IMMEDIATE 
-CONCAT(
+EXECUTE IMMEDIATE CONCAT(
   """CREATE OR REPLACE VIEW
     org_mozilla_firefox.event_types
   AS
@@ -12,4 +11,5 @@ CONCAT(
   WHERE
     submission_date = '""",
   CAST(submission_date AS STRING),
-  "'");
+  "'"
+);

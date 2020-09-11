@@ -58,8 +58,7 @@ RETURNS ARRAY<
     is_web_extension BOOL,
     multiprocess_compatible BOOL
   >
->
-DETERMINISTIC
+> DETERMINISTIC
 LANGUAGE js
 AS
   """

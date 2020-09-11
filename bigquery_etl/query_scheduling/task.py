@@ -27,6 +27,7 @@ QUERY_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql)$"
 )
 DEFAULT_PROJECT = "moz-fx-data-shared-prod"
+DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
 
 
 class TaskParseException(Exception):
@@ -151,6 +152,7 @@ class Task:
     priority: Optional[int] = None
     referenced_tables: Optional[List[Tuple[str, str]]] = attr.ib(None)
     allow_field_addition_on_date: Optional[str] = attr.ib(None)
+    destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -202,6 +204,9 @@ class Task:
             if self.task_name is None:
                 self.task_name = f"{self.dataset}__{self.table}__{self.version}"
                 self.validate_task_name(None, self.task_name)
+
+            if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
+                self.destination_table = f"{self.table}_{self.version}"
         else:
             raise ValueError(
                 "query_file must be a path with format:"

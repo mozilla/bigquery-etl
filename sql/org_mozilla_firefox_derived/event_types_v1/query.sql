@@ -85,8 +85,13 @@ new_event_property_indices AS (
     all_primary_event_types
   USING
     (event, category)
+  LEFT JOIN
+    UNNEST(['time_ms']) skipped_property
+  ON
+    skipped_property = event_property.key
   WHERE
-    event_types.event IS NULL
+    skipped_property IS NULL
+    AND event_types.event IS NULL
   GROUP BY
     category,
     event,

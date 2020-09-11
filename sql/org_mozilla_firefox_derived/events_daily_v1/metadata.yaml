@@ -8,3 +8,4 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_fenix_event_rollup
+  referenced_tables: [['org_mozilla_firefox', 'event_types_v1'], ['org_mozilla_firefox_stable', 'events_v1']]

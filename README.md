@@ -265,6 +265,7 @@ Scheduling Queries in Airflow
       - `task_id`: name of task query depends on
       - `dag_name`: name of the DAG the external task is part of
       - `execution_delta`: time difference between the `schedule_intervals` of the external DAG and the DAG the query is part of
+      - `destination_table`: The table to write to. If unspecified, defaults to the query destination; if None, no destination table is used (the query is simply run as-is).
 - To generate all Airflow DAGs run `./script/generate_airflow_dags`
   - Generated DAGs are located in the `dags/` directory
   - Dependencies between queries scheduled in bigquery-etl and dependencies to stable tables are detected automatically

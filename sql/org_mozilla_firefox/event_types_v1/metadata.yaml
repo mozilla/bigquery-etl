@@ -1,0 +1,12 @@
+friendly_name: Firefox Android Release Event Types
+description: Recreate a view on the most recent data from event_types_v1
+owners:
+  - frank@mozilla.com
+labels:
+  application: firefox-android
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fenix_event_rollup
+  destination_table: null
+  referenced_tables: [['org_mozilla_firefox_derived', 'event_types_v1']]

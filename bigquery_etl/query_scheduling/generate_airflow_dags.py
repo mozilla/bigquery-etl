@@ -33,9 +33,16 @@ parser.add_argument(
 parser.add_argument(
     "--output_dir",
     "--output-dir",
-    default=DEFAULT_DAGS_DIR,
     help="Generated DAGs are written to this output directory.",
+    default=DEFAULT_DAGS_DIR,
 )
+parser.add_argument(
+    "--dag_id",
+    "--dag_id",
+    help="The DAG to generate. Generates all DAGs by default",
+    default=None,
+)
+
 standard_args.add_log_level(parser)
 
 
@@ -96,7 +103,7 @@ def main():
     dags_output_dir = Path(args.output_dir)
 
     dags = get_dags(args.sql_dir, args.dags_config)
-    dags.to_airflow_dags(dags_output_dir)
+    dags.to_airflow_dags(dags_output_dir, args.dag_id)
 
 
 if __name__ == "__main__":

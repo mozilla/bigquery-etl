@@ -5,6 +5,50 @@ BigQuery ETL
 
 Bigquery UDFs and SQL queries for building derived datasets.
 
+The `bqetl` CLI
+---
+
+The `bqetl` command-line tool aims to simplify working with the bigquery-etl repository by supporting
+common workflows, such as creating, validating and scheduling queries or adding new UDFs.
+
+`bqetl` can be installed by running `pip install mozilla-bigquery-etl` or by downloading the repository
+and running `pip install .`
+
+### Usage
+
+The CLI groups commands into different groups:
+
+```
+$ bqetl --help
+Commands:
+  dag     Commands for managing DAGs.
+  dryrun  Dry run SQL.
+  format  Format SQL.
+  mozfun  Commands for managing mozfun UDFs.
+  query   Commands for managing queries.
+  udf     Commands for managing UDFs.
+  ...
+```
+
+To get information about commands and available options, simply append the `--help` flag:
+
+```
+$ bqetl query create --help
+Usage: bqetl query create [OPTIONS] NAME
+
+  Create a new query with name <dataset>.<query_name>, for example:
+  telemetry_derived.asn_aggregates
+
+Options:
+  -p, --path DIRECTORY  Path to directory in which query should be created
+  -o, --owner TEXT      Owner of the query (email address)
+  -i, --init            Create an init.sql file to initialize the table
+  --help                Show this message and exit.
+```
+
+Running some commands, for example to create or query tables, require access to GCP which can
+be granted by running `gcloud auth login`.
+
 Formatting SQL
 ---
 

@@ -241,5 +241,3 @@ SELECT
   *
 FROM
   per_event
-ORDER BY
-  numeric_index ASC

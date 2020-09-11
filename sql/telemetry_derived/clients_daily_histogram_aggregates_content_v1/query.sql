@@ -12,15 +12,6 @@ AS
           return z;
         ''';
 
-        -- convert a string like '[5, 6, 7]' to an array struct
-CREATE TEMPORARY FUNCTION string_to_arr(y STRING)
-RETURNS ARRAY<STRING> DETERMINISTIC
-LANGUAGE js
-AS
-  '''
-          return JSON.parse(y);
-        ''';
-
 CREATE TEMP FUNCTION udf_aggregate_json_sum(histograms ARRAY<STRING>) AS (
   ARRAY(
     SELECT AS STRUCT

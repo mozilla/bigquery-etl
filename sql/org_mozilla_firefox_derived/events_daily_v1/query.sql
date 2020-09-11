@@ -6,6 +6,7 @@ WITH events AS (
     name AS event,
     extra AS event_properties,
     client_info.* EXCEPT (os, os_version),
+    sample_id,
     metadata.geo.city,
     metadata.geo.country,
     metadata.geo.subdivision1,
@@ -42,6 +43,7 @@ joined AS (
 SELECT
   submission_date,
   client_id,
+  sample_id,
   CONCAT(STRING_AGG(index, ',' ORDER BY timestamp ASC), ',') AS events,
   -- client info
   mozfun.stats.mode_last(ARRAY_AGG(android_sdk_version)) AS android_sdk_version,
@@ -68,4 +70,5 @@ FROM
   joined
 GROUP BY
   submission_date,
-  client_id
+  client_id,
+  sample_id

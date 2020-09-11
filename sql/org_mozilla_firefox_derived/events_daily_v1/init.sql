@@ -1,4 +1,4 @@
-CREATE TABLE
+CREATE OR REPLACE TABLE
   org_mozilla_firefox_derived.events_daily_v1
 PARTITION BY
   submission_date

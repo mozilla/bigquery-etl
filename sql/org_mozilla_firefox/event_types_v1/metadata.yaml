@@ -9,4 +9,5 @@ labels:
 scheduling:
   dag_name: bqetl_fenix_event_rollup
   destination_table: null
+  sql_file_path: 'sql/org_mozilla_firefox/event_types_v1/query.sql'
   referenced_tables: [['org_mozilla_firefox_derived', 'event_types_v1']]

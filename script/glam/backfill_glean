@@ -4,6 +4,8 @@
 #   END_DATE=2020-07-01 \
 #   PRODUCT=org_mozilla_fenix \
 #       backfill_glean
+#
+# This script requires the SQL to be generated.
 
 set -ex
 
@@ -14,7 +16,7 @@ from os import environ
 start_date = datetime.fromisoformat(environ["DS_START"])
 end_date = datetime.fromisoformat(environ["DS_END"])
 dates = []
-for i in range((end_date - start_date).days):
+for i in range((end_date - start_date).days+1):
     dt = start_date + timedelta(i)
     dates.append(dt.strftime("%Y-%m-%d"))
 print("\n".join(dates))
@@ -26,14 +28,19 @@ export DATASET=${DATASET:-glam_etl_dev}
 START_DATE=${START_DATE?}
 END_DATE=${END_DATE?}
 PRODUCT=${PRODUCT?}
+STAGE=${STAGE:-all}
+RUN_EXPORT=${RUN_EXPORT:-true}
 
 for ds in $(ds_range "$START_DATE" "$END_DATE"); do
         echo $ds
         BACKFILL_ONLY=true \
+        STAGE=$STAGE \
         PRODUCT=$PRODUCT \
         SUBMISSION_DATE=$ds \
             script/glam/run_glam_sql
 done
 
-EXPORT_ONLY=true PRODUCT=$PRODUCT script/glam/run_glam_sql
-PRODUCT=$PRODUCT script/glam/export_csv
+if $RUN_EXPORT; then
+    EXPORT_ONLY=true PRODUCT=$PRODUCT script/glam/run_glam_sql
+    PRODUCT=$PRODUCT script/glam/export_csv
+fi

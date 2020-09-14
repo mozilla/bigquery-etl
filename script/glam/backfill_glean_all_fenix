@@ -12,7 +12,7 @@ from os import environ
 start_date = datetime.fromisoformat(environ["DS_START"])
 end_date = datetime.fromisoformat(environ["DS_END"])
 dates = []
-for i in range((end_date - start_date).days):
+for i in range((end_date - start_date).days+1):
     dt = start_date + timedelta(i)
     dates.append(dt.strftime("%Y-%m-%d"))
 print("\n".join(dates))
@@ -22,6 +22,7 @@ EOD
 export DATASET=${DATASET:-glam_etl_dev}
 START_DATE=${START_DATE?}
 END_DATE=${END_DATE?}
+RUN_EXPORT=${RUN_EXPORT:-true}
 
 dir="$(dirname "$0")"
 
@@ -59,3 +60,8 @@ for ds in $(ds_range "$START_DATE" "$END_DATE"); do
     wait
 done
 
+if $RUN_EXPORT; then
+    for logical_app_id in "${logical_app_ids[@]}"; do
+        EXPORT_ONLY=true PRODUCT=$logical_app_id STAGE=incremental $dir/run_glam_sql
+    done
+fi

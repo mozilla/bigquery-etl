@@ -5,6 +5,10 @@ CREATE TEMP FUNCTION offsets_to_bytes(offsets ARRAY<INT64>) AS (
         STRING_AGG(
           (
             SELECT
+              -- CODE_POINTS_TO_BYTES is the best available interface for converting
+              -- an array of numeric values to a BYTES field; it requires that values
+              -- are valid extended ASCII characters, so we can only aggregate 8 bits
+              -- at a time, and then append all those chunks together with STRING_AGG.
               CODE_POINTS_TO_BYTES(
                 [
                   BIT_OR(

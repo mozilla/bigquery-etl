@@ -207,6 +207,11 @@ class Task:
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
                 self.destination_table = f"{self.table}_{self.version}"
+
+            if self.destination_table is None and self.sql_file_path is None:
+                raise ValueError(
+                    "One of destination_table or sql_file_path must be specified"
+                )
         else:
             raise ValueError(
                 "query_file must be a path with format:"

@@ -51,7 +51,6 @@ WITH base AS (
     -- Only do one sample_id at a time to limit shuffling.
     AND sample_id = 0
 ),
-
 -- This per_client ETL is where we can define BYTES fields for capturing history
 -- for various usage criteria, and also capture the first-seen and last-seen
 -- values for various dimensions.
@@ -66,7 +65,8 @@ per_client1 AS (
   FROM
     base
   GROUP BY
-    sample_id, client_id
+    sample_id,
+    client_id
 ),
 per_client2 AS (
   SELECT
@@ -78,7 +78,6 @@ per_client2 AS (
   FROM
     per_client1
 ),
-
 -- This per-country section demonstrates how we can maintain a BYTES field per dimension.
 -- For a user that only ever appears in one country, this will recreate the top-level days_seen_bits,
 -- but for a client that appears in more than one country, we get an array with one entry per

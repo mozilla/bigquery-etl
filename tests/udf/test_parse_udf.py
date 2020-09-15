@@ -95,7 +95,7 @@ class TestParseUdf:
     def test_read_udf_dirs(self):
         udf_dir = TEST_DIR / "data" / "udf"
         raw_udfs = parse_udf.read_udf_dirs((udf_dir))
-        assert len(raw_udfs.keys()) == 4
+        assert len(raw_udfs.keys()) == 5
         assert "udf.test_shift_28_bits_one_day" in raw_udfs
         assert "udf.test_safe_crc32_uuid" in raw_udfs
         assert "udf.test_safe_sample_id" in raw_udfs
@@ -109,7 +109,7 @@ class TestParseUdf:
     def test_parse_udf_dirs(self):
         udf_dir = TEST_DIR / "data" / "udf"
         parsed_udfs = list(parse_udf.parse_udf_dirs((udf_dir)))
-        assert len(parsed_udfs) == 4
+        assert len(parsed_udfs) == 5
         bitmask_lowest_28 = [
             u for u in parsed_udfs if u.name == "udf.test_bitmask_lowest_28"
         ][0]
@@ -190,3 +190,13 @@ class TestParseUdf:
         )
         result = parse_udf.udf_tests_sql(raw_udf, raw_udfs)
         assert result == []
+
+    def test_udf_description(self):
+        udf_dir = TEST_DIR / "data" / "udf"
+        raw_udf = parse_udf.RawUdf.from_file(
+            udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
+        )
+        assert (
+            raw_udf.description
+            == "Shift input bits one day left and drop any bits beyond 28 days."
+        )

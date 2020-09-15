@@ -44,7 +44,7 @@ class TestParseUdf:
                 "CREATE OR REPLACE FUNCTION udf.test_udf() "
                 + "AS (SELECT mozfun.json.parse('{}'))"
             )
-            result = parse_udf.RawUdf.from_text(text, "udf", "test_udf")
+            result = parse_udf.RawUdf.from_text(text, "udf", "test_udf", description="")
             assert result.name == "udf.test_udf"
             assert len(result.definitions) == 1
             assert len(result.dependencies) == 1
@@ -52,7 +52,7 @@ class TestParseUdf:
             assert result.tests == []
 
             text = "CREATE OR REPLACE FUNCTION json.parse() " + "AS (SELECT 1)"
-            result = parse_udf.RawUdf.from_text(text, "json", "parse")
+            result = parse_udf.RawUdf.from_text(text, "json", "parse", description="")
             assert result.name == "json.parse"
             assert len(result.definitions) == 1
             assert result.dependencies == []

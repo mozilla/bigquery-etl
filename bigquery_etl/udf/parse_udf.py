@@ -8,9 +8,12 @@ parsing UDF dependencies in queries as well.
 from dataclasses import dataclass, astuple
 import re
 import os
+from pathlib import Path
 from typing import List
-
 import sqlparse
+import yaml
+
+from bigquery_etl.metadata.parse_metadata import METADATA_FILE
 
 
 UDF_DIRS = ("udf", "udf_js")
@@ -46,25 +49,32 @@ class RawUdf:
     definitions: List[str]
     tests: List[str]
     dependencies: List[str]
+    description: str  # description from metadata file
 
     @staticmethod
     def from_file(filepath):
         """Read in a RawUdf from a SQL file on disk."""
-        dirpath, basename = os.path.split(filepath)
+        filepath = Path(filepath)
 
-        with open(filepath) as f:
-            text = f.read()
+        text = filepath.read_text()
+        name = filepath.parent.name
+        dataset = filepath.parent.parent.name
 
-        name = os.path.basename(dirpath)
-        dataset = os.path.basename(os.path.split(dirpath)[0])
+        # check if UDF has associated metadata file
+        description = ""
+        metadata_file = filepath.parent / METADATA_FILE
+        if metadata_file.exists():
+            metadata = yaml.safe_load(metadata_file.read_text())
+            if "description" in metadata:
+                description = metadata["description"]
 
         try:
-            return RawUdf.from_text(text, dataset, name, filepath)
+            return RawUdf.from_text(text, dataset, name, str(filepath), description)
         except ValueError as e:
             raise ValueError(str(e) + f" in {filepath}")
 
     @staticmethod
-    def from_text(text, dataset, name, filepath=None, is_defined=True):
+    def from_text(text, dataset, name, filepath=None, description="", is_defined=True):
         """Create a RawUdf instance from text.
 
         If is_defined is False, then the UDF does not
@@ -133,6 +143,7 @@ class RawUdf:
             # We convert the list to a set to deduplicate entries,
             # but then convert back to a list for stable order.
             sorted(set(dependencies)),
+            description,
         )
 
 

@@ -306,5 +306,3 @@ SELECT
 FROM
   with_ltv,
   totals
-ORDER BY
-  normalized_ltv_ad_clicks_current DESC

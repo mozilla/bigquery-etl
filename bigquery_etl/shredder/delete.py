@@ -34,7 +34,8 @@ OUTSIDE_RANGE_PARTITION_ID = "__UNPARTITIONED__"
 
 parser = ArgumentParser(description=__doc__)
 standard_args.add_dry_run(parser)
-parser.add_argument("--environment",
+parser.add_argument(
+    "--environment",
     default="telemetry",
     const="telemetry",
     nargs="?",

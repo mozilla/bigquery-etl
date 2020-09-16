@@ -1,0 +1,206 @@
+{
+  "fields": [
+    {
+      "name": "last_setup_error",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "type",
+          "type": "STRING"
+        },
+        {
+          "name": "payment_method",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "type",
+              "type": "STRING"
+            },
+            {
+              "name": "livemode",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "created",
+              "type": "INTEGER"
+            },
+            {
+              "name": "billing_details",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "name",
+                  "type": "STRING"
+                },
+                {
+                  "name": "address",
+                  "type": "RECORD",
+                  "fields": [
+                    {
+                      "name": "postal_code",
+                      "type": "STRING"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "card",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "last4",
+                  "type": "INTEGER"
+                },
+                {
+                  "name": "exp_year",
+                  "type": "INTEGER"
+                },
+                {
+                  "name": "three_d_secure_usage",
+                  "type": "RECORD",
+                  "fields": [
+                    {
+                      "name": "supported",
+                      "type": "BOOLEAN"
+                    }
+                  ]
+                },
+                {
+                  "name": "fingerprint",
+                  "type": "STRING"
+                },
+                {
+                  "name": "brand",
+                  "type": "STRING"
+                },
+                {
+                  "name": "exp_month",
+                  "type": "INTEGER"
+                },
+                {
+                  "name": "funding",
+                  "type": "STRING"
+                },
+                {
+                  "name": "country",
+                  "type": "STRING"
+                },
+                {
+                  "name": "networks",
+                  "type": "RECORD",
+                  "fields": [
+                    {
+                      "name": "available",
+                      "type": "STRING",
+                      "mode": "REPEATED"
+                    }
+                  ]
+                },
+                {
+                  "name": "checks",
+                  "type": "RECORD",
+                  "fields": [
+                    {
+                      "name": "cvc_check",
+                      "type": "STRING"
+                    },
+                    {
+                      "name": "address_postal_code_check",
+                      "type": "STRING"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "object",
+              "type": "STRING"
+            },
+            {
+              "name": "id",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "param",
+          "type": "STRING"
+        },
+        {
+          "name": "code",
+          "type": "STRING"
+        },
+        {
+          "name": "doc_url",
+          "type": "STRING"
+        },
+        {
+          "name": "decline_code",
+          "type": "STRING"
+        },
+        {
+          "name": "message",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "status",
+      "type": "STRING"
+    },
+    {
+      "name": "usage",
+      "type": "STRING"
+    },
+    {
+      "name": "payment_method_types",
+      "type": "STRING",
+      "mode": "REPEATED"
+    },
+    {
+      "name": "client_secret",
+      "type": "STRING"
+    },
+    {
+      "name": "customer",
+      "type": "STRING"
+    },
+    {
+      "name": "created",
+      "type": "TIMESTAMP"
+    },
+    {
+      "name": "payment_method_options",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "card",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "request_three_d_secure",
+              "type": "STRING"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "livemode",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "payment_method",
+      "type": "STRING"
+    },
+    {
+      "name": "object",
+      "type": "STRING"
+    },
+    {
+      "name": "id",
+      "type": "STRING"
+    }
+  ]
+}

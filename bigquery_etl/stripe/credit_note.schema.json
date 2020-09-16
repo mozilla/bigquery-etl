@@ -1,0 +1,123 @@
+{
+  "fields": [
+    {
+      "name": "type",
+      "type": "STRING"
+    },
+    {
+      "name": "total",
+      "type": "INTEGER"
+    },
+    {
+      "name": "status",
+      "type": "STRING"
+    },
+    {
+      "name": "refund",
+      "type": "STRING"
+    },
+    {
+      "name": "pdf",
+      "type": "STRING"
+    },
+    {
+      "name": "livemode",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "lines",
+      "type": "RECORD",
+      "mode": "REPEATED",
+      "fields": [
+        {
+          "name": "unit_amount_decimal",
+          "type": "INTEGER"
+        },
+        {
+          "name": "type",
+          "type": "STRING"
+        },
+        {
+          "name": "unit_amount",
+          "type": "INTEGER"
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER"
+        },
+        {
+          "name": "livemode",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "invoice_line_item",
+          "type": "STRING"
+        },
+        {
+          "name": "discount_amount",
+          "type": "INTEGER"
+        },
+        {
+          "name": "description",
+          "type": "STRING"
+        },
+        {
+          "name": "invoice_line_item_unique_id",
+          "type": "STRING"
+        },
+        {
+          "name": "amount",
+          "type": "INTEGER"
+        },
+        {
+          "name": "object",
+          "type": "STRING"
+        },
+        {
+          "name": "id",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "invoice",
+      "type": "STRING"
+    },
+    {
+      "name": "discount_amount",
+      "type": "INTEGER"
+    },
+    {
+      "name": "created",
+      "type": "TIMESTAMP"
+    },
+    {
+      "name": "currency",
+      "type": "STRING"
+    },
+    {
+      "name": "subtotal",
+      "type": "INTEGER"
+    },
+    {
+      "name": "number",
+      "type": "STRING"
+    },
+    {
+      "name": "customer",
+      "type": "STRING"
+    },
+    {
+      "name": "amount",
+      "type": "INTEGER"
+    },
+    {
+      "name": "object",
+      "type": "STRING"
+    },
+    {
+      "name": "id",
+      "type": "STRING"
+    }
+  ]
+}

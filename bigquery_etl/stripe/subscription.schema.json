@@ -1,0 +1,385 @@
+{
+  "fields": [
+    {
+      "name": "trial_start",
+      "type": "INTEGER"
+    },
+    {
+      "name": "status",
+      "type": "STRING"
+    },
+    {
+      "name": "plan",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "usage_type",
+          "type": "STRING"
+        },
+        {
+          "name": "product",
+          "type": "STRING"
+        },
+        {
+          "name": "metadata",
+          "type": "RECORD",
+          "mode": "REPEATED",
+          "fields": [
+            {
+              "name": "key",
+              "type": "STRING"
+            },
+            {
+              "name": "value",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "livemode",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "interval",
+          "type": "STRING"
+        },
+        {
+          "name": "created",
+          "type": "INTEGER"
+        },
+        {
+          "name": "currency",
+          "type": "STRING"
+        },
+        {
+          "name": "amount",
+          "type": "INTEGER"
+        },
+        {
+          "name": "interval_count",
+          "type": "INTEGER"
+        },
+        {
+          "name": "amount_decimal",
+          "type": "INTEGER"
+        },
+        {
+          "name": "billing_scheme",
+          "type": "STRING"
+        },
+        {
+          "name": "active",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "object",
+          "type": "STRING"
+        },
+        {
+          "name": "nickname",
+          "type": "STRING"
+        },
+        {
+          "name": "id",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "start",
+      "type": "INTEGER"
+    },
+    {
+      "name": "livemode",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "invoice_customer_balance_settings",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "consume_applied_balance_on_void",
+          "type": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "name": "items",
+      "type": "RECORD",
+      "mode": "REPEATED",
+      "fields": [
+        {
+          "name": "subscription",
+          "type": "STRING"
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER"
+        },
+        {
+          "name": "created",
+          "type": "INTEGER"
+        },
+        {
+          "name": "plan",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "usage_type",
+              "type": "STRING"
+            },
+            {
+              "name": "product",
+              "type": "STRING"
+            },
+            {
+              "name": "metadata",
+              "type": "RECORD",
+              "mode": "REPEATED",
+              "fields": [
+                {
+                  "name": "key",
+                  "type": "STRING"
+                },
+                {
+                  "name": "value",
+                  "type": "STRING"
+                }
+              ]
+            },
+            {
+              "name": "livemode",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "interval",
+              "type": "STRING"
+            },
+            {
+              "name": "created",
+              "type": "INTEGER"
+            },
+            {
+              "name": "currency",
+              "type": "STRING"
+            },
+            {
+              "name": "amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "interval_count",
+              "type": "INTEGER"
+            },
+            {
+              "name": "amount_decimal",
+              "type": "INTEGER"
+            },
+            {
+              "name": "billing_scheme",
+              "type": "STRING"
+            },
+            {
+              "name": "active",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "object",
+              "type": "STRING"
+            },
+            {
+              "name": "nickname",
+              "type": "STRING"
+            },
+            {
+              "name": "id",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "object",
+          "type": "STRING"
+        },
+        {
+          "name": "price",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "unit_amount_decimal",
+              "type": "INTEGER"
+            },
+            {
+              "name": "unit_amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "type",
+              "type": "STRING"
+            },
+            {
+              "name": "product",
+              "type": "STRING"
+            },
+            {
+              "name": "metadata",
+              "type": "RECORD",
+              "mode": "REPEATED",
+              "fields": [
+                {
+                  "name": "key",
+                  "type": "STRING"
+                },
+                {
+                  "name": "value",
+                  "type": "STRING"
+                }
+              ]
+            },
+            {
+              "name": "livemode",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "recurring",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "usage_type",
+                  "type": "STRING"
+                },
+                {
+                  "name": "interval_count",
+                  "type": "INTEGER"
+                },
+                {
+                  "name": "interval",
+                  "type": "STRING"
+                }
+              ]
+            },
+            {
+              "name": "id",
+              "type": "STRING"
+            },
+            {
+              "name": "nickname",
+              "type": "STRING"
+            },
+            {
+              "name": "currency",
+              "type": "STRING"
+            },
+            {
+              "name": "created",
+              "type": "INTEGER"
+            },
+            {
+              "name": "billing_scheme",
+              "type": "STRING"
+            },
+            {
+              "name": "active",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "object",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "id",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "object",
+      "type": "STRING"
+    },
+    {
+      "name": "days_until_due",
+      "type": "INTEGER"
+    },
+    {
+      "name": "current_period_start",
+      "type": "INTEGER"
+    },
+    {
+      "name": "collection_method",
+      "type": "STRING"
+    },
+    {
+      "name": "quantity",
+      "type": "INTEGER"
+    },
+    {
+      "name": "latest_invoice",
+      "type": "STRING"
+    },
+    {
+      "name": "billing_cycle_anchor",
+      "type": "INTEGER"
+    },
+    {
+      "name": "trial_end",
+      "type": "INTEGER"
+    },
+    {
+      "name": "start_date",
+      "type": "INTEGER"
+    },
+    {
+      "name": "cancel_at_period_end",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "customer",
+      "type": "STRING"
+    },
+    {
+      "name": "current_period_end",
+      "type": "INTEGER"
+    },
+    {
+      "name": "created",
+      "type": "TIMESTAMP"
+    },
+    {
+      "name": "billing",
+      "type": "STRING"
+    },
+    {
+      "name": "id",
+      "type": "STRING"
+    },
+    {
+      "name": "metadata",
+      "type": "RECORD",
+      "mode": "REPEATED",
+      "fields": [
+        {
+          "name": "key",
+          "type": "STRING"
+        },
+        {
+          "name": "value",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "ended_at",
+      "type": "INTEGER"
+    },
+    {
+      "name": "cancel_at",
+      "type": "INTEGER"
+    },
+    {
+      "name": "canceled_at",
+      "type": "INTEGER"
+    }
+  ]
+}

@@ -1,0 +1,372 @@
+{
+  "fields": [
+    {
+      "name": "dispute",
+      "type": "STRING",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "fraud_details",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "stripe_report",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "failure_message",
+      "type": "STRING"
+    },
+    {
+      "name": "status",
+      "type": "STRING"
+    },
+    {
+      "name": "source",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "cvc_check",
+          "type": "STRING"
+        },
+        {
+          "name": "name",
+          "type": "STRING"
+        },
+        {
+          "name": "last4",
+          "type": "INTEGER"
+        },
+        {
+          "name": "fingerprint",
+          "type": "STRING"
+        },
+        {
+          "name": "exp_month",
+          "type": "INTEGER"
+        },
+        {
+          "name": "customer",
+          "type": "STRING"
+        },
+        {
+          "name": "brand",
+          "type": "STRING"
+        },
+        {
+          "name": "exp_year",
+          "type": "INTEGER"
+        },
+        {
+          "name": "address_zip",
+          "type": "STRING"
+        },
+        {
+          "name": "funding",
+          "type": "STRING"
+        },
+        {
+          "name": "country",
+          "type": "STRING"
+        },
+        {
+          "name": "object",
+          "type": "STRING"
+        },
+        {
+          "name": "address_zip_check",
+          "type": "STRING"
+        },
+        {
+          "name": "id",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "statement_descriptor",
+      "type": "STRING"
+    },
+    {
+      "name": "refunded",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "payment_method_details",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "type",
+          "type": "STRING"
+        },
+        {
+          "name": "card",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "three_d_secure",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "succeeded",
+                  "type": "BOOLEAN"
+                },
+                {
+                  "name": "version",
+                  "type": "STRING"
+                },
+                {
+                  "name": "result",
+                  "type": "STRING"
+                },
+                {
+                  "name": "authentication_flow",
+                  "type": "STRING"
+                },
+                {
+                  "name": "authenticated",
+                  "type": "BOOLEAN"
+                }
+              ]
+            },
+            {
+              "name": "network",
+              "type": "STRING"
+            },
+            {
+              "name": "last4",
+              "type": "INTEGER"
+            },
+            {
+              "name": "exp_year",
+              "type": "INTEGER"
+            },
+            {
+              "name": "fingerprint",
+              "type": "STRING"
+            },
+            {
+              "name": "brand",
+              "type": "STRING"
+            },
+            {
+              "name": "exp_month",
+              "type": "INTEGER"
+            },
+            {
+              "name": "funding",
+              "type": "STRING"
+            },
+            {
+              "name": "country",
+              "type": "STRING"
+            },
+            {
+              "name": "checks",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "cvc_check",
+                  "type": "STRING"
+                },
+                {
+                  "name": "address_postal_code_check",
+                  "type": "STRING"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "payment_method",
+      "type": "STRING"
+    },
+    {
+      "name": "paid",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "invoice",
+      "type": "STRING"
+    },
+    {
+      "name": "receipt_url",
+      "type": "STRING"
+    },
+    {
+      "name": "refunds",
+      "type": "RECORD",
+      "mode": "REPEATED",
+      "fields": [
+        {
+          "name": "reason",
+          "type": "STRING"
+        },
+        {
+          "name": "status",
+          "type": "STRING"
+        },
+        {
+          "name": "currency",
+          "type": "STRING"
+        },
+        {
+          "name": "created",
+          "type": "INTEGER"
+        },
+        {
+          "name": "charge",
+          "type": "STRING"
+        },
+        {
+          "name": "balance_transaction",
+          "type": "STRING"
+        },
+        {
+          "name": "receipt_number",
+          "type": "STRING",
+          "mode": "NULLABLE"
+        },
+        {
+          "name": "payment_intent",
+          "type": "STRING"
+        },
+        {
+          "name": "amount",
+          "type": "INTEGER"
+        },
+        {
+          "name": "object",
+          "type": "STRING"
+        },
+        {
+          "name": "id",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "description",
+      "type": "STRING"
+    },
+    {
+      "name": "disputed",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "created",
+      "type": "TIMESTAMP",
+      "description": "bq-datetime"
+    },
+    {
+      "name": "billing_details",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "name",
+          "type": "STRING"
+        },
+        {
+          "name": "address",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "postal_code",
+              "type": "STRING"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "currency",
+      "type": "STRING"
+    },
+    {
+      "name": "captured",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "amount",
+      "type": "INTEGER"
+    },
+    {
+      "name": "outcome",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "rule",
+          "type": "STRING"
+        },
+        {
+          "name": "reason",
+          "type": "STRING"
+        },
+        {
+          "name": "network_status",
+          "type": "STRING"
+        },
+        {
+          "name": "type",
+          "type": "STRING"
+        },
+        {
+          "name": "seller_message",
+          "type": "STRING"
+        },
+        {
+          "name": "risk_score",
+          "type": "INTEGER"
+        },
+        {
+          "name": "risk_level",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "failure_code",
+      "type": "STRING"
+    },
+    {
+      "name": "livemode",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "calculated_statement_descriptor",
+      "type": "STRING"
+    },
+    {
+      "name": "amount_refunded",
+      "type": "INTEGER"
+    },
+    {
+      "name": "balance_transaction",
+      "type": "STRING"
+    },
+    {
+      "name": "receipt_number",
+      "type": "STRING"
+    },
+    {
+      "name": "object",
+      "type": "STRING"
+    },
+    {
+      "name": "payment_intent",
+      "type": "STRING"
+    },
+    {
+      "name": "id",
+      "type": "STRING"
+    },
+    {
+      "name": "customer",
+      "type": "STRING"
+    }
+  ]
+}

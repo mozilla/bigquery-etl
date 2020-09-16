@@ -1,5 +1,0 @@
-#!/bin/sh
-
-cd "$(dirname "$0")/.."
-
-exec python3 -m bigquery_etl.stripe.import "$@"

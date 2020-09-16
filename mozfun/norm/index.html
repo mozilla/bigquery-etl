@@ -114,15 +114,11 @@
             
             <li class="nav-item" data-level="1"><a href="#norm" class="nav-link">norm</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#metadata" class="nav-link">metadata</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-level="2"><a href="#fenix_app_info" class="nav-link">fenix_app_info</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#os" class="nav-link">os</a>
+            <li class="nav-item" data-level="2"><a href="#glean_ping_info" class="nav-link">glean_ping_info</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -130,7 +126,11 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#glean_ping_info" class="nav-link">glean_ping_info</a>
+            <li class="nav-item" data-level="2"><a href="#os" class="nav-link">os</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#metadata" class="nav-link">metadata</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -143,8 +143,6 @@
 
 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
-<h2 id="metadata">metadata</h2>
-<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
 <h2 id="fenix_app_info">fenix_app_info</h2>
 <p>Returns canonical, human-understandable identification info for Fenix sources.</p>
 <p>The Glean telemetry library for Android by design routes pings based on the Play Store
@@ -213,15 +211,17 @@ GROUP BY
   geckoview_version
 </code></pre>
 
+<h2 id="glean_ping_info">glean_ping_info</h2>
+<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<h2 id="glean_baseline_client_info">glean_baseline_client_info</h2>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <h2 id="os">os</h2>
 <p>Normalize an operating system string to one of the three major desktop
 platforms, one of the two major mobile platforms, or "Other". </p>
 <p>Reimplementation of logic used in the data pipeline: 
 <a href="https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74</a></p>
-<h2 id="glean_baseline_client_info">glean_baseline_client_info</h2>
-<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<h2 id="glean_ping_info">glean_ping_info</h2>
-<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p></div>
+<h2 id="metadata">metadata</h2>
+<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p></div>
             </div>
         </div>
 

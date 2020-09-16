@@ -35,6 +35,16 @@ OUTSIDE_RANGE_PARTITION_ID = "__UNPARTITIONED__"
 parser = ArgumentParser(description=__doc__)
 standard_args.add_dry_run(parser)
 parser.add_argument(
+    "--environment",
+    default="telemetry",
+    const="telemetry",
+    nargs="?",
+    choices=["telemetry", "pioneer"],
+    help="environment to run in (dictates the choice of source and target tables):"
+    "telemetry - standard environment"
+    "pioneer - restricted pioneer environment",
+)
+parser.add_argument(
     "--partition-limit",
     "--partition_limit",
     metavar="N",
@@ -399,16 +409,22 @@ def main():
                     )
                 ).result()
             )
-    with ThreadPool(args.parallelism) as pool:
-        glean_targets = find_glean_targets(pool, client)
-        experiment_analysis_targets = find_experiment_analysis_targets(pool, client)
-    tasks = [
-        task
-        for target, sources in chain(
+
+    if args.environment == "telemetry":
+        with ThreadPool(args.parallelism) as pool:
+            glean_targets = find_glean_targets(pool, client)
+            experiment_analysis_targets = find_experiment_analysis_targets(pool, client)
+        targets_with_sources = chain(
             DELETE_TARGETS.items(),
             glean_targets.items(),
             experiment_analysis_targets.items(),
         )
+    elif args.environment == "pioneer":
+        raise NotImplementedError
+
+    tasks = [
+        task
+        for target, sources in targets_with_sources
         if args.table_filter(target.table)
         for task in delete_from_table(
             client=client,

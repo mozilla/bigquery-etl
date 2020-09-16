@@ -42,7 +42,7 @@ parser.add_argument(
     choices=["telemetry", "pioneer"],
     help="environment to run in (dictates the choice of source and target tables):"
     "telemetry - standard environment"
-    "pioneer - restricted pioneer environment"
+    "pioneer - restricted pioneer environment",
 )
 parser.add_argument(
     "--partition-limit",

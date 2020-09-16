@@ -37,7 +37,7 @@ class TestPublishUdfs:
         query = (
             "CREATE OR REPLACE FUNCTION udf.test_js_udf(input BYTES)\nRETURNS "
             + "STRING DETERMINISTIC\nLANGUAGE js\nAS\n "
-            + ' """return 1;"""\nOPTIONS(description="Some description",\n '
-            + '   library = "gs:///script.js"\n  );'
+            + ' """return 1;"""\nOPTIONS(description="Some description",'
+            + 'library = "gs:///script.js");'
         )
         mock_client.query.assert_called_with(query)

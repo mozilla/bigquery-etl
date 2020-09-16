@@ -138,6 +138,8 @@ def publish_udf(
 
         # add UDF descriptions
         if raw_udf.filepath not in SKIP:
+            # descriptions need to be escaped since quotation marks and other
+            # characters, such as \x01, will make the query invalid otherwise
             escaped_description = json.dumps(str(raw_udf.description))
             query = OPTIONS_RE.sub(f"OPTIONS(description={escaped_description},", query)
 

@@ -1,6 +1,7 @@
 """Publish UDFs and resources to the public mozfun GCP project."""
 
 from argparse import ArgumentParser
+import json
 import os
 import re
 
@@ -17,8 +18,9 @@ DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
 DEFAULT_GCS_PATH = ""
 
 OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
+OPTIONS_RE = re.compile(r"OPTIONS(\n|\s)*\(")
 
-SKIP = {"udf/main_summary_scalars/udf.sql"}
+SKIP = ["udf/main_summary_scalars/udf.sql"]
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -133,6 +135,16 @@ def publish_udf(
         query = OPTIONS_LIB_RE.sub(
             fr'library = "gs://{gcs_bucket}/{gcs_path}\1"', definition
         )
+
+        # add UDF descriptions
+        if raw_udf.filepath not in SKIP:
+            # descriptions need to be escaped since quotation marks and other
+            # characters, such as \x01, will make the query invalid otherwise
+            escaped_description = json.dumps(str(raw_udf.description))
+            query = OPTIONS_RE.sub(f"OPTIONS(description={escaped_description},", query)
+
+            if "OPTIONS(" not in query and query[-1] == ";":
+                query = query[:-1] + f"OPTIONS(description={escaped_description});"
 
         print(f"Publish {raw_udf.name}")
         client.query(query).result()

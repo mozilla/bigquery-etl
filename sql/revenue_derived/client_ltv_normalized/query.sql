@@ -1,9 +1,13 @@
 SELECT
   * EXCEPT (
-    avg_client_ad_click_value,
-    avg_client_search_with_ads_value,
-    avg_client_search_value,
-    avg_client_tagged_search_value,
+    client_ad_click_value,
+    client_search_with_ads_value,
+    client_search_value,
+    client_tagged_search_value,
+    ad_click_value,
+    search_with_ads_value,
+    sap_value,
+    tagged_sap_value,
     ltv_ad_clicks_current,
     ltv_search_with_ads_current,
     ltv_search_current,

@@ -295,7 +295,7 @@ class Task:
         file that might exist alongside the query file.
         """
         task = cls.of_query(query_file, metadata, dag_collection)
-        task.sql_file_path = os.path.dirname(query_file)
+        task.sql_file_path = query_file
         return task
 
     def _get_referenced_tables(self):

@@ -28,9 +28,9 @@ with DAG(
         owner="jklukas@mozilla.com",
         email=["jklukas@mozilla.com"],
         date_partition_parameter=None,
-        depends_on_past=False,
+        depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
-        sql_file_path="sql/account_ecosystem_derived/ecosystem_user_id_lookup_v1",
+        sql_file_path="sql/account_ecosystem_derived/ecosystem_user_id_lookup_v1/script.sql",
         dag=dag,
     )
 

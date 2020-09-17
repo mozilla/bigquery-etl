@@ -14,6 +14,7 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_account_ecosystem
+  depends_on_past: True
   referenced_tables: [['firefox_accounts_stable', 'account_ecosystem_v1']]
   # This is an unpartitioned table where the script adds rows via INSERT INTO,
   # thus the custom settings below.

@@ -290,7 +290,7 @@ class Task:
         """
         Create task that schedules the corresponding script in Airflow.
 
-        Raises FileNotFoundError if not metadata file exists for query.
+        Raises FileNotFoundError if no metadata file exists for query.
         If `metadata` is set, then it is used instead of the metadata.yaml
         file that might exist alongside the query file.
         """

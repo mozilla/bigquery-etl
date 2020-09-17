@@ -31,7 +31,7 @@ SELECT
   IF(
     array_length(previous_ecosystem_user_ids) > 1,
     ERROR(FORMAT("Found more than 1 previous ID for %s", ecosystem_user_id)),
-    previous_ecosystem_user_ids[safe_offset(0)]
+    previous_ecosystem_user_ids[SAFE_OFFSET(0)]
   ) AS previous_ecosystem_user_id
 FROM
   aggregated;

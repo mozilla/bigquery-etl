@@ -1,0 +1,505 @@
+{
+  "fields": [
+    {
+      "name": "total",
+      "type": "INTEGER"
+    },
+    {
+      "name": "starting_balance",
+      "type": "INTEGER"
+    },
+    {
+      "name": "pre_payment_credit_notes_amount",
+      "type": "INTEGER"
+    },
+    {
+      "name": "post_payment_credit_notes_amount",
+      "type": "INTEGER"
+    },
+    {
+      "name": "payment_intent",
+      "type": "STRING"
+    },
+    {
+      "name": "period_start",
+      "type": "INTEGER"
+    },
+    {
+      "name": "number",
+      "type": "STRING"
+    },
+    {
+      "name": "livemode",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "subtotal",
+      "type": "INTEGER"
+    },
+    {
+      "name": "lines",
+      "type": "RECORD",
+      "mode": "REPEATED",
+      "fields": [
+        {
+          "name": "unique_id",
+          "type": "STRING"
+        },
+        {
+          "name": "type",
+          "type": "STRING"
+        },
+        {
+          "name": "quantity",
+          "type": "INTEGER"
+        },
+        {
+          "name": "object",
+          "type": "STRING"
+        },
+        {
+          "name": "proration",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "livemode",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "discountable",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "plan",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "usage_type",
+              "type": "STRING"
+            },
+            {
+              "name": "product",
+              "type": "STRING"
+            },
+            {
+              "name": "metadata",
+              "type": "RECORD",
+              "mode": "REPEATED",
+              "fields": [
+                {
+                  "name": "key",
+                  "type": "STRING"
+                },
+                {
+                  "name": "value",
+                  "type": "STRING"
+                }
+              ]
+            },
+            {
+              "name": "livemode",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "interval",
+              "type": "STRING"
+            },
+            {
+              "name": "created",
+              "type": "INTEGER"
+            },
+            {
+              "name": "currency",
+              "type": "STRING"
+            },
+            {
+              "name": "amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "interval_count",
+              "type": "INTEGER"
+            },
+            {
+              "name": "amount_decimal",
+              "type": "INTEGER"
+            },
+            {
+              "name": "billing_scheme",
+              "type": "STRING"
+            },
+            {
+              "name": "active",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "object",
+              "type": "STRING"
+            },
+            {
+              "name": "nickname",
+              "type": "STRING"
+            },
+            {
+              "name": "id",
+              "type": "STRING"
+            },
+            {
+              "name": "trial_period_days",
+              "type": "INTEGER"
+            }
+          ]
+        },
+        {
+          "name": "period",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "start",
+              "type": "INTEGER"
+            },
+            {
+              "name": "end",
+              "type": "INTEGER"
+            }
+          ]
+        },
+        {
+          "name": "subscription_item",
+          "type": "STRING"
+        },
+        {
+          "name": "subscription",
+          "type": "STRING"
+        },
+        {
+          "name": "description",
+          "type": "STRING"
+        },
+        {
+          "name": "price",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "unit_amount_decimal",
+              "type": "INTEGER"
+            },
+            {
+              "name": "unit_amount",
+              "type": "INTEGER"
+            },
+            {
+              "name": "type",
+              "type": "STRING"
+            },
+            {
+              "name": "product",
+              "type": "STRING"
+            },
+            {
+              "name": "metadata",
+              "type": "RECORD",
+              "mode": "REPEATED",
+              "fields": [
+                {
+                  "name": "key",
+                  "type": "STRING"
+                },
+                {
+                  "name": "value",
+                  "type": "STRING"
+                }
+              ]
+            },
+            {
+              "name": "livemode",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "recurring",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "usage_type",
+                  "type": "STRING"
+                },
+                {
+                  "name": "interval_count",
+                  "type": "INTEGER"
+                },
+                {
+                  "name": "interval",
+                  "type": "STRING"
+                },
+                {
+                  "name": "trial_period_days",
+                  "type": "INTEGER"
+                }
+              ]
+            },
+            {
+              "name": "id",
+              "type": "STRING"
+            },
+            {
+              "name": "nickname",
+              "type": "STRING"
+            },
+            {
+              "name": "currency",
+              "type": "STRING"
+            },
+            {
+              "name": "created",
+              "type": "INTEGER"
+            },
+            {
+              "name": "billing_scheme",
+              "type": "STRING"
+            },
+            {
+              "name": "active",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "object",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "currency",
+          "type": "STRING"
+        },
+        {
+          "name": "amount",
+          "type": "INTEGER"
+        },
+        {
+          "name": "id",
+          "type": "STRING"
+        },
+        {
+          "name": "metadata",
+          "type": "RECORD",
+          "mode": "REPEATED",
+          "fields": [
+            {
+              "name": "key",
+              "type": "STRING"
+            },
+            {
+              "name": "value",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "invoice_item",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "invoice_pdf",
+      "type": "STRING"
+    },
+    {
+      "name": "hosted_invoice_url",
+      "type": "STRING"
+    },
+    {
+      "name": "amount_due",
+      "type": "INTEGER"
+    },
+    {
+      "name": "ending_balance",
+      "type": "INTEGER"
+    },
+    {
+      "name": "status_transitions",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "paid_at",
+          "type": "INTEGER"
+        },
+        {
+          "name": "finalized_at",
+          "type": "INTEGER"
+        },
+        {
+          "name": "voided_at",
+          "type": "INTEGER"
+        }
+      ]
+    },
+    {
+      "name": "customer_tax_exempt",
+      "type": "STRING"
+    },
+    {
+      "name": "customer",
+      "type": "STRING"
+    },
+    {
+      "name": "collection_method",
+      "type": "STRING"
+    },
+    {
+      "name": "subscription",
+      "type": "STRING"
+    },
+    {
+      "name": "customer_name",
+      "type": "STRING"
+    },
+    {
+      "name": "currency",
+      "type": "STRING"
+    },
+    {
+      "name": "billing",
+      "type": "STRING"
+    },
+    {
+      "name": "custom_fields",
+      "type": "RECORD",
+      "mode": "REPEATED",
+      "fields": [
+        {
+          "name": "value",
+          "type": "STRING"
+        },
+        {
+          "name": "name",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "auto_advance",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "amount_remaining",
+      "type": "INTEGER"
+    },
+    {
+      "name": "amount_paid",
+      "type": "INTEGER"
+    },
+    {
+      "name": "id",
+      "type": "STRING"
+    },
+    {
+      "name": "webhooks_delivered_at",
+      "type": "INTEGER"
+    },
+    {
+      "name": "billing_reason",
+      "type": "STRING"
+    },
+    {
+      "name": "charge",
+      "type": "STRING"
+    },
+    {
+      "name": "status",
+      "type": "STRING"
+    },
+    {
+      "name": "attempted",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "period_end",
+      "type": "INTEGER"
+    },
+    {
+      "name": "object",
+      "type": "STRING"
+    },
+    {
+      "name": "account_country",
+      "type": "STRING"
+    },
+    {
+      "name": "paid",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "customer_email",
+      "type": "STRING"
+    },
+    {
+      "name": "attempt_count",
+      "type": "INTEGER"
+    },
+    {
+      "name": "account_name",
+      "type": "STRING"
+    },
+    {
+      "name": "created",
+      "type": "TIMESTAMP"
+    },
+    {
+      "name": "receipt_number",
+      "type": "STRING"
+    },
+    {
+      "name": "due_date",
+      "type": "INTEGER"
+    },
+    {
+      "name": "customer_shipping",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "name",
+          "type": "STRING"
+        },
+        {
+          "name": "phone",
+          "type": "STRING"
+        },
+        {
+          "name": "address",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "state",
+              "type": "STRING"
+            },
+            {
+              "name": "country",
+              "type": "STRING"
+            },
+            {
+              "name": "postal_code",
+              "type": "STRING"
+            },
+            {
+              "name": "line1",
+              "type": "STRING"
+            },
+            {
+              "name": "line2",
+              "type": "STRING"
+            },
+            {
+              "name": "city",
+              "type": "STRING"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "next_payment_attempt",
+      "type": "INTEGER"
+    }
+  ]
+}

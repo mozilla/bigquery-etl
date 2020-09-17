@@ -1,0 +1,89 @@
+{
+  "fields": [
+    {
+      "name": "metadata",
+      "type": "RECORD",
+      "mode": "REPEATED",
+      "fields": [
+        {
+          "name": "key",
+          "type": "STRING"
+        },
+        {
+          "name": "value",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "unit_amount_decimal",
+      "type": "INTEGER"
+    },
+    {
+      "name": "unit_amount",
+      "type": "INTEGER"
+    },
+    {
+      "name": "type",
+      "type": "STRING"
+    },
+    {
+      "name": "product",
+      "type": "STRING"
+    },
+    {
+      "name": "livemode",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "recurring",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "trial_period_days",
+          "type": "INTEGER"
+        },
+        {
+          "name": "usage_type",
+          "type": "STRING"
+        },
+        {
+          "name": "interval_count",
+          "type": "INTEGER"
+        },
+        {
+          "name": "interval",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "created",
+      "type": "TIMESTAMP"
+    },
+    {
+      "name": "currency",
+      "type": "STRING"
+    },
+    {
+      "name": "billing_scheme",
+      "type": "STRING"
+    },
+    {
+      "name": "active",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "object",
+      "type": "STRING"
+    },
+    {
+      "name": "nickname",
+      "type": "STRING"
+    },
+    {
+      "name": "id",
+      "type": "STRING"
+    }
+  ]
+}

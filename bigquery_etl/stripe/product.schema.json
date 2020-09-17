@@ -1,0 +1,60 @@
+{
+  "fields": [
+    {
+      "name": "statement_descriptor",
+      "type": "STRING"
+    },
+    {
+      "name": "type",
+      "type": "STRING"
+    },
+    {
+      "name": "name",
+      "type": "STRING"
+    },
+    {
+      "name": "metadata",
+      "type": "RECORD",
+      "mode": "REPEATED",
+      "fields": [
+        {
+          "name": "key",
+          "type": "STRING"
+        },
+        {
+          "name": "value",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "livemode",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "updated",
+      "type": "INTEGER"
+    },
+    {
+      "name": "active",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "object",
+      "type": "STRING"
+    },
+    {
+      "name": "id",
+      "type": "STRING"
+    },
+    {
+      "name": "images",
+      "type": "STRING",
+      "mode": "REPEATED"
+    },
+    {
+      "name": "created",
+      "type": "TIMESTAMP"
+    }
+  ]
+}

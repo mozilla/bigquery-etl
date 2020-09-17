@@ -24,7 +24,8 @@ from bigquery_etl.query_scheduling.utils import (
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(
-    r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql)$"
+    r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/"
+    r"(?:query\.sql|part1\.sql|script\.sql)$"
 )
 DEFAULT_PROJECT = "moz-fx-data-shared-prod"
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
@@ -281,6 +282,19 @@ class Task:
         """
         task = cls.of_query(query_file, metadata, dag_collection)
         task.multipart = True
+        task.sql_file_path = os.path.dirname(query_file)
+        return task
+
+    @classmethod
+    def of_script(cls, query_file, metadata=None, dag_collection=None):
+        """
+        Create task that schedules the corresponding script in Airflow.
+
+        Raises FileNotFoundError if not metadata file exists for query.
+        If `metadata` is set, then it is used instead of the metadata.yaml
+        file that might exist alongside the query file.
+        """
+        task = cls.of_query(query_file, metadata, dag_collection)
         task.sql_file_path = os.path.dirname(query_file)
         return task
 

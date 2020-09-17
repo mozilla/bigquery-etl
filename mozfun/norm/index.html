@@ -118,10 +118,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#glean_ping_info" class="nav-link">glean_ping_info</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-level="2"><a href="#os" class="nav-link">os</a>
               <ul class="nav flex-column">
               </ul>
@@ -131,6 +127,10 @@
               </ul>
             </li>
             <li class="nav-item" data-level="2"><a href="#glean_baseline_client_info" class="nav-link">glean_baseline_client_info</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#glean_ping_info" class="nav-link">glean_ping_info</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -211,8 +211,6 @@ GROUP BY
   geckoview_version
 </code></pre>
 
-<h2 id="glean_ping_info">glean_ping_info</h2>
-<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <h2 id="os">os</h2>
 <p>Normalize an operating system string to one of the three major desktop
 platforms, one of the two major mobile platforms, or "Other". </p>
@@ -221,7 +219,9 @@ platforms, one of the two major mobile platforms, or "Other". </p>
 <h2 id="metadata">metadata</h2>
 <p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
 <h2 id="glean_baseline_client_info">glean_baseline_client_info</h2>
-<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p></div>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<h2 id="glean_ping_info">glean_ping_info</h2>
+<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p></div>
             </div>
         </div>
 

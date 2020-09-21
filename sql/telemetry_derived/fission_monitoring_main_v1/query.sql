@@ -1,5 +1,5 @@
 -- creates a pre-filtered main ping dataset for monitoring
--- fission experiment (also ad-hoc analyses)
+-- and ad-hoc analyses on fission experiment
 SELECT
   *
 FROM
@@ -10,3 +10,4 @@ WHERE
   AND normalized_channel = 'nightly'
   -- TODO: specify experiment inclusion criteria using prefs
   -- to be added in https://bugzilla.mozilla.org/show_bug.cgi?id=1660057#c3
+  AND mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') IS NOT NULL

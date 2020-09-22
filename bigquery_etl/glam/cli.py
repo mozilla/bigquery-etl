@@ -76,7 +76,7 @@ def list_daily(project, dataset):
 @click.option("--dataset", type=str, default="glam_etl_dev")
 def backfill_incremental(app_id, start_date, end_date, dataset):
     """Backfill the incremental tables using existing daily tables.
-    
+
     To rebuild the table from scratch, drop the clients_scalar_aggregates and
     clients_histogram_aggregates tables.
     """

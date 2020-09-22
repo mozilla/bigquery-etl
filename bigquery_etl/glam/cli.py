@@ -38,7 +38,7 @@ def list_daily(project, dataset):
                 table_name LIKE "%clients_daily%" )
         SELECT
             app_id,
-            (app_id LIKE "%glam%") AS is_logical
+            (app_id LIKE "%_glam_%") AS is_logical
         FROM
             extracted
         ORDER BY

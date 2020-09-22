@@ -14,8 +14,7 @@ CustomDistributionMeta = namedtuple(
 
 
 def run(command, **kwargs) -> str:
-    """Simple wrapper around subprocess.run that returns stdout and raises
-    exceptions on errors."""
+    """Return the result of stdout and raise on subprocess error."""
     if isinstance(command, list):
         args = command
     elif isinstance(command, str):

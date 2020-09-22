@@ -1,3 +1,4 @@
+"""Tools for GLAM ETL."""
 import click
 from google.cloud import bigquery
 from .utils import run

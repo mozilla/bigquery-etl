@@ -101,6 +101,7 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
         },
     )
 
+
 @glean.command()
 @click.argument("app-id", type=str)
 @click.option("--project", default="glam-fenix-dev")
@@ -131,13 +132,10 @@ def export(app_id, project, dataset):
         cwd=ROOT,
         env={
             **os.environ,
-            **dict(
-                SRC_PROJECT=project,
-                DATASET=dataset,
-                PRODUCT=app_id,
-            ),
+            **dict(SRC_PROJECT=project, DATASET=dataset, PRODUCT=app_id),
         },
     )
+
 
 if __name__ == "__main__":
     glam()

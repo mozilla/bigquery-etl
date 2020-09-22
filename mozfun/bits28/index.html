@@ -114,6 +114,10 @@
             
             <li class="nav-item" data-level="1"><a href="#bits28" class="nav-link">bits28</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#to_dates" class="nav-link">to_dates</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#to_string" class="nav-link">to_string</a>
               <ul class="nav flex-column">
               </ul>
@@ -122,15 +126,11 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#retention" class="nav-link">retention</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#days_since_seen" class="nav-link">days_since_seen</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#to_dates" class="nav-link">to_dates</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#range" class="nav-link">range</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -138,7 +138,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#retention" class="nav-link">retention</a>
+            <li class="nav-item" data-level="2"><a href="#range" class="nav-link">range</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -163,6 +163,10 @@ metrics based on these usage histories, such as various retention definitions.</
 type of the field is a BigQuery INT64, but logically the integer
 represents an array of bits, with each 1 indicating a day where the given clients
 was active and each 0 indicating a day where the client was inactive.</p>
+<h2 id="to_dates">to_dates</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <h2 id="to_string">to_string</h2>
 <p>Convert an INT64 field into a 28-character string representing the individual bits.</p>
 <p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
@@ -181,6 +185,8 @@ of a bit pattern. The <code>start_offset</code> must be zero or a negative numbe
 an offset from the rightmost bit in the pattern. n_bits is the number of bits to
 consider, counting right from the bit at <code>start_offset</code>. </p>
 <p>See detailed docs for the bits28 suite of functions: <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<h2 id="retention">retention</h2>
+<p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p>
 <h2 id="days_since_seen">days_since_seen</h2>
 <p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
 <p>To determine this position, we take a bitwise AND of the bit pattern and
@@ -193,8 +199,9 @@ see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow
 -- &gt;&gt; 1
 </code></pre>
 
-<h2 id="to_dates">to_dates</h2>
-<p>Convert a bit pattern into an array of the dates is represents.</p>
+<h2 id="from_string">from_string</h2>
+<p>Convert a string representing individual bits into an INT64.</p>
+<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <h2 id="range">range</h2>
@@ -212,15 +219,7 @@ FROM
   telemetry.clients_last_seen
 WHERE
   submission_date &gt; '2020-01-01'
-</code></pre>
-
-<h2 id="from_string">from_string</h2>
-<p>Convert a string representing individual bits into an INT64.</p>
-<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<h2 id="retention">retention</h2>
-<p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p></div>
+</code></pre></div>
             </div>
         </div>
 

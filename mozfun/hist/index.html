@@ -114,15 +114,11 @@
             
             <li class="nav-item" data-level="1"><a href="#hist" class="nav-link">hist</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#mean" class="nav-link">mean</a>
+            <li class="nav-item" data-level="2"><a href="#threshold_count" class="nav-link">threshold_count</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#normalize" class="nav-link">normalize</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#extract" class="nav-link">extract</a>
+            <li class="nav-item" data-level="2"><a href="#percentiles" class="nav-link">percentiles</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -130,11 +126,15 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#threshold_count" class="nav-link">threshold_count</a>
+            <li class="nav-item" data-level="2"><a href="#extract" class="nav-link">extract</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#percentiles" class="nav-link">percentiles</a>
+            <li class="nav-item" data-level="2"><a href="#mean" class="nav-link">mean</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#normalize" class="nav-link">normalize</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -147,12 +147,21 @@
 
 <h1 id="hist">hist</h1>
 <p>Functions for working with string encodings of histograms from desktop telemetry.</p>
-<h2 id="mean">mean</h2>
-<p>Given histogram h, return floor(mean) of the measurements in the bucket.
-That is, the histogram sum divided by the number of measurements taken.</p>
-<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
-<h2 id="normalize">normalize</h2>
-<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
+<h2 id="threshold_count">threshold_count</h2>
+<p>Return the number of recorded observations greater than threshold for
+the histogram.  CAUTION: Does not count any buckets that have any values less than
+the threshold. For example, a bucket with range (1, 10) will not be counted for
+a threshold of 2. Use threshold that are not bucket boundaries with caution. </p>
+<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239</a></p>
+<h2 id="percentiles">percentiles</h2>
+<p>Given histogram and list of percentiles, calculate what those percentiles are for the histogram.  If the histogram is empty, returns NULL.</p>
+<h2 id="merge">merge</h2>
+<p>Merge an array of histograms into a single histogram.</p>
+<ul>
+<li>The histogram values will be summed per-bucket </li>
+<li>The count will be summed </li>
+<li>Other fields will take the mode_last</li>
+</ul>
 <h2 id="extract">extract</h2>
 <p>Return a parsed struct from a string-encoded histogram.</p>
 <p>We support a variety of compact encodings as well as the classic JSON
@@ -182,21 +191,12 @@ formed, which gives us some flexibility.</p>
 -- 5
 </code></pre>
 
-<h2 id="merge">merge</h2>
-<p>Merge an array of histograms into a single histogram.</p>
-<ul>
-<li>The histogram values will be summed per-bucket </li>
-<li>The count will be summed </li>
-<li>Other fields will take the mode_last</li>
-</ul>
-<h2 id="threshold_count">threshold_count</h2>
-<p>Return the number of recorded observations greater than threshold for
-the histogram.  CAUTION: Does not count any buckets that have any values less than
-the threshold. For example, a bucket with range (1, 10) will not be counted for
-a threshold of 2. Use threshold that are not bucket boundaries with caution. </p>
-<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239</a></p>
-<h2 id="percentiles">percentiles</h2>
-<p>Given histogram and list of percentiles, calculate what those percentiles are for the histogram.  If the histogram is empty, returns NULL.</p></div>
+<h2 id="mean">mean</h2>
+<p>Given histogram h, return floor(mean) of the measurements in the bucket.
+That is, the histogram sum divided by the number of measurements taken.</p>
+<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
+<h2 id="normalize">normalize</h2>
+<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p></div>
             </div>
         </div>
 

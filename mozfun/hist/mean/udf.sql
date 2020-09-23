@@ -19,7 +19,18 @@ CREATE OR REPLACE FUNCTION hist.mean(histogram ANY TYPE) AS (
   ELSE
     SAFE_CAST(
       TRUNC(
-        histogram.sum / (SELECT SUM(value) FROM UNNEST(histogram.values) WHERE value > 0)
+        histogram.sum / (
+          SELECT
+            SUM(
+              -- Truncate pathological values that are beyond the documented limits per
+              -- https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/histograms.html#histogram-values
+              IF(value > 2147483648, 2147483648, value)
+            )
+          FROM
+            UNNEST(histogram.values)
+          WHERE
+            value > 0
+        )
       ) AS INT64
     )
   END
@@ -41,6 +52,10 @@ SELECT
   assert_equals(
     7699,
     hist.mean(STRUCT(30798 AS sum, [STRUCT(1 AS value), STRUCT(2), STRUCT(1)] AS values))
+  ),
+  assert_equals(
+    0,
+    hist.mean(STRUCT(0 AS sum, [STRUCT(10 AS value), STRUCT(2147483649)] AS values))
   ),
   assert_equals(0, hist.mean(STRUCT(0 AS sum, ARRAY<STRUCT<value INT64>>[] AS values))),
   assert_null(hist.mean(STRUCT(10 AS sum, [STRUCT(0 AS value)] AS values))),

@@ -9,6 +9,7 @@ from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.format import format
 from ..cli.udf import udf, mozfun
+from ..glam.cli import glam
 from .._version import __version__
 from ..stripe import stripe_
 
@@ -23,6 +24,7 @@ def cli():
         "udf": udf,
         "mozfun": mozfun,
         "stripe": stripe_,
+        "glam": glam,
     }
 
     @click.group(commands=commands)

@@ -1,0 +1,17 @@
+friendly_name: Ecosystem Client ID Lookup
+description: >
+  Lookup table of ecosystem_client_id_hash to canonical_id.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: aet
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_account_ecosystem
+  depends_on_past: True
+  # We access a restricted table for getting an HMAC key, so cannot dry run
+  # and must explicitly list referenced tables.
+  referenced_tables:
+    - ['telemetry_stable', 'account_ecosystem_v4']
+    - ['account_ecosystem_derived', 'ecosystem_user_id_lookup_v1']

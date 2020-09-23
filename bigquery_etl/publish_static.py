@@ -73,6 +73,7 @@ def _load_table(
 
 
 def main():
+    """Publish csv files as BigQuery tables."""
     args = _parse_args()
 
     for root, dirs, files in os.walk(args.data_dir):

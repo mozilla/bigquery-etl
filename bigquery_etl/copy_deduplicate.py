@@ -12,13 +12,8 @@ from datetime import datetime, timedelta
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
 from uuid import uuid4
-
 import logging
-import os
-import sys
-
 from google.cloud import bigquery
-
 
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.client_queue import ClientQueue
@@ -304,6 +299,7 @@ def _list_live_tables(client, pool, project_id, only_tables, table_filter):
 
 
 def main():
+    """Copy a day's data from live to stable ping tables, dedup on document_id."""
     args = parser.parse_args()
 
     # create a queue for balancing load across projects

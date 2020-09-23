@@ -129,6 +129,7 @@ def _run_part(client, part, args):
 
 
 def main():
+    """Run multipart query."""
     args = parser.parse_args()
     if "." not in args.dataset_id and args.project_id is not None:
         args.dataset_id = f"{args.project_id}.{args.dataset_id}"

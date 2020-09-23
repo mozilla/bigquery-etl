@@ -107,6 +107,7 @@ def _query(day, entrypoint, destination_table, query_options, query_file):
 
 
 def main():
+    """Run a query with a series of @submission_date values."""
     args, unknown_args = parser.parse_known_args()
     # Unknown args should be passed as query_options.
     args.query_options.extend(unknown_args)

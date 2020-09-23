@@ -83,6 +83,7 @@ def _process_file(client, args, filepath):
 
 
 def main():
+    """Find view definition files and execute them."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument(
         "target",

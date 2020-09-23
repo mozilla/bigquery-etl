@@ -1,0 +1,64 @@
+{
+  "fields": [
+    {
+      "name": "type",
+      "type": "STRING"
+    },
+    {
+      "name": "status",
+      "type": "STRING"
+    },
+    {
+      "name": "source_type",
+      "type": "STRING"
+    },
+    {
+      "name": "description",
+      "type": "STRING"
+    },
+    {
+      "name": "destination",
+      "type": "STRING"
+    },
+    {
+      "name": "currency",
+      "type": "STRING"
+    },
+    {
+      "name": "created",
+      "type": "TIMESTAMP"
+    },
+    {
+      "name": "id",
+      "type": "STRING"
+    },
+    {
+      "name": "automatic",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "amount",
+      "type": "INTEGER"
+    },
+    {
+      "name": "method",
+      "type": "STRING"
+    },
+    {
+      "name": "object",
+      "type": "STRING"
+    },
+    {
+      "name": "livemode",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "balance_transaction",
+      "type": "STRING"
+    },
+    {
+      "name": "arrival_date",
+      "type": "INTEGER"
+    }
+  ]
+}

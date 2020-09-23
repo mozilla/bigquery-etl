@@ -110,9 +110,26 @@ SYNC_SOURCES = (
         field="SUBSTR(hmac_user_id, 0, 32)",
     ),
 )
-SOURCES = [DESKTOP_SRC, IMPRESSION_SRC, CFR_SRC, FXA_HMAC_SRC, FXA_SRC] + list(
-    SYNC_SOURCES
+LEGACY_MOBILE_SOURCES = tuple(
+    DeleteSource(
+        table=f"{product}_stable.deletion_request_v1",
+        field="metrics.uuid.legacy_ids_client_id",
+    )
+    for product in (
+        "org_mozilla_ios_fennec",
+        "org_mozilla_ios_firefox",
+        "org_mozilla_ios_firefoxbeta",
+        "org_mozilla_tv_firefox",
+        "mozilla_lockbox",
+    )
 )
+SOURCES = (
+    [DESKTOP_SRC, IMPRESSION_SRC, CFR_SRC, FXA_HMAC_SRC, FXA_SRC]
+    + list(SYNC_SOURCES)
+    + list(LEGACY_MOBILE_SOURCES)
+)
+
+LEGACY_MOBILE_IDS = tuple(CLIENT_ID for _ in LEGACY_MOBILE_SOURCES)
 
 
 client_id_target = partial(DeleteTarget, field=CLIENT_ID)
@@ -237,6 +254,51 @@ DELETE_TARGETS = {
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_last_seen_v1"
     ): FXA_SRC,
+    # legacy mobile
+    DeleteTarget(
+        table="telemetry_stable.core_v1",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.core_v2",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.core_v3",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.core_v4",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.core_v5",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.core_v6",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.core_v7",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.core_v8",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.core_v9",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.core_v10",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
+    DeleteTarget(
+        table="telemetry_stable.mobile_event_v1",
+        field=LEGACY_MOBILE_IDS,
+    ): LEGACY_MOBILE_SOURCES,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}

@@ -126,9 +126,9 @@ google-cloud-core==1.4.1 \
     --hash=sha256:4c9e457fcfc026fdde2e492228f04417d4c717fb0f29f070122fb0ab89e34ebd \
     --hash=sha256:613e56f164b6bee487dd34f606083a0130f66f42f7b10f99730afdf1630df507 \
     # via google-cloud-bigquery, google-cloud-storage
-google-cloud-storage==1.31.0 \
-    --hash=sha256:34fb8f7e8a2a633cbfb09d8dec38b3450c4029af1a328a67bca64f6226a1f4a5 \
-    --hash=sha256:4f51c7700242a9d54c07117f25fec5d110ab85435b3ce60ac28cc553f8ea938b \
+google-cloud-storage==1.31.1 \
+    --hash=sha256:0fa5cbe6fcbddb9c1c03e6aa78baac1618867b386eac9aceeeb6982c42efbf56 \
+    --hash=sha256:3b4bd9c3ab99c0119004f9db5344459fc7238bc20bc7d977873712d9e5b539b6 \
     # via -r requirements.in
 google-crc32c==1.0.0 \
     --hash=sha256:00b34d4c9ac565b2be553f81f58e5861e51d43af2043ed7cbfe1853ee2f54671 \
@@ -397,7 +397,7 @@ regex==2020.7.14 \
 requests==2.24.0 \
     --hash=sha256:b3559a131db72c33ee969480840fff4bb6dd111de7dd27c8ee1f820f4f00231b \
     --hash=sha256:fe75cc94a9443b9246fc7049224f75604b113c36acb93f87b80ed42c44cbb898 \
-    # via google-api-core, mozilla-schema-generator, smart-open
+    # via google-api-core, google-cloud-storage, mozilla-schema-generator, smart-open, stripe
 rsa==4.6 \
     --hash=sha256:109ea5a66744dd859bf16fe904b8d8b627adafb9408753161e766a92e7d681fa \
     --hash=sha256:6166864e23d6b5195a5cfed6cd9fed0fe774e226d8f854fcb23b7bbef0350233 \
@@ -424,6 +424,10 @@ snowballstemmer==2.0.0 \
 sqlparse==0.3.1 \
     --hash=sha256:022fb9c87b524d1f7862b3037e541f68597a730a8843245c349fc93e1643dc4e \
     --hash=sha256:e162203737712307dfe78860cc56c8da8a852ab2ee33750e33aeadf38d12c548 \
+    # via -r requirements.in
+stripe==2.51.0 \
+    --hash=sha256:67f9887ac80411a43fc0d20680760b10bd06506f03df0b7fade284d97ffa2bcf \
+    --hash=sha256:ed0e58eeb2f154c7165225e64059145c7e0bd0a31607112f494db41e51effe7c \
     # via -r requirements.in
 toml==0.10.1 \
     --hash=sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f \
@@ -460,6 +464,29 @@ typing-extensions==3.7.4.3 \
 typing==3.7.4.3 \
     --hash=sha256:1187fb9c82fd670d10aa07bbb6cfcfe4bdda42d6fab8d5134f04e8c4d0b71cc9 \
     --hash=sha256:283d868f5071ab9ad873e5e52268d611e851c870a2ba354193026f2dfb29d8b5 \
+    # via -r requirements.in
+ujson==3.2.0 \
+    --hash=sha256:0784f35f2ace41ed55c435ee11f9d9877cf3e6ff03c8850f87504cb93e9a9469 \
+    --hash=sha256:0bdc62a1543d697e9c649ac0ac41e0d076a7b886d6b45f9f21971e25b90a2b27 \
+    --hash=sha256:17460d88dd4b9630e449e5d29b97301e6dbbbedbf46a6f95f3b2cb7e1333e6ea \
+    --hash=sha256:2050c7f1ce72055f1b6fba29e4694ccf4509917d3be3ed6f3543ef3ff00eec4a \
+    --hash=sha256:253edfe274538bb1060ab8877d51fc75e416047d5fab5340454a48b971f30612 \
+    --hash=sha256:2d50cb3d87d4aabe6dbeb6ef79025bf9fdf350c4355c24819dc5c5cc38bad3dc \
+    --hash=sha256:437e051a3e292ddbd5b4682f9b6c3e2ea4cd059d0d75bc9f8314349d63cbb015 \
+    --hash=sha256:59048958793e0b0489449a414e2fbe54644457be1dd882b99a4fe16158632af1 \
+    --hash=sha256:5ae6f599ef7c01ef626697f9e15e9d4e2a186ab4c0593ddb529b86866b562efb \
+    --hash=sha256:66d47eabb4f0e12b5784b1a49c59bc6f32e91e18e02f2a43c5e91e2f6ad9cc60 \
+    --hash=sha256:6ee651c0210a67e3a72367de53ccac83b623913214e7c75015caadfad2b7e0dc \
+    --hash=sha256:6f7c24dabb0ff0ff43744d18211af6035ef37197f530c13edf704e627da7251d \
+    --hash=sha256:7060105de892cada2f01bd072d33b2421b4eefd32536207c1c9f2ade18656139 \
+    --hash=sha256:782bdf016da793a3bf138e50ed973428e59006b8d73a9e1911bc6207c6b79fff \
+    --hash=sha256:7b6496b3e2bc396628f114fd96ec41655b10c84adececc0ef8cf1c2329dae36c \
+    --hash=sha256:812748c8de041f1ef5e9b37f33121c0c7390055fa5f12215b3d06a63b1c055a2 \
+    --hash=sha256:a27ea44406100a97fb0fcc0b18dcdaf324824e722a00856a2992fafc65779351 \
+    --hash=sha256:a476525862a394018a7a3438c86596815b84518b2744184444fc6f8b0e3e4aee \
+    --hash=sha256:abb1996ba1c1d2faf5b1e38efa97da7f64e5373a31f705b96fe0587f5f778db4 \
+    --hash=sha256:d0ad63fc88d4e4cb7630f59aacd742256804a4cee447e9589e55957107a469b7 \
+    --hash=sha256:fda324ca055e671eae46e8fc32b46fab20eb251d3e6e22beb67f71f1d240b0b4 \
     # via -r requirements.in
 urllib3==1.25.10 \
     --hash=sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a \

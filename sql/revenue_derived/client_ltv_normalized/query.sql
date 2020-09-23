@@ -15,7 +15,16 @@ SELECT
     ltv_ad_clicks_future,
     ltv_search_with_ads_future,
     ltv_search_future,
-    ltv_tagged_search_future
+    ltv_tagged_search_future,
+    revenue,
+    ltv_ad_clicks_current_total,
+    ltv_search_with_ads_current_total,
+    ltv_search_current_total,
+    ltv_tagged_search_current_total,
+    ltv_ad_clicks_future_total,
+    ltv_search_with_ads_future_total,
+    ltv_search_future_total,
+    ltv_tagged_search_future_total
   )
 FROM
   `moz-it-eip-revenue-users.ltv_derived.client_ltv_v1`

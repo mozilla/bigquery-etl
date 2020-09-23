@@ -10,6 +10,7 @@ from ..cli.dryrun import dryrun
 from ..cli.format import format
 from ..cli.udf import udf, mozfun
 from .._version import __version__
+from ..stripe import stripe_
 
 
 def cli():
@@ -21,6 +22,7 @@ def cli():
         "format": format,
         "udf": udf,
         "mozfun": mozfun,
+        "stripe": stripe_,
     }
 
     @click.group(commands=commands)

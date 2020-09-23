@@ -5,8 +5,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod`.telemetry.main
 WHERE
-  -- TODO: parameterize for daily runs
-  DATE(submission_timestamp) >= '2020-09-01'
+  DATE(submission_timestamp) = @submission_date
   AND normalized_channel = 'nightly'
   AND mozfun.map.get_key(
     environment.settings.user_prefs,

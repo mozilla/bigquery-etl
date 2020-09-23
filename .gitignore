@@ -1,6 +1,7 @@
 *.pyc
 *.swp
 *.swo
+*.egg-info/
 .DS_Store
 .mypy_cache/
 venv/

@@ -25,7 +25,7 @@ CREATE TEMP FUNCTION sum_values(x ARRAY<STRUCT<key INT64, value INT64>>) AS (
       SELECT
         -- Truncate pathological values that are beyond the documented limits per
         -- https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/histograms.html#histogram-values
-        SUM(IF(value > 2147483648, 2147483648, value)) AS t
+        SUM(LEAST(2147483648, value)) AS t
       FROM
         UNNEST(x)
       WHERE
@@ -261,7 +261,7 @@ dns_success_time AS (
         client_id,
         time_slot,
         key,
-        sum(IF(value > 2147483648, 2147483648, value)) AS count
+        sum(LEAST(2147483648, value)) AS count
       FROM
         histogram_data_sample
       CROSS JOIN
@@ -318,7 +318,7 @@ dns_failure_src AS (
     client_id,
     time_slot,
     key,
-    sum(IF(value > 2147483648, 2147483648, value)) AS count
+    SUM(LEAST(2147483648, value)) AS count
   FROM
     histogram_data_sample
   CROSS JOIN
@@ -452,7 +452,7 @@ tls_handshake_time AS (
         client_id,
         time_slot,
         key,
-        sum(IF(value > 2147483648, 2147483648, value)) AS count
+        SUM(LEAST(2147483648, value)) AS count
       FROM
         histogram_data_sample
       CROSS JOIN

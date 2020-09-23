@@ -24,7 +24,7 @@ CREATE OR REPLACE FUNCTION hist.mean(histogram ANY TYPE) AS (
             SUM(
               -- Truncate pathological values that are beyond the documented limits per
               -- https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/histograms.html#histogram-values
-              IF(value > 2147483648, 2147483648, value)
+              LEAST(2147483648, value)
             )
           FROM
             UNNEST(histogram.values)

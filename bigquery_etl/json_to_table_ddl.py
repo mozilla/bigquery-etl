@@ -73,6 +73,7 @@ def _field_to_string(field, nest_level):
 
 
 def main(argv):
+    """Create a Standard SQL DDL statement that recreates a table."""
     args = parser.parse_args(argv[1:])
     if args.input:
         in_json = args.input

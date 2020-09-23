@@ -13,7 +13,7 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 import sqlparse
 
-sql_root = Path(__file__).resolve().parent.parent / "sql"
+sql_root = Path(__file__).resolve().parent.parent.parent / "sql"
 assert sql_root.exists(), f"{sql_root} not found"
 
 VIEWS_TO_SKIP = (

@@ -18,7 +18,8 @@ WITH
     WHEN windows_build_number <= 18362 THEN '1903'
     WHEN windows_build_number <= 18363 THEN '1909'
     WHEN windows_build_number <= 19041 THEN '2004'
-    WHEN windows_build_number > 19041 THEN 'Insider'
+    WHEN windows_build_number <= 19042 THEN '20H2'
+    WHEN windows_build_number > 19042 THEN 'Insider'
     ELSE NULL
     END AS build_group,
     SPLIT(app_version, ".")[OFFSET(0)] AS ff_build_version,

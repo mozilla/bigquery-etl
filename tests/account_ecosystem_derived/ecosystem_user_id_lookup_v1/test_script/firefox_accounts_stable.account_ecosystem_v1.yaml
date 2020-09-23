@@ -1,0 +1,21 @@
+- submission_timestamp: 2020-04-01 22:09:03.243074 UTC
+  ecosystem_user_id: a0
+  previous_ecosystem_user_ids: null
+- submission_timestamp: 2020-04-01 22:09:03.243074 UTC
+  ecosystem_user_id: a0
+  previous_ecosystem_user_ids: [a3]
+- submission_timestamp: 2020-04-01 22:09:03.243074 UTC
+  ecosystem_user_id: a0
+  previous_ecosystem_user_ids: null
+- submission_timestamp: 2020-04-01 22:09:03.243074 UTC
+  ecosystem_user_id: b3
+  previous_ecosystem_user_ids: [b2]
+- submission_timestamp: 2020-04-01 22:09:03.243074 UTC
+  ecosystem_user_id: b3
+  previous_ecosystem_user_ids: [b2]
+- submission_timestamp: 2020-04-01 22:09:03.243074 UTC
+  ecosystem_user_id: b4
+  previous_ecosystem_user_ids: [b3]
+- submission_timestamp: 2020-04-01 22:09:03.243074 UTC
+  ecosystem_user_id: c1
+  previous_ecosystem_user_ids: null

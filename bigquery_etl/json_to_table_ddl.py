@@ -72,7 +72,7 @@ def _field_to_string(field, nest_level):
     return tabs + field["name"] + " " + definition
 
 
-def _main(argv):
+def main(argv):
     args = parser.parse_args(argv[1:])
     if args.input:
         in_json = args.input
@@ -126,4 +126,4 @@ def _main(argv):
 
 
 if __name__ == "__main__":
-    _main(sys.argv)
+    main(sys.argv)

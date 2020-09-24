@@ -270,8 +270,8 @@ def schedule(name, path, dag, depends_on_past, task_name):
 
     # re-run DAG generation for the affected DAG
     for d in dags_to_be_generated:
-        print(f"Running DAG generation for {existing_dag.name}")
         existing_dag = dags.dag_by_name(d)
+        print(f"Running DAG generation for {existing_dag.name}")
         output_dir = sql_dir.parent / "dags"
         dags.dag_to_airflow(output_dir, existing_dag)
 

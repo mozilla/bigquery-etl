@@ -3,7 +3,12 @@ import pytest
 from click.testing import CliRunner
 import yaml
 
-from bigquery_etl.cli.query import create, schedule, info
+from bigquery_etl.cli.query import (
+    create,
+    schedule,
+    info,
+    _queries_matching_name_pattern,
+)
 
 
 class TestQuery:
@@ -80,21 +85,13 @@ class TestQuery:
             result = runner.invoke(schedule, ["/test/query_v1"])
             assert result.exit_code == 2
 
-    def test_schedule_invalid_query_path(self, runner):
-        with runner.isolated_filesystem():
-            os.mkdir("sql")
-            os.mkdir("sql/test")
-            os.mkdir("sql/query_v1")
-            result = runner.invoke(schedule, ["/test/query_v1"])
-            assert result.exit_code == 2
-
     def test_schedule_query_non_existing_dag(self, runner):
         with runner.isolated_filesystem():
             os.mkdir("sql")
             os.mkdir("sql/test")
             os.mkdir("sql/test/query_v1")
             open("sql/test/query_v1/query.sql", "a").close()
-            result = runner.invoke(schedule, ["sql/test/query_v1", "--dag=foo"])
+            result = runner.invoke(schedule, ["test.query_v1", "--dag=foo"])
             assert result.exit_code == 1
 
     def test_schedule_query(self, runner):
@@ -131,7 +128,7 @@ class TestQuery:
                 f.write(yaml.dump(dag_conf))
 
             result = runner.invoke(
-                schedule, ["sql/telemetry_derived/query_v1", "--dag=bqetl_test"]
+                schedule, ["telemetry_derived.query_v1", "--dag=bqetl_test"]
             )
 
             assert result.exit_code == 0
@@ -170,7 +167,7 @@ class TestQuery:
             with open("dags.yaml", "w") as f:
                 f.write(yaml.dump(dag_conf))
 
-            result = runner.invoke(schedule, ["sql/telemetry_derived/query_v1"])
+            result = runner.invoke(schedule, ["telemetry_derived.query_v1"])
 
             assert result.exit_code == 0
 
@@ -182,7 +179,7 @@ class TestQuery:
             with open("sql/telemetry_derived/query_v1/query.sql", "w") as f:
                 f.write("SELECT 1")
 
-            result = runner.invoke(info, ["sql/telemetry_derived/query_v1"])
+            result = runner.invoke(info, ["telemetry_derived.query_v1"])
             assert result.exit_code == 0
             assert "No metadata" in result.output
             assert "path:" in result.output
@@ -197,8 +194,70 @@ class TestQuery:
             with open("sql/telemetry_derived/query_v1/metadata.yaml", "w") as f:
                 f.write(yaml.dump(metadata_conf))
 
-            result = runner.invoke(info, ["sql/telemetry_derived/query_v1"])
+            result = runner.invoke(info, ["telemetry_derived.query_v1"])
             assert result.exit_code == 0
             assert "No metadata" not in result.output
             assert "description" in result.output
             assert "dag_name: bqetl_test" in result.output
+
+    def test_info_name_pattern(self, runner):
+        with runner.isolated_filesystem():
+            os.mkdir("sql")
+            os.mkdir("sql/telemetry_derived")
+            os.mkdir("sql/telemetry_derived/query_v1")
+            with open("sql/telemetry_derived/query_v1/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            os.mkdir("sql/telemetry_derived/query_v2")
+            with open("sql/telemetry_derived/query_v2/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            os.mkdir("sql/foo_derived")
+            os.mkdir("sql/foo_derived/query_v2")
+            with open("sql/foo_derived/query_v2/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            result = runner.invoke(info, ["*.query_*"])
+            assert result.exit_code == 0
+            assert "foo_derived.query_v2" in result.output
+            assert "telemetry_derived.query_v2" in result.output
+            assert "telemetry_derived.query_v1" in result.output
+
+            result = runner.invoke(info, ["foo_derived.*"])
+            assert result.exit_code == 0
+            assert "foo_derived.query_v2" in result.output
+            assert "telemetry_derived.query_v2" not in result.output
+            assert "telemetry_derived.query_v1" not in result.output
+
+            result = runner.invoke(info, ["*.query_v2"])
+            assert result.exit_code == 0
+            assert "foo_derived.query_v2" in result.output
+            assert "telemetry_derived.query_v2" in result.output
+            assert "telemetry_derived.query_v1" not in result.output
+
+    def test_queries_matching_name_pattern(self, runner):
+        with runner.isolated_filesystem():
+            os.mkdir("sql")
+            os.mkdir("sql/telemetry_derived")
+            os.mkdir("sql/telemetry_derived/query_v1")
+            with open("sql/telemetry_derived/query_v1/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            os.mkdir("sql/telemetry_derived/query_v2")
+            with open("sql/telemetry_derived/query_v2/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            os.mkdir("sql/foo_derived")
+            os.mkdir("sql/foo_derived/query_v2")
+            with open("sql/foo_derived/query_v2/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            assert len(_queries_matching_name_pattern("*", "sql/")) == 3
+            assert len(_queries_matching_name_pattern("*.sql", "sql/")) == 0
+            assert len(_queries_matching_name_pattern("test", "sql/")) == 0
+            assert len(_queries_matching_name_pattern("foo_derived", "sql/")) == 0
+            assert len(_queries_matching_name_pattern("foo_derived*", "sql/")) == 1
+            assert len(_queries_matching_name_pattern("*query*", "sql/")) == 3
+            assert (
+                len(_queries_matching_name_pattern("foo_derived.query_v2", "sql/")) == 1
+            )

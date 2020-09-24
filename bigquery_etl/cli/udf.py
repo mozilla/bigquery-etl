@@ -50,7 +50,7 @@ def mozfun(ctx):
 def create(ctx, name, path):
     """CLI command for creating a new UDF."""
     udf_dir = ctx.obj["UDF_DIRS"][0]
-    if path and is_valid_dir(path):
+    if path and is_valid_dir(ctx, name, path):
         udf_dir = path
 
     # create directory structure

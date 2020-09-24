@@ -35,6 +35,19 @@ class TestUdf:
             assert "udf.sql" in os.listdir("udf/test_udf")
             assert "metadata.yaml" in os.listdir("udf/test_udf")
 
+    def test_create_udf_with_path(self, runner):
+        with runner.isolated_filesystem():
+            udf_path = "udf_alt"
+            os.mkdir(udf_path)
+            result = runner.invoke(
+                create, ["-p", udf_path, "udf.test_udf"], obj={"UDF_DIRS": (udf_path,)}
+            )
+            assert result.exit_code == 0
+            assert os.listdir(udf_path) == ["udf"]
+            assert os.listdir(f"{udf_path}/udf") == ["test_udf"]
+            assert "udf.sql" in os.listdir(f"{udf_path}/udf/test_udf")
+            assert "metadata.yaml" in os.listdir(f"{udf_path}/udf/test_udf")
+
     def test_create_mozfun_udf(self, runner):
         with runner.isolated_filesystem():
             os.mkdir("mozfun")

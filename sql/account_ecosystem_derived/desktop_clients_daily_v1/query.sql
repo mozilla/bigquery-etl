@@ -1,4 +1,21 @@
-CREATE TEMP FUNCTION quantilify(v ANY TYPE, buckets ARRAY<INT64>) AS (
+-- Function to coerce a raw value `v` to the nearest quantile to make fingerprinting
+-- more difficult. The method here attempts to keep aggregates fairly close to aggregates
+-- over raw values by bucketing based on pairs of quantiles, and using the lower
+-- quantile as a rough midpoint for each bucket. When adding a new metric, you'll need
+-- to pass in a quantile array. See the following example query:
+
+/* Sample query for generating a quantile list for a new metric.
+
+SELECT
+  FORMAT("%T", APPROX_QUANTILES(payload.duration, 10 ignore nulls)),
+FROM
+  `moz-fx-data-shared-prod.telemetry_stable.account_ecosystem_v4`
+WHERE
+  DATE(submission_timestamp) BETWEEN "2020-09-01" AND "2020-10-01"
+
+*/
+
+CREATE TEMP FUNCTION quantilify(v ANY TYPE, quantiles ARRAY<INT64>) AS (
   (
     WITH boundaries AS (
       SELECT
@@ -6,18 +23,18 @@ CREATE TEMP FUNCTION quantilify(v ANY TYPE, buckets ARRAY<INT64>) AS (
           SELECT
             n
           FROM
-            UNNEST(buckets) AS n
+            UNNEST(quantiles) AS n
             WITH OFFSET AS i
           WHERE
             mod(i, 2) = 0
             AND i
             BETWEEN 1
-            AND array_length(buckets) - 2
+            AND ARRAY_LENGTH(quantiles) - 2
         ) AS uppers,
-        ARRAY(SELECT n FROM UNNEST(buckets) AS n WITH OFFSET AS i WHERE MOD(i, 2) = 1) AS midpoints,
+        ARRAY(SELECT n FROM UNNEST(quantiles) AS n WITH OFFSET AS i WHERE MOD(i, 2) = 1) AS midpoints,
     )
     SELECT
-      midpoints[offset(range_bucket(v, uppers))]
+      midpoints[OFFSET(RANGE_BUCKET(v, uppers))]
     FROM
       boundaries
   )

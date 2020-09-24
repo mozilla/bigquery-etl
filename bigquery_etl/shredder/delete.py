@@ -26,6 +26,7 @@ from .config import (
     DELETE_TARGETS,
     find_glean_targets,
     find_experiment_analysis_targets,
+    find_pioneer_targets,
 )
 
 
@@ -420,7 +421,8 @@ def main():
             experiment_analysis_targets.items(),
         )
     elif args.environment == "pioneer":
-        raise NotImplementedError
+        with ThreadPool(args.parallelism) as pool:
+            targets_with_sources = find_pioneer_targets(pool, client).items()
 
     tasks = [
         task

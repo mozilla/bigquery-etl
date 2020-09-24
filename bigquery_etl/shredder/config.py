@@ -75,7 +75,7 @@ SHIELD_ID = "shield_id"
 ECOSYSTEM_CLIENT_ID = "ecosystem_client_id"
 ECOSYSTEM_CLIENT_ID_HASH = f"{ECOSYSTEM_CLIENT_ID}_hash"
 DESKTOP_ECOSYSTEM_CLIENT_ID = f"payload.{ECOSYSTEM_CLIENT_ID}"
-PIONEER_ID = "payload.pioneer_id"
+PIONEER_ID = "pioneer_id"
 ID = "id"
 CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
 FXA_USER_ID = "jsonPayload.fields.user_id"
@@ -156,6 +156,7 @@ impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 cfr_id_target = partial(DeleteTarget, field=CFR_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
+pioneer_target = partial(DeleteTarget, field=PIONEER_ID)
 
 DELETE_TARGETS = {
     client_id_target(
@@ -473,4 +474,65 @@ def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
     return {
         client_id_target(table=qualified_table_id(table)): DESKTOP_SRC
         for table in tables
+    }
+
+
+PIONEER_PROD = "moz-fx-data-pioneer-prod"
+
+
+def find_pioneer_targets(pool, client, project=PIONEER_PROD):
+    """Return a dict like DELETE_TARGETS for Pioneer tables."""
+    datasets = {
+        dataset.reference
+        for dataset in client.list_datasets(project)
+        if dataset.reference.dataset_id.startswith("pioneer_")
+    }
+    # There should be a single stable and derived dataset per study
+    stable_datasets = {dr for dr in datasets if dr.dataset_id.endswith("_stable")}
+    derived_datasets = {dr for dr in datasets if dr.dataset_id.endswith("_derived")}
+
+    stable_tables = [
+        table
+        for tables in pool.map(client.list_tables, stable_datasets, chunksize=1)
+        for table in tables
+    ]
+
+    sources = {
+        table.dataset_id: DeleteSource(qualified_table_id(table), PIONEER_ID, project)
+        # dict comprehension will only keep the last value for a given key, so
+        # sort by table_id to use the latest version
+        for table in sorted(stable_tables, key=lambda t: t.table_id)
+        if table.table_id.startswith("deletion_request_")
+    }
+
+    return {
+        **{
+            # stable tables
+            pioneer_target(
+                table=qualified_table_id(table), project=PIONEER_PROD
+            ): sources[table.dataset_id]
+            for table in stable_tables
+            if not table.table_id.startswith("deletion_request_")
+            and not table.table_id.startswith("pioneer_enrollment_")
+        },
+        **{
+            # derived tables with pioneer_id
+            pioneer_target(
+                table=qualified_table_id(table), project=PIONEER_PROD
+            ): sources[table.dataset_id]
+            for table in pool.map(
+                client.get_table,
+                [
+                    table
+                    for tables in pool.map(
+                        client.list_tables,
+                        derived_datasets,
+                        chunksize=1,
+                    )
+                    for table in tables
+                ],
+                chunksize=1,
+            )
+            if any(field.name == PIONEER_ID for field in table.schema)
+        },
     }

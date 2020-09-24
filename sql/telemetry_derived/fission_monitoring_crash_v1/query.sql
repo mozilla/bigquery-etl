@@ -1,6 +1,7 @@
 WITH crash_ping_data AS (
   SELECT
     submission_timestamp,
+    client_id,
     mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') AS experiment_branch,
     environment.build.build_id,
     IF(payload.process_type = 'main' OR payload.process_type IS NULL, 1, 0) AS main_crash,
@@ -31,6 +32,7 @@ WITH crash_ping_data AS (
 main_ping_data AS (
   SELECT
     submission_timestamp,
+    client_id,
     mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') AS experiment_branch,
     environment.build.build_id,
     0 AS main_crash,
@@ -78,8 +80,9 @@ combined_ping_data AS (
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,
-  build_id,
+  client_id,
   experiment_branch,
+  build_id,
   COUNT(*) AS count,
   SUM(main_crash) AS main_crashes,
   SUM(content_crash) AS content_crashes,
@@ -97,5 +100,6 @@ WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
   submission_date,
-  build_id,
-  experiment_branch
+  client_id,
+  experiment_branch,
+  build_id

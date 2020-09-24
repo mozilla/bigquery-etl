@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod.analysis.fission_monitoring_crash_v1`( -- TODO: s/analysis/telemetry_derived/
     submission_date DATE,
+    client_id STRING,
     experiment_branch STRING,
     build_id STRING,
     count INT64,

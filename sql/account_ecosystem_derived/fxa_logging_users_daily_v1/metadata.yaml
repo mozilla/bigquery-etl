@@ -1,0 +1,11 @@
+friendly_name: AET Desktop Clients Daily
+description: >
+  One row per canonical_id per oauth service per day aggregating all AET events received for that user.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: aet
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_account_ecosystem

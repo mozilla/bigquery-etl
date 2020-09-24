@@ -66,11 +66,13 @@ SELECT
 How to Configure a Generated Test
 ===
 
-1. Make a directory for test resources named `tests/{dataset}/{query_name}/{test_name}/`,
+1. Make a directory for test resources named `tests/{dataset}/{table}/{test_name}/`,
    e.g. `tests/telemetry_derived/clients_last_seen_raw_v1/test_single_day`
-   - `query_name` must match a query file named `sql/{dataset}/{query_name}.sql`, e.g.
-     `sql/telemetry_derived/clients_last_seen_v1.sql`
+   - `table` must match a directory named like `sql/{dataset}/{table}`, e.g.
+     `sql/telemetry_derived/clients_last_seen_v1`
    - `test_name` should start with `test_`, e.g. `test_single_day`
+   - If `test_name` is `test_init` or `test_script`, then the query will run `init.sql`
+     or `script.sql` respectively; otherwise, the test will run `query.sql`
 1. Add `.yaml` files for input tables, e.g. `clients_daily_v6.yaml`
    - Include the dataset prefix if it's set in the tested query,
      e.g. `analysis.clients_last_seen_v1.yaml`

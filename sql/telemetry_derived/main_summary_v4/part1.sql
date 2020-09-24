@@ -551,5 +551,3 @@ WHERE
   DATE(submission_timestamp) = @submission_date
   AND normalized_app_name = 'Firefox'
   AND document_id IS NOT NULL
-  -- Temporary workaround for bug 1666768
-  AND document_id != 'e52fe847-618b-43ec-92af-d2563854bad2'

@@ -20,6 +20,7 @@ import sys
 
 SKIP = {
     # Access Denied
+    "sql/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql",
     "sql/activity_stream/impression_stats_flat/view.sql",
     "sql/activity_stream/tile_id_types/view.sql",
     "sql/monitoring/deletion_request_volume_v1/query.sql",

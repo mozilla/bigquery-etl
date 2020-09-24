@@ -69,6 +69,7 @@ class SqlTest(pytest.Item, pytest.File):
         dataset_name = self.fspath.dirpath().dirpath().basename
 
         init_test = False
+        script_test = False
 
         # init tests write to dataset_query_test, instead of their
         # default name
@@ -83,6 +84,9 @@ class SqlTest(pytest.Item, pytest.File):
             )
             query = query.replace(original, dest_name)
             query_name = dest_name
+        elif test_name == "test_script":
+            script_test = True
+            query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/script.sql")
         else:
             query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/query.sql")
 
@@ -116,6 +120,7 @@ class SqlTest(pytest.Item, pytest.File):
                     )
                     query = query.replace(original, table_name)
                 tables[table_name] = Table(table_name, source_format, source_path)
+                print(f"Initialized {table_name}")
             elif extension == "sql":
                 if "." in table_name:
                     # combine project and dataset name with table name
@@ -141,7 +146,20 @@ class SqlTest(pytest.Item, pytest.File):
             # configure job
             res_table = bigquery.TableReference(default_dataset, query_name)
 
-            if not init_test:
+            if init_test or script_test:
+                job_config = bigquery.QueryJobConfig(
+                    default_dataset=default_dataset,
+                    query_parameters=get_query_params(self.fspath.strpath),
+                    use_legacy_sql=False,
+                )
+
+                bq.query(query, job_config=job_config).result()
+                # Retrieve final state of table on init or script tests
+                job = bq.query(
+                    f"SELECT * FROM {dataset_id}.{query_name}", job_config=job_config
+                )
+
+            else:
                 job_config = bigquery.QueryJobConfig(
                     default_dataset=default_dataset,
                     destination=res_table,
@@ -152,19 +170,6 @@ class SqlTest(pytest.Item, pytest.File):
 
                 # run query
                 job = bq.query(query, job_config=job_config)
-
-            else:
-                job_config = bigquery.QueryJobConfig(
-                    default_dataset=default_dataset,
-                    query_parameters=get_query_params(self.fspath.strpath),
-                    use_legacy_sql=False,
-                )
-
-                bq.query(query, job_config=job_config).result()
-                # retrieve results from new table on init test
-                job = bq.query(
-                    f"SELECT * FROM {dataset_id}.{query_name}", job_config=job_config
-                )
 
             result = list(coerce_result(*job.result()))
             result.sort(key=lambda row: json.dumps(row, sort_keys=True))

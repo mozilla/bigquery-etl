@@ -468,7 +468,10 @@ def validate(ctx, name, path, use_cloud_function, project):
     for query in query_files:
         ctx.invoke(format, path=str(query))
         ctx.invoke(
-            dryrun, path=str(query), use_cloud_function=use_cloud_function, project=project
+            dryrun,
+            path=str(query),
+            use_cloud_function=use_cloud_function,
+            project=project,
         )
         validate_metadata.validate(query.parent)
 

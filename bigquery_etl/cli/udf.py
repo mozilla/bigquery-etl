@@ -1,6 +1,7 @@
 """bigquery-etl CLI UDF command."""
 
 import click
+from fnmatch import fnmatchcase
 from pathlib import Path
 import pytest
 import re
@@ -15,10 +16,37 @@ from ..udf import publish_udfs
 from ..docs import validate_docs
 
 UDF_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
+UDF_FILE_RE = re.compile(r"(^.*/|^)([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/udf\.sql$")
 DEFAULT_DEPENDENCY_DIR = "udf_js/lib/"
 DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
 DEFAULT_GCS_PATH = ""
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
+
+
+def _udfs_matching_name_pattern(pattern, udf_paths):
+    """Return paths to UDFs matching the name pattern."""
+    udf_files = []
+    for udf_path in udf_paths:
+        all_udf_files = Path(udf_path).rglob("*.sql")
+
+        for udf_file in all_udf_files:
+            match = UDF_FILE_RE.match(str(udf_file))
+            if match:
+                dataset = match.group(2)
+                udf_name = match.group(3)
+                udf_name = f"{dataset}.{udf_name}"
+                if fnmatchcase(udf_name, pattern):
+                    udf_files.append(udf_file)
+
+    return udf_files
+
+
+path_option = click.option(
+    "--path",
+    "-p",
+    help="Path to directory in with UDFs. Use default directories if not set.",
+    type=click.Path(file_okay=False),
+)
 
 
 @click.group(help="Commands for managing UDFs.")
@@ -39,13 +67,7 @@ def mozfun(ctx):
 
 @udf.command(help="Create a new UDF")
 @click.argument("name")
-@click.option(
-    "--path",
-    "-p",
-    help="Path to directory in which UDF should be created. "
-    + "Use default directories if not set.",
-    type=click.Path(file_okay=False),
-)
+@path_option
 @click.pass_context
 def create(ctx, name, path):
     """CLI command for creating a new UDF."""
@@ -102,7 +124,8 @@ mozfun.add_command(create)
 
 
 @udf.command(help="Get UDF information")
-@click.argument("path", type=click.Path(file_okay=False), required=False)
+@click.argument("name", required=False)
+@path_option
 @click.option("--usages", "-u", is_flag=True, help="Show UDF usages", default=False)
 @click.option(
     "--sql_dir",
@@ -113,15 +136,16 @@ mozfun.add_command(create)
     default=".",
 )
 @click.pass_context
-def info(ctx, path, usages, sql_dir):
+def info(ctx, name, path, usages, sql_dir):
     """CLI command for returning information about UDFs."""
     udf_dirs = ctx.obj["UDF_DIRS"]
     if path and is_valid_dir(None, None, path):
         udf_dirs = (path,)
 
-    udf_files = [
-        udf_file for udf_dir in udf_dirs for udf_file in Path(udf_dir).rglob("udf.sql")
-    ]
+    if name is None:
+        name = "*.*"
+
+    udf_files = _udfs_matching_name_pattern(name, udf_dirs)
 
     for udf_file in udf_files:
         udf_file_path = Path(udf_file)
@@ -163,18 +187,24 @@ mozfun.add_command(info)
 @udf.command(
     help="Validate UDFs.",
 )
-@click.argument("path", type=click.Path(file_okay=False), required=False)
+@click.argument("name", required=False)
+@path_option
 @click.pass_context
-def validate(ctx, path):
+def validate(ctx, name, path):
     """Validate UDFs by formatting and running tests."""
     udf_dirs = ctx.obj["UDF_DIRS"]
     if path and is_valid_dir(None, None, path):
         udf_dirs = (path,)
 
+    if name is None:
+        name = "*.*"
+
+    udf_files = _udfs_matching_name_pattern(name, udf_dirs)
+
     validate_docs.validate(udf_dirs)
-    for udf_dir in udf_dirs:
-        ctx.invoke(format, path=udf_dir)
-        pytest.main([udf_dir])
+    for udf_file in udf_files:
+        ctx.invoke(format, path=str(udf_file.parent))
+        pytest.main([str(udf_file.parent)])
 
 
 mozfun.add_command(validate)
@@ -236,23 +266,3 @@ def publish(ctx, path, project, dependency_dir, gcs_bucket, gcs_path):
 
 
 mozfun.add_command(publish)
-
-
-@udf.command(
-    help="Rename a UDF.",
-)
-@click.argument("path", type=click.Path(file_okay=False), required=False)
-@click.pass_context
-def validate(ctx, path):
-    """Validate UDFs by formatting and running tests."""
-    udf_dirs = ctx.obj["UDF_DIRS"]
-    if path and is_valid_dir(None, None, path):
-        udf_dirs = (path,)
-
-    validate_docs.validate(udf_dirs)
-    for udf_dir in udf_dirs:
-        ctx.invoke(format, path=udf_dir)
-        pytest.main([udf_dir])
-
-
-mozfun.add_command(validate)

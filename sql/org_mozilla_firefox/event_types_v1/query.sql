@@ -5,7 +5,7 @@ EXECUTE IMMEDIATE CONCAT(
     org_mozilla_firefox.event_types
   AS
   SELECT
-    *
+    * EXCEPT (submission_date)
   FROM
     org_mozilla_firefox_derived.event_types_v1
   WHERE

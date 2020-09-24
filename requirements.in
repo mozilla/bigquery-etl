@@ -1,6 +1,6 @@
 gcloud==0.18.3
-google-cloud-bigquery==1.27.2
-google-cloud-storage==1.31.0
+google-cloud-bigquery==1.28.0
+google-cloud-storage==1.31.1
 Jinja2==2.11.2
 pytest-black==0.3.11
 pytest-pydocstyle==2.2.0
@@ -20,3 +20,4 @@ click==7.1.2
 incremental==17.5.0
 stripe==2.51.0
 ujson==3.2.0
+pandas==1.1.2

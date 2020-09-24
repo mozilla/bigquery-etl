@@ -66,7 +66,7 @@ class TestUdf:
             with open("udf/test_udf/udf.sql", "w") as f:
                 f.write("CREATE OR REPLACE FUNCTION udf.test_udf() AS (TRUE)")
 
-            result = runner.invoke(info, ["udf/test_udf"], obj={"UDF_DIRS": ("udf",)})
+            result = runner.invoke(info, ["udf.test_udf"], obj={"UDF_DIRS": ("udf",)})
             assert result.exit_code == 0
             assert "No metadata" in result.output
             assert "path:" in result.output
@@ -76,7 +76,28 @@ class TestUdf:
             with open("udf/test_udf/metadata.yaml", "w") as f:
                 f.write(yaml.dump(metadata_conf))
 
-            result = runner.invoke(info, ["udf/test_udf"], obj={"UDF_DIRS": ("udf",)})
+            result = runner.invoke(info, ["udf.test_udf"], obj={"UDF_DIRS": ("udf",)})
             assert result.exit_code == 0
             assert "No metadata" not in result.output
             assert "description" in result.output
+
+    def test_udf_info_name_pattern(self, runner):
+        with runner.isolated_filesystem():
+            os.mkdir("udf")
+            os.mkdir("udf/test_udf")
+            with open("udf/test_udf/udf.sql", "w") as f:
+                f.write("CREATE OR REPLACE FUNCTION udf.test_udf() AS (TRUE)")
+
+            os.mkdir("udf/another_udf")
+            with open("udf/another_udf/udf.sql", "w") as f:
+                f.write("CREATE OR REPLACE FUNCTION udf.test_udf() AS (TRUE)")
+
+            result = runner.invoke(info, ["udf.*"], obj={"UDF_DIRS": ("udf",)})
+            assert result.exit_code == 0
+            assert "udf.another_udf" in result.output
+            assert "udf.test_udf" in result.output
+
+            result = runner.invoke(info, ["udf.another*"], obj={"UDF_DIRS": ("udf",)})
+            assert result.exit_code == 0
+            assert "udf.another_udf" in result.output
+            assert "udf.test_udf" not in result.output

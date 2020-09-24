@@ -2,8 +2,8 @@
 
 import click
 from google.cloud import bigquery
+from fnmatch import fnmatchcase
 from datetime import date, timedelta
-import os
 from pathlib import Path
 import re
 import sys
@@ -20,7 +20,38 @@ from ..run_query import run
 
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
+QUERY_FILE_RE = re.compile(
+    r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+_v[0-9]+)/"
+    r"(?:query\.sql|part1\.sql|script\.sql)$"
+)
 VERSION_RE = re.compile(r"_v[0-9]+")
+
+
+def _queries_matching_name_pattern(pattern, sql_path):
+    """Return paths to queries matching the name pattern."""
+    all_query_files = Path(sql_path).rglob("*.sql")
+    query_files = []
+
+    for query_file in all_query_files:
+        match = QUERY_FILE_RE.match(str(query_file))
+        if match:
+            dataset = match.group(1)
+            table = match.group(2)
+            query_name = f"{dataset}.{table}"
+            if fnmatchcase(query_name, pattern):
+                query_files.append(query_file)
+
+    return query_files
+
+
+path_option = click.option(
+    "--path",
+    "-p",
+    help="Path to directory which contains queries.",
+    type=click.Path(file_okay=False),
+    default="sql/",
+    callback=is_valid_dir,
+)
 
 
 @click.group(help="Commands for managing queries.")
@@ -34,14 +65,7 @@ def query():
     "<dataset>.<query_name>, for example: telemetry_derived.asn_aggregates",
 )
 @click.argument("name")
-@click.option(
-    "--path",
-    "-p",
-    help="Path to directory in which query should be created",
-    type=click.Path(file_okay=False),
-    default="sql/",
-    callback=is_valid_dir,
-)
+@path_option
 @click.option(
     "--owner",
     "-o",
@@ -157,7 +181,8 @@ def create(name, path, owner, init):
 @query.command(
     help="Schedule an existing query",
 )
-@click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
+@click.argument("name")
+@path_option
 @click.option(
     "--dag",
     "-d",
@@ -182,80 +207,88 @@ def create(name, path, owner, init):
         "combination of the dataset and table name."
     ),
 )
-def schedule(path, dag, depends_on_past, task_name):
+def schedule(name, path, dag, depends_on_past, task_name):
     """CLI command for scheduling a query."""
-    path = Path(path)
-    if not os.path.isfile(path / "query.sql"):
-        click.echo(f"Path doesn't refer to query: {path}", err=True)
+    query_files = queries_matching_name_pattern(name, path)
+
+    if query_files == []:
+        click.echo(f"Name doesn't refer to any queries: {name}", err=True)
         sys.exit(1)
 
-    sql_dir = path.parent.parent
+    sql_dir = Path(path)
     dags = get_dags(sql_dir, sql_dir.parent / "dags.yaml")
 
-    metadata = Metadata.of_sql_file(path / "query.sql")
+    dags_to_be_generated = set()
 
-    if dag:
-        # check if DAG already exists
-        existing_dag = dags.dag_by_name(dag)
-        if not existing_dag:
-            click.echo(
-                (
-                    f"DAG {dag} does not exist. "
-                    "To see available DAGs run `bqetl dag info`. "
-                    "To create a new DAG run `bqetl dag create`."
-                ),
-                err=True,
+    for query_file in query_files:
+        metadata = Metadata.of_sql_file(query_file)
+
+        if dag:
+            # check if DAG already exists
+            existing_dag = dags.dag_by_name(dag)
+            if not existing_dag:
+                click.echo(
+                    (
+                        f"DAG {dag} does not exist. "
+                        "To see available DAGs run `bqetl dag info`. "
+                        "To create a new DAG run `bqetl dag create`."
+                    ),
+                    err=True,
+                )
+                sys.exit(1)
+
+            # write scheduling information to metadata file
+            metadata.scheduling = {}
+            metadata.scheduling["dag_name"] = dag
+
+            if depends_on_past:
+                metadata.scheduling["depends_on_past"] = depends_on_past
+
+            if task_name:
+                metadata.scheduling["task_name"] = task_name
+
+            metadata.write(query_file.parent / METADATA_FILE)
+            print(
+                f"Updated {query_file.parent / METADATA_FILE} with scheduling"
+                " information. For more information about scheduling queries see: "
+                "https://github.com/mozilla/bigquery-etl#scheduling-queries-in-airflow"
             )
-            sys.exit(1)
 
-        # write scheduling information to metadata file
-        metadata.scheduling = {}
-        metadata.scheduling["dag_name"] = dag
-
-        if depends_on_past:
-            metadata.scheduling["depends_on_past"] = depends_on_past
-
-        if task_name:
-            metadata.scheduling["task_name"] = task_name
-
-        metadata.write(path / METADATA_FILE)
-        print(
-            f"Updated {path / METADATA_FILE} with scheduling information. "
-            "For more information about scheduling queries see: "
-            "https://github.com/mozilla/bigquery-etl#scheduling-queries-in-airflow"
-        )
-
-        # update dags since new task has been added
-        dags = get_dags(sql_dir, sql_dir.parent / "dags.yaml")
-        existing_dag = dags.dag_by_name(dag)
-    else:
-        if metadata.scheduling == {}:
-            click.echo(f"No scheduling information for: {path}", err=True)
-            sys.exit(1)
+            # update dags since new task has been added
+            dags = get_dags(sql_dir, sql_dir.parent / "dags.yaml")
+            dags_to_be_generated.add(dag)
         else:
-            existing_dag = dags.dag_by_name(metadata.scheduling["dag_name"])
+            if metadata.scheduling == {}:
+                click.echo(f"No scheduling information for: {path}", err=True)
+                sys.exit(1)
+            else:
+                dags_to_be_generated.add(metadata.scheduling["dag_name"])
 
     # re-run DAG generation for the affected DAG
-    print(f"Running DAG generation for {existing_dag.name}")
-    output_dir = sql_dir.parent / "dags"
-    dags.dag_to_airflow(output_dir, existing_dag)
+    for d in dags_to_be_generated:
+        print(f"Running DAG generation for {existing_dag.name}")
+        existing_dag = dags.dag_by_name(d)
+        output_dir = sql_dir.parent / "dags"
+        dags.dag_to_airflow(output_dir, existing_dag)
 
 
 @query.command(
     help="Get information about all or specific queries.",
 )
-@click.argument(
-    "path", default="sql/", type=click.Path(file_okay=False), callback=is_valid_dir
-)
+@click.argument("name", required=False)
+@path_option
 @click.option("--cost", help="Include information about query costs", is_flag=True)
 @click.option(
     "--last_updated",
     help="Include timestamps when destination tables were last updated",
     is_flag=True,
 )
-def info(path, cost, last_updated):
+def info(name, path, cost, last_updated):
     """Return information about all or specific queries."""
-    query_files = Path(path).rglob("query.sql")
+    if name is None:
+        name = "*.*"
+
+    query_files = queries_matching_name_pattern(name, path)
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -328,7 +361,8 @@ def info(path, cost, last_updated):
         allow_extra_args=True,
     ),
 )
-@click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
+@click.argument("name")
+@path_option
 @click.option(
     "--start_date",
     "--start-date",
@@ -362,7 +396,7 @@ def info(path, cost, last_updated):
     help="Dry run the backfill",
 )
 @click.pass_context
-def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
+def backfill(ctx, name, path, start_date, end_date, exclude, project, dry_run):
     """Run a backfill."""
     if not is_authenticated():
         click.echo("Authentication to GCP required. Run `gcloud auth login`.")
@@ -402,7 +436,8 @@ def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
 @query.command(
     help="Validate a query.",
 )
-@click.argument("path", default="sql/", type=click.Path(file_okay=True))
+@click.argument("name")
+@path_option
 @click.option(
     "--use_cloud_function",
     "--use-cloud-function",
@@ -420,7 +455,7 @@ def backfill(ctx, path, start_date, end_date, exclude, project, dry_run):
     default="moz-fx-data-shared-prod",
 )
 @click.pass_context
-def validate(ctx, path, use_cloud_function, project):
+def validate(ctx, name, path, use_cloud_function, project):
     """Validate queries by dry running, formatting and checking scheduling configs."""
     ctx.invoke(format, path=path)
     ctx.invoke(
@@ -434,7 +469,8 @@ def validate(ctx, path, use_cloud_function, project):
 @query.command(
     help="Create and initialize the destination table for the query.",
 )
-@click.argument("path", type=click.Path(file_okay=False), callback=is_valid_dir)
+@click.argument("name")
+@path_option
 @click.option(
     "--project",
     "-p",
@@ -445,7 +481,7 @@ def validate(ctx, path, use_cloud_function, project):
     "--dry_run/--no_dry_run",
     help="Dry run the backfill",
 )
-def initialize(path, project, dry_run):
+def initialize(name, path, project, dry_run):
     """Create the destination table for the provided query."""
     if not is_authenticated():
         click.echo("Authentication required for creating tables.", err=True)

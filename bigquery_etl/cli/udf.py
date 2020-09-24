@@ -236,3 +236,23 @@ def publish(ctx, path, project, dependency_dir, gcs_bucket, gcs_path):
 
 
 mozfun.add_command(publish)
+
+
+@udf.command(
+    help="Rename a UDF.",
+)
+@click.argument("path", type=click.Path(file_okay=False), required=False)
+@click.pass_context
+def validate(ctx, path):
+    """Validate UDFs by formatting and running tests."""
+    udf_dirs = ctx.obj["UDF_DIRS"]
+    if path and is_valid_dir(None, None, path):
+        udf_dirs = (path,)
+
+    validate_docs.validate(udf_dirs)
+    for udf_dir in udf_dirs:
+        ctx.invoke(format, path=udf_dir)
+        pytest.main([udf_dir])
+
+
+mozfun.add_command(validate)

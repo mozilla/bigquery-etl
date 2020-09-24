@@ -13,8 +13,8 @@ from fnmatch import fnmatchcase
 import logging
 import os
 import re
-from .util.bigquery_tables import get_tables_matching_patterns
-from .util import standard_args
+from bigquery_etl.util.bigquery_tables import get_tables_matching_patterns
+from bigquery_etl.util import standard_args
 
 from google.cloud import bigquery
 

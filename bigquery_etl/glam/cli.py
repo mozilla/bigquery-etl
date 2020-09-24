@@ -6,7 +6,10 @@ from pathlib import Path
 import os
 
 ROOT = Path(__file__).parent.parent.parent
-assert (ROOT / "sql").exists(), f"{ROOT} is not the project root"
+
+
+def _check_root():
+    assert (ROOT / "sql").exists(), f"{ROOT} is not the project root"
 
 
 @click.group()
@@ -26,6 +29,7 @@ def glean():
 @click.option("--dataset", default="glam_etl_dev")
 def list_daily(project, dataset):
     """List the start and end dates for clients daily tables."""
+    _check_root()
     client = bigquery.Client()
     app_df = client.query(
         f"""
@@ -81,6 +85,7 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
     To rebuild the table from scratch, drop the clients_scalar_aggregates and
     clients_histogram_aggregates tables.
     """
+    _check_root()
     run(
         "script/glam/generate_glean_sql",
         cwd=ROOT,
@@ -109,6 +114,7 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
 @click.option("--dataset", type=str, default="glam_etl_dev")
 def export(app_id, project, dataset):
     """Run the export ETL and write the final csv to a gcs bucket."""
+    _check_root()
     run(
         "script/glam/generate_glean_sql",
         cwd=ROOT,

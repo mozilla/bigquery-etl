@@ -1,678 +1,2159 @@
-{
-  "fields": [
-    {
-      "name": "tax_exempt",
-      "type": "STRING"
-    },
-    {
-      "name": "shipping",
-      "type": "RECORD",
-      "fields": [
-        {
-          "name": "name",
-          "type": "STRING"
-        },
-        {
-          "name": "phone",
-          "type": "STRING"
-        },
-        {
-          "name": "address",
-          "type": "RECORD",
-          "fields": [
-            {
-              "name": "state",
-              "type": "STRING"
-            },
-            {
-              "name": "country",
-              "type": "STRING"
-            },
-            {
-              "name": "postal_code",
-              "type": "STRING"
-            },
-            {
-              "name": "line1",
-              "type": "STRING"
-            },
-            {
-              "name": "line2",
-              "type": "STRING"
-            },
-            {
-              "name": "city",
-              "type": "STRING"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "next_invoice_sequence",
-      "type": "INTEGER"
-    },
-    {
-      "name": "name",
-      "type": "STRING"
-    },
-    {
-      "name": "sources",
-      "type": "RECORD",
-      "mode": "REPEATED",
-      "fields": [
-        {
-          "name": "usage",
-          "type": "STRING"
-        },
-        {
-          "name": "type",
-          "type": "STRING"
-        },
-        {
-          "name": "status",
-          "type": "STRING"
-        },
-        {
-          "name": "receiver",
-          "type": "RECORD",
-          "fields": [
-            {
-              "name": "refund_attributes_status",
-              "type": "STRING"
-            },
-            {
-              "name": "amount_returned",
-              "type": "INTEGER"
-            },
-            {
-              "name": "amount_received",
-              "type": "INTEGER"
-            },
-            {
-              "name": "refund_attributes_method",
-              "type": "STRING"
-            },
-            {
-              "name": "amount_charged",
-              "type": "INTEGER"
-            },
-            {
-              "name": "address",
-              "type": "STRING"
-            }
-          ]
-        },
-        {
-          "name": "object",
-          "type": "STRING"
-        },
-        {
-          "name": "owner",
-          "type": "RECORD",
-          "fields": [
-            {
-              "name": "email",
-              "type": "STRING"
-            }
-          ]
-        },
-        {
-          "name": "created",
-          "type": "INTEGER"
-        },
-        {
-          "name": "currency",
-          "type": "STRING"
-        },
-        {
-          "name": "ach_credit_transfer",
-          "type": "RECORD",
-          "fields": [
-            {
-              "name": "swift_code",
-              "type": "STRING"
-            },
-            {
-              "name": "fingerprint",
-              "type": "STRING"
-            },
-            {
-              "name": "routing_number",
-              "type": "INTEGER"
-            },
-            {
-              "name": "bank_name",
-              "type": "STRING"
-            },
-            {
-              "name": "account_number",
-              "type": "INTEGER"
-            }
-          ]
-        },
-        {
-          "name": "client_secret",
-          "type": "STRING"
-        },
-        {
-          "name": "customer",
-          "type": "STRING"
-        },
-        {
-          "name": "livemode",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "flow",
-          "type": "STRING"
-        },
-        {
-          "name": "id",
-          "type": "STRING"
-        },
-        {
-          "name": "name",
-          "type": "STRING"
-        },
-        {
-          "name": "last4",
-          "type": "INTEGER"
-        },
-        {
-          "name": "funding",
-          "type": "STRING"
-        },
-        {
-          "name": "cvc_check",
-          "type": "STRING"
-        },
-        {
-          "name": "fingerprint",
-          "type": "STRING"
-        },
-        {
-          "name": "exp_month",
-          "type": "INTEGER"
-        },
-        {
-          "name": "brand",
-          "type": "STRING"
-        },
-        {
-          "name": "exp_year",
-          "type": "INTEGER"
-        },
-        {
-          "name": "address_zip",
-          "type": "STRING"
-        },
-        {
-          "name": "country",
-          "type": "STRING"
-        },
-        {
-          "name": "address_zip_check",
-          "type": "STRING"
-        }
-      ]
-    },
-    {
-      "name": "metadata",
-      "type": "RECORD",
-      "mode": "REPEATED",
-      "fields": [
-        {
-          "name": "key",
-          "type": "STRING"
-        },
-        {
-          "name": "value",
-          "type": "STRING"
-        }
-      ]
-    },
-    {
-      "name": "livemode",
-      "type": "BOOLEAN"
-    },
-    {
-      "name": "created",
-      "type": "TIMESTAMP"
-    },
-    {
-      "name": "currency",
-      "type": "STRING"
-    },
-    {
-      "name": "email",
-      "type": "STRING"
-    },
-    {
-      "name": "delinquent",
-      "type": "BOOLEAN"
-    },
-    {
-      "name": "default_source",
-      "type": "STRING"
-    },
-    {
-      "name": "balance",
-      "type": "INTEGER"
-    },
-    {
-      "name": "account_balance",
-      "type": "INTEGER"
-    },
-    {
-      "name": "subscriptions",
-      "type": "RECORD",
-      "mode": "REPEATED",
-      "fields": [
-        {
-          "name": "trial_start",
-          "type": "INTEGER"
-        },
-        {
-          "name": "status",
-          "type": "STRING"
-        },
-        {
-          "name": "plan",
-          "type": "RECORD",
-          "fields": [
-            {
-              "name": "usage_type",
-              "type": "STRING"
-            },
-            {
-              "name": "product",
-              "type": "STRING"
-            },
-            {
-              "name": "metadata",
-              "type": "RECORD",
-              "mode": "REPEATED",
-              "fields": [
-                {
-                  "name": "key",
-                  "type": "STRING"
-                },
-                {
-                  "name": "value",
-                  "type": "STRING"
-                }
-              ]
-            },
-            {
-              "name": "livemode",
-              "type": "BOOLEAN"
-            },
-            {
-              "name": "interval",
-              "type": "STRING"
-            },
-            {
-              "name": "created",
-              "type": "INTEGER"
-            },
-            {
-              "name": "currency",
-              "type": "STRING"
-            },
-            {
-              "name": "amount",
-              "type": "INTEGER"
-            },
-            {
-              "name": "interval_count",
-              "type": "INTEGER"
-            },
-            {
-              "name": "amount_decimal",
-              "type": "INTEGER"
-            },
-            {
-              "name": "billing_scheme",
-              "type": "STRING"
-            },
-            {
-              "name": "active",
-              "type": "BOOLEAN"
-            },
-            {
-              "name": "object",
-              "type": "STRING"
-            },
-            {
-              "name": "nickname",
-              "type": "STRING"
-            },
-            {
-              "name": "id",
-              "type": "STRING"
-            }
-          ]
-        },
-        {
-          "name": "start",
-          "type": "INTEGER"
-        },
-        {
-          "name": "livemode",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "invoice_customer_balance_settings",
-          "type": "RECORD",
-          "fields": [
-            {
-              "name": "consume_applied_balance_on_void",
-              "type": "BOOLEAN"
-            }
-          ]
-        },
-        {
-          "name": "items",
-          "type": "RECORD",
-          "mode": "REPEATED",
-          "fields": [
-            {
-              "name": "subscription",
-              "type": "STRING"
-            },
-            {
-              "name": "quantity",
-              "type": "INTEGER"
-            },
-            {
-              "name": "created",
-              "type": "INTEGER"
-            },
-            {
-              "name": "plan",
-              "type": "RECORD",
-              "fields": [
-                {
-                  "name": "usage_type",
-                  "type": "STRING"
-                },
-                {
-                  "name": "product",
-                  "type": "STRING"
-                },
-                {
-                  "name": "metadata",
-                  "type": "RECORD",
-                  "mode": "REPEATED",
-                  "fields": [
-                    {
-                      "name": "key",
-                      "type": "STRING"
-                    },
-                    {
-                      "name": "value",
-                      "type": "STRING"
-                    }
-                  ]
-                },
-                {
-                  "name": "livemode",
-                  "type": "BOOLEAN"
-                },
-                {
-                  "name": "interval",
-                  "type": "STRING"
-                },
-                {
-                  "name": "created",
-                  "type": "INTEGER"
-                },
-                {
-                  "name": "currency",
-                  "type": "STRING"
-                },
-                {
-                  "name": "amount",
-                  "type": "INTEGER"
-                },
-                {
-                  "name": "interval_count",
-                  "type": "INTEGER"
-                },
-                {
-                  "name": "amount_decimal",
-                  "type": "INTEGER"
-                },
-                {
-                  "name": "billing_scheme",
-                  "type": "STRING"
-                },
-                {
-                  "name": "active",
-                  "type": "BOOLEAN"
-                },
-                {
-                  "name": "object",
-                  "type": "STRING"
-                },
-                {
-                  "name": "nickname",
-                  "type": "STRING"
-                },
-                {
-                  "name": "id",
-                  "type": "STRING"
-                }
-              ]
-            },
-            {
-              "name": "object",
-              "type": "STRING"
-            },
-            {
-              "name": "price",
-              "type": "RECORD",
-              "fields": [
-                {
-                  "name": "unit_amount_decimal",
-                  "type": "INTEGER"
-                },
-                {
-                  "name": "unit_amount",
-                  "type": "INTEGER"
-                },
-                {
-                  "name": "type",
-                  "type": "STRING"
-                },
-                {
-                  "name": "product",
-                  "type": "STRING"
-                },
-                {
-                  "name": "metadata",
-                  "type": "RECORD",
-                  "mode": "REPEATED",
-                  "fields": [
-                    {
-                      "name": "key",
-                      "type": "STRING"
-                    },
-                    {
-                      "name": "value",
-                      "type": "STRING"
-                    }
-                  ]
-                },
-                {
-                  "name": "livemode",
-                  "type": "BOOLEAN"
-                },
-                {
-                  "name": "recurring",
-                  "type": "RECORD",
-                  "fields": [
-                    {
-                      "name": "usage_type",
-                      "type": "STRING"
-                    },
-                    {
-                      "name": "interval_count",
-                      "type": "INTEGER"
-                    },
-                    {
-                      "name": "interval",
-                      "type": "STRING"
-                    }
-                  ]
-                },
-                {
-                  "name": "id",
-                  "type": "STRING"
-                },
-                {
-                  "name": "nickname",
-                  "type": "STRING"
-                },
-                {
-                  "name": "currency",
-                  "type": "STRING"
-                },
-                {
-                  "name": "created",
-                  "type": "INTEGER"
-                },
-                {
-                  "name": "billing_scheme",
-                  "type": "STRING"
-                },
-                {
-                  "name": "active",
-                  "type": "BOOLEAN"
-                },
-                {
-                  "name": "object",
-                  "type": "STRING"
-                }
-              ]
-            },
-            {
-              "name": "id",
-              "type": "STRING"
-            }
-          ]
-        },
-        {
-          "name": "object",
-          "type": "STRING"
-        },
-        {
-          "name": "days_until_due",
-          "type": "INTEGER"
-        },
-        {
-          "name": "current_period_start",
-          "type": "INTEGER"
-        },
-        {
-          "name": "collection_method",
-          "type": "STRING"
-        },
-        {
-          "name": "quantity",
-          "type": "INTEGER"
-        },
-        {
-          "name": "latest_invoice",
-          "type": "STRING"
-        },
-        {
-          "name": "billing_cycle_anchor",
-          "type": "INTEGER"
-        },
-        {
-          "name": "trial_end",
-          "type": "INTEGER"
-        },
-        {
-          "name": "start_date",
-          "type": "INTEGER"
-        },
-        {
-          "name": "cancel_at_period_end",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "customer",
-          "type": "STRING"
-        },
-        {
-          "name": "current_period_end",
-          "type": "INTEGER"
-        },
-        {
-          "name": "created",
-          "type": "INTEGER"
-        },
-        {
-          "name": "billing",
-          "type": "STRING"
-        },
-        {
-          "name": "id",
-          "type": "STRING"
-        },
-        {
-          "name": "metadata",
-          "type": "RECORD",
-          "mode": "REPEATED",
-          "fields": [
-            {
-              "name": "key",
-              "type": "STRING"
-            },
-            {
-              "name": "value",
-              "type": "STRING"
-            }
-          ]
-        },
-        {
-          "name": "cancel_at",
-          "type": "INTEGER"
-        },
-        {
-          "name": "canceled_at",
-          "type": "INTEGER"
-        }
-      ]
-    },
-    {
-      "name": "object",
-      "type": "STRING"
-    },
-    {
-      "name": "invoice_prefix",
-      "type": "STRING"
-    },
-    {
-      "name": "id",
-      "type": "STRING"
-    },
-    {
-      "name": "invoice_settings",
-      "type": "RECORD",
-      "fields": [
-        {
-          "name": "default_payment_method",
-          "type": "STRING"
-        }
-      ]
-    },
-    {
-      "name": "description",
-      "type": "STRING"
-    }
-  ]
-}
+[
+  {
+    "name": "account_balance",
+    "type": "INTEGER",
+    "description": "undocumented"
+  },
+  {
+    "name": "address",
+    "type": "RECORD",
+    "fields": [
+      {
+        "name": "city",
+        "type": "STRING"
+      },
+      {
+        "name": "country",
+        "type": "STRING"
+      },
+      {
+        "name": "line1",
+        "type": "STRING"
+      },
+      {
+        "name": "line2",
+        "type": "STRING"
+      },
+      {
+        "name": "postal_code",
+        "type": "STRING"
+      },
+      {
+        "name": "state",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "balance",
+    "type": "INTEGER"
+  },
+  {
+    "name": "created",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "currency",
+    "type": "STRING"
+  },
+  {
+    "name": "default_source",
+    "type": "STRING"
+  },
+  {
+    "name": "delinquent",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "description",
+    "type": "STRING"
+  },
+  {
+    "name": "email",
+    "type": "STRING"
+  },
+  {
+    "name": "id",
+    "type": "STRING"
+  },
+  {
+    "name": "invoice_prefix",
+    "type": "STRING"
+  },
+  {
+    "name": "invoice_settings",
+    "type": "RECORD",
+    "fields": [
+      {
+        "name": "custom_fields",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "name",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "default_payment_method",
+        "type": "STRING"
+      },
+      {
+        "name": "footer",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "livemode",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "metadata",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "name",
+    "type": "STRING"
+  },
+  {
+    "name": "next_invoice_sequence",
+    "type": "INTEGER"
+  },
+  {
+    "name": "object",
+    "type": "STRING"
+  },
+  {
+    "name": "phone",
+    "type": "STRING"
+  },
+  {
+    "name": "preferred_locales",
+    "type": "STRING",
+    "mode": "REPEATED"
+  },
+  {
+    "name": "shipping",
+    "type": "RECORD",
+    "fields": [
+      {
+        "name": "address",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "city",
+            "type": "STRING"
+          },
+          {
+            "name": "country",
+            "type": "STRING"
+          },
+          {
+            "name": "line1",
+            "type": "STRING"
+          },
+          {
+            "name": "line2",
+            "type": "STRING"
+          },
+          {
+            "name": "postal_code",
+            "type": "STRING"
+          },
+          {
+            "name": "state",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "name",
+        "type": "STRING"
+      },
+      {
+        "name": "phone",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "sources",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "account_holder_name",
+        "type": "STRING"
+      },
+      {
+        "name": "account_holder_type",
+        "type": "STRING"
+      },
+      {
+        "name": "ach_credit_transfer",
+        "type": "RECORD",
+        "description": "undocumented",
+        "fields": [
+          {
+            "name": "account_number",
+            "type": "INTEGER"
+          },
+          {
+            "name": "bank_name",
+            "type": "STRING"
+          },
+          {
+            "name": "fingerprint",
+            "type": "STRING"
+          },
+          {
+            "name": "refund_accout_holder_name",
+            "type": "STRING"
+          },
+          {
+            "name": "refund_accout_holder_type",
+            "type": "STRING"
+          },
+          {
+            "name": "routing_number",
+            "type": "INTEGER"
+          },
+          {
+            "name": "swift_code",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "active",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "address_city",
+        "type": "STRING"
+      },
+      {
+        "name": "address_country",
+        "type": "STRING"
+      },
+      {
+        "name": "address_line1",
+        "type": "STRING"
+      },
+      {
+        "name": "address_line1_check",
+        "type": "STRING"
+      },
+      {
+        "name": "address_line2",
+        "type": "STRING"
+      },
+      {
+        "name": "address_state",
+        "type": "STRING"
+      },
+      {
+        "name": "address_zip",
+        "type": "STRING"
+      },
+      {
+        "name": "address_zip_check",
+        "type": "STRING"
+      },
+      {
+        "name": "amount",
+        "type": "INTEGER"
+      },
+      {
+        "name": "amount_received",
+        "type": "INTEGER"
+      },
+      {
+        "name": "available_payout_methods",
+        "type": "STRING",
+        "mode": "REPEATED"
+      },
+      {
+        "name": "bank_name",
+        "type": "STRING"
+      },
+      {
+        "name": "bitcoin_amount",
+        "type": "INTEGER"
+      },
+      {
+        "name": "bitcoin_amount_received",
+        "type": "INTEGER"
+      },
+      {
+        "name": "bitcoin_uri",
+        "type": "STRING"
+      },
+      {
+        "name": "brand",
+        "type": "STRING"
+      },
+      {
+        "name": "client_secret",
+        "type": "STRING"
+      },
+      {
+        "name": "code_verification",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "attempts_remaining",
+            "type": "INTEGER"
+          },
+          {
+            "name": "status",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "country",
+        "type": "STRING"
+      },
+      {
+        "name": "created",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "currency",
+        "type": "STRING"
+      },
+      {
+        "name": "customer",
+        "type": "STRING"
+      },
+      {
+        "name": "cvc_check",
+        "type": "STRING"
+      },
+      {
+        "name": "description",
+        "type": "STRING"
+      },
+      {
+        "name": "dynamic_last4",
+        "type": "STRING"
+      },
+      {
+        "name": "email",
+        "type": "STRING"
+      },
+      {
+        "name": "exp_month",
+        "type": "INTEGER"
+      },
+      {
+        "name": "exp_year",
+        "type": "INTEGER"
+      },
+      {
+        "name": "filled",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "fingerprint",
+        "type": "STRING"
+      },
+      {
+        "name": "flow",
+        "type": "STRING"
+      },
+      {
+        "name": "funding",
+        "type": "STRING"
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "inbound_address",
+        "type": "STRING"
+      },
+      {
+        "name": "last4",
+        "type": "STRING"
+      },
+      {
+        "name": "livemode",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "metadata",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "name",
+        "type": "STRING"
+      },
+      {
+        "name": "object",
+        "type": "STRING"
+      },
+      {
+        "name": "owner",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "address",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "city",
+                "type": "STRING"
+              },
+              {
+                "name": "country",
+                "type": "STRING"
+              },
+              {
+                "name": "line1",
+                "type": "STRING"
+              },
+              {
+                "name": "line2",
+                "type": "STRING"
+              },
+              {
+                "name": "postal_code",
+                "type": "STRING"
+              },
+              {
+                "name": "state",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "email",
+            "type": "STRING"
+          },
+          {
+            "name": "name",
+            "type": "STRING"
+          },
+          {
+            "name": "phone",
+            "type": "STRING"
+          },
+          {
+            "name": "verified_address",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "city",
+                "type": "STRING"
+              },
+              {
+                "name": "country",
+                "type": "STRING"
+              },
+              {
+                "name": "line1",
+                "type": "STRING"
+              },
+              {
+                "name": "line2",
+                "type": "STRING"
+              },
+              {
+                "name": "postal_code",
+                "type": "STRING"
+              },
+              {
+                "name": "state",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "verified_email",
+            "type": "STRING"
+          },
+          {
+            "name": "verified_name",
+            "type": "STRING"
+          },
+          {
+            "name": "verified_phone",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "payment",
+        "type": "STRING"
+      },
+      {
+        "name": "payment_amount",
+        "type": "INTEGER"
+      },
+      {
+        "name": "payment_currency",
+        "type": "STRING"
+      },
+      {
+        "name": "receiver",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "address",
+            "type": "STRING"
+          },
+          {
+            "name": "amount_charged",
+            "type": "INTEGER"
+          },
+          {
+            "name": "amount_received",
+            "type": "INTEGER"
+          },
+          {
+            "name": "amount_returned",
+            "type": "INTEGER"
+          },
+          {
+            "name": "refund_attributes_method",
+            "type": "STRING"
+          },
+          {
+            "name": "refund_attributes_status",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "recipient",
+        "type": "STRING"
+      },
+      {
+        "name": "redirect",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "failure_reason",
+            "type": "STRING"
+          },
+          {
+            "name": "return_url",
+            "type": "STRING"
+          },
+          {
+            "name": "status",
+            "type": "STRING"
+          },
+          {
+            "name": "url",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "refund_address",
+        "type": "STRING"
+      },
+      {
+        "name": "reusable",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "routing_number",
+        "type": "STRING"
+      },
+      {
+        "name": "source_order",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "INTEGER"
+          },
+          {
+            "name": "currency",
+            "type": "STRING"
+          },
+          {
+            "name": "email",
+            "type": "STRING"
+          },
+          {
+            "name": "items",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "amount",
+                "type": "INTEGER"
+              },
+              {
+                "name": "currency",
+                "type": "STRING"
+              },
+              {
+                "name": "description",
+                "type": "STRING"
+              },
+              {
+                "name": "parent",
+                "type": "STRING"
+              },
+              {
+                "name": "quantity",
+                "type": "INTEGER"
+              },
+              {
+                "name": "type",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "shipping",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "address",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "city",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "country",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "line1",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "line2",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "postal_code",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "state",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "carrier",
+                "type": "STRING"
+              },
+              {
+                "name": "name",
+                "type": "STRING"
+              },
+              {
+                "name": "phone",
+                "type": "STRING"
+              },
+              {
+                "name": "tracking_number",
+                "type": "STRING"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "statement_descriptor",
+        "type": "STRING"
+      },
+      {
+        "name": "status",
+        "type": "STRING"
+      },
+      {
+        "name": "tokenization_method",
+        "type": "STRING"
+      },
+      {
+        "name": "transactions",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "INTEGER"
+          },
+          {
+            "name": "bitcoin_amount",
+            "type": "INTEGER"
+          },
+          {
+            "name": "created",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "currency",
+            "type": "STRING"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "object",
+            "type": "STRING"
+          },
+          {
+            "name": "receiver",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "type",
+        "type": "STRING"
+      },
+      {
+        "name": "uncaptured_funds",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "usage",
+        "type": "STRING"
+      },
+      {
+        "name": "used",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "used_for_payment",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "username",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "subscriptions",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "billing",
+        "type": "STRING",
+        "description": "undocumented"
+      },
+      {
+        "name": "billing_cycle_anchor",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "billing_thresholds",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "amount_gte",
+            "type": "INTEGER"
+          },
+          {
+            "name": "reset_billing_cycle_anchor",
+            "type": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "name": "cancel_at",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "cancel_at_period_end",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "canceled_at",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "collection_method",
+        "type": "STRING"
+      },
+      {
+        "name": "created",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "current_period_end",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "current_period_start",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "customer",
+        "type": "STRING",
+        "description": "expandable"
+      },
+      {
+        "name": "days_until_due",
+        "type": "INTEGER"
+      },
+      {
+        "name": "default_payment_method",
+        "type": "STRING",
+        "description": "expandable"
+      },
+      {
+        "name": "default_source",
+        "type": "STRING",
+        "description": "expandable"
+      },
+      {
+        "name": "default_tax_rates",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "active",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "created",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "description",
+            "type": "STRING"
+          },
+          {
+            "name": "display_name",
+            "type": "STRING"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "inclusive",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "jurisdiction",
+            "type": "STRING"
+          },
+          {
+            "name": "livemode",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "metadata",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING"
+              },
+              {
+                "name": "value",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "object",
+            "type": "STRING"
+          },
+          {
+            "name": "percentage",
+            "type": "NUMERIC"
+          }
+        ]
+      },
+      {
+        "name": "discount",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "checkout_session",
+            "type": "STRING"
+          },
+          {
+            "name": "coupon",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "amount_off",
+                "type": "INTEGER"
+              },
+              {
+                "name": "applies_to",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "products",
+                    "type": "STRING",
+                    "mode": "REPEATED"
+                  }
+                ]
+              },
+              {
+                "name": "created",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "currency",
+                "type": "STRING"
+              },
+              {
+                "name": "duration",
+                "type": "STRING"
+              },
+              {
+                "name": "duration_in_months",
+                "type": "INTEGER"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "livemode",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "max_redemptions",
+                "type": "INTEGER"
+              },
+              {
+                "name": "metadata",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "name",
+                "type": "STRING"
+              },
+              {
+                "name": "object",
+                "type": "STRING"
+              },
+              {
+                "name": "percent_off",
+                "type": "NUMERIC"
+              },
+              {
+                "name": "redeem_by",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "times_redeemed",
+                "type": "INTEGER"
+              },
+              {
+                "name": "valid",
+                "type": "BOOLEAN"
+              }
+            ]
+          },
+          {
+            "name": "customer",
+            "type": "STRING",
+            "description": "expandable"
+          },
+          {
+            "name": "end",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "invoice",
+            "type": "STRING"
+          },
+          {
+            "name": "invoice_item",
+            "type": "STRING"
+          },
+          {
+            "name": "object",
+            "type": "STRING"
+          },
+          {
+            "name": "promotion_code",
+            "type": "STRING"
+          },
+          {
+            "name": "start",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "subscription",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "ended_at",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "invoice_customer_balance_settings",
+        "type": "RECORD",
+        "description": "undocumented",
+        "fields": [
+          {
+            "name": "consume_applied_balance_on_void",
+            "type": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "name": "items",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "billing_thresholds",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "usage_gte",
+                "type": "INTEGER"
+              }
+            ]
+          },
+          {
+            "name": "created",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "metadata",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING"
+              },
+              {
+                "name": "value",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "object",
+            "type": "STRING"
+          },
+          {
+            "name": "plan",
+            "type": "RECORD",
+            "description": "undocumented",
+            "fields": [
+              {
+                "name": "active",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "aggregate_usage",
+                "type": "STRING"
+              },
+              {
+                "name": "amount",
+                "type": "INTEGER"
+              },
+              {
+                "name": "amount_decimal",
+                "type": "STRING"
+              },
+              {
+                "name": "billing_scheme",
+                "type": "STRING"
+              },
+              {
+                "name": "created",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "currency",
+                "type": "STRING"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "interval",
+                "type": "STRING"
+              },
+              {
+                "name": "interval_count",
+                "type": "INTEGER"
+              },
+              {
+                "name": "livemode",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "metadata",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "nickname",
+                "type": "STRING"
+              },
+              {
+                "name": "object",
+                "type": "STRING"
+              },
+              {
+                "name": "product",
+                "type": "STRING"
+              },
+              {
+                "name": "tiers",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "flat_amount",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "flat_amount_decimal",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "unit_amount",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "unit_amount_decimal",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "up_to",
+                    "type": "INTEGER"
+                  }
+                ]
+              },
+              {
+                "name": "tiers_mode",
+                "type": "STRING"
+              },
+              {
+                "name": "transform_usage",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "divide_by",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "round",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "trial_period_days",
+                "type": "INTEGER"
+              },
+              {
+                "name": "usage_type",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "price",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "active",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "billing_scheme",
+                "type": "STRING"
+              },
+              {
+                "name": "created",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "currency",
+                "type": "STRING"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "livemode",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "lookup_key",
+                "type": "STRING"
+              },
+              {
+                "name": "metadata",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "nickname",
+                "type": "STRING"
+              },
+              {
+                "name": "object",
+                "type": "STRING"
+              },
+              {
+                "name": "product",
+                "type": "STRING",
+                "description": "expandable"
+              },
+              {
+                "name": "recurring",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "aggregate_usage",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "interval",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "interval_count",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "trial_period_days",
+                    "type": "INTEGER",
+                    "description": "undocumented"
+                  },
+                  {
+                    "name": "usage_type",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "tiers",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "flat_amount",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "flat_amount_decimal",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "unit_amount",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "unit_amount_decimal",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "up_to",
+                    "type": "INTEGER"
+                  }
+                ]
+              },
+              {
+                "name": "tiers_mode",
+                "type": "STRING"
+              },
+              {
+                "name": "transform_quantity",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "divide_by",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "round",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "type",
+                "type": "STRING"
+              },
+              {
+                "name": "unit_amount",
+                "type": "INTEGER"
+              },
+              {
+                "name": "unit_amount_decimal",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "quantity",
+            "type": "INTEGER"
+          },
+          {
+            "name": "subscription",
+            "type": "STRING"
+          },
+          {
+            "name": "tax_rates",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "active",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "created",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "description",
+                "type": "STRING"
+              },
+              {
+                "name": "display_name",
+                "type": "STRING"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "inclusive",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "jurisdiction",
+                "type": "STRING"
+              },
+              {
+                "name": "livemode",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "metadata",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "object",
+                "type": "STRING"
+              },
+              {
+                "name": "percentage",
+                "type": "NUMERIC"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "latest_invoice",
+        "type": "STRING",
+        "description": "expandable"
+      },
+      {
+        "name": "livemode",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "metadata",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING"
+          },
+          {
+            "name": "value",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "next_pending_invoice_item_invoice",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "object",
+        "type": "STRING"
+      },
+      {
+        "name": "pause_collection",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "behavior",
+            "type": "STRING"
+          },
+          {
+            "name": "resumes_at",
+            "type": "TIMESTAMP"
+          }
+        ]
+      },
+      {
+        "name": "pending_invoice_item_interval",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "interval",
+            "type": "STRING"
+          },
+          {
+            "name": "interval_count",
+            "type": "INTEGER"
+          }
+        ]
+      },
+      {
+        "name": "pending_setup_intent",
+        "type": "STRING",
+        "description": "expandable"
+      },
+      {
+        "name": "pending_update",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "billing_cycle_anchor",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "expires_at",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "subscription_items",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "billing_thresholds",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "usage_gte",
+                    "type": "INTEGER"
+                  }
+                ]
+              },
+              {
+                "name": "created",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "metadata",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "value",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "object",
+                "type": "STRING"
+              },
+              {
+                "name": "plan",
+                "type": "RECORD",
+                "description": "undocumented",
+                "fields": [
+                  {
+                    "name": "active",
+                    "type": "BOOLEAN"
+                  },
+                  {
+                    "name": "aggregate_usage",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "amount",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "amount_decimal",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "billing_scheme",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "created",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "currency",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "id",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "interval",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "interval_count",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "livemode",
+                    "type": "BOOLEAN"
+                  },
+                  {
+                    "name": "metadata",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "value",
+                        "type": "STRING"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "nickname",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "object",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "product",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "tiers",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "flat_amount",
+                        "type": "INTEGER"
+                      },
+                      {
+                        "name": "flat_amount_decimal",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "unit_amount",
+                        "type": "INTEGER"
+                      },
+                      {
+                        "name": "unit_amount_decimal",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "up_to",
+                        "type": "INTEGER"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tiers_mode",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "transform_usage",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "divide_by",
+                        "type": "INTEGER"
+                      },
+                      {
+                        "name": "round",
+                        "type": "STRING"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "trial_period_days",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "usage_type",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "price",
+                "type": "RECORD",
+                "fields": [
+                  {
+                    "name": "active",
+                    "type": "BOOLEAN"
+                  },
+                  {
+                    "name": "billing_scheme",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "created",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "currency",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "id",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "livemode",
+                    "type": "BOOLEAN"
+                  },
+                  {
+                    "name": "lookup_key",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "metadata",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "value",
+                        "type": "STRING"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "nickname",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "object",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "product",
+                    "type": "STRING",
+                    "description": "expandable"
+                  },
+                  {
+                    "name": "recurring",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "aggregate_usage",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "interval",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "interval_count",
+                        "type": "INTEGER"
+                      },
+                      {
+                        "name": "trial_period_days",
+                        "type": "INTEGER",
+                        "description": "undocumented"
+                      },
+                      {
+                        "name": "usage_type",
+                        "type": "STRING"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tiers",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "flat_amount",
+                        "type": "INTEGER"
+                      },
+                      {
+                        "name": "flat_amount_decimal",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "unit_amount",
+                        "type": "INTEGER"
+                      },
+                      {
+                        "name": "unit_amount_decimal",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "up_to",
+                        "type": "INTEGER"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tiers_mode",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "transform_quantity",
+                    "type": "RECORD",
+                    "fields": [
+                      {
+                        "name": "divide_by",
+                        "type": "INTEGER"
+                      },
+                      {
+                        "name": "round",
+                        "type": "STRING"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "type",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "unit_amount",
+                    "type": "INTEGER"
+                  },
+                  {
+                    "name": "unit_amount_decimal",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "name": "quantity",
+                "type": "INTEGER"
+              },
+              {
+                "name": "subscription",
+                "type": "STRING"
+              },
+              {
+                "name": "tax_rates",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                  {
+                    "name": "active",
+                    "type": "BOOLEAN"
+                  },
+                  {
+                    "name": "created",
+                    "type": "TIMESTAMP"
+                  },
+                  {
+                    "name": "description",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "display_name",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "id",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "inclusive",
+                    "type": "BOOLEAN"
+                  },
+                  {
+                    "name": "jurisdiction",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "livemode",
+                    "type": "BOOLEAN"
+                  },
+                  {
+                    "name": "metadata",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING"
+                      },
+                      {
+                        "name": "value",
+                        "type": "STRING"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "object",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "percentage",
+                    "type": "NUMERIC"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "trial_end",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "trial_from_plan",
+            "type": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "name": "plan",
+        "type": "RECORD",
+        "description": "undocumented",
+        "fields": [
+          {
+            "name": "active",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "aggregate_usage",
+            "type": "STRING"
+          },
+          {
+            "name": "amount",
+            "type": "INTEGER"
+          },
+          {
+            "name": "amount_decimal",
+            "type": "STRING"
+          },
+          {
+            "name": "billing_scheme",
+            "type": "STRING"
+          },
+          {
+            "name": "created",
+            "type": "TIMESTAMP"
+          },
+          {
+            "name": "currency",
+            "type": "STRING"
+          },
+          {
+            "name": "id",
+            "type": "STRING"
+          },
+          {
+            "name": "interval",
+            "type": "STRING"
+          },
+          {
+            "name": "interval_count",
+            "type": "INTEGER"
+          },
+          {
+            "name": "livemode",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "metadata",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING"
+              },
+              {
+                "name": "value",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "nickname",
+            "type": "STRING"
+          },
+          {
+            "name": "object",
+            "type": "STRING"
+          },
+          {
+            "name": "product",
+            "type": "STRING"
+          },
+          {
+            "name": "tiers",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "flat_amount",
+                "type": "INTEGER"
+              },
+              {
+                "name": "flat_amount_decimal",
+                "type": "STRING"
+              },
+              {
+                "name": "unit_amount",
+                "type": "INTEGER"
+              },
+              {
+                "name": "unit_amount_decimal",
+                "type": "STRING"
+              },
+              {
+                "name": "up_to",
+                "type": "INTEGER"
+              }
+            ]
+          },
+          {
+            "name": "tiers_mode",
+            "type": "STRING"
+          },
+          {
+            "name": "transform_usage",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "divide_by",
+                "type": "INTEGER"
+              },
+              {
+                "name": "round",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "trial_period_days",
+            "type": "INTEGER"
+          },
+          {
+            "name": "usage_type",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "quantity",
+        "type": "INTEGER",
+        "description": "undocumented"
+      },
+      {
+        "name": "schedule",
+        "type": "STRING",
+        "description": "expandable"
+      },
+      {
+        "name": "start",
+        "type": "TIMESTAMP",
+        "description": "undocumented"
+      },
+      {
+        "name": "start_date",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "status",
+        "type": "STRING"
+      },
+      {
+        "name": "transfer_data",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "amount_percent",
+            "type": "NUMERIC"
+          },
+          {
+            "name": "destination",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "trial_end",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "trial_start",
+        "type": "TIMESTAMP"
+      }
+    ]
+  },
+  {
+    "name": "tax_exempt",
+    "type": "STRING"
+  },
+  {
+    "name": "tax_ids",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "country",
+        "type": "STRING"
+      },
+      {
+        "name": "created",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "customer",
+        "type": "STRING"
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "livemode",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "object",
+        "type": "STRING"
+      },
+      {
+        "name": "type",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      },
+      {
+        "name": "verification",
+        "type": "RECORD",
+        "fields": [
+          {
+            "name": "status",
+            "type": "STRING"
+          },
+          {
+            "name": "verified_address",
+            "type": "STRING"
+          },
+          {
+            "name": "verified_name",
+            "type": "STRING"
+          }
+        ]
+      }
+    ]
+  }
+]

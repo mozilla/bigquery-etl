@@ -1,186 +1,201 @@
-{
-  "fields": [
-    {
-      "name": "evidence_details",
-      "type": "RECORD",
-      "fields": [
-        {
-          "name": "submission_count",
-          "type": "INTEGER"
-        },
-        {
-          "name": "past_due",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "has_evidence",
-          "type": "BOOLEAN"
-        },
-        {
-          "name": "due_by",
-          "type": "INTEGER"
-        }
-      ]
-    },
-    {
-      "name": "created",
-      "type": "TIMESTAMP"
-    },
-    {
-      "name": "currency",
-      "type": "STRING"
-    },
-    {
-      "name": "charge",
-      "type": "STRING"
-    },
-    {
-      "name": "balance_transactions",
-      "type": "RECORD",
-      "mode": "REPEATED",
-      "fields": [
-        {
-          "name": "type",
-          "type": "STRING"
-        },
-        {
-          "name": "status",
-          "type": "STRING"
-        },
-        {
-          "name": "reporting_category",
-          "type": "STRING"
-        },
-        {
-          "name": "description",
-          "type": "STRING"
-        },
-        {
-          "name": "exchange_rate",
-          "type": "STRING"
-        },
-        {
-          "name": "fee",
-          "type": "INTEGER"
-        },
-        {
-          "name": "currency",
-          "type": "STRING"
-        },
-        {
-          "name": "created",
-          "type": "INTEGER"
-        },
-        {
-          "name": "fee_details",
-          "type": "RECORD",
-          "mode": "REPEATED",
-          "fields": [
-            {
-              "name": "description",
-              "type": "STRING"
-            },
-            {
-              "name": "currency",
-              "type": "STRING"
-            },
-            {
-              "name": "type",
-              "type": "STRING"
-            },
-            {
-              "name": "application",
-              "type": "STRING"
-            },
-            {
-              "name": "amount",
-              "type": "INTEGER"
-            }
-          ]
-        },
-        {
-          "name": "source",
-          "type": "STRING"
-        },
-        {
-          "name": "amount",
-          "type": "INTEGER"
-        },
-        {
-          "name": "available_on",
-          "type": "INTEGER"
-        },
-        {
-          "name": "net",
-          "type": "INTEGER"
-        },
-        {
-          "name": "object",
-          "type": "STRING"
-        },
-        {
-          "name": "id",
-          "type": "STRING"
-        }
-      ]
-    },
-    {
-      "name": "status",
-      "type": "STRING"
-    },
-    {
-      "name": "is_charge_refundable",
-      "type": "BOOLEAN"
-    },
-    {
-      "name": "livemode",
-      "type": "BOOLEAN"
-    },
-    {
-      "name": "balance_transaction",
-      "type": "STRING"
-    },
-    {
-      "name": "evidence",
-      "type": "RECORD",
-      "fields": [
-        {
-          "name": "customer_purchase_ip",
-          "type": "STRING"
-        },
-        {
-          "name": "customer_name",
-          "type": "STRING"
-        },
-        {
-          "name": "customer_email_address",
-          "type": "STRING"
-        },
-        {
-          "name": "billing_address",
-          "type": "STRING"
-        }
-      ]
-    },
-    {
-      "name": "amount",
-      "type": "INTEGER"
-    },
-    {
-      "name": "reason",
-      "type": "STRING"
-    },
-    {
-      "name": "object",
-      "type": "STRING"
-    },
-    {
-      "name": "payment_intent",
-      "type": "STRING"
-    },
-    {
-      "name": "id",
-      "type": "STRING"
-    }
-  ]
-}
+[
+  {
+    "name": "amount",
+    "type": "INTEGER"
+  },
+  {
+    "name": "balance_transaction",
+    "type": "STRING",
+    "description": "undocumented"
+  },
+  {
+    "name": "balance_transactions",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "amount",
+        "type": "INTEGER"
+      },
+      {
+        "name": "available_on",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "created",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "currency",
+        "type": "STRING"
+      },
+      {
+        "name": "description",
+        "type": "STRING"
+      },
+      {
+        "name": "exchange_rate",
+        "type": "NUMERIC"
+      },
+      {
+        "name": "fee",
+        "type": "INTEGER"
+      },
+      {
+        "name": "fee_details",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "INTEGER"
+          },
+          {
+            "name": "application",
+            "type": "STRING"
+          },
+          {
+            "name": "currency",
+            "type": "STRING"
+          },
+          {
+            "name": "description",
+            "type": "STRING"
+          },
+          {
+            "name": "type",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "name": "id",
+        "type": "STRING"
+      },
+      {
+        "name": "net",
+        "type": "INTEGER"
+      },
+      {
+        "name": "object",
+        "type": "STRING"
+      },
+      {
+        "name": "reporting_category",
+        "type": "STRING"
+      },
+      {
+        "name": "source",
+        "type": "STRING"
+      },
+      {
+        "name": "status",
+        "type": "STRING"
+      },
+      {
+        "name": "type",
+        "type": "STRING"
+      }
+    ]
+
+  },
+  {
+    "name": "charge",
+    "type": "STRING"
+  },
+  {
+    "name": "created",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "currency",
+    "type": "STRING"
+  },
+  {
+    "name": "evidence",
+    "type": "RECORD",
+    "fields": [
+      {
+        "name": "billing_address",
+        "type": "STRING"
+      },
+      {
+        "name": "customer_email_address",
+        "type": "STRING"
+      },
+      {
+        "name": "customer_name",
+        "type": "STRING"
+      },
+      {
+        "name": "customer_purchase_ip",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "evidence_details",
+    "type": "RECORD",
+    "fields": [
+      {
+        "name": "due_by",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "has_evidence",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "past_due",
+        "type": "BOOLEAN"
+      },
+      {
+        "name": "submission_count",
+        "type": "INTEGER"
+      }
+    ]
+  },
+  {
+    "name": "id",
+    "type": "STRING"
+  },
+  {
+    "name": "is_charge_refundable",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "livemode",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "metadata",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "STRING"
+      }
+    ]
+  },
+  {
+    "name": "object",
+    "type": "STRING"
+  },
+  {
+    "name": "payment_intent",
+    "type": "STRING"
+  },
+  {
+    "name": "reason",
+    "type": "STRING"
+  },
+  {
+    "name": "status",
+    "type": "STRING"
+  }
+]

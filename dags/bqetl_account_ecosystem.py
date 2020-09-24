@@ -20,6 +20,18 @@ with DAG(
     "bqetl_account_ecosystem", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
+    account_ecosystem_derived__ecosystem_client_id_lookup__v1 = bigquery_etl_query(
+        task_id="account_ecosystem_derived__ecosystem_client_id_lookup__v1",
+        destination_table="ecosystem_client_id_lookup_v1",
+        dataset_id="account_ecosystem_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        dag=dag,
+    )
+
     account_ecosystem_derived__ecosystem_user_id_lookup__v1 = bigquery_etl_query(
         task_id="account_ecosystem_derived__ecosystem_user_id_lookup__v1",
         destination_table="ecosystem_user_id_lookup_v1",
@@ -34,6 +46,9 @@ with DAG(
         dag=dag,
     )
 
+    account_ecosystem_derived__ecosystem_client_id_lookup__v1.set_upstream(
+        account_ecosystem_derived__ecosystem_user_id_lookup__v1
+    )
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -42,6 +57,10 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    account_ecosystem_derived__ecosystem_client_id_lookup__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     account_ecosystem_derived__ecosystem_user_id_lookup__v1.set_upstream(

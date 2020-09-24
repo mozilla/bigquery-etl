@@ -1,10 +1,12 @@
 """Import Stripe data into BigQuery."""
 
 from datetime import datetime, timedelta, timezone
-from typing import Any, IO, Optional
+from typing import Any, Dict, IO, List, Optional, Type
 from tempfile import TemporaryFile
-import ujson
+import os.path
+import re
 import sys
+import ujson
 import warnings
 
 from google.cloud import bigquery
@@ -50,6 +52,9 @@ def bigquery_format(obj: Any, *path):
         return {
             key: formatted
             for key, value in obj.items()
+            # drop use_stripe_sdk because the contents are only for use in Stripe.js
+            # https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_action-use_stripe_sdk
+            if key != "use_stripe_sdk"
             for formatted in (bigquery_format(value, *path, key),)
             # drop nulls, empty lists, and empty objects
             if formatted not in (None, [], {})
@@ -72,6 +77,19 @@ def _open_file(
         return sys.stdin.buffer
     else:
         return TemporaryFile(mode="w+b")
+
+
+def _get_schema(
+    resource: Type[ListableAPIResource],
+) -> Optional[List[bigquery.SchemaField]]:
+    snake_case = re.sub(r"(?<!^)(?=[A-Z])", "_", resource.__name__).lower()
+    path = os.path.join(os.path.dirname(__file__), f"{snake_case}.schema.json")
+    if not os.path.exists(path):
+        return None
+    with open(path) as fp:
+        return bigquery.SchemaField.from_api_repr(
+            {"name": "root", "type": "RECORD", "fields": ujson.load(fp)}
+        ).fields
 
 
 @click.group(help="Commands for Stripe ETL.")
@@ -107,7 +125,13 @@ def stripe_():
     type=StripeResourceType(),
     help="Type of stripe resource to export",
 )
-def import_(api_key, date, table, file, resource):
+def import_(
+    api_key: str,
+    date: datetime,
+    table: str,
+    file: str,
+    resource: Type[ListableAPIResource],
+):
     """Import Stripe data into BigQuery."""
     assert resource is stripe.Event
     if resource is stripe.Event and not date:
@@ -131,7 +155,7 @@ def import_(api_key, date, table, file, resource):
                     "lt": int((start + timedelta(days=1)).timestamp()),
                 }
             for instance in resource.list(created=created).auto_paging_iter():
-                row = {
+                row: Dict[str, Any] = {
                     "created": datetime.utcfromtimestamp(instance.created).isoformat()
                 }
                 if resource is stripe.Event:
@@ -152,10 +176,10 @@ def import_(api_key, date, table, file, resource):
             job = bigquery.Client().load_table_from_file(
                 file_obj=file_obj,
                 destination=table,
-                rewind=True,
                 job_config=bigquery.LoadJobConfig(
                     clustering_fields=["created"],
                     ignore_unknown_values=False,
+                    schema=_get_schema(resource),
                     source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
                     time_partitioning=bigquery.TimePartitioning(field="created"),
                     write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
@@ -166,6 +190,10 @@ def import_(api_key, date, table, file, resource):
                 job.result()
             except Exception as e:
                 print(f"{job.job_id} failed: {e}", file=sys.stderr)
+                for error in job.errors or ():
+                    message = error.get("message")
+                    if message and message != getattr(e, "message", None):
+                        print(message, file=sys.stderr)
                 sys.exit(1)
             else:
                 print(f"{job.job_id} succeeded", file=sys.stderr)

@@ -20,7 +20,7 @@ from ..run_query import run
 
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
-QUERY_FILE_RE = re.compile(
+SQL_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+_v[0-9]+)/"
     r"(?:query\.sql|part1\.sql|script\.sql)$"
 )
@@ -29,19 +29,19 @@ VERSION_RE = re.compile(r"_v[0-9]+")
 
 def _queries_matching_name_pattern(pattern, sql_path):
     """Return paths to queries matching the name pattern."""
-    all_query_files = Path(sql_path).rglob("*.sql")
-    query_files = []
+    all_sql_files = Path(sql_path).rglob("*.sql")
+    sql_files = []
 
-    for query_file in all_query_files:
-        match = QUERY_FILE_RE.match(str(query_file))
+    for sql_file in all_sql_files:
+        match = SQL_FILE_RE.match(str(sql_file))
         if match:
             dataset = match.group(1)
             table = match.group(2)
             query_name = f"{dataset}.{table}"
             if fnmatchcase(query_name, pattern):
-                query_files.append(query_file)
+                sql_files.append(sql_file)
 
-    return query_files
+    return sql_files
 
 
 path_option = click.option(

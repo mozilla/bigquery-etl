@@ -2,9 +2,11 @@
 
 import click
 from fnmatch import fnmatchcase
+import os
 from pathlib import Path
 import pytest
 import re
+import shutil
 import string
 import sys
 import yaml
@@ -16,6 +18,7 @@ from ..udf import publish_udfs
 from ..docs import validate_docs
 
 UDF_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
+UDF_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")
 UDF_FILE_RE = re.compile(r"(^.*/|^)([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/udf\.sql$")
 DEFAULT_DEPENDENCY_DIR = "udf_js/lib/"
 DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
@@ -44,7 +47,7 @@ def _udfs_matching_name_pattern(pattern, udf_paths):
 path_option = click.option(
     "--path",
     "-p",
-    help="Path to directory in with UDFs. Use default directories if not set.",
+    help="Path to directory with UDFs. Use default directories if not set.",
     type=click.Path(file_okay=False),
 )
 
@@ -266,3 +269,74 @@ def publish(ctx, path, project, dependency_dir, gcs_bucket, gcs_path):
 
 
 mozfun.add_command(publish)
+
+
+@udf.command(
+    help="Rename UDF or UDF dataset.",
+)
+@click.argument("name", required=True)
+@path_option
+@click.option("--new_name", "-n", help="New UDF or dataset name", required=True)
+@click.option(
+    "--sql_path",
+    "--sql-path",
+    help="Path to directory with SQL queries.",
+    type=click.Path(file_okay=False),
+    default="sql/",
+)
+@click.pass_context
+def rename(ctx, name, path, new_name, sql_path):
+    """Rename UDFs based on pattern."""
+    udf_dirs = ctx.obj["UDF_DIRS"]
+    if path and is_valid_dir(None, None, path):
+        udf_dirs = (path,)
+
+    if UDF_NAME_RE.match(name) and UDF_NAME_RE.match(new_name):
+        # rename UDF
+        udf_files = _udfs_matching_name_pattern(name, udf_dirs)
+        match = UDF_NAME_RE.match(new_name)
+        new_udf_name = match.group("name")
+        new_udf_dataset = match.group("dataset")
+    elif UDF_DATASET_RE.match(name) and UDF_DATASET_RE.match(new_name):
+        # rename UDF dataset
+        match = UDF_DATASET_RE.match(new_name)
+        udf_files = _udfs_matching_name_pattern(f"{name}.*", udf_dirs)
+        new_udf_name = None
+        new_udf_dataset = match.group("dataset")
+    else:
+        click.echo("Invalid rename naming patterns.")
+        sys.exit(1)
+
+    for udf_file in udf_files:
+        # move to new directories
+        old_full_udf_name = f"{udf_file.parent.parent.name}.{udf_file.parent.name}"
+
+        if new_udf_name and new_udf_dataset:
+            source = udf_file.parent
+            destination = udf_file.parent.parent.parent / new_udf_dataset / new_udf_name
+            new_full_udf_name = f"{new_udf_dataset}.{new_udf_name}"
+        else:
+            source = udf_file.parent.parent
+            destination = udf_file.parent.parent.parent / new_udf_dataset
+            new_full_udf_name = f"{new_udf_dataset}.{udf_file.parent.name}"
+
+        if source.exists():
+            os.makedirs(destination.parent, exist_ok=True)
+            shutil.move(source, destination)
+
+        # replace usages
+        all_sql_files = list(Path(sql_path).rglob("*.sql"))
+
+        for udf_path in udf_dirs:
+            all_sql_files += list(Path(udf_path).rglob("*.sql"))
+
+        for sql_file in all_sql_files:
+            sql = sql_file.read_text()
+
+            replaced_sql = sql.replace(f"{old_full_udf_name}(", f"{new_full_udf_name}(")
+            sql_file.write_text(replaced_sql)
+
+        click.echo(f"Renamed {old_full_udf_name} to {new_full_udf_name}")
+
+
+mozfun.add_command(rename)

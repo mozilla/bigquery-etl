@@ -275,8 +275,8 @@ mozfun.add_command(publish)
     help="Rename UDF or UDF dataset.",
 )
 @click.argument("name", required=True)
+@click.argument("new_name", required=True)
 @path_option
-@click.option("--new_name", "-n", help="New UDF or dataset name", required=True)
 @click.option(
     "--sql_path",
     "--sql-path",
@@ -291,16 +291,16 @@ def rename(ctx, name, path, new_name, sql_path):
     if path and is_valid_dir(None, None, path):
         udf_dirs = (path,)
 
-    if UDF_NAME_RE.match(name) and UDF_NAME_RE.match(new_name):
+    udf_files = _udfs_matching_name_pattern(name, udf_dirs)
+
+    if UDF_NAME_RE.match(new_name) and len(udf_files) <= 1:
         # rename UDF
-        udf_files = _udfs_matching_name_pattern(name, udf_dirs)
         match = UDF_NAME_RE.match(new_name)
         new_udf_name = match.group("name")
         new_udf_dataset = match.group("dataset")
-    elif UDF_DATASET_RE.match(name) and UDF_DATASET_RE.match(new_name):
+    elif UDF_DATASET_RE.match(new_name):
         # rename UDF dataset
         match = UDF_DATASET_RE.match(new_name)
-        udf_files = _udfs_matching_name_pattern(f"{name}.*", udf_dirs)
         new_udf_name = None
         new_udf_dataset = match.group("dataset")
     else:

@@ -296,6 +296,7 @@ class Task:
         """
         task = cls.of_query(query_file, metadata, dag_collection)
         task.sql_file_path = query_file
+        task.destination_table = None
         return task
 
     def _get_referenced_tables(self):

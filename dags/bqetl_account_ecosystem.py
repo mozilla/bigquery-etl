@@ -46,7 +46,7 @@ with DAG(
 
     account_ecosystem_derived__ecosystem_user_id_lookup__v1 = bigquery_etl_query(
         task_id="account_ecosystem_derived__ecosystem_user_id_lookup__v1",
-        destination_table="ecosystem_user_id_lookup_v1",
+        destination_table=None,
         dataset_id="account_ecosystem_derived",
         project_id="moz-fx-data-shared-prod",
         owner="jklukas@mozilla.com",

@@ -104,13 +104,19 @@ class TestUdf:
 
     def test_udf_renaming_invalid_naming(self, runner):
         with runner.isolated_filesystem():
-            result = runner.invoke(
-                rename, ["dataset", "-n", "something.else"], obj={"UDF_DIRS": ("udf",)}
-            )
-            assert result.exit_code == 1
+            os.mkdir("udf")
+            os.mkdir("udf/test_udf")
+            with open("udf/test_udf/udf.sql", "w") as f:
+                f.write("CREATE OR REPLACE FUNCTION udf.test_udf() AS (TRUE)")
+
+            os.mkdir("udf/another_udf")
+            with open("udf/another_udf/udf.sql", "w") as f:
+                f.write(
+                    "CREATE OR REPLACE FUNCTION udf.another_udf() AS (udf.test_udf())"
+                )
 
             result = runner.invoke(
-                rename, ["dataset.udf", "-n", "something"], obj={"UDF_DIRS": ("udf",)}
+                rename, ["udf.*", "something.else"], obj={"UDF_DIRS": ("udf",)}
             )
             assert result.exit_code == 1
 
@@ -138,7 +144,7 @@ class TestUdf:
 
             result = runner.invoke(
                 rename,
-                ["udf.test_udf", "-n", "udf.renamed_udf"],
+                ["udf.test_udf", "udf.renamed_udf"],
                 obj={"UDF_DIRS": ("udf",)},
             )
             assert result.exit_code == 0
@@ -182,7 +188,7 @@ class TestUdf:
                 f.write("SELECT udf.test_udf()")
 
             result = runner.invoke(
-                rename, ["udf", "-n", "new_dataset"], obj={"UDF_DIRS": ("mozfun",)}
+                rename, ["udf.*", "new_dataset"], obj={"UDF_DIRS": ("mozfun",)}
             )
             assert result.exit_code == 0
             assert "udf" not in os.listdir("mozfun")

@@ -2,7 +2,17 @@ WITH crash_ping_data AS (
   SELECT
     submission_timestamp,
     client_id,
-    mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') AS experiment_branch,
+    CASE
+    WHEN
+      mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'true'
+    THEN
+      'enabled'
+    WHEN
+      mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'false'
+    THEN
+      'disabled'
+    END
+    AS experiment_branch,
     environment.build.build_id,
     IF(payload.process_type = 'main' OR payload.process_type IS NULL, 1, 0) AS main_crash,
     IF(
@@ -33,7 +43,17 @@ main_ping_data AS (
   SELECT
     submission_timestamp,
     client_id,
-    mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') AS experiment_branch,
+    CASE
+    WHEN
+      mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'true'
+    THEN
+      'enabled'
+    WHEN
+      mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'false'
+    THEN
+      'disabled'
+    END
+    AS experiment_branch,
     environment.build.build_id,
     0 AS main_crash,
     0 AS content_crash,

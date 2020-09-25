@@ -114,11 +114,11 @@
             
             <li class="nav-item" data-level="1"><a href="#json" class="nav-link">json</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#extract_int_map" class="nav-link">extract_int_map</a>
+            <li class="nav-item" data-level="2"><a href="#mode_last" class="nav-link">mode_last</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#mode_last" class="nav-link">mode_last</a>
+            <li class="nav-item" data-level="2"><a href="#extract_int_map" class="nav-link">extract_int_map</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -131,11 +131,11 @@
 
 <h1 id="json">json</h1>
 <p>Functions for parsing Mozilla-specific JSON data types.</p>
+<h2 id="mode_last">mode_last</h2>
+<p>Returns the most frequently occuring element in an array of json-compatible elements. In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are ignored.</p>
 <h2 id="extract_int_map">extract_int_map</h2>
 <p>Returns an array of key/value structs from a string representing a JSON map. Both keys and values are cast to integers.
-This is the format for the "values" field in the desktop telemetry histogram JSON representation.</p>
-<h2 id="mode_last">mode_last</h2>
-<p>Returns the most frequently occuring element in an array of json-compatible elements. In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are ignored.</p></div>
+This is the format for the "values" field in the desktop telemetry histogram JSON representation.</p></div>
             </div>
         </div>
 

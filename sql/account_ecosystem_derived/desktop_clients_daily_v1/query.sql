@@ -3,9 +3,9 @@
 -- over raw values by bucketing based on pairs of quantiles, and using the lower
 -- quantile as a rough midpoint for each bucket. When adding a new metric, you'll need
 -- to pass in a quantile array. See the following example query:
+/*
 
-/* Sample query for generating a quantile list for a new metric.
-
+-- Sample query for generating a quantile list for a new metric.
 SELECT
   FORMAT("%T", APPROX_QUANTILES(payload.duration, 10 ignore nulls)),
 FROM
@@ -14,7 +14,6 @@ WHERE
   DATE(submission_timestamp) BETWEEN "2020-09-01" AND "2020-10-01"
 
 */
-
 CREATE TEMP FUNCTION quantilify(v ANY TYPE, quantiles ARRAY<INT64>) AS (
   (
     WITH boundaries AS (
@@ -31,7 +30,15 @@ CREATE TEMP FUNCTION quantilify(v ANY TYPE, quantiles ARRAY<INT64>) AS (
             BETWEEN 1
             AND ARRAY_LENGTH(quantiles) - 2
         ) AS uppers,
-        ARRAY(SELECT n FROM UNNEST(quantiles) AS n WITH OFFSET AS i WHERE MOD(i, 2) = 1) AS midpoints,
+        ARRAY(
+          SELECT
+            n
+          FROM
+            UNNEST(quantiles) AS n
+            WITH OFFSET AS i
+          WHERE
+            MOD(i, 2) = 1
+        ) AS midpoints,
     )
     SELECT
       midpoints[OFFSET(RANGE_BUCKET(v, uppers))]

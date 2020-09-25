@@ -18,7 +18,7 @@ WITH unioned AS (
 aggregated AS (
   SELECT
     ecosystem_user_id,
-    array_agg(DISTINCT previous_ecosystem_user_id IGNORE NULLS) AS previous_ecosystem_user_ids
+    ARRAY_AGG(DISTINCT previous_ecosystem_user_id IGNORE NULLS) AS previous_ecosystem_user_ids
   FROM
     unioned
   WHERE
@@ -29,7 +29,7 @@ aggregated AS (
 SELECT
   ecosystem_user_id,
   IF(
-    array_length(previous_ecosystem_user_ids) > 1,
+    ARRAY_LENGTH(previous_ecosystem_user_ids) > 1,
     ERROR(FORMAT("Found more than 1 previous ID for %s", ecosystem_user_id)),
     previous_ecosystem_user_ids[SAFE_OFFSET(0)]
   ) AS previous_ecosystem_user_id
@@ -72,7 +72,7 @@ LOOP
 
   SET checksum_post = (
     SELECT
-      BIT_XOR(FARM_FINGERPRINT(previous_ecosystem_user_id))
+      BIT_XOR(FARM_FINGERPRINT(TO_JSON_STRING(working_set)))
     FROM
       working_set
   );

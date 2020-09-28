@@ -21,7 +21,8 @@ WITH compressed AS (
         'CA',
         'ES',
         'ID',
-        'KE'
+        'KE',
+        'JP'
       ),
       country,
       NULL

@@ -1,5 +1,7 @@
 """Generic utility functions."""
+import os
 import re
+from typing import List
 
 
 # Search for all camelCase situations in reverse with arbitrary lookaheads.
@@ -22,3 +24,15 @@ def snake_case(line: str) -> str:
     words = REV_WORD_BOUND_PAT.split(subbed)
     # filter spaces between words and snake_case and reverse again
     return "_".join([w.lower() for w in words if w.strip()])[::-1]
+
+
+def project_dirs(project_id=None) -> List[str]:
+    """Return all project directories, except mozfun."""
+    if project_id is None:
+        return [
+            project_dir
+            for project_dir in os.listdir()
+            if project_dir.startswith("moz-fx-")
+        ]
+    else:
+        return [project_id]

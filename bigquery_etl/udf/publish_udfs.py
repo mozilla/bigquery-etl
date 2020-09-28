@@ -10,6 +10,7 @@ from google.cloud import storage
 
 from bigquery_etl.util import standard_args
 from bigquery_etl.udf.parse_udf import read_udf_dirs, accumulate_dependencies
+from bigquery_etl.util.common import project_dirs
 
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 DEFAULT_UDF_DIR = ["udf/", "udf_js/"]
@@ -81,15 +82,7 @@ def get_udf_dirs(udf_dirs, project_id):
     if project_id != "mozfun":
         # for non-mozfun projects, the default UDF directories are udf/ and udf_js/
         # the project needs to be pre-pended to these paths
-        if project_id is None:
-            # publish for all projects
-            projects = [
-                project_dir
-                for project_dir in os.listdir()
-                if project_dir.startswith("moz-fx-")
-            ]
-        else:
-            projects = [project_id]
+        projects = project_dirs(project_id)
 
         udf_dirs = [
             os.path.join(project, d)

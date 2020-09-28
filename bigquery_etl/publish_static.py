@@ -3,8 +3,9 @@
 import os
 import json
 from argparse import ArgumentParser
-
 from google.cloud import bigquery
+
+from bigquery_etl.util.common import project_dirs
 
 DATA_FILENAME = "data.csv"
 SCHEMA_FILENAME = "schema.json"
@@ -18,7 +19,9 @@ def _parse_args():
         default="sql/",
         help="Path containing CSV's containing static data",
     )
-    parser.add_argument("--project-id", help="Project to publish tables to")
+    parser.add_argument(
+        "--project-id", "--project_id", help="Project to publish tables to"
+    )
     return parser.parse_args()
 
 
@@ -27,10 +30,12 @@ def _load_table(
 ):
     client = bigquery.Client()
 
-    # Assume path is .../dataset/table/data.csv
+    # Assume path is ...project/data_dir/dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split("/")
     dataset_id = path_split[-3]
     table_id = path_split[-2]
+    if not project:
+        project = path_split[0]
     dataset_ref = client.dataset(dataset_id, project=project)
     table_ref = dataset_ref.table(table_id)
 
@@ -75,26 +80,29 @@ def _load_table(
 def main():
     """Publish csv files as BigQuery tables."""
     args = _parse_args()
+    projects = project_dirs(args.project_id)
+    data_dirs = [os.path.join(project, args.data_dir) for project in projects]
 
-    for root, dirs, files in os.walk(args.data_dir):
-        for filename in files:
-            if filename == DATA_FILENAME:
-                schema_file_path = (
-                    os.path.join(root, SCHEMA_FILENAME)
-                    if SCHEMA_FILENAME in files
-                    else None
-                )
-                description_file_path = (
-                    os.path.join(root, DESCRIPTION_FILENAME)
-                    if DESCRIPTION_FILENAME in files
-                    else None
-                )
-                _load_table(
-                    os.path.join(root, filename),
-                    schema_file_path,
-                    description_file_path,
-                    args.project_id,
-                )
+    for data_dir in data_dirs:
+        for root, dirs, files in os.walk(data_dir):
+            for filename in files:
+                if filename == DATA_FILENAME:
+                    schema_file_path = (
+                        os.path.join(root, SCHEMA_FILENAME)
+                        if SCHEMA_FILENAME in files
+                        else None
+                    )
+                    description_file_path = (
+                        os.path.join(root, DESCRIPTION_FILENAME)
+                        if DESCRIPTION_FILENAME in files
+                        else None
+                    )
+                    _load_table(
+                        os.path.join(root, filename),
+                        schema_file_path,
+                        description_file_path,
+                        args.project_id,
+                    )
 
 
 if __name__ == "__main__":

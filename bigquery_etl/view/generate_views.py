@@ -103,33 +103,33 @@ def create_views_if_not_exist(client, views, exclude, sql_dir):
         target = f"{view}_v{version}"
         view_dataset = dataset.rsplit("_", 1)[0]
         full_view_id = ".".join([project, view_dataset, viewname])
-        target_file = os.path.join(sql_dir, view_dataset, viewname, "view.sql")
+        target_file = os.path.join(project, sql_dir, view_dataset, viewname, "view.sql")
 
         if not os.path.exists(target_file):
             # We put this BQ API all inside the conditional to speed up execution
             # in the case target files already exist.
             table = client.get_table(target)
             replacements = [
-                "`moz-fx-data-shared-prod.udf.normalize_metadata`(metadata)"
+                "`mozfun.norm.metadata`(metadata)"
                 " AS metadata"
             ]
             # Add special replacements for Glean pings.
             schema_id = table.labels.get("schema_id", None)
             if schema_id == "glean_ping_1":
                 replacements += [
-                    "`moz-fx-data-shared-prod.udf.normalize_glean_ping_info`(ping_info)"
+                    "`mozfun.norm.glean_ping_info`(ping_info)"
                     " AS ping_info"
                 ]
                 if table.table_id == "baseline_v1":
                     replacements += [
-                        "`moz-fx-data-shared-prod.udf"
-                        ".normalize_glean_baseline_client_info`"
+                        "`mozfun.norm.glean_baseline_client_info`"
                         "(client_info, metrics)"
                         " AS client_info"
                     ]
                 if table.dataset_id.startswith(
                     "org_mozilla_fenix"
                 ) and table.table_id.startswith("metrics"):
+                    # todo: use mozfun udfs
                     replacements += [
                         "`moz-fx-data-shared-prod.udf.normalize_fenix_metrics`"
                         "(client_info.telemetry_sdk_build, metrics)"

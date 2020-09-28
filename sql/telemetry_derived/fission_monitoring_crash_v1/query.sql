@@ -2,6 +2,7 @@ WITH crash_ping_data AS (
   SELECT
     submission_timestamp,
     client_id,
+    -- TODO: update filtering when https://bugzilla.mozilla.org/show_bug.cgi?id=1667426 is finalized
     CASE
     WHEN
       mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'true'
@@ -37,12 +38,14 @@ WITH crash_ping_data AS (
     `moz-fx-data-shared-prod.telemetry.crash`
   WHERE
     normalized_channel = 'nightly'
+    -- TODO: update filtering when https://bugzilla.mozilla.org/show_bug.cgi?id=1667426 is finalized
     AND mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') IS NOT NULL
 ),
 main_ping_data AS (
   SELECT
     submission_timestamp,
     client_id,
+    -- TODO: update filtering when https://bugzilla.mozilla.org/show_bug.cgi?id=1667426 is finalized
     CASE
     WHEN
       mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'true'
@@ -85,6 +88,7 @@ main_ping_data AS (
     `moz-fx-data-shared-prod.telemetry.main`
   WHERE
     normalized_channel = 'nightly'
+    -- TODO: update filtering when https://bugzilla.mozilla.org/show_bug.cgi?id=1667426 is finalized
     AND mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') IS NOT NULL
 ),
 combined_ping_data AS (

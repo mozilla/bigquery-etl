@@ -13,9 +13,6 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 import sqlparse
 
-sql_root = Path(__file__).resolve().parent.parent.parent / "sql"
-assert sql_root.exists(), f"{sql_root} not found"
-
 VIEWS_TO_SKIP = (
     # Access Denied
     "activity_stream/tile_id_types/view.sql",
@@ -24,8 +21,8 @@ VIEWS_TO_SKIP = (
     "telemetry/buildhub2/view.sql",
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
     *[
-        str(path.relative_to(sql_root))
-        for path in sql_root.glob("glam_etl/**/view.sql")
+        str(path)
+        for path in Path("moz-fx-data-shared-prod").glob("sql/glam_etl/**/view.sql")
     ],
     # View in project other than prod
     "sql/shredder_state/progress/view.sql",

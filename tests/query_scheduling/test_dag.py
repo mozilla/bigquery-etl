@@ -35,6 +35,7 @@ class TestDag:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -64,6 +65,7 @@ class TestDag:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -209,6 +211,7 @@ class TestDag:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"

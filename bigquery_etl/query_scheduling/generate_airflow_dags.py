@@ -8,6 +8,7 @@ from pathlib import Path
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
+from bigquery_etl.util.common import project_dirs
 
 
 DEFAULT_SQL_DIR = "sql/"
@@ -42,6 +43,13 @@ parser.add_argument(
     "--dag_id",
     help="The DAG to generate. Generates all DAGs by default",
     default=None,
+)
+parser.add_argument(
+    "--project_id",
+    "--project-id",
+    help="Project to generate DAGs for. If not specified, generate for all projects.",
+    default=None,
+    required=False,
 )
 
 standard_args.add_log_level(parser)
@@ -92,7 +100,7 @@ def get_dags(sql_dir, dags_config):
         logging.error(
             """
             Invalid sql_dir: {}, sql_dir must be a directory with
-            structure /<dataset>/<table>/metadata.yaml.
+            structure <project>/<sql_dir>/<dataset>/<table>/metadata.yaml.
             """.format(
                 sql_dir
             )
@@ -106,8 +114,11 @@ def main():
     args = parser.parse_args()
     dags_output_dir = Path(args.output_dir)
 
-    dags = get_dags(args.sql_dir, args.dags_config)
-    dags.to_airflow_dags(dags_output_dir, args.dag_id)
+    projects = project_dirs(args.project_id)
+
+    for project in projects:
+        dags = get_dags(os.path.join(project, args.sql_dir), args.dags_config)
+        dags.to_airflow_dags(dags_output_dir, args.dag_id)
 
 
 if __name__ == "__main__":

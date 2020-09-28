@@ -24,7 +24,7 @@ with DAG(
         task_id="test__non_incremental_query__v1",
         destination_table="non_incremental_query_v1",
         dataset_id="test",
-        project_id="moz-fx-data-shared-prod",
+        project_id="moz-fx-data-test-project",
         owner="test@example.com",
         email=["test@example.com"],
         date_partition_parameter="submission_date",

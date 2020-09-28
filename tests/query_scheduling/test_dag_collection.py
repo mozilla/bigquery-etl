@@ -102,6 +102,7 @@ class TestDagCollection:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -127,7 +128,9 @@ class TestDagCollection:
             }
         ).with_tasks(tasks)
 
-        task = dags.task_for_table("test", "incremental_query_v1")
+        task = dags.task_for_table(
+            "moz-fx-data-test-project", "test", "incremental_query_v1"
+        )
 
         assert task
         assert task.dag_name == "bqetl_test_dag"
@@ -142,12 +145,18 @@ class TestDagCollection:
             }
         ).with_tasks([])
 
-        assert dags.task_for_table("test", "non_existing_table") is None
+        assert (
+            dags.task_for_table(
+                "moz-fx-data-test-project", "test", "non_existing_table"
+            )
+            is None
+        )
 
     def test_dags_with_tasks(self):
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -184,6 +193,7 @@ class TestDagCollection:
             query_file = (
                 TEST_DIR
                 / "data"
+                / "moz-fx-data-test-project"
                 / "test_sql"
                 / "test"
                 / "incremental_query_v1"
@@ -219,6 +229,7 @@ class TestDagCollection:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "non_incremental_query_v1"
@@ -267,7 +278,7 @@ class TestDagCollection:
     def test_to_airflow_with_dependencies(
         self, tmp_path, project_id, temporary_dataset, bigquery_client
     ):
-        query_file_path = tmp_path / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -307,19 +318,45 @@ class TestDagCollection:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table1_v1"
+            / "query.sql",
+            metadata,
         )
 
-        os.makedirs(tmp_path / "sql" / temporary_dataset / "table1_v1")
-        query_file = tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql"
+        os.makedirs(tmp_path / project_id / "sql" / temporary_dataset / "table1_v1")
+        query_file = (
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table1_v1"
+            / "query.sql"
+        )
         query_file.write_text("SELECT 1")
 
         table_task2 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table2_v1"
+            / "query.sql",
+            metadata,
         )
 
-        os.makedirs(tmp_path / "sql" / temporary_dataset / "table2_v1")
-        query_file = tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql"
+        os.makedirs(tmp_path / project_id / "sql" / temporary_dataset / "table2_v1")
+        query_file = (
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table2_v1"
+            / "query.sql"
+        )
         query_file.write_text("SELECT 2")
 
         metadata = Metadata(
@@ -334,13 +371,25 @@ class TestDagCollection:
         )
 
         external_table_task = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "external_table_v1" / "query.sql",
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "external_table_v1"
+            / "query.sql",
             metadata,
         )
 
-        os.makedirs(tmp_path / "sql" / temporary_dataset / "external_table_v1")
+        os.makedirs(
+            tmp_path / project_id / "sql" / temporary_dataset / "external_table_v1"
+        )
         query_file = (
-            tmp_path / "sql" / temporary_dataset / "external_table_v1" / "query.sql"
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "external_table_v1"
+            / "query.sql"
         )
         query_file.write_text("SELECT 3")
 
@@ -392,6 +441,7 @@ class TestDagCollection:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "non_incremental_query_v1"
@@ -437,6 +487,7 @@ class TestDagCollection:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "non_incremental_query_v1"
@@ -446,6 +497,7 @@ class TestDagCollection:
         query_file2 = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "no_metadata_query_v1"

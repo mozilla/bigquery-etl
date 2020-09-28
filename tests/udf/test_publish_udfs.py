@@ -41,3 +41,21 @@ class TestPublishUdfs:
             + 'library = "gs:///script.js");'
         )
         mock_client.query.assert_called_with(query)
+
+    def test_get_udf_dirs(self):
+        udf_dirs = publish_udfs.get_udf_dirs(("data/udf",), "non-existing")
+        assert udf_dirs == []
+
+        udf_dirs = publish_udfs.get_udf_dirs(("data/udf",), "tests")
+        assert "tests/data/udf" in udf_dirs
+
+    def test_get_udf_dirs_non_mozfun(self):
+        udf_dirs = publish_udfs.get_udf_dirs(("udf",), None)
+        assert "moz-fx-data-shared-prod/udf" in udf_dirs
+
+    def test_get_udf_dirs_mozfun(self):
+        udf_dirs = publish_udfs.get_udf_dirs(("mozfun",), "mozfun")
+        assert "mozfun" in udf_dirs
+
+        udf_dirs = publish_udfs.get_udf_dirs(("mozfun",), None)
+        assert udf_dirs == []

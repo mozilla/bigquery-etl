@@ -240,6 +240,7 @@ class PublicDataJsonDag(Dag):
         del task_dict["dataset"]
         del task_dict["table"]
         del task_dict["version"]
+        del task_dict["project"]
 
         export_task = converter.structure(task_dict, Task)
         export_task.dag_name = self.name

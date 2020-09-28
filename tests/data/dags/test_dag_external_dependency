@@ -24,7 +24,7 @@ with DAG(
         task_id="{{ temporary_dataset }}__external_table__v1",
         destination_table="external_table_v1",
         dataset_id="{{ temporary_dataset }}",
-        project_id="moz-fx-data-shared-prod",
+        project_id="bigquery-etl-integration-test",
         owner="test@example.org",
         email=["test@example.org"],
         date_partition_parameter="submission_date",

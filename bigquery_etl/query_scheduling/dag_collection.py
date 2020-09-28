@@ -62,11 +62,15 @@ class DagCollection:
         """Return the DAG with the provided name."""
         return self.dags_by_name.get(name)
 
-    def task_for_table(self, dataset, table):
+    def task_for_table(self, project, dataset, table):
         """Return the task that schedules the query for the provided table."""
         for dag in self.dags:
             for task in dag.tasks:
-                if dataset == task.dataset and table == f"{task.table}_{task.version}":
+                if (
+                    project == task.project
+                    and dataset == task.dataset
+                    and table == f"{task.table}_{task.version}"
+                ):
                     return task
 
         return None

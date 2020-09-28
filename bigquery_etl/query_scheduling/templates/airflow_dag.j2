@@ -19,7 +19,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
                           {%+ else -%}None
                           {%+ endif -%},
         dataset_id='{{ task.dataset }}',
-        project_id='moz-fx-data-shared-prod',
+        project_id='{{ task.project }}',
         owner='{{ task.owner }}',
         {%+ if task.email | length > 0 -%}
         email={{ task.email | sort }},

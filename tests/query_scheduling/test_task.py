@@ -33,6 +33,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -43,6 +44,7 @@ class TestTask:
 
         assert task.query_file == str(query_file)
         assert task.dataset == "test"
+        assert task.project == "moz-fx-data-test-project"
         assert task.table == "incremental_query"
         assert task.version == "v1"
         assert task.task_name == "test__incremental_query__v1"
@@ -53,7 +55,13 @@ class TestTask:
 
     def test_of_multipart_query(self):
         query_file = (
-            TEST_DIR / "data" / "test_sql" / "test" / "multipart_query_v1" / "part1.sql"
+            TEST_DIR
+            / "data"
+            / "moz-fx-data-test-project"
+            / "test_sql"
+            / "test"
+            / "multipart_query_v1"
+            / "part1.sql"
         )
 
         task = Task.of_multipart_query(query_file)
@@ -61,6 +69,7 @@ class TestTask:
         assert task.query_file == str(query_file)
         assert task.dataset == "test"
         assert task.table == "multipart_query"
+        assert task.project == "moz-fx-data-test-project"
         assert task.version == "v1"
         assert task.task_name == "test__multipart_query__v1"
         assert task.dag_name == "bqetl_core"
@@ -81,6 +90,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -96,6 +106,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -111,6 +122,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -132,6 +144,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -154,6 +167,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -195,7 +209,13 @@ class TestTask:
 
     def test_validate_task_name(self):
         query_file = (
-            TEST_DIR / "data" / "test_sql" / "test" / (("a" * 63) + "_v1") / "query.sql"
+            TEST_DIR
+            / "data"
+            / "moz-fx-data-test-project"
+            / "test_sql"
+            / "test"
+            / (("a" * 63) + "_v1")
+            / "query.sql"
         )
 
         scheduling = {
@@ -212,6 +232,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -235,6 +256,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -256,6 +278,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -288,6 +311,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -321,6 +345,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"
@@ -350,8 +375,8 @@ class TestTask:
 
     @pytest.mark.integration
     @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
-    def test_task_get_dependencies_none(self, tmp_path):
-        query_file_path = tmp_path / "sql" / "test" / "query_v1"
+    def test_task_get_dependencies_none(self, tmp_path, project_id):
+        query_file_path = tmp_path / project_id / "sql" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -371,7 +396,7 @@ class TestTask:
     def test_task_get_multiple_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
-        query_file_path = tmp_path / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -397,10 +422,22 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table1_v1"
+            / "query.sql",
+            metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table2_v1"
+            / "query.sql",
+            metadata,
         )
 
         dags = DagCollection.from_dict(
@@ -428,7 +465,7 @@ class TestTask:
     def test_multipart_task_get_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
-        query_file_path = tmp_path / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file_part1 = query_file_path / "part1.sql"
@@ -458,10 +495,22 @@ class TestTask:
         task = Task.of_multipart_query(query_file_part1, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table1_v1"
+            / "query.sql",
+            metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table2_v1"
+            / "query.sql",
+            metadata,
         )
 
         dags = DagCollection.from_dict(
@@ -489,7 +538,7 @@ class TestTask:
     def test_task_get_view_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
-        query_file_path = tmp_path / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -518,10 +567,22 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table1_v1"
+            / "query.sql",
+            metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table2_v1"
+            / "query.sql",
+            metadata,
         )
 
         dags = DagCollection.from_dict(
@@ -549,7 +610,7 @@ class TestTask:
     def test_task_get_nested_view_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
-        query_file_path = tmp_path / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -581,10 +642,22 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table1_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table1_v1"
+            / "query.sql",
+            metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path / "sql" / temporary_dataset / "table2_v1" / "query.sql", metadata
+            tmp_path
+            / project_id
+            / "sql"
+            / temporary_dataset
+            / "table2_v1"
+            / "query.sql",
+            metadata,
         )
 
         dags = DagCollection.from_dict(
@@ -610,6 +683,7 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "incremental_query_v1"

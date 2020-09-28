@@ -24,10 +24,9 @@ from bigquery_etl.query_scheduling.utils import (
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(
-    r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/"
+    r"^.*/([a-zA-Z0-9_-]+)/[a-zA-Z0-9_]+/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/"
     r"(?:query\.sql|part1\.sql|script\.sql)$"
 )
-DEFAULT_PROJECT = "moz-fx-data-shared-prod"
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
 
 
@@ -137,6 +136,7 @@ class Task:
     owner: str = attr.ib()
     email: List[str] = attr.ib([])
     task_name: Optional[str] = attr.ib(None)
+    project: str = attr.ib(init=False)
     dataset: str = attr.ib(init=False)
     table: str = attr.ib(init=False)
     version: str = attr.ib(init=False)
@@ -198,9 +198,10 @@ class Task:
         """Extract information from the query file name."""
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
         if query_file_re:
-            self.dataset = query_file_re.group(1)
-            self.table = query_file_re.group(2)
-            self.version = query_file_re.group(3)
+            self.project = query_file_re.group(1)
+            self.dataset = query_file_re.group(2)
+            self.table = query_file_re.group(3)
+            self.version = query_file_re.group(4)
 
             if self.task_name is None:
                 self.task_name = f"{self.dataset}__{self.table}__{self.version}"
@@ -216,7 +217,7 @@ class Task:
         else:
             raise ValueError(
                 "query_file must be a path with format:"
-                " ../<dataset>/<table>_<version>/(query.sql|part1.sql)"
+                " <project>/*/<dataset>/<table>_<version>/(query.sql|part1.sql)"
                 f" but is {self.query_file}"
             )
 
@@ -328,7 +329,7 @@ class Task:
                     )
 
                 for t in referenced_tables:
-                    table_names.add((t["datasetId"], t["tableId"]))
+                    table_names.add((t["projectId"], t["datasetId"], t["tableId"]))
 
             # the order of table dependencies changes between requests
             # sort to maintain same order between DAG generation runs
@@ -340,7 +341,7 @@ class Task:
         dependencies = []
 
         for table in self._get_referenced_tables():
-            upstream_task = dag_collection.task_for_table(table[0], table[1])
+            upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
             task_schedule_interval = dag_collection.dag_by_name(
                 self.dag_name
             ).schedule_interval
@@ -374,7 +375,7 @@ class Task:
             else:
                 # see if there are some static dependencies
                 for task, patterns in EXTERNAL_TASKS.items():
-                    if any(fnmatchcase(f"{table[0]}.{table[1]}", p) for p in patterns):
+                    if any(fnmatchcase(f"{table[1]}.{table[2]}", p) for p in patterns):
                         # ensure there are no duplicate dependencies
                         # manual dependency definitions overwrite automatically detected
                         if not any(

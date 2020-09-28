@@ -26,8 +26,9 @@ parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--project-id",
     "--project_id",
-    default=DEFAULT_PROJECT_ID,
-    help="Project to publish UDFs to",
+    required=False,
+    help="Project to publish UDFs to. "
+    "If not set, publish UDFs for all projects except mozfun.",
 )
 parser.add_argument(
     "--udf-dirs",
@@ -75,6 +76,31 @@ def main():
     )
 
 
+def get_udf_dirs(udf_dirs, project_id):
+    """Return paths to directories with UDFs."""
+    if project_id != "mozfun":
+        # for non-mozfun projects, the default UDF directories are udf/ and udf_js/
+        # the project needs to be pre-pended to these paths
+        if project_id is None:
+            # publish for all projects
+            projects = [
+                project_dir
+                for project_dir in os.listdir()
+                if project_dir.startswith("moz-fx-")
+            ]
+        else:
+            projects = [project_id]
+
+        udf_dirs = [
+            os.path.join(project, d)
+            for project in projects
+            for d in udf_dirs
+            if os.path.exists(os.path.join(project, d))
+        ]
+
+    return udf_dirs
+
+
 def publish(udf_dirs, project_id, dependency_dir, gcs_bucket, gcs_path, public):
     """Publish UDFs in the provided directory."""
     client = bigquery.Client(project_id)
@@ -82,6 +108,7 @@ def publish(udf_dirs, project_id, dependency_dir, gcs_bucket, gcs_path, public):
     if dependency_dir and os.path.exists(dependency_dir):
         push_dependencies_to_gcs(gcs_bucket, gcs_path, dependency_dir, project_id)
 
+    udf_dirs = get_udf_dirs(udf_dirs, project_id)
     raw_udfs = read_udf_dirs(*udf_dirs)
 
     published_udfs = []

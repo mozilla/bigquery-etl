@@ -113,6 +113,7 @@ SKIP = {
 class DryRun:
     """Dry run SQL files."""
 
+    # todo: support different dry run endpoints for different projects
     DRY_RUN_URL = (
         "https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/"
         "bigquery-etl-dryrun"

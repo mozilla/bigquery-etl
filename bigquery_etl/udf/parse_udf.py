@@ -109,7 +109,13 @@ class RawUdf:
 
             elif normalized_statement.startswith("create or replace procedure"):
                 definitions.append(s)
-                tests.append(s)
+
+                # For now, dryruns don't work because procedures don't support
+                # default datasets.
+                # Support issue has been filed with Google, when this is resolved
+                # we can reenable these.
+                #
+                # tests.append(s)
                 if persistent_name in normalized_statement:
                     internal_name = persistent_name
 

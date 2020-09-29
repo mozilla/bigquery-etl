@@ -20,24 +20,13 @@ from bigquery_etl.util.common import project_dirs
 _parsed_udfs = None
 
 
-def project_udf_dirs():
-    """Get UDF directories of existing projects."""
-    projects = project_dirs()
-    return [
-        os.path.join(project, d)
-        for project in projects
-        for d in UDF_DIRS
-        if os.path.exists(os.path.join(project, d))
-    ]
-
-
 def parsed_udfs():
     """Get cached parsed udfs."""
     global _parsed_udfs
     if _parsed_udfs is None:
         _parsed_udfs = {
             udf.filepath: udf
-            for udf in parse_udf_dirs("tests/assert", *project_udf_dirs(), *MOZFUN_DIR)
+            for udf in parse_udf_dirs("tests/assert", *get_udf_dirs(UDF_DIRS), *MOZFUN_DIR)
         }
 
     return _parsed_udfs

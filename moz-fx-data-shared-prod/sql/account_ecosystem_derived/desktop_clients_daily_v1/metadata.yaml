@@ -12,4 +12,4 @@ scheduling:
   # We access a restricted table for getting an HMAC key, so cannot dry run
   # and must explicitly list referenced tables.
   referenced_tables:
-    - ['telemetry_stable', 'account_ecosystem_v4']
+    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'account_ecosystem_v4']

@@ -53,7 +53,7 @@ SKIP = {
     "moz-fx-data-shared-prod/sql/telemetry/windows_10_patch_adoption/view.sql",
     "moz-fx-data-shared-prod/sql/telemetry_derived/attitudes_daily_v1/init.sql",
     "moz-fx-data-shared-prod/sql/telemetry_derived/attitudes_daily_v1/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_histogram_aggregates_v1/init.sql",   # noqa E501
+    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_histogram_aggregates_v1/init.sql",  # noqa E501
     "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_histogram_aggregates_v1/query.sql",  # noqa E501
     "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",  # noqa E501
     "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",  # noqa E501

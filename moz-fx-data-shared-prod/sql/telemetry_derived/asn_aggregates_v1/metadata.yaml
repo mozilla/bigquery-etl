@@ -13,8 +13,8 @@ scheduling:
   dag_name: bqetl_asn_aggregates
   parameters: ["n_clients:INT64:500"]
   referenced_tables:
-  - ['static', 'isp_blocks_ipv4_20200407']
-  - ['telemetry_derived', 'events_v1']
-  - ['telemetry_derived', 'main_events_v1']
-  - ['telemetry_derived', 'events_events_v1']
-  - ['payload_bytes_raw', 'telemetry']
+  - ['moz-fx-data-shared-prod', 'static', 'isp_blocks_ipv4_20200407']
+  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'events_v1']
+  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'main_events_v1']
+  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'events_events_v1']
+  - ['moz-fx-data-shared-prod', 'payload_bytes_raw', 'telemetry']

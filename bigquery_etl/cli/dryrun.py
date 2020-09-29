@@ -17,7 +17,7 @@ from ..cli.utils import is_authenticated
 )
 @click.argument(
     "path",
-    default="sql/",
+    default="moz-fx-data-shared-prod/sql/",
     type=click.Path(file_okay=True),
 )
 @click.option(
@@ -46,6 +46,7 @@ def dryrun(path, use_cloud_function, project):
         sql_files = [path]
     else:
         click.echo(f"Invalid path {path}", err=True)
+        sys.exit(1)
 
     if use_cloud_function:
 

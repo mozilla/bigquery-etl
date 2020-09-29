@@ -26,7 +26,7 @@ sql_dir_option = click.option(
     "--sql_dir",
     help="Path to directory with queries",
     type=click.Path(file_okay=False),
-    default="sql/",
+    default="moz-fx-data-shared-prod/sql/",
     callback=is_valid_dir,
 )
 

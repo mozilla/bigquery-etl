@@ -27,7 +27,8 @@ class TestDag:
             info,
             [
                 "--dags_config=" + str(TEST_DIR / "data" / "dags.yaml"),
-                "--sql_dir=" + str(TEST_DIR / "data" / "test_sql"),
+                "--sql_dir="
+                + str(TEST_DIR / "data" / "moz-fx-data-test-project" / "test_sql"),
                 "--with_tasks",
             ],
         )
@@ -131,7 +132,7 @@ class TestDag:
                 },
             }
 
-            os.mkdir("sql")
+            os.makedirs("moz-fx-data-shared-prod/sql")
             os.mkdir("dags")
 
             with open("dags.yaml", "w") as f:
@@ -165,10 +166,10 @@ class TestDag:
             with open("dags.yaml", "w") as f:
                 f.write(yaml.dump(dags_conf))
 
-            os.mkdir("sql")
-            os.mkdir("sql/telemetry_derived")
-            os.mkdir("sql/telemetry_derived/query_v1")
-            with open("sql/telemetry_derived/query_v1/query.sql", "w") as f:
+            os.makedirs("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1")
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
             metadata_conf = {
@@ -178,7 +179,10 @@ class TestDag:
                 "scheduling": {"dag_name": "bqetl_test"},
             }
 
-            with open("sql/telemetry_derived/query_v1/metadata.yaml", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
                 f.write(yaml.dump(metadata_conf))
 
             os.mkdir("dags")
@@ -197,6 +201,9 @@ class TestDag:
                 assert "bqetl_test_2" in dags_conf
                 assert "bqetl_test" not in dags_conf
 
-            with open("sql/telemetry_derived/query_v1/metadata.yaml", "r") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/metadata.yaml",
+                "r",
+            ) as f:
                 metadata = yaml.safe_load(f.read())
                 assert "scheduling" not in metadata

@@ -9,7 +9,9 @@ ROOT = Path(__file__).parent.parent.parent
 
 
 def _check_root():
-    assert (ROOT / "sql").exists(), f"{ROOT} is not the project root"
+    assert (
+        ROOT / "moz-fx-data-shared-prod" / "sql"
+    ).exists(), f"{ROOT} is not the project root"
 
 
 @click.group()

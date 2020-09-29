@@ -15,9 +15,20 @@ from ..udf.parse_udf import (
     parse_udf_dirs,
     GENERIC_DATASET,
 )
+from bigquery_etl.util.common import project_dirs
 
-TEST_UDF_DIRS = {"assert"}.union(UDF_DIRS).union(MOZFUN_DIR)
 _parsed_udfs = None
+
+
+def project_udf_dirs():
+    """Get UDF directories of existing projects."""
+    projects = project_dirs()
+    return [
+        os.path.join(project, d)
+        for project in projects
+        for d in UDF_DIRS
+        if os.path.exists(os.path.join(project, d))
+    ]
 
 
 def parsed_udfs():
@@ -26,7 +37,7 @@ def parsed_udfs():
     if _parsed_udfs is None:
         _parsed_udfs = {
             udf.filepath: udf
-            for udf in parse_udf_dirs("tests/assert", *UDF_DIRS, *MOZFUN_DIR)
+            for udf in parse_udf_dirs("tests/assert", *project_udf_dirs(), *MOZFUN_DIR)
         }
 
     return _parsed_udfs
@@ -40,12 +51,8 @@ def pytest_configure(config):
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
     if "tests/data" not in str(path.dirpath()):
-        if path.basename in (UDF_FILE, PROCEDURE_FILE):
-            if (
-                path.dirpath().dirpath().basename in TEST_UDF_DIRS
-                or path.dirpath().dirpath().dirpath().basename in MOZFUN_DIR
-            ):
-                return UdfFile.from_parent(parent, fspath=path)
+        if path.basename.endswith(UDF_FILE) or path.basename.endswith(PROCEDURE_FILE):
+            return UdfFile.from_parent(parent, fspath=path)
 
 
 class UdfFile(pytest.File):

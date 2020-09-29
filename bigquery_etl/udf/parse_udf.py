@@ -20,6 +20,7 @@ UDF_DIRS = ("udf", "udf_js")
 MOZFUN_DIR = ("mozfun",)
 UDF_CHAR = "[a-zA-z0-9_]"
 UDF_FILE = "udf.sql"
+PROCEDURE_FILE = "stored_procedure.sql"
 EXAMPLE_DIR = "examples"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
@@ -35,7 +36,7 @@ MOZFUN_UDFS = {
     for udf_dir in MOZFUN_DIR
     for root, dirs, files in os.walk(udf_dir)
     for filename in files
-    if filename == UDF_FILE
+    if filename in (UDF_FILE, PROCEDURE_FILE)
 }
 
 
@@ -92,7 +93,9 @@ class RawUdf:
         definitions = []
         tests = []
 
-        for s in statements:
+        procedure_start = -1
+
+        for i, s in enumerate(statements):
             normalized_statement = " ".join(s.lower().split())
             if normalized_statement.startswith("create or replace function"):
                 definitions.append(s)
@@ -104,10 +107,28 @@ class RawUdf:
                 if temp_name in normalized_statement:
                     internal_name = temp_name
 
+            elif normalized_statement.startswith("create or replace procedure"):
+                definitions.append(s)
+                if persistent_name in normalized_statement:
+                    internal_name = persistent_name
+
             else:
-                tests.append(s)
+                if normalized_statement.startswith("begin"):
+                    procedure_start = i
+
+                if procedure_start == -1:
+                    tests.append(s)
+
+                if procedure_start > -1 and normalized_statement.endswith("end;"):
+                    tests.append(' '.join(statements[procedure_start:i+1]))
+                    procedure_start = -1
 
         for name in (prod_name, internal_name):
+            if name is None:
+                raise ValueError(
+                    f"Expected a function named {persistent_name} or {temp_name} "
+                    f"to be defined"
+                )
             if is_defined and not UDF_NAME_RE.match(name):
                 raise ValueError(
                     f"Invalid UDF name {name}: Must start with alpha char, "
@@ -127,11 +148,6 @@ class RawUdf:
                 dependencies.append(udf)
 
         if is_defined:
-            if internal_name is None:
-                raise ValueError(
-                    f"Expected a UDF named {persistent_name} or {temp_name} "
-                    f"to be defined"
-                )
             dependencies.remove(internal_name)
 
         return RawUdf(
@@ -167,7 +183,7 @@ def read_udf_dirs(*udf_dirs):
         for root, dirs, files in os.walk(udf_dir)
         if os.path.basename(root) != EXAMPLE_DIR
         for filename in files
-        if not filename.startswith(".") and filename.endswith(".sql")
+        if filename in (UDF_FILE, PROCEDURE_FILE)
         for raw_udf in (RawUdf.from_file(os.path.join(root, filename)),)
     }
 

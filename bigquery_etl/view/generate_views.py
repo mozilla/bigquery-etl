@@ -67,6 +67,7 @@ def main():
         parser.error(f"argument --log-level: {e}")
 
     client = bigquery.Client()
+    # todo: support other projects
     tables = get_tables_matching_patterns(client, args.patterns)
 
     views = {}

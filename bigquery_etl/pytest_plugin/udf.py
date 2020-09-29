@@ -15,7 +15,6 @@ from ..udf.parse_udf import (
     parse_udf_dirs,
     GENERIC_DATASET,
 )
-from bigquery_etl.util.common import project_dirs
 
 _parsed_udfs = None
 
@@ -26,7 +25,9 @@ def parsed_udfs():
     if _parsed_udfs is None:
         _parsed_udfs = {
             udf.filepath: udf
-            for udf in parse_udf_dirs("tests/assert", *get_udf_dirs(UDF_DIRS), *MOZFUN_DIR)
+            for udf in parse_udf_dirs(
+                "tests/assert", *get_udf_dirs(UDF_DIRS), *MOZFUN_DIR
+            )
         }
 
     return _parsed_udfs

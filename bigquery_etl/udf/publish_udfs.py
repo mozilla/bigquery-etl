@@ -9,8 +9,11 @@ from google.cloud import bigquery
 from google.cloud import storage
 
 from bigquery_etl.util import standard_args
-from bigquery_etl.udf.parse_udf import read_udf_dirs, accumulate_dependencies, get_udf_dirs
-from bigquery_etl.util.common import project_dirs
+from bigquery_etl.udf.parse_udf import (
+    read_udf_dirs,
+    accumulate_dependencies,
+    get_udf_dirs,
+)
 
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 DEFAULT_UDF_DIR = ["udf/", "udf_js/"]

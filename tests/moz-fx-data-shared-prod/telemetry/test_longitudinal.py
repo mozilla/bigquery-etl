@@ -9,7 +9,7 @@ def test_basic():
     results = subprocess.check_output(
         [
             sys.executable,
-            "moz-fx-datda-shared-prod/sql/telemetry/longitudinal.sql.py",
+            "moz-fx-data-shared-prod/sql/telemetry/longitudinal.sql.py",
             "--tablename",
             "foo",
             "--to",
@@ -44,7 +44,7 @@ def test_everything():
     results = subprocess.check_output(
         [
             sys.executable,
-            "moz-fx-datda-shared-prod/sql/telemetry/longitudinal.sql.py",
+            "moz-fx-data-shared-prod/sql/telemetry/longitudinal.sql.py",
             "--tablename",
             "foo",
             "--to",
@@ -92,7 +92,7 @@ def test_column_conflict():
         subprocess.check_output(
             [
                 sys.executable,
-                "moz-fx-datda-shared-prod/sql/telemetry/longitudinal.sql.py",
+                "moz-fx-data-shared-prod/sql/telemetry/longitudinal.sql.py",
                 "--tablename",
                 "foo",
                 "--to",

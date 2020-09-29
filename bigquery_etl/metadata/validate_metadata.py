@@ -8,7 +8,7 @@ import sys
 from .parse_metadata import Metadata
 from ..util import standard_args
 
-DEFAULT_DIR = "sql/"
+DEFAULT_DIR = "moz-fx-data-shared-prod/sql/"
 
 parser = ArgumentParser(description=__doc__)
 

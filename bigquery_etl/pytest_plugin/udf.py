@@ -2,7 +2,6 @@
 
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
-import os
 import pytest
 import re
 
@@ -70,7 +69,7 @@ class UdfTest(pytest.Item):
             self.add_marker(pytest.mark.xfail(strict=True))
 
     def safe_name(self):
-        """Get the name as a valid slug"""
+        """Get the name as a valid slug."""
         value = re.sub(r"[^\w\s_]", "", self.name.lower()).strip()
         return re.sub(r"[_\s]+", "_", value)
 

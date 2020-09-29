@@ -282,7 +282,7 @@ mozfun.add_command(publish)
     "--sql-path",
     help="Path to directory with SQL queries.",
     type=click.Path(file_okay=False),
-    default="sql/",
+    default="moz-fx-data-shared-prod/sql/",
 )
 @click.pass_context
 def rename(ctx, name, path, new_name, sql_path):

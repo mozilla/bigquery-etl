@@ -10,7 +10,7 @@ from bigquery_etl.format_sql.format import format as format_sql
 )
 @click.argument(
     "path",
-    default="sql/",
+    default="moz-fx-data-shared-prod/sql/",
     type=click.Path(file_okay=True),
 )
 def format(path):

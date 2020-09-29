@@ -53,6 +53,7 @@ class TestParseMetadata(object):
         metadata_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "non_incremental_query_v1"
@@ -68,6 +69,7 @@ class TestParseMetadata(object):
         metadata_file = (
             TEST_DIR
             / "data"
+            / "moz-fx-data-test-project"
             / "test_sql"
             / "test"
             / "no_metadata_query_v1"
@@ -78,7 +80,10 @@ class TestParseMetadata(object):
 
     def test_of_table(self):
         metadata = Metadata.of_table(
-            "test", "non_incremental_query", "v1", TEST_DIR / "data" / "test_sql"
+            "test",
+            "non_incremental_query",
+            "v1",
+            TEST_DIR / "data" / "moz-fx-data-test-project" / "test_sql",
         )
 
         assert metadata.friendly_name == "Test table for a non-incremental query"
@@ -88,7 +93,10 @@ class TestParseMetadata(object):
     def test_of_non_existing_table(self):
         with pytest.raises(FileNotFoundError):
             Metadata.of_table(
-                "test", "no_metadata", "v1", TEST_DIR / "data" / "test_sql"
+                "test",
+                "no_metadata",
+                "v1",
+                TEST_DIR / "data" / "moz-fx-data-test-project" / "test_sql",
             )
 
     def test_is_metadata_file(self):

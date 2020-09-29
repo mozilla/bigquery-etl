@@ -24,8 +24,8 @@ from bigquery_etl.query_scheduling.utils import (
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(
-    r"^.*/([a-zA-Z0-9_-]+)/[a-zA-Z0-9_]+/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/"
-    r"(?:query\.sql|part1\.sql|script\.sql)$"
+    r"^(?:.*/)?([a-zA-Z0-9_-]+)/[a-zA-Z0-9_]+/([a-zA-Z0-9_]+)/"
+    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql)$"
 )
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
 

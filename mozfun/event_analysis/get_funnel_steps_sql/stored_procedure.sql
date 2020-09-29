@@ -6,15 +6,16 @@ BEGIN
   DECLARE regex_query STRING;
   DECLARE funnel_sqls ARRAY<STRING> DEFAULT [];
   DECLARE funnel_step_regex ARRAY<STRING>;
+  DECLARE step_sql STRING;
 
   CALL event_analysis.create_funnel_steps_query(project, dataset, ARRAY(SELECT AS STRUCT list FROM UNNEST(funnel)), regex_query);
   EXECUTE IMMEDIATE regex_query INTO funnel_step_regex;
 
   WHILE i <= ARRAY_LENGTH(funnel) DO
-    SET funnel_sqls = ARRAY_CONCAT(funnel_sqls, [CONCAT('REGEXP_CONTAINS(events, r"', funnel_step_regex[ORDINAL(i)], '") AS ', funnel[ORDINAL(i)].step_name)]);
+    SET step_sql = CONCAT('REGEXP_CONTAINS(events, r"', funnel_step_regex[ORDINAL(i)], '") AS ', funnel[ORDINAL(i)].step_name);
+    SET funnel_sqls = ARRAY_CONCAT(funnel_sqls, [step_sql]);
     SET i = i + 1;
   END WHILE;
-
   SET funnel_sql = CONCAT('STRUCT(', ARRAY_TO_STRING(funnel_sqls, ', '), ') AS ', funnel_name);
 END;
 

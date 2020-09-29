@@ -14,6 +14,7 @@ import sqlparse
 import yaml
 
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE
+from bigquery_etl.util.common import project_dirs
 
 
 UDF_DIRS = ("udf", "udf_js")
@@ -184,11 +185,28 @@ class ParsedUdf(RawUdf):
         return ParsedUdf(*astuple(raw_udf), tests_full_sql)
 
 
+def get_udf_dirs(udf_dirs, project_id=None):
+    """Return paths to directories with UDFs."""
+    if project_id != "mozfun":
+        # for non-mozfun projects, the default UDF directories are udf/ and udf_js/
+        # the project needs to be pre-pended to these paths
+        projects = project_dirs(project_id)
+
+        udf_dirs = [
+            os.path.join(project, d)
+            for project in projects
+            for d in udf_dirs
+            if os.path.exists(os.path.join(project, d))
+        ]
+
+    return udf_dirs
+
+
 def read_udf_dirs(*udf_dirs):
     """Read contents of udf_dirs into dict of RawUdf instances."""
     return {
         raw_udf.name: raw_udf
-        for udf_dir in (udf_dirs or MOZFUN_DIR)
+        for udf_dir in (udf_dirs or get_udf_dirs(UDF_DIRS) + list(MOZFUN_DIR))
         for root, dirs, files in os.walk(udf_dir)
         if os.path.basename(root) != EXAMPLE_DIR
         for filename in files
@@ -250,8 +268,10 @@ def udf_usages_in_text(text):
     return sorted(set(udf_usages))
 
 
-def udf_usage_definitions(text, raw_udfs):
+def udf_usage_definitions(text, raw_udfs=None):
     """Return a list of definitions of UDFs used in provided SQL text."""
+    if raw_udfs is None:
+        raw_udfs = read_udf_dirs()
     deps = []
     for udf_usage in udf_usages_in_text(text):
         deps = accumulate_dependencies(deps, raw_udfs, udf_usage)
@@ -299,7 +319,7 @@ def udf_tests_sql(raw_udf, raw_udfs):
     return tests_full_sql
 
 
-def prepend_udf_usage_definitions(text, raw_udfs):
+def prepend_udf_usage_definitions(text, raw_udfs=None):
     """Prepend definitions of UDFs used to provided SQL text."""
     statements = udf_usage_definitions(text, raw_udfs)
     return "\n\n".join(statements + [text])

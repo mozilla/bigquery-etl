@@ -47,8 +47,8 @@ class SqlTest(pytest.Item, pytest.File):
 
     def reportinfo(self):
         """Set report title to `{dataset}.{table}:{test}`."""
-        dataset, table, test = self.fspath.strpath.split(os.path.sep)[-3:]
-        return super().reportinfo()[:2] + (f"{dataset}.{table}:{test}",)
+        project, dataset, table, test = self.fspath.strpath.split(os.path.sep)[-4:]
+        return super().reportinfo()[:2] + (f"{project}.{dataset}.{table}:{test}",)
 
     def repr_failure(self, excinfo):
         """Skip traceback for api error."""
@@ -67,6 +67,7 @@ class SqlTest(pytest.Item, pytest.File):
         test_name = self.fspath.basename
         query_name = self.fspath.dirpath().basename
         dataset_name = self.fspath.dirpath().dirpath().basename
+        project_name = self.fspath.dirpath().dirpath().dirpath().basename
 
         init_test = False
         script_test = False
@@ -74,10 +75,12 @@ class SqlTest(pytest.Item, pytest.File):
         # init tests write to dataset_query_test, instead of their
         # default name
         # We assume the init sql contains `CREATE TABLE dataset.table`
+        path = self.fspath.dirname.replace('tests', '')
+        path = path.replace(project_name, f'{project_name}/sql')
         if test_name == "test_init":
             init_test = True
 
-            query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/init.sql")
+            query = read(f"{path}/init.sql")
             original, dest_name = (
                 f"{dataset_name}.{query_name}",
                 f"{dataset_name}_{query_name}_{test_name}",
@@ -86,9 +89,9 @@ class SqlTest(pytest.Item, pytest.File):
             query_name = dest_name
         elif test_name == "test_script":
             script_test = True
-            query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/script.sql")
+            query = read(f"{path}/script.sql")
         else:
-            query = read(f"{self.fspath.dirname.replace('tests', 'sql')}/query.sql")
+            query = read(f"{path}/query.sql")
 
         expect = load(self.fspath.strpath, "expect")
 

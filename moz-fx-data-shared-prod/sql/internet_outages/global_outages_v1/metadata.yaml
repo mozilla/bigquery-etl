@@ -40,6 +40,6 @@ scheduling:
   # provide this value so that DAG generation does not have to dry run the
   # query to get it, and that would be slow because main_v4 is referenced
   referenced_tables:
-  - ['telemetry_stable', 'main_v4']
-  - ['telemetry_derived', 'clients_daily_v6']
-  - ['telemetry_stable', 'health_v4']
+  - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']
+  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_daily_v6']
+  - ['moz-fx-data-shared-prod', 'telemetry_stable', 'health_v4']

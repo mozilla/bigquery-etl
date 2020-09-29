@@ -7,4 +7,4 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_deletion_request_volume
-  referenced_tables: [['payload_bytes_decoded', '*']]
+  referenced_tables: [['moz-fx-data-shared-prod', 'payload_bytes_decoded', '*']]

@@ -7,7 +7,7 @@ pytest-pydocstyle==2.2.0
 pytest-flake8==1.0.6
 pytest-mypy==0.7.0
 pytest-xdist==2.1.0
-pytest==6.0.2
+pytest==6.1.0
 PyYAML==5.3.1
 smart_open==2.1.1
 sqlparse==0.3.1

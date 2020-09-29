@@ -127,7 +127,7 @@ class RawUdf:
                     tests.append(s)
 
                 if procedure_start > -1 and normalized_statement.endswith("end;"):
-                    tests.append(" ".join(statements[procedure_start : i + 1]))
+                    tests.append(" ".join(statements[procedure_start: i + 1]))
                     procedure_start = -1
 
         for name in (prod_name, internal_name):

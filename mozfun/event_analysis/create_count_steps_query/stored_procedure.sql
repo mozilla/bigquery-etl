@@ -15,7 +15,7 @@ BEGIN
   DECLARE event_filters ARRAY<STRING> DEFAULT[];
 
   WHILE
-    i <= array_length(events)
+    i <= ARRAY_LENGTH(events)
   DO
     SET event = events[ORDINAL(i)];
 
@@ -47,6 +47,9 @@ BEGIN
     ARRAY_TO_STRING(event_filters, ' OR ')
   );
 END;
+
+-- Tests
+
 BEGIN
   DECLARE result_sql STRING;
 

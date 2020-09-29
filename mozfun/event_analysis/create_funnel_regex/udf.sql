@@ -10,6 +10,7 @@ RETURNS STRING AS (
   )
 );
 
+-- Tests
 SELECT
   assert_equals(
     '((?:a|b)(?:.*?)(?:b))',

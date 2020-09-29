@@ -109,6 +109,7 @@ class RawUdf:
 
             elif normalized_statement.startswith("create or replace procedure"):
                 definitions.append(s)
+                tests.append(s)
                 if persistent_name in normalized_statement:
                     internal_name = persistent_name
 

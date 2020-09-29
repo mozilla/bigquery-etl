@@ -137,7 +137,7 @@ def publish_udf(
         )
 
         # add UDF descriptions
-        if raw_udf.filepath not in SKIP:
+        if raw_udf.filepath not in SKIP and not raw_udf.is_stored_procedure:
             # descriptions need to be escaped since quotation marks and other
             # characters, such as \x01, will make the query invalid otherwise
             escaped_description = json.dumps(str(raw_udf.description))

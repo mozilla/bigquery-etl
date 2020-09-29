@@ -51,6 +51,7 @@ class RawUdf:
     tests: List[str]
     dependencies: List[str]
     description: str  # description from metadata file
+    is_stored_procedure: str
 
     @staticmethod
     def from_file(filepath):
@@ -89,6 +90,7 @@ class RawUdf:
         persistent_name = f"{dataset}.{name}"
         temp_name = f"{dataset}_{name}"
         internal_name = None
+        is_stored_procedure = False
 
         definitions = []
         tests = []
@@ -108,6 +110,7 @@ class RawUdf:
                     internal_name = temp_name
 
             elif normalized_statement.startswith("create or replace procedure"):
+                is_stored_procedure = True
                 definitions.append(s)
 
                 # For now, dryruns don't work because procedures don't support
@@ -167,6 +170,7 @@ class RawUdf:
             # but then convert back to a list for stable order.
             sorted(set(dependencies)),
             description,
+            is_stored_procedure,
         )
 
 

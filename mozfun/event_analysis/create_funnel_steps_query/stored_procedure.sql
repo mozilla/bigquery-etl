@@ -99,7 +99,6 @@ BEGIN
 END;
 
 -- Tests
-
 BEGIN
   DECLARE result_sql STRING;
 

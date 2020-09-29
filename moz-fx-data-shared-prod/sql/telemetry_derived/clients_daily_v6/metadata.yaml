@@ -9,4 +9,5 @@ labels:
 owners:
 - dthorn@mozilla.com
 scheduling:
-  dag_name: bqetl_ssl_ratios
+  dag_name: bqetl_main_summary
+  start_date: '2019-11-05'

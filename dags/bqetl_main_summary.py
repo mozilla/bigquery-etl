@@ -59,6 +59,24 @@ with DAG(
         dag=dag,
     )
 
+    telemetry_derived__clients_daily__v6 = bigquery_etl_query(
+        task_id="telemetry_derived__clients_daily__v6",
+        destination_table="clients_daily_v6",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2019, 11, 5, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     telemetry_derived__clients_first_seen__v1 = bigquery_etl_query(
         task_id="telemetry_derived__clients_first_seen__v1",
         destination_table="clients_first_seen_v1",
@@ -122,21 +140,16 @@ with DAG(
         telemetry_derived__clients_last_seen__v1
     )
 
-    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily__v6",
-        external_dag_id="bqetl_ssl_ratios",
-        external_task_id="telemetry_derived__clients_daily__v6",
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    telemetry_derived__clients_daily__v6.set_upstream(
+        telemetry_derived__main_summary__v4
     )
 
     telemetry_derived__clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__clients_daily__v6
+        telemetry_derived__clients_daily__v6
     )
 
     telemetry_derived__clients_last_seen__v1.set_upstream(
-        wait_for_telemetry_derived__clients_daily__v6
+        telemetry_derived__clients_daily__v6
     )
 
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(

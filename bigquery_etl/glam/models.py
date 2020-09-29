@@ -33,6 +33,7 @@ def clients_scalar_aggregates(**kwargs):
                 >
             >
         """,
+        num_versions_to_keep=2,
         **kwargs,
     )
 
@@ -62,6 +63,7 @@ def clients_histogram_aggregates(**kwargs):
             key,
             agg_type
         """,
+        num_versions_to_keep=2,
         **kwargs,
     )
 

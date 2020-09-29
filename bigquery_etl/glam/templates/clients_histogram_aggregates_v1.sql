@@ -23,7 +23,7 @@ filtered_accumulated AS (
   USING
     (channel)
   WHERE
-    app_version >= (latest_version - 2)
+    app_version >= (latest_version - {{ num_versions_to_keep }})
 ),
 -- unnest the daily data
 extracted_daily AS (
@@ -55,7 +55,7 @@ filtered_daily AS (
   USING
     (channel)
   WHERE
-    app_version >= (latest_version - 2)
+    app_version >= (latest_version - {{ num_versions_to_keep }})
 ),
 -- re-aggregate based on the latest version
 aggregated_daily AS (

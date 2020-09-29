@@ -86,7 +86,7 @@ filtered_old AS (
   USING
       (channel)
   WHERE
-      app_version >= (latest_version - 2)
+      app_version >= (latest_version - {{ num_versions_to_keep }})
 ),
 joined_new_old AS (
   SELECT

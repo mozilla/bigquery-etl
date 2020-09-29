@@ -71,8 +71,8 @@ class UdfTest(pytest.Item):
 
     def safe_name(self):
         """Get the name as a valid slug"""
-        value = re.sub(r'[^\w\s_]', '', self.name.lower()).strip()
-        return re.sub(r'[_\s]+', '_', value)
+        value = re.sub(r"[^\w\s_]", "", self.name.lower()).strip()
+        return re.sub(r"[_\s]+", "_", value)
 
     def reportinfo(self):
         """Set report title to `self.name`."""
@@ -94,6 +94,8 @@ class UdfTest(pytest.Item):
         """Run Test."""
         bq = bigquery.Client()
         with dataset(bq, self.safe_name()) as default_dataset:
-            job_config = bigquery.QueryJobConfig(use_legacy_sql=False, default_dataset=default_dataset)
+            job_config = bigquery.QueryJobConfig(
+                use_legacy_sql=False, default_dataset=default_dataset
+            )
             job = bq.query(self.query, job_config=job_config)
             job.result()

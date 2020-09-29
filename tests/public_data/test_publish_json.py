@@ -17,6 +17,7 @@ class TestPublishJson(object):
     non_incremental_sql_path = (
         TEST_DIR
         / "data"
+        / "moz-fx-data-test-project"
         / "test_sql"
         / "test"
         / "non_incremental_query_v1"
@@ -24,7 +25,7 @@ class TestPublishJson(object):
     )
 
     incremental_sql_path = (
-        TEST_DIR / "data" / "test_sql" / "test" / "incremental_query_v1" / "query.sql"
+        TEST_DIR / "data" / "moz-fx-data-test-project" / "test_sql" / "test" / "incremental_query_v1" / "query.sql"
     )
 
     incremental_parameter = "submission_date:DATE:2020-03-15"

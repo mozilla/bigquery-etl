@@ -8,7 +8,9 @@ TEST_DIR = Path(__file__).parent.parent
 
 class TestParseUdf:
     mock_mozfun_udfs = mock.patch.object(
-        parse_udf, "MOZFUN_UDFS", ["hist.range", "json.parse"]
+        parse_udf,
+        "MOZFUN_UDFS",
+        ["hist.range", "json.parse", "procedure.test_procedure"],
     )
 
     def test_raw_udf_from_file(self):
@@ -200,3 +202,54 @@ class TestParseUdf:
             raw_udf.description
             == "Shift input bits one day left and drop any bits beyond 28 days."
         )
+
+    def test_procedure(self):
+        with self.mock_mozfun_udfs:
+            text = (
+                "CREATE OR REPLACE PROCEDURES procedure.test_procedure(out STRING) "
+                "BEGIN "
+                "SET out = mozfun.json.parse('{}'); "
+                "END "
+            )
+            result = parse_udf.RawUdf.from_text(
+                text, "procedure", "test_procedure", description=""
+            )
+            assert result.name == "procedure.test_procedure"
+            assert len(result.definitions) == 1
+            assert len(result.dependencies) == 1
+            assert "json.parse" in result.dependencies
+            assert result.tests == []
+
+            text = (
+                "CREATE OR REPLACE PROCEDURES procedure.test_procedure(out STRING) "
+                "BEGIN "
+                "SET out = ''; "
+                "END "
+            )
+            result = parse_udf.RawUdf.from_text(
+                text, "procedure", "test_procedure", description=""
+            )
+            assert result.name == "procedure.test_procedure"
+            assert len(result.definitions) == 1
+            assert result.dependencies == []
+            assert result.tests == []
+
+    def test_procedure_from_file(self):
+        udf_dir = TEST_DIR / "data"
+
+        with self.mock_mozfun_udfs:
+            result = parse_udf.RawUdf.from_file(
+                udf_dir / "procedure" / "test_procedure" / "stored_procedure.sql"
+            )
+            assert result.name == "procedure.test_procedure"
+            assert result.dataset == "procedure"
+            assert len(result.definitions) == 1
+            assert (
+                result.definitions[0]
+                == """CREATE OR REPLACE PROCEDURES procedure.test_procedure(out STRING)
+BEGIN
+  SET out = mozfun.json.parse('{}');
+END;"""
+            )
+            assert result.tests == []
+            assert result.dependencies == ["json.parse"]

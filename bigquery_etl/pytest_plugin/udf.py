@@ -2,10 +2,18 @@
 
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
-import os
 import pytest
+import re
 
-from ..udf.parse_udf import UDF_DIRS, MOZFUN_DIR, parse_udf_dirs
+from .sql_test import dataset
+
+from ..udf.parse_udf import (
+    UDF_DIRS,
+    MOZFUN_DIR,
+    UDF_FILE,
+    PROCEDURE_FILE,
+    parse_udf_dirs,
+)
 
 TEST_UDF_DIRS = {"assert"}.union(UDF_DIRS).union(MOZFUN_DIR)
 _parsed_udfs = None
@@ -31,9 +39,10 @@ def pytest_configure(config):
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
     if "tests/data" not in str(path.dirpath()):
-        if path.basename.endswith("udf.sql"):
-            if os.path.basename(os.path.dirname(path.dirpath())) in TEST_UDF_DIRS or (
-                "mozfun" in str(path.dirpath()) and path.basename == "udf.sql"
+        if path.basename in (UDF_FILE, PROCEDURE_FILE):
+            if (
+                path.dirpath().dirpath().basename in TEST_UDF_DIRS
+                or path.dirpath().dirpath().dirpath().basename in MOZFUN_DIR
             ):
                 return UdfFile.from_parent(parent, fspath=path)
 
@@ -59,6 +68,11 @@ class UdfTest(pytest.Item):
         if "#xfail" in query:
             self.add_marker(pytest.mark.xfail(strict=True))
 
+    def safe_name(self):
+        """Get the name as a valid slug."""
+        value = re.sub(r"[^\w\s_]", "", self.name.lower()).strip()
+        return re.sub(r"[_\s]+", "_", value)
+
     def reportinfo(self):
         """Set report title to `self.name`."""
         return super().reportinfo()[:2] + (self.name,)
@@ -77,6 +91,10 @@ class UdfTest(pytest.Item):
 
     def runtest(self):
         """Run Test."""
-        job_config = bigquery.QueryJobConfig(use_legacy_sql=False)
-        job = bigquery.Client().query(self.query, job_config=job_config)
-        job.result()
+        bq = bigquery.Client()
+        with dataset(bq, self.safe_name()) as default_dataset:
+            job_config = bigquery.QueryJobConfig(
+                use_legacy_sql=False, default_dataset=default_dataset
+            )
+            job = bq.query(self.query, job_config=job_config)
+            job.result()

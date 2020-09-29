@@ -1,18 +1,8 @@
-CREATE TEMP FUNCTION assert_sql_equals(
-  expected ANY TYPE,
-  actual ANY TYPE
-) AS (
+CREATE TEMP FUNCTION assert_sql_equals(expected ANY TYPE, actual ANY TYPE) AS (
   IF(
     LOWER(REGEXP_REPLACE(expected, '\\s*', '')) = LOWER(REGEXP_REPLACE(actual, '\\s*', '')),
     TRUE,
-    ERROR(
-      CONCAT(
-        'Expected ',
-        expected,
-        ' but got ',
-        actual
-      )
-    )
+    ERROR(CONCAT('Expected ', expected, ' but got ', actual))
   )
 );
 

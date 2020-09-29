@@ -1,19 +1,35 @@
 CREATE OR REPLACE PROCEDURE
-  event_analysis.create_count_steps_query(project STRING, dataset STRING, events ARRAY<STRUCT<category STRING, event_name STRING>>, OUT sql STRING)
+  event_analysis.create_count_steps_query(
+    project STRING,
+    dataset STRING,
+    events ARRAY<STRUCT<category STRING, event_name STRING>>,
+    OUT sql STRING
+  )
 BEGIN
-
   DECLARE i INT64 DEFAULT 1;
 
   DECLARE event STRUCT<category STRING, event_name STRING>;
-  DECLARE event_filter STRING;
-  DECLARE event_filters ARRAY<STRING> DEFAULT [];
 
-  WHILE i <= array_length(events) DO
+  DECLARE event_filter STRING;
+
+  DECLARE event_filters ARRAY<STRING> DEFAULT[];
+
+  WHILE
+    i <= array_length(events)
+  DO
     SET event = events[ORDINAL(i)];
+
     SET event_filter = CONCAT(
-      '(category = "', event.category, '"', ' AND event = "', event.event_name, '")'
+      '(category = "',
+      event.category,
+      '"',
+      ' AND event = "',
+      event.event_name,
+      '")'
     );
+
     SET event_filters = ARRAY_CONCAT(event_filters, [event_filter]);
+
     SET i = i + 1;
   END WHILE;
 
@@ -21,14 +37,19 @@ BEGIN
     '\n  SELECT',
     '\n    event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex',
     '\n  FROM',
-    '\n    `', project, '`.', dataset, '.event_types',
+    '\n    `',
+    project,
+    '`.',
+    dataset,
+    '.event_types',
     '\n  WHERE',
-    '\n    ', ARRAY_TO_STRING(event_filters, ' OR ')
+    '\n    ',
+    ARRAY_TO_STRING(event_filters, ' OR ')
   );
 END;
-
 BEGIN
   DECLARE result_sql STRING;
+
   DECLARE expect STRING DEFAULT """
   SELECT
     event_analysis.aggregate_match_strings(ARRAY_AGG(event_analysis.event_index_to_match_string(index))) AS count_regex

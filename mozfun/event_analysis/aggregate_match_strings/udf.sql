@@ -1,10 +1,6 @@
 CREATE OR REPLACE FUNCTION event_analysis.aggregate_match_strings(match_strings ARRAY<STRING>)
 RETURNS STRING AS (
-  IF(
-    ARRAY_LENGTH(match_strings) > 0,
-    CONCAT('(?:', ARRAY_TO_STRING(match_strings, '|'), ')'),
-    ''
-  )
+  IF(ARRAY_LENGTH(match_strings) > 0, CONCAT('(?:', ARRAY_TO_STRING(match_strings, '|'), ')'), '')
 );
 
 -- Tests

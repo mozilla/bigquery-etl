@@ -57,7 +57,11 @@ path_option = click.option(
 def udf(ctx):
     """Create the CLI group for the UDF command."""
     ctx.ensure_object(dict)
-    ctx.obj["UDF_DIRS"] = ("udf", "udf_js")
+    # todo: make generic for projects
+    ctx.obj["UDF_DIRS"] = (
+        "moz-fx-data-shared-prod/udf",
+        "moz-fx-data-shared-prod/udf_js",
+    )
 
 
 @click.group(help="Commands for managing mozfun UDFs.")
@@ -282,7 +286,7 @@ mozfun.add_command(publish)
     "--sql-path",
     help="Path to directory with SQL queries.",
     type=click.Path(file_okay=False),
-    default="moz-fx-data-shared-prod/sql/",
+    default="sql/",
 )
 @click.pass_context
 def rename(ctx, name, path, new_name, sql_path):

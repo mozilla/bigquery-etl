@@ -1,12 +1,12 @@
+description: 'A daily aggregate of main pings from each Firefox desktop client, partitioned
+  by day
+
+  '
 friendly_name: Clients Daily
-description: >
-  A daily aggregate of main pings from each Firefox desktop client,
-  partitioned by day
-owners:
-  - dthorn@mozilla.com
 labels:
   application: firefox
   schedule: daily
+owners:
+- dthorn@mozilla.com
 scheduling:
-  dag_name: bqetl_main_summary
-  start_date: '2019-11-05'
+  dag_name: bqetl_ssl_ratios

@@ -35,8 +35,12 @@ class TestQuery:
             assert result.exit_code == 0
             assert os.listdir("moz-fx-data-shared-prod/sql") == ["test"]
             assert os.listdir("moz-fx-data-shared-prod/sql/test") == ["test_query_v1"]
-            assert "query.sql" in os.listdir("moz-fx-data-shared-prod/sql/test/test_query_v1")
-            assert "metadata.yaml" in os.listdir("moz-fx-data-shared-prod/sql/test/test_query_v1")
+            assert "query.sql" in os.listdir(
+                "moz-fx-data-shared-prod/sql/test/test_query_v1"
+            )
+            assert "metadata.yaml" in os.listdir(
+                "moz-fx-data-shared-prod/sql/test/test_query_v1"
+            )
 
     def test_create_query_with_version(self, runner):
         with runner.isolated_filesystem():
@@ -53,9 +57,13 @@ class TestQuery:
             assert result.exit_code == 0
             assert "test_derived" in os.listdir("moz-fx-data-shared-prod/sql")
             assert "test" in os.listdir("moz-fx-data-shared-prod/sql")
-            assert os.listdir("moz-fx-data-shared-prod/sql/test_derived") == ["test_query_v1"]
+            assert os.listdir("moz-fx-data-shared-prod/sql/test_derived") == [
+                "test_query_v1"
+            ]
             assert os.listdir("moz-fx-data-shared-prod/sql/test") == ["test_query"]
-            assert os.listdir("moz-fx-data-shared-prod/sql/test/test_query") == ["view.sql"]
+            assert os.listdir("moz-fx-data-shared-prod/sql/test/test_query") == [
+                "view.sql"
+            ]
 
     def test_create_query_as_derived(self, runner):
         with runner.isolated_filesystem():
@@ -66,9 +74,13 @@ class TestQuery:
             assert result.exit_code == 0
             assert "test_derived" in os.listdir("moz-fx-data-shared-prod/sql")
             assert "test" in os.listdir("moz-fx-data-shared-prod/sql")
-            assert os.listdir("moz-fx-data-shared-prod/sql/test_derived") == ["test_query_v1"]
+            assert os.listdir("moz-fx-data-shared-prod/sql/test_derived") == [
+                "test_query_v1"
+            ]
             assert os.listdir("moz-fx-data-shared-prod/sql/test") == ["test_query"]
-            assert os.listdir("moz-fx-data-shared-prod/sql/test/test_query") == ["view.sql"]
+            assert os.listdir("moz-fx-data-shared-prod/sql/test/test_query") == [
+                "view.sql"
+            ]
 
     def test_create_query_with_init(self, runner):
         with runner.isolated_filesystem():
@@ -76,9 +88,15 @@ class TestQuery:
             result = runner.invoke(create, ["test.test_query", "--init"])
             assert result.exit_code == 0
             assert os.listdir("moz-fx-data-shared-prod/sql/test") == ["test_query_v1"]
-            assert "query.sql" in os.listdir("moz-fx-data-shared-prod/sql/test/test_query_v1")
-            assert "metadata.yaml" in os.listdir("moz-fx-data-shared-prod/sql/test/test_query_v1")
-            assert "init.sql" in os.listdir("moz-fx-data-shared-prod/sql/test/test_query_v1")
+            assert "query.sql" in os.listdir(
+                "moz-fx-data-shared-prod/sql/test/test_query_v1"
+            )
+            assert "metadata.yaml" in os.listdir(
+                "moz-fx-data-shared-prod/sql/test/test_query_v1"
+            )
+            assert "init.sql" in os.listdir(
+                "moz-fx-data-shared-prod/sql/test/test_query_v1"
+            )
 
     def test_schedule_invalid_path(self, runner):
         with runner.isolated_filesystem():
@@ -87,20 +105,18 @@ class TestQuery:
 
     def test_schedule_query_non_existing_dag(self, runner):
         with runner.isolated_filesystem():
-            os.makedirs("moz-fx-data-shared-prod/sql")
-            os.mkdir("moz-fx-data-shared-prod/sql/test")
-            os.mkdir("moz-fx-data-shared-prod/sql/test/query_v1")
+            os.makedirs("moz-fx-data-shared-prod/sql/test/query_v1")
             open("moz-fx-data-shared-prod/sql/test/query_v1/query.sql", "a").close()
             result = runner.invoke(schedule, ["test.query_v1", "--dag=foo"])
             assert result.exit_code == 1
 
     def test_schedule_query(self, runner):
         with runner.isolated_filesystem():
-            os.makedirs("moz-fx-data-shared-prod/sql")
+            os.makedirs("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1")
             os.mkdir("dags")
-            os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived")
-            os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1")
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
             metadata_conf = {
@@ -109,7 +125,10 @@ class TestQuery:
                 "owners": ["test@example.org"],
             }
 
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/metadata.yaml", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
                 f.write(yaml.dump(metadata_conf))
 
             dag_conf = {
@@ -139,7 +158,9 @@ class TestQuery:
             os.mkdir("dags")
             os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived")
             os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1")
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
             metadata_conf = {
@@ -149,7 +170,10 @@ class TestQuery:
                 "scheduling": {"dag_name": "bqetl_test"},
             }
 
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/metadata.yaml", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
                 f.write(yaml.dump(metadata_conf))
 
             dag_conf = {
@@ -173,10 +197,10 @@ class TestQuery:
 
     def test_query_info(self, runner):
         with runner.isolated_filesystem():
-            os.makedirs("moz-fx-data-shared-prod/sql")
-            os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived")
-            os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1")
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w") as f:
+            os.makedirs("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1")
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
             result = runner.invoke(info, ["telemetry_derived.query_v1"])
@@ -191,7 +215,10 @@ class TestQuery:
                 "scheduling": {"dag_name": "bqetl_test"},
             }
 
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/metadata.yaml", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
                 f.write(yaml.dump(metadata_conf))
 
             result = runner.invoke(info, ["telemetry_derived.query_v1"])
@@ -205,16 +232,22 @@ class TestQuery:
             os.makedirs("moz-fx-data-shared-prod/sql")
             os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived")
             os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1")
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
             os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived/query_v2")
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v2/query.sql", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v2/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
             os.mkdir("moz-fx-data-shared-prod/sql/foo_derived")
             os.mkdir("moz-fx-data-shared-prod/sql/foo_derived/query_v2")
-            with open("moz-fx-data-shared-prod/sql/foo_derived/query_v2/query.sql", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/foo_derived/query_v2/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
             result = runner.invoke(info, ["*.query_*"])
@@ -240,24 +273,73 @@ class TestQuery:
             os.makedirs("moz-fx-data-shared-prod/sql")
             os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived")
             os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1")
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
             os.mkdir("moz-fx-data-shared-prod/sql/telemetry_derived/query_v2")
-            with open("moz-fx-data-shared-prod/sql/telemetry_derived/query_v2/query.sql", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/telemetry_derived/query_v2/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
             os.mkdir("moz-fx-data-shared-prod/sql/foo_derived")
             os.mkdir("moz-fx-data-shared-prod/sql/foo_derived/query_v2")
-            with open("moz-fx-data-shared-prod/sql/foo_derived/query_v2/query.sql", "w") as f:
+            with open(
+                "moz-fx-data-shared-prod/sql/foo_derived/query_v2/query.sql", "w"
+            ) as f:
                 f.write("SELECT 1")
 
-            assert len(_queries_matching_name_pattern("*", "moz-fx-data-shared-prod/sql/")) == 3
-            assert len(_queries_matching_name_pattern("*.sql", "moz-fx-data-shared-prod/sql/")) == 0
-            assert len(_queries_matching_name_pattern("test", "moz-fx-data-shared-prod/sql/")) == 0
-            assert len(_queries_matching_name_pattern("foo_derived", "moz-fx-data-shared-prod/sql/")) == 0
-            assert len(_queries_matching_name_pattern("foo_derived*", "moz-fx-data-shared-prod/sql/")) == 1
-            assert len(_queries_matching_name_pattern("*query*", "moz-fx-data-shared-prod/sql/")) == 3
             assert (
-                len(_queries_matching_name_pattern("foo_derived.query_v2", "moz-fx-data-shared-prod/sql/")) == 1
+                len(_queries_matching_name_pattern("*", "moz-fx-data-shared-prod/sql/"))
+                == 3
+            )
+            assert (
+                len(
+                    _queries_matching_name_pattern(
+                        "*.sql", "moz-fx-data-shared-prod/sql/"
+                    )
+                )
+                == 0
+            )
+            assert (
+                len(
+                    _queries_matching_name_pattern(
+                        "test", "moz-fx-data-shared-prod/sql/"
+                    )
+                )
+                == 0
+            )
+            assert (
+                len(
+                    _queries_matching_name_pattern(
+                        "foo_derived", "moz-fx-data-shared-prod/sql/"
+                    )
+                )
+                == 0
+            )
+            assert (
+                len(
+                    _queries_matching_name_pattern(
+                        "foo_derived*", "moz-fx-data-shared-prod/sql/"
+                    )
+                )
+                == 1
+            )
+            assert (
+                len(
+                    _queries_matching_name_pattern(
+                        "*query*", "moz-fx-data-shared-prod/sql/"
+                    )
+                )
+                == 3
+            )
+            assert (
+                len(
+                    _queries_matching_name_pattern(
+                        "foo_derived.query_v2", "moz-fx-data-shared-prod/sql/"
+                    )
+                )
+                == 1
             )

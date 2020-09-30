@@ -51,7 +51,7 @@ def sql_for_dry_run(file, parsed_udfs, project_dir):
             dry_run_sql = dry_run_sql.replace(udf, udf.replace(".", "_"))
 
         # remove explicit project references
-        dry_run_sql = dry_run_sql.replace(project_dir + ".", "")
+        dry_run_sql = dry_run_sql.replace(os.path.basename(project_dir) + ".", "")
 
     return dry_run_sql
 

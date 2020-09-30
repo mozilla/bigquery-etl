@@ -18,7 +18,7 @@ from bigquery_etl.util.common import project_dirs
 
 
 UDF_DIRS = ("udf", "udf_js")
-MOZFUN_DIR = ("mozfun",)
+MOZFUN_DIR = ("sql/mozfun",)
 UDF_CHAR = "[a-zA-z0-9_]"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"

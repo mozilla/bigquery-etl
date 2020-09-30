@@ -22,7 +22,10 @@ create_events_view(
 
 ***view_name***: The name of the view that will be created. This view
     will be in the shared-prod project, in the analysis bucket,
-    and so will be queryable at ````moz-fx-data-shared-prod`.analysis.{view_name}```.
+    and so will be queryable at:
+    ```
+    `moz-fx-data-shared-prod`.analysis.{view_name}
+    ```
 
 ***project***: The project where the `dataset` is located.
 

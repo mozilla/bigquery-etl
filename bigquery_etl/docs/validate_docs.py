@@ -10,7 +10,7 @@ from bigquery_etl.dryrun import DryRun
 from bigquery_etl.udf.parse_udf import read_udf_dirs, sub_local_routines
 from bigquery_etl.util import standard_args
 
-DEFAULT_PROJECTS = ["mozfun"]
+DEFAULT_PROJECTS = ["sql/mozfun"]
 EXAMPLE_DIR = "examples"
 UDF_FILE = "udf.sql"
 UDF_CHAR = "[a-zA-z0-9_]"

@@ -49,7 +49,7 @@ path_option = click.option(
     "-p",
     help="Path to directory which contains queries.",
     type=click.Path(file_okay=False),
-    default="moz-fx-data-shared-prod/",
+    default="sql/",
     callback=is_valid_dir,
 )
 
@@ -217,7 +217,7 @@ def schedule(name, path, dag, depends_on_past, task_name):
 
     sql_dir = Path(path)
 
-    dags = get_dags(sql_dir, sql_dir.parent.parent / "dags.yaml")
+    dags = get_dags(sql_dir, sql_dir.parent / "dags.yaml")
 
     dags_to_be_generated = set()
 
@@ -260,7 +260,7 @@ def schedule(name, path, dag, depends_on_past, task_name):
             )
 
             # update dags since new task has been added
-            dags = get_dags(sql_dir, sql_dir.parent.parent / "dags.yaml")
+            dags = get_dags(sql_dir, sql_dir.parent / "dags.yaml")
             dags_to_be_generated.add(dag)
         else:
             if metadata.scheduling == {}:
@@ -273,7 +273,7 @@ def schedule(name, path, dag, depends_on_past, task_name):
     for d in dags_to_be_generated:
         existing_dag = dags.dag_by_name(d)
         print(f"Running DAG generation for {existing_dag.name}")
-        output_dir = sql_dir.parent.parent / "dags"
+        output_dir = sql_dir.parent / "dags"
         dags.dag_to_airflow(output_dir, existing_dag)
 
 

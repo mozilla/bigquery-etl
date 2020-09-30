@@ -10,7 +10,7 @@ ROOT = Path(__file__).parent.parent.parent
 
 def _check_root():
     assert (
-        ROOT / "moz-fx-data-shared-prod"
+        ROOT / "sql" / "moz-fx-data-shared-prod"
     ).exists(), f"{ROOT} is not the project root"
 
 

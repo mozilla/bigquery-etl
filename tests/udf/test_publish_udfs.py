@@ -51,7 +51,7 @@ class TestPublishUdfs:
 
     def test_get_udf_dirs_non_mozfun(self):
         udf_dirs = publish_udfs.get_udf_dirs(("udf",), None)
-        assert "moz-fx-data-shared-prod/udf" in udf_dirs
+        assert "sql/moz-fx-data-shared-prod/udf" in udf_dirs
 
     def test_get_udf_dirs_mozfun(self):
         udf_dirs = publish_udfs.get_udf_dirs(("mozfun",), "mozfun")

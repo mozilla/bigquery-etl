@@ -136,11 +136,12 @@ class TestUdf:
                     "CREATE OR REPLACE FUNCTION udf.another_udf() AS (udf.test_udf())"
                 )
 
-            os.mkdir("moz-fx-data-shared-prod")
-            os.mkdir("moz-fx-data-shared-prod/telemetry_derived")
-            os.mkdir("moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            os.mkdir("sql")
+            os.mkdir("sql/moz-fx-data-shared-prod")
+            os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived")
+            os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
             with open(
-                "moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
             ) as f:
                 f.write("SELECT udf.test_udf()")
 
@@ -155,7 +156,7 @@ class TestUdf:
             assert "renamed_udf" in os.listdir("udf")
 
             with open(
-                "moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "r"
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "r"
             ) as f:
                 sql = f.read()
                 assert "udf.renamed_udf" in sql
@@ -185,11 +186,12 @@ class TestUdf:
                     "CREATE OR REPLACE FUNCTION udf.another_udf() AS (udf.test_udf())"
                 )
 
-            os.mkdir("moz-fx-data-shared-prod")
-            os.mkdir("moz-fx-data-shared-prod/telemetry_derived")
-            os.mkdir("moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            os.mkdir("sql")
+            os.mkdir("sql/moz-fx-data-shared-prod")
+            os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived")
+            os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
             with open(
-                "moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
             ) as f:
                 f.write("SELECT udf.test_udf()")
 
@@ -203,7 +205,7 @@ class TestUdf:
             assert "test_udf" in os.listdir("mozfun/new_dataset")
 
             with open(
-                "moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "r"
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "r"
             ) as f:
                 sql = f.read()
                 assert "new_dataset.test_udf" in sql

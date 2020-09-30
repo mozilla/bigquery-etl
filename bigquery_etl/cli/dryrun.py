@@ -2,7 +2,6 @@
 
 import click
 from google.cloud import bigquery
-import glob
 import os
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
@@ -17,7 +16,7 @@ from ..cli.utils import is_authenticated
 )
 @click.argument(
     "path",
-    default="moz-fx-data-shared-prod/",  # todo: generic project support
+    default="sql/",
     type=click.Path(file_okay=True),
 )
 @click.option(
@@ -39,9 +38,7 @@ from ..cli.utils import is_authenticated
 def dryrun(path, use_cloud_function, project):
     """Perform a dry run."""
     if os.path.isdir(path) and os.path.exists(path):
-        sql_files = [
-            f for f in glob.glob(path + "/*.sql", recursive=True) if f not in SKIP
-        ]
+        sql_files = [f for f in Path(path).rglob("*.sql") if str(f) not in SKIP]
     elif os.path.isfile(path) and os.path.exists(path):
         sql_files = [path]
     else:

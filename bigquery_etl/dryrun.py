@@ -20,93 +20,93 @@ import sys
 
 SKIP = {
     # Access Denied
-    "moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql",
-    "moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql",
-    "moz-fx-data-shared-prod/monitoring/deletion_request_volume_v1/query.sql",
-    "moz-fx-data-shared-prod/monitoring/document_sample_nonprod_v1/query.sql",
-    "moz-fx-data-shared-prod/monitoring/schema_error_counts_v1/view.sql",
-    "moz-fx-data-shared-prod/monitoring/structured_error_counts_v1/view.sql",
-    "moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
-    "moz-fx-data-shared-prod/telemetry/buildhub2/view.sql",
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql",
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_oauth_events_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_auth_events_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_content_events_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_device_command_events_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/addons_daily_v1/query.sql",
-    "moz-fx-data-shared-prod/search_derived/search_clients_last_seen_v1/init.sql",
-    "moz-fx-data-shared-prod/search_derived/search_clients_last_seen_v1/query.sql",
-    "moz-fx-data-shared-prod/search/search_rfm/view.sql",
-    "moz-fx-data-shared-prod/search/search_clients_last_seen_v1/view.sql",
-    "moz-fx-data-shared-prod/search/search_clients_last_seen/view.sql",
-    "moz-fx-data-shared-prod/firefox_accounts/fxa_amplitude_email_clicks/view.sql",
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
-    "moz-fx-data-shared-prod/shredder_state/progress/view.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_by_app_referrer/query.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_by_app_version/query.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_by_campaign/query.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_by_platform/query.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_by_platform_version/query.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_by_region/query.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_by_source/query.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_by_storefront/query.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_by_web_referrer/query.sql",
-    "moz-fx-data-shared-prod/apple_app_store/metrics_total/query.sql",
-    "moz-fx-data-shared-prod/monitoring/telemetry_distinct_docids_v1/query.sql",
-    "moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
+    "sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql",
+    "sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/deletion_request_volume_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/document_sample_nonprod_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/schema_error_counts_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/structured_error_counts_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql",
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_oauth_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_auth_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_content_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_device_command_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/addons_daily_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/search_derived/search_clients_last_seen_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/search_derived/search_clients_last_seen_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/search/search_rfm/view.sql",
+    "sql/moz-fx-data-shared-prod/search/search_clients_last_seen_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/search/search_clients_last_seen/view.sql",
+    "sql/moz-fx-data-shared-prod/firefox_accounts/fxa_amplitude_email_clicks/view.sql",
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/shredder_state/progress/view.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_by_app_referrer/query.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_by_app_version/query.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_by_campaign/query.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_by_platform/query.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_by_platform_version/query.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_by_region/query.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_by_source/query.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_by_storefront/query.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_by_web_referrer/query.sql",
+    "sql/moz-fx-data-shared-prod/apple_app_store/metrics_total/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/telemetry_distinct_docids_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
-    "moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/org_mozilla_vrbrowser_derived/clients_last_seen_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql",
-    "moz-fx-data-shared-prod/telemetry/fxa_users_last_seen_raw_v1/init.sql",
-    "moz-fx-data-shared-prod/telemetry_derived/core_clients_first_seen_v1/init.sql",
-    "moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_last_seen_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/messaging_system_derived/cfr_users_last_seen_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/messaging_system_derived/onboarding_users_last_seen_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/messaging_system_derived/snippets_users_last_seen_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser_derived/clients_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/fxa_users_last_seen_raw_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_first_seen_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/messaging_system_derived/cfr_users_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/messaging_system_derived/onboarding_users_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/messaging_system_derived/snippets_users_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql",  # noqa E501
     # Reference table not found
-    "moz-fx-data-shared-prod/monitoring/structured_detailed_error_counts_v1/view.sql",  # noqa E501
-    "moz-fx-data-shared-prod/org_mozilla_firefox_derived/migrated_clients_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/org_mozilla_firefox_derived/incline_executive_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/org_mozilla_firefox/migrated_clients/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/structured_detailed_error_counts_v1/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/migrated_clients_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/incline_executive_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_firefox/migrated_clients/view.sql",
     # No matching signature for function IF
-    "moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql",
+    "sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql",
     # Duplicate UDF
-    "moz-fx-data-shared-prod/static/fxa_amplitude_export_users_daily/query.sql",
+    "sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_daily/query.sql",
     # Syntax error
-    "moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql",  # noqa E501
     # HTTP Error 408: Request Time-out
-    "moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql",
-    "moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql",
     # Query parameter not found
-    "moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql",
-    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_content_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_parent_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/telemetry_derived/asn_aggregates_v1/query.sql",
-    # Dataset moz-fx-data-shared-prod:glam_etl was not found
-    *glob.glob("moz-fx-data-shared-prod/glam_etl/**/*.sql", recursive=True),
+    "sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_content_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_parent_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/asn_aggregates_v1/query.sql",
+    # Dataset sql/moz-fx-data-shared-prod:glam_etl was not found
+    *glob.glob("sql/moz-fx-data-shared-prod/glam_etl/**/*.sql", recursive=True),
     # Query templates
-    "moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
-    "moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa
+    "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa
 }
 
 
@@ -198,7 +198,7 @@ def main():
     sql_files = [
         f
         for n in file_names
-        for f in glob.glob(f"moz-fx-*/**/{n}", recursive=True)
+        for f in glob.glob(f"sql/**/{n}", recursive=True)
         if f not in SKIP
     ]
 

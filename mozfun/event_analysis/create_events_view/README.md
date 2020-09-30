@@ -82,6 +82,23 @@ The view will be created at
 `moz-fx-data-shared-prod`.analysis.{event_name}.
 ```
 
+The view will have a schema roughly matching the following:
+```
+root
+ |-- submission_date: date
+ |-- client_id: string
+ |-- {funnel_1_name}: record
+ |  |-- {funnel_step_1_name} boolean
+ |  |-- {funnel_step_2_name} boolean
+ ...
+ |-- {funnel_N_name}: record
+ |  |-- {funnel_step_M_name}: boolean
+ |-- {count_1_name}: integer
+ ...
+ |-- {count_N_name}: integer
+ ...dimensions...
+```
+
 
 ##### Funnels
 Each funnel will be a `STRUCT` with nested columns representing completion of each step

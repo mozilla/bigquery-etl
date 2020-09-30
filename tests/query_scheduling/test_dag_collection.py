@@ -278,7 +278,7 @@ class TestDagCollection:
     def test_to_airflow_with_dependencies(
         self, tmp_path, project_id, temporary_dataset, bigquery_client
     ):
-        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -318,44 +318,24 @@ class TestDagCollection:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table1_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
             metadata,
         )
 
-        os.makedirs(tmp_path / project_id / "sql" / temporary_dataset / "table1_v1")
+        os.makedirs(tmp_path / project_id / temporary_dataset / "table1_v1")
         query_file = (
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table1_v1"
-            / "query.sql"
+            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql"
         )
         query_file.write_text("SELECT 1")
 
         table_task2 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table2_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
             metadata,
         )
 
-        os.makedirs(tmp_path / project_id / "sql" / temporary_dataset / "table2_v1")
+        os.makedirs(tmp_path / project_id / temporary_dataset / "table2_v1")
         query_file = (
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table2_v1"
-            / "query.sql"
+            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql"
         )
         query_file.write_text("SELECT 2")
 
@@ -373,20 +353,16 @@ class TestDagCollection:
         external_table_task = Task.of_query(
             tmp_path
             / project_id
-            / "sql"
             / temporary_dataset
             / "external_table_v1"
             / "query.sql",
             metadata,
         )
 
-        os.makedirs(
-            tmp_path / project_id / "sql" / temporary_dataset / "external_table_v1"
-        )
+        os.makedirs(tmp_path / project_id / temporary_dataset / "external_table_v1")
         query_file = (
             tmp_path
             / project_id
-            / "sql"
             / temporary_dataset
             / "external_table_v1"
             / "query.sql"

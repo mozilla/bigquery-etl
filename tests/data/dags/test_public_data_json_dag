@@ -27,7 +27,7 @@ with DAG(
         name="export_public_data_json_test__non_incremental_query__v1",
         arguments=["script/publish_public_data_json"]
         + [
-            "--query_file=moz-fx-data-test-project/test/non_incremental_query_v1/query.sql"
+            "--query_file=sql/moz-fx-data-test-project/test/non_incremental_query_v1/query.sql"
         ]
         + ["--destination_table=non_incremental_query${{ds_nodash}}"]
         + ["--dataset_id=test"]

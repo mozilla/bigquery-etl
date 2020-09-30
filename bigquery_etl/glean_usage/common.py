@@ -21,7 +21,7 @@ def render(sql_filename, **kwargs) -> str:
 def write_sql(output_dir, full_table_id, basename, sql):
     """Write out a query to a location based on the table ID.
 
-    :param output_dir:    Base target directory (probably sql/)
+    :param output_dir:    Base target directory (probably moz-fx-data-shared-prod/)
     :param full_table_id: Table ID in project.dataset.table form
     :param basename:      The name to give the written file (like query.sql)
     :param sql:           The query content to write out

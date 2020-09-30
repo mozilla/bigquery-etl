@@ -12,6 +12,7 @@ from itertools import groupby
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.util import standard_args
+from bigquery_etl.util.common import project_dirs
 
 
 DEFAULT_BUCKET = "mozilla-public-data-http"
@@ -41,9 +42,6 @@ parser.add_argument(
     "--api-version",
     default=DEFAULT_API_VERSION,
     help="Endpoint API version",
-)
-parser.add_argument(
-    "--target", help="File or directory containing metadata files", default="sql/"
 )
 standard_args.add_log_level(parser)
 
@@ -188,26 +186,34 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    if os.path.isdir(args.target):
-        gcs_table_metadata = get_public_gcs_table_metadata(
-            storage_client,
-            args.target_bucket,
-            args.api_version,
-            args.endpoint,
-            args.target,
-        )
+    projects = project_dirs()
 
-        output_file = f"gs://{args.target_bucket}/all-datasets.json"
-        publish_all_datasets_metadata(gcs_table_metadata, output_file)
-        set_content_type(
-            storage_client, args.target_bucket, "all-datasets.json", "application/json"
-        )
-        publish_table_metadata(storage_client, gcs_table_metadata, args.target_bucket)
-    else:
-        print(
-            f"Invalid target: {args.target}, target must be a directory with"
-            "structure /<dataset>/<table>/metadata.yaml."
-        )
+    for target in projects:
+        if os.path.isdir(target):
+            gcs_table_metadata = get_public_gcs_table_metadata(
+                storage_client,
+                args.target_bucket,
+                args.api_version,
+                args.endpoint,
+                target,
+            )
+
+            output_file = f"gs://{args.target_bucket}/all-datasets.json"
+            publish_all_datasets_metadata(gcs_table_metadata, output_file)
+            set_content_type(
+                storage_client,
+                args.target_bucket,
+                "all-datasets.json",
+                "application/json",
+            )
+            publish_table_metadata(
+                storage_client, gcs_table_metadata, args.target_bucket
+            )
+        else:
+            print(
+                f"Invalid target: {target}, target must be a directory with"
+                "structure <project>/<dataset>/<table>/metadata.yaml."
+            )
 
 
 if __name__ == "__main__":

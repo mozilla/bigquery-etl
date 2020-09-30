@@ -127,7 +127,7 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         multipart=True,
-        sql_file_path="moz-fx-data-shared-prod/sql/telemetry_derived/main_summary_v4",
+        sql_file_path="moz-fx-data-shared-prod/telemetry_derived/main_summary_v4",
         priority_weight=90,
         dag=dag,
     )

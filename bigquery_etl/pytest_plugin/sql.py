@@ -67,7 +67,6 @@ class SqlTest(pytest.Item, pytest.File):
         test_name = self.fspath.basename
         query_name = self.fspath.dirpath().basename
         dataset_name = self.fspath.dirpath().dirpath().basename
-        project_name = self.fspath.dirpath().dirpath().dirpath().basename
 
         init_test = False
         script_test = False
@@ -76,7 +75,6 @@ class SqlTest(pytest.Item, pytest.File):
         # default name
         # We assume the init sql contains `CREATE TABLE dataset.table`
         path = self.fspath.dirname.replace("tests", "")
-        path = path.replace(project_name, f"{project_name}/sql")
         if test_name == "test_init":
             init_test = True
 

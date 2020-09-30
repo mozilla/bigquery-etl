@@ -16,81 +16,81 @@ SKIP = {
     "bigquery_etl/glean_usage/templates/baseline_clients_daily_v1.sql",
     "bigquery_etl/glean_usage/templates/baseline_clients_last_seen.view.sql",
     "bigquery_etl/glean_usage/templates/baseline_clients_last_seen_v1.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/experiments_aggregates_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/fenix_events_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/fennec_ios_events_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/fire_tv_events_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/first_shutdown_summary/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/first_shutdown_summary_v4/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/focus_android_events_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/lockwise_mobile_events_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/origin_content_blocking/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/rocket_android_events_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/simpleprophet_forecasts/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/smoot_usage_day_0/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/smoot_usage_day_13/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/sync/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_anonymous_parquet/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_anonymous_parquet_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_core_parquet/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_core_parquet_v3/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_downgrade_parquet/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_downgrade_parquet_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_focus_event_parquet/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_focus_event_parquet_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_heartbeat_parquet/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_heartbeat_parquet_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_ip_privacy_parquet/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_ip_privacy_parquet_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_mobile_event_parquet/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_mobile_event_parquet_v2/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_new_profile_parquet/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_new_profile_parquet_v2/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_shield_study_parquet/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/telemetry_shield_study_parquet_v1/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/windows_10_aggregate/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/windows_10_build_distribution/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry/windows_10_patch_adoption/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/attitudes_daily_v1/init.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/attitudes_daily_v1/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_histogram_aggregates_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_histogram_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_scalar_aggregates_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_histogram_aggregates_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_histogram_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_histogram_probe_counts_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/core_clients_daily_v1/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/core_clients_last_seen_v1/init.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/core_clients_last_seen_v1/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/core_live/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/devtools_events_amplitude_v1/view.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/error_aggregates/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/event_events_v1/init.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/event_events_v1/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/events_live/view.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/experiment_enrollment_aggregates_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/experiment_enrollment_aggregates_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/experiments_daily_active_clients_v1/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/firefox_desktop_exact_mau28_by_client_count_dimensions_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/fxa_users_services_daily_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/fxa_users_services_last_seen_v1/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/glam_user_counts_v1/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/latest_versions/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/main_events_v1/init.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/main_events_v1/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/scalar_percentiles_v1/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/smoot_usage_desktop_v2/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/smoot_usage_fxa_v2/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/telemetry_derived/smoot_usage_nondesktop_v2/query.sql",
-    "moz-fx-data-shared-prod/sql/telemetry_derived/surveygizmo_daily_attitudes/init.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
-    "moz-fx-data-shared-prod/sql/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry/experiments_aggregates_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/first_shutdown_summary/view.sql",
+    "moz-fx-data-shared-prod/telemetry/first_shutdown_summary_v4/view.sql",
+    "moz-fx-data-shared-prod/telemetry/focus_android_events_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/lockwise_mobile_events_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/origin_content_blocking/view.sql",
+    "moz-fx-data-shared-prod/telemetry/rocket_android_events_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/simpleprophet_forecasts/view.sql",
+    "moz-fx-data-shared-prod/telemetry/smoot_usage_day_0/view.sql",
+    "moz-fx-data-shared-prod/telemetry/smoot_usage_day_13/view.sql",
+    "moz-fx-data-shared-prod/telemetry/sync/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_anonymous_parquet/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_anonymous_parquet_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_core_parquet/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_core_parquet_v3/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_downgrade_parquet/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_downgrade_parquet_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_focus_event_parquet/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_focus_event_parquet_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_heartbeat_parquet/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_heartbeat_parquet_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_ip_privacy_parquet/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_ip_privacy_parquet_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_mobile_event_parquet/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_mobile_event_parquet_v2/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_new_profile_parquet/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_new_profile_parquet_v2/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_shield_study_parquet/view.sql",
+    "moz-fx-data-shared-prod/telemetry/telemetry_shield_study_parquet_v1/view.sql",
+    "moz-fx-data-shared-prod/telemetry/windows_10_aggregate/view.sql",
+    "moz-fx-data-shared-prod/telemetry/windows_10_build_distribution/view.sql",
+    "moz-fx-data-shared-prod/telemetry/windows_10_patch_adoption/view.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/attitudes_daily_v1/init.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/attitudes_daily_v1/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_v1/init.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/init.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/init.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_histogram_probe_counts_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/core_clients_daily_v1/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/core_live/view.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/devtools_events_amplitude_v1/view.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/error_aggregates/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/event_events_v1/init.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/event_events_v1/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/events_live/view.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_v1/init.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/experiments_daily_active_clients_v1/init.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/firefox_desktop_exact_mau28_by_client_count_dimensions_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_daily_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_last_seen_v1/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/glam_user_counts_v1/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/main_events_v1/init.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/main_events_v1/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/smoot_usage_desktop_v2/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/smoot_usage_fxa_v2/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",  # noqa E501
+    "moz-fx-data-shared-prod/telemetry_derived/smoot_usage_nondesktop_v2/query.sql",
+    "moz-fx-data-shared-prod/telemetry_derived/surveygizmo_daily_attitudes/init.sql",  # noqa E501
+    "moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
+    "moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501
     "moz-fx-data-shared-prod/udf/active_n_weeks_ago.sql",
     "moz-fx-data-shared-prod/udf/add_monthly_engine_searches.sql",
     "moz-fx-data-shared-prod/udf/add_monthly_searches.sql",

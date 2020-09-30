@@ -12,7 +12,7 @@ fi
 DS=$1
 BUCKET="gs://moz-fx-data-prod-analysis"
 
-# List of countries should match that in sql/org_mozilla_firefox/derived/incline_executive_v1/
+# List of countries should match that in moz-fx-data-shared-prod/org_mozilla_firefox/derived/incline_executive_v1/
 for country in US CA DE FR GB IN CN IR BR IE ID tier-1 non-tier-1 Overall; do
     dest_latest="$BUCKET/incline/executive_dash/latest/${country}.csv.gz"
     echo "Populating $dest_latest from query"

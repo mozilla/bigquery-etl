@@ -24,7 +24,7 @@ from bigquery_etl.query_scheduling.utils import (
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(
-    r"^(?:.*/)?([a-zA-Z0-9_-]+)/[a-zA-Z0-9_]+/([a-zA-Z0-9_]+)/"
+    r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
     r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql)$"
 )
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
@@ -217,7 +217,7 @@ class Task:
         else:
             raise ValueError(
                 "query_file must be a path with format:"
-                " <project>/*/<dataset>/<table>_<version>/(query.sql|part1.sql)"
+                " <project>/<dataset>/<table>_<version>/(query.sql|part1.sql)"
                 f" but is {self.query_file}"
             )
 

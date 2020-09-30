@@ -10,6 +10,7 @@ from google.cloud import bigquery
 from .parse_metadata import Metadata
 from ..util import standard_args
 from ..util.bigquery_tables import get_tables_matching_patterns
+from ..util.common import project_dirs
 
 
 METADATA_FILE = "metadata.yaml"
@@ -17,7 +18,6 @@ DEFAULT_PATTERN = "moz-fx-data-shared-prod:*.*"
 
 
 parser = ArgumentParser(description=__doc__)
-parser.add_argument("--project-id", help="Default project")
 parser.add_argument(
     "patterns",
     metavar="[project:]dataset[.table]",
@@ -52,7 +52,6 @@ def publish_metadata(client, dataset, table, metadata):
 def main():
     """Update BigQuery table metadata."""
     args = parser.parse_args()
-    client = bigquery.Client(args.project_id)
 
     # set log level
     try:
@@ -60,25 +59,32 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    if os.path.isdir(args.target):
-        for full_table_id in get_tables_matching_patterns(client, args.patterns):
-            [project, dataset, table] = full_table_id.split(".")
-            metadata_file = os.path.join(args.target, dataset, table, METADATA_FILE)
-
-            try:
-                metadata = Metadata.from_file(metadata_file)
-                publish_metadata(client, dataset, table, metadata)
-            except FileNotFoundError:
-                print("No metadata file for: {}.{}".format(dataset, table))
+    if args.target:
+        projects = [args.target]
     else:
-        print(
-            """
-            Invalid target: {}, target must be a directory with
-            structure /<dataset>/<table>/metadata.yaml.
-            """.format(
-                args.target
+        projects = project_dirs()
+
+    for target in projects:
+        client = bigquery.Client(target)
+        if os.path.isdir(target):
+            for full_table_id in get_tables_matching_patterns(client, args.patterns):
+                [project, dataset, table] = full_table_id.split(".")
+                metadata_file = os.path.join(target, dataset, table, METADATA_FILE)
+
+                try:
+                    metadata = Metadata.from_file(metadata_file)
+                    publish_metadata(client, dataset, table, metadata)
+                except FileNotFoundError:
+                    print("No metadata file for: {}.{}".format(dataset, table))
+        else:
+            print(
+                """
+                Invalid target: {}, target must be a directory with
+                structure <project>/<dataset>/<table>/metadata.yaml.
+                """.format(
+                    target
+                )
             )
-        )
 
 
 if __name__ == "__main__":

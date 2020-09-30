@@ -68,8 +68,8 @@ How to Configure a Generated Test
 
 1. Make a directory for test resources named `tests/{dataset}/{table}/{test_name}/`,
    e.g. `tests/telemetry_derived/clients_last_seen_raw_v1/test_single_day`
-   - `table` must match a directory named like `sql/{dataset}/{table}`, e.g.
-     `sql/telemetry_derived/clients_last_seen_v1`
+   - `table` must match a directory named like `{dataset}/{table}`, e.g.
+     `telemetry_derived/clients_last_seen_v1`
    - `test_name` should start with `test_`, e.g. `test_single_day`
    - If `test_name` is `test_init` or `test_script`, then the query will run `init.sql`
      or `script.sql` respectively; otherwise, the test will run `query.sql`

@@ -14,7 +14,7 @@ parser.add_argument("--destination_dataset", default="monitoring")
 parser.add_argument(
     "--destination_table", default="bigquery_etl_scheduled_queries_cost_v1"
 )
-parser.add_argument("--sql_dir", default="sql/")
+parser.add_argument("--sql_dir", default="moz-fx-data-shared-prod/")
 
 
 def create_query(query_paths, date):

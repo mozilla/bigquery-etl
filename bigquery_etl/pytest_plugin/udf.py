@@ -41,7 +41,7 @@ def pytest_configure(config):
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
     if "tests/data" not in str(path.dirpath()):
-        if path.basename.endswith(UDF_FILE) or path.basename.endswith(PROCEDURE_FILE):
+        if path.basename in (UDF_FILE, PROCEDURE_FILE):
             return UdfFile.from_parent(parent, fspath=path)
 
 

@@ -3,26 +3,23 @@ CREATE OR REPLACE FUNCTION udf.fenix_build_to_datetime(app_build STRING) AS (
     LENGTH(app_build)
   WHEN
     8
+    AND SUBSTR(app_build, 5, 2) < "24"
+    AND SUBSTR(app_build, 7, 2) < "60"
   THEN
     -- Ideally, we would use PARSE_DATETIME, but that doesn't support
     -- day of year (%j) or the custom single-character year used here.
-    IF(
-      SUBSTR(app_build, 5, 2) < "24"
-      AND SUBSTR(app_build, 7, 2) < "60",
-      DATETIME_ADD(
-        DATETIME(
-          2018 + SAFE_CAST(
-            SUBSTR(app_build, 1, 1) AS INT64
-          ), -- year
-          1, -- placeholder month
-          1, -- placeholder year
-          SAFE_CAST(SUBSTR(app_build, 5, 2) AS INT64),
-          SAFE_CAST(SUBSTR(app_build, 7, 2) AS INT64),
-          0  -- seconds is always zero
-        ),
-        INTERVAL SAFE_CAST(SUBSTR(app_build, 2, 3) AS INT64) - 1 DAY
+    DATETIME_ADD(
+      DATETIME(
+        2018 + SAFE_CAST(
+          SUBSTR(app_build, 1, 1) AS INT64
+        ), -- year
+        1, -- placeholder month
+        1, -- placeholder year
+        SAFE_CAST(SUBSTR(app_build, 5, 2) AS INT64),
+        SAFE_CAST(SUBSTR(app_build, 7, 2) AS INT64),
+        0  -- seconds is always zero
       ),
-      NULL
+      INTERVAL SAFE_CAST(SUBSTR(app_build, 2, 3) AS INT64) - 1 DAY
     )
   WHEN
     10

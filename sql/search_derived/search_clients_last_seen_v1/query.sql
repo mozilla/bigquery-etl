@@ -80,7 +80,7 @@ _grouped AS (
 ),
 _current AS (
   SELECT
-    * EXCEPT(total_searches),
+    * EXCEPT (total_searches),
       -- In this raw table, we capture the history of activity over the past
       -- 365 days for each usage criterion as an array of bytes. The
       -- rightmost bit represents whether the user was active in the current day.

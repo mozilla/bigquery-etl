@@ -22,7 +22,7 @@ create_events_view(
 
 ***view_name***: The name of the view that will be created. This view
     will be in the shared-prod project, in the analysis bucket,
-    and so will be queryable at `\`moz-fx-data-shared-prod\`.analysis.{view_name}`.
+    and so will be queryable at ````moz-fx-data-shared-prod`.analysis.{view_name}```.
 
 ***project***: The project where the `dataset` is located.
 
@@ -159,6 +159,8 @@ FROM
     `moz-fx-data-shared-prod`.analysis.fenix_collection_funnels
 WHERE
     submission_date >= DATE_SUB(current_date, INTERVAL 28 DAY)
+GROUP BY
+    submission_date
 ```
 
 Or we can see the number of collections created and deleted:
@@ -171,6 +173,8 @@ FROM
     `moz-fx-data-shared-prod`.analysis.fenix_collection_funnels
 WHERE
     submission_date >= DATE_SUB(current_date, INTERVAL 28 DAY)
+GROUP BY
+    submission_date
 ```
 
 #### Recommended Pattern

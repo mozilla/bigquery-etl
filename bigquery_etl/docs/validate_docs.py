@@ -10,7 +10,7 @@ from bigquery_etl.dryrun import DryRun
 from bigquery_etl.udf.parse_udf import read_udf_dirs, sub_local_routines
 from bigquery_etl.util import standard_args
 
-DEFAULT_PROJECTS = ["sql/mozfun"]
+DEFAULT_PROJECTS_DIRS = ["sql/mozfun"]
 EXAMPLE_DIR = "examples"
 UDF_FILE = "udf.sql"
 UDF_CHAR = "[a-zA-z0-9_]"
@@ -22,7 +22,7 @@ parser.add_argument(
     "--project-dirs",
     help="Directories of projects documentation is validated for.",
     nargs="+",
-    default=DEFAULT_PROJECTS,
+    default=DEFAULT_PROJECTS_DIRS,
 )
 standard_args.add_log_level(parser)
 

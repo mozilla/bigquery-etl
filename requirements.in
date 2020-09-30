@@ -21,3 +21,4 @@ incremental==17.5.0
 stripe==2.54.0
 ujson==3.2.0
 pandas==1.1.2
+jsonschema==3.2.0

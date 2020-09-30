@@ -6,5 +6,4 @@ class TestUtilCommon:
         assert project_dirs("test") == ["test"]
 
         existing_projects = project_dirs()
-        assert "moz-fx-data-shared-prod" in existing_projects
-        assert "mozfun" not in existing_projects
+        assert "sql/moz-fx-data-shared-prod" in existing_projects

@@ -187,6 +187,8 @@ class ParsedUdf(RawUdf):
 
 def get_udf_dirs(udf_dirs, project_id=None):
     """Return paths to directories with UDFs."""
+    # todo: make this more generic, I don't think we need to make the distinction
+    # between mozfun and other project here since UDFs now live in project directories
     if project_id != "mozfun":
         # for non-mozfun projects, the default UDF directories are udf/ and udf_js/
         # the project needs to be pre-pended to these paths

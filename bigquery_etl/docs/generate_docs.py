@@ -9,7 +9,7 @@ import shutil
 from bigquery_etl.util import standard_args
 import yaml
 
-DEFAULT_PROJECTS = ["mozfun/"]
+DEFAULT_PROJECTS = ["sql/mozfun/"]
 DOCS_FILE = "README.md"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"

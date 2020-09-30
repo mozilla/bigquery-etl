@@ -60,8 +60,8 @@ def udf(ctx):
     ctx.ensure_object(dict)
     # todo: make generic for projects
     ctx.obj["UDF_DIRS"] = (
-        "moz-fx-data-shared-prod/udf",
-        "moz-fx-data-shared-prod/udf_js",
+        "sql/moz-fx-data-shared-prod/udf",
+        "sql/moz-fx-data-shared-prod/udf_js",
     )
 
 
@@ -70,7 +70,7 @@ def udf(ctx):
 def mozfun(ctx):
     """Create the CLI group for the mozfun command."""
     ctx.ensure_object(dict)
-    ctx.obj["UDF_DIRS"] = ("mozfun",)
+    ctx.obj["UDF_DIRS"] = ("sql/mozfun",)
 
 
 @udf.command(help="Create a new UDF")
@@ -170,9 +170,7 @@ def info(ctx, name, path, usages):
             # find UDF usages in SQL files
             click.echo("usages: ")
             sql_files = [
-                p
-                for project in project_dirs() + ["mozfun"]
-                for p in Path(project).rglob("*.sql")
+                p for project in project_dirs() for p in Path(project).rglob("*.sql")
             ]
             for sql_file in sql_files:
                 if f"{udf_dataset}.{udf_name}" in sql_file.read_text():

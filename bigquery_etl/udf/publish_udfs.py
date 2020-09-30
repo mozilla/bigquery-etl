@@ -24,7 +24,7 @@ DEFAULT_GCS_PATH = ""
 OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
 OPTIONS_RE = re.compile(r"OPTIONS(\n|\s)*\(")
 
-SKIP = ["udf/main_summary_scalars/udf.sql"]
+SKIP = ["sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql"]
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(

@@ -59,10 +59,7 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    if args.target:
-        projects = [args.target]
-    else:
-        projects = project_dirs()
+    projects = project_dirs(args.target)
 
     for target in projects:
         client = bigquery.Client(target)

@@ -26,7 +26,7 @@ sql_dir_option = click.option(
     "--sql_dir",
     help="Path to directory with queries",
     type=click.Path(file_okay=False),
-    default="moz-fx-data-shared-prod/",
+    default="sql/",
     callback=is_valid_dir,
 )
 
@@ -84,7 +84,9 @@ def info(name, dags_config, sql_dir, with_tasks):
         if with_tasks:
             click.echo("tasks: ")
             for task in sorted(dag.tasks, key=lambda d: d.table):
-                click.echo(f"  - {task.dataset}.{task.table}_{task.version}")
+                click.echo(
+                    f"  - {task.project}.{task.dataset}.{task.table}_{task.version}"
+                )
 
         click.echo("")
 

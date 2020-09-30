@@ -22,7 +22,7 @@ VIEWS_TO_SKIP = (
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
     *[
         str(path)
-        for path in Path("moz-fx-data-shared-prod").glob("glam_etl/**/view.sql")
+        for path in Path("sql/moz-fx-data-shared-prod").glob("glam_etl/**/view.sql")
     ],
     # View in project other than prod
     "shredder_state/progress/view.sql",

@@ -64,5 +64,5 @@ bq rm -f -t 'moz-fx-data-derived-datasets:telemetry.clients_last_seen_raw_v1$201
 bq rm -f -t 'moz-fx-data-derived-datasets:telemetry.clients_last_seen_raw_v1$20190515'
 
 
-./script/generate_incremental_table --destination_table clients_last_seen_v1 --start 2019-05-04 --end 2019-05-15 --dataset=telemetry moz-fx-data-shared-prod/clients_last_seen_v1.sql
-./script/generate_incremental_table --destination_table clients_last_seen_raw_v1 --start 2019-05-04 --end 2019-05-15 --dataset=telemetry moz-fx-data-shared-prod/clients_last_seen_raw_v1.sql
+./script/generate_incremental_table --destination_table clients_last_seen_v1 --start 2019-05-04 --end 2019-05-15 --dataset=telemetry sql/moz-fx-data-shared-prod/clients_last_seen_v1.sql
+./script/generate_incremental_table --destination_table clients_last_seen_raw_v1 --start 2019-05-04 --end 2019-05-15 --dataset=telemetry sql/moz-fx-data-shared-prod/clients_last_seen_raw_v1.sql

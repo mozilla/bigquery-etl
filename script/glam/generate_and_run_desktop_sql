@@ -36,12 +36,12 @@ function generate_and_run_sql {
         table_name_suffix+="_"
     fi
 
-    python3 "moz-fx-data-shared-prod/telemetry_derived/clients_daily_${script_type}_aggregates_v1.sql.py" \
+    python3 "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_${script_type}_aggregates_v1.sql.py" \
         "--agg-type=${probe_type}s" \
         $processes_argument \
-        > "moz-fx-data-shared-prod/telemetry_derived/clients_daily_${probe_type}_aggregates_${table_name_suffix}v1/query.sql"
+        > "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_${probe_type}_aggregates_${table_name_suffix}v1/query.sql"
 
-    echo "generated moz-fx-data-shared-prod/telemetry_derived/clients_daily_${probe_type}_aggregates_${table_name_suffix}v1/query.sql"
+    echo "generated sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_${probe_type}_aggregates_${table_name_suffix}v1/query.sql"
 
     if [[ -z $RUN_QUERY ]]; then
         return

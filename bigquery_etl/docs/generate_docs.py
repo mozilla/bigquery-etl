@@ -9,7 +9,7 @@ import shutil
 from bigquery_etl.util import standard_args
 import yaml
 
-DEFAULT_PROJECTS = ["sql/mozfun/"]
+DEFAULT_PROJECTS_DIRS = ["sql/mozfun/"]
 DOCS_FILE = "README.md"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
@@ -24,7 +24,7 @@ parser.add_argument(
     "--project-dirs",
     help="Directories of projects documentation is generated for.",
     nargs="+",
-    default=DEFAULT_PROJECTS,
+    default=DEFAULT_PROJECTS_DIRS,
 )
 parser.add_argument(
     "--docs_dir",

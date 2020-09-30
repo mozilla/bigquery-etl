@@ -46,9 +46,6 @@ class TestPublishUdfs:
         udf_dirs = publish_udfs.get_udf_dirs(("data/udf",), "non-existing")
         assert udf_dirs == []
 
-        udf_dirs = publish_udfs.get_udf_dirs(("data/udf",), "tests")
-        assert "tests/data/udf" in udf_dirs
-
     def test_get_udf_dirs_non_mozfun(self):
         udf_dirs = publish_udfs.get_udf_dirs(("udf",), None)
         assert "sql/moz-fx-data-shared-prod/udf" in udf_dirs

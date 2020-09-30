@@ -33,8 +33,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -57,8 +57,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "multipart_query_v1"
             / "part1.sql"
@@ -90,8 +90,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -106,8 +106,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -122,8 +122,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -144,8 +144,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -167,8 +167,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -211,8 +211,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / (("a" * 63) + "_v1")
             / "query.sql"
@@ -232,8 +232,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -256,8 +256,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -278,8 +278,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -311,8 +311,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -345,8 +345,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -683,8 +683,8 @@ class TestTask:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"

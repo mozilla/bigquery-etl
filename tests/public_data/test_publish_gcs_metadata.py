@@ -17,7 +17,7 @@ class TestPublishGcsMetadata(object):
     project_id = "test-project-id"
     api_version = "v1"
     endpoint = "https://test.endpoint.mozilla.com/"
-    sql_dir = TEST_DIR / "data" / "moz-fx-data-test-project" / "test_sql"
+    sql_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project"
 
     mock_blob1 = Mock()
     mock_blob1.name = (

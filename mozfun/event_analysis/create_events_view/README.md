@@ -51,6 +51,7 @@ create_events_view(
     2. `events`: The set of events which indicate the user completed
         that step of the funnel. Most of the time this is a single event.
         Each event has a `category` and `event_name`.
+
 ***counts***: An array of counts. Each count has two parts, similar to funnel steps:
 1. `count_name`: Used to name the column representing the event count. E.g.
     `"clicked_settings_count"` would be queried at
@@ -171,3 +172,10 @@ FROM
 WHERE
     submission_date >= DATE_SUB(current_date, INTERVAL 28 DAY)
 ```
+
+#### Recommended Pattern
+Because the view definitions themselves are not informative about the contents of the events fields,
+we recommend that queries using this procedure are put immediately after the invocation.
+
+[This STMO query](https://sql.telemetry.mozilla.org/queries/74809/source) is an example of doing so.
+This allows viewers of the query to easily interpret what the funnel and count columns represent.

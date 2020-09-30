@@ -107,16 +107,16 @@ def create_views_if_not_exist(client, views, exclude):
             # We put this BQ API all inside the conditional to speed up execution
             # in the case target files already exist.
             table = client.get_table(target)
-            replacements = ["`mozfun.norm.metadata`(metadata)" " AS metadata"]
+            replacements = ["mozfun.norm.metadata(metadata)" " AS metadata"]
             # Add special replacements for Glean pings.
             schema_id = table.labels.get("schema_id", None)
             if schema_id == "glean_ping_1":
                 replacements += [
-                    "`mozfun.norm.glean_ping_info`(ping_info)" " AS ping_info"
+                    "mozfun.norm.glean_ping_info(ping_info)" " AS ping_info"
                 ]
                 if table.table_id == "baseline_v1":
                     replacements += [
-                        "`mozfun.norm.glean_baseline_client_info`"
+                        "mozfun.norm.glean_baseline_client_info"
                         "(client_info, metrics)"
                         " AS client_info"
                     ]

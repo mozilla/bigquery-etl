@@ -217,7 +217,7 @@ class Task:
         else:
             raise ValueError(
                 "query_file must be a path with format:"
-                " <project>/<dataset>/<table>_<version>/(query.sql|part1.sql)"
+                " sql/<project>/<dataset>/<table>_<version>/(query.sql|part1.sql)"
                 f" but is {self.query_file}"
             )
 

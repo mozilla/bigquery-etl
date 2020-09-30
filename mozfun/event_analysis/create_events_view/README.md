@@ -71,7 +71,7 @@ Because the view definitions themselves are not informative about the contents o
 we recommend that queries using this view are put immediately after the procedure invocation, and
 not run as separate queries.
 
-[This STMO query](https://sql.telemetry.mozilla.org/queries/74809/source) is an example of doing so.
+[This STMO query](https://sql.telemetry.mozilla.org/queries/75243/source) is an example of doing so.
 This allows viewers of the query to easily interpret what the funnel and count columns represent.
 
 
@@ -120,7 +120,7 @@ The following creates a few fields:
 - `number_of_collections_deleted` is the number of collections deleted
 
 ```sql
-CALL procedures.create_funnels_view(
+CALL mozfun.event_analysis.create_events_view(
   'fenix_collection_funnels',
   'moz-fx-data-shared-prod',
   'org_mozilla_firefox',

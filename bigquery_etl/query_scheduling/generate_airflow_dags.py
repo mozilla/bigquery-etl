@@ -93,7 +93,7 @@ def get_dags(sql_dir, dags_config):
         logging.error(
             """
             Invalid sql_dir: {}, sql_dir must be a directory with
-            structure <project>/<sql_dir>/<dataset>/<table>/metadata.yaml.
+            structure <sql_dir>/<project>/<dataset>/<table>/metadata.yaml.
             """.format(
                 sql_dir
             )
@@ -110,8 +110,9 @@ def main():
     projects = project_dirs(args.project_id)
 
     for project in projects:
-        dags = get_dags(project, args.dags_config)
-        dags.to_airflow_dags(dags_output_dir, args.dag_id)
+        if "mozfun" not in project:
+            dags = get_dags(project, args.dags_config)
+            dags.to_airflow_dags(dags_output_dir, args.dag_id)
 
 
 if __name__ == "__main__":

@@ -376,7 +376,7 @@ class TestTask:
     @pytest.mark.integration
     @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_task_get_dependencies_none(self, tmp_path, project_id):
-        query_file_path = tmp_path / project_id / "sql" / "test" / "query_v1"
+        query_file_path = tmp_path / project_id / "test" / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -396,7 +396,7 @@ class TestTask:
     def test_task_get_multiple_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
-        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -422,21 +422,11 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table1_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
             metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table2_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
             metadata,
         )
 
@@ -465,7 +455,7 @@ class TestTask:
     def test_multipart_task_get_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
-        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file_part1 = query_file_path / "part1.sql"
@@ -495,21 +485,11 @@ class TestTask:
         task = Task.of_multipart_query(query_file_part1, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table1_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
             metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table2_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
             metadata,
         )
 
@@ -538,7 +518,7 @@ class TestTask:
     def test_task_get_view_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
-        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -567,21 +547,11 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table1_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
             metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table2_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
             metadata,
         )
 
@@ -610,7 +580,7 @@ class TestTask:
     def test_task_get_nested_view_dependencies(
         self, tmp_path, bigquery_client, project_id, temporary_dataset
     ):
-        query_file_path = tmp_path / project_id / "sql" / temporary_dataset / "query_v1"
+        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -642,21 +612,11 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table1_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
             metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path
-            / project_id
-            / "sql"
-            / temporary_dataset
-            / "table2_v1"
-            / "query.sql",
+            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
             metadata,
         )
 

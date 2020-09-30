@@ -68,7 +68,18 @@ filtered_accumulated AS (
   USING
     (channel)
   WHERE
-    app_version >= (latest_version - 2)
+      -- allow for builds to be slighly ahead of the current submission date, to
+      -- account for a reasonable amount of clock skew
+    `moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build_id) < DATE_ADD(
+      @submission_date,
+      INTERVAL 3 day
+    )
+      -- only keep builds from the last year
+    AND `moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build_id) > DATE_SUB(
+      @submission_date,
+      INTERVAL 365 day
+    )
+    AND app_version >= (latest_version - 2)
 ),
 -- unnest the daily data
 extracted_daily AS (
@@ -102,7 +113,18 @@ filtered_daily AS (
   USING
     (channel)
   WHERE
-    app_version >= (latest_version - 2)
+      -- allow for builds to be slighly ahead of the current submission date, to
+      -- account for a reasonable amount of clock skew
+    `moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build_id) < DATE_ADD(
+      @submission_date,
+      INTERVAL 3 day
+    )
+      -- only keep builds from the last year
+    AND `moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build_id) > DATE_SUB(
+      @submission_date,
+      INTERVAL 365 day
+    )
+    AND app_version >= (latest_version - 2)
 ),
 -- re-aggregate based on the latest version
 aggregated_daily AS (

@@ -12,6 +12,7 @@ import yaml
 DEFAULT_PROJECTS = ["mozfun/"]
 DOCS_FILE = "README.md"
 UDF_FILE = "udf.sql"
+PROCEDURE_FILE = "stored_procedure.sql"
 METADATA_FILE = "metadata.yaml"
 DOCS_DIR = "docs/"
 INDEX_MD = "index.md"
@@ -103,7 +104,7 @@ def main():
                                 except yaml.YAMLError:
                                     pass
                         # dataset or UDF level doc file
-                        if UDF_FILE in files:
+                        if UDF_FILE in files or PROCEDURE_FILE in files:
                             # UDF-level doc; append to dataset doc
                             dataset_name = os.path.basename(path)
                             dataset_doc = out_dir / path.parent / f"{dataset_name}.md"

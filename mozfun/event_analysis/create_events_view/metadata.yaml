@@ -1,13 +1,11 @@
 description: >
-  Create a view that queries the events_daily table.
-  This view currently supports funnels and event counts.
+  Create a view that queries the `events_daily` table.
+  This view currently supports both funnels and event
+  counts.
 
-  Funnels are separated into steps, where every user did or did not
-  complete that funnel step on that day.
+  Funnels are created as a struct, with each step in the
+  funnel as a boolean column in the struct, indicating
+  whether the user completed that step on that day.
 
-  Event counts give the count per-user per-day.
-
-  [Here](https://sql.telemetry.mozilla.org/queries/74809/source) is
-  an example of using this procedure to create a view that gives
-  information on collections usage in Fenix.
+  Event counts are simply integers.
 friendly_name: Create Events View

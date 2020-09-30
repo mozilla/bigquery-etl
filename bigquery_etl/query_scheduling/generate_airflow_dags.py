@@ -11,7 +11,6 @@ from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 from bigquery_etl.util.common import project_dirs
 
 
-DEFAULT_SQL_DIR = "sql/"
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
 QUERY_PART_FILE = "part1.sql"
@@ -20,12 +19,6 @@ DEFAULT_DAGS_DIR = "dags"
 TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
 
 parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "--sql_dir",
-    "--sql-dir",
-    help="File or directory containing query and metadata files",
-    default=DEFAULT_SQL_DIR,
-)
 parser.add_argument(
     "--dags_config",
     "--dags-config",
@@ -117,7 +110,7 @@ def main():
     projects = project_dirs(args.project_id)
 
     for project in projects:
-        dags = get_dags(os.path.join(project, args.sql_dir), args.dags_config)
+        dags = get_dags(project, args.dags_config)
         dags.to_airflow_dags(dags_output_dir, args.dag_id)
 
 

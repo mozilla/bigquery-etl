@@ -16,6 +16,7 @@ from ..format_sql.formatter import reformat
 from ..cli.format import format
 from ..udf import publish_udfs
 from ..docs import validate_docs
+from ..util.common import project_dirs
 
 UDF_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 UDF_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")
@@ -134,16 +135,8 @@ mozfun.add_command(create)
 @click.argument("name", required=False)
 @path_option
 @click.option("--usages", "-u", is_flag=True, help="Show UDF usages", default=False)
-@click.option(
-    "--sql_dir",
-    "--sql-dir",
-    type=click.Path(file_okay=False),
-    callback=is_valid_dir,
-    help="Path to SQL files",
-    default=".",
-)
 @click.pass_context
-def info(ctx, name, path, usages, sql_dir):
+def info(ctx, name, path, usages):
     """CLI command for returning information about UDFs."""
     udf_dirs = ctx.obj["UDF_DIRS"]
     if path and is_valid_dir(None, None, path):
@@ -176,7 +169,11 @@ def info(ctx, name, path, usages, sql_dir):
         if usages:
             # find UDF usages in SQL files
             click.echo("usages: ")
-            sql_files = Path(sql_dir).rglob("*.sql")
+            sql_files = [
+                p
+                for project in project_dirs() + ["mozfun"]
+                for p in Path(project).rglob("*.sql")
+            ]
             for sql_file in sql_files:
                 if f"{udf_dataset}.{udf_name}" in sql_file.read_text():
                     no_usages = False
@@ -281,15 +278,8 @@ mozfun.add_command(publish)
 @click.argument("name", required=True)
 @click.argument("new_name", required=True)
 @path_option
-@click.option(
-    "--sql_path",
-    "--sql-path",
-    help="Path to directory with SQL queries.",
-    type=click.Path(file_okay=False),
-    default="sql/",
-)
 @click.pass_context
-def rename(ctx, name, path, new_name, sql_path):
+def rename(ctx, name, path, new_name):
     """Rename UDFs based on pattern."""
     udf_dirs = ctx.obj["UDF_DIRS"]
     if path and is_valid_dir(None, None, path):
@@ -329,7 +319,11 @@ def rename(ctx, name, path, new_name, sql_path):
             shutil.move(source, destination)
 
         # replace usages
-        all_sql_files = list(Path(sql_path).rglob("*.sql"))
+        all_sql_files = list(
+            sql_files=[
+                p for project in project_dirs() for p in Path(project).rglob("*.sql")
+            ]
+        )
 
         for udf_path in udf_dirs:
             all_sql_files += list(Path(udf_path).rglob("*.sql"))

@@ -7,14 +7,11 @@ import sys
 
 from .parse_metadata import Metadata
 from ..util import standard_args
-
-DEFAULT_DIR = "moz-fx-data-shared-prod/sql/"
+from ..util.common import project_dirs
 
 parser = ArgumentParser(description=__doc__)
 
-parser.add_argument(
-    "--target", default=DEFAULT_DIR, help="File or directory containing metadata files"
-)
+parser.add_argument("--target", help="File or directory containing metadata files")
 standard_args.add_log_level(parser)
 
 
@@ -64,7 +61,11 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    validate(args.target)
+    if args.target:
+        validate(args.target)
+    else:
+        for project in project_dirs():
+            validate(project)
 
 
 if __name__ == "__main__":

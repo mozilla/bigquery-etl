@@ -17,7 +17,7 @@ from ..cli.utils import is_authenticated
 )
 @click.argument(
     "path",
-    default="moz-fx-data-shared-prod/sql/",
+    default="moz-fx-data-shared-prod/",  # todo: generic project support
     type=click.Path(file_okay=True),
 )
 @click.option(

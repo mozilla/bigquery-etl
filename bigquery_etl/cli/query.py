@@ -49,7 +49,7 @@ path_option = click.option(
     "-p",
     help="Path to directory which contains queries.",
     type=click.Path(file_okay=False),
-    default="moz-fx-data-shared-prod/sql/",
+    default="moz-fx-data-shared-prod/",
     callback=is_valid_dir,
 )
 

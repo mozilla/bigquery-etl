@@ -27,7 +27,7 @@ with DAG(
         name="export_public_data_json_telemetry_derived__ssl_ratios__v1",
         arguments=["script/publish_public_data_json"]
         + [
-            "--query_file=moz-fx-data-shared-prod/sql/telemetry_derived/ssl_ratios_v1/query.sql"
+            "--query_file=moz-fx-data-shared-prod/telemetry_derived/ssl_ratios_v1/query.sql"
         ]
         + ["--destination_table=ssl_ratios${{ds_nodash}}"]
         + ["--dataset_id=telemetry_derived"]

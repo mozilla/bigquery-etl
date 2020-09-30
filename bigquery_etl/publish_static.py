@@ -15,11 +15,6 @@ DESCRIPTION_FILENAME = "description.txt"
 def _parse_args():
     parser = ArgumentParser(__doc__)
     parser.add_argument(
-        "--data-dir",
-        default="sql/",
-        help="Path containing CSV's containing static data",
-    )
-    parser.add_argument(
         "--project-id", "--project_id", help="Project to publish tables to"
     )
     return parser.parse_args()
@@ -30,7 +25,7 @@ def _load_table(
 ):
     client = bigquery.Client()
 
-    # Assume path is ...project/data_dir/dataset/table/data.csv
+    # Assume path is ...project/dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split("/")
     dataset_id = path_split[-3]
     table_id = path_split[-2]
@@ -81,9 +76,8 @@ def main():
     """Publish csv files as BigQuery tables."""
     args = _parse_args()
     projects = project_dirs(args.project_id)
-    data_dirs = [os.path.join(project, args.data_dir) for project in projects]
 
-    for data_dir in data_dirs:
+    for data_dir in projects:
         for root, dirs, files in os.walk(data_dir):
             for filename in files:
                 if filename == DATA_FILENAME:

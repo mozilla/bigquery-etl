@@ -46,7 +46,7 @@ function run_query {
     local query_location=${5:-$destination_table}
     local additional_arguments="${6:---replace}"
     local sample_size=${7:-10}
-    local query="sql/$PROD_DATASET/$query_location/query.sql"
+    local query="moz-fx-data-shared-prod/$PROD_DATASET/$query_location/query.sql"
 
     # add an option to write to a time-partitioned table
     if $time_partition; then
@@ -74,7 +74,7 @@ function run_query {
 
 function run_init {
     local destination_table=$1
-    local init="sql/$PROD_DATASET/$destination_table/init.sql"
+    local init="moz-fx-data-shared-prod/$PROD_DATASET/$destination_table/init.sql"
     # run if needed
     if ! bq show "${DATASET}.${destination_table}" &> /dev/null; then
         echo "running $init"
@@ -91,7 +91,7 @@ function run_init {
 
 function run_view {
     local view_name=$1
-    local view="sql/$PROD_DATASET/$view_name/view.sql"
+    local view="moz-fx-data-shared-prod/$PROD_DATASET/$view_name/view.sql"
     echo "running $view"
     local tmp
     tmp=$(mktemp)
@@ -202,10 +202,10 @@ function run_glean_sql {
     fi
     if [[ $stage == "daily" || $stage == "all" ]]; then
         if ((start_stage <= 0)) && [[ $export_only = false ]]; then
-            for directory in sql/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
+            for directory in moz-fx-data-shared-prod/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
                 run_query "$(basename "$directory")" true &
             done
-            for directory in sql/glam_etl/"${product}"__clients_daily_histogram_aggregates*/; do
+            for directory in moz-fx-data-shared-prod/glam_etl/"${product}"__clients_daily_histogram_aggregates*/; do
                 run_query "$(basename "$directory")" true &
             done
             wait

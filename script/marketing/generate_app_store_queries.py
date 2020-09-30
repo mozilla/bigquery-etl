@@ -19,7 +19,7 @@ sys.path.append(
 )
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 
-SQL_DIR = "sql/"
+SQL_DIR = "moz-fx-data-shared-prod/"
 
 QUERY_TEMPLATE = """
 SELECT

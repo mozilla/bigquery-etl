@@ -71,7 +71,7 @@ def main():
     parser = ArgumentParser(description=main.__doc__)
     parser.add_argument("--prefix")
     parser.add_argument("--dataset", default="glam_etl")
-    parser.add_argument("--sql-root", default="moz-fx-data-shared-prod/sql/")
+    parser.add_argument("--sql-root", default="moz-fx-data-shared-prod/")
     parser.add_argument("--daily-view-only", action="store_true", default=False)
     args = parser.parse_args()
 

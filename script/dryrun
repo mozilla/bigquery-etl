@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Passes all queries defined under sql/ to a Cloud Function that will run the
+# Passes all queries to a Cloud Function that will run the
 # queries with the dry_run option enabled.
 
 cd "$(dirname "$0")/.."

@@ -23,9 +23,9 @@ create_events_view(
 - `view_name`: The name of the view that will be created. This view
     will be in the shared-prod project, in the analysis bucket,
     and so will be queryable at:
-    ```sql
-    `moz-fx-data-shared-prod`.analysis.{view_name}
-    ```
+        ```sql
+        `moz-fx-data-shared-prod`.analysis.{view_name}
+        ```
 
 - `project`: The project where the `dataset` is located.
 
@@ -77,7 +77,10 @@ This allows viewers of the query to easily interpret what the funnel and count c
 
 #### Structure of the Resulting View
 
-The view will be created at `\`moz-fx-data-shared-prod`\.analysis.{event_name}`.
+The view will be created at 
+```
+`moz-fx-data-shared-prod`.analysis.{event_name}.
+```
 
 
 ##### Funnels

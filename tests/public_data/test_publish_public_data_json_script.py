@@ -24,8 +24,8 @@ class TestPublishJsonScript(object):
         incremental_sql_path = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -89,8 +89,8 @@ class TestPublishJsonScript(object):
         incremental_sql_path = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -113,8 +113,8 @@ class TestPublishJsonScript(object):
         no_metadata_sql_path = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "no_metadata_query_v1"
             / "query.sql"
@@ -142,8 +142,8 @@ class TestPublishJsonScript(object):
         non_incremental_sql_path = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "non_incremental_query_v1"
             / "query.sql"
@@ -204,8 +204,8 @@ class TestPublishJsonScript(object):
         incremental_non_incremental_export_sql_path = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_non_incremental_export_v1"
             / "query.sql"

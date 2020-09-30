@@ -75,7 +75,6 @@ class SqlTest(pytest.Item, pytest.File):
         # default name
         # We assume the init sql contains `CREATE TABLE dataset.table`
         path = self.fspath.dirname.replace("tests", "")
-        path = f"sql/{path}"
         if test_name == "test_init":
             init_test = True
 

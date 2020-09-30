@@ -17,8 +17,8 @@ class TestPublishJson(object):
     non_incremental_sql_path = (
         TEST_DIR
         / "data"
-        / "moz-fx-data-test-project"
         / "test_sql"
+        / "moz-fx-data-test-project"
         / "test"
         / "non_incremental_query_v1"
         / "query.sql"
@@ -27,8 +27,8 @@ class TestPublishJson(object):
     incremental_sql_path = (
         TEST_DIR
         / "data"
-        / "moz-fx-data-test-project"
         / "test_sql"
+        / "moz-fx-data-test-project"
         / "test"
         / "incremental_query_v1"
         / "query.sql"

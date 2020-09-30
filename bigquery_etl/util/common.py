@@ -30,6 +30,8 @@ def snake_case(line: str) -> str:
 def project_dirs(project_id=None) -> List[str]:
     """Return all project directories."""
     if project_id is None:
-        return [project_dir for project_dir in os.listdir(SQL_DIR)]
+        return [
+            os.path.join(SQL_DIR, project_dir) for project_dir in os.listdir(SQL_DIR)
+        ]
     else:
         return [os.path.join(SQL_DIR, project_id)]

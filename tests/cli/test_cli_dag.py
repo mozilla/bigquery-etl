@@ -28,7 +28,7 @@ class TestDag:
             [
                 "--dags_config=" + str(TEST_DIR / "data" / "dags.yaml"),
                 "--sql_dir="
-                + str(TEST_DIR / "data" / "moz-fx-data-test-project" / "test_sql"),
+                + str(TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project"),
                 "--with_tasks",
             ],
         )
@@ -168,7 +168,7 @@ class TestDag:
 
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
             with open(
-                "sql" / "moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql",
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql",
                 "w",
             ) as f:
                 f.write("SELECT 1")
@@ -181,8 +181,7 @@ class TestDag:
             }
 
             with open(
-                "sql"
-                / "moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
                 "w",
             ) as f:
                 f.write(yaml.dump(metadata_conf))
@@ -204,8 +203,7 @@ class TestDag:
                 assert "bqetl_test" not in dags_conf
 
             with open(
-                "sql"
-                / "moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
                 "r",
             ) as f:
                 metadata = yaml.safe_load(f.read())

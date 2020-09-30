@@ -53,8 +53,8 @@ class TestParseMetadata(object):
         metadata_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "non_incremental_query_v1"
             / "query.sql"
@@ -69,8 +69,8 @@ class TestParseMetadata(object):
         metadata_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "no_metadata_query_v1"
             / "query.sql"
@@ -83,7 +83,7 @@ class TestParseMetadata(object):
             "test",
             "non_incremental_query",
             "v1",
-            TEST_DIR / "data" / "moz-fx-data-test-project" / "test_sql",
+            TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project",
         )
 
         assert metadata.friendly_name == "Test table for a non-incremental query"
@@ -96,7 +96,7 @@ class TestParseMetadata(object):
                 "test",
                 "no_metadata",
                 "v1",
-                TEST_DIR / "data" / "moz-fx-data-test-project" / "test_sql",
+                TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project",
             )
 
     def test_is_metadata_file(self):

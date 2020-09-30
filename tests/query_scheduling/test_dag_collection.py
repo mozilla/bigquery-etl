@@ -102,8 +102,8 @@ class TestDagCollection:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -156,8 +156,8 @@ class TestDagCollection:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "incremental_query_v1"
             / "query.sql"
@@ -229,8 +229,8 @@ class TestDagCollection:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "non_incremental_query_v1"
             / "query.sql"
@@ -441,8 +441,8 @@ class TestDagCollection:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "non_incremental_query_v1"
             / "query.sql"
@@ -487,8 +487,8 @@ class TestDagCollection:
         query_file = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "non_incremental_query_v1"
             / "query.sql"
@@ -497,8 +497,8 @@ class TestDagCollection:
         query_file2 = (
             TEST_DIR
             / "data"
-            / "moz-fx-data-test-project"
             / "test_sql"
+            / "moz-fx-data-test-project"
             / "test"
             / "no_metadata_query_v1"
             / "query.sql"

@@ -6,7 +6,7 @@ TEST_DIR = Path(__file__).parent.parent
 
 
 class TestGenerateAirflowDags(object):
-    sql_dir = TEST_DIR / "data" / "moz-fx-data-test-project" / "test_sql"
+    sql_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project"
     dags_config = TEST_DIR / "data" / "dags.yaml"
 
     def test_get_dags(self):

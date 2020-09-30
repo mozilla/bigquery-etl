@@ -125,19 +125,16 @@ class TestUdf:
 
     def test_udf_renaming(self, runner):
         with runner.isolated_filesystem():
-            os.mkdir("udf")
-            os.mkdir("udf/test_udf")
-            with open("udf/test_udf/udf.sql", "w") as f:
+            os.makedirs("sql/moz-fx-data-shared-prod/udf/test_udf")
+            with open("sql/moz-fx-data-shared-prod/udf/test_udf/udf.sql", "w") as f:
                 f.write("CREATE OR REPLACE FUNCTION udf.test_udf() AS (TRUE)")
 
-            os.mkdir("udf/another_udf")
-            with open("udf/another_udf/udf.sql", "w") as f:
+            os.mkdir("sql/moz-fx-data-shared-prod/udf/another_udf")
+            with open("sql/moz-fx-data-shared-prod/udf/another_udf/udf.sql", "w") as f:
                 f.write(
                     "CREATE OR REPLACE FUNCTION udf.another_udf() AS (udf.test_udf())"
                 )
 
-            os.mkdir("sql")
-            os.mkdir("sql/moz-fx-data-shared-prod")
             os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived")
             os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
             with open(
@@ -148,12 +145,12 @@ class TestUdf:
             result = runner.invoke(
                 rename,
                 ["udf.test_udf", "udf.renamed_udf"],
-                obj={"UDF_DIRS": ("udf",)},
+                obj={"UDF_DIRS": ("sql/moz-fx-data-shared-prod/udf",)},
             )
             assert result.exit_code == 0
-            assert "test_udf" not in os.listdir("udf")
-            assert "another_udf" in os.listdir("udf")
-            assert "renamed_udf" in os.listdir("udf")
+            assert "test_udf" not in os.listdir("sql/moz-fx-data-shared-prod/udf")
+            assert "another_udf" in os.listdir("sql/moz-fx-data-shared-prod/udf")
+            assert "renamed_udf" in os.listdir("sql/moz-fx-data-shared-prod/udf")
 
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "r"
@@ -162,31 +159,31 @@ class TestUdf:
                 assert "udf.renamed_udf" in sql
                 assert "udf.test_udf" not in sql
 
-            with open("udf/another_udf/udf.sql", "r") as f:
+            with open("sql/moz-fx-data-shared-prod/udf/another_udf/udf.sql", "r") as f:
                 sql = f.read()
                 assert "udf.renamed_udf" in sql
                 assert "udf.test_udf" not in sql
 
-            with open("udf/renamed_udf/udf.sql", "r") as f:
+            with open("sql/moz-fx-data-shared-prod/udf/renamed_udf/udf.sql", "r") as f:
                 sql = f.read()
                 assert "udf.renamed_udf" in sql
                 assert "udf.test_udf" not in sql
 
     def test_mozfun_dataset_renaming(self, runner):
         with runner.isolated_filesystem():
-            os.mkdir("mozfun")
-            os.mkdir("mozfun/udf")
-            os.mkdir("mozfun/udf/test_udf")
-            with open("mozfun/udf/test_udf/udf.sql", "w") as f:
+            os.mkdir("sql")
+            os.mkdir("sql/mozfun")
+            os.mkdir("sql/mozfun/udf")
+            os.mkdir("sql/mozfun/udf/test_udf")
+            with open("sql/mozfun/udf/test_udf/udf.sql", "w") as f:
                 f.write("CREATE OR REPLACE FUNCTION udf.test_udf() AS (TRUE)")
 
-            os.mkdir("mozfun/udf/another_udf")
-            with open("mozfun/udf/another_udf/udf.sql", "w") as f:
+            os.mkdir("sql/mozfun/udf/another_udf")
+            with open("sql/mozfun/udf/another_udf/udf.sql", "w") as f:
                 f.write(
                     "CREATE OR REPLACE FUNCTION udf.another_udf() AS (udf.test_udf())"
                 )
 
-            os.mkdir("sql")
             os.mkdir("sql/moz-fx-data-shared-prod")
             os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived")
             os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
@@ -196,13 +193,15 @@ class TestUdf:
                 f.write("SELECT udf.test_udf()")
 
             result = runner.invoke(
-                rename, ["udf.*", "new_dataset"], obj={"UDF_DIRS": ("mozfun",)}
+                rename, ["udf.*", "new_dataset"], obj={"UDF_DIRS": ("sql/mozfun",)}
             )
             assert result.exit_code == 0
-            assert "udf" not in os.listdir("mozfun")
-            assert "new_dataset" in os.listdir("mozfun")
-            assert "another_udf" in os.listdir("mozfun/new_dataset")
-            assert "test_udf" in os.listdir("mozfun/new_dataset")
+            assert "udf" not in os.listdir("sql/mozfun")
+            assert "new_dataset" in os.listdir("sql/mozfun")
+            assert "another_udf" in os.listdir("sql/mozfun/new_dataset")
+            assert "test_udf" in os.listdir("sql/mozfun/new_dataset")
+
+            print(result.output)
 
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "r"
@@ -211,12 +210,12 @@ class TestUdf:
                 assert "new_dataset.test_udf" in sql
                 assert "udf.test_udf" not in sql
 
-            with open("mozfun/new_dataset/another_udf/udf.sql", "r") as f:
+            with open("sql/mozfun/new_dataset/another_udf/udf.sql", "r") as f:
                 sql = f.read()
                 assert "new_dataset.test_udf" in sql
                 assert "udf.test_udf" not in sql
 
-            with open("mozfun/new_dataset/test_udf/udf.sql", "r") as f:
+            with open("sql/mozfun/new_dataset/test_udf/udf.sql", "r") as f:
                 sql = f.read()
                 assert "new_dataset.test_udf" in sql
                 assert "udf.test_udf" not in sql

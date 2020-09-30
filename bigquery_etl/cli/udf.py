@@ -318,9 +318,7 @@ def rename(ctx, name, path, new_name):
 
         # replace usages
         all_sql_files = list(
-            sql_files=[
-                p for project in project_dirs() for p in Path(project).rglob("*.sql")
-            ]
+            [p for project in project_dirs() for p in Path(project).rglob("*.sql")]
         )
 
         for udf_path in udf_dirs:

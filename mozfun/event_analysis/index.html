@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Mozilla Data Platform Team">
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Event Analysis - BigQuery ETL</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">BigQuery ETL</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">BigQuery ETL</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Mozfun <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../bits28/" class="dropdown-item">bits28</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Event Analysis</a>
+</li>
+                                    
+<li>
+    <a href="../glean/" class="dropdown-item">glean</a>
+</li>
+                                    
+<li>
+    <a href="../hist/" class="dropdown-item">hist</a>
+</li>
+                                    
+<li>
+    <a href="../json/" class="dropdown-item">json</a>
+</li>
+                                    
+<li>
+    <a href="../map/" class="dropdown-item">map</a>
+</li>
+                                    
+<li>
+    <a href="../norm/" class="dropdown-item">norm</a>
+</li>
+                                    
+<li>
+    <a href="../overview/" class="dropdown-item">mozfun</a>
+</li>
+                                    
+<li>
+    <a href="../stats/" class="dropdown-item">stats</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../bits28/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../glean/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/mozilla/bigquery-etl/edit/master/docs/mozfun/event_analysis.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#event-analysis" class="nav-link">Event Analysis</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#create_events_view" class="nav-link">create_events_view</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="event-analysis">Event Analysis</h1>
+<p>These functions are specific for use with the <code>events_daily</code> and <code>event_types</code> tables.
+By themselves, these two tables are nearly impossible to use since the event history
+is compressed; however, these stored procedures should make the data accessible.</p>
+<p>The <code>events_daily</code> table is created as a result of two steps:
+1. Map each event to a single UTF8 char which will represent it
+2. Group each client-day and store a string that records, using the
+    compressed format, that clients' event history for that day.
+    The characters are ordered by the timestamp which they appeared
+    that day.</p>
+<p>The best way to access this data is to create a view to do the heavy lifting.
+For example, to see which clients completed a certain action, you can create a view using these functions that
+knows what that action's representation is (using the compressed mapping from 1.) and
+create a regex string that checks for the presence of that event. The view makes this
+transparent, and allows users to simply query a boolean field representing the presence
+of that event on that day.</p>
+<h2 id="create_events_view">create_events_view</h2>
+<p>Create a view that queries the <code>events_daily</code> table. This view currently supports both funnels and event counts.
+Funnels are created as a struct, with each step in the funnel as a boolean column in the struct, indicating whether the user completed that step on that day.
+Event counts are simply integers.</p>
+<h3 id="usage">Usage</h3>
+<pre><code class="sql">create_events_view(
+    view_name STRING,
+    project STRING,
+    dataset STRING,
+    funnels ARRAY&lt;STRUCT&lt;
+        funnel_name STRING,
+        funnel ARRAY&lt;STRUCT&lt;
+            step_name STRING,
+            events ARRAY&lt;STRUCT&lt;
+                category STRING,
+                event_name STRING&gt;&gt;&gt;&gt;&gt;&gt;,
+    counts ARRAY&lt;STRUCT&lt;
+        count_name STRING,
+        events ARRAY&lt;STRUCT&lt;
+            category STRING,
+            event_name STRING&gt;&gt;&gt;&gt;
+  )
+</code></pre>
+
+<ul>
+<li>
+<p><code>view_name</code>: The name of the view that will be created. This view
+    will be in the shared-prod project, in the analysis bucket,
+    and so will be queryable at:
+        <code>sql
+        `moz-fx-data-shared-prod`.analysis.{view_name}</code></p>
+</li>
+<li>
+<p><code>project</code>: The project where the <code>dataset</code> is located.</p>
+</li>
+<li>
+<p><code>dataset</code>: The dataset that must contain both the <code>events_daily</code> and
+    <code>event_types</code> tables.</p>
+</li>
+<li>
+<p><code>funnels</code>: An array of funnels that will be created. Each funnel has
+    two parts:</p>
+<ol>
+<li><code>funnel_name</code>: The name of the funnel is what the column representing
+    the funnel will be named in the view. For example, with the value
+    <code>"onboarding"</code>, the view can be selected as follows:
+    <code>sql
+    SELECT onboarding
+    FROM `moz-fx-data-shared-prod`.analysis.{view_name}</code></li>
+<li><code>funnel</code>: The ordered series of steps that make up a funnel.
+    Each step also has:<ol>
+<li><code>step_name</code>: Used to name the column
+    within the funnel and represents whether the user completed
+    that step on that day. For example, within <code>onboarding</code> a user may
+    have <code>completed_first_card</code> as a step; this can be queried at
+    <code>sql
+    SELECT onboarding.completed_first_step
+    FROM `moz-fx-data-shared-prod`.analysis.{view_name}</code></li>
+<li><code>events</code>: The set of events which indicate the user completed
+    that step of the funnel. Most of the time this is a single event.
+    Each event has a <code>category</code> and <code>event_name</code>.</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p><code>counts</code>: An array of counts. Each count has two parts, similar to funnel steps:</p>
+<ol>
+<li><code>count_name</code>: Used to name the column representing the event count. E.g.
+    <code>"clicked_settings_count"</code> would be queried at
+    <code>sql
+    SELECT clicked_settings_count
+    FROM `moz-fx-data-shared-prod`.analysis.{view_name}</code></li>
+<li><code>events</code>: The set of events you want to count. Each event has
+    a <code>category</code> and <code>event_name</code>.</li>
+</ol>
+</li>
+</ul>
+<h4 id="recommended-pattern">Recommended Pattern</h4>
+<p>Because the view definitions themselves are not informative about the contents of the events fields,
+it is best to put your query immediately after the procedure invocation, rather than invoking the procedure and running a separate query.</p>
+<p><a href="https://sql.telemetry.mozilla.org/queries/75243/source">This STMO query</a> is an example of doing so.
+This allows viewers of the query to easily interpret what the funnel and count columns represent.</p>
+<h4 id="structure-of-the-resulting-view">Structure of the Resulting View</h4>
+<p>The view will be created at </p>
+<pre><code>`moz-fx-data-shared-prod`.analysis.{event_name}.
+</code></pre>
+
+<p>The view will have a schema roughly matching the following:</p>
+<pre><code>root
+ |-- submission_date: date
+ |-- client_id: string
+ |-- {funnel_1_name}: record
+ |  |-- {funnel_step_1_name} boolean
+ |  |-- {funnel_step_2_name} boolean
+ ...
+ |-- {funnel_N_name}: record
+ |  |-- {funnel_step_M_name}: boolean
+ |-- {count_1_name}: integer
+ ...
+ |-- {count_N_name}: integer
+ ...dimensions...
+</code></pre>
+
+<h5 id="funnels">Funnels</h5>
+<p>Each funnel will be a <code>STRUCT</code> with nested columns representing completion of each step
+The types of those columns are boolean, and represent whether the user completed that
+step on that day.</p>
+<pre><code class="sql">STRUCT(
+    completed_step_1 BOOLEAN,
+    completed_step_2 BOOLEAN,
+    ...
+) AS funnel_name
+</code></pre>
+
+<p>With one row per-user per-day, you can use <code>COUNTIF(funnel_name.completed_step_N)</code> to query
+these fields. See below for an example.</p>
+<h5 id="event-counts">Event Counts</h5>
+<p>Each event count is simply an <code>INT64</code> representing the number of times the user completed
+those events on that day. If there are multiple events represented within one count,
+the values are summed. For example, if you wanted to know the number of times a user
+opened or closed the app, you could create a single event count with those two
+events.</p>
+<pre><code class="sql">event_count_name INT64
+</code></pre>
+
+<h3 id="examples">Examples</h3>
+<p>The following creates a few fields:
+- <code>collection_flow</code> is a funnel for those that started creating
+    a collection within Fenix, and then finished, either by adding
+    those tabs to an existing collection or saving it as a new
+    collection.
+- <code>collection_flow_saved</code> represents users who started the collection
+    flow then saved it as a new collection.
+- <code>number_of_collections_created</code> is the number of collections created
+- <code>number_of_collections_deleted</code> is the number of collections deleted</p>
+<pre><code class="sql">CALL mozfun.event_analysis.create_events_view(
+  'fenix_collection_funnels',
+  'moz-fx-data-shared-prod',
+  'org_mozilla_firefox',
+
+  -- Funnels
+  [
+    STRUCT(
+      &quot;collection_flow&quot; AS funnel_name,
+      [STRUCT(
+        &quot;started_collection_creation&quot; AS step_name,
+        [STRUCT('collections' AS category, 'tab_select_opened' AS event_name)] AS events),
+      STRUCT(
+        &quot;completed_collection_creation&quot; AS step_name,
+        [STRUCT('collections' AS category, 'saved' AS event_name),
+        STRUCT('collections' AS category, 'tabs_added' AS event_name)] AS events)
+    ] AS funnel),
+
+    STRUCT(
+      &quot;collection_flow_saved&quot; AS funnel_name,
+      [STRUCT(
+        &quot;started_collection_creation&quot; AS step_name,
+        [STRUCT('collections' AS category, 'tab_select_opened' AS event_name)] AS events),
+      STRUCT(
+        &quot;saved_collection&quot; AS step_name,
+        [STRUCT('collections' AS category, 'saved' AS event_name)] AS events)
+    ] AS funnel)
+  ],
+
+  -- Event Counts
+  [
+    STRUCT(
+      &quot;number_of_collections_created&quot; AS count_name,
+      [STRUCT('collections' AS category, 'saved' AS event_name)] AS events
+    ),
+    STRUCT(
+      &quot;number_of_collections_deleted&quot; AS count_name,
+      [STRUCT('collections' AS category, 'removed' AS event_name)] AS events
+    )
+  ]
+);
+</code></pre>
+
+<p>From there, you can query a few things. For example, the fraction 
+of users who completed each step of the collection flow over time:</p>
+<pre><code class="sql">SELECT
+    submission_date,
+    COUNTIF(collection_flow.started_collection_creation) / COUNT(*) AS started_collection_creation,
+    COUNTIF(collection_flow.completed_collection_creation) / COUNT(*) AS completed_collection_creation,
+FROM
+    `moz-fx-data-shared-prod`.analysis.fenix_collection_funnels
+WHERE
+    submission_date &gt;= DATE_SUB(current_date, INTERVAL 28 DAY)
+GROUP BY
+    submission_date
+</code></pre>
+
+<p>Or you can see the number of collections created and deleted:</p>
+<pre><code class="sql">SELECT
+    submission_date,
+    SUM(number_of_collections_created) AS number_of_collections_created,
+    SUM(number_of_collections_deleted) AS number_of_collections_deleted,
+FROM
+    `moz-fx-data-shared-prod`.analysis.fenix_collection_funnels
+WHERE
+    submission_date &gt;= DATE_SUB(current_date, INTERVAL 28 DAY)
+GROUP BY
+    submission_date
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -45,7 +45,7 @@ create_events_view(
         Each step also has:
         1. `step_name`: Used to name the column
             within the funnel and represents whether the user completed
-            that step on that day. For example, within `onboarding` we may
+            that step on that day. For example, within `onboarding` a user may
             have `completed_first_card` as a step; this can be queried at
             ```sql
             SELECT onboarding.completed_first_step
@@ -62,14 +62,13 @@ create_events_view(
         SELECT clicked_settings_count
         FROM `moz-fx-data-shared-prod`.analysis.{view_name}
         ```
-    2. `events`: The set of events that we want to count. Each event has
+    2. `events`: The set of events you want to count. Each event has
         a `category` and `event_name`.
 
 
 #### Recommended Pattern
 Because the view definitions themselves are not informative about the contents of the events fields,
-we recommend that queries using this view are put immediately after the procedure invocation, and
-not run as separate queries.
+it is best to put your query immediately after the procedure invocation, rather than invoking the procedure and running a separate query.
 
 [This STMO query](https://sql.telemetry.mozilla.org/queries/75243/source) is an example of doing so.
 This allows viewers of the query to easily interpret what the funnel and count columns represent.
@@ -113,15 +112,15 @@ STRUCT(
 ) AS funnel_name
 ```
 
-With one row per-user per-day, we can use `COUNTIF(funnel_name.completed_step_N)` to query
+With one row per-user per-day, you can use `COUNTIF(funnel_name.completed_step_N)` to query
 these fields. See below for an example.
 
 
 ##### Event Counts
 Each event count is simply an `INT64` representing the number of times the user completed
 those events on that day. If there are multiple events represented within one count,
-the values are summed. For example, if we wanted to know the number of times a user
-opened or closed the app, we could create a single event count with those two
+the values are summed. For example, if you wanted to know the number of times a user
+opened or closed the app, you could create a single event count with those two
 events.
 
 ```sql
@@ -183,7 +182,7 @@ CALL mozfun.event_analysis.create_events_view(
 );
 ```
 
-From there, we can query a few things. For example, the fraction 
+From there, you can query a few things. For example, the fraction 
 of users who completed each step of the collection flow over time:
 ```sql
 SELECT
@@ -198,7 +197,7 @@ GROUP BY
     submission_date
 ```
 
-Or we can see the number of collections created and deleted:
+Or you can see the number of collections created and deleted:
 ```sql
 SELECT
     submission_date,

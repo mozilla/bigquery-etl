@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS
     channel STRING,
     histogram_aggregates ARRAY<
       STRUCT<
-        latest_version INT64,
         metric STRING,
         metric_type STRING,
         key STRING,

@@ -101,7 +101,7 @@ FROM
 UNION ALL
 SELECT
   -- We also present a single usage criterion that sums together Fenix + Firefox Preview
-  -- as that represents total logic "Fenix" usage.
+  -- as that represents total logical "Fenix" usage.
   * REPLACE(REPLACE(usage, 'Firefox Non-desktop', 'Preview+Fenix') AS usage)
 FROM
   unnested

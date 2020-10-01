@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS
     startup_crashes INT64,
     content_shutdown_crashes INT64,
     oom_crashes INT64,
+    shutdown_kill_crashes INT64,
     shutdown_hangs INT64,
     gpu_crashes INT64,
     plugin_crashes INT64,

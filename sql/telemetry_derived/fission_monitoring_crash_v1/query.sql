@@ -30,6 +30,7 @@ WITH crash_ping_data AS (
       0
     ) AS content_shutdown_crash,
     IF(payload.metadata.oom_allocation_size IS NOT NULL, 1, 0) AS oom_crashes,
+    IF(payload.metadata.ipc_channel_error = 'ShutDownKill', 1, 0) AS shutdown_kill_crashes,
     IF(payload.metadata.moz_crash_reason LIKE 'MOZ_CRASH%', 1, 0) AS shutdown_hangs,
     -- 0 for values retrieved from main ping
     0 AS usage_seconds,
@@ -65,6 +66,7 @@ main_ping_data AS (
     0 AS startup_crash,
     0 AS content_shutdown_crash,
     0 AS oom_crashes,
+    0 AS shutdown_kill_crashes,
     0 AS shutdown_hangs,
     payload.info.subsession_length AS usage_seconds,
     COALESCE(

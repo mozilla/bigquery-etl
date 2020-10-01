@@ -59,7 +59,6 @@ extracted_daily AS (
 filtered_daily AS (
   SELECT
     {{ attributes }},
-    latest_version,
     histogram_aggregates.*
   FROM
     extracted_daily
@@ -83,7 +82,6 @@ transformed_daily AS (
     {{ attributes }},
     ARRAY_AGG(
       STRUCT<
-        latest_version INT64,
         metric STRING,
         metric_type STRING,
         key STRING,

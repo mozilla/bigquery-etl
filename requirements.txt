@@ -215,10 +215,6 @@ idna==2.10 \
     --hash=sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6 \
     --hash=sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0 \
     # via requests, yarl
-incremental==17.5.0 \
-    --hash=sha256:717e12246dddf231a349175f48d74d93e2897244939173b01974ab6661406b9f \
-    --hash=sha256:7b751696aaf36eebfab537e458929e194460051ccad279c72b755a167eebd4b3 \
-    # via -r requirements.in
 iniconfig==1.0.1 \
     --hash=sha256:80cf40c597eb564e86346103f609d74efce0f6b4d4f30ec8ce9e2c26411ba437 \
     --hash=sha256:e5f92f89355a67de0595932a6c6c02ab4afddc6fcdc0bfc5becd0d60884d3f69 \

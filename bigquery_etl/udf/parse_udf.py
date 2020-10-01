@@ -268,6 +268,7 @@ def udf_usage_definitions(text, raw_udfs=None):
 def sub_local_routines(test, raw_udfs=None):
     """
     Transform persistent UDF into temporary UDFs.
+
     Use generic dataset for stored procedures.
     """
     sql = prepend_udf_usage_definitions(test, raw_udfs)

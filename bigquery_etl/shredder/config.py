@@ -480,8 +480,29 @@ def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
 PIONEER_PROD = "moz-fx-data-pioneer-prod"
 
 
-def find_pioneer_targets(pool, client, project=PIONEER_PROD):
+def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects={}):
     """Return a dict like DELETE_TARGETS for Pioneer tables."""
+
+    def __get_tables_with_pioneer_id__(dataset_list):
+        return [
+            table
+            for table in pool.map(
+                client.get_table,
+                [
+                    table
+                    for tables in pool.map(
+                        client.list_tables,
+                        dataset_list,
+                        chunksize=1,
+                    )
+                    for table in tables
+                ],
+                chunksize=1,
+            )
+            if any(field.name == PIONEER_ID for field in table.schema)
+            and table.table_type != "VIEW"
+        ]
+
     datasets = {
         dataset.reference
         for dataset in client.list_datasets(project)
@@ -520,19 +541,19 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD):
             pioneer_target(
                 table=qualified_table_id(table), project=PIONEER_PROD
             ): sources[table.dataset_id]
-            for table in pool.map(
-                client.get_table,
+            for table in __get_tables_with_pioneer_id__(derived_datasets)
+        },
+        **{
+            # tables with pioneer_id located in study analysis projects
+            pioneer_target(
+                table=qualified_table_id(table), project=analysis_project
+            ): sources[study_name + "_stable"]
+            for study_name, analysis_project in study_projects.items()
+            for table in __get_tables_with_pioneer_id__(
                 [
-                    table
-                    for tables in pool.map(
-                        client.list_tables,
-                        derived_datasets,
-                        chunksize=1,
-                    )
-                    for table in tables
-                ],
-                chunksize=1,
+                    dataset.reference
+                    for dataset in client.list_datasets(analysis_project)
+                ]
             )
-            if any(field.name == PIONEER_ID for field in table.schema)
         },
     }

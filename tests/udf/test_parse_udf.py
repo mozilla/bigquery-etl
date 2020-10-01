@@ -9,8 +9,13 @@ TEST_DIR = Path(__file__).parent.parent
 class TestParseUdf:
     mock_mozfun_udfs = mock.patch.object(
         parse_udf,
-        "MOZFUN_UDFS",
-        ["hist.range", "json.parse", "procedure.test_procedure"],
+        "MOZFUN_ROUTINES",
+        [
+            {"name": "hist.range", "is_udf": True},
+            {"name": "json.parse", "is_udf": True},
+            {"name": "procedure.test_procedure", "is_udf": False},
+            {"name": "procedure.append_hello", "is_udf": False},
+        ],
     )
 
     def test_raw_udf_from_file(self):
@@ -158,24 +163,34 @@ class TestParseUdf:
             in result
         )
 
-    def test_persistent_udf_as_temp(self):
-        udf_dir = TEST_DIR / "data" / "udf"
-        raw_udfs = parse_udf.read_udf_dirs((udf_dir))
-        raw_udf = parse_udf.RawUdf.from_file(
-            udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
-        ).tests[0]
+    def test_sub_local_routines(self):
+        with self.mock_mozfun_udfs:
+            data_dir = TEST_DIR / "data"
+            raw_udfs = parse_udf.read_udf_dirs((data_dir / "udf"))
+            raw_udfs.update(parse_udf.read_udf_dirs((data_dir / "procedure")))
+            raw_udf = parse_udf.RawUdf.from_file(
+                data_dir / "udf" / "test_shift_28_bits_one_day" / "udf.sql"
+            ).tests[0]
 
-        assert "CREATE TEMP FUNCTION" not in raw_udf
-        assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" not in raw_udf
-        result = parse_udf.persistent_udf_as_temp(raw_udf, raw_udfs)
-        assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in result
-        assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
+            assert "CREATE TEMP FUNCTION" not in raw_udf
+            assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" not in raw_udf
+            result = parse_udf.sub_local_routines(raw_udf, raw_udfs)
+            assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in result
+            assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
 
-        text = "SELECT udf.test_bitmask_lowest_28(23), mozfun.hist.range('{}')"
-        result = parse_udf.persistent_udf_as_temp(text, raw_udfs)
-        assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
-        assert "hist.range" in result
-        assert "mozfun.hist.range" not in result
+            text = "SELECT udf.test_bitmask_lowest_28(23), mozfun.hist.range('{}')"
+            result = parse_udf.sub_local_routines(text, raw_udfs)
+            assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
+            assert "hist_range" in result
+            assert "mozfun.hist.range" not in result
+            assert "hist.range" not in result
+
+            text = "CALL procedure.test_procedure(23);"
+            result = parse_udf.sub_local_routines(text, raw_udfs)
+            assert (
+                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_test_procedure"
+                in result
+            )
 
     def test_udf_tests_sql(self):
         udf_dir = TEST_DIR / "data" / "udf"
@@ -206,7 +221,7 @@ class TestParseUdf:
     def test_procedure(self):
         with self.mock_mozfun_udfs:
             text = (
-                "CREATE OR REPLACE PROCEDURES procedure.test_procedure(out STRING) "
+                "CREATE OR REPLACE PROCEDURE procedure.test_procedure(out STRING) "
                 "BEGIN "
                 "SET out = mozfun.json.parse('{}'); "
                 "END "
@@ -218,10 +233,10 @@ class TestParseUdf:
             assert len(result.definitions) == 1
             assert len(result.dependencies) == 1
             assert "json.parse" in result.dependencies
-            assert result.tests == []
+            assert result.tests == [text.strip()]
 
             text = (
-                "CREATE OR REPLACE PROCEDURES procedure.test_procedure(out STRING) "
+                "CREATE OR REPLACE PROCEDURE procedure.test_procedure(out STRING) "
                 "BEGIN "
                 "SET out = ''; "
                 "END "
@@ -232,7 +247,7 @@ class TestParseUdf:
             assert result.name == "procedure.test_procedure"
             assert len(result.definitions) == 1
             assert result.dependencies == []
-            assert result.tests == []
+            assert result.tests == [text.strip()]
 
     def test_procedure_from_file(self):
         udf_dir = TEST_DIR / "data"
@@ -246,10 +261,40 @@ class TestParseUdf:
             assert len(result.definitions) == 1
             assert (
                 result.definitions[0]
-                == """CREATE OR REPLACE PROCEDURES procedure.test_procedure(out STRING)
+                == """CREATE OR REPLACE PROCEDURE procedure.test_procedure(out STRING)
 BEGIN
   SET out = mozfun.json.parse('{}');
 END;"""
             )
-            assert result.tests == []
+            assert result.tests == [result.definitions[0].strip()]
             assert result.dependencies == ["json.parse"]
+
+    def test_procedure_tests_sql(self):
+        with self.mock_mozfun_udfs:
+            udf_dir = TEST_DIR / "data"
+            raw_procedure = parse_udf.RawUdf.from_file(
+                udf_dir / "procedure" / "append_hello" / "stored_procedure.sql"
+            )
+
+            raw_routines = parse_udf.read_udf_dirs((udf_dir / "udf"))
+            raw_routines.update(parse_udf.read_udf_dirs((udf_dir / "procedure")))
+
+            tests = parse_udf.udf_tests_sql(raw_procedure, raw_routines)
+            assert (
+                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_test_procedure"
+                in tests[0]
+            )
+            assert (
+                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_append_hello"
+                in tests[0]
+            )
+
+            assert (
+                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_test_procedure"
+                in tests[1]
+            )
+            assert (
+                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_append_hello"
+                in tests[1]
+            )
+            assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in tests[1]

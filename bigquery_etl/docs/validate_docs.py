@@ -7,7 +7,7 @@ import tempfile
 import sys
 
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.udf.parse_udf import read_udf_dirs, persistent_udf_as_temp
+from bigquery_etl.udf.parse_udf import read_udf_dirs, sub_local_routines
 from bigquery_etl.util import standard_args
 
 DEFAULT_PROJECTS = ["mozfun"]
@@ -42,7 +42,7 @@ def sql_for_dry_run(file, parsed_udfs, project_dir):
         for udf, raw_udf in parsed_udfs.items():
             if udf in example_sql:
                 query = "".join(raw_udf.definitions)
-                dry_run_sql += persistent_udf_as_temp(query, parsed_udfs)
+                dry_run_sql += sub_local_routines(query, parsed_udfs)
 
         dry_run_sql += example_sql
 

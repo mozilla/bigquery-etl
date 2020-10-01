@@ -188,7 +188,7 @@ class TestParseUdf:
             text = "CALL procedure.test_procedure(23);"
             result = parse_udf.sub_local_routines(text, raw_udfs)
             assert (
-                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_test_procedure"
+                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
                 in result
             )
 
@@ -261,7 +261,8 @@ class TestParseUdf:
             assert len(result.definitions) == 1
             assert (
                 result.definitions[0]
-                == """CREATE OR REPLACE PROCEDURE procedure.test_procedure(out STRING)
+                == """CREATE OR REPLACE PROCEDURE
+  procedure.test_procedure(out STRING)
 BEGIN
   SET out = mozfun.json.parse('{}');
 END;"""
@@ -281,20 +282,20 @@ END;"""
 
             tests = parse_udf.udf_tests_sql(raw_procedure, raw_routines)
             assert (
-                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_test_procedure"
+                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
                 in tests[0]
             )
             assert (
-                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_append_hello"
+                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_append_hello"
                 in tests[0]
             )
 
             assert (
-                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_test_procedure"
+                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
                 in tests[1]
             )
             assert (
-                "CREATE OR REPLACE PROCEDURE _generic_dataset_.procedure_append_hello"
+                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_append_hello"
                 in tests[1]
             )
             assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in tests[1]

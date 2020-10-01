@@ -29,15 +29,19 @@ PERSISTENT_UDF_PREFIX = re.compile(
     r"CREATE\s+(OR\s+REPLACE\s+)?FUNCTION(\s+IF\s+NOT\s+EXISTS)?", re.IGNORECASE
 )
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
+GENERIC_DATASET = "_generic_dataset_"
 
 # UDFs defined in mozfun
-MOZFUN_UDFS = {
-    root.split("/")[-2] + "." + root.split("/")[-1]
+MOZFUN_ROUTINES = [
+    {
+        "name": root.split("/")[-2] + "." + root.split("/")[-1],
+        "is_udf": filename == UDF_FILE,
+    }
     for udf_dir in MOZFUN_DIR
     for root, dirs, files in os.walk(udf_dir)
     for filename in files
     if filename in (UDF_FILE, PROCEDURE_FILE)
-}
+]
 
 
 @dataclass
@@ -112,13 +116,7 @@ class RawUdf:
             elif normalized_statement.startswith("create or replace procedure"):
                 is_stored_procedure = True
                 definitions.append(s)
-
-                # For now, dryruns don't work because procedures don't support
-                # default datasets.
-                # Support issue has been filed with Google, when this is resolved
-                # we can reenable these.
-                #
-                # tests.append(s)
+                tests.append(s)
                 if persistent_name in normalized_statement:
                     internal_name = persistent_name
 
@@ -153,9 +151,9 @@ class RawUdf:
         # for public UDFs dependencies can live in arbitrary dataset;
         # we can check if some known dependency is part of the UDF
         # definition instead
-        for udf in MOZFUN_UDFS:
-            if udf in "\n".join(definitions):
-                dependencies.append(udf)
+        for udf in MOZFUN_ROUTINES:
+            if udf["name"] in "\n".join(definitions):
+                dependencies.append(udf["name"])
 
         if is_defined:
             dependencies.remove(internal_name)
@@ -245,9 +243,9 @@ def udf_usages_in_text(text):
     tmp_udfs = list(filter(lambda u: u != "udf_js", TEMP_UDF_RE.findall(sql)))
     udf_usages.extend(tmp_udfs)
 
-    for udf in MOZFUN_UDFS:
-        if udf in sql:
-            udf_usages.append(udf)
+    for routine in MOZFUN_ROUTINES:
+        if routine["name"] in sql:
+            udf_usages.append(routine["name"])
 
     return sorted(set(udf_usages))
 
@@ -267,15 +265,22 @@ def udf_usage_definitions(text, raw_udfs=None):
     ]
 
 
-def persistent_udf_as_temp(raw_udf, raw_udfs=None):
-    """Transform persistent UDF into temporary UDF."""
-    sql = prepend_udf_usage_definitions(raw_udf, raw_udfs)
+def sub_local_routines(test, raw_udfs=None):
+    """
+    Transform persistent UDFs into temporary UDFs.
+
+    Use generic dataset for stored procedures.
+    """
+    sql = prepend_udf_usage_definitions(test, raw_udfs)
     sql = sub_persistent_udf_names_as_temp(sql)
 
-    for udf in MOZFUN_UDFS:
-        if udf in sql:
-            sql = sql.replace(udf, udf.replace(".", "_"))
-    sql = sql.replace("mozfun.", "")
+    for routine in MOZFUN_ROUTINES:
+        if routine["name"] in sql:
+            replace_name = routine["name"].replace(".", "_")
+            if not routine["is_udf"]:
+                replace_name = GENERIC_DATASET + "." + replace_name
+            regex_str = r"(?:mozfun.)?" + routine["name"]
+            sql = re.sub(regex_str, replace_name, sql)
 
     sql = PERSISTENT_UDF_PREFIX.sub("CREATE TEMP FUNCTION", sql)
     return sql
@@ -290,7 +295,7 @@ def udf_tests_sql(raw_udf, raw_udfs):
     """
     tests_full_sql = []
     for test in raw_udf.tests:
-        test_sql = persistent_udf_as_temp(test, raw_udfs)
+        test_sql = sub_local_routines(test, raw_udfs)
         tests_full_sql.append(test_sql)
 
     return tests_full_sql

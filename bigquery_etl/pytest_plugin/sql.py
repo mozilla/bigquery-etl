@@ -132,7 +132,7 @@ class SqlTest(pytest.Item, pytest.File):
                 views[table_name] = read(self.fspath.strpath, resource)
 
         # rewrite all udfs as temporary
-        query = parse_udf.persistent_udf_as_temp(query)
+        query = parse_udf.sub_local_routines(query)
 
         dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
         if "CIRCLE_BUILD_NUM" in os.environ:

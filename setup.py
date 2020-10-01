@@ -11,7 +11,6 @@ def get_version():
 setup(
     name="mozilla-bigquery-etl",
     version=get_version(),
-    use_incremental=True,
     author="Mozilla Corporation",
     author_email="fx-data-dev@mozilla.org",
     description="Tooling for building derived datasets in BigQuery",
@@ -39,6 +38,8 @@ setup(
         "typing",
         "click",
         "pandas",
+        "ujson",
+        "stripe",
     ],
     long_description="Tooling for building derived datasets in BigQuery",
     long_description_content_type="text/markdown",

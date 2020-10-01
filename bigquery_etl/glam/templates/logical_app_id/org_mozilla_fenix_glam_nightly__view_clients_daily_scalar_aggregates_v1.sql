@@ -24,7 +24,7 @@ SELECT
   -- to use a build id as a placeholder. See
   -- https://github.com/mozilla/bigquery-etl/issues/1329
   * EXCEPT (channel, app_version),
-  SAFE_CAST(app_build_id as INT64) as app_version,
+  SAFE_CAST(app_build_id AS INT64) AS app_version,
   "*" AS channel
 FROM
   extracted

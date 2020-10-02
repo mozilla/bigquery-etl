@@ -1,58 +1,11 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.nondesktop_clients_last_seen_v1`
 AS
--- For context on naming and channels of Fenix apps, see:
--- https://docs.google.com/document/d/1Ym4eZyS0WngEP6WdwJjmCoxtoQbJSvORxlQwZpuSV2I/edit#heading=h.69hvvg35j8un
-WITH fenix_union AS (
-  SELECT
-    *,
-    'org_mozilla_fenix' AS _dataset
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    *,
-    'org_mozilla_fenix_nightly' AS _dataset
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    *,
-    'org_mozilla_firefox' AS _dataset
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    *,
-    'org_mozilla_firefox_beta' AS _dataset
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline_clients_last_seen`
-  UNION ALL
-  SELECT
-    *,
-    'org_mozilla_fennec_aurora' AS _dataset
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline_clients_last_seen`
-),
-fenix_app_info AS (
-  SELECT
-    *,
-    mozfun.norm.fenix_app_info(_dataset, app_build) AS _app_info
-  FROM
-    fenix_union
-),
-fenix_normalized AS (
-  SELECT
-    * EXCEPT (_dataset, _app_info) REPLACE(_app_info.channel AS normalized_channel),
-    _app_info.app_name,
-  FROM
-    fenix_app_info
-),
-glean_union AS (
+WITH glean_final AS (
   SELECT
     *
   FROM
-    fenix_normalized
+    `moz-fx-data-shared-prod.telemetry.fenix_clients_last_seen`
   UNION ALL
   SELECT
     *,
@@ -92,6 +45,7 @@ SELECT
   days_created_profile_bits,
   days_since_created_profile,
   app_name,
+  mozfun.norm.product_info(app_name, os).*,
   os,
   osversion AS os_version,
   normalized_channel,
@@ -111,6 +65,7 @@ SELECT
   days_created_profile_bits,
   days_since_created_profile,
   app_name,
+  mozfun.norm.product_info(app_name, os).*,
   normalized_os AS os,
   normalized_os_version AS os_version,
   normalized_channel,
@@ -120,4 +75,4 @@ SELECT
   NULL AS distribution_id,
   app_display_version AS app_version
 FROM
-  glean_union
+  glean_final

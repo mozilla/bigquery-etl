@@ -1,47 +1,50 @@
-WITH
-  base AS (
+WITH base AS (
   SELECT
-    * REPLACE (
-      CASE app_name
-        WHEN 'Fennec' THEN CONCAT(app_name, ' ', os)
-        WHEN 'Focus' THEN CONCAT(app_name, ' ', os)
-        WHEN 'Lockbox' THEN CONCAT('Lockwise ', os)
-        WHEN 'Zerda' THEN 'Firefox Lite'
-        ELSE app_name
-      END AS app_name),
+    *,
     normalized_channel AS channel,
     (campaign IS NOT NULL) AS attributed,
   FROM
-    telemetry.nondesktop_clients_last_seen_v1
+    telemetry.nondesktop_clients_last_seen
   WHERE
-    -- We apply this filter here rather than in the live view because this field
-    -- is not normalized and there are many single pings that come in with unique
-    -- nonsensical app_name values. App names are documented in
-    -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
-    (STARTS_WITH(app_name, 'FirefoxReality') OR
-     ENDS_WITH(app_name, 'Baseline') OR
-     app_name IN (
-      'Fenix',
-      'Fennec', -- Firefox for Android and Firefox for iOS
-      'Focus',
-      'Lockbox', -- Lockwise
-      'FirefoxConnect', -- Amazon Echo
-      'FirefoxForFireTV',
-      'Firefox Preview',
-      'Zerda')) -- Firefox Lite, previously called Rocket
-    -- There are also many strange nonsensical entries for os, so we filter here.
-    AND os IN ('Android', 'iOS')),
-  --
-  nested AS (
+    product != 'Other'
+    -- There are many strange nonsensical entries for os, so we filter here.
+    AND os IN ('Android', 'iOS')
+),
+--
+unioned AS (
+  SELECT
+    *
+  FROM
+    base
+  UNION ALL
+  SELECT
+    * REPLACE ('Firefox Non-desktop' AS product)
+  FROM
+    base
+  WHERE
+    contributes_to_2020_kpi
+  UNION ALL
+  SELECT
+    * REPLACE ('Preview+Fenix' AS product)
+  FROM
+    base
+  WHERE
+    product IN ('Fenix', 'Firefox Preview')
+),
+--
+nested AS (
   SELECT
     submission_date,
     [
-    STRUCT('Any Firefox Non-desktop Activity' AS usage,
-      udf.smoot_usage_from_28_bits(ARRAY_AGG(STRUCT(days_created_profile_bits,
-        days_seen_bits))) AS metrics)
+      STRUCT(
+        FORMAT('Any %s Activity', product) AS usage,
+        udf.smoot_usage_from_28_bits(
+          ARRAY_AGG(STRUCT(days_created_profile_bits, days_seen_bits))
+        ) AS metrics
+      )
     ] AS metrics_array,
     MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
-    app_name,
+    product,
     app_version,
     country,
     locale,
@@ -58,52 +61,26 @@ WITH
   GROUP BY
     submission_date,
     id_bucket,
-    app_name,
+    product,
     app_version,
     country,
     locale,
     os,
     os_version,
     channel,
-    attributed ),
-  --
-  unnested AS (
-  SELECT
-    submission_date,
-    m.usage,
-    (SELECT AS STRUCT m.metrics.* EXCEPT (is_empty_group)) AS metrics,
-    nested.* EXCEPT (submission_date, metrics_array)
-  FROM
-    nested
-  CROSS JOIN
-    UNNEST(metrics_array) AS m
-  WHERE
+    attributed
+)
+--
+SELECT
+  submission_date,
+  m.usage,
+  product AS app_name,
+  (SELECT AS STRUCT m.metrics.* EXCEPT (is_empty_group)) AS metrics,
+  nested.* EXCEPT (submission_date, metrics_array, product)
+FROM
+  nested
+CROSS JOIN
+  UNNEST(metrics_array) AS m
+WHERE
     -- Optimization so we don't have to store rows where counts are all zero.
-    NOT m.metrics.is_empty_group )
-  --
-SELECT
-  *
-FROM
-  unnested
-WHERE
-  -- For the 'Firefox Non-desktop' umbrella, we include only apps that
-  -- are considered for KPIs, so we filter out FireTV and Reality.
-  app_name != 'FirefoxForFireTV'
-  AND NOT ENDS_WITH(app_name, 'Baseline')
-  AND NOT STARTS_WITH(app_name, 'FirefoxReality')
-UNION ALL
-SELECT
-  -- Also present each app as its own usage criterion. App names are documented in
-  -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
-  * REPLACE(REPLACE(usage, 'Firefox Non-desktop', app_name) AS usage)
-FROM
-  unnested
-UNION ALL
-SELECT
-  -- We also present a single usage criterion that sums together Fenix + Firefox Preview
-  -- as that represents total logic "Fenix" usage.
-  * REPLACE(REPLACE(usage, 'Firefox Non-desktop', 'Preview+Fenix') AS usage)
-FROM
-  unnested
-WHERE
-  app_name IN ('Firefox Preview', 'Fenix')
+  NOT m.metrics.is_empty_group

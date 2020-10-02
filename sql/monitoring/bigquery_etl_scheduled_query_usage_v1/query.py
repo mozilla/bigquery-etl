@@ -19,7 +19,7 @@ parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
 parser.add_argument("--destination_dataset", default="monitoring")
 parser.add_argument(
-    "--destination_table", default="bigquery_etl_scheduled_queries_usages_v1"
+    "--destination_table", default="bigquery_etl_scheduled_query_usage_v1"
 )
 parser.add_argument("--sql_dir", default="sql/")
 

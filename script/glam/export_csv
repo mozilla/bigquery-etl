@@ -9,8 +9,9 @@ src_project=${SRC_PROJECT:-glam-fenix-dev}
 dst_project=${DST_PROJECT:-$src_project}
 dataset=${DATASET:-glam_etl_dev}
 product=${PRODUCT?PRODUCT must be defined}
+bucket_name=${BUCKET:-$dst_project}
 
-bucket="gs://${dst_project}"
+bucket="gs://${bucket_name}"
 gsutil ls "$bucket" > /dev/null
 
 bq extract --destination_format CSV --noprint_header \

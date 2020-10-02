@@ -1,6 +1,24 @@
 {{ header }}
 {% include "clients_histogram_aggregates_v1.udf.sql" %}
 
+{% set aggregate_filter_clause %}
+  {% if filter_version %}
+  LEFT JOIN
+      glam_etl.{{ prefix }}__latest_versions_v1
+  USING
+      (channel)
+  {% endif %}
+  WHERE
+      -- allow for builds to be slighly ahead of the current submission date, to
+      -- account for a reasonable amount of clock skew
+      {{ build_date_udf }}(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 day)
+      -- only keep builds from the last year
+      AND {{ build_date_udf }}(app_build_id) > DATE_SUB(@submission_date, INTERVAL 365 day)
+      {% if filter_version %}
+      AND app_version >= (latest_version - {{ num_versions_to_keep }})
+      {% endif %}
+{% endset %}
+
 WITH extracted_accumulated AS (
   SELECT
     *
@@ -18,12 +36,7 @@ filtered_accumulated AS (
     histogram_aggregates
   FROM
     extracted_accumulated
-  LEFT JOIN
-    glam_etl.{{ prefix }}__latest_versions_v1
-  USING
-    (channel)
-  WHERE
-    app_version >= (latest_version - 2)
+  {{ aggregate_filter_clause }}
 ),
 -- unnest the daily data
 extracted_daily AS (
@@ -46,16 +59,10 @@ extracted_daily AS (
 filtered_daily AS (
   SELECT
     {{ attributes }},
-    latest_version,
     histogram_aggregates.*
   FROM
     extracted_daily
-  LEFT JOIN
-    glam_etl.{{ prefix }}__latest_versions_v1
-  USING
-    (channel)
-  WHERE
-    app_version >= (latest_version - 2)
+  {{ aggregate_filter_clause }}
 ),
 -- re-aggregate based on the latest version
 aggregated_daily AS (
@@ -75,7 +82,6 @@ transformed_daily AS (
     {{ attributes }},
     ARRAY_AGG(
       STRUCT<
-        latest_version INT64,
         metric STRING,
         metric_type STRING,
         key STRING,

@@ -56,7 +56,6 @@ def clients_histogram_aggregates(**kwargs):
         cubed_attributes=cubed_attributes,
         attribute_combinations=compute_datacube_groupings(cubed_attributes),
         metric_attributes="""
-            latest_version,
             metric,
             metric_type,
             key,
@@ -106,7 +105,6 @@ def histogram_bucket_counts(**kwargs):
     """Variables for clients histogram bucket counts."""
     attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
     metric_attributes_list = [
-        "latest_version",
         "metric",
         "metric_type",
         "key",

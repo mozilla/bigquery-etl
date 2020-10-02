@@ -2,6 +2,7 @@
 from pathlib import Path
 from argparse import ArgumentParser, Namespace
 from jinja2 import Environment, PackageLoader, TemplateNotFound
+from jsonschema import validate
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.glam import models
@@ -113,19 +114,56 @@ def main():
     # Supported fenix/firefox for android products. These are logical ids that
     # are formed from the union of several app_ids (sometimes across date
     # boundaries).
-    fenix_app_ids = [
-        "org_mozilla_fenix_glam_nightly",
-        "org_mozilla_fenix_glam_beta",
-        "org_mozilla_fenix_glam_release",
-    ]
+    config_schema = {
+        "type": "object",
+        "additionalProperties": {
+            "type": "object",
+            "properties": {
+                "build_date_udf": {
+                    "type": "string",
+                    "description": (
+                        "The fully qualified path to a UDF that accepts the "
+                        "client_info.app_build_id field and returns a datetime."
+                    ),
+                },
+                "filter_version": {
+                    "type": "boolean",
+                    "description": (
+                        "Whether the integer extracted from the "
+                        "client_info.app_display_version should be used to "
+                        "filter incremental aggregates."
+                    ),
+                },
+                "num_versions_to_keep": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "The number of versions to keep.",
+                },
+            },
+            "required": ["build_date_udf", "filter_version", "num_versions_to_keep"],
+        },
+    }
+    config = {
+        "org_mozilla_fenix_glam_nightly": {
+            "build_date_udf": "`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+            "filter_version": False,
+            # this value is ignored due to filter version
+            "num_versions_to_keep": 1000,
+        },
+        "org_mozilla_fenix_glam_beta": {
+            "build_date_udf": "`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+            "filter_version": True,
+            "num_versions_to_keep": 2,
+        },
+        "org_mozilla_fenix_glam_release": {
+            "build_date_udf": "`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime",
+            "filter_version": True,
+            "num_versions_to_keep": 2,
+        },
+    }
+    validate(instance=config, schema=config_schema)
 
-    build_date_udf_mapping = dict(
-        **{
-            app_id: "`moz-fx-data-shared-prod`.udf.fenix_build_to_datetime"
-            for app_id in fenix_app_ids
-        }
-    )
-    if not build_date_udf_mapping.get(args.prefix):
+    if not config.get(args.prefix, {}).get("build_date_udf"):
         raise ValueError(f"build date udf for {args.prefix} was not found")
 
     [
@@ -157,6 +195,7 @@ def main():
                 destination_table=(
                     f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
                 ),
+                **config[args.prefix],
             ),
         ),
         init(
@@ -165,7 +204,9 @@ def main():
         ),
         table(
             "clients_histogram_aggregates_v1",
-            **models.clients_histogram_aggregates(parameterize=True),
+            **models.clients_histogram_aggregates(
+                parameterize=True, **config[args.prefix]
+            ),
         ),
         table(
             "scalar_bucket_counts_v1",
@@ -204,13 +245,8 @@ def main():
         table("histogram_percentiles_v1"),
         view("view_probe_counts_v1"),
         view("view_user_counts_v1", **models.user_counts()),
-        table(
-            "extract_user_counts_v1", build_date_udf=build_date_udf_mapping[args.prefix]
-        ),
-        table(
-            "extract_probe_counts_v1",
-            build_date_udf=build_date_udf_mapping[args.prefix],
-        ),
+        table("extract_user_counts_v1", **config[args.prefix]),
+        table("extract_probe_counts_v1", **config[args.prefix]),
     ]
 
 

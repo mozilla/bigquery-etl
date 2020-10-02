@@ -14,6 +14,13 @@ WITH unioned AS (
     previous_ecosystem_user_ids[SAFE_OFFSET(0)] AS previous_ecosystem_user_id
   FROM
     firefox_accounts_stable.account_ecosystem_v1
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    payload.ecosystem_user_id,
+    payload.previous_ecosystem_user_ids[SAFE_OFFSET(0)] AS previous_ecosystem_user_id
+  FROM
+    telemetry_stable.account_ecosystem_v4
 ),
 aggregated AS (
   SELECT
@@ -72,7 +79,7 @@ LOOP
 
   SET checksum_post = (
     SELECT
-      BIT_XOR(FARM_FINGERPRINT(TO_JSON_STRING(working_set)))
+      IFNULL(BIT_XOR(FARM_FINGERPRINT(TO_JSON_STRING(working_set))), 0)
     FROM
       working_set
   );

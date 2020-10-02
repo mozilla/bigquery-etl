@@ -16,6 +16,6 @@ SELECT
   ) AS days_since_clicked_ad,
   `moz-fx-data-shared-prod`.udf.bits_to_days_since_first_seen(
     days_created_profile_bytes
-  ) AS days_since_created_profile  
+  ) AS days_since_created_profile
 FROM
   `moz-fx-data-shared-prod.search_derived.search_clients_last_seen_v1`

@@ -1,4 +1,4 @@
-# Event Analysis
+# event_analysis
 
 These functions are specific for use with the `events_daily` and `event_types` tables.
 By themselves, these two tables are nearly impossible to use since the event history

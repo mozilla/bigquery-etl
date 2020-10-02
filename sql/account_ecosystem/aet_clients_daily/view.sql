@@ -11,6 +11,8 @@ WITH desktop AS (
     duration_sum,
     active_hours_sum,
     scalar_parent_browser_engagement_total_uri_count_sum,
+    visited_5_uri,
+    visited_10_uri,
     normalized_channel AS channel,
     normalized_os AS os,
     normalized_country_code AS country,
@@ -25,11 +27,13 @@ fxa_logging AS (
     -- We likely want to replace oauth_client_id with a human-readable service name.
     FORMAT('fxa - %s', oauth_client_id) AS service,
     event_count,
-    CAST(NULL AS int64) AS duration_sum,
-    CAST(NULL AS int64) AS active_hours_sum,
-    CAST(NULL AS int64) AS scalar_parent_browser_engagement_total_uri_count_sum,
-    CAST(NULL AS string) AS channel,
-    CAST(NULL AS string) AS os,
+    CAST(NULL AS INT64) AS duration_sum,
+    CAST(NULL AS INT64) AS active_hours_sum,
+    CAST(NULL AS INT64) AS scalar_parent_browser_engagement_total_uri_count_sum,
+    CAST(NULL AS BOOLEAN) AS visited_5_uri,
+    CAST(NULL AS BOOLEAN) AS visited_10_uri,
+    CAST(NULL AS STRING) AS channel,
+    CAST(NULL AS STRING) AS os,
     country_code AS country,
   FROM
     `moz-fx-data-shared-prod.account_ecosystem_derived.fxa_logging_users_daily_v1`

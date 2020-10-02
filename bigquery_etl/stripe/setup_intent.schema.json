@@ -432,6 +432,10 @@
     ]
   },
   {
+    "name": "latest_attempt",
+    "type": "STRING"
+  },
+  {
     "name": "livemode",
     "type": "BOOLEAN"
   },

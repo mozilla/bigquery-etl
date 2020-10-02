@@ -107,7 +107,8 @@ def stripe_():
 @click.option(
     "--date",
     type=click.DateTime(formats=["%Y-%m-%d"]),
-    help="Creation date of resources to pull from stripe API",
+    help="Creation date of resources to pull from stripe API; Added to table if set "
+    "to ensure only that date partition is replaced",
 )
 @click.option(
     "--table",
@@ -133,7 +134,6 @@ def import_(
     resource: Type[ListableAPIResource],
 ):
     """Import Stripe data into BigQuery."""
-    assert resource is stripe.Event
     if resource is stripe.Event and not date:
         click.echo("must specify --date for --resource=Event")
         sys.exit(1)
@@ -145,16 +145,20 @@ def import_(
     with _open_file(api_key, file, table) as file_obj:
         if api_key:
             stripe.api_key = api_key
-            created = {}
+            kwargs: Dict[str, Any] = {}
             if date:
                 start = date.replace(tzinfo=timezone.utc)
-                created = {
+                kwargs["created"] = {
                     "gte": int(start.timestamp()),
                     # make sure to use timedelta before converting to timestamp,
                     # so that leap seconds are properly accounted for.
                     "lt": int((start + timedelta(days=1)).timestamp()),
                 }
-            for instance in resource.list(created=created).auto_paging_iter():
+            if resource is stripe.Subscription:
+                # list subscriptions api does not list canceled subscriptions by default
+                # https://stripe.com/docs/api/subscriptions/list
+                kwargs["status"] = "all"
+            for instance in resource.list(**kwargs).auto_paging_iter():
                 row: Dict[str, Any] = {
                     "created": datetime.utcfromtimestamp(instance.created).isoformat()
                 }
@@ -183,6 +187,9 @@ def import_(
                     source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
                     time_partitioning=bigquery.TimePartitioning(field="created"),
                     write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+                    schema_update_options=[
+                        bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
+                    ],
                 ),
             )
             try:

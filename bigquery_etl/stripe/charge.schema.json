@@ -1137,10 +1137,6 @@
     "description": "undocumented card",
     "fields": [
       {
-        "name": "id",
-        "type": "STRING"
-      },
-      {
         "name": "address_city",
         "type": "STRING"
       },
@@ -1150,6 +1146,10 @@
       },
       {
         "name": "address_line1",
+        "type": "STRING"
+      },
+      {
+        "name": "address_line1_check",
         "type": "STRING"
       },
       {
@@ -1169,6 +1169,11 @@
         "type": "STRING"
       },
       {
+        "name": "available_payout_methods",
+        "type": "STRING",
+        "mode": "REPEATED"
+      },
+      {
         "name": "brand",
         "type": "STRING"
       },
@@ -1185,6 +1190,10 @@
         "type": "STRING"
       },
       {
+        "name": "dynamic_last4",
+        "type": "STRING"
+      },
+      {
         "name": "exp_month",
         "type": "INTEGER"
       },
@@ -1198,6 +1207,10 @@
       },
       {
         "name": "funding",
+        "type": "STRING"
+      },
+      {
+        "name": "id",
         "type": "STRING"
       },
       {
@@ -1225,19 +1238,6 @@
       },
       {
         "name": "object",
-        "type": "STRING"
-      },
-      {
-        "name": "address_line1_check",
-        "type": "STRING"
-      },
-      {
-        "name": "available_payout_methods",
-        "type": "STRING",
-        "mode": "REPEATED"
-      },
-      {
-        "name": "dynamic_last4",
         "type": "STRING"
       },
       {

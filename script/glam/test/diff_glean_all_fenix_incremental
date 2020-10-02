@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Created 2020-09-30 for diffing the generated sql for all of the logical glam
+# application ids. This script may put your current branch in an odd state if
+# there are pending changes. Ensure that your branch is up to date before
+# running.
+
+set -ex
+
+logical_app_ids=(
+    "org_mozilla_fenix_glam_nightly"
+    "org_mozilla_fenix_glam_beta"
+    "org_mozilla_fenix_glam_release"
+)
+
+function generate() {
+    for logical_app_id in "${logical_app_ids[@]}"; do
+        PRODUCT=$logical_app_id STAGE=incremental script/glam/generate_glean_sql &
+    done
+    wait
+}
+
+head=${1-HEAD}
+base=${2:-master}
+result=glean_all_fenix_incremental_diff
+
+root=$(git rev-parse --show-toplevel)
+cd $root
+
+original_ref=$(git rev-parse --abbrev-ref HEAD)
+head_rev=$(git rev-parse $head)
+base_rev=$(git rev-parse $base)
+
+# clear the generated folder for generation, this is stored in vcs so there are
+# no worries of data loss
+mkdir -p $result
+rm -r sql/glam_etl
+
+# do the first revision
+mkdir -p sql/glam_etl
+git checkout $head
+generate
+mv sql/glam_etl $result/$head_rev
+
+# then the second revision
+mkdir -p sql/glam_etl
+git checkout $base
+generate
+mv sql/glam_etl $result/$base_rev
+
+# diff and restore state (naively, may require some user intervention)
+git checkout $original_ref
+git stash
+git stash drop
+diff -r $result/$base_rev $result/$head_rev > $result/result.diff
+
+

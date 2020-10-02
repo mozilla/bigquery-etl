@@ -1,6 +1,24 @@
 {{ header }}
 {% include "clients_scalar_aggregates_v1.udf.sql" %}
 
+{% set aggregate_filter_clause %}
+  {% if filter_version %}
+  LEFT JOIN
+      glam_etl.{{ prefix }}__latest_versions_v1
+  USING
+      (channel)
+  {% endif %}
+  WHERE
+      -- allow for builds to be slighly ahead of the current submission date, to
+      -- account for a reasonable amount of clock skew
+      {{ build_date_udf }}(app_build_id) < DATE_ADD(@submission_date, INTERVAL 3 day)
+      -- only keep builds from the last year
+      AND {{ build_date_udf }}(app_build_id) > DATE_SUB(@submission_date, INTERVAL 365 day)
+      {% if filter_version %}
+      AND app_version >= (latest_version - {{ num_versions_to_keep }})
+      {% endif %}
+{% endset %}
+
 WITH filtered_date_channel AS (
   SELECT
     *
@@ -34,12 +52,7 @@ version_filtered_new AS (
     value
   FROM
     filtered_aggregates AS scalar_aggs
-  LEFT JOIN
-      glam_etl.{{ prefix }}__latest_versions_v1
-  USING
-      (channel)
-  WHERE
-      app_version >= (latest_version - 2)
+  {{ aggregate_filter_clause }}
 ),
 scalar_aggregates_new AS (
   SELECT
@@ -81,12 +94,7 @@ filtered_old AS (
     scalar_aggregates
   FROM
     {{ destination_table }} AS scalar_aggs
-  LEFT JOIN
-      glam_etl.{{ prefix }}__latest_versions_v1
-  USING
-      (channel)
-  WHERE
-      app_version >= (latest_version - 2)
+  {{ aggregate_filter_clause }}
 ),
 joined_new_old AS (
   SELECT

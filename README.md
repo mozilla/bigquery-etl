@@ -302,8 +302,8 @@ Scheduling Queries in Airflow
     - `depends_on` defines external dependencies in telemetry-airflow that are not detected automatically:
     ```yaml
       depends_on:
-        - task_id: anomdtct
-          dag_name: anomdtct
+        - task_id: external_task
+          dag_name: external_dag
           execution_delta: 1h
     ```
       - `task_id`: name of task query depends on

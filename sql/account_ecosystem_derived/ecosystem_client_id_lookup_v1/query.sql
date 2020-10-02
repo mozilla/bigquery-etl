@@ -31,6 +31,23 @@ hashed AS (
     unioned
   WHERE
     DATE(submission_timestamp) = @submission_date
+),
+euil AS (
+  SELECT
+    ecosystem_user_id,
+    canonical_id
+  FROM
+    ecosystem_user_id_lookup_v1
+  WHERE
+    first_seen_date <= @submission_date
+),
+existing AS (
+  SELECT
+    ecosystem_client_id_hash
+  FROM
+    ecosystem_client_id_lookup_v1
+  WHERE
+    first_seen_date < @submission_date
 )
 SELECT
   ecosystem_client_id_hash,
@@ -38,12 +55,12 @@ SELECT
   hashed.first_seen_date,
 FROM
   hashed
-JOIN
-  ecosystem_user_id_lookup_v1 AS euil
+LEFT JOIN
+  euil
 USING
   (ecosystem_user_id)
 LEFT JOIN
-  ecosystem_client_id_lookup_v1 AS existing
+  existing
 USING
   (ecosystem_client_id_hash)
 WHERE

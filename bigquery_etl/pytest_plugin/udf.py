@@ -13,6 +13,7 @@ from ..udf.parse_udf import (
     UDF_FILE,
     PROCEDURE_FILE,
     parse_udf_dirs,
+    GENERIC_DATASET,
 )
 
 TEST_UDF_DIRS = {"assert"}.union(UDF_DIRS).union(MOZFUN_DIR)
@@ -96,5 +97,8 @@ class UdfTest(pytest.Item):
             job_config = bigquery.QueryJobConfig(
                 use_legacy_sql=False, default_dataset=default_dataset
             )
-            job = bq.query(self.query, job_config=job_config)
+            job = bq.query(
+                self.query.replace(GENERIC_DATASET, default_dataset.dataset_id),
+                job_config=job_config,
+            )
             job.result()

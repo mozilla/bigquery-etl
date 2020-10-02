@@ -3,14 +3,13 @@
 """Determine cost of previously scheduled bigquery-etl queries."""
 
 from argparse import ArgumentParser
-from fnmatch import fnmatchcase
 from google.cloud import bigquery
 from pathlib import Path
 
 DEFAULT_PROJECTS = [
     "moz-fx-data-shared-prod",
     "moz-fx-data-derived-datasets",
-    "moz-fx-data-experiments"
+    "moz-fx-data-experiments",
 ]
 
 parser = ArgumentParser(description=__doc__)
@@ -36,18 +35,18 @@ def create_query(query_paths, date, project):
             project_id,
             referenced_tables,
           FROM `region-us`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
-          WHERE 
+          WHERE
             statement_type = "SELECT" AND
             DATE(creation_time) = '{date}'
         )
-        SELECT 
+        SELECT
           submission_date,
           logs.project_id,
           CONCAT(referenced_table.project_id, ".", referenced_table.dataset_id, ".", referenced_table.table_id) as table,
           COUNT(*) AS number_of_accesses
         FROM logs
         CROSS JOIN UNNEST(logs.referenced_tables) AS referenced_table
-        WHERE 
+        WHERE
           referenced_table.dataset_id IN ({",".join(datasets)})
           AND REGEXP_CONTAINS(referenced_table.table_id, "({"|".join(tables)})")
         GROUP BY submission_date, project_id, table
@@ -69,12 +68,12 @@ def main():
     client.delete_table(destination_table, not_found_ok=True)
 
     for project in args.source_projects:
-      client = bigquery.Client(project)
-      query = create_query(query_paths, args.date, project)
-      job_config = bigquery.QueryJobConfig(
-          destination=destination_table, write_disposition="WRITE_APPEND"
-      )
-      client.query(query, job_config=job_config).result()
+        client = bigquery.Client(project)
+        query = create_query(query_paths, args.date, project)
+        job_config = bigquery.QueryJobConfig(
+            destination=destination_table, write_disposition="WRITE_APPEND"
+        )
+        client.query(query, job_config=job_config).result()
 
 
 if __name__ == "__main__":

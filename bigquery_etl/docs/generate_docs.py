@@ -111,8 +111,12 @@ def main():
                             docfile_content = load_with_examples(src)
                             with open(dataset_doc, "a") as dataset_doc_file:
                                 dataset_doc_file.write("\n\n")
-                                # Inject a level-2 header with the UDF name
-                                dataset_doc_file.write(f"## {name}\n\n")
+                                # Inject a level-2 header with the UDF name & type
+                                is_udf = UDF_FILE in files
+                                routine_type = "UDF" if is_udf else "Stored Procedure"
+                                dataset_doc_file.write(
+                                    f"## {name} ({routine_type})\n\n"
+                                )
                                 # Inject the "description" from metadata.yaml
                                 if description:
                                     formated = format_url(description)

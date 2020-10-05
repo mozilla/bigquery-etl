@@ -97,6 +97,7 @@ Recommended practices
 ### Queries
 
 - Should be defined in files named as `sql/<project>/<dataset>/<table>_<version>/query.sql` e.g.
+  -  `<project>` defines both where the destination table resides and in which project the query job runs
   `sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v7/query.sql`
   - Queries that populate tables should always be named with a version suffix;
     we assume that future optimizations to the data representation may require

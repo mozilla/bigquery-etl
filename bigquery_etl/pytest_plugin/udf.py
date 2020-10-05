@@ -6,6 +6,7 @@ import pytest
 import re
 
 from .sql_test import dataset
+from bigquery_etl.udf.parse_udf import get_udf_dirs
 
 from ..udf.parse_udf import (
     UDF_DIRS,

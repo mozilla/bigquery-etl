@@ -50,6 +50,9 @@ parser.add_argument(
     help="Latest-version views that should be ignored, may use shell-style wildcards,"
     f" defaults to: {DEFAULT_EXCLUDE}",
 )
+parser.add_argument(
+    "--sql-dir", default="sql/", help="The path where generated SQL files are stored."
+)
 standard_args.add_log_level(parser)
 
 
@@ -73,10 +76,10 @@ def main():
             views[view] = []
         views[view].append(full_table_id)
 
-    create_views_if_not_exist(client, views, args.exclude)
+    create_views_if_not_exist(client, views, args.exclude, args.sql_dir)
 
 
-def create_views_if_not_exist(client, views, exclude):
+def create_views_if_not_exist(client, views, exclude, sql_dir):
     """Create views unless a local file for creating the view exists."""
     for view, tables in views.items():
         if any(fnmatchcase(pattern, view) for pattern in exclude):
@@ -100,7 +103,7 @@ def create_views_if_not_exist(client, views, exclude):
         target = f"{view}_v{version}"
         view_dataset = dataset.rsplit("_", 1)[0]
         full_view_id = ".".join([project, view_dataset, viewname])
-        target_file = os.path.join(project, view_dataset, viewname, "view.sql")
+        target_file = os.path.join(sql_dir, project, view_dataset, viewname, "view.sql")
 
         if not os.path.exists(target_file):
             # We put this BQ API all inside the conditional to speed up execution

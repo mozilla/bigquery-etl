@@ -7,15 +7,15 @@
         
         <meta name="author" content="Mozilla Data Platform Team">
         
-        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
         <title>bits28 - BigQuery ETL</title>
-        <link href="../../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../../css/font-awesome.min.css" rel="stylesheet">
-        <link href="../../css/base.css" rel="stylesheet">
+        <link href="../../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
 
-        <script src="../../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script> 
     </head>
@@ -23,7 +23,7 @@
     <body>
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href="../..">BigQuery ETL</a>
+                <a class="navbar-brand" href="../../..">BigQuery ETL</a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
@@ -34,47 +34,49 @@
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
                             <li class="navitem">
-                                <a href="../.." class="nav-link">BigQuery ETL</a>
+                                <a href="../../.." class="nav-link">BigQuery ETL</a>
                             </li>
                             <li class="dropdown active">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Mozfun <b class="caret"></b></a>
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Sql <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Mozfun</a>
+    <ul class="dropdown-menu">
+            
 <li>
     <a href="./" class="dropdown-item active">bits28</a>
 </li>
-                                    
-<li>
-    <a href="../event_analysis/" class="dropdown-item">Event Analysis</a>
-</li>
-                                    
+            
 <li>
     <a href="../glean/" class="dropdown-item">glean</a>
 </li>
-                                    
+            
 <li>
     <a href="../hist/" class="dropdown-item">hist</a>
 </li>
-                                    
+            
 <li>
     <a href="../json/" class="dropdown-item">json</a>
 </li>
-                                    
+            
 <li>
     <a href="../map/" class="dropdown-item">map</a>
 </li>
-                                    
+            
 <li>
     <a href="../norm/" class="dropdown-item">norm</a>
 </li>
-                                    
+            
 <li>
     <a href="../overview/" class="dropdown-item">mozfun</a>
 </li>
-                                    
+            
 <li>
     <a href="../stats/" class="dropdown-item">stats</a>
 </li>
+    </ul>
+  </li>
                                 </ul>
                             </li>
                         </ul>
@@ -86,17 +88,17 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../.." class="nav-link">
+                                <a rel="prev" href="../../.." class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../event_analysis/" class="nav-link">
+                                <a rel="next" href="../glean/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="https://github.com/mozilla/bigquery-etl/edit/master/docs/mozfun/bits28.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/mozilla/bigquery-etl/edit/master/docs/sql/mozfun/bits28.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -118,19 +120,7 @@
             
             <li class="nav-item" data-level="1"><a href="#bits28" class="nav-link">bits28</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#retention" class="nav-link">retention</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#active_in_range" class="nav-link">active_in_range</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#to_dates" class="nav-link">to_dates</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#days_since_seen" class="nav-link">days_since_seen</a>
+            <li class="nav-item" data-level="2"><a href="#from_string" class="nav-link">from_string</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -138,11 +128,23 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#range" class="nav-link">range</a>
+            <li class="nav-item" data-level="2"><a href="#days_since_seen" class="nav-link">days_since_seen</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#from_string" class="nav-link">from_string</a>
+            <li class="nav-item" data-level="2"><a href="#active_in_range" class="nav-link">active_in_range</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#retention" class="nav-link">retention</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#to_dates" class="nav-link">to_dates</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#range" class="nav-link">range</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -167,30 +169,11 @@ metrics based on these usage histories, such as various retention definitions.</
 type of the field is a BigQuery INT64, but logically the integer
 represents an array of bits, with each 1 indicating a day where the given clients
 was active and each 0 indicating a day where the client was inactive.</p>
-<h2 id="retention">retention</h2>
-<p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p>
-<h2 id="active_in_range">active_in_range</h2>
-<p>Return a boolean indicating if any bits are set in the specified range
-of a bit pattern. The <code>start_offset</code> must be zero or a negative number indicating
-an offset from the rightmost bit in the pattern. n_bits is the number of bits to
-consider, counting right from the bit at <code>start_offset</code>. </p>
-<p>See detailed docs for the bits28 suite of functions: <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<h2 id="to_dates">to_dates</h2>
-<p>Convert a bit pattern into an array of the dates is represents.</p>
+<h2 id="from_string">from_string</h2>
+<p>Convert a string representing individual bits into an INT64.</p>
+<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<h2 id="days_since_seen">days_since_seen</h2>
-<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
-<p>To determine this position, we take a bitwise AND of the bit pattern and
-its complement, then we determine the position of the bit via base-2 logarithm;
-see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow.com/a/42747608/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<pre><code class="sql">SELECT
-  mozfun.bits28.days_since_seen(18)
--- &gt;&gt; 1
-</code></pre>
-
 <h2 id="to_string">to_string</h2>
 <p>Convert an INT64 field into a 28-character string representing the individual bits.</p>
 <p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
@@ -203,6 +186,30 @@ see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow
 --      '0000000000000000000000000011']
 </code></pre>
 
+<h2 id="days_since_seen">days_since_seen</h2>
+<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
+<p>To determine this position, we take a bitwise AND of the bit pattern and
+its complement, then we determine the position of the bit via base-2 logarithm;
+see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow.com/a/42747608/1260237</a></p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<pre><code class="sql">SELECT
+  mozfun.bits28.days_since_seen(18)
+-- &gt;&gt; 1
+</code></pre>
+
+<h2 id="active_in_range">active_in_range</h2>
+<p>Return a boolean indicating if any bits are set in the specified range
+of a bit pattern. The <code>start_offset</code> must be zero or a negative number indicating
+an offset from the rightmost bit in the pattern. n_bits is the number of bits to
+consider, counting right from the bit at <code>start_offset</code>. </p>
+<p>See detailed docs for the bits28 suite of functions: <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<h2 id="retention">retention</h2>
+<p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p>
+<h2 id="to_dates">to_dates</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <h2 id="range">range</h2>
 <p>Return an INT64 representing a range of bits from a source bit pattern.</p>
 <p>The start_offset must be zero or a negative number indicating an offset from
@@ -218,13 +225,7 @@ FROM
   telemetry.clients_last_seen
 WHERE
   submission_date &gt; '2020-01-01'
-</code></pre>
-
-<h2 id="from_string">from_string</h2>
-<p>Convert a string representing individual bits into an INT64.</p>
-<p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p></div>
+</code></pre></div>
             </div>
         </div>
 
@@ -233,11 +234,11 @@ WHERE
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
         <script>
-            var base_url = "../..",
+            var base_url = "../../..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../../js/base.js" defer></script>
-        <script src="../../search/main.js" defer></script>
+        <script src="../../../js/base.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

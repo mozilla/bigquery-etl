@@ -208,3 +208,12 @@ bqetl_account_ecosystem:
     email: ['jklukas@mozilla.com']
     retries: 2
     retry_delay: 30m
+
+bqetl_stripe:
+  schedule_interval: daily
+  default_args:
+    owner: dthorn@mozilla.com
+    start_date: '2020-10-05'
+    email: ['telemetry-alerts@mozilla.com', 'dthorn@mozilla.com']
+    retries: 2
+    retry_delay: 5m

@@ -63,6 +63,15 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/apple_app_store/metrics_total/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_distinct_docids_v1/query.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
+    "sql/moz-fx-data-shared-prod/stripe_derived/plan_events/view.sql",
+    "sql/moz-fx-data-shared-prod/stripe_derived/plans_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_derived/plans_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/stripe_derived/product_events/view.sql",
+    "sql/moz-fx-data-shared-prod/stripe_derived/products_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_derived/products_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/stripe_derived/subscription_events/view.sql",
+    "sql/moz-fx-data-shared-prod/stripe_derived/subscriptions_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_derived/subscriptions_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501

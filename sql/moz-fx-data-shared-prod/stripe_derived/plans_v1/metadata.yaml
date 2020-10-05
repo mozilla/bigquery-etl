@@ -1,0 +1,15 @@
+friendly_name: Stripe Plans
+description: Stripe plans as of UTC midnight. See bug 1667889.
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: stripe
+  schedule: daily
+scheduling:
+  dag_name: bqetl_stripe
+  date_partition_parameter: date
+  depends_on:
+    - dag_name: stripe
+      task_id: stripe_import_events
+      schedule_interval: daily
+  referenced_tables: []

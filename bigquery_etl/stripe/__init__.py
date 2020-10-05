@@ -14,6 +14,22 @@ from stripe.api_resources.abstract import ListableAPIResource
 import click
 import stripe
 
+# omit lists of resources that have a separate table
+OMIT_LIST_TYPES = (
+    stripe.Charge,
+    stripe.CreditNote,
+    stripe.Customer,
+    stripe.Dispute,
+    stripe.Invoice,
+    stripe.PaymentIntent,
+    stripe.Payout,
+    stripe.Plan,
+    stripe.Price,
+    stripe.Product,
+    stripe.SetupIntent,
+    stripe.Subscription,
+)
+
 
 class StripeResourceType(click.ParamType):
     """Click parameter type for stripe listable resources."""
@@ -38,6 +54,8 @@ class StripeResourceType(click.ParamType):
 def bigquery_format(obj: Any, *path):
     """Format stripe objects for BigQuery."""
     if isinstance(obj, stripe.ListObject):
+        if obj.data and isinstance(obj.data[0], OMIT_LIST_TYPES):
+            return None
         # recursively request any additional values for paged lists.
         return [
             bigquery_format(e, *path, i) for i, e in enumerate(obj.auto_paging_iter())

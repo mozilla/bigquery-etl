@@ -1,15 +1,35 @@
-WITH crash_ping_data AS (
+WITH first_sessions AS (
+    -- these are the sessions where clients were enrolled in the experiment
+    -- since fission is enabled after restart, we want to filter them out from the main pings
+  SELECT
+    session_id
+  FROM
+    `moz-fx-data-shared-prod.telemetry.events`
+  WHERE
+    event_category = 'normandy'
+    AND normalized_channel = 'nightly'
+    AND event_method = 'enroll'
+    AND submission_date = @submission_date
+    AND event_string_value = 'bug-1660366-pref-ongoing-fission-nightly-experiment-nightly-83-100'
+),
+crash_ping_data_unfiltered AS (
   SELECT
     submission_timestamp,
     client_id,
-    -- TODO: update filtering when https://bugzilla.mozilla.org/show_bug.cgi?id=1667426 is finalized
+    payload.session_id,
     CASE
     WHEN
-      mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'true'
+      mozfun.map.get_key(
+        environment.experiments,
+        "bug-1660366-pref-ongoing-fission-nightly-experiment-nightly-83-100"
+      ).branch = 'fission-enabled'
     THEN
       'enabled'
     WHEN
-      mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'false'
+      mozfun.map.get_key(
+        environment.experiments,
+        "bug-1660366-pref-ongoing-fission-nightly-experiment-nightly-83-100"
+      ).branch = 'fission-disabled'
     THEN
       'disabled'
     END
@@ -41,21 +61,41 @@ WITH crash_ping_data AS (
     `moz-fx-data-shared-prod.telemetry.crash`
   WHERE
     normalized_channel = 'nightly'
-    -- TODO: update filtering when https://bugzilla.mozilla.org/show_bug.cgi?id=1667426 is finalized
-    AND mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') IS NOT NULL
+    AND mozfun.map.get_key(
+      environment.experiments,
+      "bug-1660366-pref-ongoing-fission-nightly-experiment-nightly-83-100"
+    ) IS NOT NULL
 ),
-main_ping_data AS (
+crash_ping_data AS (
+  SELECT
+    c.* EXCEPT (session_id)
+  FROM
+    crash_ping_data_unfiltered c
+  LEFT JOIN
+    first_sessions e
+  ON
+    c.session_id = e.session_id
+  WHERE
+    e.session_id IS NULL
+),
+main_ping_data_unfiltered AS (
   SELECT
     submission_timestamp,
     client_id,
-    -- TODO: update filtering when https://bugzilla.mozilla.org/show_bug.cgi?id=1667426 is finalized
+    payload.info.session_id,
     CASE
     WHEN
-      mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'true'
+      mozfun.map.get_key(
+        environment.experiments,
+        "bug-1660366-pref-ongoing-fission-nightly-experiment-nightly-83-100"
+      ).branch = 'fission-enabled'
     THEN
       'enabled'
     WHEN
-      mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') = 'false'
+      mozfun.map.get_key(
+        environment.experiments,
+        "bug-1660366-pref-ongoing-fission-nightly-experiment-nightly-83-100"
+      ).branch = 'fission-disabled'
     THEN
       'disabled'
     END
@@ -94,8 +134,22 @@ main_ping_data AS (
     `moz-fx-data-shared-prod.telemetry.main`
   WHERE
     normalized_channel = 'nightly'
-    -- TODO: update filtering when https://bugzilla.mozilla.org/show_bug.cgi?id=1667426 is finalized
-    AND mozfun.map.get_key(environment.settings.user_prefs, 'fission.autostart') IS NOT NULL
+    AND mozfun.map.get_key(
+      environment.experiments,
+      "bug-1660366-pref-ongoing-fission-nightly-experiment-nightly-83-100"
+    ) IS NOT NULL
+),
+main_ping_data AS (
+  SELECT
+    m.* EXCEPT (session_id)
+  FROM
+    main_ping_data_unfiltered m
+  LEFT JOIN
+    first_sessions e
+  ON
+    m.session_id = e.session_id
+  WHERE
+    e.session_id IS NULL
 ),
 combined_ping_data AS (
   SELECT

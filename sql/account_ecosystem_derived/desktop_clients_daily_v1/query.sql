@@ -82,6 +82,8 @@ SELECT
       [1, 3, 7, 13, 22, 39, 71, 126, 227, 432, 37284]
     )
   ) AS scalar_parent_browser_engagement_total_uri_count_sum,
+  SUM(payload.scalars.parent.browser_engagement_total_uri_count) >= 5 AS visited_5_uri,
+  SUM(payload.scalars.parent.browser_engagement_total_uri_count) >= 10 AS visited_10_uri,
   mozfun.stats.mode_last(ARRAY_AGG(normalized_channel)) AS normalized_channel,
   mozfun.stats.mode_last(ARRAY_AGG(normalized_os)) AS normalized_os,
   mozfun.stats.mode_last(ARRAY_AGG(normalized_country_code)) AS normalized_country_code,

@@ -9,7 +9,7 @@ from .sql_test import dataset
 from bigquery_etl.util.common import project_dirs
 
 
-from ..udf.parse_udf import (
+from ..routine.parse_routine import (
     UDF_FILE,
     PROCEDURE_FILE,
     parse_routines,

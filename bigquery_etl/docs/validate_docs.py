@@ -7,7 +7,7 @@ import tempfile
 import sys
 
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.udf.parse_udf import read_routine_dirs, sub_local_routines
+from bigquery_etl.routine.parse_routine import read_routine_dirs, sub_local_routines
 from bigquery_etl.util import standard_args
 
 DEFAULT_PROJECTS_DIRS = ["sql/mozfun"]

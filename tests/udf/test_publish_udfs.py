@@ -2,7 +2,7 @@ from pathlib import Path
 from unittest import mock
 from unittest.mock import MagicMock
 
-from bigquery_etl.udf import parse_udf, publish_udfs
+from bigquery_etl.routine import parse_routine, publish_routines
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -12,11 +12,11 @@ class TestPublishUdfs:
 
     @mock.patch("google.cloud.bigquery.Client")
     def test_publish_udf_with_description(self, mock_client):
-        raw_routine = parse_udf.RawRoutine.from_file(
+        raw_routine = parse_routine.RawRoutine.from_file(
             self.udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
         )
         mock_client.query = MagicMock()
-        publish_udfs.publish_udf(
+        publish_routines.publish_udf(
             raw_routine, mock_client, "test-project", "", "", [], False
         )
         query = (
@@ -29,11 +29,11 @@ class TestPublishUdfs:
 
     @mock.patch("google.cloud.bigquery.Client")
     def test_publish_js_udf_with_description(self, mock_client):
-        raw_routine = parse_udf.RawRoutine.from_file(
+        raw_routine = parse_routine.RawRoutine.from_file(
             self.udf_dir / "test_js_udf" / "udf.sql"
         )
         mock_client.query = MagicMock()
-        publish_udfs.publish_udf(
+        publish_routines.publish_udf(
             raw_routine, mock_client, "test-project", "", "", [], False
         )
         query = (

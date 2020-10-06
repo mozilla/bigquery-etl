@@ -280,3 +280,31 @@ class TestPublishGcsMetadata(object):
                 call(json.dumps(expected_incremental_query_json, indent=4)),
             ]
         )
+
+    def test_get_public_gcs_table_metadata_different_projects(self):
+        mock_blob1 = Mock()
+        mock_blob1.name = (
+            "api/v1/tables/test/non_incremental_query/v1/files/000000000000.json"
+        )
+        mock_blob1.updated = datetime(2020, 4, 3, 11, 30, 1)
+
+        mock_blob2 = Mock()
+        mock_blob2.name = "api/v1/tables/test/not_existing/v1/files/000000000000.json"
+        mock_blob2.updated = datetime(2020, 4, 3, 11, 25, 5)
+
+        mock_storage_client = Mock()
+        mock_storage_client.list_blobs.return_value = [mock_blob1, mock_blob2]
+
+        result = list(
+            pgm.get_public_gcs_table_metadata(
+                mock_storage_client,
+                self.test_bucket,
+                self.api_version,
+                self.endpoint,
+                self.sql_dir,
+            )
+        )
+
+        expected = self.endpoint + "api/v1/tables/test/non_incremental_query/v1/files"
+        assert len(result) == 1
+        assert result[0].files_uri == expected

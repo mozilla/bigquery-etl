@@ -22,6 +22,7 @@ SKIP = {
     # Access Denied
     "sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/account_ecosystem_restricted/ecosystem_client_id_deletion_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql",
     "sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/deletion_request_volume_v1/query.sql",

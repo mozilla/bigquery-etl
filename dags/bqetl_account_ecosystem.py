@@ -70,6 +70,18 @@ with DAG(
         dag=dag,
     )
 
+    account_ecosystem_restricted__ecosystem_client_id_deletion__v1 = bigquery_etl_query(
+        task_id="account_ecosystem_restricted__ecosystem_client_id_deletion__v1",
+        destination_table="ecosystem_client_id_deletion_v1",
+        dataset_id="account_ecosystem_restricted",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -99,5 +111,9 @@ with DAG(
         account_ecosystem_derived__ecosystem_user_id_lookup__v1
     )
     account_ecosystem_derived__fxa_logging_users_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    account_ecosystem_restricted__ecosystem_client_id_deletion__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

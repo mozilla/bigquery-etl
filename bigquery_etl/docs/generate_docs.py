@@ -85,7 +85,7 @@ def main():
                     # remove empty strings from path parts
                     path_parts = list(filter(None, root.split(os.sep)))
                     name = path_parts[-1]
-                    path = Path(os.sep.join(path_parts[:-1]))
+                    path = Path(os.sep.join(path_parts[1:-1]))
 
                     if os.path.split(root)[1] == "":
                         # project level-doc file

@@ -12,24 +12,24 @@ from bigquery_etl.util.common import project_dirs
 from ..udf.parse_udf import (
     UDF_FILE,
     PROCEDURE_FILE,
-    parse_udfs,
+    parse_routines,
     GENERIC_DATASET,
 )
 
-_parsed_udfs = None
+_parsed_routines = None
 
 
-def parsed_udfs():
+def parsed_routines():
     """Get cached parsed udfs."""
-    global _parsed_udfs
-    if _parsed_udfs is None:
-        _parsed_udfs = {
+    global _parsed_routines
+    if _parsed_routines is None:
+        _parsed_routines = {
             udf.filepath: udf
             for project in project_dirs() + ["tests/assert"]
-            for udf in parse_udfs(project)
+            for udf in parse_routines(project)
         }
 
-    return _parsed_udfs
+    return _parsed_routines
 
 
 def pytest_configure(config):
@@ -50,7 +50,7 @@ class UdfFile(pytest.File):
     def collect(self):
         """Collect."""
         self.add_marker("udf")
-        self.udf = parsed_udfs()[self.name]
+        self.udf = parsed_routines()[self.name]
         for i, query in enumerate(self.udf.tests_full_sql):
             yield UdfTest.from_parent(self, name=f"{self.udf.name}#{i+1}", query=query)
 

@@ -45,7 +45,7 @@ def get_routines_from_dir(project_dir):
 
 
 def get_routines(project):
-    """Return all reoutines that could be referenced by the project."""
+    """Return all routines that could be referenced by the project."""
     return (
         get_routines_from_dir(project)
         + get_routines_from_dir(os.path.join(SQL_DIR, "mozfun"))
@@ -54,8 +54,8 @@ def get_routines(project):
 
 
 @dataclass
-class RawUdf:
-    """Representation of the content of a single UDF sql file."""
+class RawRoutine:
+    """Representation of the content of a single routine sql file."""
 
     name: str
     dataset: str
@@ -68,7 +68,7 @@ class RawUdf:
 
     @staticmethod
     def from_file(filepath):
-        """Read in a RawUdf from a SQL file on disk."""
+        """Read in a RawRoutine from a SQL file on disk."""
         filepath = Path(filepath)
 
         text = filepath.read_text()
@@ -85,7 +85,7 @@ class RawUdf:
                 description = metadata["description"]
 
         try:
-            return RawUdf.from_text(
+            return RawRoutine.from_text(
                 text, project, dataset, name, str(filepath), description
             )
         except ValueError as e:
@@ -95,9 +95,9 @@ class RawUdf:
     def from_text(
         text, project, dataset, name, filepath=None, description="", is_defined=True
     ):
-        """Create a RawUdf instance from text.
+        """Create a RawRoutine instance from text.
 
-        If is_defined is False, then the UDF does not
+        If is_defined is False, then the routine does not
         need to be defined in the text; it could be
         just tests.
         """
@@ -170,7 +170,7 @@ class RawUdf:
         if is_defined:
             dependencies.remove(internal_name)
 
-        return RawUdf(
+        return RawRoutine(
             internal_name,
             dataset,
             filepath,
@@ -185,69 +185,62 @@ class RawUdf:
 
 
 @dataclass
-class ParsedUdf(RawUdf):
-    """Parsed representation of a UDF including dependent UDF code."""
+class ParsedRoutine(RawRoutine):
+    """Parsed representation of a routine including dependent routine code."""
 
     tests_full_sql: List[str]
 
     @staticmethod
-    def from_raw(raw_udf, tests_full_sql):
-        """Promote a RawUdf to a ParsedUdf."""
-        return ParsedUdf(*astuple(raw_udf), tests_full_sql)
+    def from_raw(raw_routine, tests_full_sql):
+        """Promote a RawRoutine to a ParsedRoutine."""
+        return ParsedRoutine(*astuple(raw_routine), tests_full_sql)
 
 
-def read_udf_dirs(*udf_dirs):
-    """Read contents of udf_dirs into dict of RawUdf instances."""
+def read_routine_dirs(*udf_dirs):
+    """Read contents of routine dirs into dict of RawRoutine instances."""
     return {
-        raw_udf.name: raw_udf
+        raw_routine.name: raw_routine
         for udf_dir in udf_dirs
         for root, dirs, files in os.walk(udf_dir)
         if os.path.basename(root) != EXAMPLE_DIR
         for filename in files
         if filename in (UDF_FILE, PROCEDURE_FILE)
-        for raw_udf in (RawUdf.from_file(os.path.join(root, filename)),)
+        for raw_routine in (RawRoutine.from_file(os.path.join(root, filename)),)
     }
 
 
-def parse_udfs(project_dir):
-    """Read UDF contents of the project dir into ParsedUdf instances."""
+def parse_routines(project_dir):
+    """Read routine contents of the project dir into ParsedRoutine instances."""
     # collect udfs to parse
-    raw_udfs = read_udf_dirs(project_dir)
+    raw_routines = read_routine_dirs(project_dir)
 
     # prepend udf definitions to tests
-    for raw_udf in raw_udfs.values():
-        tests_full_sql = udf_tests_sql(raw_udf, raw_udfs, project_dir)
-        yield ParsedUdf.from_raw(raw_udf, tests_full_sql)
+    for raw_routine in raw_routines.values():
+        tests_full_sql = routine_tests_sql(raw_routine, raw_routines, project_dir)
+        yield ParsedRoutine.from_raw(raw_routine, tests_full_sql)
 
 
-def accumulate_dependencies(deps, raw_udfs, udf_name):
+def accumulate_dependencies(deps, raw_routines, udf_name):
     """
-    Accumulate a list of dependent UDF names.
+    Accumulate a list of dependent routine names.
 
-    Given a dict of raw_udfs and a udf_name string, recurse into the
-    UDF's dependencies, adding the names to deps in depth-first order.
+    Given a dict of raw_routines and a udf_name string, recurse into the
+    routine's dependencies, adding the names to deps in depth-first order.
     """
-    if udf_name not in raw_udfs:
+    if udf_name not in raw_routines:
         return deps
 
-    raw_udf = raw_udfs[udf_name]
-    for dep in raw_udf.dependencies:
-        deps = accumulate_dependencies(deps, raw_udfs, dep)
+    raw_routine = raw_routines[udf_name]
+    for dep in raw_routine.dependencies:
+        deps = accumulate_dependencies(deps, raw_routines, dep)
     if udf_name in deps:
         return deps
     else:
         return deps + [udf_name]
 
 
-def udf_usages_in_file(filepath):
-    """Return a list of UDF names used in the provided SQL file."""
-    with open(filepath) as f:
-        text = f.read()
-    return udf_usages_in_text(text)
-
-
-def udf_usages_in_text(text, project):
-    """Return a list of UDF names used in the provided SQL text."""
+def routine_usages_in_text(text, project):
+    """Return a list of routine names used in the provided SQL text."""
     sql = sqlparse.format(text, strip_comments=True)
     routines = get_routines(project)
 
@@ -264,28 +257,28 @@ def udf_usages_in_text(text, project):
     return sorted(set(udf_usages))
 
 
-def udf_usage_definitions(text, project, raw_udfs=None):
-    """Return a list of definitions of UDFs used in provided SQL text."""
-    if raw_udfs is None:
-        raw_udfs = read_udf_dirs(project)
+def routine_usage_definitions(text, project, raw_routines=None):
+    """Return a list of definitions of routines used in provided SQL text."""
+    if raw_routines is None:
+        raw_routines = read_routine_dirs(project)
     deps = []
-    for udf_usage in udf_usages_in_text(text, project):
-        deps = accumulate_dependencies(deps, raw_udfs, udf_usage)
+    for udf_usage in routine_usages_in_text(text, project):
+        deps = accumulate_dependencies(deps, raw_routines, udf_usage)
     return [
         statement
         for udf_name in deps
-        for statement in raw_udfs[udf_name].definitions
+        for statement in raw_routines[udf_name].definitions
         if statement not in text
     ]
 
 
-def sub_local_routines(test, project, raw_udfs=None):
+def sub_local_routines(test, project, raw_routines=None):
     """
     Transform persistent UDFs into temporary UDFs.
 
     Use generic dataset for stored procedures.
     """
-    sql = prepend_udf_usage_definitions(test, project, raw_udfs)
+    sql = prepend_routine_usage_definitions(test, project, raw_routines)
     routines = get_routines(project)
 
     for routine in routines:
@@ -300,7 +293,7 @@ def sub_local_routines(test, project, raw_udfs=None):
     return sql
 
 
-def udf_tests_sql(raw_udf, raw_udfs, project):
+def routine_tests_sql(raw_routine, raw_routines, project):
     """
     Create tests for testing persistent UDFs.
 
@@ -308,14 +301,14 @@ def udf_tests_sql(raw_udf, raw_udfs, project):
     can be tested.
     """
     tests_full_sql = []
-    for test in raw_udf.tests:
-        test_sql = sub_local_routines(test, project, raw_udfs)
+    for test in raw_routine.tests:
+        test_sql = sub_local_routines(test, project, raw_routines)
         tests_full_sql.append(test_sql)
 
     return tests_full_sql
 
 
-def prepend_udf_usage_definitions(text, project, raw_udfs=None):
+def prepend_routine_usage_definitions(text, project, raw_routines=None):
     """Prepend definitions of UDFs used to provided SQL text."""
-    statements = udf_usage_definitions(text, project, raw_udfs)
+    statements = routine_usage_definitions(text, project, raw_routines)
     return "\n\n".join(statements + [text])

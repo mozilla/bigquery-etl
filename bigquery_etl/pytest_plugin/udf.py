@@ -6,14 +6,13 @@ import pytest
 import re
 
 from .sql_test import dataset
-from bigquery_etl.udf.parse_udf import get_udf_dirs
+from bigquery_etl.util.common import project_dirs
+
 
 from ..udf.parse_udf import (
-    UDF_DIRS,
-    MOZFUN_DIR,
     UDF_FILE,
     PROCEDURE_FILE,
-    parse_udf_dirs,
+    parse_udfs,
     GENERIC_DATASET,
 )
 
@@ -26,9 +25,8 @@ def parsed_udfs():
     if _parsed_udfs is None:
         _parsed_udfs = {
             udf.filepath: udf
-            for udf in parse_udf_dirs(
-                "tests/assert", *get_udf_dirs(UDF_DIRS), *MOZFUN_DIR
-            )
+            for project in project_dirs() + ["tests/assert"]
+            for udf in parse_udfs(project)
         }
 
     return _parsed_udfs

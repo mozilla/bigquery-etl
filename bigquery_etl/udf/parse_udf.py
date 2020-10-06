@@ -14,35 +14,43 @@ import sqlparse
 import yaml
 
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE
-from bigquery_etl.util.common import project_dirs
 
 
-UDF_DIRS = ("udf", "udf_js")
-MOZFUN_DIR = ("sql/mozfun",)
 UDF_CHAR = "[a-zA-z0-9_]"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 EXAMPLE_DIR = "examples"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
-PERSISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
-MOZFUN_UDF_RE = re.compile(fr"({UDF_CHAR}+)\.({UDF_CHAR}+)")
 PERSISTENT_UDF_PREFIX = re.compile(
     r"CREATE\s+(OR\s+REPLACE\s+)?FUNCTION(\s+IF\s+NOT\s+EXISTS)?", re.IGNORECASE
 )
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 GENERIC_DATASET = "_generic_dataset_"
+SQL_DIR = "sql/"
+ASSERT_UDF_DIR = "tests"
 
-# UDFs defined in mozfun
-MOZFUN_ROUTINES = [
-    {
-        "name": root.split("/")[-2] + "." + root.split("/")[-1],
-        "is_udf": filename == UDF_FILE,
-    }
-    for udf_dir in MOZFUN_DIR
-    for root, dirs, files in os.walk(udf_dir)
-    for filename in files
-    if filename in (UDF_FILE, PROCEDURE_FILE)
-]
+
+def get_routines_from_dir(project_dir):
+    """Returns all UDFs and stored procedures in the project directory."""
+    return [
+        {
+            "name": root.split("/")[-2] + "." + root.split("/")[-1],
+            "project": root.split("/")[-3],
+            "is_udf": filename == UDF_FILE,
+        }
+        for root, dirs, files in os.walk(project_dir)
+        for filename in files
+        if filename in (UDF_FILE, PROCEDURE_FILE)
+    ]
+
+
+def get_routines(project):
+    """Return all reoutines that could be referenced by the project."""
+    return (
+        get_routines_from_dir(project)
+        + get_routines_from_dir(os.path.join(SQL_DIR, "mozfun"))
+        + get_routines_from_dir(ASSERT_UDF_DIR)
+    )  # assert UDFs used for testing
 
 
 @dataclass
@@ -66,6 +74,7 @@ class RawUdf:
         text = filepath.read_text()
         name = filepath.parent.name
         dataset = filepath.parent.parent.name
+        project = filepath.parent.parent.parent.name
 
         # check if UDF has associated metadata file
         description = ""
@@ -76,12 +85,16 @@ class RawUdf:
                 description = metadata["description"]
 
         try:
-            return RawUdf.from_text(text, dataset, name, str(filepath), description)
+            return RawUdf.from_text(
+                text, project, dataset, name, str(filepath), description
+            )
         except ValueError as e:
             raise ValueError(str(e) + f" in {filepath}")
 
     @staticmethod
-    def from_text(text, dataset, name, filepath=None, description="", is_defined=True):
+    def from_text(
+        text, project, dataset, name, filepath=None, description="", is_defined=True
+    ):
         """Create a RawUdf instance from text.
 
         If is_defined is False, then the UDF does not
@@ -144,17 +157,15 @@ class RawUdf:
                     f"limited to chars {UDF_CHAR}, be at most 256 chars long"
                 )
 
-        # find usages of both persistent and temporary UDFs
-        dependencies = re.findall(PERSISTENT_UDF_RE, "\n".join(definitions))
-        dependencies = [".".join(t) for t in dependencies]
-        dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
-
-        # for public UDFs dependencies can live in arbitrary dataset;
-        # we can check if some known dependency is part of the UDF
-        # definition instead
-        for udf in MOZFUN_ROUTINES:
+        # get routines that could be referenced by the UDF
+        routines = get_routines(os.path.join(SQL_DIR, project))
+        dependencies = []
+        for udf in routines:
             if udf["name"] in "\n".join(definitions):
                 dependencies.append(udf["name"])
+
+        dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
+        dependencies = list(set(dependencies))
 
         if is_defined:
             dependencies.remove(internal_name)
@@ -167,7 +178,7 @@ class RawUdf:
             tests,
             # We convert the list to a set to deduplicate entries,
             # but then convert back to a list for stable order.
-            sorted(set(dependencies)),
+            sorted(dependencies),
             description,
             is_stored_procedure,
         )
@@ -185,30 +196,11 @@ class ParsedUdf(RawUdf):
         return ParsedUdf(*astuple(raw_udf), tests_full_sql)
 
 
-def get_udf_dirs(udf_dirs, project_id=None):
-    """Return paths to directories with UDFs."""
-    # todo: make this more generic, I don't think we need to make the distinction
-    # between mozfun and other project here since UDFs now live in project directories
-    if project_id != "mozfun":
-        # for non-mozfun projects, the default UDF directories are udf/ and udf_js/
-        # the project needs to be pre-pended to these paths
-        projects = project_dirs(project_id)
-
-        udf_dirs = [
-            os.path.join(project, d)
-            for project in projects
-            for d in udf_dirs
-            if os.path.exists(os.path.join(project, d))
-        ]
-
-    return udf_dirs
-
-
 def read_udf_dirs(*udf_dirs):
     """Read contents of udf_dirs into dict of RawUdf instances."""
     return {
         raw_udf.name: raw_udf
-        for udf_dir in (udf_dirs or get_udf_dirs(UDF_DIRS) + list(MOZFUN_DIR))
+        for udf_dir in udf_dirs
         for root, dirs, files in os.walk(udf_dir)
         if os.path.basename(root) != EXAMPLE_DIR
         for filename in files
@@ -217,14 +209,14 @@ def read_udf_dirs(*udf_dirs):
     }
 
 
-def parse_udf_dirs(*udf_dirs):
-    """Read contents of udf_dirs into ParsedUdf instances."""
+def parse_udfs(project_dir):
+    """Read UDF contents of the project dir into ParsedUdf instances."""
     # collect udfs to parse
-    raw_udfs = read_udf_dirs(*udf_dirs)
+    raw_udfs = read_udf_dirs(project_dir)
 
     # prepend udf definitions to tests
     for raw_udf in raw_udfs.values():
-        tests_full_sql = udf_tests_sql(raw_udf, raw_udfs)
+        tests_full_sql = udf_tests_sql(raw_udf, raw_udfs, project_dir)
         yield ParsedUdf.from_raw(raw_udf, tests_full_sql)
 
 
@@ -254,28 +246,30 @@ def udf_usages_in_file(filepath):
     return udf_usages_in_text(text)
 
 
-def udf_usages_in_text(text):
+def udf_usages_in_text(text, project):
     """Return a list of UDF names used in the provided SQL text."""
     sql = sqlparse.format(text, strip_comments=True)
-    udf_usages = PERSISTENT_UDF_RE.findall(sql)
-    udf_usages = list(map(lambda t: ".".join(t), udf_usages))
+    routines = get_routines(project)
+
+    udf_usages = []
+
+    for routine in routines:
+        if routine["name"] in sql:
+            udf_usages.append(routine["name"])
+
     # the TEMP_UDF_RE matches udf_js, remove since it's not a valid UDF
     tmp_udfs = list(filter(lambda u: u != "udf_js", TEMP_UDF_RE.findall(sql)))
     udf_usages.extend(tmp_udfs)
 
-    for routine in MOZFUN_ROUTINES:
-        if routine["name"] in sql:
-            udf_usages.append(routine["name"])
-
     return sorted(set(udf_usages))
 
 
-def udf_usage_definitions(text, raw_udfs=None):
+def udf_usage_definitions(text, project, raw_udfs=None):
     """Return a list of definitions of UDFs used in provided SQL text."""
     if raw_udfs is None:
-        raw_udfs = read_udf_dirs()
+        raw_udfs = read_udf_dirs(project)
     deps = []
-    for udf_usage in udf_usages_in_text(text):
+    for udf_usage in udf_usages_in_text(text, project):
         deps = accumulate_dependencies(deps, raw_udfs, udf_usage)
     return [
         statement
@@ -285,28 +279,28 @@ def udf_usage_definitions(text, raw_udfs=None):
     ]
 
 
-def sub_local_routines(test, raw_udfs=None):
+def sub_local_routines(test, project, raw_udfs=None):
     """
     Transform persistent UDFs into temporary UDFs.
 
     Use generic dataset for stored procedures.
     """
-    sql = prepend_udf_usage_definitions(test, raw_udfs)
-    sql = sub_persistent_udf_names_as_temp(sql)
+    sql = prepend_udf_usage_definitions(test, project, raw_udfs)
+    routines = get_routines(project)
 
-    for routine in MOZFUN_ROUTINES:
+    for routine in routines:
         if routine["name"] in sql:
             replace_name = routine["name"].replace(".", "_")
             if not routine["is_udf"]:
                 replace_name = GENERIC_DATASET + "." + replace_name
-            regex_str = r"(?:mozfun.)?" + routine["name"]
-            sql = re.sub(regex_str, replace_name, sql)
+            sql = sql.replace(f'{routine["project"]}.{routine["name"]}', replace_name)
+            sql = sql.replace(f'{routine["name"]}', replace_name)
 
     sql = PERSISTENT_UDF_PREFIX.sub("CREATE TEMP FUNCTION", sql)
     return sql
 
 
-def udf_tests_sql(raw_udf, raw_udfs):
+def udf_tests_sql(raw_udf, raw_udfs, project):
     """
     Create tests for testing persistent UDFs.
 
@@ -315,18 +309,13 @@ def udf_tests_sql(raw_udf, raw_udfs):
     """
     tests_full_sql = []
     for test in raw_udf.tests:
-        test_sql = sub_local_routines(test, raw_udfs)
+        test_sql = sub_local_routines(test, project, raw_udfs)
         tests_full_sql.append(test_sql)
 
     return tests_full_sql
 
 
-def prepend_udf_usage_definitions(text, raw_udfs=None):
+def prepend_udf_usage_definitions(text, project, raw_udfs=None):
     """Prepend definitions of UDFs used to provided SQL text."""
-    statements = udf_usage_definitions(text, raw_udfs)
+    statements = udf_usage_definitions(text, project, raw_udfs)
     return "\n\n".join(statements + [text])
-
-
-def sub_persistent_udf_names_as_temp(text):
-    """Substitute persistent UDF references with temporary UDF references."""
-    return PERSISTENT_UDF_RE.sub(r"\1_\2", text)

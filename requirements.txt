@@ -445,8 +445,8 @@ pyparsing==2.4.7 \
 pyrsistent==0.17.3 \
     --hash=sha256:2e636185d9eb976a18a8a8e96efce62f2905fea90041958d8cc2a189756ebf3e \
     # via jsonschema
-pytest-black==0.3.11 \
-    --hash=sha256:595eb0e7908b8a858a8564a5c8f0eae853c3926a4ec7b2afdfcedfa6fec65dd6 \
+pytest-black==0.3.12 \
+    --hash=sha256:1d339b004f764d6cd0f06e690f6dd748df3d62e6fe1a692d6a5500ac2c5b75a5 \
     # via -r requirements.in
 pytest-flake8==1.0.6 \
     --hash=sha256:1b82bb58c88eb1db40524018d3fcfd0424575029703b4e2d8e3ee873f2b17027 \

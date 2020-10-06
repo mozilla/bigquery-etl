@@ -9,17 +9,16 @@ from google.cloud import bigquery
 from google.cloud import storage
 
 from bigquery_etl.util import standard_args
+from bigquery_etl.util.common import project_dirs
 from bigquery_etl.udf.parse_udf import (
     read_udf_dirs,
     accumulate_dependencies,
-    get_udf_dirs,
 )
 
-DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
-DEFAULT_UDF_DIR = ["udf/", "udf_js/"]
-DEFAULT_DEPENDENCY_DIR = "udf_js/lib/"
+DEFAULT_DEPENDENCY_DIR = "lib/"
 DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
 DEFAULT_GCS_PATH = ""
+SQL_DIR = "sql/"
 
 OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
 OPTIONS_RE = re.compile(r"OPTIONS(\n|\s)*\(")
@@ -33,13 +32,6 @@ parser.add_argument(
     required=False,
     help="Project to publish UDFs to. "
     "If not set, publish UDFs for all projects except mozfun.",
-)
-parser.add_argument(
-    "--udf-dirs",
-    "--udf_dirs",
-    nargs="+",
-    default=DEFAULT_UDF_DIR,
-    help="Directory containing UDF definitions",
 )
 parser.add_argument(
     "--dependency-dir",
@@ -70,25 +62,30 @@ standard_args.add_log_level(parser)
 def main():
     """Publish UDFs."""
     args = parser.parse_args()
-    publish(
-        args.udf_dirs,
-        args.project_id,
-        args.dependency_dir,
-        args.gcs_bucket,
-        args.gcs_path,
-        args.public,
-    )
+
+    if args.project_id != None:
+        projects = [args.project_id]
+    else:
+        projects = project_dirs()
+
+    for project in projects:
+        publish(
+            os.path.basename(project),
+            os.path.join(SQL_DIR, project, args.dependency_dir),
+            args.gcs_bucket,
+            args.gcs_path,
+            args.public,
+        )
 
 
-def publish(udf_dirs, project_id, dependency_dir, gcs_bucket, gcs_path, public):
+def publish(project_id, dependency_dir, gcs_bucket, gcs_path, public):
     """Publish UDFs in the provided directory."""
     client = bigquery.Client(project_id)
 
     if dependency_dir and os.path.exists(dependency_dir):
         push_dependencies_to_gcs(gcs_bucket, gcs_path, dependency_dir, project_id)
 
-    udf_dirs = get_udf_dirs(udf_dirs, project_id)
-    raw_udfs = read_udf_dirs(*udf_dirs)
+    raw_udfs = read_udf_dirs(os.path.join(SQL_DIR, project_id))
 
     published_udfs = []
 
@@ -153,7 +150,7 @@ def publish_udf(
                 query = query[:-1] + f"OPTIONS(description={escaped_description});"
 
         print(f"Publish {raw_udf.name}")
-        client.query(query).result()
+        # client.query(query).result()
 
 
 def push_dependencies_to_gcs(bucket, path, dependency_dir, project_id):

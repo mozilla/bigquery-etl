@@ -278,3 +278,10 @@ END;"""
             in tests[1]
         )
         assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in tests[1]
+
+    def test_get_routines_from_dir(self):
+        routines = parse_udf.get_routines_from_dir(self.udf_dir.parent)
+        assert len(routines) == 7
+
+        routines = parse_udf.get_routines_from_dir("non-existing")
+        assert len(routines) == 0

@@ -10,7 +10,7 @@ from google.cloud import storage
 
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
-from bigquery_etl.udf.parse_udf import (
+from bigquery_etl.routine.parse_routine import (
     read_routine_dirs,
     accumulate_dependencies,
 )

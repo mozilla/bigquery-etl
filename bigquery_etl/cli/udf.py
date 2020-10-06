@@ -14,7 +14,7 @@ import yaml
 from ..cli.utils import is_valid_dir, is_authenticated
 from ..format_sql.formatter import reformat
 from ..cli.format import format
-from ..udf import publish_udfs
+from ..routine import publish_routines
 from ..docs import validate_docs
 from ..util.common import project_dirs
 
@@ -261,7 +261,7 @@ def publish(ctx, path, project, dependency_dir, gcs_bucket, gcs_path):
         udf_dirs = path
 
     click.echo(f"Publish UDFs to {project_id}")
-    publish_udfs.publish(
+    publish_routines.publish(
         udf_dirs, project_id, dependency_dir, gcs_bucket, gcs_path, public
     )
     click.echo(f"Published UDFs to {project_id}")

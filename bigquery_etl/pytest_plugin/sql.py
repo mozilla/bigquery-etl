@@ -8,7 +8,7 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 import pytest
 
-from ..udf import parse_udf
+from ..routine import parse_routine
 from .sql_test import (
     coerce_result,
     dataset,
@@ -133,7 +133,7 @@ class SqlTest(pytest.Item, pytest.File):
                 views[table_name] = read(self.fspath.strpath, resource)
 
         # rewrite all udfs as temporary
-        query = parse_udf.sub_local_routines(query)
+        query = parse_routine.sub_local_routines(query)
 
         dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
         if "CIRCLE_BUILD_NUM" in os.environ:

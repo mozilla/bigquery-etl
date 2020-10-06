@@ -8,7 +8,7 @@
         <meta name="author" content="Mozilla Data Platform Team">
         
         <link rel="shortcut icon" href="../../../img/favicon.ico">
-        <title>Event Analysis - BigQuery ETL</title>
+        <title>event_analysis - BigQuery ETL</title>
         <link href="../../../css/bootstrap.min.css" rel="stylesheet">
         <link href="../../../css/font-awesome.min.css" rel="stylesheet">
         <link href="../../../css/base.css" rel="stylesheet">
@@ -49,7 +49,7 @@
 </li>
             
 <li>
-    <a href="./" class="dropdown-item active">Event Analysis</a>
+    <a href="./" class="dropdown-item active">event_analysis</a>
 </li>
             
 <li>
@@ -122,9 +122,13 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#event-analysis" class="nav-link">Event Analysis</a>
+            <li class="nav-item" data-level="1"><a href="#event_analysis" class="nav-link">event_analysis</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#create_events_view" class="nav-link">create_events_view</a>
+            <li class="nav-item" data-level="2"><a href="#create_events_view-stored-procedure" class="nav-link">create_events_view (Stored Procedure)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#extract_event_counts-udf" class="nav-link">extract_event_counts (UDF)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -135,7 +139,7 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="event-analysis">Event Analysis</h1>
+<h1 id="event_analysis">event_analysis</h1>
 <p>These functions are specific for use with the <code>events_daily</code> and <code>event_types</code> tables.
 By themselves, these two tables are nearly impossible to use since the event history
 is compressed; however, these stored procedures should make the data accessible.</p>
@@ -151,7 +155,7 @@ knows what that action's representation is (using the compressed mapping from 1.
 create a regex string that checks for the presence of that event. The view makes this
 transparent, and allows users to simply query a boolean field representing the presence
 of that event on that day.</p>
-<h2 id="create_events_view">create_events_view</h2>
+<h2 id="create_events_view-stored-procedure">create_events_view (Stored Procedure)</h2>
 <p>Create a view that queries the <code>events_daily</code> table. This view currently supports both funnels and event counts.
 Funnels are created as a struct, with each step in the funnel as a boolean column in the struct, indicating whether the user completed that step on that day.
 Event counts are simply integers.</p>
@@ -355,7 +359,23 @@ WHERE
     submission_date &gt;= DATE_SUB(current_date, INTERVAL 28 DAY)
 GROUP BY
     submission_date
-</code></pre></div>
+</code></pre>
+
+<h2 id="extract_event_counts-udf">extract_event_counts (UDF)</h2>
+<p>Extract the events and their counts from an events string.
+This function explicitly ignores event properties, and retrieves just the counts of the top-level events.</p>
+<h3 id="usage_1">Usage</h3>
+<pre><code>extract_event_counts(
+events STRING
+)
+</code></pre>
+
+<p><code>events</code> - A comma-separated events string,
+where each event is represented as a string
+of unicode chars.</p>
+<h3 id="example">Example</h3>
+<p>See <a href="https://sql.telemetry.mozilla.org/dashboard/fenix-events">this dashboard</a>
+for example usage.</p></div>
             </div>
         </div>
 

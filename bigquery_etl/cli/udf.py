@@ -122,7 +122,7 @@ def create(ctx, name, path):
     # create defaul metadata.yaml
     metadata_file = udf_path / "metadata.yaml"
     metadata = {
-        "friendly_name": string.capwords(dataset + " " + name.replace("_", " ")),
+        "friendly_name": string.capwords(name.replace("_", " ")),
         "description": "Please provide a description for the UDF",
     }
     metadata_file.write_text(yaml.dump(metadata))

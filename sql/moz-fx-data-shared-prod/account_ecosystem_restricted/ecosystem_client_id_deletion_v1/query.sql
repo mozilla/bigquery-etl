@@ -20,6 +20,7 @@ unioned AS (
   -- and also added to the list of referenced tables in metadata.yaml
 )
 SELECT
+  submission_timestamp,
   ecosystem_client_id,
   TO_HEX(
     udf.hmac_sha256((SELECT * FROM hmac_key), CAST(ecosystem_client_id AS BYTES))
@@ -27,4 +28,5 @@ SELECT
 FROM
   unioned
 WHERE
-  DATE(submission_timestamp) = @submission_date
+  ecosystem_client_id IS NOT NULL
+  AND DATE(submission_timestamp) = @submission_date

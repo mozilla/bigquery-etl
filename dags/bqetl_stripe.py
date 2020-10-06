@@ -25,8 +25,9 @@ with DAG("bqetl_stripe", default_args=default_args, schedule_interval="@daily") 
         project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
         dag=dag,
     )
 
@@ -37,8 +38,9 @@ with DAG("bqetl_stripe", default_args=default_args, schedule_interval="@daily") 
         project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
         dag=dag,
     )
 
@@ -49,8 +51,9 @@ with DAG("bqetl_stripe", default_args=default_args, schedule_interval="@daily") 
         project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
         dag=dag,
     )
 

@@ -125,6 +125,8 @@ def get_public_gcs_table_metadata(
         GcsTableMetadata(list(blobs), endpoint, target_dir)
         for table, blobs in groupby(blobs, dataset_table_version_from_gcs_blob)
         if table is not None
+        and table[0] in os.listdir(target_dir)
+        and f"{table[1]}_{table[2]}" in os.listdir(os.path.join(target_dir, table[0]))
     ]
 
 

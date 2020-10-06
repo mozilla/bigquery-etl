@@ -49,6 +49,10 @@
 </li>
             
 <li>
+    <a href="../event_analysis/" class="dropdown-item">Event Analysis</a>
+</li>
+            
+<li>
     <a href="./" class="dropdown-item active">glean</a>
 </li>
             
@@ -88,7 +92,7 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../bits28/" class="nav-link">
+                                <a rel="prev" href="../event_analysis/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
@@ -120,11 +124,11 @@
             
             <li class="nav-item" data-level="1"><a href="#glean" class="nav-link">glean</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#timespan_seconds" class="nav-link">timespan_seconds</a>
+            <li class="nav-item" data-level="2"><a href="#timespan_nanos" class="nav-link">timespan_nanos</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#timespan_nanos" class="nav-link">timespan_nanos</a>
+            <li class="nav-item" data-level="2"><a href="#timespan_seconds" class="nav-link">timespan_seconds</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -137,12 +141,12 @@
 
 <h1 id="glean">glean</h1>
 <p>Functions for working with Glean data.</p>
+<h2 id="timespan_nanos">timespan_nanos</h2>
+<p>Returns the number of nanoseconds represented by a Glean timespan struct.</p>
+<p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p>
 <h2 id="timespan_seconds">timespan_seconds</h2>
 <p>Returns the number of seconds represented by a Glean timespan struct,
 rounded down to full seconds.</p>
-<p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p>
-<h2 id="timespan_nanos">timespan_nanos</h2>
-<p>Returns the number of nanoseconds represented by a Glean timespan struct.</p>
 <p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p></div>
             </div>
         </div>

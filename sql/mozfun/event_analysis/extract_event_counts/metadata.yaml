@@ -3,4 +3,4 @@ description: >
 
   This function explicitly ignores event properties, and
   retrieves just the counts of the top-level events.
-friendly_name: Event_analysis Extract Event Counts
+friendly_name: Extract Event Counts

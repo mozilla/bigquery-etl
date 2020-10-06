@@ -134,7 +134,15 @@ LEGACY_MOBILE_SOURCES = tuple(
     )
 )
 SOURCES = (
-    [DESKTOP_SRC, IMPRESSION_SRC, CFR_SRC, FXA_HMAC_SRC, FXA_SRC]
+    [
+        DESKTOP_SRC,
+        IMPRESSION_SRC,
+        CFR_SRC,
+        ECOSYSTEM_CLIENT_ID_HMAC_SRC,
+        ECOSYSTEM_CLIENT_ID_SRC,
+        FXA_HMAC_SRC,
+        FXA_SRC,
+    ]
     + list(SYNC_SOURCES)
     + list(LEGACY_MOBILE_SOURCES)
 )

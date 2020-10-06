@@ -11,7 +11,7 @@ from google.cloud import storage
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
 from bigquery_etl.udf.parse_udf import (
-    read_udf_dirs,
+    read_routine_dirs,
     accumulate_dependencies,
 )
 
@@ -63,7 +63,7 @@ def main():
     """Publish UDFs."""
     args = parser.parse_args()
 
-    if args.project_id != None:
+    if args.project_id is not None:
         projects = [args.project_id]
     else:
         projects = project_dirs()
@@ -85,36 +85,36 @@ def publish(project_id, dependency_dir, gcs_bucket, gcs_path, public):
     if dependency_dir and os.path.exists(dependency_dir):
         push_dependencies_to_gcs(gcs_bucket, gcs_path, dependency_dir, project_id)
 
-    raw_udfs = read_udf_dirs(os.path.join(SQL_DIR, project_id))
+    raw_routines = read_routine_dirs(os.path.join(SQL_DIR, project_id))
 
     published_udfs = []
 
-    for raw_udf in raw_udfs:
+    for raw_routine in raw_routines:
         # get all dependencies for UDF and publish as persistent UDF
-        udfs_to_publish = accumulate_dependencies([], raw_udfs, raw_udf)
-        udfs_to_publish.append(raw_udf)
+        udfs_to_publish = accumulate_dependencies([], raw_routines, raw_routine)
+        udfs_to_publish.append(raw_routine)
 
         for dep in udfs_to_publish:
-            if dep not in published_udfs and raw_udfs[dep].filepath not in SKIP:
+            if dep not in published_udfs and raw_routines[dep].filepath not in SKIP:
                 publish_udf(
-                    raw_udfs[dep],
+                    raw_routines[dep],
                     client,
                     project_id,
                     gcs_bucket,
                     gcs_path,
-                    raw_udfs.keys(),
+                    raw_routines.keys(),
                     public,
                 )
                 published_udfs.append(dep)
 
 
 def publish_udf(
-    raw_udf, client, project_id, gcs_bucket, gcs_path, known_udfs, is_public
+    raw_routine, client, project_id, gcs_bucket, gcs_path, known_udfs, is_public
 ):
     """Publish a specific UDF to BigQuery."""
     if is_public:
         # create new dataset for UDF if necessary
-        dataset = client.create_dataset(raw_udf.dataset, exists_ok=True)
+        dataset = client.create_dataset(raw_routine.dataset, exists_ok=True)
 
         # set permissions for dataset, public for everyone
         entry = bigquery.AccessEntry("READER", "specialGroup", "allAuthenticatedUsers")
@@ -124,7 +124,7 @@ def publish_udf(
         dataset = client.update_dataset(dataset, ["access_entries"])
 
     # transforms temporary UDF to persistent UDFs and publishes them
-    for definition in raw_udf.definitions:
+    for definition in raw_routine.definitions:
         # Within a standard SQL function, references to other entities require
         # explicit project IDs
         for udf in set(known_udfs):
@@ -140,17 +140,17 @@ def publish_udf(
         )
 
         # add UDF descriptions
-        if raw_udf.filepath not in SKIP and not raw_udf.is_stored_procedure:
+        if raw_routine.filepath not in SKIP and not raw_routine.is_stored_procedure:
             # descriptions need to be escaped since quotation marks and other
             # characters, such as \x01, will make the query invalid otherwise
-            escaped_description = json.dumps(str(raw_udf.description))
+            escaped_description = json.dumps(str(raw_routine.description))
             query = OPTIONS_RE.sub(f"OPTIONS(description={escaped_description},", query)
 
             if "OPTIONS(" not in query and query[-1] == ";":
                 query = query[:-1] + f"OPTIONS(description={escaped_description});"
 
-        print(f"Publish {raw_udf.name}")
-        # client.query(query).result()
+        print(f"Publish {raw_routine.name}")
+        client.query(query).result()
 
 
 def push_dependencies_to_gcs(bucket, path, dependency_dir, project_id):

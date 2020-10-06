@@ -12,12 +12,12 @@ class TestPublishUdfs:
 
     @mock.patch("google.cloud.bigquery.Client")
     def test_publish_udf_with_description(self, mock_client):
-        raw_udf = parse_udf.RawUdf.from_file(
+        raw_routine = parse_udf.RawRoutine.from_file(
             self.udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
         )
         mock_client.query = MagicMock()
         publish_udfs.publish_udf(
-            raw_udf, mock_client, "test-project", "", "", [], False
+            raw_routine, mock_client, "test-project", "", "", [], False
         )
         query = (
             "CREATE OR REPLACE FUNCTION udf.test_shift_28_bits_one_day(x INT64)"
@@ -29,10 +29,12 @@ class TestPublishUdfs:
 
     @mock.patch("google.cloud.bigquery.Client")
     def test_publish_js_udf_with_description(self, mock_client):
-        raw_udf = parse_udf.RawUdf.from_file(self.udf_dir / "test_js_udf" / "udf.sql")
+        raw_routine = parse_udf.RawRoutine.from_file(
+            self.udf_dir / "test_js_udf" / "udf.sql"
+        )
         mock_client.query = MagicMock()
         publish_udfs.publish_udf(
-            raw_udf, mock_client, "test-project", "", "", [], False
+            raw_routine, mock_client, "test-project", "", "", [], False
         )
         query = (
             "CREATE OR REPLACE FUNCTION udf.test_js_udf(input BYTES)\nRETURNS "

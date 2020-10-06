@@ -7,15 +7,15 @@
         
         <meta name="author" content="Mozilla Data Platform Team">
         
-        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
         <title>event_analysis - BigQuery ETL</title>
-        <link href="../../../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
-        <link href="../../../css/base.css" rel="stylesheet">
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
 
-        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../../../js/bootstrap.min.js" defer></script>
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script> 
     </head>
@@ -23,7 +23,7 @@
     <body>
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href="../../..">BigQuery ETL</a>
+                <a class="navbar-brand" href="../..">BigQuery ETL</a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
@@ -34,53 +34,47 @@
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
                             <li class="navitem">
-                                <a href="../../.." class="nav-link">BigQuery ETL</a>
+                                <a href="../.." class="nav-link">BigQuery ETL</a>
                             </li>
                             <li class="dropdown active">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Sql <b class="caret"></b></a>
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Mozfun <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
-  <li class="dropdown-submenu">
-    <a href="#" class="dropdown-item">Mozfun</a>
-    <ul class="dropdown-menu">
-            
 <li>
     <a href="../bits28/" class="dropdown-item">bits28</a>
 </li>
-            
+                                    
 <li>
     <a href="./" class="dropdown-item active">event_analysis</a>
 </li>
-            
+                                    
 <li>
     <a href="../glean/" class="dropdown-item">glean</a>
 </li>
-            
+                                    
 <li>
     <a href="../hist/" class="dropdown-item">hist</a>
 </li>
-            
+                                    
 <li>
     <a href="../json/" class="dropdown-item">json</a>
 </li>
-            
+                                    
 <li>
     <a href="../map/" class="dropdown-item">map</a>
 </li>
-            
+                                    
 <li>
     <a href="../norm/" class="dropdown-item">norm</a>
 </li>
-            
+                                    
 <li>
     <a href="../overview/" class="dropdown-item">mozfun</a>
 </li>
-            
+                                    
 <li>
     <a href="../stats/" class="dropdown-item">stats</a>
 </li>
-    </ul>
-  </li>
                                 </ul>
                             </li>
                         </ul>
@@ -102,7 +96,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="https://github.com/mozilla/bigquery-etl/edit/master/docs/sql/mozfun/event_analysis.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/mozilla/bigquery-etl/edit/master/docs/mozfun/event_analysis.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -124,11 +118,11 @@
             
             <li class="nav-item" data-level="1"><a href="#event_analysis" class="nav-link">event_analysis</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#create_events_view-stored-procedure" class="nav-link">create_events_view (Stored Procedure)</a>
+            <li class="nav-item" data-level="2"><a href="#extract_event_counts-udf" class="nav-link">extract_event_counts (UDF)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#extract_event_counts-udf" class="nav-link">extract_event_counts (UDF)</a>
+            <li class="nav-item" data-level="2"><a href="#create_events_view-stored-procedure" class="nav-link">create_events_view (Stored Procedure)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -155,11 +149,26 @@ knows what that action's representation is (using the compressed mapping from 1.
 create a regex string that checks for the presence of that event. The view makes this
 transparent, and allows users to simply query a boolean field representing the presence
 of that event on that day.</p>
+<h2 id="extract_event_counts-udf">extract_event_counts (UDF)</h2>
+<p>Extract the events and their counts from an events string.
+This function explicitly ignores event properties, and retrieves just the counts of the top-level events.</p>
+<h3 id="usage">Usage</h3>
+<pre><code>extract_event_counts(
+events STRING
+)
+</code></pre>
+
+<p><code>events</code> - A comma-separated events string,
+where each event is represented as a string
+of unicode chars.</p>
+<h3 id="example">Example</h3>
+<p>See <a href="https://sql.telemetry.mozilla.org/dashboard/fenix-events">this dashboard</a>
+for example usage.</p>
 <h2 id="create_events_view-stored-procedure">create_events_view (Stored Procedure)</h2>
 <p>Create a view that queries the <code>events_daily</code> table. This view currently supports both funnels and event counts.
 Funnels are created as a struct, with each step in the funnel as a boolean column in the struct, indicating whether the user completed that step on that day.
 Event counts are simply integers.</p>
-<h3 id="usage">Usage</h3>
+<h3 id="usage_1">Usage</h3>
 <pre><code class="sql">create_events_view(
     view_name STRING,
     project STRING,
@@ -359,23 +368,7 @@ WHERE
     submission_date &gt;= DATE_SUB(current_date, INTERVAL 28 DAY)
 GROUP BY
     submission_date
-</code></pre>
-
-<h2 id="extract_event_counts-udf">extract_event_counts (UDF)</h2>
-<p>Extract the events and their counts from an events string.
-This function explicitly ignores event properties, and retrieves just the counts of the top-level events.</p>
-<h3 id="usage_1">Usage</h3>
-<pre><code>extract_event_counts(
-events STRING
-)
-</code></pre>
-
-<p><code>events</code> - A comma-separated events string,
-where each event is represented as a string
-of unicode chars.</p>
-<h3 id="example">Example</h3>
-<p>See <a href="https://sql.telemetry.mozilla.org/dashboard/fenix-events">this dashboard</a>
-for example usage.</p></div>
+</code></pre></div>
             </div>
         </div>
 
@@ -384,11 +377,11 @@ for example usage.</p></div>
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
         <script>
-            var base_url = "../../..",
+            var base_url = "../..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../../../js/base.js" defer></script>
-        <script src="../../../search/main.js" defer></script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

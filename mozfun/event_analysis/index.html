@@ -157,7 +157,6 @@ This function explicitly ignores event properties, and retrieves just the counts
 events STRING
 )
 </code></pre>
-
 <p><code>events</code> - A comma-separated events string,
 where each event is represented as a string
 of unicode chars.</p>
@@ -169,7 +168,7 @@ for example usage.</p>
 Funnels are created as a struct, with each step in the funnel as a boolean column in the struct, indicating whether the user completed that step on that day.
 Event counts are simply integers.</p>
 <h3 id="usage_1">Usage</h3>
-<pre><code class="sql">create_events_view(
+<pre><code class="language-sql">create_events_view(
     view_name STRING,
     project STRING,
     dataset STRING,
@@ -187,7 +186,6 @@ Event counts are simply integers.</p>
             event_name STRING&gt;&gt;&gt;&gt;
   )
 </code></pre>
-
 <ul>
 <li>
 <p><code>view_name</code>: The name of the view that will be created. This view
@@ -251,7 +249,6 @@ This allows viewers of the query to easily interpret what the funnel and count c
 <p>The view will be created at </p>
 <pre><code>`moz-fx-data-shared-prod`.analysis.{event_name}.
 </code></pre>
-
 <p>The view will have a schema roughly matching the following:</p>
 <pre><code>root
  |-- submission_date: date
@@ -267,18 +264,16 @@ This allows viewers of the query to easily interpret what the funnel and count c
  |-- {count_N_name}: integer
  ...dimensions...
 </code></pre>
-
 <h5 id="funnels">Funnels</h5>
 <p>Each funnel will be a <code>STRUCT</code> with nested columns representing completion of each step
 The types of those columns are boolean, and represent whether the user completed that
 step on that day.</p>
-<pre><code class="sql">STRUCT(
+<pre><code class="language-sql">STRUCT(
     completed_step_1 BOOLEAN,
     completed_step_2 BOOLEAN,
     ...
 ) AS funnel_name
 </code></pre>
-
 <p>With one row per-user per-day, you can use <code>COUNTIF(funnel_name.completed_step_N)</code> to query
 these fields. See below for an example.</p>
 <h5 id="event-counts">Event Counts</h5>
@@ -287,9 +282,8 @@ those events on that day. If there are multiple events represented within one co
 the values are summed. For example, if you wanted to know the number of times a user
 opened or closed the app, you could create a single event count with those two
 events.</p>
-<pre><code class="sql">event_count_name INT64
+<pre><code class="language-sql">event_count_name INT64
 </code></pre>
-
 <h3 id="examples">Examples</h3>
 <p>The following creates a few fields:
 - <code>collection_flow</code> is a funnel for those that started creating
@@ -300,7 +294,7 @@ events.</p>
     flow then saved it as a new collection.
 - <code>number_of_collections_created</code> is the number of collections created
 - <code>number_of_collections_deleted</code> is the number of collections deleted</p>
-<pre><code class="sql">CALL mozfun.event_analysis.create_events_view(
+<pre><code class="language-sql">CALL mozfun.event_analysis.create_events_view(
   'fenix_collection_funnels',
   'moz-fx-data-shared-prod',
   'org_mozilla_firefox',
@@ -342,10 +336,9 @@ events.</p>
   ]
 );
 </code></pre>
-
 <p>From there, you can query a few things. For example, the fraction 
 of users who completed each step of the collection flow over time:</p>
-<pre><code class="sql">SELECT
+<pre><code class="language-sql">SELECT
     submission_date,
     COUNTIF(collection_flow.started_collection_creation) / COUNT(*) AS started_collection_creation,
     COUNTIF(collection_flow.completed_collection_creation) / COUNT(*) AS completed_collection_creation,
@@ -356,9 +349,8 @@ WHERE
 GROUP BY
     submission_date
 </code></pre>
-
 <p>Or you can see the number of collections created and deleted:</p>
-<pre><code class="sql">SELECT
+<pre><code class="language-sql">SELECT
     submission_date,
     SUM(number_of_collections_created) AS number_of_collections_created,
     SUM(number_of_collections_deleted) AS number_of_collections_deleted,

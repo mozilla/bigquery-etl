@@ -122,6 +122,14 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#merge-udf" class="nav-link">merge (UDF)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#mean-udf" class="nav-link">mean (UDF)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#normalize-udf" class="nav-link">normalize (UDF)</a>
               <ul class="nav flex-column">
               </ul>
@@ -130,15 +138,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#mean-udf" class="nav-link">mean (UDF)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-level="2"><a href="#percentiles-udf" class="nav-link">percentiles (UDF)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#merge-udf" class="nav-link">merge (UDF)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -157,6 +157,17 @@ the histogram.  CAUTION: Does not count any buckets that have any values less th
 the threshold. For example, a bucket with range (1, 10) will not be counted for
 a threshold of 2. Use threshold that are not bucket boundaries with caution. </p>
 <p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239</a></p>
+<h2 id="merge-udf">merge (UDF)</h2>
+<p>Merge an array of histograms into a single histogram.</p>
+<ul>
+<li>The histogram values will be summed per-bucket </li>
+<li>The count will be summed </li>
+<li>Other fields will take the mode_last</li>
+</ul>
+<h2 id="mean-udf">mean (UDF)</h2>
+<p>Given histogram h, return floor(mean) of the measurements in the bucket.
+That is, the histogram sum divided by the number of measurements taken.</p>
+<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
 <h2 id="normalize-udf">normalize (UDF)</h2>
 <p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
 <h2 id="extract-udf">extract (UDF)</h2>
@@ -176,31 +187,18 @@ formed, which gives us some flexibility.</p>
 <ul>
 <li>https://docs.google.com/document/d/1k_ji_1DB6htgtXnPpMpa7gX0klm-DGV5NMY7KkvVB00/edit#</li>
 </ul>
-<pre><code class="sql">SELECT
+<pre><code class="language-sql">SELECT
   mozfun.hist.extract(
     '{&quot;bucket_count&quot;:3,&quot;histogram_type&quot;:4,&quot;sum&quot;:1,&quot;range&quot;:[1,2],&quot;values&quot;:{&quot;0&quot;:1,&quot;1&quot;:0}}'
   ).sum
 -- 1
 </code></pre>
-
-<pre><code class="sql">SELECT
+<pre><code class="language-sql">SELECT
   mozfun.hist.extract('5').sum
 -- 5
 </code></pre>
-
-<h2 id="mean-udf">mean (UDF)</h2>
-<p>Given histogram h, return floor(mean) of the measurements in the bucket.
-That is, the histogram sum divided by the number of measurements taken.</p>
-<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
 <h2 id="percentiles-udf">percentiles (UDF)</h2>
-<p>Given histogram and list of percentiles, calculate what those percentiles are for the histogram.  If the histogram is empty, returns NULL.</p>
-<h2 id="merge-udf">merge (UDF)</h2>
-<p>Merge an array of histograms into a single histogram.</p>
-<ul>
-<li>The histogram values will be summed per-bucket </li>
-<li>The count will be summed </li>
-<li>Other fields will take the mode_last</li>
-</ul></div>
+<p>Given histogram and list of percentiles, calculate what those percentiles are for the histogram.  If the histogram is empty, returns NULL.</p></div>
             </div>
         </div>
 

@@ -5,7 +5,7 @@ from bigquery_etl.routine import parse_routine
 TEST_DIR = Path(__file__).parent.parent
 
 
-class TestParseUdf:
+class TestParseRoutine:
     udf_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project" / "udf"
 
     def test_raw_routine_from_file(self):

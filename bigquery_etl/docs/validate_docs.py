@@ -42,7 +42,7 @@ def sql_for_dry_run(file, parsed_routines, project_dir):
         for udf, raw_routine in parsed_routines.items():
             if udf in example_sql:
                 query = "".join(raw_routine.definitions)
-                dry_run_sql += sub_local_routines(query, parsed_routines)
+                dry_run_sql += sub_local_routines(query, project_dir, parsed_routines)
 
         dry_run_sql += example_sql
 

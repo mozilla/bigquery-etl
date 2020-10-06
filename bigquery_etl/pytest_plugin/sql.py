@@ -67,6 +67,9 @@ class SqlTest(pytest.Item, pytest.File):
         test_name = self.fspath.basename
         query_name = self.fspath.dirpath().basename
         dataset_name = self.fspath.dirpath().dirpath().basename
+        project_dir = (
+            self.fspath.dirpath().dirpath().dirpath().dirname.replace("tests", "")
+        )
 
         init_test = False
         script_test = False
@@ -133,7 +136,8 @@ class SqlTest(pytest.Item, pytest.File):
                 views[table_name] = read(self.fspath.strpath, resource)
 
         # rewrite all udfs as temporary
-        query = parse_routine.sub_local_routines(query)
+        query = parse_routine.sub_local_routines(query, project_dir)
+        print(query)
 
         dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
         if "CIRCLE_BUILD_NUM" in os.environ:

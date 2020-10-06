@@ -7,7 +7,7 @@ from bigquery_etl.routine import parse_routine, publish_routines
 TEST_DIR = Path(__file__).parent.parent
 
 
-class TestPublishUdfs:
+class TestPublishRoutine:
     udf_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project" / "udf"
 
     @mock.patch("google.cloud.bigquery.Client")

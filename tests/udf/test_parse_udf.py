@@ -1,5 +1,4 @@
 from pathlib import Path
-from unittest import mock
 
 from bigquery_etl.udf import parse_udf
 
@@ -7,21 +6,11 @@ TEST_DIR = Path(__file__).parent.parent
 
 
 class TestParseUdf:
-    mock_mozfun_udfs = mock.patch.object(
-        parse_udf,
-        "MOZFUN_ROUTINES",
-        [
-            {"name": "hist.range", "is_udf": True},
-            {"name": "json.parse", "is_udf": True},
-            {"name": "procedure.test_procedure", "is_udf": False},
-            {"name": "procedure.append_hello", "is_udf": False},
-        ],
-    )
+    udf_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project" / "udf"
 
     def test_raw_udf_from_file(self):
-        udf_dir = TEST_DIR / "data" / "udf"
         result = parse_udf.RawUdf.from_file(
-            udf_dir / "test_bitmask_lowest_28" / "udf.sql"
+            self.udf_dir / "test_bitmask_lowest_28" / "udf.sql"
         )
         assert result.name == "udf.test_bitmask_lowest_28"
         assert result.dataset == "udf"
@@ -36,7 +25,7 @@ class TestParseUdf:
         assert result.dependencies == []
 
         result = parse_udf.RawUdf.from_file(
-            udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
+            self.udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
         )
         assert len(result.tests) == 1
         assert (
@@ -46,62 +35,59 @@ class TestParseUdf:
         assert result.dependencies == ["udf.test_bitmask_lowest_28"]
 
     def test_raw_udf_from_text(self):
-        with self.mock_mozfun_udfs:
-            text = (
-                "CREATE OR REPLACE FUNCTION udf.test_udf() "
-                + "AS (SELECT mozfun.json.parse('{}'))"
-            )
-            result = parse_udf.RawUdf.from_text(text, "udf", "test_udf", description="")
-            assert result.name == "udf.test_udf"
-            assert len(result.definitions) == 1
-            assert len(result.dependencies) == 1
-            assert "json.parse" in result.dependencies
-            assert result.tests == []
+        text = (
+            "CREATE OR REPLACE FUNCTION udf.test_js_udf() "
+            + "AS (SELECT mozfun.json.mode_last('{}'))"
+        )
+        result = parse_udf.RawUdf.from_text(
+            text,
+            str(TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project"),
+            "udf",
+            "test_js_udf",
+            description="",
+        )
+        assert result.name == "udf.test_js_udf"
+        assert len(result.definitions) == 1
+        assert len(result.dependencies) == 1
+        assert "json.mode_last" in result.dependencies
+        assert result.tests == []
 
-            text = "CREATE OR REPLACE FUNCTION json.parse() " + "AS (SELECT 1)"
-            result = parse_udf.RawUdf.from_text(text, "json", "parse", description="")
-            assert result.name == "json.parse"
-            assert len(result.definitions) == 1
-            assert result.dependencies == []
-            assert result.tests == []
+        text = "CREATE OR REPLACE FUNCTION json.mode_last() " + "AS (SELECT 1)"
+        result = parse_udf.RawUdf.from_text(
+            text, "sql/mozfun", "json", "mode_last", description=""
+        )
+        assert result.name == "json.mode_last"
+        assert len(result.definitions) == 1
+        assert result.dependencies == []
+        assert result.tests == []
 
     def test_parse_udf(self):
-        udf_dir = TEST_DIR / "data" / "udf"
         raw_udf = parse_udf.RawUdf.from_file(
-            udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
+            self.udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
         )
         result = parse_udf.ParsedUdf.from_raw(raw_udf, "SELECT 'test'")
         assert result.tests_full_sql == "SELECT 'test'"
         assert result.name == "udf.test_shift_28_bits_one_day"
 
     def test_udf_usages_in_text(self):
-        with self.mock_mozfun_udfs:
-            text = "SELECT hist.range(123) AS a, json.parse('{}') AS b, udf.test(1)"
-            result = parse_udf.udf_usages_in_text(text)
-            assert result == ["hist.range", "json.parse", "udf.test"]
-
-            text = ""
-            assert parse_udf.udf_usages_in_text(text) == []
-
-            text = "SELECT mozfun.unknown.udf(1) AS a, udf_js.test(1) AS b"
-            result = parse_udf.udf_usages_in_text(text)
-            assert result == ["udf_js.test"]
-
-    def test_sub_persistent_udf_names_as_temp(self):
-        text = "SELECT udf.test_udf(1), udf_js.text_udf('foo_bar'), hist.range('{}')"
-        result = parse_udf.sub_persistent_udf_names_as_temp(text)
-        assert (
-            result
-            == "SELECT udf_test_udf(1), udf_js_text_udf('foo_bar'), hist.range('{}')"
+        text = (
+            "SELECT hist.extract(123) AS a, event_analysis.get_count_sql('{}') AS b,"
+            " udf.test_bitmask_lowest_28(1)"
         )
+        result = parse_udf.udf_usages_in_text(text, project=self.udf_dir.parent)
+        assert "hist.extract" in result
+        assert "event_analysis.get_count_sql" in result
+        assert "udf.test_bitmask_lowest_28" in result
 
-        text = "SELECT assert.true()"
-        result = parse_udf.sub_persistent_udf_names_as_temp(text)
-        assert result == "SELECT assert_true()"
+        text = ""
+        assert parse_udf.udf_usages_in_text(text, project=self.udf_dir.parent) == []
+
+        text = "SELECT mozfun.unknown.udf(1) AS a, udf.test_js_udf(1) AS b"
+        result = parse_udf.udf_usages_in_text(text, project=self.udf_dir.parent)
+        assert result == ["udf.test_js_udf"]
 
     def test_read_udf_dirs(self):
-        udf_dir = TEST_DIR / "data" / "udf"
-        raw_udfs = parse_udf.read_udf_dirs((udf_dir))
+        raw_udfs = parse_udf.read_udf_dirs(self.udf_dir)
         assert len(raw_udfs.keys()) == 5
         assert "udf.test_shift_28_bits_one_day" in raw_udfs
         assert "udf.test_safe_crc32_uuid" in raw_udfs
@@ -114,9 +100,8 @@ class TestParseUdf:
         assert type(raw_udfs["udf.test_shift_28_bits_one_day"]) == parse_udf.RawUdf
 
     def test_parse_udf_dirs(self):
-        udf_dir = TEST_DIR / "data" / "udf"
-        parsed_udfs = list(parse_udf.parse_udf_dirs((udf_dir)))
-        assert len(parsed_udfs) == 5
+        parsed_udfs = list(parse_udf.parse_udfs(self.udf_dir.parent))
+        assert len(parsed_udfs) == 7
         bitmask_lowest_28 = [
             u for u in parsed_udfs if u.name == "udf.test_bitmask_lowest_28"
         ][0]
@@ -131,8 +116,7 @@ class TestParseUdf:
         )
 
     def test_accumulate_dependencies(self):
-        udf_dir = TEST_DIR / "data" / "udf"
-        raw_udfs = parse_udf.read_udf_dirs((udf_dir))
+        raw_udfs = parse_udf.read_udf_dirs(self.udf_dir)
 
         result = parse_udf.accumulate_dependencies(
             [], raw_udfs, "udf.test_shift_28_bits_one_day"
@@ -146,11 +130,10 @@ class TestParseUdf:
         assert "udf.test_bitmask_lowest_28" in result
 
     def test_udf_usage_definitions(self):
-        udf_dir = TEST_DIR / "data" / "udf"
-        raw_udfs = parse_udf.read_udf_dirs((udf_dir))
+        raw_udfs = parse_udf.read_udf_dirs(self.udf_dir)
 
         text = "SELECT udf.test_bitmask_lowest_28(0), udf.test_safe_sample_id('')"
-        result = parse_udf.udf_usage_definitions(text, raw_udfs)
+        result = parse_udf.udf_usage_definitions(text, self.udf_dir.parent, raw_udfs)
         assert len(result) == 11
         assert (
             "CREATE OR REPLACE FUNCTION udf.test_bitmask_lowest_28()"
@@ -164,54 +147,51 @@ class TestParseUdf:
         )
 
     def test_sub_local_routines(self):
-        with self.mock_mozfun_udfs:
-            data_dir = TEST_DIR / "data"
-            raw_udfs = parse_udf.read_udf_dirs((data_dir / "udf"))
-            raw_udfs.update(parse_udf.read_udf_dirs((data_dir / "procedure")))
-            raw_udf = parse_udf.RawUdf.from_file(
-                data_dir / "udf" / "test_shift_28_bits_one_day" / "udf.sql"
-            ).tests[0]
+        data_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project"
+        raw_udfs = parse_udf.read_udf_dirs(data_dir / "udf")
+        raw_udfs.update(parse_udf.read_udf_dirs(data_dir / "procedure"))
+        raw_udf = parse_udf.RawUdf.from_file(
+            data_dir / "udf" / "test_shift_28_bits_one_day" / "udf.sql"
+        ).tests[0]
 
-            assert "CREATE TEMP FUNCTION" not in raw_udf
-            assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" not in raw_udf
-            result = parse_udf.sub_local_routines(raw_udf, raw_udfs)
-            assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in result
-            assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
+        assert "CREATE TEMP FUNCTION" not in raw_udf
+        assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" not in raw_udf
+        result = parse_udf.sub_local_routines(raw_udf, self.udf_dir.parent, raw_udfs)
+        assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in result
+        assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
 
-            text = "SELECT udf.test_bitmask_lowest_28(23), mozfun.hist.range('{}')"
-            result = parse_udf.sub_local_routines(text, raw_udfs)
-            assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
-            assert "hist_range" in result
-            assert "mozfun.hist.range" not in result
-            assert "hist.range" not in result
+        text = "SELECT udf.test_bitmask_lowest_28(23), mozfun.hist.extract('{}')"
+        result = parse_udf.sub_local_routines(text, self.udf_dir.parent, raw_udfs)
+        assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
+        assert "hist_extract" in result
+        assert "mozfun.hist.extract" not in result
+        assert "hist.extract" not in result
 
-            text = "CALL procedure.test_procedure(23);"
-            result = parse_udf.sub_local_routines(text, raw_udfs)
-            assert (
-                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
-                in result
-            )
+        text = "CALL procedure.test_procedure(23);"
+        result = parse_udf.sub_local_routines(text, self.udf_dir.parent, raw_udfs)
+        assert (
+            "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
+            in result
+        )
 
     def test_udf_tests_sql(self):
-        udf_dir = TEST_DIR / "data" / "udf"
-        raw_udfs = parse_udf.read_udf_dirs((udf_dir))
+        raw_udfs = parse_udf.read_udf_dirs(self.udf_dir)
         raw_udf = parse_udf.RawUdf.from_file(
-            udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
+            self.udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
         )
-        result = parse_udf.udf_tests_sql(raw_udf, raw_udfs)[0]
+        result = parse_udf.udf_tests_sql(raw_udf, raw_udfs, self.udf_dir.parent)[0]
         assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in result
         assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
 
         raw_udf = parse_udf.RawUdf.from_file(
-            udf_dir / "test_bitmask_lowest_28" / "udf.sql"
+            self.udf_dir / "test_bitmask_lowest_28" / "udf.sql"
         )
-        result = parse_udf.udf_tests_sql(raw_udf, raw_udfs)
+        result = parse_udf.udf_tests_sql(raw_udf, raw_udfs, self.udf_dir.parent)
         assert result == []
 
     def test_udf_description(self):
-        udf_dir = TEST_DIR / "data" / "udf"
         raw_udf = parse_udf.RawUdf.from_file(
-            udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
+            self.udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
         )
         assert (
             raw_udf.description
@@ -219,83 +199,82 @@ class TestParseUdf:
         )
 
     def test_procedure(self):
-        with self.mock_mozfun_udfs:
-            text = (
-                "CREATE OR REPLACE PROCEDURE procedure.test_procedure(out STRING) "
-                "BEGIN "
-                "SET out = mozfun.json.parse('{}'); "
-                "END "
-            )
-            result = parse_udf.RawUdf.from_text(
-                text, "procedure", "test_procedure", description=""
-            )
-            assert result.name == "procedure.test_procedure"
-            assert len(result.definitions) == 1
-            assert len(result.dependencies) == 1
-            assert "json.parse" in result.dependencies
-            assert result.tests == [text.strip()]
+        text = (
+            "CREATE OR REPLACE PROCEDURE procedure.test_procedure(out STRING) "
+            "BEGIN "
+            "SET out = mozfun.json.mode_last('{}'); "
+            "END "
+        )
+        result = parse_udf.RawUdf.from_text(
+            text, self.udf_dir.parent, "procedure", "test_procedure", description=""
+        )
+        assert result.name == "procedure.test_procedure"
+        assert len(result.definitions) == 1
+        assert len(result.dependencies) == 1
+        assert "json.mode_last" in result.dependencies
+        assert result.tests == [text.strip()]
 
-            text = (
-                "CREATE OR REPLACE PROCEDURE procedure.test_procedure(out STRING) "
-                "BEGIN "
-                "SET out = ''; "
-                "END "
-            )
-            result = parse_udf.RawUdf.from_text(
-                text, "procedure", "test_procedure", description=""
-            )
-            assert result.name == "procedure.test_procedure"
-            assert len(result.definitions) == 1
-            assert result.dependencies == []
-            assert result.tests == [text.strip()]
+        text = (
+            "CREATE OR REPLACE PROCEDURE procedure.test_procedure(out STRING) "
+            "BEGIN "
+            "SET out = ''; "
+            "END "
+        )
+        result = parse_udf.RawUdf.from_text(
+            text, self.udf_dir.parent, "procedure", "test_procedure", description=""
+        )
+        assert result.name == "procedure.test_procedure"
+        assert len(result.definitions) == 1
+        assert result.dependencies == []
+        assert result.tests == [text.strip()]
 
     def test_procedure_from_file(self):
-        udf_dir = TEST_DIR / "data"
-
-        with self.mock_mozfun_udfs:
-            result = parse_udf.RawUdf.from_file(
-                udf_dir / "procedure" / "test_procedure" / "stored_procedure.sql"
-            )
-            assert result.name == "procedure.test_procedure"
-            assert result.dataset == "procedure"
-            assert len(result.definitions) == 1
-            assert (
-                result.definitions[0]
-                == """CREATE OR REPLACE PROCEDURE
+        result = parse_udf.RawUdf.from_file(
+            self.udf_dir.parent
+            / "procedure"
+            / "test_procedure"
+            / "stored_procedure.sql"
+        )
+        assert result.name == "procedure.test_procedure"
+        assert result.dataset == "procedure"
+        assert len(result.definitions) == 1
+        assert (
+            result.definitions[0]
+            == """CREATE OR REPLACE PROCEDURE
   procedure.test_procedure(out STRING)
 BEGIN
-  SET out = mozfun.json.parse('{}');
+  SET out = mozfun.json.mode_last('{}');
 END;"""
-            )
-            assert result.tests == [result.definitions[0].strip()]
-            assert result.dependencies == ["json.parse"]
+        )
+        assert result.tests == [result.definitions[0].strip()]
+        assert result.dependencies == ["json.mode_last"]
 
     def test_procedure_tests_sql(self):
-        with self.mock_mozfun_udfs:
-            udf_dir = TEST_DIR / "data"
-            raw_procedure = parse_udf.RawUdf.from_file(
-                udf_dir / "procedure" / "append_hello" / "stored_procedure.sql"
-            )
+        raw_procedure = parse_udf.RawUdf.from_file(
+            self.udf_dir.parent / "procedure" / "append_hello" / "stored_procedure.sql"
+        )
 
-            raw_routines = parse_udf.read_udf_dirs((udf_dir / "udf"))
-            raw_routines.update(parse_udf.read_udf_dirs((udf_dir / "procedure")))
+        raw_routines = parse_udf.read_udf_dirs(self.udf_dir)
+        raw_routines.update(parse_udf.read_udf_dirs(self.udf_dir.parent / "procedure"))
 
-            tests = parse_udf.udf_tests_sql(raw_procedure, raw_routines)
-            assert (
-                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
-                in tests[0]
-            )
-            assert (
-                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_append_hello"
-                in tests[0]
-            )
+        tests = parse_udf.udf_tests_sql(
+            raw_procedure, raw_routines, self.udf_dir.parent
+        )
+        assert (
+            "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
+            in tests[0]
+        )
+        assert (
+            "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_append_hello"
+            in tests[0]
+        )
 
-            assert (
-                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
-                in tests[1]
-            )
-            assert (
-                "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_append_hello"
-                in tests[1]
-            )
-            assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in tests[1]
+        assert (
+            "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
+            in tests[1]
+        )
+        assert (
+            "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_append_hello"
+            in tests[1]
+        )
+        assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in tests[1]

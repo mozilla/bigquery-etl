@@ -4,6 +4,7 @@
 """Utilities."""
 
 from bigquery_etl.udf import parse_udf
+from bigquery_etl.util.common import project_dirs
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, datetime
@@ -46,7 +47,7 @@ TABLE_EXTENSIONS = {
     "orc": bigquery.SourceFormat.ORC,
 }
 
-raw_udfs = parse_udf.read_udf_dirs()
+raw_udfs = [udf for udf in parse_udf.read_udf_dirs(*project_dirs())]
 
 
 @dataclass

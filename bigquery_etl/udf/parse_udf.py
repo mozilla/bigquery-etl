@@ -31,7 +31,7 @@ ASSERT_UDF_DIR = "tests"
 
 
 def get_routines_from_dir(project_dir):
-    """Returns all UDFs and stored procedures in the project directory."""
+    """Return all UDFs and stored procedures in the project directory."""
     return [
         {
             "name": root.split("/")[-2] + "." + root.split("/")[-1],

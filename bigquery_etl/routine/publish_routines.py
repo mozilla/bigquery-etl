@@ -15,7 +15,7 @@ from bigquery_etl.routine.parse_routine import (
     accumulate_dependencies,
 )
 
-DEFAULT_DEPENDENCY_DIR = "lib/"
+DEFAULT_UDF_DEPENDENCY_DIR = "lib/"
 DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
 DEFAULT_GCS_PATH = ""
 SQL_DIR = "sql/"
@@ -36,7 +36,7 @@ parser.add_argument(
 parser.add_argument(
     "--dependency-dir",
     "--dependency_dir",
-    default=DEFAULT_DEPENDENCY_DIR,
+    default=DEFAULT_UDF_DEPENDENCY_DIR,
     help="The directory JavaScript dependency files for UDFs are stored.",
 )
 parser.add_argument(
@@ -60,7 +60,7 @@ standard_args.add_log_level(parser)
 
 
 def main():
-    """Publish UDFs."""
+    """Publish routine."""
     args = parser.parse_args()
 
     if args.project_id is not None:
@@ -79,7 +79,7 @@ def main():
 
 
 def publish(project_id, dependency_dir, gcs_bucket, gcs_path, public):
-    """Publish UDFs in the provided directory."""
+    """Publish routines in the provided directory."""
     client = bigquery.Client(project_id)
 
     if dependency_dir and os.path.exists(dependency_dir):
@@ -87,7 +87,7 @@ def publish(project_id, dependency_dir, gcs_bucket, gcs_path, public):
 
     raw_routines = read_routine_dir(os.path.join(SQL_DIR, project_id))
 
-    published_udfs = []
+    published_routines = []
 
     for raw_routine in raw_routines:
         # get all dependencies for UDF and publish as persistent UDF
@@ -95,8 +95,8 @@ def publish(project_id, dependency_dir, gcs_bucket, gcs_path, public):
         udfs_to_publish.append(raw_routine)
 
         for dep in udfs_to_publish:
-            if dep not in published_udfs and raw_routines[dep].filepath not in SKIP:
-                publish_udf(
+            if dep not in published_routines and raw_routines[dep].filepath not in SKIP:
+                publish_routine(
                     raw_routines[dep],
                     client,
                     project_id,
@@ -105,15 +105,15 @@ def publish(project_id, dependency_dir, gcs_bucket, gcs_path, public):
                     raw_routines.keys(),
                     public,
                 )
-                published_udfs.append(dep)
+                published_routines.append(dep)
 
 
-def publish_udf(
+def publish_routine(
     raw_routine, client, project_id, gcs_bucket, gcs_path, known_udfs, is_public
 ):
-    """Publish a specific UDF to BigQuery."""
+    """Publish a specific routine to BigQuery."""
     if is_public:
-        # create new dataset for UDF if necessary
+        # create new dataset for routine if necessary
         dataset = client.create_dataset(raw_routine.dataset, exists_ok=True)
 
         # set permissions for dataset, public for everyone

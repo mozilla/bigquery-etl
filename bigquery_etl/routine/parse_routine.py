@@ -19,6 +19,7 @@ from bigquery_etl.metadata.parse_metadata import METADATA_FILE
 UDF_CHAR = "[a-zA-z0-9_]"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
+ROUTINE_FILE = (UDF_FILE, PROCEDURE_FILE)
 EXAMPLE_DIR = "examples"
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_PREFIX = re.compile(
@@ -27,7 +28,7 @@ PERSISTENT_UDF_PREFIX = re.compile(
 PERSISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 GENERIC_DATASET = "_generic_dataset_"
-SQL_DIR = "sql/"
+SQL_DIR = Path("sql/")
 ASSERT_UDF_DIR = "tests/assert"
 
 
@@ -41,7 +42,7 @@ def get_routines_from_dir(project_dir):
         }
         for root, dirs, files in os.walk(project_dir)
         for filename in files
-        if filename in (UDF_FILE, PROCEDURE_FILE)
+        if filename in ROUTINE_FILE
     ]
 
 
@@ -49,7 +50,7 @@ def get_routines(project):
     """Return all routines that could be referenced by the project."""
     return (
         get_routines_from_dir(project)
-        + get_routines_from_dir(os.path.join(SQL_DIR, "mozfun"))
+        + get_routines_from_dir(SQL_DIR / "mozfun")
         + get_routines_from_dir(ASSERT_UDF_DIR)
     )  # assert UDFs used for testing
 
@@ -177,8 +178,6 @@ class RawRoutine:
             filepath,
             definitions,
             tests,
-            # We convert the list to a set to deduplicate entries,
-            # but then convert back to a list for stable order.
             sorted(dependencies),
             description,
             is_stored_procedure,
@@ -197,14 +196,15 @@ class ParsedRoutine(RawRoutine):
         return ParsedRoutine(*astuple(raw_routine), tests_full_sql)
 
 
-def read_routine_dir(project_dir):
+def read_routine_dir(*project_dirs):
     """Read contents of routine dirs into dict of RawRoutine instances."""
     return {
         raw_routine.name: raw_routine
+        for project_dir in project_dirs
         for root, dirs, files in os.walk(project_dir)
         if os.path.basename(root) != EXAMPLE_DIR
         for filename in files
-        if filename in (UDF_FILE, PROCEDURE_FILE)
+        if filename in ROUTINE_FILE
         for raw_routine in (RawRoutine.from_file(os.path.join(root, filename)),)
     }
 
@@ -212,9 +212,7 @@ def read_routine_dir(project_dir):
 def parse_routines(project_dir):
     """Read routine contents of the project dir into ParsedRoutine instances."""
     # collect udfs to parse
-    raw_routines = read_routine_dir(project_dir)
-    raw_routines.update(read_routine_dir(os.path.join(SQL_DIR, "mozfun")))
-    raw_routines.update(read_routine_dir(ASSERT_UDF_DIR))
+    raw_routines = read_routine_dir(project_dir, SQL_DIR / "mozfun", ASSERT_UDF_DIR)
 
     # prepend udf definitions to tests
     for raw_routine in raw_routines.values():

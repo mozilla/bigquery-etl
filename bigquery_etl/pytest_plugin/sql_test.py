@@ -3,8 +3,6 @@
 # file, you can obtain one at http://mozilla.org/MPL/2.0/.
 """Utilities."""
 
-from bigquery_etl.routine import parse_routine
-from bigquery_etl.util.common import project_dirs
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, datetime
@@ -47,11 +45,6 @@ TABLE_EXTENSIONS = {
     "orc": bigquery.SourceFormat.ORC,
 }
 
-raw_routines = [
-    udf
-    for project_dir in project_dirs()
-    for udf in parse_routine.read_routine_dir(project_dir)
-]
 
 @dataclass
 class Table:

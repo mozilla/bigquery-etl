@@ -89,9 +89,8 @@ class TestParseRoutine:
         result = parse_routine.routine_usages_in_text(text, project=self.udf_dir.parent)
         assert result == ["udf.test_js_udf"]
 
-    def test_read_routine_dirs(self):
-        raw_routines = parse_routine.read_routine_dirs(self.udf_dir)
-        assert len(raw_routines.keys()) == 5
+    def test_read_routine_dir(self):
+        raw_routines = parse_routine.read_routine_dir(self.udf_dir)
         assert "udf.test_shift_28_bits_one_day" in raw_routines
         assert "udf.test_safe_crc32_uuid" in raw_routines
         assert "udf.test_safe_sample_id" in raw_routines
@@ -107,7 +106,6 @@ class TestParseRoutine:
 
     def test_parse_routine_dirs(self):
         parsed_routines = list(parse_routine.parse_routines(self.udf_dir.parent))
-        assert len(parsed_routines) == 7
         bitmask_lowest_28 = [
             u for u in parsed_routines if u.name == "udf.test_bitmask_lowest_28"
         ][0]
@@ -122,7 +120,7 @@ class TestParseRoutine:
         )
 
     def test_accumulate_dependencies(self):
-        raw_routines = parse_routine.read_routine_dirs(self.udf_dir)
+        raw_routines = parse_routine.read_routine_dir(self.udf_dir)
 
         result = parse_routine.accumulate_dependencies(
             [], raw_routines, "udf.test_shift_28_bits_one_day"
@@ -136,7 +134,7 @@ class TestParseRoutine:
         assert "udf.test_bitmask_lowest_28" in result
 
     def test_routine_usage_definitions(self):
-        raw_routines = parse_routine.read_routine_dirs(self.udf_dir)
+        raw_routines = parse_routine.read_routine_dir(self.udf_dir)
 
         text = "SELECT udf.test_bitmask_lowest_28(0), udf.test_safe_sample_id('')"
         result = parse_routine.routine_usage_definitions(
@@ -156,8 +154,8 @@ class TestParseRoutine:
 
     def test_sub_local_routines(self):
         data_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project"
-        raw_routines = parse_routine.read_routine_dirs(data_dir / "udf")
-        raw_routines.update(parse_routine.read_routine_dirs(data_dir / "procedure"))
+        raw_routines = parse_routine.read_routine_dir(data_dir / "udf")
+        raw_routines.update(parse_routine.read_routine_dir(data_dir / "procedure"))
         raw_routine = parse_routine.RawRoutine.from_file(
             data_dir / "udf" / "test_shift_28_bits_one_day" / "udf.sql"
         ).tests[0]
@@ -189,7 +187,7 @@ class TestParseRoutine:
         )
 
     def test_routine_tests_sql(self):
-        raw_routines = parse_routine.read_routine_dirs(self.udf_dir)
+        raw_routines = parse_routine.read_routine_dir(self.udf_dir)
         raw_routine = parse_routine.RawRoutine.from_file(
             self.udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
         )
@@ -272,9 +270,9 @@ END;"""
             self.udf_dir.parent / "procedure" / "append_hello" / "stored_procedure.sql"
         )
 
-        raw_routines = parse_routine.read_routine_dirs(self.udf_dir)
+        raw_routines = parse_routine.read_routine_dir(self.udf_dir)
         raw_routines.update(
-            parse_routine.read_routine_dirs(self.udf_dir.parent / "procedure")
+            parse_routine.read_routine_dir(self.udf_dir.parent / "procedure")
         )
 
         tests = parse_routine.routine_tests_sql(

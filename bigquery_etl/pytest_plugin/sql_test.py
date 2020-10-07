@@ -47,8 +47,11 @@ TABLE_EXTENSIONS = {
     "orc": bigquery.SourceFormat.ORC,
 }
 
-raw_routines = [udf for udf in parse_routine.read_routine_dirs(*project_dirs())]
-
+raw_routines = [
+    udf
+    for project_dir in project_dirs()
+    for udf in parse_routine.read_routine_dir(project_dir)
+]
 
 @dataclass
 class Table:

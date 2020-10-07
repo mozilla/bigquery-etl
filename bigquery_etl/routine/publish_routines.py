@@ -11,7 +11,7 @@ from google.cloud import storage
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
 from bigquery_etl.routine.parse_routine import (
-    read_routine_dirs,
+    read_routine_dir,
     accumulate_dependencies,
 )
 
@@ -85,7 +85,7 @@ def publish(project_id, dependency_dir, gcs_bucket, gcs_path, public):
     if dependency_dir and os.path.exists(dependency_dir):
         push_dependencies_to_gcs(gcs_bucket, gcs_path, dependency_dir, project_id)
 
-    raw_routines = read_routine_dirs(os.path.join(SQL_DIR, project_id))
+    raw_routines = read_routine_dir(os.path.join(SQL_DIR, project_id))
 
     published_udfs = []
 

@@ -7,7 +7,7 @@ import tempfile
 import sys
 
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.routine.parse_routine import read_routine_dirs, sub_local_routines
+from bigquery_etl.routine.parse_routine import read_routine_dir, sub_local_routines
 from bigquery_etl.util import standard_args
 
 DEFAULT_PROJECTS_DIRS = ["sql/mozfun"]
@@ -58,12 +58,12 @@ def sql_for_dry_run(file, parsed_routines, project_dir):
 
 def validate(project_dirs):
     """Validate UDF docs."""
-    # parse UDFs
-    parsed_routines = read_routine_dirs(*project_dirs)
     is_valid = True
 
     for project_dir in project_dirs:
         if os.path.isdir(project_dir):
+            parsed_routines = read_routine_dir(project_dir)
+
             for root, dirs, files in os.walk(project_dir):
                 if os.path.basename(root) == EXAMPLE_DIR:
                     for file in files:

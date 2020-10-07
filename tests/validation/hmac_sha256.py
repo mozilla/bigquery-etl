@@ -7,7 +7,7 @@ The vectors are located in tests/validation/data/hmac_sha256_validation.json.
 import json
 import pytest
 from bigquery_etl.routine.parse_routine import (
-    read_routine_dirs,
+    read_routine_dir,
     RawRoutine,
     routine_tests_sql,
 )
@@ -18,7 +18,7 @@ validation_data_file = "tests/validation/data/hmac_sha256_validation.json"
 
 def udfs():
     """Get all udfs and assertions."""
-    return read_routine_dirs("tests/assert", "udf", "udf_js")
+    return read_routine_dir("tests/assert", "udf", "udf_js")
 
 
 def load_data():

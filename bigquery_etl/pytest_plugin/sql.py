@@ -137,7 +137,6 @@ class SqlTest(pytest.Item, pytest.File):
 
         # rewrite all udfs as temporary
         query = parse_routine.sub_local_routines(query, project_dir)
-        print(query)
 
         dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
         if "CIRCLE_BUILD_NUM" in os.environ:

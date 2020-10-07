@@ -77,7 +77,6 @@ SELECT
     with_event_props[OFFSET(0)]
   ),
   assert_struct_equals(
-  assert_struct_equals(
     STRUCT('a' AS event_index, 1 AS property_index, 'a' AS property_value_index, 1 AS count),
     with_event_props[OFFSET(1)]
   ),

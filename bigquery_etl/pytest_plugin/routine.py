@@ -20,13 +20,13 @@ _parsed_routines = None
 
 
 def parsed_routines():
-    """Get cached parsed udfs."""
+    """Get cached parsed routines."""
     global _parsed_routines
     if _parsed_routines is None:
         _parsed_routines = {
-            udf.filepath: udf
+            routine.filepath: routine
             for project in (project_dirs() + ["tests/assert"])
-            for udf in parse_routines(project)
+            for routine in parse_routines(project)
         }
 
     return _parsed_routines
@@ -34,29 +34,31 @@ def parsed_routines():
 
 def pytest_configure(config):
     """Register a custom marker."""
-    config.addinivalue_line("markers", "udf: mark udf tests.")
+    config.addinivalue_line("markers", "routine: mark routine tests.")
 
 
 def pytest_collect_file(parent, path):
     """Collect non-python query tests."""
     if "tests/data" not in str(path.dirpath()):
         if path.basename in (UDF_FILE, PROCEDURE_FILE):
-            return UdfFile.from_parent(parent, fspath=path)
+            return RoutineFile.from_parent(parent, fspath=path)
 
 
-class UdfFile(pytest.File):
-    """UDF File."""
+class RoutineFile(pytest.File):
+    """Routine File."""
 
     def collect(self):
         """Collect."""
-        self.add_marker("udf")
-        self.udf = parsed_routines()[self.name]
-        for i, query in enumerate(self.udf.tests_full_sql):
-            yield UdfTest.from_parent(self, name=f"{self.udf.name}#{i+1}", query=query)
+        self.add_marker("routine")
+        self.routine = parsed_routines()[self.name]
+        for i, query in enumerate(self.routine.tests_full_sql):
+            yield RoutineTest.from_parent(
+                self, name=f"{self.routine.name}#{i+1}", query=query
+            )
 
 
-class UdfTest(pytest.Item):
-    """UDF Test."""
+class RoutineTest(pytest.Item):
+    """Routine Test."""
 
     def __init__(self, name, parent, query):
         """Initialize."""

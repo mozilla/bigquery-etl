@@ -24,10 +24,11 @@ TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
 PERSISTENT_UDF_PREFIX = re.compile(
     r"CREATE\s+(OR\s+REPLACE\s+)?FUNCTION(\s+IF\s+NOT\s+EXISTS)?", re.IGNORECASE
 )
+PERSISTENT_UDF_RE = re.compile(fr"((?:udf|assert){UDF_CHAR}*)\.({UDF_CHAR}+)")
 UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 GENERIC_DATASET = "_generic_dataset_"
 SQL_DIR = "sql/"
-ASSERT_UDF_DIR = "tests"
+ASSERT_UDF_DIR = "tests/assert"
 
 
 def get_routines_from_dir(project_dir):
@@ -74,7 +75,7 @@ class RawRoutine:
         text = filepath.read_text()
         name = filepath.parent.name
         dataset = filepath.parent.parent.name
-        project = filepath.parent.parent.parent.name
+        project = filepath.parent.parent.parent
 
         # check if UDF has associated metadata file
         description = ""
@@ -158,7 +159,7 @@ class RawRoutine:
                 )
 
         # get routines that could be referenced by the UDF
-        routines = get_routines(os.path.join(SQL_DIR, project))
+        routines = get_routines(project)
         dependencies = []
         for udf in routines:
             if udf["name"] in "\n".join(definitions):
@@ -196,12 +197,11 @@ class ParsedRoutine(RawRoutine):
         return ParsedRoutine(*astuple(raw_routine), tests_full_sql)
 
 
-def read_routine_dirs(*udf_dirs):
+def read_routine_dir(project_dir):
     """Read contents of routine dirs into dict of RawRoutine instances."""
     return {
         raw_routine.name: raw_routine
-        for udf_dir in udf_dirs
-        for root, dirs, files in os.walk(udf_dir)
+        for root, dirs, files in os.walk(project_dir)
         if os.path.basename(root) != EXAMPLE_DIR
         for filename in files
         if filename in (UDF_FILE, PROCEDURE_FILE)
@@ -212,7 +212,9 @@ def read_routine_dirs(*udf_dirs):
 def parse_routines(project_dir):
     """Read routine contents of the project dir into ParsedRoutine instances."""
     # collect udfs to parse
-    raw_routines = read_routine_dirs(project_dir)
+    raw_routines = read_routine_dir(project_dir)
+    raw_routines.update(read_routine_dir(os.path.join(SQL_DIR, "mozfun")))
+    raw_routines.update(read_routine_dir(ASSERT_UDF_DIR))
 
     # prepend udf definitions to tests
     for raw_routine in raw_routines.values():
@@ -260,7 +262,7 @@ def routine_usages_in_text(text, project):
 def routine_usage_definitions(text, project, raw_routines=None):
     """Return a list of definitions of routines used in provided SQL text."""
     if raw_routines is None:
-        raw_routines = read_routine_dirs(project)
+        raw_routines = read_routine_dir(project)
     deps = []
     for udf_usage in routine_usages_in_text(text, project):
         deps = accumulate_dependencies(deps, raw_routines, udf_usage)
@@ -279,6 +281,7 @@ def sub_local_routines(test, project, raw_routines=None):
     Use generic dataset for stored procedures.
     """
     sql = prepend_routine_usage_definitions(test, project, raw_routines)
+    sql = sub_persistent_udf_names_as_temp(sql)
     routines = get_routines(project)
 
     for routine in routines:
@@ -312,3 +315,8 @@ def prepend_routine_usage_definitions(text, project, raw_routines=None):
     """Prepend definitions of UDFs used to provided SQL text."""
     statements = routine_usage_definitions(text, project, raw_routines)
     return "\n\n".join(statements + [text])
+
+
+def sub_persistent_udf_names_as_temp(text):
+    """Substitute persistent UDF references with temporary UDF references."""
+    return PERSISTENT_UDF_RE.sub(r"\1_\2", text)

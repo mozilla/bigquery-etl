@@ -25,7 +25,7 @@ def parsed_routines():
     if _parsed_routines is None:
         _parsed_routines = {
             udf.filepath: udf
-            for project in project_dirs() + ["tests/assert"]
+            for project in (project_dirs() + ["tests/assert"])
             for udf in parse_routines(project)
         }
 

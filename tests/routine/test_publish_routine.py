@@ -11,12 +11,12 @@ class TestPublishRoutine:
     udf_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project" / "udf"
 
     @mock.patch("google.cloud.bigquery.Client")
-    def test_publish_udf_with_description(self, mock_client):
+    def test_publish_routine_with_description(self, mock_client):
         raw_routine = parse_routine.RawRoutine.from_file(
             self.udf_dir / "test_shift_28_bits_one_day" / "udf.sql"
         )
         mock_client.query = MagicMock()
-        publish_routines.publish_udf(
+        publish_routines.publish_routine(
             raw_routine, mock_client, "test-project", "", "", [], False
         )
         query = (
@@ -33,7 +33,7 @@ class TestPublishRoutine:
             self.udf_dir / "test_js_udf" / "udf.sql"
         )
         mock_client.query = MagicMock()
-        publish_routines.publish_udf(
+        publish_routines.publish_routine(
             raw_routine, mock_client, "test-project", "", "", [], False
         )
         query = (

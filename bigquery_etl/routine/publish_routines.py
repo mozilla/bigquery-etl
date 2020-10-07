@@ -15,9 +15,10 @@ from bigquery_etl.routine.parse_routine import (
     accumulate_dependencies,
 )
 
-DEFAULT_UDF_DEPENDENCY_DIR = "lib/"
+DEFAULT_UDF_DEPENDENCY_DIR = "udf_js_lib/"
 DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
 DEFAULT_GCS_PATH = ""
+DEFAULT_PROJECT = "sql/moz-fx-data-shared-prod"
 SQL_DIR = "sql/"
 
 OPTIONS_LIB_RE = re.compile(r'library = "gs://[^"]+/([^"]+)"')
@@ -32,6 +33,12 @@ parser.add_argument(
     required=False,
     help="Project to publish UDFs to. "
     "If not set, publish UDFs for all projects except mozfun.",
+)
+parser.add_argument(
+    "--target",
+    default=DEFAULT_PROJECT,
+    required=False,
+    help="Path to project directory.",
 )
 parser.add_argument(
     "--dependency-dir",
@@ -63,14 +70,15 @@ def main():
     """Publish routine."""
     args = parser.parse_args()
 
-    if args.project_id is not None:
-        projects = [args.project_id]
+    if args.target is not None:
+        projects = [args.target]
     else:
         projects = project_dirs()
 
     for project in projects:
         publish(
-            os.path.basename(project),
+            args.target,
+            args.project_id,
             os.path.join(SQL_DIR, project, args.dependency_dir),
             args.gcs_bucket,
             args.gcs_path,
@@ -78,14 +86,16 @@ def main():
         )
 
 
-def publish(project_id, dependency_dir, gcs_bucket, gcs_path, public):
+def publish(target, project_id, dependency_dir, gcs_bucket, gcs_path, public):
     """Publish routines in the provided directory."""
     client = bigquery.Client(project_id)
 
     if dependency_dir and os.path.exists(dependency_dir):
-        push_dependencies_to_gcs(gcs_bucket, gcs_path, dependency_dir, project_id)
+        push_dependencies_to_gcs(
+            gcs_bucket, gcs_path, dependency_dir, os.path.basename(target)
+        )
 
-    raw_routines = read_routine_dir(os.path.join(SQL_DIR, project_id))
+    raw_routines = read_routine_dir(target)
 
     published_routines = []
 

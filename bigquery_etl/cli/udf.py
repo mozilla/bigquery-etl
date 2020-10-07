@@ -21,7 +21,7 @@ from ..util.common import project_dirs
 UDF_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 UDF_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")
 UDF_FILE_RE = re.compile(r"(^.*/|^)([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/udf\.sql$")
-DEFAULT_UDF_DEPENDENCY_DIR = "lib/"
+DEFAULT_UDF_DEPENDENCY_DIR = "udf_js_lib/"
 DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
 DEFAULT_GCS_PATH = ""
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"

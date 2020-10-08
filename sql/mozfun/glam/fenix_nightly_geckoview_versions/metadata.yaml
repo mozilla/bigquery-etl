@@ -1,0 +1,4 @@
+description: >
+  Enumerate the most common GeckoView version for each build hour for "nightly"
+  Fenix builds.
+friendly_name: Enumerated GeckoView versions for Fenix Nightly builds

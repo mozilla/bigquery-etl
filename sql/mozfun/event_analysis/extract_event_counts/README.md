@@ -1,7 +1,7 @@
 ### Usage
 ```
 extract_event_counts(
-events STRING
+    events STRING
 )
 ```
 

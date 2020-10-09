@@ -16,7 +16,6 @@ import yaml
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE
 
 
-PROJECT_CHAR = "[a-zA-z0-9-]"
 UDF_CHAR = "[a-zA-z0-9_]"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
@@ -34,7 +33,6 @@ UDF_NAME_RE = re.compile(r"^([a-zA-Z0-9_]+\.)?[a-zA-Z][a-zA-Z0-9_]{0,255}$")
 GENERIC_DATASET = "_generic_dataset_"
 SQL_DIR = Path("sql/")
 ASSERT_UDF_DIR = "tests/assert"
-TEST_UDF_DIR = "tests/data/test_sql/moz-fx-data-test-project/udf"
 
 raw_routines = {}
 

@@ -18,9 +18,9 @@ CREATE OR REPLACE FUNCTION udf.days_since_created_profile_as_28_bits(
 
 -- Tests
 SELECT
-  assert_equals(2, udf.days_since_created_profile_as_28_bits(1)),
-  assert_equals(4, udf.days_since_created_profile_as_28_bits(2)),
-  assert_equals(64, udf.days_since_created_profile_as_28_bits(6)),
-  assert_equals(0, udf.days_since_created_profile_as_28_bits(7)),
-  assert_equals(0, udf.days_since_created_profile_as_28_bits(-1)),
-  assert_equals(0, udf.days_since_created_profile_as_28_bits(NULL));
+  assert.equals(2, udf.days_since_created_profile_as_28_bits(1)),
+  assert.equals(4, udf.days_since_created_profile_as_28_bits(2)),
+  assert.equals(64, udf.days_since_created_profile_as_28_bits(6)),
+  assert.equals(0, udf.days_since_created_profile_as_28_bits(7)),
+  assert.equals(0, udf.days_since_created_profile_as_28_bits(-1)),
+  assert.equals(0, udf.days_since_created_profile_as_28_bits(NULL));

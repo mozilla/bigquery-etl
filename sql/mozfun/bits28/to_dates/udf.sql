@@ -22,9 +22,9 @@ RETURNS ARRAY<DATE> AS (
 
 -- Tests
 SELECT
-  assert_array_empty(bits28.to_dates(0, '2020-01-28')),
-  assert_array_equals([DATE('2020-01-28')], bits28.to_dates(1, '2020-01-28')),
-  assert_array_equals(
+  assert.array_empty(bits28.to_dates(0, '2020-01-28')),
+  assert.array_equals([DATE('2020-01-28')], bits28.to_dates(1, '2020-01-28')),
+  assert.array_equals(
     [DATE('2020-01-01'), DATE('2020-01-28')],
     bits28.to_dates(1 | (1 << 27), '2020-01-28')
   ),

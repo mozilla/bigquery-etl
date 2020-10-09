@@ -46,7 +46,7 @@ RETURNS BOOLEAN AS (
 
 -- Tests
 SELECT
-  assert_true(bits28.active_in_range(1 << 10, -13, 7)),
-  assert_false(bits28.active_in_range(1 << 10, -6, 7)),
-  assert_true(bits28.active_in_range(1, 0, 1)),
-  assert_false(bits28.active_in_range(0, 0, 1));
+  assert.true(bits28.active_in_range(1 << 10, -13, 7)),
+  assert.false(bits28.active_in_range(1 << 10, -6, 7)),
+  assert.true(bits28.active_in_range(1, 0, 1)),
+  assert.false(bits28.active_in_range(0, 0, 1));

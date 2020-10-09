@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION assert_map_equals(expected ANY TYPE, actual ANY TYPE)
+CREATE OR REPLACE FUNCTION assert.map_equals(expected ANY TYPE, actual ANY TYPE)
 RETURNS BOOLEAN AS (
   IF(
     EXISTS(
@@ -17,7 +17,7 @@ RETURNS BOOLEAN AS (
         OR (e.value IS NULL AND a.value IS NOT NULL)
         OR (e.value IS NOT NULL AND a.value IS NULL)
     ),
-    assert_error('map', expected, actual),
+    assert.error('map', expected, actual),
     TRUE
   )
 );

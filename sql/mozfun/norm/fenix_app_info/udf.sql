@@ -41,11 +41,11 @@ RETURNS STRUCT<app_name STRING, channel STRING, app_id STRING> AS (
 
 -- Tests
 SELECT
-  assert_equals(
+  assert.equals(
     STRUCT('Fenix' AS app_name, 'nightly' AS channel, 'org.mozilla.fennec_aurora' AS app_id),
     norm.fenix_app_info('org_mozilla_fennec_aurora_stable', '2015718419')
   ),
-  assert_equals(
+  assert.equals(
     STRUCT(
       'Firefox Preview' AS app_name,
       'nightly' AS channel,
@@ -61,7 +61,7 @@ WITH build_id AS (
     UNNEST(['21930609', '2015718419', '3015718419'])
 )
 SELECT
-  assert_equals(
+  assert.equals(
     STRUCT('Fenix' AS app_name, 'nightly' AS channel, 'org.mozilla.fenix' AS app_id),
     norm.fenix_app_info('org_mozilla_fenix_live', build_id)
   )
@@ -75,7 +75,7 @@ WITH build_id AS (
     UNNEST(['21730609', '11730609', '5'])
 )
 SELECT
-  assert_equals(
+  assert.equals(
     STRUCT('Firefox Preview' AS app_name, 'beta' AS channel, 'org.mozilla.fenix' AS app_id),
     norm.fenix_app_info('org_mozilla_fenix_live', build_id)
   )

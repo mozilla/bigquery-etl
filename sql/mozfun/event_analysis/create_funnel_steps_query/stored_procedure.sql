@@ -148,5 +148,5 @@ FROM
   );
 
   SELECT
-    assert_sql_equals(expect, result_sql);
+    assert.sql_equals(expect, result_sql);
 END;

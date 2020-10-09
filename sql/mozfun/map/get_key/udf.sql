@@ -11,4 +11,4 @@ CREATE OR REPLACE FUNCTION map.get_key(map ANY TYPE, k ANY TYPE) AS (
 
 -- Tests
 SELECT
-  assert_equals(12, map.get_key([STRUCT('foo' AS key, 42 AS value), ('bar', 12)], 'bar'));
+  assert.equals(12, map.get_key([STRUCT('foo' AS key, 42 AS value), ('bar', 12)], 'bar'));

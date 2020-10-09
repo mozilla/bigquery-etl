@@ -41,16 +41,16 @@ WITH example AS (
     )
 )
 SELECT
-  assert_equals('Thu, 21 Nov 2019 22:06:06 GMT', example.header.`date`),
-  assert_equals(TIMESTAMP '2019-11-21 22:06:06', example.header.parsed_date),
-  assert_equals('automation, performance-test', example.header.x_source_tags),
-  assert_array_equals(['automation', 'performance-test'], example.header.parsed_x_source_tags)
+  assert.equals('Thu, 21 Nov 2019 22:06:06 GMT', example.header.`date`),
+  assert.equals(TIMESTAMP '2019-11-21 22:06:06', example.header.parsed_date),
+  assert.equals('automation, performance-test', example.header.x_source_tags),
+  assert.array_equals(['automation', 'performance-test'], example.header.parsed_x_source_tags)
 FROM
   example;
 
 --
 SELECT
-  assert_null(
+  assert.null(
     norm.metadata(
       STRUCT(
         STRUCT(
@@ -60,14 +60,14 @@ SELECT
       )
     ).header.parsed_date
   ),
-  assert_null(
+  assert.null(
     norm.metadata(
       STRUCT(
         STRUCT(CAST(NULL AS STRING) AS `date`, CAST(NULL AS STRING) AS x_source_tags) AS header
       )
     ).header.parsed_date
   ),
-  assert_array_empty(
+  assert.array_empty(
     norm.metadata(
       STRUCT(
         STRUCT(CAST(NULL AS STRING) AS `date`, CAST(NULL AS STRING) AS x_source_tags) AS header

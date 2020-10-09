@@ -35,7 +35,7 @@ RETURNS STRUCT<
 
 -- Test
 SELECT
-  assert_histogram_equals(
+  assert.histogram_equals(
     STRUCT(
       10 AS bucket_count,
       1 AS `sum`,

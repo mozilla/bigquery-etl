@@ -23,6 +23,6 @@ CREATE OR REPLACE FUNCTION stats.mode_last_retain_nulls(list ANY TYPE) AS (
 
 -- Test
 SELECT
-  assert_equals('bar', stats.mode_last_retain_nulls(['foo', 'bar', 'baz', 'bar', 'fred'])),
-  assert_equals('baz', stats.mode_last_retain_nulls(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
-  assert_equals(CAST(NULL AS STRING), stats.mode_last_retain_nulls([NULL, 'foo', NULL]));
+  assert.equals('bar', stats.mode_last_retain_nulls(['foo', 'bar', 'baz', 'bar', 'fred'])),
+  assert.equals('baz', stats.mode_last_retain_nulls(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
+  assert.equals(CAST(NULL AS STRING), stats.mode_last_retain_nulls([NULL, 'foo', NULL]));

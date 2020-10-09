@@ -28,16 +28,16 @@ CREATE OR REPLACE FUNCTION udf.normalize_main_payload(payload ANY TYPE) AS (
 
 -- Tests
 SELECT
-  assert_equals(
+  assert.equals(
     3,
     udf.normalize_main_payload(STRUCT(STRUCT(3 AS session_length) AS info)).info.session_length
   ),
-  assert_null(
+  assert.null(
     udf.normalize_main_payload(
       STRUCT(STRUCT(-98984108 AS session_length) AS info)
     ).info.session_length
   ),
-  assert_null(
+  assert.null(
     udf.normalize_main_payload(
       STRUCT(STRUCT(51536000 AS session_length) AS info)
     ).info.session_length

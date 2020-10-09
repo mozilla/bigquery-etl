@@ -47,7 +47,7 @@ RETURNS INT64 AS (
 
 -- Tests
 SELECT
-  assert_equals(345600, glean.timespan_seconds(STRUCT('day', 4))),
-  assert_equals(0, glean.timespan_seconds(STRUCT('nanosecond', 13))),
-  assert_equals(13, glean.timespan_seconds(STRUCT('second', 13))),
-  assert_null(glean.timespan_seconds(STRUCT('nonexistent_unit', 13)))
+  assert.equals(345600, glean.timespan_seconds(STRUCT('day', 4))),
+  assert.equals(0, glean.timespan_seconds(STRUCT('nanosecond', 13))),
+  assert.equals(13, glean.timespan_seconds(STRUCT('second', 13))),
+  assert.null(glean.timespan_seconds(STRUCT('nonexistent_unit', 13)))

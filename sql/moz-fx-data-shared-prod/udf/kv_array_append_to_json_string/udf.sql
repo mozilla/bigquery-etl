@@ -23,18 +23,18 @@ CREATE OR REPLACE FUNCTION udf.kv_array_append_to_json_string(input STRING, arr 
 
 -- Test
 SELECT
-  assert_equals(
+  assert.equals(
     '{"hello":"world","foo":"bar","baz":"boo"}',
     udf.kv_array_append_to_json_string(
       '{"hello":"world"}',
       [STRUCT("foo" AS key, "bar" AS value), STRUCT("baz" AS key, "boo" AS value)]
     )
   ),
-  assert_equals(
+  assert.equals(
     '{"foo":"bar"}',
     udf.kv_array_append_to_json_string(CAST(NULL AS STRING), [STRUCT("foo" AS key, "bar" AS value)])
   ),
-  assert_equals(
+  assert.equals(
     '{"foo":"bar"}',
     udf.kv_array_append_to_json_string('{}', [STRUCT("foo" AS key, "bar" AS value)])
   );

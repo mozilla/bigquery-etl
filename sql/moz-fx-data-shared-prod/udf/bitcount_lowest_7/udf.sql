@@ -7,5 +7,5 @@ CREATE OR REPLACE FUNCTION udf.bitcount_lowest_7(x INT64) AS (
 
 -- Tests
 SELECT
-  assert_equals(7, udf.bitcount_lowest_7(255)),
-  assert_equals(1, udf.bitcount_lowest_7(2))
+  assert.equals(7, udf.bitcount_lowest_7(255)),
+  assert.equals(1, udf.bitcount_lowest_7(2))

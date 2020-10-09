@@ -25,14 +25,14 @@ CREATE OR REPLACE FUNCTION json.mode_last(list ANY TYPE) AS (
 
 -- Tests
 SELECT
-  assert_equals(
+  assert.equals(
     STRUCT('bar'),
     json.mode_last([STRUCT('foo'), STRUCT('bar'), STRUCT('baz'), STRUCT('bar'), STRUCT('fred')])
   ),
-  assert_equals(
+  assert.equals(
     STRUCT('baz'),
     json.mode_last(
       [STRUCT('foo'), STRUCT('bar'), STRUCT('baz'), STRUCT('bar'), STRUCT('baz'), STRUCT('fred')]
     )
   ),
-  assert_equals(STRUCT('foo'), json.mode_last([NULL, STRUCT('foo'), NULL]));
+  assert.equals(STRUCT('foo'), json.mode_last([NULL, STRUCT('foo'), NULL]));

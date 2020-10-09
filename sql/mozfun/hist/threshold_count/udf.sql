@@ -16,7 +16,7 @@ CREATE OR REPLACE FUNCTION hist.threshold_count(histogram STRING, threshold INT6
 
 -- Tests
 SELECT
-  assert_equals(17, hist.threshold_count('{"values":{"0":1,"1":2, "4": 10, "8": 7}}', 4)),
-  assert_equals(0, hist.threshold_count('{}', 1)),
-  assert_equals(0, hist.threshold_count('{"values":{"0":0}}', 1)),
-  assert_equals(3, hist.threshold_count('{"values":{"5":1, "6":3}}', 6))
+  assert.equals(17, hist.threshold_count('{"values":{"0":1,"1":2, "4": 10, "8": 7}}', 4)),
+  assert.equals(0, hist.threshold_count('{}', 1)),
+  assert.equals(0, hist.threshold_count('{"values":{"0":0}}', 1)),
+  assert.equals(3, hist.threshold_count('{"values":{"5":1, "6":3}}', 6))

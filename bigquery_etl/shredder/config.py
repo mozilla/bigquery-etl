@@ -480,7 +480,7 @@ def find_experiment_analysis_targets(pool, client, project=EXPERIMENT_ANALYSIS):
 PIONEER_PROD = "moz-fx-data-pioneer-prod"
 
 
-def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects={}):
+def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     """Return a dict like DELETE_TARGETS for Pioneer tables."""
 
     def __get_tables_with_pioneer_id__(dataset_list):
@@ -526,6 +526,9 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects={}):
         if table.table_id.startswith("deletion_request_")
     }
 
+    # we only expect analysis tables to be created under `analysis` datasets
+    analysis_datasets = [project + ".analysis" for project in study_projects]
+
     return {
         **{
             # stable tables
@@ -546,14 +549,13 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects={}):
         **{
             # tables with pioneer_id located in study analysis projects
             pioneer_target(
-                table=qualified_table_id(table), project=analysis_project
-            ): sources[study_name + "_stable"]
-            for study_name, analysis_project in study_projects.items()
-            for table in __get_tables_with_pioneer_id__(
-                [
-                    dataset.reference
-                    for dataset in client.list_datasets(analysis_project)
-                ]
-            )
+                table=qualified_table_id(table), project=table.project
+            ):  # The following finds corresponding delete request table.
+            # By convention, it is located under stable study dataset in
+            # PIONEER_PROD project
+            sources[
+                re.sub("^moz-fx-data-", "", table.project).replace("-", "_") + "_stable"
+            ]
+            for table in __get_tables_with_pioneer_id__(analysis_datasets)
         },
     }

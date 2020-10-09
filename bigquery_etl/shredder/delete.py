@@ -45,26 +45,12 @@ parser.add_argument(
     "telemetry - standard environment"
     "pioneer - restricted pioneer environment",
 )
-
-
-def __parse_projects__(s):
-    pairs = [i for i in s.split(",")]
-    studies = {}
-    for pair in pairs:
-        split = pair.split(":")
-        studies[split[0]] = split[1]
-    return studies
-
-
 parser.add_argument(
     "--pioneer-study-projects",
     "--pioneer_study_projects",
-    default={},
-    metavar="STUDY_NAME_TO_PROJECT_ID_LIST",
-    help="Pioneer study-specific analysis projects to include in data deletion."
-    "This should be comma-delimited list of study-name:project-id pairs, e.g.:"
-    "study-one:project-one,study-two:project-two",
-    type=__parse_projects__,
+    default=[],
+    help="Pioneer study-specific analysis projects to include in data deletion.",
+    type=lambda s: [i for i in s.split(",")],
 )
 parser.add_argument(
     "--partition-limit",

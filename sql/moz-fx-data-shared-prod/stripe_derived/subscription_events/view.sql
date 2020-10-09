@@ -1,12 +1,12 @@
 CREATE OR REPLACE VIEW
-  subscription_events
+  `moz-fx-data-shared-prod`.stripe_derived.subscription_events
 AS
 WITH raw AS (
   SELECT
     created AS event_timestamp,
     `data`.subscription.*,
   FROM
-    stripe_external.events_v1
+    `moz-fx-data-shared-prod`.stripe_external.events_v1
   WHERE
     `data`.subscription IS NOT NULL
   UNION ALL
@@ -14,7 +14,7 @@ WITH raw AS (
     created AS event_timestamp,
     *,
   FROM
-    stripe_external.subscriptions_v1
+    `moz-fx-data-shared-prod`.stripe_external.subscriptions_v1
 )
 SELECT
   -- limit fields in stripe_derived so as not to expose sensitive data

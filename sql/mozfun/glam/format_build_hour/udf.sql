@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION glam.format_build_hour(app_build_id STRING)
 RETURNS STRING AS (
-  FORMAT_DATETIME("%Y%m%d%H", `moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build_id))
+  FORMAT_DATETIME("%Y%m%d%H", mozfun.norm.fenix_build_to_datetime(app_build_id))
 );
 
 --Tests

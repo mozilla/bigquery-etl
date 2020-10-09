@@ -69,103 +69,106 @@ BEGIN
       FROM
         extracted
       WHERE
-        DATE(submission_timestamp) >= DATE_SUB(reference_date, INTERVAL history_days DAY)
-    ),
-    grouped_build_hours AS (
+        DATE(submission_timestamp)
+        BETWEEN DATE_SUB(reference_date, INTERVAL history_days DAY)
+        AND reference_date
+    )
+  ),
+  grouped_build_hours AS (
       -- Count the number of geckoview versions for each build hour row over the
       -- expected interval. We choose a minimum number of builds to filter out
       -- noise.
-      SELECT
-        build_hour,
-        geckoview_version,
-        COUNT(*) AS n_builds
-      FROM
-        transformed
-      WHERE
-        geckoview_version IS NOT NULL
-        AND app_build IS NOT NULL
-        AND build_hour IS NOT NULL
-      GROUP BY
-        build_hour,
-        geckoview_version
-      HAVING
-        n_builds > 5
-      ORDER BY
-        build_hour DESC,
-        geckoview_version
-    ),
-    top_build_hours AS (
+    SELECT
+      build_hour,
+      geckoview_version,
+      COUNT(*) AS n_builds
+    FROM
+      transformed
+    WHERE
+      geckoview_version IS NOT NULL
+      AND app_build IS NOT NULL
+      AND build_hour IS NOT NULL
+    GROUP BY
+      build_hour,
+      geckoview_version
+    HAVING
+      n_builds > 5
+    ORDER BY
+      build_hour DESC,
+      geckoview_version
+  ),
+  top_build_hours AS (
       -- Get the geckoview version for the build hour that has the most number
       -- of rows.
-      SELECT
-        ROW.*
-      FROM
-        (
-          SELECT
-            ARRAY_AGG(t ORDER BY t.n_builds DESC LIMIT 1)[OFFSET(0)] ROW
-          FROM
-            grouped_build_hours t
-          GROUP BY
-            build_hour
-        )
-    ),
-    enumerated_build_hours AS (
+    SELECT
+      ROW.*
+    FROM
+      (
+        SELECT
+          ARRAY_AGG(t ORDER BY t.n_builds DESC LIMIT 1)[OFFSET(0)] ROW
+        FROM
+          grouped_build_hours t
+        GROUP BY
+          build_hour
+      )
+  ),
+  enumerated_build_hours AS (
       -- Enumerate all of the build hours that we care about. We have a small
       -- margin that we'll use so we fill in null values for the rolling average
       -- of number of rows.
-      SELECT
-        datetime(TIMESTAMP) AS build_hour
-      FROM
-        UNNEST(
-          GENERATE_TIMESTAMP_ARRAY(
-            TIMESTAMP_SUB(
-              TIMESTAMP_TRUNC(CAST(reference_date AS timestamp), HOUR),
-              INTERVAL history_days + 2 DAY
-            ),
-            TIMESTAMP_TRUNC(CAST(reference_date AS timestamp), HOUR),
-            INTERVAL 1 HOUR
-          )
-        ) AS TIMESTAMP
-    ),
-    estimated_version AS (
-      SELECT
-        build_hour,
-        -- Versions are expected to be monotonically increasing.
-        MAX(geckoview_version) OVER (
-          ORDER BY
-            build_hour ASC
-          ROWS BETWEEN
-            UNBOUNDED PRECEDING
-            AND CURRENT ROW
-        ) AS geckoview_version,
-        -- The number of builds is used as a query diagnostic.
-        AVG(n_builds) OVER (
-          ORDER BY
-            build_hour ASC
-          ROWS BETWEEN
-            48 PRECEDING
-            AND CURRENT ROW
-        ) AS n_builds
-      FROM
-        top_build_hours
-      RIGHT JOIN
-        enumerated_build_hours
-      USING
-        (build_hour)
-    )
     SELECT
-      ARRAY_AGG(
-        STRUCT<build_hour DATETIME, geckoview_version STRING, n_builds INT64>(
-          build_hour,
-          geckoview_version,
-          CAST(n_builds AS INT64)
-        )
-        ORDER BY
-          build_hour
-      )
+      datetime(TIMESTAMP) AS build_hour
     FROM
-      estimated_version
-    WHERE
-      build_hour >= DATE_SUB(reference_date, INTERVAL history_days DAY)
-  );
+      UNNEST(
+        GENERATE_TIMESTAMP_ARRAY(
+          TIMESTAMP_SUB(
+            TIMESTAMP_TRUNC(CAST(reference_date AS timestamp), HOUR),
+            INTERVAL history_days + 2 DAY
+          ),
+          TIMESTAMP_TRUNC(CAST(reference_date AS timestamp), HOUR),
+          INTERVAL 1 HOUR
+        )
+      ) AS TIMESTAMP
+  ),
+  estimated_version AS (
+    SELECT
+      build_hour,
+        -- Versions are expected to be monotonically increasing.
+      MAX(geckoview_version) OVER (
+        ORDER BY
+          build_hour ASC
+        ROWS BETWEEN
+          UNBOUNDED PRECEDING
+          AND CURRENT ROW
+      ) AS geckoview_version,
+        -- The number of builds is used as a query diagnostic.
+      AVG(n_builds) OVER (
+        ORDER BY
+          build_hour ASC
+        ROWS BETWEEN
+          48 PRECEDING
+          AND CURRENT ROW
+      ) AS n_builds
+    FROM
+      top_build_hours
+    RIGHT JOIN
+      enumerated_build_hours
+    USING
+      (build_hour)
+  )
+  SELECT
+    ARRAY_AGG(
+      STRUCT<build_hour DATETIME, geckoview_version STRING, n_builds INT64>(
+        build_hour,
+        geckoview_version,
+        CAST(n_builds AS INT64)
+      )
+      ORDER BY
+        build_hour
+    )
+  FROM
+    estimated_version
+  WHERE
+    build_hour >= DATE_SUB(reference_date, INTERVAL history_days DAY)
+);
 END;

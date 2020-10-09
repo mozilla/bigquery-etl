@@ -5,15 +5,15 @@ RETURNS STRING AS (
 
 -- Tests
 SELECT
-  assert_equals('\\Q.*\\E', event_analysis.escape_metachars('.*')),
-  assert_equals(CAST(NULL AS STRING), event_analysis.escape_metachars(NULL)),
-  assert_equals('\\Q\\E', event_analysis.escape_metachars('')),
-  assert_equals('$', regexp_extract('.$*', event_analysis.escape_metachars('$'))),
-  assert_equals(
+  assert.equals('\\Q.*\\E', event_analysis.escape_metachars('.*')),
+  assert.equals(CAST(NULL AS STRING), event_analysis.escape_metachars(NULL)),
+  assert.equals('\\Q\\E', event_analysis.escape_metachars('')),
+  assert.equals('$', regexp_extract('.$*', event_analysis.escape_metachars('$'))),
+  assert.equals(
     CAST(NULL AS STRING),
     regexp_extract('.$*', event_analysis.escape_metachars('...'))
   ),
-  assert_equals(
+  assert.equals(
     '.$*',
     regexp_extract(
       '.$*',

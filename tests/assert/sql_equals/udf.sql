@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION assert_sql_equals(expected ANY TYPE, actual ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION assert.sql_equals(expected ANY TYPE, actual ANY TYPE) AS (
   IF(
     LOWER(REGEXP_REPLACE(expected, '\\s*', '')) = LOWER(REGEXP_REPLACE(actual, '\\s*', '')),
     TRUE,
@@ -8,4 +8,4 @@ CREATE TEMP FUNCTION assert_sql_equals(expected ANY TYPE, actual ANY TYPE) AS (
 
 -- Tests
 SELECT
-  assert_sql_equals("SELECT * FROM a", "SELECT\n\t*\nFROM\n\ta"),
+  assert.sql_equals("SELECT * FROM a", "SELECT\n\t*\nFROM\n\ta"),

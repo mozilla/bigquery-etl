@@ -9,11 +9,11 @@ CREATE OR REPLACE FUNCTION udf.shift_365_bits_one_day(x BYTES) AS (
 
 -- Tests
 SELECT
-  assert_equals(udf.one_as_365_bits() << 1, udf.shift_365_bits_one_day(udf.one_as_365_bits())),
-  assert_equals(udf.one_as_365_bits() << 8, udf.shift_365_bits_one_day(udf.one_as_365_bits() << 7)),
-  assert_equals(
+  assert.equals(udf.one_as_365_bits() << 1, udf.shift_365_bits_one_day(udf.one_as_365_bits())),
+  assert.equals(udf.one_as_365_bits() << 8, udf.shift_365_bits_one_day(udf.one_as_365_bits() << 7)),
+  assert.equals(
     udf.one_as_365_bits() << 364,
     udf.shift_365_bits_one_day(udf.one_as_365_bits() << 363)
   ),
-  assert_equals(udf.zero_as_365_bits(), udf.shift_365_bits_one_day(udf.one_as_365_bits() << 364)),
-  assert_equals(udf.zero_as_365_bits(), udf.shift_365_bits_one_day(NULL));
+  assert.equals(udf.zero_as_365_bits(), udf.shift_365_bits_one_day(udf.one_as_365_bits() << 364)),
+  assert.equals(udf.zero_as_365_bits(), udf.shift_365_bits_one_day(NULL));

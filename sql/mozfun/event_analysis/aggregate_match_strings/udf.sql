@@ -5,6 +5,6 @@ RETURNS STRING AS (
 
 -- Tests
 SELECT
-  assert_equals('(?:a|b)', event_analysis.aggregate_match_strings(['a', 'b'])),
-  assert_equals('', event_analysis.aggregate_match_strings(CAST(NULL AS ARRAY<STRING>))),
-  assert_equals('', event_analysis.aggregate_match_strings(CAST([] AS ARRAY<STRING>))),
+  assert.equals('(?:a|b)', event_analysis.aggregate_match_strings(['a', 'b'])),
+  assert.equals('', event_analysis.aggregate_match_strings(CAST(NULL AS ARRAY<STRING>))),
+  assert.equals('', event_analysis.aggregate_match_strings(CAST([] AS ARRAY<STRING>))),

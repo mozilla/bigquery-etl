@@ -85,11 +85,11 @@ extracted AS (
 )
   --
 SELECT
-  assert_equals(10, bucket_count),
-  assert_equals(1, histogram_type),
-  assert_equals(2628, `sum`),
-  assert_array_equals([1, 100], `range`),
-  assert_array_equals(
+  assert.equals(10, bucket_count),
+  assert.equals(1, histogram_type),
+  assert.equals(2628, `sum`),
+  assert.array_equals([1, 100], `range`),
+  assert.array_equals(
     [
       STRUCT(0 AS key, 12434 AS value),
       STRUCT(1 AS key, 297 AS value),
@@ -120,11 +120,11 @@ extracted AS (
 )
 --
 SELECT
-  assert_equals(3, bucket_count),
-  assert_equals(4, histogram_type),
-  assert_equals(1, `sum`),
-  assert_array_equals([1, 2], `range`),
-  assert_array_equals([STRUCT(0 AS key, 1 AS value), STRUCT(1 AS key, 0 AS value)], `values`)
+  assert.equals(3, bucket_count),
+  assert.equals(4, histogram_type),
+  assert.equals(1, `sum`),
+  assert.array_equals([1, 2], `range`),
+  assert.array_equals([STRUCT(0 AS key, 1 AS value), STRUCT(1 AS key, 0 AS value)], `values`)
 FROM
   extracted
 WHERE
@@ -143,11 +143,11 @@ extracted AS (
 )
   --
 SELECT
-  assert_equals(3, bucket_count),
-  assert_equals(2, histogram_type),
-  assert_equals(31, `sum`),
-  assert_array_equals([1, 2], `range`),
-  assert_array_equals(
+  assert.equals(3, bucket_count),
+  assert.equals(2, histogram_type),
+  assert.equals(31, `sum`),
+  assert.array_equals([1, 2], `range`),
+  assert.array_equals(
     [STRUCT(0 AS key, 0 AS value), STRUCT(1 AS key, 31 AS value), STRUCT(2 AS key, 0 AS value)],
     `values`
   )
@@ -167,11 +167,11 @@ extracted AS (
 )
 --
 SELECT
-  assert_equals(3, bucket_count),
-  assert_equals(4, histogram_type),
-  assert_equals(37, `sum`),
-  assert_array_equals([1, 2], `range`),
-  assert_array_equals([STRUCT(0 AS key, 37 AS value), STRUCT(1 AS key, 0 AS value)], `values`)
+  assert.equals(3, bucket_count),
+  assert.equals(4, histogram_type),
+  assert.equals(37, `sum`),
+  assert.array_equals([1, 2], `range`),
+  assert.array_equals([STRUCT(0 AS key, 37 AS value), STRUCT(1 AS key, 0 AS value)], `values`)
 FROM
   extracted;
 
@@ -188,11 +188,11 @@ extracted AS (
 )
   --
 SELECT
-  assert_equals(3, bucket_count),
-  assert_equals(2, histogram_type),
-  assert_equals(5, `sum`),
-  assert_array_equals([1, 2], `range`),
-  assert_array_equals(
+  assert.equals(3, bucket_count),
+  assert.equals(2, histogram_type),
+  assert.equals(5, `sum`),
+  assert.array_equals([1, 2], `range`),
+  assert.array_equals(
     [STRUCT(0 AS key, 0 AS value), STRUCT(1 AS key, 5 AS value), STRUCT(2 AS key, 0 AS value)],
     `values`
   )
@@ -212,10 +212,10 @@ extracted AS (
 )
 --
 SELECT
-  assert_equals(51, bucket_count),
-  assert_equals(1, histogram_type),
-  assert_equals(0, `sum`),
-  assert_array_equals([1, 50], `range`),
-  assert_array_empty(`values`)
+  assert.equals(51, bucket_count),
+  assert.equals(1, histogram_type),
+  assert.equals(0, `sum`),
+  assert.array_equals([1, 50], `range`),
+  assert.array_empty(`values`)
 FROM
   extracted;

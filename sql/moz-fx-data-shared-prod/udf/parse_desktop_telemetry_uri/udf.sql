@@ -50,17 +50,17 @@ RETURNS STRUCT<
 
 -- Tests
 SELECT
-  assert_equals("telemetry", udf.parse_desktop_telemetry_uri(uri1).namespace),
-  assert_equals(
+  assert.equals("telemetry", udf.parse_desktop_telemetry_uri(uri1).namespace),
+  assert.equals(
     "ce39b608-f595-4c69-b6a6-f7a436604648",
     udf.parse_desktop_telemetry_uri(uri1).document_id
   ),
-  assert_equals("main", udf.parse_desktop_telemetry_uri(uri1).document_type),
-  assert_equals("Firefox", udf.parse_desktop_telemetry_uri(uri1).app_name),
-  assert_equals("61.0a1", udf.parse_desktop_telemetry_uri(uri1).app_version),
-  assert_equals("nightly", udf.parse_desktop_telemetry_uri(uri1).app_update_channel),
-  assert_equals("20180328030202", udf.parse_desktop_telemetry_uri(uri1).app_build_id),
-  assert_null(udf.parse_desktop_telemetry_uri(uri2))
+  assert.equals("main", udf.parse_desktop_telemetry_uri(uri1).document_type),
+  assert.equals("Firefox", udf.parse_desktop_telemetry_uri(uri1).app_name),
+  assert.equals("61.0a1", udf.parse_desktop_telemetry_uri(uri1).app_version),
+  assert.equals("nightly", udf.parse_desktop_telemetry_uri(uri1).app_update_channel),
+  assert.equals("20180328030202", udf.parse_desktop_telemetry_uri(uri1).app_build_id),
+  assert.null(udf.parse_desktop_telemetry_uri(uri2))
 FROM
   (
     SELECT

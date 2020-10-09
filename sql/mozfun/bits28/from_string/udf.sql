@@ -24,8 +24,8 @@ CREATE OR REPLACE FUNCTION bits28.from_string(s STRING) AS (
 
 -- Tests
 SELECT
-  assert_equals(1, bits28.from_string('1')),
-  assert_equals(1, bits28.from_string('01')),
-  assert_equals(1, bits28.from_string('0000000000000000000000000001')),
-  assert_equals(2, bits28.from_string('10')),
-  assert_equals(5, bits28.from_string('101'));
+  assert.equals(1, bits28.from_string('1')),
+  assert.equals(1, bits28.from_string('01')),
+  assert.equals(1, bits28.from_string('0000000000000000000000000001')),
+  assert.equals(2, bits28.from_string('10')),
+  assert.equals(5, bits28.from_string('101'));

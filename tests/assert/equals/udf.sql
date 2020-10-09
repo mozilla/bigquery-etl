@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION assert_equals(expected ANY TYPE, actual ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION assert.equals(expected ANY TYPE, actual ANY TYPE) AS (
   IF(
     expected = actual
     OR expected IS NULL

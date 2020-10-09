@@ -22,7 +22,7 @@ extracted AS (
 )
     --
 SELECT
-  assert_equals(1, has_value),
-  assert_null(null_value)
+  assert.equals(1, has_value),
+  assert.null(null_value)
 FROM
   extracted

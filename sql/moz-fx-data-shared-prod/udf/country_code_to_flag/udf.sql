@@ -31,4 +31,4 @@ CREATE OR REPLACE FUNCTION udf.country_code_to_flag(
 -- Tests
 SELECT
   -- The emoji below may not be visible in your code editor.
-  assert_equals('🇫🇮', udf.country_code_to_flag('FI'));
+  assert.equals('🇫🇮', udf.country_code_to_flag('FI'));

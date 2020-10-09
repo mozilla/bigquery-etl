@@ -206,6 +206,6 @@ merged_expected_actual AS (
     )
 )
 SELECT
-  assert_array_equals(expected, actual)
+  assert.array_equals(expected, actual)
 FROM
   merged_expected_actual

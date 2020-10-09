@@ -18,28 +18,28 @@ CREATE OR REPLACE FUNCTION norm.glean_baseline_client_info(
 
 -- Tests
 SELECT
-  assert_equals(
+  assert.equals(
     'en-US',
     norm.glean_baseline_client_info(
       STRUCT('en-US' AS locale),
       STRUCT(STRUCT('en-GB' AS glean_baseline_locale) AS string)
     ).locale
   ),
-  assert_equals(
+  assert.equals(
     'en-US',
     norm.glean_baseline_client_info(
       STRUCT('en-US' AS locale),
       STRUCT(STRUCT(CAST(NULL AS STRING) AS glean_baseline_locale) AS string)
     ).locale
   ),
-  assert_equals(
+  assert.equals(
     'en-GB',
     norm.glean_baseline_client_info(
       STRUCT(CAST(NULL AS STRING) AS locale),
       STRUCT(STRUCT('en-GB' AS glean_baseline_locale) AS string)
     ).locale
   ),
-  assert_null(
+  assert.null(
     norm.glean_baseline_client_info(
       STRUCT(CAST(NULL AS STRING) AS locale),
       STRUCT(STRUCT(CAST(NULL AS STRING) AS glean_baseline_locale) AS string)

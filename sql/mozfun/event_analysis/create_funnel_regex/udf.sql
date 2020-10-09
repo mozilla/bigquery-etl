@@ -12,10 +12,10 @@ RETURNS STRING AS (
 
 -- Tests
 SELECT
-  assert_equals(
+  assert.equals(
     '((?:a|b)(?:.*?)(?:b))',
     event_analysis.create_funnel_regex(['(?:a|b)', '(?:b)'], TRUE)
   ),
-  assert_equals('((?:a|b)(?:b))', event_analysis.create_funnel_regex(['(?:a|b)', '(?:b)'], FALSE)),
-  assert_equals('', event_analysis.create_funnel_regex(CAST(NULL AS ARRAY<STRING>), FALSE)),
-  assert_equals('', event_analysis.create_funnel_regex(CAST([] AS ARRAY<STRING>), FALSE)),
+  assert.equals('((?:a|b)(?:b))', event_analysis.create_funnel_regex(['(?:a|b)', '(?:b)'], FALSE)),
+  assert.equals('', event_analysis.create_funnel_regex(CAST(NULL AS ARRAY<STRING>), FALSE)),
+  assert.equals('', event_analysis.create_funnel_regex(CAST([] AS ARRAY<STRING>), FALSE)),

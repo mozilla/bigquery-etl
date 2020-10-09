@@ -9,8 +9,8 @@ CREATE OR REPLACE FUNCTION udf.extract_document_type(table_name STRING) AS (
 
 -- Tests
 SELECT
-  assert_equals("type", udf.extract_document_type("type_v1")),
-  assert_equals(
+  assert.equals("type", udf.extract_document_type("type_v1")),
+  assert.equals(
     "namespace__namespace_type",
     udf.extract_document_type("namespace__namespace_type_v20191031")
   );

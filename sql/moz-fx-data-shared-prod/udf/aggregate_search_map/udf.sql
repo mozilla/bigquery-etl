@@ -45,11 +45,11 @@ WITH output AS (
     ) AS res
 )
 SELECT
-  assert_equals("google", res[OFFSET(0)].key),
-  assert_array_equals(udf.array_11_zeroes_then(10), res[OFFSET(0)].value.total_searches),
-  assert_array_equals(udf.array_11_zeroes_then(5), res[OFFSET(0)].value.tagged_searches),
-  assert_array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.search_with_ads),
-  assert_array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.ad_click),
-  assert_equals(array_length(res), 1)
+  assert.equals("google", res[OFFSET(0)].key),
+  assert.array_equals(udf.array_11_zeroes_then(10), res[OFFSET(0)].value.total_searches),
+  assert.array_equals(udf.array_11_zeroes_then(5), res[OFFSET(0)].value.tagged_searches),
+  assert.array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.search_with_ads),
+  assert.array_equals(udf.array_11_zeroes_then(0), res[OFFSET(0)].value.ad_click),
+  assert.equals(array_length(res), 1)
 FROM
   output;

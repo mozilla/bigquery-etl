@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION assert_struct_equals(expected ANY TYPE, actual ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION assert.struct_equals(expected ANY TYPE, actual ANY TYPE) AS (
   IF(
     ARRAY_LENGTH(
       ARRAY(
@@ -16,8 +16,8 @@ CREATE TEMP FUNCTION assert_struct_equals(expected ANY TYPE, actual ANY TYPE) AS
 );
 
 SELECT
-  assert_struct_equals(STRUCT('a' AS a, 'b' AS b, 3 AS c), STRUCT('a' AS a, 'b' AS b, 3 AS c)),
-  assert_struct_equals(STRUCT('a' AS a, NULL AS b, 3 AS c), STRUCT('a' AS a, NULL AS b, 3 AS c)),
+  assert.struct_equals(STRUCT('a' AS a, 'b' AS b, 3 AS c), STRUCT('a' AS a, 'b' AS b, 3 AS c)),
+  assert.struct_equals(STRUCT('a' AS a, NULL AS b, 3 AS c), STRUCT('a' AS a, NULL AS b, 3 AS c)),
 #xfail
 SELECT
-  assert_struct_equals(STRUCT('a' AS a, 'b' AS b, 3 AS c), STRUCT('a' AS a, 'b' AS b, 4 AS c))
+  assert.struct_equals(STRUCT('a' AS a, 'b' AS b, 3 AS c), STRUCT('a' AS a, 'b' AS b, 4 AS c))

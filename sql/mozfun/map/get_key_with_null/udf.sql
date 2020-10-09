@@ -24,8 +24,8 @@ CREATE OR REPLACE FUNCTION map.get_key_with_null(map ANY TYPE, k ANY TYPE) AS (
 
 -- Tests
 SELECT
-  assert_equals(12, map.get_key_with_null([STRUCT('foo' AS key, 42 AS value), ('bar', 12)], 'bar')),
-  assert_equals(
+  assert.equals(12, map.get_key_with_null([STRUCT('foo' AS key, 42 AS value), ('bar', 12)], 'bar')),
+  assert.equals(
     12,
     map.get_key_with_null(
       [STRUCT('foo' AS key, 42 AS value), (CAST(NULL AS STRING), 12)],

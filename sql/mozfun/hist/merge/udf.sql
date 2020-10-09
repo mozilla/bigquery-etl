@@ -53,7 +53,7 @@ merged AS (
     histograms
 )
 SELECT
-  assert_histogram_equals(
+  assert.histogram_equals(
     STRUCT(
       5 AS bucket_count,
       60 AS `sum`,

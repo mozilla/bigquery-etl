@@ -7,5 +7,5 @@ CREATE OR REPLACE FUNCTION udf.shift_one_day(x INT64) AS (
 
 -- Tests
 SELECT
-  assert_equals(4, udf.shift_one_day(2)),
-  assert_equals(0, udf.shift_one_day(NULL))
+  assert.equals(4, udf.shift_one_day(2)),
+  assert.equals(0, udf.shift_one_day(NULL))

@@ -41,7 +41,7 @@ class TestParseRoutine:
         )
         result = parse_routine.RawRoutine.from_text(
             text,
-            str(TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project"),
+            TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project",
             "udf",
             "test_js_udf",
             description="",
@@ -54,7 +54,7 @@ class TestParseRoutine:
 
         text = "CREATE OR REPLACE FUNCTION json.mode_last() " + "AS (SELECT 1)"
         result = parse_routine.RawRoutine.from_text(
-            text, "sql/mozfun", "json", "mode_last", description=""
+            text, Path("sql") / "mozfun", "json", "mode_last", description=""
         )
         assert result.name == "json.mode_last"
         assert len(result.definitions) == 1
@@ -173,13 +173,15 @@ class TestParseRoutine:
             text, self.udf_dir.parent, raw_routines
         )
         assert "CREATE TEMP FUNCTION udf_test_bitmask_lowest_28" in result
-        assert "hist_extract" in result
-        assert "mozfun.hist.extract" not in result
-        assert "hist.extract" not in result
+
+        # There is no defn for hist.extract in the `raw_routines`,
+        # so we expect this to be unreplaced
+        assert "hist_extract" not in result
+        assert "mozfun.hist.extract" in result
 
         text = "CALL procedure.test_procedure(23);"
         result = parse_routine.sub_local_routines(
-            text, self.udf_dir.parent, raw_routines
+            text, self.udf_dir.parent, raw_routines, stored_procedure_test=True
         )
         assert (
             "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_test_procedure"
@@ -295,7 +297,10 @@ END;"""
             "CREATE OR REPLACE PROCEDURE\n  _generic_dataset_.procedure_append_hello"
             in tests[1]
         )
-        assert "CREATE TEMP FUNCTION udf_test_shift_28_bits_one_day" in tests[1]
+        assert (
+            "CREATE OR REPLACE FUNCTION _generic_dataset_.udf_test_shift_28_bits_one_day"
+            in tests[1]
+        )
 
     def test_get_routines_from_dir(self):
         routines = parse_routine.get_routines_from_dir(self.udf_dir.parent)

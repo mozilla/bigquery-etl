@@ -70,6 +70,6 @@ unzipped AS (
 )
   --
 SELECT
-  assert_equals(expected, result)
+  assert.equals(expected, result)
 FROM
   unzipped

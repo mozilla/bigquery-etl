@@ -23,17 +23,17 @@ WITH results AS (
     with_event_props
 )
 SELECT
-  assert_equals('a', multi[OFFSET(0)].index),
-  assert_equals(2, multi[OFFSET(0)].count),
-  assert_equals('b', multi[OFFSET(1)].index),
-  assert_equals(1, multi[OFFSET(1)].count),
-  assert_equals('b', single[OFFSET(0)].index),
-  assert_equals(3, single[OFFSET(0)].count),
-  assert_equals('a', with_event_props[OFFSET(0)].index),
-  assert_equals(1, with_event_props[OFFSET(0)].count),
-  assert_equals('b', with_event_props[OFFSET(1)].index),
-  assert_equals(1, with_event_props[OFFSET(1)].count),
-  assert_equals('c', with_event_props[OFFSET(2)].index),
-  assert_equals(1, with_event_props[OFFSET(2)].count),
+  assert.equals('a', multi[OFFSET(0)].index),
+  assert.equals(2, multi[OFFSET(0)].count),
+  assert.equals('b', multi[OFFSET(1)].index),
+  assert.equals(1, multi[OFFSET(1)].count),
+  assert.equals('b', single[OFFSET(0)].index),
+  assert.equals(3, single[OFFSET(0)].count),
+  assert.equals('a', with_event_props[OFFSET(0)].index),
+  assert.equals(1, with_event_props[OFFSET(0)].count),
+  assert.equals('b', with_event_props[OFFSET(1)].index),
+  assert.equals(1, with_event_props[OFFSET(1)].count),
+  assert.equals('c', with_event_props[OFFSET(2)].index),
+  assert.equals(1, with_event_props[OFFSET(2)].count),
 FROM
   results

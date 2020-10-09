@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW
-  waitlist
+  `moz-fx-data-shared-prod`.mozilla_vpn.waitlist
 AS
 SELECT
   *
 FROM
-  mozilla_vpn_derived.waitlist_v1
+  `moz-fx-data-shared-prod`.mozilla_vpn_derived.waitlist_v1

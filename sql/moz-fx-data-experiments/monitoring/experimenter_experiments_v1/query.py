@@ -28,11 +28,18 @@ parser.add_argument("--sql_dir", default="sql/")
 
 
 @attr.s(auto_attribs=True)
+class Branch:
+    slug: str
+    ratio: int
+
+
+@attr.s(auto_attribs=True)
 class Experiment:
     experimenter_slug: Optional[str]
     normandy_slug: Optional[str]
     type: str
     status: Optional[str]
+    branches: List[Branch]
     start_date: Optional[datetime.datetime]
     end_date: Optional[datetime.datetime]
     proposed_enrollment: Optional[int]
@@ -82,6 +89,9 @@ class ExperimentV1:
 
     def to_experiment(self) -> "Experiment":
         """Convert to Experiment."""
+        branches = [
+            Branch(slug=variant.slug, ratio=variant.ratio) for variant in self.variants
+        ]
         control_slug = None
 
         control_slugs = [
@@ -97,6 +107,7 @@ class ExperimentV1:
             status=self.status,
             start_date=self.start_date,
             end_date=self.end_date,
+            branches=branches,
             proposed_enrollment=self.proposed_enrollment,
             reference_branch=control_slug,
             is_high_population=self.is_high_population or False,
@@ -112,6 +123,7 @@ class ExperimentV4:
     startDate: Optional[datetime.datetime]
     endDate: Optional[datetime.datetime]
     proposedEnrollment: int
+    branches: List[Branch]
     referenceBranch: Optional[str]
 
     @classmethod
@@ -137,10 +149,11 @@ class ExperimentV4:
             proposed_enrollment=self.proposedEnrollment,
             reference_branch=self.referenceBranch,
             is_high_population=False,
+            branches=self.branches,
         )
 
 
-def get_experiments():
+def get_experiments() -> List[Experiment]:
     """Fetch experiments from Experimenter."""
     session = requests.Session()
     legacy_experiments_json = session.get(EXPERIMENTER_API_URL_V1).json()
@@ -189,6 +202,15 @@ def main():
         bigquery.SchemaField("proposed_enrollment", "INTEGER"),
         bigquery.SchemaField("reference_branch", "STRING"),
         bigquery.SchemaField("is_high_population", "BOOL"),
+        bigquery.SchemaField(
+            "branches",
+            "RECORD",
+            mode="REPEATED",
+            fields=[
+                bigquery.SchemaField("slug", "STRING"),
+                bigquery.SchemaField("ratio", "INTEGER"),
+            ],
+        ),
     )
 
     job_config = bigquery.QueryJobConfig(

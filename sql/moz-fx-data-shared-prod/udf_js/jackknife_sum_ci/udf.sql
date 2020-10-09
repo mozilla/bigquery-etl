@@ -115,4 +115,4 @@ return sum_buckets_with_ci(n_buckets, counts_per_bucket);
 -- Tests
 SELECT
   -- Make sure a single-element array doesn't throw an error.
-  assert_equals(5, udf_js.jackknife_sum_ci(20, [5]).total)
+  assert.equals(5, udf_js.jackknife_sum_ci(20, [5]).total)

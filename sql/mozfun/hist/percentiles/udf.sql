@@ -32,7 +32,7 @@ RETURNS ARRAY<STRUCT<percentile FLOAT64, value INT64>> AS (
 );
 
 SELECT
-  assert_array_equals(
+  assert.array_equals(
     [10, 50, 90],
     ARRAY(
       SELECT
@@ -53,7 +53,7 @@ SELECT
         )
     )
   ),
-  assert_array_equals(
+  assert.array_equals(
     [100],
     ARRAY(
       SELECT
@@ -67,7 +67,7 @@ SELECT
         )
     )
   ),
-  assert_array_equals(
+  assert.array_equals(
     CAST(NULL AS ARRAY<STRUCT<percentile FLOAT64, value INT64>>),
     hist.percentiles(STRUCT([STRUCT(0 AS key, 0 AS value)] AS values), [.2, .5])
   );

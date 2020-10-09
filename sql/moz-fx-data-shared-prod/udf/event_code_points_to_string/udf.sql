@@ -37,18 +37,18 @@ CREATE OR REPLACE FUNCTION udf.event_code_points_to_string(code_points ANY TYPE)
 );
 
 SELECT
-  assert_equals("!", udf.event_code_points_to_string([33])),
-  assert_equals("#", udf.event_code_points_to_string([34])),
-  assert_equals("-", udf.event_code_points_to_string([43])),
-  assert_equals(CODE_POINTS_TO_STRING([1, 2]), udf.event_code_points_to_string([1, 2])),
-  assert_equals(
+  assert.equals("!", udf.event_code_points_to_string([33])),
+  assert.equals("#", udf.event_code_points_to_string([34])),
+  assert.equals("-", udf.event_code_points_to_string([43])),
+  assert.equals(CODE_POINTS_TO_STRING([1, 2]), udf.event_code_points_to_string([1, 2])),
+  assert.equals(
     CODE_POINTS_TO_STRING(NULL),
     udf.event_code_points_to_string(CAST(NULL AS ARRAY<INT64>))
   ),
-  assert_equals(CODE_POINTS_TO_STRING([NULL]), udf.event_code_points_to_string([NULL])),
-  assert_equals(CODE_POINTS_TO_STRING([]), udf.event_code_points_to_string([]));
+  assert.equals(CODE_POINTS_TO_STRING([NULL]), udf.event_code_points_to_string([NULL])),
+  assert.equals(CODE_POINTS_TO_STRING([]), udf.event_code_points_to_string([]));
 
 SELECT
-  assert_not_null(udf.event_code_points_to_string([n]))
+  assert.not_null(udf.event_code_points_to_string([n]))
 FROM
   UNNEST(GENERATE_ARRAY(1, 1000000)) AS n

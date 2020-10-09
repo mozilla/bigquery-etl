@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION udf.map_mode_last(entries ANY TYPE) AS (
 
 -- Tests
 SELECT
-  assert_array_equals(
+  assert.array_equals(
     [STRUCT('foo' AS key, 'bar' AS value), STRUCT('baz' AS key, 'fred' AS value)],
     udf.map_mode_last(
       [
@@ -15,7 +15,7 @@ SELECT
       ]
     )
   ),
-  assert_array_equals(
+  assert.array_equals(
     [STRUCT('foo' AS key, 'bar' AS value), STRUCT('baz' AS key, 'fred' AS value)],
     udf.map_mode_last(
       [

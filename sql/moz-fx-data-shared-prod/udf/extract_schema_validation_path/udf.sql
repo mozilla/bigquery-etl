@@ -14,12 +14,12 @@ RETURNS STRING AS (
 
 -- Tests
 SELECT
-  assert_null(
+  assert.null(
     udf.extract_schema_validation_path(
       "com.mozilla.telemetry.decoder.Deduplicate$DuplicateIdException: A message with this documentId has already been successfully processed."
     )
   ),
-  assert_equals(
+  assert.equals(
     "#/events/1/timestamp",
     udf.extract_schema_validation_path(
       "org.everit.json.schema.ValidationException: #/events/1/timestamp: -2 is not greater or equal to 0"

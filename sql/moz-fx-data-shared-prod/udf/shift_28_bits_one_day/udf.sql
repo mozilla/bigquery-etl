@@ -9,7 +9,7 @@ CREATE OR REPLACE FUNCTION udf.shift_28_bits_one_day(x INT64) AS (
 
 -- Tests
 SELECT
-  assert_equals(2, udf.shift_28_bits_one_day(1)),
-  assert_equals(1 << 8, udf.shift_28_bits_one_day(1 << 7)),
-  assert_equals(1 << 27, udf.shift_28_bits_one_day(1 << 26)),
-  assert_equals(0, udf.shift_28_bits_one_day(1 << 27));
+  assert.equals(2, udf.shift_28_bits_one_day(1)),
+  assert.equals(1 << 8, udf.shift_28_bits_one_day(1 << 7)),
+  assert.equals(1 << 27, udf.shift_28_bits_one_day(1 << 26)),
+  assert.equals(0, udf.shift_28_bits_one_day(1 << 27));

@@ -4,8 +4,8 @@ RETURNS STRING AS (
 );
 
 SELECT
-  assert_equals('\\Qp\\E,', event_analysis.event_index_to_match_string('p')),
-  assert_equals('\\Q.\\E,', event_analysis.event_index_to_match_string('.')),
-  assert_equals('\\Q.t\\E,', event_analysis.event_index_to_match_string('.t')),
-  assert_equals(CAST(NULL AS STRING), event_analysis.event_index_to_match_string(NULL)),
-  assert_equals('\\Q\\E,', event_analysis.event_index_to_match_string('')),
+  assert.equals('\\Qp\\E,', event_analysis.event_index_to_match_string('p')),
+  assert.equals('\\Q.\\E,', event_analysis.event_index_to_match_string('.')),
+  assert.equals('\\Q.t\\E,', event_analysis.event_index_to_match_string('.t')),
+  assert.equals(CAST(NULL AS STRING), event_analysis.event_index_to_match_string(NULL)),
+  assert.equals('\\Q\\E,', event_analysis.event_index_to_match_string('')),

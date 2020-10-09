@@ -42,9 +42,9 @@ CREATE OR REPLACE FUNCTION udf.normalize_search_engine(engine STRING) AS (
 
 -- Test
 SELECT
-  assert_equals('Google', udf.normalize_search_engine('google')),
-  assert_equals('Google', udf.normalize_search_engine('Google-abc')),
-  assert_equals('Other', udf.normalize_search_engine('not-bing')),
-  assert_equals('Other', udf.normalize_search_engine('other-Google')),
-  assert_equals('Other', udf.normalize_search_engine('engine')),
-  assert_null(udf.normalize_search_engine(NULL))
+  assert.equals('Google', udf.normalize_search_engine('google')),
+  assert.equals('Google', udf.normalize_search_engine('Google-abc')),
+  assert.equals('Other', udf.normalize_search_engine('not-bing')),
+  assert.equals('Other', udf.normalize_search_engine('other-Google')),
+  assert.equals('Other', udf.normalize_search_engine('engine')),
+  assert.null(udf.normalize_search_engine(NULL))

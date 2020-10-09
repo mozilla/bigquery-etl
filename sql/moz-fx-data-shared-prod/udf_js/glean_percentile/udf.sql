@@ -33,7 +33,7 @@ AS
 ''';
 
 SELECT
-  assert_equals(
+  assert.equals(
     2,
     udf_js.glean_percentile(
       50.0,

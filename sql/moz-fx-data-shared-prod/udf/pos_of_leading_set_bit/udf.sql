@@ -9,6 +9,6 @@ CREATE OR REPLACE FUNCTION udf.pos_of_leading_set_bit(i INT64) AS (
 
 -- Tests
 SELECT
-  assert_equals(udf.pos_of_leading_set_bit(0), NULL),
-  assert_equals(udf.pos_of_leading_set_bit(1), 0),
-  assert_equals(udf.pos_of_leading_set_bit(2), 1);
+  assert.equals(udf.pos_of_leading_set_bit(0), NULL),
+  assert.equals(udf.pos_of_leading_set_bit(1), 0),
+  assert.equals(udf.pos_of_leading_set_bit(2), 1);

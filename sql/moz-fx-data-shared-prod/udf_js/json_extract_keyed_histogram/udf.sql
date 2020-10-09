@@ -57,11 +57,11 @@ extracted AS (
 )
   --
 SELECT
-  assert_equals('audio/mp4a-latm', `key`),
-  assert_equals(3, bucket_count),
-  assert_equals(4, histogram_type),
-  assert_equals(3, `sum`),
-  assert_array_equals([1, 2], `range`),
-  assert_array_equals([STRUCT(0 AS key, 3 AS value), STRUCT(1 AS key, 0 AS value)], `values`)
+  assert.equals('audio/mp4a-latm', `key`),
+  assert.equals(3, bucket_count),
+  assert.equals(4, histogram_type),
+  assert.equals(3, `sum`),
+  assert.array_equals([1, 2], `range`),
+  assert.array_equals([STRUCT(0 AS key, 3 AS value), STRUCT(1 AS key, 0 AS value)], `values`)
 FROM
   extracted

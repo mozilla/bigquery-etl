@@ -19,4 +19,4 @@ CREATE OR REPLACE FUNCTION bits28.to_string(bits INT64) AS (
 
 -- Tests
 SELECT
-  assert_equals('0100000000000000000000000010', bits28.to_string((1 << 1) | (1 << 26)))
+  assert.equals('0100000000000000000000000010', bits28.to_string((1 << 1) | (1 << 26)))

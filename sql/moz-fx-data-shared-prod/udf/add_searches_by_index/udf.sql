@@ -63,17 +63,17 @@ correct_sum AS (
     ) AS actual
 )
 SELECT
-  assert_array_equals([0, 2, 3, 4], actual.total_searches),
-  assert_array_equals([1, 0, 3, 4], actual.tagged_searches),
-  assert_array_equals([1, 2, 0, 4], actual.search_with_ads),
-  assert_array_equals([1, 2, 3, 0], actual.ad_click),
+  assert.array_equals([0, 2, 3, 4], actual.total_searches),
+  assert.array_equals([1, 0, 3, 4], actual.tagged_searches),
+  assert.array_equals([1, 2, 0, 4], actual.search_with_ads),
+  assert.array_equals([1, 2, 3, 0], actual.ad_click),
 FROM
   correct_order
 UNION ALL
 SELECT
-  assert_array_equals([3, 6, 1], actual.total_searches),
-  assert_array_equals([5, 7, 1], actual.tagged_searches),
-  assert_array_equals([7, 8, 1], actual.search_with_ads),
-  assert_array_equals([9, 9, 1], actual.ad_click),
+  assert.array_equals([3, 6, 1], actual.total_searches),
+  assert.array_equals([5, 7, 1], actual.tagged_searches),
+  assert.array_equals([7, 8, 1], actual.search_with_ads),
+  assert.array_equals([9, 9, 1], actual.ad_click),
 FROM
   correct_sum

@@ -10,7 +10,7 @@ pytest-xdist==2.1.0
 pytest==6.1.1
 PyYAML==5.3.1
 smart_open==2.2.1
-sqlparse==0.4.0
+sqlparse==0.4.1
 mozilla_schema_generator==0.1.4
 GitPython==3.1.9
 cattrs==1.0.0

@@ -1,0 +1,99 @@
+- &id001
+  client_info:
+    app_build: 0000380160
+  metrics:
+    string:
+      geckoview_version: 79.0.0
+  submission_timestamp: '2020-06-01T00:00:00'
+- &id002
+  client_info:
+    app_build: 0000380160
+  metrics:
+    string:
+      geckoview_version: 79.0.0
+  submission_timestamp: '2020-05-31T00:00:00'
+- &id003
+  client_info:
+    app_build: 0000380160
+  metrics:
+    string:
+      geckoview_version: 79.0.0
+  submission_timestamp: '2020-05-30T00:00:00'
+- &id004
+  client_info:
+    app_build: 0000380352
+  metrics:
+    string:
+      geckoview_version: 80.0.0
+  submission_timestamp: '2020-06-01T00:00:00'
+- &id005
+  client_info:
+    app_build: 0000380352
+  metrics:
+    string:
+      geckoview_version: 80.0.0
+  submission_timestamp: '2020-05-31T00:00:00'
+- &id006
+  client_info:
+    app_build: 0000380352
+  metrics:
+    string:
+      geckoview_version: 80.0.0
+  submission_timestamp: '2020-05-30T00:00:00'
+- &id007
+  client_info:
+    app_build: 0000380544
+  metrics:
+    string:
+      geckoview_version: 80.0.0
+  submission_timestamp: '2020-06-01T00:00:00'
+- &id008
+  client_info:
+    app_build: 0000380544
+  metrics:
+    string:
+      geckoview_version: 80.0.0
+  submission_timestamp: '2020-05-31T00:00:00'
+- &id009
+  client_info:
+    app_build: 0000380544
+  metrics:
+    string:
+      geckoview_version: 80.0.0
+  submission_timestamp: '2020-05-30T00:00:00'
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009

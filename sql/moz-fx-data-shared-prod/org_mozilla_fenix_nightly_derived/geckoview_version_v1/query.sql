@@ -1,11 +1,3 @@
-DECLARE reference_date DATE;
-
-DECLARE history_days INT64;
-
-SET reference_date = @submission_date;
-
-SET history_days = 30;
-
 WITH extracted AS (
     -- We'll look at the metrics ping to estimate the major geckoview version.
     -- The metrics section is aliased, so we must rename the table for this to
@@ -15,7 +7,7 @@ WITH extracted AS (
     client_info.app_build,
     metrics.string.geckoview_version,
   FROM
-    `moz-fx-data-shared-prod`.org_mozilla_fenix.metrics AS t1
+    org_mozilla_fenix.metrics AS t1
   WHERE
     mozfun.norm.fenix_app_info('org_mozilla_fenix', client_info.app_build).channel = 'nightly'
   UNION ALL
@@ -24,14 +16,14 @@ WITH extracted AS (
     client_info.app_build,
     metrics.string.geckoview_version,
   FROM
-    `moz-fx-data-shared-prod`.org_mozilla_fenix_nightly.metrics AS t1
+    org_mozilla_fenix_nightly.metrics AS t1
   UNION ALL
   SELECT
     submission_timestamp,
     client_info.app_build,
     metrics.string.geckoview_version,
   FROM
-    `moz-fx-data-shared-prod`.org_mozilla_fennec_aurora.metrics AS t1
+    org_mozilla_fennec_aurora.metrics AS t1
 ),
 transformed AS (
   SELECT
@@ -39,15 +31,15 @@ transformed AS (
     geckoview_version,
         -- Truncate to the hour, since older builds give minute resolution.
     datetime_TRUNC(
-      `moz-fx-data-shared-prod`.udf.fenix_build_to_datetime(app_build),
+      `moz-fx-data-shared-prod.udf.fenix_build_to_datetime`(app_build),
       HOUR
     ) AS build_hour
   FROM
     extracted
   WHERE
     DATE(submission_timestamp)
-    BETWEEN DATE_SUB(reference_date, INTERVAL history_days DAY)
-    AND reference_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND @submission_date
 ),
 grouped_build_hours AS (
       -- Count the number of geckoview versions for each build hour row over the
@@ -97,10 +89,10 @@ enumerated_build_hours AS (
     UNNEST(
       GENERATE_TIMESTAMP_ARRAY(
         TIMESTAMP_SUB(
-          TIMESTAMP_TRUNC(CAST(reference_date AS timestamp), HOUR),
-          INTERVAL history_days + 2 DAY
+          TIMESTAMP_TRUNC(CAST(@submission_date AS timestamp), HOUR),
+          INTERVAL 30 + 2 DAY
         ),
-        TIMESTAMP_TRUNC(CAST(reference_date AS timestamp), HOUR),
+        TIMESTAMP_TRUNC(CAST(@submission_date AS timestamp), HOUR),
         INTERVAL 1 HOUR
       )
     ) AS TIMESTAMP
@@ -139,7 +131,7 @@ new_geckoview_versions AS (
   FROM
     estimated_version
   WHERE
-    build_hour >= DATE_SUB(reference_date, INTERVAL history_days DAY)
+    build_hour >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
   ORDER BY
     build_hour
 ),

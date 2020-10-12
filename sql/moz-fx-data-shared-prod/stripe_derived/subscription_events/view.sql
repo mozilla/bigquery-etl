@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod`.stripe_derived.subscription_events
+  `moz-fx-data-shared-prod.stripe_derived.subscription_events`
 AS
 WITH raw AS (
   SELECT

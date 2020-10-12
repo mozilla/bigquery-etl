@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod`.stripe_derived.plan_events
+  `moz-fx-data-shared-prod.stripe_derived.plan_events`
 AS
 SELECT
   created AS event_timestamp,

@@ -49,7 +49,7 @@ def _process_file(client, args, filepath):
         target_view_orig = str(tokens[2]).strip().split()[0]
         target_view = target_view_orig
         if args.target_project:
-            project_id = target_view_orig.strip("`").split(".", 1)[0]
+            project_id = target_view_orig.replace("`", "").split(".", 1)[0]
             target_view = target_view_orig.replace(project_id, args.target_project, 1)
             # We only change the first occurrence, which is in the target view name.
             sql = sql.replace(project_id, args.target_project, 1)

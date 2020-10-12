@@ -2,6 +2,8 @@
 from pathlib import Path
 from datetime import datetime, timedelta
 import yaml
+import click
+import shutil
 
 ROOT = Path(__file__).parent
 
@@ -23,8 +25,11 @@ def input_row(submission_offset, build_offset, version_offset=0):
     }
 
 
-def main():
-    with (ROOT / "org_mozilla_fenix_nightly.metrics.yaml").open("w") as fp:
+@click.command()
+@click.argument("test-name")
+def main(test_name):
+    assert (ROOT / test_name).is_dir(), f"{ROOT / test_name} not name of test"
+    with (ROOT / test_name / "org_mozilla_fenix_nightly.metrics.yaml").open("w") as fp:
         # this does not generate any complicated cases where there might be
         # discontinuities in the data.
         rows = []
@@ -36,9 +41,22 @@ def main():
             sorted(rows, key=lambda x: x["client_info"]["app_build"]) * 5,
             fp,
         )
-    with (ROOT / "expect.yaml").open("w") as fp:
+    with (ROOT / test_name / "org_mozilla_fenix.metrics.yaml").open("w") as fp:
+        yaml.dump([input_row(30, 30, 10)], fp)
+    with (ROOT / test_name / "org_mozilla_fennec_aurora.metrics.yaml").open("w") as fp:
+        yaml.dump([input_row(30, 30, 10)], fp)
+    for dataset in [
+        "org_mozilla_fenix_nightly",
+        "org_mozilla_fenix",
+        "org_mozilla_fennec_aurora",
+    ]:
+        shutil.copyfile(
+            ROOT / "metrics.schema.json",
+            ROOT / test_name / f"{dataset}.metrics.schema.json",
+        )
+    with (ROOT / test_name / "expect.yaml").open("w") as fp:
         row = []
-        # this is inclusive
+        # this is inclusive∏
         for hour in range(HISTORY_DAYS * 24):
             row += [
                 {
@@ -48,6 +66,23 @@ def main():
                 }
             ]
         yaml.dump(row, fp)
+    if test_name == "test_aggregation":
+        with (
+            ROOT
+            / test_name
+            / "org_mozilla_fenix_nightly_derived.geckoview_version_v1.yaml"
+        ).open("w") as fp:
+            row = []
+            # this is inclusive
+            for hour in range(HISTORY_DAYS * 24):
+                row += [
+                    {
+                        "build_hour": (START_DATE + timedelta(hours=hour)).isoformat(),
+                        "geckoview_version": "80.0.0",
+                        "n_builds": 1,
+                    }
+                ]
+            yaml.dump(row, fp)
 
 
 if __name__ == "__main__":

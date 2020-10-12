@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod`.stripe.subscription_transitions
+  `moz-fx-data-shared-prod.stripe.subscription_transitions`
 AS
 WITH subscriptions AS (
   SELECT

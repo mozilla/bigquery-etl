@@ -13,7 +13,7 @@ TEST_BUCKET = "bigquery-etl-integration-test-bucket"
 
 pytest_plugins = [
     "bigquery_etl.pytest_plugin.sql",
-    "bigquery_etl.pytest_plugin.udf",
+    "bigquery_etl.pytest_plugin.routine",
     "bigquery_etl.pytest_plugin.script_lint.black",
     "bigquery_etl.pytest_plugin.script_lint.docstyle",
     "bigquery_etl.pytest_plugin.script_lint.flake8",

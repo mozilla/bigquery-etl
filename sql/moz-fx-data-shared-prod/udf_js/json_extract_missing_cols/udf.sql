@@ -116,7 +116,7 @@ extracted AS (
 )
     --
 SELECT
-  assert_array_equals_any_order(
+  assert.array_equals_any_order(
     no_args,
     ARRAY[
       '`first`.`second`.`third`',
@@ -126,7 +126,7 @@ SELECT
       '`first`.`array`.[...].`unique-array-element`'
     ]
   ),
-  assert_array_equals_any_order(
+  assert.array_equals_any_order(
     indicates_node_arg,
     ARRAY[
       '`first`.`second`',
@@ -136,6 +136,6 @@ SELECT
       '`first`.`array`.[...].`unique-array-element`'
     ]
   ),
-  assert_array_equals_any_order(is_node_arg, ARRAY['`first`'])
+  assert.array_equals_any_order(is_node_arg, ARRAY['`first`'])
 FROM
   extracted

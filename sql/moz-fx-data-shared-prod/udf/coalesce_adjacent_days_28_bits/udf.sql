@@ -14,8 +14,8 @@ or else 0.
 */
 -- Test
 SELECT
-  assert_equals(2, udf.coalesce_adjacent_days_28_bits(1, 64)),
-  assert_equals(128, udf.coalesce_adjacent_days_28_bits(64, 1)),
-  assert_equals(64, udf.coalesce_adjacent_days_28_bits(0, 64)),
-  assert_equals(64, udf.coalesce_adjacent_days_28_bits(NULL, 64)),
-  assert_equals(0, udf.coalesce_adjacent_days_28_bits(NULL, NULL));
+  assert.equals(2, udf.coalesce_adjacent_days_28_bits(1, 64)),
+  assert.equals(128, udf.coalesce_adjacent_days_28_bits(64, 1)),
+  assert.equals(64, udf.coalesce_adjacent_days_28_bits(0, 64)),
+  assert.equals(64, udf.coalesce_adjacent_days_28_bits(NULL, 64)),
+  assert.equals(0, udf.coalesce_adjacent_days_28_bits(NULL, NULL));

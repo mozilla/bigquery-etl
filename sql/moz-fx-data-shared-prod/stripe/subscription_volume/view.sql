@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  subscription_volume
+  `moz-fx-data-shared-prod`.stripe.subscription_volume
 AS
 WITH subscriptions AS (
   SELECT
@@ -8,13 +8,13 @@ WITH subscriptions AS (
     COALESCE(DATE(ended_at), CURRENT_DATE) AS end_date,
     products_v1.name AS product,
   FROM
-    stripe_derived.subscriptions_v1
+    `moz-fx-data-shared-prod`.stripe_derived.subscriptions_v1
   LEFT JOIN
-    stripe_derived.plans_v1
+    `moz-fx-data-shared-prod`.stripe_derived.plans_v1
   ON
     (subscriptions_v1.plan = plans_v1.id)
   LEFT JOIN
-    stripe_derived.products_v1
+    `moz-fx-data-shared-prod`.stripe_derived.products_v1
   ON
     (plans_v1.product = products_v1.id)
   WHERE

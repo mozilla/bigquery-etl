@@ -39,7 +39,7 @@ WITH results AS (
     with_many_props,
 )
 SELECT
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT(
       'a' AS event_index,
       NULL AS property_index,
@@ -48,7 +48,7 @@ SELECT
     ),
     multi[OFFSET(0)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT(
       'b' AS event_index,
       NULL AS property_index,
@@ -57,7 +57,7 @@ SELECT
     ),
     multi[OFFSET(1)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT(
       'b' AS event_index,
       NULL AS property_index,
@@ -66,8 +66,8 @@ SELECT
     ),
     single[OFFSET(0)]
   ),
-  assert_equals(4, ARRAY_LENGTH(with_event_props)),
-  assert_struct_equals(
+  assert.equals(4, ARRAY_LENGTH(with_event_props)),
+  assert.struct_equals(
     STRUCT(
       'a' AS event_index,
       NULL AS property_index,
@@ -76,20 +76,20 @@ SELECT
     ),
     with_event_props[OFFSET(0)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT('a' AS event_index, 1 AS property_index, 'a' AS property_value_index, 1 AS count),
     with_event_props[OFFSET(1)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT('a' AS event_index, 1 AS property_index, 'b' AS property_value_index, 1 AS count),
     with_event_props[OFFSET(2)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT('a' AS event_index, 1 AS property_index, 'c' AS property_value_index, 1 AS count),
     with_event_props[OFFSET(3)]
   ),
-  assert_equals(7, ARRAY_LENGTH(with_many_props)),
-  assert_struct_equals(
+  assert.equals(7, ARRAY_LENGTH(with_many_props)),
+  assert.struct_equals(
     STRUCT(
       'a' AS event_index,
       NULL AS property_index,
@@ -98,19 +98,19 @@ SELECT
     ),
     with_many_props[OFFSET(0)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT('a' AS event_index, 1 AS property_index, 'a' AS property_value_index, 1 AS count),
     with_many_props[OFFSET(1)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT('a' AS event_index, 2 AS property_index, 'a' AS property_value_index, 1 AS count),
     with_many_props[OFFSET(2)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT('a' AS event_index, 3 AS property_index, 'a' AS property_value_index, 1 AS count),
     with_many_props[OFFSET(3)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT(
       'b' AS event_index,
       NULL AS property_index,
@@ -119,11 +119,11 @@ SELECT
     ),
     with_many_props[OFFSET(4)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT('b' AS event_index, 1 AS property_index, 'a' AS property_value_index, 1 AS count),
     with_many_props[OFFSET(5)]
   ),
-  assert_struct_equals(
+  assert.struct_equals(
     STRUCT('b' AS event_index, 2 AS property_index, 'a' AS property_value_index, 1 AS count),
     with_many_props[OFFSET(6)]
   ),

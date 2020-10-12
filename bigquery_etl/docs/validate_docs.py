@@ -7,7 +7,7 @@ import tempfile
 import sys
 
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.udf.parse_udf import read_udf_dirs, sub_local_routines
+from bigquery_etl.routine.parse_routine import read_routine_dir, sub_local_routines
 from bigquery_etl.util import standard_args
 
 DEFAULT_PROJECTS_DIRS = ["sql/mozfun"]
@@ -27,7 +27,7 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
-def sql_for_dry_run(file, parsed_udfs, project_dir):
+def sql_for_dry_run(file, parsed_routines, project_dir):
     """
     Return the example SQL used for the dry run.
 
@@ -39,14 +39,14 @@ def sql_for_dry_run(file, parsed_udfs, project_dir):
         example_sql = sql.read()
 
         # add UDFs that example depends on as temporary functions
-        for udf, raw_udf in parsed_udfs.items():
+        for udf, raw_routine in parsed_routines.items():
             if udf in example_sql:
-                query = "".join(raw_udf.definitions)
-                dry_run_sql += sub_local_routines(query, parsed_udfs)
+                query = "".join(raw_routine.definitions)
+                dry_run_sql += sub_local_routines(query, project_dir, parsed_routines)
 
         dry_run_sql += example_sql
 
-        for udf, _ in parsed_udfs.items():
+        for udf, _ in parsed_routines.items():
             # temporary UDFs cannot contain dots, rename UDFS
             dry_run_sql = dry_run_sql.replace(udf, udf.replace(".", "_"))
 
@@ -58,17 +58,17 @@ def sql_for_dry_run(file, parsed_udfs, project_dir):
 
 def validate(project_dirs):
     """Validate UDF docs."""
-    # parse UDFs
-    parsed_udfs = read_udf_dirs(*project_dirs)
     is_valid = True
 
     for project_dir in project_dirs:
         if os.path.isdir(project_dir):
+            parsed_routines = read_routine_dir(project_dir)
+
             for root, dirs, files in os.walk(project_dir):
                 if os.path.basename(root) == EXAMPLE_DIR:
                     for file in files:
                         dry_run_sql = sql_for_dry_run(
-                            os.path.join(root, file), parsed_udfs, project_dir
+                            os.path.join(root, file), parsed_routines, project_dir
                         )
 
                         # store sql in temporary file for dry_run

@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION udf.quantile_search_metric_contribution(
 
 -- Test
 SELECT
-  assert_equals(1.0, udf.quantile_search_metric_contribution(73, 1, 60)),
-  assert_null(udf.quantile_search_metric_contribution(29, 9, 60)),
-  assert_equals(8.0, udf.quantile_search_metric_contribution(118, 8, 21)),
-  assert_null(udf.quantile_search_metric_contribution(10, 5, 21));
+  assert.equals(1.0, udf.quantile_search_metric_contribution(73, 1, 60)),
+  assert.null(udf.quantile_search_metric_contribution(29, 9, 60)),
+  assert.equals(8.0, udf.quantile_search_metric_contribution(118, 8, 21)),
+  assert.null(udf.quantile_search_metric_contribution(10, 5, 21));

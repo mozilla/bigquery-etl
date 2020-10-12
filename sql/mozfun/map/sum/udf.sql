@@ -13,15 +13,15 @@ CREATE OR REPLACE FUNCTION map.sum(entries ANY TYPE) AS (
 
 -- Tests
 SELECT
-  assert_array_equals(
+  assert.array_equals(
     [STRUCT('a' AS key, 3 AS value)],
     map.sum(ARRAY<STRUCT<key STRING, value INT64>>[('a', 1), ('a', 2)])
   ),
-  assert_array_equals(
+  assert.array_equals(
     [STRUCT(5 AS key, 20 AS value)],
     map.sum(ARRAY<STRUCT<key INT64, value INT64>>[(5, 10), (5, 10)])
   ),
-  assert_array_equals(
+  assert.array_equals(
     map.sum(
       ARRAY<STRUCT<key BOOL, value INT64>>[
         (TRUE, 1),

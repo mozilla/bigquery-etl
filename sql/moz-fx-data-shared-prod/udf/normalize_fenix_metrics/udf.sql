@@ -23,14 +23,14 @@ CREATE OR REPLACE FUNCTION udf.normalize_fenix_metrics(
 
 -- Tests
 SELECT
-  assert_equals(
+  assert.equals(
     'foo',
     udf.normalize_fenix_metrics(
       '19.0.0',
       STRUCT(STRUCT('foo' AS foo) AS timing_distribution)
     ).timing_distribution.foo
   ),
-  assert_null(
+  assert.null(
     udf.normalize_fenix_metrics(
       '0.3.0',
       STRUCT(STRUCT('foo' AS foo) AS timing_distribution)

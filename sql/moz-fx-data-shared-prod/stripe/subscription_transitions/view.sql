@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  subscription_transitions
+  `moz-fx-data-shared-prod`.stripe.subscription_transitions
 AS
 WITH subscriptions AS (
   SELECT
@@ -14,13 +14,13 @@ WITH subscriptions AS (
     MIN(DATE(start_date)) OVER (PARTITION BY customer) AS customer_start_date,
     customer,
   FROM
-    stripe_derived.subscriptions_v1
+    `moz-fx-data-shared-prod`.stripe_derived.subscriptions_v1
   LEFT JOIN
-    stripe_derived.plans_v1
+    `moz-fx-data-shared-prod`.stripe_derived.plans_v1
   ON
     (subscriptions_v1.plan = plans_v1.id)
   LEFT JOIN
-    stripe_derived.products_v1
+    `moz-fx-data-shared-prod`.stripe_derived.products_v1
   ON
     (plans_v1.product = products_v1.id)
   WHERE

@@ -23,6 +23,6 @@ CREATE OR REPLACE FUNCTION stats.mode_last(list ANY TYPE) AS (
 
 -- Test
 SELECT
-  assert_equals('bar', stats.mode_last(['foo', 'bar', 'baz', 'bar', 'fred'])),
-  assert_equals('baz', stats.mode_last(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
-  assert_equals('foo', stats.mode_last([NULL, 'foo', NULL]));
+  assert.equals('bar', stats.mode_last(['foo', 'bar', 'baz', 'bar', 'fred'])),
+  assert.equals('baz', stats.mode_last(['foo', 'bar', 'baz', 'bar', 'baz', 'fred'])),
+  assert.equals('foo', stats.mode_last([NULL, 'foo', NULL]));

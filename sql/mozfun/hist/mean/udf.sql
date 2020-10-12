@@ -37,26 +37,26 @@ CREATE OR REPLACE FUNCTION hist.mean(histogram ANY TYPE) AS (
 );
 
 SELECT
-  assert_equals(
+  assert.equals(
     30798,
     hist.mean(STRUCT(30798 AS sum, [STRUCT(0 AS value), STRUCT(1), STRUCT(0)] AS values))
   ),
-  assert_equals(
+  assert.equals(
     15399,
     hist.mean(STRUCT(30798 AS sum, [STRUCT(0 AS value), STRUCT(2), STRUCT(0)] AS values))
   ),
-  assert_equals(
+  assert.equals(
     10266,
     hist.mean(STRUCT(30798 AS sum, [STRUCT(1 AS value), STRUCT(2), STRUCT(0)] AS values))
   ),
-  assert_equals(
+  assert.equals(
     7699,
     hist.mean(STRUCT(30798 AS sum, [STRUCT(1 AS value), STRUCT(2), STRUCT(1)] AS values))
   ),
-  assert_equals(
+  assert.equals(
     0,
     hist.mean(STRUCT(0 AS sum, [STRUCT(10 AS value), STRUCT(2147483649)] AS values))
   ),
-  assert_equals(0, hist.mean(STRUCT(0 AS sum, ARRAY<STRUCT<value INT64>>[] AS values))),
-  assert_null(hist.mean(STRUCT(10 AS sum, [STRUCT(0 AS value)] AS values))),
-  assert_null(hist.mean(CAST(NULL AS STRUCT<sum INT64, VALUES ARRAY<STRUCT<value INT64>>>)))
+  assert.equals(0, hist.mean(STRUCT(0 AS sum, ARRAY<STRUCT<value INT64>>[] AS values))),
+  assert.null(hist.mean(STRUCT(10 AS sum, [STRUCT(0 AS value)] AS values))),
+  assert.null(hist.mean(CAST(NULL AS STRUCT<sum INT64, VALUES ARRAY<STRUCT<value INT64>>>)))

@@ -14,14 +14,14 @@ import yaml
 from ..cli.utils import is_valid_dir, is_authenticated
 from ..format_sql.formatter import reformat
 from ..cli.format import format
-from ..udf import publish_udfs
+from ..routine import publish_routines
 from ..docs import validate_docs
 from ..util.common import project_dirs
 
 UDF_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")
 UDF_DATASET_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)$")
 UDF_FILE_RE = re.compile(r"(^.*/|^)([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/udf\.sql$")
-DEFAULT_DEPENDENCY_DIR = "udf_js/lib/"
+DEFAULT_UDF_DEPENDENCY_DIR = "udf_js_lib/"
 DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"
 DEFAULT_GCS_PATH = ""
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
@@ -122,7 +122,7 @@ def create(ctx, name, path):
     # create defaul metadata.yaml
     metadata_file = udf_path / "metadata.yaml"
     metadata = {
-        "friendly_name": string.capwords(dataset + " " + name.replace("_", " ")),
+        "friendly_name": string.capwords(name.replace("_", " ")),
         "description": "Please provide a description for the UDF",
     }
     metadata_file.write_text(yaml.dump(metadata))
@@ -224,7 +224,7 @@ mozfun.add_command(validate)
 @click.option(
     "--dependency-dir",
     "--dependency_dir",
-    default=DEFAULT_DEPENDENCY_DIR,
+    default=DEFAULT_UDF_DEPENDENCY_DIR,
     help="The directory JavaScript dependency files for UDFs are stored.",
 )
 @click.option(
@@ -261,7 +261,7 @@ def publish(ctx, path, project, dependency_dir, gcs_bucket, gcs_path):
         udf_dirs = path
 
     click.echo(f"Publish UDFs to {project_id}")
-    publish_udfs.publish(
+    publish_routines.publish(
         udf_dirs, project_id, dependency_dir, gcs_bucket, gcs_path, public
     )
     click.echo(f"Published UDFs to {project_id}")

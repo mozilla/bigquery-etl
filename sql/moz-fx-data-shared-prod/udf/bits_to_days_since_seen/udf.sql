@@ -34,9 +34,9 @@ CREATE OR REPLACE FUNCTION udf.bits_to_days_since_seen(b BYTES) AS (
 
 -- Tests
 SELECT
-  assert_equals(0, udf.bits_to_days_since_seen(b'\x00\x01')),
-  assert_equals(0, udf.bits_to_days_since_seen(b'\x00\x00\x00\x01')),
-  assert_equals(8, udf.bits_to_days_since_seen(b'\x01\x00')),
-  assert_equals(NULL, udf.bits_to_days_since_seen(b'\x00\x00')),
-  assert_equals(0, udf.bits_to_days_since_seen(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03')),
-  assert_equals(76, udf.bits_to_days_since_seen(b'\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00'));
+  assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x01')),
+  assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x00\x00\x01')),
+  assert.equals(8, udf.bits_to_days_since_seen(b'\x01\x00')),
+  assert.equals(NULL, udf.bits_to_days_since_seen(b'\x00\x00')),
+  assert.equals(0, udf.bits_to_days_since_seen(b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03')),
+  assert.equals(76, udf.bits_to_days_since_seen(b'\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00'));

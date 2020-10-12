@@ -382,7 +382,7 @@ expected AS (
     )
 )
 SELECT
-  assert_array_equals(
+  assert.array_equals(
     exp,
     CASE
     WHEN

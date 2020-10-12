@@ -4,7 +4,6 @@ CREATE TEMP FUNCTION get_fields(m ANY TYPE) AS (
     m.client_info.client_id,
     m.sample_id,
     m.metrics.string_list.addons_enabled_addons,
-    m.client_info.app_build,
     m.normalized_country_code,
     m.client_info.locale,
     m.normalized_os
@@ -13,29 +12,50 @@ CREATE TEMP FUNCTION get_fields(m ANY TYPE) AS (
 
 WITH unioned AS (
   SELECT
-    get_fields(m1).*
+    get_fields(release).*,
+    client_info.app_display_version AS app_version,
   FROM
-    org_mozilla_fenix.metrics AS m1
+    org_mozilla_firefox.metrics AS release
   UNION ALL
   SELECT
-    get_fields(m2).*
+    get_fields(beta).*,
+    -- Bug 1669516 We choose to show beta versions as 80.0.0b1, etc.
+    REPLACE(client_info.app_display_version, '-beta.', 'b') AS app_version,
   FROM
-    org_mozilla_fenix_nightly.metrics AS m2
+    org_mozilla_firefox_beta.metrics AS beta
   UNION ALL
   SELECT
-    get_fields(m3).*
+    get_fields(nightly).*,
+    -- Bug 1669516 Nightly versions have app_display_version like "Nightly <timestamp>",
+    -- so we take the geckoview version instead.
+    nightly.metrics.string.geckoview_version AS app_version,
   FROM
-    org_mozilla_fennec_aurora.metrics AS m3
+    org_mozilla_fenix.metrics AS nightly
   UNION ALL
   SELECT
-    get_fields(m4).*
+    get_fields(preview_nightly).*,
+    preview_nightly.metrics.string.geckoview_version AS app_version,
   FROM
-    org_mozilla_firefox.metrics AS m4
+    org_mozilla_fenix_nightly.metrics AS preview_nightly
   UNION ALL
   SELECT
-    get_fields(m5).*
+    get_fields(old_fenix_nightly).*,
+    old_fenix_nightly.metrics.string.geckoview_version AS app_version,
   FROM
-    org_mozilla_firefox_beta.metrics AS m5
+    org_mozilla_fennec_aurora.metrics AS old_fenix_nightly
+),
+cleaned AS (
+  SELECT
+    * REPLACE (
+      IF(
+        -- Accepts formats: 80.0 80.0.0 80.0.0a1 80.0.0b1
+        REGEXP_CONTAINS(app_version, r'^(\d+\.\d+(\.\d+)?([ab]\d+)?)$'),
+        app_version,
+        NULL
+      ) AS app_version
+    )
+  FROM
+    unioned
 ),
 per_client AS (
   SELECT
@@ -43,14 +63,12 @@ per_client AS (
     client_id,
     sample_id,
     array_concat_agg(addons_enabled_addons) AS addons,
-    -- app_build is the Fenix equivalent of app_version; we use app_version as the name for
-    -- compatibility with the desktop table schema.
-    udf.mode_last(array_agg(app_build)) AS app_version,
+    udf.mode_last(array_agg(app_version)) AS app_version,
     udf.mode_last(array_agg(normalized_country_code)) AS country,
     udf.mode_last(array_agg(locale)) AS locale,
     udf.mode_last(array_agg(normalized_os)) AS app_os,
   FROM
-    unioned
+    cleaned
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_id IS NOT NULL

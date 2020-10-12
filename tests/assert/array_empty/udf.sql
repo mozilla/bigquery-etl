@@ -1,4 +1,4 @@
-CREATE TEMP FUNCTION assert_array_empty(actual ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION assert.array_empty(actual ANY TYPE) AS (
   IF(
     ARRAY_LENGTH(actual) = 0,
     TRUE,

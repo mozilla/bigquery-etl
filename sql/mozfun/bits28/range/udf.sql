@@ -46,7 +46,7 @@ RETURNS INT64 AS (
 
 -- Tests
 SELECT
-  assert_equals(1 << 3, bits28.range(1 << 10, -13, 7)),
-  assert_equals(0, bits28.range(1 << 10, -6, 7)),
-  assert_equals(1, bits28.range(1, 0, 1)),
-  assert_equals(0, bits28.range(0, 0, 1));
+  assert.equals(1 << 3, bits28.range(1 << 10, -13, 7)),
+  assert.equals(0, bits28.range(1 << 10, -6, 7)),
+  assert.equals(1, bits28.range(1, 0, 1)),
+  assert.equals(0, bits28.range(0, 0, 1));

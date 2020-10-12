@@ -26,13 +26,13 @@ CREATE OR REPLACE FUNCTION udf.deanonymize_event(
 
 -- Tests
 SELECT
-  assert_equals(1, udf.deanonymize_event(event).event_timestamp),
-  assert_equals("normandy", udf.deanonymize_event(event).event_category),
-  assert_equals("enroll", udf.deanonymize_event(event).event_method),
-  assert_equals("pref-flip", udf.deanonymize_event(event).event_object),
-  assert_equals("test-experiment", udf.deanonymize_event(event).event_string_value),
-  assert_equals("branch", udf.deanonymize_event(event).event_map_values[OFFSET(0)].key),
-  assert_equals("control", udf.deanonymize_event(event).event_map_values[OFFSET(0)].value)
+  assert.equals(1, udf.deanonymize_event(event).event_timestamp),
+  assert.equals("normandy", udf.deanonymize_event(event).event_category),
+  assert.equals("enroll", udf.deanonymize_event(event).event_method),
+  assert.equals("pref-flip", udf.deanonymize_event(event).event_object),
+  assert.equals("test-experiment", udf.deanonymize_event(event).event_string_value),
+  assert.equals("branch", udf.deanonymize_event(event).event_map_values[OFFSET(0)].key),
+  assert.equals("control", udf.deanonymize_event(event).event_map_values[OFFSET(0)].value)
 FROM
   (
     SELECT
@@ -47,7 +47,7 @@ FROM
   );
 
 SELECT
-  assert_null(udf.deanonymize_event(event).event_timestamp)
+  assert.null(udf.deanonymize_event(event).event_timestamp)
 FROM
   (
     SELECT

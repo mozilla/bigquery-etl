@@ -110,7 +110,8 @@ def main():
     projects = project_dirs(args.project_id)
 
     for project in projects:
-        if "mozfun" not in project:
+        # todo: add support for multiple projects to publish tasks to the same DAG
+        if "moz-fx-data-shared-prod" in project:
             dags = get_dags(project, args.dags_config)
             dags.to_airflow_dags(dags_output_dir, args.dag_id)
 

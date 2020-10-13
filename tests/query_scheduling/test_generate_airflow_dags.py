@@ -6,7 +6,7 @@ TEST_DIR = Path(__file__).parent.parent
 
 
 class TestGenerateAirflowDags(object):
-    sql_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project"
+    sql_dir = TEST_DIR / "data" / "test_sql"
     dags_config = TEST_DIR / "data" / "dags.yaml"
 
     def test_get_dags(self):
@@ -18,7 +18,7 @@ class TestGenerateAirflowDags(object):
         assert dags.dag_by_name("bqetl_core") is not None
 
         events_dag = dags.dag_by_name("bqetl_events")
-        assert len(events_dag.tasks) == 2
+        assert len(events_dag.tasks) == 3
         assert events_dag.tasks[0].depends_on_past is False
         assert events_dag.tasks[1].depends_on_past is False
 

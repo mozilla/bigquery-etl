@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod`.stripe.subscription_volume
+  `moz-fx-data-shared-prod.stripe.subscription_volume`
 AS
 WITH subscriptions AS (
   SELECT

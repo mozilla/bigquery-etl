@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod`.mozilla_vpn.waitlist
+  `moz-fx-data-shared-prod.mozilla_vpn.waitlist`
 AS
 SELECT
   *

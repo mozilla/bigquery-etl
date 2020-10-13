@@ -12,9 +12,9 @@ WITH hmac_key AS (
 )
 SELECT
   `timestamp` AS submission_timestamp,
-  TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id,
+  TO_HEX(SHA256(jsonPayload.fields.uid)) AS user_id,
   TO_HEX(
-    udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.user_id AS BYTES))
+    udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.uid AS BYTES))
   ) AS hmac_user_id,
 FROM
   `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_auth_20*`
@@ -22,4 +22,4 @@ WHERE
   _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)
   AND jsonPayload.type = 'activityEvent'
   AND jsonPayload.fields.event = 'account.deleted'
-  AND jsonPayload.fields.user_id IS NOT NULL
+  AND jsonPayload.fields.uid IS NOT NULL

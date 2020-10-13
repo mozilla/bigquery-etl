@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION glam.parse_build_hour(build_hour STRING)
+CREATE OR REPLACE FUNCTION glam.build_hour_to_datetime(build_hour STRING)
 RETURNS DATETIME AS (
   PARSE_DATETIME("%Y%m%d%H", build_hour)
 );

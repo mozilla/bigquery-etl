@@ -49,7 +49,16 @@ def _process_file(client, args, filepath):
         target_view_orig = str(tokens[2]).strip().split()[0]
         target_view = target_view_orig
         if args.target_project:
-            project_id = target_view_orig.strip("`").split(".", 1)[0]
+            # target_view must be a fully-qualified BigQuery Standard SQL table
+            # identifier, which is of the form f"{project_id}.{dataset_id}.{table_id}".
+            # dataset_id and table_id may not contain "." or "`". Each component may be
+            # a backtick (`) quoted identifier, or the whole thing may be a backtick
+            # quoted identifier, but not both.
+            # Project IDs must contain 6-63 lowercase letters, digits, or dashes. Some
+            # project IDs also include domain name separated by a colon. IDs must start
+            # with a letter and may not end with a dash. For more information see also
+            # https://github.com/mozilla/bigquery-etl/pull/1427#issuecomment-707376291
+            project_id = target_view_orig.replace("`", "").rsplit(".", 2)[0]
             target_view = target_view_orig.replace(project_id, args.target_project, 1)
             # We only change the first occurrence, which is in the target view name.
             sql = sql.replace(project_id, args.target_project, 1)

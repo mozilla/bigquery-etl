@@ -1,3 +1,3 @@
 description: |
   Returns a custom build id generated from the build hour of a Fenix build.
-friendly_name: Format custom build id by build hour
+friendly_name: Format fenix builds into a custom build id representing build hour

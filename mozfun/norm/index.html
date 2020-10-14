@@ -118,15 +118,11 @@
             
             <li class="nav-item" data-level="1"><a href="#norm" class="nav-link">norm</a>
               <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#product_info-udf" class="nav-link">product_info (UDF)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#fenix_app_info-udf" class="nav-link">fenix_app_info (UDF)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#metadata-udf" class="nav-link">metadata (UDF)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#glean_ping_info-udf" class="nav-link">glean_ping_info (UDF)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -134,7 +130,15 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#glean_ping_info-udf" class="nav-link">glean_ping_info (UDF)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#glean_baseline_client_info-udf" class="nav-link">glean_baseline_client_info (UDF)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#metadata-udf" class="nav-link">metadata (UDF)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -147,6 +151,174 @@
 
 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
+<h2 id="product_info-udf">product_info (UDF)</h2>
+<p>Returns a normalized <code>product</code> name and a <code>canonical_name</code> for a product
+based on the raw <code>app_name</code> and <code>os</code> values that appear in pings.</p>
+<p>The returned <code>product</code> name is intended to be readable and unambiguous, but
+short and easy to type. This value is suitable for use as a key in derived
+tables.</p>
+<p>The returned <code>canonical_name</code> is more verbose and is suited for displaying
+in visualizations.</p>
+<p>The returned struct also contains boolean <code>contributes_to_2020_kpi</code> as the
+canonical reference for whether the given application is included in KPI
+reporting. Additional fields may be added for future years.</p>
+<p>The <code>os</code> value that's passed in should be the top-level <code>normalized_os</code> value
+present in any ping table, although this function does normalize the value to
+tolerate more raw operating system values.</p>
+<p>For legacy telemetry pings like <code>main</code> ping for desktop and <code>core</code> ping for
+mobile products, <code>app_name</code> should come from the submission URI (stored as
+<code>metadata.uri.app_name</code> in BigQuery ping tables).</p>
+<p>For Glean pings, the concept of an <code>app_name</code> doesn't exist, since pings
+from different applications are routed to different BigQuery datasets.
+Instead, the <code>app_name</code> send in for Glean pings should be the same value as
+what's expected for <code>product</code>. So, a view on top of pings from Fenix should
+pass in "Fenix" for <code>app_name</code>.</p>
+<p>This function also tolerates passing in a <code>product</code> value as <code>app_name</code> so that
+this function is still useful for derived tables which have thrown away the
+raw <code>app_name</code> value.</p>
+<p>The mappings are as follows:</p>
+<table>
+<thead>
+<tr>
+<th>app_name</th>
+<th>os</th>
+<th>product</th>
+<th>canonical_name</th>
+<th>2019</th>
+<th>2020</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Firefox</td>
+<td>*</td>
+<td>Firefox</td>
+<td>Firefox for Desktop</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Fenix</td>
+<td>Android</td>
+<td>Fenix</td>
+<td>Firefox for Android (Fenix)</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Fennec</td>
+<td>Android</td>
+<td>Fennec</td>
+<td>Firefox for Android (Fennec)</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Firefox Preview</td>
+<td>Android</td>
+<td>Firefox Preview</td>
+<td>Firefox Preview for Android</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Fennec</td>
+<td>iOS</td>
+<td>Firefox iOS</td>
+<td>Firefox for iOS</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>FirefoxForFireTV</td>
+<td>Android</td>
+<td>Firefox Fire TV</td>
+<td>Firefox for Fire TV</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td>FirefoxConnect</td>
+<td>Android</td>
+<td>Firefox Echo</td>
+<td>Firefox for Echo Show</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Zerda</td>
+<td>Android</td>
+<td>Firefox Lite</td>
+<td>Firefox Lite</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Zerda_cn</td>
+<td>Android</td>
+<td>Firefox Lite CN</td>
+<td>Firefox Lite (China)</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Focus</td>
+<td>Android</td>
+<td>Focus Android</td>
+<td>Firefox Focus for Android</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Focus</td>
+<td>iOS</td>
+<td>Focus iOS</td>
+<td>Firefox Focus for iOS</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Klar</td>
+<td>Android</td>
+<td>Klar Android</td>
+<td>Firefox Klar for Android</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Klar</td>
+<td>iOS</td>
+<td>Klar iOS</td>
+<td>Firefox Klar for iOS</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Lockbox</td>
+<td>Android</td>
+<td>Lockwise Android</td>
+<td>Lockwise for Android</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Lockbox</td>
+<td>iOS</td>
+<td>Lockwise iOS</td>
+<td>Lockwise for iOS</td>
+<td>true</td>
+<td>true</td>
+</tr>
+<tr>
+<td>FirefoxReality*</td>
+<td>Android</td>
+<td>Firefox Reality</td>
+<td>Firefox Reality</td>
+<td>true</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
 <h2 id="fenix_app_info-udf">fenix_app_info (UDF)</h2>
 <p>Returns canonical, human-understandable identification info for Fenix sources.</p>
 <p>The Glean telemetry library for Android by design routes pings based on the Play Store
@@ -214,17 +386,17 @@ GROUP BY
   submission_date,
   geckoview_version
 </code></pre>
-<h2 id="metadata-udf">metadata (UDF)</h2>
-<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
-<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
-<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <h2 id="os-udf">os (UDF)</h2>
 <p>Normalize an operating system string to one of the three major desktop
 platforms, one of the two major mobile platforms, or "Other". </p>
 <p>Reimplementation of logic used in the data pipeline: 
 <a href="https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74</a></p>
+<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
+<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
-<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p></div>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<h2 id="metadata-udf">metadata (UDF)</h2>
+<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p></div>
             </div>
         </div>
 

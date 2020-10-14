@@ -299,30 +299,30 @@ RETURNS STRUCT<
 
 -- Tests
 SELECT
-  assert_equals(
+  assert.equals(
     STRUCT('Firefox', 'Firefox for Desktop', TRUE, TRUE),
     norm.product_info('Firefox', 'Windows')
   ),
-  assert_equals(
+  assert.equals(
     STRUCT('Fenix', 'Firefox for Android (Fenix)', TRUE, TRUE),
     norm.product_info('Fenix', 'Android')
   ),
-  assert_equals(STRUCT('Other', 'Other', FALSE, FALSE), norm.product_info('Fenix', 'iOS')),
-  assert_equals(
+  assert.equals(STRUCT('Other', 'Other', FALSE, FALSE), norm.product_info('Fenix', 'iOS')),
+  assert.equals(
     STRUCT('Klar iOS', 'Firefox Klar for iOS', FALSE, FALSE),
     norm.product_info('Klar', 'iOS')
   ),
-  assert_equals(
+  assert.equals(
     STRUCT('Lockwise iOS', 'Lockwise for iOS', TRUE, TRUE),
     norm.product_info('Lockbox', 'iOS')
   ),
   -- Make sure os normalization works.
-  assert_equals(
+  assert.equals(
     STRUCT('Firefox iOS', 'Firefox for iOS', TRUE, TRUE),
     norm.product_info('Fennec', 'iPhone OS')
   ),
   -- Make sure we can pass in product values for app_name.
-  assert_equals(
+  assert.equals(
     STRUCT('Firefox iOS', 'Firefox for iOS', TRUE, TRUE),
     norm.product_info('Firefox iOS', 'iOS')
   );

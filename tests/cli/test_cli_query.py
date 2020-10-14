@@ -20,7 +20,7 @@ class TestQuery:
         with runner.isolated_filesystem():
             with open("foo.txt", "w") as f:
                 f.write("")
-            result = runner.invoke(create, ["test.query_v1", "--path=foo.txt"])
+            result = runner.invoke(create, ["test.query_v1", "--sql_dir=foo.txt"])
             assert result.exit_code == 2
 
     def test_create_invalid_query_name(self, runner):
@@ -203,7 +203,7 @@ class TestQuery:
             ) as f:
                 f.write("SELECT 1")
 
-            result = runner.invoke(info, ["telemetry_derived.query_v1"])
+            result = runner.invoke(info, ["*.telemetry_derived.query_v1"])
             assert result.exit_code == 0
             assert "No metadata" in result.output
             assert "path:" in result.output
@@ -221,7 +221,7 @@ class TestQuery:
             ) as f:
                 f.write(yaml.dump(metadata_conf))
 
-            result = runner.invoke(info, ["telemetry_derived.query_v1"])
+            result = runner.invoke(info, ["*.telemetry_derived.query_v1"])
             assert result.exit_code == 0
             assert "No metadata" not in result.output
             assert "description" in result.output
@@ -256,7 +256,9 @@ class TestQuery:
             assert "telemetry_derived.query_v2" in result.output
             assert "telemetry_derived.query_v1" in result.output
 
-            result = runner.invoke(info, ["foo_derived.*"])
+            result = runner.invoke(
+                info, ["foo_derived.*", "--project-id=moz-fx-data-shared-prod"]
+            )
             assert result.exit_code == 0
             assert "foo_derived.query_v2" in result.output
             assert "telemetry_derived.query_v2" not in result.output
@@ -291,14 +293,19 @@ class TestQuery:
             ) as f:
                 f.write("SELECT 1")
 
-            assert (
-                len(_queries_matching_name_pattern("*", "sql/moz-fx-data-shared-prod/"))
-                == 3
-            )
+            os.makedirs("sql/moz-fx-data-test-project")
+            os.mkdir("sql/moz-fx-data-test-project/telemetry_derived")
+            os.mkdir("sql/moz-fx-data-test-project/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-test-project/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            assert len(_queries_matching_name_pattern("*", "sql/", None)) == 4
             assert (
                 len(
                     _queries_matching_name_pattern(
-                        "*.sql", "sql/moz-fx-data-shared-prod/"
+                        "*.sql", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
                 == 0
@@ -306,7 +313,7 @@ class TestQuery:
             assert (
                 len(
                     _queries_matching_name_pattern(
-                        "test", "sql/moz-fx-data-shared-prod/"
+                        "test", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
                 == 0
@@ -314,7 +321,7 @@ class TestQuery:
             assert (
                 len(
                     _queries_matching_name_pattern(
-                        "foo_derived", "sql/moz-fx-data-shared-prod/"
+                        "foo_derived", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
                 == 0
@@ -322,23 +329,45 @@ class TestQuery:
             assert (
                 len(
                     _queries_matching_name_pattern(
-                        "foo_derived*", "sql/moz-fx-data-shared-prod/"
+                        "foo_derived*", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
                 == 1
             )
+            assert len(_queries_matching_name_pattern("*query*", "sql/", None)) == 4
             assert (
                 len(
                     _queries_matching_name_pattern(
-                        "*query*", "sql/moz-fx-data-shared-prod/"
+                        "foo_derived.query_v2", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
-                == 3
+                == 1
             )
+
             assert (
                 len(
                     _queries_matching_name_pattern(
-                        "foo_derived.query_v2", "sql/moz-fx-data-shared-prod/"
+                        "telemetry_derived.query_v1", "sql/", "moz-fx-data-test-project"
+                    )
+                )
+                == 1
+            )
+
+            assert (
+                len(
+                    _queries_matching_name_pattern(
+                        "moz-fx-data-test-project.telemetry_derived.query_v1",
+                        "sql/",
+                        None,
+                    )
+                )
+                == 1
+            )
+
+            assert (
+                len(
+                    _queries_matching_name_pattern(
+                        "moz-fx-data-test-project.telemetry_derived.*", "sql/", None
                     )
                 )
                 == 1

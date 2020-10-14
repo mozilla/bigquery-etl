@@ -21,22 +21,6 @@ dags_config_option = click.option(
     callback=is_valid_file,
 )
 
-sql_dir_option = click.option(
-    "--sql-dir",
-    "--sql_dir",
-    help="Path to directory with queries",
-    type=click.Path(file_okay=False),
-    default="sql/",
-    callback=is_valid_dir,
-)
-
-project_id_option = click.option(
-    "--project-id",
-    "--project_id",
-    help="Project ID",
-    default="moz-fx-data-shared-prod",
-)
-
 output_dir_option = click.option(
     "--output-dir",
     "--output_dir",
@@ -57,7 +41,6 @@ def dag():
     help="List all available DAGs",
 )
 @click.argument("name", required=False)
-@sql_dir_option
 @dags_config_option
 @click.option(
     "--with_tasks",
@@ -67,10 +50,10 @@ def dag():
     default=False,
     is_flag=True,
 )
-def info(name, dags_config, sql_dir, with_tasks):
+def info(name, dags_config, with_tasks):
     """List available DAG information."""
     if with_tasks:
-        dag_collection = get_dags(sql_dir, dags_config)
+        dag_collection = get_dags(None, dags_config)
     else:
         dag_collection = DagCollection.from_file(dags_config)
 
@@ -173,11 +156,10 @@ def create(
 @dag.command(help="Generate Airflow DAGs from DAG definitions")
 @click.argument("name", required=False)
 @dags_config_option
-@sql_dir_option
 @output_dir_option
-def generate(name, dags_config, sql_dir, output_dir):
+def generate(name, dags_config, output_dir):
     """CLI command for generating Airflow DAGs."""
-    dags = get_dags(sql_dir, dags_config)
+    dags = get_dags(None, dags_config)
     if name:
         # only generate specific DAG
         dag = dags.dag_by_name(name)
@@ -198,15 +180,14 @@ def generate(name, dags_config, sql_dir, output_dir):
 @click.argument("name", required=False)
 @dags_config_option
 @output_dir_option
-@project_id_option
-def remove(name, dags_config, output_dir, project_id):
+def remove(name, dags_config, output_dir):
     """
     CLI command for removing a DAG.
 
     Also removes scheduling information from queries that were referring to the DAG.
     """
     # remove from task schedulings
-    dags = get_dags(project_id, dags_config)
+    dags = get_dags(None, dags_config)
     dag_tbr = dags.dag_by_name(name)
 
     if not dag_tbr:

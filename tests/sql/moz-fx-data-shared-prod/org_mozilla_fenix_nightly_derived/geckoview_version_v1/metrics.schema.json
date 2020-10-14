@@ -1,7 +1,7 @@
 [
   {
     "type": "TIMESTAMP",
-    "name": "submission_timetamp",
+    "name": "submission_timestamp",
     "mode": "REQUIRED"
   },
   {
@@ -10,7 +10,7 @@
     "mode": "NULLABLE",
     "fields": [
       {
-        "type:": "STRING",
+        "type": "STRING",
         "name": "app_build",
         "mode": "NULLABLE"
       }
@@ -27,7 +27,7 @@
         "mode": "NULLABLE",
         "fields": [
           {
-            "type:": "STRING",
+            "type": "STRING",
             "name": "geckoview_version",
             "mode": "NULLABLE"
           }
@@ -36,4 +36,3 @@
     ]
   }
 ]
-  

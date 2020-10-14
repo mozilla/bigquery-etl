@@ -30,6 +30,13 @@ sql_dir_option = click.option(
     callback=is_valid_dir,
 )
 
+project_id_option = click.option(
+    "--project-id",
+    "--project_id",
+    help="Project ID",
+    default="moz-fx-data-shared-prod",
+)
+
 output_dir_option = click.option(
     "--output-dir",
     "--output_dir",
@@ -190,16 +197,16 @@ def generate(name, dags_config, sql_dir, output_dir):
 @dag.command(help="Remove a DAG")
 @click.argument("name", required=False)
 @dags_config_option
-@sql_dir_option
 @output_dir_option
-def remove(name, dags_config, sql_dir, output_dir):
+@project_id_option
+def remove(name, dags_config, output_dir, project_id):
     """
     CLI command for removing a DAG.
 
     Also removes scheduling information from queries that were referring to the DAG.
     """
     # remove from task schedulings
-    dags = get_dags(sql_dir, dags_config)
+    dags = get_dags(project_id, dags_config)
     dag_tbr = dags.dag_by_name(name)
 
     if not dag_tbr:

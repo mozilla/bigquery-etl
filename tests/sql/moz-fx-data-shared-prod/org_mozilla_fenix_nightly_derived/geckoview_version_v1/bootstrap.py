@@ -1,9 +1,10 @@
 """Code for setting up the the tests."""
-from pathlib import Path
-from datetime import datetime, timedelta
-import yaml
-import click
+import math
 import shutil
+from datetime import datetime, timedelta
+from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).parent
 
@@ -25,26 +26,25 @@ def input_row(submission_offset, build_offset, version_offset=0):
     }
 
 
-@click.command()
-@click.argument("test-name")
 def main(test_name):
     assert (ROOT / test_name).is_dir(), f"{ROOT / test_name} not name of test"
     with (ROOT / test_name / "org_mozilla_fenix_nightly.metrics.yaml").open("w") as fp:
         # this does not generate any complicated cases where there might be
         # discontinuities in the data.
         rows = []
-        for i in range(3):
-            for j in range(3):
-                # higher values of j should lead to an offset in version
-                rows += [input_row(i, j, int(j > 1))]
+        # needs some data out of the period for the cold start of the window function
+        for i in range(HISTORY_DAYS + 2):
+            # new version every day
+            rows += [input_row(i, i, i)]
         yaml.dump(
-            sorted(rows, key=lambda x: x["client_info"]["app_build"]) * 5,
+            sorted(rows, key=lambda x: x["client_info"]["app_build"]) * 6,
             fp,
         )
+    # bad rows
     with (ROOT / test_name / "org_mozilla_fenix.metrics.yaml").open("w") as fp:
-        yaml.dump([input_row(30, 30, 10)], fp)
+        yaml.dump([input_row(15, 30, 10)], fp)
     with (ROOT / test_name / "org_mozilla_fennec_aurora.metrics.yaml").open("w") as fp:
-        yaml.dump([input_row(30, 30, 10)], fp)
+        yaml.dump([input_row(15, 30, 10)], fp)
     for dataset in [
         "org_mozilla_fenix_nightly",
         "org_mozilla_fenix",
@@ -54,19 +54,22 @@ def main(test_name):
             ROOT / "metrics.schema.json",
             ROOT / test_name / f"{dataset}.metrics.schema.json",
         )
-    with (ROOT / test_name / "expect.yaml").open("w") as fp:
-        row = []
-        # this is inclusive∏
-        for hour in range(HISTORY_DAYS * 24):
-            row += [
-                {
-                    "build_hour": (START_DATE + timedelta(hours=hour)).isoformat(),
-                    "geckoview_version": "80.0.0",
-                    "n_builds": 0,
-                }
-            ]
-        yaml.dump(row, fp)
-    if test_name == "test_aggregation":
+    if test_name == "test_init":
+        with (ROOT / test_name / "expect.yaml").open("w") as fp:
+            row = []
+            # this is inclusive∏
+            for hour in range(HISTORY_DAYS * 24 + 1):
+                # new version every day
+                version_offset = math.ceil(hour / 24)
+                row += [
+                    {
+                        "build_hour": (START_DATE - timedelta(hours=hour)).isoformat(),
+                        "geckoview_version": f"{80-version_offset}.0.0",
+                        "n_builds": 6,
+                    }
+                ]
+            yaml.dump(row, fp)
+    elif test_name == "test_aggregation":
         with (
             ROOT
             / test_name
@@ -86,4 +89,5 @@ def main(test_name):
 
 
 if __name__ == "__main__":
-    main()
+    main("test_init")
+    main("test_aggregation")

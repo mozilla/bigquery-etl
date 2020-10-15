@@ -23,8 +23,9 @@ SELECT
   -- NOTE: app_version is dropped due to a lack of semantic versioning. We opt
   -- to use a build id as a placeholder. See
   -- https://github.com/mozilla/bigquery-etl/issues/1329
-  * EXCEPT (channel, app_version),
+  * EXCEPT (app_build_id, channel, app_version),
+  mozfun.norm.fenix_build_to_build_hour(app_build_id) AS app_build_id,
+  "*" AS channel,
   SAFE_CAST(app_build_id AS INT64) AS app_version,
-  "*" AS channel
 FROM
   extracted

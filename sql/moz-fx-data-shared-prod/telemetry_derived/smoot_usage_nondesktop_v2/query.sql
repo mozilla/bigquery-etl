@@ -7,8 +7,6 @@ WITH base AS (
     telemetry.nondesktop_clients_last_seen
   WHERE
     product != 'Other'
-    -- There are many strange nonsensical entries for os, so we filter here.
-    AND os IN ('Android', 'iOS')
 ),
 --
 unioned AS (
@@ -53,7 +51,7 @@ nested AS (
     channel,
     attributed
   FROM
-    base
+    unioned
   WHERE
     client_id IS NOT NULL
     -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL

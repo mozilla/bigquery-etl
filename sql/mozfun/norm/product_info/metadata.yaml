@@ -1,7 +1,7 @@
 friendly_name: Normalize Product Info
 description: |
   Returns a normalized `product` name and a `canonical_name` for a product
-  based on the raw `app_name` and `os` values that appear in pings.
+  based on the raw `app_name` and `normalized_os` values that appear in pings.
 
   The returned `product` name is intended to be readable and unambiguous, but
   short and easy to type. This value is suitable for use as a key in derived
@@ -14,9 +14,9 @@ description: |
   canonical reference for whether the given application is included in KPI
   reporting. Additional fields may be added for future years.
 
-  The `os` value that's passed in should be the top-level `normalized_os` value
-  present in any ping table, although this function does normalize the value to
-  tolerate more raw operating system values.
+  The `normalized_os` value that's passed in should be the top-level `normalized_os`
+  value present in any ping table or you may want to wrap a raw value in `mozfun.norm.os`
+  like `mozfun.norm.product_info(app_name, mozfun.norm.os(os))`.
 
   For legacy telemetry pings like `main` ping for desktop and `core` ping for
   mobile products, `app_name` should come from the submission URI (stored as
@@ -34,21 +34,21 @@ description: |
 
   The mappings are as follows:
 
-  app_name         | os      | product          | canonical_name              | 2019  | 2020
-  ---------------- | ------- | ---------------- | --------------------------- | ----- | ----
-  Firefox          | *       | Firefox          | Firefox for Desktop         | true  | true
-  Fenix            | Android | Fenix            | Firefox for Android (Fenix) | true  | true
-  Fennec           | Android | Fennec           | Firefox for Android (Fennec)| true  | true
-  Firefox Preview  | Android | Firefox Preview  | Firefox Preview for Android | true  | true
-  Fennec           | iOS     | Firefox iOS      | Firefox for iOS             | true  | true
-  FirefoxForFireTV | Android | Firefox Fire TV  | Firefox for Fire TV         | false | false
-  FirefoxConnect   | Android | Firefox Echo     | Firefox for Echo Show       | true  | true
-  Zerda            | Android | Firefox Lite     | Firefox Lite                | true  | true
-  Zerda_cn         | Android | Firefox Lite CN  | Firefox Lite (China)        | false | false
-  Focus            | Android | Focus Android    | Firefox Focus for Android   | true  | true
-  Focus            | iOS     | Focus iOS        | Firefox Focus for iOS       | true  | true
-  Klar             | Android | Klar Android     | Firefox Klar for Android    | false | false
-  Klar             | iOS     | Klar iOS         | Firefox Klar for iOS        | false | false
-  Lockbox          | Android | Lockwise Android | Lockwise for Android        | true  | true
-  Lockbox          | iOS     | Lockwise iOS     | Lockwise for iOS            | true  | true
-  FirefoxReality*  | Android | Firefox Reality  | Firefox Reality             | true  | true
+  app_name         | normalized_os | product          | canonical_name              | 2019  | 2020
+  ---------------- | ------------- | ---------------- | --------------------------- | ----- | ----
+  Firefox          | *             | Firefox          | Firefox for Desktop         | true  | true
+  Fenix            | Android       | Fenix            | Firefox for Android (Fenix) | true  | true
+  Fennec           | Android       | Fennec           | Firefox for Android (Fennec)| true  | true
+  Firefox Preview  | Android       | Firefox Preview  | Firefox Preview for Android | true  | true
+  Fennec           | iOS           | Firefox iOS      | Firefox for iOS             | true  | true
+  FirefoxForFireTV | Android       | Firefox Fire TV  | Firefox for Fire TV         | false | false
+  FirefoxConnect   | Android       | Firefox Echo     | Firefox for Echo Show       | true  | true
+  Zerda            | Android       | Firefox Lite     | Firefox Lite                | true  | true
+  Zerda_cn         | Android       | Firefox Lite CN  | Firefox Lite (China)        | false | false
+  Focus            | Android       | Focus Android    | Firefox Focus for Android   | true  | true
+  Focus            | iOS           | Focus iOS        | Firefox Focus for iOS       | true  | true
+  Klar             | Android       | Klar Android     | Firefox Klar for Android    | false | false
+  Klar             | iOS           | Klar iOS         | Firefox Klar for iOS        | false | false
+  Lockbox          | Android       | Lockwise Android | Lockwise for Android        | true  | true
+  Lockbox          | iOS           | Lockwise iOS     | Lockwise for iOS            | true  | true
+  FirefoxReality*  | Android       | Firefox Reality  | Firefox Reality             | true  | true

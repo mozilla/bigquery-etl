@@ -18,7 +18,7 @@ lines AS (
 structured AS (
   SELECT AS STRUCT
     fields[OFFSET(0)] AS app_name,
-    fields[OFFSET(1)] AS os,
+    fields[OFFSET(1)] AS normalized_os,
     fields[OFFSET(2)] AS product,
     fields[OFFSET(3)] AS canonical_name,
     fields[OFFSET(4)] AS contributes_to_2019_kpi,
@@ -48,9 +48,9 @@ formatted AS (
     *,
     CONCAT(
       FORMAT(
-        "WHEN app_name LIKE %T AND norm.os(os) LIKE %T THEN STRUCT(%T AS product, %T AS canonical_name, %s AS contributes_to_2019_kpi, %s AS contributes_to_2020_kpi)",
+        "WHEN app_name LIKE %T AND normalized_os LIKE %T THEN STRUCT(%T AS product, %T AS canonical_name, %s AS contributes_to_2019_kpi, %s AS contributes_to_2020_kpi)",
         app_name,
-        os,
+        normalized_os,
         product,
         canonical_name,
         contributes_to_2019_kpi,

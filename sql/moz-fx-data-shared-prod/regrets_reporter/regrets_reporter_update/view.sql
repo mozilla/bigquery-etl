@@ -21,11 +21,11 @@ SELECT
                 FROM
                   UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
               ) AS parsed_x_source_tags
-          ) AS header
-        ),
-        -- Limit the geo info we present to the country level;
-        -- https://bugzilla.mozilla.org/show_bug.cgi?id=1654078#c45
-        (SELECT AS STRUCT metadata.geo.country) AS geo
+          ) AS header,
+          -- Limit the geo info we present to the country level;
+          -- https://bugzilla.mozilla.org/show_bug.cgi?id=1654078#c45
+          (SELECT AS STRUCT metadata.geo.country) AS geo
+        )
     ) AS metadata
   )
 FROM

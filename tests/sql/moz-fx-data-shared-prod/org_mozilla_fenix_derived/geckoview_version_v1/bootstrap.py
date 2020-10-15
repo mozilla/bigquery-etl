@@ -15,10 +15,12 @@ HISTORY_DAYS = 30
 
 
 def app_build(start_date):
+    """Generate an app build id per Fenix specifications."""
     return f"{(start_date-EPOCH).days*24<<3:010d}"
 
 
 def input_row(submission_offset, build_offset, version_offset=0):
+    """Generate a single row in a glean metrics ping that is being referenced."""
     return {
         "submission_timestamp": (START_DATE - timedelta(submission_offset)).isoformat(),
         "client_info": {"app_build": app_build(START_DATE - timedelta(build_offset))},
@@ -27,6 +29,7 @@ def input_row(submission_offset, build_offset, version_offset=0):
 
 
 def main(test_name):
+    """Generate assets for each test."""
     assert (ROOT / test_name).is_dir(), f"{ROOT / test_name} not name of test"
     with (ROOT / test_name / "org_mozilla_fenix_nightly.metrics.yaml").open("w") as fp:
         # this does not generate any complicated cases where there might be

@@ -73,7 +73,12 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/stripe_derived/subscription_events/view.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/subscriptions_v1/init.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/waitlist_funnel_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/waitlist_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)

@@ -1,6 +1,6 @@
-friendly_name: Mozilla VPN Waitlist
+friendly_name: Mozilla VPN Users
 description: >
-  A mirror of the vpn_waitlist table from the Mozilla VPN (Guardian) CloudSQL database, updated daily to
+  A mirror of the users table from the Mozilla VPN (Guardian) CloudSQL database, updated daily to
   match the current state of the table. The table history is not needed, because changes made are not
   destructive, except in the case of self-serve data deletion.
 owners:
@@ -17,5 +17,5 @@ scheduling:
   # The external_database_query argument in EXTERNAL_QUERY must be a literal string or query
   # parameter, and cannot be generated at runtime using function calls like CONCAT or FORMAT,
   # so the entire value must be provided as a STRING query parameter to handle specific dates:
-  - "external_database_query:STRING:SELECT * FROM vpn_waitlist WHERE DATE(updated_at) = DATE '{{ds}}'"
+  - "external_database_query:STRING:SELECT * FROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
   referenced_tables: []

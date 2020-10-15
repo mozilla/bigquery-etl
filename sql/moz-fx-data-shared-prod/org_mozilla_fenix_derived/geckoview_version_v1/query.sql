@@ -146,7 +146,7 @@ past_and_present AS (
   SELECT
     *
   FROM
-    org_mozilla_fenix_nightly_derived.geckoview_version_v1
+    org_mozilla_fenix_derived.geckoview_version_v1
 )
 -- take the average over the previous values
 SELECT

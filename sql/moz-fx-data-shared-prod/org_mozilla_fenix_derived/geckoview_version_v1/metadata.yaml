@@ -1,6 +1,6 @@
 friendly_name: Geckoview versions corresponding to build hours
 description: |
-  Enumerate the most common GeckoView version for each build hour for "nightly"
+  Enumerate the most common GeckoView version for each build hour for nightly
   Fenix builds.
   This includes all hours up to the reference day e.g. the last row up where the
   reference date is 2020-10-01 will include hours up to midnight of that day.
@@ -10,7 +10,7 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: org_mozilla_fenix_nightly_derived_geckoview_version
+  dag_name: org_mozilla_fenix_derived_geckoview_version
   destination_table: null
-  sql_file_path: "sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived/geckoview_version_v1/query.sql"
+  sql_file_path: "sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/geckoview_version_v1/query.sql"
   parameters: ["submission_date:DATE:{{ds}}"]

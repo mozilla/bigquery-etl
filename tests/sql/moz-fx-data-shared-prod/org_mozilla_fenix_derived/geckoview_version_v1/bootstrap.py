@@ -72,9 +72,7 @@ def main(test_name):
             yaml.dump(init_rows, fp)
     elif test_name == "test_aggregation":
         with (
-            ROOT
-            / test_name
-            / "org_mozilla_fenix_nightly_derived.geckoview_version_v1.yaml"
+            ROOT / test_name / "org_mozilla_fenix_derived.geckoview_version_v1.yaml"
         ).open("w") as fp:
             yaml.dump(init_rows, fp)
 

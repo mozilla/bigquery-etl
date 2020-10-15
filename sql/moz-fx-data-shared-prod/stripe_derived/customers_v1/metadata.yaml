@@ -1,0 +1,12 @@
+friendly_name: Stripe Customers
+description: Stripe Customers as of UTC midnight.
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: stripe
+  schedule: daily
+scheduling:
+  dag_name: bqetl_stripe
+  # destination is the whole table, not a single partition, so don't use date_partition_parameter
+  date_partition_parameter:
+  referenced_tables: [['moz-fx-data-shared-prod', 'stripe_external', 'customers_v1']]

@@ -1,0 +1,15 @@
+friendly_name: Mozilla VPN protected users
+description: >
+  First time that accounts were protected by the Mozilla VPN
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: mozilla_vpn
+  schedule: daily
+scheduling:
+  dag_name: bqetl_mozilla_vpn
+  # destination is the whole table, not a single partition, so don't use date_partition_parameter
+  date_partition_parameter: null
+  parameters:
+  - "date:DATE:{{ds}}"
+  referenced_tables: []

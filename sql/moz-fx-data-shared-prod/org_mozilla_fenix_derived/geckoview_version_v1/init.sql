@@ -1,14 +1,14 @@
 CREATE TABLE IF NOT EXISTS
-  org_mozilla_fenix_nightly_derived.geckoview_version_v1(
+  org_mozilla_fenix_derived.geckoview_version_v1(
     build_hour DATETIME,
     geckoview_version STRING,
     n_builds INT64,
   )
 AS
 WITH extracted AS (
-    -- We'll look at the metrics ping to estimate the major geckoview version.
-    -- The metrics section is aliased, so we must rename the table for this to
-    -- work as expected.
+  -- We'll look at the metrics ping to estimate the major geckoview version.
+  -- The metrics section is aliased, so we must rename the table for this to
+  -- work as expected.
   SELECT
     submission_timestamp,
     client_info.app_build,
@@ -36,11 +36,8 @@ transformed AS (
   SELECT
     app_build,
     geckoview_version,
-        -- Truncate to the hour, since older builds give minute resolution.
-    datetime_TRUNC(
-      `moz-fx-data-shared-prod.udf.fenix_build_to_datetime`(app_build),
-      HOUR
-    ) AS build_hour
+    -- Truncate to the hour, since older builds give minute resolution.
+    datetime_TRUNC(mozfun.norm.fenix_build_to_datetime(app_build), HOUR) AS build_hour
   FROM
     extracted
   WHERE
@@ -49,9 +46,9 @@ transformed AS (
     AND @submission_date
 ),
 grouped_build_hours AS (
-      -- Count the number of geckoview versions for each build hour row over the
-      -- expected interval. We choose a minimum number of builds to filter out
-      -- noise.
+  -- Count the number of geckoview versions for each build hour row over the
+  -- expected interval. We choose a minimum number of builds to filter out
+  -- noise.
   SELECT
     build_hour,
     geckoview_version,
@@ -72,8 +69,8 @@ grouped_build_hours AS (
     geckoview_version
 ),
 top_build_hours AS (
-      -- Get the geckoview version for the build hour that has the most number
-      -- of rows.
+  -- Get the geckoview version for the build hour that has the most number
+  -- of rows.
   SELECT
     ROW.*
   FROM
@@ -87,9 +84,9 @@ top_build_hours AS (
     )
 ),
 enumerated_build_hours AS (
-      -- Enumerate all of the build hours that we care about. We have a small
-      -- margin that we'll use so we fill in null values for the rolling average
-      -- of number of rows.
+  -- Enumerate all of the build hours that we care about. We have a small
+  -- margin that we'll use so we fill in null values for the rolling average
+  -- of number of rows.
   SELECT
     datetime(`timestamp`) AS build_hour
   FROM
@@ -107,7 +104,7 @@ enumerated_build_hours AS (
 estimated_version AS (
   SELECT
     build_hour,
-        -- Versions are expected to be monotonically increasing.
+    -- Versions are expected to be monotonically increasing.
     MAX(geckoview_version) OVER (
       ORDER BY
         build_hour ASC
@@ -115,7 +112,7 @@ estimated_version AS (
         UNBOUNDED PRECEDING
         AND CURRENT ROW
     ) AS geckoview_version,
-        -- The number of builds is used as a query diagnostic.
+    -- The number of builds is used as a query diagnostic.
     AVG(n_builds) OVER (
       ORDER BY
         build_hour ASC

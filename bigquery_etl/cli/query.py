@@ -364,7 +364,7 @@ def info(name, sql_dir, project_id, cost, last_updated):
                     WHERE submission_date BETWEEN '{start_date}' AND '{end_date}'
                         AND dataset = '{dataset}'
                         AND table = '{table}'
-                """ # noqa E501
+                """  # noqa E501
                 ).result()
 
                 if result.total_rows == 0:

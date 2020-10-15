@@ -222,6 +222,76 @@
     string:
       geckoview_version: 80.0.0
   submission_timestamp: '2020-06-01T00:00:00'
+- &id033
+  client_info:
+    app_build: 0000380736
+  metrics:
+    string:
+      geckoview_version: 81.0.0
+  submission_timestamp: '2020-06-02T00:00:00'
+- &id034
+  client_info:
+    app_build: 0000380928
+  metrics:
+    string:
+      geckoview_version: 82.0.0
+  submission_timestamp: '2020-06-03T00:00:00'
+- &id035
+  client_info:
+    app_build: 0000381120
+  metrics:
+    string:
+      geckoview_version: 83.0.0
+  submission_timestamp: '2020-06-04T00:00:00'
+- &id036
+  client_info:
+    app_build: 0000381312
+  metrics:
+    string:
+      geckoview_version: 84.0.0
+  submission_timestamp: '2020-06-05T00:00:00'
+- &id037
+  client_info:
+    app_build: 0000381504
+  metrics:
+    string:
+      geckoview_version: 85.0.0
+  submission_timestamp: '2020-06-06T00:00:00'
+- &id038
+  client_info:
+    app_build: 0000381696
+  metrics:
+    string:
+      geckoview_version: 86.0.0
+  submission_timestamp: '2020-06-07T00:00:00'
+- &id039
+  client_info:
+    app_build: 0000381888
+  metrics:
+    string:
+      geckoview_version: 87.0.0
+  submission_timestamp: '2020-06-08T00:00:00'
+- &id040
+  client_info:
+    app_build: 0000382080
+  metrics:
+    string:
+      geckoview_version: 88.0.0
+  submission_timestamp: '2020-06-09T00:00:00'
+- &id041
+  client_info:
+    app_build: 0000382272
+  metrics:
+    string:
+      geckoview_version: 89.0.0
+  submission_timestamp: '2020-06-10T00:00:00'
+- &id042
+  client_info:
+    app_build: 0000382464
+  metrics:
+    string:
+      geckoview_version: 90.0.0
+  submission_timestamp: '2020-06-11T00:00:00'
 - *id001
 - *id002
 - *id003
@@ -254,6 +324,16 @@
 - *id030
 - *id031
 - *id032
+- *id033
+- *id034
+- *id035
+- *id036
+- *id037
+- *id038
+- *id039
+- *id040
+- *id041
+- *id042
 - *id001
 - *id002
 - *id003
@@ -286,6 +366,16 @@
 - *id030
 - *id031
 - *id032
+- *id033
+- *id034
+- *id035
+- *id036
+- *id037
+- *id038
+- *id039
+- *id040
+- *id041
+- *id042
 - *id001
 - *id002
 - *id003
@@ -318,6 +408,16 @@
 - *id030
 - *id031
 - *id032
+- *id033
+- *id034
+- *id035
+- *id036
+- *id037
+- *id038
+- *id039
+- *id040
+- *id041
+- *id042
 - *id001
 - *id002
 - *id003
@@ -350,6 +450,16 @@
 - *id030
 - *id031
 - *id032
+- *id033
+- *id034
+- *id035
+- *id036
+- *id037
+- *id038
+- *id039
+- *id040
+- *id041
+- *id042
 - *id001
 - *id002
 - *id003
@@ -382,3 +492,13 @@
 - *id030
 - *id031
 - *id032
+- *id033
+- *id034
+- *id035
+- *id036
+- *id037
+- *id038
+- *id039
+- *id040
+- *id041
+- *id042

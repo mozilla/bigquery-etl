@@ -80,11 +80,11 @@ top_build_hours AS (
     )
 ),
 enumerated_build_hours AS (
-      -- Enumerate all of the build hours that we care about. We have a small
-      -- margin that we'll use so we fill in null values for the rolling average
-      -- of number of rows.
+    -- Enumerate all of the build hours that we care about. We have a small
+    -- margin that we'll use so we fill in null values for the rolling average
+    -- of number of rows.
   SELECT
-    datetime(TIMESTAMP) AS build_hour
+    datetime(`timestamp`) AS build_hour
   FROM
     UNNEST(
       GENERATE_TIMESTAMP_ARRAY(
@@ -95,7 +95,7 @@ enumerated_build_hours AS (
         TIMESTAMP_TRUNC(CAST(@submission_date AS timestamp), HOUR),
         INTERVAL 1 HOUR
       )
-    ) AS TIMESTAMP
+    ) AS `timestamp`
 ),
 estimated_version AS (
   SELECT
@@ -131,7 +131,9 @@ new_geckoview_versions AS (
   FROM
     estimated_version
   WHERE
-    build_hour >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    build_hour
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND @submission_date
   ORDER BY
     build_hour
 ),
@@ -158,3 +160,5 @@ FROM
     GROUP BY
       build_hour
   )
+ORDER BY
+  build_hour DESC

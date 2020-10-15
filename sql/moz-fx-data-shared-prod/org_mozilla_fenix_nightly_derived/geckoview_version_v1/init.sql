@@ -1,5 +1,9 @@
 CREATE TABLE IF NOT EXISTS
-  org_mozilla_fenix_nightly_derived.geckoview_version_v1
+  org_mozilla_fenix_nightly_derived.geckoview_version_v1(
+    build_hour DATETIME,
+    geckoview_version STRING,
+    n_builds INT64,
+  )
 AS
 WITH extracted AS (
     -- We'll look at the metrics ping to estimate the major geckoview version.
@@ -87,7 +91,7 @@ enumerated_build_hours AS (
       -- margin that we'll use so we fill in null values for the rolling average
       -- of number of rows.
   SELECT
-    datetime(TIMESTAMP) AS build_hour
+    datetime(`timestamp`) AS build_hour
   FROM
     UNNEST(
       GENERATE_TIMESTAMP_ARRAY(
@@ -98,7 +102,7 @@ enumerated_build_hours AS (
         TIMESTAMP_TRUNC(CAST(@submission_date AS timestamp), HOUR),
         INTERVAL 1 HOUR
       )
-    ) AS TIMESTAMP
+    ) AS `timestamp`
 ),
 estimated_version AS (
   SELECT
@@ -134,8 +138,13 @@ new_geckoview_versions AS (
   FROM
     estimated_version
   WHERE
-    build_hour between DATE_SUB(@submission_date, INTERVAL 30 DAY) and @submission_date
+    build_hour
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND @submission_date
   ORDER BY
     build_hour
 )
-select * from new_geckoview_versions
+SELECT
+  *
+FROM
+  new_geckoview_versions

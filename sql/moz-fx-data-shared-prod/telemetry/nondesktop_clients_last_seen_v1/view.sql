@@ -45,7 +45,6 @@ SELECT
   days_created_profile_bits,
   days_since_created_profile,
   app_name,
-  mozfun.norm.product_info(app_name, os).*,
   os,
   osversion AS os_version,
   normalized_channel,
@@ -53,7 +52,8 @@ SELECT
   country,
   locale,
   distribution_id,
-  metadata_app_version AS app_version
+  metadata_app_version AS app_version,
+  mozfun.norm.product_info(app_name, os).*,
 FROM
   `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
 UNION ALL
@@ -65,7 +65,6 @@ SELECT
   days_created_profile_bits,
   days_since_created_profile,
   app_name,
-  mozfun.norm.product_info(app_name, os).*,
   normalized_os AS os,
   normalized_os_version AS os_version,
   normalized_channel,
@@ -73,6 +72,7 @@ SELECT
   country,
   locale,
   NULL AS distribution_id,
-  app_display_version AS app_version
+  app_display_version AS app_version,
+  mozfun.norm.product_info(app_name, normalized_os).*,
 FROM
   glean_final

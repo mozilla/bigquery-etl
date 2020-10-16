@@ -14,7 +14,7 @@ from .._version import __version__
 from ..stripe import stripe_
 
 
-def cli():
+def cli(prog_name=None):
     """Create the bigquery-etl CLI."""
     commands = {
         "query": query,
@@ -37,7 +37,7 @@ def cli():
         "ignore", "Your application has authenticated using end user credentials"
     )
 
-    group()
+    group(prog_name=prog_name)
 
 
 if __name__ == "__main__":

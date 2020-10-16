@@ -9,7 +9,7 @@ WITH extracted AS (
 )
 SELECT
   * EXCEPT (app_build_id, channel),
-  mozfun.norm.fenix_build_to_build_hour(app_build_id) AS app_build_id,
+  mozfun.glam.fenix_build_to_build_hour(app_build_id) AS app_build_id,
   "*" AS channel
 FROM
   extracted

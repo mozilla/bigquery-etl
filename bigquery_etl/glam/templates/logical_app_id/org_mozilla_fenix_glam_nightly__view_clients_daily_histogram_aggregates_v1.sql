@@ -24,7 +24,7 @@ SELECT
   -- to use a build id as a placeholder. See
   -- https://github.com/mozilla/bigquery-etl/issues/1329
   * EXCEPT (app_build_id, channel, app_version),
-  mozfun.norm.fenix_build_to_build_hour(app_build_id) AS app_build_id,
+  mozfun.glam.fenix_build_to_build_hour(app_build_id) AS app_build_id,
   "*" AS channel,
   SAFE_CAST(app_build_id AS INT64) AS app_version,
 FROM

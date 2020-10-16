@@ -26,17 +26,10 @@ class TestDag:
         result = runner.invoke(
             info,
             [
-                "--dags_config=" + str(TEST_DIR / "data" / "dags.yaml"),
-                "--sql_dir="
-                + str(TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project"),
                 "--with_tasks",
             ],
         )
         assert result.exit_code == 0
-        assert "bqetl_core" in result.output
-        assert "bqetl_events" in result.output
-        assert "test.multipart_query_v1" in result.output
-        assert "test.incremental_query_non_incremental_export_v1" in result.output
 
     def test_single_dag_info(self, runner):
         result = runner.invoke(

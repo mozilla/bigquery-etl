@@ -3,6 +3,9 @@
 from google.cloud import bigquery
 import click
 import os
+from pathlib import Path
+
+from bigquery_etl.util.common import project_dirs
 
 
 def is_valid_dir(ctx, param, value):
@@ -23,3 +26,10 @@ def is_authenticated(project_id="moz-fx-data-shared-prod"):
     """Check if the user is authenticated to GCP and can access the project."""
     client = bigquery.Client()
     return client.project == project_id
+
+
+def is_valid_project(ctx, param, value):
+    """Check if the provided project_id corresponds to an existing project."""
+    if value in [Path(p).name for p in project_dirs()]:
+        return value
+    raise click.BadParameter(f"Invalid project {value}")

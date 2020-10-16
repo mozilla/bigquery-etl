@@ -75,7 +75,7 @@ def main(test_name):
         init_rows += [
             {
                 "build_hour": (START_DATE - timedelta(hours=hour)).isoformat(),
-                "geckoview_major_version": START_VERSION-version_offset,
+                "geckoview_major_version": START_VERSION - version_offset,
                 "n_pings": 6,
             }
         ]

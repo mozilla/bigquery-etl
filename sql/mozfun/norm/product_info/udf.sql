@@ -4,7 +4,7 @@ The case statement below can be generated based on the markdown table
 in metadata.yaml via the query in generate_body.sql
 
 */
-CREATE OR REPLACE FUNCTION norm.product_info(app_name STRING, os STRING)
+CREATE OR REPLACE FUNCTION norm.product_info(app_name STRING, normalized_os STRING)
 RETURNS STRUCT<
   product STRING,
   canonical_name STRING,
@@ -14,7 +14,7 @@ RETURNS STRUCT<
   CASE
   WHEN
     app_name LIKE "Firefox"
-    AND norm.os(os) LIKE "%"
+    AND normalized_os LIKE "%"
   THEN
     STRUCT(
       "Firefox" AS product,
@@ -24,7 +24,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Fenix"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Fenix" AS product,
@@ -34,7 +34,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Fennec"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Fennec" AS product,
@@ -44,7 +44,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Firefox Preview"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Preview" AS product,
@@ -54,7 +54,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Fennec"
-    AND norm.os(os) LIKE "iOS"
+    AND normalized_os LIKE "iOS"
   THEN
     STRUCT(
       "Firefox iOS" AS product,
@@ -64,7 +64,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "FirefoxForFireTV"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Fire TV" AS product,
@@ -74,7 +74,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "FirefoxConnect"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Echo" AS product,
@@ -84,7 +84,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Zerda"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Lite" AS product,
@@ -94,7 +94,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Zerda_cn"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Lite CN" AS product,
@@ -104,7 +104,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Focus"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Focus Android" AS product,
@@ -114,7 +114,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Focus"
-    AND norm.os(os) LIKE "iOS"
+    AND normalized_os LIKE "iOS"
   THEN
     STRUCT(
       "Focus iOS" AS product,
@@ -124,7 +124,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Klar"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Klar Android" AS product,
@@ -134,7 +134,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Klar"
-    AND norm.os(os) LIKE "iOS"
+    AND normalized_os LIKE "iOS"
   THEN
     STRUCT(
       "Klar iOS" AS product,
@@ -144,7 +144,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Lockbox"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Lockwise Android" AS product,
@@ -154,7 +154,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Lockbox"
-    AND norm.os(os) LIKE "iOS"
+    AND normalized_os LIKE "iOS"
   THEN
     STRUCT(
       "Lockwise iOS" AS product,
@@ -164,7 +164,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "FirefoxReality%"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Reality" AS product,
@@ -174,7 +174,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Firefox iOS"
-    AND norm.os(os) LIKE "iOS"
+    AND normalized_os LIKE "iOS"
   THEN
     STRUCT(
       "Firefox iOS" AS product,
@@ -184,7 +184,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Firefox Fire TV"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Fire TV" AS product,
@@ -194,7 +194,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Firefox Echo"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Echo" AS product,
@@ -204,7 +204,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Firefox Lite"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Lite" AS product,
@@ -214,7 +214,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Firefox Lite CN"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Lite CN" AS product,
@@ -224,7 +224,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Focus Android"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Focus Android" AS product,
@@ -234,7 +234,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Focus iOS"
-    AND norm.os(os) LIKE "iOS"
+    AND normalized_os LIKE "iOS"
   THEN
     STRUCT(
       "Focus iOS" AS product,
@@ -244,7 +244,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Klar Android"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Klar Android" AS product,
@@ -254,7 +254,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Klar iOS"
-    AND norm.os(os) LIKE "iOS"
+    AND normalized_os LIKE "iOS"
   THEN
     STRUCT(
       "Klar iOS" AS product,
@@ -264,7 +264,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Lockwise Android"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Lockwise Android" AS product,
@@ -274,7 +274,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Lockwise iOS"
-    AND norm.os(os) LIKE "iOS"
+    AND normalized_os LIKE "iOS"
   THEN
     STRUCT(
       "Lockwise iOS" AS product,
@@ -284,7 +284,7 @@ RETURNS STRUCT<
     )
   WHEN
     app_name LIKE "Firefox Reality"
-    AND norm.os(os) LIKE "Android"
+    AND normalized_os LIKE "Android"
   THEN
     STRUCT(
       "Firefox Reality" AS product,
@@ -315,11 +315,6 @@ SELECT
   assert.equals(
     STRUCT('Lockwise iOS', 'Lockwise for iOS', TRUE, TRUE),
     norm.product_info('Lockbox', 'iOS')
-  ),
-  -- Make sure os normalization works.
-  assert.equals(
-    STRUCT('Firefox iOS', 'Firefox for iOS', TRUE, TRUE),
-    norm.product_info('Fennec', 'iPhone OS')
   ),
   -- Make sure we can pass in product values for app_name.
   assert.equals(

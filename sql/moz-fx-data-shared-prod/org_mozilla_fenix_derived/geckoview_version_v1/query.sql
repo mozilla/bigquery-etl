@@ -67,7 +67,8 @@ aggregated_build_hours AS (
     grouped_build_hours t
   GROUP BY
     build_hour
-) top_build_hours AS (
+),
+top_build_hours AS (
   SELECT
     top_row.*
   FROM
@@ -112,7 +113,6 @@ estimated_version AS (
     (build_hour)
 )
 SELECT
-  @submission_date AS submission_date,
   build_hour,
   geckoview_version,
   CAST(n_pings AS INT64) AS n_pings

@@ -11,7 +11,9 @@ ROOT = Path(__file__).parent
 EPOCH = datetime(2014, 12, 28)
 START_DATE = datetime(2020, 6, 1)
 
-HISTORY_DAYS = 30
+HISTORY_DAYS = 14
+# testing when we hit Firefox 100, soonish
+START_VERSION = 80 + HISTORY_DAYS // 2
 
 
 def app_build(start_date):
@@ -24,14 +26,16 @@ def input_row(submission_offset, build_offset, version_offset=0):
     return {
         "submission_timestamp": (START_DATE - timedelta(submission_offset)).isoformat(),
         "client_info": {"app_build": app_build(START_DATE - timedelta(build_offset))},
-        "metrics": {"string": {"geckoview_version": f"{80-version_offset}.0.0"}},
+        "metrics": {
+            "string": {"geckoview_version": f"{START_VERSION-version_offset}.0.0"}
+        },
     }
 
 
 def main(test_name):
     """Generate assets for each test."""
     assert (ROOT / test_name).is_dir(), f"{ROOT / test_name} not name of test"
-    with (ROOT / test_name / "org_mozilla_fenix_nightly.metrics.yaml").open("w") as fp:
+    with (ROOT / test_name / "org_mozilla_fenix.metrics.yaml").open("w") as fp:
         # this does not generate any complicated cases where there might be
         # discontinuities in the data.
         rows = []
@@ -44,11 +48,12 @@ def main(test_name):
             sorted(rows, key=lambda x: x["client_info"]["app_build"]) * 6,
             fp,
         )
-    # bad rows
-    with (ROOT / test_name / "org_mozilla_fenix.metrics.yaml").open("w") as fp:
-        yaml.dump([input_row(15, 30, 10)], fp)
+    # bad rows, versions less than 100 put before and after the 100 mark
+    with (ROOT / test_name / "org_mozilla_fenix_nightly.metrics.yaml").open("w") as fp:
+        yaml.dump([input_row(HISTORY_DAYS // 2 + 1, 30, 1337)], fp)
     with (ROOT / test_name / "org_mozilla_fennec_aurora.metrics.yaml").open("w") as fp:
-        yaml.dump([input_row(15, 30, 10)], fp)
+        yaml.dump([input_row(HISTORY_DAYS // 2 - 1, 30, 1337)], fp)
+
     for dataset in [
         "org_mozilla_fenix_nightly",
         "org_mozilla_fenix",
@@ -66,34 +71,13 @@ def main(test_name):
         init_rows += [
             {
                 "build_hour": (START_DATE - timedelta(hours=hour)).isoformat(),
-                "geckoview_version": f"{80-version_offset}.0.0",
-                "n_builds": 6,
+                "geckoview_version": f"{START_VERSION-version_offset}.0.0",
+                "n_pings": 6,
             }
         ]
-    if test_name == "test_init":
-        with (ROOT / test_name / "expect.yaml").open("w") as fp:
-            yaml.dump(init_rows, fp)
-    elif test_name == "test_aggregation":
-        with (
-            ROOT / test_name / "org_mozilla_fenix_derived.geckoview_version_v1.yaml"
-        ).open("w") as fp:
-            yaml.dump(init_rows, fp)
-
-        # we move a few days in the future to end up at 2020-06-07
-        new_rows = []
-        for hour in range(-6 * 24, 0):
-            version_offset = math.ceil(hour / 24)
-            new_rows += [
-                {
-                    "build_hour": (START_DATE - timedelta(hours=hour)).isoformat(),
-                    "geckoview_version": f"{80-version_offset}.0.0",
-                    "n_builds": 6,
-                }
-            ]
-        with (ROOT / test_name / "expect.yaml").open("w") as fp:
-            yaml.dump(new_rows + init_rows, fp)
+    with (ROOT / test_name / "expect.yaml").open("w") as fp:
+        yaml.dump(init_rows, fp)
 
 
 if __name__ == "__main__":
-    main("test_init")
-    main("test_aggregation")
+    main("test_query")

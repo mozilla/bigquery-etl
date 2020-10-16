@@ -2,5 +2,5 @@
     app_build: 0000374784
   metrics:
     string:
-      geckoview_version: 70.0.0
-  submission_timestamp: '2020-05-17T00:00:00'
+      geckoview_version: -1250.0.0
+  submission_timestamp: '2020-05-26T00:00:00'

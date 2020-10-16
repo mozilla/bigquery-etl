@@ -226,3 +226,17 @@ bqetl_mozilla_vpn:
     email: ['telemetry-alerts@mozilla.com', 'dthorn@mozilla.com']
     retries: 2
     retry_delay: 30m
+
+bqetl_org_mozilla_fenix_derived:
+  default_args:
+    depends_on_past: false
+    email:
+    - amiyaguchi@mozilla.com
+    - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: amiyaguchi@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2020-10-18'
+  schedule_interval: daily

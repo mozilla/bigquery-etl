@@ -95,14 +95,15 @@ enumerated_build_hours AS (
 estimated_version AS (
   SELECT
     build_hour,
-    -- Versions are expected to be monotonically increasing.
-    MAX(geckoview_version) OVER (
+    -- Versions are expected to be monotonically increasing. We use the major
+    -- version for integer comparisons when the version hits 100.
+    MAX(CAST(split(geckoview_version, ".")[offset(0)] AS INT64)) OVER (
       ORDER BY
         build_hour ASC
       ROWS BETWEEN
         UNBOUNDED PRECEDING
         AND CURRENT ROW
-    ) AS geckoview_version,
+    ) AS geckoview_major_version,
     -- The number of builds is used as a query diagnostic.
     AVG(n_pings) OVER (ORDER BY build_hour ASC ROWS BETWEEN 48 PRECEDING AND CURRENT ROW) AS n_pings
   FROM
@@ -114,7 +115,7 @@ estimated_version AS (
 )
 SELECT
   build_hour,
-  geckoview_version,
+  geckoview_major_version,
   CAST(n_pings AS INT64) AS n_pings
 FROM
   estimated_version

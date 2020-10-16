@@ -31,7 +31,6 @@ with DAG(
         email=["amiyaguchi@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
         dag=dag,
     )
 

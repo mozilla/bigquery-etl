@@ -11,4 +11,3 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_org_mozilla_fenix_derived
-  parameters: ["submission_date:DATE:{{ds}}"]

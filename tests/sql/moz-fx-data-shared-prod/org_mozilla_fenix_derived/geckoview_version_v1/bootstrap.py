@@ -35,24 +35,33 @@ def input_row(submission_offset, build_offset, version_offset=0):
 def main(test_name):
     """Generate assets for each test."""
     assert (ROOT / test_name).is_dir(), f"{ROOT / test_name} not name of test"
-    with (ROOT / test_name / "org_mozilla_fenix.metrics.yaml").open("w") as fp:
-        # this does not generate any complicated cases where there might be
-        # discontinuities in the data.
-        rows = []
-        # needs some data out of the period for the cold start of the window function
-        # We'll also include dates in the future
-        for i in range(-10, HISTORY_DAYS + 2):
-            # new version every day
-            rows += [input_row(i, i, i)]
+    # We use the deprecated nightly product since it is not being filtered
+    with (ROOT / test_name / "org_mozilla_fenix_nightly.metrics.yaml").open("w") as fp:
+        # Needs some data out of the period for the cold start of the window
+        # function. We'll also include dates in the future. There is a new
+        # version every day.
+        rows = [input_row(i, i, i) for i in range(-10, HISTORY_DAYS + 2)]
         yaml.dump(
             sorted(rows, key=lambda x: x["client_info"]["app_build"]) * 6,
             fp,
         )
     # bad rows, versions less than 100 put before and after the 100 mark
-    with (ROOT / test_name / "org_mozilla_fenix_nightly.metrics.yaml").open("w") as fp:
-        yaml.dump([input_row(HISTORY_DAYS // 2 + 1, 30, 1337)], fp)
+    with (ROOT / test_name / "org_mozilla_fenix.metrics.yaml").open("w") as fp:
+        yaml.dump(
+            [
+                input_row(HISTORY_DAYS // 2 + 1, 30, 1337),
+                input_row(HISTORY_DAYS // 2 - 1, 30, 1337),
+            ],
+            fp,
+        )
     with (ROOT / test_name / "org_mozilla_fennec_aurora.metrics.yaml").open("w") as fp:
-        yaml.dump([input_row(HISTORY_DAYS // 2 - 1, 30, 1337)], fp)
+        yaml.dump(
+            [
+                input_row(HISTORY_DAYS // 2 + 1, 30, 1337),
+                input_row(HISTORY_DAYS // 2 - 1, 30, 1337),
+            ],
+            fp,
+        )
 
     for dataset in [
         "org_mozilla_fenix_nightly",
@@ -80,4 +89,4 @@ def main(test_name):
 
 
 if __name__ == "__main__":
-    main("test_query")
+    main("test_aggregation")

@@ -3,4 +3,10 @@
   metrics:
     string:
       geckoview_version: -1250.0.0
+  submission_timestamp: '2020-05-24T00:00:00'
+- client_info:
+    app_build: 0000374784
+  metrics:
+    string:
+      geckoview_version: -1250.0.0
   submission_timestamp: '2020-05-26T00:00:00'

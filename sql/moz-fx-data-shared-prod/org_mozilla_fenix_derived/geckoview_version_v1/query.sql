@@ -1,7 +1,7 @@
 WITH extracted AS (
   -- We'll look at the metrics ping to estimate the major geckoview version.
   -- The metrics section is aliased, so we must rename the table for this to
-  -- work as expected.
+  -- work as expected (e.g. t1).
   SELECT
     submission_timestamp,
     client_info.app_build,
@@ -35,17 +35,16 @@ transformed AS (
     extracted
   WHERE
     DATE(submission_timestamp)
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 14 DAY)
     AND @submission_date
 ),
 grouped_build_hours AS (
-  -- Count the number of geckoview versions for each build hour row over the
-  -- expected interval. We choose a minimum number of builds to filter out
-  -- noise.
+  -- Count the number of pings for each build hour and geckoview version.
+  -- We choose a minimum number of pings for each group to filter out noise.
   SELECT
     build_hour,
     geckoview_version,
-    COUNT(*) AS n_builds
+    COUNT(*) AS n_pings
   FROM
     transformed
   WHERE
@@ -56,25 +55,23 @@ grouped_build_hours AS (
     build_hour,
     geckoview_version
   HAVING
-    n_builds > 5
+    n_pings > 5
   ORDER BY
     build_hour DESC,
     geckoview_version
 ),
-top_build_hours AS (
-  -- Get the geckoview version for the build hour that has the most number
-  -- of rows.
+aggregated_build_hours AS (
   SELECT
-    ROW.*
+    ARRAY_AGG(t ORDER BY t.n_pings DESC LIMIT 1)[OFFSET(0)] AS top_row
   FROM
-    (
-      SELECT
-        ARRAY_AGG(t ORDER BY t.n_builds DESC LIMIT 1)[OFFSET(0)] ROW
-      FROM
-        grouped_build_hours t
-      GROUP BY
-        build_hour
-    )
+    grouped_build_hours t
+  GROUP BY
+    build_hour
+) top_build_hours AS (
+  SELECT
+    top_row.*
+  FROM
+    aggregated_build_hours
 ),
 enumerated_build_hours AS (
   -- Enumerate all of the build hours that we care about. We have a small
@@ -87,7 +84,7 @@ enumerated_build_hours AS (
       GENERATE_TIMESTAMP_ARRAY(
         TIMESTAMP_SUB(
           TIMESTAMP_TRUNC(CAST(@submission_date AS timestamp), HOUR),
-          INTERVAL 30 + 2 DAY
+          INTERVAL 14 + 2 DAY
         ),
         TIMESTAMP_TRUNC(CAST(@submission_date AS timestamp), HOUR),
         INTERVAL 1 HOUR
@@ -106,56 +103,24 @@ estimated_version AS (
         AND CURRENT ROW
     ) AS geckoview_version,
     -- The number of builds is used as a query diagnostic.
-    AVG(n_builds) OVER (
-      ORDER BY
-        build_hour ASC
-      ROWS BETWEEN
-        48 PRECEDING
-        AND CURRENT ROW
-    ) AS n_builds
+    AVG(n_pings) OVER (ORDER BY build_hour ASC ROWS BETWEEN 48 PRECEDING AND CURRENT ROW) AS n_pings
   FROM
     top_build_hours
   RIGHT JOIN
     enumerated_build_hours
   USING
     (build_hour)
-),
-new_geckoview_versions AS (
-  SELECT
-    build_hour,
-    geckoview_version,
-    CAST(n_builds AS INT64) AS n_builds
-  FROM
-    estimated_version
-  WHERE
-    build_hour
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    AND @submission_date
-  ORDER BY
-    build_hour
-),
-past_and_present AS (
-  SELECT
-    *
-  FROM
-    new_geckoview_versions
-  UNION ALL
-  SELECT
-    *
-  FROM
-    org_mozilla_fenix_derived.geckoview_version_v1
 )
--- take the average over the previous values
 SELECT
-  ROW.*
+  @submission_date AS submission_date,
+  build_hour,
+  geckoview_version,
+  CAST(n_pings AS INT64) AS n_pings
 FROM
-  (
-    SELECT
-      ARRAY_AGG(t ORDER BY t.n_builds DESC LIMIT 1)[OFFSET(0)] ROW
-    FROM
-      past_and_present t
-    GROUP BY
-      build_hour
-  )
+  estimated_version
+WHERE
+  build_hour
+  BETWEEN DATE_SUB(@submission_date, INTERVAL 14 DAY)
+  AND @submission_date
 ORDER BY
-  build_hour DESC
+  build_hour

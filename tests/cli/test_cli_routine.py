@@ -183,8 +183,7 @@ class TestRoutine:
                     "CREATE OR REPLACE FUNCTION udf.another_udf() AS (udf.test_udf())"
                 )
 
-            os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived")
-            os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
             ) as f:
@@ -219,10 +218,7 @@ class TestRoutine:
 
     def test_mozfun_dataset_renaming(self, runner):
         with runner.isolated_filesystem():
-            os.mkdir("sql")
-            os.mkdir("sql/mozfun")
-            os.mkdir("sql/mozfun/udf")
-            os.mkdir("sql/mozfun/udf/test_udf")
+            os.makedirs("sql/mozfun/udf/test_udf")
             with open("sql/mozfun/udf/test_udf/udf.sql", "w") as f:
                 f.write("CREATE OR REPLACE FUNCTION udf.test_udf() AS (TRUE)")
 
@@ -232,9 +228,7 @@ class TestRoutine:
                     "CREATE OR REPLACE FUNCTION udf.another_udf() AS (udf.test_udf())"
                 )
 
-            os.mkdir("sql/moz-fx-data-shared-prod")
-            os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived")
-            os.mkdir("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
             with open(
                 "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
             ) as f:

@@ -13,7 +13,7 @@ START_DATE = datetime(2020, 6, 1)
 
 HISTORY_DAYS = 14
 # testing when we hit Firefox 100, soonish
-START_VERSION = 80 + HISTORY_DAYS // 2
+START_VERSION = 100 + HISTORY_DAYS // 2
 
 
 def app_build(start_date):
@@ -45,23 +45,18 @@ def main(test_name):
             sorted(rows, key=lambda x: x["client_info"]["app_build"]) * 6,
             fp,
         )
-    # bad rows, versions less than 100 put before and after the 100 mark
+    # bad rows, versions less than 100 put before and after the 100 mark. The
+    # one for fenix will probably get filtered out because of the channel norm
+    # udf.
+    bad_rows = [
+        input_row(HISTORY_DAYS // 2 + 2, 30, 1337),
+        input_row(HISTORY_DAYS // 2 - 2, 30, 1337),
+    ]
+
     with (ROOT / test_name / "org_mozilla_fenix.metrics.yaml").open("w") as fp:
-        yaml.dump(
-            [
-                input_row(HISTORY_DAYS // 2 + 1, 30, 1337),
-                input_row(HISTORY_DAYS // 2 - 1, 30, 1337),
-            ],
-            fp,
-        )
+        yaml.dump(bad_rows, fp)
     with (ROOT / test_name / "org_mozilla_fennec_aurora.metrics.yaml").open("w") as fp:
-        yaml.dump(
-            [
-                input_row(HISTORY_DAYS // 2 + 1, 30, 1337),
-                input_row(HISTORY_DAYS // 2 - 1, 30, 1337),
-            ],
-            fp,
-        )
+        yaml.dump(bad_rows, fp)
 
     for dataset in [
         "org_mozilla_fenix_nightly",

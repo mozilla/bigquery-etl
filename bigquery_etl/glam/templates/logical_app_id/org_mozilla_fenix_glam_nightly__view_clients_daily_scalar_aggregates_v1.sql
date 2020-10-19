@@ -19,13 +19,34 @@ WITH extracted AS (
   FROM
     `{{ project }}`.glam_etl.org_mozilla_fennec_aurora__view_clients_daily_scalar_aggregates_v1
 )
+with_app_build_id AS (
+  SELECT
+    * EXCEPT (app_build_id, channel, app_version),
+    mozfun.glam.fenix_build_to_build_hour(app_build_id) AS app_build_id,
+    "*" AS channel,
+  FROM
+    extracted
+),
+with_build_hour AS (
+  SELECT
+    *,
+    mozfun.glam.build_hour_to_datetime(app_build_id) AS build_hour
+  FROM
+    with_app_build_id
+),
+with_geckoview_version_renamed AS (
+  SELECT
+    build_hour,
+    geckoview_major_version AS app_version
+  FROM
+    `moz-fx-data-shared-prod`.org_mozilla_fenix.geckoview_version
+)
 SELECT
-  -- NOTE: app_version is dropped due to a lack of semantic versioning. We opt
-  -- to use a build id as a placeholder. See
-  -- https://github.com/mozilla/bigquery-etl/issues/1329
-  * EXCEPT (app_build_id, channel, app_version),
-  mozfun.glam.fenix_build_to_build_hour(app_build_id) AS app_build_id,
-  "*" AS channel,
-  SAFE_CAST(app_build_id AS INT64) AS app_version,
+  * EXCEPT (build_hour),
+  app_version
 FROM
-  extracted
+  with_build_hour
+JOIN
+  with_geckoview_version_renamed
+USING
+  (build_hour)

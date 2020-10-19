@@ -416,15 +416,15 @@ def info(name, sql_dir, project_id, cost, last_updated):
     help="Dates excluded from backfill. Date format: yyyy-mm-dd",
     default=[],
 )
-@click.option(
-    "--dry_run/--no_dry_run",
-    help="Dry run the backfill",
-)
+@click.option("--dry_run/--no_dry_run", help="Dry run the backfill")
 @click.pass_context
 def backfill(ctx, name, sql_dir, project_id, start_date, end_date, exclude, dry_run):
     """Run a backfill."""
     if not is_authenticated():
-        click.echo("Authentication to GCP required. Run `gcloud auth login`.")
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
         sys.exit(1)
 
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
@@ -447,6 +447,7 @@ def backfill(ctx, name, sql_dir, project_id, start_date, end_date, exclude, dry_
 
                 arguments = [
                     "query",
+                    "--time_partitioning_type=DAY",
                     f"--parameter=submission_date:DATE:{backfill_date}",
                     "--use_legacy_sql=false",
                     "--replace",

@@ -1,5 +1,5 @@
-friendly_name: Stripe Plans
-description: Stripe Plans as of UTC midnight. See bug 1667889.
+friendly_name: Stripe Payouts
+description: Stripe Payouts as of UTC midnight
 owners:
   - dthorn@mozilla.com
 labels:
@@ -9,4 +9,10 @@ scheduling:
   dag_name: bqetl_stripe
   # destination is the whole table, not a single partition, so don't use date_partition_parameter
   date_partition_parameter:
-  referenced_tables: [['moz-fx-data-shared-prod', 'stripe_external', 'plans_v1']]
+  parameters:
+  - 'date:DATE:{{ds}}'
+  depends_on:
+  - dag_name: stripe
+    task_id: stripe_import_events
+    schedule_interval: daily
+  referenced_tables: []

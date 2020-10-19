@@ -4,8 +4,11 @@
 set -e
 
 skip_generate=${SKIP_GENERATE:-false}
-app_id="org_mozilla_firefox"
-logical_app_id="org_mozilla_fenix_glam_release"
+# NOTE: there are three app_ids that we must look at for historical context. For
+# the purpose of this script, it is sufficient to look only at what is currently
+# "fenix nightly".
+app_id="org_mozilla_fenix"
+logical_app_id="org_mozilla_fenix_glam_nightly"
 
 dir="$(dirname "$0")/.."
 

@@ -10,6 +10,7 @@ from ..cli.dryrun import dryrun
 from ..cli.format import format
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
+from ..cli.view import view
 from ..glam.cli import glam
 from ..stripe import stripe_
 
@@ -25,6 +26,7 @@ def cli(prog_name=None):
         "mozfun": mozfun,
         "stripe": stripe_,
         "glam": glam,
+        "view": view,
     }
 
     @click.group(commands=commands)

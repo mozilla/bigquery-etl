@@ -4,11 +4,12 @@ import logging
 import os
 import sys
 import time
-from argparse import ArgumentParser
 from functools import partial
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
+from types import SimpleNamespace
 
+import click
 import sqlparse
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
@@ -88,44 +89,43 @@ def _process_file(client, args, filepath):
     return True
 
 
-def main():
-    """Find view definition files and execute them."""
-    parser = ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "target",
-        nargs="+",
-        help="File or directory containing view definitions to execute",
-    )
-    parser.add_argument(
-        "--target-project",
-        help=(
-            "If specified, create views in the target project rather than"
-            " the project specified in the file"
-        ),
-    )
-    parser.add_argument("--log-level", default="INFO", help="Defaults to INFO")
-    parser.add_argument(
-        "-p",
-        "--parallelism",
-        default=8,
-        type=int,
-        help="Number of views to process in parallel",
-    )
-    parser.add_argument(
-        "--dry_run",
-        "--dry-run",
-        action="store_true",
-        help="Validate view definitions, but do not publish them.",
-    )
-
-    args = parser.parse_args()
+@click.command()
+@click.argument(
+    "target",
+    nargs=-1,
+    required=True,
+)
+@click.option(
+    "--target-project",
+    help=(
+        "If specified, create views in the target project rather than"
+        " the project specified in the file"
+    ),
+)
+@click.option("--log-level", default="INFO", help="Defaults to INFO")
+@click.option(
+    "-p",
+    "--parallelism",
+    default=8,
+    type=int,
+    help="Number of views to process in parallel",
+)
+@click.option(
+    "--dry_run",
+    "--dry-run",
+    is_flag=True,
+    help="Validate view definitions, but do not publish them.",
+)
+def main(**kwargs):
+    """Find view definition files in TARGET and execute them."""
+    args = SimpleNamespace(**kwargs)
     client = bigquery.Client()
 
     # set log level
     try:
         logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
     except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
+        click.error(f"argument --log-level: {e}")
 
     worker_entrypoint = partial(_process_file, client, args)
     sql_files = []

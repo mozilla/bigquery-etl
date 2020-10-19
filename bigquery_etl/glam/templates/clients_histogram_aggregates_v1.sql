@@ -69,7 +69,7 @@ aggregated_daily AS (
   SELECT
     {{ attributes }},
     {{ metric_attributes }},
-    `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
+    mozfun.map.sum(ARRAY_CONCAT_AGG(value)) AS value
   FROM
     filtered_daily
   GROUP BY

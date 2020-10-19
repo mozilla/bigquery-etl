@@ -14,6 +14,7 @@ EOD
 }
 
 PROJECT=${PROJECT:-"glam-fenix-dev"}
+DEST_PROJECT=${DEST_PROJECT:-PROJECT}
 PROD_DATASET=${PROD_DATASET:-"glam_etl"}
 DATASET=${DATASET:-"glam_etl_dev"}
 SUBMISSION_DATE=${SUBMISSION_DATE:-$(yesterday)}
@@ -28,16 +29,6 @@ function replace_dataset {
     sed "s/$PROD_DATASET/$DATASET/g" < "$sql_path"
 }
 
-
-# replace project and dataset in an init or view file
-function replace_project_dataset {
-    local sql_path=$1
-    local prod="moz-fx-data-shared-prod"
-    sed "s/$prod/$PROJECT/g" < "$sql_path" | \
-        sed "s/$PROD_DATASET/$DATASET/g"
-}
-
-
 function run_query {
     local destination_table=$1
     local time_partition=${2:-false}
@@ -46,7 +37,7 @@ function run_query {
     local query_location=${5:-$destination_table}
     local additional_arguments="${6:---replace}"
     local sample_size=${7:-10}
-    local query="sql/moz-fx-data-shared-prod/$PROD_DATASET/$query_location/query.sql"
+    local query="sql/$PROJECT/$PROD_DATASET/$query_location/query.sql"
 
     # add an option to write to a time-partitioned table
     if $time_partition; then
@@ -60,7 +51,7 @@ function run_query {
         --max_rows=0 \
         --use_legacy_sql=false \
         $additional_arguments \
-        --project_id="$PROJECT" \
+        --project_id="$DEST_PROJECT" \
         --dataset_id="$DATASET" \
         --destination_table="$destination_table" \
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
@@ -74,16 +65,16 @@ function run_query {
 
 function run_init {
     local destination_table=$1
-    local init="sql/moz-fx-data-shared-prod/$PROD_DATASET/$destination_table/init.sql"
+    local init="sql/$PROJECT/$PROD_DATASET/$destination_table/init.sql"
     # run if needed
     if ! bq show "${DATASET}.${destination_table}" &> /dev/null; then
         echo "running $init"
         local tmp
         tmp=$(mktemp)
-        replace_project_dataset "$init" > "$tmp"
+        replace_dataset "$init" > "$tmp"
         bq query \
             --use_legacy_sql=false \
-            --project_id="$PROJECT" \
+            --project_id="$DEST_PROJECT" \
             < "$tmp"
     fi
 }
@@ -91,14 +82,14 @@ function run_init {
 
 function run_view {
     local view_name=$1
-    local view="sql/moz-fx-data-shared-prod/$PROD_DATASET/$view_name/view.sql"
+    local view="sql/$PROJECT/$PROD_DATASET/$view_name/view.sql"
     echo "running $view"
     local tmp
     tmp=$(mktemp)
-    replace_project_dataset "$view" > "$tmp"
+    replace_dataset "$view" > "$tmp"
     bq query \
         --use_legacy_sql=false \
-        --project_id="$PROJECT" \
+        --project_id="$DEST_PROJECT" \
         --dataset_id="$DATASET" \
         < "$tmp"
 }
@@ -202,10 +193,10 @@ function run_glean_sql {
     fi
     if [[ $stage == "daily" || $stage == "all" ]]; then
         if ((start_stage <= 0)) && [[ $export_only = false ]]; then
-            for directory in sql/moz-fx-data-shared-prod/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
+            for directory in sql/$PROJECT/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
                 run_query "$(basename "$directory")" true &
             done
-            for directory in sql/moz-fx-data-shared-prod/glam_etl/"${product}"__clients_daily_histogram_aggregates*/; do
+            for directory in sql/$PROJECT/glam_etl/"${product}"__clients_daily_histogram_aggregates*/; do
                 run_query "$(basename "$directory")" true &
             done
             wait

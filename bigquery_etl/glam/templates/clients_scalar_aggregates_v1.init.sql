@@ -1,6 +1,6 @@
 {{ header }}
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.{{ destination_table }}`(
+  `{{ project }}.{{ destination_table }}`(
     {{ attributes_type }},
     scalar_aggregates {{ user_data_type }}
   )

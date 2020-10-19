@@ -56,7 +56,7 @@ aggregated AS (
     {{ attributes }},
     metric,
     metric_type,
-    `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) as value
+    mozfun.map.sum(ARRAY_CONCAT_AGG(value)) as value
   FROM
     flattened_histograms
   GROUP BY

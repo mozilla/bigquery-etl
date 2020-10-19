@@ -1,17 +1,17 @@
 """Find view definition files and execute them."""
 
-from argparse import ArgumentParser
-from functools import partial
-from pathlib import Path
 import logging
-from multiprocessing.pool import ThreadPool
 import os
 import sys
 import time
+from argparse import ArgumentParser
+from functools import partial
+from multiprocessing.pool import ThreadPool
+from pathlib import Path
 
+import sqlparse
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
-import sqlparse
 
 VIEWS_TO_SKIP = (
     # Access Denied

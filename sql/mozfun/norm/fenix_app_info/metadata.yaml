@@ -29,7 +29,7 @@ description: |
   view of the pings associated with a logical app channel, you may need to union together
   tables from multiple BigQuery datasets. To see data for all Fenix channels together, it
   is necessary to union together tables from all 5 datasets. For basic usage information,
-  consider using `telemetry.nondesktop_clients_last_seen` which already handles the union.
+  consider using `telemetry.fenix_clients_last_seen` which already handles the union.
   Otherwise, see the example below as a template for how construct a custom union.
 
   Mapping of channels to datasets:

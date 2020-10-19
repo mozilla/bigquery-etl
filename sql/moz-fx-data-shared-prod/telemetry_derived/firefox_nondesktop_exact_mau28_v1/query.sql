@@ -9,52 +9,15 @@ SELECT
   MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
   -- Instead of app_name and os, we provide a single clean "product" name
   -- that includes OS where necessary to disambiguate.
-  CASE
-    app_name
-  WHEN
-    'Fennec'
-  THEN
-    CONCAT(app_name, ' ', os)
-  WHEN
-    'Focus'
-  THEN
-    CONCAT(app_name, ' ', os)
-  WHEN
-    'Lockbox'
-  THEN
-    CONCAT('Lockwise ', os)
-  WHEN
-    'Zerda'
-  THEN
-    'Firefox Lite'
-  ELSE
-    app_name
-  END
-  AS product,
+  product,
   normalized_channel,
   campaign,
   country,
   distribution_id
 FROM
-  telemetry.nondesktop_clients_last_seen_v1
+  telemetry.nondesktop_clients_last_seen
 WHERE
-  -- This list corresponds to the products considered for 2019 nondesktop KPIs;
-  -- we apply this filter here rather than in the live view because this field
-  -- is not normalized and there are many single pings that come in with unique
-  -- nonsensical app_name values. App names are documented in
-  -- https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset_mobile.html#products-overview
-  app_name IN (
-    'Fenix',
-    'Firefox Preview',
-    'Fennec', -- Firefox for Android and Firefox for iOS
-    'Focus',
-    'Lockbox', -- Lockwise
-    'Zerda', -- Firefox Lite, previously called Rocket
-    'FirefoxForFireTV', -- Amazon Fire TV
-    'FirefoxConnect' -- Amazon Echo Show
-  )
-  -- There are also many strange nonsensical entries for os, so we filter here.
-  AND os IN ('Android', 'iOS')
+  contributes_to_2020_kpi
   -- 2017-01-01 is the first populated day of telemetry_core_parquet, so start 28 days later.
   AND submission_date >= DATE '2017-01-28'
   -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL

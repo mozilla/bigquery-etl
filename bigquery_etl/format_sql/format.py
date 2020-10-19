@@ -87,7 +87,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_desktop_v2/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_fxa_v2/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_nondesktop_v2/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/surveygizmo_daily_attitudes/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501

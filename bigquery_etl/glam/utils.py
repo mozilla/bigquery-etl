@@ -22,11 +22,17 @@ def run(command, **kwargs) -> str:
     else:
         raise RuntimeError(f"run command is invalid: {command}")
 
-    return (
-        subprocess.run(args, stdout=subprocess.PIPE, check=True, **kwargs)
-        .stdout.decode()
-        .strip()
-    )
+    try:
+        res = (
+            subprocess.run(args, stdout=subprocess.PIPE, check=True, **kwargs)
+            .stdout.decode()
+            .strip()
+        )
+    except subprocess.CalledProcessError as e:
+        print(e.output.decode())
+        raise e
+
+    return res
 
 
 def get_schema(table: str, project: str = "moz-fx-data-shared-prod"):

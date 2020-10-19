@@ -42,7 +42,7 @@ nested AS (
       )
     ] AS metrics_array,
     MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
-    product,
+    product AS app_name,
     app_version,
     country,
     locale,
@@ -72,9 +72,8 @@ nested AS (
 SELECT
   submission_date,
   m.usage,
-  product AS app_name,
   (SELECT AS STRUCT m.metrics.* EXCEPT (is_empty_group)) AS metrics,
-  nested.* EXCEPT (submission_date, metrics_array, product)
+  nested.* EXCEPT (submission_date, metrics_array)
 FROM
   nested
 CROSS JOIN

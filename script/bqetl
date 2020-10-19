@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec python3 -c "from bigquery_etl.cli import cli; cli(prog_name='$0')" "$@"

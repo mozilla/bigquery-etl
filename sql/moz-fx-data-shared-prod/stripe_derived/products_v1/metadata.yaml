@@ -1,5 +1,5 @@
 friendly_name: Stripe Products
-description: Stripe products as of UTC midnight. See bug 1667889.
+description: Stripe Products as of UTC midnight. See bug 1667889.
 owners:
   - dthorn@mozilla.com
 labels:
@@ -9,10 +9,4 @@ scheduling:
   dag_name: bqetl_stripe
   # destination is the whole table, not a single partition, so don't use date_partition_parameter
   date_partition_parameter:
-  parameters:
-  - 'date:DATE:{{ds}}'
-  depends_on:
-    - dag_name: stripe
-      task_id: stripe_import_events
-      schedule_interval: daily
-  referenced_tables: []
+  referenced_tables: [['moz-fx-data-shared-prod', 'stripe_external', 'products_v1']]

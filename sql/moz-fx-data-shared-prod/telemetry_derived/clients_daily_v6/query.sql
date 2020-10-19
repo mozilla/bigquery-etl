@@ -375,7 +375,13 @@ SELECT
   ) AS ad_clicks_count_all,
   SUM(
     (SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_with_ads))
-  ) AS search_with_ads_count_all
+  ) AS search_with_ads_count_all,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_telemetry_event_counts)
+  ) AS scalar_parent_telemetry_event_counts_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_content_telemetry_event_counts)
+  ) AS scalar_content_telemetry_event_counts_sum
 FROM
   main_summary_v4
 LEFT JOIN

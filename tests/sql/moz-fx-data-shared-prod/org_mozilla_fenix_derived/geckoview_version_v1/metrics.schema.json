@@ -1,0 +1,38 @@
+[
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp",
+    "mode": "REQUIRED"
+  },
+  {
+    "type": "RECORD",
+    "name": "client_info",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "app_build",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  {
+    "type": "RECORD",
+    "name": "metrics",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "type": "RECORD",
+        "name": "string",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "geckoview_version",
+            "mode": "NULLABLE"
+          }
+        ]
+      }
+    ]
+  }
+]

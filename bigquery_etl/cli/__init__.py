@@ -8,20 +8,20 @@ from ..cli.query import query
 from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.format import format
-from ..cli.udf import udf, mozfun
+from ..cli.routine import routine, mozfun
 from ..glam.cli import glam
 from .._version import __version__
 from ..stripe import stripe_
 
 
-def cli():
+def cli(prog_name=None):
     """Create the bigquery-etl CLI."""
     commands = {
         "query": query,
         "dag": dag,
         "dryrun": dryrun,
         "format": format,
-        "udf": udf,
+        "routine": routine,
         "mozfun": mozfun,
         "stripe": stripe_,
         "glam": glam,
@@ -37,7 +37,7 @@ def cli():
         "ignore", "Your application has authenticated using end user credentials"
     )
 
-    group()
+    group(prog_name=prog_name)
 
 
 if __name__ == "__main__":

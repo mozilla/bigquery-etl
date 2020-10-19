@@ -1,16 +1,17 @@
 """bigquery-etl CLI dag command."""
 
-import click
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import click
 import yaml
 
-from ..query_scheduling.dag_collection import DagCollection
-from ..query_scheduling.dag import Dag
-from ..query_scheduling.generate_airflow_dags import get_dags
 from ..cli.utils import is_valid_dir, is_valid_file
-from ..metadata.parse_metadata import Metadata, METADATA_FILE
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..query_scheduling.dag import Dag
+from ..query_scheduling.dag_collection import DagCollection
+from ..query_scheduling.generate_airflow_dags import get_dags
 
 dags_config_option = click.option(
     "--dags_config",

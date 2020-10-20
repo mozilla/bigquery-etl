@@ -1037,5 +1037,39 @@
     "type": "RECORD",
     "name": "scalar_parent_browser_search_with_ads",
     "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_telemetry_event_counts",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+       "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_content_telemetry_event_counts",
+    "mode": "REPEATED"
   }
 ]

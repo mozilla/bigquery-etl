@@ -126,17 +126,17 @@ google-auth==1.22.0 \
     --hash=sha256:a73e6fb6d232ed1293ef9a5301e6f8aada7880d19c65d7f63e130dc50ec05593 \
     --hash=sha256:e86e72142d939a8d90a772947268aacc127ab7a1d1d6f3e0fecca7a8d74d8257 \
     # via google-api-core, google-cloud-storage
-google-cloud-bigquery==2.1.0 \
-    --hash=sha256:7369e2f81ccddfa62f2af4009dbddf7a1daaef0fc701a4097e8de5508235af74 \
-    --hash=sha256:eafd9e3458b271d12c0b28cbb18e0e267ab96361d03a98a9042163eb1f5f78f6 \
+google-cloud-bigquery==2.2.0 \
+    --hash=sha256:94bcdce4bcf67974445e2c46224dcdab211d91c1dab720fb1dd68884a720a5f1 \
+    --hash=sha256:ede55082d0f2343f197f48f51a8c44ba1031383dc6f23aff070ea1b0c45a258a \
     # via -r requirements.in
 google-cloud-core==1.4.1 \
     --hash=sha256:4c9e457fcfc026fdde2e492228f04417d4c717fb0f29f070122fb0ab89e34ebd \
     --hash=sha256:613e56f164b6bee487dd34f606083a0130f66f42f7b10f99730afdf1630df507 \
     # via google-cloud-bigquery, google-cloud-storage
-google-cloud-storage==1.31.2 \
-    --hash=sha256:74bbb5b2d0b249de4a52f561435d0c3570ddc19b249653ae588ec0abcc3c81e6 \
-    --hash=sha256:e2a2533b5e368365e84d2acaa53b75266a09802fc1c8bda52e3212335eccb6bd \
+google-cloud-storage==1.32.0 \
+    --hash=sha256:063bd12b5ceb4045e8681dc5cce8c3ceeb1203f7c5c3e59f5c9b75bb79a5f59b \
+    --hash=sha256:da12b7bd79bbe978a7945a44b600604fbc10ece2935d31f243e751f99135e34f \
     # via -r requirements.in
 google-crc32c==1.0.0 \
     --hash=sha256:00b34d4c9ac565b2be553f81f58e5861e51d43af2043ed7cbfe1853ee2f54671 \
@@ -393,7 +393,7 @@ protobuf==3.13.0 \
     --hash=sha256:df3932e1834a64b46ebc262e951cd82c3cf0fa936a154f0a42231140d8237060 \
     --hash=sha256:e7662437ca1e0c51b93cadb988f9b353fa6b8013c0385d63a70c8a77d84da5f9 \
     --hash=sha256:f68eb9d03c7d84bd01c790948320b768de8559761897763731294e3bc316decb \
-    # via gcloud, google-api-core, googleapis-common-protos, proto-plus
+    # via gcloud, google-api-core, google-cloud-bigquery, googleapis-common-protos, proto-plus
 py==1.9.0 \
     --hash=sha256:366389d1db726cd2fcfc79732e75410e5fe4d31db13692115529d34069a043c2 \
     --hash=sha256:9ca6883ce56b4e8da7e79ac18787889fa5206c79dcc67fb065376cd2fe03f342 \

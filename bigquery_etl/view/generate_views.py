@@ -8,15 +8,16 @@ Run as:
   ./script/generate_views 'moz-fx-data-shared-prod:*_stable.*'
 """
 
-from argparse import ArgumentParser
-from fnmatch import fnmatchcase
 import logging
 import os
 import re
-from bigquery_etl.util.bigquery_tables import get_tables_matching_patterns
-from bigquery_etl.util import standard_args
+from argparse import ArgumentParser
+from fnmatch import fnmatchcase
 
 from google.cloud import bigquery
+
+from bigquery_etl.util import standard_args
+from bigquery_etl.util.bigquery_tables import get_tables_matching_patterns
 
 VERSION_RE = re.compile(r"_v([0-9]+)$")
 WHITESPACE_RE = re.compile(r"\s+")

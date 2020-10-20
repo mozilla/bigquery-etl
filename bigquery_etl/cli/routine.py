@@ -1,22 +1,23 @@
 """bigquery-etl CLI UDF command."""
 
-import click
-from fnmatch import fnmatchcase
 import os
-from pathlib import Path
-import pytest
 import re
 import shutil
 import string
 import sys
+from fnmatch import fnmatchcase
+from pathlib import Path
+
+import click
+import pytest
 import yaml
 
-from ..cli.utils import is_valid_dir, is_authenticated, is_valid_project
-from ..format_sql.formatter import reformat
 from ..cli.format import format
+from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
+from ..docs import validate_docs
+from ..format_sql.formatter import reformat
 from ..routine import publish_routines
 from ..routine.parse_routine import PROCEDURE_FILE, UDF_FILE
-from ..docs import validate_docs
 from ..util.common import project_dirs
 
 ROUTINE_NAME_RE = re.compile(r"^(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)$")

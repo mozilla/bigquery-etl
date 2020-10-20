@@ -116,6 +116,7 @@
   scalar_combined_webrtc_nicer_turn_438s_sum: 4
   scalar_content_navigator_storage_estimate_count_sum: 2
   scalar_content_navigator_storage_persist_count_sum: 2
+  scalar_content_telemetry_event_counts_sum: []
   scalar_parent_aushelper_websense_reg_version: second
   scalar_parent_browser_engagement_max_concurrent_tab_count_max: 3
   scalar_parent_browser_engagement_max_concurrent_window_count_max: 3
@@ -132,6 +133,7 @@
   scalar_parent_navigator_storage_estimate_count_sum: 2
   scalar_parent_navigator_storage_persist_count_sum: 2
   scalar_parent_storage_sync_api_usage_extensions_using_sum: 2
+  scalar_parent_telemetry_event_counts_sum: []
   search_cohort: second
   search_count_abouthome: 0
   search_count_all: 0

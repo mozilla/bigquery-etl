@@ -7,8 +7,9 @@ WITH extracted AS (
   FROM
     {{ source_table }}
   WHERE
-    submission_date <= @submission_date
-    AND submission_date > DATE_SUB(@submission_date, INTERVAL 28 DAY)
+    submission_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 28 DAY)
+    AND @submission_date
     AND channel IS NOT NULL
 ),
 transformed AS (
@@ -21,7 +22,7 @@ transformed AS (
     channel,
     app_version
   HAVING
-    COUNT(DISTINCT client_id) > 100
+    COUNT(DISTINCT client_id) > 5
   ORDER BY
     channel,
     app_version DESC

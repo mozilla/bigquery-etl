@@ -3,19 +3,44 @@
 
 set -e
 
+project=${PROJECT:-glam-fenix-dev}
 skip_generate=${SKIP_GENERATE:-false}
 # NOTE: there are three app_ids that we must look at for historical context. For
 # the purpose of this script, it is sufficient to look only at what is currently
 # "fenix nightly".
-app_id="org_mozilla_fenix"
+app_ids=(
+    "org_mozilla_fenix"
+    "org_mozilla_fenix_nightly"
+    "org_mozilla_fennec_aurora"
+)
 logical_app_id="org_mozilla_fenix_glam_nightly"
 
 dir="$(dirname "$0")/.."
+sql_dir=$dir/../../sql/$project/glam_etl
 
 if [[ $skip_generate == false ]]; then
-    PRODUCT=$app_id STAGE=daily $dir/generate_glean_sql
+    # generate views for each of the referenced products to avoid errors
+    for app_id in "${app_ids[@]}"; do
+        PRODUCT=$app_id STAGE=daily $dir/generate_glean_sql &
+    done
+    wait
+    for app_id in "${app_ids[@]}"; do
+        # keep all pings for org_mozilla_fenix, and only the baseline ping for
+        # the others
+        if [[ $app_id == "org_mozilla_fenix" ]]; then
+            continue;
+        fi
+        for path in "${sql_dir}/${app_id}__clients"*; do
+            if [[ $path == *metrics* ]]; then
+                continue;
+            fi
+            rm -r $path
+        done
+    done
     PRODUCT=$logical_app_id STAGE=incremental $dir/generate_glean_sql
 fi
 
-PRODUCT=$app_id STAGE=daily $dir/run_glam_sql
+for app_id in "${app_ids[@]}"; do
+    PRODUCT=$app_id STAGE=daily $dir/run_glam_sql
+done
 PRODUCT=$logical_app_id STAGE=incremental $dir/run_glam_sql

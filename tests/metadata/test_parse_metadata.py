@@ -121,7 +121,8 @@ class TestParseMetadata(object):
             )
 
     def test_is_metadata_file(self):
-        assert Metadata.is_metadata_file("foo/bar/invalid.json") is False
-        assert Metadata.is_metadata_file("foo/bar/invalid.yaml") is False
-        assert Metadata.is_metadata_file("metadata.yaml")
-        assert Metadata.is_metadata_file("some/path/to/metadata.yaml")
+        assert Metadata.is_metadata_file("tests/data/metadata.yaml")
+        with pytest.raises(ValueError):
+            Metadata.is_metadata_file("tests/data/invalid.yaml")
+        with pytest.raises(ValueError):
+            Metadata.is_metadata_file("foo/bar/metadata.yaml")

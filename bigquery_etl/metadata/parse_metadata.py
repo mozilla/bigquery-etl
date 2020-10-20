@@ -3,23 +3,54 @@
 import re
 import yaml
 import os
+import attr
+from typing import List, Optional, Dict
 
+from bigquery_etl.query_scheduling.utils import is_email
 
 METADATA_FILE = "metadata.yaml"
 
 
+@attr.s(auto_attribs=True)
 class Metadata:
-    """Representation of metadata file content."""
+    """
+    Representation of a Metadata configuration.
 
-    def __init__(
-        self, friendly_name=None, description=None, owners=[], labels={}, scheduling={}
-    ):
-        """Create a new Metadata instance."""
-        self.friendly_name = friendly_name
-        self.description = description
-        self.labels = labels
-        self.scheduling = scheduling
-        self.owners = owners
+    Uses attrs to simplify the class definition and provide validation.
+    Docs: https://www.attrs.org
+    """
+
+    friendly_name: str = attr.ib()
+    description: str = attr.ib()
+    owners: List[str] = attr.ib()
+    labels: Dict = attr.ib({})
+    scheduling: Optional[Dict] = attr.ib({})
+
+    @owners.validator
+    def validate_owners(self, attribute, value):
+        """Check that provided email addresses for owners are valid."""
+        if not all(map(lambda e: is_email(e), value)):
+            raise ValueError(f"Invalid email for owners: {value}.")
+
+    @labels.validator
+    def validate_labels(self, attribute, value):
+        """Check that labels are valid."""
+        for key, label in value.items():
+            if not isinstance(label, bool):
+                if not Metadata.is_valid_label(str(key)):
+                    raise ValueError(
+                        f"""Invalid label key format: {key}.
+                                    Key cannot be empty. Only hyphens(-), underscores(_),
+                                    lowercase characters, and numbers are allowed.
+                                    International characters are not allowed."""
+                    )
+                elif not Metadata.is_valid_label(str(label)) and not label == "":
+                    raise ValueError(
+                        f"""Invalid label value format: {label}.
+                                    Value be empty. Only hyphens(-), underscores(_),
+                                    lowercase characters, and numbers are allowed.
+                                    International characters are not allowed."""
+                    )
 
     @staticmethod
     def is_valid_label(label):
@@ -78,27 +109,13 @@ class Metadata:
                     labels = {}
 
                     for key, label in metadata["labels"].items():
-                        if isinstance(label, bool) and Metadata.is_valid_label(
-                            str(key)
-                        ):
+                        if isinstance(label, bool):
                             # publish key-value pair with bool value as tag
                             if label:
                                 labels[str(key)] = ""
-                        elif Metadata.is_valid_label(
-                            str(key)
-                        ) and Metadata.is_valid_label(str(label)):
+                        else:
                             # all other pairs get published as key-value pair label
                             labels[str(key)] = str(label)
-                        else:
-                            print(
-                                """
-                                Invalid label format: {}: {}. Only hyphens (-),
-                                underscores (_), lowercase characters, and numbers
-                                are allowed. International characters are not allowed.
-                                """.format(
-                                    key, label
-                                )
-                            )
 
                 if "scheduling" in metadata:
                     scheduling = metadata["scheduling"]

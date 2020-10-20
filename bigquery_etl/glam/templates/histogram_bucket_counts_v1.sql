@@ -46,7 +46,6 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
 CREATE TEMP FUNCTION udf_normalize_histograms(
   arrs ARRAY<
     STRUCT<
-      latest_version INT64,
       metric STRING,
       metric_type STRING,
       key STRING,
@@ -57,7 +56,6 @@ CREATE TEMP FUNCTION udf_normalize_histograms(
 )
 RETURNS ARRAY<
   STRUCT<
-    latest_version INT64,
     metric STRING,
     metric_type STRING,
     key STRING,

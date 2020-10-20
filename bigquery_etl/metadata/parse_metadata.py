@@ -7,9 +7,7 @@ import attr
 from typing import List, Optional, Dict
 from pathlib import Path
 
-from bigquery_etl.query_scheduling.utils import (
-    is_email
-)
+from bigquery_etl.query_scheduling.utils import is_email
 
 METADATA_FILE = "metadata.yaml"
 
@@ -41,15 +39,19 @@ class Metadata:
         for key, label in value.items():
             if not isinstance(label, bool):
                 if not Metadata.is_valid_label(str(key)):
-                    raise ValueError(f"""Invalid label key format: {key}. 
+                    raise ValueError(
+                        f"""Invalid label key format: {key}. 
                                     Key cannot be empty. Only hyphens(-), underscores(_), 
                                     lowercase characters, and numbers are allowed. 
-                                    International characters are not allowed.""")
+                                    International characters are not allowed."""
+                    )
                 elif not Metadata.is_valid_label(str(label)) and not label == "":
-                    raise ValueError(f"""Invalid label value format: {label}. 
+                    raise ValueError(
+                        f"""Invalid label value format: {label}. 
                                     Value be empty. Only hyphens(-), underscores(_), 
                                     lowercase characters, and numbers are allowed. 
-                                    International characters are not allowed.""")
+                                    International characters are not allowed."""
+                    )
 
     @staticmethod
     def is_valid_label(label):
@@ -72,7 +74,7 @@ class Metadata:
 
         Checks if the name and file format match the metadata file requirements.
         """
-        if Path(file_path).is_file():
+        if Path(file_path).is_file() or file_path == "metadata.yaml":
             return os.path.basename(file_path) == METADATA_FILE
         else:
             raise ValueError(f"Metadata file doesn't exist at {file_path}.")

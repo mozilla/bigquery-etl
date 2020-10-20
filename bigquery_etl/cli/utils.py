@@ -1,9 +1,10 @@
 """Utility functions used by the CLI."""
 
-from google.cloud import bigquery
-import click
 import os
 from pathlib import Path
+
+import click
+from google.cloud import bigquery
 
 from bigquery_etl.util.common import project_dirs
 

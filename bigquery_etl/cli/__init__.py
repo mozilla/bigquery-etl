@@ -1,16 +1,17 @@
 """bigquery-etl CLI."""
 
-import click
 import warnings
 
+import click
 
-from ..cli.query import query
+from .._version import __version__
 from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.format import format
-from ..cli.routine import routine, mozfun
+from ..cli.query import query
+from ..cli.routine import mozfun, routine
+from ..cli.view import view
 from ..glam.cli import glam
-from .._version import __version__
 from ..stripe import stripe_
 
 
@@ -25,6 +26,7 @@ def cli(prog_name=None):
         "mozfun": mozfun,
         "stripe": stripe_,
         "glam": glam,
+        "view": view,
     }
 
     @click.group(commands=commands)

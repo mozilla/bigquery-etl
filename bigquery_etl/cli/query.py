@@ -1,23 +1,23 @@
 """bigquery-etl CLI query command."""
 
+import re
+import string
+import sys
+from datetime import date, timedelta
+from fnmatch import fnmatchcase
+from pathlib import Path
+
 import click
 from google.cloud import bigquery
-from fnmatch import fnmatchcase
-from datetime import date, timedelta
-from pathlib import Path
-import re
-import sys
-import string
 
-from ..metadata.parse_metadata import Metadata, METADATA_FILE
-from ..metadata import validate_metadata
-from ..format_sql.formatter import reformat
-from ..query_scheduling.generate_airflow_dags import get_dags
-from ..cli.utils import is_valid_dir, is_authenticated, is_valid_project
-from ..cli.format import format
 from ..cli.dryrun import dryrun
+from ..cli.format import format
+from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
+from ..format_sql.formatter import reformat
+from ..metadata import validate_metadata
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..query_scheduling.generate_airflow_dags import get_dags
 from ..run_query import run
-
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 SQL_FILE_RE = re.compile(

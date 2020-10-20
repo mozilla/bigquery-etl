@@ -1,14 +1,15 @@
 """bigquery-etl CLI dryrun command."""
 
-import click
-from google.cloud import bigquery
 import os
+import sys
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
-import sys
 
-from ..dryrun import DryRun, SKIP
+import click
+from google.cloud import bigquery
+
 from ..cli.utils import is_authenticated
+from ..dryrun import SKIP, DryRun
 
 
 @click.command(

@@ -34,9 +34,10 @@ def validate(target):
     if os.path.isdir(target):
         for root, dirs, files in os.walk(target):
             for file in files:
-                path = os.path.join(root, *dirs, file)
-                if Metadata.is_metadata_file(path):
+                if Metadata.is_metadata_file(file):
+                    path = os.path.join(root, *dirs, file)
                     metadata = Metadata.from_file(path)
+
                     if not validate_public_data(metadata, path):
                         failed = True
 

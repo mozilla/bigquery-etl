@@ -74,10 +74,8 @@ class Metadata:
 
         Checks if the name and file format match the metadata file requirements.
         """
-        if Path(file_path).is_file() or file_path == "metadata.yaml":
-            return os.path.basename(file_path) == METADATA_FILE
-        else:
-            raise ValueError(f"Metadata file doesn't exist at {file_path}.")
+        # todo: we should probably also check if the file actually exists etc.
+        return os.path.basename(file_path) == METADATA_FILE
 
     @classmethod
     def of_table(cls, dataset, table, version, target_dir):

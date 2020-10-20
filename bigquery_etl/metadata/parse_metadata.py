@@ -5,7 +5,6 @@ import yaml
 import os
 import attr
 from typing import List, Optional, Dict
-from pathlib import Path
 
 from bigquery_etl.query_scheduling.utils import is_email
 
@@ -40,16 +39,16 @@ class Metadata:
             if not isinstance(label, bool):
                 if not Metadata.is_valid_label(str(key)):
                     raise ValueError(
-                        f"""Invalid label key format: {key}. 
-                                    Key cannot be empty. Only hyphens(-), underscores(_), 
-                                    lowercase characters, and numbers are allowed. 
+                        f"""Invalid label key format: {key}.
+                                    Key cannot be empty. Only hyphens(-), underscores(_),
+                                    lowercase characters, and numbers are allowed.
                                     International characters are not allowed."""
                     )
                 elif not Metadata.is_valid_label(str(label)) and not label == "":
                     raise ValueError(
-                        f"""Invalid label value format: {label}. 
-                                    Value be empty. Only hyphens(-), underscores(_), 
-                                    lowercase characters, and numbers are allowed. 
+                        f"""Invalid label value format: {label}.
+                                    Value be empty. Only hyphens(-), underscores(_),
+                                    lowercase characters, and numbers are allowed.
                                     International characters are not allowed."""
                     )
 

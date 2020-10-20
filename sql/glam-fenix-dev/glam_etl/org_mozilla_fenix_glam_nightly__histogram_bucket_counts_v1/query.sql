@@ -281,6 +281,38 @@ distribution_metadata AS (
           5000 AS range_max,
           50 AS bucket_count,
           "exponential" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "js_baseline_compile_percentage" AS metric,
+          0 AS range_min,
+          100 AS range_max,
+          20 AS bucket_count,
+          "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "js_delazification_percentage" AS metric,
+          0 AS range_min,
+          100 AS range_max,
+          20 AS bucket_count,
+          "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "js_execution_percentage" AS metric,
+          0 AS range_min,
+          100 AS range_max,
+          20 AS bucket_count,
+          "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "js_xdr_encode_percentage" AS metric,
+          0 AS range_min,
+          100 AS range_max,
+          20 AS bucket_count,
+          "linear" AS histogram_type
         )
       ]
     )

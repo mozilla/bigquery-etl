@@ -34,7 +34,7 @@ class Metadata:
 
     @labels.validator
     def validate_labels(self, attribute, value):
-        """Check that labels are valid"""
+        """Check that labels are valid."""
         for key, label in value.items():
             if not isinstance(label, bool):
                 if not Metadata.is_valid_label(str(key)):

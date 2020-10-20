@@ -8,8 +8,9 @@ TEST_DIR = Path(__file__).parent.parent
 
 class TestParseMetadata(object):
     def test_metadata_instantiation(self):
-        metadata = Metadata("Test metadata", "test description",
-                            ["test@example.org"], {})
+        metadata = Metadata(
+            "Test metadata", "test description", ["test@example.org"], {}
+        )
 
         assert metadata.friendly_name == "Test metadata"
         assert metadata.description == "test description"
@@ -19,16 +20,23 @@ class TestParseMetadata(object):
 
     def test_invalid_owners(self):
         with pytest.raises(ValueError):
-            Metadata("Test metadata", "test description",
-                     ["testexample.org"])
+            Metadata("Test metadata", "test description", ["testexample.org"])
 
     def test_invalid_label(self):
         with pytest.raises(ValueError):
-            Metadata("Test metadata", "test description",
-                     ["test@example.org"], {"INVALID-KEY": "foo"})
+            Metadata(
+                "Test metadata",
+                "test description",
+                ["test@example.org"],
+                {"INVALID-KEY": "foo"},
+            )
         with pytest.raises(ValueError):
-            Metadata("Test metadata", "test description",
-                     ["test@example.org"], {"foo": "INVALID-VALUE"})
+            Metadata(
+                "Test metadata",
+                "test description",
+                ["test@example.org"],
+                {"foo": "INVALID-VALUE"},
+            )
 
     def test_is_valid_label(self):
         assert Metadata.is_valid_label("valid_label")

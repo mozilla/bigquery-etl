@@ -23,12 +23,15 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/account_ecosystem_restricted/ecosystem_client_id_deletion_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/account_ecosystem_derived/fxa_logging_users_daily_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql",
     "sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/deletion_request_volume_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring/document_sample_nonprod_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring/schema_error_counts_v1/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/structured_error_counts_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql",
     "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql",
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql",  # noqa E501

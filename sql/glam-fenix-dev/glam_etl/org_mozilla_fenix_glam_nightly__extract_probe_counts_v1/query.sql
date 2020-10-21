@@ -17,7 +17,11 @@ SELECT
   ping_type,
   os,
   app_build_id AS build_id,
-  SAFE_CAST(mozfun.glam.build_hour_to_datetime(app_build_id) AS STRING) AS build_date,
+  IF(
+    app_build_id = "*",
+    "*",
+    SAFE_CAST(mozfun.glam.build_hour_to_datetime(app_build_id) AS STRING)
+  ) AS build_date,
   metric,
   metric_type,
     -- BigQuery has some null unicode characters which Postgresql doesn't like,

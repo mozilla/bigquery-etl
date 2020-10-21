@@ -20,7 +20,11 @@ SELECT
   app_version,
   coalesce(ping_type, "*") AS ping_type,
   COALESCE(app_build_id, "*") AS app_build_id,
-  SAFE_CAST(mozfun.glam.build_hour_to_datetime(app_build_id) AS STRING) AS build_date,
+  IF(
+    app_build_id = "*",
+    "*",
+    SAFE_CAST(mozfun.glam.build_hour_to_datetime(app_build_id) AS STRING)
+  ) AS build_date,
   COALESCE(os, "*") AS os,
   total_users
 FROM

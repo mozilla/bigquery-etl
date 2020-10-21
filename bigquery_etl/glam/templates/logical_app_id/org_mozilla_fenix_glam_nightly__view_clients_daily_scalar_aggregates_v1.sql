@@ -18,7 +18,7 @@ WITH extracted AS (
     *
   FROM
     `{{ project }}`.glam_etl.org_mozilla_fennec_aurora__view_clients_daily_scalar_aggregates_v1
-)
+),
 with_app_build_id AS (
   SELECT
     * EXCEPT (app_build_id, channel, app_version),
@@ -42,8 +42,7 @@ with_geckoview_version_renamed AS (
     `moz-fx-data-shared-prod`.org_mozilla_fenix.geckoview_version
 )
 SELECT
-  * EXCEPT (build_hour),
-  app_version
+  * EXCEPT (build_hour)
 FROM
   with_build_hour
 JOIN

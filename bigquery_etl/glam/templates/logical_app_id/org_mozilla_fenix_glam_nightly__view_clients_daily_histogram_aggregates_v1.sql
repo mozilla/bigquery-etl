@@ -42,8 +42,7 @@ with_geckoview_version_renamed AS (
     `moz-fx-data-shared-prod`.org_mozilla_fenix.geckoview_version
 )
 SELECT
-  * EXCEPT (build_hour),
-  app_version
+  * EXCEPT (build_hour)
 FROM
   with_build_hour
 JOIN

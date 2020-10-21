@@ -20,7 +20,8 @@ VIEWS_TO_SKIP = (
     "firefox_accounts/fxa_amplitude_email_clicks/view.sql",
     "pocket/pocket_reach_mau/view.sql",
     "telemetry/buildhub2/view.sql",
-    # Dataset moz-fx-data-shared-prod:glam_etl was not found
+    # Dataset glam-fenix-dev:glam_etl was not found
+    # TODO: this should be removed if views are to be automatically deployed
     *[str(path) for path in Path("sql/glam-fenix-dev").glob("glam_etl/**/view.sql")],
     # View in project other than prod
     "shredder_state/progress/view.sql",

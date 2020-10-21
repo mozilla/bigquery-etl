@@ -21,10 +21,7 @@ VIEWS_TO_SKIP = (
     "pocket/pocket_reach_mau/view.sql",
     "telemetry/buildhub2/view.sql",
     # Dataset moz-fx-data-shared-prod:glam_etl was not found
-    *[
-        str(path)
-        for path in Path("sql/glam-fenix-dev").glob("glam_etl/**/view.sql")
-    ],
+    *[str(path) for path in Path("sql/glam-fenix-dev").glob("glam_etl/**/view.sql")],
     # View in project other than prod
     "shredder_state/progress/view.sql",
 )

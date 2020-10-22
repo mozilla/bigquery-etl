@@ -213,7 +213,7 @@ def main():
         ),
     )
 
-    job_config = bigquery.QueryJobConfig(
+    job_config = bigquery.LoadJobConfig(
         destination=destination_table, write_disposition="WRITE_TRUNCATE"
     )
     job_config.schema = bq_schema
@@ -224,7 +224,7 @@ def main():
     )
 
     client.load_table_from_json(
-        converter.unstructure(experiments), destination_table, job_config
+        converter.unstructure(experiments), destination_table, job_config=job_config
     ).result()
     print(f"Loaded {len(experiments)} experiments")
 

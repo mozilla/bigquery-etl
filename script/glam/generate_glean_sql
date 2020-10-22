@@ -72,7 +72,10 @@ function write_clients_daily_aggregates {
 
 cd "$(dirname "$0")/../.."
 error="STAGE must be one of (daily, incremental, all)"
+# The project for generating the clients daily tables
 src_project=${SRC_PROJECT:-moz-fx-data-shared-prod}
+# We may also define the PROJECT as the destination project for backwards
+# compatibility.
 dst_project=${DST_PROJECT:-${PROJECT:-glam-fenix-dev}}
 product=${PRODUCT?PRODUCT must be defined}
 stage=${STAGE?$error}

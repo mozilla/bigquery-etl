@@ -7,7 +7,9 @@ project=${PROJECT:-glam-fenix-dev}
 skip_generate=${SKIP_GENERATE:-false}
 # NOTE: there are three app_ids that we must look at for historical context. For
 # the purpose of this script, it is sufficient to look only at what is currently
-# "fenix nightly".
+# "fenix nightly". We must have at least one table scalar/histogram tables for
+# each of the referenced tables in the view. We'll keep all pings for
+# org_mozilla_fenix, and only the metrics ping for the others.
 app_ids=(
     "org_mozilla_fenix"
     "org_mozilla_fenix_nightly"
@@ -19,14 +21,12 @@ dir="$(dirname "$0")/.."
 sql_dir=$dir/../../sql/$project/glam_etl
 
 if [[ $skip_generate == false ]]; then
-    # generate views for each of the referenced products to avoid errors
     for app_id in "${app_ids[@]}"; do
         PRODUCT=$app_id STAGE=daily $dir/generate_glean_sql &
     done
     wait
+    # remove tables to reduce noise of checked-in queries
     for app_id in "${app_ids[@]}"; do
-        # keep all pings for org_mozilla_fenix, and only the baseline ping for
-        # the others
         if [[ $app_id == "org_mozilla_fenix" ]]; then
             continue;
         fi

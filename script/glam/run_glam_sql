@@ -13,6 +13,7 @@ print(dt.strftime("%Y-%m-%d"))
 EOD
 }
 
+# Project of the generated SQL
 PROJECT=${PROJECT:-"glam-fenix-dev"}
 # The DST project is the location of the destination tables, which may be
 # different from PROJECT. One example would be for running desktop SQL into a

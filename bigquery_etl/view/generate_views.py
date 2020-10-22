@@ -132,6 +132,11 @@ def create_views_if_not_exist(client, views, exclude, sql_dir):
                         "(client_info.telemetry_sdk_build, metrics)"
                         " AS metrics"
                     ]
+                if table.dataset_id.startswith("firefox_desktop"):
+                    # Bug 1672191
+                    replacements += [
+                        "'Firefox' AS normalized_app_name",
+                    ]
             elif schema_id in ("main_ping_1", "main_ping_4"):
                 replacements += [
                     "`moz-fx-data-shared-prod.udf.normalize_main_payload`(payload)"

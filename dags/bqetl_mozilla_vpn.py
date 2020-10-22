@@ -32,6 +32,51 @@ with DAG(
         dag=dag,
     )
 
+    mozilla_vpn_external__devices__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_external__devices__v1",
+        destination_table="devices_v1",
+        dataset_id="mozilla_vpn_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=[
+            "external_database_query:STRING:SELECT * FROM devices WHERE DATE(updated_at) = DATE '{{ds}}'"
+        ],
+        dag=dag,
+    )
+
+    mozilla_vpn_external__subscriptions__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_external__subscriptions__v1",
+        destination_table="subscriptions_v1",
+        dataset_id="mozilla_vpn_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=[
+            "external_database_query:STRING:SELECT * FROM subscriptions WHERE DATE(updated_at) = DATE '{{ds}}'"
+        ],
+        dag=dag,
+    )
+
+    mozilla_vpn_external__users__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_external__users__v1",
+        destination_table="users_v1",
+        dataset_id="mozilla_vpn_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=[
+            "external_database_query:STRING:SELECT * FROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
+        ],
+        dag=dag,
+    )
+
     mozilla_vpn_external__waitlist__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_external__waitlist__v1",
         destination_table="waitlist_v1",

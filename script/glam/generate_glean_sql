@@ -6,8 +6,8 @@ function write_scalars {
     local product=$1
     local dataset=$2
     local table=$3
-    local project=$4
-    local directory="sql/${project}/glam_etl/${product}__clients_daily_scalar_aggregates_${table}"
+    local dst_project=$4
+    local directory="sql/${dst_project}/glam_etl/${product}__clients_daily_scalar_aggregates_${table}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
         --source-table "$dataset.$table" \
@@ -23,8 +23,8 @@ function write_histograms {
     local product=$1
     local dataset=$2
     local table=$3
-    local project=$4
-    local directory="sql/${project}/glam_etl/${product}__clients_daily_histogram_aggregates_${table}"
+    local dst_project=$4
+    local directory="sql/${dst_project}/glam_etl/${product}__clients_daily_histogram_aggregates_${table}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
         --source-table "$dataset.$table" \
@@ -39,7 +39,7 @@ function write_histograms {
 function write_clients_daily_aggregates {
     local product=$1
     local src_project=$2
-    local project=$3
+    local dst_project=$3
 
     local dataset="${product}_stable"
     local qualified="$src_project:$dataset"
@@ -62,8 +62,8 @@ function write_clients_daily_aggregates {
     )
     # generate all of the schemas in parallel
     for table in $tables; do
-        write_scalars "$product" "$dataset" "$table" "$project" &
-        write_histograms "$product" "$dataset" "$table" "$project" &
+        write_scalars "$product" "$dataset" "$table" "$dst_project" &
+        write_histograms "$product" "$dataset" "$table" "$dst_project" &
     done
 
     # wait for all of the processes before continuing
@@ -73,17 +73,17 @@ function write_clients_daily_aggregates {
 cd "$(dirname "$0")/../.."
 error="STAGE must be one of (daily, incremental, all)"
 src_project=${SRC_PROJECT:-moz-fx-data-shared-prod}
-project=${PROJECT:-glam-fenix-dev}
+dst_project=${DST_PROJECT:-${PROJECT:-glam-fenix-dev}}
 product=${PRODUCT?PRODUCT must be defined}
 stage=${STAGE?$error}
 
 if [[ $stage == "daily" ]]; then
-    write_clients_daily_aggregates "$product" "$src_project" "$project"
+    write_clients_daily_aggregates "$product" "$src_project" "$dst_project"
     python3 -m bigquery_etl.glam.generate --prefix "${product}" --daily-view-only
 elif [[ $stage == "incremental" ]]; then
     python3 -m bigquery_etl.glam.generate --prefix "${product}"
 elif [[ $stage == "all" ]]; then
-    write_clients_daily_aggregates "$product" "$src_project" "$project"
+    write_clients_daily_aggregates "$product" "$src_project" "$dst_project"
     python3 -m bigquery_etl.glam.generate --prefix "${product}"
 else
     echo "$error"

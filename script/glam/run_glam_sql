@@ -14,7 +14,10 @@ EOD
 }
 
 PROJECT=${PROJECT:-"glam-fenix-dev"}
-DEST_PROJECT=${DEST_PROJECT:-$PROJECT}
+# The DST project is the location of the destination tables, which may be
+# different from PROJECT. One example would be for running desktop SQL into a
+# dataset that's not moz-fx-data-shared-prod.
+DST_PROJECT=${DST_PROJECT:-$PROJECT}
 PROD_DATASET=${PROD_DATASET:-"glam_etl"}
 DATASET=${DATASET:-"glam_etl_dev"}
 SUBMISSION_DATE=${SUBMISSION_DATE:-$(yesterday)}
@@ -51,7 +54,7 @@ function run_query {
         --max_rows=0 \
         --use_legacy_sql=false \
         $additional_arguments \
-        --project_id="$DEST_PROJECT" \
+        --project_id="$DST_PROJECT" \
         --dataset_id="$DATASET" \
         --destination_table="$destination_table" \
         --parameter="submission_date:DATE:$SUBMISSION_DATE" \
@@ -74,7 +77,7 @@ function run_init {
         replace_dataset "$init" > "$tmp"
         bq query \
             --use_legacy_sql=false \
-            --project_id="$DEST_PROJECT" \
+            --project_id="$DST_PROJECT" \
             < "$tmp"
     fi
 }
@@ -89,7 +92,7 @@ function run_view {
     replace_dataset "$view" > "$tmp"
     bq query \
         --use_legacy_sql=false \
-        --project_id="$DEST_PROJECT" \
+        --project_id="$DST_PROJECT" \
         --dataset_id="$DATASET" \
         < "$tmp"
 }

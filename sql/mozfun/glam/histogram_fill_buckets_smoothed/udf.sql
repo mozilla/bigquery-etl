@@ -1,5 +1,5 @@
 -- udf_fill_buckets
-CREATE OR REPLACE FUNCTION glam.fill_buckets_smoothed(
+CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_smoothed(
   input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
   buckets ARRAY<STRING>,
   total_users INT64

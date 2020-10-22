@@ -11,3 +11,8 @@ RETURNS FLOAT64 AS (
       val >= CAST(bucket AS FLOAT64)
   )
 );
+
+--Tests
+SELECT
+  assert.equals(2.0, glam.histogram_bucket_from_value(["1", "2", "3"], 2.333)),
+  assert.equals(1.0, glam.histogram_bucket_from_value(["1", "2", "3"], 0.99)),

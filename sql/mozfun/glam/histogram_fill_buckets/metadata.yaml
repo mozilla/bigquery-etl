@@ -1,0 +1,3 @@
+description: |
+  Interpolate missing histogram buckets with empty buckets.
+friendly_name: Histogram fill buckets

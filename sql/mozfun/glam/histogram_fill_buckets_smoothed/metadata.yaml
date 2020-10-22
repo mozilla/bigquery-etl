@@ -1,0 +1,4 @@
+description: |
+  Interpolate missing histogram buckets with empty buckets with bayesian
+  smoothing factor.
+friendly_name: Histogram fill buckets smoothed

@@ -1,0 +1,3 @@
+description: |
+  Generate functional buckets for a histogram. This is specific to Glean.
+friendly_name: Histograms generate functional buckets

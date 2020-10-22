@@ -16,8 +16,8 @@ EXPERIMENTER_API_URL_V1 = (
 )
 
 # for nimbus experiments
-EXPERIMENTER_API_URL_V4 = (
-    "https://experimenter.services.mozilla.com/api/v4/experiments/"
+EXPERIMENTER_API_URL_V6 = (
+    "https://experimenter.services.mozilla.com/api/v6/experiments/"
 )
 
 parser = ArgumentParser(description=__doc__)
@@ -115,11 +115,10 @@ class ExperimentV1:
 
 
 @attr.s(auto_attribs=True)
-class ExperimentV4:
-    """Represents a v4 experiment from Experimenter."""
+class ExperimentV6:
+    """Represents a v6 experiment from Experimenter."""
 
     slug: str  # Normandy slug
-    active: bool
     startDate: Optional[datetime.datetime]
     endDate: Optional[datetime.datetime]
     proposedEnrollment: int
@@ -127,7 +126,7 @@ class ExperimentV4:
     referenceBranch: Optional[str]
 
     @classmethod
-    def from_dict(cls, d) -> "ExperimentV4":
+    def from_dict(cls, d) -> "ExperimentV6":
         converter = cattr.Converter()
         converter.register_structure_hook(
             datetime.datetime,
@@ -142,8 +141,10 @@ class ExperimentV4:
         return Experiment(
             normandy_slug=self.slug,
             experimenter_slug=None,
-            type="v4",
-            status="Live" if self.active else "Complete",
+            type="v6",
+            status="Live"
+            if self.endDate and self.endDate <= pytz.utc.localize(datetime.datetime.now())
+            else "Complete",
             start_date=self.startDate,
             end_date=self.endDate,
             proposed_enrollment=self.proposedEnrollment,
@@ -168,13 +169,13 @@ def get_experiments() -> List[Experiment]:
             except Exception as e:
                 print(f"Cannot import experiment: {experiment}: {e}")
 
-    nimbus_experiments_json = session.get(EXPERIMENTER_API_URL_V4).json()
+    nimbus_experiments_json = session.get(EXPERIMENTER_API_URL_V6).json()
     nimbus_experiments = []
 
     for experiment in nimbus_experiments_json:
         try:
             nimbus_experiments.append(
-                ExperimentV4.from_dict(experiment["arguments"]).to_experiment()
+                ExperimentV6.from_dict(experiment).to_experiment()
             )
         except Exception as e:
             print(f"Cannot import experiment: {experiment}: {e}")

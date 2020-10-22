@@ -72,7 +72,7 @@ filtered_accumulated AS (
       @submission_date,
       INTERVAL 365 day
     )
-    AND app_version >= (latest_version - 3)
+    AND app_version > (latest_version - 3)
 ),
 -- unnest the daily data
 extracted_daily AS (
@@ -113,7 +113,7 @@ filtered_daily AS (
       @submission_date,
       INTERVAL 365 day
     )
-    AND app_version >= (latest_version - 3)
+    AND app_version > (latest_version - 3)
 ),
 -- re-aggregate based on the latest version
 aggregated_daily AS (

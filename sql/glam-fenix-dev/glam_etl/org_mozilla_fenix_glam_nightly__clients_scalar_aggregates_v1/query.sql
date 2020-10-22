@@ -143,7 +143,7 @@ version_filtered_new AS (
       @submission_date,
       INTERVAL 365 day
     )
-    AND app_version >= (latest_version - 3)
+    AND app_version > (latest_version - 3)
 ),
 scalar_aggregates_new AS (
   SELECT
@@ -224,7 +224,7 @@ filtered_old AS (
       @submission_date,
       INTERVAL 365 day
     )
-    AND app_version >= (latest_version - 3)
+    AND app_version > (latest_version - 3)
 ),
 joined_new_old AS (
   SELECT

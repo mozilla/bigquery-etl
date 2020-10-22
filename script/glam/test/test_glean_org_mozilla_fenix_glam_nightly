@@ -31,7 +31,7 @@ if [[ $skip_generate == false ]]; then
             continue;
         fi
         for path in "${sql_dir}/${app_id}__clients"*; do
-            if [[ $path == *metrics* ]]; then
+            if [[ $path == "${sql_dir}/${app_id}__clients"*metrics* ]]; then
                 continue;
             fi
             rm -r $path

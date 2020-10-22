@@ -19,7 +19,7 @@ RETURNS ARRAY<
     aggregated_data AS (
       SELECT AS STRUCT
         {{ metric_attributes }},
-        `moz-fx-data-shared-prod`.udf.map_sum(ARRAY_CONCAT_AGG(value)) AS value
+        mozfun.map.sum(ARRAY_CONCAT_AGG(value)) AS value
       FROM
         unnested
       GROUP BY

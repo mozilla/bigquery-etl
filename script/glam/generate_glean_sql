@@ -6,7 +6,8 @@ function write_scalars {
     local product=$1
     local dataset=$2
     local table=$3
-    local directory="sql/moz-fx-data-shared-prod/glam_etl/${product}__clients_daily_scalar_aggregates_${table}"
+    local dst_project=$4
+    local directory="sql/${dst_project}/glam_etl/${product}__clients_daily_scalar_aggregates_${table}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
         --source-table "$dataset.$table" \
@@ -22,7 +23,8 @@ function write_histograms {
     local product=$1
     local dataset=$2
     local table=$3
-    local directory="sql/moz-fx-data-shared-prod/glam_etl/${product}__clients_daily_histogram_aggregates_${table}"
+    local dst_project=$4
+    local directory="sql/${dst_project}/glam_etl/${product}__clients_daily_histogram_aggregates_${table}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
         --source-table "$dataset.$table" \
@@ -36,10 +38,11 @@ function write_histograms {
 
 function write_clients_daily_aggregates {
     local product=$1
-    local project=$2
+    local src_project=$2
+    local dst_project=$3
 
     local dataset="${product}_stable"
-    local qualified="$project:$dataset"
+    local qualified="$src_project:$dataset"
     # validate inputs with set -e, however note that this will fail silently
     if ! bq ls "$qualified" &> /dev/null; then
         echo "could not list $qualified"
@@ -53,14 +56,14 @@ function write_clients_daily_aggregates {
     # e.g. baseline_v1
     local tables;
     tables=$(
-        bq ls "$project:$dataset" \
+        bq ls "$qualified" \
         | grep TABLE \
         | awk '{print $1}'
     )
     # generate all of the schemas in parallel
     for table in $tables; do
-        write_scalars "$product" "$dataset" "$table" &
-        write_histograms "$product" "$dataset" "$table" &
+        write_scalars "$product" "$dataset" "$table" "$dst_project" &
+        write_histograms "$product" "$dataset" "$table" "$dst_project" &
     done
 
     # wait for all of the processes before continuing
@@ -69,17 +72,21 @@ function write_clients_daily_aggregates {
 
 cd "$(dirname "$0")/../.."
 error="STAGE must be one of (daily, incremental, all)"
-project=${SRC_PROJECT:-moz-fx-data-shared-prod}
+# The project for generating the clients daily tables
+src_project=${SRC_PROJECT:-moz-fx-data-shared-prod}
+# We may also define the PROJECT as the destination project for backwards
+# compatibility.
+dst_project=${DST_PROJECT:-${PROJECT:-glam-fenix-dev}}
 product=${PRODUCT?PRODUCT must be defined}
 stage=${STAGE?$error}
 
 if [[ $stage == "daily" ]]; then
-    write_clients_daily_aggregates "$product" "$project"
+    write_clients_daily_aggregates "$product" "$src_project" "$dst_project"
     python3 -m bigquery_etl.glam.generate --prefix "${product}" --daily-view-only
 elif [[ $stage == "incremental" ]]; then
     python3 -m bigquery_etl.glam.generate --prefix "${product}"
 elif [[ $stage == "all" ]]; then
-    write_clients_daily_aggregates "$product" "$project"
+    write_clients_daily_aggregates "$product" "$src_project" "$dst_project"
     python3 -m bigquery_etl.glam.generate --prefix "${product}"
 else
     echo "$error"

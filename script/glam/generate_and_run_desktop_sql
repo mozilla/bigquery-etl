@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # import run_query procedure from run_glam_sql without running the script
+PROJECT=${PROJECT:-moz-fx-data-shared-prod}
+DST_PROJECT=${DST_PROJECT:-$PROJECT}
 IMPORT=true source script/glam/run_glam_sql
 
 

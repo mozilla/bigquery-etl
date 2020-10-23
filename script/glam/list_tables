@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# List all of the tables within a dataset
+
+project=${PROJECT:-glam-fenix-dev}
+dataset=${1:-glam_etl_dev}
+bq ls -n 10000 --format json "$project:$dataset" | jq -r '.[].id'

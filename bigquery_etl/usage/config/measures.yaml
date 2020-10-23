@@ -1,0 +1,24 @@
+sources:
+  - name: main
+    ref: telemetry.main
+    submission_date: DATE(submission_timestamp)
+    origin_date: '2020-01-01'
+    measures:
+      - name: total_uri_count_sum
+        sql: SUM(payload.processes.parent.scalars.browser_engagement_total_uri_count)
+        usages:
+          - name: visited_1_uri
+            sql: '>= 1'
+          - name: visited_5_uri
+            sql: '>= 5'
+          - name: visited_10_uri
+            sql: '>= 10'
+      - name: active_ticks_sum
+        sql: >-
+          SUM(COALESCE(
+            payload.processes.parent.scalars.browser_engagement_active_ticks,
+            payload.simple_measurements.active_ticks
+          ))
+        usages:
+          - name: had_active_ticks
+            sql: '> 0'

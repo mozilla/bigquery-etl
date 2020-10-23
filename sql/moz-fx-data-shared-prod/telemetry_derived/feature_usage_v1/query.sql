@@ -4,15 +4,17 @@ WITH events_t AS (
     sample_id,
     client_id,
     LOGICAL_OR(
-      event_method = 'show'
+      event_category = 'security.ui.protections'
+      AND event_method = 'show'
       AND event_object = 'protection_report'
     ) AS viewed_protection_report,
     LOGICAL_OR(event_category = 'pictureinpicture' AND event_method = 'create') AS used_pip,
-    LOGICAL_OR(event_string_value = 'SEC_ERROR_UNKNOWN_ISSUER') AS had_cert_error,
+    LOGICAL_OR(event_category = 'security.ui.certerror' AND event_string_value = 'SEC_ERROR_UNKNOWN_ISSUER') AS had_cert_error,
   FROM
     `moz-fx-data-shared-prod.telemetry.events`
   WHERE
     submission_date = @submission_date
+    AND event_category IN ('security.ui.protections', 'security.ui.certerror', 'pictureinpicture')
   GROUP BY
     submission_date,
     sample_id,

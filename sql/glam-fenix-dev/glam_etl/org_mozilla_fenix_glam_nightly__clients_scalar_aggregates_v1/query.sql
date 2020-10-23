@@ -130,6 +130,10 @@ version_filtered_new AS (
     value
   FROM
     filtered_aggregates AS scalar_aggs
+  LEFT JOIN
+    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
+  USING
+    (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
@@ -139,6 +143,7 @@ version_filtered_new AS (
       @submission_date,
       INTERVAL 365 day
     )
+    AND app_version > (latest_version - 3)
 ),
 scalar_aggregates_new AS (
   SELECT
@@ -206,6 +211,10 @@ filtered_old AS (
     scalar_aggregates
   FROM
     glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1 AS scalar_aggs
+  LEFT JOIN
+    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
+  USING
+    (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
@@ -215,6 +224,7 @@ filtered_old AS (
       @submission_date,
       INTERVAL 365 day
     )
+    AND app_version > (latest_version - 3)
 ),
 joined_new_old AS (
   SELECT

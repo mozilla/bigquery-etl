@@ -18,8 +18,38 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
         SAFE_CAST(key AS STRING) = e.key
     )
     SELECT
-      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value))
+      ARRAY_AGG(
+        STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value)
+        ORDER BY
+          CAST(key AS int64)
+      )
     FROM
       total_counts
   )
 );
+
+SELECT
+  -- fill in 1 with a value of 0
+  assert.array_equals(
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0), ("1", 0.0), ("2", 1.0)],
+    glam.histogram_fill_buckets(
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0), ("2", 1.0)],
+      ["0", "1", "2"]
+    )
+  ),
+  -- only keep values in specified in buckets
+  assert.array_equals(
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0)],
+    glam.histogram_fill_buckets(
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0), ("2", 1.0)],
+      ["0"]
+    )
+  ),
+  -- return ordered keys
+  assert.array_equals(
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[("2", 1.0), ("11", 0.0)],
+    glam.histogram_fill_buckets(
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0), ("2", 1.0)],
+      ["11", "2"]
+    )
+  )

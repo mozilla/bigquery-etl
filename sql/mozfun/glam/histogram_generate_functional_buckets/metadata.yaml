@@ -1,3 +1,12 @@
 description: |
   Generate functional buckets for a histogram. This is specific to Glean.
+
+  See: https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs
+
+  A functional bucketing algorithm. The bucket index of a given sample is
+  determined with the following function:
+
+  i = ⌊n log<sub>base</sub>(𝑥)⌋
+
+  In other words, there are n buckets for each power of `base` magnitude.
 friendly_name: Histograms generate functional buckets

@@ -1,7 +1,7 @@
 -- udf_normalized_sum
 CREATE OR REPLACE FUNCTION glam.histogram_normalized_sum(
   arrs ARRAY<STRUCT<key STRING, value INT64>>,
-  sampled BOOL
+  weight FLOAT64
 )
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Input: one histogram for a single client.
@@ -23,22 +23,40 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
         UNNEST(arrs) AS a
       GROUP BY
         a.key
-    ),
-    final_values AS (
-      SELECT
-        STRUCT<key STRING, value FLOAT64>(
-          k,
-          -- Weight probes from Windows release clients to account for 10% sampling
-          COALESCE(SAFE_DIVIDE(1.0 * v, total_count), 0) * IF(sampled, 10, 1)
-        ) AS record
-      FROM
-        summed_counts
-      CROSS JOIN
-        total_counts
     )
     SELECT
-      ARRAY_AGG(record)
+      ARRAY_AGG(
+        STRUCT<key STRING, value FLOAT64>(
+          k,
+          COALESCE(SAFE_DIVIDE(1.0 * v, total_count), 0) * weight
+        )
+        ORDER BY
+          CAST(k AS INT64)
+      )
     FROM
-      final_values
+      summed_counts
+    CROSS JOIN
+      total_counts
   )
 );
+
+SELECT
+  assert.array_equals(
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 0.25), ("1", 0.25), ("2", 0.5)],
+    glam.histogram_normalized_sum(
+      ARRAY<STRUCT<key STRING, value INT64>>[("0", 1), ("1", 1), ("2", 2)],
+      1.0
+    )
+  ),
+  assert.array_equals(
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 0.5), ("1", 0.5), ("2", 1.0)],
+    glam.histogram_normalized_sum(
+      ARRAY<STRUCT<key STRING, value INT64>>[("0", 1), ("1", 1), ("2", 2)],
+      2.0
+    )
+  ),
+  -- out of order keys
+  assert.array_equals(
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[("2", 0.5), ("11", 0.5)],
+    glam.histogram_normalized_sum(ARRAY<STRUCT<key STRING, value INT64>>[("11", 1), ("2", 1)], 1)
+  )

@@ -1,4 +1,19 @@
 description: |
   Interpolate missing histogram buckets with empty buckets with bayesian
   smoothing factor.
+
+  See: https://docs.google.com/document/d/1ipy1oFIKDvHr3R6Ku0goRjS11R1ZH1z2gygOGkSdqUg
+
+  Aggregate the histograms to the client level, to get a histogram {k1: p1,
+  k2:p2} where the p’s are proportions(and p1, p2 sum to 1). This is then the
+  clients estimated density. So every client is reduced to one row (i.e the
+  clients histograms are reduced to this single density). How can we create a
+  final estimator for the histogram density? The approach is similar to the
+  approach in Case 2 but every profile here has equal weight.  The steps are
+
+  For every client, compute the density i.e. {k1:p1, k2:p2 } Add all of these
+  across clients to get {k1: P1, k2:P2} where P1 = sum(p1 across clients) and P2 =
+  sum(p2 across clients). We also compute K the number of buckets(in this example
+  K=2) We also compute total number of profiles, say nreporting Then our estimate
+  for final density is {k1: (P1+1/K) / (nreporting+1), k2:(P2+1/K) / (nreporting+1)}
 friendly_name: Histogram fill buckets smoothed

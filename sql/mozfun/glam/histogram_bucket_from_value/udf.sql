@@ -15,4 +15,6 @@ RETURNS FLOAT64 AS (
 --Tests
 SELECT
   assert.equals(2.0, glam.histogram_bucket_from_value(["1", "2", "3"], 2.333)),
-  assert.equals(1.0, glam.histogram_bucket_from_value(["1", "2", "3"], 0.99)),
+  assert.equals(NULL, glam.histogram_bucket_from_value(["1"], 0.99)),
+  assert.equals(0.0, glam.histogram_bucket_from_value(["0", "1"], 0.99)),
+  assert.equals(0.0, glam.histogram_bucket_from_value(["1", "0"], 0.99)),

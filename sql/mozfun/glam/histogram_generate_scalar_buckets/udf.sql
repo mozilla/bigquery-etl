@@ -1,10 +1,10 @@
--- udf_generate_buckets
+-- udf_generate_buckets, except with FLOAT64 return type instead of STRING
 CREATE OR REPLACE FUNCTION glam.histogram_generate_scalar_buckets(
   min_bucket FLOAT64,
   max_bucket FLOAT64,
   num_buckets INT64
 )
-RETURNS ARRAY<STRING> DETERMINISTIC
+RETURNS ARRAY<FLOAT64> DETERMINISTIC
 LANGUAGE js
 AS
   '''
@@ -15,3 +15,10 @@ AS
   }
   return Array.from(buckets);
 ''';
+
+SELECT
+  assert.array_equals([1, 2, 4, 8], glam.histogram_generate_scalar_buckets(0, log(16, 2), 4)),
+  assert.array_equals(
+    [1, 1.9, 3.62, 6.9, 13.13],
+    glam.histogram_generate_scalar_buckets(0, log(25, 2), 5)
+  )

@@ -1,3 +1,4 @@
+---
 friendly_name: Core Clients Last Seen
 description: >
   Captures history of activity of each client sending core pings in 28 day

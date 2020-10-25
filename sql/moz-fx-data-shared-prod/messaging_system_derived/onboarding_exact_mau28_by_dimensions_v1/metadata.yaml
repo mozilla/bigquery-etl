@@ -1,6 +1,8 @@
+---
 friendly_name: Messaging System Onboarding Exact MAU by Dimensions
 description: >
-  Monthly active users using Onboarding aggregated across unique sets of dimensions.
+  Monthly active users using Onboarding aggregated across unique
+  sets of dimensions.
 owners:
   - najiang@mozilla.com
 labels:

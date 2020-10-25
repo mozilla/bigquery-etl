@@ -1,6 +1,7 @@
+---
 friendly_name: Devtools Panel Usage
 description: >
-  A daily number of usages of different devtools, partitioned by day. 
+  A daily number of usages of different devtools, partitioned by day.
 owners:
   - jklukas@mozilla.com
 labels:

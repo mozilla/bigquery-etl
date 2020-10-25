@@ -1,3 +1,4 @@
+---
 - build_hour: '2020-06-01T00:00:00'
   geckoview_major_version: 107
   n_pings: 6

@@ -1,3 +1,4 @@
+---
 friendly_name: Stripe Plans
 description: Stripe Plans as of UTC midnight. See bug 1667889.
 owners:
@@ -7,6 +8,8 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_stripe
-  # destination is the whole table, not a single partition, so don't use date_partition_parameter
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
   date_partition_parameter:
-  referenced_tables: [['moz-fx-data-shared-prod', 'stripe_external', 'plans_v1']]
+  referenced_tables:
+    [["moz-fx-data-shared-prod", "stripe_external", "plans_v1"]]

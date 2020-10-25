@@ -1,3 +1,4 @@
+---
 description: |
   Returns the number of nanoseconds represented by a Glean timespan struct.
 

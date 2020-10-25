@@ -1,3 +1,4 @@
+---
 friendly_name: Normalize Product Info
 description: |
   Returns a normalized `product` name and a `canonical_name` for a product
@@ -14,8 +15,9 @@ description: |
   canonical reference for whether the given application is included in KPI
   reporting. Additional fields may be added for future years.
 
-  The `normalized_os` value that's passed in should be the top-level `normalized_os`
-  value present in any ping table or you may want to wrap a raw value in `mozfun.norm.os`
+  The `normalized_os` value that's passed in should be the top-level
+  `normalized_os` value present in any ping table or you may want
+  to wrap a raw value in `mozfun.norm.os`
   like `mozfun.norm.product_info(app_name, mozfun.norm.os(os))`.
 
   For legacy telemetry pings like `main` ping for desktop and `core` ping for

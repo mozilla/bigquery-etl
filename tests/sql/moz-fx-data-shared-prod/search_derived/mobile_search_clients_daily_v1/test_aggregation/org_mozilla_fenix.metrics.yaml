@@ -7,7 +7,7 @@
   normalized_os: Android
   sample_id: 1
   client_info:
-    android_sdk_version: '29'
+    android_sdk_version: "29"
     app_display_version: Nightly 191124 06:01
     first_run_date: 2019-11-01-05:00
     client_id: a
@@ -20,7 +20,7 @@
       metrics_search_count: []
 - <<: *base
   client_info:
-    android_sdk_version: '29'
+    android_sdk_version: "29"
     app_display_version: Nightly 191124 06:01
     first_run_date: 2019-11-01-05:00
     client_id: b
@@ -31,13 +31,13 @@
       search_default_engine_submission_url:
     labeled_counter:
       metrics_search_count:
-      - key: engine1.action
-        value: '2'
-      - key: engine1.suggestion
-        value: '1'
+        - key: engine1.action
+          value: "2"
+        - key: engine1.suggestion
+          value: "1"
 - <<: *base
   client_info:
-    android_sdk_version: '29'
+    android_sdk_version: "29"
     app_display_version: Nightly 191124 06:01
     first_run_date: 2019-11-01-05:00
     client_id: b
@@ -48,13 +48,13 @@
       search_default_engine_submission_url:
     labeled_counter:
       metrics_search_count:
-      - key: engine1_action
-        value: '3'
-      - key: engine2.suggestion
-        value: '5'
+        - key: engine1_action
+          value: "3"
+        - key: engine2.suggestion
+          value: "5"
 - <<: *base
   client_info:
-    android_sdk_version: '29'
+    android_sdk_version: "29"
     app_display_version: Nightly 191124 06:01
     first_run_date: 2019-11-01-05:00
     client_id: c
@@ -65,11 +65,11 @@
       search_default_engine_submission_url:
     labeled_counter:
       metrics_search_count:
-      - key: invalid
-        value: '3'
+        - key: invalid
+          value: "3"
 - <<: *base
   client_info:
-    android_sdk_version: '29'
+    android_sdk_version: "29"
     app_display_version: Nightly 191124 06:01
     first_run_date: 2019-11-01-05:00
     client_id: d
@@ -80,11 +80,11 @@
       search_default_engine_submission_url:
     labeled_counter:
       metrics_search_count:
-      - key: engine2.suggestion
-        value: 3
+        - key: engine2.suggestion
+          value: 3
 - <<: *base
   client_info:
-    android_sdk_version: '29'
+    android_sdk_version: "29"
     app_display_version: Nightly 191124 06:01
     first_run_date: 2019-11-01-05:00
     client_id: e
@@ -95,39 +95,39 @@
       search_default_engine_submission_url:
     labeled_counter:
       metrics_search_count:
-      - key: engine2.suggestion
-        value: 4
+        - key: engine2.suggestion
+          value: 4
       browser_search_ad_clicks:
-      - key: engine3
-        value: 3
-      - key: engine4
-        value: 2
+        - key: engine3
+          value: 3
+        - key: engine4
+          value: 2
       browser_search_with_ads:
-      - key: engine3
-        value: 1
-      - key: engine4
-        value: 3
+        - key: engine3
+          value: 1
+        - key: engine4
+          value: 3
       browser_search_in_content:
-      - key: engine1.in-content.organic.none
-        value: 1
-      - key: engine1.in-content.sap.none
-        value: 2
-      - key: engine2.in-content.sap-follow-on.none
-        value: 3
+        - key: engine1.in-content.organic.none
+          value: 1
+        - key: engine1.in-content.sap.none
+          value: 2
+        - key: engine2.in-content.sap-follow-on.none
+          value: 3
     counter:
       events_total_uri_count: 22
   ping_info:
     experiments:
-    - key: test_experiment
-      value:
-        branch: test_branch
-    - key: test_experiment_2
-      value:
-        branch: test_branch_2
+      - key: test_experiment
+        value:
+          branch: test_branch
+      - key: test_experiment_2
+        value:
+          branch: test_branch_2
     end_time: 2019-12-01T04:13-05:00
 - <<: *base
   client_info:
-    android_sdk_version: '29'
+    android_sdk_version: "29"
     app_display_version: Nightly 191124 06:01
     first_run_date: 2019-11-01-05:00
     client_id: e
@@ -138,21 +138,21 @@
       search_default_engine_submission_url:
     labeled_counter:
       browser_search_ad_clicks:
-      - key: engine4
-        value: 1
+        - key: engine4
+          value: 1
       browser_search_with_ads:
-      - key: engine4
-        value: 2
+        - key: engine4
+          value: 2
       browser_search_in_content:
-      - key: engine1.in-content.organic.none
-        value: 2
-      - key: __other__
-        value: 8
+        - key: engine1.in-content.organic.none
+          value: 2
+        - key: __other__
+          value: 8
     counter:
       events_total_uri_count: 1
   ping_info:
     experiments:
-    - key: test_experiment
-      value:
-        branch: test_branch
+      - key: test_experiment
+        value:
+          branch: test_branch
     end_time: 2019-12-01T04:13-05:00

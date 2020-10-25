@@ -1,3 +1,4 @@
+---
 description: >
   Escape all metachars from a regex string.
   This will make the string an exact match, no

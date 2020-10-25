@@ -1,6 +1,8 @@
+---
 friendly_name: Mozilla VPN Waitlist
 description: >
-  A subset of Mozilla VPN waitlist columns and values that are accessible to a broader audience.
+  A subset of Mozilla VPN waitlist columns and values that are
+  accessible to a broader audience.
 owners:
   - dthorn@mozilla.com
 labels:
@@ -8,6 +10,8 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_mozilla_vpn
-  # destination is the whole table, not a single partition, so don't use date_partition_parameter
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
   date_partition_parameter: null
-  referenced_tables: [['moz-fx-data-shared-prod', 'mozilla_vpn_external','waitlist_v1']]
+  referenced_tables: [['moz-fx-data-shared-prod', 'mozilla_vpn_external',
+                       'waitlist_v1']]

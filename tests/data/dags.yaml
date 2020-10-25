@@ -1,3 +1,4 @@
+---
 bqetl_events:
   schedule_interval: daily
   default_args:

@@ -1,11 +1,12 @@
+---
 loads:
-- source: ''
-  destination: core_clients_daily_v1
-  job_config:
-    schema:
-      fields:
+  - source: ""
+    destination: core_clients_daily_v1
+    job_config:
+      schema:
+        fields:
 query:
   queryParameters:
-  - name: submission_date
-    parameterType: {type: DATE}
-    parameterValue: {value: 2019-1-2}
+    - name: submission_date
+      parameterType: {type: DATE}
+      parameterValue: {value: 2019-1-2}

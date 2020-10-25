@@ -1,5 +1,7 @@
+---
 friendly_name: FxA Users Services Last Seen
-description: Usage aggregations per FxA user per FxA service per day over a 28-day window
+description: Usage aggregations per FxA user per FxA service
+ per day over a 28-day window
 owners:
   - jklukas@mozilla.com
 labels:

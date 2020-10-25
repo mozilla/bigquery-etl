@@ -1,3 +1,4 @@
+---
 friendly_name: FxA Users Last Seen
 description: Usage aggregations per FxA user per day over a 28-day window
 owners:

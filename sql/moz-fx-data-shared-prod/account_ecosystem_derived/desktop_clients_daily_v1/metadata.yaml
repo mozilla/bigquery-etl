@@ -1,6 +1,8 @@
+---
 friendly_name: AET Desktop Clients Daily
 description: >
-  One row per desktop client per day aggregating all AET pings received for that client.
+  One row per desktop client per day aggregating all AET pings received
+  for that client.
 owners:
   - jklukas@mozilla.com
 labels:

@@ -79,7 +79,7 @@ class GcsTableMetadata:
             review_links = list(
                 map(lambda bug: REVIEW_LINK + str(bug), self.metadata.review_bugs())
             )
-            metadata_json["review_link"] = review_links
+            metadata_json["review_links"] = review_links
 
         metadata_json["files_uri"] = self.files_uri
         metadata_json["last_updated"] = self.last_updated_uri

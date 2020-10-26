@@ -1,5 +1,5 @@
 -- udf_fill_buckets
-CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_smoothed(
+CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
   input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
   buckets ARRAY<STRING>,
   total_users INT64
@@ -26,11 +26,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
         SAFE_CAST(key AS STRING) = e.key
     )
     SELECT
-      ARRAY_AGG(
-        STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value)
-        ORDER BY
-          CAST(key AS INT64)
-      )
+      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value) order by cast(key as INT64))
     FROM
       total_counts
   )
@@ -44,7 +40,7 @@ SELECT
       ("1", 1 / 9),
       ("2", (2 + (1 / 3)) / 3)
     ],
-    glam.histogram_fill_buckets_smoothed(
+    glam.histogram_fill_buckets_dirichlet(
       ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0), ("2", 2.0)],
       ["0", "1", "2"],
       2
@@ -53,7 +49,7 @@ SELECT
   -- only keep values in specified in buckets
   assert.array_equals(
     ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", (1 + 1) / 3)],
-    glam.histogram_fill_buckets_smoothed(
+    glam.histogram_fill_buckets_dirichlet(
       ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0), ("2", 1.0)],
       ["0"],
       2
@@ -62,7 +58,7 @@ SELECT
   -- out of order keys
   assert.array_equals(
     ARRAY<STRUCT<key STRING, value FLOAT64>>[("2", (1 + (1 / 2)) / 3), ("11", (1 + (1 / 2)) / 3)],
-    glam.histogram_fill_buckets_smoothed(
+    glam.histogram_fill_buckets_dirichlet(
       ARRAY<STRUCT<key STRING, value FLOAT64>>[("11", 1.0), ("2", 1.0)],
       ["11", "2"],
       2

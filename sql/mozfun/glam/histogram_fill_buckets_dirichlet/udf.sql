@@ -26,7 +26,11 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
         SAFE_CAST(key AS STRING) = e.key
     )
     SELECT
-      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value) order by cast(key as INT64))
+      ARRAY_AGG(
+        STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value)
+        ORDER BY
+          CAST(key AS INT64)
+      )
     FROM
       total_counts
   )

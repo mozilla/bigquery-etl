@@ -41,7 +41,7 @@ class TestRunQuery:
             "friendly_name": "test",
             "description": "test",
             "owners": ["test@example.org"],
-            "labels": {"public_bigquery": True, "review_bug": 222222},
+            "labels": {"public_bigquery": True, "review_bugs": [222222]},
         }
 
         metadata_file = query_file_path / "metadata.yaml"
@@ -70,7 +70,7 @@ class TestRunQuery:
             "friendly_name": "test",
             "description": "test",
             "owners": ["test@example.org"],
-            "labels": {"public_bigquery": True, "review_bug": 222222},
+            "labels": {"public_bigquery": True, "review_bugs": [222222]},
         }
 
         metadata_file = query_file_path / "metadata.yaml"

@@ -36,21 +36,18 @@ class Metadata:
     def validate_labels(self, attribute, value):
         """Check that labels are valid."""
         for key, label in value.items():
-            if not isinstance(label, bool):
+            if key == "review_bugs" and label != "":
+                if isinstance(label, list):
+                    for bug in label:
+                        if not Metadata.is_valid_label(str(bug)):
+                            raise ValueError(f"Invalid label format: {bug}")
+                else:
+                    raise ValueError("Error: review_bugs needs to be a list.")
+            elif not isinstance(label, bool):
                 if not Metadata.is_valid_label(str(key)):
-                    raise ValueError(
-                        f"""Invalid label key format: {key}.
-                                    Key cannot be empty. Only hyphens(-), underscores(_),
-                                    lowercase characters, and numbers are allowed.
-                                    International characters are not allowed."""
-                    )
-                elif not Metadata.is_valid_label(str(label)) and not label == "":
-                    raise ValueError(
-                        f"""Invalid label value format: {label}.
-                                    Value be empty. Only hyphens(-), underscores(_),
-                                    lowercase characters, and numbers are allowed.
-                                    International characters are not allowed."""
-                    )
+                    raise ValueError(f"Invalid label format: {key}")
+                elif not Metadata.is_valid_label(str(label)) and label != "":
+                    raise ValueError(f"Invalid label format: {label}")
 
     @staticmethod
     def is_valid_label(label):
@@ -113,6 +110,8 @@ class Metadata:
                             # publish key-value pair with bool value as tag
                             if label:
                                 labels[str(key)] = ""
+                        elif isinstance(label, list):
+                            labels[str(key)] = list(map(str, label))
                         else:
                             # all other pairs get published as key-value pair label
                             labels[str(key)] = str(label)
@@ -165,6 +164,6 @@ class Metadata:
         """Return true if the incremental_export flag is set."""
         return "incremental_export" in self.labels
 
-    def review_bug(self):
+    def review_bugs(self):
         """Return the bug ID of the data review bug in bugzilla."""
-        return self.labels.get("review_bug", None)
+        return self.labels.get("review_bugs", None)

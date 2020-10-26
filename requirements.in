@@ -12,7 +12,7 @@ PyYAML==5.3.1
 smart_open==3.0.0
 sqlparse==0.4.1
 mozilla_schema_generator==0.1.4
-GitPython==3.1.9
+GitPython==3.1.10
 cattrs==1.0.0
 attrs==20.2.0
 typing==3.7.4.3

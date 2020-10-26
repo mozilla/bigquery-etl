@@ -147,19 +147,18 @@ def main():
     config = {
         "org_mozilla_fenix_glam_nightly": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
-            "filter_version": False,
-            # this value is ignored due to filter version
-            "num_versions_to_keep": 1000,
+            "filter_version": True,
+            "num_versions_to_keep": 3,
         },
         "org_mozilla_fenix_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
-            "num_versions_to_keep": 2,
+            "num_versions_to_keep": 3,
         },
         "org_mozilla_fenix_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
-            "num_versions_to_keep": 2,
+            "num_versions_to_keep": 3,
         },
     }
     validate(instance=config, schema=config_schema)

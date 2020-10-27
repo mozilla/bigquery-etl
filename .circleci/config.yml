@@ -212,4 +212,11 @@ workflows:
               only: master
             tags:
               only: /.*/
+
+lint: 
+  build:
+  steps: 
+    -run: 
+      - checkout 
+      - command: yamllint 
 extends: default

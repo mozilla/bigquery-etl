@@ -12,7 +12,7 @@ parser.add_argument("--date", required=True)  # expect string with format yyyy-m
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument(
     "--tables", nargs="*", default=["telemetry_stable.main_v4"]
-)  # pattern
+)
 parser.add_argument("--destination_dataset", default="monitoring")
 parser.add_argument("--destination_table", default="column_size_v1")
 
@@ -37,27 +37,31 @@ def get_columns(client, project, dataset, table):
 def get_column_size_json(client, date, column):
     """Returns the size of a specific date parition of the specified table."""
     print(column)
-    job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
-    dataset_id = column[0]
-    table_id = column[1]
-    column = column[2]
+    try:
+        job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
+        dataset_id = column[0]
+        table_id = column[1]
+        column = column[2]
 
-    sql = f"""
-        SELECT {column} FROM {dataset_id}.{table_id}
-        WHERE DATE(submission_timestamp) = '{date}'
-    """
+        sql = f"""
+            SELECT {column} FROM {dataset_id}.{table_id}
+            WHERE DATE(submission_timestamp) = '{date}'
+        """
 
-    job = client.query(sql, job_config=job_config)
+        job = client.query(sql, job_config=job_config)
 
-    size = job.total_bytes_processed
+        size = job.total_bytes_processed
 
-    return {
-        "submission_date": date,
-        "dataset_id": dataset_id,
-        "table_id": table_id,
-        "column_name": column,
-        "byte_size": size,
-    }
+        return {
+            "submission_date": date,
+            "dataset_id": dataset_id,
+            "table_id": table_id,
+            "column_name": column,
+            "byte_size": size,
+        }
+    except Exception as e:
+        print(e)
+        return None
 
 
 def save_column_sizes(
@@ -101,6 +105,8 @@ def main():
             table_columns,
             chunksize=1,
         )
+
+        column_sizes = [cs for cs in column_sizes if cs is not None]
 
         save_column_sizes(
             client,

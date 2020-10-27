@@ -1,0 +1,6 @@
+- mode: NULLABLE
+  name: channel
+  type: STRING
+- mode: NULLABLE
+  name: latest_version
+  type: INTEGER

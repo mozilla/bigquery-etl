@@ -1,0 +1,36 @@
+- name: sample_id
+  type: INTEGER
+- name: client_id
+  type: STRING
+- name: ping_type
+  type: STRING
+- name: os
+  type: STRING
+- fields:
+  - name: metric
+    type: STRING
+  - name: metric_type
+    type: STRING
+  - name: key
+    type: STRING
+  - name: agg_type
+    type: STRING
+  - fields:
+    - name: key
+      type: STRING
+    - name: value
+      type: INTEGER
+    mode: REPEATED
+    name: value
+    type: RECORD
+  mode: REPEATED
+  name: histogram_aggregates
+  type: RECORD
+- name: submission_date
+  type: DATE
+- name: app_build_id
+  type: STRING
+- name: channel
+  type: STRING
+- name: app_version
+  type: INTEGER

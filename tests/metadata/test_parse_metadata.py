@@ -104,7 +104,7 @@ class TestParseMetadata(object):
 
         assert metadata.friendly_name == "Test table for a non-incremental query"
         assert metadata.description == "Test table for a non-incremental query"
-        assert metadata.review_bugs() == ["1999999"]
+        assert metadata.review_bugs() == ["1999999", "12121212"]
 
     def test_of_sql_file_no_metadata(self):
         metadata_file = (
@@ -129,7 +129,7 @@ class TestParseMetadata(object):
 
         assert metadata.friendly_name == "Test table for a non-incremental query"
         assert metadata.description == "Test table for a non-incremental query"
-        assert metadata.review_bugs() == ["1999999"]
+        assert metadata.review_bugs() == ["1999999", "12121212"]
 
     def test_of_non_existing_table(self):
         with pytest.raises(FileNotFoundError):

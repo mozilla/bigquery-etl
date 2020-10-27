@@ -2,9 +2,11 @@
 import argparse
 import sys
 from typing import Dict, List
+
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
+
 from .utils import get_schema, ping_type_from_table
 
 ATTRIBUTES = ",".join(

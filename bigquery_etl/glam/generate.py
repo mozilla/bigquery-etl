@@ -1,14 +1,14 @@
 """Generate templated views."""
-from pathlib import Path
 from argparse import ArgumentParser, Namespace
+from dataclasses import dataclass
+from functools import partial
+from pathlib import Path
+
 from jinja2 import Environment, PackageLoader, TemplateNotFound
 from jsonschema import validate
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.glam import models
-
-from dataclasses import dataclass
-from functools import partial
 
 
 class QueryType:

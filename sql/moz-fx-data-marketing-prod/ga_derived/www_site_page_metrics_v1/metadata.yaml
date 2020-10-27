@@ -1,0 +1,9 @@
+description: Aggregated metrics per page on www.mozilla.org
+friendly_name: WWW Site Page Metrics
+labels:
+  incremental: true
+  schedule: daily
+owners:
+  - bewu@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived

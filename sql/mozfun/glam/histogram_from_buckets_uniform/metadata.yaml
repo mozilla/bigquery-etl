@@ -1,0 +1,3 @@
+description: |
+  Create an empty histogram from an array of buckets.
+friendly_name: Histogram from buckets empty

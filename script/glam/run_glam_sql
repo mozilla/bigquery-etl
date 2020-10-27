@@ -177,6 +177,16 @@ function run_desktop_sql {
     run_query "glam_user_counts_v1"
 }
 
+function wait_pids {
+    # Wait for the results from a list of pids, so the script can exit on the
+    # first encountered error.
+    # https://stackoverflow.com/a/356154
+    # https://askubuntu.com/a/674347
+    local pids=("$@")
+    for pid in "${pids[@]}"; do
+        wait "$pid"
+    done
+}
 
 function run_glean_sql {
     local error="STAGE must be one of (daily, incremental, all)"
@@ -185,6 +195,9 @@ function run_glean_sql {
     local start_stage=${START_STAGE:-0}
     local backfill_only=${BACKFILL_ONLY:-false}
     local export_only=${EXPORT_ONLY:-false}
+
+    # used to store any process ids
+    declare -a pids=()
 
     if [[ $backfill_only = true && $export_only = true ]]; then
         echo "BACKFILL_ONLY and EXPORT_ONLY are mutually exclusive"
@@ -197,17 +210,24 @@ function run_glean_sql {
     fi
     if [[ $stage == "daily" || $stage == "all" ]]; then
         if ((start_stage <= 0)) && [[ $export_only = false ]]; then
+            pids=()
             for directory in sql/$PROJECT/glam_etl/"${product}"__clients_daily_scalar_aggregates*/; do
                 run_query "$(basename "$directory")" true &
+                pids+=($!)
             done
             for directory in sql/$PROJECT/glam_etl/"${product}"__clients_daily_histogram_aggregates*/; do
                 run_query "$(basename "$directory")" true &
+                pids+=($!)
             done
-            wait
+            wait_pids "${pids[@]}"
+
+            pids=()
             # run in daily and incremental
             run_view "${product}__view_clients_daily_scalar_aggregates_v1" &
+            pids+=($!)
             run_view "${product}__view_clients_daily_histogram_aggregates_v1" &
-            wait
+            pids+=($!)
+            wait_pids "${pids[@]}"
         fi
     fi
     if [[ $stage == "incremental" || $stage == "all" ]]; then
@@ -217,33 +237,58 @@ function run_glean_sql {
             run_view "${product}__view_clients_daily_scalar_aggregates_v1"
             run_query "${product}__latest_versions_v1"
 
+            pids=()
             run_init "${product}__clients_scalar_aggregates_v1" &
+            pids+=($!)
             run_init "${product}__clients_histogram_aggregates_v1" &
-            wait
+            pids+=($!)
+            wait_pids "${pids[@]}"
+
+            pids=()
             run_query "${product}__clients_scalar_aggregates_v1" &
+            pids+=($!)
             run_query "${product}__clients_histogram_aggregates_v1" &
-            wait
+            pids+=($!)
+            wait_pids "${pids[@]}"
         fi
         if [[ $backfill_only = true ]]; then
             return
         fi
         if ((start_stage <= 2)); then
+            pids=()
             run_query "${product}__scalar_bucket_counts_v1" &
+            pids+=($!)
             run_query "${product}__histogram_bucket_counts_v1" &
-            wait
+            pids+=($!)
+            wait_pids "${pids[@]}"
+
+            pids=()
             run_query "${product}__scalar_probe_counts_v1" &
+            pids+=($!)
             run_query "${product}__histogram_probe_counts_v1" &
-            wait
+            pids+=($!)
+            wait_pids "${pids[@]}"
+
+            pids=()
             run_query "${product}__scalar_percentiles_v1" &
+            pids+=($!)
             run_query "${product}__histogram_percentiles_v1" &
-            wait
+            pids+=($!)
+            wait_pids "${pids[@]}"
         fi
+        pids=()
         run_view "${product}__view_probe_counts_v1" &
+        pids+=($!)
         run_view "${product}__view_user_counts_v1" &
-        wait
+        pids+=($!)
+        wait_pids "${pids[@]}"
+
+        pids=()
         run_query "${product}__extract_user_counts_v1" &
+        pids+=($!)
         run_query "${product}__extract_probe_counts_v1" &
-        wait
+        pids+=($!)
+        wait_pids "${pids[@]}"
     fi
 }
 

@@ -1,6 +1,6 @@
 WITH events AS (
   SELECT
-    id,
+    `data`.price.id,
     created AS event_timestamp,
     `data`.price.* EXCEPT (id),
   FROM

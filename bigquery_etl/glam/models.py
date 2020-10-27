@@ -1,5 +1,5 @@
 """Variables for templated SQL."""
-from .utils import get_custom_distribution_metadata, compute_datacube_groupings
+from .utils import compute_datacube_groupings, get_custom_distribution_metadata
 
 
 def clients_scalar_aggregates(**kwargs):

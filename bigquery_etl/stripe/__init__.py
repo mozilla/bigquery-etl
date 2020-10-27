@@ -14,8 +14,8 @@ from stripe.api_resources.abstract import ListableAPIResource
 import click
 import stripe
 
-# omit lists of resources that have a separate table
-OMIT_LIST_TYPES = (
+# event data types with separate events and a defined schema
+EVENT_DATA_TYPES = (
     stripe.Charge,
     stripe.CreditNote,
     stripe.Customer,
@@ -54,7 +54,8 @@ class StripeResourceType(click.ParamType):
 def bigquery_format(obj: Any, *path):
     """Format stripe objects for BigQuery."""
     if isinstance(obj, stripe.ListObject):
-        if obj.data and isinstance(obj.data[0], OMIT_LIST_TYPES):
+        if obj.data and isinstance(obj.data[0], EVENT_DATA_TYPES):
+            # don't expand lists of types that get updated in separate events
             return None
         # recursively request any additional values for paged lists.
         return [
@@ -181,6 +182,8 @@ def import_(
                     "created": datetime.utcfromtimestamp(instance.created).isoformat()
                 }
                 if resource is stripe.Event:
+                    if not isinstance(instance.data.object, EVENT_DATA_TYPES):
+                        continue  # skip events without a defined schema
                     row["data"] = {
                         instance.data.object.object.replace(
                             ".", "_"

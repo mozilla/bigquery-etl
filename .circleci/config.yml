@@ -29,6 +29,9 @@ jobs:
           paths:
             - venv/
           key: *cache_key
+      - run: 
+          name: Yamllint Test
+          command: PATH="venv/bin:$PATH" yamllint 
   verify-format-sql:
     docker: *docker
     steps:

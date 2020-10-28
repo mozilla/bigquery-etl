@@ -22,7 +22,7 @@ jobs:
             python3.8 -m venv venv/
             venv/bin/pip install pip-tools
             venv/bin/pip-sync
-      - run: 
+      - run:
           name: Yamllint Test
           command: PATH="venv/bin:$PATH" yamllint   
       - run:

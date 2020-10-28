@@ -1,9 +1,9 @@
 WITH with_hits AS (
   SELECT
     PARSE_DATE('%Y%m%d', date) AS date,
-    CONCAT(CAST(fullVisitorId AS string), CAST(visitId AS string)) AS visitIdentifier,
-    device.deviceCategory,
-    device.operatingSystem,
+    CONCAT(CAST(fullVisitorId AS string), CAST(visitId AS string)) AS visit_identifier,
+    device.deviceCategory AS device_category,
+    device.operatingSystem AS operating_system,
     device.browser,
     device.language,
     geoNetwork.country AS country,
@@ -11,7 +11,7 @@ WITH with_hits AS (
     trafficSource.medium AS medium,
     trafficSource.campaign AS campaign,
     trafficSource.adcontent AS content,
-    hits.page.pagePath AS landingPage,
+    hits.page.pagePath AS landing_page,
     CASE
     WHEN
       hits.isEntrance IS NOT NULL
@@ -22,7 +22,7 @@ WITH with_hits AS (
     END
     AS entrance,
     SPLIT(hits.page.pagePathLevel1, '/')[SAFE_OFFSET(1)] AS blog,
-    SPLIT(hits.page.pagePathLevel2, '/')[SAFE_OFFSET(1)] AS pagePathLevel2
+    SPLIT(hits.page.pagePathLevel2, '/')[SAFE_OFFSET(1)] AS page_path_level2
   FROM
     `ga-mozilla-org-prod-001.66602784.ga_sessions_*`
   CROSS JOIN
@@ -32,7 +32,7 @@ WITH with_hits AS (
 ),
 sessions_intermediate AS (
   SELECT
-    * EXCEPT (blog, pagePathLevel2),
+    * EXCEPT (blog, page_path_level2),
     CASE
     WHEN
       blog LIKE "press%"
@@ -101,9 +101,9 @@ sessions_intermediate AS (
     CASE
     WHEN
       blog = "firefox"
-      AND pagePathLevel2 IN ('ru', 'pt-br', 'pl', 'it', 'id', 'fr', 'es', 'de')
+      AND page_path_level2 IN ('ru', 'pt-br', 'pl', 'it', 'id', 'fr', 'es', 'de')
     THEN
-      pagePathLevel2
+      page_path_level2
     WHEN
       blog = "firefox"
     THEN
@@ -128,47 +128,47 @@ sessions_intermediate AS (
       "Main"
     WHEN
       blog = 'internetcitizen'
-      AND pagePathLevel2 IN ('de', 'fr')
+      AND page_path_level2 IN ('de', 'fr')
     THEN
-      pagePathLevel2
+      page_path_level2
     ELSE
       "Main"
     END
     AS subblog,
     ROW_NUMBER() OVER (
       PARTITION BY
-        visitIdentifier
+        visit_identifier
       ORDER BY
-        visitIdentifier,
+        visit_identifier,
         entrance
-    ) AS entryPage,
-    COUNT(DISTINCT visitIdentifier) AS sessions
+    ) AS entry_page,
+    COUNT(DISTINCT visit_identifier) AS sessions
   FROM
     with_hits
   GROUP BY
     date,
-    visitIdentifier,
-    deviceCategory,
-    operatingSystem,
+    visit_identifier,
+    device_category,
+    operating_system,
     browser,
-    LANGUAGE,
+    `language`,
     country,
     source,
     medium,
     campaign,
     content,
-    landingPage,
+    landing_page,
     blog,
     subblog,
     entrance
 )
 SELECT
   date,
-  visitIdentifier,
-  deviceCategory,
-  operatingSystem,
+  visit_identifier,
+  device_category,
+  operating_system,
   browser,
-  LANGUAGE AS language,
+  `language`,
   country,
   source,
   medium,
@@ -183,11 +183,11 @@ WHERE
   entryPage = 1
 GROUP BY
   date,
-  visitIdentifier,
-  deviceCategory,
-  operatingSystem,
+  visit_identifier,
+  device_category,
+  operating_system,
   browser,
-  LANGUAGE,
+  `language`,
   country,
   source,
   medium,

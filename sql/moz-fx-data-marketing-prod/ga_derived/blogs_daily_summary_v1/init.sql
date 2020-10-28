@@ -1,12 +1,10 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-marketing-prod.ga_derived.blogs_daily_summary_v1`(
     date DATE,
-    deviceCategory STRING,
-    operatingSystem STRING,
+    device_category STRING,
+    operating_system STRING,
     browser STRING,
-    -- format: off
-    language STRING,
-    -- format: on
+    `language` STRING,
     country STRING,
     standardized_country_name STRING,
     source STRING,
@@ -17,8 +15,8 @@ CREATE TABLE IF NOT EXISTS
     subblog STRING,
     sessions INT64,
     downloads INT64,
-    socialShare INT64,
-    newsletterSubscription INT64
+    social_share INT64,
+    newsletter_subscription INT64
   )
 PARTITION BY
   date

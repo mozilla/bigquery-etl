@@ -3,9 +3,9 @@
 WITH landing_page_table AS (
   SELECT
     PARSE_DATE('%Y%m%d', date) AS date,
-    CONCAT(CAST(fullVisitorId AS string), CAST(visitId AS string)) AS visitIdentifier,
-    hits.page.pagePath AS landingPage,
-    SPLIT(hits.page.pagePath, '?')[OFFSET(0)] AS cleanedLandingPage,
+    CONCAT(CAST(fullVisitorId AS string), CAST(visitId AS string)) AS visit_identifier,
+    hits.page.pagePath AS landing_page,
+    SPLIT(hits.page.pagePath, '?')[OFFSET(0)] AS cleaned_landing_page,
     SUM(IF(hits.isEntrance IS NOT NULL, 1, 0)) AS page_sessions,
   FROM
     `ga-mozilla-org-prod-001.66602784.ga_sessions_*`
@@ -15,18 +15,18 @@ WITH landing_page_table AS (
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
   GROUP BY
     date,
-    visitIdentifier,
-    landingPage,
-    cleanedLandingPage
+    visit_identifier,
+    landing_page,
+    cleaned_landing_page
   HAVING
     page_sessions != 0
 )
 SELECT
   date,
-  deviceCategory AS device_category,
-  operatingSystem AS operating_system,
+  device_category,
+  operating_system,
   browser,
-  LANGUAGE AS language,
+  `language`,
   country,
   standardized_country_list.standardized_country AS standardized_country_name,
   source,
@@ -35,34 +35,34 @@ SELECT
   content,
   blog,
   subblog,
-  landingPage AS landing_page,
-  cleanedLandingPage AS cleaned_landing_page,
+  landing_page,
+  cleaned_landing_page,
   SUM(sessions) AS sessions,
   SUM(downloads) AS downloads,
-  SUM(socialShare) AS socialShare,
-  SUM(newsletterSubscription) AS newsletterSubscription,
+  SUM(social_share) AS social_share,
+  SUM(newsletter_subscription) AS newsletter_subscription,
 FROM
   `moz-fx-data-marketing-prod.ga_derived.blogs_sessions_v1` AS sessions_table
 LEFT JOIN
-  `moz-fx-data-marketing-prod.ga_derived.blogs_goals_v1`
+  `moz-fx-data-marketing-prod.ga_derived.blogs_goals_v1` AS goals_table
 USING
-  (date, visitIdentifier)
+  (date, visit_identifier)
 LEFT JOIN
   landing_page_table
 USING
-  (date, visitIdentifier)
+  (date, visit_identifier)
 LEFT JOIN
-  `moz-fx-data-marketing-prod.static.standardized_country_list` AS standardized_country_list
+  `moz-fx-data-shared-prod.static.standardized_country_names` AS standardized_country_list
 ON
   sessions_table.country = standardized_country_list.raw_country
 WHERE
   date = @submission_date
 GROUP BY
   date,
-  deviceCategory,
-  operatingSystem,
+  device_category,
+  operating_system,
   browser,
-  LANGUAGE,
+  `language`,
   country,
   standardized_country_name,
   source,
@@ -71,5 +71,5 @@ GROUP BY
   content,
   blog,
   subblog,
-  landingPage,
-  cleanedLandingPage
+  landing_page,
+  cleaned_landing_page

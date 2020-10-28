@@ -1,13 +1,11 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-marketing-prod.ga_derived.blogs_sessions_v1`(
     date DATE,
-    visitIdentifier STRING,
-    deviceCategory STRING,
-    operatingSystem STRING,
+    visit_identifier STRING,
+    device_category STRING,
+    operating_system STRING,
     browser STRING,
-    -- format: off
-    language STRING,
-    -- format: on
+    `language` STRING,
     country STRING,
     source STRING,
     medium STRING,

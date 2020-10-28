@@ -99,6 +99,21 @@ def skeleton(dependency_file):
         path = TEST_ROOT / query.name / "test_minimal"
         path.mkdir(parents=True, exist_ok=True)
 
+        # set query parameters
+        params = list(
+            map(
+                lambda x: dict(zip(["name", "type", "value"], x)),
+                [
+                    ("submission_date", "DATE", "2020-10-01"),
+                    ("min_sample_id", "INT64", 0),
+                    ("max_sample_id", "INT64", 99),
+                    ("sample_size", "INT64", 100),
+                ],
+            )
+        )
+        with (path / "query_params.yaml").open("w") as fp:
+            yaml.dump(params, fp)
+
         # now copy over the schemas
         query_deps = [x["from"] for x in deps if query.name in x["to"]]
         print(f"found dependencies: {json.dumps(query_deps, indent=2)}")

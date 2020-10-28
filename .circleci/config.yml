@@ -22,6 +22,9 @@ jobs:
             python3.8 -m venv venv/
             venv/bin/pip install pip-tools
             venv/bin/pip-sync
+      - run: 
+          name: Yamllint Test
+          command: PATH="venv/bin:$PATH" yamllint   
       - run:
           name: PyTest with linters
           command: PATH="venv/bin:$PATH" script/entrypoint
@@ -29,9 +32,7 @@ jobs:
           paths:
             - venv/
           key: *cache_key
-      - run: 
-          name: Yamllint Test
-          command: PATH="venv/bin:$PATH" yamllint 
+      
   verify-format-sql:
     docker: *docker
     steps:

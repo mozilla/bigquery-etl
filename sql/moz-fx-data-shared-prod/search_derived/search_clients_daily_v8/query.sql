@@ -62,7 +62,8 @@ augmented AS (
                 'system',
                 'activitystream',
                 'webextension',
-                'alias'
+                'alias',
+                'urlbar-searchmode'
               )
               OR element.source IS NULL
             )

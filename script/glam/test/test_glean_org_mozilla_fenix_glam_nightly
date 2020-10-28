@@ -5,6 +5,7 @@ set -e
 
 project=${PROJECT:-glam-fenix-dev}
 skip_generate=${SKIP_GENERATE:-false}
+generate_only=${GENERATE_ONLY:-false}
 # NOTE: there are three app_ids that we must look at for historical context. For
 # the purpose of this script, it is sufficient to look only at what is currently
 # "fenix nightly". We must have at least one table scalar/histogram tables for
@@ -40,7 +41,13 @@ if [[ $skip_generate == false ]]; then
     PRODUCT=$logical_app_id STAGE=incremental $dir/generate_glean_sql
 fi
 
+if [[ $generate_only != false ]]; then
+    exit
+    bqetl glam glean update-schemas
+fi
+
 for app_id in "${app_ids[@]}"; do
     PRODUCT=$app_id STAGE=daily $dir/run_glam_sql
 done
 PRODUCT=$logical_app_id STAGE=incremental $dir/run_glam_sql
+bqetl glam glean update-schemas

@@ -23,7 +23,7 @@ def _parse_args():
 def _load_table(
     data_file_path, schema_file_path=None, description_file_path=None, project=None
 ):
-    client = bigquery.Client()
+    client = bigquery.Client(project)
 
     # Assume path is ...project/dataset/table/data.csv
     path_split = os.path.normcase(data_file_path).split("/")

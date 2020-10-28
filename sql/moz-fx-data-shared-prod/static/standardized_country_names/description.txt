@@ -1,1 +1,0 @@
-Mappings from country codes or non-standard names to a standardized country name.

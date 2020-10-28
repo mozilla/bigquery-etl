@@ -242,6 +242,7 @@ bqetl_org_mozilla_fenix_derived:
   schedule_interval: daily
 
 bqetl_google_analytics_derived:
+  # Run at 16:00 UTC because GA export runs at 15:00 UTC
   schedule_interval: 0 16 * * *
   default_args:
     owner: bewu@mozilla.com

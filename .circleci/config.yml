@@ -22,6 +22,9 @@ jobs:
             python3.8 -m venv venv/
             venv/bin/pip install pip-tools
             venv/bin/pip-sync
+      - run: 
+          name: Yamllint Test
+          command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml
       - run:
           name: PyTest with linters
           command: PATH="venv/bin:$PATH" script/entrypoint
@@ -47,13 +50,6 @@ jobs:
             pip install pip-tools
             pip-compile --quiet --generate-hashes requirements.in
             git diff --exit-code requirements.txt
-  yamllint-test:
-    docker: *docker 
-    steps: 
-      - checkout
-      - run: 
-          name: Verify that yaml files are linted for errors
-          command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml
   dry-run-sql:
     docker: *docker
     steps:

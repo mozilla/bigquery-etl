@@ -21,7 +21,8 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
               'system',
               'activitystream',
               'webextension',
-              'alias'
+              'alias',
+              'urlbar-searchmode'
             )
             OR source IS NULL,
             count,

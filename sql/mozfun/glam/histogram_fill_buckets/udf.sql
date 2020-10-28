@@ -43,7 +43,7 @@ SELECT
   ),
   -- return ordered keys by string value
   assert.array_equals(
-    ARRAY<STRUCT<key STRING, value FLOAT64>>[("11", 1.0), ("2", 0.0)],
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[("11", 0.0), ("2", 1.0)],
     glam.histogram_fill_buckets(
       ARRAY<STRUCT<key STRING, value FLOAT64>>[("0", 1.0), ("2", 1.0)],
       ["11", "2"]

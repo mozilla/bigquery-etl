@@ -31,7 +31,7 @@ jobs:
       - save_cache:
           paths:
             - venv/
-          key: *cache_key 
+          key: *cache_key
   verify-format-sql:
     docker: *docker
     steps:

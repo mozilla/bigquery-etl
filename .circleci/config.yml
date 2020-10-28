@@ -50,6 +50,7 @@ jobs:
   yamllint-test:
     docker: *docker 
     steps: 
+      - checkout
       - run: 
           name: Verify that yaml files are linted for errors
           command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml

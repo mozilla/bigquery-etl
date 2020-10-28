@@ -24,7 +24,7 @@ jobs:
             venv/bin/pip-sync
       - run: 
           name: Yamllint Test
-          command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml
+          command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
       - run:
           name: PyTest with linters
           command: PATH="venv/bin:$PATH" script/entrypoint

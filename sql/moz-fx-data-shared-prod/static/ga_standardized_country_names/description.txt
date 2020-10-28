@@ -1,0 +1,1 @@
+Mappings from country codes or non-standard names to a standardized country name intended for use with Google Analytics data.

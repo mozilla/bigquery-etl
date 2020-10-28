@@ -3,4 +3,4 @@ friendly_name: Column Size
 labels:
   incremental: true
 owners:
-- ascholtz@mozilla.com
+  - ascholtz@mozilla.com

@@ -14,7 +14,8 @@ description: |-
     - `proportion_undefined`: the proportion of users who failed
     to send telemetry for a reason that was not listed in the other cases.
     - `proportion_timeout`: the proportion of users that had their
-    connection timeout while uploading telemetry ([after 90s, in Firefox](https://searchfox.org/mozilla-central/rev/fa2df28a49883612bd7af4dacd80cdfedcccd2f6/toolkit/components/telemetry/app/TelemetrySend.jsm#81)).
+    connection timeout while uploading telemetry
+    ([after 90s, in Firefox](https://searchfox.org/mozilla-central/rev/fa2df28a49883612bd7af4dacd80cdfedcccd2f6/toolkit/components/telemetry/app/TelemetrySend.jsm#81)).
     - `proportion_abort`: the proportion of users that had their connection
     terminated by the client (for example, terminating open connections
     before shutting down).
@@ -55,6 +56,6 @@ labels:
   incremental: true
   public_json: true
   public_bigquery: true
-  review_bugs: 
+  review_bugs:
     - 1633681
   incremental_export: false

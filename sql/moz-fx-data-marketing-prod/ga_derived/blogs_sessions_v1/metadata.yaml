@@ -1,4 +1,5 @@
-description: Intermediate table containing normalized sessions for blog.mozilla.org
+description: Intermediate table containing normalized sessions
+  for blog.mozilla.org
 friendly_name: Blogs Sessions
 labels:
   incremental: true
@@ -8,4 +9,4 @@ owners:
 scheduling:
   dag_name: bqetl_google_analytics_derived
   referenced_tables:
-    - ['moz-fx-data-marketing-prod', 'ga_derived', 'blogs_empty_check_v1']
+    - ["moz-fx-data-marketing-prod", "ga_derived", "blogs_empty_check_v1"]

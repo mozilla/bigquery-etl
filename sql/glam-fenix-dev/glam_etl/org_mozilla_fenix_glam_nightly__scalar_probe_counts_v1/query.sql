@@ -262,50 +262,6 @@ RETURNS ARRAY<STRING> AS (
   )
 );
 
-CREATE TEMP FUNCTION udf_dedupe_map_sum(map ARRAY<STRUCT<key STRING, value FLOAT64>>)
-RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
-  -- Given a MAP with duplicate keys, de-duplicates by summing the values of duplicate keys
-  (
-    WITH summed_counts AS (
-      SELECT
-        STRUCT<key STRING, value FLOAT64>(e.key, SUM(e.value)) AS record
-      FROM
-        UNNEST(map) AS e
-      GROUP BY
-        e.key
-    )
-    SELECT
-      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(record.key, record.value))
-    FROM
-      summed_counts
-  )
-);
-
-CREATE TEMP FUNCTION udf_fill_buckets(
-  input_map ARRAY<STRUCT<key STRING, value FLOAT64>>,
-  buckets ARRAY<STRING>
-)
-RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
-  -- Given a MAP `input_map`, fill in any missing keys with value `0.0`
-  (
-    WITH total_counts AS (
-      SELECT
-        key,
-        COALESCE(e.value, 0.0) AS value
-      FROM
-        UNNEST(buckets) AS key
-      LEFT JOIN
-        UNNEST(input_map) AS e
-      ON
-        SAFE_CAST(key AS STRING) = e.key
-    )
-    SELECT
-      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value))
-    FROM
-      total_counts
-  )
-);
-
 SELECT
   ping_type,
   os,
@@ -318,23 +274,20 @@ SELECT
   client_agg_type,
   agg_type,
   SUM(count) AS total_users,
-  CASE
-  WHEN
-    metric_type IN ("counter", "quantity", "labeled_counter")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      udf_get_buckets()
-    )
-  WHEN
-    metric_type IN ("boolean")
-  THEN
-    udf_fill_buckets(
-      udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-      ['always', 'never', 'sometimes']
-    )
-  END
-  AS aggregates
+  mozfun.glam.histogram_fill_buckets_dirichlet(
+    mozfun.map.sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+WHEN
+  metric_type IN ("counter", "quantity", "labeled_counter")
+THEN
+  udf_get_buckets()
+WHEN
+  metric_type IN ("boolean")
+THEN
+  ['always', 'never', 'sometimes']
+END
+,
+SUM(count)
+) AS aggregates
 FROM
   glam_etl.org_mozilla_fenix_glam_nightly__scalar_bucket_counts_v1
 GROUP BY

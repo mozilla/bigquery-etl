@@ -519,7 +519,9 @@ bucketed_scalars AS (
     metric_type,
     key,
     agg_type,
-    SAFE_CAST(udf_bucket(SAFE_CAST(value AS FLOAT64)) AS STRING) AS bucket
+    SAFE_CAST(
+      mozfun.glam.histogram_bucket_from_value(SAFE_CAST(value AS FLOAT64)) AS STRING
+    ) AS bucket
   FROM
     deduplicated_combos
   CROSS JOIN

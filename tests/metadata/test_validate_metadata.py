@@ -11,7 +11,7 @@ class TestValidateMetadata(object):
             "Public json data",
             "Public json data",
             [],
-            {"public_json": True, "review_bug": 123456},
+            {"public_json": True, "review_bugs": [123456]},
             {},
         )
         assert validate_public_data(metadata_valid_public, "test/path/metadata.yaml")
@@ -20,7 +20,7 @@ class TestValidateMetadata(object):
             "Public BigQuery data",
             "Public BigQuery data",
             [],
-            {"public_bigquery": True, "review_bug": 123456},
+            {"public_bigquery": True, "review_bugs": [123456]},
             {},
         )
         assert validate_public_data(metadata_valid_public, "test/path/metadata.yaml")

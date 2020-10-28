@@ -61,7 +61,8 @@ labels:
   incremental: true
   public_json: false
   public_bigquery: false
-  review_bug: 1640204
+  review_bugs: 
+    - 1640204
   incremental_export: false
 scheduling:
   dag_name: bqetl_internet_outages

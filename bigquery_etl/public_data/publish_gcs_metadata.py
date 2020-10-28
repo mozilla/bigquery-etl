@@ -75,8 +75,11 @@ class GcsTableMetadata:
         metadata_json["incremental"] = self.metadata.is_incremental()
         metadata_json["incremental_export"] = self.metadata.is_incremental_export()
 
-        if self.metadata.review_bug() is not None:
-            metadata_json["review_link"] = REVIEW_LINK + self.metadata.review_bug()
+        if self.metadata.review_bugs() is not None:
+            review_links = list(
+                map(lambda bug: REVIEW_LINK + str(bug), self.metadata.review_bugs())
+            )
+            metadata_json["review_links"] = review_links
 
         metadata_json["files_uri"] = self.files_uri
         metadata_json["last_updated"] = self.last_updated_uri

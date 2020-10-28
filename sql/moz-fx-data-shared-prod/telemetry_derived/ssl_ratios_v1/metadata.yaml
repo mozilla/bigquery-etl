@@ -10,7 +10,8 @@ labels:
   incremental: true
   public_json: true
   public_bigquery: true
-  review_bug: 1414839
+  review_bugs: 
+   - 1414839
   incremental_export: false
 scheduling:
   dag_name: bqetl_ssl_ratios

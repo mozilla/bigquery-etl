@@ -91,7 +91,7 @@ class TestPublishGcsMetadata(object):
         assert gcs_table_metadata.version == "v1"
         assert gcs_table_metadata.metadata.is_incremental() is False
         assert gcs_table_metadata.metadata.is_incremental_export() is False
-        assert gcs_table_metadata.metadata.review_bug() == "1999999"
+        assert gcs_table_metadata.metadata.review_bugs() == ["1999999", "12121212"]
         assert gcs_table_metadata.last_updated_path == last_updated_path
         assert gcs_table_metadata.last_updated_uri == self.endpoint + last_updated_path
 
@@ -114,8 +114,11 @@ class TestPublishGcsMetadata(object):
         assert result["friendly_name"] == "Test table for a non-incremental query"
         assert result["incremental"] is False
         assert result["incremental_export"] is False
-        review_link = "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999"
-        assert result["review_link"] == review_link
+        review_link = [
+            "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999",
+            "https://bugzilla.mozilla.org/show_bug.cgi?id=12121212",
+        ]
+        assert result["review_links"] == review_link
         assert result["files_uri"] == self.endpoint + files_path
         assert result["last_updated"] == self.endpoint + last_updated_path
 

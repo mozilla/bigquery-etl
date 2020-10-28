@@ -20,7 +20,7 @@ def validate_public_data(metadata, path):
     is_valid = True
 
     if metadata.is_public_bigquery() or metadata.is_public_json():
-        if not metadata.review_bug():
+        if not metadata.review_bugs():
             logging.error(f"Missing review bug for public data: {path}")
             is_valid = False
 

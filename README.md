@@ -239,7 +239,8 @@ labels:
   schedule: daily       # scheduled in Airflow to run daily
   public_json: true
   public_bigquery: true
-  review_bug: 1414839   # Bugzilla bug ID of data review
+  review_bugs: 
+   - 1414839   # Bugzilla bug ID of data review
   incremental_export: false  # non-incremental JSON export writes all data to a single location
 ```
 

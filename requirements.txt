@@ -366,7 +366,7 @@ pandas==1.1.3 \
 pathspec==0.8.0 \
     --hash=sha256:7d91249d21749788d07a2d0f94147accd8f845507400749ea19c1ec9054a12b0 \
     --hash=sha256:da45173eb3a6f2a5a487efba21f050af2b41948be6ab52b6a1e3ff22bb8b7061 \
-    # via black
+    # via black, yamllint
 pluggy==0.13.1 \
     --hash=sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0 \
     --hash=sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d \
@@ -475,7 +475,7 @@ pyyaml==5.3.1 \
     --hash=sha256:b8eac752c5e14d3eca0e6dd9199cd627518cb5ec06add0de9d32baeee6fe645d \
     --hash=sha256:cc8955cfbfc7a115fa81d85284ee61147059a753344bc51098f3ccd69b0d7e0c \
     --hash=sha256:d13155f591e6fcc1ec3b30685d50bf0711574e2c0dfffd7644babf8b5102ca1a \
-    # via -r requirements.in, mozilla-schema-generator
+    # via -r requirements.in, mozilla-schema-generator, yamllint
 regex==2020.9.27 \
     --hash=sha256:088afc8c63e7bd187a3c70a94b9e50ab3f17e1d3f52a32750b5b77dbe99ef5ef \
     --hash=sha256:1fe0a41437bbd06063aa184c34804efa886bcc128222e9916310c92cd54c3b4c \
@@ -593,6 +593,10 @@ urllib3==1.25.10 \
     --hash=sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a \
     --hash=sha256:e7983572181f5e1522d9c98453462384ee92a0be7fac5f1413a1e35c56cc0461 \
     # via requests
+yamllint==1.25.0 \
+    --hash=sha256:b1549cbe5b47b6ba67bdeea31720f5c51431a4d0c076c1557952d841f7223519 \
+    --hash=sha256:c7be4d0d2584a1b561498fa9acb77ad22eb434a109725c7781373ae496d823b3 \
+    # via -r requirements.in
 yarl==1.6.0 \
     --hash=sha256:04a54f126a0732af75e5edc9addeaa2113e2ca7c6fce8974a63549a70a25e50e \
     --hash=sha256:3cc860d72ed989f3b1f3abbd6ecf38e412de722fb38b8f1b1a086315cf0d69c5 \

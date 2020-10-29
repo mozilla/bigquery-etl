@@ -273,7 +273,7 @@ SELECT
       ANY_VALUE(buckets)
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN (
+    THEN udf_fill_buckets(
       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
       ['always','never','sometimes'])
    END AS aggregates

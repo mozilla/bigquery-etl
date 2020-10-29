@@ -18,6 +18,18 @@ default_args = {
 
 with DAG("bqetl_stripe", default_args=default_args, schedule_interval="@daily") as dag:
 
+    stripe_derived__customers__v1 = bigquery_etl_query(
+        task_id="stripe_derived__customers__v1",
+        destination_table="customers_v1",
+        dataset_id="stripe_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
     stripe_derived__plans__v1 = bigquery_etl_query(
         task_id="stripe_derived__plans__v1",
         destination_table="plans_v1",
@@ -209,6 +221,8 @@ with DAG("bqetl_stripe", default_args=default_args, schedule_interval="@daily") 
         parameters=["date:DATE:{{ds}}"],
         dag=dag,
     )
+
+    stripe_derived__customers__v1.set_upstream(stripe_external__customers__v1)
 
     stripe_derived__plans__v1.set_upstream(stripe_external__plans__v1)
 

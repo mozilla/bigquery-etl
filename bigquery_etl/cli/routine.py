@@ -73,7 +73,7 @@ project_id_option = click.option(
 
 
 def get_project_id(ctx, project_id=None):
-    """Returns the project id with the option flag taking priority."""
+    """Return the project id with the option flag taking priority."""
     if project_id:
         return project_id
     default_project = ctx.obj["DEFAULT_PROJECT"]

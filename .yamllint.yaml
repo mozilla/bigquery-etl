@@ -3,5 +3,5 @@ rules:
   line-length:
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
-    ignore: |
-    ./venv/lib/python3.8/site-packages/mozilla_schema_generator/configs/main.yaml
+  ignore: |
+  ./venv/lib/python3.8/site-packages/mozilla_schema_generator/configs/main.yaml

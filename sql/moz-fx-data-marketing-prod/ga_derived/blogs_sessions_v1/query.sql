@@ -180,7 +180,7 @@ SELECT
 FROM
   sessions_intermediate
 WHERE
-  entryPage = 1
+  entry_page = 1
 GROUP BY
   date,
   visit_identifier,

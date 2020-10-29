@@ -68,8 +68,7 @@ project_id_option = click.option(
     "--project-id",
     "--project_id",
     help="GCP project ID",
-    default=None,
-    callback=is_valid_project,
+    callback=lambda *args: is_valid_project(*args) if args[-1] else args[-1],
 )
 
 
@@ -78,7 +77,7 @@ def get_project_id(ctx, project_id=None):
     if project_id:
         return project_id
     default_project = ctx.obj["DEFAULT_PROJECT"]
-    if default_project and is_valid_project(ctx, name, default_project):
+    if default_project and is_valid_project(ctx, None, default_project):
         return default_project
     click.echo(
         "Please specify a project_id e.g. --project_id=moz-fx-data-shared-prod",
@@ -310,17 +309,19 @@ def publish(ctx, path, project_id, dependency_dir, gcs_bucket, gcs_path):
         click.echo("User needs to be authenticated to publish routines.", err=True)
         sys.exit(1)
 
-    if path and is_valid_dir(path):
+    if path and is_valid_dir(ctx, None, path):
         click.echo(f"Publish routines to {project_id}")
-        publish_routines.publish(
-            project_dirs(project_id),
-            project_id,
-            dependency_dir,
-            gcs_bucket,
-            gcs_path,
-            public,
-        )
-        click.echo(f"Published routines to {project_id}")
+        # NOTE: there will only publish to a single project
+        for target in project_dirs(project_id):
+            publish_routines.publish(
+                target,
+                project_id,
+                dependency_dir,
+                gcs_bucket,
+                gcs_path,
+                public,
+            )
+            click.echo(f"Published routines to {project_id}")
 
 
 mozfun.add_command(publish)

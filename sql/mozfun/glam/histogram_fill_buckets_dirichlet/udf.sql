@@ -6,29 +6,25 @@ CREATE OR REPLACE FUNCTION glam.histogram_fill_buckets_dirichlet(
 )
 RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   -- Given a MAP `input_map`, fill in any missing keys with value `0.0`
-  (
-    WITH total_counts AS (
-      SELECT
-        key,
-        -- Dirichlet distribution density for each bucket in a histogram.
-        -- Given {k1: p1,k2:p2} where p’s are proportions(and p1, p2 sum to 1)
-        -- return {k1: (P1+1/K) / (nreporting+1), k2:(P2+1/K) / (nreporting+1)}.
-        -- https://docs.google.com/document/d/1ipy1oFIKDvHr3R6Ku0goRjS11R1ZH1z2gygOGkSdqUg
-        SAFE_DIVIDE(
-          COALESCE(e.value, 0.0) + SAFE_DIVIDE(1, ARRAY_LENGTH(buckets)),
-          total_users + 1
-        ) AS value
-      FROM
-        UNNEST(buckets) AS key
-      LEFT JOIN
-        UNNEST(input_map) AS e
-      ON
-        SAFE_CAST(key AS STRING) = e.key
-    )
-    SELECT
-      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value) ORDER BY key)
+  ARRAY(
+    SELECT AS STRUCT
+      key,
+      -- Dirichlet distribution density for each bucket in a histogram.
+      -- Given {k1: p1,k2:p2} where p’s are proportions(and p1, p2 sum to 1)
+      -- return {k1: (P1+1/K) / (nreporting+1), k2:(P2+1/K) / (nreporting+1)}.
+      -- https://docs.google.com/document/d/1ipy1oFIKDvHr3R6Ku0goRjS11R1ZH1z2gygOGkSdqUg
+      SAFE_DIVIDE(
+        COALESCE(e.value, 0.0) + SAFE_DIVIDE(1, ARRAY_LENGTH(buckets)),
+        total_users + 1
+      ) AS value
     FROM
-      total_counts
+      UNNEST(buckets) AS key
+    LEFT JOIN
+      UNNEST(input_map) AS e
+    ON
+      key = e.key
+    ORDER BY
+      key
   )
 );
 

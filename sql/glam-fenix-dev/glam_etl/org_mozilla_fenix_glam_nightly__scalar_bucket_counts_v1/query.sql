@@ -252,7 +252,7 @@ log_min_max AS (
     LOG(IF(MAX(value) <= 0, 1, MAX(value)), 2) range_max,
     100 AS bucket_count
   FROM
-    deduplicated_combos,
+    deduplicated_combos
   CROSS JOIN
     UNNEST(scalar_aggregates)
   WHERE

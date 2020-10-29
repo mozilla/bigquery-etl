@@ -1,8 +1,9 @@
 """Import Stripe data into BigQuery."""
 
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, IO, List, Optional, Type
+from hashlib import sha256
 from tempfile import TemporaryFile
+from typing import Any, Dict, IO, List, Optional, Type
 import os.path
 import re
 import sys
@@ -62,9 +63,13 @@ def bigquery_format(obj: Any, *path):
             bigquery_format(e, *path, i) for i, e in enumerate(obj.auto_paging_iter())
         ]
     if path[-1:] == ("metadata",) and isinstance(obj, dict):
+        if "userid" in obj:
+            # hash fxa uid before it reaches BigQuery
+            obj["fxa_uid"] = sha256(obj.pop("userid").encode()).hexdigest()
         # format metadata as a key-value list
         return [
-            {"key": key, "value": bigquery_format(value)} for key, value in obj.items()
+            {"key": key, "value": bigquery_format(value, *path, key)}
+            for key, value in obj.items()
         ]
     if isinstance(obj, dict):
         # recursively format and drop nulls, empty lists, and empty objects

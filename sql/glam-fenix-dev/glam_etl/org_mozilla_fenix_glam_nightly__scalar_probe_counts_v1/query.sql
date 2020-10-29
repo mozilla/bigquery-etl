@@ -24,6 +24,8 @@ SELECT
           UNNEST(
             mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
           ) AS bucket
+        ORDER BY
+          bucket
       )
     WHEN
       metric_type IN ("boolean")

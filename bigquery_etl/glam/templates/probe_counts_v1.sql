@@ -58,7 +58,7 @@ SELECT
             WHEN metric_type IN ({{ scalar_metric_types }}) THEN
               ARRAY(SELECT FORMAT("%.*f", 2, bucket) FROM UNNEST(
                 mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
-              ) AS bucket)
+              ) AS bucket ORDER BY bucket)
             WHEN metric_type in ({{ boolean_metric_types }}) THEN
               ['always', 'never', 'sometimes']
             END,

@@ -128,9 +128,9 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/asn_aggregates_v1/query.sql",
     # Dataset sql/glam-fenix-dev:glam_etl was not found
-    # https://bugzilla.mozilla.org/show_bug.cgi?id=1673967
     *glob.glob("sql/glam-fenix-dev/glam_etl/**/*.sql", recursive=True),
     # Access denied for marketing project
+    # https://bugzilla.mozilla.org/show_bug.cgi?id=1673967
     *glob.glob("sql/moz-fx-data-marketing-prod/ga_derived/**/*.sql", recursive=True),
     # Query templates
     "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501

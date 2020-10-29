@@ -17,7 +17,14 @@ SELECT
     WHEN
       metric_type IN ("counter", "quantity", "labeled_counter")
     THEN
-      mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
+      ARRAY(
+        SELECT
+          FORMAT("%.*f", 2, bucket)
+        FROM
+          UNNEST(
+            mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
+          ) AS bucket
+      )
     WHEN
       metric_type IN ("boolean")
     THEN

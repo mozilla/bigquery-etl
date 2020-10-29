@@ -56,7 +56,10 @@ log_min_max AS (
 buckets_by_metric AS (
   SELECT
     *,
-    mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count) AS buckets
+    ARRAY(SELECT FORMAT("%.*f", 2, bucket) FROM UNNEST(
+      mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
+      ) as bucket
+    ) AS buckets
   FROM log_min_max
 ),
 bucketed_scalars AS (
@@ -71,7 +74,7 @@ bucketed_scalars AS (
     -- Keep two decimal places before converting bucket to a string
     SAFE_CAST(
       FORMAT("%.*f", 2, mozfun.glam.histogram_bucket_from_value(buckets, value) + 0.0001)
-      AS STRING) AS bucket,
+      AS STRING) AS bucket
   FROM
     deduplicated_combos
   CROSS JOIN UNNEST(scalar_aggregates)
@@ -82,14 +85,28 @@ bucketed_scalars AS (
 ),
 booleans_and_scalars AS (
   SELECT
-    * EXCEPT (scalar_aggregates)
+    client_id,
+    {{ attributes }},
+    {{ aggregate_attributes }},
+    agg_type,
+    range_min,
+    range_max,
+    bucket_count,
+    bucket
   FROM
     bucketed_booleans
   CROSS JOIN
     UNNEST(scalar_aggregates)
   UNION ALL
   SELECT
-    *
+    client_id,
+    {{ attributes }},
+    {{ aggregate_attributes }},
+    agg_type,
+    range_min,
+    range_max,
+    bucket_count,
+    bucket
   FROM
     bucketed_scalars
 )

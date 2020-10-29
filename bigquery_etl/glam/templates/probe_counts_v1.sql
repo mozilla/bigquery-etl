@@ -56,7 +56,9 @@ SELECT
             mozfun.map.sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
             CASE
             WHEN metric_type IN ({{ scalar_metric_types }}) THEN
-              mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
+              ARRAY(SELECT FORMAT("%.*f", 2, bucket) FROM UNNEST(
+                mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
+              ) AS bucket)
             WHEN metric_type in ({{ boolean_metric_types }}) THEN
               ['always', 'never', 'sometimes']
             END,

@@ -38,45 +38,6 @@ RETURNS ARRAY<
   )
 );
 
-CREATE TEMP FUNCTION udf_normalize_histograms(
-  arrs ARRAY<
-    STRUCT<
-      metric STRING,
-      metric_type STRING,
-      key STRING,
-      agg_type STRING,
-      value ARRAY<STRUCT<key STRING, value INT64>>
-    >
-  >
-)
-RETURNS ARRAY<
-  STRUCT<
-    metric STRING,
-    metric_type STRING,
-    key STRING,
-    agg_type STRING,
-    aggregates ARRAY<STRUCT<key STRING, value FLOAT64>>
-  >
-> AS (
-  (
-    WITH normalized AS (
-      SELECT
-        metric,
-        metric_type,
-        key,
-        agg_type,
-        -- NOTE: dropping the actual sum here, since it isn't being used
-        mozfun.glam.histogram_normalized_sum(value, 1.0) AS aggregates
-      FROM
-        UNNEST(arrs)
-    )
-    SELECT
-      ARRAY_AGG((metric, metric_type, key, agg_type, aggregates))
-    FROM
-      normalized
-  )
-);
-
 WITH
 -- Cross join with the attribute combinations to reduce the query complexity
 -- with respect to the number of operations. A table with n rows cross joined
@@ -138,7 +99,16 @@ normalized_histograms AS (
     app_version,
     app_build_id,
     channel,
-    udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
+    ARRAY(
+      SELECT AS STRUCT
+        metric,
+        metric_type,
+        key,
+        agg_type,
+        mozfun.glam.histogram_normalized_sum(value, 1.0) AS aggregates
+      FROM
+        UNNEST(histogram_aggregates)
+    ) AS histogram_aggregates
   FROM
     deduplicated_combos
 ),

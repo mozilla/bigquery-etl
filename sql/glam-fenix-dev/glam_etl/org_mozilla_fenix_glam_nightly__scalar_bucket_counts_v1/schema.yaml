@@ -29,6 +29,15 @@
   name: agg_type
   type: STRING
 - mode: NULLABLE
+  name: range_min
+  type: FLOAT
+- mode: NULLABLE
+  name: range_max
+  type: FLOAT
+- mode: NULLABLE
+  name: bucket_count
+  type: INTEGER
+- mode: NULLABLE
   name: bucket
   type: STRING
 - mode: NULLABLE

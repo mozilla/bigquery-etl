@@ -1,6 +1,6 @@
 SELECT
-  COALESCE(_current, _previous).* REPLACE (
-    COALESCE(TO_HEX(SHA256(_current.fxa_uid)), _previous.fxa_uid) AS fxa_uid
+  IF(_current.id IS NULL, _previous, _current).* REPLACE (
+    IF(_current.id IS NULL, _previous.fxa_uid, TO_HEX(SHA256(_current.fxa_uid))) AS fxa_uid
   )
 FROM
   EXTERNAL_QUERY(

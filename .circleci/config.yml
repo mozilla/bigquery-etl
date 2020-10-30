@@ -177,8 +177,7 @@ jobs:
           name: Determine docker image name
           command:
           # yamllint disable-line rule:line-length
-            echo 'IMAGE="${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/} ${CIRCLE_PROJECT_REPONAME:-bigquery-etl}:${CIRCLE_TAG:-latest}"' > $BASH_ENV
-
+            echo 'IMAGE="${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}:${CIRCLE_TAG:-latest}"' > $BASH_ENV
       - run:
           name: Build docker image
           command: docker build . --pull --tag "$IMAGE"

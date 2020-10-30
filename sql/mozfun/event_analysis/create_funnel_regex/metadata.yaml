@@ -1,3 +1,4 @@
+---
 description: >
   Given an array of match strings, each representing a single
   funnel step, aggregate them into a regex string that will

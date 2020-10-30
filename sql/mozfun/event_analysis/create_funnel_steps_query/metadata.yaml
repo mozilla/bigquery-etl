@@ -1,3 +1,4 @@
+---
 description: >
   Generate the SQL statement that can be used to create
   an easily queryable view on events data.

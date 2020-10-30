@@ -1,3 +1,4 @@
+---
 friendly_name: FxA Amplitude Export
 description: >
   Derived from FxA logs, this table contains active events and user property

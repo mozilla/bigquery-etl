@@ -1,6 +1,8 @@
+---
 friendly_name: Firefox Non-desktop Exact MAU by Client Count Dimensions
 description: >
-  Monthly active users with non-desktop clients aggregated across unique sets of dimensions.
+  Monthly active users with non-desktop clients aggregated across
+  unique sets of dimensions.
 owners:
   - jklukas@mozilla.com
 labels:

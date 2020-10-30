@@ -1,3 +1,4 @@
+---
 friendly_name: Ecosystem User ID Lookup
 description: >
   Lookup table of ecosystem_user_id to canonical_id.
@@ -14,9 +15,14 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_account_ecosystem
-  depends_on_past: True
-  referenced_tables: [['moz-fx-data-shared-prod', 'firefox_accounts_stable', 'account_ecosystem_v1']]
+  depends_on_past: true
+  referenced_tables:
+    - [
+        "moz-fx-data-shared-prod",
+        "firefox_accounts_stable",
+        "account_ecosystem_v1",
+      ]
   # This is an unpartitioned table where the script adds rows via INSERT INTO,
-  # thus the custom settings below.
+  # thus the custom settings below.$
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]

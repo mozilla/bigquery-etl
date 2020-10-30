@@ -1,4 +1,5 @@
+---
 - submission_timestamp: 2020-04-01 22:09:03.243074 UTC
-  payload:
-    ecosystem_user_id: a0
-    previous_ecosystem_user_ids: [a3]
+- payload:
+- ecosystem_user_id: a0
+- previous_ecosystem_user_ids: [a3]

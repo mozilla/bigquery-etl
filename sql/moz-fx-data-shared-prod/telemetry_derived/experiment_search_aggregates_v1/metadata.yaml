@@ -1,6 +1,8 @@
+---
 friendly_name: Experiment Search Aggregates
 description: >-
-  Aggregates search metrics for experiments. Used in the Grafana Live Monitoring Dashboard.
+  Aggregates search metrics for experiments. Used in the
+  Grafana Live Monitoring Dashboard.
 owners:
   - ascholtz@mozilla.com
 labels:

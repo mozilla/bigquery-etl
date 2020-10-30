@@ -1,34 +1,25 @@
 ---
 - &base
   client_id: test
-  document_id: base
   sample_id: 0
-  submission_timestamp: '2019-07-17 17:19:39.844336 UTC'
+  submission_timestamp: "2019-07-17 17:19:39.844336 UTC"
   normalized_os: first
   normalized_channel: nightly
   document_id: avg_1
 - <<: *base
   payload:
     {
-      "keyed_histograms": {
-        "addon_content_policy_shim_blocking_loading_ms": [{
-          "key": "google.urlbar",
-          "value": "{
-            \"histogram_type\": 1,
-            \"values\": {\"1\":0, \"56\": 9, \"397\": 1, \"3\": 26, \"149\": 1, \"1056\": 0, \"8\": 7, \"21\": 235}
-          }"
-        }, {
-          "key": "google.searchbar",
-          "value": "{
-            \"histogram_type\": 1,
-            \"values\": {\"1\":0, \"56\": 9, \"397\": 1, \"21\": 235}
-          }"
-        }]
-      }
+      "keyed_histograms":
+        {
+          "addon_content_policy_shim_blocking_loading_ms":
+            [{"key": "google.urlbar", "value": '{
+                  "histogram_type": 1,
+                  "values": {"1":0, "56": 9,
+                  "397": 1, "3": 26, "149": 1, "1056": 0, "8": 7, "21": 235}
+                  }'}, {"key": "google.searchbar", "value": '{
+                  "histogram_type": 1,
+                  "values": {"1":0, "56": 9, "397": 1, "21": 235}
+                  }'}],
+        },
     }
-  application:
-    {
-      "channel": nightly,
-      "version": first,
-      "build_id": first
-    }
+  application: {"channel": nightly, "version": first, "build_id": first}

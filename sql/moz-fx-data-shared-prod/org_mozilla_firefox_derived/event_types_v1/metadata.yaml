@@ -1,5 +1,7 @@
+---
 friendly_name: Firefox Android Release Event Types
-description: Retrieve the set of [events, event_properties] and record them in a table.
+description: Retrieve the set of [events, event_properties]
+ and record them in a table.
 owners:
   - frank@mozilla.com
 labels:

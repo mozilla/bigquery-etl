@@ -1,6 +1,7 @@
+---
 friendly_name: Experiments Daily Active Clients
 description: >
-  A daily number of active clients per experiment, partitioned by day. 
+  A daily number of active clients per experiment, partitioned by day.
 owners:
   - ssuh@mozilla.com
 labels:

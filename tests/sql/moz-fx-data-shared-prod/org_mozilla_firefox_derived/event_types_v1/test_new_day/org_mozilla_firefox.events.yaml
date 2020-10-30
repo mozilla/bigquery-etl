@@ -1,48 +1,36 @@
---- 
-- 
-  submission_timestamp: '2020-01-03 00:00:00'
+---
+- submission_timestamp: "2020-01-03 00:00:00"
   events:
-    - 
-      timestamp: 1000
+    - timestamp: 1000
       name: new_event_no_props
       category: new_category
-    - 
-      timestamp: 2000
+    - timestamp: 2000
       name: new_event_with_props
       category: new_category
       extra:
-        - 
-          key: new_event_prop
+        - key: new_event_prop
           value: new_event_prop_value_1
-    - 
-      timestamp: 3000
+    - timestamp: 3000
       name: third_event
       category: first_category
       extra:
-        - 
-          key: third_event_prop
+        - key: third_event_prop
           value: third_event_prop_value_1
-    - 
-      timestamp: 3000
+    - timestamp: 3000
       name: second_event
       category: second_category
       extra:
-        - 
-          key: third_property
+        - key: third_property
           value: third_property_value_1
-    - 
-      timestamp: 1000
+    - timestamp: 1000
       name: first_event
       category: first_category
       extra:
-        - 
-          key: first_property
+        - key: first_property
           value: first_property_value_3
-    - 
-      timestamp: 1000
+    - timestamp: 1000
       name: first_event
       category: first_category
       extra:
-        - 
-          key: second_property
+        - key: second_property
           value: second_property_value_1

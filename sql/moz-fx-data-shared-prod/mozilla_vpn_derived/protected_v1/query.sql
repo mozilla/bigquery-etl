@@ -1,5 +1,5 @@
 -- WARNING: on mobile this is undercounted and may not be measurable
-WITH _current AS (
+WITH base AS (
   SELECT
     TO_HEX(SHA256(jsonPayload.fields.fxa_uid)) AS fxa_uid,
     MIN(`timestamp`) AS first_protected,
@@ -10,18 +10,16 @@ WITH _current AS (
     AND DATE(`timestamp`) = @date
   GROUP BY
     fxa_uid
+  UNION ALL
+  SELECT
+    *
+  FROM
+    protected_v1
 )
 SELECT
   fxa_uid,
-  IF(
-    _previous.first_protected IS NULL
-    OR _previous.first_protected > _current.first_protected,
-    _current,
-    previous
-  ).first_protected,
+  MIN(first_protected) AS first_protected,
 FROM
-  protected_v1 AS _previous
-FULL JOIN
-  _current
-USING
+  base
+GROUP BY
   (fxa_uid)

@@ -132,7 +132,7 @@ with DAG(
         multipart=True,
         sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/main_summary_v4",
         priority_weight=90,
-        allow_field_addition_on_date="2020-10-30",
+        allow_field_addition_on_date="2020-11-02",
         dag=dag,
     )
 

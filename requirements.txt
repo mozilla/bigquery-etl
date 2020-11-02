@@ -41,9 +41,9 @@ cachetools==4.1.1 \
     --hash=sha256:513d4ff98dd27f85743a8dc0e92f55ddb1b49e060c2d5961512855cda2c01a98 \
     --hash=sha256:bbaa39c3dede00175df2dc2b03d0cf18dd2d32a7de7beb68072d13043c9edb20 \
     # via google-auth
-cattrs==1.1.0 \
-    --hash=sha256:5a544e78c92679a20e6fffe9d242338b9bb261a88a06653154d4368d08bf6f11 \
-    --hash=sha256:6ec92a3816dc94afdcc24d76be738198a21870a0e64eace9c3ef0e56decd00df \
+cattrs==1.1.1 \
+    --hash=sha256:41398d3cbdda64707a9947c3ffac35116dc8ab5307c2962c02cdd01c96097149 \
+    --hash=sha256:cd7579ef6ed80993bdd0e24a806493c48576caebd47b7b6ec2cd3cfd0b9a5f72 \
     # via -r requirements.in
 certifi==2020.6.20 \
     --hash=sha256:5930595817496dd21bb8dc35dad090f1c2cd0adfaf21204bf6732ca5d8ee34d3 \

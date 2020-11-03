@@ -13,10 +13,11 @@ The query files must be in the same directory and all be prefixed with `part`.
 
 from argparse import ArgumentParser
 from multiprocessing.pool import ThreadPool
-from uuid import uuid4
 import os.path
 
 from google.cloud import bigquery
+
+from .util.temp_table import get_temporary_table
 
 
 def dirpath(string):
@@ -46,7 +47,9 @@ parser.add_argument(
     "--project_id", help="Default project, if not specified the sdk will determine one"
 )
 parser.add_argument(
-    "--destination_table", help="table where combined results will be written"
+    "--destination_table",
+    required=True,
+    help="table where combined results will be written",
 )
 parser.add_argument(
     "--time_partitioning_field",
@@ -90,22 +93,15 @@ parser.add_argument(
 )
 parser.add_argument(
     "--schema_update_option",
+    action="append",
+    choices=[
+        bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
+        bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION,
+    ],
+    default=[],
+    dest="schema_update_options",
     help="Optional options for updating the schema.",
-    default="",
 )
-
-temporary_dataset = None
-
-
-def get_temporary_dataset(client):
-    """Get a cached reference to the dataset used for server-assigned destinations."""
-    global temporary_dataset
-    if temporary_dataset is None:
-        # look up the dataset used for query results without a destination
-        dry_run = bigquery.QueryJobConfig(dry_run=True)
-        destination = client.query("SELECT 1", dry_run).destination
-        temporary_dataset = client.dataset(destination.dataset_id, destination.project)
-    return temporary_dataset
 
 
 def _sql_table_id(table):
@@ -116,7 +112,7 @@ def _run_part(client, part, args):
     with open(os.path.join(args.query_dir, part)) as sql_file:
         query = sql_file.read()
     job_config = bigquery.QueryJobConfig(
-        destination=get_temporary_dataset(client).table(f"anon{uuid4().hex}"),
+        destination=get_temporary_table(client),
         default_dataset=args.dataset_id,
         use_legacy_sql=False,
         dry_run=args.dry_run,
@@ -136,7 +132,11 @@ def _run_part(client, part, args):
 def main():
     """Run multipart query."""
     args = parser.parse_args()
-    if "." not in args.dataset_id and args.project_id is not None:
+    if (
+        args.dataset_id is not None
+        and "." not in args.dataset_id
+        and args.project_id is not None
+    ):
         args.dataset_id = f"{args.project_id}.{args.dataset_id}"
     if "." not in args.destination_table and args.dataset_id is not None:
         args.destination_table = f"{args.dataset_id}.{args.destination_table}"
@@ -162,17 +162,6 @@ def main():
             )
         )
         try:
-            schema_update_options = []
-
-            if args.schema_update_option == "ALLOW_FIELD_ADDITION":
-                schema_update_options = [
-                    bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
-                ]
-            elif args.schema_update_option == "ALLOW_FIELD_RELAXATION":
-                schema_update_options = [
-                    bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION
-                ]
-
             job = client.query(
                 query=query,
                 job_config=bigquery.QueryJobConfig(
@@ -182,7 +171,7 @@ def main():
                     write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
                     use_legacy_sql=False,
                     priority=args.priority,
-                    schema_update_options=schema_update_options,
+                    schema_update_options=args.schema_update_options,
                 ),
             )
             job.result()

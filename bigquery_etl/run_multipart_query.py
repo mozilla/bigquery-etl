@@ -88,6 +88,11 @@ parser.add_argument(
     type=dirpath,
     help="Path to the query directory that contains part*.sql files",
 )
+parser.add_argument(
+    "--schema_update_option",
+    help="Optional options for updating the schema.",
+    default="",
+)
 
 temporary_dataset = None
 
@@ -157,6 +162,17 @@ def main():
             )
         )
         try:
+            schema_update_options = []
+
+            if args.schema_update_option == "ALLOW_FIELD_ADDITION":
+                schema_update_options = [
+                    bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
+                ]
+            elif args.schema_update_option == "ALLOW_FIELD_RELAXATION":
+                schema_update_options = [
+                    bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION
+                ]
+
             job = client.query(
                 query=query,
                 job_config=bigquery.QueryJobConfig(
@@ -166,6 +182,7 @@ def main():
                     write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
                     use_legacy_sql=False,
                     priority=args.priority,
+                    schema_update_options=schema_update_options,
                 ),
             )
             job.result()

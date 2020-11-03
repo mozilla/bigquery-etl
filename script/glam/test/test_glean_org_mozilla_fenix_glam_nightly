@@ -43,8 +43,8 @@ if [[ $skip_generate == false ]]; then
 fi
 
 if [[ $generate_only != false ]]; then
-    exit
     bqetl glam glean update-schemas
+    exit
 fi
 
 if [[ $skip_daily == false ]]; then

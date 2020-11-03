@@ -32,9 +32,9 @@ bucketed_booleans AS (
   SELECT
     client_id,
     {{ attributes }},
-    null as range_min,
-    null as range_max,
-    null as bucket_count,
+    NULL AS range_min,
+    NULL AS range_max,
+    NULL AS bucket_count,
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates,
   FROM
     deduplicated_combos

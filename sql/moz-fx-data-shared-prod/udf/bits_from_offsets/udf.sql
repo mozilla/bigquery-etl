@@ -45,4 +45,6 @@ SELECT
   assert.equals(b'\x03', udf.bits_from_offsets([0, 1])),
   assert.equals(b'\xff', udf.bits_from_offsets([0, 1, 2, 3, 4, 5, 6, 7])),
   assert.equals(b'\x01\xff', udf.bits_from_offsets([0, 1, 2, 3, 4, 5, 6, 7, 8])),
-  assert.equals(b'\x01\xff', udf.bits_from_offsets([8, 0, 1, 2, 3, 4, 5, 6, 7]));
+  assert.equals(b'\x01\xff', udf.bits_from_offsets([8, 0, 1, 2, 3, 4, 5, 6, 7])),
+  assert.equals(b'\x01', udf.bits_from_offsets([0, 2048])),
+  assert.equals(CONCAT(b'\x80', REPEAT(b'\x00', 255)), udf.bits_from_offsets([2047]));

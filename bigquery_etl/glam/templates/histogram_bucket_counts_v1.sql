@@ -4,81 +4,6 @@
 {# TODO: remove this import by factoring it out as a proper udf #}
 {% include "clients_histogram_aggregates_v1.udf.sql" %}
 
-CREATE TEMP FUNCTION udf_normalized_sum(arrs ARRAY<STRUCT<key STRING, value INT64>>)
-RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
-  -- Returns the normalized sum of the input maps.
-  -- It returns the total_count[k] / SUM(total_count)
-  -- for each key k.
-  (
-    WITH total_counts AS (
-      SELECT
-        sum(a.value) AS total_count
-      FROM
-        UNNEST(arrs) AS a
-    ),
-    summed_counts AS (
-      SELECT
-        a.key AS k,
-        SUM(a.value) AS v
-      FROM
-        UNNEST(arrs) AS a
-      GROUP BY
-        a.key
-    ),
-    final_values AS (
-      SELECT
-        STRUCT<key STRING, value FLOAT64>(
-          k,
-          COALESCE(SAFE_DIVIDE(1.0 * v, total_count), 0)
-        ) AS record
-      FROM
-        summed_counts
-      CROSS JOIN
-        total_counts
-    )
-    SELECT
-      ARRAY_AGG(record)
-    FROM
-      final_values
-  )
-);
-
-CREATE TEMP FUNCTION udf_normalize_histograms(
-  arrs ARRAY<
-    STRUCT<
-      metric STRING,
-      metric_type STRING,
-      key STRING,
-      agg_type STRING,
-      value ARRAY<STRUCT<key STRING, value INT64>>
-    >
-  >
-)
-RETURNS ARRAY<
-  STRUCT<
-    metric STRING,
-    metric_type STRING,
-    key STRING,
-    agg_type STRING,
-    aggregates ARRAY<STRUCT<key STRING, value FLOAT64>>
-  >
-> AS (
-  (
-    WITH normalized AS (
-      SELECT
-        {{ metric_attributes }},
-        -- NOTE: dropping the actual sum here, since it isn't being used
-        udf_normalized_sum(value) AS aggregates
-      FROM
-        UNNEST(arrs)
-    )
-    SELECT
-      ARRAY_AGG(({{ metric_attributes }}, aggregates))
-    FROM
-      normalized
-  )
-);
-
 WITH
 {{
     enumerate_table_combinations(
@@ -105,7 +30,12 @@ deduplicated_combos AS (
 normalized_histograms AS (
   SELECT
     {{ attributes }},
-    udf_normalize_histograms(histogram_aggregates) AS histogram_aggregates
+    ARRAY(
+      SELECT AS STRUCT
+        {{metric_attributes}},
+        mozfun.glam.histogram_normalized_sum(value, 1.0) AS aggregates
+      FROM unnest(histogram_aggregates)
+    )AS histogram_aggregates
   FROM
     deduplicated_combos
 ),

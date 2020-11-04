@@ -19,7 +19,7 @@ default_args = {
 with DAG(
     "bqetl_google_analytics_derived",
     default_args=default_args,
-    schedule_interval="0 16 * * *",
+    schedule_interval="0 23 * * *",
 ) as dag:
 
     ga_derived__blogs_daily_summary__v1 = bigquery_etl_query(

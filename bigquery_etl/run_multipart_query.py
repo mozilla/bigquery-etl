@@ -97,6 +97,11 @@ parser.add_argument(
     choices=[
         bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
         bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION,
+        # Airflow passes an empty string when the field addition date doesn't
+        # match the run date.
+        # See https://github.com/mozilla/telemetry-airflow/blob/
+        # e49fa7e6b3f5ec562dd248d257770c2303cf0cba/dags/utils/gcp.py#L515
+        "",
     ],
     default=[],
     dest="schema_update_options",

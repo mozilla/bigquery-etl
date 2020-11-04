@@ -122,15 +122,15 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#sum-udf" class="nav-link">sum (UDF)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#mode_last-udf" class="nav-link">mode_last (UDF)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
             <li class="nav-item" data-level="2"><a href="#get_key-udf" class="nav-link">get_key (UDF)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#sum-udf" class="nav-link">sum (UDF)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -146,13 +146,13 @@
 <h2 id="get_key_with_null-udf">get_key_with_null (UDF)</h2>
 <p>Fetch the value associated with a given key from an array of key/value structs.
 Because map types aren't available in BigQuery, we model maps as arrays of structs instead, and this function provides map-like access to such fields. This version matches NULL keys as well.</p>
+<h2 id="sum-udf">sum (UDF)</h2>
+<p>Return the sum of values by key in an array of map entries. The expected schema for entries is ARRAY<STRUCT\<key ANY TYPE, value ANY TYPE>>, where the type for value must be supported by SUM, which allows numeric data types INT64, NUMERIC, and FLOAT64.</p>
 <h2 id="mode_last-udf">mode_last (UDF)</h2>
 <p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
 <h2 id="get_key-udf">get_key (UDF)</h2>
 <p>Fetch the value associated with a given key from an array of key/value structs.
-Because map types aren't available in BigQuery, we model maps as arrays of structs instead, and this function provides map-like access to such fields.</p>
-<h2 id="sum-udf">sum (UDF)</h2>
-<p>Return the sum of values by key in an array of map entries. The expected schema for entries is ARRAY<STRUCT\<key ANY TYPE, value ANY TYPE>>, where the type for value must be supported by SUM, which allows numeric data types INT64, NUMERIC, and FLOAT64.</p></div>
+Because map types aren't available in BigQuery, we model maps as arrays of structs instead, and this function provides map-like access to such fields.</p></div>
             </div>
         </div>
 

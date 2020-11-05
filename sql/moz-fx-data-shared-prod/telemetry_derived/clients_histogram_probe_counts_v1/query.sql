@@ -5,8 +5,8 @@ RETURNS ARRAY<INT64> AS (
       SELECT
         CASE
           WHEN metric_type = 'histogram-exponential'
-          THEN glam.histogram_generate_exponential_buckets(min, max, num)
-          ELSE glam.histogram_generate_linear_buckets(min, max, num)
+          THEN mozfun.glam.histogram_generate_exponential_buckets(min, max, num)
+          ELSE mozfun.glam.histogram_generate_linear_buckets(min, max, num)
        END AS arr
     )
 

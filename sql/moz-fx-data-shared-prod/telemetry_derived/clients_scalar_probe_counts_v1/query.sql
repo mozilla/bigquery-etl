@@ -147,7 +147,7 @@ bucketed_scalars AS (
     process,
     agg_type,
     -- Keep two decimal places before converting bucket to a string
-    SAFE_CAST(FORMAT("%.*f", 2, glam.histogram_bucket_from_value(buckets, SAFE_CAST(value AS FLOAT64)) + 0.0001) AS STRING) AS bucket
+    SAFE_CAST(FORMAT("%.*f", 2, mozfun.glam.histogram_bucket_from_value(buckets, SAFE_CAST(value AS FLOAT64)) + 0.0001) AS STRING) AS bucket
   FROM
     user_aggregates
   CROSS JOIN UNNEST(scalar_aggregates)

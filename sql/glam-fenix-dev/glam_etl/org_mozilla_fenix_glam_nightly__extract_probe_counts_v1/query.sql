@@ -18,8 +18,10 @@ SELECT
   SUBSTR(REPLACE(key, r"\x00", ""), 0, 200) AS metric_key,
   client_agg_type,
   MAX(total_users) AS total_users,
-  MAX(IF(agg_type = "histogram", glam.histogram_cast_json(aggregates), NULL)) AS histogram,
-  MAX(IF(agg_type = "percentiles", glam.histogram_cast_json(aggregates), NULL)) AS percentiles,
+  MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) AS histogram,
+  MAX(
+    IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)
+  ) AS percentiles,
 FROM
   `glam_etl.org_mozilla_fenix_glam_nightly__view_probe_counts_v1`
 GROUP BY

@@ -15,8 +15,8 @@ SELECT
     SUBSTR(REPLACE(key, r"\x00", ""), 0, 200) AS metric_key,
     client_agg_type,
     MAX(total_users) as total_users,
-    MAX(IF(agg_type = "histogram", glam.histogram_cast_json(aggregates), NULL)) as histogram,
-    MAX(IF(agg_type = "percentiles", glam.histogram_cast_json(aggregates), NULL)) as percentiles,
+    MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) as histogram,
+    MAX(IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)) as percentiles,
 FROM
     `{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
 GROUP BY

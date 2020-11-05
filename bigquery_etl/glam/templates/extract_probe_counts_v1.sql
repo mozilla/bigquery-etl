@@ -19,6 +19,8 @@ SELECT
     MAX(IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)) as percentiles,
 FROM
     `{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
+WHERE
+    total_users > 10
 GROUP BY
     channel,
     app_version,

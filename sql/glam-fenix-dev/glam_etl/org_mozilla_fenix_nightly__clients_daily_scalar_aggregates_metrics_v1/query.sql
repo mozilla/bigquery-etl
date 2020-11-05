@@ -57,6 +57,76 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.addons_has_installed_addons AS INT64))
       ),
       (
+        'avif_aom_decode_error',
+        'quantity',
+        '',
+        'avg',
+        avg(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
+      ),
+      (
+        'avif_aom_decode_error',
+        'quantity',
+        '',
+        'count',
+        IF(MIN(metrics.quantity.avif_aom_decode_error) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'avif_aom_decode_error',
+        'quantity',
+        '',
+        'max',
+        max(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
+      ),
+      (
+        'avif_aom_decode_error',
+        'quantity',
+        '',
+        'min',
+        min(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
+      ),
+      (
+        'avif_aom_decode_error',
+        'quantity',
+        '',
+        'sum',
+        sum(CAST(metrics.quantity.avif_aom_decode_error AS INT64))
+      ),
+      (
+        'avif_dav1d_decode_error',
+        'quantity',
+        '',
+        'avg',
+        avg(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
+      ),
+      (
+        'avif_dav1d_decode_error',
+        'quantity',
+        '',
+        'count',
+        IF(MIN(metrics.quantity.avif_dav1d_decode_error) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'avif_dav1d_decode_error',
+        'quantity',
+        '',
+        'max',
+        max(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
+      ),
+      (
+        'avif_dav1d_decode_error',
+        'quantity',
+        '',
+        'min',
+        min(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
+      ),
+      (
+        'avif_dav1d_decode_error',
+        'quantity',
+        '',
+        'sum',
+        sum(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
+      ),
+      (
         'events_total_uri_count',
         'counter',
         '',
@@ -820,6 +890,10 @@ grouped_labeled_metrics AS (
     app_build_id,
     channel,
     ARRAY<STRUCT<name STRING, type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
+      ('avif_bit_depth', 'labeled_counter', metrics.labeled_counter.avif_bit_depth),
+      ('avif_decode_result', 'labeled_counter', metrics.labeled_counter.avif_decode_result),
+      ('avif_decoder', 'labeled_counter', metrics.labeled_counter.avif_decoder),
+      ('avif_yuv_color_space', 'labeled_counter', metrics.labeled_counter.avif_yuv_color_space),
       (
         'browser_search_ad_clicks',
         'labeled_counter',

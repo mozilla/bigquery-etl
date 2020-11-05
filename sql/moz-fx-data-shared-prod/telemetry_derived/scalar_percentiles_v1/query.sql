@@ -1,19 +1,3 @@
-CREATE TEMP FUNCTION udf_get_values(required ARRAY<FLOAT64>, values ARRAY<FLOAT64>)
-RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
-  (
-    SELECT ARRAY_AGG(record)
-    FROM (
-      SELECT
-        STRUCT<key STRING, value FLOAT64>(
-          CAST(k AS STRING),
-          values[OFFSET(CAST(k AS INT64))]
-        ) as record
-      FROM
-        UNNEST(required) AS k
-    )
-  )
-);
-
 WITH flat_clients_scalar_aggregates AS (
   SELECT *,
     os = 'Windows' and channel = 'release' AS sampled,
@@ -90,7 +74,7 @@ percentiles AS (
     client_agg_type)
 
 SELECT *
-REPLACE(udf_get_values(
+REPLACE(mozfun.glam.map_from_array_offsets(
   [5.0, 25.0, 50.0, 75.0, 95.0],
   aggregates
 ) AS aggregates)

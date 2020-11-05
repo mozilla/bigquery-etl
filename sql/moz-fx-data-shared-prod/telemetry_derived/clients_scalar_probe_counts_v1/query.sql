@@ -1,66 +1,3 @@
-CREATE TEMP FUNCTION udf_fill_buckets(input_map ARRAY<STRUCT<key STRING, value FLOAT64>>, buckets ARRAY<STRING>)
-RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
-  -- Given a MAP `input_map`, fill in any missing keys with value `0.0`
-  (
-    WITH total_counts AS (
-      SELECT
-        key,
-        COALESCE(e.value, 0.0) AS value
-      FROM
-        UNNEST(buckets) as key
-      LEFT JOIN
-        UNNEST(input_map) AS e ON SAFE_CAST(key AS STRING) = e.key
-    )
-    
-    SELECT
-      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(SAFE_CAST(key AS STRING), value))
-    FROM
-      total_counts
-  )
-);
-
-CREATE TEMPORARY FUNCTION udf_generate_buckets(min_bucket FLOAT64, max_bucket FLOAT64, num_buckets INT64)
-RETURNS ARRAY<STRING>
-DETERMINISTIC LANGUAGE js
-AS
-'''
-  let bucket_size = (max_bucket - min_bucket) / num_buckets;
-  let buckets = new Set();
-  for (let bucket = min_bucket; bucket < max_bucket; bucket += bucket_size) {
-    buckets.add(Math.pow(2, bucket).toFixed(2));
-  }
-  return Array.from(buckets);
-''';
-
-CREATE TEMP FUNCTION udf_get_values(required ARRAY<FLOAT64>, values ARRAY<FLOAT64>)
-RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
-  (
-    SELECT ARRAY_AGG(record)
-    FROM (
-      SELECT
-        STRUCT<key STRING, value FLOAT64>(
-          CAST(k AS STRING),
-          values[OFFSET(CAST(k AS INT64))]
-        ) as record
-      FROM
-        UNNEST(required) AS k
-    )
-  )
-);
-
-CREATE TEMP FUNCTION udf_bucket (
-  buckets ARRAY<STRING>,
-  val FLOAT64
-)
-RETURNS FLOAT64 AS (
-  -- Bucket `value` into a histogram with min_bucket, max_bucket and num_buckets
-  (
-    SELECT MAX(CAST(bucket AS FLOAT64))
-    FROM UNNEST(buckets) AS bucket
-    WHERE val >= CAST(bucket AS FLOAT64)
-  )
-);
-
 CREATE TEMP FUNCTION udf_boolean_buckets(
   scalar_aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, process STRING, agg_type STRING, value FLOAT64>>)
   RETURNS ARRAY<STRUCT<metric STRING,
@@ -139,7 +76,9 @@ log_min_max AS (
   GROUP BY 1, 2),
 
 buckets_by_metric AS (
-  SELECT metric, key, udf_generate_buckets(log_min, log_max, 100) AS buckets
+  SELECT metric, key, ARRAY(SELECT FORMAT("%.*f", 2, bucket) FROM UNNEST(
+                mozfun.glam.histogram_generate_scalar_buckets(log_min, log_max, 100)
+              ) AS bucket ORDER BY bucket) AS buckets
   FROM log_min_max),
 
 static_combos as (
@@ -208,7 +147,7 @@ bucketed_scalars AS (
     process,
     agg_type,
     -- Keep two decimal places before converting bucket to a string
-    SAFE_CAST(FORMAT("%.*f", 2, udf_bucket(buckets, SAFE_CAST(value AS FLOAT64)) + 0.0001) AS STRING) AS bucket
+    SAFE_CAST(FORMAT("%.*f", 2, mozfun.glam.histogram_bucket_from_value(buckets, SAFE_CAST(value AS FLOAT64)) + 0.0001) AS STRING) AS bucket
   FROM
     user_aggregates
   CROSS JOIN UNNEST(scalar_aggregates)
@@ -268,12 +207,12 @@ SELECT
   SUM(user_count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN udf_fill_buckets(
+    THEN mozfun.glam.histogram_fill_buckets(
       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
       ANY_VALUE(buckets)
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN udf_fill_buckets(
+    THEN mozfun.glam.histogram_fill_buckets(
       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
       ['always','never','sometimes'])
    END AS aggregates

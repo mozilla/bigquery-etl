@@ -11,8 +11,8 @@ SELECT
   metric_type,
   total_users,
   -- Using MAX instead of COALESCE since this is not in the GROUP BY.
-  MAX(IF(agg_type = "histogram", glam.histogram_cast_json(aggregates), NULL)) AS histogram,
-  MAX(IF(agg_type = "percentiles", glam.histogram_cast_json(aggregates), NULL)) AS percentiles
+  MAX(IF(agg_type = "histogram", mozfun.glam.histogram_cast_json(aggregates), NULL)) AS histogram,
+  MAX(IF(agg_type = "percentiles", mozfun.glam.histogram_cast_json(aggregates), NULL)) AS percentiles
 FROM
   `moz-fx-data-shared-prod.telemetry.client_probe_counts`
 WHERE

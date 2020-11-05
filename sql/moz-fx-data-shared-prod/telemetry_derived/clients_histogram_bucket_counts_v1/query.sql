@@ -60,8 +60,8 @@ normalized_histograms AS (
     -- This returns true if at least 1 row has sampled=true.
     -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
     -- and in this case we treat them as Windows+Release users when fudging numbers
-      glam.histogram_normalized_sum(
-        udf.map.sum(ARRAY_CONCAT_AGG(aggregates)),
+    mozfun.glam.histogram_normalized_sum(
+        mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
         IF(MAX(sampled), 10.0, 1.0)
       ) AS aggregates
     )

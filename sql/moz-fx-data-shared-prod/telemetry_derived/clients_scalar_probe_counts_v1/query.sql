@@ -207,12 +207,12 @@ SELECT
   SUM(user_count) AS total_users,
   CASE
     WHEN metric_type = 'scalar' OR metric_type = 'keyed-scalar'
-    THEN glam.histogram_fill_buckets(
+    THEN mozfun.glam.histogram_fill_buckets(
       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
       ANY_VALUE(buckets)
     )
     WHEN metric_type = 'boolean' OR metric_type = 'keyed-scalar-boolean'
-    THEN glam.histogram_fill_buckets(
+    THEN mozfun.glam.histogram_fill_buckets(
       ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, user_count)),
       ['always','never','sometimes'])
    END AS aggregates

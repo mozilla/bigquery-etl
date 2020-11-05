@@ -24,6 +24,8 @@ SELECT
   ) AS percentiles,
 FROM
   `glam_etl.org_mozilla_fenix_glam_nightly__view_probe_counts_v1`
+WHERE
+  total_users > 10
 GROUP BY
   channel,
   app_version,

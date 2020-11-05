@@ -90,7 +90,7 @@ percentiles AS (
     client_agg_type)
 
 SELECT *
-REPLACE(udf_get_values(
+REPLACE(glam.map_from_array_offsets(
   [5.0, 25.0, 50.0, 75.0, 95.0],
   aggregates
 ) AS aggregates)

@@ -1,17 +1,5 @@
 {{ header }}
 
-CREATE TEMP FUNCTION udf_js_flatten(histogram ARRAY<STRUCT<key STRING, value FLOAT64>>)
-RETURNS STRING
-DETERMINISTIC LANGUAGE js
-AS
-  '''
-    let obj = {};
-    histogram.map(function(r) {
-        obj[r.key] = parseFloat(r.value.toFixed(4));
-    });
-    return JSON.stringify(obj);
-''';
-
 SELECT
     channel,
     app_version as version,
@@ -27,8 +15,8 @@ SELECT
     SUBSTR(REPLACE(key, r"\x00", ""), 0, 200) AS metric_key,
     client_agg_type,
     MAX(total_users) as total_users,
-    MAX(IF(agg_type = "histogram", udf_js_flatten(aggregates), NULL)) as histogram,
-    MAX(IF(agg_type = "percentiles", udf_js_flatten(aggregates), NULL)) as percentiles,
+    MAX(IF(agg_type = "histogram", glam.histogram_cast_json(aggregates), NULL)) as histogram,
+    MAX(IF(agg_type = "percentiles", glam.histogram_cast_json(aggregates), NULL)) as percentiles,
 FROM
     `{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
 GROUP BY

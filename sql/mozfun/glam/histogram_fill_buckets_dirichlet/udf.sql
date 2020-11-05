@@ -24,7 +24,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
     ON
       key = e.key
     ORDER BY
-      key
+      SAFE_CAST(key AS FLOAT64)
   )
 );
 
@@ -51,9 +51,21 @@ SELECT
       2
     )
   ),
-  -- keys may not non-integer values, so we must make do with string ordering
+  -- keys may not non-integer values, so ordering is not well defined for strings
   assert.array_equals(
-    ARRAY<STRUCT<key STRING, value FLOAT64>>[("11", (1 + (1 / 2)) / 3), ("2", (1 + (1 / 2)) / 3)],
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[
+      ("foo", (1 + (1 / 2)) / 3),
+      ("bar", (1 + (1 / 2)) / 3)
+    ],
+    glam.histogram_fill_buckets_dirichlet(
+      ARRAY<STRUCT<key STRING, value FLOAT64>>[("foo", 1.0), ("bar", 1.0)],
+      ["foo", "bar"],
+      2
+    )
+  ),
+  -- but ordering is guaranteed for integers/floats
+  assert.array_equals(
+    ARRAY<STRUCT<key STRING, value FLOAT64>>[("2", (1 + (1 / 2)) / 3), ("11", (1 + (1 / 2)) / 3)],
     glam.histogram_fill_buckets_dirichlet(
       ARRAY<STRUCT<key STRING, value FLOAT64>>[("11", 1.0), ("2", 1.0)],
       ["11", "2"],

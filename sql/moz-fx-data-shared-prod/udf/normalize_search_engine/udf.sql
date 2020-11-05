@@ -35,6 +35,10 @@ CREATE OR REPLACE FUNCTION udf.normalize_search_engine(engine STRING) AS (
     STARTS_WITH(LOWER(engine), 'ebay')
   THEN
     'Ebay'
+  WHEN
+    STARTS_WITH(LOWER(engine), 'baidu')
+  THEN
+    'Baidu'
   ELSE
     'Other'
   END
@@ -47,4 +51,5 @@ SELECT
   assert.equals('Other', udf.normalize_search_engine('not-bing')),
   assert.equals('Other', udf.normalize_search_engine('other-Google')),
   assert.equals('Other', udf.normalize_search_engine('engine')),
+  assert.equals('Baidu', udf.normalize_search_engine('baidu-abc')),
   assert.null(udf.normalize_search_engine(NULL))

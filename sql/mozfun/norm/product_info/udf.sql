@@ -169,8 +169,8 @@ RETURNS STRUCT<
     STRUCT(
       "Firefox Reality" AS product,
       "Firefox Reality" AS canonical_name,
-      TRUE AS contributes_to_2019_kpi,
-      TRUE AS contributes_to_2020_kpi
+      FALSE AS contributes_to_2019_kpi,
+      FALSE AS contributes_to_2020_kpi
     )
   WHEN
     app_name LIKE "Firefox iOS"
@@ -289,8 +289,8 @@ RETURNS STRUCT<
     STRUCT(
       "Firefox Reality" AS product,
       "Firefox Reality" AS canonical_name,
-      TRUE AS contributes_to_2019_kpi,
-      TRUE AS contributes_to_2020_kpi
+      FALSE AS contributes_to_2019_kpi,
+      FALSE AS contributes_to_2020_kpi
     )
   ELSE
     ('Other', 'Other', FALSE, FALSE)

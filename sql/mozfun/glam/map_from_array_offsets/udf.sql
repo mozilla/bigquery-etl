@@ -7,7 +7,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
   (
     SELECT
       ARRAY_AGG(
-        STRUCT<key STRING, value FLOAT64>(CAST(key AS STRING), `values`[OFFSET(CAST(key AS INT64))])
+        STRUCT<key STRING, value FLOAT64>(CAST(key AS STRING), `values`[OFFSET(SAFE_CAST(key AS INT64))])
         ORDER BY
           key
       )

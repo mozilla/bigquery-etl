@@ -79,7 +79,7 @@ distribution_metadata AS (
       metric_type,
       metric,
       NULL AS range_min,
-      MAX(CAST(bucket AS INT64)) AS range_max,
+      MAX(SAFE_CAST(bucket AS INT64)) AS range_max,
       NULL AS bucket_count,
       NULL AS histogram_type
     FROM

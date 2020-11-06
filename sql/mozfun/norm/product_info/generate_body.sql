@@ -1,7 +1,7 @@
 WITH input AS (
   SELECT AS VALUE
     """
-    <paste table from metadata.yaml here>
+    <paste table from README.md here>
     """
 ),
 lines AS (

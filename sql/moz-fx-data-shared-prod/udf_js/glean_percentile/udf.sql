@@ -5,7 +5,8 @@ CREATE OR REPLACE FUNCTION udf_js.glean_percentile(
 )
 RETURNS FLOAT64 DETERMINISTIC AS (
   glam.percentile(percentile, histogram, type)
-)
+);
+
 SELECT
   assert.equals(
     2,

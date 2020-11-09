@@ -28,6 +28,7 @@ WHERE
   date = @submission_date
   AND hit_type = 'EVENT'
   AND visits = 1
+  AND event_category IS NOT NULL
 GROUP BY
   date,
   event_category,
@@ -50,5 +51,3 @@ GROUP BY
   campaign,
   ad_content,
   page_name
-HAVING
-  event_category IS NOT NULL

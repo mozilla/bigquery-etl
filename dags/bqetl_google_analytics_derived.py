@@ -84,6 +84,91 @@ with DAG(
         dag=dag,
     )
 
+    ga_derived__www_site_downloads__v1 = bigquery_etl_query(
+        task_id="ga_derived__www_site_downloads__v1",
+        destination_table="www_site_downloads_v1",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    ga_derived__www_site_empty_check__v1 = bigquery_etl_query(
+        task_id="ga_derived__www_site_empty_check__v1",
+        destination_table=None,
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        sql_file_path="sql/moz-fx-data-marketing-prod/ga_derived/www_empty_check_v1/query.sql",
+        dag=dag,
+    )
+
+    ga_derived__www_site_events_metrics__v1 = bigquery_etl_query(
+        task_id="ga_derived__www_site_events_metrics__v1",
+        destination_table="www_site_events_metrics_v1",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    ga_derived__www_site_hits__v1 = bigquery_etl_query(
+        task_id="ga_derived__www_site_hits__v1",
+        destination_table="www_site_hits_v1",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    ga_derived__www_site_landing_page_metrics__v1 = bigquery_etl_query(
+        task_id="ga_derived__www_site_landing_page_metrics__v1",
+        destination_table="www_site_landing_page_metrics_v1",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    ga_derived__www_site_metrics_summary__v1 = bigquery_etl_query(
+        task_id="ga_derived__www_site_metrics_summary__v1",
+        destination_table="www_site_metrics_summary_v1",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    ga_derived__www_site_page_metrics__v1 = bigquery_etl_query(
+        task_id="ga_derived__www_site_page_metrics__v1",
+        destination_table="www_site_page_metrics_v1",
+        dataset_id="ga_derived",
+        project_id="moz-fx-data-marketing-prod",
+        owner="bewu@mozilla.com",
+        email=["bewu@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     ga_derived__blogs_daily_summary__v1.set_upstream(ga_derived__blogs_goals__v1)
 
     ga_derived__blogs_daily_summary__v1.set_upstream(ga_derived__blogs_sessions__v1)
@@ -97,3 +182,23 @@ with DAG(
     )
 
     ga_derived__blogs_sessions__v1.set_upstream(ga_derived__blogs_empty_check__v1)
+
+    ga_derived__www_site_downloads__v1.set_upstream(ga_derived__www_site_hits__v1)
+
+    ga_derived__www_site_events_metrics__v1.set_upstream(ga_derived__www_site_hits__v1)
+
+    ga_derived__www_site_hits__v1.set_upstream(ga_derived__www_site_empty_check__v1)
+
+    ga_derived__www_site_landing_page_metrics__v1.set_upstream(
+        ga_derived__www_site_downloads__v1
+    )
+
+    ga_derived__www_site_landing_page_metrics__v1.set_upstream(
+        ga_derived__www_site_hits__v1
+    )
+
+    ga_derived__www_site_metrics_summary__v1.set_upstream(
+        ga_derived__www_site_downloads__v1
+    )
+
+    ga_derived__www_site_page_metrics__v1.set_upstream(ga_derived__www_site_hits__v1)

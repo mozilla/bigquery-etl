@@ -17,9 +17,9 @@ SELECT
   SUM(social_share) AS social_share,
   SUM(newsletter_subscription) AS newsletter_subscription,
 FROM
-  blogs_sessions_v1 AS sessions_table
+  `moz-fx-data-marketing-prod.ga_derived.blogs_sessions_v1` AS sessions_table
 LEFT JOIN
-  blogs_goals_v1
+  `moz-fx-data-marketing-prod.ga_derived.blogs_goals_v1`
 USING
   (date, visit_identifier)
 LEFT JOIN

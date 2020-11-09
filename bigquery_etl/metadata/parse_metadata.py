@@ -127,7 +127,7 @@ class Metadata:
                 raise e
 
     @classmethod
-    def of_sql_file(cls, sql_file):
+    def of_query_file(cls, sql_file):
         """Return the metadata that is associated with the provided SQL file."""
         path, _ = os.path.split(sql_file)
         metadata_file = os.path.join(path, METADATA_FILE)

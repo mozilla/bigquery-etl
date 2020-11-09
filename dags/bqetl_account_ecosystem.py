@@ -54,7 +54,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
-        sql_file_path="sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_user_id_lookup_v1/script.sql",
+        query_file_path="sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_user_id_lookup_v1/script.sql",
         dag=dag,
     )
 

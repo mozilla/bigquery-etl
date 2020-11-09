@@ -75,7 +75,7 @@ class TestTask:
         assert task.dag_name == "bqetl_core"
         assert task.depends_on_past is False
         assert task.multipart
-        assert task.sql_file_path == os.path.dirname(query_file)
+        assert task.query_file_path == os.path.dirname(query_file)
 
     def test_of_non_existing_query(self):
         with pytest.raises(FileNotFoundError):

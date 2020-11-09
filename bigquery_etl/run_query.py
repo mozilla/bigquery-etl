@@ -48,7 +48,7 @@ def run(
     use_public_table = False
 
     try:
-        metadata = Metadata.of_sql_file(query_file)
+        metadata = Metadata.of_query_file(query_file)
         if metadata.is_public_bigquery():
             if not validate_public_data(metadata, query_file):
                 sys.exit(1)

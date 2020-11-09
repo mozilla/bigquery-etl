@@ -3,7 +3,7 @@
 from airflow import DAG
 from airflow.operators.sensors import ExternalTaskSensor
 import datetime
-from utils.gcp import bigquery_etl_query
+from utils.gcp import bigquery_etl_query, gke_command
 
 default_args = {{ 
     default_args.to_dict() | 
@@ -13,44 +13,57 @@ default_args = {{
 
 with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}) as dag:
 {% for task in tasks | sort(attribute='task_name') %}
-    {{ task.task_name }} = bigquery_etl_query(
-        task_id='{{ task.task_name }}',
-        destination_table={%+ if task.destination_table -%}'{{ task.destination_table }}'
-                          {%+ else -%}None
-                          {%+ endif -%},
-        dataset_id='{{ task.dataset }}',
-        project_id='{{ task.project }}',
-        owner='{{ task.owner }}',
-        {%+ if task.email | length > 0 -%}
-        email={{ task.email | sort }},
-        {%+ endif -%}
-        {%+ if task.start_date -%}
-        start_date={{ task.start_date | format_date | format_repr }},
-        {%+ endif -%}
-        {%+ if task.date_partition_parameter == None or task.date_partition_parameter is string -%}
-        date_partition_parameter={{ task.date_partition_parameter | format_optional_string }},
-        {%+ endif -%}
-        depends_on_past={{ task.depends_on_past }},
-        {%+ if task.arguments | length > 0 -%}
-        arguments={{ task.arguments }},
-        {%+ endif -%}
-        {%+ if task.parameters | length > 0 -%}
-        parameters={{ task.parameters }},
-        {%+ endif -%}
-        {%+ if task.multipart -%}
-        multipart={{ task.multipart }},
-        {%+ endif -%}
-        {%+ if task.sql_file_path -%}
-        sql_file_path={{ task.sql_file_path | format_repr }},
-        {%+ endif -%}
-        {%+ if task.priority -%}
-        priority_weight={{ task.priority }},
-        {%+ endif -%}
-        {%+ if task.allow_field_addition_on_date -%}
-        allow_field_addition_on_date={{ task.allow_field_addition_on_date | format_repr }},
-        {%+ endif -%}
-        dag=dag,
-    )
+    {% if not task.is_python_script -%}
+        {{ task.task_name }} = bigquery_etl_query(
+            task_id='{{ task.task_name }}',
+            destination_table={%+ if task.destination_table -%}'{{ task.destination_table }}'
+                            {%+ else -%}None
+                            {%+ endif -%},
+            dataset_id='{{ task.dataset }}',
+            project_id='{{ task.project }}',
+            owner='{{ task.owner }}',
+            {%+ if task.email | length > 0 -%}
+            email={{ task.email | sort }},
+            {%+ endif -%}
+            {%+ if task.start_date -%}
+            start_date={{ task.start_date | format_date | format_repr }},
+            {%+ endif -%}
+            {%+ if task.date_partition_parameter == None or task.date_partition_parameter is string -%}
+            date_partition_parameter={{ task.date_partition_parameter | format_optional_string }},
+            {%+ endif -%}
+            depends_on_past={{ task.depends_on_past }},
+            {%+ if task.arguments | length > 0 -%}
+            arguments={{ task.arguments }},
+            {%+ endif -%}
+            {%+ if task.parameters | length > 0 -%}
+            parameters={{ task.parameters }},
+            {%+ endif -%}
+            {%+ if task.multipart -%}
+            multipart={{ task.multipart }},
+            {%+ endif -%}
+            {%+ if task.query_file_path -%}
+            query_file_path={{ task.query_file_path | format_repr }},
+            {%+ endif -%}
+            {%+ if task.priority -%}
+            priority_weight={{ task.priority }},
+            {%+ endif -%}
+            {%+ if task.allow_field_addition_on_date -%}
+            allow_field_addition_on_date={{ task.allow_field_addition_on_date | format_repr }},
+            {%+ endif -%}
+            dag=dag,
+        )
+    {%+ else -%}
+        {{ task.task_name }} = gke_command(
+            task_id='{{ task.task_name }}',
+            command=[
+                'python',
+                '{{ task.query_file_path }}',
+            ] + {{ task.arguments }},
+            docker_image='mozilla/bigquery-etl:latest',
+            owner='{{ task.owner }}',
+            email={{ task.email | sort }},
+        )
+    {% endif -%}
 {% endfor -%}
 
 {% set wait_for_seen = [] -%}

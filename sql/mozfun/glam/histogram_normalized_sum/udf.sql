@@ -31,7 +31,7 @@ RETURNS ARRAY<STRUCT<key STRING, value FLOAT64>> AS (
           COALESCE(SAFE_DIVIDE(1.0 * v, total_count), 0) * weight
         )
         ORDER BY
-          CAST(k AS INT64)
+          SAFE_CAST(k AS INT64)
       )
     FROM
       summed_counts

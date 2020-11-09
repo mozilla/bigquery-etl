@@ -1,0 +1,9 @@
+description: Aggregated metrics for www.mozilla.org
+friendly_name: WWW Site Metrics Summary
+labels:
+  incremental: true
+  schedule: daily
+owners:
+  - bewu@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived

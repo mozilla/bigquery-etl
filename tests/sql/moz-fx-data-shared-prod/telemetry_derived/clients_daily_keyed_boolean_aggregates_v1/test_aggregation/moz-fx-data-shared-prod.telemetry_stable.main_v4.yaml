@@ -1,7 +1,6 @@
 ---
 - &base
   client_id: test
-  document_id: base
   sample_id: 0
   submission_timestamp: '2019-01-01 17:19:39.844336 UTC'
   normalized_os: first
@@ -15,7 +14,7 @@
           "keyed_scalars": {
             "widget_ime_name_on_linux": {
               "key": "test",
-              "value": True
+              "value": true,
             }
           }
         }

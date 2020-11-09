@@ -1,0 +1,46 @@
+- mode: NULLABLE
+  name: metric
+  type: STRING
+- mode: NULLABLE
+  name: ping_type
+  type: STRING
+- mode: NULLABLE
+  name: os
+  type: STRING
+- mode: NULLABLE
+  name: app_version
+  type: INTEGER
+- mode: NULLABLE
+  name: app_build_id
+  type: STRING
+- mode: NULLABLE
+  name: channel
+  type: STRING
+- mode: NULLABLE
+  name: key
+  type: STRING
+- mode: NULLABLE
+  name: agg_type
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: FLOAT
+  mode: NULLABLE
+  name: record
+  type: RECORD
+- mode: NULLABLE
+  name: range_min
+  type: INTEGER
+- mode: NULLABLE
+  name: range_max
+  type: INTEGER
+- mode: NULLABLE
+  name: bucket_count
+  type: INTEGER
+- mode: NULLABLE
+  name: metric_type
+  type: STRING

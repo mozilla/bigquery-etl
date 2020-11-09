@@ -1,3 +1,4 @@
+---
 friendly_name: "Test table for a multipart query"
 description: "Test table for a multipart query"
 owners:
@@ -7,6 +8,7 @@ labels:
   public_json: false
   incremental: false
   incremental_export: false
-  review_bug: 1999999
+  review_bugs: 
+   - 1999999
 scheduling:
   dag_name: "bqetl_core"

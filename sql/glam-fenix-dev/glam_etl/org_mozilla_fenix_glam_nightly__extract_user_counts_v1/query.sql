@@ -22,7 +22,7 @@ SELECT
   COALESCE(app_build_id, "*") AS app_build_id,
   IF(
     app_build_id = "*",
-    "*",
+    NULL,
     SAFE_CAST(mozfun.glam.build_hour_to_datetime(app_build_id) AS STRING)
   ) AS build_date,
   COALESCE(os, "*") AS os,

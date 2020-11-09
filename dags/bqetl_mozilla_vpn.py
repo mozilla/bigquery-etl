@@ -20,6 +20,56 @@ with DAG(
     "bqetl_mozilla_vpn", default_args=default_args, schedule_interval="@daily"
 ) as dag:
 
+    mozilla_vpn_derived__add_device_events__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__add_device_events__v1",
+        destination_table="add_device_events_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__login_flows__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__login_flows__v1",
+        destination_table="login_flows_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__protected__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__protected__v1",
+        destination_table="protected_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__users__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__users__v1",
+        destination_table="users_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
     mozilla_vpn_derived__waitlist__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__waitlist__v1",
         destination_table="waitlist_v1",
@@ -91,5 +141,34 @@ with DAG(
         ],
         dag=dag,
     )
+
+    wait_for_firefox_accounts_derived__fxa_auth_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_auth_events__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=81000),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    mozilla_vpn_derived__login_flows__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_auth_events__v1
+    )
+    wait_for_firefox_accounts_derived__fxa_content_events__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
+        external_dag_id="bqetl_fxa_events",
+        external_task_id="firefox_accounts_derived__fxa_content_events__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=81000),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    mozilla_vpn_derived__login_flows__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_content_events__v1
+    )
+
+    mozilla_vpn_derived__users__v1.set_upstream(mozilla_vpn_external__users__v1)
 
     mozilla_vpn_derived__waitlist__v1.set_upstream(mozilla_vpn_external__waitlist__v1)

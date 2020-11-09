@@ -1,9 +1,12 @@
 """Tools for GLAM ETL."""
-import click
-from google.cloud import bigquery
-from .utils import run
-from pathlib import Path
 import os
+from pathlib import Path
+
+import click
+import yaml
+from google.cloud import bigquery
+
+from .utils import get_schema, run
 
 ROOT = Path(__file__).parent.parent.parent
 
@@ -114,7 +117,8 @@ def backfill_incremental(app_id, start_date, end_date, dataset):
 @click.argument("app-id", type=str)
 @click.option("--project", default="glam-fenix-dev")
 @click.option("--dataset", type=str, default="glam_etl_dev")
-def export(app_id, project, dataset):
+@click.option("--bucket", default="glam-fenix-dev-testing")
+def export(app_id, project, dataset, bucket):
     """Run the export ETL and write the final csv to a gcs bucket."""
     _check_root()
     run(
@@ -141,9 +145,24 @@ def export(app_id, project, dataset):
         cwd=ROOT,
         env={
             **os.environ,
-            **dict(SRC_PROJECT=project, DATASET=dataset, PRODUCT=app_id),
+            **dict(SRC_PROJECT=project, DATASET=dataset, PRODUCT=app_id, BUCKET=bucket),
         },
     )
+
+
+@glean.command()
+@click.option("--project", default="glam-fenix-dev")
+@click.option("--dataset", default="glam_etl")
+@click.option("--src-dataset", default="glam_etl_dev")
+def update_schemas(project, dataset, src_dataset):
+    """Update the schema.yaml files in each query."""
+    sql_root = ROOT / "sql" / project / dataset
+    for path in sql_root.glob("*"):
+        print(f"fetching schema for {path.name}")
+        # we can update the schema with the development version of the schema
+        schema = get_schema(f"{src_dataset}.{path.name}", project)
+        with (path / "schema.yaml").open("w") as fp:
+            yaml.dump(schema, fp)
 
 
 if __name__ == "__main__":

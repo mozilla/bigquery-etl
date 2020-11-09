@@ -6,7 +6,7 @@
                 "description": "Test table for a non-incremental query",
                 "incremental": false,
                 "incremental_export": false,
-                "review_link": "https://bugzilla.mozilla.org/show_bug.cgi?id=1999999",
+                "review_links": ["https://bugzilla.mozilla.org/show_bug.cgi?id=1999999", "https://bugzilla.mozilla.org/show_bug.cgi?id=12121212"],
                 "files_uri": "https://test.endpoint.mozilla.com/api/v1/tables/test/non_incremental_query/v1/files",
                 "last_updated": "https://test.endpoint.mozilla.com/api/v1/tables/test/non_incremental_query/v1/last_updated"
             }
@@ -17,7 +17,7 @@
                 "description": "Test table for an incremental query",
                 "incremental": true,
                 "incremental_export": true,
-                "review_link": "https://bugzilla.mozilla.org/show_bug.cgi?id=123456",
+                "review_links": ["https://bugzilla.mozilla.org/show_bug.cgi?id=123456"],
                 "files_uri": "https://test.endpoint.mozilla.com/api/v1/tables/test/incremental_query/v1/files",
                 "last_updated": "https://test.endpoint.mozilla.com/api/v1/tables/test/incremental_query/v1/last_updated"
             }

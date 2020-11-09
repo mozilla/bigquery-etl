@@ -68,8 +68,22 @@ project_id_option = click.option(
     "--project-id",
     "--project_id",
     help="GCP project ID",
-    default=None,
+    callback=lambda *args: is_valid_project(*args) if args[-1] else args[-1],
 )
+
+
+def get_project_id(ctx, project_id=None):
+    """Return the project id with the option flag taking priority."""
+    if project_id:
+        return project_id
+    default_project = ctx.obj["DEFAULT_PROJECT"]
+    if default_project and is_valid_project(ctx, None, default_project):
+        return default_project
+    click.echo(
+        "Please specify a project_id e.g. --project_id=moz-fx-data-shared-prod",
+        err=True,
+    )
+    sys.exit(1)
 
 
 @click.group(help="Commands for managing routines.")
@@ -77,7 +91,7 @@ project_id_option = click.option(
 def routine(ctx):
     """Create the CLI group for the routine command."""
     ctx.ensure_object(dict)
-    ctx.obj["DEFAULT_PROJECT"] = None
+    ctx.obj["DEFAULT_PROJECT"] = "moz-fx-data-shared-prod"
 
 
 @click.group(help="Commands for managing mozfun routines.")
@@ -85,7 +99,7 @@ def routine(ctx):
 def mozfun(ctx):
     """Create the CLI group for the mozfun command."""
     ctx.ensure_object(dict)
-    ctx.obj["DEFAULT_PROJECT"] = "sql/mozfun"
+    ctx.obj["DEFAULT_PROJECT"] = "mozfun"
 
 
 @routine.command(
@@ -95,13 +109,7 @@ def mozfun(ctx):
 )
 @click.argument("name")
 @sql_dir_option
-@click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project routine should be part of.",
-    default="moz-fx-data-shared-prod",
-    callback=is_valid_project,
-)
+@project_id_option
 @click.option("--udf", "-u", is_flag=True, help="Create a new UDF", default=False)
 @click.option(
     "--stored_procedure",
@@ -123,18 +131,7 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
         )
         sys.exit(1)
 
-    default_project = ctx.obj["DEFAULT_PROJECT"]
-    if default_project and is_valid_project(ctx, name, default_project):
-        project_id = default_project
-
-    if project_id is None:
-        click.echo(
-            "Please specify a project_id: "
-            "bqetl routine create <dataset>.<name> --udf "
-            "--project_id=moz-fx-data-shared-prod",
-            err=True,
-        )
-        sys.exit(1)
+    project_id = get_project_id(ctx, project_id)
 
     # create directory structure
     try:
@@ -206,9 +203,7 @@ mozfun.add_command(create)
 @click.pass_context
 def info(ctx, name, sql_dir, project_id, usages):
     """CLI command for returning information about routines."""
-    default_project = ctx.obj["DEFAULT_PROJECT"]
-    if default_project and is_valid_project(ctx, name, default_project):
-        project_id = default_project
+    project_id = get_project_id(ctx, project_id)
 
     if name is None:
         name = "*.*"
@@ -264,9 +259,7 @@ mozfun.add_command(info)
 @click.pass_context
 def validate(ctx, name, sql_dir, project_id):
     """Validate routines by formatting and running tests."""
-    default_project = ctx.obj["DEFAULT_PROJECT"]
-    if default_project and is_valid_project(ctx, name, default_project):
-        project_id = default_project
+    project_id = get_project_id(ctx, project_id)
 
     if name is None:
         name = "*.*"
@@ -286,13 +279,7 @@ mozfun.add_command(validate)
     help="Publish routines to BigQuery.",
 )
 @click.argument("path", type=click.Path(file_okay=False), required=False)
-@click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project routine should be part of.",
-    default="moz-fx-data-shared-prod",
-    callback=is_valid_project,
-)
+@project_id_option
 @click.option(
     "--dependency-dir",
     "--dependency_dir",
@@ -312,31 +299,29 @@ mozfun.add_command(validate)
     help="The GCS path in the bucket where dependency files are uploaded to.",
 )
 @click.pass_context
-def publish(ctx, path, project, dependency_dir, gcs_bucket, gcs_path):
+def publish(ctx, path, project_id, dependency_dir, gcs_bucket, gcs_path):
     """Publish routines."""
-    default_project = ctx.obj["DEFAULT_PROJECT"]
-    if default_project and is_valid_project(ctx, None, default_project):
-        project_id = default_project
+    project_id = get_project_id(ctx, project_id)
 
     public = False
-    if project:
-        project_id = project
 
     if not is_authenticated(project_id):
         click.echo("User needs to be authenticated to publish routines.", err=True)
         sys.exit(1)
 
-    if path and is_valid_dir(path):
+    if path and is_valid_dir(ctx, None, path):
         click.echo(f"Publish routines to {project_id}")
-        publish_routines.publish(
-            project_dirs(project_id),
-            project_id,
-            dependency_dir,
-            gcs_bucket,
-            gcs_path,
-            public,
-        )
-        click.echo(f"Published routines to {project_id}")
+        # NOTE: there will only publish to a single project
+        for target in project_dirs(project_id):
+            publish_routines.publish(
+                target,
+                project_id,
+                dependency_dir,
+                gcs_bucket,
+                gcs_path,
+                public,
+            )
+            click.echo(f"Published routines to {project_id}")
 
 
 mozfun.add_command(publish)
@@ -352,9 +337,7 @@ mozfun.add_command(publish)
 @click.pass_context
 def rename(ctx, name, new_name, sql_dir, project_id):
     """Rename routines based on pattern."""
-    default_project = ctx.obj["DEFAULT_PROJECT"]
-    if default_project and is_valid_project(ctx, None, default_project):
-        project_id = default_project
+    project_id = get_project_id(ctx, project_id)
 
     routine_files = _routines_matching_name_pattern(name, sql_dir, project_id)
 

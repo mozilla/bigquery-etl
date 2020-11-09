@@ -1,3 +1,4 @@
+---
 description: >
   Create a view that queries the `events_daily` table.
   This view currently supports both funnels and event

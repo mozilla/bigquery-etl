@@ -1,5 +1,7 @@
+---
 friendly_name: FxA Auth Bounce Events
-description: Selected Amplitude events extracted from FxA auth_bounce server logs
+description: Selected Amplitude events extracted from FxA auth_bounce
+ server logs
 owners:
   - jklukas@mozilla.com
 labels:

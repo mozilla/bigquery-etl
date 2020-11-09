@@ -345,6 +345,46 @@ histograms AS (
         metrics.timing_distribution.performance_page_total_content_page_load.values
       ),
       (
+        "performance_pageload_dcl",
+        "timing_distribution",
+        metrics.timing_distribution.performance_pageload_dcl.values
+      ),
+      (
+        "performance_pageload_dcl_responsestart",
+        "timing_distribution",
+        metrics.timing_distribution.performance_pageload_dcl_responsestart.values
+      ),
+      (
+        "performance_pageload_fcp",
+        "timing_distribution",
+        metrics.timing_distribution.performance_pageload_fcp.values
+      ),
+      (
+        "performance_pageload_fcp_responsestart",
+        "timing_distribution",
+        metrics.timing_distribution.performance_pageload_fcp_responsestart.values
+      ),
+      (
+        "performance_pageload_load_time",
+        "timing_distribution",
+        metrics.timing_distribution.performance_pageload_load_time.values
+      ),
+      (
+        "performance_pageload_load_time_responsestart",
+        "timing_distribution",
+        metrics.timing_distribution.performance_pageload_load_time_responsestart.values
+      ),
+      (
+        "performance_pageload_req_anim_frame_callback",
+        "timing_distribution",
+        metrics.timing_distribution.performance_pageload_req_anim_frame_callback.values
+      ),
+      (
+        "performance_responsiveness_req_anim_frame_callback",
+        "timing_distribution",
+        metrics.timing_distribution.performance_responsiveness_req_anim_frame_callback.values
+      ),
+      (
         "performance_time_dom_complete",
         "timing_distribution",
         metrics.timing_distribution.performance_time_dom_complete.values

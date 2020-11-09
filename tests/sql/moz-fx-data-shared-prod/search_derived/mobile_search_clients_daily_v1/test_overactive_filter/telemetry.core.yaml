@@ -10,12 +10,12 @@
   normalized_app_name: Fennec
   normalized_country_code: FR
   normalized_os: Android
-  normalized_os_version: '23'
-  profile_date: '16606'
-  sample_id: '1'
+  normalized_os_version: "23"
+  profile_date: "16606"
+  sample_id: "1"
   searches:
-  - key: engine1.actionbar
-    value: '100000'
+    - key: engine1.actionbar
+      value: "100000"
 - client_id: b
   submission_timestamp: 2019-12-01 16:10:43.967324 UTC
   default_search: engine1
@@ -27,12 +27,12 @@
   normalized_app_name: Fennec
   normalized_country_code: CA
   normalized_os: Android
-  normalized_os_version: '26'
-  profile_date: '17332'
-  sample_id: '1'
+  normalized_os_version: "26"
+  profile_date: "17332"
+  sample_id: "1"
   searches:
-  - key: engine1.actionbar
-    value: '100000'
+    - key: engine1.actionbar
+      value: "100000"
 - client_id: b
   submission_timestamp: 2019-12-01 16:10:43.967324 UTC
   default_search: engine1
@@ -44,11 +44,11 @@
   normalized_app_name: Fennec
   normalized_country_code: CA
   normalized_os: Android
-  normalized_os_version: '26'
-  profile_date: '17332'
-  sample_id: '1'
+  normalized_os_version: "26"
+  profile_date: "17332"
+  sample_id: "1"
   searches:
-  - key: engine1.actionbar
-    value: '2'
-  - key: engine2.actionbar
-    value: '100000'
+    - key: engine1.actionbar
+      value: "2"
+    - key: engine2.actionbar
+      value: "100000"

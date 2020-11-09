@@ -1,3 +1,4 @@
+---
 friendly_name: Search Clients Daily
 description: A daily aggregate of search clients, partitioned by day
 owners:

@@ -1,0 +1,11 @@
+description: Normalized individual hits for www.mozilla.org
+friendly_name: WWW Site Hits
+labels:
+  incremental: true
+  schedule: daily
+owners:
+  - bewu@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived
+  referenced_tables:
+    - ['moz-fx-data-marketing-prod', 'ga_derived', 'www_site_empty_check_v1']

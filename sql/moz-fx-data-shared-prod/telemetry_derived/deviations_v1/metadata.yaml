@@ -1,3 +1,4 @@
+---
 friendly_name: Deviations
 description: >-
   Deviation of different metrics from forecast.
@@ -7,5 +8,6 @@ labels:
   incremental: true
   public_json: true
   public_bigquery: true
-  review_bug: 1624528
+  review_bugs: 
+   - 1624528
   incremental_export: false

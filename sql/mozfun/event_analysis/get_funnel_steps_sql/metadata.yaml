@@ -1,3 +1,4 @@
+---
 description: >
   For a given funnel, get a SQL statement that can be used to
   determine if an events string contains that funnel.

@@ -1,6 +1,6 @@
 ---
 - &base
-  submission_date: '2020-07-01'
+  submission_date: "2020-07-01"
   client_id: a
   channel: release
   locale: fr-FR
@@ -9,7 +9,7 @@
   normalized_app_name: Fennec
   country: FR
   os: Android
-  os_version: '23'
+  os_version: "23"
   profile_creation_date: 18200
   profile_age_in_days: 200
   sap: 0
@@ -23,11 +23,11 @@
   total_searches: 0
   tagged_searches: 0
   engine_searches:
-  - value:
-      total_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      tagged_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      search_with_ads: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      ad_click: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    - value:
+        total_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        tagged_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        search_with_ads: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ad_click: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   days_seen_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==
   days_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg==
   days_tagged_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg==
@@ -47,12 +47,12 @@
   total_searches: 0
   tagged_searches: 0
   engine_searches:
-  - key: engine1
-    value:
-      total_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
-      tagged_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
-      search_with_ads: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
-      ad_click: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+    - key: engine1
+      value:
+        total_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+        tagged_searches: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+        search_with_ads: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+        ad_click: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
   days_seen_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw==
   days_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg==
   days_tagged_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg==

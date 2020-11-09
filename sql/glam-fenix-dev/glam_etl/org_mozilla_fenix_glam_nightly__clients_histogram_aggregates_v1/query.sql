@@ -59,6 +59,10 @@ filtered_accumulated AS (
     histogram_aggregates
   FROM
     extracted_accumulated
+  LEFT JOIN
+    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
+  USING
+    (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
@@ -68,6 +72,7 @@ filtered_accumulated AS (
       @submission_date,
       INTERVAL 365 day
     )
+    AND app_version > (latest_version - 3)
 ),
 -- unnest the daily data
 extracted_daily AS (
@@ -95,6 +100,10 @@ filtered_daily AS (
     histogram_aggregates.*
   FROM
     extracted_daily
+  LEFT JOIN
+    glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1
+  USING
+    (channel)
   WHERE
       -- allow for builds to be slighly ahead of the current submission date, to
       -- account for a reasonable amount of clock skew
@@ -104,6 +113,7 @@ filtered_daily AS (
       @submission_date,
       INTERVAL 365 day
     )
+    AND app_version > (latest_version - 3)
 ),
 -- re-aggregate based on the latest version
 aggregated_daily AS (

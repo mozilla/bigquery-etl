@@ -1,0 +1,7 @@
+description: Determines column sizes of specific tables and partitions
+  via dry runs.
+friendly_name: Column Size
+labels:
+  incremental: true
+owners:
+  - ascholtz@mozilla.com

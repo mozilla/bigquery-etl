@@ -1,8 +1,9 @@
 """Import Stripe data into BigQuery."""
 
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, IO, List, Optional, Type
+from hashlib import sha256
 from tempfile import TemporaryFile
+from typing import Any, Dict, IO, List, Optional, Type
 import os.path
 import re
 import sys
@@ -14,8 +15,8 @@ from stripe.api_resources.abstract import ListableAPIResource
 import click
 import stripe
 
-# omit lists of resources that have a separate table
-OMIT_LIST_TYPES = (
+# event data types with separate events and a defined schema
+EVENT_DATA_TYPES = (
     stripe.Charge,
     stripe.CreditNote,
     stripe.Customer,
@@ -54,16 +55,21 @@ class StripeResourceType(click.ParamType):
 def bigquery_format(obj: Any, *path):
     """Format stripe objects for BigQuery."""
     if isinstance(obj, stripe.ListObject):
-        if obj.data and isinstance(obj.data[0], OMIT_LIST_TYPES):
+        if obj.data and isinstance(obj.data[0], EVENT_DATA_TYPES):
+            # don't expand lists of types that get updated in separate events
             return None
         # recursively request any additional values for paged lists.
         return [
             bigquery_format(e, *path, i) for i, e in enumerate(obj.auto_paging_iter())
         ]
     if path[-1:] == ("metadata",) and isinstance(obj, dict):
+        if "userid" in obj:
+            # hash fxa uid before it reaches BigQuery
+            obj["fxa_uid"] = sha256(obj.pop("userid").encode()).hexdigest()
         # format metadata as a key-value list
         return [
-            {"key": key, "value": bigquery_format(value)} for key, value in obj.items()
+            {"key": key, "value": bigquery_format(value, *path, key)}
+            for key, value in obj.items()
         ]
     if isinstance(obj, dict):
         # recursively format and drop nulls, empty lists, and empty objects
@@ -181,6 +187,8 @@ def import_(
                     "created": datetime.utcfromtimestamp(instance.created).isoformat()
                 }
                 if resource is stripe.Event:
+                    if not isinstance(instance.data.object, EVENT_DATA_TYPES):
+                        continue  # skip events without a defined schema
                     row["data"] = {
                         instance.data.object.object.replace(
                             ".", "_"

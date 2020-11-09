@@ -1,6 +1,6 @@
 WITH events AS (
   SELECT
-    id,
+    `data`.setup_intent.id,
     created AS event_timestamp,
     `data`.setup_intent.* EXCEPT (id),
   FROM

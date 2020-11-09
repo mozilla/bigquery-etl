@@ -1,9 +1,15 @@
+---
 bqetl_error_aggregates:
   schedule_interval: 3h
   default_args:
     owner: bewu@mozilla.com
-    email: ['telemetry-alerts@mozilla.com', 'bewu@mozilla.com', 'wlachance@mozilla.com']
-    start_date: '2019-11-01'
+    email:
+      [
+        "telemetry-alerts@mozilla.com",
+        "bewu@mozilla.com",
+        "wlachance@mozilla.com",
+      ]
+    start_date: "2019-11-01"
     retries: 1
     retry_delay: 20m
     depends_on_past: false
@@ -11,27 +17,32 @@ bqetl_error_aggregates:
 bqetl_ssl_ratios:
   schedule_interval: 0 2 * * *
   default_args:
-      owner: chutten@mozilla.com
-      start_date: '2019-07-20'
-      email: ['telemetry-alerts@mozilla.com', 'chutten@mozilla.com']
-      retries: 2
-      retry_delay: 30m
+    owner: chutten@mozilla.com
+    start_date: "2019-07-20"
+    email: ["telemetry-alerts@mozilla.com", "chutten@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
 
 bqetl_amo_stats:
   schedule_interval: 0 3 * * *
   default_args:
-      owner: jklukas@mozilla.com
-      start_date: '2020-06-01'
-      email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
-      retries: 2
-      retry_delay: 30m
+    owner: jklukas@mozilla.com
+    start_date: "2020-06-01"
+    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
 
 bqetl_vrbrowser:
   schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
-    start_date: '2019-07-25'
-    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com', 'ascholtz@mozilla.com']
+    start_date: "2019-07-25"
+    email:
+      [
+        "telemetry-alerts@mozilla.com",
+        "jklukas@mozilla.com",
+        "ascholtz@mozilla.com",
+      ]
     retries: 1
     retry_delay: 5m
 
@@ -39,8 +50,8 @@ bqetl_core:
   schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
-    start_date: '2019-07-25'
-    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+    start_date: "2019-07-25"
+    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 1
     retry_delay: 5m
 
@@ -48,8 +59,8 @@ bqetl_nondesktop:
   schedule_interval: 0 3 * * *
   default_args:
     owner: jklukas@mozilla.com
-    start_date: '2019-07-25'
-    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+    start_date: "2019-07-25"
+    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 1
     retry_delay: 5m
 
@@ -57,8 +68,8 @@ bqetl_mobile_search:
   schedule_interval: 0 2 * * *
   default_args:
     owner: bewu@mozilla.com
-    start_date: '2019-07-25'
-    email: ['telemetry-alerts@mozilla.com', 'bewu@mozilla.com']
+    start_date: "2019-07-25"
+    email: ["telemetry-alerts@mozilla.com", "bewu@mozilla.com"]
     retries: 1
     retry_delay: 5m
 
@@ -66,8 +77,8 @@ bqetl_fxa_events:
   schedule_interval: 30 1 * * *
   default_args:
     owner: jklukas@mozilla.com
-    start_date: '2019-03-01'
-    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+    start_date: "2019-03-01"
+    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 1
     retry_delay: 10m
 
@@ -75,8 +86,8 @@ bqetl_gud:
   schedule_interval: 0 3 * * *
   default_args:
     owner: jklukas@mozilla.com
-    start_date: '2019-07-25'
-    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+    start_date: "2019-07-25"
+    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 1
     retry_delay: 5m
 
@@ -84,8 +95,8 @@ bqetl_messaging_system:
   schedule_interval: 0 2 * * *
   default_args:
     owner: najiang@mozilla.com
-    start_date: '2019-07-25'
-    email: ['telemetry-alerts@mozilla.com', 'najiang@mozilla.com']
+    start_date: "2019-07-25"
+    email: ["telemetry-alerts@mozilla.com", "najiang@mozilla.com"]
     retries: 1
     retry_delay: 5m
 
@@ -93,8 +104,8 @@ bqetl_activity_stream:
   schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
-    start_date: '2019-07-25'
-    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+    start_date: "2019-07-25"
+    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 1
     retry_delay: 5m
 
@@ -102,8 +113,9 @@ bqetl_search:
   schedule_interval: 0 3 * * *
   default_args:
     owner: bewu@mozilla.com
-    start_date: '2018-11-27'
-    email: ['telemetry-alerts@mozilla.com', 'bewu@mozilla.com', 'frank@mozilla.com']
+    start_date: "2018-11-27"
+    email:
+      ["telemetry-alerts@mozilla.com", "bewu@mozilla.com", "frank@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -111,8 +123,8 @@ bqetl_addons:
   schedule_interval: 0 3 * * *
   default_args:
     owner: bmiroglio@mozilla.com
-    start_date: '2018-11-27'
-    email: ['telemetry-alerts@mozilla.com', 'bmiroglio@mozilla.com']
+    start_date: "2018-11-27"
+    email: ["telemetry-alerts@mozilla.com", "bmiroglio@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -120,8 +132,8 @@ bqetl_devtools:
   schedule_interval: 0 3 * * *
   default_args:
     owner: jklukas@mozilla.com
-    start_date: '2018-11-27'
-    email: ['telemetry-alerts@mozilla.com', 'jklukas@mozilla.com']
+    start_date: "2018-11-27"
+    email: ["telemetry-alerts@mozilla.com", "jklukas@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -129,8 +141,14 @@ bqetl_main_summary:
   schedule_interval: 0 2 * * *
   default_args:
     owner: dthorn@mozilla.com
-    start_date: '2018-11-27'
-    email: ['telemetry-alerts@mozilla.com', 'dthorn@mozilla.com', 'jklukas@mozilla.com', 'frank@mozilla.com']
+    start_date: "2018-11-27"
+    email:
+      [
+        "telemetry-alerts@mozilla.com",
+        "dthorn@mozilla.com",
+        "jklukas@mozilla.com",
+        "frank@mozilla.com",
+      ]
     retries: 2
     retry_delay: 30m
 
@@ -138,8 +156,8 @@ bqetl_experiments_daily:
   schedule_interval: 0 3 * * *
   default_args:
     owner: ssuh@mozilla.com
-    start_date: '2018-11-27'
-    email: ['telemetry-alerts@mozilla.com', 'ssuh@mozilla.com']
+    start_date: "2018-11-27"
+    email: ["telemetry-alerts@mozilla.com", "ssuh@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -147,8 +165,8 @@ bqetl_document_sample:
   schedule_interval: daily
   default_args:
     owner: amiyaguchi@mozilla.com
-    start_date: '2020-02-17'
-    email: ['telemetry-alerts@mozilla.com', 'amiyaguchi@mozilla.com']
+    start_date: "2020-02-17"
+    email: ["telemetry-alerts@mozilla.com", "amiyaguchi@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -156,19 +174,19 @@ bqetl_asn_aggregates:
   schedule_interval: 0 2 * * *
   default_args:
     owner: ascholtz@mozilla.com
-    start_date: '2020-04-05'
-    email: ['ascholtz@mozilla.com', 'tdsmith@mozilla.com']
+    start_date: "2020-04-05"
+    email: ["ascholtz@mozilla.com", "tdsmith@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
 # DAG for exporting query data marked as public to GCS
-# queries should not be explicitly assigned to this DAG (it's done automatically)
+# queries should not be explicitly assigned to this DAG (done automatically)
 bqetl_public_data_json:
   schedule_interval: 0 4 * * *
   default_args:
     owner: ascholtz@mozilla.com
-    start_date: '2020-04-14'
-    email: ['telemetry-alerts@mozilla.com', 'ascholtz@mozilla.com']
+    start_date: "2020-04-14"
+    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -177,8 +195,8 @@ bqetl_internet_outages:
   schedule_interval: 0 3 * * *
   default_args:
     owner: aplacitelli@mozilla.com
-    start_date: '2020-01-01'
-    email: ['aplacitelli@mozilla.com', 'sguha@mozilla.com']
+    start_date: "2020-01-01"
+    email: ["aplacitelli@mozilla.com", "sguha@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -186,8 +204,8 @@ bqetl_deletion_request_volume:
   schedule_interval: 0 1 * * *
   default_args:
     owner: dthorn@mozilla.com
-    start_date: '2020-06-29'
-    email: ['telemetry-alerts@mozilla.com', 'dthorn@mozilla.com']
+    start_date: "2020-06-29"
+    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -195,8 +213,8 @@ bqetl_fenix_event_rollup:
   schedule_interval: 0 2 * * *
   default_args:
     owner: frank@mozilla.com
-    start_date: '2020-09-09'
-    email: ['frank@mozilla.com']
+    start_date: "2020-09-09"
+    email: ["frank@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -204,8 +222,8 @@ bqetl_account_ecosystem:
   schedule_interval: 0 2 * * *
   default_args:
     owner: jklukas@mozilla.com
-    start_date: '2020-09-17'
-    email: ['jklukas@mozilla.com']
+    start_date: "2020-09-17"
+    email: ["jklukas@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -213,8 +231,8 @@ bqetl_stripe:
   schedule_interval: daily
   default_args:
     owner: dthorn@mozilla.com
-    start_date: '2020-10-05'
-    email: ['telemetry-alerts@mozilla.com', 'dthorn@mozilla.com']
+    start_date: "2020-10-05"
+    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
     retries: 2
     retry_delay: 5m
 
@@ -222,8 +240,8 @@ bqetl_mozilla_vpn:
   schedule_interval: daily
   default_args:
     owner: dthorn@mozilla.com
-    start_date: '2020-10-08'
-    email: ['telemetry-alerts@mozilla.com', 'dthorn@mozilla.com']
+    start_date: "2020-10-08"
+    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -231,12 +249,22 @@ bqetl_org_mozilla_fenix_derived:
   default_args:
     depends_on_past: false
     email:
-    - amiyaguchi@mozilla.com
-    - telemetry-alerts@mozilla.com
+      - amiyaguchi@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     owner: amiyaguchi@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2020-10-18'
+    start_date: "2020-10-18"
   schedule_interval: daily
+
+bqetl_google_analytics_derived:
+  # GA export runs at 15:00 UTC so there's an effectively 2-day delay on ETL
+  schedule_interval: 0 23 * * *
+  default_args:
+    owner: bewu@mozilla.com
+    email: ['bewu@mozilla.com']
+    start_date: '2020-10-31'
+    retries: 2
+    retry_delay: 30m

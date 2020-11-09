@@ -1,9 +1,11 @@
+---
 friendly_name: Ecosystem Client ID Deletion
 description: >
-  Provides ecosystem_client_id values that have appeared in a deletion-request ping.
+  Provides ecosystem_client_id values that have appeared in a
+  deletion-request ping.
 
-  Also includes the hashed version of the ID to enable deletion of rows in derived
-  tables containing the hash.
+  Also includes the hashed version of the ID to enable deletion
+  of rows in derived tables containing the hash.
 owners:
   - jklukas@mozilla.com
 labels:

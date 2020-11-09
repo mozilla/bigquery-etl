@@ -1,0 +1,9 @@
+description: Aggregated download counts for www.mozilla.org
+friendly_name: WWW Site Downloads
+labels:
+  incremental: true
+  schedule: daily
+owners:
+  - bewu@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived

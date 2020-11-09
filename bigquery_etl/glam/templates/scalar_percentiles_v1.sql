@@ -1,5 +1,4 @@
 {{ header }}
-{% include "scalar_percentiles_v1.udf.sql" %}
 {% from 'macros.sql' import enumerate_table_combinations %}
 
 WITH flat_clients_scalar_aggregates AS (
@@ -34,6 +33,6 @@ percentiles AS (
         client_agg_type
 )
 SELECT
-  * REPLACE (udf_get_values([5.0, 25.0, 50.0, 75.0, 95.0], aggregates) AS aggregates)
+  * REPLACE (mozfun.glam.map_from_array_offsets([5.0, 25.0, 50.0, 75.0, 95.0], aggregates) AS aggregates)
 FROM
   percentiles

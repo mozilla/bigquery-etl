@@ -1,8 +1,48 @@
 {{ header }}
-{% if is_scalar %}
-    {% include "probe_counts_v1.udf.scalar.sql" %}
-{% else %}
-    {% include "probe_counts_v1.udf.histogram.sql" %}
+{% if not is_scalar %}
+
+CREATE TEMP FUNCTION udf_get_buckets(
+  metric_type STRING,
+  range_min INT64,
+  range_max INT64,
+  bucket_count INT64
+)
+RETURNS ARRAY<INT64> AS (
+  (
+    WITH buckets AS (
+      SELECT
+        CASE
+        WHEN
+          metric_type = 'timing_distribution'
+        THEN
+          -- https://mozilla.github.io/glean/book/user/metrics/timing_distribution.html
+          mozfun.glam.histogram_generate_functional_buckets(2, 8, range_max)
+        WHEN
+          metric_type = 'memory_distribution'
+        THEN
+          -- https://mozilla.github.io/glean/book/user/metrics/memory_distribution.html
+          mozfun.glam.histogram_generate_functional_buckets(2, 16, range_max)
+        WHEN
+          metric_type = 'custom_distribution_exponential'
+        THEN
+          mozfun.glam.histogram_generate_exponential_buckets(range_min, range_max, bucket_count)
+        WHEN
+          metric_type = 'custom_distribution_linear'
+        THEN
+          mozfun.glam.histogram_generate_linear_buckets(range_min, range_max, bucket_count)
+        ELSE
+          []
+        END
+        AS arr
+    )
+    SELECT
+      ARRAY_AGG(CAST(item AS INT64))
+    FROM
+      buckets
+    CROSS JOIN
+      UNNEST(arr) AS item
+  )
+);
 {% endif %}
 
 SELECT
@@ -12,42 +52,37 @@ SELECT
         client_agg_type,
         agg_type,
         SUM(count) AS total_users,
-        CASE
-        WHEN
-            metric_type IN ({{ scalar_metric_types }})
-        THEN
-            udf_fill_buckets(
-                udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-                udf_get_buckets()
-            )
-        WHEN
-            metric_type in ({{ boolean_metric_types }})
-        THEN
-            udf_fill_buckets(
-                udf_dedupe_map_sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
-                ['always', 'never', 'sometimes']
-            )
-        END
+        mozfun.glam.histogram_fill_buckets_dirichlet(
+            mozfun.map.sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
+            CASE
+            WHEN metric_type IN ({{ scalar_metric_types }}) THEN
+              ARRAY(SELECT FORMAT("%.*f", 2, bucket) FROM UNNEST(
+                mozfun.glam.histogram_generate_scalar_buckets(range_min, range_max, bucket_count)
+              ) AS bucket ORDER BY bucket)
+            WHEN metric_type in ({{ boolean_metric_types }}) THEN
+              ['always', 'never', 'sometimes']
+            END,
+            SUM(count)
+        )
         AS aggregates
     {% else %}
         agg_type AS client_agg_type,
         'histogram' as agg_type,
         CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
-        udf_fill_buckets(
-            udf_dedupe_map_sum(ARRAY_AGG(record)),
-            udf_to_string_arr(
+        mozfun.glam.histogram_fill_buckets_dirichlet(
+            mozfun.map.sum(ARRAY_AGG(record)),
+            mozfun.glam.histogram_buckets_cast_string_array(
                 udf_get_buckets(metric_type, range_min, range_max, bucket_count)
-            )
+            ),
+            CAST(ROUND(SUM(record.value)) AS INT64)
         ) AS aggregates
     {% endif %}
 FROM
     {{ source_table }}
 GROUP BY
     {{ attributes }},
-    {% if not is_scalar %}
-        range_min,
-        range_max,
-        bucket_count,
-    {% endif %}
+    range_min,
+    range_max,
+    bucket_count,
     {{ aggregate_attributes }},
     {{ aggregate_grouping }}

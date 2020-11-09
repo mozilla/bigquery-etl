@@ -8,9 +8,8 @@
   normalized_channel: release
   normalized_country_code: US
   normalized_os: Android
-  normalized_os_version: '29'
+  normalized_os_version: "29"
   sample_id: 1
   searches:
-  - key: engine1.actionbar
-    value: '10'
-
+    - key: engine1.actionbar
+      value: "10"

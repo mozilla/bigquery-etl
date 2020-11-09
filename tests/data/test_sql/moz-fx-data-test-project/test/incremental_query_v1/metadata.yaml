@@ -1,3 +1,4 @@
+---
 friendly_name: "Test table for an incremental query"
 description: "Test table for an incremental query"
 owners:
@@ -7,7 +8,8 @@ labels:
   public_json: true
   incremental: true
   incremental_export: true
-  review_bug: 123456
+  review_bugs: 
+   - 123456
 scheduling:
   dag_name: "bqetl_events"
   depends_on_past: false

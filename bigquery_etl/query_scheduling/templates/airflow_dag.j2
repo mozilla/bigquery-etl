@@ -13,7 +13,18 @@ default_args = {{
 
 with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}) as dag:
 {% for task in tasks | sort(attribute='task_name') %}
-    {% if not task.is_python_script -%}
+    {% if task.is_python_script -%}
+        {{ task.task_name }} = gke_command(
+            task_id='{{ task.task_name }}',
+            command=[
+                'python',
+                'sql/{{ task.project }}/{{ task.dataset }}/{{ task.table }}_{{ task.version }}/query.py',
+            ] + {{ task.arguments }},
+            docker_image='mozilla/bigquery-etl:latest',
+            owner='{{ task.owner }}',
+            email={{ task.email | sort }},
+        )
+    {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
             task_id='{{ task.task_name }}',
             destination_table={%+ if task.destination_table -%}'{{ task.destination_table }}'
@@ -51,17 +62,6 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             allow_field_addition_on_date={{ task.allow_field_addition_on_date | format_repr }},
             {%+ endif -%}
             dag=dag,
-        )
-    {%+ else -%}
-        {{ task.task_name }} = gke_command(
-            task_id='{{ task.task_name }}',
-            command=[
-                'python',
-                'sql/{{ task.project }}/{{ task.dataset }}/{{ task.table }}_{{ task.version }}/query.py',
-            ] + {{ task.arguments }},
-            docker_image='mozilla/bigquery-etl:latest',
-            owner='{{ task.owner }}',
-            email={{ task.email | sort }},
         )
     {% endif -%}
 {% endfor -%}

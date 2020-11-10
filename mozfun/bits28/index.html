@@ -122,6 +122,10 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#retention-udf" class="nav-link">retention (UDF)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
             <li class="nav-item" data-level="2"><a href="#from_string-udf" class="nav-link">from_string (UDF)</a>
               <ul class="nav flex-column">
               </ul>
@@ -130,15 +134,11 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#days_since_seen-udf" class="nav-link">days_since_seen (UDF)</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
             <li class="nav-item" data-level="2"><a href="#range-udf" class="nav-link">range (UDF)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#retention-udf" class="nav-link">retention (UDF)</a>
+            <li class="nav-item" data-level="2"><a href="#days_since_seen-udf" class="nav-link">days_since_seen (UDF)</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -171,6 +171,8 @@ was active and each 0 indicating a day where the client was inactive.</p>
 <p>Convert a bit pattern into an array of the dates is represents.</p>
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<h2 id="retention-udf">retention (UDF)</h2>
+<p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p>
 <h2 id="from_string-udf">from_string (UDF)</h2>
 <p>Convert a string representing individual bits into an INT64.</p>
 <p>Implementation based on <a href="https://stackoverflow.com/a/51600210/1260237">https://stackoverflow.com/a/51600210/1260237</a></p>
@@ -184,17 +186,6 @@ the number of bits to consider, counting right from the bit at
 <code>start_offset</code>.</p>
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
-<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
-<p>To determine this position, we take a bitwise AND of the bit pattern and
-its complement, then we determine the position of the bit via base-2
-logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow.com/a/42747608/1260237</a></p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<pre><code class="language-sql">SELECT
-  mozfun.bits28.days_since_seen(18)
--- &gt;&gt; 1
-</code></pre>
 <h2 id="range-udf">range (UDF)</h2>
 <p>Return an INT64 representing a range of bits from a source bit pattern.</p>
 <p>The start_offset must be zero or a negative number indicating an offset from
@@ -212,8 +203,17 @@ FROM
 WHERE
   submission_date &gt; '2020-01-01'
 </code></pre>
-<h2 id="retention-udf">retention (UDF)</h2>
-<p>Return a nested struct providing booleans indicating whether a given client was active various time periods based on the passed bit pattern.</p>
+<h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
+<p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
+<p>To determine this position, we take a bitwise AND of the bit pattern and
+its complement, then we determine the position of the bit via base-2
+logarithm; see <a href="https://stackoverflow.com/a/42747608/1260237">https://stackoverflow.com/a/42747608/1260237</a></p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<pre><code class="language-sql">SELECT
+  mozfun.bits28.days_since_seen(18)
+-- &gt;&gt; 1
+</code></pre>
 <h2 id="to_string-udf">to_string (UDF)</h2>
 <p>Convert an INT64 field into a 28-character string representing
 the individual bits.</p>

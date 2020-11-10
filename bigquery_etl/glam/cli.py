@@ -84,6 +84,36 @@ def list_daily(project, dataset):
 @click.argument("start-date", type=str)
 @click.argument("end-date", type=str)
 @click.option("--dataset", type=str, default="glam_etl_dev")
+def backfill_daily(app_id, start_date, end_date, dataset):
+    """Backfill the daily tables."""
+    _check_root()
+    run(
+        "script/glam/generate_glean_sql",
+        cwd=ROOT,
+        env={**os.environ, **dict(PRODUCT=app_id, STAGE="daily")},
+    )
+    run(
+        "script/glam/backfill_glean",
+        cwd=ROOT,
+        env={
+            **os.environ,
+            **dict(
+                DATASET=dataset,
+                PRODUCT=app_id,
+                STAGE="daily",
+                START_DATE=start_date,
+                END_DATE=end_date,
+                RUN_EXPORT="false",
+            ),
+        },
+    )
+
+
+@glean.command()
+@click.argument("app-id", type=str)
+@click.argument("start-date", type=str)
+@click.argument("end-date", type=str)
+@click.option("--dataset", type=str, default="glam_etl_dev")
 def backfill_incremental(app_id, start_date, end_date, dataset):
     """Backfill the incremental tables using existing daily tables.
 

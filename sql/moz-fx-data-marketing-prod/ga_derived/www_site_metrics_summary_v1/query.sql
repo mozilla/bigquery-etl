@@ -119,6 +119,6 @@ SELECT
 FROM
   site_data
 LEFT JOIN
-  `moz-fx-data-shared-prod.static.standardized_country_names` AS standardized_country_list
+  `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS standardized_country_list
 ON
   site_data.country = standardized_country_list.raw_country

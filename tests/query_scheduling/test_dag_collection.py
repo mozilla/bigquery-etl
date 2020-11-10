@@ -315,7 +315,9 @@ class TestDagCollection:
 
         dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
-        expected = (TEST_DIR / "data" / "dags" / "python_script_test_dag").read_text().strip()
+        expected = (
+            (TEST_DIR / "data" / "dags" / "python_script_test_dag").read_text().strip()
+        )
 
         assert result == expected
 

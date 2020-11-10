@@ -105,7 +105,7 @@ with DAG(
         email=["bewu@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        query_file_path="sql/moz-fx-data-marketing-prod/ga_derived/www_empty_check_v1/query.sql",
+        query_file_path="sql/moz-fx-data-marketing-prod/ga_derived/www_site_empty_check_v1/query.sql",
         dag=dag,
     )
 

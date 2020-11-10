@@ -1,0 +1,1 @@
+One-to-many mapping from country codes or non-standard names to a standardized country name.

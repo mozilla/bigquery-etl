@@ -1,0 +1,12 @@
+---
+friendly_name: "Test table for a Python script query"
+description: "Test table for a Python script query"
+owners:
+  - test@mozilla.com
+labels:
+  schedule: daily
+  incremental: false
+scheduling:
+  dag_name: "bqetl_core"
+  depends_on_past: true
+  arguments: ["--date", "{{ds}}"]

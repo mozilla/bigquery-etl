@@ -77,6 +77,29 @@ class TestTask:
         assert task.multipart
         assert task.query_file_path == os.path.dirname(query_file)
 
+    def test_of_python_script(self):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        task = Task.of_python_script(query_file)
+
+        assert task.query_file == str(query_file)
+        assert task.dataset == "test"
+        assert task.project == "moz-fx-data-test-project"
+        assert task.table == "incremental_query"
+        assert task.version == "v1"
+        assert task.task_name == "test__incremental_query__v1"
+        assert task.dag_name == "bqetl_events"
+        assert task.depends_on_past is False
+        assert task.is_python_script
+
     def test_of_non_existing_query(self):
         with pytest.raises(FileNotFoundError):
             Task.of_query("non_existing_query/query.sql")

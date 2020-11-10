@@ -223,7 +223,6 @@ class TestDagCollection:
                 }
             ).with_tasks(tasks)
 
-    @pytest.mark.integration
     @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_to_airflow(self, tmp_path):
         query_file = (
@@ -270,6 +269,53 @@ class TestDagCollection:
         dags.to_airflow_dags(tmp_path)
         result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
         expected = (TEST_DIR / "data" / "dags" / "simple_test_dag").read_text().strip()
+        assert result == expected
+
+    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
+    def test_python_script_to_airflow(self, tmp_path):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "python_script_query_v1"
+            / "query.py"
+        )
+
+        metadata = Metadata(
+            "test",
+            "test",
+            ["test@example.com"],
+            {},
+            {
+                "dag_name": "bqetl_test_dag",
+                "depends_on_past": True,
+                "arguments": ["--date", "{{ds}}"],
+            },
+        )
+
+        tasks = [Task.of_python_script(query_file, metadata)]
+
+        default_args = {
+            "depends_on_past": False,
+            "owner": "test@example.org",
+            "email": ["test@example.org"],
+            "start_date": "2020-01-01",
+            "retry_delay": "1h",
+        }
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_test_dag": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                }
+            }
+        ).with_tasks(tasks)
+
+        dags.to_airflow_dags(tmp_path)
+        result = (tmp_path / "bqetl_test_dag.py").read_text().strip()
+        expected = (TEST_DIR / "data" / "dags" / "python_script_test_dag").read_text().strip()
 
         assert result == expected
 

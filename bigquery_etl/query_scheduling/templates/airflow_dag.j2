@@ -57,7 +57,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             task_id='{{ task.task_name }}',
             command=[
                 'python',
-                '{{ task.query_file_path }}',
+                'sql/{{ task.project }}/{{ task.dataset }}/{{ task.table }}_{{ task.version }}/query.py',
             ] + {{ task.arguments }},
             docker_image='mozilla/bigquery-etl:latest',
             owner='{{ task.owner }}',

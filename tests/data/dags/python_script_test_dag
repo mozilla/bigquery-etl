@@ -20,15 +20,14 @@ with DAG(
     "bqetl_test_dag", default_args=default_args, schedule_interval="@daily"
 ) as dag:
 
-    test__non_incremental_query__v1 = bigquery_etl_query(
-        task_id="test__non_incremental_query__v1",
-        destination_table="non_incremental_query_v1",
-        dataset_id="test",
-        project_id="moz-fx-data-test-project",
+    test__python_script_query__v1 = gke_command(
+        task_id="test__python_script_query__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-test-project/test/python_script_query_v1/query.py",
+        ]
+        + ["--date", "{{ds}}"],
+        docker_image="mozilla/bigquery-etl:latest",
         owner="test@example.com",
         email=["test@example.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        arguments=["--append_table"],
-        dag=dag,
     )

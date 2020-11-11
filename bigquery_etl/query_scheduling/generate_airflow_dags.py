@@ -15,6 +15,7 @@ DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"
 QUERY_PART_FILE = "part1.sql"
 SCRIPT_FILE = "script.sql"
+PYTHON_SCRIPT_FILE = "query.py"
 DEFAULT_DAGS_DIR = "dags"
 TELEMETRY_AIRFLOW_GITHUB = "https://github.com/mozilla/telemetry-airflow.git"
 
@@ -70,6 +71,11 @@ def get_dags(project_id, dags_config):
                     elif SCRIPT_FILE in files:
                         query_file = os.path.join(root, SCRIPT_FILE)
                         task = Task.of_script(query_file, dag_collection=dag_collection)
+                    elif PYTHON_SCRIPT_FILE in files:
+                        query_file = os.path.join(root, PYTHON_SCRIPT_FILE)
+                        task = Task.of_python_script(
+                            query_file, dag_collection=dag_collection
+                        )
                     else:
                         continue
                 except FileNotFoundError:

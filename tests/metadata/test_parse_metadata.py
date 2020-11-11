@@ -90,7 +90,7 @@ class TestParseMetadata(object):
         with pytest.raises(FileNotFoundError):
             Metadata.from_file(metadata_file)
 
-    def test_of_sql_file(self):
+    def test_of_query_file(self):
         metadata_file = (
             TEST_DIR
             / "data"
@@ -100,13 +100,13 @@ class TestParseMetadata(object):
             / "non_incremental_query_v1"
             / "query.sql"
         )
-        metadata = Metadata.of_sql_file(metadata_file)
+        metadata = Metadata.of_query_file(metadata_file)
 
         assert metadata.friendly_name == "Test table for a non-incremental query"
         assert metadata.description == "Test table for a non-incremental query"
         assert metadata.review_bugs() == ["1999999", "12121212"]
 
-    def test_of_sql_file_no_metadata(self):
+    def test_of_query_file_no_metadata(self):
         metadata_file = (
             TEST_DIR
             / "data"
@@ -117,7 +117,7 @@ class TestParseMetadata(object):
             / "query.sql"
         )
         with pytest.raises(FileNotFoundError):
-            Metadata.of_sql_file(metadata_file)
+            Metadata.of_query_file(metadata_file)
 
     def test_of_table(self):
         metadata = Metadata.of_table(

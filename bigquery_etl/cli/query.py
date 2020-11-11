@@ -246,7 +246,7 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 
     for query_file in query_files:
         try:
-            metadata = Metadata.of_sql_file(query_file)
+            metadata = Metadata.of_query_file(query_file)
         except FileNotFoundError:
             click.echo(f"Cannot schedule {query_file}. No metadata.yaml found.")
             continue
@@ -326,7 +326,7 @@ def info(name, sql_dir, project_id, cost, last_updated):
         project = query_file_path.parent.parent.parent.name
 
         try:
-            metadata = Metadata.of_sql_file(query_file)
+            metadata = Metadata.of_query_file(query_file)
         except FileNotFoundError:
             metadata = None
 

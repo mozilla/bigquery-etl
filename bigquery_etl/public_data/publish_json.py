@@ -58,7 +58,7 @@ class JsonPublisher:
         self.date = None
         self.stage_gcs_path = self.gcs_path + "stage/json/"
 
-        self.metadata = Metadata.of_sql_file(self.query_file)
+        self.metadata = Metadata.of_query_file(self.query_file)
 
         # only for incremental exports files are written into separate directories
         # for each date, ignore date parameters for non-incremental exports
@@ -311,7 +311,7 @@ def main():
     args, query_arguments = parser.parse_known_args()
 
     try:
-        metadata = Metadata.of_sql_file(args.query_file)
+        metadata = Metadata.of_query_file(args.query_file)
     except FileNotFoundError:
         print("No metadata file for: {}".format(args.query_file))
         return

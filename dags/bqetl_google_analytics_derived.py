@@ -44,7 +44,7 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
-        query_file_path="sql/moz-fx-data-marketing-prod/ga_derived/blogs_empty_check_v1/query.sql",
+        sql_file_path="sql/moz-fx-data-marketing-prod/ga_derived/blogs_empty_check_v1/query.sql",
         dag=dag,
     )
 
@@ -105,7 +105,7 @@ with DAG(
         email=["bewu@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        query_file_path="sql/moz-fx-data-marketing-prod/ga_derived/www_site_empty_check_v1/query.sql",
+        sql_file_path="sql/moz-fx-data-marketing-prod/ga_derived/www_site_empty_check_v1/query.sql",
         dag=dag,
     )
 

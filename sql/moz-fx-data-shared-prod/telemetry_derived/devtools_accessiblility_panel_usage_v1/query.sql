@@ -17,6 +17,9 @@ WITH accessibility_panel_client_days AS (
       payload.processes.parent.scalars.devtools_accessibility_node_inspected_count
     ) AS node_inspected_count,
     SUM(
+      payload.processes.parent.scalars.devtools_accessibility_tabbing_order_activated
+    ) AS tabbing_order_activated_count,
+    SUM(
       mozfun.map.get_key(
         payload.processes.parent.keyed_scalars.devtools_accessibility_select_accessible_for_node,
         "browser-context-menu"
@@ -107,6 +110,11 @@ SELECT
   SAFE_DIVIDE(SUM(context_menu_opened_count), COUNT(*)) AS context_menu_opened_per_client_day,
   SAFE_DIVIDE(SUM(print_to_json_context_count), COUNT(*)) AS print_to_json_context_per_client_day,
   COUNTIF(print_to_json_context_count > 0) AS print_to_json_context_users,
+  SAFE_DIVIDE(
+    SUM(tabbing_order_activated_count),
+    COUNT(*)
+  ) AS tabbing_order_activated_per_client_day,
+  COUNTIF(tabbing_order_activated_count > 0) AS tabbing_order_activated_users,
   SAFE_DIVIDE(SUM(node_inspected_count), COUNT(*)) AS node_inspected_per_client_day,
   COUNTIF(node_inspected_count > 0) AS node_inspected_users,
   COUNTIF(picker_used_count > 0) AS picker_users,

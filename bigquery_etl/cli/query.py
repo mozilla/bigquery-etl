@@ -59,12 +59,16 @@ sql_dir_option = click.option(
     callback=is_valid_dir,
 )
 
-project_id_option = click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project ID",
-    default=None,
-)
+
+def project_id_option(default=None):
+    """Generate a project-id option, with optional default."""
+    return click.option(
+        "--project-id",
+        "--project_id",
+        help="GCP project ID",
+        default=default,
+        callback=is_valid_project,
+    )
 
 
 @click.group(help="Commands for managing queries.")
@@ -81,13 +85,7 @@ def query():
 )
 @click.argument("name")
 @sql_dir_option
-@click.option(
-    "--project-id",
-    "--project_id",
-    help="GCP project ID",
-    default="moz-fx-data-shared-prod",
-    callback=is_valid_project,
-)
+@project_id_option("moz-fx-data-shared-prod")
 @click.option(
     "--owner",
     "-o",
@@ -205,7 +203,7 @@ def create(name, sql_dir, project_id, owner, init):
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option(
     "--dag",
     "-d",
@@ -305,7 +303,7 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 )
 @click.argument("name", required=False)
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option("--cost", help="Include information about query costs", is_flag=True)
 @click.option(
     "--last_updated",
@@ -393,7 +391,7 @@ def info(name, sql_dir, project_id, cost, last_updated):
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option(
     "--start_date",
     "--start-date",
@@ -465,7 +463,7 @@ def backfill(ctx, name, sql_dir, project_id, start_date, end_date, exclude, dry_
 )
 @click.argument("name", required=False)
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option(
     "--use_cloud_function",
     "--use-cloud-function",
@@ -503,7 +501,7 @@ def validate(ctx, name, sql_dir, project_id, use_cloud_function):
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option
+@project_id_option()
 @click.option(
     "--dry_run/--no_dry_run",
     help="Dry run the backfill",

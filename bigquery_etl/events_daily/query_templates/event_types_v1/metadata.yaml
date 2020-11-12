@@ -1,8 +1,7 @@
 ---
-friendly_name: '{{ app_id }} Event Types'
+friendly_name: {{ app_id }} Event Types
 description: >
-  Retrieve the set of [events, event_properties]
-  and record them in a table.
+  A materialized view of the most recent day of event_types data
 owners:
   - frank@mozilla.com
 labels:
@@ -11,5 +10,6 @@ labels:
   schedule: daily
 scheduling:
   dag_name: {{ dag_name }}
-  depends_on_past: true
-
+  date_partition_parameter: null
+  referenced_tables: [['moz-fx-data-shared-prod', '{{ app_id }}_derived',
+                       'event_types_history_v1']]

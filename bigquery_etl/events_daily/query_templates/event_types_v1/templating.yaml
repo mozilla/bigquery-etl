@@ -1,0 +1,14 @@
+org_mozilla_firefox_derived:
+  glean: True
+  app_id: org_mozilla_firefox
+  start_date: 2020-01-01
+  skipped_properties:
+    - time_ms
+  max_property_values: 1000
+  dag_name: bqetl_fenix_event_rollup
+telemetry_derived:
+  app_id: telemetry
+  source_table: telemetry.deanonymized_events
+  start_date: 2020-10-01
+  max_property_values: 1000
+  dag_name: bqetl_event_rollup

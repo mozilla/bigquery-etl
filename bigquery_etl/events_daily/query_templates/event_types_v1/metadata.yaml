@@ -1,0 +1,15 @@
+---
+friendly_name: '{{ app_id }} Event Types'
+description: >
+  Retrieve the set of [events, event_properties]
+  and record them in a table.
+owners:
+  - frank@mozilla.com
+labels:
+  application: {{ app_id }}
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: {{ dag_name }}
+  depends_on_past: true
+

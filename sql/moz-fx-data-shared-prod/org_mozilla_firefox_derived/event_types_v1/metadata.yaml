@@ -1,11 +1,12 @@
 ---
-friendly_name: Firefox Android Release Event Types
-description: Retrieve the set of [events, event_properties]
- and record them in a table.
+friendly_name: 'org_mozilla_firefox Event Types'
+description: >
+  Retrieve the set of [events, event_properties]
+  and record them in a table.
 owners:
   - frank@mozilla.com
 labels:
-  application: firefox-android
+  application: org_mozilla_firefox
   incremental: false
   schedule: daily
 # TODO: Uncomment this section to reschedule once logic is fixed.

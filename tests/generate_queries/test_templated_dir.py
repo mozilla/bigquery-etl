@@ -1,17 +1,17 @@
 import os
 import pytest
 
-from bigquery_etl.events_daily.generate_queries import QueryDir, Template
+from bigquery_etl.events_daily.generate_queries import TemplatedDir, Template
 from pathlib import Path
 
 
 BASE_DIR = Path(os.path.dirname(__file__)).parent
 
 
-class TestQueryDir:
+class TestTemplatedDir:
     @pytest.fixture
     def query_dir(self):
-        return QueryDir("event_types", Path(BASE_DIR / "templates" / "event_types"))
+        return TemplatedDir("event_types", Path(BASE_DIR / "templates" / "event_types"))
 
     def test_get_datasets(self, query_dir):
         assert query_dir.get_datasets(query_dir.get_args()) == [

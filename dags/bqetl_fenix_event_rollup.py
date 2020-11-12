@@ -35,6 +35,32 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
+    org_mozilla_firefox__event_types_update__v1 = bigquery_etl_query(
+        task_id="org_mozilla_firefox__event_types_update__v1",
+        destination_table=None,
+        dataset_id="org_mozilla_firefox",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        parameters=["submission_date:DATE:"],
+        sql_file_path="sql/moz-fx-data-shared-prod/org_mozilla_firefox /event_types/query.sql",
+        dag=dag,
+    )
+
+    org_mozilla_firefox_derived__event_types__v1 = bigquery_etl_query(
+        task_id="org_mozilla_firefox_derived__event_types__v1",
+        destination_table="event_types_v1",
+        dataset_id="org_mozilla_firefox_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        dag=dag,
+    )
+
     org_mozilla_firefox_derived__events_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_firefox_derived__events_daily__v1",
         destination_table="events_daily_v1",
@@ -45,6 +71,10 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
+    )
+
+    org_mozilla_firefox__event_types_update__v1.set_upstream(
+        org_mozilla_firefox_derived__event_types__v1
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
@@ -58,5 +88,5 @@ with DAG(
     )
 
     org_mozilla_firefox_derived__events_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        org_mozilla_firefox_derived__event_types__v1
     )

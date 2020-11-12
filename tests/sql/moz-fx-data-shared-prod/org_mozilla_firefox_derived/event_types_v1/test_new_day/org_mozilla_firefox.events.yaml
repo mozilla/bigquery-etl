@@ -1,5 +1,7 @@
 ---
 - submission_timestamp: "2020-01-03 00:00:00"
+  ping_info:
+    parsed_start_time: '2020-01-02 23:59:00'
   events:
     - timestamp: 1000
       name: new_event_no_props

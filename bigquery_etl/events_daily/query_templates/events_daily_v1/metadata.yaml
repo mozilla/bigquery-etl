@@ -1,19 +1,19 @@
 ---
-friendly_name: 'org_mozilla_firefox Events Daily'
+friendly_name: '{{ app_id }} Events Daily'
 description: >
   Packed event representation with one-row per-client
 owners:
   - frank@mozilla.com
 labels:
-  application: org_mozilla_firefox
+  application: {{ app_id }}
   schedule: daily
   incremental: true
 scheduling:
-  dag_name: bqetl_fenix_event_rollup
+  dag_name: {{ dag_name }}
   referenced_tables: [
     [
       'moz-fx-data-shared-prod',
-      'org_mozilla_firefox_derived',
+      '{{ app_id }}_derived',
       'event_types_v1'
     ],
   ]

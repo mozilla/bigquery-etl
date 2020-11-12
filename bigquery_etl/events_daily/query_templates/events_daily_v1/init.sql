@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  org_mozilla_firefox_derived.events_daily_v1
+  {{ app_id }}_derived.events_daily_v1
 PARTITION BY
   submission_date
 CLUSTER BY
@@ -13,16 +13,9 @@ SELECT
   CAST(NULL AS INT64) AS sample_id,
   CAST(NULL AS STRING) AS events,
   -- client info
-  CAST(NULL AS STRING) AS android_sdk_version,
-  CAST(NULL AS STRING) AS app_build,
-  CAST(NULL AS STRING) AS app_channel,
-  CAST(NULL AS STRING) AS app_display_version,
-  CAST(NULL AS STRING) AS architecture,
-  CAST(NULL AS STRING) AS device_manufacturer,
-  CAST(NULL AS STRING) AS device_model,
-  CAST(NULL AS STRING) AS first_run_date,
-  CAST(NULL AS STRING) AS telemetry_sdk_build,
-  CAST(NULL AS STRING) AS locale,
+  {% for property in user_properties %}
+    CAST(NULL AS STRING) AS {{ property.dest }},
+  {% endfor %}
   -- metadata
   CAST(NULL AS STRING) AS city,
   CAST(NULL AS STRING) AS country,

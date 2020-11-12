@@ -6,3 +6,4 @@ rules:
   
 ignore: |
   venv/
+  bigquery_etl/events_daily/

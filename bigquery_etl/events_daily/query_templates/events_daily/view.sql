@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.org_mozilla_firefox.events_daily`
+  `moz-fx-data-shared-prod.{{ app_id }}.events_daily`
 AS
 SELECT
   *

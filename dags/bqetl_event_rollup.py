@@ -20,23 +20,33 @@ with DAG(
     "bqetl_event_rollup", default_args=default_args, schedule_interval="0 3 * * *"
 ) as dag:
 
-    telemetry__event_types_update__v1 = bigquery_etl_query(
-        task_id="telemetry__event_types_update__v1",
-        destination_table=None,
+    telemetry__event_types__v1 = bigquery_etl_query(
+        task_id="telemetry__event_types__v1",
+        destination_table="event_types_v1",
         dataset_id="telemetry",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
         email=["frank@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["submission_date:DATE:"],
-        sql_file_path="'sql/moz-fx-data-shared-prod/telemetry/event_types/query.sql'\n",
         dag=dag,
     )
 
     telemetry_derived__event_types__v1 = bigquery_etl_query(
         task_id="telemetry_derived__event_types__v1",
         destination_table="event_types_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        dag=dag,
+    )
+
+    telemetry_derived__event_types_history__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__event_types_history__v1",
+        destination_table="event_types_history_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
@@ -58,7 +68,7 @@ with DAG(
         dag=dag,
     )
 
-    telemetry__event_types_update__v1.set_upstream(telemetry_derived__event_types__v1)
+    telemetry__event_types__v1.set_upstream(telemetry_derived__event_types_history__v1)
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
@@ -71,5 +81,9 @@ with DAG(
     )
 
     telemetry_derived__event_types__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    telemetry_derived__event_types_history__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
 
     telemetry_derived__events_daily__v1.set_upstream(telemetry_derived__event_types__v1)

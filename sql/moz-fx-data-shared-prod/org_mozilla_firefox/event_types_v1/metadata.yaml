@@ -1,6 +1,7 @@
 ---
 friendly_name: org_mozilla_firefox Event Types
-description: Recreate a view on the most recent data from event_types_v1
+description: >
+  A materialized view of the most recent day of event_types data
 owners:
   - frank@mozilla.com
 labels:
@@ -9,8 +10,6 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_fenix_event_rollup
-  destination_table: null
-  query_file_path: 'sql/moz-fx-data-shared-prod/org_mozilla_firefox/event_types/query.sql'
+  date_partition_parameter: null
   referenced_tables: [['moz-fx-data-shared-prod', 'org_mozilla_firefox_derived',
-                       'event_types_v1']]
-  parameters: ['submission_date:DATE:']
+                       'event_types_history_v1']]

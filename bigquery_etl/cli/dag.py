@@ -196,7 +196,7 @@ def remove(name, dags_config, output_dir):
         sys.exit(1)
 
     for task in dag_tbr.tasks:
-        metadata = Metadata.of_sql_file(task.query_file)
+        metadata = Metadata.of_query_file(task.query_file)
         sql_path = Path(os.path.dirname(task.query_file))
         metadata.scheduling = {}
         metadata_file = sql_path / METADATA_FILE

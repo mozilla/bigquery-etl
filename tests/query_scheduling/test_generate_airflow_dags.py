@@ -23,4 +23,4 @@ class TestGenerateAirflowDags(object):
         assert events_dag.tasks[1].depends_on_past is False
 
         core_dag = dags.dag_by_name("bqetl_core")
-        assert len(core_dag.tasks) == 2
+        assert len(core_dag.tasks) == 3

@@ -3,7 +3,7 @@
 from airflow import DAG
 from airflow.operators.sensors import ExternalTaskSensor
 import datetime
-from utils.gcp import bigquery_etl_query
+from utils.gcp import bigquery_etl_query, gke_command
 
 default_args = {
     "owner": "najiang@mozilla.com",

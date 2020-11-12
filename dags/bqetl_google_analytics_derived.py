@@ -3,7 +3,7 @@
 from airflow import DAG
 from airflow.operators.sensors import ExternalTaskSensor
 import datetime
-from utils.gcp import bigquery_etl_query
+from utils.gcp import bigquery_etl_query, gke_command
 
 default_args = {
     "owner": "bewu@mozilla.com",
@@ -105,7 +105,7 @@ with DAG(
         email=["bewu@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-marketing-prod/ga_derived/www_empty_check_v1/query.sql",
+        sql_file_path="sql/moz-fx-data-marketing-prod/ga_derived/www_site_empty_check_v1/query.sql",
         dag=dag,
     )
 

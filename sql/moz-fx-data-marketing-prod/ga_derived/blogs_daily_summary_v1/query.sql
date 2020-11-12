@@ -23,7 +23,7 @@ LEFT JOIN
 USING
   (date, visit_identifier)
 LEFT JOIN
-  `moz-fx-data-shared-prod.static.ga_standardized_country_names` AS standardized_country_list
+  `moz-fx-data-shared-prod.static.third_party_standardized_country_names` AS standardized_country_list
 ON
   sessions_table.country = standardized_country_list.raw_country
 WHERE

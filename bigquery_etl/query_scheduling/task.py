@@ -25,7 +25,7 @@ from bigquery_etl.query_scheduling.utils import (
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(
     r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
-    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql)$"
+    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py)$"
 )
 DEFAULT_DESTINATION_TABLE_STR = "use-default-destination-table"
 
@@ -149,11 +149,12 @@ class Task:
     arguments: List[str] = attr.ib([])
     parameters: List[str] = attr.ib([])
     multipart: bool = attr.ib(False)
-    sql_file_path: Optional[str] = None
+    query_file_path: Optional[str] = None
     priority: Optional[int] = None
     referenced_tables: Optional[List[Tuple[str, str, str]]] = attr.ib(None)
     allow_field_addition_on_date: Optional[str] = attr.ib(None)
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
+    is_python_script: bool = attr.ib(False)
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -210,9 +211,9 @@ class Task:
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
                 self.destination_table = f"{self.table}_{self.version}"
 
-            if self.destination_table is None and self.sql_file_path is None:
+            if self.destination_table is None and self.query_file_path is None:
                 raise ValueError(
-                    "One of destination_table or sql_file_path must be specified"
+                    "One of destination_table or query_file_path must be specified"
                 )
         else:
             raise ValueError(
@@ -232,7 +233,7 @@ class Task:
         """
         converter = cattr.Converter()
         if metadata is None:
-            metadata = Metadata.of_sql_file(query_file)
+            metadata = Metadata.of_query_file(query_file)
 
         dag_name = metadata.scheduling.get("dag_name")
         if dag_name is None:
@@ -283,7 +284,7 @@ class Task:
         """
         task = cls.of_query(query_file, metadata, dag_collection)
         task.multipart = True
-        task.sql_file_path = os.path.dirname(query_file)
+        task.query_file_path = os.path.dirname(query_file)
         return task
 
     @classmethod
@@ -296,8 +297,22 @@ class Task:
         file that might exist alongside the query file.
         """
         task = cls.of_query(query_file, metadata, dag_collection)
-        task.sql_file_path = query_file
+        task.query_file_path = query_file
         task.destination_table = None
+        return task
+
+    @classmethod
+    def of_python_script(cls, query_file, metadata=None, dag_collection=None):
+        """
+        Create a task that schedules the Python script file in Airflow.
+
+        Raises FileNotFoundError if no metadata file exists for query.
+        If `metadata` is set, then it is used instead of the metadata.yaml
+        file that might exist alongside the query file.
+        """
+        task = cls.of_query(query_file, metadata, dag_collection)
+        task.query_file_path = query_file
+        task.is_python_script = True
         return task
 
     def _get_referenced_tables(self):
@@ -316,7 +331,7 @@ class Task:
 
             if self.multipart:
                 # dry_run all files if query is split into multiple parts
-                query_files = glob.glob(self.sql_file_path + "/*.sql")
+                query_files = glob.glob(self.query_file_path + "/*.sql")
 
             for query_file in query_files:
                 referenced_tables = DryRun(query_file).get_referenced_tables()
@@ -339,6 +354,11 @@ class Task:
     def with_dependencies(self, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""
         dependencies = []
+
+        if self.is_python_script:
+            # dry run is not possible for python script queries; skip
+            self.dependencies = dependencies
+            return
 
         for table in self._get_referenced_tables():
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])

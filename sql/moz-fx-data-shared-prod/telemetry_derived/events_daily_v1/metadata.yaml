@@ -1,19 +1,19 @@
 ---
-friendly_name: 'org_mozilla_firefox Events Daily'
+friendly_name: 'telemetry Events Daily'
 description: >
   Packed event representation with one-row per-client
 owners:
   - frank@mozilla.com
 labels:
-  application: org_mozilla_firefox
+  application: telemetry
   schedule: daily
   incremental: true
 scheduling:
-  dag_name: bqetl_fenix_event_rollup
+  dag_name: bqetl_event_rollup
   referenced_tables: [
     [
       'moz-fx-data-shared-prod',
-      'org_mozilla_firefox_derived',
+      'telemetry_derived',
       'event_types_v1'
     ],
   ]

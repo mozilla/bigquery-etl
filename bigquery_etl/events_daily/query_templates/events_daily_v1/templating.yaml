@@ -1,0 +1,47 @@
+org_mozilla_firefox_derived:
+  glean: True
+  app_id: org_mozilla_firefox
+  start_date: 2020-01-01
+  dag_name: bqetl_fenix_event_rollup
+  user_properties:
+    - src: android_sdk_version
+      dest: android_sdk_version
+    - src: app_build
+      dest: app_build
+    - src: app_channel
+      dest: app_channel
+    - src: app_display_version
+      dest: app_display_version
+    - src: architecture
+      dest: architecture
+    - src: device_manufacturer
+      dest: device_manufacturer
+    - src: device_model
+      dest: device_model
+    - src: first_run_date
+      dest: first_run_date
+    - src: telemetry_sdk_build
+      dest: telemetry_sdk_build
+    - src: locale
+      dest: locale
+telemetry_derived:
+  glean: False
+  app_id: telemetry
+  source_table: telemetry.deanonymized_events
+  start_date: 2020-10-01
+  dag_name: bqetl_event_rollup
+  user_properties:
+    - src: application.build_id
+      dest: build_id
+    - src: environment.build.architecture
+      dest: build_architecture
+    - src: environment.profile.creation_date
+      dest: profile_creation_date
+    - src: environment.settings.is_default_browser
+      dest: is_default_browser
+    - src: environment.settings.attribution.source
+      dest: attribution_source
+    - src: metadata.uri.app_version
+      dest: app_version
+    - src: environment.settings.locale
+      dest: locale

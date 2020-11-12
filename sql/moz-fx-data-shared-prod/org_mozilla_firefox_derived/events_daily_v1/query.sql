@@ -1,38 +1,33 @@
-WITH events AS (
+WITH sample AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    timestamp,
-    category,
     name AS event,
-    extra AS event_properties,
-    client_info.* EXCEPT (os, os_version),
-    sample_id,
-    metadata.geo.city,
-    metadata.geo.country,
-    metadata.geo.subdivision1,
-    normalized_channel AS channel,
-    normalized_os AS os,
-    normalized_os_version AS os_version,
+    client_info.*,
     (
       SELECT
         ARRAY_AGG(STRUCT(key, value.branch AS value))
       FROM
         UNNEST(ping_info.experiments)
     ) AS experiments,
+    * EXCEPT (name, client_info)
   FROM
-    org_mozilla_firefox.events e,
-    UNNEST(e.events)
+    org_mozilla_firefox.events e
+  CROSS JOIN
+    UNNEST(e.events) AS event
+),
+events AS (
+  SELECT
+    *
+  FROM
+    sample
   WHERE
-    DATE(submission_timestamp) = @submission_date
-    OR (@submission_date IS NULL AND DATE(submission_timestamp) >= '2020-01-01')
+    submission_date = @submission_date
+    OR (@submission_date IS NULL AND submission_date >= '2020-01-01')
 ),
 joined AS (
   SELECT
-    CONCAT(
-      udf.pack_event_properties(events.event_properties, event_types.event_properties),
-      index
-    ) AS index,
-    events.* EXCEPT (category, event, event_properties)
+    CONCAT(udf.pack_event_properties(events.extra, event_types.event_properties), index) AS index,
+    events.* EXCEPT (category, event, extra)
   FROM
     events
   INNER JOIN
@@ -57,13 +52,13 @@ SELECT
   mozfun.stats.mode_last(ARRAY_AGG(telemetry_sdk_build)) AS telemetry_sdk_build,
   mozfun.stats.mode_last(ARRAY_AGG(locale)) AS locale,
   -- metadata
-  mozfun.stats.mode_last(ARRAY_AGG(city)) AS city,
-  mozfun.stats.mode_last(ARRAY_AGG(country)) AS country,
-  mozfun.stats.mode_last(ARRAY_AGG(subdivision1)) AS subdivision1,
+  mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.city)) AS city,
+  mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.country)) AS country,
+  mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.subdivision1)) AS subdivision1,
   -- normalized fields
-  mozfun.stats.mode_last(ARRAY_AGG(channel)) AS channel,
-  mozfun.stats.mode_last(ARRAY_AGG(os)) AS os,
-  mozfun.stats.mode_last(ARRAY_AGG(os_version)) AS os_version,
+  mozfun.stats.mode_last(ARRAY_AGG(normalized_channel)) AS channel,
+  mozfun.stats.mode_last(ARRAY_AGG(normalized_os)) AS os,
+  mozfun.stats.mode_last(ARRAY_AGG(normalized_os_version)) AS os_version,
   -- ping info
   mozfun.map.mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments
 FROM

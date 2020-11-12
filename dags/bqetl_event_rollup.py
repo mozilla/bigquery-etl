@@ -30,7 +30,7 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         parameters=["submission_date:DATE:"],
-        sql_file_path="sql/moz-fx-data-shared-prod/telemetry /event_types/query.sql",
+        sql_file_path="'sql/moz-fx-data-shared-prod/telemetry/event_types/query.sql'\n",
         dag=dag,
     )
 

@@ -135,8 +135,9 @@ jobs:
     steps:
       - checkout
       - *build
+      # Additional query generation commands may be added here in the future.
       - run:
-          name: Generate Queries
+          name: Generate events_daily Queries
           command: PATH="venv/bin:$PATH" script/generate_events_daily_queries
       - run:
           name: Verify that queries were correctly generated and are up-to-date

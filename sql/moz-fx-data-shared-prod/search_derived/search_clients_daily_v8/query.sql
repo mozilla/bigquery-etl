@@ -25,10 +25,49 @@ WITH overactive AS (
   HAVING
     COUNT(*) > 200000
 ),
-client_experiments AS (
+client_map_sums AS (
   SELECT
     client_id,
     udf.map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_bookmarkmenu)
+    ) AS scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_handoff)
+    ) AS scalar_parent_urlbar_searchmode_handoff_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_keywordoffer)
+    ) AS scalar_parent_urlbar_searchmode_keywordoffer_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_oneoff)
+    ) AS scalar_parent_urlbar_searchmode_oneoff_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_other)
+    ) AS scalar_parent_urlbar_searchmode_other_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_shortcut)
+    ) AS scalar_parent_urlbar_searchmode_shortcut_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabmenu)
+    ) AS scalar_parent_urlbar_searchmode_tabmenu_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch)
+    ) AS scalar_parent_urlbar_searchmode_tabtosearch_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch_onboard)
+    ) AS scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_newtab)
+    ) AS scalar_parent_urlbar_searchmode_topsites_newtab_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_urlbar)
+    ) AS scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_touchbar)
+    ) AS scalar_parent_urlbar_searchmode_touchbar_sum,
+    udf.map_sum(
+      ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_typed)
+    ) AS scalar_parent_urlbar_searchmode_typed_sum
   FROM
     telemetry.main_summary
   LEFT JOIN
@@ -43,7 +82,22 @@ client_experiments AS (
 ),
 augmented AS (
   SELECT
-    * EXCEPT (experiments),
+    * EXCEPT (
+      experiments,
+      scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
+      scalar_parent_urlbar_searchmode_handoff_sum,
+      scalar_parent_urlbar_searchmode_keywordoffer_sum,
+      scalar_parent_urlbar_searchmode_oneoff_sum,
+      scalar_parent_urlbar_searchmode_other_sum,
+      scalar_parent_urlbar_searchmode_shortcut_sum,
+      scalar_parent_urlbar_searchmode_tabmenu_sum,
+      scalar_parent_urlbar_searchmode_tabtosearch_sum,
+      scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
+      scalar_parent_urlbar_searchmode_topsites_newtab_sum,
+      scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
+      scalar_parent_urlbar_searchmode_touchbar_sum,
+      scalar_parent_urlbar_searchmode_typed_sum
+    ),
     ARRAY_CONCAT(
       ARRAY(
         SELECT AS STRUCT
@@ -128,11 +182,63 @@ augmented AS (
     SUM(scalar_parent_browser_engagement_tab_open_event_count) OVER w1 AS tab_open_event_count_sum,
     SUM(active_ticks / (3600 / 5)) OVER w1 AS active_hours_sum,
     SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count,
-    COALESCE(client_experiments.experiments, []) AS experiments,
+    COALESCE(client_map_sums.experiments, []) AS experiments,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_handoff_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_handoff_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_keywordoffer_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_keywordoffer_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_oneoff_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_oneoff_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_other_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_other_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_shortcut_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_shortcut_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_tabmenu_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_tabmenu_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_tabtosearch_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_tabtosearch_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_topsites_newtab_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_topsites_newtab_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_touchbar_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_touchbar_sum,
+    COALESCE(
+      client_map_sums.scalar_parent_urlbar_searchmode_typed_sum,
+      []
+    ) AS scalar_parent_urlbar_searchmode_typed_sum,
   FROM
     telemetry.main_summary
   LEFT JOIN
-    client_experiments
+    client_map_sums
   USING
     (client_id)
   WINDOW
@@ -205,6 +311,19 @@ windowed AS (
     active_hours_sum,
     total_uri_count,
     experiments,
+    scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
+    scalar_parent_urlbar_searchmode_handoff_sum,
+    scalar_parent_urlbar_searchmode_keywordoffer_sum,
+    scalar_parent_urlbar_searchmode_oneoff_sum,
+    scalar_parent_urlbar_searchmode_other_sum,
+    scalar_parent_urlbar_searchmode_shortcut_sum,
+    scalar_parent_urlbar_searchmode_tabmenu_sum,
+    scalar_parent_urlbar_searchmode_tabtosearch_sum,
+    scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
+    scalar_parent_urlbar_searchmode_topsites_newtab_sum,
+    scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
+    scalar_parent_urlbar_searchmode_touchbar_sum,
+    scalar_parent_urlbar_searchmode_typed_sum,
     SAFE_SUBTRACT(
       UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date))),
       profile_creation_date
@@ -215,7 +334,7 @@ windowed AS (
     SUM(IF(type = 'sap', count, 0)) OVER w1 AS sap,
     SUM(IF(type = 'ad-click', count, 0)) OVER w1 AS ad_click,
     SUM(IF(type = 'search-with-ads', count, 0)) OVER w1 AS search_with_ads,
-    SUM(IF(type = 'unknown', count, 0)) OVER w1 AS unknown
+    SUM(IF(type = 'unknown', count, 0)) OVER w1 AS unknown,
   FROM
     flattened
   WHERE

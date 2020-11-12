@@ -74,7 +74,7 @@ with DAG(
         start_date=datetime.datetime(2019, 11, 5, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        allow_field_addition_on_date="2020-10-20",
+        allow_field_addition_on_date="2020-11-13",
         dag=dag,
     )
 

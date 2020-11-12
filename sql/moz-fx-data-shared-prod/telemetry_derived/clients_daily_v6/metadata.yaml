@@ -10,4 +10,4 @@ owners:
 scheduling:
   dag_name: bqetl_main_summary
   start_date: "2019-11-05"
-  allow_field_addition_on_date: "2020-10-20"
+  allow_field_addition_on_date: "2020-11-13"

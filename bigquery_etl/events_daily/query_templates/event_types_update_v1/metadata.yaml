@@ -1,0 +1,17 @@
+---
+friendly_name: {{ app_id }} Event Types
+description: Recreate a view on the most recent data from event_types_v1
+owners:
+  - frank@mozilla.com
+labels:
+  application: {{ app_id }}
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: {{ dag_name }}
+  destination_table: null
+  query_file_path: 'sql/moz-fx-data-shared-prod/{{ app_id }}
+  /event_types/query.sql'
+  referenced_tables: [['moz-fx-data-shared-prod', '{{ app_id }}_derived',
+                       'event_types_v1']]
+  parameters: ['submission_date:DATE:{{ds}}']

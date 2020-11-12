@@ -130,6 +130,17 @@ jobs:
       - run:
           name: Verify that DAGs were correctly generated and are up-to-date
           command: git diff --exit-code
+  verify-queries-up-to-date:
+    docker: *docker
+    steps:
+      - checkout
+      - *build
+      - run:
+          name: Generate Queries
+          command: PATH="venv/bin:$PATH" script/generate_events_daily_queries
+      - run:
+          name: Verify that queries were correctly generated and are up-to-date
+          command: git diff --exit-code
   validate-docs:
     docker: *docker
     steps:

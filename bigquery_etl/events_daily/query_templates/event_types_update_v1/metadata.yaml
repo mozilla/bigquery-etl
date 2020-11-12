@@ -10,8 +10,8 @@ labels:
 scheduling:
   dag_name: {{ dag_name }}
   destination_table: null
-  query_file_path: 'sql/moz-fx-data-shared-prod/{{ app_id }}
-  /event_types/query.sql'
+  query_file_path: >
+    'sql/moz-fx-data-shared-prod/{{ app_id }}/event_types/query.sql'
   referenced_tables: [['moz-fx-data-shared-prod', '{{ app_id }}_derived',
                        'event_types_v1']]
   parameters: ['submission_date:DATE:{{ds}}']

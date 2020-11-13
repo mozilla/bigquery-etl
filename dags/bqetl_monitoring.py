@@ -142,7 +142,3 @@ with DAG(
     monitoring__telemetry_distinct_docids__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )
-
-    monitoring__telemetry_missing_columns__v3.set_upstream(
-        wait_for_copy_deduplicate_copy_deduplicate_main_ping
-    )

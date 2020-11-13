@@ -15,11 +15,5 @@ scheduling:
        'payload_bytes_decoded', 
        'telemetry_telemetry__*']
     - ['moz-fx-data-shared-prod', 'telemetry_stable', '*']
+    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']
     - ['moz-fx-data-shared-prod', 'telemetry_live', '*']
-  depends_on:
-    - task_id: copy_deduplicate_main_ping
-      dag_name: copy_deduplicate
-      execution_delta: 1h
-    - task_id: copy_deduplicate_all
-      dag_name: copy_deduplicate
-      execution_delta: 1h

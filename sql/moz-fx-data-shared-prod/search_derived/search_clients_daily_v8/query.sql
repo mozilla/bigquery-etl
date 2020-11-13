@@ -67,7 +67,7 @@ client_map_sums AS (
     ) AS scalar_parent_urlbar_searchmode_touchbar_sum,
     udf.map_sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_typed)
-    ) AS scalar_parent_urlbar_searchmode_typed_sum
+    ) AS scalar_parent_urlbar_searchmode_typed_sum,
   FROM
     telemetry.main_summary
   LEFT JOIN

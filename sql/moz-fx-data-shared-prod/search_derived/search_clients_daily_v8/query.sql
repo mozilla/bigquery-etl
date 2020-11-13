@@ -234,7 +234,9 @@ windowed AS (
     engine,
     source,
     mozfun.stats.mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    mozfun.stats.mode_last(ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1) AS addon_version,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1
+    ) AS addon_version,
     mozfun.stats.mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
     mozfun.stats.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
     mozfun.stats.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,

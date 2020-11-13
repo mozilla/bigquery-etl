@@ -181,7 +181,7 @@ class DryRun:
 
     def get_referenced_tables(self):
         """Return referenced tables by dry running the SQL file."""
-        if not self.is_valid() and self.sqlfile not in SKIP:
+        if self.sqlfile not in SKIP and not self.is_valid():
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
         if self.sqlfile in SKIP:

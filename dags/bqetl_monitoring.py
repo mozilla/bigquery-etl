@@ -8,7 +8,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 default_args = {
     "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2018, 10, 30, 0, 0),
-    "email": ["ascholtz@mozilla.com", "amiyaguchi@mozilla.com"],
+    "email": ["ascholtz@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -29,7 +29,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com"],
     )
 
     monitoring__bigquery_etl_scheduled_query_usage__v1 = gke_command(
@@ -41,7 +41,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com"],
     )
 
     monitoring__column_size__v1 = gke_command(
@@ -53,7 +53,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com"],
     )
 
     monitoring__stable_table_sizes__v1 = gke_command(
@@ -65,7 +65,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com"],
     )
 
     monitoring__structured_distinct_docids__v1 = gke_command(
@@ -77,7 +77,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
         owner="bewu@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com", "bewu@mozilla.com"],
+        email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
     )
 
     monitoring__telemetry_distinct_docids__v1 = bigquery_etl_query(
@@ -86,7 +86,7 @@ with DAG(
         dataset_id="monitoring",
         project_id="moz-fx-data-shared-prod",
         owner="bewu@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com", "bewu@mozilla.com"],
+        email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

@@ -56,6 +56,18 @@ with DAG(
         email=["ascholtz@mozilla.com"],
     )
 
+    monitoring__schema_error_counts__v2 = bigquery_etl_query(
+        task_id="monitoring__schema_error_counts__v2",
+        destination_table="schema_error_counts_v2",
+        dataset_id="monitoring",
+        project_id="moz-fx-data-shared-prod",
+        owner="amiyaguchi@mozilla.com",
+        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     monitoring__stable_table_sizes__v1 = gke_command(
         task_id="monitoring__stable_table_sizes__v1",
         command=[

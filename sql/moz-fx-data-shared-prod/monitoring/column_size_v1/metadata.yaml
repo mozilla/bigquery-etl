@@ -5,3 +5,8 @@ labels:
   incremental: true
 owners:
   - ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']

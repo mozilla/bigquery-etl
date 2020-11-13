@@ -325,6 +325,10 @@ class Task:
         """
         logging.info(f"Get dependencies for {self.task_name}")
 
+        if self.is_python_script:
+            # cannot do dry runs for python scripts
+            return self.referenced_tables or []
+
         if self.referenced_tables is None:
             table_names = set()
             query_files = [self.query_file]
@@ -354,11 +358,6 @@ class Task:
     def with_dependencies(self, dag_collection):
         """Perfom a dry_run to get upstream dependencies."""
         dependencies = []
-
-        if self.is_python_script:
-            # dry run is not possible for python script queries; skip
-            self.dependencies = dependencies
-            return
 
         for table in self._get_referenced_tables():
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])

@@ -7,3 +7,9 @@ owners:
 labels:
   schedule: daily
   incremental: true
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', '*_stable', '*']
+    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']

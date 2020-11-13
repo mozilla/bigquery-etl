@@ -268,3 +268,12 @@ bqetl_google_analytics_derived:
     start_date: '2020-10-31'
     retries: 2
     retry_delay: 30m
+
+bqetl_monitoring:
+  schedule_interval: 0 2 * * *
+  default_args:
+    owner: ascholtz@mozilla.com
+    email: ['ascholtz@mozilla.com']
+    start_date: '2018-10-30'
+    retries: 2
+    retry_delay: 30m

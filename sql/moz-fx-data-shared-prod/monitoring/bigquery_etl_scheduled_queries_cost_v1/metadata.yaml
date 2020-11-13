@@ -6,3 +6,6 @@ labels:
   schedule: daily
 owners:
   - ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]

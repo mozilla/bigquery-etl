@@ -2,7 +2,7 @@
 CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
   (
     SELECT
-      udf.mode_last(ARRAY_AGG(version))
+      mozfun.stats.mode_last(ARRAY_AGG(version))
     FROM
       UNNEST(active_addons)
     WHERE
@@ -28,44 +28,44 @@ WITH overactive AS (
 client_map_sums AS (
   SELECT
     client_id,
-    udf.map_mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
-    udf.map_sum(
+    mozfun.map.mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments,
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_bookmarkmenu)
     ) AS scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_handoff)
     ) AS scalar_parent_urlbar_searchmode_handoff_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_keywordoffer)
     ) AS scalar_parent_urlbar_searchmode_keywordoffer_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_oneoff)
     ) AS scalar_parent_urlbar_searchmode_oneoff_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_other)
     ) AS scalar_parent_urlbar_searchmode_other_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_shortcut)
     ) AS scalar_parent_urlbar_searchmode_shortcut_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabmenu)
     ) AS scalar_parent_urlbar_searchmode_tabmenu_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch)
     ) AS scalar_parent_urlbar_searchmode_tabtosearch_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch_onboard)
     ) AS scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_newtab)
     ) AS scalar_parent_urlbar_searchmode_topsites_newtab_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_urlbar)
     ) AS scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_touchbar)
     ) AS scalar_parent_urlbar_searchmode_touchbar_sum,
-    udf.map_sum(
+    mozfun.map.sum(
       ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_typed)
     ) AS scalar_parent_urlbar_searchmode_typed_sum,
   FROM
@@ -182,59 +182,20 @@ augmented AS (
     SUM(scalar_parent_browser_engagement_tab_open_event_count) OVER w1 AS tab_open_event_count_sum,
     SUM(active_ticks / (3600 / 5)) OVER w1 AS active_hours_sum,
     SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count,
-    COALESCE(client_map_sums.experiments, []) AS experiments,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_handoff_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_handoff_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_keywordoffer_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_keywordoffer_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_oneoff_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_oneoff_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_other_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_other_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_shortcut_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_shortcut_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_tabmenu_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_tabmenu_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_tabtosearch_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_tabtosearch_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_topsites_newtab_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_topsites_newtab_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_touchbar_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_touchbar_sum,
-    COALESCE(
-      client_map_sums.scalar_parent_urlbar_searchmode_typed_sum,
-      []
-    ) AS scalar_parent_urlbar_searchmode_typed_sum,
+    client_map_sums.experiments,
+    client_map_sums.scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_handoff_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_keywordoffer_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_oneoff_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_other_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_shortcut_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_tabmenu_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_tabtosearch_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_topsites_newtab_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_touchbar_sum,
+    client_map_sums.scalar_parent_urlbar_searchmode_typed_sum,
   FROM
     telemetry.main_summary
   LEFT JOIN
@@ -272,37 +233,37 @@ windowed AS (
     client_id,
     engine,
     source,
-    udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
-    udf.mode_last(ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1) AS addon_version,
-    udf.mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
-    udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
-    udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
-    udf.mode_last(
+    mozfun.stats.mode_last(ARRAY_AGG(country) OVER w1) AS country,
+    mozfun.stats.mode_last(ARRAY_AGG(get_search_addon_version(active_addons)) OVER w1) AS addon_version,
+    mozfun.stats.mode_last(ARRAY_AGG(app_version) OVER w1) AS app_version,
+    mozfun.stats.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+    mozfun.stats.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
+    mozfun.stats.mode_last(
       ARRAY_AGG(user_pref_browser_search_region) OVER w1
     ) AS user_pref_browser_search_region,
-    udf.mode_last(ARRAY_AGG(search_cohort) OVER w1) AS search_cohort,
-    udf.mode_last(ARRAY_AGG(os) OVER w1) AS os,
-    udf.mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
-    udf.mode_last(ARRAY_AGG(channel) OVER w1) AS channel,
-    udf.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
-    udf.mode_last(ARRAY_AGG(profile_creation_date) OVER w1) AS profile_creation_date,
-    udf.mode_last(ARRAY_AGG(default_search_engine) OVER w1) AS default_search_engine,
-    udf.mode_last(
+    mozfun.stats.mode_last(ARRAY_AGG(search_cohort) OVER w1) AS search_cohort,
+    mozfun.stats.mode_last(ARRAY_AGG(os) OVER w1) AS os,
+    mozfun.stats.mode_last(ARRAY_AGG(os_version) OVER w1) AS os_version,
+    mozfun.stats.mode_last(ARRAY_AGG(channel) OVER w1) AS channel,
+    mozfun.stats.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
+    mozfun.stats.mode_last(ARRAY_AGG(profile_creation_date) OVER w1) AS profile_creation_date,
+    mozfun.stats.mode_last(ARRAY_AGG(default_search_engine) OVER w1) AS default_search_engine,
+    mozfun.stats.mode_last(
       ARRAY_AGG(default_search_engine_data_load_path) OVER w1
     ) AS default_search_engine_data_load_path,
-    udf.mode_last(
+    mozfun.stats.mode_last(
       ARRAY_AGG(default_search_engine_data_submission_url) OVER w1
     ) AS default_search_engine_data_submission_url,
-    udf.mode_last(
+    mozfun.stats.mode_last(
       ARRAY_AGG(default_private_search_engine) OVER w1
     ) AS default_private_search_engine,
-    udf.mode_last(
+    mozfun.stats.mode_last(
       ARRAY_AGG(default_private_search_engine_data_load_path) OVER w1
     ) AS default_private_search_engine_data_load_path,
-    udf.mode_last(
+    mozfun.stats.mode_last(
       ARRAY_AGG(default_private_search_engine_data_submission_url) OVER w1
     ) AS default_private_search_engine_data_submission_url,
-    udf.mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
+    mozfun.stats.mode_last(ARRAY_AGG(sample_id) OVER w1) AS sample_id,
     subsession_hours_sum,
     sessions_started_on_this_day,
     active_addons_count_mean,

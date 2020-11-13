@@ -5,7 +5,7 @@ This should eventually be refactored to a more general library for
 parsing UDF dependencies in queries as well.
 """
 
-from dataclasses import dataclass, astuple
+import attr
 import re
 import os
 from pathlib import Path
@@ -60,59 +60,94 @@ def get_routines(project):
     )  # assert UDFs used for testing
 
 
-@dataclass
+@attr.s(auto_attribs=True)
 class RawRoutine:
     """Representation of the content of a single routine sql file."""
 
-    name: str
-    dataset: str
-    project: str
-    filepath: str
-    definitions: List[str]
-    tests: List[str]
-    dependencies: List[str]
-    description: str  # description from metadata file
-    is_stored_procedure: bool
+    filepath: str = attr.ib()
+    name: str = attr.ib()
+    dataset: str = attr.ib()
+    project: str = attr.ib()
+    definitions: List[str] = attr.ib([])
+    tests: List[str] = attr.ib([])
+    dependencies: List[str] = attr.ib([])
+    description: str = attr.ib()
+    is_stored_procedure: bool = attr.ib(False)
 
-    @staticmethod
-    def from_file(filepath):
-        """Read in a RawRoutine from a SQL file on disk."""
-        filepath = Path(filepath)
-
-        text = filepath.read_text()
+    @name.validator
+    def validate_name(self, attribute, value):
+        """Check that name is correctly derived."""
+        filepath = Path(str(self.filepath))
         name = filepath.parent.name
-        dataset = filepath.parent.parent.name
-        project = filepath.parent.parent.parent
+        persistent_name = f"{self.dataset}.{name}"
+        temp_name = f"{self.dataset}_{name}"
 
-        # check if UDF has associated metadata file
-        description = ""
+        if value is None or value != persistent_name:
+            raise ValueError(
+                f"Expected a function named {persistent_name} or {temp_name} "
+                f"to be defined."
+            )
+        if not UDF_NAME_RE.match(name):
+            raise ValueError(
+                f"Invalid UDF name {name}: Must start with alpha char, "
+                f"limited to chars {UDF_CHAR}, be at most 256 chars long"
+            )
+
+    @dataset.validator
+    def validate_dataset(self, attribute, value):
+        """Check that dataset name is valid."""
+        if value is not Path(self.filepath).parent.parent.name:
+            raise ValueError("Invalid dataset name.")
+
+    @project.validator
+    def validate_project(self, attribute, value):
+        """Check that project name is valid."""
+        if value is not Path(self.filepath).parent.parent.parent.name:
+            raise ValueError("Invalid project name.")
+
+    # since dataset, project, and description are derived from filepath,
+    # setting their default values at instantiation would eliminate
+    # the need for the previous from_file() method
+
+    @dataset.default
+    def set_default_dataset_name(self):
+        """Set dataset default value to be derived from filepath."""
+        return Path(str(self.filepath)).parent.parent.name
+
+    @project.default
+    def set_project_default_name(self):
+        """Set project default value to be derived from filepath."""
+        return Path(str(self.filepath)).parent.parent.parent.name
+
+    @description.default
+    def set_description_default(self):
+        """Set description default value to be the metadata description derived from filepath."""
+        filepath = Path(str(self.filepath))
         metadata_file = filepath.parent / METADATA_FILE
         if metadata_file.exists():
             metadata = yaml.safe_load(metadata_file.read_text())
             if "description" in metadata:
-                description = metadata["description"]
+                return metadata["description"]
+        else:
+            return ""
 
-        try:
-            return RawRoutine.from_text(
-                text, project, dataset, name, str(filepath), description
-            )
-        except ValueError as e:
-            raise ValueError(str(e) + f" in {filepath}")
-
-    @staticmethod
-    def from_text(
-        text, project, dataset, name, filepath=None, description="", is_defined=True
-    ):
+    @classmethod
+    def from_text(cls, path, is_defined=True):
         """Create a RawRoutine instance from text.
 
         If is_defined is False, then the routine does not
         need to be defined in the text; it could be
         just tests.
         """
+        filepath = Path(path)
+        text = filepath.read_text()
         sql = sqlparse.format(text, strip_comments=True)
         statements = [s for s in sqlparse.split(sql) if s.strip()]
 
-        prod_name = name
+        name = filepath.parent.name
+        dataset = filepath.parent.parent.name
+        project = filepath.parent.parent.parent
+
         persistent_name = f"{dataset}.{name}"
         temp_name = f"{dataset}_{name}"
         internal_name = None
@@ -150,20 +185,8 @@ class RawRoutine:
                     tests.append(s)
 
                 if procedure_start > -1 and normalized_statement.endswith("end;"):
-                    tests.append(" ".join(statements[procedure_start : i + 1]))
+                    tests.append(" ".join(statements[procedure_start: i + 1]))
                     procedure_start = -1
-
-        for name in (prod_name, internal_name):
-            if name is None:
-                raise ValueError(
-                    f"Expected a function named {persistent_name} or {temp_name} "
-                    f"to be defined"
-                )
-            if is_defined and not UDF_NAME_RE.match(name):
-                raise ValueError(
-                    f"Invalid UDF name {name}: Must start with alpha char, "
-                    f"limited to chars {UDF_CHAR}, be at most 256 chars long"
-                )
 
         # get routines that could be referenced by the UDF
         routines = get_routines(project)
@@ -178,29 +201,24 @@ class RawRoutine:
         if is_defined:
             dependencies.remove(internal_name)
 
-        return RawRoutine(
-            internal_name,
-            dataset,
-            project.parts[-1],
-            filepath,
-            definitions,
-            tests,
-            sorted(dependencies),
-            description,
-            is_stored_procedure,
-        )
+        return cls(name=internal_name, filepath=path,
+                   definitions=definitions,
+                   tests=tests,
+                   dependencies=sorted(dependencies),
+                   is_stored_procedure=is_stored_procedure,
+                   )
 
 
-@dataclass
+@attr.s(auto_attribs=True)
 class ParsedRoutine(RawRoutine):
     """Parsed representation of a routine including dependent routine code."""
 
-    tests_full_sql: List[str]
+    tests_full_sql: List[str] = attr.ib([])
 
     @staticmethod
     def from_raw(raw_routine, tests_full_sql):
         """Promote a RawRoutine to a ParsedRoutine."""
-        return ParsedRoutine(*astuple(raw_routine), tests_full_sql)
+        return ParsedRoutine(*attr.astuple(raw_routine), tests_full_sql)
 
 
 def read_routine_dir(*project_dirs):

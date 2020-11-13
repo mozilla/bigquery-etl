@@ -1,0 +1,12 @@
+---
+friendly_name: Telemetry Missing Columns
+description: >
+  Enumerated paths in additional properties for the Telemetry namespace. This
+  excludes the main ping and its variants for the sake of efficiency.
+owners:
+  - amiyaguchi@mozilla.com
+labels:
+  schedule: daily
+  incremental: false
+scheduling:
+  dag_name: bqetl_monitoring

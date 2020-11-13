@@ -93,6 +93,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v3/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501
@@ -180,8 +181,11 @@ class DryRun:
 
     def get_referenced_tables(self):
         """Return referenced tables by dry running the SQL file."""
-        if not self.is_valid():
+        if self.sqlfile not in SKIP and not self.is_valid():
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
+
+        if self.sqlfile in SKIP:
+            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
 
         if (
             self.dry_run_result

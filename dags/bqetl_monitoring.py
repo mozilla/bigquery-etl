@@ -92,6 +92,18 @@ with DAG(
         dag=dag,
     )
 
+    monitoring__telemetry_missing_columns__v3 = bigquery_etl_query(
+        task_id="monitoring__telemetry_missing_columns__v3",
+        destination_table="telemetry_missing_columns_v3",
+        dataset_id="monitoring",
+        project_id="moz-fx-data-shared-prod",
+        owner="amiyaguchi@mozilla.com",
+        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",

@@ -82,22 +82,7 @@ client_map_sums AS (
 ),
 augmented AS (
   SELECT
-    * EXCEPT (
-      experiments,
-      scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
-      scalar_parent_urlbar_searchmode_handoff_sum,
-      scalar_parent_urlbar_searchmode_keywordoffer_sum,
-      scalar_parent_urlbar_searchmode_oneoff_sum,
-      scalar_parent_urlbar_searchmode_other_sum,
-      scalar_parent_urlbar_searchmode_shortcut_sum,
-      scalar_parent_urlbar_searchmode_tabmenu_sum,
-      scalar_parent_urlbar_searchmode_tabtosearch_sum,
-      scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
-      scalar_parent_urlbar_searchmode_topsites_newtab_sum,
-      scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
-      scalar_parent_urlbar_searchmode_touchbar_sum,
-      scalar_parent_urlbar_searchmode_typed_sum
-    ),
+    * EXCEPT (experiments),
     ARRAY_CONCAT(
       ARRAY(
         SELECT AS STRUCT
@@ -183,19 +168,6 @@ augmented AS (
     SUM(active_ticks / (3600 / 5)) OVER w1 AS active_hours_sum,
     SUM(scalar_parent_browser_engagement_total_uri_count) OVER w1 AS total_uri_count,
     client_map_sums.experiments,
-    client_map_sums.scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_handoff_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_keywordoffer_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_oneoff_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_other_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_shortcut_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_tabmenu_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_tabtosearch_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_topsites_newtab_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_touchbar_sum,
-    client_map_sums.scalar_parent_urlbar_searchmode_typed_sum,
   FROM
     telemetry.main_summary
   LEFT JOIN

@@ -17,6 +17,19 @@
     value: active
   - key: exp2
     value: active
+  scalar_parent_urlbar_searchmode_bookmarkmenu_sum: []
+  scalar_parent_urlbar_searchmode_handoff_sum: []
+  scalar_parent_urlbar_searchmode_keywordoffer_sum: []
+  scalar_parent_urlbar_searchmode_oneoff_sum: []
+  scalar_parent_urlbar_searchmode_other_sum: []
+  scalar_parent_urlbar_searchmode_shortcut_sum: []
+  scalar_parent_urlbar_searchmode_tabmenu_sum: []
+  scalar_parent_urlbar_searchmode_tabtosearch_sum: []
+  scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum: []
+  scalar_parent_urlbar_searchmode_topsites_newtab_sum: []
+  scalar_parent_urlbar_searchmode_topsites_urlbar_sum: []
+  scalar_parent_urlbar_searchmode_touchbar_sum: []
+  scalar_parent_urlbar_searchmode_typed_sum: []
 - <<: *base
   client_id: a
   sap: 4

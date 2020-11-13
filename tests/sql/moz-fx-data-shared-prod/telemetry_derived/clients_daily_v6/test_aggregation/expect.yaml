@@ -135,6 +135,19 @@
   scalar_parent_navigator_storage_persist_count_sum: 2
   scalar_parent_storage_sync_api_usage_extensions_using_sum: 2
   scalar_parent_telemetry_event_counts_sum: []
+  scalar_parent_urlbar_searchmode_bookmarkmenu_sum: []
+  scalar_parent_urlbar_searchmode_handoff_sum: []
+  scalar_parent_urlbar_searchmode_keywordoffer_sum: []
+  scalar_parent_urlbar_searchmode_oneoff_sum: []
+  scalar_parent_urlbar_searchmode_other_sum: []
+  scalar_parent_urlbar_searchmode_shortcut_sum: []
+  scalar_parent_urlbar_searchmode_tabmenu_sum: []
+  scalar_parent_urlbar_searchmode_tabtosearch_sum: []
+  scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum: []
+  scalar_parent_urlbar_searchmode_topsites_newtab_sum: []
+  scalar_parent_urlbar_searchmode_topsites_urlbar_sum: []
+  scalar_parent_urlbar_searchmode_touchbar_sum: []
+  scalar_parent_urlbar_searchmode_typed_sum: []
   search_cohort: second
   search_count_abouthome: 0
   search_count_all: 0

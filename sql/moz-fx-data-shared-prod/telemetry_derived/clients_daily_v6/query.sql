@@ -381,7 +381,46 @@ SELECT
   ) AS scalar_parent_telemetry_event_counts_sum,
   udf.map_sum(
     ARRAY_CONCAT_AGG(scalar_content_telemetry_event_counts)
-  ) AS scalar_content_telemetry_event_counts_sum
+  ) AS scalar_content_telemetry_event_counts_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_bookmarkmenu)
+  ) AS scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_handoff)
+  ) AS scalar_parent_urlbar_searchmode_handoff_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_keywordoffer)
+  ) AS scalar_parent_urlbar_searchmode_keywordoffer_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_oneoff)
+  ) AS scalar_parent_urlbar_searchmode_oneoff_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_other)
+  ) AS scalar_parent_urlbar_searchmode_other_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_shortcut)
+  ) AS scalar_parent_urlbar_searchmode_shortcut_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabmenu)
+  ) AS scalar_parent_urlbar_searchmode_tabmenu_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch)
+  ) AS scalar_parent_urlbar_searchmode_tabtosearch_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_tabtosearch_onboard)
+  ) AS scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_newtab)
+  ) AS scalar_parent_urlbar_searchmode_topsites_newtab_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_topsites_urlbar)
+  ) AS scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_touchbar)
+  ) AS scalar_parent_urlbar_searchmode_touchbar_sum,
+  udf.map_sum(
+    ARRAY_CONCAT_AGG(scalar_parent_urlbar_searchmode_typed)
+  ) AS scalar_parent_urlbar_searchmode_typed_sum
 FROM
   main_summary_v4
 LEFT JOIN

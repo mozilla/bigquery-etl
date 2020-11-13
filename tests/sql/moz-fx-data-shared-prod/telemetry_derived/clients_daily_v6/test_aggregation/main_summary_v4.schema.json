@@ -1009,7 +1009,7 @@
       {
         "type": "STRING",
         "name": "key",
-       "mode": "NULLABLE"
+        "mode": "NULLABLE"
       },
       {
         "type": "INTEGER",
@@ -1060,7 +1060,7 @@
       {
         "type": "STRING",
         "name": "key",
-       "mode": "NULLABLE"
+        "mode": "NULLABLE"
       },
       {
         "type": "INTEGER",
@@ -1070,6 +1070,227 @@
     ],
     "type": "RECORD",
     "name": "scalar_content_telemetry_event_counts",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_bookmarkmenu",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_handoff",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_keywordoffer",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_oneoff",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_other",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_shortcut",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_tabmenu",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_tabtosearch",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_tabtosearch_onboard",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_topsites_newtab",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_topsites_urlbar",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_touchbar",
+    "mode": "REPEATED"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "key",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "value",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "scalar_parent_urlbar_searchmode_typed",
     "mode": "REPEATED"
   }
 ]

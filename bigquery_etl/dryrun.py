@@ -185,7 +185,7 @@ class DryRun:
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
         if self.sqlfile in SKIP:
-            print(f"Ignoring dryrun results for {self.sqlfile}")
+            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
 
         if (
             self.dry_run_result

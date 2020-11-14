@@ -1,0 +1,20 @@
+---
+friendly_name: Structured Distinct Document IDs
+description: >
+  Compares number of document IDs in structured decoded, live,
+  and stable tables.
+owners:
+  - bewu@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', 
+       'payload_bytes_decoded', 
+       'structured_*']
+    - ['moz-fx-data-shared-prod', 'payload_bytes_decoded', 'stub_installer_*']
+    - ['moz-fx-data-shared-prod', '*_stable', '*']
+    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']

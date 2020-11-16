@@ -6,6 +6,6 @@ owners:
   - amiyaguchi@mozilla.com
 labels:
   schedule: daily
-  incremental: false
+  incremental: true
 scheduling:
   dag_name: bqetl_monitoring

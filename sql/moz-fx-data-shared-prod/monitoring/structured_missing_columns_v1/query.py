@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Compare number of document IDs in structured decoded, live, and stable tables."""
+"""Generates the list of missing columns in structured datasets."""
 import datetime
 import json
 from argparse import ArgumentParser
@@ -90,8 +90,6 @@ def structured_missing_columns(
     namespaces = [
         row.schema_name.split("_stable")[0]
         for row in client.query(NAMESPACE_QUERY).result()
-        # NOTE: making an exception for this namespace, because it's large.
-        if row.schema_name != "activity_stream_stable"
     ]
     print(namespaces)
 

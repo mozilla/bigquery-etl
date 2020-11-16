@@ -92,6 +92,18 @@ with DAG(
         email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
     )
 
+    monitoring__structured_missing_columns__v1 = gke_command(
+        task_id="monitoring__structured_missing_columns__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring/structured_missing_columns_v1/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        docker_image="mozilla/bigquery-etl:latest",
+        owner="amiyaguchi@mozilla.com",
+        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+    )
+
     monitoring__telemetry_distinct_docids__v1 = bigquery_etl_query(
         task_id="monitoring__telemetry_distinct_docids__v1",
         destination_table="telemetry_distinct_docids_v1",
@@ -146,6 +158,10 @@ with DAG(
     )
     monitoring__structured_distinct_docids__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
+    )
+
+    monitoring__structured_missing_columns__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     monitoring__telemetry_distinct_docids__v1.set_upstream(

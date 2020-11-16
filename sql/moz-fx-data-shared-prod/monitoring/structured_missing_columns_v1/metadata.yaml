@@ -1,10 +1,9 @@
 ---
-friendly_name: Structured Distinct Document IDs
+friendly_name: Structured missing columns
 description: >
-  Compares number of document IDs in structured decoded, live,
-  and stable tables.
+  Generates the list of missing columns in structured datasets.
 owners:
-  - bewu@mozilla.com
+  - amiyaguchi@mozilla.com
 labels:
   schedule: daily
   incremental: true
@@ -12,9 +11,4 @@ scheduling:
   dag_name: bqetl_monitoring
   arguments: ["--date", "{{ ds }}"]
   referenced_tables:
-    - ['moz-fx-data-shared-prod', 
-       'payload_bytes_decoded', 
-       'structured_*']
-    - ['moz-fx-data-shared-prod', 'payload_bytes_decoded', 'stub_installer_*']
     - ['moz-fx-data-shared-prod', '*_stable', '*']
-    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']

@@ -5,7 +5,7 @@ Jinja2==2.11.2
 pytest-black==0.3.12
 pytest-pydocstyle==2.2.0
 pytest-flake8==1.0.6
-pytest-mypy==0.7.0
+pytest-mypy==0.8.0
 pytest-xdist==2.1.0
 pytest==6.1.2
 PyYAML==5.3.1

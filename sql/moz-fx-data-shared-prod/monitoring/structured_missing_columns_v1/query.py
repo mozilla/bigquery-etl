@@ -70,16 +70,6 @@ FROM
   transformed
 """
 
-# handy query for table sizes, although some tables should have less additional
-# properties than others.
-"""
-select *, round(byte_size/pow(1024,3), 2) as gb_size
-from monitoring.stable_table_sizes_v1
-where submission_date = "2020-11-11"
-and dataset_id <> "telemetry_stable"
-order by gb_size desc
-"""
-
 
 def structured_missing_columns(
     date, project, destination_dataset, destination_table, skip_exceptions

@@ -1,0 +1,8 @@
+- app_build_id: '2020111117'
+  app_version: 84
+  channel: '*'
+  client_id: efb9803f-ad25-4ed9-93da-7af32316e08c
+  histogram_aggregates: []
+  os: Android
+  ping_type: metrics
+  sample_id: 1

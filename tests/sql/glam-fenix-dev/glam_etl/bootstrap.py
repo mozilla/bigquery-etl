@@ -125,7 +125,15 @@ def skeleton(dependency_file):
                 print(f"copied dependency {schema}")
                 shutil.copyfile(
                     schema,
-                    path / f"{project}.{dataset}.{schema.parent.name}.{schema.name}",
+                    path
+                    / (
+                        (
+                            f"{project}.{dataset}."
+                            if dataset != "glam_etl"
+                            else f"{dataset}."
+                        )
+                        + f"{schema.parent.name}.{schema.name}"
+                    ),
                 )
 
 

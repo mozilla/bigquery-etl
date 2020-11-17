@@ -96,18 +96,14 @@ class RawRoutine:
     @dataset.validator
     def validate_dataset(self, attribute, value):
         """Check that dataset name is valid."""
-        if value is not Path(self.filepath).parent.parent.name:
+        if value != Path(self.filepath).parent.parent.name:
             raise ValueError("Invalid dataset name.")
 
     @project.validator
     def validate_project(self, attribute, value):
         """Check that project name is valid."""
-        if value is not Path(self.filepath).parent.parent.parent.name:
+        if value != Path(self.filepath).parent.parent.parent.name:
             raise ValueError("Invalid project name.")
-
-    # since dataset, project, and description are derived from filepath,
-    # setting their default values at instantiation would eliminate
-    # the need for the previous from_file() method
 
     @dataset.default
     def set_default_dataset_name(self):
@@ -121,7 +117,7 @@ class RawRoutine:
 
     @description.default
     def set_description_default(self):
-        """Set description default value to be the metadata description derived from filepath."""
+        """Set description default value."""
         filepath = Path(str(self.filepath))
         metadata_file = filepath.parent / METADATA_FILE
         if metadata_file.exists():
@@ -132,15 +128,15 @@ class RawRoutine:
             return ""
 
     @classmethod
-    def from_text(cls, path, is_defined=True):
-        """Create a RawRoutine instance from text.
-
-        If is_defined is False, then the routine does not
-        need to be defined in the text; it could be
-        just tests.
-        """
+    def from_file(cls, path, from_text=None):
+        """Create a RawRoutine instance from text."""
         filepath = Path(path)
-        text = filepath.read_text()
+
+        if from_text is None:
+            text = filepath.read_text()
+        else:
+            text = from_text
+
         sql = sqlparse.format(text, strip_comments=True)
         statements = [s for s in sqlparse.split(sql) if s.strip()]
 
@@ -185,7 +181,7 @@ class RawRoutine:
                     tests.append(s)
 
                 if procedure_start > -1 and normalized_statement.endswith("end;"):
-                    tests.append(" ".join(statements[procedure_start: i + 1]))
+                    tests.append(" ".join(statements[procedure_start : i + 1]))
                     procedure_start = -1
 
         # get routines that could be referenced by the UDF
@@ -198,15 +194,17 @@ class RawRoutine:
         dependencies.extend(re.findall(TEMP_UDF_RE, "\n".join(definitions)))
         dependencies = list(set(dependencies))
 
-        if is_defined:
+        if internal_name in dependencies:
             dependencies.remove(internal_name)
 
-        return cls(name=internal_name, filepath=path,
-                   definitions=definitions,
-                   tests=tests,
-                   dependencies=sorted(dependencies),
-                   is_stored_procedure=is_stored_procedure,
-                   )
+        return cls(
+            name=internal_name,
+            filepath=path,
+            definitions=definitions,
+            tests=tests,
+            dependencies=sorted(dependencies),
+            is_stored_procedure=is_stored_procedure,
+        )
 
 
 @attr.s(auto_attribs=True)

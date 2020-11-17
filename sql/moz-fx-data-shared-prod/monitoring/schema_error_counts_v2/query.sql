@@ -36,7 +36,3 @@ SELECT
   *
 FROM
   count_errors
-ORDER BY
-  document_namespace,
-  document_type,
-  hour

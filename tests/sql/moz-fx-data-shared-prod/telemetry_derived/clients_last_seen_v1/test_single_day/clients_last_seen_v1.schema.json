@@ -5,7 +5,22 @@
     "mode": "REQUIRED"
   },
   {
+    "name": "days_visited_1_uri_bits",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
     "name": "days_visited_5_uri_bits",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "days_visited_10_uri_bits",
+    "type": "INT64",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "days_had_8_active_ticks_bits",
     "type": "INT64",
     "mode": "NULLABLE"
   },

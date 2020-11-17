@@ -10,8 +10,17 @@ WITH _current AS (
     -- client_id was an Active User as defined by
     -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
     CAST(
+      scalar_parent_browser_engagement_total_uri_count_sum >= 1 AS INT64
+    ) AS days_visited_1_uri_bits, -- Added 2020-11
+    CAST(
       scalar_parent_browser_engagement_total_uri_count_sum >= 5 AS INT64
     ) AS days_visited_5_uri_bits,
+    CAST(
+      scalar_parent_browser_engagement_total_uri_count_sum >= 10 AS INT64
+    ) AS days_visited_10_uri_bits, -- Added 2020-11
+    CAST(
+      active_hours_sum >= 0.011 AS INT64
+    ) AS days_had_8_active_ticks_bits, -- Added 2020-11
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
     CAST(active_hours_sum > 0 AS INT64) AS days_interacted_bits,
     -- We only trust profile_date if it is within one week of the ping submission,
@@ -38,14 +47,20 @@ WITH _current AS (
 _previous AS (
   SELECT
     days_seen_bits,
+    days_visited_1_uri_bits,
     days_visited_5_uri_bits,
+    days_visited_10_uri_bits,
+    days_had_8_active_ticks_bits,
     days_opened_dev_tools_bits,
     days_interacted_bits,
     days_created_profile_bits,
     days_seen_in_experiment,
     * EXCEPT (
       days_seen_bits,
+      days_visited_1_uri_bits,
       days_visited_5_uri_bits,
+      days_visited_10_uri_bits,
+      days_had_8_active_ticks_bits,
       days_opened_dev_tools_bits,
       days_interacted_bits,
       days_created_profile_bits,
@@ -68,9 +83,21 @@ SELECT
       _current.days_seen_bits
     ) AS days_seen_bits,
     udf.combine_adjacent_days_28_bits(
+      _previous.days_visited_1_uri_bits,
+      _current.days_visited_1_uri_bits
+    ) AS days_visited_1_uri_bits,
+    udf.combine_adjacent_days_28_bits(
       _previous.days_visited_5_uri_bits,
       _current.days_visited_5_uri_bits
     ) AS days_visited_5_uri_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_visited_10_uri_bits,
+      _current.days_visited_10_uri_bits
+    ) AS days_visited_10_uri_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_had_8_active_ticks_bits,
+      _current.days_had_8_active_ticks_bits
+    ) AS days_had_8_active_ticks_bits,
     udf.combine_adjacent_days_28_bits(
       _previous.days_opened_dev_tools_bits,
       _current.days_opened_dev_tools_bits

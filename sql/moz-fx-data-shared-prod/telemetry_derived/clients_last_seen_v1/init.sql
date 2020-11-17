@@ -10,7 +10,10 @@ OPTIONS
 AS
 SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
+  CAST(NULL AS INT64) AS days_visited_1_uri_bits,
   CAST(NULL AS INT64) AS days_visited_5_uri_bits,
+  CAST(NULL AS INT64) AS days_visited_10_uri_bits,
+  CAST(NULL AS INT64) AS days_had_8_active_ticks_bits,
   CAST(NULL AS INT64) AS days_opened_dev_tools_bits,
   CAST(NULL AS INT64) AS days_interacted_bits,
   CAST(NULL AS INT64) AS days_created_profile_bits,

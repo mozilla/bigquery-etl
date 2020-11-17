@@ -41,12 +41,9 @@ def generate_raw_routine(test_cases):
     )
     test_sql_stmnts = [test_sql_fixture.format(**test_case) for test_case in test_cases]
 
-    return RawRoutine.from_text(
-        "\n".join(test_sql_stmnts),
-        "udf",
-        "hmac_sha256",
-        description="",
-        is_defined=False,
+    return RawRoutine.from_file(
+        from_text="\n".join(test_sql_stmnts),
+        path="udf" / "hmac_sha256" / "hmac_sha256" / "sql",
     )
 
 

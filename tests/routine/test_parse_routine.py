@@ -8,6 +8,24 @@ TEST_DIR = Path(__file__).parent.parent
 class TestParseRoutine:
     udf_dir = TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project" / "udf"
 
+    def test_routine_instantiation(self):
+        raw_routine = parse_routine.RawRoutine(
+            self.udf_dir / "test_js_udf" / "udf.sql",
+            "udf.test_js_udf",
+            "udf",
+            "moz-fx-data-test-project",
+        )
+
+        assert raw_routine.filepath == self.udf_dir / "test_js_udf" / "udf.sql"
+        assert raw_routine.name == "udf.test_js_udf"
+        assert raw_routine.dataset == "udf"
+        assert raw_routine.project == "moz-fx-data-test-project"
+        assert raw_routine.definitions == []
+        assert raw_routine.tests == []
+        assert raw_routine.dependencies == []
+        assert raw_routine.description == "Some description"
+        assert raw_routine.is_stored_procedure is False
+
     def test_raw_routine_from_file(self):
         result = parse_routine.RawRoutine.from_file(
             self.udf_dir / "test_bitmask_lowest_28" / "udf.sql"
@@ -39,12 +57,15 @@ class TestParseRoutine:
             "CREATE OR REPLACE FUNCTION udf.test_js_udf() "
             + "AS (SELECT mozfun.json.mode_last('{}'))"
         )
-        result = parse_routine.RawRoutine.from_text(
-            text,
-            TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project",
-            "udf",
-            "test_js_udf",
-            description="",
+        result = parse_routine.RawRoutine.from_file(
+            path=TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "udf"
+            / "test_js_udf"
+            / "udf.sql",
+            from_text=text,
         )
         assert result.name == "udf.test_js_udf"
         assert len(result.definitions) == 1
@@ -53,8 +74,9 @@ class TestParseRoutine:
         assert result.tests == []
 
         text = "CREATE OR REPLACE FUNCTION json.mode_last() " + "AS (SELECT 1)"
-        result = parse_routine.RawRoutine.from_text(
-            text, Path("sql") / "mozfun", "json", "mode_last", description=""
+        result = parse_routine.RawRoutine.from_file(
+            path=Path("sql") / "mozfun" / "json" / "mode_last" / "udf.sql",
+            from_text=text,
         )
         assert result.name == "json.mode_last"
         assert len(result.definitions) == 1
@@ -223,8 +245,8 @@ class TestParseRoutine:
             "SET out = mozfun.json.mode_last('{}'); "
             "END "
         )
-        result = parse_routine.RawRoutine.from_text(
-            text, self.udf_dir.parent, "procedure", "test_procedure", description=""
+        result = parse_routine.RawRoutine.from_file(
+            self.udf_dir.parent / "procedure" / "test_procedure" / "sql", from_text=text
         )
         assert result.name == "procedure.test_procedure"
         assert len(result.definitions) == 1
@@ -238,8 +260,8 @@ class TestParseRoutine:
             "SET out = ''; "
             "END "
         )
-        result = parse_routine.RawRoutine.from_text(
-            text, self.udf_dir.parent, "procedure", "test_procedure", description=""
+        result = parse_routine.RawRoutine.from_file(
+            self.udf_dir.parent / "procedure" / "test_procedure" / "sql", from_text=text
         )
         assert result.name == "procedure.test_procedure"
         assert len(result.definitions) == 1

@@ -1,13 +1,15 @@
 import yaml
-import uuid
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 
-UUID = str(uuid.uuid4())
+UUID = "df735f02-efe5-4b07-b212-583bb99ba241"
+SUBMISSION_DATE = "2020-10-01"
+APP_BUILD_ID = "2020100100"
 
-LATEST_VERSION = [dict(channel="nightly", latest_version=83)]
+LATEST_VERSION = [dict(channel="nightly", latest_version=84)]
 
+# NOTE: what happens when channel = "*"?
 CLIENTS_HISTOGRAM_AGGREGATES = [
     {
         "sample_id": 1,
@@ -15,21 +17,22 @@ CLIENTS_HISTOGRAM_AGGREGATES = [
         "ping_type": "metrics",
         "os": "Android",
         "app_version": 84,
-        "app_build_id": "2020111117",
-        "channel": "*",
+        "app_build_id": APP_BUILD_ID,
+        "channel": "nightly",
         "histogram_aggregates": [],
     }
 ]
 
 CLIENTS_DAILY_HISTOGRAM_AGGREGATES = [
     {
+        "submission_date": SUBMISSION_DATE,
         "sample_id": 1,
         "client_id": UUID,
         "ping_type": "metrics",
         "os": "Android",
         "app_version": 84,
-        "app_build_id": "2020111117",
-        "channel": "*",
+        "app_build_id": APP_BUILD_ID,
+        "channel": "nightly",
         "histogram_aggregates": [
             {
                 "metric": "network_tcp_connection",
@@ -37,8 +40,8 @@ CLIENTS_DAILY_HISTOGRAM_AGGREGATES = [
                 "key": "",
                 "agg_type": "summed_histogram",
                 "value": [
-                    {"key": "112863206", "value": "1"},
-                    {"key": "123078199", "value": "0"},
+                    {"key": "112863206", "value": 1},
+                    {"key": "123078199", "value": 0},
                 ],
             },
         ],
@@ -52,8 +55,8 @@ EXPECT = [
         "ping_type": "metrics",
         "os": "Android",
         "app_version": 84,
-        "app_build_id": "2020111117",
-        "channel": "*",
+        "app_build_id": APP_BUILD_ID,
+        "channel": "nightly",
         "histogram_aggregates": [
             {
                 "metric": "network_tcp_connection",
@@ -61,8 +64,8 @@ EXPECT = [
                 "key": "",
                 "agg_type": "summed_histogram",
                 "value": [
-                    {"key": "112863206", "value": "1"},
-                    {"key": "123078199", "value": "0"},
+                    {"key": "112863206", "value": 1},
+                    {"key": "123078199", "value": 0},
                 ],
             },
         ],
@@ -70,19 +73,21 @@ EXPECT = [
 ]
 
 prefix = "glam_etl"
-with (ROOT / f"{prefix}.org_mozilla_fenix_glam_nightly__latest_versions_v1.yaml").open(
-    "w"
-) as fp:
-    yaml.dump(LATEST_VERSION, fp)
-with (
-    ROOT
-    / f"{prefix}.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1.yaml"
-).open("w") as fp:
-    yaml.dump(CLIENTS_HISTOGRAM_AGGREGATES, fp)
-with (
-    ROOT
-    / f"{prefix}.org_mozilla_fenix__clients_daily_histogram_aggregates_metrics_v1.yaml"
-).open("w") as fp:
-    yaml.dump(CLIENTS_DAILY_HISTOGRAM_AGGREGATES, fp)
-with (ROOT / "expect.yaml").open("w") as fp:
-    yaml.dump(EXPECT, fp)
+tables = [
+    (
+        f"{prefix}.org_mozilla_fenix_glam_nightly__latest_versions_v1.yaml",
+        LATEST_VERSION,
+    ),
+    (
+        f"{prefix}.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1.yaml",
+        CLIENTS_HISTOGRAM_AGGREGATES,
+    ),
+    (
+        f"{prefix}.org_mozilla_fenix_glam_nightly__view_clients_daily_histogram_aggregates_v1.yaml",
+        CLIENTS_DAILY_HISTOGRAM_AGGREGATES,
+    ),
+    ("expect.yaml", EXPECT),
+]
+for name, data in tables:
+    with (ROOT / name).open("w") as fp:
+        yaml.dump(data, fp)

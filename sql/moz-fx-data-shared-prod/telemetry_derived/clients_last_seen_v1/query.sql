@@ -76,7 +76,9 @@ _previous AS (
 )
   --
 SELECT
-  @submission_date AS submission_date,
+  DATE @submission_date AS submission_date,
+  IF(cfs.first_seen_date > @submission_date, NULL, cfs.first_seen_date) AS first_seen_date,
+  IF(cfs.second_seen_date > @submission_date, NULL, cfs.second_seen_date) AS second_seen_date,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
     udf.combine_adjacent_days_28_bits(
       _previous.days_seen_bits,
@@ -119,5 +121,9 @@ FROM
   _current
 FULL JOIN
   _previous
+USING
+  (client_id)
+LEFT JOIN
+  telemetry_derived.clients_first_seen_v1 AS cfs
 USING
   (client_id)

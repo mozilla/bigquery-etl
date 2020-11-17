@@ -20,6 +20,9 @@ SELECT
   CAST(NULL AS STRING) AS attribution_source,
   CAST(NULL AS STRING) AS app_version,
   CAST(NULL AS STRING) AS locale,
+  CAST(NULL AS STRING) AS distribution_id,
+  CAST(NULL AS STRING) AS attribution_ua,
+  CAST(NULL AS STRING) AS display_version,
   -- metadata
   CAST(NULL AS STRING) AS city,
   CAST(NULL AS STRING) AS country,

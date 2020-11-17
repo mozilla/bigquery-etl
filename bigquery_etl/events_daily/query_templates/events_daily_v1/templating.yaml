@@ -45,3 +45,9 @@ telemetry_derived:
       dest: app_version
     - src: environment.settings.locale
       dest: locale
+    - src: environment.partner.distribution_id
+      dest: distribution_id
+    - src: environment.settings.attribution.ua
+      dest: attribution_ua
+    - src: application.display_version
+      dest: display_version

@@ -37,6 +37,9 @@ SELECT
   mozfun.stats.mode_last(ARRAY_AGG(environment.settings.attribution.source)) AS attribution_source,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.uri.app_version)) AS app_version,
   mozfun.stats.mode_last(ARRAY_AGG(environment.settings.locale)) AS locale,
+  mozfun.stats.mode_last(ARRAY_AGG(environment.partner.distribution_id)) AS distribution_id,
+  mozfun.stats.mode_last(ARRAY_AGG(environment.settings.attribution.ua)) AS attribution_ua,
+  mozfun.stats.mode_last(ARRAY_AGG(application.display_version)) AS display_version,
   -- metadata
   mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.city)) AS city,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.country)) AS country,

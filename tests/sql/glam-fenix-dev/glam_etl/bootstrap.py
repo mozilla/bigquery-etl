@@ -133,16 +133,5 @@ def skeleton(dependency_file):
                 )
 
 
-@bootstrap.command()
-def main():
-    pp = PrettyPrinter()
-    assert SQL_ROOT.exists(), f"{SQL_ROOT} does not exist"
-    queries = list_queries(SQL_ROOT)
-    query_names = sorted([q.name for q in queries])
-    pp.pprint(query_names)
-
-    # create folders if they don't exist
-
-
 if __name__ == "__main__":
     bootstrap()

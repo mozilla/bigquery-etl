@@ -65,7 +65,9 @@ _previous AS (
       days_interacted_bits,
       days_created_profile_bits,
       days_seen_in_experiment,
-      submission_date
+      submission_date,
+      first_seen_date,
+      second_seen_date
     )
   FROM
     clients_last_seen_v1

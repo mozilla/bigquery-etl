@@ -1,0 +1,24 @@
+- app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  client_id: 6f3d4ae5-1726-49fc-9485-88a59124c519
+  os: '*'
+  ping_type: '*'
+  scalar_aggregates:
+  - agg_type: count
+    key: ''
+    metric: places_manager_write_query_count
+    metric_type: counter
+    value: 4.0
+- app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  client_id: 5723b61e-35ea-44d1-9b5f-aa299ada0aeb
+  os: '*'
+  ping_type: '*'
+  scalar_aggregates:
+  - agg_type: count
+    key: ''
+    metric: places_manager_write_query_count
+    metric_type: counter
+    value: 8.0

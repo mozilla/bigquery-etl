@@ -1,7 +1,7 @@
 - app_build_id: '*'
   app_version: 84
   channel: '*'
-  client_id: 6f3d4ae5-1726-49fc-9485-88a59124c519
+  client_id: 8e8d2a3b-0d26-46c0-9dbe-ab9d5991bf07
   os: '*'
   ping_type: '*'
   scalar_aggregates:
@@ -13,7 +13,7 @@
 - app_build_id: '*'
   app_version: 84
   channel: '*'
-  client_id: 5723b61e-35ea-44d1-9b5f-aa299ada0aeb
+  client_id: 4e3f927b-37b6-4e66-93f6-668074c7bf22
   os: '*'
   ping_type: '*'
   scalar_aggregates:

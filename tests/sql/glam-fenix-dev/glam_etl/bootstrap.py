@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
-# Script for initializing all of the tests for queries related to
-# fenix-glam-dev. This only needs to be run once for the initial testing.
+"""
+Script for initializing all of the tests for queries related to fenix-glam-dev.
 
+This only needs to be run once for the initial testing.
+"""
 import json
 import shutil
 import warnings
 from collections import namedtuple
 from multiprocessing import Pool
 from pathlib import Path
-from pprint import PrettyPrinter
 
 import click
 import yaml
-from bigquery_etl.glam.utils import get_schema, run
+from bigquery_etl.glam.utils import run
 from google.cloud import bigquery
 
 warnings.filterwarnings(
@@ -25,10 +26,16 @@ TEST_ROOT = Path(__file__).parent
 
 
 def list_queries(path):
+    """List all of the queries in the glam_etl folder."""
     return list([p for p in path.glob("*") if "__clients_daily" not in p.name])
 
 
 def dryrun(sql):
+    """Dry run a query and return the referenced tables.
+
+    This does not capture views, but only the tables referenced by those
+    views.
+    """
     client = bigquery.Client(project="glam-fenix-dev")
     job = client.query(
         sql,
@@ -47,10 +54,12 @@ def dryrun(sql):
 
 
 def _dryrun(p):
+    """Return the dry run results from a path."""
     return (p, dryrun(p.read_text()))
 
 
 def calculate_dependencies(queries):
+    """Create a list of dependencies between queries for bootstrapping schemas."""
     with Pool(20) as p:
         dryrun_references = p.map(_dryrun, queries)
     res = []
@@ -59,7 +68,8 @@ def calculate_dependencies(queries):
             res.append(
                 (
                     f"{ref.project}:{ref.dataset_id}.{ref.table_id}",
-                    f"{query.parent.parent.parent.name}:{query.parent.parent.name}.{query.parent.name}",
+                    f"{query.parent.parent.parent.name}:"
+                    f"{query.parent.parent.name}.{query.parent.name}",
                 )
             )
     return sorted(set(res))
@@ -67,12 +77,14 @@ def calculate_dependencies(queries):
 
 @click.group()
 def bootstrap():
+    """Click group."""
     pass
 
 
 @bootstrap.command()
 @click.option("--output", default=TEST_ROOT / "dependencies.json")
 def deps(output):
+    """Create a dependency file with all links between queries and tables."""
     path = Path(output)
     deps = calculate_dependencies(
         [p for p in SQL_ROOT.glob("**/*.sql") if "__clients_daily" not in p.name]
@@ -161,6 +173,11 @@ def mermaid(dependency_file):
     type=click.Path(dir_okay=False, exists=True),
 )
 def skeleton(dependency_file):
+    """Generate the skeleton for minimal tests.
+
+    Schemas are populated from the sql folder. Run the `deps` command to
+    generate a file of dependencies between queries.
+    """
     deps = json.loads(Path(dependency_file).read_text())
     for query in list_queries(SQL_ROOT):
         # only tests for org_mozilla_fenix_glam_nightly

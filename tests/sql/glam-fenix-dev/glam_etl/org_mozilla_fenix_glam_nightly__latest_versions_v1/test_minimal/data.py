@@ -1,6 +1,9 @@
-import yaml
+"""Testing data for query."""
+
 from pathlib import Path
 from uuid import uuid4
+
+import yaml
 
 ROOT = Path(__file__).parent
 
@@ -27,7 +30,8 @@ EXPECT = [dict(channel="nightly", latest_version=84)]
 prefix = "glam_etl"
 tables = [
     (
-        f"{prefix}.org_mozilla_fenix_glam_nightly__view_clients_daily_scalar_aggregates_v1.yaml",
+        f"{prefix}.org_mozilla_fenix_glam_nightly__"
+        "view_clients_daily_scalar_aggregates_v1.yaml",
         CLIENTS_DAILY_SCALAR_AGGREGATES,
     ),
     ("expect.yaml", EXPECT),

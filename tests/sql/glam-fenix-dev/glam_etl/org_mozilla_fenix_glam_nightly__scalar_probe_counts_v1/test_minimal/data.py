@@ -1,6 +1,7 @@
-import yaml
+"""Testing data for query."""
 from pathlib import Path
-from uuid import uuid4
+
+import yaml
 
 ROOT = Path(__file__).parent
 

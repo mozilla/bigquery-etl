@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-Copy a range of ga_sessions_* tables from one project to another
-"""
+"""Copy a range of ga_sessions_* tables from one project to another."""
 import datetime
 
 import click
@@ -9,6 +7,7 @@ from google.cloud import bigquery, exceptions
 
 
 def get_qualified_table_name(project, ga_id, table_date):
+    """Get qualified name for ga_sessions table."""
     return (
         f"{project}.{ga_id}.ga_sessions_"
         f"{datetime.datetime.strftime(table_date, '%Y%m%d')}"
@@ -16,6 +15,7 @@ def get_qualified_table_name(project, ga_id, table_date):
 
 
 def copy_single_table(bq_client, src_table, dst_table, overwrite):
+    """Copy a single day of ga_sessions."""
     job_config = bigquery.CopyJobConfig(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
         if overwrite
@@ -45,6 +45,7 @@ def copy_single_table(bq_client, src_table, dst_table, overwrite):
 @click.option("--overwrite/--no-overwrite", default=False)
 @click.argument("ga-ids", nargs=-1)
 def copy_ga_sessions(ga_ids, start_date, end_date, src_project, dst_project, overwrite):
+    """Copy ga_sessions tables for one or multiple properties over a date range."""
     bq_client = bigquery.Client(project=dst_project)
 
     if end_date is None:

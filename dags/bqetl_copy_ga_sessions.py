@@ -32,7 +32,7 @@ with DAG(
             "--src-project",
             "ga-mozilla-org-prod-001",
             "--dst-project",
-            "moz-fx-data-shared-prod",
+            "moz-fx-data-marketing-prod",
             "--overwrite",
             "65789850",
             "66602784",

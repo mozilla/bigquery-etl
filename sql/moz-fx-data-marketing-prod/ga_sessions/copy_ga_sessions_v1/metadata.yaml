@@ -2,6 +2,7 @@
 friendly_name: Google Analytics Sessions Copy
 description: >
   Copy ga_sessions tables to moz-fx-data-marketing-prod.
+  This is a temporary job to mirror tables during the transition period.
 owners:
   - bewu@mozilla.com
 labels:

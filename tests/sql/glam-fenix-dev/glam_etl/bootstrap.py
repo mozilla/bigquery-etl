@@ -2,16 +2,18 @@
 # Script for initializing all of the tests for queries related to
 # fenix-glam-dev. This only needs to be run once for the initial testing.
 
-from pathlib import Path
-from bigquery_etl.glam.utils import run, get_schema
 import json
-import yaml
-from pprint import PrettyPrinter
-from google.cloud import bigquery
-import click
-import warnings
 import shutil
+import warnings
+from collections import namedtuple
 from multiprocessing import Pool
+from pathlib import Path
+from pprint import PrettyPrinter
+
+import click
+import yaml
+from bigquery_etl.glam.utils import get_schema, run
+from google.cloud import bigquery
 
 warnings.filterwarnings(
     "ignore", "Your application has authenticated using end user credentials"
@@ -68,7 +70,6 @@ def bootstrap():
     pass
 
 
-# TODO: move this to bqetl glam glean
 @bootstrap.command()
 @click.option("--output", default=TEST_ROOT / "dependencies.json")
 def deps(output):
@@ -79,6 +80,78 @@ def deps(output):
     path.write_text(
         json.dumps([dict(zip(["from", "to"], dep)) for dep in deps], indent=2)
     )
+
+
+@bootstrap.command()
+@click.option(
+    "--dependency-file",
+    default=TEST_ROOT / "dependencies.json",
+    type=click.Path(dir_okay=False, exists=True),
+)
+def mermaid(dependency_file):
+    """Generate a mermaid diagram of dependencies."""
+    deps = json.loads(Path(dependency_file).read_text())
+
+    # project, dataset, product, query
+    Node = namedtuple("node", ["qualified", "project", "dataset", "name", "product"])
+
+    def parse(x):
+        project, dataset_table = x.split(":")
+        dataset, table = dataset_table.split(".")
+        is_glam = dataset == "glam_etl"
+        return Node(
+            dataset_table if is_glam else x,
+            project,
+            dataset,
+            table.split("__")[1] if is_glam else table,
+            table.split("__")[0] if is_glam else None,
+        )
+
+    # build up mapping of nodes to parsed info
+    nodes = {}
+    for dep in deps:
+        src = dep["from"]
+        dst = dep["to"]
+        for x in [src, dst]:
+            if "*" not in x:
+                nodes[x] = parse(x)
+
+    print("graph LR")
+    projects = set(n.project for n in nodes.values())
+    for project in projects:
+        print(f'subgraph "{project}"')
+        datasets = set(n.dataset for n in nodes.values() if n.project == project)
+        for dataset in datasets:
+            print(f'subgraph "{dataset}"')
+            if dataset == "glam_etl":
+                products = set(
+                    n.product for n in nodes.values() if n.dataset == "glam_etl"
+                )
+                for product in products:
+                    print(f'subgraph "{product}"')
+                    for n in set(
+                        n
+                        for n in nodes.values()
+                        if n.dataset == "glam_etl" and n.product == product
+                    ):
+                        print(f"{n.qualified}[{n.name}]")
+                    print("end")
+            else:
+                for n in set(n for n in nodes.values() if n.dataset == dataset):
+                    print(f"{n.qualified}[{n.name}]")
+            print("end")
+        print("end")
+
+    for dep in deps:
+        src = dep["from"]
+        dst = dep["to"]
+        if "*" in src:
+            for node in [
+                v for k, v in nodes.items() if k.startswith(src.replace("*", ""))
+            ]:
+                print(f"{node.qualified} --> {nodes[dst].qualified}")
+        else:
+            print(f"{nodes[src].qualified} --> {nodes[dst].qualified}")
 
 
 @bootstrap.command()

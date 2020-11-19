@@ -102,7 +102,7 @@ SELECT
       _previous.days_opened_dev_tools_bits,
       _current.days_opened_dev_tools_bits
     ) AS days_opened_dev_tools_bits,
-    udf.coalesce_adjacent_days_28_bits(
+    udf.combine_adjacent_days_28_bits(
       _previous.days_interacted_bits,
       _current.days_interacted_bits
     ) AS days_interacted_bits,

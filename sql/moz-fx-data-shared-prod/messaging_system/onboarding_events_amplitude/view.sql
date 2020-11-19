@@ -24,7 +24,9 @@ SELECT
     STRUCT(
       locale,
       release_channel,
-      ARRAY(SELECT CONCAT(key, " - ", value.branch) FROM UNNEST(experiments)) AS experiments
+      ARRAY(SELECT CONCAT(key, " - ", value.branch) FROM UNNEST(experiments)) AS experiments,
+      attribution.source AS attribution_source,
+      attribution.ua AS attribution_ua
     )
   ) AS user_properties
 FROM

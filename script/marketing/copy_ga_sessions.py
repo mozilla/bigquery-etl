@@ -21,11 +21,15 @@ def copy_single_table(bq_client, src_table, dst_table, overwrite):
         if overwrite
         else bigquery.WriteDisposition.WRITE_EMPTY
     )
-    copy_job = bq_client.copy_table(
-        sources=src_table,
-        destination=dst_table,
-        job_config=job_config,
-    )
+    try:
+        copy_job = bq_client.copy_table(
+            sources=src_table,
+            destination=dst_table,
+            job_config=job_config,
+        )
+    except exceptions.NotFound:
+        print(f"{src_table} not found, copy skipped")
+        return
 
     try:
         copy_job.result()

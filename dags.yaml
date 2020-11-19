@@ -277,12 +277,3 @@ bqetl_monitoring:
     start_date: '2018-10-30'
     retries: 2
     retry_delay: 30m
-
-bqetl_copy_ga_sessions:
-  schedule_interval: 0 1 * * *
-  default_args:
-    owner: bewu@mozilla.com
-    email: ['bewu@mozilla.com']
-    start_date: '2020-10-31'
-    retries: 2
-    retry_delay: 30m

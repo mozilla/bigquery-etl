@@ -19,7 +19,8 @@ fi
 
 if [ "$#" = 0 ]; then
     # Default to 20 workers because most of the tests are io-bound
-    exec pytest --black --flake8 --mypy-ignore-missing-imports --mypy-scripts-are-modules --pydocstyle --numprocesses 20
+    exec mypy --ignore-missing-imports bigquery_etl tests \
+        && pytest --black --flake8 --pydocstyle --numprocesses 20
 elif [ "${1:0:1}" = - ]; then
     # First argument is a flag, assume intended executable is pytest
     exec pytest "$@"

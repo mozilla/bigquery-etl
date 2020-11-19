@@ -1,0 +1,3 @@
+---
+friendly_name: Histogram String to JSON
+description: Convert a histogram string to a full histogram JSON blob.

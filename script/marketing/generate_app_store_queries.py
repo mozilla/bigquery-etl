@@ -19,7 +19,7 @@ sys.path.append(
 )
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 
-SQL_DIR = "sql/moz-fx-data-shared-prod/"
+SQL_DIR = "sql/moz-fx-data-marketing-prod/"
 
 QUERY_TEMPLATE = """
 SELECT
@@ -65,7 +65,7 @@ def parse_args():
         "--backfill",
         action="store_true",
         help="If --create-table is set, backfill will populate"
-        " tables with data from eported tables",
+        " tables with data from exported tables",
     )
 
     return parser.parse_args()

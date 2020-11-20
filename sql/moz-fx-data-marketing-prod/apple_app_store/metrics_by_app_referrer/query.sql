@@ -44,4 +44,4 @@ FULL JOIN
 USING
   (date, app_name, app_referrer)
 WHERE
-  date = @date
+  date = @submission_date

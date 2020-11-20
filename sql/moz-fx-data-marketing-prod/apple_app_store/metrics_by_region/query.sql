@@ -49,4 +49,4 @@ FULL JOIN
 USING
   (date, app_name, region)
 WHERE
-  date = @date
+  date = @submission_date

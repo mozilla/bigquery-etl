@@ -7,7 +7,7 @@ WITH by_browser AS (
     SUM(IF(hits.eventInfo.eventAction = "share", 1, 0)) AS share,
     SUM(IF(hits.eventInfo.eventAction = "newsletter subscription", 1, 0)) AS newsletter_subscription
   FROM
-    `ga-mozilla-org-prod-001.66602784.ga_sessions_*`,
+    `moz-fx-data-marketing-prod.66602784.ga_sessions_*`,
     UNNEST(hits) AS hits
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)

@@ -8,7 +8,7 @@ WITH landing_page_table AS (
     SPLIT(hits.page.pagePath, '?')[OFFSET(0)] AS cleaned_landing_page,
     SUM(IF(hits.isEntrance IS NOT NULL, 1, 0)) AS page_sessions,
   FROM
-    `ga-mozilla-org-prod-001.66602784.ga_sessions_*`
+    `moz-fx-data-marketing-prod.66602784.ga_sessions_*`
   CROSS JOIN
     UNNEST(hits) AS hits
   WHERE

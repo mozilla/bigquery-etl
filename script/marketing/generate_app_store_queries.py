@@ -135,7 +135,7 @@ def main(project, source_dataset, destination_dataset, create_table, backfill, d
             additional_fields=", ".join(additional_fields),
             first_table=qualified_table_names[0],
             joined_tables="\n".join(join_clauses),
-            filter="date=@date",
+            filter="date=@submission_date",
         )
         query_path = os.path.join(SQL_DIR, destination_dataset, table_name, "query.sql")
 

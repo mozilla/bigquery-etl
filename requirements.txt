@@ -519,8 +519,8 @@ six==1.15.0 \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
     --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
     # via gcloud, google-api-core, google-auth, google-cloud-bigquery, google-resumable-media, grpcio, jsonschema, oauth2client, packaging, protobuf, python-dateutil
-smart_open==3.0.0 \
-    --hash=sha256:7f4e85b71df5a3618f5447d0b417b7a3576308c839690a24a70338b8993684c3 \
+smart_open==4.0.0 \
+    --hash=sha256:2ce157700821e285bbacd8d01ec7a4f2582765460e541f55b216cb135db8be24 \
     # via -r requirements.in
 smmap==3.0.4 \
     --hash=sha256:54c44c197c819d5ef1991799a7e30b662d1e520f2ac75c9efbeb54a742214cf4 \

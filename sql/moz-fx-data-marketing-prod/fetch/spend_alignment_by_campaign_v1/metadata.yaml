@@ -9,5 +9,3 @@ owners:
 scheduling:
   dag_name: bqetl_marketing_fetch
   date_partition_parameter: null
-  referenced_tables: []
-

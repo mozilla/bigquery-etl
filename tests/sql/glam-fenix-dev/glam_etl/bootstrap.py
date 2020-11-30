@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script for initializing all of the tests for queries related to fenix-glam-dev.
+Script for initializing tests for queries related to glam-fenix-dev.
 
 This only needs to be run once for the initial testing.
 """
@@ -77,7 +77,7 @@ def calculate_dependencies(queries):
 
 @click.group()
 def bootstrap():
-    """Click group."""
+    """Script for initializing tests for queries related to glam-fenix-dev."""
     pass
 
 

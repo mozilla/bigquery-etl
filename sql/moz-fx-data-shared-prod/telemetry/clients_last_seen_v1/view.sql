@@ -1,17 +1,23 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v1`
 AS
+WITH days_since AS (
+  SELECT
+    DATE_DIFF(submission_date, first_seen_date, DAY) AS days_since_first_seen,
+    DATE_DIFF(submission_date, second_seen_date, DAY) AS days_since_second_seen,
+    mozfun.bits28.days_since_seen(days_seen_bits) AS days_since_seen,
+    mozfun.bits28.days_since_seen(days_visited_1_uri_bits) AS days_since_visited_1_uri,
+    mozfun.bits28.days_since_seen(days_visited_5_uri_bits) AS days_since_visited_5_uri,
+    mozfun.bits28.days_since_seen(days_visited_10_uri_bits) AS days_since_visited_10_uri,
+    mozfun.bits28.days_since_seen(days_had_8_active_ticks_bits) AS days_since_had_8_active_ticks,
+    mozfun.bits28.days_since_seen(days_opened_dev_tools_bits) AS days_since_opened_dev_tools,
+    mozfun.bits28.days_since_seen(days_created_profile_bits) AS days_since_created_profile,
+    mozfun.bits28.days_since_seen(days_interacted_bits) AS days_since_interacted,
+    *
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`
+)
 SELECT
-  DATE_DIFF(submission_date, first_seen_date, DAY) AS days_since_first_seen,
-  DATE_DIFF(submission_date, second_seen_date, DAY) AS days_since_second_seen,
-  mozfun.bits28.days_since_seen(days_seen_bits) AS days_since_seen,
-  mozfun.bits28.days_since_seen(days_visited_1_uri_bits) AS days_since_visited_1_uri,
-  mozfun.bits28.days_since_seen(days_visited_5_uri_bits) AS days_since_visited_5_uri,
-  mozfun.bits28.days_since_seen(days_visited_10_uri_bits) AS days_since_visited_10_uri,
-  mozfun.bits28.days_since_seen(days_had_8_active_ticks_bits) AS days_since_had_8_active_ticks,
-  mozfun.bits28.days_since_seen(days_opened_dev_tools_bits) AS days_since_opened_dev_tools,
-  mozfun.bits28.days_since_seen(days_created_profile_bits) AS days_since_created_profile,
-  mozfun.bits28.days_since_seen(days_interacted_bits) AS days_since_interacted,
   -- Segment definitions; see https://docs.telemetry.mozilla.org/concepts/segments.html
   -- 0x0FFFFFFE is a bitmask that accepts the previous 27 days, excluding the current day (rightmost bit)
   -- 0x183060C183 == 0b000001100000110000011000001100000110000011 is a bit mask that accepts a pair of
@@ -94,18 +100,15 @@ SELECT
     'other'
   END
   AS activity_segments_v1,
+  --     0x7f = mozfun.bits28.from_string('0000000000000000000001111111')
   days_since_created_profile = 6
-  AND BIT_COUNT(
-    days_seen_bits & udf.bits28_from_string('0000000000000000000001111111')
-  ) >= 5 AS new_profile_7_day_activated_v1,
+  AND BIT_COUNT(days_seen_bits & 0x7f) >= 5 AS new_profile_7_day_activated_v1,
+  --   0x3fff = mozfun.bits28.from_string('0000000000000011111111111111')
   days_since_created_profile = 13
-  AND BIT_COUNT(
-    days_seen_bits & udf.bits28_from_string('0000000000000011111111111111')
-  ) >= 8 AS new_profile_14_day_activated_v1,
+  AND BIT_COUNT(days_seen_bits & 0x3fff) >= 8 AS new_profile_14_day_activated_v1,
+  -- 0x1fffff = mozfun.bits28.from_string('0000000111111111111111111111')
   days_since_created_profile = 20
-  AND BIT_COUNT(
-    days_seen_bits & udf.bits28_from_string('0000000111111111111111111111')
-  ) >= 12 AS new_profile_21_day_activated_v1,
+  AND BIT_COUNT(days_seen_bits & 0x1fffff) >= 12 AS new_profile_21_day_activated_v1,
   * EXCEPT (
     active_experiment_id,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,
@@ -128,4 +131,4 @@ SELECT
   -- TODO: Announce and remove this temporary field.
   CAST(sample_id AS STRING) AS _sample_id_string
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`
+  days_since

@@ -32,10 +32,10 @@ Again:
 
 1. Copy `test_minimal` to `<test_name>`
 2. Modify `data.py`
-  2a. Set `EXPECT=[]` if unsure about results, otherwise goto 3.
-  2b. Run `data.py`
-  2c. Run `pytest -k <test_name>`
-  2d. Set `EXPECT` to result in test output
+   * 2a. Set `EXPECT=[]` if unsure about results, otherwise goto 3.
+   * 2b. Run `data.py`
+   * 2c. Run `pytest -k <test_name>`
+   * 2d. Set `EXPECT` to result in test output
 3. Run `data.py`
 4. Run `pytest -k <test name>`
 

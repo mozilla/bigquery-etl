@@ -43,7 +43,7 @@ WITH _current AS (
   WHERE
     submission_date = @submission_date
 ),
-  --
+--
 _previous AS (
   SELECT
     days_seen_bits,
@@ -65,7 +65,9 @@ _previous AS (
       days_interacted_bits,
       days_created_profile_bits,
       days_seen_in_experiment,
-      submission_date
+      submission_date,
+      first_seen_date,
+      second_seen_date
     )
   FROM
     clients_last_seen_v1
@@ -74,9 +76,11 @@ _previous AS (
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
 )
-  --
+--
 SELECT
   @submission_date AS submission_date,
+  IF(cfs.first_seen_date > @submission_date, NULL, cfs.first_seen_date) AS first_seen_date,
+  IF(cfs.second_seen_date > @submission_date, NULL, cfs.second_seen_date) AS second_seen_date,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
     udf.combine_adjacent_days_28_bits(
       _previous.days_seen_bits,
@@ -119,5 +123,9 @@ FROM
   _current
 FULL JOIN
   _previous
+USING
+  (client_id)
+LEFT JOIN
+  clients_first_seen_v1 AS cfs
 USING
   (client_id)

@@ -2,8 +2,13 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.clients_last_seen_v1`
 AS
 SELECT
+  DATE_DIFF(submission_date, first_seen_date, DAY) AS days_since_first_seen,
+  DATE_DIFF(submission_date, second_seen_date, DAY) AS days_since_second_seen,
   mozfun.bits28.days_since_seen(days_seen_bits) AS days_since_seen,
+  mozfun.bits28.days_since_seen(days_visited_1_uri_bits) AS days_since_visited_1_uri,
   mozfun.bits28.days_since_seen(days_visited_5_uri_bits) AS days_since_visited_5_uri,
+  mozfun.bits28.days_since_seen(days_visited_10_uri_bits) AS days_since_visited_10_uri,
+  mozfun.bits28.days_since_seen(days_had_8_active_ticks_bits) AS days_since_had_8_active_ticks,
   mozfun.bits28.days_since_seen(days_opened_dev_tools_bits) AS days_since_opened_dev_tools,
   mozfun.bits28.days_since_seen(days_created_profile_bits) AS days_since_created_profile,
   mozfun.bits28.days_since_seen(days_interacted_bits) AS days_since_interacted,
@@ -61,6 +66,46 @@ SELECT
       ) <= 1
     )
   ) AS is_allweek_regular_v1,
+  BIT_COUNT(days_visited_1_uri_bits) >= 21 AS is_core_active_v1,
+  CASE
+  WHEN
+    BIT_COUNT(days_visited_1_uri_bits)
+    BETWEEN 1
+    AND 6
+  THEN
+    'infrequent_user'
+  WHEN
+    BIT_COUNT(days_visited_1_uri_bits)
+    BETWEEN 7
+    AND 13
+  THEN
+    'casual_user'
+  WHEN
+    BIT_COUNT(days_visited_1_uri_bits)
+    BETWEEN 14
+    AND 20
+  THEN
+    'regular_user'
+  WHEN
+    BIT_COUNT(days_visited_1_uri_bits) >= 21
+  THEN
+    'core_user'
+  ELSE
+    'other'
+  END
+  AS activity_segments_v1,
+  days_since_created_profile = 6
+  AND BIT_COUNT(
+    days_seen_bits & udf.bits28_from_string('0000000000000000000001111111')
+  ) >= 5 AS new_profile_7_day_activated_v1,
+  days_since_created_profile = 13
+  AND BIT_COUNT(
+    days_seen_bits & udf.bits28_from_string('0000000000000011111111111111')
+  ) >= 8 AS new_profile_14_day_activated_v1,
+  days_since_created_profile = 20
+  AND BIT_COUNT(
+    days_seen_bits & udf.bits28_from_string('0000000111111111111111111111')
+  ) >= 12 AS new_profile_21_day_activated_v1,
   * EXCEPT (
     active_experiment_id,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,

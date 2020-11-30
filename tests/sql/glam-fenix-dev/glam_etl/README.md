@@ -15,7 +15,7 @@ the test. Run the test using the `-k` flag.
 For example:
 
 ```bash
-cd tests/sql/glam-fenix-dev
+cd tests/sql/glam-fenix-dev/glam_etl
 python org_mozilla_fenix_glam_nightly__extract_user_counts_v1/test_minimal/data.py
 pytest -k extract_user_counts
 ```

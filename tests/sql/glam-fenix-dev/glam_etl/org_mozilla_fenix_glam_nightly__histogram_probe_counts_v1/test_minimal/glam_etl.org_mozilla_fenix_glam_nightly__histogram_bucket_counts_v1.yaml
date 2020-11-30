@@ -7,9 +7,9 @@
   metric_type: timing_distribution
   os: '*'
   ping_type: '*'
-  range_max: 123078199
+  range_max: 3
   record:
-    key: '112863206'
+    key: '1'
     value: 1.0
 - agg_type: summed_histogram
   app_build_id: '*'
@@ -20,7 +20,7 @@
   metric_type: timing_distribution
   os: '*'
   ping_type: '*'
-  range_max: 123078199
+  range_max: 3
   record:
-    key: '123078199'
+    key: '2'
     value: 0.0

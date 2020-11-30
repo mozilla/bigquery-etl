@@ -9,6 +9,7 @@ import attr
 import cattr
 import datetime
 import pytz
+import time
 from typing import List, Optional
 
 EXPERIMENTER_API_URL_V1 = (
@@ -152,10 +153,19 @@ class ExperimentV6:
         )
 
 
+def fetch(url):
+    for _ in range(2):
+        try:
+            return requests.get(url, timeout=30).json()
+        except Exception as e:
+            last_exception = e
+            time.sleep(1)
+    raise last_exception
+
+
 def get_experiments() -> List[Experiment]:
     """Fetch experiments from Experimenter."""
-    session = requests.Session()
-    legacy_experiments_json = session.get(EXPERIMENTER_API_URL_V1).json()
+    legacy_experiments_json = fetch(EXPERIMENTER_API_URL_V1)
     legacy_experiments = []
 
     for experiment in legacy_experiments_json:
@@ -167,7 +177,7 @@ def get_experiments() -> List[Experiment]:
             except Exception as e:
                 print(f"Cannot import experiment: {experiment}: {e}")
 
-    nimbus_experiments_json = session.get(EXPERIMENTER_API_URL_V6).json()
+    nimbus_experiments_json = fetch(EXPERIMENTER_API_URL_V6)
     nimbus_experiments = []
 
     for experiment in nimbus_experiments_json:

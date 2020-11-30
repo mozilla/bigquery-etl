@@ -9,6 +9,8 @@ OPTIONS
   (require_partition_filter = TRUE)
 AS
 SELECT
+  CAST(NULL AS DATE) AS first_seen_date,
+  CAST(NULL AS DATE) AS second_seen_date,
   CAST(NULL AS INT64) AS days_seen_bits,
   CAST(NULL AS INT64) AS days_visited_1_uri_bits,
   CAST(NULL AS INT64) AS days_visited_5_uri_bits,

@@ -1,5 +1,15 @@
 [
   {
+    "name": "first_seen_date",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "second_seen_date",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
     "name": "days_seen_bits",
     "type": "INT64",
     "mode": "REQUIRED"

@@ -156,6 +156,10 @@ with DAG(
         telemetry_derived__clients_daily__v6
     )
 
+    telemetry_derived__clients_last_seen__v1.set_upstream(
+        telemetry_derived__clients_first_seen__v1
+    )
+
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",

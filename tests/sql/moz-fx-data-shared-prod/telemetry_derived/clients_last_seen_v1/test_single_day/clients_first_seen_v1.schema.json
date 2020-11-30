@@ -1,0 +1,17 @@
+[
+  {
+    "name": "first_seen_date",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "second_seen_date",
+    "type": "DATE",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  }
+]

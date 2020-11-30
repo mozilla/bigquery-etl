@@ -1,0 +1,11 @@
+description: >
+  Compare spend data by campaign between summary tables and detailed tables
+friendly_name: Campaign Spend Alignment
+labels:
+  incremental: false
+  schedule: weekly
+owners:
+  - bewu@mozilla.com
+scheduling:
+  dag_name: bqetl_marketing_fetch
+  date_partition_parameter: null

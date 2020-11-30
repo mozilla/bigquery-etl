@@ -87,7 +87,10 @@ client_meta AS (
     scalar_parent_browser_engagement_total_uri_count_sum,
     devtools_toolbox_opened_count_sum,
     active_hours_sum,
-    days_since_seen,
+    -- We apply this UDF on top of telemetry_derived.clients_last_seen_v1;
+    -- it would be more convenient to use the telemetry.clients_last_seen view,
+    -- but this saves on query complexity.
+    mozfun.bits28.days_since_seen(days_seen_bits) AS days_since_seen,
     sync_configured,
     sap,
     tagged_sap,
@@ -97,7 +100,7 @@ client_meta AS (
     ad_clicks,
     active_addons
   FROM
-    `moz-fx-data-shared-prod.telemetry.clients_last_seen`
+    `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`
   LEFT JOIN
     client_searches
   USING

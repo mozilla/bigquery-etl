@@ -126,6 +126,6 @@ FULL JOIN
 USING
   (client_id)
 LEFT JOIN
-  telemetry_derived.clients_first_seen_v1 AS cfs
+  clients_first_seen_v1 AS cfs
 USING
   (client_id)

@@ -9,7 +9,6 @@ ROOT = Path(__file__).parent
 SUBMISSION_DATE = "2020-10-01"
 APP_BUILD_ID = "2020100100"
 
-# TODO: counts are wrong here?
 CLIENTS_SCALAR_AGGREGATES = [
     {
         "client_id": str(uuid4()),
@@ -67,7 +66,7 @@ EXPECT = [
         "metric_type": "counter",
         "os": "*",
         "ping_type": "*",
-        "total_users": 16,
+        "total_users": 2,
     }
 ]
 

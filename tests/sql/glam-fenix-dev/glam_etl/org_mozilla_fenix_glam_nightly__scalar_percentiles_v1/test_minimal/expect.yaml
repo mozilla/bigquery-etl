@@ -19,4 +19,4 @@
   metric_type: counter
   os: '*'
   ping_type: '*'
-  total_users: 16
+  total_users: 2

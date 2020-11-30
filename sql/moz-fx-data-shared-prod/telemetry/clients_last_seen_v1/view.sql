@@ -100,15 +100,21 @@ SELECT
     'other'
   END
   AS activity_segments_v1,
-  --     0x7F = mozfun.bits28.from_string('0000000000000000000001111111')
-  days_since_created_profile = 6
-  AND BIT_COUNT(days_seen_bits & 0x7F) >= 5 AS new_profile_7_day_activated_v1,
-  --   0x3FFF = mozfun.bits28.from_string('0000000000000011111111111111')
-  days_since_created_profile = 13
-  AND BIT_COUNT(days_seen_bits & 0x3FFF) >= 8 AS new_profile_14_day_activated_v1,
-  -- 0x1FFFFF = mozfun.bits28.from_string('0000000111111111111111111111')
-  days_since_created_profile = 20
-  AND BIT_COUNT(days_seen_bits & 0x1FFFFF) >= 12 AS new_profile_21_day_activated_v1,
+  (
+    days_since_first_seen = 6
+    -- 0x7F = mozfun.bits28.from_string('0000000000000000000001111111')
+    AND BIT_COUNT(days_seen_bits & 0x7F) >= 5
+  ) AS new_profile_7_day_activated_v1,
+  (
+    days_since_first_seen = 13
+    -- 0x3FFF = mozfun.bits28.from_string('0000000000000011111111111111')
+    AND BIT_COUNT(days_seen_bits & 0x3FFF) >= 8
+  ) AS new_profile_14_day_activated_v1,
+  (
+    days_since_first_seen = 20
+    -- 0x1FFFFF = mozfun.bits28.from_string('0000000111111111111111111111')
+    AND BIT_COUNT(days_seen_bits & 0x1FFFFF) >= 12
+  ) AS new_profile_21_day_activated_v1,
   * EXCEPT (
     active_experiment_id,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,

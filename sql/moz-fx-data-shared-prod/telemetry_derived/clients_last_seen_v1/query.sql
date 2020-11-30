@@ -43,7 +43,7 @@ WITH _current AS (
   WHERE
     submission_date = @submission_date
 ),
-  --
+--
 _previous AS (
   SELECT
     days_seen_bits,
@@ -76,9 +76,9 @@ _previous AS (
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
 )
-  --
+--
 SELECT
-  DATE @submission_date AS submission_date,
+  @submission_date AS submission_date,
   IF(cfs.first_seen_date > @submission_date, NULL, cfs.first_seen_date) AS first_seen_date,
   IF(cfs.second_seen_date > @submission_date, NULL, cfs.second_seen_date) AS second_seen_date,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (

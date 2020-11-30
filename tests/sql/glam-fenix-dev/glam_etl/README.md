@@ -20,6 +20,25 @@ python org_mozilla_fenix_glam_nightly__extract_user_counts_v1/test_minimal/data.
 pytest -k extract_user_counts
 ```
 
+## Creating a new test
+
+To create a new test, copy the `test_minimal` directory and rename it to reflect
+the new test behavior. In `data.py`, change the relevant parameters for the
+input data. If you aren't sure about the output result, or the result is
+excessively long, you may set `EXPECT=[]` and run the test to find out what the
+`EXPECT` value should be.
+
+Again:
+
+1. Copy `test_minimal` to `<test_name>`
+2. Modify `data.py`
+  2a. Set `EXPECT=[]` if unsure about results, otherwise goto 3.
+  2b. Run `data.py`
+  2c. Run `pytest -k <test_name>`
+  2d. Set `EXPECT` to result in test output
+3. Run `data.py`
+4. Run `pytest -k <test name>`
+
 ## Test bootstrapping process
 
 This directory contains a bootstrap script used to generate the minimal tests.

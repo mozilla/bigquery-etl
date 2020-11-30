@@ -53,9 +53,9 @@ def dryrun(sql):
     return job.referenced_tables
 
 
-def _dryrun(p):
+def _dryrun(query_path):
     """Return the dry run results from a path."""
-    return (p, dryrun(p.read_text()))
+    return (query_path, dryrun(query_path.read_text()))
 
 
 def calculate_dependencies(queries):

@@ -6,7 +6,4 @@ AS
 SELECT
   *
 FROM
-  EXTERNAL_QUERY(
-    "moz-fx-guardian-prod-bfc7.us.guardian-sql-prod",
-    "SELECT * FROM vpn_waitlist LIMIT 0;"
-  )
+  EXTERNAL_QUERY("moz-fx-guardian-prod-bfc7.us.guardian-sql-prod", "SELECT * FROM vpn_waitlist")

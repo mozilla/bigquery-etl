@@ -44,4 +44,4 @@ FULL JOIN
 USING
   (date, app_name, source)
 WHERE
-  date = @date
+  date = @submission_date

@@ -36,4 +36,4 @@ FULL JOIN
 USING
   (date, app_name, app_version)
 WHERE
-  date = @date
+  date = @submission_date

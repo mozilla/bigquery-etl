@@ -49,4 +49,4 @@ FULL JOIN
 USING
   (date, app_name, storefront)
 WHERE
-  date = @date
+  date = @submission_date

@@ -24,7 +24,7 @@ WITH with_hits AS (
     SPLIT(hits.page.pagePathLevel1, '/')[SAFE_OFFSET(1)] AS blog,
     SPLIT(hits.page.pagePathLevel2, '/')[SAFE_OFFSET(1)] AS page_path_level2
   FROM
-    `ga-mozilla-org-prod-001.66602784.ga_sessions_*`
+    `moz-fx-data-marketing-prod.66602784.ga_sessions_*`
   CROSS JOIN
     UNNEST(hits) AS hits
   WHERE

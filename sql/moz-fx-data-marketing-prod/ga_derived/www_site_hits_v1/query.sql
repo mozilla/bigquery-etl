@@ -46,7 +46,7 @@ WITH hits AS (
       COALESCE(hit.eventInfo.eventLabel, '')
     ) AS event_id,
   FROM
-    `ga-mozilla-org-prod-001.65789850.ga_sessions_*`
+    `moz-fx-data-marketing-prod.65789850.ga_sessions_*`
   CROSS JOIN
     UNNEST(hits) AS hit
   WHERE

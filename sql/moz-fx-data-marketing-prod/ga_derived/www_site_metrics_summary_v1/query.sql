@@ -13,7 +13,7 @@ WITH sessions_table AS (
     COUNT(*) AS sessions,
     SUM(IF(device.browser != 'Firefox', 1, 0)) AS non_fx_sessions,
   FROM
-    `ga-mozilla-org-prod-001.65789850.ga_sessions_*`
+    `moz-fx-data-marketing-prod.65789850.ga_sessions_*`
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
     AND totals.visits = 1

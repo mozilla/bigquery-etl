@@ -63,6 +63,12 @@ _previous AS (
       days_interacted_bits,
       days_created_profile_bits,
       days_seen_in_experiment,
+      -- Event-based criteria
+      days_logged_event_bits,
+      days_viewed_protection_report_bits,
+      days_used_pip_bits,
+      days_had_cert_error_bits,
+      -- Dates
       submission_date,
       first_seen_date,
       second_seen_date
@@ -73,12 +79,24 @@ _previous AS (
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.
     AND udf.shift_28_bits_one_day(days_seen_bits) > 0
+),
+events_last_seen AS (
+  SELECT
+    *
+  FROM
+    events_last_seen_v1
+  WHERE
+    submission_date = @submission_date
 )
 --
 SELECT
   @submission_date AS submission_date,
   IF(cfs.first_seen_date > @submission_date, NULL, cfs.first_seen_date) AS first_seen_date,
   IF(cfs.second_seen_date > @submission_date, NULL, cfs.second_seen_date) AS second_seen_date,
+  els.days_logged_event_bits,
+  els.days_viewed_protection_report_bits,
+  els.days_used_pip_bits,
+  els.days_had_cert_error_bits,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
     udf.combine_adjacent_days_28_bits(
       _previous.days_seen_bits,
@@ -121,6 +139,10 @@ FROM
   _current
 FULL JOIN
   _previous
+USING
+  (client_id)
+LEFT JOIN
+  events_last_seen AS els
 USING
   (client_id)
 LEFT JOIN

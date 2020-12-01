@@ -1,0 +1,13 @@
+friendly_name: Events Last Seen
+description: >
+  Used to define bit patterns on top of events that represent usage of desktop
+  features over 28-day windows. Includes no dimensions, since these fields are intended
+  to be joined in as part of the clients_last_seen query.
+
+  Note that the join with clients_last_seen is a LEFT JOIN to avoid allowing rows
+  where no main pings have been seen. As a result, clients_last_seen will not reflect
+  any events which arrive on the date before the first main ping is received.
+labels:
+  incremental: true
+owners:
+- jklukas@mozilla.com

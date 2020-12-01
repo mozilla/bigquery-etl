@@ -12,7 +12,7 @@ WITH _current AS (
     ) AS days_viewed_protection_report_bits,
     CAST(
       LOGICAL_OR(event_category = 'pictureinpicture' AND event_method = 'create') AS INT64
-    ) AS days_used_pip_bits,
+    ) AS days_used_picture_in_picture_bits,
     CAST(
       LOGICAL_OR(event_string_value = 'SEC_ERROR_UNKNOWN_ISSUER') AS INT64
     ) AS days_had_cert_error_bits,
@@ -44,9 +44,9 @@ SELECT
     _current.days_viewed_protection_report_bits
   ) AS days_viewed_protection_report_bits,
   udf.combine_adjacent_days_28_bits(
-    _previous.days_used_pip_bits,
-    _current.days_used_pip_bits
-  ) AS days_used_pip_bits,
+    _previous.days_used_picture_in_picture_bits,
+    _current.days_used_picture_in_picture_bits
+  ) AS days_used_picture_in_picture_bits,
   udf.combine_adjacent_days_28_bits(
     _previous.days_had_cert_error_bits,
     _current.days_had_cert_error_bits

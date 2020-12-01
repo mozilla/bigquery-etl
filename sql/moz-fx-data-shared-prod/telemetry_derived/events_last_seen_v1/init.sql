@@ -11,7 +11,7 @@ SELECT
   client_id,
   CAST(FALSE AS INT64) AS days_logged_event_bits,
   CAST(FALSE AS INT64) AS days_viewed_protection_report_bits,
-  CAST(FALSE AS INT64) AS days_used_pip_bits,
+  CAST(FALSE AS INT64) AS days_used_picture_in_picture_bits,
   CAST(FALSE AS INT64) AS days_had_cert_error_bits,
 FROM
   telemetry.events

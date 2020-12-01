@@ -66,7 +66,7 @@ _previous AS (
       -- Event-based criteria
       days_logged_event_bits,
       days_viewed_protection_report_bits,
-      days_used_pip_bits,
+      days_used_picture_in_picture_bits,
       days_had_cert_error_bits,
       -- Dates
       submission_date,
@@ -95,7 +95,7 @@ SELECT
   IF(cfs.second_seen_date > @submission_date, NULL, cfs.second_seen_date) AS second_seen_date,
   els.days_logged_event_bits,
   els.days_viewed_protection_report_bits,
-  els.days_used_pip_bits,
+  els.days_used_picture_in_picture_bits,
   els.days_had_cert_error_bits,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
     udf.combine_adjacent_days_28_bits(
@@ -141,10 +141,15 @@ FULL JOIN
   _previous
 USING
   (client_id)
+-- We join with events_last_seen to get usage patterns based on event pings.
+-- Note that this left join will ignore clients that haven't sent a main ping,
+-- meaning that we won't show event usage if it appears on the submission_date
+-- before a client's first main ping is sent.
 LEFT JOIN
   events_last_seen AS els
 USING
   (client_id)
+-- We join with clients_first_seen to get first_seen_date over all time.
 LEFT JOIN
   clients_first_seen_v1 AS cfs
 USING

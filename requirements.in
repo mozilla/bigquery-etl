@@ -13,7 +13,7 @@ smart_open==3.0.0
 sqlparse==0.4.1
 mozilla_schema_generator==0.1.4
 GitPython==3.1.11
-cattrs==1.1.1
+cattrs==1.1.2
 attrs==20.3.0
 typing==3.7.4.3
 click==7.1.2

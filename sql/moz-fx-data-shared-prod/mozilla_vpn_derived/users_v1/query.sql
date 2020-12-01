@@ -2,7 +2,7 @@ WITH raw AS (
   SELECT
     fxa_uid,
     created_at,
-    JSON_EXTRACT(attribution, '$') AS attribution,
+    mozfun.json.js_extract_string_map(attribution) AS attribution,
   FROM
     mozilla_vpn_external.users_v1
 ), intermediate AS (

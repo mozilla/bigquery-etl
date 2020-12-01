@@ -58,6 +58,11 @@ def _process_file(client, args, filepath):
             # with a letter and may not end with a dash. For more information see also
             # https://github.com/mozilla/bigquery-etl/pull/1427#issuecomment-707376291
             project_id = target_view_orig.replace("`", "").rsplit(".", 2)[0]
+            # Only views for moz-fx-data-shared-prod will get published to other
+            # projects, for example to moz-fx-data-derived-datasets
+            if project_id != "moz-fx-data-shared-prod":
+                print(f"Skipping {filepath} because --target-project is set")
+                return True
             target_view = target_view_orig.replace(project_id, args.target_project, 1)
             # We only change the first occurrence, which is in the target view name.
             sql = sql.replace(project_id, args.target_project, 1)
@@ -97,7 +102,8 @@ def _process_file(client, args, filepath):
     "--target-project",
     help=(
         "If specified, create views in the target project rather than"
-        " the project specified in the file"
+        " the project specified in the file. Only views for "
+        " moz-fx-data-shared-prod will be published if this is set."
     ),
 )
 @click.option("--log-level", default="INFO", help="Defaults to INFO")

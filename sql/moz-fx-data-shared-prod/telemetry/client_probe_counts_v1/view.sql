@@ -26,7 +26,3 @@ SELECT
   *
 FROM
   all_counts
-WHERE
-  metric != "search_counts"
-  AND metric NOT LIKE "%browser_search%"
-  AND metric NOT LIKE "%browser_engagement_navigation%"

@@ -52,7 +52,7 @@ percentiles AS (
     key,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
-    COUNT(*) AS total_users,
+    COUNT(DISTINCT(client_id)) AS total_users,
     APPROX_QUANTILES(value, 100) AS aggregates
   FROM
     all_combos

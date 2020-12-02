@@ -7,6 +7,18 @@ The GLAM glean queries are situated within the `glam_etl` dataset under the
 `glam-fenix-dev` project. Each query is prefixed with the namespace of the the
 glean application.
 
+## Running the main integration test
+
+The `test_glean_org_mozilla_fenix_glam_nightly` script is the main testing
+script for this set of GLAM ETL queries. The volume of data is typically low and
+requires joining across several different glean datasets. Read the script to
+determine how to run it. For reference, here is how to generate the the queries
+and the schemas for check-in.
+
+```bash
+GENERATE_ONLY=true script/glam/test/test_glean_org_mozilla_fenix_glam_nightly
+```
+
 ## Dropping tables
 
 Use the `list_tables` script to enumerate all of the tables for the GLAM

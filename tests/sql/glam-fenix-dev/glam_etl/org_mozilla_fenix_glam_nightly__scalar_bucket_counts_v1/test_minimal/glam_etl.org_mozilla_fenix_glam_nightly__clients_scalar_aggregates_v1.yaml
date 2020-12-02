@@ -1,0 +1,24 @@
+- app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  client_id: e4b68766-0c07-4896-92d3-0f920dc202f0
+  os: '*'
+  ping_type: '*'
+  scalar_aggregates:
+  - agg_type: count
+    key: ''
+    metric: places_manager_write_query_count
+    metric_type: counter
+    value: 4.0
+- app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  client_id: 8d20cc29-7bd8-4595-85a0-43aecc9e5432
+  os: '*'
+  ping_type: '*'
+  scalar_aggregates:
+  - agg_type: count
+    key: ''
+    metric: places_manager_write_query_count
+    metric_type: counter
+    value: 8.0

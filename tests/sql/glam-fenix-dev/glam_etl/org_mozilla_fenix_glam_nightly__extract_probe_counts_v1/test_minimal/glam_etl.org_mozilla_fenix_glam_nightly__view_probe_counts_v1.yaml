@@ -1,0 +1,22 @@
+- agg_type: percentiles
+  aggregates:
+  - key: '5'
+    value: 4.0
+  - key: '25'
+    value: 4.0
+  - key: '50'
+    value: 4.0
+  - key: '75'
+    value: 8.0
+  - key: '95'
+    value: 8.0
+  app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  client_agg_type: count
+  key: ''
+  metric: places_manager_write_query_count
+  metric_type: counter
+  os: '*'
+  ping_type: '*'
+  total_users: 16

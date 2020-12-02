@@ -1,0 +1,26 @@
+- agg_type: summed_histogram
+  app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: '*'
+  ping_type: '*'
+  range_max: 3
+  record:
+    key: '1'
+    value: 1.0
+- agg_type: summed_histogram
+  app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: '*'
+  ping_type: '*'
+  range_max: 3
+  record:
+    key: '2'
+    value: 0.0

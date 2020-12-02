@@ -1,0 +1,266 @@
+[
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_histogram_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__view_clients_daily_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_histogram_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_histogram_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__view_clients_daily_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__extract_user_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__histogram_bucket_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_user_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__extract_user_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__scalar_bucket_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__scalar_percentiles_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_user_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__histogram_bucket_counts_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__histogram_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__histogram_percentiles_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__extract_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__histogram_percentiles_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__histogram_probe_counts_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__extract_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__histogram_probe_counts_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__histogram_percentiles_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__histogram_probe_counts_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__scalar_bucket_counts_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__scalar_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__scalar_percentiles_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__extract_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__scalar_percentiles_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__scalar_probe_counts_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__extract_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__scalar_probe_counts_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_probe_counts_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__clients_daily_histogram_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__clients_daily_histogram_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__clients_daily_histogram_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__view_clients_daily_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__view_clients_daily_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__clients_daily_histogram_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__clients_daily_histogram_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__clients_daily_histogram_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__view_clients_daily_histogram_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_scalar_aggregates_v1"
+  },
+  {
+    "from": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__clients_daily_scalar_aggregates*",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__view_clients_daily_scalar_aggregates_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_derived.geckoview_version_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_histogram_aggregates_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_derived.geckoview_version_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__clients_scalar_aggregates_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_derived.geckoview_version_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__latest_versions_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_derived.geckoview_version_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_histogram_aggregates_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_derived.geckoview_version_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_glam_nightly__view_clients_daily_scalar_aggregates_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_nightly_stable.metrics_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__clients_daily_histogram_aggregates_metrics_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_nightly_stable.metrics_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix_nightly__clients_daily_scalar_aggregates_metrics_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.activation_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_activation_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.baseline_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_baseline_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.bookmarks_sync_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_bookmarks_sync_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.deletion_request_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_deletion_request_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.events_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_events_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.first_session_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_first_session_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.history_sync_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_history_sync_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.installation_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_installation_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.logins_sync_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_logins_sync_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.metrics_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_histogram_aggregates_metrics_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.metrics_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_metrics_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.migration_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_migration_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.startup_timeline_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_startup_timeline_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fenix_stable.sync_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fenix__clients_daily_scalar_aggregates_sync_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fennec_aurora_stable.metrics_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__clients_daily_histogram_aggregates_metrics_v1"
+  },
+  {
+    "from": "moz-fx-data-shared-prod:org_mozilla_fennec_aurora_stable.metrics_v1",
+    "to": "glam-fenix-dev:glam_etl.org_mozilla_fennec_aurora__clients_daily_scalar_aggregates_metrics_v1"
+  }
+]

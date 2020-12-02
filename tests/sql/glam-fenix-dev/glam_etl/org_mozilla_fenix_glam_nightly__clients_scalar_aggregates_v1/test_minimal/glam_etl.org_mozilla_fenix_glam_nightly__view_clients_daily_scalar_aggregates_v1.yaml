@@ -1,0 +1,23 @@
+- app_build_id: '2020100100'
+  app_version: 84
+  channel: nightly
+  client_id: df735f02-efe5-4b07-b212-583bb99ba241
+  os: Android
+  ping_type: metrics
+  scalar_aggregates:
+  - agg_type: 'false'
+    key: ''
+    metric: metrics_has_recent_pwas
+    metric_type: boolean
+    value: 1.0
+  - agg_type: count
+    key: ''
+    metric: places_manager_write_query_count
+    metric_type: counter
+    value: 3.0
+  - agg_type: sum
+    key: ''
+    metric: places_manager_write_query_count
+    metric_type: counter
+    value: 48.0
+  submission_date: '2020-10-01'

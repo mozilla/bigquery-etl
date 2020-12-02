@@ -1,0 +1,11 @@
+- build_id: '*'
+  channel: '*'
+  client_agg_type: count
+  metric: places_manager_write_query_count
+  metric_key: ''
+  metric_type: counter
+  os: '*'
+  percentiles: '{"5":4,"25":4,"50":4,"75":8,"95":8}'
+  ping_type: '*'
+  total_users: 16
+  version: 84

@@ -1,4 +1,39 @@
 - agg_type: summed_histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: Android
+  ping_type: metrics
+  range_max: 2
+  record: &id001
+    key: '1'
+    value: 1.0
+- agg_type: summed_histogram
+  app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: Android
+  ping_type: metrics
+  range_max: 2
+  record: *id001
+- agg_type: summed_histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: '*'
+  ping_type: metrics
+  range_max: 2
+  record: *id001
+- agg_type: summed_histogram
   app_build_id: '*'
   app_version: 84
   channel: '*'
@@ -6,11 +41,42 @@
   metric: network_tcp_connection
   metric_type: timing_distribution
   os: '*'
+  ping_type: metrics
+  range_max: 2
+  record: *id001
+- agg_type: summed_histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: Android
   ping_type: '*'
-  range_max: 123078199
-  record:
-    key: '112863206'
-    value: 1.0
+  range_max: 2
+  record: *id001
+- agg_type: summed_histogram
+  app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: Android
+  ping_type: '*'
+  range_max: 2
+  record: *id001
+- agg_type: summed_histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: '*'
+  ping_type: '*'
+  range_max: 2
+  record: *id001
 - agg_type: summed_histogram
   app_build_id: '*'
   app_version: 84
@@ -20,7 +86,95 @@
   metric_type: timing_distribution
   os: '*'
   ping_type: '*'
-  range_max: 123078199
-  record:
-    key: '123078199'
+  range_max: 2
+  record: *id001
+- agg_type: summed_histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: Android
+  ping_type: metrics
+  range_max: 2
+  record: &id002
+    key: '2'
     value: 0.0
+- agg_type: summed_histogram
+  app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: Android
+  ping_type: metrics
+  range_max: 2
+  record: *id002
+- agg_type: summed_histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: '*'
+  ping_type: metrics
+  range_max: 2
+  record: *id002
+- agg_type: summed_histogram
+  app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: '*'
+  ping_type: metrics
+  range_max: 2
+  record: *id002
+- agg_type: summed_histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: Android
+  ping_type: '*'
+  range_max: 2
+  record: *id002
+- agg_type: summed_histogram
+  app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: Android
+  ping_type: '*'
+  range_max: 2
+  record: *id002
+- agg_type: summed_histogram
+  app_build_id: '2020100100'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: '*'
+  ping_type: '*'
+  range_max: 2
+  record: *id002
+- agg_type: summed_histogram
+  app_build_id: '*'
+  app_version: 84
+  channel: '*'
+  key: ''
+  metric: network_tcp_connection
+  metric_type: timing_distribution
+  os: '*'
+  ping_type: '*'
+  range_max: 2
+  record: *id002

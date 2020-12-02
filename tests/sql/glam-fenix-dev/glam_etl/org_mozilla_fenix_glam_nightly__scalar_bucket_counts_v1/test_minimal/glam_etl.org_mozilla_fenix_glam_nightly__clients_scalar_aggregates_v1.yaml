@@ -1,7 +1,7 @@
-- app_build_id: '2020100100'
+- app_build_id: '*'
   app_version: 84
   channel: '*'
-  client_id: e4b68766-0c07-4896-92d3-0f920dc202f0
+  client_id: 097ed2e8-fa29-4ab2-834b-4e15cabd9752
   os: '*'
   ping_type: '*'
   scalar_aggregates:
@@ -10,10 +10,10 @@
     metric: places_manager_write_query_count
     metric_type: counter
     value: 4.0
-- app_build_id: '2020100100'
+- app_build_id: '*'
   app_version: 84
   channel: '*'
-  client_id: 8d20cc29-7bd8-4595-85a0-43aecc9e5432
+  client_id: 31c6da11-2248-41ad-b99e-a577387d5995
   os: '*'
   ping_type: '*'
   scalar_aggregates:

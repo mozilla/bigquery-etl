@@ -1,7 +1,7 @@
 - agg_type: histogram
   app_build_id: '*'
   app_version: 84
-  bucket: '16.00'
+  bucket: '4.00'
   bucket_count: 100
   channel: '*'
   client_agg_type: count
@@ -11,12 +11,12 @@
   metric_type: counter
   os: '*'
   ping_type: '*'
-  range_max: 5.0
-  range_min: 0.0
+  range_max: 3.0
+  range_min: 2.0
 - agg_type: histogram
   app_build_id: '*'
   app_version: 84
-  bucket: '32.00'
+  bucket: '8.00'
   bucket_count: 100
   channel: '*'
   client_agg_type: count
@@ -26,63 +26,5 @@
   metric_type: counter
   os: '*'
   ping_type: '*'
-  range_max: 5.0
-  range_min: 0.0
-- agg_type: histogram
-  app_build_id: '*'
-  app_version: 84
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: avg
-  count: 2
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: '*'
-  ping_type: '*'
-  range_max: 5.0
-  range_min: 0.0
-- agg_type: histogram
-  app_build_id: '2020100100'
-  app_version: 84
-  bucket: '16.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: '*'
-  ping_type: '*'
-  range_max: 5.0
-  range_min: 0.0
-- agg_type: histogram
-  app_build_id: '2020100100'
-  app_version: 84
-  bucket: '32.00'
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: count
-  count: 1
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: '*'
-  ping_type: '*'
-  range_max: 5.0
-  range_min: 0.0
-- agg_type: histogram
-  app_build_id: '2020100100'
-  app_version: 84
-  bucket_count: 100
-  channel: '*'
-  client_agg_type: avg
-  count: 2
-  key: ''
-  metric: places_manager_write_query_count
-  metric_type: counter
-  os: '*'
-  ping_type: '*'
-  range_max: 5.0
-  range_min: 0.0
+  range_max: 3.0
+  range_min: 2.0

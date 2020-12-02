@@ -24,7 +24,7 @@ CLIENTS_SCALAR_AGGREGATES = [
                 "key": "",
                 "agg_type": "count",
                 "value": 4.0,
-            },
+            }
         ],
     },
     {
@@ -41,7 +41,7 @@ CLIENTS_SCALAR_AGGREGATES = [
                 "key": "",
                 "agg_type": "count",
                 "value": 8.0,
-            },
+            }
         ],
     },
 ]

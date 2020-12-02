@@ -104,12 +104,7 @@ def scalar_bucket_counts(**kwargs):
 def histogram_bucket_counts(**kwargs):
     """Variables for clients histogram bucket counts."""
     attributes_list = ["ping_type", "os", "app_version", "app_build_id", "channel"]
-    metric_attributes_list = [
-        "metric",
-        "metric_type",
-        "key",
-        "agg_type",
-    ]
+    metric_attributes_list = ["metric", "metric_type", "key", "agg_type"]
     fixed_attributes = ["app_version", "channel"]
     cubed_attributes = [x for x in attributes_list if x not in fixed_attributes]
     return dict(

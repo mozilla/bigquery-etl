@@ -30,7 +30,7 @@ CLIENTS_HISTOGRAM_AGGREGATES = [
                     {"key": "112863206", "value": 1},
                     {"key": "123078199", "value": 0},
                 ],
-            },
+            }
         ],
     }
 ]
@@ -46,7 +46,7 @@ EXPECT = [
         "metric_type": "timing_distribution",
         "os": "*",
         "ping_type": "*",
-        "range_max": 123078199,
+        "range_max": 123_078_199,
         "record": {"key": "112863206", "value": 1.0},
     },
     {
@@ -59,7 +59,7 @@ EXPECT = [
         "metric_type": "timing_distribution",
         "os": "*",
         "ping_type": "*",
-        "range_max": 123078199,
+        "range_max": 123_078_199,
         "record": {"key": "123078199", "value": 0.0},
     },
 ]

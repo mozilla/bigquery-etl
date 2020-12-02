@@ -355,7 +355,10 @@ SELECT
   ) AS events,
   -- bug 1339655
   SAFE_CAST(
-    JSON_EXTRACT_SCALAR(payload.histograms.ssl_handshake_result, '$.values.0') AS INT64
+    mozfun.map.get_key(
+      mozfun.hist.extract(payload.histograms.ssl_handshake_result).values,
+      0
+    ) AS INT64
   ) AS ssl_handshake_result_success,
   (
     SELECT
@@ -429,28 +432,34 @@ SELECT
   ) AS blank_window_shown,
   -- bug 1362520 and 1526278 - plugin notifications
   SAFE_CAST(
-    JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.1') AS INT64
+    mozfun.map.get_key(
+      mozfun.hist.extract(payload.histograms.plugins_notification_shown).values,
+      1
+    ) AS INT64
   ) AS plugins_notification_shown,
   SAFE_CAST(
-    JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.0') AS INT64
+    mozfun.map.get_key(
+      mozfun.hist.extract(payload.histograms.plugins_notification_shown).values,
+      0
+    ) AS INT64
   ) AS plugins_notification_shown_false,
   STRUCT(
     SAFE_CAST(
-      JSON_EXTRACT_SCALAR(
-        payload.histograms.plugins_notification_user_action,
-        '$.values.0'
+      mozfun.map.get_key(
+        mozfun.hist.extract(payload.histograms.plugins_notification_user_action).values,
+        0
       ) AS INT64
     ) AS allow_now,
     SAFE_CAST(
-      JSON_EXTRACT_SCALAR(
-        payload.histograms.plugins_notification_user_action,
-        '$.values.1'
+      mozfun.map.get_key(
+        mozfun.hist.extract(payload.histograms.plugins_notification_user_action).values,
+        1
       ) AS INT64
     ) AS allow_always,
     SAFE_CAST(
-      JSON_EXTRACT_SCALAR(
-        payload.histograms.plugins_notification_user_action,
-        '$.values.2'
+      mozfun.map.get_key(
+        mozfun.hist.extract(payload.histograms.plugins_notification_user_action).values,
+        2
       ) AS INT64
     ) AS block
   ) AS plugins_notification_user_action,

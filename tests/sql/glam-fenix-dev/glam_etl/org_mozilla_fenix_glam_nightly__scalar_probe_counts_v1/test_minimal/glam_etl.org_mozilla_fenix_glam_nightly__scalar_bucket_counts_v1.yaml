@@ -1,0 +1,15 @@
+- agg_type: histogram
+  app_build_id: '*'
+  app_version: 84
+  bucket: '2.00'
+  bucket_count: 3
+  channel: '*'
+  client_agg_type: count
+  count: 1
+  key: ''
+  metric: places_manager_write_query_count
+  metric_type: counter
+  os: '*'
+  ping_type: '*'
+  range_max: 3.0
+  range_min: 0.0

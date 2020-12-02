@@ -959,6 +959,12 @@ grouped_labeled_metrics AS (
         'labeled_counter',
         metrics.labeled_counter.logins_store_write_query_error_count
       ),
+      ('media_audio_backend', 'labeled_counter', metrics.labeled_counter.media_audio_backend),
+      (
+        'media_audio_init_failure',
+        'labeled_counter',
+        metrics.labeled_counter.media_audio_init_failure
+      ),
       ('metrics_search_count', 'labeled_counter', metrics.labeled_counter.metrics_search_count),
       (
         'places_manager_read_query_error_count',

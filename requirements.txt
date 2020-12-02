@@ -41,9 +41,9 @@ cachetools==4.1.1 \
     --hash=sha256:513d4ff98dd27f85743a8dc0e92f55ddb1b49e060c2d5961512855cda2c01a98 \
     --hash=sha256:bbaa39c3dede00175df2dc2b03d0cf18dd2d32a7de7beb68072d13043c9edb20 \
     # via google-auth
-cattrs==1.1.1 \
-    --hash=sha256:41398d3cbdda64707a9947c3ffac35116dc8ab5307c2962c02cdd01c96097149 \
-    --hash=sha256:cd7579ef6ed80993bdd0e24a806493c48576caebd47b7b6ec2cd3cfd0b9a5f72 \
+cattrs==1.1.2 \
+    --hash=sha256:967ce8f99b79f112a500fc03d02c4da669966055ea190b0c59a023af0ae33e5f \
+    --hash=sha256:a5873cd4745a74388557730247b4bb005d762f8aba0ab7aa55bcbd190bdf3322 \
     # via -r requirements.in
 certifi==2020.6.20 \
     --hash=sha256:5930595817496dd21bb8dc35dad090f1c2cd0adfaf21204bf6732ca5d8ee34d3 \
@@ -510,7 +510,7 @@ regex==2020.9.27 \
 requests==2.24.0 \
     --hash=sha256:b3559a131db72c33ee969480840fff4bb6dd111de7dd27c8ee1f820f4f00231b \
     --hash=sha256:fe75cc94a9443b9246fc7049224f75604b113c36acb93f87b80ed42c44cbb898 \
-    # via google-api-core, google-cloud-storage, mozilla-schema-generator, smart-open, stripe
+    # via google-api-core, google-cloud-storage, mozilla-schema-generator, stripe
 rsa==4.6 \
     --hash=sha256:109ea5a66744dd859bf16fe904b8d8b627adafb9408753161e766a92e7d681fa \
     --hash=sha256:6166864e23d6b5195a5cfed6cd9fed0fe774e226d8f854fcb23b7bbef0350233 \
@@ -519,8 +519,8 @@ six==1.15.0 \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
     --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
     # via gcloud, google-api-core, google-auth, google-cloud-bigquery, google-resumable-media, grpcio, jsonschema, oauth2client, packaging, protobuf, python-dateutil
-smart_open==3.0.0 \
-    --hash=sha256:7f4e85b71df5a3618f5447d0b417b7a3576308c839690a24a70338b8993684c3 \
+smart_open==4.0.1 \
+    --hash=sha256:49396d86de8e0d609ec40422c59f837dd944dcdf727feed6f2ff8cbdc0e3bc8e \
     # via -r requirements.in
 smmap==3.0.4 \
     --hash=sha256:54c44c197c819d5ef1991799a7e30b662d1e520f2ac75c9efbeb54a742214cf4 \
@@ -534,9 +534,9 @@ sqlparse==0.4.1 \
     --hash=sha256:017cde379adbd6a1f15a61873f43e8274179378e95ef3fede90b5aa64d304ed0 \
     --hash=sha256:0f91fd2e829c44362cbcfab3e9ae12e22badaa8a29ad5ff599f9ec109f0454e8 \
     # via -r requirements.in
-stripe==2.55.0 \
-    --hash=sha256:2eebf023595e8aa9d65d8b46ccc3c716185bb9625d0e39d3956282fd7525848d \
-    --hash=sha256:833313d28dcceca71128ee915c2dacbbf235c909e0a01b0f94ee5037e1c46109 \
+stripe==2.55.1 \
+    --hash=sha256:6b70e2cf87cfbe0cb891b725b690495bc3d34ab0d82545a5989ecd3b5fa83e2a \
+    --hash=sha256:fd98ae43b105e75cb4f1d23ba3d0c16b45e3957d432002398a2f75d083d606ce \
     # via -r requirements.in
 toml==0.10.1 \
     --hash=sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f \

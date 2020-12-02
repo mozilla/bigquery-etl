@@ -1,0 +1,17 @@
+- app_build_id: '2020100100'
+  app_version: 84
+  channel: nightly
+  client_id: df735f02-efe5-4b07-b212-583bb99ba241
+  histogram_aggregates:
+  - agg_type: summed_histogram
+    key: ''
+    metric: network_tcp_connection
+    metric_type: timing_distribution
+    value:
+    - key: '112863206'
+      value: 1
+    - key: '123078199'
+      value: 0
+  os: Android
+  ping_type: metrics
+  sample_id: 1

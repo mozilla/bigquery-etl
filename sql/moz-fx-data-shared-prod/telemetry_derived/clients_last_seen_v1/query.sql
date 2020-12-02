@@ -11,16 +11,14 @@ WITH _current AS (
     -- https://docs.telemetry.mozilla.org/cookbooks/active_dau.html
     CAST(
       scalar_parent_browser_engagement_total_uri_count_sum >= 1 AS INT64
-    ) AS days_visited_1_uri_bits, -- Added 2020-11
+    ) AS days_visited_1_uri_bits,
     CAST(
       scalar_parent_browser_engagement_total_uri_count_sum >= 5 AS INT64
     ) AS days_visited_5_uri_bits,
     CAST(
       scalar_parent_browser_engagement_total_uri_count_sum >= 10 AS INT64
-    ) AS days_visited_10_uri_bits, -- Added 2020-11
-    CAST(
-      active_hours_sum >= 0.011 AS INT64
-    ) AS days_had_8_active_ticks_bits, -- Added 2020-11
+    ) AS days_visited_10_uri_bits,
+    CAST(active_hours_sum >= 0.011 AS INT64) AS days_had_8_active_ticks_bits,
     CAST(devtools_toolbox_opened_count_sum > 0 AS INT64) AS days_opened_dev_tools_bits,
     CAST(active_hours_sum > 0 AS INT64) AS days_interacted_bits,
     -- We only trust profile_date if it is within one week of the ping submission,

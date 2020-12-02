@@ -222,18 +222,12 @@ histogram_data_sample AS (
     document_id,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS time_slot,
     payload.info.subsession_length AS subsession_length,
-    udf.json_extract_int_map(
-      JSON_EXTRACT(payload.histograms.dns_failed_lookup_time, '$.values')
-    ) AS dns_fail,
-    udf.json_extract_int_map(
-      JSON_EXTRACT(payload.histograms.dns_lookup_time, '$.values')
-    ) AS dns_success,
-    udf.json_extract_int_map(
-      JSON_EXTRACT(payload.histograms.ssl_cert_verification_errors, '$.values')
-    ) AS ssl_cert_errors,
-    udf.json_extract_int_map(
-      JSON_EXTRACT(payload.processes.content.histograms.http_page_tls_handshake, '$.values')
-    ) AS tls_handshake,
+    mozfun.hist.extract(payload.histograms.dns_failed_lookup_time).values AS dns_fail,
+    mozfun.hist.extract(payload.histograms.dns_lookup_time).values AS dns_success,
+    mozfun.hist.extract(payload.histograms.ssl_cert_verification_errors).values AS ssl_cert_errors,
+    mozfun.hist.extract(
+      payload.processes.content.histograms.http_page_tls_handshake
+    ).values AS tls_handshake,
   FROM
     telemetry.main
   WHERE

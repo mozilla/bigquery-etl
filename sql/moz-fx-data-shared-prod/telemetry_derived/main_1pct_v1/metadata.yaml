@@ -1,5 +1,7 @@
 friendly_name: Main 1 percent
 description: >-
+  *Nota bene: This table is in a beta testing phase and may go away!*
+
   A materialized 1 percent sample of main pings intended as a performance
   optimization for exploratory queries.
 
@@ -13,6 +15,10 @@ description: >-
   the execution time appears to be dominated by BQ simply scanning metadata
   for all the blocks it might need to touch. Because this table contains only 1%
   of main ping data, it is likely to have many fewer blocks to scan through.
+
+  An extra-experimental feature here is the addition of subsample_id, an additional
+  clustering field that allows for queries to efficiently filter down to a 0.01%
+  sample. Like sample_id, it ranges from 0 to 99.
 labels:
   incremental: true
 owners:

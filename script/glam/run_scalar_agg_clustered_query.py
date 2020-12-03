@@ -80,8 +80,8 @@ def main(submission_date, dst_table, project, dataset):
         # Periodically print so airflow gke operator doesn't think task is dead
         elapsed = 0
         while not query_job.done():
-            time.sleep(5)
-            elapsed += 5
+            time.sleep(10)
+            elapsed += 10
             if elapsed % 200 == 10:
                 print("Waiting on query...")
 

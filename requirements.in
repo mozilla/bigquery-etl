@@ -1,5 +1,5 @@
 gcloud==0.18.3
-google-cloud-bigquery==2.4.0
+google-cloud-bigquery==2.5.0
 google-cloud-storage==1.33.0
 Jinja2==2.11.2
 pytest-black==0.3.12

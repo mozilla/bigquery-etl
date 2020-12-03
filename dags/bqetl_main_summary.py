@@ -129,6 +129,7 @@ with DAG(
         start_date=datetime.datetime(2020, 6, 1, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         dag=dag,
     )
 

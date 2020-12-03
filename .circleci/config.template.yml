@@ -1,0 +1,57 @@
+{{ config_header }}
+version: 2.1
+
+orbs:
+  gcp-gcr: circleci/gcp-gcr@0.7.1
+
+commands:
+  compare-branch:
+    description: Compare current branch with main
+    parameters:
+      pattern:
+        type: string
+    steps:
+      - run:
+          name: Compare current branch with main
+          command: |
+            if [ "$CIRCLE_BRANCH" = main ]; then
+                echo "Run tests because branch is main"
+            elif git log --format=%B --no-merges -n 1 | grep -qF '[run-tests]'; then
+                echo "Run tests because [run-tests] in commit message"
+            elif git diff --name-only ..origin | egrep -q '<< parameters.pattern >>'; then
+                echo "Run tests because << parameters.pattern >> was modified since branching off main"
+            else
+                echo "Skipping tests because << parameters.pattern >> was not modified"
+                circleci step halt
+            fi
+
+jobs:
+  build-docker-etl:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t docker-etl:build .
+      - run:
+          name: Test Code
+          command: docker run docker-etl:build pytest --black --flake8 docker_etl/ tests/
+      - run:
+          name: Verify jobs have required files
+          command: docker run docker-etl:build script/verify_files
+      - run:
+          name: Verify CI config is up-to-date
+          command: docker run docker-etl:build python3 -m docker_etl.ci_config --dry-run | diff -B .circleci/config.yml -
+
+{{ jobs | indent(2, True) }}
+
+workflows:
+  docker-etl:
+    jobs:
+      - build-docker-etl
+
+{{ workflows | indent(2, True) }}
+

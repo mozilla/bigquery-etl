@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd "$(dirname "$0")/.."
+
+python3 -m docker_etl.create_new_job "$@"

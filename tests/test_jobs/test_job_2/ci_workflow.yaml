@@ -1,0 +1,3 @@
+test_job_2_workflow:
+  jobs:
+    - test_job_2_job

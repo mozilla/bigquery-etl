@@ -1,0 +1,12 @@
+job-{{ job_name }}:
+  jobs:
+    - build-job-{{ job_name }}
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        path: jobs/{{ job_name }}/
+        image: {{ job_name }}_docker_etl
+        requires:
+          - build-job-{{ job_name }}
+        filters:
+          branches:
+            only: main

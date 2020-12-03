@@ -1,0 +1,5 @@
+{{ config_header }}
+jobs:
+{{ jobs | indent(2, True) }}
+workflows:
+{{ workflows | indent(2, True) }}

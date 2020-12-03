@@ -391,3 +391,14 @@ bqetl_internal_tooling:
     retry_delay: 30m
     start_date: '2020-06-01'
   schedule_interval: 0 4 * * *
+
+bqetl_release_criteria:
+  schedule_interval: daily
+  default_args:
+    owner: perf-pmo@mozilla.com
+    start_date: "2020-12-03"
+    email:
+      - telemetry-alerts@mozilla.com
+      - dthorn@mozilla.com
+    retries: 2
+    retry_delay: 30m

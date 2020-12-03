@@ -1,5 +1,6 @@
 """Run a query on clients_scalar_aggregates on one app_version at a time."""
 import datetime
+import time
 from pathlib import Path
 
 import click
@@ -47,8 +48,6 @@ def main(submission_date, dst_table, project, dataset):
     intermediate_table = f"{project}.analysis.glam_temp_clustered_query_{dst_table}"
     print(f"Writing results to {intermediate_table}")
 
-    # TODO: add something to print periodically for airflow
-
     for i, app_version in enumerate(app_versions):
         print(f"Querying for app_version {app_version}")
 
@@ -67,25 +66,30 @@ def main(submission_date, dst_table, project, dataset):
 
         query_job = bq_client.query(query_text, job_config=query_config)
 
-        # Periodically print so airflow gke operator doesn't think job is dead
+        # Periodically print so airflow gke operator doesn't think task is dead
         elapsed = 0
-        while not query_job.done(timeout=10):
+        while not query_job.done():
+            time.sleep(10)
             elapsed += 10
-            if elapsed % 10:
+            if elapsed % 200 == 10:
                 print("Waiting on query...")
 
         results = query_job.result()
         print(f"{results.total_rows} rows in {intermediate_table}")
 
     copy_config = bigquery.CopyJobConfig(
-        create_disposition=bigquery.CreateDisposition.CREATE_NEVER,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
+
+    print(f"Copying {intermediate_table} to {project}.{dataset}.{dst_table}")
     bq_client.copy_table(
         intermediate_table,
         f"{project}.{dataset}.{dst_table}",
         job_config=copy_config,
     ).result()
+
+    print(f"Deleting {intermediate_table}")
+    bq_client.delete_table(intermediate_table)
 
 
 if __name__ == "__main__":

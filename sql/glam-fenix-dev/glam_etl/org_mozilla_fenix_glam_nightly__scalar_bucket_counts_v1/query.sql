@@ -253,8 +253,8 @@ SELECT
   range_max,
   bucket_count,
   bucket,
-  -- we can rely on count(*) because there is one row per client and bucket
-  COUNT(*) AS count
+  -- we could rely on count(*) because there is one row per client and bucket
+  COUNT(DISTINCT client_id) AS count
 FROM
   booleans_and_scalars
 GROUP BY

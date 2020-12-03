@@ -16,8 +16,10 @@ WHERE
 """
 
 SQL_BASE_DIR = (
-        Path(__file__).parent.parent.parent / "sql"
-        / "moz-fx-data-shared-prod" / "telemetry_derived"
+    Path(__file__).parent.parent.parent
+    / "sql"
+    / "moz-fx-data-shared-prod"
+    / "telemetry_derived"
 )
 
 
@@ -27,11 +29,12 @@ SQL_BASE_DIR = (
 @click.option("--project", default="moz-fx-data-shared-prod")
 @click.option("--dataset", default="telemetry_derived")
 def main(submission_date, dst_table, project, dataset):
+    """Run query per app_version."""
     bq_client = bigquery.Client(project=project)
 
     app_versions = [
-        row["app_version"] for row in
-        bq_client.query(
+        row["app_version"]
+        for row in bq_client.query(
             VERSION_QUERY_TEMPLATE.format(
                 date=submission_date, project=project, dataset=dataset
             )
@@ -60,7 +63,8 @@ def main(submission_date, dst_table, project, dataset):
             ],
             destination=intermediate_table,
             default_dataset=f"{project}.{dataset}",
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE if i == 0
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
+            if i == 0
             else bigquery.WriteDisposition.WRITE_APPEND,
         )
 

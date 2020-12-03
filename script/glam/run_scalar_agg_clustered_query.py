@@ -1,5 +1,6 @@
 """Run a query on clients_scalar_aggregates on one app_version at a time."""
 import datetime
+import sys
 import time
 from pathlib import Path
 
@@ -43,6 +44,10 @@ def main(submission_date, dst_table, project, dataset):
 
     print(f"Found versions: {app_versions}")
 
+    if len(app_versions) == 0:
+        print("Source table empty", file=sys.stderr)
+        sys.exit(1)
+
     sql_path = SQL_BASE_DIR / dst_table / "query.sql"
 
     query_text = sql_path.read_text()
@@ -63,9 +68,11 @@ def main(submission_date, dst_table, project, dataset):
             ],
             destination=intermediate_table,
             default_dataset=f"{project}.{dataset}",
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
-            if i == 0
-            else bigquery.WriteDisposition.WRITE_APPEND,
+            write_disposition=(
+                bigquery.WriteDisposition.WRITE_TRUNCATE
+                if i == 0
+                else bigquery.WriteDisposition.WRITE_APPEND
+            ),
         )
 
         query_job = bq_client.query(query_text, job_config=query_config)
@@ -73,12 +80,15 @@ def main(submission_date, dst_table, project, dataset):
         # Periodically print so airflow gke operator doesn't think task is dead
         elapsed = 0
         while not query_job.done():
-            time.sleep(10)
-            elapsed += 10
+            time.sleep(5)
+            elapsed += 5
             if elapsed % 200 == 10:
                 print("Waiting on query...")
 
+        print(f"Total elapsed: approximately {elapsed} seconds")
+
         results = query_job.result()
+        print(f"Query job {query_job.job_id} finished")
         print(f"{results.total_rows} rows in {intermediate_table}")
 
     copy_config = bigquery.CopyJobConfig(

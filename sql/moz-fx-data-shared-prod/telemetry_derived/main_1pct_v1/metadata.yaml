@@ -26,5 +26,6 @@ owners:
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2020-06-01'
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
   referenced_tables: [['moz-fx-data-shared-prod', 'telemetry_stable',
                        'main_v4']]

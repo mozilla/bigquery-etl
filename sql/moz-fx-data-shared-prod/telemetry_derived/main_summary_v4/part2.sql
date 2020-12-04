@@ -688,7 +688,7 @@ WITH histogram_lists AS (
           ARRAY(
             SELECT AS STRUCT
               key,
-              SAFE_CAST(JSON_EXTRACT_SCALAR(value, '$.values.0') AS INT64) AS value
+              SAFE_CAST(mozfun.map.get_key(mozfun.hist.extract(value).values, 0) AS INT64) AS value
             FROM
               UNNEST(histogram)
           )
@@ -711,7 +711,7 @@ WITH histogram_lists AS (
               IFNULL(labels[SAFE_OFFSET(key)], 'spill') AS key,
               value
             FROM
-              UNNEST(udf.json_extract_int_map(JSON_EXTRACT(histogram, '$.values')))
+              UNNEST(mozfun.hist.extract(histogram).values)
           )
         ) AS list
       FROM
@@ -790,7 +790,7 @@ WITH histogram_lists AS (
                   IFNULL(labels[SAFE_OFFSET(_.key)], 'spill') AS key,
                   _.value
                 FROM
-                  UNNEST(udf.json_extract_int_map(JSON_EXTRACT(value, '$.values'))) AS _
+                  UNNEST(mozfun.hist.extract(value).values) AS _
               ) AS value
             FROM
               UNNEST(histogram)

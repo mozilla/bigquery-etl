@@ -45,6 +45,23 @@ CREATE TEMP FUNCTION extract_popup_notification_stats(h STRING) AS (
   )
 );
 
+WITH extracted_histograms AS (
+  SELECT
+    mozfun.hist.extract(payload.histograms.ssl_handshake_result) AS ssl_handshake_result,
+    mozfun.hist.extract(
+      payload.histograms.plugins_notification_shown
+    ) AS plugins_notification_shown,
+    mozfun.hist.extract(
+      payload.histograms.plugins_notification_user_action
+    ) AS plugins_notification_user_action,
+    *
+  FROM
+    `moz-fx-data-shared-prod.telemetry.main`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND normalized_app_name = 'Firefox'
+    AND document_id IS NOT NULL
+)
 SELECT
   document_id,
   client_id,
@@ -355,13 +372,13 @@ SELECT
   ) AS events,
   -- bug 1339655
   SAFE_CAST(
-    JSON_EXTRACT_SCALAR(payload.histograms.ssl_handshake_result, '$.values.0') AS INT64
+    mozfun.map.get_key(ssl_handshake_result.values, 0) AS INT64
   ) AS ssl_handshake_result_success,
   (
     SELECT
       IFNULL(SUM(value), 0)
     FROM
-      UNNEST(mozfun.hist.extract(payload.histograms.ssl_handshake_result).values)
+      UNNEST(ssl_handshake_result.values)
     WHERE
       key
       BETWEEN 1
@@ -372,7 +389,7 @@ SELECT
       CAST(key AS STRING) AS key,
       value
     FROM
-      UNNEST(mozfun.hist.extract(payload.histograms.ssl_handshake_result).values)
+      UNNEST(ssl_handshake_result.values)
     WHERE
       key
       BETWEEN 0
@@ -429,30 +446,17 @@ SELECT
   ) AS blank_window_shown,
   -- bug 1362520 and 1526278 - plugin notifications
   SAFE_CAST(
-    JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.1') AS INT64
+    mozfun.map.get_key(plugins_notification_shown.values, 1) AS INT64
   ) AS plugins_notification_shown,
   SAFE_CAST(
-    JSON_EXTRACT_SCALAR(payload.histograms.plugins_notification_shown, '$.values.0') AS INT64
+    mozfun.map.get_key(plugins_notification_shown.values, 0) AS INT64
   ) AS plugins_notification_shown_false,
   STRUCT(
+    SAFE_CAST(mozfun.map.get_key(plugins_notification_user_action.values, 0) AS INT64) AS allow_now,
     SAFE_CAST(
-      JSON_EXTRACT_SCALAR(
-        payload.histograms.plugins_notification_user_action,
-        '$.values.0'
-      ) AS INT64
-    ) AS allow_now,
-    SAFE_CAST(
-      JSON_EXTRACT_SCALAR(
-        payload.histograms.plugins_notification_user_action,
-        '$.values.1'
-      ) AS INT64
+      mozfun.map.get_key(plugins_notification_user_action.values, 1) AS INT64
     ) AS allow_always,
-    SAFE_CAST(
-      JSON_EXTRACT_SCALAR(
-        payload.histograms.plugins_notification_user_action,
-        '$.values.2'
-      ) AS INT64
-    ) AS block
+    SAFE_CAST(mozfun.map.get_key(plugins_notification_user_action.values, 2) AS INT64) AS block
   ) AS plugins_notification_user_action,
   udf.extract_histogram_sum(payload.histograms.plugins_infobar_shown) AS plugins_infobar_shown,
   udf.extract_histogram_sum(payload.histograms.plugins_infobar_block) AS plugins_infobar_block,
@@ -546,8 +550,4 @@ SELECT
     NULL AS room_share
   ) AS loop_activity_counter
 FROM
-  `moz-fx-data-shared-prod.telemetry.main`
-WHERE
-  DATE(submission_timestamp) = @submission_date
-  AND normalized_app_name = 'Firefox'
-  AND document_id IS NOT NULL
+  extracted_histograms

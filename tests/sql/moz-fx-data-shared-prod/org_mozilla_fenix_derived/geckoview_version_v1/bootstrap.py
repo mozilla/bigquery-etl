@@ -41,10 +41,7 @@ def main(test_name):
         # function. We'll also include dates in the future. There is a new
         # version every day.
         rows = [input_row(i, i, i) for i in range(-10, HISTORY_DAYS + 2)]
-        yaml.dump(
-            sorted(rows, key=lambda x: x["client_info"]["app_build"]) * 6,
-            fp,
-        )
+        yaml.dump(sorted(rows, key=lambda x: x["client_info"]["app_build"]) * 6, fp)
     # bad rows, versions less than 100 put before and after the 100 mark. The
     # one for fenix will probably get filtered out because of the channel norm
     # udf.

@@ -1,43 +1,4 @@
 -- query for org_mozilla_fenix_glam_nightly__histogram_bucket_counts_v1;
-CREATE TEMP FUNCTION udf_merged_user_data(aggs ANY TYPE)
-RETURNS ARRAY<
-  STRUCT<
-    metric STRING,
-    metric_type STRING,
-    key STRING,
-    agg_type STRING,
-    value ARRAY<STRUCT<key STRING, value INT64>>
-  >
-> AS (
-  (
-    WITH unnested AS (
-      SELECT
-        *
-      FROM
-        UNNEST(aggs)
-    ),
-    aggregated_data AS (
-      SELECT AS STRUCT
-        metric,
-        metric_type,
-        key,
-        agg_type,
-        mozfun.map.sum(ARRAY_CONCAT_AGG(value)) AS value
-      FROM
-        unnested
-      GROUP BY
-        metric,
-        metric_type,
-        key,
-        agg_type
-    )
-    SELECT
-      ARRAY_AGG((metric, metric_type, key, agg_type, value))
-    FROM
-      aggregated_data
-  )
-);
-
 WITH
 -- Cross join with the attribute combinations to reduce the query complexity
 -- with respect to the number of operations. A table with n rows cross joined
@@ -72,26 +33,6 @@ all_combos AS (
   CROSS JOIN
     static_combos combo
 ),
--- Ensure there is a single record per client id
-deduplicated_combos AS (
-  SELECT
-    client_id,
-    ping_type,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    udf_merged_user_data(ARRAY_CONCAT_AGG(histogram_aggregates)) AS histogram_aggregates
-  FROM
-    all_combos
-  GROUP BY
-    client_id,
-    ping_type,
-    os,
-    app_version,
-    app_build_id,
-    channel
-),
 normalized_histograms AS (
   SELECT
     ping_type,
@@ -110,7 +51,7 @@ normalized_histograms AS (
         UNNEST(histogram_aggregates)
     ) AS histogram_aggregates
   FROM
-    deduplicated_combos
+    all_combos
 ),
 unnested AS (
   SELECT

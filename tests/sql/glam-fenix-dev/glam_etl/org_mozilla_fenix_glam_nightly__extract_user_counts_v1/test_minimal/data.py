@@ -18,7 +18,7 @@ VIEW_USER_COUNTS = [
         "app_build_id": APP_BUILD_ID,
         "channel": "*",
         "total_users": 44444,
-    },
+    }
 ]
 
 EXPECT = [

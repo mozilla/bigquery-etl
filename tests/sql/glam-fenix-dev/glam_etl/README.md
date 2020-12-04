@@ -20,6 +20,13 @@ python org_mozilla_fenix_glam_nightly__extract_user_counts_v1/test_minimal/data.
 pytest -k extract_user_counts
 ```
 
+The easiest way to generate sql for testing is to run the following script from
+the project root.
+
+```bash
+GENERATE_ONLY=true script/glam/test/test_glean_org_mozilla_fenix_glam_nightly
+```
+
 ## Creating a new test
 
 To create a new test, copy the `test_minimal` directory and rename it to reflect

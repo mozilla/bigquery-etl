@@ -89,92 +89,6 @@ RETURNS ARRAY<
   )
 );
 
-CREATE TEMP FUNCTION udf_merged_user_data(
-  aggs ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>
-)
-RETURNS ARRAY<
-  STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>
-> AS (
-  (
-    WITH unnested AS (
-      SELECT
-        *
-      FROM
-        UNNEST(aggs)
-      WHERE
-        agg_type != "avg"
-    ),
-    aggregated AS (
-      SELECT
-        metric,
-        metric_type,
-        key,
-        agg_type,
-        --format:off
-        CASE agg_type
-          WHEN 'max' THEN max(value)
-          WHEN 'min' THEN min(value)
-          WHEN 'count' THEN sum(value)
-          WHEN 'sum' THEN sum(value)
-          WHEN 'false' THEN sum(value)
-          WHEN 'true' THEN sum(value)
-        END AS value
-        --format:on
-      FROM
-        unnested
-      WHERE
-        value IS NOT NULL
-      GROUP BY
-        metric,
-        metric_type,
-        key,
-        agg_type
-    ),
-    scalar_count_and_sum AS (
-      SELECT
-        metric,
-        metric_type,
-        key,
-        'avg' AS agg_type,
-        --format:off
-        CASE WHEN agg_type = 'count' THEN value ELSE 0 END AS count,
-        CASE WHEN agg_type = 'sum' THEN value ELSE 0 END AS sum
-        --format:on
-      FROM
-        aggregated
-      WHERE
-        agg_type IN ('sum', 'count')
-    ),
-    scalar_averages AS (
-      SELECT
-        * EXCEPT (count, sum),
-        SUM(sum) / SUM(count) AS agg_value
-      FROM
-        scalar_count_and_sum
-      GROUP BY
-        metric,
-        metric_type,
-        key,
-        agg_type
-    ),
-    merged_data AS (
-      SELECT
-        *
-      FROM
-        aggregated
-      UNION ALL
-      SELECT
-        *
-      FROM
-        scalar_averages
-    )
-    SELECT
-      ARRAY_AGG((metric, metric_type, key, agg_type, value))
-    FROM
-      merged_data
-  )
-);
-
 WITH
 -- Cross join with the attribute combinations to reduce the query complexity
 -- with respect to the number of operations. A table with n rows cross joined
@@ -209,26 +123,6 @@ all_combos AS (
   CROSS JOIN
     static_combos combo
 ),
--- Ensure there is a single record per client id
-deduplicated_combos AS (
-  SELECT
-    client_id,
-    ping_type,
-    os,
-    app_version,
-    app_build_id,
-    channel,
-    udf_merged_user_data(ARRAY_CONCAT_AGG(scalar_aggregates)) AS scalar_aggregates
-  FROM
-    all_combos
-  GROUP BY
-    client_id,
-    ping_type,
-    os,
-    app_version,
-    app_build_id,
-    channel
-),
 bucketed_booleans AS (
   SELECT
     client_id,
@@ -242,17 +136,17 @@ bucketed_booleans AS (
     NULL AS bucket_count,
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates,
   FROM
-    deduplicated_combos
+    all_combos
 ),
 log_min_max AS (
   SELECT
     metric,
     key,
-    LOG(IF(MIN(value) <= 0, 1, MIN(value)), 2) range_min,
-    LOG(IF(MAX(value) <= 0, 1, MAX(value)), 2) range_max,
+    LOG(IF(MIN(value) <= 0, 1, MIN(value)), 2) AS range_min,
+    LOG(IF(MAX(value) <= 0, 1, MAX(value)), 2) AS range_max,
     100 AS bucket_count
   FROM
-    deduplicated_combos
+    all_combos
   CROSS JOIN
     UNNEST(scalar_aggregates)
   WHERE
@@ -295,7 +189,7 @@ bucketed_scalars AS (
       FORMAT("%.*f", 2, mozfun.glam.histogram_bucket_from_value(buckets, value) + 0.0001) AS STRING
     ) AS bucket
   FROM
-    deduplicated_combos
+    all_combos
   CROSS JOIN
     UNNEST(scalar_aggregates)
   LEFT JOIN
@@ -359,7 +253,8 @@ SELECT
   range_max,
   bucket_count,
   bucket,
-  COUNT(*) AS count
+  -- we could rely on count(*) because there is one row per client and bucket
+  COUNT(DISTINCT client_id) AS count
 FROM
   booleans_and_scalars
 GROUP BY

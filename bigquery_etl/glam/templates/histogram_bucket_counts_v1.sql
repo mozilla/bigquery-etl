@@ -1,9 +1,6 @@
 {{ header }}
 {% from 'macros.sql' import enumerate_table_combinations %}
 
-{# TODO: remove this import by factoring it out as a proper udf #}
-{% include "clients_histogram_aggregates_v1.udf.sql" %}
-
 WITH
 {{
     enumerate_table_combinations(
@@ -13,20 +10,6 @@ WITH
         attribute_combinations
     )
 }},
--- Ensure there is a single record per client id
-deduplicated_combos AS (
-  SELECT
-    client_id,
-    {{ attributes }},
-    udf_merged_user_data(
-      ARRAY_CONCAT_AGG(histogram_aggregates)
-    ) AS histogram_aggregates
-  FROM
-    all_combos
-  GROUP BY
-    client_id,
-    {{ attributes }}
-),
 normalized_histograms AS (
   SELECT
     {{ attributes }},
@@ -37,7 +20,7 @@ normalized_histograms AS (
       FROM unnest(histogram_aggregates)
     )AS histogram_aggregates
   FROM
-    deduplicated_combos
+    all_combos
 ),
 unnested AS (
   SELECT

@@ -192,6 +192,7 @@ def main():
         parser.error(f"argument --log-level: {e}")
 
     projects = project_dirs()
+    all_metadata = []
 
     for target in projects:
         if os.path.isdir(target):
@@ -202,15 +203,7 @@ def main():
                 args.endpoint,
                 target,
             )
-
-            output_file = f"gs://{args.target_bucket}/all-datasets.json"
-            publish_all_datasets_metadata(gcs_table_metadata, output_file)
-            set_content_type(
-                storage_client,
-                args.target_bucket,
-                "all-datasets.json",
-                "application/json",
-            )
+            all_metadata += gcs_table_metadata
             publish_table_metadata(
                 storage_client, gcs_table_metadata, args.target_bucket
             )
@@ -219,6 +212,15 @@ def main():
                 f"Invalid target: {target}, target must be a directory with"
                 "structure <project>/<dataset>/<table>/metadata.yaml."
             )
+
+    output_file = f"gs://{args.target_bucket}/all-datasets.json"
+    publish_all_datasets_metadata(all_metadata, output_file)
+    set_content_type(
+        storage_client,
+        args.target_bucket,
+        "all-datasets.json",
+        "application/json",
+    )
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@
 from dataclasses import dataclass
 from functools import partial
 from typing import Tuple, Union
+import logging
 import re
 
 from google.cloud import bigquery
@@ -483,25 +484,16 @@ PIONEER_PROD = "moz-fx-data-pioneer-prod"
 def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     """Return a dict like DELETE_TARGETS for Pioneer tables."""
 
-    def __get_tables_with_pioneer_id__(dataset_list):
-        return [
-            table
-            for table in pool.map(
-                client.get_table,
-                [
-                    table
-                    for tables in pool.map(
-                        client.list_tables,
-                        dataset_list,
-                        chunksize=1,
-                    )
-                    for table in tables
-                ],
-                chunksize=1,
-            )
-            if any(field.name == PIONEER_ID for field in table.schema)
-            and table.table_type != "VIEW"
-        ]
+    def __get_tables_with_pioneer_id__(dataset):
+        tables_with_pioneer_id = []
+        for table in client.list_tables(dataset):
+            table_ref = client.get_table(table)
+            if (
+                any(field.name == PIONEER_ID for field in table_ref.schema)
+                and table_ref.table_type != "VIEW"
+            ):
+                tables_with_pioneer_id.append(table_ref)
+        return tables_with_pioneer_id
 
     datasets = {
         dataset.reference
@@ -526,8 +518,21 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
         if table.table_id.startswith("deletion_request_")
     }
 
-    # we only expect analysis tables to be created under `analysis` datasets
-    analysis_datasets = [project + ".analysis" for project in study_projects]
+    # Dictionary mapping analysis dataset names to corresponding study names.
+    # We expect analysis tables to be created only under `analysis` datasets
+    # in study projects. These datasets are labeled with study names which
+    # we use for discovering corresponding delete request tables later on.
+    analysis_datasets = {}
+    for project in study_projects:
+        analysis_dataset = project + ".analysis"
+        labels = client.get_dataset(analysis_dataset).labels
+        study_name = labels.get("study_name")
+        if study_name is None:
+            logging.error(
+                f"Dataset {analysis_dataset} does not have `study_name` label, skipping..."
+            )
+        else:
+            analysis_datasets[analysis_dataset] = study_name
 
     return {
         **{
@@ -544,18 +549,15 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             pioneer_target(
                 table=qualified_table_id(table), project=PIONEER_PROD
             ): sources[table.dataset_id]
-            for table in __get_tables_with_pioneer_id__(derived_datasets)
+            for dataset in derived_datasets
+            for table in __get_tables_with_pioneer_id__(dataset)
         },
         **{
             # tables with pioneer_id located in study analysis projects
             pioneer_target(
                 table=qualified_table_id(table), project=table.project
-            ):  # The following finds corresponding delete request table.
-            # By convention, it is located under stable study dataset in
-            # PIONEER_PROD project
-            sources[
-                re.sub("^moz-fx-data-", "", table.project).replace("-", "_") + "_stable"
-            ]
-            for table in __get_tables_with_pioneer_id__(analysis_datasets)
+            ): sources[study + "_stable"]
+            for dataset, study in analysis_datasets.items()
+            for table in __get_tables_with_pioneer_id__(dataset)
         },
     }

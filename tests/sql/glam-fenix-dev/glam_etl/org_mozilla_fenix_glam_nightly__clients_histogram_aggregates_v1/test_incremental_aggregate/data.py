@@ -32,7 +32,7 @@ CLIENTS_HISTOGRAM_AGGREGATES = [
                     {"key": "1", "value": 0},
                     {"key": "2", "value": 1},
                 ],
-            },
+            }
         ],
     }
 ]
@@ -53,11 +53,8 @@ CLIENTS_DAILY_HISTOGRAM_AGGREGATES = [
                 "metric_type": "timing_distribution",
                 "key": "",
                 "agg_type": "summed_histogram",
-                "value": [
-                    {"key": "0", "value": 1},
-                    {"key": "1", "value": 0},
-                ],
-            },
+                "value": [{"key": "0", "value": 1}, {"key": "1", "value": 0}],
+            }
         ],
     }
 ]
@@ -82,7 +79,7 @@ EXPECT = [
                     {"key": "1", "value": 0},
                     {"key": "2", "value": 1},
                 ],
-            },
+            }
         ],
     }
 ]

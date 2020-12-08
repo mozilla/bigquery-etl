@@ -1,4 +1,4 @@
-- app_build_id: '*'
+- app_build_id: '2020100100'
   app_version: 84
   channel: '*'
   client_id: df735f02-efe5-4b07-b212-583bb99ba241
@@ -8,10 +8,10 @@
     metric: network_tcp_connection
     metric_type: timing_distribution
     value:
-    - key: '112863206'
+    - key: '1'
       value: 1
-    - key: '123078199'
+    - key: '2'
       value: 0
-  os: '*'
-  ping_type: '*'
+  os: Android
+  ping_type: metrics
   sample_id: 1

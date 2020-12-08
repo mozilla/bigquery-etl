@@ -195,6 +195,7 @@ DELETE_TARGETS = {
     client_id_target(table="telemetry_derived.experiments_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_events_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_summary_v4"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.main_1pct_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.block_autoplay_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.crash_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.downgrade_v4"): DESKTOP_SRC,

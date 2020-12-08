@@ -46,7 +46,7 @@ CLIENTS_DAILY_HISTOGRAM_AGGREGATES = [
                     {"key": "112863206", "value": 1},
                     {"key": "123078199", "value": 0},
                 ],
-            },
+            }
         ],
     }
 ]
@@ -70,7 +70,7 @@ EXPECT = [
                     {"key": "112863206", "value": 1},
                     {"key": "123078199", "value": 0},
                 ],
-            },
+            }
         ],
     }
 ]

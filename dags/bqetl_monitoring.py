@@ -21,16 +21,16 @@ with DAG(
     "bqetl_monitoring", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
-    monitoring__average_ping_sizes__v1 = bigquery_etl_query(
+    monitoring__average_ping_sizes__v1 = gke_command(
         task_id="monitoring__average_ping_sizes__v1",
-        destination_table="average_ping_sizes_v1",
-        dataset_id="monitoring",
-        project_id="moz-fx-data-shared-prod",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring/average_ping_sizes_v1/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        docker_image="mozilla/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
     )
 
     monitoring__bigquery_etl_scheduled_queries_cost__v1 = gke_command(

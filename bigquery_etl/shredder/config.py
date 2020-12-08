@@ -556,7 +556,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             # tables with pioneer_id located in study analysis projects
             pioneer_target(
                 table=qualified_table_id(table), project=table.project
-            ): sources[study + "_stable"]
+            ): sources[study.replace("-", "_") + "_stable"]
             for dataset, study in analysis_datasets.items()
             for table in __get_tables_with_pioneer_id__(dataset)
         },

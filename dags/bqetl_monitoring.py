@@ -21,6 +21,18 @@ with DAG(
     "bqetl_monitoring", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
+    monitoring__average_ping_sizes__v1 = bigquery_etl_query(
+        task_id="monitoring__average_ping_sizes__v1",
+        destination_table="average_ping_sizes_v1",
+        dataset_id="monitoring",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     monitoring__bigquery_etl_scheduled_queries_cost__v1 = gke_command(
         task_id="monitoring__bigquery_etl_scheduled_queries_cost__v1",
         command=[
@@ -129,6 +141,20 @@ with DAG(
         dag=dag,
     )
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    monitoring__average_ping_sizes__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    monitoring__average_ping_sizes__v1.set_upstream(monitoring__stable_table_sizes__v1)
+
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -140,16 +166,6 @@ with DAG(
     )
 
     monitoring__column_size__v1.set_upstream(wait_for_copy_deduplicate_main_ping)
-
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
 
     monitoring__stable_table_sizes__v1.set_upstream(wait_for_copy_deduplicate_all)
     monitoring__stable_table_sizes__v1.set_upstream(wait_for_copy_deduplicate_main_ping)

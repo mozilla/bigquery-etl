@@ -525,7 +525,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     # we use for discovering corresponding delete request tables later on.
     analysis_datasets = {}
     for project in study_projects:
-        analysis_dataset = project + ".analysis"
+        analysis_dataset = bigquery.DatasetReference(project, "analysis")
         labels = client.get_dataset(analysis_dataset).labels
         study_name = labels.get("study_name")
         if study_name is None:

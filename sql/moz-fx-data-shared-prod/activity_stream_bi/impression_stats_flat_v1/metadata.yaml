@@ -8,3 +8,8 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_activity_stream
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential
+      - workgroup:pocket/external

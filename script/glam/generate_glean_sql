@@ -80,6 +80,9 @@ dst_project=${DST_PROJECT:-${PROJECT:-glam-fenix-dev}}
 product=${PRODUCT?PRODUCT must be defined}
 stage=${STAGE?$error}
 
+# ensure the sql directory exists
+mkdir -p sql/$dst_project/glam_etl
+
 if [[ $stage == "daily" ]]; then
     write_clients_daily_aggregates "$product" "$src_project" "$dst_project"
     python3 -m bigquery_etl.glam.generate --project "$dst_project" --prefix "${product}" --daily-view-only

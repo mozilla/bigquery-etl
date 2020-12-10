@@ -1,0 +1,6 @@
+.DS_Store
+*.pyc
+__pycache__/
+venv/
+desktop_mau/static/img/
+mobile_mau/static/index.html

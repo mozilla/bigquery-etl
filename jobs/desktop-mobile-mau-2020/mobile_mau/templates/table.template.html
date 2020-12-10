@@ -1,0 +1,31 @@
+<div class="col-6 col-md-4 col-lg-3 table-column">
+    <div class="table-container section">
+        <h3 class="table-header">{{ platform }} {{ metric }}</h3>
+        <table class="data-table">
+            <tr>
+                <td class="tg-0lax">Current Value</td>
+                <td class="tg-0laz">{{ current }}</td>
+            </tr>
+            <tr>
+                <td class="tg-0lax">± Credible Interval</td>
+                <td class="tg-0laz">{{ current_pm }}</td>
+            </tr>
+            <tr>
+                <td class="tg-0lax">Actual 2019 EoY</td>
+                <td class="tg-0laz">{{ actual_2019 }}</td>
+            </tr>
+            <tr style="border-style: double none none;">
+                <td class="tg-0lax">Forecast 2020 EoY</td>
+                <td class="tg-0laz">{{ forecast }}</td>
+            </tr>
+            <tr>
+                <td class="tg-0lax">± Credible Interval</td>
+                <td class="tg-0laz">{{ forecast_pm }}</td>
+            </tr>
+            <tr>
+                <td class="tg-0lax">Forecast EoY YoY</td>
+                <td class="tg-0laz {{ forecast_color }}">{{ eoy_yoy }}%</td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2020 Key Performance Indicator Dashboard</title>
+
+    <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+
+<body>
+<div class="container-xl">
+
+    <div class="page-header">
+        <h1>Mobile Product MAU Dashboard</h1>
+    </div>
+
+    <div class="section warning-header">
+        <h1>
+            This is a proof of concept for generating protosaur dashboards with a docker-etl workload
+            (<a href="https://github.com/mozilla/docker-etl">https://github.com/mozilla/docker-etl</a>)
+        </h1>
+        <h2>The data in this table is not validated and may not be accurate</h2>
+    </div>
+
+    <div class="section">
+        <h2>Background</h2>
+        <p>This dashboard (updates daily at 9:00 PST) provides current **Global** MAU for each individual mobile product and the forecast toward 12/15/2020.</p>
+        <p>You'll also find links that provide a window into the underlying data and forecast methodology, as well as contact information in case you have questions.</p>
+    </div>
+
+    <div class="row justify-content-center table-row">
+        {{ fennec_table }}
+        {{ firefox_ios_table }}
+        {{ focus_android_table }}
+        {{ firefox_lite_table }}
+        {{ fenix_table }}
+        {{ focus_ios_table }}
+        {{ firefox_echo_table }}
+        {{ lockwise_android_table }}
+    </div>
+
+    <div class="section">
+        <h3>Definitions</h3>
+
+        <p>MAU: Count of unique client_id during a 28d period.</p>
+        <p>Actual 2019 EoY: Observed metric value of measurement on 12/15/2019. </p>
+        <p>Forecast 2020 EoY: Expected metric value of measurement on 12/15/2020 based on all available information.</p>
+        <p>Current value: Value of metric on previous day (yesterday).</p>
+        <p>Credible Intervals: The visualizations for each KPI contain credible intervals. They are intended to capture statistical noise due to the randomness in the metric actuals and to represent the credibility of the forecasted values.</p>
+        <p>Forecast EoY YoY, %: Difference between forecast on date of measurement in 2019 and 2020.</p>
+        <p></p>
+
+        <h3> Data & Methodologies</h3>
+
+        <p> For further details on methodology, see <a href="https://sql.telemetry.mozilla.org/queries/67552/source">Mobile Product MAU data</a>, and <a href="https://github.com/mozilla/forecasting/tree/master/simpleprophet">SimpleProphet KPI forecasting models and tools</a>.
+    </div>
+
+    <div class="section">
+        {{ fenix_plot }}
+    </div>
+
+    <div class="section">
+        {{ fennec_plot }}
+    </div>
+
+    <div class="section">
+        {{ firefox_ios_plot }}
+    </div>
+
+    <div class="section">
+        {{ focus_android_plot }}
+    </div>
+
+    <div class="section">
+        {{ firefox_echo_plot }}
+    </div>
+
+    <div class="section">
+        {{ focus_ios_plot }}
+    </div>
+
+    <div class="section">
+        {{ firefox_lite_plot }}
+    </div>
+
+    <div class="section">
+        {{ lockwise_android_plot }}
+    </div>
+
+</div>
+
+</body>
+
+</html>

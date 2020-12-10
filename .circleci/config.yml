@@ -49,6 +49,22 @@ jobs:
           name: Verify CI config is up-to-date
           command: docker run docker-etl:build python3 -m docker_etl.ci_config --dry-run | diff -B .circleci/config.yml -
 
+  build-job-desktop-mobile-mau-2020:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/desktop-mobile-mau-2020/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/desktop-mobile-mau-2020/
+      - run:
+          name: Test Code
+          command: docker run app:build pytest --flake8 --black
+
   build-job-example_job:
     docker:
       - image: docker:stable-git
@@ -67,6 +83,20 @@ workflows:
   docker-etl:
     jobs:
       - build-docker-etl
+
+  job-desktop-mobile-mau-2020:
+    jobs:
+      - build-job-desktop-mobile-mau-2020
+      - gcp-gcr/build-and-push-image:
+          google-project-id: MAU_DASHBOARDS_PROJECT
+          gcloud-service-key: MAU_DASHBOARDS_KEY
+          path: jobs/desktop-mobile-mau-2020/
+          image: desktop-mobile-mau-2020_docker_etl
+          requires:
+            - build-job-desktop-mobile-mau-2020
+          filters:
+            branches:
+              only: main
 
   job-example_job:
     jobs:

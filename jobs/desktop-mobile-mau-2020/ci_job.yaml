@@ -1,0 +1,15 @@
+build-job-desktop-mobile-mau-2020:
+  docker:
+    - image: docker:stable-git
+  steps:
+    - checkout
+    - compare-branch:
+        pattern: ^jobs/desktop-mobile-mau-2020/
+    - setup_remote_docker:
+        version: 19.03.13
+    - run:
+        name: Build Docker image
+        command: docker build -t app:build jobs/desktop-mobile-mau-2020/
+    - run:
+        name: Test Code
+        command: docker run app:build pytest --flake8 --black

@@ -1,0 +1,27 @@
+.page-header {
+    text-align: center;
+    margin: 18px;
+}
+
+.full-width {
+    min-width: 1100px;
+    max-width: 100%;
+}
+
+.half-width {
+    min-width: 570px;
+}
+
+.section {
+    border: #eaeaea solid 1px;
+    padding: 18px;
+}
+
+.plot-container {
+    margin: 24px;
+    text-align: center;
+}
+
+.warning-header {
+    border: 3px solid #f00;
+}

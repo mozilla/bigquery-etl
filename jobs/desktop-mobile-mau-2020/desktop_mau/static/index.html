@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Desktop MAU/DAU in Tier1 Countries</title>
+
+    <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+
+<body>
+    <div class="page-header">
+        <h1>Desktop MAU/DAU in Tier1 Countries</h1>
+    </div>
+
+    <div class="container section warning-header">
+        <h1>
+            This is a proof of concept for generating protosaur dashboards with a docker-etl workload
+            (<a href="https://github.com/mozilla/docker-etl">https://github.com/mozilla/docker-etl</a>)
+        </h1>
+        <h2>The data in this table is not validated and may not be accurate</h2>
+    </div>
+
+    <div class="container section">
+        <h2> Part 1: Tier1 countries (US, CA, GB, DE, FR) </h2>
+        <h3> Part 1.1: Desktop MAU/DAU contribution from each Tier1 countries w.r.t Global</h3>
+        <p> Stored as img/desktop_[COUNTRY NAME]_mau_dau_ratio.jpeg for each country</p>
+    </div>
+
+    <div class="plot-container">
+        <div class="row">
+            <img class="col half-width" src="img/desktop_Tier1_mau_dau_ratio.jpeg">
+            <img class="col half-width" src="img/desktop_US_mau_dau_ratio.jpeg">
+        </div>
+        <div class="row">
+            <img class="col half-width" src="img/desktop_CA_mau_dau_ratio.jpeg">
+            <img class="col half-width" src="img/desktop_DE_mau_dau_ratio.jpeg">
+        </div>
+        <div class="row">
+            <img class="col half-width" src="img/desktop_FR_mau_dau_ratio.jpeg">
+            <img class="col half-width" src="img/desktop_GB_mau_dau_ratio.jpeg">
+        </div>
+    </div>
+
+    <div class="container section">
+        <h3>Part 1.2 Desktop MAU/DAU contribution from Tier1 w.r.t. Global</h3>
+        <p>Stored as img/desktop_MAU_tier1_contribution.jpeg </p>
+        <p>Stored as img/desktop_DAU_tier1_contribution.jpeg </p>
+    </div>
+
+    <div class="plot-container">
+        <img class="full-width" src="img/desktop_MAU_Tier1_contribution.jpeg">
+        <img class="full-width" src="img/desktop_DAU_Tier1_contribution.jpeg">
+        <img class="full-width" src="img/desktop_mau_dau_ratio.jpeg">
+    </div>
+
+    <div class="container section">
+        <h3>Part 1.3 Desktop MAU/DAU from Tier1 countries</h3>
+        <p>We show for each **Tier1** country (US, CA, DE, FR, GB) and (Global/Tier1/RoW) 4 different plots (from left to right) </p>
+        <p>Stored as img/desktop_[COUNTRY NAME]_mau_dau.jpeg for each country</p>
+        <p>1. MAU for each year</p>
+        <p>2. MAU w.r.t MAU on Jan01 for each year</p>
+        <p>3. DAU (7d MA) for each year</p>
+        <p>4. DAU (7d MA) w.r.t that on Jan01 for each year</p>
+    </div>
+
+    <div class="plot-container">
+        <img class="full-width" src="img/desktop_US_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_CA_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_DE_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_FR_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_GB_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_Tier1_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_Global_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_RoW_mau_dau.jpeg">
+    </div>
+
+    <div class="container section">
+        <h3>Part 1.4 Desktop DAU contribution per User State</h3>
+        <p>Stored as img/desktop_[COUNTRY]_user_state_dau_contribution.jpeg </p>
+        <p>User state is based on v3 of user state expalined <a href="https://docs.telemetry.mozilla.org/concepts/segments.html">here</a>. </p>
+        <p>Directly run from `clients_last_seen` daily is expensive (> 6TB) so that we create an aggregation table to store the historical data, and only append daily data to it. Hence the numbers might be different from direct run.</p>
+    </div>
+
+    <div class="plot-container">
+        <img class="full-width" src="img/desktop_US_user_state_dau_contribution.jpeg">
+        <img class="full-width" src="img/desktop_CA_user_state_dau_contribution.jpeg">
+        <img class="full-width" src="img/desktop_DE_user_state_dau_contribution.jpeg">
+        <img class="full-width" src="img/desktop_GB_user_state_dau_contribution.jpeg">
+        <img class="full-width" src="img/desktop_FR_user_state_dau_contribution.jpeg">
+    </div>
+
+    <div class="container section">
+        <h2>Part 2: Top countries not in Tier 1 (CN, IN, BR, ID, RU, PL) </h2>
+        <p>Besides Tier1 countries, there are another 6 countries (CN, IN, BR, ID, RU, PL) that has top rank MAU/DAU. In total these 11 countries usually contribute ~60% of our DAU/MAU.</p>
+
+        <h3> Part 2.1: Desktop MAU/DAU contribution from Top countries w.r.t Global</h3>
+        <p> Stored as img/desktop_[COUNTRY NAME]_mau_dau_ratio.jpeg for each country</p>
+    </div>
+
+    <div class="plot-container">
+        <div class="row">
+            <img class="col half-width" src="img/desktop_CN_mau_dau_ratio.jpeg">
+            <img class="col half-width" src="img/desktop_IN_mau_dau_ratio.jpeg">
+        </div>
+        <div class="row">
+            <img class="col half-width" src="img/desktop_RU_mau_dau_ratio.jpeg">
+            <img class="col half-width" src="img/desktop_BR_mau_dau_ratio.jpeg">
+        </div>
+        <div class="row">
+            <img class="col half-width" src="img/desktop_ID_mau_dau_ratio.jpeg">
+            <img class="col half-width" src="img/desktop_PL_mau_dau_ratio.jpeg">
+        </div>
+    </div>
+
+    <div class="container section">
+        <h3>Part 2.2 Desktop MAU/DAU contribution from Top11 w.r.t. Global</h3>
+        <p>Stored as img/desktop_MAU_top11_contribution.jpeg </p>
+        <p>Stored as img/desktop_DAU_top11_contribution.jpeg </p>
+    </div>
+
+    <div class="plot-container">
+        <img class="full-width" src="img/desktop_MAU_Top11_contribution.jpeg">
+        <img class="full-width" src="img/desktop_DAU_Top11_contribution.jpeg">
+    </div>
+
+    <div class="container section">
+        <h3> Part 2.3 Desktop MAU/DAU from Top countries</h3>
+        <p>Stored as img/desktop_[COUNTRY NAME]_mau_dau.jpeg for each country</p>
+        <p>1. MAU for each year</p>
+        <p>2. MAU w.r.t MAU on Jan01 for each year</p>
+        <p>3. DAU (7d MA) for each year</p>
+        <p>4. DAU (7d MA) w.r.t that on Jan01 for each year</p>
+    </div>
+
+    <div class="plot-container">
+        <img class="full-width" src="img/desktop_CN_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_IN_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_BR_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_RU_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_ID_mau_dau.jpeg">
+        <img class="full-width" src="img/desktop_PL_mau_dau.jpeg">
+    </div>
+
+    <div class="container section">
+        <h3>Part 2.4 Desktop DAU contribution per User State</h3>
+        <p>Stored as img/desktop_[COUNTRY]_user_state_dau_contribution.jpeg </p>
+    </div>
+
+    <div class="plot-container">
+        <img class="full-width" src="img/desktop_CN_user_state_dau_contribution.jpeg">
+        <img class="full-width" src="img/desktop_IN_user_state_dau_contribution.jpeg">
+        <img class="full-width" src="img/desktop_BR_user_state_dau_contribution.jpeg">
+        <img class="full-width" src="img/desktop_RU_user_state_dau_contribution.jpeg">
+        <img class="full-width" src="img/desktop_ID_user_state_dau_contribution.jpeg">
+        <img class="full-width" src="img/desktop_PL_user_state_dau_contribution.jpeg">
+    </div>
+
+</div>
+
+</body>
+
+</html>

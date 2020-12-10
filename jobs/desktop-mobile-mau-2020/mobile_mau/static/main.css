@@ -1,0 +1,115 @@
+hr {
+    margin-top: 50px;
+}
+
+@font-face {
+    font-family: "Benton Sans";
+    src: url("./BentonSansBook.otf") format("opentype");
+}
+
+body {
+    padding: 16px;
+    font-family: "Benton Sans", sans-serif;
+    font-size: large;
+    background-color: #fafafa;
+}
+
+h1, h2, h3 {
+    color: black;
+}
+
+.data-table  {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-top: 8px;
+}
+
+.data-table td {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 10px 5px;
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    word-break: normal;
+    border-color: black;
+}
+
+.data-table th {
+    font-family:Arial, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 10px 5px;
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    word-break: normal;
+    border-color: black;
+}
+
+.data-table .tg-0lax {
+    font-weight: bold;
+    text-align: left;
+    vertical-align: top;
+}
+
+.data-table .tg-0laz {
+    text-align: right;
+    vertical-align: top;
+}
+
+.red-text {
+    color: #cb0000;
+}
+
+.green-text {
+    color: #009901;
+}
+
+.table-header {
+    text-align: center;
+    margin: auto;
+    align-self: flex-start;
+}
+
+.table-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.page-header {
+    text-align: center;
+    margin: 24px;
+}
+
+.subheader {
+    text-align: center;
+    margin: 20px;
+}
+
+.section {
+    padding: 18px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.plot-footer {
+    font-size: smaller;
+}
+
+.table-column {
+    padding: 2px;
+}
+
+.table-row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.warning-header {
+    border: 3px solid #f00;
+}

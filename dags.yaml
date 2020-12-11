@@ -287,3 +287,18 @@ bqetl_marketing_fetch:
     retries: 2
     retry_delay: 30m
 
+
+bqetl_search_dashboard:
+  default_args:
+    depends_on_past: false
+    email:
+    - telemetry-alerts@mozilla.com
+    - ssuh@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: ssuh@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2020-12-14'
+  schedule_interval: 0 4 * * *
+

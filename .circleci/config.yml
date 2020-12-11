@@ -151,7 +151,7 @@ jobs:
       - *build
       - run:
           name: Install dependencies
-          command: pip install mkdocs markdown-include
+          command: pip install mkdocs mkdocs-material markdown-include
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
       - run:

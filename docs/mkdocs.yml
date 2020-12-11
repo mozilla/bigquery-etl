@@ -6,4 +6,8 @@ site_author: Mozilla Data Platform Team
 repo_url: https://github.com/mozilla/bigquery-etl/
 
 theme:
-    name: mkdocs
+    name: material
+    features:
+        - navigation.tabs
+    palette:
+        primary: teal

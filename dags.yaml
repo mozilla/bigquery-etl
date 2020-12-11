@@ -287,3 +287,17 @@ bqetl_marketing_fetch:
     retries: 2
     retry_delay: 30m
 
+bqetl_desktop_platform:
+  schedule_interval: 0 3 * * *
+  default_args:
+    owner: jklukas@mozilla.com
+    start_date: "2020-12-10"
+    email:
+      [
+        "telemetry-alerts@mozilla.com",
+        "jklukas@mozilla.com",
+        "yzenevich@mozilla.com",
+      ]
+    retries: 2
+    retry_delay: 30m
+

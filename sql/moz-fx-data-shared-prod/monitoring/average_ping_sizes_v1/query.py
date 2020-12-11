@@ -70,7 +70,7 @@ def save_average_ping_sizes(
         bigquery.SchemaField("submission_date", "DATE"),
         bigquery.SchemaField("dataset_id", "STRING"),
         bigquery.SchemaField("table_id", "STRING"),
-        bigquery.SchemaField("average_byte_size", "INT64"),
+        bigquery.SchemaField("average_byte_size", "FLOAT64"),
     )
     job_config.write_disposition = bigquery.job.WriteDisposition.WRITE_TRUNCATE
 

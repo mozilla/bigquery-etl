@@ -1,0 +1,15 @@
+description: >-
+  This query creates a table based on search_aggregate containing
+  search metrics aggregated by geo, locale, os, engine, app_version,
+  submission_date.
+  Originally created fro the search report dashboard.
+friendly_name: Desktop Search Aggregates For Search Report
+labels:
+  incremental: true
+  schedule: daily
+owners:
+- xluo@mozilla.com
+- ssuh@mozilla.com
+scheduling:
+  dag_name: bqetl_search_dashboard
+  depends_on_past: false

@@ -1,4 +1,8 @@
-description: This query creates a table based on clients_last_seen containing search metrics aggregated by user state, geo, submission_date and whether the user searched or not. Originally created for the search report dashboard.
+description: >-
+  This query creates a table based on clients_last_seen containing
+  search metrics aggregated by user state, geo, submission_date
+  and whether the user searched or not.
+  Originally created for the search report dashboard.
 friendly_name: Desktop Search Aggregates By Userstate
 labels:
   incremental: true

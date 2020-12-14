@@ -5,3 +5,7 @@
 .DS_Store
 .mypy_cache/
 venv/
+
+# ignore locally generated docs
+sql/**/docs
+sql/**/mkdocs.yml

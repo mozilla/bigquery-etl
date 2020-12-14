@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod:search_derived.mobile_search_aggregates_for_searchreport_v1`(
+  `moz-fx-data-shared-prod.search_derived.mobile_search_aggregates_for_searchreport_v1`(
     submission_date DATE,
     country STRING,
     product STRING,

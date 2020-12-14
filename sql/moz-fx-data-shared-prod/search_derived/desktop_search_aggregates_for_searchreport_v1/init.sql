@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod:search_derived.desktop_search_aggregates_for_searchreport_v1`(
+  `moz-fx-data-shared-prod.search_derived.desktop_search_aggregates_for_searchreport_v1`(
     submission_date DATE,
     geo STRING,
     locale STRING,
@@ -18,4 +18,7 @@ PARTITION BY
   submission_date
 CLUSTER BY
   geo,
-  user_state
+  locale, 
+  engine, 
+  os, 
+  app_version

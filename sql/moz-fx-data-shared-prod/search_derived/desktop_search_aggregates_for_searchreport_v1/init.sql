@@ -18,7 +18,7 @@ PARTITION BY
   submission_date
 CLUSTER BY
   geo,
-  locale, 
-  engine, 
-  os, 
+  locale,
+  engine,
+  os,
   app_version

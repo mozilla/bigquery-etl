@@ -49,9 +49,9 @@ with DAG(
         destination_table="mobile_search_aggregates_for_searchreport_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="mm@mozilla.com",
+        owner="mmccorquodale@mozilla.com",
         email=[
-            "mm@mozilla.com",
+            "mmccorquodale@mozilla.com",
             "ssuh@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "xluo@mozilla.com",

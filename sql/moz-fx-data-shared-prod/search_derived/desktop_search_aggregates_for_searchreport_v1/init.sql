@@ -20,5 +20,4 @@ CLUSTER BY
   geo,
   locale,
   engine,
-  os,
   app_version

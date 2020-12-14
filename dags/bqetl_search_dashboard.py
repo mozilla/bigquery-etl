@@ -44,6 +44,23 @@ with DAG(
         dag=dag,
     )
 
+    search_derived__mobile_search_aggregates_for_searchreport__v1 = bigquery_etl_query(
+        task_id="search_derived__mobile_search_aggregates_for_searchreport__v1",
+        destination_table="mobile_search_aggregates_for_searchreport_v1",
+        dataset_id="search_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mm@mozilla.com",
+        email=[
+            "mm@mozilla.com",
+            "ssuh@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "xluo@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",
         external_dag_id="bqetl_main_summary",
@@ -70,4 +87,18 @@ with DAG(
 
     search_derived__desktop_search_aggregates_for_searchreport__v1.set_upstream(
         wait_for_search_derived__search_aggregates__v8
+    )
+
+    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    search_derived__mobile_search_aggregates_for_searchreport__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v1
     )

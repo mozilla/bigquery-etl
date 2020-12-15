@@ -17,6 +17,8 @@ METADATA_FILE = "metadata.yaml"
 DOCS_DIR = "docs/"
 INDEX_MD = "index.md"
 SQL_REF_RE = r"@sql\((.+)\)"
+SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/master"
+EDIT_URL = "https://github.com/mozilla/bigquery-etl/edit/master/"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -63,6 +65,11 @@ def load_with_examples(file):
     return file_content
 
 
+def add_source_and_edit(source_url, edit_url):
+    """Add links to the function directory and metadata.yaml editor."""
+    return f"[Source]({source_url})  |  [Edit]({edit_url})"
+
+
 def main():
     """Generate documentation for project."""
     args = parser.parse_args()
@@ -96,6 +103,9 @@ def main():
                     else:
                         description = None
                         if METADATA_FILE in files:
+                            source_link = f"{SOURCE_URL}/{root}"
+                            edit_link = f"{EDIT_URL}/{root}/{METADATA_FILE}"
+
                             with open(os.path.join(root, METADATA_FILE)) as stream:
                                 try:
                                     description = yaml.safe_load(stream).get(
@@ -123,6 +133,9 @@ def main():
                                     dataset_doc_file.write(f"{formated}\n\n")
                                 # Inject the contents of the README.md
                                 dataset_doc_file.write(docfile_content)
+                                # Add links to source and edit
+                                sourced = add_source_and_edit(source_link, edit_link)
+                                dataset_doc_file.write(f"{sourced}\n\n")
                         else:
                             # dataset-level doc; create a new doc file
                             dest = out_dir / path / f"{name}.md"

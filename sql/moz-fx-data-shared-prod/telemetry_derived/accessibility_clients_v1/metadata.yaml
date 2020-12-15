@@ -10,4 +10,4 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_desktop_platform
-  start_date: "2017-03-01"
+  start_date: "2018-11-01"

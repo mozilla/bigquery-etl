@@ -98,7 +98,7 @@ def main():
                         # project level-doc file
                         project_doc_dir = out_dir / path / name
                         project_doc_dir.mkdir(parents=True, exist_ok=True)
-                        dest = project_doc_dir / "overview.md"
+                        dest = project_doc_dir / "about.md"
                         dest.write_text(load_with_examples(src))
                     else:
                         description = None

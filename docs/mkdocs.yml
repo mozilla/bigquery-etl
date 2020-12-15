@@ -4,7 +4,7 @@ site_description: Mozilla BigQuery ETL
 site_author: Mozilla Data Platform Team
 
 # Repository
-repo_name: mozilla/bigquery-etl/
+repo_name: mozilla/bigquery-etl
 repo_url: https://github.com/mozilla/bigquery-etl/
 edit_uri: "" 
 

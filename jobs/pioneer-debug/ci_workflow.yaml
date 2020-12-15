@@ -1,0 +1,12 @@
+job-pioneer-debug:
+  jobs:
+    - build-job-pioneer-debug
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        path: jobs/pioneer-debug/
+        image: pioneer-debug_docker_etl
+        requires:
+          - build-job-pioneer-debug
+        filters:
+          branches:
+            only: main

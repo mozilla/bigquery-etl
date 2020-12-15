@@ -166,7 +166,7 @@
     
     
     <a href="../.." class="md-tabs__link">
-      BigQuery ETL
+      About
     </a>
   </li>
 
@@ -179,7 +179,7 @@
       
         
       
-      <a href="../bits28/" class="md-tabs__link md-tabs__link--active">
+      <a href="../about/" class="md-tabs__link md-tabs__link--active">
         Mozfun
       </a>
     </li>
@@ -233,7 +233,7 @@
 
   <li class="md-nav__item">
     <a href="../.." class="md-nav__link">
-      BigQuery ETL
+      About
     </a>
   </li>
 
@@ -259,6 +259,18 @@
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../about/" class="md-nav__link">
+      mozfun
+    </a>
+  </li>
+
         
           
           
@@ -357,6 +369,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#mode_last-udf" class="md-nav__link">
+    mode_last (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_key_with_null-udf" class="md-nav__link">
     get_key_with_null (UDF)
   </a>
@@ -377,13 +396,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -399,18 +411,6 @@
   <li class="md-nav__item">
     <a href="../norm/" class="md-nav__link">
       norm
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../overview/" class="md-nav__link">
-      mozfun
     </a>
   </li>
 
@@ -456,6 +456,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#mode_last-udf" class="md-nav__link">
+    mode_last (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_key_with_null-udf" class="md-nav__link">
     get_key_with_null (UDF)
   </a>
@@ -476,13 +483,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#mode_last-udf" class="md-nav__link">
-    mode_last (UDF)
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -498,6 +498,9 @@
                 
                 <h1 id="map">map</h1>
 <p>Functions for working with arrays of key/value structs.</p>
+<h2 id="mode_last-udf">mode_last (UDF)</h2>
+<p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/map/mode_last/metadata.yaml">Edit</a></p>
 <h2 id="get_key_with_null-udf">get_key_with_null (UDF)</h2>
 <p>Fetch the value associated with a given key from an array of key/value structs.
 Because map types aren't available in BigQuery, we model maps as arrays of structs instead, and this function provides map-like access to such fields. This version matches NULL keys as well.</p>
@@ -509,9 +512,6 @@ Because map types aren't available in BigQuery, we model maps as arrays of struc
 <h2 id="sum-udf">sum (UDF)</h2>
 <p>Return the sum of values by key in an array of map entries. The expected schema for entries is ARRAY<STRUCT\<key ANY TYPE, value ANY TYPE>>, where the type for value must be supported by SUM, which allows numeric data types INT64, NUMERIC, and FLOAT64.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/map/sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/map/sum/metadata.yaml">Edit</a></p>
-<h2 id="mode_last-udf">mode_last (UDF)</h2>
-<p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/map/mode_last/metadata.yaml">Edit</a></p>
                 
               
               

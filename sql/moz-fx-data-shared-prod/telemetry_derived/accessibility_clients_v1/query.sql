@@ -7,7 +7,7 @@ WITH a11y_consumers_instantiators AS (
     hpac.key AS consumer
   FROM
     telemetry.main
-  CROSS JOIN
+  LEFT JOIN -- Do not exclude rows that have empty or NULL hpac
     UNNEST(mozfun.hist.extract(payload.histograms.a11y_consumers).values) AS hpac
   WHERE
     DATE(submission_timestamp) = @submission_date

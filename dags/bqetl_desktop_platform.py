@@ -7,7 +7,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 
 default_args = {
     "owner": "jklukas@mozilla.com",
-    "start_date": datetime.datetime(2020, 12, 10, 0, 0),
+    "start_date": datetime.datetime(2018, 11, 1, 0, 0),
     "email": [
         "telemetry-alerts@mozilla.com",
         "jklukas@mozilla.com",
@@ -35,7 +35,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "yzenevich@mozilla.com",
         ],
-        start_date=datetime.datetime(2017, 3, 1, 0, 0),
+        start_date=datetime.datetime(2018, 11, 1, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

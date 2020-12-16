@@ -455,9 +455,9 @@ pytest-mypy==0.8.0 \
 pytest-pydocstyle==2.2.0 \
     --hash=sha256:b4e7eee47252fbb7495f4a0126e547a25f5f114f3096c504e738db49a5034333 \
     # via -r requirements.in
-pytest-xdist==2.1.0 \
-    --hash=sha256:7c629016b3bb006b88ac68e2b31551e7becf173c76b977768848e2bbed594d90 \
-    --hash=sha256:82d938f1a24186520e2d9d3a64ef7d9ac7ecdf1a0659e095d18e596b8cbd0672 \
+pytest-xdist==2.2.0 \
+    --hash=sha256:1d8edbb1a45e8e1f8e44b1260583107fc23f8bc8da6d18cb331ff61d41258ecf \
+    --hash=sha256:f127e11e84ad37cc1de1088cb2990f3c354630d428af3f71282de589c5bb779b \
     # via -r requirements.in
 pytest==6.2.1 \
     --hash=sha256:1969f797a1a0dbd8ccf0fecc80262312729afea9c17f1d70ebf85c5e76c6f7c8 \

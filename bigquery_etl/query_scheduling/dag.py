@@ -3,7 +3,7 @@
 import attr
 import cattr
 from jinja2 import Environment, PackageLoader
-from typing import List
+from typing import List, Optional
 
 from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling import formatters
@@ -59,6 +59,7 @@ class DagDefaultArgs:
 
     owner: str = attr.ib()
     start_date: str = attr.ib()
+    end_date: Optional[str] = attr.ib(None)
     email: List[str] = attr.ib([])
     depends_on_past: bool = attr.ib(False)
     retry_delay: str = attr.ib("30m")
@@ -87,9 +88,10 @@ class DagDefaultArgs:
                 "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
             )
 
+    @end_date.validator
     @start_date.validator
-    def validate_start_date(self, attribute, value):
-        """Check that start_date has YYYY-MM-DD format."""
+    def validate_date(self, attribute, value):
+        """Check that start_date and end_date has YYYY-MM-DD format."""
         if value is not None and not is_date_string(value):
             raise ValueError(
                 f"Invalid date definition for {attribute}: {value}."

@@ -24,8 +24,7 @@ class TestFormatters:
         ) == {"interval": "'@daily'", "a": 12}
 
     def test_format_date(self):
-        with pytest.raises(TypeError):
-            assert format_date(None)
+        assert format_date(None) is None
 
         with pytest.raises(ValueError):
             assert format_date("March 12th 2020")

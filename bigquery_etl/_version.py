@@ -1,3 +1,3 @@
 """Provides bigquery-etl version information."""
 
-__version__ = "20.12.1"
+__version__ = "20.12.2"

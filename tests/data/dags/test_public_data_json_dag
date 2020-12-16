@@ -9,6 +9,7 @@ from utils.gcp import gke_command
 default_args = {
     "owner": "test@example.org",
     "start_date": datetime.datetime(2020, 1, 1, 0, 0),
+    "end_date": None,
     "email": ["test@example.org"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=3600),

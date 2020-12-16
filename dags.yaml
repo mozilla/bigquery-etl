@@ -321,6 +321,11 @@ bqetl_deviations:
       owner: ascholtz@mozilla.com
       start_date: '2020-10-01'
       end_date: '2021-01-01'
-      email: ['telemetry-alerts@mozilla.com', 'ascholtz@mozilla.com', 'aplacitelli@mozilla.com']
+      email: 
+        [
+          'telemetry-alerts@mozilla.com',
+          'ascholtz@mozilla.com',
+          'aplacitelli@mozilla.com'
+        ]
       retries: 2
       retry_delay: 30m

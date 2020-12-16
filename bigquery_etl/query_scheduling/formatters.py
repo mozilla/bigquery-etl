@@ -29,6 +29,8 @@ def format_attr(d, attribute, formatter_name):
 
 def format_date(date_string):
     """Format a date string to a datetime object."""
+    if date_string is None:
+        return None
     return datetime.strptime(date_string, "%Y-%m-%d")
 
 

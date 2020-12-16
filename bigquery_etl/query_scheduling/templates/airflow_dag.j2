@@ -7,7 +7,8 @@ from utils.gcp import bigquery_etl_query, gke_command
 
 default_args = {{ 
     default_args.to_dict() | 
-    format_attr("start_date", "format_date") | 
+    format_attr("start_date", "format_date") |
+    format_attr("end_date", "format_date") |
     format_attr("retry_delay", "format_timedelta") 
 }}
 

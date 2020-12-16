@@ -8,6 +8,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 default_args = {
     "owner": "frank@mozilla.com",
     "start_date": datetime.datetime(2020, 9, 9, 0, 0),
+    "end_date": None,
     "email": ["frank@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),

@@ -42,19 +42,22 @@ def get_average_ping_size_json(client, date, table):
                 FROM {dataset_id}.{table_id}
                 WHERE DATE(submission_timestamp) = '{date}'
             ) SELECT
-                COALESCE(SAFE_DIVIDE(byte_size, total)) AS average_ping_size
+                SAFE_DIVIDE(byte_size, total) AS average_ping_size,
+                byte_size as total_byte_size,
+                total as row_count
             FROM total_pings, `moz-fx-data-shared-prod.monitoring.stable_table_sizes_v1`
             WHERE submission_date = '{date}' AND dataset_id = '{dataset_id}' AND table_id = '{table_id}'
         """
 
-        result = client.query(sql).result()
-        average_ping_size = [row.average_ping_size for row in result][0]
+        result = list(client.query(sql).result())[0]
 
         return {
             "submission_date": date,
             "dataset_id": dataset_id,
             "table_id": table_id,
-            "average_byte_size": average_ping_size,
+            "average_byte_size": result.average_ping_size,
+            "total_byte_size": result.total_byte_size,
+            "row_count": result.row_count,
         }
     except Exception as e:
         print(e)
@@ -71,6 +74,8 @@ def save_average_ping_sizes(
         bigquery.SchemaField("dataset_id", "STRING"),
         bigquery.SchemaField("table_id", "STRING"),
         bigquery.SchemaField("average_byte_size", "FLOAT64"),
+        bigquery.SchemaField("total_byte_size", "INT64"),
+        bigquery.SchemaField("row_count", "INT64"),
     )
     job_config.write_disposition = bigquery.job.WriteDisposition.WRITE_TRUNCATE
 

@@ -36,6 +36,7 @@ FROM
 WHERE
   submission_date = @submission_date
   AND days_since_seen = 0
+  AND search_count_all < 10000
 GROUP BY
   1,
   2,

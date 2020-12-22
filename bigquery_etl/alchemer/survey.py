@@ -1,10 +1,7 @@
 """Import data from alchemer (surveygizmo) surveys into BigQuery."""
 import datetime as dt
-import itertools
 import json
-import re
 from pathlib import Path
-from time import sleep
 
 import click
 import pytz
@@ -29,9 +26,9 @@ def date_plus_one(date_string):
 
 def format_responses(s, date):
     """Return a nested field of responses for each user."""
-
-    # `survey_data` is a dict with question ID as the key and question/response details as the value
-    # e.g. survey_data: {'25': {'id': 25, 'type': 'RADIO', 'question': 'I trust Firefox to help me with my online privacy',
+    # `survey_data` is a dict with question ID as the key and question/response
+    # details as the value e.g. survey_data: {'25': {'id': 25, 'type': 'RADIO',
+    # 'question': 'I trust Firefox to help me with my online privacy',
     # 'section_id': 2, 'answer': 'Agree', 'answer_id': 10066, 'shown': True}}
     # See https://apihelp.alchemer.com/help/surveyresponse-returned-fields-v5#getobject
 
@@ -69,9 +66,13 @@ def get_survey_data(survey_id, date_string, token, secret):
         f"https://restapi.surveygizmo.com/v5/survey/{survey_id}/surveyresponse"
         f"?api_token={token}&api_token_secret={secret}&results_per_page=500"
         # filter for date_submitted >= start_date
-        f"&filter[field][0]=date_submitted&filter[operator][0]=>=&filter[value][0]={start_date}"
+        f"&filter[field][0]=date_submitted"
+        f"&filter[operator][0]=>="
+        f"&filter[value][0]={start_date}"
         # filter for date_submitted < end_date
-        f"&filter[field][1]=date_submitted&filter[operator][1]=<&filter[value][1]={end_date}"
+        f"&filter[field][1]=date_submitted"
+        f"&filter[operator][1]=<"
+        f"&filter[value][1]={end_date}"
     )
     resp = requests.get(url)
     resp.raise_for_status()
@@ -93,6 +94,7 @@ def get_survey_data(survey_id, date_string, token, secret):
 
 
 def response_schema():
+    """Get the schema for the response object from disk."""
     path = Path(__file__).parent / "response.schema.json"
     return bigquery.SchemaField.from_api_repr(
         {"name": "root", "type": "RECORD", "fields": json.loads(path.read_text())}

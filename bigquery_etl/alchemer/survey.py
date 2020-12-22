@@ -1,7 +1,9 @@
 """Import data from alchemer (surveygizmo) surveys into BigQuery."""
 import datetime as dt
 import itertools
+import json
 import re
+from pathlib import Path
 from time import sleep
 
 import click
@@ -31,14 +33,15 @@ def format_responses(s, date):
     # `survey_data` is a dict with question ID as the key and question/response details as the value
     # e.g. survey_data: {'25': {'id': 25, 'type': 'RADIO', 'question': 'I trust Firefox to help me with my online privacy',
     # 'section_id': 2, 'answer': 'Agree', 'answer_id': 10066, 'shown': True}}
+    # See https://apihelp.alchemer.com/help/surveyresponse-returned-fields-v5#getobject
 
-    # https://apihelp.alchemer.com/help/surveyresponse-returned-fields-v5#getobject
+    # Note that we are omitted date_submission and date_completed because the
+    # timezone is not ISO compliant. The submission date that is passed in as
+    # the time parameter should suffice.
     fields = [
         "id",
         "session_id",
         "status",
-        "date_submitted",
-        "date_started",
         "response_time",
     ]
     return {
@@ -89,15 +92,22 @@ def get_survey_data(survey_id, date_string, token, secret):
     return ret
 
 
+def response_schema():
+    path = Path(__file__).parent / "response.schema.json"
+    return bigquery.SchemaField.from_api_repr(
+        {"name": "root", "type": "RECORD", "fields": json.loads(path.read_text())}
+    ).fields
+
+
 def insert_to_bq(
     data, table, date, write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE
 ):
     """Insert data into a bigquery table."""
     client = bigquery.Client()
     print(f"Inserting {len(data)} rows into bigquery")
-    print(data)
     job_config = bigquery.LoadJobConfig(
-        autodetect=True,
+        # We may also infer the schema by setting `autodetect=True`
+        schema=response_schema(),
         write_disposition=write_disposition,
         time_partitioning=bigquery.table.TimePartitioning(field="submission_date"),
     )

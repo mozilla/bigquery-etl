@@ -9,16 +9,9 @@ import pytz
 import requests
 from google.cloud import bigquery
 
-Q_FIELDS = {
-    "I trust Firefox to help me with my online privacy": "trust_firefox",
-    "All the sites I’ve visited recently have worked; none of them seem broken": "sites_work",
-    "The internet is open and accessible to all": "internet_accessible",
-    "Using the internet helped me meet my goals today": "met_goals",
-}
-
 
 def utc_date_to_eastern_string(date_string):
-    """Takes in a YYYY-MM-DD date string and returns the equivalent in eastern time of midnight UTC of that date"""
+    """Normalize ISO date to UTC midnight."""
     naive_dt = dt.datetime.strptime(date_string, "%Y-%m-%d")
     as_utc = pytz.utc.localize(naive_dt)
     as_eastern = as_utc.astimezone(pytz.timezone("US/Eastern"))
@@ -33,39 +26,32 @@ def date_plus_one(date_string):
 
 
 def format_responses(s, date):
-    """Takes a single user's responses and returns a list of dictionaries, one per answer,
-    formatted to corresponding bigquery fields."""
+    """Return a nested field of responses for each user."""
 
     # `survey_data` is a dict with question ID as the key and question/response details as the value
     # e.g. survey_data: {'25': {'id': 25, 'type': 'RADIO', 'question': 'I trust Firefox to help me with my online privacy',
     # 'section_id': 2, 'answer': 'Agree', 'answer_id': 10066, 'shown': True}}
-    resp = list(s.get("survey_data", {}).values())
-    try:
-        # Shield ID is sent as a hidden field with question name "Shield ID"
-        shield_id = [r.get("answer") for r in resp if r.get("question") == "Shield ID"][
-            0
-        ]
-    except IndexError:
-        shield_id = None
 
-    return [
-        {
-            "shield_id": shield_id,
-            "date": date,
-            "question": r.get("question"),
-            "question_key": Q_FIELDS.get(r.get("question")),
-            "value": r.get("answer"),
-        }
-        for r in resp
-        if r.get("question") != "Shield ID"
+    # https://apihelp.alchemer.com/help/surveyresponse-returned-fields-v5#getobject
+    fields = [
+        "id",
+        "session_id",
+        "status",
+        "date_submitted",
+        "date_started",
+        "response_time",
     ]
+    return {
+        # this is used as the partitioning field
+        "submission_date": date,
+        **{field: s[field] for field in fields},
+        "survey_data": list(s.get("survey_data", {}).values()),
+    }
 
 
 def construct_data(survey, date):
     """Construct response data."""
-    formatted = [format_responses(resp, date) for resp in survey["data"]]
-    # flatten list of lists into a single list of dictionaries
-    return list(itertools.chain.from_iterable(formatted))
+    return [format_responses(resp, date) for resp in survey["data"]]
 
 
 def get_survey_data(survey_id, date_string, token, secret):
@@ -109,7 +95,12 @@ def insert_to_bq(
     """Insert data into a bigquery table."""
     client = bigquery.Client()
     print(f"Inserting {len(data)} rows into bigquery")
-    job_config = bigquery.LoadJobConfig(write_disposition=write_disposition)
+    print(data)
+    job_config = bigquery.LoadJobConfig(
+        autodetect=True,
+        write_disposition=write_disposition,
+        time_partitioning=bigquery.table.TimePartitioning(field="submission_date"),
+    )
     partition = f"{table}${date.replace('-', '')}"
     job = client.load_table_from_json(data, partition, job_config=job_config)
     # job.result() returns a LoadJob object if successful, or raises an exception if not
@@ -124,7 +115,6 @@ def insert_to_bq(
 @click.option("--destination_table", required=True)
 def main(date, survey_id, api_token, api_secret, destination_table):
     """Import data from alchemer (surveygizmo) surveys into BigQuery."""
-    args = parser.parse_args()
     survey_data = get_survey_data(survey_id, date, api_token, api_secret)
     insert_to_bq(survey_data, destination_table, date)
 

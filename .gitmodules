@@ -1,3 +1,0 @@
-[submodule "bigquery-etl"]
-	path = bigquery-etl
-	url = git@github.com:mozilla/bigquery-etl.git

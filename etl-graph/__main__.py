@@ -8,7 +8,6 @@ from .config import *
 from .crawler import (
     fetch_dataset_listing,
     fetch_table_listing,
-    resolve_bigquery_etl_references,
     resolve_view_references,
 )
 from .utils import ensure_folder, ndjson_load, print_json, qualify, run, run_query
@@ -35,15 +34,6 @@ def crawl():
 
     views_listing = [row for row in tables_listing if row["table_type"] == "VIEW"]
     resolve_view_references(views_listing, data_root / project)
-
-
-@cli.command()
-def etl():
-    """Crawl bigquery-etl."""
-    # this is basically dryrun, but with some data collection baked in.
-    resolve_bigquery_etl_references(
-        ROOT / "bigquery-etl", ensure_folder(ROOT / "data" / "bigquery_etl")
-    )
 
 
 @cli.command()

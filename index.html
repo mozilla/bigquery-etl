@@ -26,16 +26,23 @@
 
       async function main() {
         let edges = await fetch("data/edges.json").then((resp) => resp.json());
-        var nodes = new Set();
+        let nodes = new Set();
         for (i = 0; i < edges.length; i++) {
           nodes.add(edges[i].destination);
           nodes.add(edges[i].referenced);
         }
         // datasets are nodes too now, but assigned to a different group
-        var datasets = new Set();
+        let datasets = new Set();
         nodes.forEach((name) => {
           datasets.add(getDatasetId(name));
         });
+
+        // check for intersection, which will break network visualization
+        let intersect = new Set([...nodes].filter(n => datasets.has(n)));
+        if (intersect.size > 0) {
+          console.log("intersection between nodes and datasets found");
+          console.log(intersect);
+        }
 
         let nodeMap = new Map(
           [...nodes, ...datasets].map((el, idx) => [el, idx])

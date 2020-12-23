@@ -10,10 +10,11 @@ RETURNS string AS (
     -- case: moz-fx-data-shared-prod:tmp.active_profiles_v1_2020_04_27_6e09b8
     -- case: moz-fx-data-shared-prod:telemetry_derived.attitudes_daily_v1$20200314
     -- case: moz-fx-data-shared-prod:telemetry_derived.attitudes_daily$20200314
-    -- Get rid of the date partition if it exists, and then extract everything up to the version part.
+    -- case: moz-fx-data-shared-prod:telemetry_derived_core_clients_daily_v1_test_aggregation.telemetry_core
+    -- Get rid of the date partition if it exists in the table name, and then extract everything up to the version part.
     -- If the regex fails, just return the name without the partition.
   coalesce(
-    REGEXP_EXTRACT(SPLIT(name, "$")[OFFSET(0)], r"^(.*_v[0-9]+)"),
+    REGEXP_EXTRACT(SPLIT(name, "$")[OFFSET(0)], r"^(.*:.*\..*_v[0-9]+)"),
     SPLIT(name, "$")[OFFSET(0)]
   )
 );
@@ -72,3 +73,12 @@ WHERE
 ORDER BY
   destination_table,
   creation_time
+-- SELECT
+--   strip_suffix(test)
+-- FROM
+--   UNNEST([
+--     "moz-fx-data-shared-prod:tmp.active_profiles_v1_2020_04_27_6e09b8",
+--     "moz-fx-data-shared-prod:telemetry_derived.attitudes_daily_v1$20200314",
+--     "moz-fx-data-shared-prod:telemetry_derived.attitudes_daily$20200314",
+--     "moz-fx-data-shared-prod:telemetry_derived_core_clients_daily_v1_test_aggregation.telemetry_core"
+--   ]) AS test

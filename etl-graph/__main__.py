@@ -5,11 +5,7 @@ from pathlib import Path
 import click
 
 from .config import *
-from .crawler import (
-    fetch_dataset_listing,
-    fetch_table_listing,
-    resolve_view_references,
-)
+from .crawler import fetch_dataset_listing, fetch_table_listing, resolve_view_references
 from .utils import ensure_folder, ndjson_load, print_json, qualify, run, run_query
 
 ROOT = Path(__file__).parent.parent
@@ -52,16 +48,23 @@ def query_logs():
     )
 
 
+def _get_name(obj):
+    """Assumes structure in views_references.ndjson"""
+    return qualify(obj["projectId"], obj["datasetId"], obj["tableId"])
+
+
+def _deduplicate_edges(edges):
+    """Given a list of flat dictionaries, return a deduplicated list."""
+    edgeset = set([tuple(d.items()) for d in edges])
+    return [dict(tup) for tup in edgeset]
+
+
 @cli.command()
 def index():
     """Combine all of the files together."""
     # currently, only combine view references and query_edgelist
     data_root = ROOT / "data"
     edges = []
-
-    def get_name(obj):
-        """Assumes structure in views_references.ndjson"""
-        return qualify(obj["projectId"], obj["datasetId"], obj["tableId"])
 
     for view_ref in data_root.glob("**/*views_references.ndjson"):
         rows = ndjson_load(view_ref)
@@ -70,10 +73,10 @@ def index():
         )
         for row in rows:
             # TODO: this needs a schema
-            destination = get_name(row)
+            destination = _get_name(row)
             for referenced in row["query"].get("referencedTables", []):
                 edges.append(
-                    dict(destination=destination, referenced=get_name(referenced))
+                    dict(destination=destination, referenced=_get_name(referenced))
                 )
 
     # TODO: hardcoded artifact tied to query_logs command
@@ -89,6 +92,8 @@ def index():
                     referenced=row["referenced_table"],
                 )
             )
+
+    edges = _deduplicate_edges(edges)
 
     # write the file to disk as both csv and json, csv target is gephi compatible
     with (data_root / "edges.json").open("w") as fp:

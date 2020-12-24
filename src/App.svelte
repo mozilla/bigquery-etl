@@ -1,5 +1,7 @@
 <script>
   import { onMount } from "svelte";
+  import { DataSet } from "vis-data/peer";
+  import { Network } from "vis-network/peer";
 
   // view-source:https://visjs.github.io/vis-network/examples/network/exampleApplications/loadingBar.html
   function getDatasetId(name) {
@@ -29,7 +31,7 @@
     let nodeMap = new Map([...nodes, ...datasets].map((el, idx) => [el, idx]));
 
     let data = {
-      nodes: new vis.DataSet(
+      nodes: new DataSet(
         [...nodes]
           .map((el) => ({
             id: nodeMap.get(el),
@@ -47,7 +49,7 @@
             }))
           )
       ),
-      edges: new vis.DataSet(
+      edges: new DataSet(
         edges
           .map((el) => ({
             from: nodeMap.get(el.referenced),
@@ -97,7 +99,7 @@
         arrows: { to: true },
       },
     };
-    var network = new vis.Network(container, data, options);
+    var network = new Network(container, data, options);
     network.on("stabilizationProgress", function (params) {
       document.getElementById("progress").innerHTML =
         Math.round((params.iterations / params.total) * 100) + "%";

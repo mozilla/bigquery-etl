@@ -3,3 +3,7 @@ data/
 __pycache__/
 .vscode
 venv/
+
+/node_modules/
+/public/build/
+.DS_Store

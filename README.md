@@ -22,8 +22,7 @@ python -m etl-graph index
 Start the web client for visualization.
 
 ```bash
-python3 -m http.server
-open index.html
+npm run dev
 ```
 
 Deploy to hosting.

@@ -1,0 +1,16 @@
+---
+friendly_name: Dataflow User Counters
+description: >
+  Exported dataflow user counters from GCP monitoring (dataflow.googleapis.com/job/user_counter)
+owners:
+  - bewu@mozilla.com
+labels:
+  schedule: hourly
+  incremental: true
+scheduling:
+  dag_name: bqetl_cloud_monitoring_export
+  arguments: [
+    "--execution-time", "{{ ts }}",
+    "--interval-hours", "1",
+    "--time-offset", "1"
+  ]

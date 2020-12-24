@@ -1,0 +1,17 @@
+---
+friendly_name: Pubsub Subscription Oldest Unacked Message
+description: >
+  Exported pubsub oldest unacked message from GCP monitoring
+  (pubsub.googleapis.com/subscription/oldest_unacked_message_age)
+owners:
+  - bewu@mozilla.com
+labels:
+  schedule: hourly
+  incremental: true
+scheduling:
+  dag_name: bqetl_cloud_monitoring_export
+  arguments: [
+    "--execution-time", "{{ ts }}",
+    "--interval-hours", "1",
+    "--time-offset", "1"
+  ]

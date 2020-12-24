@@ -3,6 +3,7 @@
   import { DataSet } from "vis-data/peer";
   import Network from "./Network.svelte";
 
+  let nodeMap;
   let data;
 
   // view-source:https://visjs.github.io/vis-network/examples/network/exampleApplications/loadingBar.html
@@ -30,8 +31,7 @@
       console.log(intersect);
     }
 
-    let nodeMap = new Map([...nodes, ...datasets].map((el, idx) => [el, idx]));
-
+    nodeMap = new Map([...nodes, ...datasets].map((el, idx) => [el, idx]));
     data = {
       nodes: new DataSet(
         [...nodes]
@@ -101,7 +101,7 @@
     <a href="https://visjs.github.io/vis-network/docs/network/">vis-network</a>.
   </p>
 
-  {#if data}
-    <Network {data} />
+  {#if nodeMap && data}
+    <Network {nodeMap} {data} />
   {/if}
 </div>

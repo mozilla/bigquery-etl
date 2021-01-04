@@ -2,17 +2,24 @@
   import { onMount } from "svelte";
   import { DataSet } from "vis-data/peer";
   import Network from "./Network.svelte";
+  import Summary from "./Summary.svelte";
 
-  let initNodeTitle = "moz-fx-data-shared-prod:telemetry_stable.main_v4";
   let data;
+  let network = null;
+  let selectedNode = null;
 
   // view-source:https://visjs.github.io/vis-network/examples/network/exampleApplications/loadingBar.html
   function getDatasetId(name) {
     return name.split(".")[0];
   }
 
-  onMount(async () => {
-    let edges = await fetch("data/edges.json").then((resp) => resp.json());
+  function getNode(data, title) {
+    return data.nodes.get({
+      filter: (item) => item.title == title,
+    })[0];
+  }
+
+  function transform(edges) {
     let nodes = new Set();
     for (let i = 0; i < edges.length; i++) {
       nodes.add(edges[i].destination);
@@ -32,7 +39,7 @@
     }
 
     let nodeMap = new Map([...nodes, ...datasets].map((el, idx) => [el, idx]));
-    data = {
+    return {
       nodes: new DataSet(
         [...nodes]
           .map((el) => ({
@@ -66,6 +73,15 @@
           )
       ),
     };
+  }
+
+  onMount(async () => {
+    let edges = await fetch("data/edges.json").then((resp) => resp.json());
+    data = transform(edges);
+    selectedNode = getNode(
+      data,
+      "moz-fx-data-shared-prod:telemetry_stable.main_v4"
+    );
   });
 </script>
 
@@ -102,6 +118,7 @@
   </p>
 
   {#if data}
-    <Network {data} {initNodeTitle} />
+    <Network {data} bind:network bind:selectedNode />
+    <Summary {data} {network} root={selectedNode} />
   {/if}
 </div>

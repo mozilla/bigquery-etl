@@ -4,11 +4,10 @@
     import Summary from "./Summary.svelte";
 
     export let data;
-    export let initNodeTitle;
-    export let selectedNode = getNode(initNodeTitle);
+    export let network;
+    export let selectedNode;
 
     let container;
-    let network;
     let progress = 0;
 
     let options = {
@@ -45,12 +44,6 @@
         },
     };
 
-    function getNode(title) {
-        return data.nodes.get({
-            filter: (item) => item.title == title,
-        })[0];
-    }
-
     onMount(async () => {
         // create a network
         network = new Network(container, data, options);
@@ -78,8 +71,4 @@
 <div class="network" bind:this={container} />
 {#if progress < 100}
     <p>Loading {progress}%</p>
-{/if}
-
-{#if network && selectedNode}
-    <Summary {network} {data} root={selectedNode} />
 {/if}

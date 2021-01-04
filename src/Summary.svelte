@@ -1,8 +1,8 @@
 <script>
-    export let network;
     export let data;
+    export let network;
     export let root;
-    $: output = root ? transform(root) : null;
+    $: output = network && root ? transform(root) : null;
 
     function transform(root) {
         let parents = data.nodes.get(

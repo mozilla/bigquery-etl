@@ -12,9 +12,3 @@ labels:
   review_bugs: 
    - 1624528
   incremental_export: false
-scheduling:
-  dag_name: bqetl_deviations
-  depends_on:
-    - task_id: anomdtct
-      dag_name: anomdtct
-      execution_delta: 1h

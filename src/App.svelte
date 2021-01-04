@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { DataSet } from "vis-data/peer";
+  import FrontMatter from "./FrontMatter.md";
   import Network from "./Network.svelte";
   import Summary from "./Summary.svelte";
 
@@ -94,28 +95,8 @@
 
 <div id="container">
   <h1>BigQuery ETL Query Network</h1>
-  <i>Created 2020-06-18.</i>
-  <p>
-    This network represents the relationships between tables in BigQuery. Each
-    blue node represents a table, while each orange node represents a dataset.
-    The network was created by scraping the BigQuery TABLES and JOBS_BY_PROJECT
-    tables in the INFORMATION_SCHEMA dataset. Views are resolved using bq with
-    --dry_run.
-  </p>
-  <p>
-    Scroll and drag to navigate the network. Selecting a node by double clicking
-    will show summary information about the table or dataset.
-  </p>
-  <p>
-    The source can be found at
-    <a
-      href="https://github.com/acmiyaguchi/etl-graph">acmiyaguchi/etl-graph</a>.
-    See
-    <a
-      href="https://github.com/acmiyaguchi/etl-graph/blob/main/README.md">NOTES.md</a>
-    for a detailed overview of development. This visualizaton is powered by
-    <a href="https://visjs.github.io/vis-network/docs/network/">vis-network</a>.
-  </p>
+
+  <FrontMatter />
 
   {#if data}
     <Network {data} bind:network bind:selectedNode />

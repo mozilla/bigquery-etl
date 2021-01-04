@@ -30,7 +30,7 @@ WITH base AS (
   FROM
     `moz-fx-fxa-prod-0712.fxa_prod_logs.docker_fxa_oauth_20*`
   WHERE
-    _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)
+    _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
 )
   --
 SELECT

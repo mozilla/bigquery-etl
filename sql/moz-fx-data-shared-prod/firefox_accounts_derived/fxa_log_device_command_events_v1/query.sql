@@ -41,4 +41,4 @@ WHERE
   -- Device command metrics were first deployed and stable on 2020-07-08;
   -- there is some data for earlier dates but it's from a failed deployment so we don't count it.
   AND _TABLE_SUFFIX >= '200708'
-  AND _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)
+  AND _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)

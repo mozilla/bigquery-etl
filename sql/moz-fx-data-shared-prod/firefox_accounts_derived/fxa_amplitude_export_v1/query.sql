@@ -22,8 +22,8 @@ base_events AS (
     -- submission date.
     -- See https://console.cloud.google.com/bigquery?sq=768515352537:e63d2d2faa85431dbf0e5440021af837
     (
-      _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', @submission_date)
-      OR _TABLE_SUFFIX = FORMAT_DATE('%g%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
+      _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', @submission_date)
+      OR _TABLE_SUFFIX = FORMAT_DATE('%y%m%d', DATE_ADD(@submission_date, INTERVAL 1 DAY))
     )
     AND DATE(`timestamp`, "America/Los_Angeles") = @submission_date
     AND jsonPayload.fields.event_type IN (

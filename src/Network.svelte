@@ -1,7 +1,6 @@
 <script>
     import { onMount } from "svelte";
     import { Network } from "vis-network/peer";
-    import Summary from "./Summary.svelte";
 
     export let data;
     export let network;

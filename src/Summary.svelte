@@ -9,9 +9,6 @@
             network.getConnectedNodes(root.id, "from")
         );
         let children = data.nodes.get(network.getConnectedNodes(root.id, "to"));
-        console.log(root);
-        console.log(parents);
-        // pretty output
         return {
             root: root.title,
             links: {

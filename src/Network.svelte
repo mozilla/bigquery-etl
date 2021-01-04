@@ -3,12 +3,13 @@
     import { Network } from "vis-network/peer";
     import Summary from "./Summary.svelte";
 
-    export let nodeMap;
     export let data;
+    export let initNodeTitle;
+    export let selectedNode = getNode(initNodeTitle);
 
     let container;
     let network;
-    let selectedNode;
+    let progress = 0;
 
     let options = {
         nodes: {
@@ -44,28 +45,23 @@
         },
     };
 
+    function getNode(title) {
+        return data.nodes.get({
+            filter: (item) => item.title == title,
+        })[0];
+    }
+
     onMount(async () => {
         // create a network
         network = new Network(container, data, options);
-        network.on("stabilizationProgress", function (params) {
-            document.getElementById("progress").innerHTML =
-                Math.round((params.iterations / params.total) * 100) + "%";
+        network.on("stabilizationProgress", (params) => {
+            progress = Math.round((params.iterations / params.total) * 100);
         });
-
+        network.once("stabilizationIterationsDone", () => {
+            progress = 100;
+        });
         network.on("selectNode", (obj) => {
             selectedNode = data.nodes.get(obj.nodes)[0];
-        });
-        network.once("stabilizationIterationsDone", function () {
-            document.getElementById("progress").innerHTML = "100%";
-            setTimeout(function () {
-                document.getElementById("status").style.display = "none";
-                // set a default summary
-                selectedNode = data.nodes.get(
-                    nodeMap.get(
-                        "moz-fx-data-shared-prod:telemetry_stable.main_v4"
-                    )
-                );
-            }, 500);
         });
     });
 </script>
@@ -80,8 +76,10 @@
 </style>
 
 <div class="network" bind:this={container} />
-<p id="status">Loading <span id="progress">0%</span></p>
+{#if progress < 100}
+    <p>Loading {progress}%</p>
+{/if}
 
-{#if selectedNode}
+{#if network && selectedNode}
     <Summary {network} {data} root={selectedNode} />
 {/if}

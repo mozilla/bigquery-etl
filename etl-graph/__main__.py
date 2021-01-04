@@ -17,12 +17,15 @@ def cli():
 
 
 @cli.command()
-def crawl():
+@click.option(
+    "--data-root", type=click.Path(file_okay=False), default=ROOT / "public" / "data"
+)
+def crawl(data_root):
     """Crawl bigquery projects."""
     run(f"gsutil ls gs://{BUCKET}")
     run(f"bq ls {PROJECT}:{DATASET}")
 
-    data_root = ensure_folder(ROOT / "data")
+    data_root = ensure_folder(data_root)
     project = "moz-fx-data-shared-prod"
     dataset_listing = fetch_dataset_listing(project, data_root)
     tables_listing = fetch_table_listing(dataset_listing, data_root / project)
@@ -33,7 +36,10 @@ def crawl():
 
 
 @cli.command()
-def query_logs():
+@click.option(
+    "--data-root", type=click.Path(file_okay=False), default=ROOT / "public" / "data"
+)
+def query_logs(data_root):
     """Create edgelist from jobs by project query logs."""
     # TODO: modify this so it's generic to a project instead of hardcoded.
     # Problem is that the worker running this command may not have permissions
@@ -43,7 +49,7 @@ def query_logs():
     run_query(
         sql.read_text(),
         dest_table="shared_prod_edgelist",
-        output=ensure_folder(ROOT / "data" / project),
+        output=ensure_folder(data_root) / project,
         project=project,
     )
 
@@ -60,10 +66,13 @@ def _deduplicate_edges(edges):
 
 
 @cli.command()
-def index():
+@click.option(
+    "--data-root", type=click.Path(file_okay=False), default=ROOT / "public" / "data"
+)
+def index(data_root):
     """Combine all of the files together."""
     # currently, only combine view references and query_edgelist
-    data_root = ROOT / "data"
+    data_root = ensure_folder(data_root)
     edges = []
 
     for view_ref in data_root.glob("**/*views_references.ndjson"):

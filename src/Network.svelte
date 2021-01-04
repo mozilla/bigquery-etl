@@ -6,6 +6,7 @@
     export let nodeMap;
     export let data;
 
+    let container;
     let network;
     let selectedNode;
 
@@ -45,7 +46,6 @@
 
     onMount(async () => {
         // create a network
-        let container = document.getElementById("mynetwork");
         network = new Network(container, data, options);
         network.on("stabilizationProgress", function (params) {
             document.getElementById("progress").innerHTML =
@@ -71,7 +71,7 @@
 </script>
 
 <style>
-    #mynetwork {
+    .network {
         width: 800px;
         height: 600px;
         margin: 0 auto;
@@ -79,8 +79,9 @@
     }
 </style>
 
-<div id="mynetwork" />
+<div class="network" bind:this={container} />
 <p id="status">Loading <span id="progress">0%</span></p>
+
 {#if selectedNode}
     <Summary {network} {data} root={selectedNode} />
 {/if}

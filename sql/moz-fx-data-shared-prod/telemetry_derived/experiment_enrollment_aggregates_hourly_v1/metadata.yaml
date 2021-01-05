@@ -1,0 +1,12 @@
+friendly_name: Experiment Enrollment Aggregates Hourly
+description: >
+  Experiment enrollment aggregate data from the events live table
+  from the past hour, partitioned by hour.
+labels:
+  incremental: true
+owners:
+- ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_experiments_hourly
+  parameters: ["submission_timestamp:TIMESTAMP:{{ts}}"]
+  referenced_tables: ["moz-fx-data-shared-prod", "telemetry_derived", "events_live"]

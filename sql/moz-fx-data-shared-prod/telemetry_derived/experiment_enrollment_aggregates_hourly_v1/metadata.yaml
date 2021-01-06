@@ -8,7 +8,8 @@ owners:
 - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_experiments_hourly
+  task_name: experiment_enrollment_aggregates_hourly
   parameters: ["submission_timestamp:TIMESTAMP:{{ts}}"]
   referenced_tables: ["moz-fx-data-shared-prod", "telemetry_derived", "events_live"]
   date_partition_parameter: submission_timestamp
-  time_delta: 30m
+  execution_delay: 30m

@@ -11,34 +11,26 @@ default_args = {
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"],
     "depends_on_past": False,
-    "retry_delay": datetime.timedelta(seconds=600),
+    "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
     "email_on_retry": True,
-    "retries": 2,
+    "retries": 0,
 }
 
 with DAG(
-    "bqetl_experiments_hourly", default_args=default_args, schedule_interval="0 0 * * *"
+    "bqetl_experiments_recents",
+    default_args=default_args,
+    schedule_interval="*/5 * * * *",
 ) as dag:
 
-    experiment_enrollment_aggregates_hourly = bigquery_etl_query(
-        task_id="experiment_enrollment_aggregates_hourly",
-        destination_table="experiment_enrollment_aggregates_hourly_v1",
+    experiment_enrollment_aggregates_recents = bigquery_etl_query(
+        task_id="experiment_enrollment_aggregates_recents",
+        destination_table="experiment_enrollment_aggregates_recents_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_timestamp",
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_timestamp:TIMESTAMP:{{ts}}"],
         dag=dag,
-    )
-
-    experiment_enrollment_aggregates_hourly_execution_delay = TimeDeltaSensor(
-        task_id="experiment_enrollment_aggregates_hourly_execution_delay",
-        delta=datetime.timedelta(seconds=1800),
-    )
-
-    experiment_enrollment_aggregates_hourly.set_upstream(
-        experiment_enrollment_aggregates_hourly_execution_delay
     )

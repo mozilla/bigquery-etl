@@ -41,7 +41,7 @@ def is_valid_dag_name(name):
 # https://stackoverflow.com/questions/14203122/create-a-regular-expression-for-cron-statement
 SCHEDULE_INTERVAL_RE = re.compile(
     r"^(once|hourly|daily|weekly|monthly|yearly|"
-    r"((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})|"
+    r"((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*/\d+|\*) ?){5,7})|"
     r"((\d+h)?(\d+m)?(\d+s)?))$"
 )
 

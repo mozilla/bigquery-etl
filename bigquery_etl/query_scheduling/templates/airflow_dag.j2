@@ -1,7 +1,7 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/master/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from airflow.operators.sensors import ExternalTaskSensor, TimeDeltaSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -65,6 +65,15 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             dag=dag,
         )
     {% endif -%}
+
+    {%+ if task.execution_delay %}
+    {{ task.task_name }}_execution_delay = TimeDeltaSensor(
+        task_id='{{ task.task_name }}_execution_delay',
+        delta={{ task.execution_delay | format_timedelta | format_repr }}
+    )
+
+    {{ task.task_name }}.set_upstream({{ task.task_name }}_execution_delay)
+    {% endif %}
 {% endfor -%}
 
 {% set wait_for_seen = [] -%}

@@ -6,5 +6,5 @@ owners:
 - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_experiments_recents
-  parameters: ["submission_timestamp:TIMESTAMP:{{ts}}"]
+  task_name: experiment_enrollment_aggregates_recents
   referenced_tables: ["moz-fx-data-shared-prod", "telemetry_derived", "events_live"]

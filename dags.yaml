@@ -171,7 +171,7 @@ bqetl_experiments_hourly:
     retry_delay: 10m
 
 bqetl_experiments_recents:
-  schedule_interval: */5 * * * *
+  schedule_interval: '*/5 * * * *'
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2021-01-10"

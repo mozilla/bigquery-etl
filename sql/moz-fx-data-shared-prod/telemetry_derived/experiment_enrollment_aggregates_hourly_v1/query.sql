@@ -1,4 +1,5 @@
 SELECT
+  timestamp,
   event_object AS `type`,
   event_string_value AS experiment,
   mozfun.map.get_key(event_map_values, 'branch') AS branch,
@@ -22,8 +23,8 @@ FROM
   `moz-fx-data-shared-prod.telemetry_derived.events_live`
 WHERE
   event_category = 'normandy'
-  AND timestamp >= TIME_SUB(@submission_timestamp, INTERVAL 90 MINUTE)
-  AND timestamp < TIME_SUB(@submission_timestamp, INTERVAL 30 MINUTE)
+  AND timestamp >= TIME_SUB(@submission_timestamp, INTERVAL 1 HOUR)
+  AND timestamp < @submission_timestamp
 GROUP BY
   `type`,
   experiment,

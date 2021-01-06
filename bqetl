@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+# Absolute path this script is in
+SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+CMD=$1
+
+if [ "$PWD" != "$SCRIPT_PATH" ]; then
+    echo "Please run this command from the root of your bigquery-etl checkout ($SCRIPT_PATH)"
+    exit 1
+fi
+
+if [ "$CMD" == "bootstrap" ]; then
+    if [ -d "venv" ]; then
+        echo "venv subdirectory already exists, execute "rm -rf venv" and re-run this command if you want to recreate it"
+    else
+        virtualenv -p python3 venv
+    fi
+    venv/bin/pip install -r requirements.txt
+    venv/bin/pip install -e .
+fi
+
+if [ ! -d "venv" ]; then
+    echo "Please run ./bqetl bootstrap"
+    exit 1
+fi
+
+venv/bin/bqetl $@

@@ -62,6 +62,11 @@
             "mode": "NULLABLE"
           }
         ]
+      },
+      {
+        "type": "STRING",
+        "name": "subquestions",
+        "mode": "NULLABLE"
       }
     ],
     "type": "RECORD",

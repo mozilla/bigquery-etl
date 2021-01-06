@@ -40,6 +40,8 @@ def format_responses(s, date):
     for data in s.get("survey_data", {}).values():
         if data.get("options"):
             data["options"] = list(data["options"].values())
+        if data.get("subquestions"):
+            data["subquestions"] = json.dumps(data["subquestions"])
         results.append(data)
 
     return {

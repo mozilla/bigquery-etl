@@ -326,86 +326,86 @@ def test_insert_to_bq_options(testing_table_id):
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
-# def test_insert_to_bq_subquestions(testing_table_id):
-#     # override survey data
-#     # https://apihelp.alchemer.com/help/surveyresponse-per-question-v5#checkboxgrid
-#     base = EXAMPLE_RESPONSE["data"][0]
-#     base["survey_data"] = {
-#         "30": {
-#             "id": 30,
-#             "type": "parent",
-#             "question": "Checkbox Grid Question Title",
-#             "subquestions": {
-#                 "31": {
-#                     "10062": {
-#                         "id": 10062,
-#                         "type": "CHECKBOX",
-#                         "parent": 30,
-#                         "question": "Row 1 : Column 1",
-#                         "answer": "Column 1",
-#                         "shown": True,
-#                     },
-#                     "10063": {
-#                         "id": 10063,
-#                         "type": "CHECKBOX",
-#                         "parent": 30,
-#                         "question": "Row 1 : Column 2",
-#                         "answer": None,
-#                         "shown": True,
-#                     },
-#                 },
-#                 "32": {
-#                     "10062": {
-#                         "id": 10062,
-#                         "type": "CHECKBOX",
-#                         "parent": 30,
-#                         "question": "Row 2 : Column 1",
-#                         "answer": None,
-#                         "shown": True,
-#                     },
-#                     "10063": {
-#                         "id": 10063,
-#                         "type": "CHECKBOX",
-#                         "parent": 30,
-#                         "question": "Row 2 : Column 2",
-#                         "answer": "Column 2",
-#                         "shown": True,
-#                     },
-#                 },
-#             },
-#             "section_id": 3,
-#             "shown": True,
-#         },
-#         "83": {
-#             "id": 83,
-#             "type": "parent",
-#             "question": "Custom Table Question Title",
-#             "subquestions": {
-#                 "10001": {
-#                     "id": 10001,
-#                     "type": "RADIO",
-#                     "question": "Radio Button Column",
-#                     "section_id": 4,
-#                     "answer": "Option 1",
-#                     "answer_id": 10113,
-#                     "shown": true,
-#                 },
-#                 "10002": {
-#                     "id": 10002,
-#                     "type": "RADIO",
-#                     "question": "Radio Button Column",
-#                     "section_id": 4,
-#                     "answer": "Option 2",
-#                     "answer_id": 10114,
-#                     "shown": true,
-#                 },
-#             },
-#             "section_id": 4,
-#             "shown": true,
-#         },
-#     }
-#     transformed = [format_responses(base, SUBMISSION_DATE)]
-#     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
+def test_insert_to_bq_subquestions(testing_table_id):
+    # Override survey data. Note that the subquestion object is incompatible.
+    # https://apihelp.alchemer.com/help/surveyresponse-per-question-v5#checkboxgrid
+    base = copy.deepcopy(EXAMPLE_RESPONSE["data"][0])
+    base["survey_data"] = {
+        "30": {
+            "id": 30,
+            "type": "parent",
+            "question": "Checkbox Grid Question Title",
+            "subquestions": {
+                "31": {
+                    "10062": {
+                        "id": 10062,
+                        "type": "CHECKBOX",
+                        "parent": 30,
+                        "question": "Row 1 : Column 1",
+                        "answer": "Column 1",
+                        "shown": True,
+                    },
+                    "10063": {
+                        "id": 10063,
+                        "type": "CHECKBOX",
+                        "parent": 30,
+                        "question": "Row 1 : Column 2",
+                        "answer": None,
+                        "shown": True,
+                    },
+                },
+                "32": {
+                    "10062": {
+                        "id": 10062,
+                        "type": "CHECKBOX",
+                        "parent": 30,
+                        "question": "Row 2 : Column 1",
+                        "answer": None,
+                        "shown": True,
+                    },
+                    "10063": {
+                        "id": 10063,
+                        "type": "CHECKBOX",
+                        "parent": 30,
+                        "question": "Row 2 : Column 2",
+                        "answer": "Column 2",
+                        "shown": True,
+                    },
+                },
+            },
+            "section_id": 3,
+            "shown": True,
+        },
+        "83": {
+            "id": 83,
+            "type": "parent",
+            "question": "Custom Table Question Title",
+            "subquestions": {
+                "10001": {
+                    "id": 10001,
+                    "type": "RADIO",
+                    "question": "Radio Button Column",
+                    "section_id": 4,
+                    "answer": "Option 1",
+                    "answer_id": 10113,
+                    "shown": True,
+                },
+                "10002": {
+                    "id": 10002,
+                    "type": "RADIO",
+                    "question": "Radio Button Column",
+                    "section_id": 4,
+                    "answer": "Option 2",
+                    "answer_id": 10114,
+                    "shown": True,
+                },
+            },
+            "section_id": 4,
+            "shown": True,
+        },
+    }
+    transformed = [format_responses(base, SUBMISSION_DATE)]
+    insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
 def test_cli(patch_api_requests, testing_table_id):

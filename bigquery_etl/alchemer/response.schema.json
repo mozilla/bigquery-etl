@@ -13,6 +13,11 @@
       },
       {
         "type": "STRING",
+        "name": "original_answer",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
         "name": "question",
         "mode": "NULLABLE"
       },
@@ -35,6 +40,28 @@
         "type": "STRING",
         "name": "type",
         "mode": "NULLABLE"
+      },
+      {
+        "type": "RECORD",
+        "name": "options",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "id",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "option",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "answer",
+            "mode": "NULLABLE"
+          }
+        ]
       }
     ],
     "type": "RECORD",

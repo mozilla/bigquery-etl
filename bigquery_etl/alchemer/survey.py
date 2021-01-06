@@ -36,11 +36,17 @@ def format_responses(s, date):
     # timezone is not ISO compliant. The submission date that is passed in as
     # the time parameter should suffice.
     fields = ["id", "session_id", "status", "response_time"]
+    results = []
+    for data in s.get("survey_data", {}).values():
+        if data.get("options"):
+            data["options"] = list(data["options"].values())
+        results.append(data)
+
     return {
         # this is used as the partitioning field
         "submission_date": date,
         **{field: s[field] for field in fields},
-        "survey_data": list(s.get("survey_data", {}).values()),
+        "survey_data": results,
     }
 
 

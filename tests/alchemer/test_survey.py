@@ -1,3 +1,4 @@
+import copy
 from uuid import uuid4
 
 import pytest
@@ -234,6 +235,24 @@ def testing_table_id(testing_dataset):
     yield table_id
 
 
+@pytest.fixture()
+def patch_api_requests(monkeypatch):
+    # Note: this does not test iterating over multiple pages
+    class MockResponse:
+        @staticmethod
+        def raise_for_status():
+            pass
+
+        @staticmethod
+        def json():
+            return EXAMPLE_RESPONSE
+
+    def mock_get(*args, **kwargs):
+        return MockResponse()
+
+    monkeypatch.setattr(requests, "get", mock_get)
+
+
 def test_utc_date_to_eastern_time():
     # UTC-5 during standard time: https://en.wikipedia.org/wiki/Eastern_Time_Zone
     assert utc_date_to_eastern_string("2021-01-05") == "2021-01-04+19:00:00"
@@ -258,24 +277,6 @@ def test_construct_data():
     )
 
 
-@pytest.fixture()
-def patch_api_requests(monkeypatch):
-    # Note: this does not test iterating over multiple pages
-    class MockResponse:
-        @staticmethod
-        def raise_for_status():
-            pass
-
-        @staticmethod
-        def json():
-            return EXAMPLE_RESPONSE
-
-    def mock_get(*args, **kwargs):
-        return MockResponse()
-
-    monkeypatch.setattr(requests, "get", mock_get)
-
-
 def test_get_survey_data(patch_api_requests):
     assert (
         get_survey_data("555555", SUBMISSION_DATE, "token", "secret")
@@ -291,6 +292,120 @@ def test_response_schema():
 def test_insert_to_bq(testing_table_id):
     transformed = construct_data(EXAMPLE_RESPONSE, SUBMISSION_DATE)
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
+
+
+def test_insert_to_bq_options(testing_table_id):
+    # Override survey data, but make sure to deep copy to prevent mutating state
+    # in other tests.
+    # https://apihelp.alchemer.com/help/surveyresponse-per-question-v5#textboxlist
+    base = copy.deepcopy(EXAMPLE_RESPONSE["data"][0])
+    base["survey_data"] = {
+        "37": {
+            "id": 37,
+            "type": "parent",
+            "question": "Textbox List Question Title",
+            "section_id": 3,
+            "options": {
+                "10068": {"id": 10068, "option": "Row 1", "answer": "text list answer"}
+            },
+            "shown": True,
+        },
+        "38": {
+            "id": 38,
+            "type": "parent",
+            "question": "Continuous Sum Question Title",
+            "section_id": 3,
+            "options": {
+                "10070": {"id": 10070, "option": "Row 1", "answer": "6"},
+                "10071": {"id": 10071, "option": "Row 2", "answer": "7"},
+            },
+            "shown": True,
+        },
+    }
+    transformed = [format_responses(base, SUBMISSION_DATE)]
+    insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
+
+
+# def test_insert_to_bq_subquestions(testing_table_id):
+#     # override survey data
+#     # https://apihelp.alchemer.com/help/surveyresponse-per-question-v5#checkboxgrid
+#     base = EXAMPLE_RESPONSE["data"][0]
+#     base["survey_data"] = {
+#         "30": {
+#             "id": 30,
+#             "type": "parent",
+#             "question": "Checkbox Grid Question Title",
+#             "subquestions": {
+#                 "31": {
+#                     "10062": {
+#                         "id": 10062,
+#                         "type": "CHECKBOX",
+#                         "parent": 30,
+#                         "question": "Row 1 : Column 1",
+#                         "answer": "Column 1",
+#                         "shown": True,
+#                     },
+#                     "10063": {
+#                         "id": 10063,
+#                         "type": "CHECKBOX",
+#                         "parent": 30,
+#                         "question": "Row 1 : Column 2",
+#                         "answer": None,
+#                         "shown": True,
+#                     },
+#                 },
+#                 "32": {
+#                     "10062": {
+#                         "id": 10062,
+#                         "type": "CHECKBOX",
+#                         "parent": 30,
+#                         "question": "Row 2 : Column 1",
+#                         "answer": None,
+#                         "shown": True,
+#                     },
+#                     "10063": {
+#                         "id": 10063,
+#                         "type": "CHECKBOX",
+#                         "parent": 30,
+#                         "question": "Row 2 : Column 2",
+#                         "answer": "Column 2",
+#                         "shown": True,
+#                     },
+#                 },
+#             },
+#             "section_id": 3,
+#             "shown": True,
+#         },
+#         "83": {
+#             "id": 83,
+#             "type": "parent",
+#             "question": "Custom Table Question Title",
+#             "subquestions": {
+#                 "10001": {
+#                     "id": 10001,
+#                     "type": "RADIO",
+#                     "question": "Radio Button Column",
+#                     "section_id": 4,
+#                     "answer": "Option 1",
+#                     "answer_id": 10113,
+#                     "shown": true,
+#                 },
+#                 "10002": {
+#                     "id": 10002,
+#                     "type": "RADIO",
+#                     "question": "Radio Button Column",
+#                     "section_id": 4,
+#                     "answer": "Option 2",
+#                     "answer_id": 10114,
+#                     "shown": true,
+#                 },
+#             },
+#             "section_id": 4,
+#             "shown": true,
+#         },
+#     }
+#     transformed = [format_responses(base, SUBMISSION_DATE)]
+#     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
 def test_cli(patch_api_requests, testing_table_id):

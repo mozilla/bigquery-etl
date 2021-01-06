@@ -35,12 +35,7 @@ def format_responses(s, date):
     # Note that we are omitted date_submission and date_completed because the
     # timezone is not ISO compliant. The submission date that is passed in as
     # the time parameter should suffice.
-    fields = [
-        "id",
-        "session_id",
-        "status",
-        "response_time",
-    ]
+    fields = ["id", "session_id", "status", "response_time"]
     return {
         # this is used as the partitioning field
         "submission_date": date,
@@ -110,11 +105,13 @@ def insert_to_bq(
     job_config = bigquery.LoadJobConfig(
         # We may also infer the schema by setting `autodetect=True`
         schema=response_schema(),
+        schema_update_options=bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
         write_disposition=write_disposition,
         time_partitioning=bigquery.table.TimePartitioning(field="submission_date"),
     )
     partition = f"{table}${date.replace('-', '')}"
     job = client.load_table_from_json(data, partition, job_config=job_config)
+    print(f"Running job {job.job_id}")
     # job.result() returns a LoadJob object if successful, or raises an exception if not
     job.result()
 

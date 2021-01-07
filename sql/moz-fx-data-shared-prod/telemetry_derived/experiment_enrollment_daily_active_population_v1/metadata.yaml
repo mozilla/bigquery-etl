@@ -1,0 +1,11 @@
+friendly_name: Experiment Enrollment Daily Active Population
+description: > 
+  Daily active clients enrolled in experiments, partitioned by day
+  and clustered by experiment_id.
+labels:
+  incremental: true
+owners:
+- ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_experiments_daily
+  task_name: experiment_enrollment_daily_active_population

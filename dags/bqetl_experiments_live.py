@@ -18,9 +18,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_experiments_recents",
-    default_args=default_args,
-    schedule_interval="*/5 * * * *",
+    "bqetl_experiments_live", default_args=default_args, schedule_interval="*/5 * * * *"
 ) as dag:
 
     experiment_enrollment_aggregates_recents = bigquery_etl_query(
@@ -33,4 +31,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
+    )
+
+    experiment_enrollment_cumulative_population_estimate = bigquery_etl_query(
+        task_id="experiment_enrollment_cumulative_population_estimate",
+        destination_table="experiment_enrollment_cumulative_population_estimate_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    experiment_enrollment_cumulative_population_estimate.set_upstream(
+        experiment_enrollment_aggregates_recents
     )

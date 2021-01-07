@@ -276,16 +276,16 @@ def test_format_response_nonnumeric_answer_id():
         "status": "Complete",
         "session_id": "1538059336_5bacec4869caa2.27680217",
         "response_time": 10,
-        "survey_data": [
-            {
+        "survey_data": {
+            "1": {
                 "answer_id": "10001-other",
             },
-            {
+            "2": {
                 "answer_id": "fadfasdf-other",
             },
-        ],
+        },
     }
-    res = format_response(base, SUBMISSION_DATE)
+    res = format_responses(base, SUBMISSION_DATE)
     assert res["survey_data"][0]["answer_id"] == 10001
     assert not res["survey_data"][1].get("answer_id")
 

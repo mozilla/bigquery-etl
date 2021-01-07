@@ -1,6 +1,7 @@
 """Import data from alchemer (surveygizmo) surveys into BigQuery."""
 import datetime as dt
 import json
+import re
 from pathlib import Path
 
 import click
@@ -35,17 +36,27 @@ def format_responses(s, date):
     # Note that we are omitted date_submission and date_completed because the
     # timezone is not ISO compliant. The submission date that is passed in as
     # the time parameter should suffice.
-    fields = [
-        "id",
-        "session_id",
-        "status",
-        "response_time",
-    ]
+    fields = ["id", "session_id", "status", "response_time"]
+    results = []
+    for data in s.get("survey_data", {}).values():
+        # There can be answer_id's like "123456-other"
+        if data.get("answer_id") and isinstance(data["answer_id"], str):
+            numeric = re.findall(r"\d+", data["answer_id"])
+            if numeric:
+                data["answer_id"] = int(numeric[0])
+            else:
+                del data["answer_id"]
+        if data.get("options"):
+            data["options"] = list(data["options"].values())
+        if data.get("subquestions"):
+            data["subquestions"] = json.dumps(data["subquestions"])
+        results.append(data)
+
     return {
         # this is used as the partitioning field
         "submission_date": date,
         **{field: s[field] for field in fields},
-        "survey_data": list(s.get("survey_data", {}).values()),
+        "survey_data": results,
     }
 
 
@@ -110,11 +121,13 @@ def insert_to_bq(
     job_config = bigquery.LoadJobConfig(
         # We may also infer the schema by setting `autodetect=True`
         schema=response_schema(),
+        schema_update_options=bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
         write_disposition=write_disposition,
         time_partitioning=bigquery.table.TimePartitioning(field="submission_date"),
     )
     partition = f"{table}${date.replace('-', '')}"
     job = client.load_table_from_json(data, partition, job_config=job_config)
+    print(f"Running job {job.job_id}")
     # job.result() returns a LoadJob object if successful, or raises an exception if not
     job.result()
 

@@ -1,6 +1,7 @@
 """Import data from alchemer (surveygizmo) surveys into BigQuery."""
 import datetime as dt
 import json
+import re
 from pathlib import Path
 
 import click
@@ -38,6 +39,13 @@ def format_responses(s, date):
     fields = ["id", "session_id", "status", "response_time"]
     results = []
     for data in s.get("survey_data", {}).values():
+        # There can be answer_id's like "123456-other"
+        if data.get("answer_id") and isinstance(data["answer_id"], str):
+            numeric = re.findall(r"\d+", data["answer_id"])
+            if numeric:
+                data["answer_id"] = int(numeric[0])
+            else:
+                del data["answer_id"]
         if data.get("options"):
             data["options"] = list(data["options"].values())
         if data.get("subquestions"):

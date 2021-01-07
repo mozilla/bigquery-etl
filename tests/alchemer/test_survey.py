@@ -263,11 +263,31 @@ def test_date_plus_one():
 
 
 def test_format_response():
-    submission_date = "2021-01-05"
     assert (
         format_responses(EXAMPLE_RESPONSE["data"][0], SUBMISSION_DATE)
         == EXAMPLE_RESPONSE_FORMATTED_0
     )
+
+
+def test_format_response_nonnumeric_answer_id():
+    base = {
+        "submission_date": SUBMISSION_DATE,
+        "id": "1",
+        "status": "Complete",
+        "session_id": "1538059336_5bacec4869caa2.27680217",
+        "response_time": 10,
+        "survey_data": [
+            {
+                "answer_id": "10001-other",
+            },
+            {
+                "answer_id": "fadfasdf-other",
+            },
+        ],
+    }
+    res = format_response(base, SUBMISSION_DATE)
+    assert res["survey_data"][0]["answer_id"] == 10001
+    assert not res["survey_data"][1].get("answer_id")
 
 
 def test_construct_data():

@@ -9,11 +9,7 @@ default_args = {
     "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
     "end_date": None,
-    "email": [
-        "telemetry-alerts@mozilla.com",
-        "ascholtz@mozilla.com",
-        "ssuh@mozilla.com",
-    ],
+    "email": ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -25,33 +21,13 @@ with DAG(
     "bqetl_experiments_daily", default_args=default_args, schedule_interval="0 3 * * *"
 ) as dag:
 
-    experiment_enrollment_daily_active_population = bigquery_etl_query(
-        task_id="experiment_enrollment_daily_active_population",
-        destination_table="experiment_enrollment_daily_active_population_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "ssuh@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
     telemetry_derived__experiment_enrollment_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__experiment_enrollment_aggregates__v1",
         destination_table="experiment_enrollment_aggregates_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "ssuh@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -71,10 +47,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
-    )
-
-    experiment_enrollment_daily_active_population.set_upstream(
-        telemetry_derived__experiments_daily_active_clients__v1
     )
 
     wait_for_bq_main_events = ExternalTaskSensor(

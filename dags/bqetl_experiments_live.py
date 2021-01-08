@@ -30,21 +30,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        parameters=["submission_timestamp:TIMESTAMP:{{ts}}"],
         dag=dag,
-    )
-
-    experiment_enrollment_cumulative_population_estimate = bigquery_etl_query(
-        task_id="experiment_enrollment_cumulative_population_estimate",
-        destination_table="experiment_enrollment_cumulative_population_estimate_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    experiment_enrollment_cumulative_population_estimate.set_upstream(
-        experiment_enrollment_aggregates_recents
     )

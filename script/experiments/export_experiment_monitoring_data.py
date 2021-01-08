@@ -36,6 +36,10 @@ parser.add_argument(
     required=True,
     help="Experiment monitoring datasets to be exported",
     nargs="*",
+    default=[
+        "moz-fx-data-shared-prod.telemetry.experiment_enrollment_daily_active_population",  # noqa E501
+        "moz-fx-data-shared-prod.telemetry.experiment_enrollment_cumulative_population_estimate",  # noqa E501
+    ],
 )
 parser.add_argument(
     "--date",
@@ -47,10 +51,12 @@ parser.add_argument(
 
 def get_active_experiments(client, date, dataset):
     """
-    Determine experiments that are currently are currently active or have been active
-    within the past 14 days. Return the experiment slug and experiment start date.
-    """
+    Determine active experiments.
 
+    Experiments are considered as active if they are currently live or have been live
+    within the past 14 days.
+    Returns the experiment slug and experiment start date.
+    """
     job = client.query(
         f"""
         SELECT DISTINCT experiment, start_date
@@ -77,6 +83,7 @@ def get_active_experiments(client, date, dataset):
 def export_data_for_experiment(
     date, dataset, bucket, gcs_path, source_project, destination_project, experiment
 ):
+    """Export the monitoring data for a specific experiment in the dataset."""
     experiment_slug, start_date = experiment
     table_name = dataset.split(".")[-1]
     storage_client = storage.Client(destination_project)
@@ -154,6 +161,7 @@ def export_data_for_experiment(
 def export_dataset(
     date, source_project, destination_project, bucket, gcs_path, dataset
 ):
+    """Export monitoring data for all active experiments in the dataset."""
     client = bigquery.Client(source_project)
     active_experiments = get_active_experiments(client, date, dataset)
 
@@ -180,7 +188,7 @@ def _convert_ndjson_to_json(
     storage_client: storage.Client,
     tmp: str,
 ):
-    """Converts the provided ndjson file on GCS to json."""
+    """Convert the provided ndjson file on GCS to json."""
     ndjson_blob_path = (
         f"gs://{bucket_name}/{target_path}/{experiment_slug}_{table}_{tmp}.ndjson"
     )
@@ -224,6 +232,7 @@ def _convert_ndjson_to_json(
 
 
 def main():
+    """Run the monitoring data export to GCS."""
     args = parser.parse_args()
 
     for dataset in args.datasets:

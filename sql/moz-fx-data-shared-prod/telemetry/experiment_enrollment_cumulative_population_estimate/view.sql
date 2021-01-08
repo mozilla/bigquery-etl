@@ -8,7 +8,7 @@ WITH all_enrollments AS (
     `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_v1`
   UNION ALL
   SELECT
-    * EXCEPT(timestamp)
+    * EXCEPT (timestamp)
   FROM
     `moz-fx-data-shared-prod.telemetry.experiment_enrollment_aggregates_hourly`
   WHERE
@@ -20,7 +20,7 @@ WITH all_enrollments AS (
     )
   UNION ALL
   SELECT
-    * EXCEPT(timestamp)
+    * EXCEPT (timestamp)
   FROM
     `moz-fx-data-shared-prod.telemetry.experiment_enrollment_aggregates_recents`
 ),
@@ -75,17 +75,18 @@ branches_per_window AS (
 ),
 cumulative_counts AS (
   SELECT
-      *,
-      SUM(enroll_count) OVER previous_rows_window AS cumulative_enroll_count,
-      SUM(unenroll_count) OVER previous_rows_window AS cumulative_unenroll_count,
-      SUM(graduate_count) OVER previous_rows_window AS cumulative_graduate_count,
-      SUM(update_count) OVER previous_rows_window AS cumulative_update_count,
-      SUM(enroll_failed_count) OVER previous_rows_window AS cumulative_enroll_failed_count,
-      SUM(unenroll_failed_count) OVER previous_rows_window AS cumulative_unenroll_failed_count,
-      SUM(update_failed_count) OVER previous_rows_window AS cumulative_update_failed_count
-    FROM
-      all_enrollments
-    WINDOW previous_rows_window AS (
+    *,
+    SUM(enroll_count) OVER previous_rows_window AS cumulative_enroll_count,
+    SUM(unenroll_count) OVER previous_rows_window AS cumulative_unenroll_count,
+    SUM(graduate_count) OVER previous_rows_window AS cumulative_graduate_count,
+    SUM(update_count) OVER previous_rows_window AS cumulative_update_count,
+    SUM(enroll_failed_count) OVER previous_rows_window AS cumulative_enroll_failed_count,
+    SUM(unenroll_failed_count) OVER previous_rows_window AS cumulative_unenroll_failed_count,
+    SUM(update_failed_count) OVER previous_rows_window AS cumulative_update_failed_count
+  FROM
+    all_enrollments
+  WINDOW
+    previous_rows_window AS (
       PARTITION BY
         experiment,
         branch
@@ -97,32 +98,31 @@ cumulative_counts AS (
     )
 ),
 cumulative_populations AS (
-  SELECT 
-  window_start,
-  branch,
-  branches_per_window.experiment,
-  MAX(cumulative_enroll_count) OVER previous_rows_window AS cumulative_enroll_count,
-  MAX(cumulative_unenroll_count) OVER previous_rows_window AS cumulative_unenroll_count,
-  MAX(cumulative_graduate_count) OVER previous_rows_window AS cumulative_graduate_count,
-  FROM 
+  SELECT
+    window_start,
+    branch,
+    branches_per_window.experiment,
+    MAX(cumulative_enroll_count) OVER previous_rows_window AS cumulative_enroll_count,
+    MAX(cumulative_unenroll_count) OVER previous_rows_window AS cumulative_unenroll_count,
+    MAX(cumulative_graduate_count) OVER previous_rows_window AS cumulative_graduate_count,
+  FROM
     branches_per_window
   LEFT JOIN
-    (
-      SELECT * EXCEPT(branch),
-      IF (branch IS NULL, 'null', branch) AS branch
-      FROM cumulative_counts
+    (SELECT * EXCEPT (branch), IF(branch IS NULL, 'null', branch) AS branch FROM cumulative_counts)
+  USING
+    (window_start, branch, experiment)
+  WINDOW
+    previous_rows_window AS (
+      PARTITION BY
+        branches_per_window.experiment,
+        branch
+      ORDER BY
+        window_start
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND CURRENT ROW
     )
-  USING (window_start, branch, experiment)
-  WINDOW previous_rows_window AS (
-  PARTITION BY
-    branches_per_window.experiment,
-    branch
-  ORDER BY
-    window_start
-  ROWS BETWEEN
-    UNBOUNDED PRECEDING
-    AND CURRENT ROW
-))
+)
 SELECT
   `time`,
   experiment,
@@ -142,12 +142,13 @@ FROM
       branch IS NOT NULL
     GROUP BY
       1,
-      2, 
+      2,
       3
     ORDER BY
       1
   )
 GROUP BY
-  1, 2
+  1,
+  2
 ORDER BY
   1

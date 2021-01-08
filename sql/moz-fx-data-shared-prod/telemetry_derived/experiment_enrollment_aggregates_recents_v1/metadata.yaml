@@ -1,5 +1,7 @@
 friendly_name: Experiment Enrollment Aggregates Recents
-description: Experiment enrollment aggregates data that has not been processed by the hourly job.
+description: >
+  Experiment enrollment aggregates data that has not been processed by
+  the hourly job.
 labels:
   incremental: false
 owners:
@@ -8,4 +10,6 @@ scheduling:
   dag_name: bqetl_experiments_live
   task_name: experiment_enrollment_aggregates_recents
   parameters: ["submission_timestamp:TIMESTAMP:{{ts}}"]
-  referenced_tables: ["moz-fx-data-shared-prod", "telemetry_derived", "events_live"]
+  referenced_tables: [
+    "moz-fx-data-shared-prod", "telemetry_derived", "events_live"
+    ]

@@ -157,7 +157,7 @@ bqetl_experiments_daily:
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2018-11-27"
-    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com", "ssuh@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
     retries: 2
     retry_delay: 30m
 

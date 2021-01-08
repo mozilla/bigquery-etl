@@ -11,7 +11,7 @@ accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
 from functools import cached_property
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import Pool
 from os.path import basename, dirname
 from urllib.request import urlopen, Request
 import glob
@@ -217,6 +217,11 @@ class DryRun:
         return True
 
 
+def sql_file_valid(sqlfile):
+    """Dry run SQL files."""
+    return DryRun(sqlfile).is_valid()
+
+
 def main():
     """Dry run all SQL files in the project directories."""
     file_names = ("query.sql", "view.sql", "part*.sql")
@@ -228,11 +233,7 @@ def main():
         if f not in SKIP
     ]
 
-    def sql_file_valid(sqlfile):
-        """Dry run SQL files."""
-        return DryRun(sqlfile).is_valid()
-
-    with ThreadPool(8) as p:
+    with Pool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
     if all(result):
         exitcode = 0

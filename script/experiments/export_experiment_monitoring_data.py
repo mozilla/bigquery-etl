@@ -4,8 +4,10 @@
 
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
+from functools import partial
 from google.cloud import storage
 from google.cloud import bigquery
+from multiprocessing import Pool
 import random
 import smart_open
 import string
@@ -51,13 +53,13 @@ def get_active_experiments(client, date, dataset):
 
     job = client.query(
         f"""
-        SELECT DISTINCT experiment, start_date 
+        SELECT DISTINCT experiment, start_date
         FROM `{dataset}`
         LEFT JOIN (
-            SELECT 
-                start_date, 
-                end_date, 
-                normandy_slug 
+            SELECT
+                start_date,
+                end_date,
+                normandy_slug
             FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
         )
         ON experiment = normandy_slug
@@ -72,88 +74,102 @@ def get_active_experiments(client, date, dataset):
     ]
 
 
-def export_dataset(
-    date, source_project, destination_project, bucket, gcs_path, dataset
+def export_data_for_experiment(
+    date, dataset, bucket, gcs_path, source_project, destination_project, experiment
 ):
+    experiment_slug, start_date = experiment
+    table_name = dataset.split(".")[-1]
     storage_client = storage.Client(destination_project)
     client = bigquery.Client(source_project)
-    table_name = dataset.split(".")[-1]
 
-    active_experiments = get_active_experiments(client, date, dataset)
-
-    print(f"Active experiments: {active_experiments}")
-
-    for active_experiment in active_experiments:
-        experiment_slug, start_date = active_experiment
-
-        if (date - start_date) > timedelta(days=14):
-            # if the experiment has been running for more than 14 days, export data as 30 minute intervals
-            query = f"""
-                WITH data AS (
-                    SELECT * EXCEPT(experiment) FROM
-                    `{dataset}`
-                    WHERE experiment = '{experiment_slug}' AND
-                    time >= (
-                        SELECT TIMESTAMP(MIN(start_date))
-                        FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
-                        WHERE normandy_slug = '{experiment_slug}'
-                    )
-                )
-                SELECT * EXCEPT(rn) FROM (
-                    SELECT *, ROW_NUMBER() OVER (PARTITION BY time) AS rn 
-                    FROM (
-                        SELECT 
-                            * EXCEPT(time),
-                            TIMESTAMP_SECONDS(
-                                UNIX_SECONDS(time) - MOD(UNIX_SECONDS(time), 30 * 60) + 30 * 60
-                                ) AS time,
-                        FROM data
-                        ORDER BY time DESC
-                    )
-                )
-                WHERE rn = 1
-                ORDER BY time DESC
-            """
-        else:
-            # for recently launched experiments, data is exported as 5 minuted intervals
-            query = f"""
-                SELECT * EXCEPT(experiment) FROM {dataset}
+    if (date - start_date) > timedelta(days=14):
+        # if the experiment has been running for more than 14 days,
+        # export data as 30 minute intervals
+        query = f"""
+            WITH data AS (
+                SELECT * EXCEPT(experiment) FROM
+                `{dataset}`
                 WHERE experiment = '{experiment_slug}' AND
                 time >= (
                     SELECT TIMESTAMP(MIN(start_date))
                     FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
                     WHERE normandy_slug = '{experiment_slug}'
                 )
-                ORDER BY time DESC
-            """
+            )
+            SELECT * EXCEPT(rn) FROM (
+                SELECT *, ROW_NUMBER() OVER (PARTITION BY time) AS rn
+                FROM (
+                    SELECT
+                        * EXCEPT(time),
+                        TIMESTAMP_SECONDS(
+                            UNIX_SECONDS(time) - MOD(UNIX_SECONDS(time), 30 * 60) + 30 * 60
+                            ) AS time,
+                    FROM data
+                    ORDER BY time DESC
+                )
+            )
+            WHERE rn = 1
+            ORDER BY time DESC
+        """
+    else:
+        # for recently launched experiments, data is exported as 5 minuted intervals
+        query = f"""
+            SELECT * EXCEPT(experiment) FROM {dataset}
+            WHERE experiment = '{experiment_slug}' AND
+            time >= (
+                SELECT TIMESTAMP(MIN(start_date))
+                FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
+                WHERE normandy_slug = '{experiment_slug}'
+            )
+            ORDER BY time DESC
+        """
 
-        job = client.query(query)
-        job.result()
+    job = client.query(query)
+    job.result()
 
-        # add a random string to the identifier to prevent collision errors if there
-        # happen to be multiple instances running that export data for the same experiment
-        tmp = "".join(random.choices(string.ascii_lowercase, k=8))
-        destination_uri = (
-            f"gs://{bucket}/{gcs_path}/{experiment_slug}_{table_name}_{tmp}.ndjson"
+    # add a random string to the identifier to prevent collision errors if there
+    # happen to be multiple instances running that export data for the same experiment
+    tmp = "".join(random.choices(string.ascii_lowercase, k=8))
+    destination_uri = (
+        f"gs://{bucket}/{gcs_path}/{experiment_slug}_{table_name}_{tmp}.ndjson"
+    )
+    dataset_ref = bigquery.DatasetReference(source_project, job.destination.dataset_id)
+    table_ref = dataset_ref.table(job.destination.table_id)
+
+    print(f"Export table {dataset} to {destination_uri}")
+
+    job_config = bigquery.ExtractJobConfig()
+    job_config.destination_format = "NEWLINE_DELIMITED_JSON"
+    extract_job = client.extract_table(
+        table_ref, destination_uri, location="US", job_config=job_config
+    )
+    extract_job.result()
+
+    # convert ndjson to json
+    _convert_ndjson_to_json(
+        bucket, gcs_path, experiment_slug, table_name, storage_client, tmp
+    )
+
+
+def export_dataset(
+    date, source_project, destination_project, bucket, gcs_path, dataset
+):
+    client = bigquery.Client(source_project)
+    active_experiments = get_active_experiments(client, date, dataset)
+
+    print(f"Active experiments: {active_experiments}")
+
+    with Pool(20) as p:
+        _experiment_data_export = partial(
+            export_data_for_experiment,
+            date,
+            dataset,
+            bucket,
+            gcs_path,
+            source_project,
+            destination_project,
         )
-        dataset_ref = bigquery.DatasetReference(
-            source_project, job.destination.dataset_id
-        )
-        table_ref = dataset_ref.table(job.destination.table_id)
-
-        print(f"Export table {dataset} to {destination_uri}")
-
-        job_config = bigquery.ExtractJobConfig()
-        job_config.destination_format = "NEWLINE_DELIMITED_JSON"
-        extract_job = client.extract_table(
-            table_ref, destination_uri, location="US", job_config=job_config
-        )
-        extract_job.result()
-
-        # convert ndjson to json
-        _convert_ndjson_to_json(
-            bucket, gcs_path, experiment_slug, table_name, storage_client, tmp
-        )
+        p.map(_experiment_data_export, active_experiments)
 
 
 def _convert_ndjson_to_json(
@@ -198,7 +214,8 @@ def _convert_ndjson_to_json(
     blob = bucket.blob(f"{target_path}/{experiment_slug}_{table}_{tmp}.ndjson")
     blob.delete()
     print(
-        f"Rename file {experiment_slug}_{table}_{tmp}.json to {experiment_slug}_{table}.json"
+        f"Rename file {experiment_slug}_{table}_{tmp}.json to "
+        f"{experiment_slug}_{table}.json"
     )
     bucket.rename_blob(
         bucket.blob(f"{target_path}/{experiment_slug}_{table}_{tmp}.json"),

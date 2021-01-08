@@ -1,0 +1,102 @@
+[
+  {
+    "fields": [
+      {
+        "type": "INTEGER",
+        "name": "answer_id",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "answer",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "original_answer",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "question",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "id",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "INTEGER",
+        "name": "section_id",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "BOOLEAN",
+        "name": "shown",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "type",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "RECORD",
+        "name": "options",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "id",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "option",
+            "mode": "NULLABLE"
+          },
+          {
+            "type": "STRING",
+            "name": "answer",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "type": "STRING",
+        "name": "subquestions",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "survey_data",
+    "mode": "REPEATED"
+  },
+  {
+    "type": "INTEGER",
+    "name": "response_time",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "session_id",
+    "mode": "NULLABLE"
+  },
+  {
+    "description": "%E4Y-%m-%d",
+    "type": "DATE",
+    "name": "submission_date",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "id",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "status",
+    "mode": "NULLABLE"
+  }
+]

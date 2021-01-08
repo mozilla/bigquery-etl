@@ -113,6 +113,141 @@ with DAG(
         dag=dag,
     )
 
+    mozilla_vpn_external__survey_cancellation_of_service__v1 = gke_command(
+        task_id="mozilla_vpn_external__survey_cancellation_of_service__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_external/survey_cancellation_of_service_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--survey_id",
+            "5111573",
+            "--api_token",
+            "{{ var.value.surveygizmo_api_token }}",
+            "--api_secret",
+            "{{ var.value.surveygizmo_api_secret }}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.mozilla_vpn_external.survey_cancellation_of_service_v1",
+        ],
+        docker_image="mozilla/bigquery-etl:latest",
+        owner="amiyaguchi@mozilla.com",
+        email=[
+            "amiyaguchi@mozilla.com",
+            "dthorn@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+    )
+
+    mozilla_vpn_external__survey_intercept_q3__v1 = gke_command(
+        task_id="mozilla_vpn_external__survey_intercept_q3__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_external/survey_intercept_q3_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--survey_id",
+            "5829956",
+            "--api_token",
+            "{{ var.value.surveygizmo_api_token }}",
+            "--api_secret",
+            "{{ var.value.surveygizmo_api_secret }}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.mozilla_vpn_external.survey_intercept_q3_v1",
+        ],
+        docker_image="mozilla/bigquery-etl:latest",
+        owner="amiyaguchi@mozilla.com",
+        email=[
+            "amiyaguchi@mozilla.com",
+            "dthorn@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+    )
+
+    mozilla_vpn_external__survey_market_fit__v1 = gke_command(
+        task_id="mozilla_vpn_external__survey_market_fit__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_external/survey_market_fit_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--survey_id",
+            "5205593",
+            "--api_token",
+            "{{ var.value.surveygizmo_api_token }}",
+            "--api_secret",
+            "{{ var.value.surveygizmo_api_secret }}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.mozilla_vpn_external.survey_market_fit_v1",
+        ],
+        docker_image="mozilla/bigquery-etl:latest",
+        owner="amiyaguchi@mozilla.com",
+        email=[
+            "amiyaguchi@mozilla.com",
+            "dthorn@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+    )
+
+    mozilla_vpn_external__survey_product_quality__v1 = gke_command(
+        task_id="mozilla_vpn_external__survey_product_quality__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_external/survey_product_quality_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--survey_id",
+            "5187896",
+            "--api_token",
+            "{{ var.value.surveygizmo_api_token }}",
+            "--api_secret",
+            "{{ var.value.surveygizmo_api_secret }}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.mozilla_vpn_external.survey_product_quality_v1",
+        ],
+        docker_image="mozilla/bigquery-etl:latest",
+        owner="amiyaguchi@mozilla.com",
+        email=[
+            "amiyaguchi@mozilla.com",
+            "dthorn@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+    )
+
+    mozilla_vpn_external__survey_recommend__v1 = gke_command(
+        task_id="mozilla_vpn_external__survey_recommend__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_external/survey_recommend_v1/query.py",
+        ]
+        + [
+            "--date",
+            "{{ ds }}",
+            "--survey_id",
+            "5572350",
+            "--api_token",
+            "{{ var.value.surveygizmo_api_token }}",
+            "--api_secret",
+            "{{ var.value.surveygizmo_api_secret }}",
+            "--destination_table",
+            "moz-fx-data-shared-prod.mozilla_vpn_external.survey_recommend_v1",
+        ],
+        docker_image="mozilla/bigquery-etl:latest",
+        owner="amiyaguchi@mozilla.com",
+        email=[
+            "amiyaguchi@mozilla.com",
+            "dthorn@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+    )
+
     mozilla_vpn_external__users__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_external__users__v1",
         destination_table="users_v1",

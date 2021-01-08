@@ -21,9 +21,9 @@ jobs:
           name: Build
           command: |
             python3.8 -m venv venv/
-            venv/bin/pip install pip-tools
+            venv/bin/pip install pip-tools --constraint requirements.in
             venv/bin/pip-sync
-      - run: 
+      - run:
           name: Yamllint Test
           command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
       - run:
@@ -45,11 +45,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Verify that requirements.txt contains the right dependencies
-            for this python version
+          name: Verify that requirements.txt contains the right dependencies for
+            this python version
+          # use `--constraint` with `requirements.in` not `requirements.txt`
+          # because for pip>=20.3 "Constraints are only allowed to take the form
+          # of a package name and a version specifier"
           command: |
-            pip install pip-tools
-            pip-compile --quiet --generate-hashes requirements.in
+            pip install pip-tools --constraint requirements.in
+            pip-compile --quiet --allow-unsafe --generate-hashes
             git diff --exit-code requirements.txt
   dry-run-sql:
     docker: *docker

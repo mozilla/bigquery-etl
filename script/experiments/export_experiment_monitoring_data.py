@@ -3,7 +3,7 @@
 """Exports experiment monitoring data to GCS as JSON."""
 
 from argparse import ArgumentParser
-from datetime import datetime
+from datetime import datetime, timedelta
 from google.cloud import storage
 from google.cloud import bigquery
 import random
@@ -30,13 +30,16 @@ parser.add_argument(
     "--gcs_path", "--gcs-path", default="monitoring", help="GCS path data is written to"
 )
 parser.add_argument(
-    "--datasets", required=True, help="Experiment monitoring datasets to be exported"
+    "--datasets",
+    required=True,
+    help="Experiment monitoring datasets to be exported",
+    nargs="*",
 )
 parser.add_argument(
     "--date",
     required=True,
     help="Export date",
-    type=lambda s: datetime.datetime.strptime(s, "%Y-%m-%d"),
+    type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
 )
 
 
@@ -49,7 +52,7 @@ def get_active_experiments(client, date, dataset):
     job = client.query(
         f"""
         SELECT DISTINCT experiment, start_date 
-        FROM {dataset}
+        FROM `{dataset}`
         LEFT JOIN (
             SELECT 
                 start_date, 
@@ -58,13 +61,15 @@ def get_active_experiments(client, date, dataset):
             FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
         )
         ON experiment = normandy_slug
-        WHERE TIME_ADD(end_date, INTERVAL 14 DAY) < {date}
+        WHERE TIMESTAMP_ADD(TIMESTAMP(end_date), INTERVAL 14 DAY) >= TIMESTAMP('{date}')
         """
     )
 
     result = job.result()
-
-    [(row.experiment, row.start_date) for row in result]
+    return [
+        (row.experiment, datetime.combine(row.start_date, datetime.min.time()))
+        for row in result
+    ]
 
 
 def export_dataset(
@@ -76,36 +81,50 @@ def export_dataset(
 
     active_experiments = get_active_experiments(client, date, dataset)
 
-    for active_experiment in active_experiments:
-        start_date, experiment_slug = active_experiment
+    print(f"Active experiments: {active_experiments}")
 
-        if start_date - date > datetime.timedelta(days=14):
+    for active_experiment in active_experiments:
+        experiment_slug, start_date = active_experiment
+
+        if (date - start_date) > timedelta(days=14):
             # if the experiment has been running for more than 14 days, export data as 30 minute intervals
             query = f"""
                 WITH data AS (
-                    SELECT * FROM
+                    SELECT * EXCEPT(experiment) FROM
                     `{dataset}`
-                    WHERE experiment = {experiment_slug}
+                    WHERE experiment = '{experiment_slug}' AND
+                    time >= (
+                        SELECT TIMESTAMP(MIN(start_date))
+                        FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
+                        WHERE normandy_slug = '{experiment_slug}'
+                    )
                 )
-                SELECT * FROM (
+                SELECT * EXCEPT(rn) FROM (
                     SELECT *, ROW_NUMBER() OVER (PARTITION BY time) AS rn 
                     FROM (
                         SELECT 
-                            *,
+                            * EXCEPT(time),
                             TIMESTAMP_SECONDS(
-                                UNIX_SECONDS(window_end) - MOD(UNIX_SECONDS(window_end), 30 * 60) + 30 * 60
+                                UNIX_SECONDS(time) - MOD(UNIX_SECONDS(time), 30 * 60) + 30 * 60
                                 ) AS time,
                         FROM data
-                        ORDER BY window_end DESC
+                        ORDER BY time DESC
                     )
                 )
                 WHERE rn = 1
+                ORDER BY time DESC
             """
         else:
             # for recently launched experiments, data is exported as 5 minuted intervals
             query = f"""
-                SELECT * FROM {dataset}
-                WHERE experiment = '{experiment_slug}'
+                SELECT * EXCEPT(experiment) FROM {dataset}
+                WHERE experiment = '{experiment_slug}' AND
+                time >= (
+                    SELECT TIMESTAMP(MIN(start_date))
+                    FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
+                    WHERE normandy_slug = '{experiment_slug}'
+                )
+                ORDER BY time DESC
             """
 
         job = client.query(query)

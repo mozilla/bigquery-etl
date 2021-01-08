@@ -27,6 +27,7 @@ FROM
 WHERE
   event_category = 'normandy'
 GROUP BY
+  timestamp,
   `type`,
   experiment,
   branch,

@@ -20,10 +20,8 @@ def main(execution_time, interval_hours, time_offset):
         execution_time=execution_time,
         interval_hours=interval_hours,
         time_offset=time_offset,
-        overwrite=False,
         aggregator=monitoring.Aggregation.Reducer.REDUCE_NONE,
         aligner=monitoring.Aggregation.Aligner.ALIGN_MEAN,
-        alignment_period=300,
     )
 
 

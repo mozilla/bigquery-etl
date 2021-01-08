@@ -1,0 +1,205 @@
+#!/usr/bin/env python3
+
+"""Exports experiment monitoring data to GCS as JSON."""
+
+from argparse import ArgumentParser
+from datetime import datetime
+from google.cloud import storage
+from google.cloud import bigquery
+import random
+import smart_open
+import string
+
+parser = ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--source_project",
+    "--source-project",
+    default="moz-fx-data-shared-prod",
+    help="Project containing datasets to be exported",
+)
+parser.add_argument(
+    "--destination_project",
+    "--destination-project",
+    default="moz-fx-data-experiments",
+    help="Project with bucket data is exported to",
+)
+parser.add_argument(
+    "--bucket", default="mozanalysis", help="GCS bucket data is exported to"
+)
+parser.add_argument(
+    "--gcs_path", "--gcs-path", default="monitoring", help="GCS path data is written to"
+)
+parser.add_argument(
+    "--datasets", required=True, help="Experiment monitoring datasets to be exported"
+)
+parser.add_argument(
+    "--date",
+    required=True,
+    help="Export date",
+    type=lambda s: datetime.datetime.strptime(s, "%Y-%m-%d"),
+)
+
+
+def get_active_experiments(client, date, dataset):
+    """
+    Determine experiments that are currently are currently active or have been active
+    within the past 14 days. Return the experiment slug and experiment start date.
+    """
+
+    job = client.query(
+        f"""
+        SELECT DISTINCT experiment, start_date 
+        FROM {dataset}
+        LEFT JOIN (
+            SELECT 
+                start_date, 
+                end_date, 
+                normandy_slug 
+            FROM `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
+        )
+        ON experiment = normandy_slug
+        WHERE TIME_ADD(end_date, INTERVAL 14 DAY) < {date}
+        """
+    )
+
+    result = job.result()
+
+    [(row.experiment, row.start_date) for row in result]
+
+
+def export_dataset(
+    date, source_project, destination_project, bucket, gcs_path, dataset
+):
+    storage_client = storage.Client(destination_project)
+    client = bigquery.Client(source_project)
+    table_name = dataset.split(".")[-1]
+
+    active_experiments = get_active_experiments(client, date, dataset)
+
+    for active_experiment in active_experiments:
+        start_date, experiment_slug = active_experiment
+
+        if start_date - date > datetime.timedelta(days=14):
+            # if the experiment has been running for more than 14 days, export data as 30 minute intervals
+            query = f"""
+                WITH data AS (
+                    SELECT * FROM
+                    `{dataset}`
+                    WHERE experiment = {experiment_slug}
+                )
+                SELECT * FROM (
+                    SELECT *, ROW_NUMBER() OVER (PARTITION BY time) AS rn 
+                    FROM (
+                        SELECT 
+                            *,
+                            TIMESTAMP_SECONDS(
+                                UNIX_SECONDS(window_end) - MOD(UNIX_SECONDS(window_end), 30 * 60) + 30 * 60
+                                ) AS time,
+                        FROM data
+                        ORDER BY window_end DESC
+                    )
+                )
+                WHERE rn = 1
+            """
+        else:
+            # for recently launched experiments, data is exported as 5 minuted intervals
+            query = f"""
+                SELECT * FROM {dataset}
+                WHERE experiment = '{experiment_slug}'
+            """
+
+        job = client.query(query)
+        job.result()
+
+        # add a random string to the identifier to prevent collision errors if there
+        # happen to be multiple instances running that export data for the same experiment
+        tmp = "".join(random.choices(string.ascii_lowercase, k=8))
+        destination_uri = (
+            f"gs://{bucket}/{gcs_path}/{experiment_slug}_{table_name}_{tmp}.ndjson"
+        )
+        dataset_ref = bigquery.DatasetReference(
+            source_project, job.destination.dataset_id
+        )
+        table_ref = dataset_ref.table(job.destination.table_id)
+
+        print(f"Export table {dataset} to {destination_uri}")
+
+        job_config = bigquery.ExtractJobConfig()
+        job_config.destination_format = "NEWLINE_DELIMITED_JSON"
+        extract_job = client.extract_table(
+            table_ref, destination_uri, location="US", job_config=job_config
+        )
+        extract_job.result()
+
+        # convert ndjson to json
+        _convert_ndjson_to_json(
+            bucket, gcs_path, experiment_slug, table_name, storage_client, tmp
+        )
+
+
+def _convert_ndjson_to_json(
+    bucket_name: str,
+    target_path: str,
+    experiment_slug: str,
+    table: str,
+    storage_client: storage.Client,
+    tmp: str,
+):
+    """Converts the provided ndjson file on GCS to json."""
+    ndjson_blob_path = (
+        f"gs://{bucket_name}/{target_path}/{experiment_slug}_{table}_{tmp}.ndjson"
+    )
+    json_blob_path = (
+        f"gs://{bucket_name}/{target_path}/{experiment_slug}_{table}_{tmp}.json"
+    )
+
+    print(f"Convert {ndjson_blob_path} to {json_blob_path}")
+
+    # stream from GCS
+    with smart_open.open(ndjson_blob_path) as fin:
+        first_line = True
+
+        with smart_open.open(json_blob_path, "w") as fout:
+            fout.write("[")
+
+            for line in fin:
+                if not first_line:
+                    fout.write(",")
+
+                fout.write(line.replace("\n", ""))
+                first_line = False
+
+            fout.write("]")
+            fout.close()
+            fin.close()
+
+    # delete ndjson file from bucket
+    print(f"Remove file {experiment_slug}_{table}_{tmp}.ndjson")
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(f"{target_path}/{experiment_slug}_{table}_{tmp}.ndjson")
+    blob.delete()
+    print(
+        f"Rename file {experiment_slug}_{table}_{tmp}.json to {experiment_slug}_{table}.json"
+    )
+    bucket.rename_blob(
+        bucket.blob(f"{target_path}/{experiment_slug}_{table}_{tmp}.json"),
+        f"{target_path}/{experiment_slug}_{table}.json",
+    )
+
+
+def main():
+    args = parser.parse_args()
+
+    for dataset in args.datasets:
+        export_dataset(
+            args.date,
+            args.source_project,
+            args.destination_project,
+            args.bucket,
+            args.gcs_path,
+            dataset,
+        )
+
+
+if __name__ == "__main__":
+    main()

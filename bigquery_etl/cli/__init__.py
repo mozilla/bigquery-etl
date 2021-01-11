@@ -5,6 +5,7 @@ import warnings
 import click
 
 from .._version import __version__
+from ..cli.alchemer import alchemer
 from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.format import format
@@ -27,6 +28,7 @@ def cli(prog_name=None):
         "stripe": stripe_,
         "glam": glam,
         "view": view,
+        "alchemer": alchemer,
     }
 
     @click.group(commands=commands)

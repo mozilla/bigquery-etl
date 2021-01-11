@@ -13,3 +13,4 @@ scheduling:
   referenced_tables: [
     "moz-fx-data-shared-prod", "telemetry_derived", "events_live"
     ]
+  date_partition_parameter: null

@@ -13,5 +13,6 @@ scheduling:
   referenced_tables: [
     "moz-fx-data-shared-prod", "telemetry_derived", "events_live"
   ]
-  date_partition_parameter: submission_timestamp
   execution_delay: 30m
+  destination_table: experiment_enrollment_aggregates_hourly_v1${{ macros.ds_format(ts_nodash, "%Y%m%d%H%M%S", "%Y%m%d%H") }}
+  date_partition_parameter: null

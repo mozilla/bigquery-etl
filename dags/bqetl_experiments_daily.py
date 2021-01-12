@@ -21,6 +21,19 @@ with DAG(
     "bqetl_experiments_daily", default_args=default_args, schedule_interval="0 3 * * *"
 ) as dag:
 
+    experiment_enrollment_daily_active_population = bigquery_etl_query(
+        task_id="experiment_enrollment_daily_active_population",
+        destination_table="experiment_enrollment_daily_active_population_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_timestamp:TIMESTAMP:{{ts}}"],
+        dag=dag,
+    )
+
     telemetry_derived__experiment_enrollment_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__experiment_enrollment_aggregates__v1",
         destination_table="experiment_enrollment_aggregates_v1",
@@ -47,6 +60,10 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
+    )
+
+    experiment_enrollment_daily_active_population.set_upstream(
+        telemetry_derived__experiments_daily_active_clients__v1
     )
 
     wait_for_bq_main_events = ExternalTaskSensor(

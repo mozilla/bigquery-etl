@@ -54,7 +54,7 @@ Options:
   --help                Show this message and exit.
 ```
 
-Running some commands, for example to create or query tables, will [require access to GCP](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool).
+Running some commands, for example to create or query tables, will [require access to Mozilla's GCP Account](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
 
 Formatting SQL
 ---

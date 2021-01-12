@@ -65,16 +65,6 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             dag=dag,
         )
     {% endif -%}
-
-    {%+ if task.execution_delay %}
-    from airflow.operators.sensors import TimeDeltaSensor
-    {{ task.task_name }}_execution_delay = TimeDeltaSensor(
-        task_id='{{ task.task_name }}_execution_delay',
-        delta={{ task.execution_delay | format_timedelta | format_repr }}
-    )
-
-    {{ task.task_name }}.set_upstream({{ task.task_name }}_execution_delay)
-    {% endif %}
 {% endfor -%}
 
 {% set wait_for_seen = [] -%}

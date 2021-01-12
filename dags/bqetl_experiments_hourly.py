@@ -18,7 +18,9 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_experiments_hourly", default_args=default_args, schedule_interval="0 0 * * *"
+    "bqetl_experiments_hourly",
+    default_args=default_args,
+    schedule_interval="30 * * * *",
 ) as dag:
 
     experiment_enrollment_aggregates_hourly = bigquery_etl_query(
@@ -30,17 +32,8 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        parameters=["submission_timestamp:TIMESTAMP:{{ts}}"],
+        parameters=[
+            'submission_timestamp:TIMESTAMP:{{ macros.ds_format(ts_nodash, "%Y%m%d%H%M%S", "%Y-%m-%d %H:00:00") }}'
+        ],
         dag=dag,
-    )
-
-    from airflow.operators.sensors import TimeDeltaSensor
-
-    experiment_enrollment_aggregates_hourly_execution_delay = TimeDeltaSensor(
-        task_id="experiment_enrollment_aggregates_hourly_execution_delay",
-        delta=datetime.timedelta(seconds=1800),
-    )
-
-    experiment_enrollment_aggregates_hourly.set_upstream(
-        experiment_enrollment_aggregates_hourly_execution_delay
     )

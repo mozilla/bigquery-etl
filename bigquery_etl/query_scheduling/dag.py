@@ -140,13 +140,7 @@ class Dag:
 
     @schedule_interval.validator
     def validate_schedule_interval(self, attribute, value):
-        """
-        Validate the schedule_interval format.
-
-        Schedule intervals can be either in CRON format or one of:
-        @once, @hourly, @daily, @weekly, @monthly, @yearly
-        or a timedelta []d[]h[]m
-        """
+        """Validate the schedule_interval format."""
         if not is_schedule_interval(value):
             raise ValueError(f"Invalid schedule_interval {value}.")
 

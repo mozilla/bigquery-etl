@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 
 import click
 
-from ..alchemer.survey import get_survey_data, insert_to_bq
+from bigquery_etl.alchemer.survey import get_survey_data, insert_to_bq
 
 
 @click.group(help="Commands for importing alchemer data.")
@@ -27,7 +27,8 @@ def backfill(start_date, end_date, survey_id, api_token, api_secret, destination
     The date range is inclusive of the start and end values.
     """
     print(
-        f"Runing backfill of {survey_id} from {start_date} to {end_date} into {destination_table}"
+        f"Runing backfill of {survey_id} from {start_date} to {end_date}"
+        " into {destination_table}"
     )
     days = (end_date - start_date).days + 1
     start = datetime.utcnow()

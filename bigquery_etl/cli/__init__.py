@@ -5,7 +5,9 @@ import warnings
 import click
 
 from .._version import __version__
-from ..cli.alchemer import alchemer
+
+# We rename the import, otherwise it affects monkeypatching in tests
+from ..cli.alchemer import alchemer as alchemer_
 from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.format import format
@@ -28,7 +30,7 @@ def cli(prog_name=None):
         "stripe": stripe_,
         "glam": glam,
         "view": view,
-        "alchemer": alchemer,
+        "alchemer": alchemer_,
     }
 
     @click.group(commands=commands)

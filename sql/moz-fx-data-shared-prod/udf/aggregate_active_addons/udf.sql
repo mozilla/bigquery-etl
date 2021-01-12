@@ -10,7 +10,7 @@ is left unspecified to allow changes to the fields of the STRUCT.
 CREATE OR REPLACE FUNCTION udf.aggregate_active_addons(active_addons ANY TYPE) AS (
   ARRAY(
     SELECT
-      udf.json_mode_last(ARRAY_AGG(element))
+      mozfun.json.mode_last(ARRAY_AGG(element))
     FROM
       UNNEST(active_addons) AS element
     GROUP BY

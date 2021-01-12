@@ -1,5 +1,5 @@
 """bigquery-etl CLI alchemer command."""
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 import click
 
@@ -29,8 +29,16 @@ def backfill(start_date, end_date, survey_id, api_token, api_secret, destination
     print(
         f"Runing backfill of {survey_id} from {start_date} to {end_date} into {destination_table}"
     )
-    for i in range((end_date - start_date).days + 1):
+    days = (end_date - start_date).days + 1
+    start = datetime.utcnow()
+    for i in range(days):
         current_date = (start_date + timedelta(i)).isoformat()[:10]
         print(f"Running for {current_date}")
         survey_data = get_survey_data(survey_id, current_date, api_token, api_secret)
+        if not survey_data:
+            print("No data, skipping insertion...")
+            continue
         insert_to_bq(survey_data, destination_table, current_date)
+    print(
+        f"Processed {days} days in {int((datetime.utcnow()-start).total_seconds())} seconds"
+    )

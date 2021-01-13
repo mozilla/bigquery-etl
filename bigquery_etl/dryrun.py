@@ -55,7 +55,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/shredder_state/progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_distinct_docids_v1/query.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/customers_v1/query.sql",
@@ -84,6 +83,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v3/query.sql",
+    "sql/moz-fx-data-shredder/shredder_state/progress/view.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501

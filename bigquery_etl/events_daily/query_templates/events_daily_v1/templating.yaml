@@ -28,7 +28,7 @@ telemetry_derived:
   glean: False
   app_id: telemetry
   source_table: telemetry.deanonymized_events
-  start_date: 2020-10-01
+  start_date: 2020-01-01
   dag_name: bqetl_event_rollup
   user_properties:
     - src: application.build_id

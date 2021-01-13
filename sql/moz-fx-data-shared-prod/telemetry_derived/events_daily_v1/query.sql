@@ -12,7 +12,7 @@ events AS (
     sample
   WHERE
     submission_date = @submission_date
-    OR (@submission_date IS NULL AND submission_date >= '2020-10-01')
+    OR (@submission_date IS NULL AND submission_date >= '2020-01-01')
 ),
 joined AS (
   SELECT

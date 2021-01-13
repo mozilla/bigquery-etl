@@ -19,7 +19,7 @@ sample AS (
   FROM
     source
   WHERE
-    submission_date >= '2020-10-01'
+    submission_date >= '2020-01-01'
 ),
 primary_event_types AS (
   SELECT

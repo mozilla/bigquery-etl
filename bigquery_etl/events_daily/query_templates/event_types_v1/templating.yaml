@@ -1,6 +1,6 @@
-org_mozilla_firefox:
+org_mozilla_firefox_derived:
   app_id: org_mozilla_firefox
   dag_name: bqetl_fenix_event_rollup
-telemetry:
+telemetry_derived:
   app_id: telemetry
   dag_name: bqetl_event_rollup

@@ -1,0 +1,8 @@
+description: >
+  Measures the number of activated new profiles in the Firefox desktop
+  funnel
+friendly_name: Firefox Desktop Funnel Activation
+labels:
+  incremental: true
+owners:
+  - wlachance@mozilla.com

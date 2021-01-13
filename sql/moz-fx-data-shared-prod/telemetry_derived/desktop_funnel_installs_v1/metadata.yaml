@@ -1,0 +1,8 @@
+description: >
+  Measures the number of installs in the desktop funnel. Implicitly, this is
+  currently Windows-only.
+friendly_name: Desktop Funnel Installs
+labels:
+  incremental: true
+owners:
+  - wlachance@mozilla.com

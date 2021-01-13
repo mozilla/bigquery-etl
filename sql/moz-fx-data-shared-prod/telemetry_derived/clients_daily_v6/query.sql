@@ -180,11 +180,15 @@ clients_summary AS (
     environment.settings.update.channel AS update_channel,
     environment.settings.update.enabled AS update_enabled,
     environment.settings.update.auto_download AS update_auto_download,
-    STRUCT(
-      environment.settings.attribution.source,
-      environment.settings.attribution.medium,
-      environment.settings.attribution.campaign,
-      environment.settings.attribution.content
+    IF(
+      environment.settings.attribution IS NOT NULL,
+      STRUCT(
+        environment.settings.attribution.source,
+        environment.settings.attribution.medium,
+        environment.settings.attribution.campaign,
+        environment.settings.attribution.content
+      ),
+      NULL
     ) AS attribution,
     environment.settings.sandbox.effective_content_process_level AS sandbox_effective_content_process_level,
     payload.info.timezone_offset,
@@ -482,42 +486,66 @@ aggregates AS (
     ) AS env_build_version,
     mozfun.json.mode_last(
       ARRAY_AGG(
-        STRUCT(udf.null_if_empty_list(environment_settings_intl_accept_languages) AS list)
+        IF(
+          ARRAY_LENGTH(environment_settings_intl_accept_languages) > 0,
+          STRUCT(environment_settings_intl_accept_languages AS list),
+          NULL
+        )
         ORDER BY
           submission_timestamp
       )
     ).list AS environment_settings_intl_accept_languages,
     mozfun.json.mode_last(
       ARRAY_AGG(
-        STRUCT(udf.null_if_empty_list(environment_settings_intl_app_locales) AS list)
+        IF(
+          ARRAY_LENGTH(environment_settings_intl_app_locales) > 0,
+          STRUCT(environment_settings_intl_app_locales AS list),
+          NULL
+        )
         ORDER BY
           submission_timestamp
       )
     ).list AS environment_settings_intl_app_locales,
     mozfun.json.mode_last(
       ARRAY_AGG(
-        STRUCT(udf.null_if_empty_list(environment_settings_intl_available_locales) AS list)
+        IF(
+          ARRAY_LENGTH(environment_settings_intl_available_locales) > 0,
+          STRUCT(environment_settings_intl_available_locales AS list),
+          NULL
+        )
         ORDER BY
           submission_timestamp
       )
     ).list AS environment_settings_intl_available_locales,
     mozfun.json.mode_last(
       ARRAY_AGG(
-        STRUCT(udf.null_if_empty_list(environment_settings_intl_requested_locales) AS list)
+        IF(
+          ARRAY_LENGTH(environment_settings_intl_requested_locales) > 0,
+          STRUCT(environment_settings_intl_requested_locales AS list),
+          NULL
+        )
         ORDER BY
           submission_timestamp
       )
     ).list AS environment_settings_intl_requested_locales,
     mozfun.json.mode_last(
       ARRAY_AGG(
-        STRUCT(udf.null_if_empty_list(environment_settings_intl_system_locales) AS list)
+        IF(
+          ARRAY_LENGTH(environment_settings_intl_system_locales) > 0,
+          STRUCT(environment_settings_intl_system_locales AS list),
+          NULL
+        )
         ORDER BY
           submission_timestamp
       )
     ).list AS environment_settings_intl_system_locales,
     mozfun.json.mode_last(
       ARRAY_AGG(
-        STRUCT(udf.null_if_empty_list(environment_settings_intl_regional_prefs_locales) AS list)
+        IF(
+          ARRAY_LENGTH(environment_settings_intl_regional_prefs_locales) > 0,
+          STRUCT(environment_settings_intl_regional_prefs_locales AS list),
+          NULL
+        )
         ORDER BY
           submission_timestamp
       )
@@ -535,7 +563,16 @@ aggregates AS (
       )
     ).*,
     mozfun.json.mode_last(
-      ARRAY_AGG(STRUCT(isp_name, isp_organization) ORDER BY submission_timestamp)
+      ARRAY_AGG(
+        IF(
+          isp_name IS NOT NULL
+          OR isp_organization IS NOT NULL,
+          STRUCT(isp_name, isp_organization),
+          NULL
+        )
+        ORDER BY
+          submission_timestamp
+      )
     ).*,
     mozfun.stats.mode_last(
       ARRAY_AGG(gfx_features_advanced_layers_status ORDER BY submission_timestamp)
@@ -672,12 +709,12 @@ aggregates AS (
     mozfun.stats.mode_last(
       ARRAY_AGG(previous_build_id ORDER BY submission_timestamp)
     ) AS previous_build_id,
-    UNIX_DATE(DATE(SAFE.TIMESTAMP(ANY_VALUE(subsession_start_date)))) - ANY_VALUE(
+    MAX(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date)))) - MAX(
       profile_creation_date
     ) AS profile_age_in_days,
     FORMAT_DATE(
       "%F 00:00:00",
-      SAFE.DATE_FROM_UNIX_DATE(ANY_VALUE(profile_creation_date))
+      SAFE.DATE_FROM_UNIX_DATE(MAX(profile_creation_date))
     ) AS profile_creation_date,
     SUM(push_api_notify) AS push_api_notify_sum,
     ANY_VALUE(sample_id) AS sample_id,

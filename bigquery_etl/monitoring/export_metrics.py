@@ -1,7 +1,7 @@
 import datetime
 import os
 import time
-from typing import Dict, List
+from typing import Dict, List, Set
 
 from google.cloud import bigquery, monitoring
 from google.cloud.exceptions import NotFound
@@ -35,14 +35,12 @@ def get_time_series(
     )
 
     data_points = []
-
     for result in results:
         data_points.extend(
             [
                 {
                     "value": point.value.double_value,
-                    # stringify datetime so it's serializable
-                    "timestamp": str(point.interval.start_time),
+                    "timestamp": point.interval.start_time,
                     **result.resource.labels,
                     **result.metric.labels,
                 }
@@ -71,6 +69,9 @@ def write_to_bq(
         time_partitioning=bigquery.TimePartitioning(field="timestamp"),
         autodetect=True,
     )
+    # stringify timestamp so it's serializable
+    for data_point in data_points:
+        data_point["timestamp"] = str(data_point["timestamp"])
     load_response = client.load_table_from_json(
         data_points,
         target_table,
@@ -79,24 +80,23 @@ def write_to_bq(
     return load_response
 
 
-def get_max_timestamp(
+def get_existing_timestamps(
     client: bigquery.Client,
     target_table: bigquery.TableReference,
-) -> datetime.datetime:
-    """Get latest timestamp in the target table."""
+    start_time: datetime.datetime,
+    end_time: datetime.datetime,
+) -> Set[datetime.datetime]:
+    """Get all unique timestamps in the target table in the given interval."""
+    query_string = f"""
+        SELECT DISTINCT(timestamp) AS timestamp
+        FROM {target_table.dataset_id}.{target_table.table_id}
+        WHERE timestamp BETWEEN '{str(start_time)}' AND '{str(end_time)}'
+    """
     try:
-        results = client.query(
-            f"""
-            SELECT MAX(timestamp) AS timestamp 
-            FROM {target_table.dataset_id}.{target_table.table_id}
-            """
-        ).result()
+        results = client.query(query_string).result()
     except NotFound:
-        return None
-    rows = [row for row in results]
-    if len(rows) == 0:
-        return None
-    return rows[0].timestamp
+        results = []
+    return {row.timestamp for row in results}
 
 
 # TODO: support additional metric filters and aggregation parameters
@@ -121,7 +121,8 @@ def export_metrics(
     :param dst_project: Project to write results to
     :param dst_dataset: Bigquery dataset to write results to
     :param dst_table: Bigquery table to write results to
-    :param metric: Metric and resource identifier (e.g. pubsub.googleapis.com/topic/send_request_count)
+    :param metric: Metric and resource identifier
+        (e.g. pubsub.googleapis.com/topic/send_request_count)
     :param execution_time: End of the time interval to export
     :param time_offset: Number of hours to offset interval to account for delayed metrics
     :param interval_hours: Number of hours to export, ending at execution time
@@ -138,15 +139,13 @@ def export_metrics(
     os.environ["TZ"] = "UTC"
     time.tzset()
 
-    # TODO: MAKE IDEMPOTENT
-
     # Larger intervals cause run time to increase superlinearly and takes a lot of memory
-    interval_width = 200
-    for interval_offset in range(0, interval_hours, interval_width):
+    max_interval_width = 24
+    for interval_offset in range(0, interval_hours, max_interval_width):
         offset = time_offset + interval_offset
         end_time = execution_time - datetime.timedelta(hours=offset)
         start_time = execution_time - datetime.timedelta(
-            hours=min(offset + interval_width, time_offset + interval_hours)
+            hours=min(offset + max_interval_width, time_offset + interval_hours)
         )
         print(f"Fetching values for {start_time} to {end_time}")
 
@@ -177,17 +176,20 @@ def export_metrics(
         target_dataset = bigquery.DatasetReference(dst_project, dst_dataset)
         target_table = bigquery.table.TableReference(target_dataset, dst_table)
 
-        # get latest timestamp in destination table to avoid overlap
+        # get existing timestamps in destination table to avoid overlap
         if not overwrite and len(time_series_data) > 0:
-            max_timestamp = get_max_timestamp(bq_client, target_table)
-            if max_timestamp is not None:
-                time_series_data = list(
-                    filter(
-                        lambda x: datetime.datetime.fromisoformat(x["timestamp"])
-                        > max_timestamp,
-                        time_series_data,
-                    )
-                )
+            existing_timestamps = get_existing_timestamps(
+                bq_client,
+                target_table,
+                start_time,
+                end_time,
+            )
+            if len(existing_timestamps) > 0:
+                time_series_data = [
+                    data_point
+                    for data_point in time_series_data
+                    if data_point["timestamp"] not in existing_timestamps
+                ]
 
         if len(time_series_data) == 0:
             print(f"No new data points found for interval {start_time} to {end_time}")

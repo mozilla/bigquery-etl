@@ -13,7 +13,7 @@ from bigquery_etl.monitoring import export_metrics
 def main(execution_time, interval_hours, time_offset):
     export_metrics.export_metrics(
         monitoring_project="moz-fx-data-ingesti-prod-579d",
-        dst_project="moz-fx-data-shared-prod",
+        dst_project="benwu-test-1",  # TODO: change
         dst_dataset="monitoring",
         dst_table="dataflow_user_counters_v1",
         metric="dataflow.googleapis.com/job/user_counter",
@@ -22,6 +22,8 @@ def main(execution_time, interval_hours, time_offset):
         time_offset=time_offset,
         aggregator=monitoring.Aggregation.Reducer.REDUCE_NONE,
         aligner=monitoring.Aggregation.Aligner.ALIGN_MEAN,
+        overwrite=False,
+        alignment_period=300,
     )
 
 

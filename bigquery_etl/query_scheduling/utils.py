@@ -47,13 +47,7 @@ SCHEDULE_INTERVAL_RE = re.compile(
 
 
 def is_schedule_interval(interval):
-    """
-    Check whether the provided string is a valid schedule interval.
-
-    Schedule intervals can be either in CRON format or one of:
-    @once, @hourly, @daily, @weekly, @monthly, @yearly
-    or a timedelta []d[]h[]m
-    """
+    """Check whether the provided string is a valid schedule interval."""
     return SCHEDULE_INTERVAL_RE.match(interval)
 
 

@@ -1,0 +1,563 @@
+---
+- &base
+  environment:
+    addons:
+      active_addons:
+      - key: a
+      - key: b
+  client_id: test
+  document_id: ""
+  normalized_app_name: Firefox
+  sample_id: 0
+  submission_timestamp: '2019-01-01T00:00:00'
+- <<: *base
+  environment:
+    addons: {}
+    profile:
+      creation_date: 0
+  metadata:
+    header:
+      date: "Mon, 31 Dec 2018 23:59:59 GMT"
+  payload:
+    histograms:
+      places_bookmarks_count: '{"sum":1,"values":{"1":1}}'
+      places_pages_count: '{"sum":1,"values":{"1":1}}'
+      weave_device_count_desktop: '{"values":{"1":1}}'
+      weave_device_count_mobile: '{"values":{"1":1}}'
+    info:
+      subsession_counter: 1
+      subsession_start_date: "1970-01-02T00:00:00"
+    processes:
+      parent:
+        scalars:
+          browser_engagement_unique_domains_count: 1
+          timestamps_first_paint: 1
+    simple_measurements:
+      session_restored: 1
+  creation_date: "2018-12-31T23:59:59.000Z"
+- <<: *base
+  metadata:
+    header:
+      date: "Mon, 31 Dec 2018 23:59:57 GMT"
+  payload:
+    histograms:
+      places_bookmarks_count: '{"sum":3,"values":{"3":1}}'
+      places_pages_count: '{"sum":3,"values":{"3":1}}'
+      weave_device_count_desktop: '{"values":{"3":1}}'
+      weave_device_count_mobile: '{"values":{"3":1}}'
+    processes:
+      parent:
+        scalars:
+          browser_engagement_unique_domains_count: 3
+          timestamps_first_paint: 3
+    simple_measurements:
+      session_restored: 3
+  creation_date: "2018-12-31T23:59:57.000Z"
+- &mode_last_1
+  <<: *base
+  application:
+    build_id: first
+    display_version: first
+    name: first
+    vendor: first
+    version: first
+  environment:
+    addons:
+      active_plugins:
+      - name: Shockwave Flash
+        version: first
+    build:
+      architecture: first
+      build_id: first
+      version: first
+    experiments:
+      key: foo
+      value:
+        branch: first
+    partner:
+      distribution_id: first
+    services:
+      account_enabled: false
+      sync_enabled: false
+    settings:
+      addon_compatibility_check_enabled: false
+      attribution:
+        campaign: first
+        content: first
+        medium: first
+        source: first
+      blocklist_enabled: false
+      default_search_engine: first
+      default_search_engine_data:
+        load_path: first
+        name: first
+        origin: first
+        submission_url: first
+      e10s_enabled: false
+      intl:
+        accept_languages: [first]
+        app_locales: [first]
+        available_locales: [first]
+        regional_prefs_locales: [first]
+        requested_locales: [first]
+        system_locales: [first]
+      is_default_browser: false
+      locale: first
+      sandbox:
+        effective_content_process_level: 1
+      search_cohort: first
+      telemetry_enabled: false
+      update:
+        auto_download: false
+        channel: first
+        enabled: false
+    system:
+      cpu:
+        cores: 1
+        count: 1
+        family: 1
+        l2cache_kb: "1"
+        l3cache_kb: "1"
+        model: 1
+        speed_m_hz: "1"
+        stepping: 1
+        vendor: first
+      gfx:
+        features:
+          advanced_layers:
+            status: first
+          d2d:
+            status: first
+          d3d11:
+            status: first
+          gpu_process:
+            status: first
+      is_wow64: false
+      memory_mb: "1"
+      os:
+        install_year: "1"
+        name: first
+        service_pack_major: "1"
+        service_pack_minor: "1"
+        version: first
+        windows_build_number: "1"
+        windows_ubr: "1"
+  metadata:
+    geo:
+      city: first
+      country: first
+      subdivision1: first
+      subdivision2: first
+    isp:
+      name: first
+      organization: first
+    uri:
+      app_update_channel: first
+  payload:
+    info:
+      previous_build_id: first
+      timezone_offset: 1
+    processes:
+      parent:
+        scalars:
+          aushelper_websense_reg_version: first
+  normalized_channel: first
+  normalized_os_version: first
+- <<: *mode_last_1
+- &mode_last_2
+  <<: *base
+  application:
+    build_id: second
+    display_version: second
+    name: second
+    vendor: second
+    version: second
+  environment:
+    addons:
+      active_plugins:
+      - name: Shockwave Flash
+        version: second
+    build:
+      architecture: second
+      build_id: second
+      version: second
+    experiments:
+      key: foo
+      value:
+        branch: second
+    partner:
+      distribution_id: second
+    services:
+      account_enabled: true
+      sync_enabled: true
+    settings:
+      addon_compatibility_check_enabled: true
+      attribution:
+        campaign: second
+        content: second
+        medium: second
+        source: second
+      blocklist_enabled: true
+      default_search_engine: second
+      default_search_engine_data:
+        load_path: second
+        name: second
+        origin: second
+        submission_url: second
+      e10s_enabled: true
+      intl:
+        accept_languages: [second]
+        app_locales: [second]
+        available_locales: [second]
+        regional_prefs_locales: [second]
+        requested_locales: [second]
+        system_locales: [second]
+      is_default_browser: true
+      locale: second
+      sandbox:
+        effective_content_process_level: 2
+      search_cohort: second
+      telemetry_enabled: true
+      update:
+        auto_download: true
+        channel: second
+        enabled: true
+    system:
+      cpu:
+        cores: 2
+        count: 2
+        family: 2
+        l2cache_kb: "2"
+        l3cache_kb: "2"
+        model: 2
+        speed_m_hz: "2"
+        stepping: 2
+        vendor: second
+      gfx:
+        features:
+          advanced_layers:
+            status: second
+          d2d:
+            status: second
+          d3d11:
+            status: second
+          gpu_process:
+            status: second
+      is_wow64: true
+      memory_mb: "2"
+      os:
+        install_year: "2"
+        name: second
+        service_pack_major: "2"
+        service_pack_minor: "2"
+        version: second
+        windows_build_number: "2"
+        windows_ubr: "2"
+  metadata:
+    geo:
+      city: second
+      country: second
+      subdivision1: second
+      subdivision2: second
+    isp:
+      name: second
+      organization: second
+    uri:
+      app_update_channel: second
+  payload:
+    info:
+      previous_build_id: second
+      timezone_offset: 2
+    processes:
+      parent:
+        scalars:
+          aushelper_websense_reg_version: second
+  normalized_channel: second
+  normalized_os_version: second
+  submission_timestamp: '2019-01-01T00:00:01'
+- <<: *mode_last_2
+- <<: *base
+  # leave out booleans
+  application:
+    build_id: third
+    display_version: third
+    name: third
+    vendor: third
+    version: third
+  environment:
+    addons:
+      active_plugins:
+      - name: Shockwave Flash
+        version: third
+    build:
+      architecture: third
+      build_id: third
+      version: third
+    experiments:
+      key: foo
+      value:
+        branch: third
+    partner:
+      distribution_id: third
+    settings:
+      attribution:
+        campaign: third
+        content: third
+        medium: third
+        source: third
+      default_search_engine: third
+      default_search_engine_data:
+        load_path: third
+        name: third
+        origin: third
+        submission_url: third
+      intl:
+        accept_languages: [third]
+        app_locales: [third]
+        available_locales: [third]
+        regional_prefs_locales: [third]
+        requested_locales: [third]
+        system_locales: [third]
+      locale: third
+      sandbox:
+        effective_content_process_level: 3
+      search_cohort: third
+      update:
+        channel: third
+    system:
+      cpu:
+        cores: 3
+        count: 3
+        family: 3
+        l2cache_kb: "3"
+        l3cache_kb: "3"
+        model: 3
+        speed_m_hz: "3"
+        stepping: 3
+        vendor: third
+      gfx:
+        features:
+          advanced_layers:
+            status: third
+          d2d:
+            status: third
+          d3d11:
+            status: third
+          gpu_process:
+            status: third
+      memory_mb: "3"
+      os:
+        install_year: "3"
+        name: third
+        service_pack_major: "3"
+        service_pack_minor: "3"
+        version: third
+        windows_build_number: "3"
+        windows_ubr: "3"
+  metadata:
+    geo:
+      city: third
+      country: third
+      subdivision1: third
+      subdivision2: third
+    isp:
+      name: third
+      organization: third
+    uri:
+      app_update_channel: third
+  payload:
+    info:
+      previous_build_id: third
+      timezone_offset: 3
+    processes:
+      parent:
+        scalars:
+          aushelper_websense_reg_version: third
+  normalized_channel: third
+  normalized_os_version: third
+  submission_timestamp: '2019-01-01T00:00:03'
+- <<: *base
+  payload:
+    processes:
+      parent:
+        scalars:
+          browser_engagement_max_concurrent_tab_count: 1
+          browser_engagement_max_concurrent_window_count: 1
+          browser_engagement_unique_domains_count: 1
+- <<: *base
+  payload:
+    processes:
+      parent:
+        scalars:
+          browser_engagement_max_concurrent_tab_count: 3
+          browser_engagement_max_concurrent_window_count: 3
+          browser_engagement_unique_domains_count: 3
+- &sum
+  <<: *base
+  payload:
+    histograms:
+      devtools_aboutdebugging_opened_count: '{"values":{"0":1}}'
+      devtools_animationinspector_opened_count: '{"values":{"0":1}}'
+      devtools_browserconsole_opened_count: '{"values":{"0":1}}'
+      devtools_canvasdebugger_opened_count: '{"values":{"0":1}}'
+      devtools_computedview_opened_count: '{"values":{"0":1}}'
+      devtools_custom_opened_count: '{"values":{"0":1}}'
+      devtools_dom_opened_count: '{"values":{"0":1}}'
+      devtools_eyedropper_opened_count: '{"values":{"0":1}}'
+      devtools_fontinspector_opened_count: '{"values":{"0":1}}'
+      devtools_inspector_opened_count: '{"values":{"0":1}}'
+      devtools_jsbrowserdebugger_opened_count: '{"values":{"0":1}}'
+      devtools_jsdebugger_opened_count: '{"values":{"0":1}}'
+      devtools_jsprofiler_opened_count: '{"values":{"0":1}}'
+      devtools_layoutview_opened_count: '{"values":{"0":1}}'
+      devtools_memory_opened_count: '{"values":{"0":1}}'
+      devtools_menu_eyedropper_opened_count: '{"values":{"0":1}}'
+      devtools_netmonitor_opened_count: '{"values":{"0":1}}'
+      devtools_options_opened_count: '{"values":{"0":1}}'
+      devtools_paintflashing_opened_count: '{"values":{"0":1}}'
+      devtools_picker_eyedropper_opened_count: '{"values":{"0":1}}'
+      devtools_responsive_opened_count: '{"values":{"0":1}}'
+      devtools_ruleview_opened_count: '{"values":{"0":1}}'
+      devtools_scratchpad_opened_count: '{"values":{"0":1}}'
+      devtools_scratchpad_window_opened_count: '{"values":{"0":1}}'
+      devtools_shadereditor_opened_count: '{"values":{"0":1}}'
+      devtools_storage_opened_count: '{"values":{"0":1}}'
+      devtools_styleeditor_opened_count: '{"values":{"0":1}}'
+      devtools_toolbox_opened_count: '{"sum":1}'
+      devtools_webaudioeditor_opened_count: '{"values":{"0":1}}'
+      devtools_webconsole_opened_count: '{"values":{"0":1}}'
+      devtools_webide_opened_count: '{"values":{"0":1}}'
+      plugins_infobar_allow: '{"sum":1}'
+      plugins_infobar_block: '{"sum":1}'
+      plugins_infobar_shown: '{"sum":1}'
+      plugins_notification_shown: '{"values":{"1":1}}'
+      push_api_notify: '{"sum":1}'
+      ssl_handshake_result: '{"values":{"0":1,"1":1,"672":1}}'
+      web_notification_shown: '{"sum":1}'
+    keyed_histograms:
+      process_crash_submit_attempt:
+      - key: content-crash
+        value: '{"sum":1}'
+      - key: main-crash
+        value: '{"sum":1}'
+      - key: plugin-crash
+        value: '{"sum":1}'
+      process_crash_submit_success:
+      - key: content-crash
+        value: '{"sum":1}'
+      - key: main-crash
+        value: '{"sum":1}'
+      - key: plugin-crash
+        value: '{"sum":1}'
+      search_counts:
+      - key: foo.abouthome
+        value: '{"sum":1}'
+      subprocess_abnormal_abort:
+      - key: content
+        value: '{"sum":1}'
+      - key: gmplugin
+        value: '{"sum":1}'
+      - key: plugin
+        value: '{"sum":1}'
+      subprocess_crashes_with_dump:
+      - key: content
+        value: '{"sum":1}'
+      - key: gmplugin
+        value: '{"sum":1}'
+      - key: plugin
+        value: '{"sum":1}'
+      - key: pluginhang
+        value: '{"sum":1}'
+      subprocess_kill_hard:
+      - key: ShutDownKill
+        value: '{"sum":1}'
+    info:
+      subsession_length: 3600
+    processes:
+      content:
+        keyed_scalars:
+          telemetry_event_counts:
+          - key: foo
+            value: 1
+        scalars:
+          navigator_storage_estimate_count: 1
+          navigator_storage_persist_count: 1
+          webrtc_nicer_stun_retransmits: 1
+          webrtc_nicer_turn_401s: 1
+          webrtc_nicer_turn_403s: 1
+          webrtc_nicer_turn_438s: 1
+      parent:
+        keyed_scalars:
+          browser_search_ad_clicks:
+          - key: foo
+            value: 1
+          browser_search_with_ads:
+          - key: foo
+            value: 1
+          devtools_accessibility_select_accessible_for_node:
+          - key: foo
+            value: 1
+          telemetry_event_counts:
+          - key: foo
+            value: 1
+          urlbar_searchmode_bookmarkmenu:
+          - key: foo
+            value: 1
+          urlbar_searchmode_handoff:
+          - key: foo
+            value: 1
+          urlbar_searchmode_keywordoffer:
+          - key: foo
+            value: 1
+          urlbar_searchmode_oneoff:
+          - key: foo
+            value: 1
+          urlbar_searchmode_other:
+          - key: foo
+            value: 1
+          urlbar_searchmode_shortcut:
+          - key: foo
+            value: 1
+          urlbar_searchmode_tabmenu:
+          - key: foo
+            value: 1
+          urlbar_searchmode_tabtosearch:
+          - key: foo
+            value: 1
+          urlbar_searchmode_tabtosearch_onboard:
+          - key: foo
+            value: 1
+          urlbar_searchmode_topsites_newtab:
+          - key: foo
+            value: 1
+          urlbar_searchmode_topsites_urlbar:
+          - key: foo
+            value: 1
+          urlbar_searchmode_touchbar:
+          - key: foo
+            value: 1
+          urlbar_searchmode_typed:
+          - key: foo
+            value: 1
+        scalars:
+          devtools_accessibility_node_inspected_count: 1
+          devtools_accessibility_opened_count: 1
+          devtools_accessibility_picker_used_count: 1
+          devtools_accessibility_service_enabled_count: 1
+          browser_engagement_active_ticks: 720
+          browser_engagement_tab_open_event_count: 1
+          browser_engagement_total_uri_count: 1
+          browser_engagement_unfiltered_uri_count: 1
+          browser_engagement_window_open_event_count: 1
+          contentblocking_trackers_blocked_count: 1
+          devtools_copy_full_css_selector_opened: 1
+          devtools_copy_unique_css_selector_opened: 1
+          devtools_toolbar_eyedropper_opened: 1
+          navigator_storage_estimate_count: 1
+          navigator_storage_persist_count: 1
+          storage_sync_api_usage_extensions_using: 1
+          webrtc_nicer_stun_retransmits: 1
+          webrtc_nicer_turn_401s: 1
+          webrtc_nicer_turn_403s: 1
+          webrtc_nicer_turn_438s: 1
+- <<: *sum

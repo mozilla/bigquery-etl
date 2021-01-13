@@ -1,0 +1,1836 @@
+[
+  {
+    "name": "additional_properties",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "A JSON string containing any payload properties not present in the schema"
+  },
+  {
+    "name": "application",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "build_id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "display_version",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "name",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "vendor",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "version",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "creation_date",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "document_id",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The document ID specified in the URI when the client sent this message"
+  },
+  {
+    "name": "environment",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "addons",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "active_addons",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "value",
+                "type": "RECORD",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "app_disabled",
+                    "type": "BOOLEAN",
+                    "mode": "NULLABLE",
+                    "description": "True if this add-on cannot be used in the application based on version compatibility, dependencies, and blocklisting. This field is only available after the 'sessionstore-windows-restored' topic is notified."
+                  },
+                  {
+                    "name": "blocklisted",
+                    "type": "BOOLEAN",
+                    "mode": "NULLABLE",
+                    "description": "Whether or not the add-on appears in the blocklist. This field is only available after the 'sessionstore-windows-restored' topic is notified."
+                  },
+                  {
+                    "name": "description",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "has_binary_components",
+                    "type": "BOOLEAN",
+                    "mode": "NULLABLE",
+                    "description": "True or false depending on whether the add-on has binary components. This is always false since Firefox 60. This field is only available after the 'sessionstore-windows-restored' topic is notified."
+                  },
+                  {
+                    "name": "install_day",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The days since epoch that the add-on was first installed. This field is only available after the 'sessionstore-windows-restored' topic is notified."
+                  },
+                  {
+                    "name": "is_system",
+                    "type": "BOOLEAN",
+                    "mode": "NULLABLE",
+                    "description": "Whether or not the add-on is a system add-on. This field is available at startup."
+                  },
+                  {
+                    "name": "name",
+                    "type": "STRING",
+                    "mode": "NULLABLE",
+                    "description": "The add-on name, limited to 100 characters. This field is only available after the 'sessionstore-windows-restored' topic is notified."
+                  },
+                  {
+                    "name": "scope",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Indicates what scope the add-on is installed in, per profile, user, system, or application. This field is available at startup."
+                  },
+                  {
+                    "name": "signed_state",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The state of the signature of the add-on. This field is only available after the 'sessionstore-windows-restored' topic is notified."
+                  },
+                  {
+                    "name": "type",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "update_day",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The day the add-on was last updated. This field is optional, but available at startup if present."
+                  },
+                  {
+                    "name": "is_web_extension",
+                    "type": "BOOLEAN",
+                    "mode": "NULLABLE",
+                    "description": "Whether or not the add-on is a WebExtension add-on. This field is available at startup."
+                  },
+                  {
+                    "name": "multiprocess_compatible",
+                    "type": "BOOLEAN",
+                    "mode": "NULLABLE",
+                    "description": "Whether or not the add-on is a compatible with e10s. Since Firefox 61, this is always true. This field is available at startup."
+                  },
+                  {
+                    "name": "foreign_install",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "user_disabled",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE"
+                  },
+                  {
+                    "name": "version",
+                    "type": "STRING",
+                    "mode": "NULLABLE"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "active_plugins",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "blocklisted",
+                "type": "BOOLEAN",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "clicktoplay",
+                "type": "BOOLEAN",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "description",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "disabled",
+                "type": "BOOLEAN",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "mime_types",
+                "type": "STRING",
+                "mode": "REPEATED"
+              },
+              {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "update_day",
+                "type": "INTEGER",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "version",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "build",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "architecture",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "The build architecture for the active build."
+          },
+          {
+            "name": "build_id",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "The build ID/date of the application."
+          },
+          {
+            "name": "version",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "The version of the application."
+          }
+        ]
+      },
+      {
+        "name": "experiments",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "value",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "branch",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "enrollment_id",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "type",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "partner",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "distribution_id",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "The value of the `distribution.id` pref that identifies the Firefox distribution."
+          }
+        ]
+      },
+      {
+        "name": "profile",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "creation_date",
+            "type": "FLOAT",
+            "mode": "NULLABLE",
+            "description": "The creation date of the user profile as the integer number of days since UNIX epoch."
+          }
+        ]
+      },
+      {
+        "name": "services",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "account_enabled",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "sync_enabled",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE"
+          }
+        ]
+      },
+      {
+        "name": "settings",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "addon_compatibility_check_enabled",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE",
+            "description": "Whether application compatibility is respected for add-ons."
+          },
+          {
+            "name": "attribution",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "campaign",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Identifier of the particular campaign that led to the download of the product."
+              },
+              {
+                "name": "content",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Identifier to indicate the particular link within a campaign."
+              },
+              {
+                "name": "medium",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Category of the source, such as 'organic' for a search engine."
+              },
+              {
+                "name": "source",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Referring partner domain, when install happens via a known partner."
+              }
+            ]
+          },
+          {
+            "name": "blocklist_enabled",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE",
+            "description": "True if the blocklist is enabled."
+          },
+          {
+            "name": "default_search_engine",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Contains the string identifier or name of the default search engine provider. Deprecated."
+          },
+          {
+            "name": "default_search_engine_data",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "load_path",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "The anonymized path of the engine xml file, e.g. e.g. jar:[app]/omni.ja!browser/engine.xml (where ‘browser’ is the name of the chrome package, not a folder) [profile]/searchplugins/engine.xml [distribution]/searchplugins/common/engine.xml [other]/engine.xml [other]/addEngineWithDetails [other]/addEngineWithDetails:extensionID [http/https]example.com/engine-name.xml [http/https]example.com/engine-name.xml:extensionID"
+              },
+              {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "The name of the default search engine."
+              },
+              {
+                "name": "origin",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "The origin of the search engine: the value will be default for engines that are built-in or from distribution partners, verified for user-installed engines with valid verification hashes, unverified for non-default engines without verification hash, and invalid for engines with broken verification hashes."
+              },
+              {
+                "name": "submission_url",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "The HTTP url we would use to search. For privacy, we don’t record this for user-installed engines."
+              }
+            ]
+          },
+          {
+            "name": "e10s_enabled",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE",
+            "description": "True if the E10S is enabled."
+          },
+          {
+            "name": "intl",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "accept_languages",
+                "type": "STRING",
+                "mode": "REPEATED"
+              },
+              {
+                "name": "app_locales",
+                "type": "STRING",
+                "mode": "REPEATED"
+              },
+              {
+                "name": "available_locales",
+                "type": "STRING",
+                "mode": "REPEATED"
+              },
+              {
+                "name": "regional_prefs_locales",
+                "type": "STRING",
+                "mode": "REPEATED"
+              },
+              {
+                "name": "requested_locales",
+                "type": "STRING",
+                "mode": "REPEATED"
+              },
+              {
+                "name": "system_locales",
+                "type": "STRING",
+                "mode": "REPEATED"
+              }
+            ]
+          },
+          {
+            "name": "is_default_browser",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE",
+            "description": "Identifier to indicate the particular link within a campaign."
+          },
+          {
+            "name": "locale",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "The best locale that the application should be localized to."
+          },
+          {
+            "name": "sandbox",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "effective_content_process_level",
+                "type": "INTEGER",
+                "mode": "NULLABLE",
+                "description": "The effective sandbox. The values are OS dependent."
+              }
+            ]
+          },
+          {
+            "name": "search_cohort",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "telemetry_enabled",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE",
+            "description": "The state of the `toolkit.telemetry.enabled` pref."
+          },
+          {
+            "name": "update",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "auto_download",
+                "type": "BOOLEAN",
+                "mode": "NULLABLE",
+                "description": "The state of the `app.update.auto` pref."
+              },
+              {
+                "name": "channel",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "The update channel from the defaults only. Does not include the partner bits."
+              },
+              {
+                "name": "enabled",
+                "type": "BOOLEAN",
+                "mode": "NULLABLE",
+                "description": "The state of the `app.update.enabled` pref."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "system",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "cpu",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "cores",
+                "type": "INTEGER",
+                "mode": "NULLABLE",
+                "description": "The number of physical CPU cores. Desktop only, e.g. 4, or `null` on failure."
+              },
+              {
+                "name": "count",
+                "type": "INTEGER",
+                "mode": "NULLABLE",
+                "description": "The number of logical CPUs. Desktop only, e.g. 8, or `null` on failure."
+              },
+              {
+                "name": "family",
+                "type": "INTEGER",
+                "mode": "NULLABLE",
+                "description": "The CPU family, `null` on failure. Desktop only."
+              },
+              {
+                "name": "l2cache_kb",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "The CPU L2 cache size in KB. `null` on failure. Desktop only."
+              },
+              {
+                "name": "l3cache_kb",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "The CPU L3 cache size in KB. `null` on failure. Desktop only."
+              },
+              {
+                "name": "model",
+                "type": "INTEGER",
+                "mode": "NULLABLE",
+                "description": "The CPU model, `null` on failure. Desktop only."
+              },
+              {
+                "name": "speed_m_hz",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "Only available on Firefox desktop. The CPU clock speed in MHz."
+              },
+              {
+                "name": "stepping",
+                "type": "INTEGER",
+                "mode": "NULLABLE",
+                "description": "The CPU stepping, `null` on failure. Desktop only."
+              },
+              {
+                "name": "vendor",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "The CPU vendor, e.g. 'GenuineIntel', or `null` on failure. Desktop only."
+              }
+            ]
+          },
+          {
+            "name": "gfx",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "features",
+                "type": "RECORD",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "advanced_layers",
+                    "type": "RECORD",
+                    "mode": "NULLABLE",
+                    "fields": [
+                      {
+                        "name": "status",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "d2d",
+                    "type": "RECORD",
+                    "mode": "NULLABLE",
+                    "fields": [
+                      {
+                        "name": "status",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "d3d11",
+                    "type": "RECORD",
+                    "mode": "NULLABLE",
+                    "fields": [
+                      {
+                        "name": "status",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "gpu_process",
+                    "type": "RECORD",
+                    "mode": "NULLABLE",
+                    "fields": [
+                      {
+                        "name": "status",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "is_wow64",
+            "type": "BOOLEAN",
+            "mode": "NULLABLE",
+            "description": "The availability of the WoW64 subsystem. This is Windows only."
+          },
+          {
+            "name": "memory_mb",
+            "type": "FLOAT",
+            "mode": "NULLABLE",
+            "description": "The machines amount of RAM."
+          },
+          {
+            "name": "os",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "install_year",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "The year Windows was installed. This is Windows only. `null` on failure."
+              },
+              {
+                "name": "name",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "The name of the OS, e.g. 'Windows_NT'. This is `null` on failure."
+              },
+              {
+                "name": "service_pack_major",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "The Windows service pack major version. This is Windows only. `null` on failure."
+              },
+              {
+                "name": "service_pack_minor",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "The Windows service pack minor version. This is Windows only. `null` on failure."
+              },
+              {
+                "name": "version",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "The version of the OS, e.g. '6.1'. This is `null` on failure."
+              },
+              {
+                "name": "windows_build_number",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "The Windows build number. This is Windows only. `null` on failure."
+              },
+              {
+                "name": "windows_ubr",
+                "type": "FLOAT",
+                "mode": "NULLABLE",
+                "description": "The Windows UBR. This is Windows 10 only. `null` on failure."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "metadata",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "geo",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "city",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "country",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "An ISO 3166-1 alpha-2 country code"
+          },
+          {
+            "name": "subdivision1",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "First major country subdivision, typically a state, province, or county"
+          },
+          {
+            "name": "subdivision2",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Second major country subdivision; not applicable for most countries"
+          }
+        ],
+        "description": "Results of a geographic lookup based on the client's IP address"
+      },
+      {
+        "name": "header",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "date",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Date HTTP header"
+          }
+        ],
+        "description": "Headers included in the client's HTTP request"
+      },
+      {
+        "name": "isp",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "name",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "The name of the ISP associated with the client's IP address"
+          },
+          {
+            "name": "organization",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "The name of a specific business entity associated with the client's IP address when available; otherwise the ISP name"
+          }
+        ],
+        "description": "Results of ISP lookup based on the client's IP address"
+      },
+      {
+        "name": "uri",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "app_update_channel",
+            "type": "STRING",
+            "mode": "NULLABLE"
+          }
+        ],
+        "description": "Components of the URI to which this ping was sent"
+      }
+    ]
+  },
+  {
+    "name": "normalized_app_name",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Set to \"Other\" if this message contained an unrecognized app name"
+  },
+  {
+    "name": "normalized_channel",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Set to \"Other\" if this message contained an unrecognized channel name"
+  },
+  {
+    "name": "normalized_os_version",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "payload",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "histograms",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "devtools_aboutdebugging_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times about:debugging has been opened."
+          },
+          {
+            "name": "devtools_animationinspector_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Animation Inspector has been opened."
+          },
+          {
+            "name": "devtools_browserconsole_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Browser Console has been opened."
+          },
+          {
+            "name": "devtools_canvasdebugger_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Canvas Debugger has been opened."
+          },
+          {
+            "name": "devtools_computedview_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Computed View has been opened."
+          },
+          {
+            "name": "devtools_custom_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times a custom developer tool has been opened."
+          },
+          {
+            "name": "devtools_dom_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools DOM Inspector has been opened."
+          },
+          {
+            "name": "devtools_eyedropper_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Eyedropper tool has been opened."
+          },
+          {
+            "name": "devtools_fontinspector_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Font Inspector has been opened."
+          },
+          {
+            "name": "devtools_inspector_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Inspector has been opened."
+          },
+          {
+            "name": "devtools_jsbrowserdebugger_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Browser Debugger has been opened."
+          },
+          {
+            "name": "devtools_jsdebugger_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Debugger has been opened."
+          },
+          {
+            "name": "devtools_jsprofiler_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools JS Profiler has been opened."
+          },
+          {
+            "name": "devtools_layoutview_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Layout View has been opened."
+          },
+          {
+            "name": "devtools_memory_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Memory Tool has been opened."
+          },
+          {
+            "name": "devtools_menu_eyedropper_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Eyedropper has been opened via the DevTools menu."
+          },
+          {
+            "name": "devtools_netmonitor_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Network Monitor has been opened."
+          },
+          {
+            "name": "devtools_options_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools options panel has been opened."
+          },
+          {
+            "name": "devtools_paintflashing_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Paint Flashing has been opened via the toolbox button."
+          },
+          {
+            "name": "devtools_picker_eyedropper_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Eyedropper has been opened via the color picker."
+          },
+          {
+            "name": "devtools_responsive_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Responsive Design Mode tool has been opened."
+          },
+          {
+            "name": "devtools_ruleview_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Rule View has been opened."
+          },
+          {
+            "name": "devtools_scratchpad_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Scratchpad toolbox panel has been opened."
+          },
+          {
+            "name": "devtools_scratchpad_window_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Scratchpad standalone window has been opened."
+          },
+          {
+            "name": "devtools_shadereditor_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Shader Editor has been opened."
+          },
+          {
+            "name": "devtools_storage_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Storage Inspector has been opened."
+          },
+          {
+            "name": "devtools_styleeditor_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Style Editor has been opened."
+          },
+          {
+            "name": "devtools_toolbox_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools toolbox has been opened."
+          },
+          {
+            "name": "devtools_webaudioeditor_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Web Audio Editor has been opened."
+          },
+          {
+            "name": "devtools_webconsole_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools Web Console has been opened."
+          },
+          {
+            "name": "devtools_webide_opened_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of times the DevTools WebIDE has been opened."
+          },
+          {
+            "name": "fxa_configured",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "If the user is signed in to a Firefox Account on this device. Recorded once per session just after startup as Sync is initialized."
+          },
+          {
+            "name": "places_bookmarks_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "PLACES: Number of bookmarks"
+          },
+          {
+            "name": "places_pages_count",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "PLACES: Number of unique pages"
+          },
+          {
+            "name": "plugins_infobar_allow",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Count the number of times the user clicked 'allow' on the hidden-plugin infobar."
+          },
+          {
+            "name": "plugins_infobar_block",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Count the number of times the user clicked 'block' on the hidden-plugin infobar."
+          },
+          {
+            "name": "plugins_infobar_shown",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Count of when the hidden-plugin infobar was displayed."
+          },
+          {
+            "name": "plugins_notification_shown",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "The number of times the click-to-activate notification was shown: false: shown by in-content activation true: shown by location bar activation"
+          },
+          {
+            "name": "push_api_notify",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of push messages that were successfully decrypted and delivered to a ServiceWorker."
+          },
+          {
+            "name": "ssl_handshake_result",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "SSL handshake result, 0=success, 1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR error offset + 512, 640-670=PKIX error, 671=unknown err"
+          },
+          {
+            "name": "weave_configured",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "If any version of Firefox Sync is configured for this device"
+          },
+          {
+            "name": "weave_device_count_desktop",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of desktop devices (including this device) associated with this Sync account. Recorded each time Sync successfully completes the 'clients' engine."
+          },
+          {
+            "name": "weave_device_count_mobile",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Number of mobile devices associated with this Sync account. Recorded each time Sync successfully completes the 'clients' engine."
+          },
+          {
+            "name": "web_notification_shown",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Count of times a Notification was rendered (accounting for XUL DND). A system backend may put the notification directly into the tray if its own DND is on."
+          }
+        ]
+      },
+      {
+        "name": "info",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "previous_build_id",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "null if this is the first run, or the previous build ID is unknown"
+          },
+          {
+            "name": "subsession_counter",
+            "type": "INTEGER",
+            "mode": "NULLABLE",
+            "description": "the running no. of this subsession since the start of the browser session"
+          },
+          {
+            "name": "subsession_length",
+            "type": "INTEGER",
+            "mode": "NULLABLE",
+            "description": "the subsession length until now in seconds, monotonic"
+          },
+          {
+            "name": "subsession_start_date",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "hourly precision, ISO date in local time"
+          },
+          {
+            "name": "timezone_offset",
+            "type": "INTEGER",
+            "mode": "NULLABLE",
+            "description": "time-zone offset from UTC, in minutes, for the current locale"
+          }
+        ]
+      },
+      {
+        "name": "keyed_histograms",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "process_crash_submit_attempt",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "value",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "An attempt to submit a crash. Keyed on the CrashManager Crash.type."
+              }
+            ]
+          },
+          {
+            "name": "process_crash_submit_success",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "value",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "The submission status when main/plugin/content crashes are submitted. 1 is success, 0 is failure. Keyed on the CrashManager Crash.type."
+              }
+            ]
+          },
+          {
+            "name": "search_counts",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "value",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Records search counts for search access points and in-content searches. For search access points in general, the format is: <engine-name>.<search-access-point> For the urlbar when in search mode, the format is <engine name>.urlbar-searchmode For the urlbar when an internal @engine shortcut is used, the format is: <engine-name>.alias For in-content searches, the format is <provider>.in-content:[sap|sap-follow-on|organic]:[code|none]"
+              }
+            ]
+          },
+          {
+            "name": "subprocess_abnormal_abort",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "value",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Counts of plugin/content process abnormal shutdown, whether or not a crash report was available."
+              }
+            ]
+          },
+          {
+            "name": "subprocess_crashes_with_dump",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "value",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Counts of plugin and content process crashes which are reported with a crash dump."
+              }
+            ]
+          },
+          {
+            "name": "subprocess_kill_hard",
+            "type": "RECORD",
+            "mode": "REPEATED",
+            "fields": [
+              {
+                "name": "key",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "value",
+                "type": "STRING",
+                "mode": "NULLABLE",
+                "description": "Counts the number of times a subprocess was forcibly killed, and the reason."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "processes",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "content",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "keyed_scalars",
+                "type": "RECORD",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "telemetry_event_counts",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "The counts of events recorded in the process, category, method, and object of the key, even if event recording for the category was not enabled.\n"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "scalars",
+                "type": "RECORD",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "navigator_storage_estimate_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times navigator.storage.estimate has been used.\n"
+                  },
+                  {
+                    "name": "navigator_storage_persist_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times navigator.storage.persist has been used.\n"
+                  },
+                  {
+                    "name": "webrtc_nicer_stun_retransmits",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of STUN message retransmissions during a WebRTC call. When sending STUN request messages over UDP, messages may be dropped by the network. Retransmissions are the mechanism used to accomplish reliability of the STUN request/response transaction. This can happen during both successful and unsuccessful WebRTC calls. For more info on ICE, see https://tools.ietf.org/html/rfc5245 For more info on STUN, see https://tools.ietf.org/html/rfc5389 For more info on TURN, see https://tools.ietf.org/html/rfc5766\n"
+                  },
+                  {
+                    "name": "webrtc_nicer_turn_401s",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of TURN 401 (Unauthorized) responses to allocation requests. Only 401 responses beyond the first, expected 401 are counted. More than one 401 repsonse indicates the client is experiencing difficulty authenticating with the TURN server. This can happen during both successful and unsuccessful WebRTC calls. For more info on ICE, see https://tools.ietf.org/html/rfc5245 For more info on STUN, see https://tools.ietf.org/html/rfc5389 For more info on TURN, see https://tools.ietf.org/html/rfc5766\n"
+                  },
+                  {
+                    "name": "webrtc_nicer_turn_403s",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of TURN 403 (Forbidden) responses to CreatePermission or ChannelBind requests.  This indicates that the TURN server is refusing the request for an IP address or IP address/port combination, likely due to administrative restrictions. For more info on ICE, see https://tools.ietf.org/html/rfc5245 For more info on STUN, see https://tools.ietf.org/html/rfc5389 For more info on TURN, see https://tools.ietf.org/html/rfc5766\n"
+                  },
+                  {
+                    "name": "webrtc_nicer_turn_438s",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of TURN 438 (Stale Nonce) responses to allocation requests. This can happen during both successful and unsuccessful WebRTC calls. For more info on ICE, see https://tools.ietf.org/html/rfc5245 For more info on STUN, see https://tools.ietf.org/html/rfc5389 For more info on TURN, see https://tools.ietf.org/html/rfc5766\n"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "parent",
+            "type": "RECORD",
+            "mode": "NULLABLE",
+            "fields": [
+              {
+                "name": "keyed_scalars",
+                "type": "RECORD",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "browser_search_ad_clicks",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "Records clicks of adverts on SERP pages. The key format is ‘<provider>:<sap|organic>’.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "browser_search_with_ads",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "Records counts of SERP pages with adverts displayed. The key format is ‘<provider>:<sap|organic>’.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "devtools_accessibility_select_accessible_for_node",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "Number of times an accessible object was inspected from outside the Accessibility tool (navigation to Accessibility panel). Keyed by the source of user action (inspector context menu, browser context menu, etc).\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "telemetry_event_counts",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "The counts of events recorded in the process, category, method, and object of the key, even if event recording for the category was not enabled.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_bookmarkmenu",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a keyword offer result.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_handoff",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a keyword offer result.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_keywordoffer",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a keyword offer result.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_oneoff",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_other",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_shortcut",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_tabmenu",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_tabtosearch",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_tabtosearch_onboard",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_topsites_newtab",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_topsites_urlbar",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_touchbar",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "urlbar_searchmode_typed",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                      {
+                        "name": "key",
+                        "type": "STRING",
+                        "mode": "NULLABLE"
+                      },
+                      {
+                        "name": "value",
+                        "type": "INTEGER",
+                        "mode": "NULLABLE",
+                        "description": "A keyed uint recording how many times the user entered a particular search mode after selecting a one-off.\n"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "scalars",
+                "type": "RECORD",
+                "mode": "NULLABLE",
+                "fields": [
+                  {
+                    "name": "aushelper_websense_reg_version",
+                    "type": "STRING",
+                    "mode": "NULLABLE",
+                    "description": "The Websense version from the Windows registry."
+                  },
+                  {
+                    "name": "browser_engagement_active_ticks",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of the number of five-second intervals ('ticks') the user was considered 'active' in a subsession. Session activity involves keyboard or mouse interaction with the application. It does not take into account whether or not the window has focus or is in the foreground, only if it is receiving these interaction events.\n"
+                  },
+                  {
+                    "name": "browser_engagement_max_concurrent_tab_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of maximum number of tabs open during a subsession, across all windows, including tabs in private windows and restored at startup.\n"
+                  },
+                  {
+                    "name": "browser_engagement_max_concurrent_window_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of maximum number of browser windows open during a subsession. This includes private windows and the ones opened when starting the browser.\n"
+                  },
+                  {
+                    "name": "browser_engagement_tab_open_event_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of tab open events per subsession, across all windows, after the session has been restored. This includes tab open events from private windows and from manual session restorations (i.e. after crashes and from about:home).\n"
+                  },
+                  {
+                    "name": "browser_engagement_total_uri_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of the total non-unique http(s) URIs visited in a subsession, including page reloads, after the session has been restored. URIs on minimized or background tabs may also be counted towards this. Private browsing is not included in this count.\n"
+                  },
+                  {
+                    "name": "browser_engagement_unfiltered_uri_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of the total non-unique URIs visited in a subsession, not restricted to a specific protocol, including page reloads and about:* pages (other than initial pages such as about:blank, ...), after the session has been restored. This does not include background page requests and URIs from embedded pages or private browsing.\n"
+                  },
+                  {
+                    "name": "browser_engagement_unique_domains_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of the unique domains visited in a subsession, after the session has been restored. Subdomains under eTLD are aggregated after the first level (i.e. test.example.com and other.example.com are only counted once). This does not include background page requests and domains from embedded pages or private browsing. The count is limited to 100 unique domains.\n"
+                  },
+                  {
+                    "name": "browser_engagement_window_open_event_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of browser window open events per subsession, after the session has been restored. The count includes private windows and the ones from manual session restorations (i.e. after crashes and from about:home).\n"
+                  },
+                  {
+                    "name": "contentblocking_trackers_blocked_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "A count of the number of tracking events blocked.\n"
+                  },
+                  {
+                    "name": "devtools_accessibility_node_inspected_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times a DOM node was inspected from within the Accessibility tool.\n"
+                  },
+                  {
+                    "name": "devtools_accessibility_opened_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times the DevTools Accessibility tool has been opened.\n"
+                  },
+                  {
+                    "name": "devtools_accessibility_picker_used_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times the picker tool has been used in DevTools Accessibility panel.\n"
+                  },
+                  {
+                    "name": "devtools_accessibility_service_enabled_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times platform accessibility has been enabled in DevTools Accessibility panel.\n"
+                  },
+                  {
+                    "name": "devtools_copy_full_css_selector_opened",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times the DevTools copy full CSS selector has been used."
+                  },
+                  {
+                    "name": "devtools_copy_unique_css_selector_opened",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times the DevTools copy unique CSS selector has been used."
+                  },
+                  {
+                    "name": "devtools_toolbar_eyedropper_opened",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times the DevTools Eyedropper has been opened via the inspector toolbar."
+                  },
+                  {
+                    "name": "navigator_storage_estimate_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times navigator.storage.estimate has been used.\n"
+                  },
+                  {
+                    "name": "navigator_storage_persist_count",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Number of times navigator.storage.persist has been used.\n"
+                  },
+                  {
+                    "name": "storage_sync_api_usage_extensions_using",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of webextensions that have data stored in the chrome.storage.sync API. This includes extensions that have not used the storage.sync API this session. This includes items that were not stored this session. This scalar is collected after every sync.\n"
+                  },
+                  {
+                    "name": "timestamps_first_paint",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "Record the timestamp of the first content window paint, in milliseconds since process start.\n"
+                  },
+                  {
+                    "name": "webrtc_nicer_stun_retransmits",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of STUN message retransmissions during a WebRTC call. When sending STUN request messages over UDP, messages may be dropped by the network. Retransmissions are the mechanism used to accomplish reliability of the STUN request/response transaction. This can happen during both successful and unsuccessful WebRTC calls. For more info on ICE, see https://tools.ietf.org/html/rfc5245 For more info on STUN, see https://tools.ietf.org/html/rfc5389 For more info on TURN, see https://tools.ietf.org/html/rfc5766\n"
+                  },
+                  {
+                    "name": "webrtc_nicer_turn_401s",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of TURN 401 (Unauthorized) responses to allocation requests. Only 401 responses beyond the first, expected 401 are counted. More than one 401 repsonse indicates the client is experiencing difficulty authenticating with the TURN server. This can happen during both successful and unsuccessful WebRTC calls. For more info on ICE, see https://tools.ietf.org/html/rfc5245 For more info on STUN, see https://tools.ietf.org/html/rfc5389 For more info on TURN, see https://tools.ietf.org/html/rfc5766\n"
+                  },
+                  {
+                    "name": "webrtc_nicer_turn_403s",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of TURN 403 (Forbidden) responses to CreatePermission or ChannelBind requests.  This indicates that the TURN server is refusing the request for an IP address or IP address/port combination, likely due to administrative restrictions. For more info on ICE, see https://tools.ietf.org/html/rfc5245 For more info on STUN, see https://tools.ietf.org/html/rfc5389 For more info on TURN, see https://tools.ietf.org/html/rfc5766\n"
+                  },
+                  {
+                    "name": "webrtc_nicer_turn_438s",
+                    "type": "INTEGER",
+                    "mode": "NULLABLE",
+                    "description": "The count of TURN 438 (Stale Nonce) responses to allocation requests. This can happen during both successful and unsuccessful WebRTC calls. For more info on ICE, see https://tools.ietf.org/html/rfc5245 For more info on STUN, see https://tools.ietf.org/html/rfc5389 For more info on TURN, see https://tools.ietf.org/html/rfc5766\n"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "simple_measurements",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "active_ticks",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "first_paint",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          },
+          {
+            "name": "session_restored",
+            "type": "INTEGER",
+            "mode": "NULLABLE"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sample_id",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99"
+  },
+  {
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": "Time when the ingestion edge server accepted this message"
+  }
+]

@@ -93,7 +93,7 @@ def info(name, dags_config, with_tasks):
     help=(
         "Schedule interval of the new DAG. "
         "Schedule intervals can be either in CRON format or one of: "
-        "@once, @hourly, @daily, @weekly, @monthly, @yearly or a timedelta []d[]h[]m"
+        "once, hourly, daily, weekly, monthly, yearly or a timedelta []d[]h[]m"
     ),
     required=True,
 )

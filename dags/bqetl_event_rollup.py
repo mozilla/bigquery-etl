@@ -8,6 +8,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 default_args = {
     "owner": "frank@mozilla.com",
     "start_date": datetime.datetime(2020, 11, 3, 0, 0),
+    "end_date": None,
     "email": ["frank@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
@@ -20,18 +21,6 @@ with DAG(
     "bqetl_event_rollup", default_args=default_args, schedule_interval="0 3 * * *"
 ) as dag:
 
-    telemetry__event_types__v1 = bigquery_etl_query(
-        task_id="telemetry__event_types__v1",
-        destination_table="event_types_v1",
-        dataset_id="telemetry",
-        project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
     telemetry_derived__event_types__v1 = bigquery_etl_query(
         task_id="telemetry_derived__event_types__v1",
         destination_table="event_types_v1",
@@ -39,8 +28,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
         email=["frank@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
+        date_partition_parameter=None,
+        depends_on_past=False,
         dag=dag,
     )
 
@@ -68,7 +57,9 @@ with DAG(
         dag=dag,
     )
 
-    telemetry__event_types__v1.set_upstream(telemetry_derived__event_types_history__v1)
+    telemetry_derived__event_types__v1.set_upstream(
+        telemetry_derived__event_types_history__v1
+    )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
@@ -79,8 +70,6 @@ with DAG(
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
-
-    telemetry_derived__event_types__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     telemetry_derived__event_types_history__v1.set_upstream(
         wait_for_copy_deduplicate_all

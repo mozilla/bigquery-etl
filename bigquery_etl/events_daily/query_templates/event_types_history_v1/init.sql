@@ -1,5 +1,3 @@
-{{ header }}
-
 CREATE OR REPLACE TABLE
   {{ app_id }}_derived.event_types_history_v1
 PARTITION BY

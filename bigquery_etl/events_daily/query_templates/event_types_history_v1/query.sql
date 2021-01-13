@@ -1,5 +1,3 @@
-{{ header }}
-
 WITH all_events AS (
   {% if glean %}
     SELECT

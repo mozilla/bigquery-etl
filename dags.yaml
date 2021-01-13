@@ -155,11 +155,28 @@ bqetl_main_summary:
 bqetl_experiments_daily:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: ssuh@mozilla.com
+    owner: ascholtz@mozilla.com
     start_date: "2018-11-27"
-    email: ["telemetry-alerts@mozilla.com", "ssuh@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
     retries: 2
     retry_delay: 30m
+
+bqetl_experiments_hourly:
+  schedule_interval: 30 * * * *
+  default_args:
+    owner: ascholtz@mozilla.com
+    start_date: "2021-01-10"
+    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
+    retries: 2
+    retry_delay: 10m
+
+bqetl_experiments_live:
+  schedule_interval: '*/5 * * * *'
+  default_args:
+    owner: ascholtz@mozilla.com
+    start_date: "2021-01-10"
+    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
+    retries: 0
 
 bqetl_document_sample:
   schedule_interval: daily

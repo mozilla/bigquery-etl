@@ -54,8 +54,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
         email=["frank@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
+        date_partition_parameter=None,
+        depends_on_past=False,
         dag=dag,
     )
 
@@ -87,6 +87,10 @@ with DAG(
         org_mozilla_firefox_derived__event_types_history__v1
     )
 
+    org_mozilla_firefox_derived__event_types__v1.set_upstream(
+        org_mozilla_firefox_derived__event_types_history__v1
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -95,10 +99,6 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    org_mozilla_firefox_derived__event_types__v1.set_upstream(
-        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_firefox_derived__event_types_history__v1.set_upstream(

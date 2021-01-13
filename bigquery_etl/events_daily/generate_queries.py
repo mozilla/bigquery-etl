@@ -66,14 +66,14 @@ class Template:
 
 @dataclass
 class TemplatedDir:
-    """A directory of templates, which will be generated per the templating.yaml."""
+    """A directory of templates, which will be rendered per the templating.yaml."""
 
     name: str
     path: Path
     env: Optional[Environment] = None
 
     def generate(self, write_path, dataset=None):
-        """Generate this TemplatedDir at write_path for the specified dataset."""
+        """Render this TemplatedDir to write_path for the specified dataset."""
         args = self.get_args()
         datasets = self.get_datasets(args, dataset)
 

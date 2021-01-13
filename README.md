@@ -6,17 +6,17 @@ BigQuery ETL
 This repository contains Mozilla Data Team's
 - Derived ETL jobs that do not require a custom container
 - User-defined functions (UDFs)
-- Airflow DAGs for scheduled queries
+- Airflow DAGs for scheduled bigquery-etl queries
 - Tools for query & UDF deployment, management and scheduling
 
 Quick Start
 ---
 
-Ensure you're Python 3.8+ is available on your machine (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python.)
+Ensure Python 3.8+ is available on your machine (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python.)
 
 (For Mozilla Employees) Set up GCP command line tools, [as described here](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool).
 
-Install the [virtualenv](https://virtualenv.pypa.io/en/latest/) python environment management tool
+Install the [virtualenv](https://virtualenv.pypa.io/en/latest/) Python environment management tool
 ```bash
 $ pip install virtualenv
 ```

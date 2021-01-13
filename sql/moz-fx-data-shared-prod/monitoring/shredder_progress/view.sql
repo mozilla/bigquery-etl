@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shredder.shredder_state.progress`
+  `moz-fx-data-shared-prod.monitoring.shredder_progress`
 AS
 WITH max_end_date AS (
   SELECT

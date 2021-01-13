@@ -70,42 +70,18 @@ branches_per_window AS (
   CROSS JOIN
     (SELECT DISTINCT window_start FROM all_enrollments)
 ),
-cumulative_counts AS (
-  SELECT
-    *,
-    SUM(enroll_count) OVER previous_rows_window AS cumulative_enroll_count,
-    SUM(unenroll_count) OVER previous_rows_window AS cumulative_unenroll_count,
-    SUM(graduate_count) OVER previous_rows_window AS cumulative_graduate_count,
-    SUM(update_count) OVER previous_rows_window AS cumulative_update_count,
-    SUM(enroll_failed_count) OVER previous_rows_window AS cumulative_enroll_failed_count,
-    SUM(unenroll_failed_count) OVER previous_rows_window AS cumulative_unenroll_failed_count,
-    SUM(update_failed_count) OVER previous_rows_window AS cumulative_update_failed_count
-  FROM
-    all_enrollments
-  WINDOW
-    previous_rows_window AS (
-      PARTITION BY
-        experiment,
-        branch
-      ORDER BY
-        window_start
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND CURRENT ROW
-    )
-),
 cumulative_populations AS (
   SELECT
     window_start,
     branch,
     branches_per_window.experiment,
-    MAX(cumulative_enroll_count) OVER previous_rows_window AS cumulative_enroll_count,
-    MAX(cumulative_unenroll_count) OVER previous_rows_window AS cumulative_unenroll_count,
-    MAX(cumulative_graduate_count) OVER previous_rows_window AS cumulative_graduate_count,
+    SUM(enroll_count) OVER previous_rows_window AS cumulative_enroll_count,
+    SUM(unenroll_count) OVER previous_rows_window AS cumulative_unenroll_count,
+    SUM(graduate_count) OVER previous_rows_window AS cumulative_graduate_count,
   FROM
     branches_per_window
   LEFT JOIN
-    (SELECT * EXCEPT (branch), IF(branch IS NULL, 'null', branch) AS branch FROM cumulative_counts)
+    (SELECT * EXCEPT (branch), IF(branch IS NULL, 'null', branch) AS branch FROM all_enrollments)
   USING
     (window_start, branch, experiment)
   WINDOW

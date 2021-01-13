@@ -134,10 +134,9 @@ google-cloud-core==1.4.1 \
     --hash=sha256:4c9e457fcfc026fdde2e492228f04417d4c717fb0f29f070122fb0ab89e34ebd \
     --hash=sha256:613e56f164b6bee487dd34f606083a0130f66f42f7b10f99730afdf1630df507 \
     # via google-cloud-bigquery, google-cloud-storage
-git+https://github.com/googleapis/python-monitoring.git@8a7e2f767c71b180d708c1bf15c0a24aff32b880 \
-    --hash=sha256:1debfa046ab9518d46b68712c03d86d0ddb11d1aad428aed62c6465752f2201f \
-    --hash=sha256:8c83b4248b6576ed133a38c67d9aefed55ecea2c78b31ff4f340617f1a813a56 \
-    # via -r requirements.in
+# WARNING: pip install will require the following package to be hashed.
+# Consider using a hashable URL like https://github.com/jazzband/pip-tools/archive/SOMECOMMIT.zip
+git+https://github.com/googleapis/python-monitoring.git@8a7e2f767c71b180d708c1bf15c0a24aff32b880  # via -r requirements.in
 google-cloud-storage==1.35.0 \
     --hash=sha256:555c0db2f88f3419f123bf9c621d7fd92f7c9e4f8b11f08eda57facacba16a9e \
     --hash=sha256:7b48b74683dafec5da315c7b0861ab168c208e04c763aa5db7ea8d7ecd8b6c5d \

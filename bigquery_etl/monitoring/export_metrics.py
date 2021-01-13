@@ -80,23 +80,33 @@ def write_to_bq(
     return load_response
 
 
-def get_existing_timestamps(
+def filter_existing_data(
+    time_series_data: List[Dict],
     client: bigquery.Client,
     target_table: bigquery.TableReference,
     start_time: datetime.datetime,
     end_time: datetime.datetime,
-) -> Set[datetime.datetime]:
-    """Get all unique timestamps in the target table in the given interval."""
+) -> List[Dict]:
+    """Remove data points that have a matching timestamp in the target table."""
     query_string = f"""
-        SELECT DISTINCT(timestamp) AS timestamp
-        FROM {target_table.dataset_id}.{target_table.table_id}
-        WHERE timestamp BETWEEN '{str(start_time)}' AND '{str(end_time)}'
-    """
+            SELECT DISTINCT(timestamp) AS timestamp
+            FROM {target_table.dataset_id}.{target_table.table_id}
+            WHERE timestamp BETWEEN '{str(start_time)}' AND '{str(end_time)}'
+        """
     try:
         results = client.query(query_string).result()
     except NotFound:
         results = []
-    return {row.timestamp for row in results}
+    existing_timestamps = {row.timestamp for row in results}
+
+    if len(existing_timestamps) == 0:
+        return time_series_data
+
+    return [
+        data_point
+        for data_point in time_series_data
+        if data_point["timestamp"] not in existing_timestamps
+    ]
 
 
 # TODO: support additional metric filters and aggregation parameters
@@ -178,18 +188,13 @@ def export_metrics(
 
         # get existing timestamps in destination table to avoid overlap
         if not overwrite and len(time_series_data) > 0:
-            existing_timestamps = get_existing_timestamps(
+            time_series_data = filter_existing_data(
+                time_series_data,
                 bq_client,
                 target_table,
                 start_time,
                 end_time,
             )
-            if len(existing_timestamps) > 0:
-                time_series_data = [
-                    data_point
-                    for data_point in time_series_data
-                    if data_point["timestamp"] not in existing_timestamps
-                ]
 
         if len(time_series_data) == 0:
             print(f"No new data points found for interval {start_time} to {end_time}")

@@ -3,7 +3,37 @@
 BigQuery ETL
 ===
 
-Bigquery UDFs and SQL queries for building derived datasets.
+This repository contains Mozilla Data Team's
+- Derived ETL jobs that do not require a custom container
+- User-defined functions (UDFs)
+- Airflow DAGs for scheduled bigquery-etl queries
+- Tools for query & UDF deployment, management and scheduling
+
+Quick Start
+---
+
+Ensure Python 3.8+ is available on your machine (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python.)
+
+(For Mozilla Employees) Set up GCP command line tools, [as described here](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool).
+
+Install the [virtualenv](https://virtualenv.pypa.io/en/latest/) Python environment management tool
+```bash
+$ pip install virtualenv
+```
+
+Clone the repository
+```bash
+$ git clone git@github.com:mozilla/bigquery-etl.git
+$ cd bigquery-etl
+```
+
+Install the `bqetl` command line tool
+```bash
+$ ./bqetl bootstrap
+```
+
+And you should now be set up to start working in the repo! The easiest way to do this is for many tasks is to use `bqetl`, which is described below.
+
 
 The `bqetl` CLI
 ---
@@ -11,16 +41,6 @@ The `bqetl` CLI
 The `bqetl` command-line tool aims to simplify working with the bigquery-etl repository by supporting
 common workflows, such as creating, validating and scheduling queries or adding new UDFs.
 
-If you have a [virtualenv](https://virtualenv.pypa.io/en/latest/) and a
-recent version of Python installed, you can set up a copy of `bqetl` for
-local use from the root of your checkout:
-
-```bash
-./bqetl bootstrap
-```
-
-After this is done, you can use it locally by running `./bqetl` with the
-appropriate parameters (see below).
 
 ### Usage
 
@@ -54,7 +74,7 @@ Options:
   --help                Show this message and exit.
 ```
 
-Running some commands, for example to create or query tables, will [require access to GCP](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool).
+Running some commands, for example to create or query tables, will [require access to Mozilla's GCP Account](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
 
 Formatting SQL
 ---

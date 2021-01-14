@@ -23,8 +23,6 @@ VIEWS_TO_SKIP = (
     # Dataset glam-fenix-dev:glam_etl was not found
     # TODO: this should be removed if views are to be automatically deployed
     *[str(path) for path in Path("sql/glam-fenix-dev").glob("glam_etl/**/view.sql")],
-    # View in project other than prod
-    "shredder_state/progress/view.sql",
 )
 
 

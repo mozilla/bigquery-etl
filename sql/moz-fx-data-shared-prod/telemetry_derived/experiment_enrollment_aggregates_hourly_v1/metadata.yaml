@@ -1,0 +1,24 @@
+friendly_name: Experiment Enrollment Aggregates Hourly
+description: >
+  Experiment enrollment aggregate data from the events live table
+  from the past hour, partitioned by hour.
+labels:
+  incremental: true
+owners:
+- ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_experiments_hourly
+  task_name: experiment_enrollment_aggregates_hourly
+  parameters: [
+    # This DAG runs 30 minutes after the hour to allow for some latency in 
+    # data loading;
+    # we truncate ts_nodash so that the query represents the previous full hour.
+    'submission_timestamp:TIMESTAMP:{{ macros.ds_format(ts_nodash, "%Y%m%dT%H%M%S", "%Y-%m-%d %H:00:00") }}' # yamllint disable-line rule:line-length
+  ]
+  referenced_tables: [
+    "moz-fx-data-shared-prod", "telemetry_live", "event_v4"
+  ]
+  destination_table:
+    experiment_enrollment_aggregates_hourly_v1${{ macros.ds_format(execution_date + macros.timedelta(hours=-1), "%Y-%m-%d %H:%M:%S", "%Y%m%d%H") }} # yamllint disable-line rule:line-length
+  query_file_path: 'sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql' # yamllint disable-line rule:line-length
+  date_partition_parameter: null

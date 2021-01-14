@@ -11,7 +11,7 @@ accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
 from functools import cached_property
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import Pool
 from os.path import basename, dirname
 from urllib.request import urlopen, Request
 import glob
@@ -55,7 +55,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/shredder_state/progress/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_distinct_docids_v1/query.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/customers_v1/query.sql",
@@ -125,6 +125,8 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/asn_aggregates_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_recents_v1/query.sql",  # noqa E501
     # Dataset sql/glam-fenix-dev:glam_etl was not found
     *glob.glob("sql/glam-fenix-dev/glam_etl/**/*.sql", recursive=True),
     # Query templates
@@ -217,6 +219,11 @@ class DryRun:
         return True
 
 
+def sql_file_valid(sqlfile):
+    """Dry run SQL files."""
+    return DryRun(sqlfile).is_valid()
+
+
 def main():
     """Dry run all SQL files in the project directories."""
     file_names = ("query.sql", "view.sql", "part*.sql")
@@ -228,11 +235,7 @@ def main():
         if f not in SKIP
     ]
 
-    def sql_file_valid(sqlfile):
-        """Dry run SQL files."""
-        return DryRun(sqlfile).is_valid()
-
-    with ThreadPool(8) as p:
+    with Pool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
     if all(result):
         exitcode = 0

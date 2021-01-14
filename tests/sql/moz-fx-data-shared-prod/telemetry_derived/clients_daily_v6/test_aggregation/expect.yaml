@@ -2,9 +2,17 @@
 - aborts_content_sum: 2
   aborts_gmplugin_sum: 2
   aborts_plugin_sum: 2
-  active_addons: []
-  active_addons_count_mean: 2
+  active_addons:
+  - addon_id: a
+  - addon_id: b
+  active_addons_count_mean: 1
   active_hours_sum: 2
+  ad_clicks_count_all: 2
+  attribution:
+    campaign: second
+    content: second
+    medium: second
+    source: second
   addon_compatibility_check_enabled: true
   app_build_id: second
   app_display_version: second
@@ -15,6 +23,8 @@
   client_clock_skew_mean: 2
   client_id: test
   client_submission_latency_mean: 2
+  city: second
+  country: second
   cpu_cores: 2
   cpu_count: 2
   cpu_family: 2
@@ -44,16 +54,20 @@
   env_build_arch: second
   env_build_id: second
   env_build_version: second
-  environment_settings_intl_accept_languages: []
-  environment_settings_intl_app_locales: []
-  environment_settings_intl_available_locales: []
-  environment_settings_intl_regional_prefs_locales: []
-  environment_settings_intl_requested_locales: []
-  environment_settings_intl_system_locales: []
-  experiments: []
+  environment_settings_intl_accept_languages: [second]
+  environment_settings_intl_app_locales: [second]
+  environment_settings_intl_available_locales: [second]
+  environment_settings_intl_regional_prefs_locales: [second]
+  environment_settings_intl_requested_locales: [second]
+  environment_settings_intl_system_locales: [second]
+  experiments:
+  - key: foo
+    value: second
   first_paint_mean: 2
   flash_version: second
   fxa_configured: true
+  geo_subdivision1: second
+  geo_subdivision2: second
   gfx_features_advanced_layers_status: second
   gfx_features_d2d_status: second
   gfx_features_d3d11_status: second
@@ -91,6 +105,8 @@
   install_year: 2
   is_default_browser: true
   is_wow64: true
+  isp_name: second
+  isp_organization: second
   locale: second
   memory_mb: 2
   normalized_channel: second
@@ -108,6 +124,8 @@
   plugins_infobar_shown_sum: 2
   plugins_notification_shown_sum: 2
   previous_build_id: second
+  profile_age_in_days: 1
+  profile_creation_date: '1970-01-01 00:00:00'
   push_api_notify_sum: 2
   sample_id: 0
   sandbox_effective_content_process_level: 2
@@ -117,7 +135,9 @@
   scalar_combined_webrtc_nicer_turn_438s_sum: 4
   scalar_content_navigator_storage_estimate_count_sum: 2
   scalar_content_navigator_storage_persist_count_sum: 2
-  scalar_content_telemetry_event_counts_sum: []
+  scalar_content_telemetry_event_counts_sum:
+  - key: foo
+    value: 2
   scalar_parent_aushelper_websense_reg_version: second
   scalar_parent_browser_engagement_max_concurrent_tab_count_max: 3
   scalar_parent_browser_engagement_max_concurrent_window_count_max: 3
@@ -127,30 +147,64 @@
   scalar_parent_browser_engagement_unique_domains_count_max: 3
   scalar_parent_browser_engagement_unique_domains_count_mean: 2
   scalar_parent_browser_engagement_window_open_event_count_sum: 2
-  scalar_parent_devtools_accessibility_select_accessible_for_node_sum: []
+  scalar_parent_devtools_accessibility_node_inspected_count_sum: 2
+  scalar_parent_devtools_accessibility_opened_count_sum: 2
+  scalar_parent_devtools_accessibility_picker_used_count_sum: 2
+  scalar_parent_devtools_accessibility_select_accessible_for_node_sum:
+  - key: foo
+    value: 2
+  scalar_parent_devtools_accessibility_service_enabled_count_sum: 2
   scalar_parent_devtools_copy_full_css_selector_opened_sum: 2
   scalar_parent_devtools_copy_unique_css_selector_opened_sum: 2
   scalar_parent_devtools_toolbar_eyedropper_opened_sum: 2
   scalar_parent_navigator_storage_estimate_count_sum: 2
   scalar_parent_navigator_storage_persist_count_sum: 2
   scalar_parent_storage_sync_api_usage_extensions_using_sum: 2
-  scalar_parent_telemetry_event_counts_sum: []
-  scalar_parent_urlbar_searchmode_bookmarkmenu_sum: []
-  scalar_parent_urlbar_searchmode_handoff_sum: []
-  scalar_parent_urlbar_searchmode_keywordoffer_sum: []
-  scalar_parent_urlbar_searchmode_oneoff_sum: []
-  scalar_parent_urlbar_searchmode_other_sum: []
-  scalar_parent_urlbar_searchmode_shortcut_sum: []
-  scalar_parent_urlbar_searchmode_tabmenu_sum: []
-  scalar_parent_urlbar_searchmode_tabtosearch_sum: []
-  scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum: []
-  scalar_parent_urlbar_searchmode_topsites_newtab_sum: []
-  scalar_parent_urlbar_searchmode_topsites_urlbar_sum: []
-  scalar_parent_urlbar_searchmode_touchbar_sum: []
-  scalar_parent_urlbar_searchmode_typed_sum: []
+  scalar_parent_telemetry_event_counts_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_bookmarkmenu_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_handoff_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_keywordoffer_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_oneoff_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_other_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_shortcut_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_tabmenu_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_tabtosearch_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_topsites_newtab_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_topsites_urlbar_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_touchbar_sum:
+  - key: foo
+    value: 2
+  scalar_parent_urlbar_searchmode_typed_sum:
+  - key: foo
+    value: 2
   search_cohort: second
-  search_count_abouthome: 0
-  search_count_all: 0
+  search_count_abouthome: 2
+  search_count_all: 2
   search_count_contextmenu: 0
   search_count_newtab: 0
   search_count_organic: 0
@@ -159,13 +213,14 @@
   search_count_tagged_follow_on: 0
   search_count_tagged_sap: 0
   search_count_urlbar: 0
+  search_with_ads_count_all: 2
   session_restored_mean: 2
-  sessions_started_on_this_day: 0
+  sessions_started_on_this_day: 1
   shutdown_kill_sum: 2
   ssl_handshake_result_failure_sum: 2
   ssl_handshake_result_success_sum: 2
   submission_date: '2019-01-01'
-  submission_timestamp_min: '2019-01-01T08:00:00+00:00'
+  submission_timestamp_min: '2019-01-01T00:00:00+00:00'
   subsession_hours_sum: '2'
   sync_configured: true
   sync_count_desktop_mean: 2

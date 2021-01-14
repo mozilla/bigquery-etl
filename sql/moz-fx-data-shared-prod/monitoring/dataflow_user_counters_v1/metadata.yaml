@@ -1,7 +1,8 @@
 ---
 friendly_name: Dataflow User Counters
 description: >
-  Exported dataflow user counters from GCP monitoring (dataflow.googleapis.com/job/user_counter)
+  Exported dataflow user counters from GCP monitoring
+  (dataflow.googleapis.com/job/user_counter)
 owners:
   - bewu@mozilla.com
 labels:

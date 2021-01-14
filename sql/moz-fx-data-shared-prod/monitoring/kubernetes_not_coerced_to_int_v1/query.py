@@ -13,7 +13,7 @@ from bigquery_etl.monitoring import export_metrics
 def main(execution_time, interval_hours, time_offset):
     export_metrics.export_metrics(
         monitoring_project="moz-fx-data-ingesti-prod-579d",
-        dst_project="benwu-test-1",  # TODO: change
+        dst_project="moz-fx-data-shared-prod",
         dst_dataset="monitoring",
         dst_table="kubernetes_not_coerced_to_int_v1",
         metric="custom.googleapis.com/opencensus/not_coerced_to_int",

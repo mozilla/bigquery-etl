@@ -13,7 +13,7 @@ from bigquery_etl.monitoring import export_metrics
 def main(execution_time, interval_hours, time_offset):
     export_metrics.export_metrics(
         monitoring_project="moz-fx-data-ingesti-prod-579d",
-        dst_project="benwu-test-1",  # TODO: change
+        dst_project="moz-fx-data-shared-prod",
         dst_dataset="monitoring",
         dst_table="pubsub_subscription_oldest_unacked_msg_v1",
         metric="pubsub.googleapis.com/subscription/oldest_unacked_message_age",

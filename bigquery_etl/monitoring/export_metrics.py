@@ -1,7 +1,8 @@
+"""Export GCP monitoring metric data to BigQuery."""
 import datetime
 import os
 import time
-from typing import Dict, List, Set
+from typing import Dict, List
 
 from google.cloud import bigquery, monitoring
 from google.cloud.exceptions import NotFound
@@ -15,6 +16,7 @@ def get_time_series(
     start_time: datetime.datetime,
     end_time: datetime.datetime,
 ) -> List[Dict]:
+    """Get monitoring time series data."""
     interval = monitoring.TimeInterval(
         {
             "start_time": {"seconds": int(start_time.timestamp())},
@@ -48,7 +50,7 @@ def get_time_series(
             ]
         )
 
-    return sorted(data_points, key=lambda x: x["timestamp"])
+    return data_points
 
 
 def write_to_bq(
@@ -70,10 +72,13 @@ def write_to_bq(
         autodetect=True,
     )
     # stringify timestamp so it's serializable
+    data_points_copy = []
     for data_point in data_points:
-        data_point["timestamp"] = str(data_point["timestamp"])
+        new_data_point = data_point.copy()
+        new_data_point["timestamp"] = str(data_point["timestamp"])
+        data_points_copy.append(new_data_point)
     load_response = client.load_table_from_json(
-        data_points,
+        data_points_copy,
         target_table,
         job_config=load_config,
     )

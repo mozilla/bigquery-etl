@@ -1,7 +1,6 @@
 gcloud==0.18.3
 google-cloud-bigquery==2.6.1
-# TODO: change back to google-cloud-monitoring==2.0.1
-git+https://github.com/googleapis/python-monitoring.git@8a7e2f767c71b180d708c1bf15c0a24aff32b880
+google-cloud-monitoring==2.0.0
 google-cloud-storage==1.35.0
 Jinja2==2.11.2
 pytest-black==0.3.12

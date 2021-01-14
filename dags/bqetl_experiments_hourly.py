@@ -25,7 +25,7 @@ with DAG(
 
     experiment_enrollment_aggregates_hourly = bigquery_etl_query(
         task_id="experiment_enrollment_aggregates_hourly",
-        destination_table='experiment_enrollment_aggregates_hourly_v1${{ macros.ds_format(ts_nodash, "%Y%m%d%H%M%S", "%Y%m%d%H") }}',
+        destination_table='experiment_enrollment_aggregates_hourly_v1${{ macros.ds_format(ts_nodash, "%Y%m%dT%H%M%S", "%Y%m%d%H") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
@@ -33,7 +33,7 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=[
-            'submission_timestamp:TIMESTAMP:{{ macros.ds_format(ts_nodash, "%Y%m%d%H%M%S", "%Y-%m-%d %H:00:00") }}'
+            'submission_timestamp:TIMESTAMP:{{ macros.ds_format(ts_nodash, "%Y%m%dT%H%M%S", "%Y-%m-%d %H:00:00") }}'
         ],
         dag=dag,
     )

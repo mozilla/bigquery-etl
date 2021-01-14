@@ -35,14 +35,9 @@
     function transform(data) {
         progress = 0;
         network = new Network(container, data, options);
-        // only keep within 2 hops
-        let firstOrder = network.getConnectedNodes(selectedNode.id);
-        firstOrder = firstOrder.concat([selectedNode.id]);
-        let secondOrder = [];
-        for (let i = 0; i < firstOrder.length; i++) {
-            let nodes = network.getConnectedNodes(firstOrder[i]);
-            secondOrder = secondOrder.concat(nodes);
-        }
+        let firstOrder = network
+            .getConnectedNodes(selectedNode.id)
+            .concat([selectedNode.id]);
         let set = new Set(firstOrder);
         network.clustering.cluster({
             joinCondition: (options) => {
@@ -53,7 +48,7 @@
         network.on("stabilizationProgress", (params) => {
             progress = Math.round((params.iterations / params.total) * 100);
         });
-        network.once("stabilizationIterationsDone", () => {
+        network.on("stabilizationIterationsDone", () => {
             progress = 100;
         });
         network.on("selectNode", (obj) => {

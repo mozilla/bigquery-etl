@@ -89,7 +89,8 @@ WITH base AS (
             payload.histograms.web_notification_shown,
             payload.histograms.plugins_infobar_shown,
             payload.histograms.plugins_infobar_block,
-            payload.histograms.plugins_infobar_allow
+            payload.histograms.plugins_infobar_allow,
+            payload.processes.content.histograms.video_play_time_ms
           ]
         ) AS histogram
     ) AS hist_sums
@@ -235,6 +236,7 @@ clients_summary AS (
     hist_sums[OFFSET(3)] AS plugins_infobar_shown,
     hist_sums[OFFSET(4)] AS plugins_infobar_block,
     hist_sums[OFFSET(5)] AS plugins_infobar_allow,
+    hist_sums[OFFSET(6)] AS video_play_time_ms,
     TIMESTAMP_DIFF(
       TIMESTAMP_TRUNC(submission_timestamp, SECOND),
       SAFE.PARSE_TIMESTAMP('%a, %d %b %Y %T %Z', metadata.header.date),
@@ -473,6 +475,8 @@ aggregates AS (
       ARRAY_AGG(default_search_engine_data_submission_url ORDER BY submission_timestamp)
     ) AS default_search_engine_data_submission_url,
     SUM(devtools_toolbox_opened_count) AS devtools_toolbox_opened_count_sum,
+    -- Added 2021-01-15
+    SUM(video_play_time_ms) AS video_play_time_ms_sum,
     mozfun.stats.mode_last(
       ARRAY_AGG(distribution_id ORDER BY submission_timestamp)
     ) AS distribution_id,

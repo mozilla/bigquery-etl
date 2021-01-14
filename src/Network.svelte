@@ -1,5 +1,4 @@
 <script>
-    import { onMount } from "svelte";
     import { Network } from "vis-network/peer";
 
     export let data;
@@ -8,6 +7,8 @@
 
     let container;
     let progress = 0;
+
+    $: data && container && transform(data);
 
     let options = {
         nodes: {
@@ -43,9 +44,23 @@
         },
     };
 
-    onMount(async () => {
-        // create a network
+    function transform(data) {
         network = new Network(container, data, options);
+        // only keep within 2 hops
+        let firstOrder = network.getConnectedNodes(selectedNode.id);
+        firstOrder = firstOrder.concat([selectedNode.id]);
+        let secondOrder = [];
+        for (let i = 0; i < firstOrder.length; i++) {
+            let nodes = network.getConnectedNodes(firstOrder[i]);
+            secondOrder = secondOrder.concat(nodes);
+        }
+        let set = new Set(firstOrder);
+        network.clustering.cluster({
+            joinCondition: (options) => {
+                return !set.has(options.id);
+            },
+        });
+
         network.on("stabilizationProgress", (params) => {
             progress = Math.round((params.iterations / params.total) * 100);
         });
@@ -53,9 +68,14 @@
             progress = 100;
         });
         network.on("selectNode", (obj) => {
-            selectedNode = data.nodes.get(obj.nodes)[0];
+            let node = data.nodes.get(obj.nodes)[0];
+            if (!node) {
+                return;
+            }
+            selectedNode = node;
+            console.log(selectedNode);
         });
-    });
+    }
 </script>
 
 <style>

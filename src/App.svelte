@@ -16,7 +16,7 @@
   $: data = edges ? transform(edges, includeDatasetNodes) : null;
   // initialize the selection
   $: selectedNode =
-    !selectedNode && network
+    !selectedNode && data
       ? getNode(data, "moz-fx-data-shared-prod:telemetry_stable.main_v4")
       : selectedNode;
 
@@ -40,7 +40,7 @@
   <label><input type="checkbox" bind:checked={includeDatasetNodes} />include
     dataset</label>
 
-  {#if data}
+  {#if data && selectedNode}
     <Network {data} bind:network bind:selectedNode />
     <Summary {data} {network} root={selectedNode} />
   {/if}

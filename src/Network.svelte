@@ -4,11 +4,12 @@
     export let data;
     export let network;
     export let selectedNode;
+    export let redraw = true;
 
     let container;
     let progress = 0;
 
-    $: data && container && transform(data);
+    $: data && container && redraw && transform(data);
 
     let options = {
         nodes: {
@@ -73,14 +74,22 @@
                 return;
             }
             selectedNode = node;
-            console.log(selectedNode);
+            // select a node, but don't redraw
         });
+        network.on("doubleClick", (obj) => {
+            let node = data.nodes.get(obj.nodes)[0];
+            if (!node) {
+                return;
+            }
+            selectedNode = node;
+            redraw = true;
+        });
+        redraw = false;
     }
 </script>
 
 <style>
     .network {
-        width: 800px;
         height: 600px;
         margin: 0 auto;
         border: 1px solid lightgray;

@@ -4,6 +4,7 @@
   import FrontMatter from "./FrontMatter.md";
   import Network from "./Network.svelte";
   import Summary from "./Summary.svelte";
+  import { redraw } from "./store.js";
 
   let edges;
   let includeDatasetNodes = true;
@@ -12,7 +13,7 @@
   let network = null;
   let selectedNode = null;
   // set redraw anytime this variable changes
-  $: redraw = includeDatasetNodes ? true : true;
+  $: includeDatasetNodes ? redraw.set(true) : redraw.set(true);
 
   // The changes only when we fetch the data or modify some parameters
   $: data = edges ? transform(edges, includeDatasetNodes) : null;
@@ -43,7 +44,7 @@
     dataset</label>
 
   {#if data && selectedNode}
-    <Network {data} bind:network bind:selectedNode bind:redraw />
-    <Summary {data} {network} root={selectedNode} />
+    <Network {data} bind:network bind:selectedNode />
+    <Summary {data} {network} bind:root={selectedNode} />
   {/if}
 </div>

@@ -1,15 +1,15 @@
 <script>
     import { Network } from "vis-network/peer";
+    import { redraw } from "./store.js";
 
     export let data;
     export let network;
     export let selectedNode;
-    export let redraw = true;
 
     let container;
     let progress = 0;
 
-    $: data && container && redraw && transform(data);
+    $: data && container && $redraw && transform(data, selectedNode);
 
     let options = {
         nodes: {
@@ -32,12 +32,12 @@
         },
     };
 
-    function transform(data) {
+    function transform(data, center) {
         progress = 0;
         network = new Network(container, data, options);
         let firstOrder = network
-            .getConnectedNodes(selectedNode.id)
-            .concat([selectedNode.id]);
+            .getConnectedNodes(center.id)
+            .concat([center.id]);
         let set = new Set(firstOrder);
         network.clustering.cluster({
             joinCondition: (options) => {
@@ -56,8 +56,8 @@
             if (!node) {
                 return;
             }
-            selectedNode = node;
             // select a node, but don't redraw
+            selectedNode = node;
         });
         network.on("doubleClick", (obj) => {
             let node = data.nodes.get(obj.nodes)[0];
@@ -65,9 +65,9 @@
                 return;
             }
             selectedNode = node;
-            redraw = true;
+            redraw.set(true);
         });
-        redraw = false;
+        redraw.set(false);
     }
 </script>
 

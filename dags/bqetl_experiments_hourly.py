@@ -35,5 +35,6 @@ with DAG(
         parameters=[
             'submission_timestamp:TIMESTAMP:{{ macros.ds_format(ts_nodash, "%Y%m%dT%H%M%S", "%Y-%m-%d %H:00:00") }}'
         ],
+        sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql",
         dag=dag,
     )

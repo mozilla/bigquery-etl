@@ -20,4 +20,5 @@ scheduling:
   ]
   destination_table:
     experiment_enrollment_aggregates_hourly_v1${{ macros.ds_format(ts_nodash, "%Y%m%dT%H%M%S", "%Y%m%d%H") }} # yamllint disable-line rule:line-length
+  query_file_path: 'sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql' # yamllint disable-line rule:line-length
   date_partition_parameter: null

@@ -11,6 +11,8 @@
 
   let network = null;
   let selectedNode = null;
+  // set redraw anytime this variable changes
+  $: redraw = includeDatasetNodes ? true : true;
 
   // The changes only when we fetch the data or modify some parameters
   $: data = edges ? transform(edges, includeDatasetNodes) : null;
@@ -41,7 +43,7 @@
     dataset</label>
 
   {#if data && selectedNode}
-    <Network {data} bind:network bind:selectedNode />
+    <Network {data} bind:network bind:selectedNode bind:redraw />
     <Summary {data} {network} root={selectedNode} />
   {/if}
 </div>

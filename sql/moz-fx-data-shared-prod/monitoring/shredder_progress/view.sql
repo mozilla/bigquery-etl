@@ -187,7 +187,4 @@ SELECT
   bytes_total / POW(2, 50) AS petabytes_total,
   tasks_total,
 FROM
-  progress
-ORDER BY
-  end_date DESC,
-  airflow_task_id
+  `moz-fx-data-shared-prod.monitoring_derived.shredder_progress`

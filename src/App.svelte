@@ -43,10 +43,16 @@
 
   {#if data && selectedNode}
     <h2>Search Box</h2>
-    <p>Search for a particular dataset or table.</p>
+    <p>Search for a dataset or table.</p>
     <SearchBox {data} bind:root={selectedNode} />
 
     <h2>Network</h2>
+    <p>
+      Scroll and drag to navigate the network. Selecting a node by clicking will
+      show summary information about the table or dataset. Double click a node
+      to center the network. By default, only neighboring nodes will be shown in
+      the sub-network.
+    </p>
     <label><input type="checkbox" bind:checked={includeDatasetNodes} />include
       dataset</label>
     <Network {data} bind:network bind:selectedNode />

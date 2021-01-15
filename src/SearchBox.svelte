@@ -47,7 +47,7 @@
                                     redraw.set(true);
                                 }}>{row.item.title}</a>
                         </td>
-                        <td>{row.score}</td>
+                        <td>{row.score.toFixed(2)}</td>
                     </tr>
                 {/each}
             </tbody>

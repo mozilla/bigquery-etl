@@ -1,5 +1,6 @@
 <script>
-    import Explorer from "./routes/Explorer.svelte";
+    import Routes from "./routes/Routes.svelte";
+    import Nav from "./components/Nav.svelte";
     import FrontMatter from "./components/FrontMatter.md";
 </script>
 
@@ -13,5 +14,6 @@
 <main>
     <h1>BigQuery ETL Query Network</h1>
     <FrontMatter />
-    <Explorer />
+    <Nav />
+    <Routes />
 </main>

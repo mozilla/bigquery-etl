@@ -4,6 +4,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
 import css from "rollup-plugin-css-only";
+import { markdown } from "svelte-preprocess-markdown";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -42,6 +43,8 @@ export default {
   },
   plugins: [
     svelte({
+      extensions: [".svelte", ".md"],
+      preprocess: markdown(),
       compilerOptions: {
         // enable run-time checks when not in production
         dev: !production,

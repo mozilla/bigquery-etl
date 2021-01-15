@@ -1,7 +1,6 @@
 <script>
-    import { onMount } from "svelte";
     import { Network } from "vis-network/peer";
-    import Summary from "./Summary.svelte";
+    import { redraw } from "./store.js";
 
     export let data;
     export let network;
@@ -10,26 +9,16 @@
     let container;
     let progress = 0;
 
+    $: data && container && $redraw && transform(data, selectedNode);
+
     let options = {
         nodes: {
             shape: "dot",
             size: 16,
         },
         physics: {
-            forceAtlas2Based: {
-                gravitationalConstant: -26,
-                centralGravity: 0.005,
-                springLength: 230,
-                springConstant: 0.18,
-            },
-            maxVelocity: 146,
-            solver: "forceAtlas2Based",
-            timestep: 0.35,
-            stabilization: {
-                enabled: true,
-                iterations: 200,
-                updateInterval: 10,
-            },
+            barnesHut: { gravitationalConstant: -30000 },
+            stabilization: { iterations: 1000, updateInterval: 100 },
         },
         layout: {
             improvedLayout: false,
@@ -39,29 +28,51 @@
             hideEdgesOnDrag: true,
         },
         edges: {
-            smooth: true,
             arrows: { to: true },
         },
     };
 
-    onMount(async () => {
-        // create a network
+    function transform(data, center) {
+        progress = 0;
         network = new Network(container, data, options);
+        let firstOrder = network
+            .getConnectedNodes(center.id)
+            .concat([center.id]);
+        let set = new Set(firstOrder);
+        network.clustering.cluster({
+            joinCondition: (options) => {
+                return !set.has(options.id);
+            },
+        });
+
         network.on("stabilizationProgress", (params) => {
             progress = Math.round((params.iterations / params.total) * 100);
         });
-        network.once("stabilizationIterationsDone", () => {
+        network.on("stabilizationIterationsDone", () => {
             progress = 100;
         });
         network.on("selectNode", (obj) => {
-            selectedNode = data.nodes.get(obj.nodes)[0];
+            let node = data.nodes.get(obj.nodes)[0];
+            if (!node) {
+                return;
+            }
+            // select a node, but don't redraw
+            selectedNode = node;
         });
-    });
+        network.on("doubleClick", (obj) => {
+            let node = data.nodes.get(obj.nodes)[0];
+            if (!node) {
+                return;
+            }
+            selectedNode = node;
+            redraw.set(true);
+        });
+        redraw.set(false);
+    }
 </script>
 
 <style>
     .network {
-        width: 800px;
         height: 600px;
         margin: 0 auto;
         border: 1px solid lightgray;

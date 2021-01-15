@@ -38,16 +38,13 @@ def crawl(data_root):
 @click.option(
     "--data-root", type=click.Path(file_okay=False), default=ROOT / "public" / "data"
 )
-def query_logs(data_root):
+@click.option("--project", default="moz-fx-data-shared-prod")
+def query_log_dependencies(data_root, project):
     """Create edgelist from jobs by project query logs."""
-    # TODO: modify this so it's generic to a project instead of hardcoded.
-    # Problem is that the worker running this command may not have permissions
-    # to actually look at INFORMATION_SCHEMA.JOBS_BY_PROJECT
-    sql = Path(__file__).parent / "resources" / "shared_prod_edgelist.sql"
-    project = "moz-fx-data-shared-prod"
+    sql = Path(__file__).parent / "resources" / "query_log_dependencies.sql"
     run_query(
         sql.read_text(),
-        dest_table="shared_prod_edgelist",
+        dest_table="query_log_dependencies",
         output=ensure_folder(data_root) / project,
         project=project,
     )
@@ -88,7 +85,7 @@ def index(data_root):
                 )
 
     # TODO: hardcoded artifact tied to query_logs command
-    for edgelist in data_root.glob("**/shared_prod_edgelist.json"):
+    for edgelist in data_root.glob("**/query_log_dependencies.json"):
         rows = json.loads(edgelist.read_text())
         logging.info(
             f"merging {edgelist.relative_to(data_root)} with {len(rows)} query references"

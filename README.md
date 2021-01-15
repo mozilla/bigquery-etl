@@ -13,7 +13,7 @@ source venv/bin/activate
 python -m etl-graph crawl
 
 # generate edgelist from query logs
-python -m etl-graph query-logs
+python -m etl-graph query-log-dependencies
 
 # generate final index
 python -m etl-graph index

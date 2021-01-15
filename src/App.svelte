@@ -31,7 +31,7 @@
 
 <style type="text/css">
   #container {
-    width: 800px;
+    width: 900px;
     margin: 0 auto;
   }
 </style>
@@ -43,7 +43,6 @@
 
   {#if data && selectedNode}
     <h2>Search Box</h2>
-    <p>Search for a dataset or table.</p>
     <SearchBox {data} bind:root={selectedNode} />
 
     <h2>Network</h2>

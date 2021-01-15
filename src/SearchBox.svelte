@@ -1,5 +1,6 @@
 <script>
     import Fuse from "fuse.js";
+    import { FormGroup, Label, Input, Table } from "sveltestrap";
     import { redraw } from "./store.js";
 
     export let data;
@@ -25,11 +26,18 @@
     }
 </script>
 
-<input bind:value={term} on:input={() => search(term)} />
+<FormGroup>
+    <Label>Search for a dataset or table.</Label>
+    <Input
+        type="text"
+        placeholder="moz-fx-data-shared-prod.telemety.main_v4"
+        bind:value={term}
+        on:input={() => search(term)} />
+</FormGroup>
 
 <div>
     {#if results}
-        <table>
+        <Table bordered class="table-sm">
             <thead>
                 <tr>
                     <th>title</th>
@@ -51,6 +59,6 @@
                     </tr>
                 {/each}
             </tbody>
-        </table>
+        </Table>
     {/if}
 </div>

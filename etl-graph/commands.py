@@ -29,7 +29,6 @@ def crawl(data_root):
     project = "moz-fx-data-shared-prod"
     dataset_listing = fetch_dataset_listing(project, data_root)
     tables_listing = fetch_table_listing(dataset_listing, data_root / project)
-    # tables_listing = ndjson_load(data_root / project / "tables_listing.ndjson")
 
     views_listing = [row for row in tables_listing if row["table_type"] == "VIEW"]
     resolve_view_references(views_listing, data_root / project)
@@ -55,7 +54,7 @@ def query_logs(data_root):
 
 
 def _get_name(obj):
-    """Assumes structure in views_references.ndjson"""
+    """Assumes structure in views_references.json"""
     return qualify(obj["projectId"], obj["datasetId"], obj["tableId"])
 
 
@@ -75,8 +74,8 @@ def index(data_root):
     data_root = ensure_folder(data_root)
     edges = []
 
-    for view_ref in data_root.glob("**/*views_references.ndjson"):
-        rows = ndjson_load(view_ref)
+    for view_ref in data_root.glob("**/*views_references.json"):
+        rows = json.loads(view_ref.read_text())
         logging.info(
             f"merging {view_ref.relative_to(data_root)} with {len(rows)} views"
         )
@@ -89,8 +88,8 @@ def index(data_root):
                 )
 
     # TODO: hardcoded artifact tied to query_logs command
-    for edgelist in data_root.glob("**/shared_prod_edgelist.ndjson"):
-        rows = ndjson_load(edgelist)
+    for edgelist in data_root.glob("**/shared_prod_edgelist.json"):
+        rows = json.loads(edgelist.read_text())
         logging.info(
             f"merging {edgelist.relative_to(data_root)} with {len(rows)} query references"
         )

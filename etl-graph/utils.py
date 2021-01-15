@@ -1,13 +1,11 @@
 import json
+import logging
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import List, Union
 
 from .config import *
-
-
-def print_json(data):
-    print(json.dumps(data, indent=2))
 
 
 def ensure_folder(path: Path) -> Path:
@@ -25,6 +23,7 @@ def ndjson_load(path: Path) -> List[dict]:
 
 def run(command: Union[str, List[str]], **kwargs) -> str:
     """Simple wrapper around subprocess.run that returns stdout and raises exceptions on errors."""
+    logging.debug(f"running command: {command}")
     if isinstance(command, list):
         args = command
     elif isinstance(command, str):
@@ -50,7 +49,9 @@ def run(command: Union[str, List[str]], **kwargs) -> str:
 # NOTE: I could use the google-cloud-bigquery package, but most of my
 # development happens in bash.
 def run_query(sql: str, dest_table: str, output: Path = None, project=PROJECT) -> dict:
+    """Run a query, and write a json file containing the query results to the output path"""
     # project is the project where the query takes place
+    intermediate = Path(tempfile.mkdtemp())
     qualified_name = f"{PROJECT}:{DATASET}.{dest_table}"
     filename = f"{dest_table}.ndjson"
     blob = f"gs://{BUCKET}/{DATASET}/{filename}"
@@ -78,8 +79,14 @@ def run_query(sql: str, dest_table: str, output: Path = None, project=PROJECT) -
             blob,
         ]
     )
-    run(f"gsutil cp {blob} {output}")
-    return ndjson_load(output / filename)
+    run(f"gsutil cp {blob} {intermediate}")
+    loaded = ndjson_load(intermediate / filename)
+    # write json instead of ndjson into the output location
+    result = output / filename.replace(".ndjson", ".json")
+    with (result).open("w") as fp:
+        logging.info(f"writing {result}")
+        json.dump(loaded, fp, indent=2)
+    return loaded
 
 
 def qualify(project, dataset, table):

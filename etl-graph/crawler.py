@@ -107,9 +107,11 @@ def resolve_view_references(view_listing, project_root):
     ):
         pass
 
-    # merge into ndjson
-    with (project_root / "views_references.ndjson").open("w") as fp:
-        for view in view_root.glob("*.json"):
-            data = json.load(view.open())
-            fp.write(json.dumps(data))
-            fp.write("\n")
+    results = []
+    for view in view_root.glob("*.json"):
+        data = json.load(view.open())
+        results.append(data)
+
+    # merge into a single json file, which fits into memory
+    with (project_root / "views_references.json").open("w") as fp:
+        json.dump(results, fp, indent=2)

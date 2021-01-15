@@ -1,14 +1,13 @@
 import json
 import multiprocessing
+import tempfile
 from functools import partial
 from pathlib import Path
-import shutil
-import tempfile
 
 import tqdm
 
 from .config import *
-from .utils import ensure_folder, ndjson_load, print_json, run, run_query
+from .utils import ensure_folder, run, run_query
 
 
 class TableType:

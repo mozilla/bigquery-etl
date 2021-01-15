@@ -33,7 +33,6 @@ parser.add_argument(
 )
 parser.add_argument(
     "--datasets",
-    required=True,
     help="Experiment monitoring datasets to be exported",
     nargs="*",
     default=[

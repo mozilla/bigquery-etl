@@ -4,5 +4,4 @@ set -ex
 
 BUCKET="gs://etl-graph"
 
-gsutil cp index.html $BUCKET/site/
-gsutil cp data/edges.json $BUCKET/site/data/
+gsutil -m rsync -r public/ $BUCKET/site/

@@ -1,7 +1,7 @@
 <script>
     import Fuse from "fuse.js";
     import { FormGroup, Label, Input, Table } from "sveltestrap";
-    import { redraw } from "./store.js";
+    import { redraw } from "../store.js";
 
     export let data;
     export let root;

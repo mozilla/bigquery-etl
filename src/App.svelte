@@ -5,6 +5,7 @@
   import Network from "./Network.svelte";
   import Summary from "./Summary.svelte";
   import { redraw } from "./store.js";
+  import SearchBox from "./SearchBox.svelte";
 
   let edges;
   let includeDatasetNodes = true;
@@ -40,11 +41,17 @@
 
   <FrontMatter />
 
-  <label><input type="checkbox" bind:checked={includeDatasetNodes} />include
-    dataset</label>
-
   {#if data && selectedNode}
+    <h2>Search Box</h2>
+    <p>Search for a particular dataset or table.</p>
+    <SearchBox {data} bind:root={selectedNode} />
+
+    <h2>Network</h2>
+    <label><input type="checkbox" bind:checked={includeDatasetNodes} />include
+      dataset</label>
     <Network {data} bind:network bind:selectedNode />
+
+    <h2>Summary</h2>
     <Summary {data} {network} bind:root={selectedNode} />
   {/if}
 </div>

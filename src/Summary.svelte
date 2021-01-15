@@ -24,7 +24,7 @@
 
 <div id="summary">
     {#if output}
-        <h3>Summary of {root.label}</h3>
+        <h3>{root.title}</h3>
         <h4>References</h4>
         <ul>
             {#each output.links.references as node}

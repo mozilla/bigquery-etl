@@ -18,6 +18,7 @@
     "svelte-preprocess-markdown": "^2.7.3"
   },
   "dependencies": {
+    "fuse.js": "^6.4.6",
     "sirv-cli": "^1.0.10",
     "vis-data": "^7.1.2",
     "vis-network": "^9.0.0"

@@ -1,4 +1,6 @@
-# Notes
+# Summer 2020 All Hands - Development notes
+
+_Written 2020-06-18_
 
 Let's build a network of the relationships between tables in BigQuery. The
 catalog of datasets and tables keeps growing, but our understanding of the
@@ -63,10 +65,9 @@ bq show --format=json moz-fx-data-shared-prod:telemetry_derived.core_live
 ```
 
 The JSON response from both `bq ls` and `bq query --dry_run` gives us all of the
-known tables and views in any project that we have access to.
-Instead of using the `bq ls` listing, it's more efficient to use
-[`{dataset}.INFORMATION_SCHEMA.TABLES` and
-`{dataset}.INFORMATION_SCHEMA.VIEWS`](https://cloud.google.com/bigquery/docs/view-metadata)
+known tables and views in any project that we have access to. Instead of using
+the `bq ls` listing, it's more efficient to use
+[`{dataset}.INFORMATION_SCHEMA.TABLES` and `{dataset}.INFORMATION_SCHEMA.VIEWS`](https://cloud.google.com/bigquery/docs/view-metadata)
 directly to enumerate tables.
 
 ```bash
@@ -160,8 +161,8 @@ bq query --dry_run --format=json --use_legacy_sql=false \
 
 In order to fully realize edges between views and tables, we'll have to
 enumerate all of the nodes and do the globbing ourselves. Thankfully the
-globbing rules are straightforward -- star globs may only be used for the
-table suffix.
+globbing rules are straightforward -- star globs may only be used for the table
+suffix.
 
 This problem is tricky because we do not have information about the underylying
 tables. They may require partition filters. We try various combinations of
@@ -283,8 +284,8 @@ tools.
 
 With the interest in building out tooling to make schemas and table provenance
 easier to reason about, there is a clear path to reasoning about relationships
-between tables. With [bug
-1646157](https://bugzilla.mozilla.org/show_bug.cgi?id=1646157), we are now
+between tables. With
+[bug 1646157](https://bugzilla.mozilla.org/show_bug.cgi?id=1646157), we are now
 empowered to use the BigQuery query logs to surface this information. One
 example application of this network would be to answer the question "how was
 this table generated?" We can surface the last query that generated it, as well

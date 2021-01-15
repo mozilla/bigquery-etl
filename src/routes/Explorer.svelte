@@ -34,10 +34,11 @@
 
   <h2>Network</h2>
   <p>
-    Scroll and drag to navigate the network. Selecting a node by clicking will
-    show summary information about the table or dataset. Double click a node to
-    center the network. By default, only neighboring nodes will be shown in the
-    sub-network.
+    Scroll and drag to navigate the network. Each blue node represents a table,
+    while each yellow node represents a dataset. Selecting a node by clicking
+    will show summary information about the table or dataset. Double click a
+    node to center the network. By default, only neighboring nodes will be shown
+    in the sub-network.
   </p>
   <label><input type="checkbox" bind:checked={includeDatasetNodes} />include
     dataset</label>

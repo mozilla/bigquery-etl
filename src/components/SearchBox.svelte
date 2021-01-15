@@ -30,7 +30,7 @@
     <Label>Search for a dataset or table.</Label>
     <Input
         type="text"
-        placeholder="moz-fx-data-shared-prod.telemety.main_v4"
+        placeholder="moz-fx-data-shared-prod.telemetry.main_v4"
         bind:value={term}
         on:input={() => search(term)} />
 </FormGroup>

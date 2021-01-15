@@ -38,6 +38,9 @@ parser.add_argument(
     default=[
         "moz-fx-data-shared-prod.telemetry.experiment_enrollment_daily_active_population",  # noqa E501
         "moz-fx-data-shared-prod.telemetry.experiment_enrollment_cumulative_population_estimate",  # noqa E501
+        "moz-fx-data-shared-prod.telemetry.experiment_enrollment_other_events_overall",  # noqa E501
+        "moz-fx-data-shared-prod.telemetry.experiment_enrollment_overall",
+        "moz-fx-data-shared-prod.telemetry.experiment_enrollment_unenrollment_overall",  # noqa E501
     ],
 )
 parser.add_argument(

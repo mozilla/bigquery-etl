@@ -1,0 +1,16 @@
+friendly_name: Experiment Enrollment Other Events Overall
+description: >
+  Number of events other than enroll and unenroll sent by clients
+  enrolled in experiments, clustered by experiment.
+labels:
+  incremental: false
+owners:
+- ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_experiments_live
+  referenced_tables: [
+    ["moz-fx-data-shared-prod", "telemetry_derived", 
+     "experiment_enrollment_aggregates_recents_v1"]
+  ]
+  task_name: experiment_enrollment_other_events_overall
+  date_partition_parameter: null

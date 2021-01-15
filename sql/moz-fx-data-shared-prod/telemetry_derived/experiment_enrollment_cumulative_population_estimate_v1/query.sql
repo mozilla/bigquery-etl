@@ -99,6 +99,7 @@ cumulative_populations AS (
 SELECT
   `time`,
   experiment,
+  branch,
   sum(cumulative_population) AS value
 FROM
   (
@@ -122,4 +123,5 @@ FROM
   )
 GROUP BY
   1,
-  2
+  2,
+  3

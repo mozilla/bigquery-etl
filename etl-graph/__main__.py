@@ -114,6 +114,25 @@ def index(data_root):
             fp.write(f"{edge['destination']},{edge['referenced']}\n")
     logging.info("wrote edges.csv")
 
+    # also generate a manifest so we can download the files via the app
+    with (data_root / "manifest.json").open("w") as fp:
+        json.dump(
+            sorted(
+                [
+                    {
+                        "path": str(p.relative_to(data_root.parent)),
+                        "size_bytes": p.stat().st_size,
+                    }
+                    for p in data_root.glob("**/*")
+                    if p.name != "manifest.json" and p.is_file()
+                ],
+                key=lambda x: x["path"],
+            ),
+            fp,
+            indent=2,
+        )
+    logging.info("wrote manifest.json")
+
 
 logging.basicConfig(level=logging.DEBUG)
 cli()

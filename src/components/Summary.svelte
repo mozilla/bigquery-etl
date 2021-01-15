@@ -1,5 +1,5 @@
 <script>
-    import { redraw } from "./store.js";
+    import { redraw } from "../store.js";
 
     export let data;
     export let network;

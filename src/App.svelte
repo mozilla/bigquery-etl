@@ -1,62 +1,19 @@
 <script>
-  import { onMount } from "svelte";
-  import { transform, getNode } from "./utils.js";
-  import FrontMatter from "./FrontMatter.md";
-  import Network from "./Network.svelte";
-  import Summary from "./Summary.svelte";
-  import { redraw } from "./store.js";
-  import SearchBox from "./SearchBox.svelte";
-
-  let edges;
-  let includeDatasetNodes = true;
-  let data;
-
-  let network = null;
-  let selectedNode = null;
-  // set redraw anytime this variable changes
-  $: includeDatasetNodes ? redraw.set(true) : redraw.set(true);
-
-  // The changes only when we fetch the data or modify some parameters
-  $: data = edges ? transform(edges, includeDatasetNodes) : null;
-  // initialize the selection
-  $: selectedNode =
-    !selectedNode && data
-      ? getNode(data, "moz-fx-data-shared-prod:telemetry_stable.main_v4")
-      : selectedNode;
-
-  onMount(async () => {
-    edges = await fetch("data/edges.json").then((resp) => resp.json());
-  });
+    import Routes from "./routes/Routes.svelte";
+    import Nav from "./components/Nav.svelte";
+    import FrontMatter from "./components/FrontMatter.md";
 </script>
 
 <style type="text/css">
-  #container {
-    width: 900px;
-    margin: 0 auto;
-  }
+    main {
+        width: 900px;
+        margin: 0 auto;
+    }
 </style>
 
-<div id="container">
-  <h1>BigQuery ETL Query Network</h1>
-
-  <FrontMatter />
-
-  {#if data && selectedNode}
-    <h2>Search Box</h2>
-    <SearchBox {data} bind:root={selectedNode} />
-
-    <h2>Network</h2>
-    <p>
-      Scroll and drag to navigate the network. Selecting a node by clicking will
-      show summary information about the table or dataset. Double click a node
-      to center the network. By default, only neighboring nodes will be shown in
-      the sub-network.
-    </p>
-    <label><input type="checkbox" bind:checked={includeDatasetNodes} />include
-      dataset</label>
-    <Network {data} bind:network bind:selectedNode />
-
-    <h2>Summary</h2>
-    <Summary {data} {network} bind:root={selectedNode} />
-  {/if}
-</div>
+<main>
+    <h1>BigQuery ETL Query Network</h1>
+    <FrontMatter />
+    <Nav />
+    <Routes />
+</main>

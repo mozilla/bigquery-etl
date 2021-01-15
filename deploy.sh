@@ -4,4 +4,5 @@ set -ex
 
 BUCKET="gs://etl-graph"
 
-gsutil -m rsync -r public/ $BUCKET/site/
+npm run build
+gsutil -m rsync -r -d public/ $BUCKET/site/

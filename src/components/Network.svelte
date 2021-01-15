@@ -1,6 +1,6 @@
 <script>
     import { Network } from "vis-network/peer";
-    import { redraw } from "./store.js";
+    import { redraw } from "../store.js";
 
     export let data;
     export let network;

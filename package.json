@@ -4,7 +4,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public"
+    "start": "sirv public --single"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
@@ -20,6 +20,7 @@
   "dependencies": {
     "bootstrap": "^4.5.3",
     "fuse.js": "^6.4.6",
+    "page": "^1.11.6",
     "sirv-cli": "^1.0.10",
     "sveltestrap": "^3.11.0",
     "vis-data": "^7.1.2",

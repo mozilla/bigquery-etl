@@ -3,8 +3,9 @@
     import { pagePathname } from "../store.js";
 
     let items = [
-        { href: "", name: "explorer" },
-        { href: "statistics", name: "statistics" },
+        { href: "/", name: "explorer" },
+        { href: "/statistics", name: "statistics" },
+        { href: "/artifacts", name: "artifacts" },
     ];
 </script>
 

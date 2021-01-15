@@ -2,6 +2,7 @@
     import page from "page";
     import Explorer from "./Explorer.svelte";
     import Statistics from "./Statistics.svelte";
+    import Artifacts from "./Artifacts.svelte";
     import { pagePathname } from "../store.js";
 
     let component;
@@ -16,7 +17,8 @@
 
     page("/", setComponent(Explorer));
     page("/statistics", setComponent(Statistics));
-    page({ hashbang: true });
+    page("/artifacts", setComponent(Artifacts));
+    page({ hashbang: false });
 </script>
 
 <svelte:component this={component} />

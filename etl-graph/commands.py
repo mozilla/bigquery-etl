@@ -35,16 +35,21 @@ def crawl(data_root):
 
 
 @cli.command()
+@click.argument("query")
 @click.option(
     "--data-root", type=click.Path(file_okay=False), default=ROOT / "public" / "data"
 )
 @click.option("--project", default="moz-fx-data-shared-prod")
-def query_log_dependencies(data_root, project):
-    """Create edgelist from jobs by project query logs."""
-    sql = Path(__file__).parent / "resources" / "query_log_dependencies.sql"
+def query_logs(query, data_root, project):
+    """Get all queries made by service accounts in a project."""
+    resources = Path(__file__).parent / "resources"
+    sql = resources / f"{query}.sql"
+    if not sql.exists():
+        items = [p.name.strip(".sql") for p in resources.glob("sql")]
+        raise ValueError(f"must be one of {items}")
     run_query(
         sql.read_text(),
-        dest_table="query_log_dependencies",
+        dest_table=query,
         output=ensure_folder(data_root) / project,
         project=project,
     )

@@ -8,12 +8,15 @@ Run the crawler.
 # optional: virtualenv
 python3 -m venv venv
 source venv/bin/activate
+pip-compile
+pip install -r requirements.txt
 
 # generate table entities and resolve view references
 python -m etl-graph crawl
 
 # generate edgelist from query logs
-python -m etl-graph query-log-dependencies
+python -m etl-graph query-log query_log_edges
+python -m etl-graph query-log query_log_nodes
 
 # generate final index
 python -m etl-graph index

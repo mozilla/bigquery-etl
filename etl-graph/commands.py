@@ -63,6 +63,7 @@ def index(data_root):
     # currently, only combine view references and query_edgelist
     data_root = ensure_folder(data_root)
     edges = []
+    nodes = []
 
     for edgelist in data_root.glob("**/query_log_edges.json"):
         rows = json.loads(edgelist.read_text())
@@ -71,10 +72,19 @@ def index(data_root):
         )
         edges += rows
 
+    for nodelist in data_root.glob("**/query_log_nodes.json"):
+        rows = json.loads(nodelist.read_text())
+        logging.info(
+            f"merging {nodelist.relative_to(data_root)} with {len(rows)} queries"
+        )
+        nodes += rows
+
     # write the file to disk as both csv and json, csv target is gephi compatible
     with (data_root / "edges.json").open("w") as fp:
         json.dump(edges, fp, indent=2)
-    logging.info("wrote edges.json")
+    with (data_root / "nodes.json").open("w") as fp:
+        json.dump(nodes, fp, indent=2)
+    logging.info("wrote nodes.json")
     with (data_root / "edges.csv").open("w") as fp:
         fp.write("Source,Target\n")
         for edge in edges:

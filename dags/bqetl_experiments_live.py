@@ -46,6 +46,54 @@ with DAG(
         dag=dag,
     )
 
+    experiment_enrollment_other_events_overall = bigquery_etl_query(
+        task_id="experiment_enrollment_other_events_overall",
+        destination_table="experiment_enrollment_other_events_overall_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    telemetry_derived__experiment_enrollment_overall__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__experiment_enrollment_overall__v1",
+        destination_table="experiment_enrollment_overall_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    telemetry_derived__experiment_unenrollment_overall__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__experiment_unenrollment_overall__v1",
+        destination_table="experiment_unenrollment_overall_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
     experiment_enrollment_cumulative_population_estimate.set_upstream(
+        experiment_enrollment_aggregates_recents
+    )
+
+    experiment_enrollment_other_events_overall.set_upstream(
+        experiment_enrollment_aggregates_recents
+    )
+
+    telemetry_derived__experiment_enrollment_overall__v1.set_upstream(
+        experiment_enrollment_aggregates_recents
+    )
+
+    telemetry_derived__experiment_unenrollment_overall__v1.set_upstream(
         experiment_enrollment_aggregates_recents
     )

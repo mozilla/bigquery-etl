@@ -76,7 +76,7 @@ edges AS (
     destination_table,
     referenced_table,
     MAX(creation_time) AS creation_timestamp,
-    COUNT(DISTINCT job_id) AS n_jobs,
+    CAST(COUNT(DISTINCT job_id) AS FLOAT64) AS n_jobs,
   FROM
     transformed
   GROUP BY

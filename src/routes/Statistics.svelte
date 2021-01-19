@@ -10,8 +10,8 @@
     function nodeLength(edges) {
         let set = new Set();
         for (let i = 0; i < edges.length; i++) {
-            set.add(edges[i].reference);
-            set.add(edges[i].destination);
+            set.add(edges[i].referenced_table);
+            set.add(edges[i].destination_table);
         }
         return set.size;
     }

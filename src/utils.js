@@ -14,8 +14,8 @@ function getDatasetId(name) {
 function transform(edges, includeDatasetNodes = false) {
   let nodes = new Set();
   for (let i = 0; i < edges.length; i++) {
-    nodes.add(edges[i].destination);
-    nodes.add(edges[i].referenced);
+    nodes.add(edges[i].destination_table);
+    nodes.add(edges[i].referenced_table);
   }
   // datasets are nodes too now, but assigned to a different group
   let datasets = new Set();
@@ -55,8 +55,8 @@ function transform(edges, includeDatasetNodes = false) {
     edges: new DataSet(
       edges
         .map((el) => ({
-          from: nodeMap.get(el.referenced),
-          to: nodeMap.get(el.destination),
+          from: nodeMap.get(el.referenced_table),
+          to: nodeMap.get(el.destination_table),
         }))
         .concat(
           includeDatasetNodes

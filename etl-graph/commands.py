@@ -54,18 +54,6 @@ def query_logs(query, data_root, project):
         project=project,
     )
 
-
-def _get_name(obj):
-    """Assumes structure in views_references.json"""
-    return qualify(obj["projectId"], obj["datasetId"], obj["tableId"])
-
-
-def _deduplicate_edges(edges):
-    """Given a list of flat dictionaries, return a deduplicated list."""
-    edgeset = set([tuple(d.items()) for d in edges])
-    return [dict(tup) for tup in edgeset]
-
-
 @cli.command()
 @click.option(
     "--data-root", type=click.Path(file_okay=False), default=ROOT / "public" / "data"
@@ -76,34 +64,12 @@ def index(data_root):
     data_root = ensure_folder(data_root)
     edges = []
 
-    for view_ref in data_root.glob("**/*views_references.json"):
-        rows = json.loads(view_ref.read_text())
-        logging.info(
-            f"merging {view_ref.relative_to(data_root)} with {len(rows)} views"
-        )
-        for row in rows:
-            # TODO: this needs a schema
-            destination = _get_name(row)
-            for referenced in row["query"].get("referencedTables", []):
-                edges.append(
-                    dict(destination=destination, referenced=_get_name(referenced))
-                )
-
-    # TODO: hardcoded artifact tied to query_logs command
-    for edgelist in data_root.glob("**/query_log_dependencies.json"):
+    for edgelist in data_root.glob("**/query_log_edges.json"):
         rows = json.loads(edgelist.read_text())
         logging.info(
             f"merging {edgelist.relative_to(data_root)} with {len(rows)} query references"
         )
-        for row in rows:
-            edges.append(
-                dict(
-                    destination=row["destination_table"],
-                    referenced=row["referenced_table"],
-                )
-            )
-
-    edges = _deduplicate_edges(edges)
+        edges += rows
 
     # write the file to disk as both csv and json, csv target is gephi compatible
     with (data_root / "edges.json").open("w") as fp:
@@ -112,7 +78,7 @@ def index(data_root):
     with (data_root / "edges.csv").open("w") as fp:
         fp.write("Source,Target\n")
         for edge in edges:
-            fp.write(f"{edge['destination']},{edge['referenced']}\n")
+            fp.write(f"{edge['destination_table']},{edge['referenced_table']}\n")
     logging.info("wrote edges.csv")
 
     # also generate a manifest so we can download the files via the app

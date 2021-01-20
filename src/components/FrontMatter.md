@@ -1,8 +1,8 @@
-_Created 2020-06-18. Updated 2021-01-14_
+_Created 2020-06-18. Updated 2021-01-19_
 
 This network represents the relationships between tables in BigQuery. It was
 created by scraping the BigQuery `TABLES` and `JOBS_BY_PROJECT` tables in the
-`INFORMATION_SCHEMA` dataset. Views are resolved using bq with `--dry_run`.
+`INFORMATION_SCHEMA` dataset.
 
 The source can be found at
 [acmiyaguchi/etl-graph](https://github.com/acmiyaguchi/etl-graph). See

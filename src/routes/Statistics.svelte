@@ -44,7 +44,12 @@
 </script>
 
 <h2>Network Statistics</h2>
-<p>This page contains statistics about the network.</p>
+<p>
+    This page contains statistics about the network. These are generated with
+    <a href="https://networkx.org/">NetworkX</a>
+    on the query network. Nodes are tables and edges are references within
+    queries.
+</p>
 
 {#if stats}
     <table class="table table-sm">

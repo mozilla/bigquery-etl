@@ -8,12 +8,16 @@ Run the crawler.
 # optional: virtualenv
 python3 -m venv venv
 source venv/bin/activate
+pip-compile
+pip install -r requirements.txt
 
-# generate table entities and resolve view references
+# Generate table entities and resolve view references. This is no longer necessary
+# and is an artifact of the exploratory phase of the project.
 python -m etl-graph crawl
 
 # generate edgelist from query logs
-python -m etl-graph query-logs
+python -m etl-graph query-logs query_log_edges
+python -m etl-graph query-logs query_log_nodes
 
 # generate final index
 python -m etl-graph index

@@ -7,10 +7,6 @@ RETURNS string AS (
 
 CREATE TEMP FUNCTION strip_suffix(name string)
 RETURNS string AS (
-    -- case: moz-fx-data-shared-prod:tmp.active_profiles_v1_2020_04_27_6e09b8
-    -- case: moz-fx-data-shared-prod:telemetry_derived.attitudes_daily_v1$20200314
-    -- case: moz-fx-data-shared-prod:telemetry_derived.attitudes_daily$20200314
-    -- case: moz-fx-data-shared-prod:telemetry_derived_core_clients_daily_v1_test_aggregation.telemetry_core
     -- Get rid of the date partition if it exists in the table name, and then extract everything up to the version part.
     -- If the regex fails, just return the name without the partition.
   coalesce(
@@ -24,13 +20,18 @@ RETURNS string AS (
   -- and *then* explode.
 WITH extracted AS (
   SELECT
+    user_email,
+    job_id,
     creation_time,
     destination_table,
     referenced_tables,
+    query
   FROM
     `region-us`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
   WHERE
-    error_result IS NULL
+    creation_time > TIMESTAMP_SUB(current_timestamp, INTERVAL 90 day)
+    AND user_email LIKE "%gserviceaccount.com"
+    AND error_result IS NULL
     AND state = "DONE"
     -- dont care about destination tables without references at the moment
     AND referenced_tables IS NOT NULL
@@ -38,47 +39,25 @@ WITH extracted AS (
 ),
 transformed AS (
   SELECT
-    creation_time,
+    DISTINCT * EXCEPT (destination_table, referenced_tables, project_id, dataset_id, table_id),
     strip_suffix(qualified_name(destination_table)) AS destination_table,
-    strip_suffix(qualified_name(referenced_table)) AS referenced_table,
   FROM
     extracted,
     extracted.referenced_tables AS referenced_table
   WHERE
     NOT STARTS_WITH(referenced_table.dataset_id, "_")
 )
--- TODO: include edge weight by counting the number of times it has been referenced
 SELECT
-  creation_time,
   destination_table,
-  referenced_table,
+  array_agg(query ORDER BY creation_time DESC LIMIT 1)[offset(0)] AS query,
+  array_agg(
+    STRUCT(job_id, user_email, creation_time)
+    ORDER BY
+      creation_time DESC
+    LIMIT
+      10
+  ) AS most_recent_jobs
 FROM
-  (
-    SELECT
-      *,
-      ROW_NUMBER() OVER (
-        PARTITION BY
-          destination_table,
-          referenced_table
-        ORDER BY
-          creation_time
-      ) AS _rank
-    FROM
-      transformed
-  )
-WHERE
-  _rank = 1
-  -- known deprecated table filtered here, though this would get filtered when joined against the set of known tables
-  AND destination_table NOT LIKE "%bgbb_clients_day%"
-ORDER BY
-  destination_table,
-  creation_time
--- SELECT
---   strip_suffix(test)
--- FROM
---   UNNEST([
---     "moz-fx-data-shared-prod:tmp.active_profiles_v1_2020_04_27_6e09b8",
---     "moz-fx-data-shared-prod:telemetry_derived.attitudes_daily_v1$20200314",
---     "moz-fx-data-shared-prod:telemetry_derived.attitudes_daily$20200314",
---     "moz-fx-data-shared-prod:telemetry_derived_core_clients_daily_v1_test_aggregation.telemetry_core"
---   ]) AS test
+  transformed
+GROUP BY
+  1

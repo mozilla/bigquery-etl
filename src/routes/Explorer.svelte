@@ -7,6 +7,7 @@
   import SearchBox from "../components/SearchBox.svelte";
 
   let edges;
+  let nodes;
   let includeDatasetNodes = true;
   let data;
 
@@ -25,10 +26,11 @@
 
   onMount(async () => {
     edges = await fetch("data/edges.json").then((resp) => resp.json());
+    nodes = await fetch("data/nodes.json").then((resp) => resp.json());
   });
 </script>
 
-{#if data && selectedNode}
+{#if nodes && edges && data && selectedNode}
   <h2>Search Box</h2>
   <SearchBox {data} bind:root={selectedNode} />
 
@@ -45,5 +47,5 @@
   <Network {data} bind:network bind:selectedNode />
 
   <h2>Summary</h2>
-  <Summary {data} {network} bind:root={selectedNode} />
+  <Summary {data} {network} bind:root={selectedNode} {nodes} />
 {/if}

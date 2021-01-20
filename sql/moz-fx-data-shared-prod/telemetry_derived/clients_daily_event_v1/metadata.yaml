@@ -1,0 +1,6 @@
+description: Please provide a description for the query
+friendly_name: Clients Daily Event
+labels:
+  incremental: true
+owners:
+- jklukas@mozilla.com

@@ -1,0 +1,6 @@
+description: Please provide a description for the query
+friendly_name: Clients Last Seen Event
+labels:
+  incremental: true
+owners:
+- example@mozilla.com

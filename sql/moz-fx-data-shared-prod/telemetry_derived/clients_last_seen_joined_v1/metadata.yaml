@@ -1,0 +1,6 @@
+description: Please provide a description for the query
+friendly_name: Clients Daily Joined
+labels:
+  incremental: true
+owners:
+- example@mozilla.com

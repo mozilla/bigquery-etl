@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod`.mozilla_vpn_external.survey_market_fit_v1
+  `moz-fx-data-shared-prod`.mozilla_vpn_derived.survey_market_fit_v1

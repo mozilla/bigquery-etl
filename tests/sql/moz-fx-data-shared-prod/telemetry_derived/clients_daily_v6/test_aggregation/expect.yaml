@@ -8,7 +8,11 @@
   active_addons_count_mean: 1
   active_hours_sum: 2
   ad_clicks_count_all: 2
-  attribution: {}
+  attribution:
+    campaign: second
+    content: second
+    medium: second
+    source: second
   addon_compatibility_check_enabled: true
   app_build_id: second
   app_display_version: second
@@ -50,12 +54,12 @@
   env_build_arch: second
   env_build_id: second
   env_build_version: second
-  environment_settings_intl_accept_languages: []
-  environment_settings_intl_app_locales: []
-  environment_settings_intl_available_locales: []
-  environment_settings_intl_regional_prefs_locales: []
-  environment_settings_intl_requested_locales: []
-  environment_settings_intl_system_locales: []
+  environment_settings_intl_accept_languages: [second]
+  environment_settings_intl_app_locales: [second]
+  environment_settings_intl_available_locales: [second]
+  environment_settings_intl_regional_prefs_locales: [second]
+  environment_settings_intl_requested_locales: [second]
+  environment_settings_intl_system_locales: [second]
   experiments:
   - key: foo
     value: second
@@ -101,6 +105,8 @@
   install_year: 2
   is_default_browser: true
   is_wow64: true
+  isp_name: second
+  isp_organization: second
   locale: second
   memory_mb: 2
   normalized_channel: second

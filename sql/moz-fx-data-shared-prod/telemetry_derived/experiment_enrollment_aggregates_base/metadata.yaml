@@ -1,0 +1,8 @@
+friendly_name: Experiment Enrollment Aggregates Base
+description: > 
+  Experiment enrollment aggregates base view used by 
+  telemetry_derived.experiment_enrollment_aggregates_hourly_v1,
+  telemetry_derived.experiment_enrollment_aggregates_recents_v1 and
+  telemetry_derived.experiment_enrollment_aggregates_v1.
+owners:
+- ascholtz@mozilla.com

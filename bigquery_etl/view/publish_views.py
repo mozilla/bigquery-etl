@@ -23,8 +23,14 @@ VIEWS_TO_SKIP = (
     # Dataset glam-fenix-dev:glam_etl was not found
     # TODO: this should be removed if views are to be automatically deployed
     *[str(path) for path in Path("sql/glam-fenix-dev").glob("glam_etl/**/view.sql")],
-    # View in project other than prod
-    "shredder_state/progress/view.sql",
+)
+
+# suffixes of datasets with non-user-facing views
+NON_USER_FACING_DATASET_SUFFIXES = (
+    "_derived",
+    "_external",
+    "_bi",
+    "_restricted",
 )
 
 
@@ -120,6 +126,16 @@ def _process_file(client, args, filepath):
     is_flag=True,
     help="Validate view definitions, but do not publish them.",
 )
+@click.option(
+    "--user-facing-only",
+    "--user_facing_only",
+    is_flag=True,
+    help=(
+        "Publish user-facing views only. User-facing views are views"
+        " part of datasets without suffixes (such as telemetry,"
+        " but not telemetry_derived)."
+    ),
+)
 def main(**kwargs):
     """Find view definition files in TARGET and execute them."""
     args = SimpleNamespace(**kwargs)
@@ -137,8 +153,12 @@ def main(**kwargs):
     for target in args.target:
         if os.path.isdir(target):
             for root, dirs, files in os.walk(target):
-                if "view.sql" in files:
-                    sql_files.append(os.path.join(root, "view.sql"))
+                dataset_dir = os.path.dirname(root)
+                if not args.user_facing_only or not dataset_dir.endswith(
+                    NON_USER_FACING_DATASET_SUFFIXES
+                ):
+                    if "view.sql" in files:
+                        sql_files.append(os.path.join(root, "view.sql"))
         else:
             sql_files.append(target)
 

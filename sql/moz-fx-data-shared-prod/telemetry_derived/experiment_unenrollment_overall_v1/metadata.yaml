@@ -1,0 +1,8 @@
+friendly_name: Experiment Unenrollment Overall
+description: > 
+  Overall number of clients that unenrolled from experiments,
+  clustered by experiment.
+labels:
+  incremental: false
+owners:
+- ascholtz@mozilla.com

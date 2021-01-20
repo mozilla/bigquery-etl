@@ -1,0 +1,6 @@
+friendly_name: Experiment Enrollment Cumulative Population Estimate
+description: Cumulative number of clients enrolled in experiments
+labels:
+  incremental: false
+owners:
+- ascholtz@mozilla.com

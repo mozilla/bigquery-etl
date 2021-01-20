@@ -134,6 +134,25 @@ with DAG(
         dag=dag,
     )
 
+    telemetry_derived__main_nightly__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__main_nightly__v1",
+        destination_table="main_nightly_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2020, 7, 1, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+        dag=dag,
+    )
+
     telemetry_derived__main_summary__v4 = bigquery_etl_query(
         task_id="telemetry_derived__main_summary__v4",
         destination_table="main_summary_v4",
@@ -191,6 +210,10 @@ with DAG(
     )
 
     telemetry_derived__main_1pct__v1.set_upstream(wait_for_copy_deduplicate_main_ping)
+
+    telemetry_derived__main_nightly__v1.set_upstream(
+        wait_for_copy_deduplicate_main_ping
+    )
 
     telemetry_derived__main_summary__v4.set_upstream(
         wait_for_copy_deduplicate_main_ping

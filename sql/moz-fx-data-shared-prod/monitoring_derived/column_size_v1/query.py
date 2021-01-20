@@ -13,7 +13,7 @@ parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument(
     "--tables", nargs="*", default=["telemetry_stable.main_v4"]
 )
-parser.add_argument("--destination_dataset", default="monitoring")
+parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="column_size_v1")
 
 

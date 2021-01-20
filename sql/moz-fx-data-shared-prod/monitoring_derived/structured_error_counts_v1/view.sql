@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring.structured_error_counts_v1`
+  `moz-fx-data-shared-prod.monitoring_derived.structured_error_counts_v1`
 AS
 WITH ping_counts AS (
   SELECT

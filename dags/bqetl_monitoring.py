@@ -21,11 +21,11 @@ with DAG(
     "bqetl_monitoring", default_args=default_args, schedule_interval="0 2 * * *"
 ) as dag:
 
-    monitoring__average_ping_sizes__v1 = gke_command(
-        task_id="monitoring__average_ping_sizes__v1",
+    monitoring_derived__average_ping_sizes__v1 = gke_command(
+        task_id="monitoring_derived__average_ping_sizes__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/monitoring/average_ping_sizes_v1/query.py",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/average_ping_sizes_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
@@ -33,11 +33,11 @@ with DAG(
         email=["ascholtz@mozilla.com"],
     )
 
-    monitoring__bigquery_etl_scheduled_queries_cost__v1 = gke_command(
-        task_id="monitoring__bigquery_etl_scheduled_queries_cost__v1",
+    monitoring_derived__bigquery_etl_scheduled_queries_cost__v1 = gke_command(
+        task_id="monitoring_derived__bigquery_etl_scheduled_queries_cost__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/monitoring/bigquery_etl_scheduled_queries_cost_v1/query.py",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_scheduled_queries_cost_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
@@ -45,11 +45,11 @@ with DAG(
         email=["ascholtz@mozilla.com"],
     )
 
-    monitoring__bigquery_etl_scheduled_query_usage__v1 = gke_command(
-        task_id="monitoring__bigquery_etl_scheduled_query_usage__v1",
+    monitoring_derived__bigquery_etl_scheduled_query_usage__v1 = gke_command(
+        task_id="monitoring_derived__bigquery_etl_scheduled_query_usage__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/monitoring/bigquery_etl_scheduled_query_usage_v1/query.py",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_scheduled_query_usage_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
@@ -57,11 +57,11 @@ with DAG(
         email=["ascholtz@mozilla.com"],
     )
 
-    monitoring__column_size__v1 = gke_command(
-        task_id="monitoring__column_size__v1",
+    monitoring_derived__column_size__v1 = gke_command(
+        task_id="monitoring_derived__column_size__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/monitoring/column_size_v1/query.py",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/column_size_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
@@ -69,10 +69,10 @@ with DAG(
         email=["ascholtz@mozilla.com"],
     )
 
-    monitoring__schema_error_counts__v2 = bigquery_etl_query(
-        task_id="monitoring__schema_error_counts__v2",
+    monitoring_derived__schema_error_counts__v2 = bigquery_etl_query(
+        task_id="monitoring_derived__schema_error_counts__v2",
         destination_table="schema_error_counts_v2",
-        dataset_id="monitoring",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="amiyaguchi@mozilla.com",
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
@@ -81,11 +81,11 @@ with DAG(
         dag=dag,
     )
 
-    monitoring__stable_table_sizes__v1 = gke_command(
-        task_id="monitoring__stable_table_sizes__v1",
+    monitoring_derived__stable_table_sizes__v1 = gke_command(
+        task_id="monitoring_derived__stable_table_sizes__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/monitoring/stable_table_sizes_v1/query.py",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/stable_table_sizes_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
@@ -93,11 +93,11 @@ with DAG(
         email=["ascholtz@mozilla.com"],
     )
 
-    monitoring__structured_distinct_docids__v1 = gke_command(
-        task_id="monitoring__structured_distinct_docids__v1",
+    monitoring_derived__structured_distinct_docids__v1 = gke_command(
+        task_id="monitoring_derived__structured_distinct_docids__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/monitoring/structured_distinct_docids_v1/query.py",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/structured_distinct_docids_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
@@ -105,11 +105,11 @@ with DAG(
         email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
     )
 
-    monitoring__structured_missing_columns__v1 = gke_command(
-        task_id="monitoring__structured_missing_columns__v1",
+    monitoring_derived__structured_missing_columns__v1 = gke_command(
+        task_id="monitoring_derived__structured_missing_columns__v1",
         command=[
             "python",
-            "sql/moz-fx-data-shared-prod/monitoring/structured_missing_columns_v1/query.py",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/structured_missing_columns_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
         docker_image="mozilla/bigquery-etl:latest",
@@ -117,10 +117,10 @@ with DAG(
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
     )
 
-    monitoring__telemetry_distinct_docids__v1 = bigquery_etl_query(
-        task_id="monitoring__telemetry_distinct_docids__v1",
+    monitoring_derived__telemetry_distinct_docids__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__telemetry_distinct_docids__v1",
         destination_table="telemetry_distinct_docids_v1",
-        dataset_id="monitoring",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="bewu@mozilla.com",
         email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
@@ -129,10 +129,10 @@ with DAG(
         dag=dag,
     )
 
-    monitoring__telemetry_missing_columns__v3 = bigquery_etl_query(
-        task_id="monitoring__telemetry_missing_columns__v3",
+    monitoring_derived__telemetry_missing_columns__v3 = bigquery_etl_query(
+        task_id="monitoring_derived__telemetry_missing_columns__v3",
         destination_table="telemetry_missing_columns_v3",
-        dataset_id="monitoring",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="amiyaguchi@mozilla.com",
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
@@ -151,9 +151,13 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    monitoring__average_ping_sizes__v1.set_upstream(wait_for_copy_deduplicate_all)
+    monitoring_derived__average_ping_sizes__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
 
-    monitoring__average_ping_sizes__v1.set_upstream(monitoring__stable_table_sizes__v1)
+    monitoring_derived__average_ping_sizes__v1.set_upstream(
+        monitoring_derived__stable_table_sizes__v1
+    )
 
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
@@ -165,25 +169,35 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    monitoring__column_size__v1.set_upstream(wait_for_copy_deduplicate_main_ping)
-
-    monitoring__stable_table_sizes__v1.set_upstream(wait_for_copy_deduplicate_all)
-    monitoring__stable_table_sizes__v1.set_upstream(wait_for_copy_deduplicate_main_ping)
-
-    monitoring__structured_distinct_docids__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-    monitoring__structured_distinct_docids__v1.set_upstream(
+    monitoring_derived__column_size__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
     )
 
-    monitoring__structured_missing_columns__v1.set_upstream(
+    monitoring_derived__stable_table_sizes__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+    monitoring_derived__stable_table_sizes__v1.set_upstream(
+        wait_for_copy_deduplicate_main_ping
+    )
+
+    monitoring_derived__structured_distinct_docids__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+    monitoring_derived__structured_distinct_docids__v1.set_upstream(
+        wait_for_copy_deduplicate_main_ping
+    )
+
+    monitoring_derived__structured_missing_columns__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    monitoring__telemetry_distinct_docids__v1.set_upstream(
+    monitoring_derived__telemetry_distinct_docids__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    monitoring__telemetry_distinct_docids__v1.set_upstream(
+    monitoring_derived__telemetry_distinct_docids__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
+    )
+
+    monitoring_derived__telemetry_missing_columns__v3.set_upstream(
+        wait_for_copy_deduplicate_all
     )

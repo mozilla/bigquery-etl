@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.monitoring.schema_error_counts_v2`(
+  `moz-fx-data-shared-prod.monitoring_derived.schema_error_counts_v2`(
     submission_date DATE,
     document_namespace STRING,
     document_type STRING,

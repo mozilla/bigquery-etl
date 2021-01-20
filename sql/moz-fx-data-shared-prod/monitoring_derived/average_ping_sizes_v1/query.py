@@ -12,7 +12,7 @@ parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 parser.add_argument("--dataset", default="*_stable")  # pattern
-parser.add_argument("--destination_dataset", default="monitoring")
+parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="average_ping_sizes_v1")
 
 
@@ -45,7 +45,7 @@ def get_average_ping_size_json(client, date, table):
                 SAFE_DIVIDE(byte_size, total) AS average_ping_size,
                 byte_size as total_byte_size,
                 total as row_count
-            FROM total_pings, `moz-fx-data-shared-prod.monitoring.stable_table_sizes_v1`
+            FROM total_pings, `moz-fx-data-shared-prod.monitoring.stable_table_sizes`
             WHERE submission_date = '{date}' AND dataset_id = '{dataset_id}' AND table_id = '{table_id}'
         """
 

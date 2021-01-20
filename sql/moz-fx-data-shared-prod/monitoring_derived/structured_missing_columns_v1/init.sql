@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.monitoring.structured_missing_columns_v1`(
+  `moz-fx-data-shared-prod.monitoring_derived.structured_missing_columns_v1`(
     submission_date DATE,
     document_namespace STRING,
     document_type STRING,

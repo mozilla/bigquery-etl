@@ -21,6 +21,7 @@
     "bootstrap": "^4.5.3",
     "codemirror": "^5.59.1",
     "fuse.js": "^6.4.6",
+    "lodash": "^4.17.20",
     "page": "^1.11.6",
     "sirv-cli": "^1.0.10",
     "sveltestrap": "^3.11.0",

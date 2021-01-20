@@ -1,8 +1,10 @@
 import json
 import logging
+import statistics
 from pathlib import Path
 
 import click
+import networkx as nx
 
 from .config import *
 from .crawler import fetch_dataset_listing, fetch_table_listing, resolve_view_references
@@ -54,6 +56,7 @@ def query_logs(query, data_root, project):
         project=project,
     )
 
+
 @cli.command()
 @click.option(
     "--data-root", type=click.Path(file_okay=False), default=ROOT / "public" / "data"
@@ -88,8 +91,31 @@ def index(data_root):
     with (data_root / "edges.csv").open("w") as fp:
         fp.write("Source,Target\n")
         for edge in edges:
-            fp.write(f"{edge['destination_table']},{edge['referenced_table']}\n")
+            fp.write(f"{edge['referenced_table']},{edge['destination_table']}\n")
     logging.info("wrote edges.csv")
+
+    # generate some stats
+    stats = {}
+    G = nx.DiGraph()
+    for edge in edges:
+        G.add_edge(edge["referenced_table"], edge["destination_table"])
+    stats["number_of_nodes"] = G.number_of_nodes()
+    stats["number_of_edges"] = G.number_of_edges()
+    stats["in_degree"] = sorted(dict(G.in_degree()).values())
+    stats["out_degree"] = sorted(dict(G.out_degree()).values())
+    stats["degree"] = sorted(dict(G.degree()).values())
+    for value in ["in_degree", "out_degree", "degree"]:
+        stats[f"avg_{value}"] = statistics.mean(stats[value])
+    stats[
+        "number_strongly_connected_components"
+    ] = nx.number_strongly_connected_components(G)
+    stats["number_weakly_connected_components"] = nx.number_weakly_connected_components(
+        G
+    )
+
+    with (data_root / "network_stats.json").open("w") as fp:
+        json.dump(stats, fp, indent=2)
+    logging.info("wrote network_stats.json")
 
     # also generate a manifest so we can download the files via the app
     with (data_root / "manifest.json").open("w") as fp:

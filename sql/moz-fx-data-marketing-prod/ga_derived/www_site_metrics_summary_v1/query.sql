@@ -11,7 +11,9 @@ WITH sessions_table AS (
     trafficSource.campaign,
     trafficSource.adContent AS ad_content,
     COUNT(*) AS sessions,
-    SUM(IF(device.browser != 'Firefox', 1, 0)) AS non_fx_sessions,
+    COUNTIF(
+      NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(device.browser)
+    ) AS non_fx_sessions,
   FROM
     `moz-fx-data-marketing-prod.65789850.ga_sessions_*`
   WHERE

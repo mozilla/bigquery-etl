@@ -10,7 +10,7 @@ from pathlib import Path
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
-parser.add_argument("--destination_dataset", default="monitoring")
+parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument(
     "--destination_table", default="bigquery_etl_scheduled_queries_cost_v1"
 )

@@ -17,7 +17,7 @@ parser.add_argument("--date", required=True)  # expect string with format yyyy-m
 parser.add_argument("--project", default="moz-fx-data-shared-prod")
 # projects queries were run from that access table
 parser.add_argument("--source_projects", nargs="+", default=DEFAULT_PROJECTS)
-parser.add_argument("--destination_dataset", default="monitoring")
+parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument(
     "--destination_table", default="bigquery_etl_scheduled_query_usage_v1"
 )

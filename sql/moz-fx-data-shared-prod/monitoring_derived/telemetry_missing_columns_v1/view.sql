@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring.telemetry_missing_columns_v1`
+  `moz-fx-data-shared-prod.monitoring_derived.telemetry_missing_columns_v1`
 AS
 SELECT
   TIMESTAMP_TRUNC(submission_timestamp, DAY) AS day,

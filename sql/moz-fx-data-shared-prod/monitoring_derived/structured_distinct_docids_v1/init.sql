@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.monitoring.structured_distinct_docids_v1`(
+  `moz-fx-data-shared-prod.monitoring_derived.structured_distinct_docids_v1`(
     submission_date DATE,
     namespace STRING,
     doc_type STRING,

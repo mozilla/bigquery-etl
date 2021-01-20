@@ -10,3 +10,5 @@ labels:
   incremental: false
 scheduling:
   dag_name: bqetl_monitoring
+  referenced_tables: 
+    - ['moz-fx-data-shared-prod', '*_stable', '*']

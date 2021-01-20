@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring.schema_error_counts_v1`
+  `moz-fx-data-shared-prod.monitoring_derived.schema_error_counts_v1`
 AS
 WITH extracted AS (
   SELECT

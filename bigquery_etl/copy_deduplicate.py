@@ -13,6 +13,7 @@ from itertools import groupby
 from multiprocessing.pool import ThreadPool
 from uuid import uuid4
 import logging
+from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.util import standard_args
@@ -119,6 +120,13 @@ parser.add_argument(
     default=0,
     help="Number of days preceding --date that should be used to filter out duplicates",
 )
+parser.add_argument(
+    "--num_retries",
+    "--num-retries",
+    type=int,
+    default=2,
+    help="Number of times to retry each slice in case of query error",
+)
 standard_args.add_billing_projects(parser)
 standard_args.add_table_filter(parser)
 
@@ -167,7 +175,7 @@ def get_temporary_table(client):
 
 
 def _get_query_job_configs(
-    client, live_table, date, dry_run, slices, priority, preceding_days
+    client, live_table, date, dry_run, slices, priority, preceding_days, num_retries
 ):
     sql = QUERY_TEMPLATE.format(live_table=live_table)
     stable_table = f"{live_table.replace('_live.', '_stable.', 1)}${date:%Y%m%d}"
@@ -206,6 +214,7 @@ def _get_query_job_configs(
                     ],
                     **kwargs,
                 ),
+                num_retries,
             )
             for i in range(slices)
         ]
@@ -230,14 +239,27 @@ def _get_query_job_configs(
                     ],
                     **kwargs,
                 ),
+                num_retries,
             )
         ]
 
 
-def _run_deduplication_query(client, sql, stable_table, job_config):
+def _run_deduplication_query(client, sql, stable_table, job_config, num_retries):
     query_job = client.query(sql, job_config)
     if not query_job.dry_run:
-        query_job.result()
+        try:
+            query_job.result()
+        except BadRequest as e:
+            if num_retries <= 0:
+                raise
+            logging.warn("Encountered bad request, retrying: ", e)
+            return _run_deduplication_query(
+                client, sql, stable_table, job_config, num_retries - 1
+            )
+    logging.info(
+        f"Completed query job for {stable_table}"
+        f" with params: {job_config.query_parameters}"
+    )
     return stable_table, query_job
 
 
@@ -328,6 +350,7 @@ def main():
                             args.slices,
                             args.priority,
                             args.preceding_days,
+                            args.num_retries,
                         )
                         for live_table in live_tables
                         for date in args.dates

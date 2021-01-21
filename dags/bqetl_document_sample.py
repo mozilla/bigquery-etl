@@ -21,10 +21,10 @@ with DAG(
     "bqetl_document_sample", default_args=default_args, schedule_interval="@daily"
 ) as dag:
 
-    monitoring__document_sample_nonprod__v1 = bigquery_etl_query(
-        task_id="monitoring__document_sample_nonprod__v1",
+    monitoring_derived__document_sample_nonprod__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__document_sample_nonprod__v1",
         destination_table="document_sample_nonprod_v1",
-        dataset_id="monitoring",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="amiyaguchi@mozilla.com",
         email=["amiyaguchi@mozilla.com", "telemetry-alerts@mozilla.com"],

@@ -43,12 +43,6 @@ parser.add_argument(
         "moz-fx-data-shared-prod.telemetry.experiment_enrollment_unenrollment_overall",  # noqa E501
     ],
 )
-parser.add_argument(
-    "--date",
-    required=True,
-    help="Export date",
-    type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
-)
 
 
 def get_active_experiments(client, date, dataset):
@@ -286,10 +280,11 @@ def _convert_ndjson_to_json(
 def main():
     """Run the monitoring data export to GCS."""
     args = parser.parse_args()
+    date = datetime.now()
 
     for dataset in args.datasets:
         export_dataset(
-            args.date,
+            date,
             args.source_project,
             args.destination_project,
             args.bucket,

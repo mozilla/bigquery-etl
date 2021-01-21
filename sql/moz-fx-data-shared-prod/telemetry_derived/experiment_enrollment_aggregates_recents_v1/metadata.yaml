@@ -6,11 +6,3 @@ labels:
   incremental: false
 owners:
 - ascholtz@mozilla.com
-scheduling:
-  dag_name: bqetl_experiments_live
-  task_name: experiment_enrollment_aggregates_recents
-  parameters: ["submission_timestamp:TIMESTAMP:{{ts}}"]
-  referenced_tables: [
-    ["moz-fx-data-shared-prod", "telemetry_derived", "events_live"]
-  ]
-  date_partition_parameter: null

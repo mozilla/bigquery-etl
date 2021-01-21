@@ -257,7 +257,7 @@ def _run_deduplication_query(client, sql, stable_table, job_config, num_retries)
                 client, sql, stable_table, job_config, num_retries - 1
             )
     logging.info(
-        f"Completed query job for {stable_table.table_id}"
+        f"Completed query job for {stable_table}"
         f" with params: {job_config.query_parameters}"
     )
     return stable_table, query_job

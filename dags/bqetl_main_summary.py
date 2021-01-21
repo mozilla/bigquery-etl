@@ -94,6 +94,7 @@ with DAG(
         start_date=datetime.datetime(2021, 1, 19, 0, 0),
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        priority_weight=85,
         dag=dag,
     )
 

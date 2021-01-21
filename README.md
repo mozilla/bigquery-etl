@@ -14,7 +14,8 @@ Quick Start
 
 Ensure Python 3.8+ is available on your machine (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python.)
 
-(For Mozilla Employees) Set up GCP command line tools, [as described here](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool).
+(For Mozilla Employees not in Data Engineering) Set up GCP command line tools, [as described here](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool). Note that some functionality (e.g. writing UDFs or backfilling queries) may not be allowed.
+(For Data Engineering) You will want to log in to `shared-prod` if making changes to production systems. Run `gcloud auth login --project=moz-fx-data-shared-prod` and `gcloud auth application-default login` (if you have not run it previously). 
 
 Install the [virtualenv](https://virtualenv.pypa.io/en/latest/) Python environment management tool
 ```bash

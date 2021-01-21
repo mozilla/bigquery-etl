@@ -362,7 +362,7 @@ def info(name, sql_dir, project_id, cost, last_updated):
                     SELECT
                         SUM(cost_usd) AS cost,
                         MAX(creation_time) AS last_updated
-                    FROM `moz-fx-data-shared-prod.monitoring.bigquery_etl_scheduled_queries_cost_v1`
+                    FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_etl_scheduled_queries_cost_v1`
                     WHERE submission_date BETWEEN '{start_date}' AND '{end_date}'
                         AND dataset = '{dataset}'
                         AND table = '{table}'

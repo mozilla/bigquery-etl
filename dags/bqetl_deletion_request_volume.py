@@ -23,10 +23,10 @@ with DAG(
     schedule_interval="0 1 * * *",
 ) as dag:
 
-    monitoring__deletion_request_volume__v1 = bigquery_etl_query(
-        task_id="monitoring__deletion_request_volume__v1",
+    monitoring_derived__deletion_request_volume__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__deletion_request_volume__v1",
         destination_table="deletion_request_volume_v1",
-        dataset_id="monitoring",
+        dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],

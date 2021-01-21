@@ -26,11 +26,15 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/account_ecosystem_derived/fxa_logging_users_daily_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql",
     "sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/deletion_request_volume_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/document_sample_nonprod_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/deletion_request_volume_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/document_sample_nonprod_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v1/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/schema_error_counts_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/structured_error_counts_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/structured_error_counts_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/structured_error_counts/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql",
     "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql",
@@ -55,8 +59,9 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/telemetry_distinct_docids_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_distinct_docids_v1/query.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/customers_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/plans_v1/query.sql",
@@ -83,7 +88,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v3/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501
@@ -98,7 +103,8 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/messaging_system_derived/snippets_users_last_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql",  # noqa E501
     # Reference table not found
-    "sql/moz-fx-data-shared-prod/monitoring/structured_detailed_error_counts_v1/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/monitoring_derived/structured_detailed_error_counts_v1/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/monitoring/structured_detailed_error_counts/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/migrated_clients_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/incline_executive_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox/migrated_clients/view.sql",

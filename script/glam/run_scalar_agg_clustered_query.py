@@ -66,6 +66,7 @@ def main(submission_date, dst_table, project, dataset):
                 ),
                 bigquery.ScalarQueryParameter("app_version", "INT64", app_version),
             ],
+            clustering_fields=["metric", "channel"],
             destination=intermediate_table,
             default_dataset=f"{project}.{dataset}",
             write_disposition=(

@@ -19,6 +19,12 @@ python3 -m etl-graph query-logs query_log_nodes
 python3 -m etl-graph index
 ```
 
+Alternatively:
+
+```bash
+./scripts/scrape.sh
+```
+
 Start the web client for visualization.
 
 ```bash
@@ -28,7 +34,7 @@ npm run dev
 Deploy to hosting.
 
 ```bash
-./deploy.sh
+./scripts/deploy.sh
 ```
 
 ## Development
@@ -40,5 +46,10 @@ host for developing the web application to avoid networking issues.
 cp .env.template .env
 # configure the environment file as necessary
 docker-compose build
+
+# automatically runs scrape and deploy
 docker-compose run --rm app
+
+# shell into a running container
+docker-compose run --rm app bash
 ```

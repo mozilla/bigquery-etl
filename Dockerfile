@@ -10,8 +10,8 @@ WORKDIR /app
 # check if dependencies change, otherwise reuse layers
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
-
 COPY package.json .
+COPY package-lock.json .
 RUN npm install
 
 ADD . .

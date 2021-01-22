@@ -17,6 +17,7 @@ from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..query_scheduling.generate_airflow_dags import get_dags
+from ..query_scheduling.dag_collection import DagCollection
 from ..run_query import run
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
@@ -240,7 +241,7 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 
     sql_dir = Path(sql_dir)
 
-    dags = get_dags(None, sql_dir.parent / "dags.yaml")
+    dags = DagCollection.from_file(sql_dir.parent / "dags.yaml")
 
     dags_to_be_generated = set()
 
@@ -286,6 +287,7 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
             dags = get_dags(None, sql_dir.parent / "dags.yaml")
             dags_to_be_generated.add(dag)
         else:
+            dags = get_dags(None, sql_dir.parent / "dags.yaml")
             if metadata.scheduling == {}:
                 click.echo(f"No scheduling information for: {query_file}", err=True)
                 sys.exit(1)
@@ -360,7 +362,7 @@ def info(name, sql_dir, project_id, cost, last_updated):
                     SELECT
                         SUM(cost_usd) AS cost,
                         MAX(creation_time) AS last_updated
-                    FROM `moz-fx-data-shared-prod.monitoring.bigquery_etl_scheduled_queries_cost_v1`
+                    FROM `moz-fx-data-shared-prod.monitoring_derived.bigquery_etl_scheduled_queries_cost_v1`
                     WHERE submission_date BETWEEN '{start_date}' AND '{end_date}'
                         AND dataset = '{dataset}'
                         AND table = '{table}'

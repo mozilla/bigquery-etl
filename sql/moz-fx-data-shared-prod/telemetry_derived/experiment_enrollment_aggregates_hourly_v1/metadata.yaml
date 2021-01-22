@@ -19,6 +19,6 @@ scheduling:
     "moz-fx-data-shared-prod", "telemetry_live", "event_v4"
   ]
   destination_table:
-    experiment_enrollment_aggregates_hourly_v1${{ macros.ds_format(execution_date + macros.timedelta(hours=-1), "%Y-%m-%d %H:%M:%S", "%Y%m%d%H") }} # yamllint disable-line rule:line-length
+    experiment_enrollment_aggregates_hourly_v1${{ macros.ds_format((execution_date + macros.timedelta(hours=-1)).to_datetime_string(), "%Y-%m-%d %H:%M:%S", "%Y%m%d%H") }} # yamllint disable-line rule:line-length
   query_file_path: 'sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql' # yamllint disable-line rule:line-length
   date_partition_parameter: null

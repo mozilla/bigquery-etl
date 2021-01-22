@@ -1,0 +1,25 @@
+---
+friendly_name: Mozilla VPN Recommend
+description: >
+  An import of survey data from Alchemer (SurveyGizmo) for the Mozilla VPN
+  Recommend survey.
+owners:
+  - amiyaguchi@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_mozilla_vpn
+  arguments:
+    [
+      "--date",
+      "{{ ds }}",
+      "--survey_id",
+      "5572350",
+      "--api_token",
+      "{{ var.value.surveygizmo_api_token }}",
+      "--api_secret",
+      "{{ var.value.surveygizmo_api_secret }}",
+      "--destination_table",
+      "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_recommend_v1",
+    ]

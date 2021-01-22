@@ -33,19 +33,15 @@ parser.add_argument(
 )
 parser.add_argument(
     "--datasets",
-    required=True,
     help="Experiment monitoring datasets to be exported",
     nargs="*",
     default=[
         "moz-fx-data-shared-prod.telemetry.experiment_enrollment_daily_active_population",  # noqa E501
         "moz-fx-data-shared-prod.telemetry.experiment_enrollment_cumulative_population_estimate",  # noqa E501
+        "moz-fx-data-shared-prod.telemetry.experiment_enrollment_other_events_overall",  # noqa E501
+        "moz-fx-data-shared-prod.telemetry.experiment_enrollment_overall",
+        "moz-fx-data-shared-prod.telemetry.experiment_enrollment_unenrollment_overall",  # noqa E501
     ],
-)
-parser.add_argument(
-    "--date",
-    required=True,
-    help="Export date",
-    type=lambda s: datetime.strptime(s, "%Y-%m-%d"),
 )
 
 
@@ -133,22 +129,72 @@ def export_data_for_experiment(
 
     job = client.query(query)
     job.result()
+    dataset_ref = bigquery.DatasetReference(source_project, job.destination.dataset_id)
+    table_ref = dataset_ref.table(job.destination.table_id)
 
+    # export data for experiment grouped by branch
+    _upload_table_to_gcs(
+        table_ref,
+        bucket,
+        gcs_path,
+        experiment_slug,
+        f"{table_name}_by_branch",
+        source_project,
+        client,
+        storage_client,
+    )
+
+    # export aggregated data for experiment
+    query = f"""
+        SELECT
+            time,
+            SUM(value) AS value
+        FROM `{source_project}.{job.destination.dataset_id}.{job.destination.table_id}`
+        GROUP BY 1
+        ORDER BY time DESC
+    """
+
+    job = client.query(query)
+    job.result()
+    dataset_ref = bigquery.DatasetReference(source_project, job.destination.dataset_id)
+    table_ref = dataset_ref.table(job.destination.table_id)
+
+    _upload_table_to_gcs(
+        table_ref,
+        bucket,
+        gcs_path,
+        experiment_slug,
+        table_name,
+        source_project,
+        client,
+        storage_client,
+    )
+
+
+def _upload_table_to_gcs(
+    table,
+    bucket,
+    gcs_path,
+    experiment_slug,
+    table_name,
+    source_project,
+    client,
+    storage_client,
+):
+    """Export the provided table reference to GCS as JSON."""
     # add a random string to the identifier to prevent collision errors if there
     # happen to be multiple instances running that export data for the same experiment
     tmp = "".join(random.choices(string.ascii_lowercase, k=8))
     destination_uri = (
         f"gs://{bucket}/{gcs_path}/{experiment_slug}_{table_name}_{tmp}.ndjson"
     )
-    dataset_ref = bigquery.DatasetReference(source_project, job.destination.dataset_id)
-    table_ref = dataset_ref.table(job.destination.table_id)
 
-    print(f"Export table {dataset} to {destination_uri}")
+    print(f"Export table {table} to {destination_uri}")
 
     job_config = bigquery.ExtractJobConfig()
     job_config.destination_format = "NEWLINE_DELIMITED_JSON"
     extract_job = client.extract_table(
-        table_ref, destination_uri, location="US", job_config=job_config
+        table, destination_uri, location="US", job_config=job_config
     )
     extract_job.result()
 
@@ -234,10 +280,11 @@ def _convert_ndjson_to_json(
 def main():
     """Run the monitoring data export to GCS."""
     args = parser.parse_args()
+    date = datetime.now()
 
     for dataset in args.datasets:
         export_dataset(
-            args.date,
+            date,
             args.source_project,
             args.destination_project,
             args.bucket,

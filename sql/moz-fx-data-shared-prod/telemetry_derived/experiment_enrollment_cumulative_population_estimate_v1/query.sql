@@ -1,33 +1,10 @@
-WITH all_enrollments AS (
-  SELECT
-    *
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_v1`
-  UNION ALL
-  SELECT
-    * EXCEPT (timestamp)
-  FROM
-    `moz-fx-data-shared-prod.telemetry.experiment_enrollment_aggregates_hourly`
-  WHERE
-    DATE(timestamp) > (
-      SELECT
-        DATE(MAX(window_end))
-      FROM
-        `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_v1`
-    )
-  UNION ALL
-  SELECT
-    * EXCEPT (timestamp)
-  FROM
-    `moz-fx-data-shared-prod.telemetry.experiment_enrollment_aggregates_recents`
-),
-all_branches AS (
+WITH all_branches AS (
   -- We need to determine all available branches for this experiment
   SELECT
     DISTINCT branch,
     experiment
   FROM
-    all_enrollments
+    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
 ),
 non_null_branches AS (
   -- We need to determine if the experiment is a rollout. Rollouts do not have any branches,
@@ -68,7 +45,12 @@ branches_per_window AS (
   FROM
     branches
   CROSS JOIN
-    (SELECT DISTINCT window_start FROM all_enrollments)
+    (
+      SELECT
+        DISTINCT window_start
+      FROM
+        `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+    )
 ),
 cumulative_populations AS (
   SELECT
@@ -81,7 +63,13 @@ cumulative_populations AS (
   FROM
     branches_per_window
   LEFT JOIN
-    (SELECT * EXCEPT (branch), IF(branch IS NULL, 'null', branch) AS branch FROM all_enrollments)
+    (
+      SELECT
+        * EXCEPT (branch),
+        IF(branch IS NULL, 'null', branch) AS branch
+      FROM
+        `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+    )
   USING
     (window_start, branch, experiment)
   WINDOW
@@ -99,6 +87,7 @@ cumulative_populations AS (
 SELECT
   `time`,
   experiment,
+  branch,
   sum(cumulative_population) AS value
 FROM
   (
@@ -122,4 +111,5 @@ FROM
   )
 GROUP BY
   1,
-  2
+  2,
+  3

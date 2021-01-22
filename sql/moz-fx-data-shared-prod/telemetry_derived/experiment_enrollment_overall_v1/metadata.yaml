@@ -1,0 +1,8 @@
+friendly_name: Experiment Enrollment Overall
+description: > 
+  Overall number of clients enrolled in experiments,
+  clustered by experiment.
+labels:
+  incremental: false
+owners:
+- ascholtz@mozilla.com

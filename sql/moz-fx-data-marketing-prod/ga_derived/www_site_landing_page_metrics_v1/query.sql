@@ -21,7 +21,9 @@ WITH sessions_table AS (
     ad_content,
     browser,
     SUM(entrances) AS sessions,
-    SUM(CASE WHEN browser != 'Firefox' THEN entrances ELSE 0 END) AS non_fx_sessions,
+    SUM(
+      IF(NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser), entrances, 0)
+    ) AS non_fx_sessions,
   FROM
     `moz-fx-data-marketing-prod.ga_derived.www_site_hits_v1`
   WHERE

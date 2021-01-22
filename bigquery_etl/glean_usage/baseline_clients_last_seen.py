@@ -36,6 +36,15 @@ parser.add_argument(
     "--output-dir",
     help="Also write the query text underneath the given sql dir",
 )
+parser.add_argument(
+    "--views_only",
+    "--views-only",
+    action="store_true",
+    help=(
+        "If set, we write out only view queries to --output-dir and we skip"
+        " running the queries; intended for stable use by Jenkins"
+    ),
+)
 standard_args.add_parallelism(parser)
 standard_args.add_dry_run(parser, debug_log_queries=False)
 standard_args.add_log_level(parser)
@@ -78,9 +87,12 @@ def main():
                 date=args.date,
                 dry_run=True,
                 output_dir=args.output_dir,
+                views_only=args.views_only,
             ),
             baseline_tables,
         )
+        if args.views_only:
+            return
         logging.info(
             f"Dry runs successful for {len(baseline_tables)}"
             " baseline_clients_last_seen table(s)"
@@ -93,7 +105,7 @@ def main():
             )
 
 
-def run_query(client, baseline_table, date, dry_run, output_dir=None):
+def run_query(client, baseline_table, date, dry_run, output_dir=None, views_only=False):
     """Process a single table, potentially also writing out the generated queries."""
     tables = table_names_from_baseline(baseline_table)
 
@@ -105,23 +117,28 @@ def run_query(client, baseline_table, date, dry_run, output_dir=None):
     render_kwargs.update(tables)
     job_kwargs = dict(use_legacy_sql=False, dry_run=dry_run)
 
-    sql = render(QUERY_FILENAME, **render_kwargs)
+    query_sql = render(QUERY_FILENAME, **render_kwargs)
     init_sql = render(QUERY_FILENAME, init=True, **render_kwargs)
     view_sql = render(VIEW_FILENAME, **render_kwargs)
-    if output_dir:
-        write_sql(output_dir, last_seen_table, "query.sql", sql)
-        write_sql(output_dir, last_seen_table, "init.sql", init_sql)
-        write_sql(output_dir, last_seen_view, "view.sql", view_sql)
+    sql = query_sql
 
     try:
         client.get_table(last_seen_table)
     except NotFound:
-        if dry_run:
+        if views_only:
+            logging.info(
+                "Skipping view for table which doesn't exist:" f" {last_seen_table}"
+            )
+            return
+        elif dry_run:
             logging.info(f"Table does not yet exist: {last_seen_table}")
         else:
             logging.info(f"Creating table: {last_seen_table}")
         sql = init_sql
     else:
+        if views_only:
+            write_sql(output_dir, last_seen_view, "view.sql", view_sql)
+            return
         # Table exists, so we will run the incremental query.
         job_kwargs.update(
             destination=f"{last_seen_table}${date.strftime('%Y%m%d')}",
@@ -130,6 +147,12 @@ def run_query(client, baseline_table, date, dry_run, output_dir=None):
         )
         if not dry_run:
             logging.info(f"Running query for: {last_seen_table}")
+
+    if output_dir:
+        write_sql(output_dir, last_seen_view, "view.sql", view_sql)
+        write_sql(output_dir, last_seen_table, "query.sql", query_sql)
+        write_sql(output_dir, last_seen_table, "init.sql", init_sql)
+
     job_config = bigquery.QueryJobConfig(**job_kwargs)
     job = client.query(sql, job_config)
     if not dry_run:

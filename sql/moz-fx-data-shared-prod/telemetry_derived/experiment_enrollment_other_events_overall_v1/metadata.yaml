@@ -1,0 +1,9 @@
+friendly_name: Experiment Enrollment Other Events Overall
+description: >
+  Number of events other than enroll and unenroll sent by clients
+  enrolled in experiments, clustered by experiment.
+labels:
+  incremental: false
+owners:
+- ascholtz@mozilla.com
+

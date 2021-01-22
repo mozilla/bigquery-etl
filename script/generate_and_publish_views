@@ -2,11 +2,32 @@
 
 set -e
 
-# Fill in any missing view definitions in the moz-fx-data-shared-prod/ folder
-./script/generate_views 'moz-fx-data-shared-prod:*_stable.*'
+: "${TARGET_PROJECT:=moz-fx-data-shar-nonprod-efed}"
+: "${SQL_DIR:=sql/}"
 
-# All view definitions target moz-fx-data-shared-prod by default
-./script/publish_views sql/
+while [[ $# -gt 0 ]]
+do
+key="$1"
 
-# We additionally make sure we have identical view definitions in moz-fx-data-derived-datasets
-./script/publish_views --target-project moz-fx-data-derived-datasets sql/
+case $key in
+    --target-project)
+    TARGET_PROJECT="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    --sql-dir)
+    SQL_DIR="$2"
+    shift # past argument
+    shift # past value
+    ;;
+esac
+done
+
+./script/generate_all_views --target-project "${TARGET_PROJECT}" --sql-dir "${SQL_DIR}"
+./script/publish_views --target-project "${TARGET_PROJECT}" "${SQL_DIR}"
+
+# We additionally make sure we have identical view definitions in moz-fx-data-derived-datasets and mozdata
+if [[ "$TARGET_PROJECT" == "moz-fx-data-shared-prod" ]]; then
+    ./script/publish_views --user-facing-only --target-project moz-fx-data-derived-datasets "${SQL_DIR}"
+    ./script/publish_views --user-facing-only --target-project mozdata "${SQL_DIR}"
+fi

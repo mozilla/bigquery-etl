@@ -170,14 +170,6 @@ bqetl_experiments_hourly:
     retries: 2
     retry_delay: 10m
 
-bqetl_experiments_live:
-  schedule_interval: '*/5 * * * *'
-  default_args:
-    owner: ascholtz@mozilla.com
-    start_date: "2021-01-10"
-    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
-    retries: 0
-
 bqetl_document_sample:
   schedule_interval: daily
   default_args:

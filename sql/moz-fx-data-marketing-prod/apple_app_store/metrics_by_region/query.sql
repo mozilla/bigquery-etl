@@ -21,6 +21,10 @@ FULL JOIN
 USING
   (date, app_name, region)
 FULL JOIN
+  `moz-fx-data-marketing-prod.apple_app_store_exported.iap_by_region`
+USING
+  (date, app_name, region)
+FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.impressions_by_region`
 USING
   (date, app_name, region)
@@ -33,6 +37,10 @@ FULL JOIN
 USING
   (date, app_name, region)
 FULL JOIN
+  `moz-fx-data-marketing-prod.apple_app_store_exported.paying_users_by_region`
+USING
+  (date, app_name, region)
+FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.product_page_views_by_region`
 USING
   (date, app_name, region)
@@ -42,6 +50,10 @@ USING
   (date, app_name, region)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.rate_by_opt_in_region`
+USING
+  (date, app_name, region)
+FULL JOIN
+  `moz-fx-data-marketing-prod.apple_app_store_exported.sales_by_region`
 USING
   (date, app_name, region)
 FULL JOIN

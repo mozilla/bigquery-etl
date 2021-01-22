@@ -79,9 +79,14 @@ def validate_fully_qualified_references(view_file):
     with open(view_file) as f:
         sql = f.read()
 
+    # dry run only returns referenced tables, not views
     referenced_tables = DryRun(str(view_file)).get_referenced_tables()
     for line in sql.split("\n"):
         for referenced_table in referenced_tables:
+            # If a view is referenced in the query then instead of the view name,
+            # the tables that are referenced it the view definition are returned.
+            # Some of these tables are not part of the SQL of the view that is
+            # validated.
             ref_project = referenced_table[0]
             ref_dataset = referenced_table[1]
             ref_table = referenced_table[2]

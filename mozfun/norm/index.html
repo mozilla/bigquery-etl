@@ -408,22 +408,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#os-udf" class="md-nav__link">
     os (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#metadata-udf" class="md-nav__link">
-    metadata (UDF)
   </a>
   
 </li>
@@ -438,6 +424,20 @@
         <li class="md-nav__item">
   <a href="#fenix_app_info-udf" class="md-nav__link">
     fenix_app_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-udf" class="md-nav__link">
+    metadata (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
+    glean_baseline_client_info (UDF)
   </a>
   
 </li>
@@ -500,22 +500,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#os-udf" class="md-nav__link">
     os (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#metadata-udf" class="md-nav__link">
-    metadata (UDF)
   </a>
   
 </li>
@@ -530,6 +516,20 @@
         <li class="md-nav__item">
   <a href="#fenix_app_info-udf" class="md-nav__link">
     fenix_app_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-udf" class="md-nav__link">
+    metadata (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
+    glean_baseline_client_info (UDF)
   </a>
   
 </li>
@@ -552,9 +552,6 @@
 <h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
 <p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
-<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
-<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
 <h2 id="os-udf">os (UDF)</h2>
 <p>Normalize an operating system string to one of the three major desktop
 platforms, one of the two major mobile platforms, or "Other".</p>
@@ -562,9 +559,6 @@ platforms, one of the two major mobile platforms, or "Other".</p>
 <a href="&lt;https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">logic used in the data pipeline</a>&gt;
   to populate <code>normalized_os</code>.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/os/metadata.yaml">Edit</a></p>
-<h2 id="metadata-udf">metadata (UDF)</h2>
-<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
 <h2 id="product_info-udf">product_info (UDF)</h2>
 <p>Returns a normalized <code>product</code> name and a <code>canonical_name</code> for a product
 based on the raw <code>app_name</code> and <code>normalized_os</code> values that appear in pings.</p>
@@ -819,6 +813,12 @@ GROUP BY
   geckoview_version
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/fenix_app_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/fenix_app_info/metadata.yaml">Edit</a></p>
+<h2 id="metadata-udf">metadata (UDF)</h2>
+<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
+<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
                 
               
               

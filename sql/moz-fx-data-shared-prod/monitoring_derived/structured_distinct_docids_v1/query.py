@@ -133,7 +133,7 @@ def parse_args():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", type=datetime.date.fromisoformat, required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
-    parser.add_argument("--destination-dataset", default="monitoring")
+    parser.add_argument("--destination-dataset", default="monitoring_derived")
     parser.add_argument("--destination-table", default="structured_distinct_docids_v1")
     return parser.parse_args()
 

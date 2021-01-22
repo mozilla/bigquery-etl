@@ -35,7 +35,10 @@ WITH download_event_count AS (
 SELECT
   *,
   COUNTIF(download_events > 0) AS downloads,
-  COUNTIF(download_events > 0 AND browser != 'Firefox') AS non_fx_downloads,
+  COUNTIF(
+    download_events > 0
+    AND NOT `moz-fx-data-shared-prod.udf.ga_is_mozilla_browser`(browser)
+  ) AS non_fx_downloads,
 FROM
   download_event_count
 GROUP BY

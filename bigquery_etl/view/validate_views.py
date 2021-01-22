@@ -7,8 +7,22 @@ from pathlib import Path
 import sqlparse
 import sys
 
-from bigquery_etl.dryrun import DryRun, SKIP
+from bigquery_etl.dryrun import DryRun, SKIP as DRYRUN_SKIP
 from bigquery_etl.util import standard_args
+
+SKIP = DRYRUN_SKIP | {
+    # not matching directory structure, but created before validation was enforced
+    "sql/moz-fx-data-shared-prod/stripe/subscription/view.sql",
+    "sql/moz-fx-data-shared-prod/stripe/product/view.sql",
+    "sql/moz-fx-data-shared-prod/stripe/plan/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/client_probe_counts_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/clients_daily_histogram_aggregates_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/clients_scalar_aggregates_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/search/search_aggregates/view.sql",
+    "sql/moz-fx-data-shared-prod/telemetry/clients_probe_processes/view.sql",
+}
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(

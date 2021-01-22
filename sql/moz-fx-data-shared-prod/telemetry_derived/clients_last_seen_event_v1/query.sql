@@ -11,6 +11,10 @@ WITH _current AS (
 ),
 _previous AS (
   SELECT
+    -- We have to list out bit pattern fields explicitly here in exactly the
+    -- order they appear in the _current CTE above. If there is any mismatch
+    -- of field names, the IF().* statement in the final query will raise
+    -- an error.
     days_logged_event_bits,
     days_used_pictureinpicture_bits,
     days_viewed_protection_report_bits,

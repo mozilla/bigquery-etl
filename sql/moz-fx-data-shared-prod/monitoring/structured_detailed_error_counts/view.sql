@@ -4,5 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.monitoring_derived.structured_detailed_error_counts_v1
-`
+  `moz-fx-data-shared-prod.monitoring_derived.structured_detailed_error_counts_v1`

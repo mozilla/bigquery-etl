@@ -159,6 +159,14 @@ class DryRun:
         """Dry run the provided SQL file."""
         sql = open(self.sqlfile).read()
 
+        project_id = None
+
+        if self.sqlfile.endswith("view.sql"):
+            # For dry running view, set project ID to something other than shared-prod.
+            # This ensures that view definitions are fully qualified.
+            # https://github.com/mozilla/bigquery-etl/issues/1413
+            project_id = "bigquery-etl-integration-test"
+
         try:
             r = urlopen(
                 Request(
@@ -166,6 +174,7 @@ class DryRun:
                     headers={"Content-Type": "application/json"},
                     data=json.dumps(
                         {
+                            "project": project_id,
                             "dataset": basename(dirname(dirname(self.sqlfile))),
                             "query": sql,
                         }

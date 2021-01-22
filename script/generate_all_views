@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# This script should call all routines that generate views.
+# It is called by Jenkins as the source of truth for what views should be published.
+
+set -e
+
+: "${TARGET_PROJECT:=moz-fx-data-shar-nonprod-efed}"
+: "${SQL_DIR:=sql}"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --target-project)
+    TARGET_PROJECT="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    --sql-dir)
+    SQL_DIR="$2"
+    shift # past argument
+    shift # past value
+    ;;
+esac
+done
+
+# Fill in any missing view definitions in the moz-fx-data-shared-prod/ folder
+./script/generate_views "${TARGET_PROJECT}:*_stable.*" --sql-dir "${SQL_DIR}"
+
+# Fill in views for generated Glean ETL
+PLACEHOLDER_DATE="2000-01-01"
+./script/run_glean_baseline_clients_daily --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}/${TARGET_PROJECT}" --views-only --date="${PLACEHOLDER_DATE}"
+./script/run_glean_baseline_clients_last_seen --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}/${TARGET_PROJECT}" --views-only --date="${PLACEHOLDER_DATE}"

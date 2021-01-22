@@ -7,5 +7,4 @@ cd "$(dirname "$0")/.."
 
 BUCKET=${BUCKET:-"gs://etl-graph"}
 
-npm run build
-gsutil -m rsync -r -d public/ $BUCKET/site/
+gsutil -m rsync -r -d public/data $BUCKET/site/data

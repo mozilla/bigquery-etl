@@ -14,3 +14,6 @@ services:
     environment:
       - CLOUDSDK_CONFIG=/tmp/.config/gcloud
       - CLOUDSDK_CORE_PROJECT
+    command:
+      bash -c "scripts/scrape.sh && scripts/deploy-data.sh &&
+      scripts/deploy-site.sh"

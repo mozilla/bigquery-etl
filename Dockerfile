@@ -17,4 +17,4 @@ RUN npm install
 ADD . .
 RUN npm run build
 
-CMD scripts/scrape.sh && scripts/deploy.sh
+CMD scripts/scrape.sh && scripts/deploy-data.sh

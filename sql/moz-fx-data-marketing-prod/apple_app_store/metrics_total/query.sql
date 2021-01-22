@@ -34,6 +34,10 @@ FULL JOIN
 USING
   (date, app_name)
 FULL JOIN
+  `moz-fx-data-marketing-prod.apple_app_store_exported.iap_total`
+USING
+  (date, app_name)
+FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.impressions_total`
 USING
   (date, app_name)
@@ -46,6 +50,10 @@ FULL JOIN
 USING
   (date, app_name)
 FULL JOIN
+  `moz-fx-data-marketing-prod.apple_app_store_exported.paying_users_total`
+USING
+  (date, app_name)
+FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.product_page_views_total`
 USING
   (date, app_name)
@@ -55,6 +63,10 @@ USING
   (date, app_name)
 FULL JOIN
   `moz-fx-data-marketing-prod.apple_app_store_exported.rate_total`
+USING
+  (date, app_name)
+FULL JOIN
+  `moz-fx-data-marketing-prod.apple_app_store_exported.sales_total`
 USING
   (date, app_name)
 FULL JOIN

@@ -1,0 +1,16 @@
+friendly_name: Clients Daily Event
+description: >-
+  Daily per-client aggregations based on desktop event pings.
+  We maintain no dimensions like geo or even release channel in this table
+  as those are all calculated in the main ping-based clients_daily.
+  We join main ping and event data together in clients_daily_joined_v1,
+  which then becomes the source for the user-facing view.
+labels:
+  application: firefox
+  schedule: daily
+owners:
+  - jklukas@mozilla.com
+scheduling:
+  dag_name: bqetl_main_summary
+  start_date: "2021-01-19"
+  priority: 85

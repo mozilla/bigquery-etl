@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 import glob
 from multiprocessing.pool import Pool
 from pathlib import Path
+import re
 import sqlparse
 import sys
 
@@ -81,17 +82,22 @@ def validate_fully_qualified_references(view_file):
 
     # dry run only returns referenced tables, not views
     referenced_tables = DryRun(str(view_file)).get_referenced_tables()
-    for line in sql.split("\n"):
+    for line in sqlparse.format(sql, strip_comments=True).split("\n"):
         for referenced_table in referenced_tables:
             # If a view is referenced in the query then instead of the view name,
             # the tables that are referenced it the view definition are returned.
             # Some of these tables are not part of the SQL of the view that is
             # validated.
-            ref_project = referenced_table[0]
             ref_dataset = referenced_table[1]
             ref_table = referenced_table[2]
-            if f"{ref_dataset}.{ref_table}" in line:
-                if f"{ref_project}.{ref_dataset}.{ref_table}" not in line:
+            # check for references to standard view names
+            ref_view_dataset = ref_dataset.rsplit("_", 1)[0]
+            ref_view = re.match(r"^(.*?)(_v\d+)?$", ref_table)[1]
+            for ref_dataset, ref_table in [
+                (ref_dataset, ref_table),
+                (ref_view_dataset, ref_view),
+            ]:
+                if re.search(fr"(?<!\.)`?\b{ref_dataset}`?\.`?{ref_table}\b", line):
                     print(
                         f"{view_file} ERROR\n"
                         f"{ref_dataset}.{ref_table} missing project ID qualifier."

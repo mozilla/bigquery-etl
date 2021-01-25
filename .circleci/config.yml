@@ -138,6 +138,14 @@ jobs:
       - run:
           name: Validate doc examples
           command: PATH="venv/bin:$PATH" script/validate_docs
+  validate-views:
+    docker: *docker
+    steps:
+      - checkout
+      - *build
+      - run:
+          name: Validate views
+          command: PATH="venv/bin:$PATH" script/validate_views
   docs:
     docker: *docker
     steps:
@@ -205,6 +213,7 @@ workflows:
       - validate-dags
       - verify-dags-up-to-date
       - validate-docs
+      - validate-views
       - docs:
           filters:
             branches:

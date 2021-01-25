@@ -7,7 +7,7 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
-# # Descheduled for now. Last run was 2021-01-23.
+# # Descheduled. Last run was 2021-01-23.
 # # See https://github.com/mozilla/bigquery-etl/issues/1713
 # scheduling:
 #   dag_name: bqetl_fxa_events

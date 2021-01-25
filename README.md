@@ -1,5 +1,9 @@
 # etl-graph
 
+Queries and visualization around BigQuery usage.
+
+![screenshot](screenshot.png)
+
 ## Quickstart
 
 Scrape the data.
@@ -34,7 +38,8 @@ npm run dev
 Deploy to hosting.
 
 ```bash
-./scripts/deploy.sh
+./scripts/deploy-data.sh
+./scripts/deploy-site.sh
 ```
 
 ## Development

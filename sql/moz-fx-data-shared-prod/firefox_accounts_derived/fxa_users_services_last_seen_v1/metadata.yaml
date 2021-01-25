@@ -8,6 +8,7 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
+  referenced_tables: []  # exempts this query from dry runs
 # # Descheduled for now. Last run was 2021-01-23.
 # # See https://github.com/mozilla/bigquery-etl/issues/1713
 # scheduling:

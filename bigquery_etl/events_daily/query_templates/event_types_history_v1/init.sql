@@ -10,7 +10,7 @@ WITH source AS (
   {% if glean %}
     SELECT
       DATE(submission_timestamp) AS submission_date,
-      TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
       category,
       name AS event,
       extra,

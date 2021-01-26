@@ -11,7 +11,7 @@ WITH source AS (
   SELECT
     *
   FROM
-    telemetry.deanonymized_events
+    telemetry_derived.deanonymized_events
 ),
 sample AS (
   SELECT

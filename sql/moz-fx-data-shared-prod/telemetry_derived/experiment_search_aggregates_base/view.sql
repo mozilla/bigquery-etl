@@ -15,7 +15,7 @@ WITH live_and_stable AS (
     `moz-fx-data-shared-prod.telemetry_live.main_v4`
 )
 SELECT
-  date(submission_timestamp) AS submission_date,
+  submission_timestamp AS `timestamp`,
   dataset_id,
   unnested_experiments.key AS experiment,
   unnested_experiments.value AS branch,
@@ -53,7 +53,7 @@ FROM
     )
   ) AS unnested_search_counts
 GROUP BY
-  submission_date,
+  timestamp,
   dataset_id,
   experiment,
   branch,

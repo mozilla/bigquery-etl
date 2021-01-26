@@ -1,0 +1,6 @@
+friendly_name: Experiment Cumulative Ad Clicks
+description: Cumulative number of ad clicks by clients enrolled in experiments
+labels:
+  incremental: false
+owners:
+- ascholtz@mozilla.com

@@ -3,7 +3,7 @@ WITH all_events AS (
   SELECT
     *
   FROM
-    telemetry.deanonymized_events
+    telemetry_derived.deanonymized_events
 ),
 current_events AS (
   SELECT

@@ -3,7 +3,7 @@ WITH sample AS (
   SELECT
     *
   FROM
-    telemetry.deanonymized_events
+    telemetry_derived.deanonymized_events
 ),
 events AS (
   SELECT

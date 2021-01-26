@@ -1,5 +1,6 @@
 """bigquery-etl CLI query command."""
 
+import json
 import re
 import string
 import sys
@@ -460,6 +461,66 @@ def backfill(ctx, name, sql_dir, project_id, start_date, end_date, exclude, dry_
                 run(query_file_path, dataset, f"{table}${partition}", arguments)
             else:
                 click.echo(f"Skip {query_file} with @submission_date={backfill_date}")
+
+
+@query.command(
+    help="""
+    Print the schema resulting from a query file, and optionally apply it.
+    Prefers `init.sql` over `query` files.
+
+    This is particularly useful for queries like clients_last_seen where
+    a self-join leads to incompatibilities when adding new fields. This utility
+    can be used to inspect the new schema as defined in `init.sql` and then
+    apply it, leaving the table in a state for incremental queries to succeed.
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument("name")
+@sql_dir_option
+@project_id_option
+@click.option("--update/--no_update", help="Apply the new schema to the table")
+@click.pass_context
+def schema(ctx, name, sql_dir, project_id, update):
+    """Check schema."""
+    if not is_authenticated():
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+    client = bigquery.Client()
+
+    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    for query_file in query_files:
+        query_file_path = Path(query_file)
+        table = query_file_path.parent.name
+        dataset = query_file_path.parent.parent.name
+        project = query_file_path.parent.parent.parent.name
+
+        init_file_path = query_file_path.parent / 'init.sql'
+        if init_file_path.exists():
+            target_path = init_file_path
+        else:
+            target_path = query_file_path
+        print(f"Schema based on dry run of {target_path}")
+        with open(target_path) as f:
+            sql = f.read()
+        config = bigquery.QueryJobConfig(
+            dry_run=True,
+            default_dataset=f"{project}.{dataset}",
+            query_parameters=[
+                bigquery.ScalarQueryParameter(
+                    "submission_date", "DATE", "2000-01-01"
+                ),
+            ]
+        )
+        new_schema = client.query(sql, config)._job_statistics()['schema']
+        print(json.dumps(new_schema, indent=2))
+        if update:
+            print("--update is not yet implemented")
 
 
 @query.command(

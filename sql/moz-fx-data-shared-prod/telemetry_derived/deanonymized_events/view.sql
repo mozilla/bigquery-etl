@@ -32,7 +32,7 @@ SELECT
       []
     )
   ) AS extra,
-  TIMESTAMP_ADD(
+  SAFE.TIMESTAMP_ADD(
     SAFE.TIMESTAMP_MILLIS(payload.process_start_timestamp),
     INTERVAL event_timestamp MILLISECOND
   ) AS timestamp,

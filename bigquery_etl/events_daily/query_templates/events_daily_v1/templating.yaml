@@ -37,8 +37,10 @@ telemetry_derived:
       dest: build_architecture
     - src: environment.profile.creation_date
       dest: profile_creation_date
+      type: FLOAT64
     - src: environment.settings.is_default_browser
       dest: is_default_browser
+      type: BOOL
     - src: environment.settings.attribution.source
       dest: attribution_source
     - src: metadata.uri.app_version

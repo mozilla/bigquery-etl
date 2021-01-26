@@ -14,7 +14,7 @@ SELECT
   CAST(NULL AS STRING) AS events,
   -- client info
   {% for property in user_properties %}
-    CAST(NULL AS STRING) AS {{ property.dest }},
+    CAST(NULL AS {% if 'type' in property %}{{property.type}}{% else %}STRING{% endif %}) AS {{ property.dest }},
   {% endfor %}
   -- metadata
   CAST(NULL AS STRING) AS city,

@@ -16,8 +16,8 @@ SELECT
   -- client info
   CAST(NULL AS STRING) AS build_id,
   CAST(NULL AS STRING) AS build_architecture,
-  CAST(NULL AS STRING) AS profile_creation_date,
-  CAST(NULL AS STRING) AS is_default_browser,
+  CAST(NULL AS FLOAT64) AS profile_creation_date,
+  CAST(NULL AS BOOL) AS is_default_browser,
   CAST(NULL AS STRING) AS attribution_source,
   CAST(NULL AS STRING) AS app_version,
   CAST(NULL AS STRING) AS locale,

@@ -78,7 +78,7 @@ def main():
 
     # This machinery is only compatible with
     # the sql/moz-fx-data-shared-prod/static directory.
-    projects = project_dirs('moz-fx-data-shared-prod')
+    projects = project_dirs("moz-fx-data-shared-prod")
 
     for data_dir in projects:
         for root, dirs, files in os.walk(data_dir):

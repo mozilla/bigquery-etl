@@ -14,3 +14,7 @@ build-job-etl-graph:
     - run:
         name: Build Docker image
         command: docker build -t app:build jobs/etl-graph/
+    - persist_to_workspace:
+        root: jobs
+        paths:
+          - etl-graph

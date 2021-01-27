@@ -1,10 +1,9 @@
 friendly_name: Main 1 percent
 description: >-
-  *Nota bene: This table is in a beta testing phase and may go away!*
-
   A materialized 1 percent sample of main pings intended as a performance
   optimization for exploratory queries. It contains only the most recent
-  six months of data.
+  six months of data. Also see main_nightly for a derived table containing
+  only data where normalized_channel = 'nightly'.
 
   Queries on this table are logically equivalent to queries on top of `main_v4`
   with a filter on `sample_id = 0`, but this table has a few advantages.

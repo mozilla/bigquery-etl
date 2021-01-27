@@ -2,6 +2,8 @@ job-etl-graph:
   jobs:
     - build-job-etl-graph
     - gcp-gcr/build-and-push-image:
+        attach-workspace: true
+        workspace-root: jobs/etl-graph
         context: data-eng-airflow-gcr
         path: jobs/etl-graph/
         image: etl-graph_docker_etl

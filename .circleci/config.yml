@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.7.1
+  gcp-gcr: circleci/gcp-gcr@0.12.0
 
 commands:
   compare-branch:
@@ -84,6 +84,10 @@ jobs:
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/etl-graph/
+      - persist_to_workspace:
+          root: jobs
+          paths:
+            - etl-graph
 
 
   build-job-example_job:
@@ -136,6 +140,8 @@ workflows:
     jobs:
       - build-job-etl-graph
       - gcp-gcr/build-and-push-image:
+          attach-workspace: true
+          workspace-root: jobs/etl-graph
           context: data-eng-airflow-gcr
           path: jobs/etl-graph/
           image: etl-graph_docker_etl

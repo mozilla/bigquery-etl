@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  gcp-gcr: circleci/gcp-gcr@0.7.1
+  gcp-gcr: circleci/gcp-gcr@0.12.0
 
 commands:
   compare-branch:

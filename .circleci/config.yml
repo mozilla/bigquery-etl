@@ -34,6 +34,9 @@ jobs:
       - image: docker:stable-git
     steps:
       - checkout
+      - run:
+          name: Checkout git submodules
+          command: git submodule update --init --recursive
       - setup_remote_docker:
           version: 19.03.13
       - run:
@@ -64,6 +67,24 @@ jobs:
       - run:
           name: Test Code
           command: docker run app:build pytest --flake8 --black
+
+  # As seen from the perpsective of https://github.com/mozilla/docker-etl
+  build-job-etl-graph:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - run:
+          name: Checkout git submodules
+          command: git submodule update --init --recursive
+      - compare-branch:
+          pattern: ^jobs/etl-graph/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/etl-graph/
+
 
   build-job-example_job:
     docker:
@@ -110,6 +131,20 @@ workflows:
           filters:
             branches:
               only: main
+
+  job-etl-graph:
+    jobs:
+      - build-job-etl-graph
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          path: jobs/etl-graph/
+          image: etl-graph_docker_etl
+          requires:
+            - build-job-etl-graph
+          filters:
+            branches:
+              only: main
+
 
   job-example_job:
     jobs:

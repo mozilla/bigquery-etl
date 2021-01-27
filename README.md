@@ -18,7 +18,24 @@ e.g. the contents of a job named `my-job` would go into `jobs/my-job`
 All job directories should have a `Dockerfile`, a `ci_job.yaml`, 
 a `ci_workflow.yaml`, and a `README.md` in the root directory.          
 `ci_job.yaml` and `ci_workflow.yaml` contain the yaml structure that will be placed
-in the `- jobs:` and `- workflows:` sections of the CircleCI `config.yml` respectively
+in the `- jobs:` and `- workflows:` sections of the CircleCI `config.yml` respectively.
+
+#### Submodule Jobs
+
+Some jobs may take on the form of a [git
+submodule](https://github.blog/2016-02-01-working-with-submodules/). These
+directories must be initialized before contents are visible in the local
+filesystem. If you are contributing a submodule, ensure that it is checked out
+by adding the following line as a ci step.
+
+```bash
+git submodule update --init--recursive
+```
+
+The commit revision of the submodule must be updated on new changes;
+[Dependabot](https://dependabot.com/submodules/) will create a new PR with the
+latest updates for you. This must be merged to pushing new images to the shared
+GCR repository.
 
 ### Templates
 

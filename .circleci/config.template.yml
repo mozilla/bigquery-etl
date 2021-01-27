@@ -31,6 +31,9 @@ jobs:
       - image: docker:stable-git
     steps:
       - checkout
+      - run:
+          name: Checkout git submodules
+          command: git submodule update --init --recursive
       - setup_remote_docker:
           version: 19.03.13
       - run:

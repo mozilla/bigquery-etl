@@ -1,7 +1,5 @@
 friendly_name: Main Nightly
 description: >-
-  *Nota bene: This table is in a beta testing phase and may go away!*
-
   A materialized subset of main pings intended as a performance
   optimization for exploratory queries. It contains only the most recent
   six months of data for the nightly channel of Firefox.

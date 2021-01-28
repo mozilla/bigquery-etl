@@ -5,7 +5,8 @@ job-etl-graph:
         attach-workspace: true
         workspace-root: jobs
         context: data-eng-airflow-gcr
-        path: jobs/etl-graph/
+        path: jobs/etl-graph
+        docker-context: jobs/etl-graph
         image: etl-graph_docker_etl
         requires:
           - build-job-etl-graph

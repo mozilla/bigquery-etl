@@ -223,7 +223,9 @@ def export_dataset(
             source_project,
             destination_project,
         )
-        p.map(_experiment_data_export, active_experiments)
+        p.map_async(_experiment_data_export, active_experiments).get(
+            600
+        )  # timeout after 10 minutes
 
 
 def _convert_ndjson_to_json(

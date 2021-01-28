@@ -20,9 +20,9 @@ WITH all_searches AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.experiment_search_aggregates_hourly`
   WHERE
-    DATE(timestamp) > (
+    timestamp > (
       SELECT
-        DATE(MAX(window_end))
+        MAX(window_end)
       FROM
         `moz-fx-data-shared-prod.telemetry_derived.experiment_search_aggregates_v1`
     )

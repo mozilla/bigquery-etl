@@ -33,6 +33,18 @@ with DAG(
         dag=dag,
     )
 
+    monitoring__query_cost__v1 = bigquery_etl_query(
+        task_id="monitoring__query_cost__v1",
+        destination_table="query_cost_v1",
+        dataset_id="monitoring",
+        project_id="moz-fx-data-experiments",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     telemetry_derived__experiment_enrollment_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__experiment_enrollment_aggregates__v1",
         destination_table="experiment_enrollment_aggregates_v1",
@@ -52,22 +64,6 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
-    monitoring__query_cost__v1 = bigquery_etl_query(
-        task_id="monitoring__query_cost__v1",
-        destination_table="query_cost_v1",
-        dataset_id="monitoring",
-        project_id="moz-fx-data-experiments",
-        owner="ascholtz@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "ssuh@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

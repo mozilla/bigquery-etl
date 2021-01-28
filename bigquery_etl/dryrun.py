@@ -91,6 +91,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql",
+    "sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501

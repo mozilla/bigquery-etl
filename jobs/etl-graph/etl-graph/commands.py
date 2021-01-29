@@ -52,7 +52,7 @@ def query_logs(query, data_root, project):
     run_query(
         sql.read_text(),
         dest_table=query,
-        output=ensure_folder(data_root) / project,
+        output=ensure_folder(data_root / project),
         project=project,
     )
 

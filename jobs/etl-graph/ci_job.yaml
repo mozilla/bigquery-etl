@@ -1,0 +1,20 @@
+# As seen from the perpsective of https://github.com/mozilla/docker-etl
+build-job-etl-graph:
+  docker:
+    - image: docker:stable-git
+  steps:
+    - checkout
+    - run:
+        name: Checkout git submodules
+        command: git submodule update --init --recursive
+    - compare-branch:
+        pattern: ^jobs/etl-graph/
+    - setup_remote_docker:
+        version: 19.03.13
+    - run:
+        name: Build Docker image
+        command: docker build -t app:build jobs/etl-graph/
+    - persist_to_workspace:
+        root: jobs
+        paths:
+          - etl-graph

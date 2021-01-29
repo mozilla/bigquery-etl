@@ -5,6 +5,21 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_experiments_hourly
+
+Built from bigquery-etl repo, [`dags/bqetl_experiments_hourly.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_experiments_hourly.py)
+
+#### Description
+
+The DAG schedules queries every hour that materialize experimentation related metrics (enrollment, search, ...) used for monitoring. Tasks are generally scheduled with some lag to account for BigQuery sink delays.
+
+#### Owner
+
+ascholtz@mozilla.com
+"""
+
+
 default_args = {
     "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2021, 1, 10, 0, 0),
@@ -21,6 +36,7 @@ with DAG(
     "bqetl_experiments_hourly",
     default_args=default_args,
     schedule_interval="30 * * * *",
+    doc_md=docs,
 ) as dag:
 
     experiment_enrollment_aggregates_hourly = bigquery_etl_query(

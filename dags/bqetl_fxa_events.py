@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_fxa_events
+
+Built from bigquery-etl repo, [`dags/bqetl_fxa_events.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_fxa_events.py)
+
+#### Owner
+
+jklukas@mozilla.com
+"""
+
+
 default_args = {
     "owner": "jklukas@mozilla.com",
     "start_date": datetime.datetime(2019, 3, 1, 0, 0),
@@ -18,7 +29,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_fxa_events", default_args=default_args, schedule_interval="30 1 * * *"
+    "bqetl_fxa_events",
+    default_args=default_args,
+    schedule_interval="30 1 * * *",
+    doc_md=docs,
 ) as dag:
 
     firefox_accounts_derived__exact_mau28__v1 = bigquery_etl_query(

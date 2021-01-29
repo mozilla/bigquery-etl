@@ -5,6 +5,21 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_monitoring
+
+Built from bigquery-etl repo, [`dags/bqetl_monitoring.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_monitoring.py)
+
+#### Description
+
+This DAG schedules queries and scripts for populating datasets used for monitoring of the data platform.
+
+#### Owner
+
+ascholtz@mozilla.com
+"""
+
+
 default_args = {
     "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2018, 10, 30, 0, 0),
@@ -18,7 +33,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_monitoring", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_monitoring",
+    default_args=default_args,
+    schedule_interval="0 2 * * *",
+    doc_md=docs,
 ) as dag:
 
     monitoring_derived__average_ping_sizes__v1 = gke_command(

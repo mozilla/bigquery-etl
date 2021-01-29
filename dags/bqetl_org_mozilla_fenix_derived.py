@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_org_mozilla_fenix_derived
+
+Built from bigquery-etl repo, [`dags/bqetl_org_mozilla_fenix_derived.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_org_mozilla_fenix_derived.py)
+
+#### Owner
+
+amiyaguchi@mozilla.com
+"""
+
+
 default_args = {
     "owner": "amiyaguchi@mozilla.com",
     "start_date": datetime.datetime(2020, 10, 18, 0, 0),
@@ -21,6 +32,7 @@ with DAG(
     "bqetl_org_mozilla_fenix_derived",
     default_args=default_args,
     schedule_interval="@daily",
+    doc_md=docs,
 ) as dag:
 
     org_mozilla_fenix_derived__geckoview_version__v1 = bigquery_etl_query(

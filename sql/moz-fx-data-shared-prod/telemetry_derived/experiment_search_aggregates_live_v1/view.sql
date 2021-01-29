@@ -3,7 +3,6 @@ CREATE OR REPLACE VIEW
 AS
 WITH all_searches AS (
   SELECT
-    `timestamp`,
     dataset_id,
     branch,
     experiment,
@@ -20,7 +19,7 @@ WITH all_searches AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.experiment_search_aggregates_hourly`
   WHERE
-    timestamp > (
+    window_start > (
       SELECT
         MAX(window_end)
       FROM

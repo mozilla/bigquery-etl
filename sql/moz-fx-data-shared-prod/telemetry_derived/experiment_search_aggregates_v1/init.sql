@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod.telemetry_derived.experiment_search_aggregates_v1`(
-    timestamp TIMESTAMP,
     dataset_id STRING,
     experiment STRING,
     branch STRING,

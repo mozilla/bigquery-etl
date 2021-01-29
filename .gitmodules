@@ -1,3 +1,0 @@
-[submodule "jobs/etl-graph"]
-	path = jobs/etl-graph
-	url = https://github.com/mozilla/etl-graph.git

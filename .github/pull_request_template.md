@@ -7,5 +7,4 @@ Checklist for reviewer:
   credentials) to be exposed in test logs
 - [ ] Ensure the container image will be using permissions granted to
   [telemetry-airflow](https://github.com/mozilla/telemetry-airflow/)
-  responsibly. If this is an update to a submodule, take the time to review the
-  explicit diff of the submodule.
+  responsibly.

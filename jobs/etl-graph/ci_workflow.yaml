@@ -3,6 +3,7 @@ job-etl-graph:
     - build-job-etl-graph
     - gcp-gcr/build-and-push-image:
         context: data-eng-airflow-gcr
+        docker-context: jobs/etl-graph/
         path: jobs/etl-graph/
         image: etl-graph_docker_etl
         requires:

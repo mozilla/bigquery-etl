@@ -237,7 +237,7 @@ def sql_file_valid(sqlfile):
 
 def main():
     """Dry run all SQL files in the project directories."""
-    file_names = ("query.sql", "view.sql", "part*.sql")
+    file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
 
     sql_files = [
         f

@@ -20,6 +20,6 @@ The source can be found at [docker-etl/jobs/etl-graph][repo]. See
 [NOTES.md][notes] for an overview of development. This visualizaton is powered
 by [vis-network][vis-network].
 
-[repo]: https://github.com/mozilla/docker-etl/tree/main/jobs/etl-graph)
+[repo]: https://github.com/mozilla/docker-etl/tree/main/jobs/etl-graph
 [notes]: https://github.com/mozilla/docker-etl/blob/main/jobs/etl-graph/README.md
 [vis-network]: https://visjs.github.io/vis-network/docs/network/

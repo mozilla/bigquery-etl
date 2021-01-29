@@ -1,6 +1,7 @@
 # etl-graph
 
-Queries and visualization around BigQuery usage.
+Queries and visualization around BigQuery usage. This is published to
+https://etl-graph.protosaur.dev.
 
 ![screenshot](screenshot.png)
 
@@ -58,3 +59,8 @@ docker-compose run --rm app
 # shell into a running container
 docker-compose run --rm app bash
 ```
+
+## Archive
+
+This job was merged from the [archived mozilla/etl-graph
+repository](https://github.com/mozilla/etl-graph).

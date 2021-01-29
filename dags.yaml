@@ -16,6 +16,7 @@ bqetl_error_aggregates:
 
 bqetl_ssl_ratios:
   schedule_interval: 0 2 * * *
+  description: The DAG schedules SSL ratios queries.
   default_args:
     owner: chutten@mozilla.com
     start_date: "2019-07-20"
@@ -154,6 +155,10 @@ bqetl_main_summary:
 
 bqetl_experiments_daily:
   schedule_interval: 0 3 * * *
+  description: >
+    The DAG schedules queries that query experimentation related
+    metrics (enrollments, search, ...) from stable tables to finalize
+    numbers of experiment monitoring datasets for a specific date.
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2018-11-27"
@@ -163,6 +168,10 @@ bqetl_experiments_daily:
 
 bqetl_experiments_hourly:
   schedule_interval: 30 * * * *
+  description: >
+    The DAG schedules queries every hour that materialize experimentation related
+    metrics (enrollment, search, ...) used for monitoring. Tasks are
+    generally scheduled with some lag to account for BigQuery sink delays.
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2021-01-10"
@@ -181,6 +190,7 @@ bqetl_document_sample:
 
 bqetl_asn_aggregates:
   schedule_interval: 0 2 * * *
+  description: The DAG schedules ASN aggregates queries.
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2020-04-05"

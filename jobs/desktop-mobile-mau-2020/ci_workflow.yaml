@@ -1,13 +1,3 @@
 job-desktop-mobile-mau-2020:
   jobs:
     - build-job-desktop-mobile-mau-2020
-    - gcp-gcr/build-and-push-image:
-        google-project-id: MAU_DASHBOARDS_PROJECT
-        gcloud-service-key: MAU_DASHBOARDS_KEY
-        path: jobs/desktop-mobile-mau-2020/
-        image: desktop-mobile-mau-2020_docker_etl
-        requires:
-          - build-job-desktop-mobile-mau-2020
-        filters:
-          branches:
-            only: main

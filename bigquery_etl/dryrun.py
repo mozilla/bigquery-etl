@@ -92,6 +92,24 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql",
     "sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/charges_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/payouts_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/subscriptions_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/payment_intents_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/products_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/disputes_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/credit_notes_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/customers_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/invoices_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/setup_intents_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/plans_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/prices_v1/init.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501
@@ -120,6 +138,8 @@ SKIP = {
     # HTTP Error 408: Request Time-out
     "sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/init.sql",
     # Query parameter not found
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",  # noqa E501

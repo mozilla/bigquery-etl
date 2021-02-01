@@ -6,6 +6,20 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.gcp import gke_command
 
+docs = """
+### bqetl_public_data_json
+
+Built from bigquery-etl repo, [`dags/bqetl_public_data_json.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_public_data_json.py)
+
+#### Description
+
+The DAG exports query data marked as public to GCS
+#### Owner
+
+ascholtz@mozilla.com
+"""
+
+
 default_args = {
     "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2020, 4, 14, 0, 0),
@@ -19,7 +33,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_public_data_json", default_args=default_args, schedule_interval="0 4 * * *"
+    "bqetl_public_data_json",
+    default_args=default_args,
+    schedule_interval="0 4 * * *",
+    doc_md=docs,
 ) as dag:
     docker_image = "mozilla/bigquery-etl:latest"
 

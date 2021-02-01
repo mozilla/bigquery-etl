@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_main_summary
+
+Built from bigquery-etl repo, [`dags/bqetl_main_summary.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_main_summary.py)
+
+#### Owner
+
+dthorn@mozilla.com
+"""
+
+
 default_args = {
     "owner": "dthorn@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
@@ -23,7 +34,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_main_summary", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_main_summary",
+    default_args=default_args,
+    schedule_interval="0 2 * * *",
+    doc_md=docs,
 ) as dag:
 
     firefox_desktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(

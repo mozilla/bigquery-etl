@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_vrbrowser
+
+Built from bigquery-etl repo, [`dags/bqetl_vrbrowser.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_vrbrowser.py)
+
+#### Owner
+
+jklukas@mozilla.com
+"""
+
+
 default_args = {
     "owner": "jklukas@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 25, 0, 0),
@@ -22,7 +33,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_vrbrowser", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_vrbrowser",
+    default_args=default_args,
+    schedule_interval="0 2 * * *",
+    doc_md=docs,
 ) as dag:
 
     org_mozilla_vrbrowser_derived__baseline_daily__v1 = bigquery_etl_query(

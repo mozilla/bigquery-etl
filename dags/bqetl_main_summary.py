@@ -79,6 +79,44 @@ with DAG(
         dag=dag,
     )
 
+    telemetry_derived__clients_daily_event__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__clients_daily_event__v1",
+        destination_table="clients_daily_event_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2021, 1, 19, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        priority_weight=85,
+        dag=dag,
+    )
+
+    telemetry_derived__clients_daily_joined__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__clients_daily_joined__v1",
+        destination_table="clients_daily_joined_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2021, 1, 19, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        priority_weight=85,
+        dag=dag,
+    )
+
     telemetry_derived__clients_first_seen__v1 = bigquery_etl_query(
         task_id="telemetry_derived__clients_first_seen__v1",
         destination_table="clients_first_seen_v1",
@@ -112,6 +150,44 @@ with DAG(
         depends_on_past=True,
         priority_weight=85,
         allow_field_addition_on_date="2020-10-20",
+        dag=dag,
+    )
+
+    telemetry_derived__clients_last_seen_event__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__clients_last_seen_event__v1",
+        destination_table="clients_last_seen_event_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2021, 1, 19, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        priority_weight=85,
+        dag=dag,
+    )
+
+    telemetry_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__clients_last_seen_joined__v1",
+        destination_table="clients_last_seen_joined_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2021, 1, 19, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        priority_weight=85,
         dag=dag,
     )
 
@@ -197,6 +273,37 @@ with DAG(
         wait_for_copy_deduplicate_main_ping
     )
 
+    wait_for_bq_main_events = ExternalTaskSensor(
+        task_id="wait_for_bq_main_events",
+        external_dag_id="copy_deduplicate",
+        external_task_id="bq_main_events",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__clients_daily_event__v1.set_upstream(wait_for_bq_main_events)
+    wait_for_event_events = ExternalTaskSensor(
+        task_id="wait_for_event_events",
+        external_dag_id="copy_deduplicate",
+        external_task_id="event_events",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__clients_daily_event__v1.set_upstream(wait_for_event_events)
+
+    telemetry_derived__clients_daily_joined__v1.set_upstream(
+        telemetry_derived__clients_daily__v6
+    )
+
+    telemetry_derived__clients_daily_joined__v1.set_upstream(
+        telemetry_derived__clients_daily_event__v1
+    )
+
     telemetry_derived__clients_first_seen__v1.set_upstream(
         telemetry_derived__clients_daily__v6
     )
@@ -207,6 +314,18 @@ with DAG(
 
     telemetry_derived__clients_last_seen__v1.set_upstream(
         telemetry_derived__clients_first_seen__v1
+    )
+
+    telemetry_derived__clients_last_seen_event__v1.set_upstream(
+        telemetry_derived__clients_daily_event__v1
+    )
+
+    telemetry_derived__clients_last_seen_joined__v1.set_upstream(
+        telemetry_derived__clients_last_seen__v1
+    )
+
+    telemetry_derived__clients_last_seen_joined__v1.set_upstream(
+        telemetry_derived__clients_last_seen_event__v1
     )
 
     telemetry_derived__main_1pct__v1.set_upstream(wait_for_copy_deduplicate_main_ping)

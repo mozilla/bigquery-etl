@@ -1,5 +1,5 @@
 SELECT
-  * EXCEPT (submission_date, dataset_id)
+  * EXCEPT (submission_date)
 FROM
   experiment_search_aggregates_base
 WHERE

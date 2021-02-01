@@ -1,0 +1,7 @@
+friendly_name: Experiment Cumulative Search with Ads Count
+description: >
+  Cumulative number of searches with ads by clients enrolled in experiments
+labels:
+  incremental: false
+owners:
+- ascholtz@mozilla.com

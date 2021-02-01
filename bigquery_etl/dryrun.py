@@ -47,6 +47,8 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_auth_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_content_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_device_command_events_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_last_seen_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/addons_daily_v1/query.sql",
     "sql/moz-fx-data-shared-prod/search_derived/search_clients_last_seen_v1/init.sql",
     "sql/moz-fx-data-shared-prod/search_derived/search_clients_last_seen_v1/query.sql",
@@ -89,6 +91,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/waitlist_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql",
+    "sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501
@@ -133,6 +136,8 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/asn_aggregates_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_recents_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_hourly_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_recents_v1/query.sql",  # noqa E501
     # Dataset sql/glam-fenix-dev:glam_etl was not found
     *glob.glob("sql/glam-fenix-dev/glam_etl/**/*.sql", recursive=True),
     # Query templates

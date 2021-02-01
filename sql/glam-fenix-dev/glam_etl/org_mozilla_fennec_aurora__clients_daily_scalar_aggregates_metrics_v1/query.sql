@@ -127,6 +127,20 @@ unlabeled_metrics AS (
         sum(CAST(metrics.quantity.avif_dav1d_decode_error AS INT64))
       ),
       (
+        'contextual_menu_long_press_tapped',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.contextual_menu_long_press_tapped AS INT64))
+      ),
+      (
+        'contextual_menu_long_press_tapped',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.contextual_menu_long_press_tapped AS INT64))
+      ),
+      (
         'events_total_uri_count',
         'counter',
         '',
@@ -329,6 +343,17 @@ unlabeled_metrics AS (
         'true',
         SUM(CAST(metrics.boolean.glean_core_migration_successful AS INT64))
       ),
+      ('glean_error_io', 'counter', '', 'avg', avg(CAST(metrics.counter.glean_error_io AS INT64))),
+      (
+        'glean_error_io',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.glean_error_io) IS NULL, NULL, COUNT(*))
+      ),
+      ('glean_error_io', 'counter', '', 'max', max(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'min', min(CAST(metrics.counter.glean_error_io AS INT64))),
+      ('glean_error_io', 'counter', '', 'sum', sum(CAST(metrics.counter.glean_error_io AS INT64))),
       (
         'glean_error_preinit_tasks_overflow',
         'counter',
@@ -519,6 +544,41 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.glean_validation_baseline_ping_count AS INT64))
       ),
       (
+        'glean_validation_foreground_count',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+      ),
+      (
+        'glean_validation_foreground_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.glean_validation_foreground_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'glean_validation_foreground_count',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+      ),
+      (
+        'glean_validation_foreground_count',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+      ),
+      (
+        'glean_validation_foreground_count',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+      ),
+      (
         'logins_store_read_query_count',
         'counter',
         '',
@@ -638,6 +698,69 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.metrics_default_browser AS INT64))
       ),
       (
+        'metrics_desktop_bookmarks_count',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
+      ),
+      (
+        'metrics_desktop_bookmarks_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.metrics_desktop_bookmarks_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'metrics_desktop_bookmarks_count',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
+      ),
+      (
+        'metrics_desktop_bookmarks_count',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
+      ),
+      (
+        'metrics_desktop_bookmarks_count',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.metrics_desktop_bookmarks_count AS INT64))
+      ),
+      (
+        'metrics_has_desktop_bookmarks',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.metrics_has_desktop_bookmarks AS INT64))
+      ),
+      (
+        'metrics_has_desktop_bookmarks',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.metrics_has_desktop_bookmarks AS INT64))
+      ),
+      (
+        'metrics_has_mobile_bookmarks',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.metrics_has_mobile_bookmarks AS INT64))
+      ),
+      (
+        'metrics_has_mobile_bookmarks',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.metrics_has_mobile_bookmarks AS INT64))
+      ),
+      (
         'metrics_has_open_tabs',
         'boolean',
         '',
@@ -678,6 +801,41 @@ unlabeled_metrics AS (
         '',
         'true',
         SUM(CAST(metrics.boolean.metrics_has_top_sites AS INT64))
+      ),
+      (
+        'metrics_mobile_bookmarks_count',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
+      ),
+      (
+        'metrics_mobile_bookmarks_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.metrics_mobile_bookmarks_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'metrics_mobile_bookmarks_count',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
+      ),
+      (
+        'metrics_mobile_bookmarks_count',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
+      ),
+      (
+        'metrics_mobile_bookmarks_count',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.metrics_mobile_bookmarks_count AS INT64))
       ),
       (
         'metrics_recently_used_pwa_count',

@@ -90,7 +90,7 @@ def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
     """
     assert scalar_type in ("unlabeled", "labeled")
     metric_type_set = {
-        "unlabeled": ["boolean", "counter", "quantity"],
+        "unlabeled": ["boolean", "counter", "quantity", "timespan"],
         "labeled": ["labeled_counter"],
     }
     scalars: Dict[str, List[str]] = {

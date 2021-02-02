@@ -10,6 +10,9 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_messaging_system.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_messaging_system.py)
 
+#### Description
+
+Daily aggregations on top of pings sent for the `messaging_system` namespace by desktop Firefox.
 #### Owner
 
 najiang@mozilla.com

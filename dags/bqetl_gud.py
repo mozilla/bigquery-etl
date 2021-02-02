@@ -10,6 +10,9 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_gud.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_gud.py)
 
+#### Description
+
+Optimized tables that power the [Mozilla Growth and Usage Dashboard](https://gud.telemetry.mozilla.org).
 #### Owner
 
 jklukas@mozilla.com

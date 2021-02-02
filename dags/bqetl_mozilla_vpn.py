@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_mozilla_vpn
+
+Built from bigquery-etl repo, [`dags/bqetl_mozilla_vpn.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_mozilla_vpn.py)
+
+#### Owner
+
+dthorn@mozilla.com
+"""
+
+
 default_args = {
     "owner": "dthorn@mozilla.com",
     "start_date": datetime.datetime(2020, 10, 8, 0, 0),
@@ -18,7 +29,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_mozilla_vpn", default_args=default_args, schedule_interval="45 1 * * *"
+    "bqetl_mozilla_vpn",
+    default_args=default_args,
+    schedule_interval="45 1 * * *",
+    doc_md=docs,
 ) as dag:
 
     mozilla_vpn_derived__add_device_events__v1 = bigquery_etl_query(

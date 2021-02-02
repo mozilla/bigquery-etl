@@ -5,6 +5,20 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_ssl_ratios
+
+Built from bigquery-etl repo, [`dags/bqetl_ssl_ratios.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_ssl_ratios.py)
+
+#### Description
+
+The DAG schedules SSL ratios queries.
+#### Owner
+
+chutten@mozilla.com
+"""
+
+
 default_args = {
     "owner": "chutten@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 20, 0, 0),
@@ -18,7 +32,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_ssl_ratios", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_ssl_ratios",
+    default_args=default_args,
+    schedule_interval="0 2 * * *",
+    doc_md=docs,
 ) as dag:
 
     telemetry_derived__ssl_ratios__v1 = bigquery_etl_query(

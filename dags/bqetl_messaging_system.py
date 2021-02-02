@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_messaging_system
+
+Built from bigquery-etl repo, [`dags/bqetl_messaging_system.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_messaging_system.py)
+
+#### Owner
+
+najiang@mozilla.com
+"""
+
+
 default_args = {
     "owner": "najiang@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 25, 0, 0),
@@ -18,7 +29,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_messaging_system", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_messaging_system",
+    default_args=default_args,
+    schedule_interval="0 2 * * *",
+    doc_md=docs,
 ) as dag:
 
     messaging_system_derived__cfr_exact_mau28_by_dimensions__v1 = bigquery_etl_query(

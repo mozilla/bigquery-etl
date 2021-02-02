@@ -16,6 +16,7 @@ bqetl_error_aggregates:
 
 bqetl_ssl_ratios:
   schedule_interval: 0 2 * * *
+  description: The DAG schedules SSL ratios queries.
   default_args:
     owner: chutten@mozilla.com
     start_date: "2019-07-20"
@@ -154,6 +155,10 @@ bqetl_main_summary:
 
 bqetl_experiments_daily:
   schedule_interval: 0 3 * * *
+  description: >
+    The DAG schedules queries that query experimentation related
+    metrics (enrollments, search, ...) from stable tables to finalize
+    numbers of experiment monitoring datasets for a specific date.
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2018-11-27"
@@ -163,6 +168,11 @@ bqetl_experiments_daily:
 
 bqetl_experiments_hourly:
   schedule_interval: 30 * * * *
+  description: >
+    The DAG schedules queries every hour that materialize experimentation
+    related metrics (enrollment, search, ...) used for monitoring. Tasks
+    are generally scheduled with some lag to account for BigQuery sink
+    delays.
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2021-01-10"
@@ -181,6 +191,7 @@ bqetl_document_sample:
 
 bqetl_asn_aggregates:
   schedule_interval: 0 2 * * *
+  description: The DAG schedules ASN aggregates queries.
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2020-04-05"
@@ -192,6 +203,7 @@ bqetl_asn_aggregates:
 # queries should not be explicitly assigned to this DAG (done automatically)
 bqetl_public_data_json:
   schedule_interval: 0 4 * * *
+  description: The DAG exports query data marked as public to GCS
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2020-04-14"
@@ -199,9 +211,11 @@ bqetl_public_data_json:
     retries: 2
     retry_delay: 30m
 
-# DAG for building the internet outages datasets. See bug 1640204.
 bqetl_internet_outages:
   schedule_interval: 0 3 * * *
+  description: > 
+    DAG for building the internet outages datasets.
+    See [bug 1640204](https://bugzilla.mozilla.org/show_bug.cgi?id=1640204).
   default_args:
     owner: aplacitelli@mozilla.com
     start_date: "2020-01-01"
@@ -280,6 +294,9 @@ bqetl_google_analytics_derived:
 
 bqetl_monitoring:
   schedule_interval: 0 2 * * *
+  description: >
+    This DAG schedules queries and scripts for populating datasets
+    used for monitoring of the data platform.
   default_args:
     owner: ascholtz@mozilla.com
     email: ['ascholtz@mozilla.com']

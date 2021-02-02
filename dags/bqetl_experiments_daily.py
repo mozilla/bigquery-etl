@@ -5,6 +5,21 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_experiments_daily
+
+Built from bigquery-etl repo, [`dags/bqetl_experiments_daily.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_experiments_daily.py)
+
+#### Description
+
+The DAG schedules queries that query experimentation related metrics (enrollments, search, ...) from stable tables to finalize numbers of experiment monitoring datasets for a specific date.
+
+#### Owner
+
+ascholtz@mozilla.com
+"""
+
+
 default_args = {
     "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
@@ -18,7 +33,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_experiments_daily", default_args=default_args, schedule_interval="0 3 * * *"
+    "bqetl_experiments_daily",
+    default_args=default_args,
+    schedule_interval="0 3 * * *",
+    doc_md=docs,
 ) as dag:
 
     experiment_enrollment_daily_active_population = bigquery_etl_query(

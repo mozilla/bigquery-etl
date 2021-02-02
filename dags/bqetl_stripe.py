@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_stripe
+
+Built from bigquery-etl repo, [`dags/bqetl_stripe.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_stripe.py)
+
+#### Owner
+
+dthorn@mozilla.com
+"""
+
+
 default_args = {
     "owner": "dthorn@mozilla.com",
     "start_date": datetime.datetime(2020, 10, 5, 0, 0),
@@ -17,7 +28,9 @@ default_args = {
     "retries": 2,
 }
 
-with DAG("bqetl_stripe", default_args=default_args, schedule_interval="@daily") as dag:
+with DAG(
+    "bqetl_stripe", default_args=default_args, schedule_interval="@daily", doc_md=docs
+) as dag:
 
     stripe_derived__customers__v1 = bigquery_etl_query(
         task_id="stripe_derived__customers__v1",

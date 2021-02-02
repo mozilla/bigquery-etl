@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_fenix_event_rollup
+
+Built from bigquery-etl repo, [`dags/bqetl_fenix_event_rollup.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_fenix_event_rollup.py)
+
+#### Owner
+
+frank@mozilla.com
+"""
+
+
 default_args = {
     "owner": "frank@mozilla.com",
     "start_date": datetime.datetime(2020, 9, 9, 0, 0),
@@ -18,7 +29,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_fenix_event_rollup", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_fenix_event_rollup",
+    default_args=default_args,
+    schedule_interval="0 2 * * *",
+    doc_md=docs,
 ) as dag:
 
     org_mozilla_firefox_derived__events_daily__v1 = bigquery_etl_query(

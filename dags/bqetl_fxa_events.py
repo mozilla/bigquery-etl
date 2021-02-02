@@ -12,7 +12,7 @@ Built from bigquery-etl repo, [`dags/bqetl_fxa_events.py`](https://github.com/mo
 
 #### Description
 
-Copies data from a Firefox Accounts (FxA) project. Those source tables are populated via Cloud Logging (Strackdriver). We hash various fields as part of the import.
+Copies data from a Firefox Accounts (FxA) project. Those source tables are populated via Cloud Logging (Stackdriver). We hash various fields as part of the import.
 The DAG also provides daily aggregations on top of the raw log data, which eventually power high-level reporting about FxA usage.
 #### Owner
 

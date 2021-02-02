@@ -15,7 +15,7 @@ SELECT
     mozfun.map.sum(ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(bucket, count))),
     CASE
     WHEN
-      metric_type IN ("counter", "quantity", "labeled_counter")
+      metric_type IN ("counter", "quantity", "labeled_counter", "timespan")
     THEN
       ARRAY(
         SELECT

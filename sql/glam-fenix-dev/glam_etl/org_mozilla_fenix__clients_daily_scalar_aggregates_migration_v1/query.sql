@@ -183,6 +183,41 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.migration_addons_success_reason AS INT64))
       ),
       (
+        'migration_addons_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
+      ),
+      (
+        'migration_addons_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_addons_total_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_addons_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
+      ),
+      (
+        'migration_addons_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
+      ),
+      (
+        'migration_addons_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_addons_total_duration.value AS INT64))
+      ),
+      (
         'migration_bookmarks_any_failures',
         'boolean',
         '',
@@ -230,6 +265,41 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.migration_bookmarks_detected AS INT64))
+      ),
+      (
+        'migration_bookmarks_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
+      ),
+      (
+        'migration_bookmarks_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_bookmarks_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_bookmarks_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
+      ),
+      (
+        'migration_bookmarks_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
+      ),
+      (
+        'migration_bookmarks_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_bookmarks_duration.value AS INT64))
       ),
       (
         'migration_bookmarks_failure_reason',
@@ -300,6 +370,41 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.migration_bookmarks_success_reason AS INT64))
+      ),
+      (
+        'migration_bookmarks_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
+      ),
+      (
+        'migration_bookmarks_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_bookmarks_total_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_bookmarks_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
+      ),
+      (
+        'migration_bookmarks_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
+      ),
+      (
+        'migration_bookmarks_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_bookmarks_total_duration.value AS INT64))
       ),
       (
         'migration_fxa_any_failures',
@@ -414,6 +519,41 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.migration_fxa_success_reason AS INT64))
       ),
       (
+        'migration_fxa_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
+      ),
+      (
+        'migration_fxa_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_fxa_total_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_fxa_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
+      ),
+      (
+        'migration_fxa_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
+      ),
+      (
+        'migration_fxa_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_fxa_total_duration.value AS INT64))
+      ),
+      (
         'migration_gecko_any_failures',
         'boolean',
         '',
@@ -498,6 +638,41 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.migration_gecko_success_reason AS INT64))
       ),
       (
+        'migration_gecko_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
+      ),
+      (
+        'migration_gecko_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_gecko_total_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_gecko_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
+      ),
+      (
+        'migration_gecko_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
+      ),
+      (
+        'migration_gecko_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_gecko_total_duration.value AS INT64))
+      ),
+      (
         'migration_history_any_failures',
         'boolean',
         '',
@@ -545,6 +720,41 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.migration_history_detected AS INT64))
+      ),
+      (
+        'migration_history_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_history_duration.value AS INT64))
+      ),
+      (
+        'migration_history_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_history_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_history_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_history_duration.value AS INT64))
+      ),
+      (
+        'migration_history_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_history_duration.value AS INT64))
+      ),
+      (
+        'migration_history_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_history_duration.value AS INT64))
       ),
       (
         'migration_history_failure_reason',
@@ -615,6 +825,41 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.migration_history_success_reason AS INT64))
+      ),
+      (
+        'migration_history_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
+      ),
+      (
+        'migration_history_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_history_total_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_history_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
+      ),
+      (
+        'migration_history_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
+      ),
+      (
+        'migration_history_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_history_total_duration.value AS INT64))
       ),
       (
         'migration_logins_any_failures',
@@ -734,6 +979,41 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.migration_logins_success_reason AS INT64))
+      ),
+      (
+        'migration_logins_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
+      ),
+      (
+        'migration_logins_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_logins_total_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_logins_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
+      ),
+      (
+        'migration_logins_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
+      ),
+      (
+        'migration_logins_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_logins_total_duration.value AS INT64))
       ),
       (
         'migration_logins_unsupported_db_version',
@@ -925,6 +1205,41 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.migration_open_tabs_success_reason AS INT64))
       ),
       (
+        'migration_open_tabs_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
+      ),
+      (
+        'migration_open_tabs_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_open_tabs_total_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_open_tabs_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
+      ),
+      (
+        'migration_open_tabs_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
+      ),
+      (
+        'migration_open_tabs_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_open_tabs_total_duration.value AS INT64))
+      ),
+      (
         'migration_pinned_sites_any_failures',
         'boolean',
         '',
@@ -1087,6 +1402,45 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.migration_pinned_sites_success_reason AS INT64))
       ),
       (
+        'migration_pinned_sites_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
+      ),
+      (
+        'migration_pinned_sites_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(
+          MIN(metrics.timespan.migration_pinned_sites_total_duration.value) IS NULL,
+          NULL,
+          COUNT(*)
+        )
+      ),
+      (
+        'migration_pinned_sites_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
+      ),
+      (
+        'migration_pinned_sites_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
+      ),
+      (
+        'migration_pinned_sites_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_pinned_sites_total_duration.value AS INT64))
+      ),
+      (
         'migration_search_any_failures',
         'boolean',
         '',
@@ -1169,6 +1523,41 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.migration_search_success_reason AS INT64))
+      ),
+      (
+        'migration_search_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
+      ),
+      (
+        'migration_search_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_search_total_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_search_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
+      ),
+      (
+        'migration_search_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
+      ),
+      (
+        'migration_search_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_search_total_duration.value AS INT64))
       ),
       (
         'migration_settings_any_failures',
@@ -1269,6 +1658,41 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.migration_settings_telemetry_enabled AS INT64))
       ),
       (
+        'migration_settings_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
+      ),
+      (
+        'migration_settings_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.migration_settings_total_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'migration_settings_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
+      ),
+      (
+        'migration_settings_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
+      ),
+      (
+        'migration_settings_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_settings_total_duration.value AS INT64))
+      ),
+      (
         'migration_telemetry_identifiers_any_failures',
         'boolean',
         '',
@@ -1359,6 +1783,45 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.migration_telemetry_identifiers_success_reason AS INT64))
+      ),
+      (
+        'migration_telemetry_identifiers_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
+      ),
+      (
+        'migration_telemetry_identifiers_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(
+          MIN(metrics.timespan.migration_telemetry_identifiers_total_duration.value) IS NULL,
+          NULL,
+          COUNT(*)
+        )
+      ),
+      (
+        'migration_telemetry_identifiers_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
+      ),
+      (
+        'migration_telemetry_identifiers_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
+      ),
+      (
+        'migration_telemetry_identifiers_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.migration_telemetry_identifiers_total_duration.value AS INT64))
       )
     ] AS scalar_aggregates
   FROM

@@ -64,6 +64,41 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.events_total_uri_count AS INT64))
       ),
       (
+        'glean_baseline_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
+      ),
+      (
+        'glean_baseline_duration',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.glean_baseline_duration.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'glean_baseline_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
+      ),
+      (
+        'glean_baseline_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
+      ),
+      (
+        'glean_baseline_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.glean_baseline_duration.value AS INT64))
+      ),
+      (
         'glean_validation_metrics_ping_count',
         'counter',
         '',

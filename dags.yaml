@@ -102,6 +102,16 @@ bqetl_fxa_events:
     retries: 1
     retry_delay: 10m
 
+bqetl_mozilla_vpn:
+  # Depends on bqetl_fxa_events, so run a bit after that one.
+  schedule_interval: 45 1 * * *
+  default_args:
+    owner: dthorn@mozilla.com
+    start_date: "2020-10-08"
+    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+
 bqetl_gud:
   schedule_interval: 0 3 * * *
   description:
@@ -295,15 +305,6 @@ bqetl_stripe:
     email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
     retries: 2
     retry_delay: 5m
-
-bqetl_mozilla_vpn:
-  schedule_interval: daily
-  default_args:
-    owner: dthorn@mozilla.com
-    start_date: "2020-10-08"
-    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
-    retries: 2
-    retry_delay: 30m
 
 bqetl_org_mozilla_fenix_derived:
   default_args:

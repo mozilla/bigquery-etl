@@ -31,7 +31,7 @@ default_args = {
 with DAG(
     "bqetl_mozilla_vpn",
     default_args=default_args,
-    schedule_interval="@daily",
+    schedule_interval="45 1 * * *",
     doc_md=docs,
 ) as dag:
 
@@ -296,7 +296,7 @@ with DAG(
         task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
         external_dag_id="bqetl_fxa_events",
         external_task_id="firefox_accounts_derived__fxa_auth_events__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=81000),
+        execution_delta=datetime.timedelta(seconds=900),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -309,7 +309,7 @@ with DAG(
         task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
         external_dag_id="bqetl_fxa_events",
         external_task_id="firefox_accounts_derived__fxa_content_events__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=81000),
+        execution_delta=datetime.timedelta(seconds=900),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

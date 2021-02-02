@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_google_analytics_derived
+
+Built from bigquery-etl repo, [`dags/bqetl_google_analytics_derived.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_google_analytics_derived.py)
+
+#### Owner
+
+bewu@mozilla.com
+"""
+
+
 default_args = {
     "owner": "bewu@mozilla.com",
     "start_date": datetime.datetime(2020, 10, 31, 0, 0),
@@ -21,6 +32,7 @@ with DAG(
     "bqetl_google_analytics_derived",
     default_args=default_args,
     schedule_interval="0 23 * * *",
+    doc_md=docs,
 ) as dag:
 
     ga_derived__blogs_daily_summary__v1 = bigquery_etl_query(

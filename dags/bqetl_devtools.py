@@ -5,6 +5,20 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_devtools
+
+Built from bigquery-etl repo, [`dags/bqetl_devtools.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_devtools.py)
+
+#### Description
+
+Summarizes usage of the Dev Tools component of desktop Firefox.
+#### Owner
+
+jklukas@mozilla.com
+"""
+
+
 default_args = {
     "owner": "jklukas@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
@@ -18,7 +32,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_devtools", default_args=default_args, schedule_interval="0 3 * * *"
+    "bqetl_devtools",
+    default_args=default_args,
+    schedule_interval="0 3 * * *",
+    doc_md=docs,
 ) as dag:
 
     telemetry_derived__devtools_accessiblility_panel_usage__v1 = bigquery_etl_query(

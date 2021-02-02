@@ -5,6 +5,20 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_account_ecosystem
+
+Built from bigquery-etl repo, [`dags/bqetl_account_ecosystem.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_account_ecosystem.py)
+
+#### Description
+
+Tables related to the v1 implementation of Account Ecosystem Telemetry (AET) which is currently on hold.
+#### Owner
+
+jklukas@mozilla.com
+"""
+
+
 default_args = {
     "owner": "jklukas@mozilla.com",
     "start_date": datetime.datetime(2020, 9, 17, 0, 0),
@@ -18,7 +32,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_account_ecosystem", default_args=default_args, schedule_interval="0 2 * * *"
+    "bqetl_account_ecosystem",
+    default_args=default_args,
+    schedule_interval="0 2 * * *",
+    doc_md=docs,
 ) as dag:
 
     account_ecosystem_derived__desktop_clients_daily__v1 = bigquery_etl_query(

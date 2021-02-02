@@ -27,8 +27,8 @@ bqetl_ssl_ratios:
 bqetl_amo_stats:
   schedule_interval: 0 3 * * *
   description: >-
-    Add-on download and install statistics to power the addons.mozilla.org
-    (AMO) stats pages.
+    Add-on download and install statistics to power the
+    [addons.mozilla.org](https://addons.mozilla.org) (AMO) stats pages.
 
     See the [post on the Add-Ons Blog](https://blog.mozilla.org/addons/2020/06/10/improvements-to-statistics-processing-on-amo/).
   default_args:
@@ -88,7 +88,7 @@ bqetl_fxa_events:
   schedule_interval: 30 1 * * *
   description: >-
     Copies data from a Firefox Accounts (FxA) project. Those source tables
-    are populated via Cloud Logging (Strackdriver). We hash various fields
+    are populated via Cloud Logging (Stackdriver). We hash various fields
     as part of the import.
 
     The DAG also provides daily aggregations on top of the raw log data,

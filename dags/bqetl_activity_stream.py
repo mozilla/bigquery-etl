@@ -10,6 +10,9 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_activity_stream.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_activity_stream.py)
 
+#### Description
+
+Daily aggregations on top of pings sent for the `activity_stream` namespace by desktop Firefox. These are largely related to activity on the newtab page and engagement with Pocket content.
 #### Owner
 
 jklukas@mozilla.com

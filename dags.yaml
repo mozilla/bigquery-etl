@@ -26,6 +26,11 @@ bqetl_ssl_ratios:
 
 bqetl_amo_stats:
   schedule_interval: 0 3 * * *
+  description: >-
+    Add-on download and install statistics to power the addons.mozilla.org
+    (AMO) stats pages.
+
+    See the [post on the Add-Ons Blog](https://blog.mozilla.org/addons/2020/06/10/improvements-to-statistics-processing-on-amo/).
   default_args:
     owner: jklukas@mozilla.com
     start_date: "2020-06-01"
@@ -35,6 +40,8 @@ bqetl_amo_stats:
 
 bqetl_vrbrowser:
   schedule_interval: 0 2 * * *
+  description: >-
+    Custom ETL based on Glean pings from Mozilla VR Browser.
   default_args:
     owner: jklukas@mozilla.com
     start_date: "2019-07-25"
@@ -49,6 +56,9 @@ bqetl_vrbrowser:
 
 bqetl_core:
   schedule_interval: 0 2 * * *
+  description:
+    Tables derived from the legacy telemetry `core` ping sent by various
+    mobile applications.
   default_args:
     owner: jklukas@mozilla.com
     start_date: "2019-07-25"
@@ -76,6 +86,13 @@ bqetl_mobile_search:
 
 bqetl_fxa_events:
   schedule_interval: 30 1 * * *
+  description: >-
+    Copies data from a Firefox Accounts (FxA) project. Those source tables
+    are populated via Cloud Logging (Strackdriver). We hash various fields
+    as part of the import.
+
+    The DAG also provides daily aggregations on top of the raw log data,
+    which eventually power high-level reporting about FxA usage.
   default_args:
     owner: jklukas@mozilla.com
     start_date: "2019-03-01"
@@ -85,6 +102,9 @@ bqetl_fxa_events:
 
 bqetl_gud:
   schedule_interval: 0 3 * * *
+  description:
+    Optimized tables that power the
+    [Mozilla Growth and Usage Dashboard](https://gud.telemetry.mozilla.org).
   default_args:
     owner: jklukas@mozilla.com
     start_date: "2019-07-25"
@@ -94,6 +114,9 @@ bqetl_gud:
 
 bqetl_messaging_system:
   schedule_interval: 0 2 * * *
+  description: >-
+    Daily aggregations on top of pings sent for the `messaging_system`
+    namespace by desktop Firefox.
   default_args:
     owner: najiang@mozilla.com
     start_date: "2019-07-25"
@@ -103,6 +126,10 @@ bqetl_messaging_system:
 
 bqetl_activity_stream:
   schedule_interval: 0 2 * * *
+  description: >-
+    Daily aggregations on top of pings sent for the `activity_stream`
+    namespace by desktop Firefox. These are largely related to activity
+    on the newtab page and engagement with Pocket content.
   default_args:
     owner: jklukas@mozilla.com
     start_date: "2019-07-25"
@@ -131,6 +158,8 @@ bqetl_addons:
 
 bqetl_devtools:
   schedule_interval: 0 3 * * *
+  description: >-
+    Summarizes usage of the Dev Tools component of desktop Firefox.
   default_args:
     owner: jklukas@mozilla.com
     start_date: "2018-11-27"
@@ -140,6 +169,9 @@ bqetl_devtools:
 
 bqetl_main_summary:
   schedule_interval: 0 2 * * *
+  description: >-
+    General-purpose derived tables for analyzing usage of desktop Firefox.
+    This is one of our highest-impact DAGs and should be handled carefully.
   default_args:
     owner: dthorn@mozilla.com
     start_date: "2018-11-27"
@@ -243,6 +275,9 @@ bqetl_fenix_event_rollup:
 
 bqetl_account_ecosystem:
   schedule_interval: 0 2 * * *
+  description: >-
+    Tables related to the v1 implementation of Account Ecosystem Telemetry (AET)
+    which is currently on hold.
   default_args:
     owner: jklukas@mozilla.com
     start_date: "2020-09-17"

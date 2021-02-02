@@ -10,6 +10,9 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_core.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_core.py)
 
+#### Description
+
+Tables derived from the legacy telemetry `core` ping sent by various mobile applications.
 #### Owner
 
 jklukas@mozilla.com

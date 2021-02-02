@@ -26,11 +26,13 @@ bqetl_ssl_ratios:
 
 bqetl_amo_stats:
   schedule_interval: 0 3 * * *
+  # yamllint disable rule:line-length
   description: >-
     Add-on download and install statistics to power the
     [addons.mozilla.org](https://addons.mozilla.org) (AMO) stats pages.
 
     See the [post on the Add-Ons Blog](https://blog.mozilla.org/addons/2020/06/10/improvements-to-statistics-processing-on-amo/).
+  # yamllint enable rule:line-length
   default_args:
     owner: jklukas@mozilla.com
     start_date: "2020-06-01"

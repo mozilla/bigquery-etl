@@ -4,13 +4,13 @@ RETURNS STRING AS (
   WHEN
     truncation_level = "minor"
   THEN
-    REGEXP_REPLACE(os_version, r"^([0-9]+.[0-9]+).*", "\\1")
+    REGEXP_REPLACE(os_version, r"^([0-9]+[.]?[0-9]+).*", "\\1")
   WHEN
     truncation_level = "major"
   THEN
     REGEXP_REPLACE(os_version, r"^([0-9]+).*", "\\1")
   ELSE
-    os_version
+    NULL
   END
 );
 

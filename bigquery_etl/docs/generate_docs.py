@@ -5,20 +5,14 @@ import os
 from pathlib import Path
 import re
 import shutil
-from typing import Dict, Sequence
-
-from bigquery_etl.util import standard_args
 import yaml
 
+from bigquery_etl.util import standard_args
+from bigquery_etl.docs.derived_datasets import generate_derived_dataset_docs
 
-DEFAULT_PROJECTS_DIRS = [
-    "sql/mozfun/",
-    "sql/moz-fx-data-marketing-prod/",
-    "sql/moz-fx-data-shared-prod/",
-]
+DEFAULT_PROJECTS_DIRS = ["sql/mozfun/", "sql/moz-fx-data-shared-prod/"]
 DOCS_FILE = "README.md"
 UDF_FILE = "udf.sql"
-VIEW_FILE = "view.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 METADATA_FILE = "metadata.yaml"
 DOCS_DIR = "docs/"
@@ -77,53 +71,22 @@ def add_source_and_edit(source_url, edit_url):
     return f"[Source]({source_url})  |  [Edit]({edit_url})"
 
 
-def get_markdown_link(title, link):
-    """Return markdown link."""
-    return f"[{title}]({link})"
-
-
-def parse_metadata(metadata: Dict) -> Sequence[str]:
-    """Parse metadata object to markdown text."""
-    output_lines = []
-    for key, value in metadata.items():
-        if key == "owners":
-            emails = ",".join(
-                [
-                    get_markdown_link(value[i], f"mailto:{value[i]}")
-                    for (i, item) in enumerate(value)
-                ]
-            )
-            output_lines.append(
-                f'**{key.replace("_", " ").capitalize()}**: {emails}\n\n'
-            )
-        elif isinstance(value, dict):
-            if "dag_name" in value:
-                dag_link = get_markdown_link(
-                    value["dag_name"], f"{SOURCE_URL}/dags/{value['dag_name']}.py"
-                )
-                output_lines.append(f"**DAG name**: {dag_link}\n\n")
-            if "schedule" in value:
-                output_lines.append(f'**Schedule**: {value["schedule"]}\n\n')
-        else:
-            output_lines.append(
-                f'**{key.replace("_", " ").capitalize()}**: {value}\n\n'
-            )
-
-    return output_lines
-
-
-def parse_sql(sql_file):
-    """Parse SQL content to markdown code block."""
-    return f"~~~~sql\n{sql_file}~~~~\n"
-
-
 def main():
     """Generate documentation for project."""
     args = parser.parse_args()
     out_dir = os.path.join(args.output_dir, "docs")
-    if os.path.exists(out_dir):
+
+    # To customize Mkdocs, we need to extend the theme with an `overrides` folder
+    # https://squidfunk.github.io/mkdocs-material/customization/#overriding-partials
+    override_dir = os.path.join(args.output_dir, "overrides")
+
+    if os.path.exists(out_dir) and os.path.exists(override_dir):
         shutil.rmtree(out_dir)
+        shutil.rmtree(override_dir)
+
+    # copy assets from /docs and /overrides folders to output folder
     shutil.copytree(args.docs_dir, out_dir)
+    shutil.copytree("bigquery_etl/docs/overrides", override_dir)
 
     # move mkdocs.yml out of docs/
     mkdocs_path = os.path.join(args.output_dir, "mkdocs.yml")
@@ -132,17 +95,15 @@ def main():
     # move files to docs/
     for project_dir in args.project_dirs:
         if os.path.isdir(project_dir):
-            # generate docs for mozfun UDFs
-            if project_dir == "sql/mozfun/":
-                for root, dirs, files in os.walk(project_dir):
-                    if DOCS_FILE in files:
-                        # copy doc file to output and replace example references
-                        src = os.path.join(root, DOCS_FILE)
-                        # remove empty strings from path parts
-                        path_parts = list(filter(None, root.split(os.sep)))
-                        name = path_parts[-1]
-                        path = Path(os.sep.join(path_parts[1:-1]))
-
+            for root, _dirs, files in os.walk(project_dir):
+                if DOCS_FILE in files:
+                    # copy doc file to output and replace example references
+                    src = os.path.join(root, DOCS_FILE)
+                    # remove empty strings from path parts
+                    path_parts = list(filter(None, root.split(os.sep)))
+                    name = path_parts[-1]
+                    path = Path(os.sep.join(path_parts[1:-1]))
+                    if project_dir == "sql/mozfun/":
                         if os.path.split(root)[1] == "":
                             # project level-doc file
                             project_doc_dir = out_dir / path / name
@@ -195,62 +156,10 @@ def main():
                                 # dataset-level doc; create a new doc file
                                 dest = out_dir / path / f"{name}.md"
                                 dest.write_text(load_with_examples(src))
-            # generate docs for Mozdata
-            else:
-                project_doc_dir = Path(os.path.join(out_dir, project_dir.split("/")[1]))
-                project_doc_dir.mkdir(parents=True, exist_ok=True)
-
-                # generate a list of datasets (ignore *_derived dirs)
-                data_sets = [
-                    item
-                    for item in os.listdir(project_dir)
-                    if os.path.isdir(os.path.join(project_dir, item))
-                    and "derived" not in item
-                ]
-
-                for table in data_sets:
-                    output = []
-                    with open(project_doc_dir / f"{table}.md", "w") as dataset_doc:
-                        # Manually set the page title to prevent mkdocs
-                        # from removing underscores in data sets' name
-                        # https://www.mkdocs.org/user-guide/writing-your-docs/#meta-data
-                        output.append(f"---\ntitle: {table}\n---\n\n")
-                        for root, dirs, files in os.walk(f"{project_dir}{table}"):
-                            if dirs == []:
-                                dataset_name = root.split("/")[-1]
-                                source_link = f"{SOURCE_URL}/{root}"
-                                # link to data set directory on GitHub
-                                output.append(
-                                    f"##{get_markdown_link(dataset_name, source_link)}\n"
-                                )
-
-                            if METADATA_FILE in files:
-                                # link to metadata.yaml on Github
-                                file_url = f"{SOURCE_URL}/{root}/{METADATA_FILE}"
-                                output.append(
-                                    f'### {get_markdown_link("Metadata", file_url)}\n\n'
-                                )
-                                with open(os.path.join(root, METADATA_FILE)) as stream:
-                                    try:
-                                        for line in parse_metadata(
-                                            yaml.safe_load(stream)
-                                        ):
-                                            output.append(line)
-                                    except yaml.YAMLError:
-                                        pass
-                            if VIEW_FILE in files:
-                                # link to view.sql on Github
-                                file_url = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
-                                output.append(
-                                    f'### {get_markdown_link("View", file_url)}\n\n'
-                                )
-                                with open(os.path.join(root, VIEW_FILE)) as stream:
-                                    try:
-                                        for line in parse_sql(stream.read()):
-                                            output.append(line)
-                                    except yaml.YAMLError:
-                                        pass
-                        dataset_doc.writelines(output)
+                    else:
+                        generate_derived_dataset_docs.generate_derived_dataset_docs(
+                            out_dir, project_dir
+                        )
 
 
 if __name__ == "__main__":

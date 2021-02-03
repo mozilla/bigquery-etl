@@ -9,3 +9,4 @@ venv/
 # ignore locally generated docs
 sql/**/docs
 sql/**/mkdocs.yml
+generated_docs/

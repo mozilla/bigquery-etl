@@ -78,6 +78,7 @@ def query():
     """Create the CLI group for the query command."""
     pass
 
+
 @query.command(
     help="Create a new query with name "
     "<dataset>.<query_name>, for example: telemetry_derived.asn_aggregates. "
@@ -539,6 +540,7 @@ def schema():
     """Create the CLI group for the query schema command."""
     pass
 
+
 @schema.command(
     help="Generate the query schema",
 )
@@ -576,12 +578,65 @@ def generate(name, sql_dir, project_id):
             dry_run=True,
             default_dataset=f"{project}.{dataset}",
             query_parameters=[
-                bigquery.ScalarQueryParameter(
-                    "submission_date", "DATE", "2000-01-01"
-                ),
-            ]
+                bigquery.ScalarQueryParameter("submission_date", "DATE", "2000-01-01"),
+            ],
         )
-        new_schema = client.query(sql, config)._job_statistics()['schema']
+        new_schema = client.query(sql, config)._job_statistics()["schema"]
 
         with open(query_file_path.parent / "schema.json", "w+") as schema_file:
             json.dump(new_schema, schema_file, indent=2)
+
+
+@schema.command(
+    help="Deploy the query schema",
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--project-id",
+    "--project_id",
+    help="GCP project ID",
+    default="moz-fx-data-shared-prod",
+    callback=is_valid_project,
+)
+def deploy(name, sql_dir, project_id):
+    """CLI command for deploying destination table schemas."""
+    if not is_authenticated():
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+    client = bigquery.Client()
+
+    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+
+    for query_file in query_files:
+        query_file_path = Path(query_file)
+
+        if (query_file_path.parent / "schema.json").is_file():
+            click.echo(f"Deploy schema for {query_file}")
+
+            table_name = query_file_path.parent.name
+            dataset_name = query_file_path.parent.parent.name
+            project_name = query_file_path.parent.parent.parent.name
+
+            table = client.get_table(f"{project_name}.{dataset_name}.{table}")
+            original_schema = table.schema
+
+            with open(query_file_path.parent / "schema.json") as schema_file:
+                new_schema = json.load(schema_file)
+                table.schema = new_schema
+                table = client.update_table(table, ["schema"])
+
+                if len(table.schema) == len(original_schema) + 1 == len(new_schema):
+                    click.echo(
+                        "A new column has been added to "
+                        f"{project_name}.{dataset_name}.{table_name}"
+                    )
+                else:
+                    click.echo(
+                        f"The schema for {project_name}.{dataset_name}.{table_name} "
+                        "is unchanged"
+                    )
+

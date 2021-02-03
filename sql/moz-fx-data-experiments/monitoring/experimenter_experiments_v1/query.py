@@ -8,7 +8,9 @@ import requests
 import attr
 import cattr
 import datetime
+import json
 import pytz
+import sys
 import time
 from typing import List, Optional
 
@@ -26,6 +28,7 @@ parser.add_argument("--project", default="moz-fx-data-experiments")
 parser.add_argument("--destination_dataset", default="monitoring")
 parser.add_argument("--destination_table", default="experimenter_experiments_v1")
 parser.add_argument("--sql_dir", default="sql/")
+parser.add_argument("--dry_run", action="store_true")
 
 
 @attr.s(auto_attribs=True)
@@ -193,8 +196,6 @@ def get_experiments() -> List[Experiment]:
 
 def main():
     args = parser.parse_args()
-    client = bigquery.Client(args.project)
-
     experiments = get_experiments()
 
     destination_table = (
@@ -232,8 +233,14 @@ def main():
         datetime.datetime, lambda d: datetime.datetime.strftime(d, format="%Y-%m-%d")
     )
 
+    blob = converter.unstructure(experiments)
+    if args.dry_run:
+        print(json.dumps(blob))
+        sys.exit(0)
+
+    client = bigquery.Client(args.project)
     client.load_table_from_json(
-        converter.unstructure(experiments), destination_table, job_config=job_config
+        blob, destination_table, job_config=job_config
     ).result()
     print(f"Loaded {len(experiments)} experiments")
 

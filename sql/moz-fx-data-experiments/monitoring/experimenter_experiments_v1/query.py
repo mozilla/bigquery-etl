@@ -49,6 +49,8 @@ class Experiment:
     proposed_enrollment: Optional[int]
     reference_branch: Optional[str]
     is_high_population: bool
+    app_name: str
+    app_id: str
 
 
 def _coerce_none_to_zero(x: Optional[int]) -> int:
@@ -115,6 +117,8 @@ class ExperimentV1:
             proposed_enrollment=self.proposed_enrollment,
             reference_branch=control_slug,
             is_high_population=self.is_high_population or False,
+            app_name="firefox_desktop",
+            app_id="firefox-desktop",
         )
 
 
@@ -128,6 +132,9 @@ class ExperimentV6:
     proposedEnrollment: int
     branches: List[Branch]
     referenceBranch: Optional[str]
+    appName: str
+    appId: str
+
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":
@@ -153,6 +160,8 @@ class ExperimentV6:
             reference_branch=self.referenceBranch,
             is_high_population=False,
             branches=self.branches,
+            app_name=self.appName,
+            app_id=self.appId,
         )
 
 
@@ -221,6 +230,8 @@ def main():
                 bigquery.SchemaField("ratio", "INTEGER"),
             ],
         ),
+        bigquery.SchemaField("app_id", "STRING"),
+        bigquery.SchemaField("app_name", "STRING"),
     )
 
     job_config = bigquery.LoadJobConfig(

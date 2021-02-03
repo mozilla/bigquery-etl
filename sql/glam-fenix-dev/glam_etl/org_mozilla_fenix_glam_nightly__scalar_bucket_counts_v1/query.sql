@@ -197,7 +197,7 @@ bucketed_scalars AS (
   USING
     (metric, key)
   WHERE
-    metric_type IN ("counter", "quantity", "labeled_counter")
+    metric_type IN ("counter", "quantity", "labeled_counter", "timespan")
 ),
 booleans_and_scalars AS (
   SELECT

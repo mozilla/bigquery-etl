@@ -64,6 +64,41 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.startup_timeline_clock_ticks_per_second AS INT64))
       ),
       (
+        'startup_timeline_framework_start',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.startup_timeline_framework_start.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_start',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.startup_timeline_framework_start.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'startup_timeline_framework_start',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.startup_timeline_framework_start.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_start',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.startup_timeline_framework_start.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_start',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.startup_timeline_framework_start.value AS INT64))
+      ),
+      (
         'startup_timeline_framework_start_error',
         'boolean',
         '',

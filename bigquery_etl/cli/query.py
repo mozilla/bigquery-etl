@@ -1,5 +1,6 @@
 """bigquery-etl CLI query command."""
 
+import json
 import re
 import string
 import sys
@@ -76,7 +77,6 @@ def project_id_option(default=None):
 def query():
     """Create the CLI group for the query command."""
     pass
-
 
 @query.command(
     help="Create a new query with name "
@@ -532,3 +532,56 @@ def initialize(name, sql_dir, project_id, dry_run):
                     default_dataset=f"{project}.{dataset}",
                 )
                 client.query(init_sql, job_config=job_config).result()
+
+
+@query.group(help="Commands for managing query schemas.")
+def schema():
+    """Create the CLI group for the query schema command."""
+    pass
+
+@schema.command(
+    help="Generate the query schema",
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--project-id",
+    "--project_id",
+    help="GCP project ID",
+    default="moz-fx-data-shared-prod",
+    callback=is_valid_project,
+)
+def generate(name, sql_dir, project_id):
+    """CLI command for generating the query schema."""
+    if not is_authenticated():
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+    client = bigquery.Client()
+
+    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+
+    for query_file in query_files:
+        query_file_path = Path(query_file)
+        table = query_file_path.parent.name
+        dataset = query_file_path.parent.parent.name
+        project = query_file_path.parent.parent.parent.name
+
+        print(f"Generate schema based on dry run of {query_file_path}")
+        with open(query_file_path) as f:
+            sql = f.read()
+        config = bigquery.QueryJobConfig(
+            dry_run=True,
+            default_dataset=f"{project}.{dataset}",
+            query_parameters=[
+                bigquery.ScalarQueryParameter(
+                    "submission_date", "DATE", "2000-01-01"
+                ),
+            ]
+        )
+        new_schema = client.query(sql, config)._job_statistics()['schema']
+
+        with open(query_file_path.parent / "schema.json", "w+") as schema_file:
+            json.dump(new_schema, schema_file, indent=2)

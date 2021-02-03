@@ -10,6 +10,10 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_amo_stats.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_amo_stats.py)
 
+#### Description
+
+Add-on download and install statistics to power the [addons.mozilla.org](https://addons.mozilla.org) (AMO) stats pages.
+See the [post on the Add-Ons Blog](https://blog.mozilla.org/addons/2020/06/10/improvements-to-statistics-processing-on-amo/).
 #### Owner
 
 jklukas@mozilla.com

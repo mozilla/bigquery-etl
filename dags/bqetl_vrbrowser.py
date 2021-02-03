@@ -10,6 +10,9 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_vrbrowser.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_vrbrowser.py)
 
+#### Description
+
+Custom ETL based on Glean pings from Mozilla VR Browser.
 #### Owner
 
 jklukas@mozilla.com

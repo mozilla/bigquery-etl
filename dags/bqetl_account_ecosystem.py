@@ -10,6 +10,9 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_account_ecosystem.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_account_ecosystem.py)
 
+#### Description
+
+Tables related to the v1 implementation of Account Ecosystem Telemetry (AET) which is currently on hold.
 #### Owner
 
 jklukas@mozilla.com

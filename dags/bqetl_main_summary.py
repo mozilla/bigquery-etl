@@ -10,6 +10,9 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_main_summary.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_main_summary.py)
 
+#### Description
+
+General-purpose derived tables for analyzing usage of desktop Firefox. This is one of our highest-impact DAGs and should be handled carefully.
 #### Owner
 
 dthorn@mozilla.com

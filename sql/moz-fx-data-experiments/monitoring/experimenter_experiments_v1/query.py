@@ -135,7 +135,6 @@ class ExperimentV6:
     appName: str
     appId: str
 
-
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":
         converter = cattr.Converter()
@@ -152,7 +151,8 @@ class ExperimentV6:
             experimenter_slug=None,
             type="v6",
             status="Live"
-            if self.endDate and self.endDate <= pytz.utc.localize(datetime.datetime.now())
+            if self.endDate
+            and self.endDate <= pytz.utc.localize(datetime.datetime.now())
             else "Complete",
             start_date=self.startDate,
             end_date=self.endDate,
@@ -250,9 +250,7 @@ def main():
         sys.exit(0)
 
     client = bigquery.Client(args.project)
-    client.load_table_from_json(
-        blob, destination_table, job_config=job_config
-    ).result()
+    client.load_table_from_json(blob, destination_table, job_config=job_config).result()
     print(f"Loaded {len(experiments)} experiments")
 
 

@@ -64,17 +64,20 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
         )
 
     for metric_type, _probes in probes.items():
+        # timespans are nested within an object that also carries the unit of
+        # of time associated with the value
+        suffix = ".value" if metric_type == "timespan" else ""
         for probe in _probes:
             for agg_func in ["max", "avg", "min", "sum"]:
                 probe_structs.append(
                     (
                         f"('{probe}', '{metric_type}', '', '{agg_func}', "
-                        f"{agg_func}(CAST(metrics.{metric_type}.{probe} AS INT64)))"
+                        f"{agg_func}(CAST(metrics.{metric_type}.{probe}{suffix} AS INT64)))"
                     )
                 )
             probe_structs.append(
                 f"('{probe}', '{metric_type}', '', 'count', "
-                f"IF(MIN(metrics.{metric_type}.{probe}) IS NULL, NULL, COUNT(*)))"
+                f"IF(MIN(metrics.{metric_type}.{probe}{suffix}) IS NULL, NULL, COUNT(*)))"
             )
 
     probe_structs.sort()
@@ -90,7 +93,7 @@ def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
     """
     assert scalar_type in ("unlabeled", "labeled")
     metric_type_set = {
-        "unlabeled": ["boolean", "counter", "quantity"],
+        "unlabeled": ["boolean", "counter", "quantity", "timespan"],
         "labeled": ["labeled_counter"],
     }
     scalars: Dict[str, List[str]] = {

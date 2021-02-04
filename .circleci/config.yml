@@ -109,6 +109,26 @@ jobs:
           name: Build Docker image
           command: docker build -t app:build jobs/pioneer-debug/
 
+  build-play-store-export:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/play-store-export/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/play-store-export
+      - run:
+          name: Test Code
+          command: docker run app:build make test
+      - run:
+          name: Lint Code
+          command: docker run app:build make lint
+
+
 workflows:
   docker-etl:
     jobs:
@@ -159,3 +179,17 @@ workflows:
           filters:
             branches:
               only: main
+
+  play-store-export:
+    jobs:
+      - build-play-store-export
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          path: jobs/play-store-export/
+          image: play-store-export
+          requires:
+            - build-play-store-export
+          filters:
+            branches:
+              only: main
+

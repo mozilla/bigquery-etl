@@ -8,7 +8,7 @@ RETURNS STRING AS (
   WHEN
     truncation_level = "major"
   THEN
-    REGEXP_REPLACE(os_version, r"^([0-9]+).*", "\\1")
+    REGEXP_EXTRACT(os_version, r"^([0-9]+).*", "\\1")
   ELSE
     NULL
   END
@@ -20,5 +20,5 @@ SELECT
   assert.equals("16", norm.truncate_version("16.1.1", "major")),
   assert.equals("10", norm.truncate_version("10", "minor")),
   assert.equals("5.1", norm.truncate_version("5.1.5-ubuntu-foobar", "minor")),
-  assert.equals("5.1.5-ubuntu-foobar", norm.truncate_version("5.1.5-ubuntu-foobar", "patch")),
+  assert.equals(CAST(NULL AS STRING), norm.truncate_version("5.1.5-ubuntu-foobar", "patch")),
   assert.equals(CAST(NULL AS STRING), norm.truncate_version("foo-bar", "minor"))

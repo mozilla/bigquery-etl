@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Loads clustered data into the mozaggregator2bq table.
+
+set -x
+
+REPLACE=${REPLACE:-false}
+PROJECT="mozaggregator2bq"
+DATASET="telemetry"
+aggregate_type=${1?missing aggregate type, one of build_id and submission_date}
+
+if [[ $aggregate_type == "build_id" ]]; then
+    clustering="metric,channel,os,version"
+else
+    clustering="ds_nodash,version,metric,channel"
+fi
+
+table="$DATASET.${aggregate_type}_aggregates"
+qualified_table=$PROJECT:$table
+
+if bq show "$qualified_table"; then
+    if $REPLACE; then
+        echo "removing $qualified_table before loading"
+        bq rm "$qualified_table"
+    else
+        echo "table $qualified_table already exists"
+        return
+    fi
+fi
+
+echo "loading partitions into $table"
+bq load \
+    --source_format=PARQUET \
+    --autodetect \
+    --time_partitioning_type DAY \
+    --clustering_fields $clustering \
+    "$qualified_table" \
+    "gs://mozaggregator2bq/data/${aggregate_type}/*.parquet"

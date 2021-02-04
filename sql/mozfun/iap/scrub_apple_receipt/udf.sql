@@ -8,8 +8,8 @@ RETURNS STRUCT<
     -- extract a list of start and end dates that doesn't overlap or repeat
     ARRAY(
       WITH exploded AS (
-        SELECT
-          DISTINCT date,
+        SELECT DISTINCT
+          date,
           IF(
             -- TRUE when date - 1 is missing
             ANY_VALUE(date) OVER (

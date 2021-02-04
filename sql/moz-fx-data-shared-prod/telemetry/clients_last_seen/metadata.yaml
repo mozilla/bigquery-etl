@@ -1,0 +1,28 @@
+---
+friendly_name: Clients Last Seen
+description: >-
+  Captures history of activity of each client in 28 day
+  windows for each submission date.
+
+  There will be one row per client per `submission_date`. A given client will
+  stop appearing for new dates if they do not send a `main` ping for 28 days.
+
+  Generally, this is a direct product of `clients_daily` and serves to make
+  certain query patterns more efficient by eliminating the need for
+  self-joins that would otherwise be needed to consider windows of activity.
+  As an exception, it pulls in `first_seen_date` and `second_seen_date` over all
+  time from `clients_first_seen` since `first_seen_date` is highly valuable for
+  providing a stable definition of when a profile was created.
+
+  See the
+  [Working with Bit Patterns in Clients Last Seen]
+  (https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html)
+  article on docs.telemetry.mozilla.org for more detailed notes on usage.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+
+  See also: `clients_daily`, `clients_first_seen`
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: firefox

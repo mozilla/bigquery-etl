@@ -1,7 +1,7 @@
 WITH all_branches AS (
   -- We need to determine all available branches for this experiment
-  SELECT
-    DISTINCT branch,
+  SELECT DISTINCT
+    branch,
     experiment
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
@@ -46,8 +46,8 @@ branches_per_window AS (
     branches
   CROSS JOIN
     (
-      SELECT
-        DISTINCT window_start
+      SELECT DISTINCT
+        window_start
       FROM
         `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
     )

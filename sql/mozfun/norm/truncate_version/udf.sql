@@ -8,7 +8,7 @@ RETURNS STRING AS (
   WHEN
     truncation_level = "major"
   THEN
-    REGEXP_EXTRACT(os_version, r"^([0-9]+).*", "\\1")
+    REGEXP_EXTRACT(os_version, r"^([0-9]+).*")
   ELSE
     NULL
   END

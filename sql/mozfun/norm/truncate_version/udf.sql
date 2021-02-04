@@ -4,7 +4,7 @@ RETURNS STRING AS (
   WHEN
     truncation_level = "minor"
   THEN
-    REGEXP_REPLACE(os_version, r"^([0-9]+[.]?[0-9]+).*", "\\1")
+    REGEXP_EXTRACT(os_version, r"^([0-9]+[.]?[0-9]+).*")
   WHEN
     truncation_level = "major"
   THEN

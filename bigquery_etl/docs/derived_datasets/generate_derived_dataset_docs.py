@@ -40,33 +40,33 @@ def generate_derived_dataset_docs(out_dir, project_dir):
             for root, dirs, files in os.walk(Path(project_dir) / table):
                 # show views in an alphabetical order
                 dirs.sort()
+                if dirs:
+                    continue
+                dataset_name = root.split("/")[-1]
+                source_urls["Source"] = f"{SOURCE_URL}/{root}"
 
-                if dirs == []:
-                    dataset_name = root.split("/")[-1]
-                    source_urls["Source"] = f"{SOURCE_URL}/{root}"
+                metadata = {}
+                if METADATA_FILE in files:
+                    source_urls["Metadata"] = f"{SOURCE_URL}/{root}/{METADATA_FILE}"
+                    with open(os.path.join(root, METADATA_FILE)) as stream:
+                        try:
+                            metadata = yaml.safe_load(stream)
+                        except yaml.YAMLError as error:
+                            print(error)
+                if VIEW_FILE in files:
+                    source_urls["View"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
 
-                    metadata = {}
-                    if METADATA_FILE in files:
-                        source_urls["Metadata"] = f"{SOURCE_URL}/{root}/{METADATA_FILE}"
-                        with open(os.path.join(root, METADATA_FILE)) as stream:
-                            try:
-                                metadata = yaml.safe_load(stream)
-                            except yaml.YAMLError as error:
-                                print(error)
-                    if VIEW_FILE in files:
-                        source_urls["View"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
+                file_loader = FileSystemLoader(
+                    "bigquery_etl/docs/derived_datasets/templates"
+                )
+                # Set up a new template environment
+                env = Environment(loader=file_loader)
+                # Create template with the markdown source text
+                template = env.get_template("table.md")
 
-                    file_loader = FileSystemLoader(
-                        "bigquery_etl/docs/derived_datasets/templates"
-                    )
-                    # Set up a new template environment
-                    env = Environment(loader=file_loader)
-                    # Create template with the markdown source text
-                    template = env.get_template("table.md")
-
-                    output = template.render(
-                        metadata=metadata,
-                        table_name=dataset_name,
-                        source_urls=source_urls,
-                    )
-                    dataset_doc.write(output)
+                output = template.render(
+                    metadata=metadata,
+                    table_name=dataset_name,
+                    source_urls=source_urls,
+                )
+                dataset_doc.write(output)

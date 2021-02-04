@@ -94,72 +94,68 @@ def main():
 
     # move files to docs/
     for project_dir in args.project_dirs:
-        if os.path.isdir(project_dir):
-            for root, _dirs, files in os.walk(project_dir):
-                if DOCS_FILE in files:
-                    # copy doc file to output and replace example references
-                    src = os.path.join(root, DOCS_FILE)
-                    # remove empty strings from path parts
-                    path_parts = list(filter(None, root.split(os.sep)))
-                    name = path_parts[-1]
-                    path = Path(os.sep.join(path_parts[1:-1]))
-                    if project_dir == "sql/mozfun/":
-                        if os.path.split(root)[1] == "":
-                            # project level-doc file
-                            project_doc_dir = out_dir / path / name
-                            project_doc_dir.mkdir(parents=True, exist_ok=True)
-                            dest = project_doc_dir / "about.md"
-                            dest.write_text(load_with_examples(src))
-                        else:
-                            description = None
-                            if METADATA_FILE in files:
-                                source_link = f"{SOURCE_URL}/{root}"
-                                edit_link = f"{EDIT_URL}/{root}/{METADATA_FILE}"
+        if not os.path.isdir(project_dir):
+            continue
 
-                                with open(os.path.join(root, METADATA_FILE)) as stream:
-                                    try:
-                                        description = yaml.safe_load(stream).get(
-                                            "description", None
-                                        )
-                                    except yaml.YAMLError:
-                                        pass
-                            # dataset or UDF level doc file
-                            if UDF_FILE in files or PROCEDURE_FILE in files:
-                                # UDF-level doc; append to dataset doc
-                                dataset_name = os.path.basename(path)
-                                dataset_doc = (
-                                    out_dir / path.parent / f"{dataset_name}.md"
-                                )
-                                docfile_content = load_with_examples(src)
-                                with open(dataset_doc, "a") as dataset_doc_file:
-                                    dataset_doc_file.write("\n\n")
-                                    # Inject a level-2 header with the UDF name & type
-                                    is_udf = UDF_FILE in files
-                                    routine_type = (
-                                        "UDF" if is_udf else "Stored Procedure"
-                                    )
-                                    dataset_doc_file.write(
-                                        f"## {name} ({routine_type})\n\n"
-                                    )
-                                    # Inject the "description" from metadata.yaml
-                                    if description:
-                                        formated = format_url(description)
-                                        dataset_doc_file.write(f"{formated}\n\n")
-                                    # Inject the contents of the README.md
-                                    dataset_doc_file.write(docfile_content)
-                                    # Add links to source and edit
-                                    sourced = add_source_and_edit(
-                                        source_link, edit_link
-                                    )
-                                    dataset_doc_file.write(f"{sourced}\n\n")
-                            else:
-                                # dataset-level doc; create a new doc file
-                                dest = out_dir / path / f"{name}.md"
-                                dest.write_text(load_with_examples(src))
+        for root, _dirs, files in os.walk(project_dir):
+            if DOCS_FILE in files:
+                # copy doc file to output and replace example references
+                src = os.path.join(root, DOCS_FILE)
+                # remove empty strings from path parts
+                path_parts = list(filter(None, root.split(os.sep)))
+                name = path_parts[-1]
+                path = Path(os.sep.join(path_parts[1:-1]))
+                if project_dir == "sql/mozfun/":
+                    if os.path.split(root)[1] == "":
+                        # project level-doc file
+                        project_doc_dir = out_dir / path / name
+                        project_doc_dir.mkdir(parents=True, exist_ok=True)
+                        dest = project_doc_dir / "about.md"
+                        dest.write_text(load_with_examples(src))
                     else:
-                        generate_derived_dataset_docs.generate_derived_dataset_docs(
-                            out_dir, project_dir
-                        )
+                        description = None
+                        if METADATA_FILE in files:
+                            source_link = f"{SOURCE_URL}/{root}"
+                            edit_link = f"{EDIT_URL}/{root}/{METADATA_FILE}"
+
+                            with open(os.path.join(root, METADATA_FILE)) as stream:
+                                try:
+                                    description = yaml.safe_load(stream).get(
+                                        "description", None
+                                    )
+                                except yaml.YAMLError:
+                                    pass
+                        # dataset or UDF level doc file
+                        if UDF_FILE in files or PROCEDURE_FILE in files:
+                            # UDF-level doc; append to dataset doc
+                            dataset_name = os.path.basename(path)
+                            dataset_doc = out_dir / path.parent / f"{dataset_name}.md"
+                            docfile_content = load_with_examples(src)
+                            with open(dataset_doc, "a") as dataset_doc_file:
+                                dataset_doc_file.write("\n\n")
+                                # Inject a level-2 header with the UDF name & type
+                                is_udf = UDF_FILE in files
+                                routine_type = "UDF" if is_udf else "Stored Procedure"
+                                dataset_doc_file.write(
+                                    f"## {name} ({routine_type})\n\n"
+                                )
+                                # Inject the "description" from metadata.yaml
+                                if description:
+                                    formated = format_url(description)
+                                    dataset_doc_file.write(f"{formated}\n\n")
+                                # Inject the contents of the README.md
+                                dataset_doc_file.write(docfile_content)
+                                # Add links to source and edit
+                                sourced = add_source_and_edit(source_link, edit_link)
+                                dataset_doc_file.write(f"{sourced}\n\n")
+                        else:
+                            # dataset-level doc; create a new doc file
+                            dest = out_dir / path / f"{name}.md"
+                            dest.write_text(load_with_examples(src))
+                else:
+                    generate_derived_dataset_docs.generate_derived_dataset_docs(
+                        out_dir, project_dir
+                    )
 
 
 if __name__ == "__main__":

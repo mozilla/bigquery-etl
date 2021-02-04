@@ -3,6 +3,7 @@ SELECT
   is_active,
   created_at,
   ended_at,
+  updated_at,
   type,
   provider,
 FROM

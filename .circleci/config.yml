@@ -185,6 +185,7 @@ workflows:
       - build-play-store-export
       - gcp-gcr/build-and-push-image:
           context: data-eng-airflow-gcr
+          docker-context: jobs/play-store-export/
           path: jobs/play-store-export/
           image: play-store-export
           requires:

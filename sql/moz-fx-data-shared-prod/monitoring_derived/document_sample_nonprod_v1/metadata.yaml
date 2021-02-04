@@ -1,0 +1,13 @@
+---
+friendly_name: Document Sample
+description: Document samples non-prod.
+owners:
+  - amiyaguchi@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_document_sample
+  date_partition_parameter: null
+  arguments: ["--append_table"]
+  referenced_tables: [['moz-fx-data-shared-prod', 'payload_bytes_decoded', '*']]

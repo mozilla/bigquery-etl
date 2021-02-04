@@ -1,0 +1,2 @@
+One-to-many mapping from country codes or non-standard names to a standardized country name.
+This table is intended to be used to normalize country values from third-party data sources.

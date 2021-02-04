@@ -1,0 +1,9 @@
+---
+friendly_name: Experimenter experiments
+description: Experimenter experiments periodically imported via the
+  Experimenter API.
+labels:
+  incremental: false
+  schedule: ten-minute
+owners:
+  - ascholtz@mozilla.com

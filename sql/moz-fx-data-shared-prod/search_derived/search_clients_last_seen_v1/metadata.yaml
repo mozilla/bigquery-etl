@@ -1,0 +1,12 @@
+---
+friendly_name: Search Clients Last Seen
+description: >-
+  Captures history of activity of each search client in 28 day
+  windows for each submission date.
+owners:
+  - frank@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_search
+  depends_on_past: true

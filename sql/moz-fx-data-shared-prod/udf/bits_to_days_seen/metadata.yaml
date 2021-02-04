@@ -1,0 +1,4 @@
+---
+description: Given a BYTE, get the number of days the user was seen.
+  NULL input returns NULL output.
+friendly_name: Bits To Days Seen

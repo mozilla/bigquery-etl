@@ -1,0 +1,12 @@
+---
+friendly_name: Impression Stats By Experiment
+description: Representation of tile impression statistics,
+ clustered by experiment_id to allow efficient analysis of
+ individual experiments
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: activity_stream
+  schedule: daily
+scheduling:
+  dag_name: bqetl_activity_stream

@@ -1,0 +1,550 @@
+raw_country,standardized_country
+(not set),(not set)
+af,Afghanistan
+Afghanistan,Afghanistan
+Africa,Africa
+ax,Aland Islands
+al,Albania
+Albania,Albania
+Algeria,Algeria
+dz,Algeria
+American Samoa,American Samoa
+as,American Samoa
+ad,Andorra
+Andorra,Andorra
+Angola,Angola
+ao,Angola
+ai,Anguilla
+Anguilla,Anguilla
+Anonymous Proxy,Anonymous Proxy
+A1,Anonymous Proxy
+Antarctica,Antarctica
+aq,Antarctica
+ag,Antigua & Barbuda
+Antigua & Barbuda,Antigua & Barbuda
+Antigua and Barbuda,Antigua & Barbuda
+ar,Argentina
+Argentina,Argentina
+am,Armenia
+Armenia,Armenia
+Aruba,Aruba
+aw,Aruba
+Asia,Asia
+AP,Asia / Pacific Region
+au,Australia
+Australia,Australia
+at,Austria
+Austria,Austria
+az,Azerbaijan
+Azerbaijan,Azerbaijan
+Bahamas,Bahamas
+bs,Bahamas
+Bahrain,Bahrain
+bh,Bahrain
+Bangladesh,Bangladesh
+bd,Bangladesh
+Barbados,Barbados
+bb,Barbados
+Belarus,Belarus
+by,Belarus
+be,Belgium
+Belgium,Belgium
+Belize,Belize
+bz,Belize
+Benin,Benin
+bj,Benin
+Bermuda,Bermuda
+bm,Bermuda
+Bhutan,Bhutan
+bt,Bhutan
+bo,Bolivia
+Bolivia,Bolivia
+Bonaire,"Bonaire, Saint Eustatius and Saba"
+bq,"Bonaire, Saint Eustatius and Saba"
+ba,Bosnia & Herzegovina
+Bosnia & Herzegovina,Bosnia & Herzegovina
+Bosnia Herzogovina,Bosnia & Herzegovina
+Botswana,Botswana
+bw,Botswana
+bv,Bouvet Island
+br,Brazil
+Brazil,Brazil
+British Indian Ocean Territory,British Indian Ocean Territory
+io,British Indian Ocean Territory
+British Virgin Islands,British Virgin Islands
+vg,British Virgin Islands
+Virgin Islands (Br.),British Virgin Islands
+bn,Brunei
+Brunei,Brunei
+Brunei Darussalam,Brunei
+bg,Bulgaria
+Bulgaria,Bulgaria
+bf,Burkina Faso
+Burkina Faso,Burkina Faso
+bi,Burundi
+Burundi,Burundi
+cv,Cabo Verde
+Cambodia,Cambodia
+kh,Cambodia
+Cameroon,Cameroon
+cm,Cameroon
+ca,Canada
+Canada,Canada
+Cape Verde,Cape Verde
+Caribbean Netherlands,Caribbean Netherlands
+Cayman Islands,Cayman Islands
+ky,Cayman Islands
+Central African Rep.,Central African Republic
+Central African Republic,Central African Republic
+cf,Central African Republic
+Chad,Chad
+td,Chad
+Chile,Chile
+cl,Chile
+China,China
+cn,China
+Christmas Island,Christmas Island
+cx,Christmas Island
+cc,Cocos Islands
+Cocos Islands,Cocos Islands
+co,Colombia
+Colombia,Colombia
+Comoros,Comoros
+km,Comoros
+cg,Congo
+Congo,Congo
+ck,Cook Islands
+Cook Islands,Cook Islands
+Costa Rica,Costa Rica
+cr,Costa Rica
+Côte d’Ivoire,Cote D Ivoire
+ci,Cote D Ivoire
+Cote D'Ivoire,Cote D Ivoire
+Croatia,Croatia
+hr,Croatia
+cu,Cuba
+Cuba,Cuba
+CuraÍ_ao,Curacao
+Curaçao,Curacao
+Cura͗‘_ao,Curacao
+cw,Curacao
+cy,Cyprus
+Cyprus,Cyprus
+Czech Republic,Czech Republic
+cz,Czechia
+Czechia,Czechia
+Democratic Republic of Timor-Leste,Democratic Republic of Timor-Leste
+cd,Democratic Republic of the Congo
+Congo - Kinshasa,Democratic Republic of the Congo
+Congo (DRC),Democratic Republic of the Congo
+Dem. Rep. of Congo,Democratic Republic of the Congo
+Denmark,Denmark
+dk,Denmark
+dj,Djibouti
+Djibouti,Djibouti
+dm,Dominica
+Dominica,Dominica
+do,Dominican Republic
+Dominican Republic,Dominican Republic
+ec,Ecuador
+Ecuador,Ecuador
+eg,Egypt
+Egypt,Egypt
+El Salvador,El Salvador
+sv,El Salvador
+Equatorial Guinea,Equatorial Guinea
+gq,Equatorial Guinea
+er,Eritrea
+Eritrea,Eritrea
+ee,Estonia
+Estonia,Estonia
+et,Ethiopia
+Ethiopia,Ethiopia
+Europe,Europe
+EU,Europe
+Falkland Islands (Islas Malvinas),Falkland Islands (Malvinas)
+Falkland Islands (Malvinas),Falkland Islands (Malvinas)
+fk,Falkland Islands (Malvinas)
+Faroe Islands,Faroe Islands
+fo,Faroe Islands
+Fiji,Fiji
+fj,Fiji
+fi,Finland
+Finland,Finland
+fr,France
+France,France
+French Guiana,French Guyana
+French Guyana,French Guyana
+gf,French Guyana
+French Polynesia,French Polynesia
+pf,French Polynesia
+tf,French Southern Territories
+ga,Gabon
+Gabon,Gabon
+Gambia,Gambia
+gm,Gambia
+ge,Georgia
+Georgia,Georgia
+de,Germany
+Germany,Germany
+gh,Ghana
+Ghana,Ghana
+gi,Gibraltar
+Gibraltar,Gibraltar
+gr,Greece
+Greece,Greece
+gl,Greenland
+Greenland,Greenland
+gd,Grenada
+Grenada,Grenada
+gp,Guadeloupe
+Guadeloupe,Guadeloupe
+gu,Guam
+Guam,Guam
+gt,Guatemala
+Guatemala,Guatemala
+gg,Guernsey
+Guernsey,Guernsey
+gn,Guinea
+Guinea,Guinea
+Guinea-Bissau,Guinea-Bissau
+gw,Guinea-Bissau
+Guyana,Guyana
+gy,Guyana
+Haiti,Haiti
+ht,Haiti
+HM,Heard Island and McDonald Islands
+Holy See (Vatican City State),Holy See (Vatican City State)
+va,Holy See (Vatican City State)
+hn,Honduras
+Honduras,Honduras
+hk,Hong Kong
+Hong Kong,Hong Kong
+hu,Hungary
+Hungary,Hungary
+Iceland,Iceland
+is,Iceland
+in,India
+India,India
+id,Indonesia
+Indonesia,Indonesia
+ir,Iran
+Iran,Iran
+iq,Iraq
+Iraq,Iraq
+ie,Ireland
+Ireland,Ireland
+im,Isle of Man
+Isle of Man,Isle of Man
+il,Israel
+Israel,Israel
+it,Italy
+Italy,Italy
+Jamaica,Jamaica
+jm,Jamaica
+Japan,Japan
+jp,Japan
+je,Jersey
+Jersey,Jersey
+jo,Jordan
+Jordan,Jordan
+Kazakhstan,Kazakhstan
+kz,Kazakhstan
+ke,Kenya
+Kenya,Kenya
+ki,Kiribati
+Kiribati,Kiribati
+Kosovo,Kosovo
+XK,Kosovo
+Kuwait,Kuwait
+kw,Kuwait
+kg,Kyrgyzstan
+Kyrgyzstan,Kyrgyzstan
+la,Laos
+Lao People's Democratic Republic,Laos
+Laos,Laos
+Latvia,Latvia
+lv,Latvia
+lb,Lebanon
+Lebanon,Lebanon
+Lesotho,Lesotho
+ls,Lesotho
+Liberia,Liberia
+lr,Liberia
+Libya,Libya
+ly,Libya
+li,Liechtenstein
+Liechtenstein,Liechtenstein
+Lithuania,Lithuania
+lt,Lithuania
+lu,Luxembourg
+Luxembourg,Luxembourg
+mo,Macao
+Macau,Macau
+Macedonia,Macedonia
+Macedonia (FYROM),Macedonia
+mk,Macedonia
+Madagascar,Madagascar
+mg,Madagascar
+Malawi,Malawi
+mw,Malawi
+Malaysia,Malaysia
+my,Malaysia
+Maldives,Maldives
+mv,Maldives
+Mali,Mali
+ml,Mali
+Malta,Malta
+mt,Malta
+Marshall Islands,Marshall Islands
+mh,Marshall Islands
+Martinique,Martinique
+mq,Martinique
+Mauritania,Mauritania
+mr,Mauritania
+Mauritius,Mauritius
+mu,Mauritius
+Mayotte,Mayotte
+yt,Mayotte
+Mexico,Mexico
+mx,Mexico
+fm,Micronesia
+Micronesia,Micronesia
+md,Moldova
+Moldova,Moldova
+mc,Monaco
+Monaco,Monaco
+mn,Mongolia
+Mongolia,Mongolia
+me,Montenegro
+Montenegro,Montenegro
+Montserrat,Montserrat
+ms,Montserrat
+ma,Morocco
+Morocco,Morocco
+Mozambique,Mozambique
+mz,Mozambique
+mm,Myanmar
+Myanmar,Myanmar
+Myanmar (Burma),Myanmar (Burma)
+na,Namibia
+Namibia,Namibia
+Nauru,Nauru
+nr,Nauru
+Nepal,Nepal
+np,Nepal
+Netherlands,Netherlands
+nl,Netherlands
+Netherlands Antilles,Netherlands Antilles
+nc,New Caledonia
+New Caledonia,New Caledonia
+New Zealand,New Zealand
+nz,New Zealand
+ni,Nicaragua
+Nicaragua,Nicaragua
+ne,Niger
+Niger,Niger
+ng,Nigeria
+Nigeria,Nigeria
+Niue,Niue
+nu,Niue
+nf,Norfolk Island
+Norfolk Island,Norfolk Island
+North America,North America
+kp,North Korea
+North Korea,North Korea
+mp,Northern Mariana Islands
+Northern Mariana Islands,Northern Mariana Islands
+no,Norway
+Norway,Norway
+Oceania,Oceania
+Åland Islands,Oland Islands
+om,Oman
+Oman,Oman
+Pakistan,Pakistan
+pk,Pakistan
+Palau,Palau
+pw,Palau
+Palestine,Palestine
+ps,Palestine
+Palestinian Territory,Palestinian Territory
+pa,Panama
+Panama,Panama
+Papua New Guinea,Papua New Guinea
+pg,Papua New Guinea
+Paraguay,Paraguay
+py,Paraguay
+pe,Peru
+Peru,Peru
+ph,Philippines
+Philippines,Philippines
+Pitcairn,Pitcairn
+pn,Pitcairn
+pl,Poland
+Poland,Poland
+Portugal,Portugal
+pt,Portugal
+pr,Puerto Rico
+Puerto Rico,Puerto Rico
+qa,Qatar
+Qatar,Qatar
+Congo - Brazzaville,Republic of the Congo
+Congo (Republic),Republic of the Congo
+Réunion,Reunion
+re,Reunion
+Reunion,Reunion
+ro,Romania
+Romania,Romania
+ru,Russia
+Russia,Russia
+rw,Rwanda
+Rwanda,Rwanda
+bl,Saint Barthelemy
+St. Barthélemy,Saint Barthelemy
+Saint Helena,Saint Helena
+sh,Saint Helena
+kn,Saint Kitts and Nevis
+Saint Kitts and Nevis,Saint Kitts and Nevis
+lc,Saint Lucia
+Saint Lucia,Saint Lucia
+mf,Saint Martin
+St. Martin,Saint Martin
+sx,Saint Martin
+pm,Saint Pierre and Miquelon
+Saint Pierre and Miquelon,Saint Pierre and Miquelon
+Saint Vincent and the Grenadines,Saint Vincent and the Grenadines
+vc,Saint Vincent and the Grenadines
+Samoa,Samoa
+ws,Samoa
+San Marino,San Marino
+sm,San Marino
+São Tomé & Príncipe,Sao Tome and Principe
+Sao Tome and Principe,Sao Tome and Principe
+st,Sao Tome and Principe
+Satellite Provider,Satellite Provider
+A2,Satellite Provider
+sa,Saudi Arabia
+Saudi Arabia,Saudi Arabia
+Senegal,Senegal
+sn,Senegal
+rs,Serbia
+Serbia,Serbia
+sc,Seychelles
+Seychelles,Seychelles
+Sierra Leone,Sierra Leone
+sl,Sierra Leone
+sg,Singapore
+Singapore,Singapore
+Sint Maarten,Sint Maarten
+sk,Slovakia
+Slovakia,Slovakia
+si,Slovenia
+Slovenia,Slovenia
+sb,Solomon Islands
+Solomon Islands,Solomon Islands
+so,Somalia
+Somalia,Somalia
+South Africa,South Africa
+za,South Africa
+South America,South America
+gs,South Georgia and the South Sandwich Islands
+South Georgia and the South Sandwich Islands,South Georgia and the South Sandwich Islands
+kr,South Korea
+South Korea,South Korea
+South Sudan,South Sudan
+ss,South Sudan
+es,Spain
+Spain,Spain
+lk,Sri Lanka
+Sri Lanka,Sri Lanka
+St. Helena,St Helena
+St. Kitts & Nevis,St Kitts & Nevis
+St. Lucia,St Lucia
+St. Pierre & Miquelon,St Pierre & Miquelon
+St. Vincent & Grenadines,St Vincent & Grenadines
+sd,Sudan
+Sudan,Sudan
+sr,Suriname
+Suriname,Suriname
+sj,Svalbard & Jan Mayen
+Svalbard & Jan Mayen,Svalbard & Jan Mayen
+Svalbard and Jan Mayen,Svalbard & Jan Mayen
+Swaziland,Swaziland
+sz,Swaziland
+se,Sweden
+Sweden,Sweden
+ch,Switzerland
+Switzerland,Switzerland
+sy,Syria
+Syria,Syria
+Taiwan,Taiwan
+tw,Taiwan
+Tajikistan,Tajikistan
+tj,Tajikistan
+Tanzania,Tanzania
+tz,Tanzania
+th,Thailand
+Thailand,Thailand
+Timor-Leste,Timor-Leste
+tl,Timor-Leste
+tg,Togo
+Togo,Togo
+tk,Tokelau
+Tokelau,Tokelau
+to,Tonga
+Tonga,Tonga
+Trinidad & Tobago,Trinidad & Tobago
+tt,Trinidad & Tobago
+tn,Tunisia
+Tunisia,Tunisia
+tr,Turkey
+Turkey,Turkey
+tm,Turkmenistan
+Turkmenistan,Turkmenistan
+tc,Turks & Caicos Islands
+Turks & Caicos Islands,Turks & Caicos Islands
+Turks and Caicos Islands,Turks & Caicos Islands
+Tuvalu,Tuvalu
+tv,Tuvalu
+U.S. Virgin Islands,US Virgin Islands
+vi,US Virgin Islands
+"Virgin Islands, U.S.",US Virgin Islands
+United States,USA
+United States of America,USA
+us,USA
+USA,USA
+ug,Uganda
+Uganda,Uganda
+ua,Ukraine
+Ukraine,Ukraine
+ae,United Arab Emirates
+United Arab Emirates,United Arab Emirates
+gb,United Kingdom
+uk,United Kingdom
+United Kingdom,United Kingdom
+um,United States Minor Outlying Islands
+United States Minor Outlying Islands,United States Minor Outlying Islands
+zz,Unknown
+Uruguay,Uruguay
+uy,Uruguay
+uz,Uzbekistan
+Uzbekistan,Uzbekistan
+Vanuatu,Vanuatu
+vu,Vanuatu
+ve,Venezuela
+Venezuela,Venezuela
+Vietnam,Vietnam
+vn,Vietnam
+Wallis & Futuna,Wallis & Futuna
+Wallis and Futuna,Wallis & Futuna
+wf,Wallis & Futuna
+eh,Western Sahara
+Western Sahara,Western Sahara
+ye,Yemen
+Yemen,Yemen
+Zambia,Zambia
+zm,Zambia
+Zimbabwe,Zimbabwe
+zw,Zimbabwe
+Worldwide,worldwide
+worldwide,worldwide

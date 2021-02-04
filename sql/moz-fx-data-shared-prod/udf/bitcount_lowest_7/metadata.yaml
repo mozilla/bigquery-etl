@@ -1,0 +1,3 @@
+---
+description: This function counts the 1s in lowest 7 bits of an INT64
+friendly_name: Bitcount Lowest 7

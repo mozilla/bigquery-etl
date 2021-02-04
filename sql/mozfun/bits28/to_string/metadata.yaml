@@ -1,0 +1,10 @@
+---
+friendly_name: Bit28 To String
+description: |
+  Convert an INT64 field into a 28-character string representing
+  the individual bits.
+
+  Implementation based on https://stackoverflow.com/a/51600210/1260237
+
+  See detailed docs for the bits28 suite of functions:
+  https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference

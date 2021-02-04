@@ -1,0 +1,6 @@
+---
+description: Returns the most frequently occuring element in
+ an array of json-compatible elements. In the case of multiple
+ values tied for the highest count, it returns the value that
+ appears latest in the array. Nulls are ignored.
+friendly_name: JSON Mode Last

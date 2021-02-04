@@ -1,0 +1,14 @@
+---
+friendly_name: Structured missing columns
+description: >
+  Generates the list of missing columns in structured datasets.
+owners:
+  - amiyaguchi@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', '*_stable', '*']

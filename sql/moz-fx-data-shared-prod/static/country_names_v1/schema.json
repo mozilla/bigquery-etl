@@ -1,0 +1,14 @@
+[
+  {
+    "name": "name",
+    "description": "An official or common country name; a single country may appear with multiple names",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "code",
+    "description": "ISO 3166 alpha-2 country code",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  }
+]

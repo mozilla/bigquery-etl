@@ -1,0 +1,5 @@
+---
+description: |
+  Returns a custom build id generated from the build hour of a Fenix build.
+friendly_name: Format fenix builds into a custom build id representing
+ build hour

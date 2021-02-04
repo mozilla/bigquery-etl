@@ -1,0 +1,5 @@
+---
+description: Only for use by the LTV Revenue join.  Maps country
+  codes to the codes we have in the revenue dataset. Buckets
+  small Bing countries into "other".
+friendly_name: Map Revenue Country

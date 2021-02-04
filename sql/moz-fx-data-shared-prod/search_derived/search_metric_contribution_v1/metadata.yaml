@@ -1,0 +1,14 @@
+---
+friendly_name: Search Metric Contribution
+description: >
+  A table helps us look at question in 28 day
+  windows for each submission date: "What percent of one search
+  metirc (ad clicks, search with ads, sap, active hours) are contributed
+  by users in the top [10, 20, 30] percent of the (ad clicks, search with
+  ads, sap, active hours) distribution?"
+owners:
+  - bmiroglio@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_search

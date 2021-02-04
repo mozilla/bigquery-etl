@@ -1,0 +1,19 @@
+---
+friendly_name: FxA Log Device Command Events
+description: >-
+  A subset of FxA auth server logs related to "send tab" activity.
+
+  See https://bugzilla.mozilla.org/show_bug.cgi?id=1649074
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  # This query references secret keys that are not available for dry runs,
+  # so we must explicitly write out dependencies. In this case, the query
+  # depends only on fxa logs produced via Stackdriver integration, so no other
+  # scheduled tasks are involved and the referenced_tables list is empty.
+  referenced_tables: []

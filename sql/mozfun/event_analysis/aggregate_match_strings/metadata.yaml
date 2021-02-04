@@ -1,0 +1,6 @@
+---
+description: >
+  Given an array of strings that each match a single event,
+  aggregate those into a single regex string that will match
+  any of the events.
+friendly_name: Event Analysis Aggregate Match Strings

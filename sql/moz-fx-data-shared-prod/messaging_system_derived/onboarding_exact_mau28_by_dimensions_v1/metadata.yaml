@@ -1,0 +1,12 @@
+---
+friendly_name: Messaging System Onboarding Exact MAU by Dimensions
+description: >
+  Monthly active users using Onboarding aggregated across unique
+  sets of dimensions.
+owners:
+  - najiang@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_messaging_system
+  task_name: messaging_system_onboarding_exact_mau28_by_dimensions

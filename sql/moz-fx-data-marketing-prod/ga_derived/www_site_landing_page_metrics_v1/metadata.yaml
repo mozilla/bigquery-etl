@@ -1,0 +1,9 @@
+description: Aggregated metrics for the www.mozilla.org landing page
+friendly_name: WWW Site Landing Page Metrics
+labels:
+  incremental: true
+  schedule: daily
+owners:
+  - bewu@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived

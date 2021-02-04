@@ -1,0 +1,9 @@
+---
+friendly_name: Get Key with NULL
+description: >-
+  Fetch the value associated with a given key from an array of
+  key/value structs.
+
+  Because map types aren't available in BigQuery, we model maps as arrays
+  of structs instead, and this function provides map-like access to such fields.
+  This version matches NULL keys as well.

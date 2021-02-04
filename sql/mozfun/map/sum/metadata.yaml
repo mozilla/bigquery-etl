@@ -1,0 +1,6 @@
+---
+description: Return the sum of values by key in an array of map entries. The
+ expected schema for entries is ARRAY<STRUCT<key ANY TYPE, value ANY TYPE>>,
+ where the type for value must be supported by SUM, which allows numeric
+ data types INT64, NUMERIC, and FLOAT64.
+friendly_name: Map Sum

@@ -1,0 +1,12 @@
+---
+description: >
+  Create a view that queries the `events_daily` table.
+  This view currently supports both funnels and event
+  counts.
+
+  Funnels are created as a struct, with each step in the
+  funnel as a boolean column in the struct, indicating
+  whether the user completed that step on that day.
+
+  Event counts are simply integers.
+friendly_name: Create Events View

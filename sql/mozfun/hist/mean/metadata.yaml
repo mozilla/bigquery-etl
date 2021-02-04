@@ -1,0 +1,7 @@
+---
+description: |
+  Given histogram h, return floor(mean) of the measurements in the bucket.
+  That is, the histogram sum divided by the number of measurements taken.
+
+  https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307
+friendly_name: Histogram Mean

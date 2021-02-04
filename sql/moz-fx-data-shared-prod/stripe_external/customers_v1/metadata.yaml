@@ -1,0 +1,20 @@
+---
+friendly_name: Stripe Customers
+description: Stripe Customers as of UTC midnight
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: stripe
+  schedule: daily
+scheduling:
+  dag_name: bqetl_stripe
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter:
+  parameters:
+    - "date:DATE:{{ds}}"
+  depends_on:
+    - dag_name: stripe
+      task_id: stripe_import_events
+      schedule_interval: daily
+  referenced_tables: []

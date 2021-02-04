@@ -1,0 +1,17 @@
+---
+friendly_name: Addon Aggregates
+description: >-
+  Addon usages by clients, aggregated across unique sets of dimensions
+  and partitioned by day
+owners:
+  - bmiroglio@mozilla.com
+labels:
+  application: addons
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_addons
+  # provide this value so that DAG generation does not have to dry run the
+  # query to get it, and that would be slow because main_v4 is referenced
+  referenced_tables: [['moz-fx-data-shared-prod', 'telemetry_stable',
+                       'main_v4']]

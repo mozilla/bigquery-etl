@@ -1,0 +1,11 @@
+---
+friendly_name: Experiments Daily Active Clients
+description: >
+  A daily number of active clients per experiment, partitioned by day.
+owners:
+  - ssuh@mozilla.com
+labels:
+  application: experiments
+  schedule: daily
+scheduling:
+  dag_name: bqetl_experiments_daily

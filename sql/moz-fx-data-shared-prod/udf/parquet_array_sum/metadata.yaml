@@ -1,0 +1,5 @@
+---
+description: Sum an array from a parquet-derived field.
+  These are lists of an `element`
+  that contain the field value.
+friendly_name: Parquet Array Sum

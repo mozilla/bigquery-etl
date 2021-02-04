@@ -1,0 +1,7 @@
+---
+description: This is a performance optimization compared to the more
+  general mozfun.hist.extract for cases where only the histogram sum
+  is needed.  It must support all the same format variants as
+  mozfun.hist.extract but this simplification is necessary to keep
+  the main_summary query complexity in check.
+friendly_name: Extract Histogram Sum

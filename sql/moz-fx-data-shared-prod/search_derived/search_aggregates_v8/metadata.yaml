@@ -1,0 +1,11 @@
+---
+friendly_name: Search Aggregates
+description: >-
+  Daily search clients, aggregated across unique sets of dimensions
+  and partitioned by day
+owners:
+  - bewu@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_search

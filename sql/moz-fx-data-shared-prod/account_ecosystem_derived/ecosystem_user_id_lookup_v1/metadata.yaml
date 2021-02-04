@@ -1,0 +1,28 @@
+---
+friendly_name: Ecosystem User ID Lookup
+description: >
+  Lookup table of ecosystem_user_id to canonical_id.
+
+  The canonical_id is the first ecosystem_user_id value observed for each user.
+  Each ecosystem_user_id ever observed is guaranteed to appear exactly once.
+  Many ecosystem_user_id values may map to the same canonical_id since the
+  value associated with a user changes whenever the user changes their password.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: aet
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_account_ecosystem
+  depends_on_past: true
+  referenced_tables:
+    - [
+        "moz-fx-data-shared-prod",
+        "firefox_accounts_stable",
+        "account_ecosystem_v1",
+      ]
+  # This is an unpartitioned table where the script adds rows via INSERT INTO,
+  # thus the custom settings below.$
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]

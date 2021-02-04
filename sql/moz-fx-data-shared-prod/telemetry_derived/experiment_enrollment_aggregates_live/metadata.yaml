@@ -1,0 +1,6 @@
+friendly_name: Experiment Enrollment Aggregates Live
+description: > 
+  View combining daily, hourly and experiment enrollment aggregates
+  recents tables.
+labels:
+  incremental: false

@@ -1,0 +1,9 @@
+---
+description: Calculates a confidence interval using a jackknife resampling
+  technique for the mean of an array of values for various buckets;
+  see https://en.wikipedia.org/wiki/Jackknife_resampling  Users must
+  specify the number of expected buckets as the first parameter to guard against
+  the case where empty buckets lead to an array with missing elements.  Usage
+  generally involves first calculating an aggregate per bucket, then
+  aggregating over buckets, passing ARRAY_AGG(metric) to this function.
+friendly_name: Jackknife Mean Ci

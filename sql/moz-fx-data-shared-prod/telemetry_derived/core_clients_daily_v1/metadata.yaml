@@ -1,0 +1,13 @@
+---
+friendly_name: Core Clients Daily
+description: >
+  A daily aggregate of baseline and metrics pings from
+  each client sending core pings,
+  partitioned by day
+owners:
+  - jklukas@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_core
+  priority: 75

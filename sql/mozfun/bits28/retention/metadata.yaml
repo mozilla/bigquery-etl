@@ -1,0 +1,5 @@
+---
+friendly_name: Bits28 Retention
+description: >-
+  Return a nested struct providing booleans indicating whether a given client
+  was active various time periods based on the passed bit pattern.

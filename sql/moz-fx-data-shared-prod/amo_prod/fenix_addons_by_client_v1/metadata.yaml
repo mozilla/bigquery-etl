@@ -1,0 +1,14 @@
+---
+friendly_name: Fenix addons by client
+description: >-
+  Clients_daily-like table on top of the various Firefox for Android channels
+  that records only the dimensions and addon info necessary to power the daily
+  amo_stats_dau_v2 query.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: amo
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_amo_stats

@@ -1,0 +1,15 @@
+---
+friendly_name: Events Daily
+description: Packed event representation with one-row per-client
+owners:
+  - frank@mozilla.com
+labels:
+  application: fenix
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_fenix_event_rollup
+  referenced_tables: [
+    ['moz-fx-data-shared-prod', 'org_mozilla_firefox', 'event_types_v1'],
+    ['moz-fx-data-shared-prod', 'org_mozilla_firefox_stable', 'events_v1']
+  ]

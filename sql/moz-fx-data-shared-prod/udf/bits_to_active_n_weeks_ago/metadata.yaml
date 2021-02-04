@@ -1,0 +1,5 @@
+---
+description: Given a BYTE and an INT64, return whether
+  the user was active that many weeks ago.  NULL input
+  returns NULL output.
+friendly_name: Bits To Active N Weeks Ago

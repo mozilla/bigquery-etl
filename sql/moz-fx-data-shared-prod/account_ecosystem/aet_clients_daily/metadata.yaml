@@ -1,0 +1,16 @@
+---
+friendly_name: AET Clients Daily
+description: >
+  One row per user per service per day, showing metrics across services.
+
+  The `user_id` and `client_id` are directly related to the
+  `ecosystem_user_id` and `ecosystem_client_id` primitive
+  identifiers for Account Ecosystem Telemetry, but are abstracted
+  to prevent fingerprinting and to provide continuity across
+  user password reset events. In this view, we are guaranteed that
+  a logical user is represented by a consistent `user_id` over time.
+
+  For rows representing client telemetry, this view looks up `user_id`
+  at runtime based on `client_id` so that we can have `user_id` values
+  present for any client that has ever logged in to FxA, even for older
+  rows before the first login.

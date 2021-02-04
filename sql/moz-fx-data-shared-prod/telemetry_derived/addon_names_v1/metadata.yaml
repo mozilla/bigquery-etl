@@ -1,0 +1,20 @@
+---
+friendly_name: Addon Names
+description: Addon IDs, names and number of occurences.
+owners:
+  - bmiroglio@mozilla.com
+labels:
+  application: addons
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_addons
+  # This is an unpartitioned table that we recreate each day based on the
+  # previous day's addon data in main pings, thus the odd combination of
+  # parameters below.
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+  # provide this value so that DAG generation does not have to dry run the
+  # query to get it, and that would be slow because main_v4 is referenced
+  referenced_tables: [['moz-fx-data-shared-prod', 'telemetry_stable',
+                       'main_v4']]

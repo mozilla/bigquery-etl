@@ -1,0 +1,12 @@
+---
+friendly_name: Firefox Non-desktop Exact MAU
+description: >
+  Monthly active users with non-desktop clients.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: nondesktop
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_nondesktop

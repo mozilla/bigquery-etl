@@ -1,0 +1,14 @@
+---
+friendly_name: FxA Auth Bounce Events
+description: Selected Amplitude events extracted from FxA auth_bounce
+ server logs
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+  referenced_tables: []

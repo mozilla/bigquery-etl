@@ -1,0 +1,12 @@
+---
+friendly_name: Mobile Search Clients Last Seen
+description: >-
+  Captures search activity of a single mobile client in the past 365 days
+  for each submission date.
+owners:
+  - bewu@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_mobile_search
+  depends_on_past: true

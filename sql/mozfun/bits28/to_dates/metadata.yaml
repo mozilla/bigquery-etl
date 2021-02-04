@@ -1,0 +1,7 @@
+---
+friendly_name: Bits28 To Dates
+description: |
+  Convert a bit pattern into an array of the dates is represents.
+
+  See detailed docs for the bits28 suite of functions:
+  https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference

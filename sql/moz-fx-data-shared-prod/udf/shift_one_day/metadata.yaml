@@ -1,0 +1,3 @@
+---
+description: Returns the bitfield shifted by one day, 0 for NULL
+friendly_name: Shift One Day

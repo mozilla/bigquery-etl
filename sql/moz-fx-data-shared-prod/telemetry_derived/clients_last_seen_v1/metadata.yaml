@@ -1,0 +1,24 @@
+---
+friendly_name: Clients Last Seen
+description: >
+  Captures history of activity of each client in 28 day
+  windows for each submission date.
+
+  Generally, this is direct product of clients_daily and serves to make
+  certain query patterns more efficient by eliminating the need for
+  self-joins that would otherwise be needed to consider windows of activity.
+  As an exception, it pulls in first_seen_date and second_seen_date over all
+  time from clients_first_seen since first_seen_date is highly valuable for
+  providing a stable definition of when a profile was created.
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: firefox
+  schedule: daily
+scheduling:
+  dag_name: bqetl_main_summary
+  priority: 85
+  start_date: '2019-04-15'
+  allow_field_addition_on_date: '2020-10-20'
+  email: ['dthorn@mozilla.com', 'jklukas@mozilla.com']
+  depends_on_past: true

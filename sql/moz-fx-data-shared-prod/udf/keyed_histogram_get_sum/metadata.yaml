@@ -1,0 +1,5 @@
+---
+description: Take a keyed histogram of type STRUCT<key STRING,
+  value STRING>, extract the histogram of the given key, and
+  return the sum value
+friendly_name: Keyed Histogram Get Sum

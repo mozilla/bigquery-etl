@@ -1,0 +1,6 @@
+---
+description: >
+  Given an event index string, create a
+  match string that is an exact match
+  in the events_daily table.
+friendly_name: Event Analysis Event Index To Match String

@@ -1,0 +1,17 @@
+---
+friendly_name: AMO Stats DAU
+description: >-
+  Daily user statistics to power addons.mozilla.org stats pages.
+  See bug 1572873.
+
+  Each row in this table represents a particular addon on a particular day
+  and provides all the information needed to populate the various
+  "Daily Users" plots for the AMO stats dashboard.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: amo
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_amo_stats

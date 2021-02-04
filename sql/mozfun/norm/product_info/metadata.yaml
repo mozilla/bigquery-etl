@@ -1,0 +1,35 @@
+---
+friendly_name: Normalize Product Info
+description: |
+  Returns a normalized `product` name and a `canonical_name` for a product
+  based on the raw `app_name` and `normalized_os` values that appear in pings.
+
+  The returned `product` name is intended to be readable and unambiguous, but
+  short and easy to type. This value is suitable for use as a key in derived
+  tables.
+
+  The returned `canonical_name` is more verbose and is suited for displaying
+  in visualizations.
+
+  The returned struct also contains boolean `contributes_to_2020_kpi` as the
+  canonical reference for whether the given application is included in KPI
+  reporting. Additional fields may be added for future years.
+
+  The `normalized_os` value that's passed in should be the top-level
+  `normalized_os` value present in any ping table or you may want
+  to wrap a raw value in `mozfun.norm.os`
+  like `mozfun.norm.product_info(app_name, mozfun.norm.os(os))`.
+
+  For legacy telemetry pings like `main` ping for desktop and `core` ping for
+  mobile products, `app_name` should come from the submission URI (stored as
+  `metadata.uri.app_name` in BigQuery ping tables).
+
+  For Glean pings, the concept of an `app_name` doesn't exist, since pings
+  from different applications are routed to different BigQuery datasets.
+  Instead, the `app_name` send in for Glean pings should be the same value as
+  what's expected for `product`. So, a view on top of pings from Fenix should
+  pass in "Fenix" for `app_name`.
+
+  This function also tolerates passing in a `product` value as `app_name` so
+  that this function is still useful for derived tables which have thrown away
+  the raw `app_name` value.

@@ -1,0 +1,21 @@
+---
+friendly_name: SSL Ratios
+description: >-
+  Percentages of page loads Firefox users have performed that were
+  conducted over SSL broken down by country.
+owners:
+  - chutten@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  public_json: true
+  public_bigquery: true
+  review_bugs: 
+   - 1414839
+  incremental_export: false
+scheduling:
+  dag_name: bqetl_ssl_ratios
+  # provide this value so that DAG generation does not have to dry run the
+  # query to get it, and that would be slow because main_v4 is referenced
+  referenced_tables: [['moz-fx-data-shared-prod', 'telemetry_stable',
+                       'main_v4']]

@@ -1,0 +1,11 @@
+---
+friendly_name: Deletion Request Volume
+description: >
+  A daily count of deletion request pings by document namespace
+owners:
+  - dthorn@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_deletion_request_volume
+  referenced_tables: [['moz-fx-data-shared-prod', 'payload_bytes_decoded', '*']]

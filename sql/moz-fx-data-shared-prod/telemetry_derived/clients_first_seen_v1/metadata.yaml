@@ -1,0 +1,23 @@
+---
+friendly_name: Clients first seen
+description: >-
+  Identical in schema to clients_daily except that each client appears only
+  once over all time; includes fields first_seen_date and second_seen_date
+  for determining user "activation"
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_main_summary
+  start_date: '2020-05-05'
+  allow_field_addition_on_date: '2020-10-20'
+  priority: 80
+  depends_on_past: true
+  # This query updates the entire existing table every day rather than appending
+  # a new partition, so we need to disable date_partition_parameter and instead
+  # pass submission_date as a generic param.
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]

@@ -1,0 +1,26 @@
+---
+friendly_name: AET Logging Users Daily
+description: >
+  One row per canonical_id per oauth service per day aggregating
+  all AET events received for that user.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: aet
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_account_ecosystem
+  # We access a restricted table for getting an HMAC key, so cannot dry run
+  # and must explicitly list referenced tables.
+  referenced_tables:
+    - [
+        "moz-fx-data-shared-prod",
+        "firefox_accounts_stable",
+        "account_ecosystem_v1",
+      ]
+    - [
+        "moz-fx-data-shared-prod",
+        "account_ecosystem_derived",
+        "ecosystem_user_id_lookup_v1",
+      ]

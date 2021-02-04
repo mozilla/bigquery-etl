@@ -1,0 +1,11 @@
+---
+friendly_name: FxA Amplitude Export
+description: >
+  Derived from FxA logs, this table contains active events and user property
+  updates for FxA users. A view of this table is exported to Amplitude.
+owners:
+  - frank@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily

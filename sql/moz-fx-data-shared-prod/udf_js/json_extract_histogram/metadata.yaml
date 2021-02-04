@@ -1,0 +1,6 @@
+---
+description: Returns a parsed struct from a JSON string representing a
+  histogram.  This implementation uses JavaScript and is provided for
+  performance comparison; see udf/udf_json_extract_histogram for a pure
+  SQL implementation that will likely be more usable in practice.
+friendly_name: Json Extract Histogram

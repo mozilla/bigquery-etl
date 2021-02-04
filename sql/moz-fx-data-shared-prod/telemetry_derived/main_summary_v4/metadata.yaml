@@ -1,0 +1,18 @@
+---
+friendly_name: Main Summary
+description: >
+  Main pings with only a subset of payload fields.
+owners:
+  - dthorn@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_main_summary
+  start_date: '2019-10-25'
+  priority: 90
+  # provide this value so that DAG generation does not have to dry run the
+  # query to get it, and that would be slow because main_v4 is referenced
+  referenced_tables: [['moz-fx-data-shared-prod', 'telemetry_stable',
+                       'main_v4']]
+  allow_field_addition_on_date: "2020-11-02"

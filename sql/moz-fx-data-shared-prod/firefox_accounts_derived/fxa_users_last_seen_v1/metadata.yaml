@@ -1,0 +1,13 @@
+---
+friendly_name: FxA Users Last Seen
+description: Usage aggregations per FxA user per day over a 28-day window
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_fxa_events
+  depends_on_past: true
+  start_date: '2019-04-23'

@@ -1,0 +1,15 @@
+---
+friendly_name: Stable Table Sizes
+description: >
+  Table sizes of stable tables, partitioned by day.
+owners:
+  - ascholtz@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', '*_stable', '*']
+    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']

@@ -1,0 +1,37 @@
+[
+  {
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP",
+    "description": "Time at which this test report was submitted"
+  },
+  {
+    "name": "test_run",
+    "type": "STRING",
+    "description": "ID of the test run"
+  },
+  {
+    "name": "test_name",
+    "type": "STRING",
+    "description": "Name of the test scenario"
+  },
+  {
+    "name": "test_outcome",
+    "type": "STRING",
+    "description": "Outcome of the test scenario; one of ERROR, FAILED, PASSED, SKIPPED, XFAILED, XPASSED"
+  },
+  {
+    "name": "test_duration_millis",
+    "type": "INT64",
+    "description": "Duration of the test scenario"
+  },
+  {
+    "name": "test_log_url",
+    "type": "STRING",
+    "description": "URL for viewing logs of this task instance in Airflow"
+  },
+  {
+    "name": "test_report",
+    "type": "STRING",
+    "description": "Markdown-formatted report for error or failed tests"
+  }
+]

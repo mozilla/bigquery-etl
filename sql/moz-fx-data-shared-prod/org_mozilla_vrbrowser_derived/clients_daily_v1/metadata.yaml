@@ -1,0 +1,13 @@
+---
+friendly_name: VR Browser Clients Daily
+description: >
+  A daily aggregate of baseline and metrics pings from each
+  Firefox Reality client, partitioned by day
+owners:
+  - jklukas@mozilla.com
+  - ascholtz@mozilla.com
+labels:
+  application: firefox-reality
+  schedule: daily
+scheduling:
+  dag_name: bqetl_vrbrowser

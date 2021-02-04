@@ -1,0 +1,50 @@
+---
+friendly_name: Normalize Fenix App Info
+description: |
+  Returns canonical, human-understandable identification info for Fenix sources.
+
+  The Glean telemetry library for Android by design routes pings based
+  on the Play Store appId value of the published application.
+  As of August 2020, there have been 5 separate Play Store appId
+   values associated with different builds of Fenix,
+   each corresponding to different datasets in BigQuery,
+  and the mapping of appId to logical app names
+  (Firefox vs. Firefox Preview) and channel names
+   (nightly, beta, or release) has changed over time; see the
+  [spreadsheet of naming history for Mozilla's mobile browsers](
+    https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0).
+
+  This function is intended as the source of truth for how to map a
+  specific ping in BigQuery to a logical app names and channel.
+  It should be expected that the output of this function may evolve
+  over time. If we rename a product or channel, we may choose to
+  update the values here so that analyses consistently get the new name.
+
+  The first argument (`app_id`) can be fairly fuzzy; it is tolerant
+  of actual Google Play Store appId values like 'org.mozilla.firefox_beta'
+  (mix of periods and underscores) as well as BigQuery dataset names
+  with suffixes like 'org_mozilla_firefox_beta_stable'.
+
+  The second argument (`app_build_id`) should be the value
+  in client_info.app_build.
+
+  The function returns a `STRUCT` that contains the logical `app_name`
+  and `channel` as well as the Play Store `app_id` in the canonical
+  form which would appear in Play Store URLs.
+
+  Note that the naming of Fenix applications changed on 2020-07-03,
+  so to get a continuous view of the pings associated with a logical
+  app channel, you may need to union together tables from multiple
+  BigQuery datasets. To see data for all Fenix channels together, it
+  is necessary to union together tables from all 5 datasets.
+  For basic usage information, consider using
+  `telemetry.fenix_clients_last_seen` which already handles the
+  union. Otherwise, see the example below as a template for how
+  construct a custom union.
+
+  Mapping of channels to datasets:
+
+  - release: `org_mozilla_firefox`
+  - beta: `org_mozilla_firefox_beta` (current) and `org_mozilla_fenix`
+  - nightly: `org_mozilla_fenix` (current), `org_mozilla_fennec_aurora`,
+  and `org_mozilla_fenix_nightly`

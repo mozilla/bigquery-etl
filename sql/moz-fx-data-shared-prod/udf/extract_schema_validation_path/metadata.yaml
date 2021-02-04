@@ -1,0 +1,4 @@
+---
+description: Return a path derived from an error message in
+ `payload_bytes_error`
+friendly_name: Extract Schema Validation Path

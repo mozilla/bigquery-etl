@@ -1,0 +1,27 @@
+friendly_name: Mozilla VPN FxA Login Flows
+description: >
+  A list of users that attempted to login to FxA, to sign up for or
+  login to Mozilla VPN.
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: mozilla_vpn
+  schedule: daily
+scheduling:
+  dag_name: bqetl_mozilla_vpn
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null
+  parameters:
+    - "date:DATE:{{ds}}"
+  referenced_tables:
+    - [
+        "moz-fx-data-shared-prod",
+        "firefox_accounts_derived",
+        "fxa_auth_events_v1",
+      ]
+    - [
+        "moz-fx-data-shared-prod",
+        "firefox_accounts_derived",
+        "fxa_content_events_v1",
+      ]

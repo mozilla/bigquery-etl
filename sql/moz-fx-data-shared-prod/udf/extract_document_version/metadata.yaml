@@ -1,0 +1,3 @@
+---
+description: Extract the document version from a table name e.g. _TABLE_SUFFIX.
+friendly_name: Extract Document Version

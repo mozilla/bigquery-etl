@@ -1,0 +1,7 @@
+---
+description: >
+  Extract the events and their counts from an events string.
+
+  This function explicitly ignores event properties, and
+  retrieves just the counts of the top-level events.
+friendly_name: Extract Event Counts

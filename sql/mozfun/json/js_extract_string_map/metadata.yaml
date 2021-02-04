@@ -1,0 +1,10 @@
+---
+friendly_name: JSON Extract String Map
+description: >-
+  Returns an array of key/value structs from a string representing a JSON map.
+
+  BigQuery Standard SQL JSON functions are insufficient to implement this
+  function, so JS is being used and it may not perform well with large or
+  numerous inputs.
+
+  Non-string non-null values are encoded as json.

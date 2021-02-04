@@ -1,0 +1,5 @@
+---
+description: Accepts a glean ping_info struct as input and returns
+ a modified struct that includes a few parsed or normalized
+ variants of the input fields.
+friendly_name: Normalize Glean Ping Info

@@ -1,0 +1,28 @@
+---
+friendly_name: Fenix Build To Datetime
+description: |
+  Convert the Fenix client_info.app_build-format string to a DATETIME.
+  May return NULL on failure.
+
+  Fenix originally used an [8-digit app_build format](
+    https://github.com/mozilla-mobile/fenix/blob/c7283447/automation/gradle/versionCode.gradle#L12-L16)
+
+  In short it is `yDDDHHmm`:
+
+   * y is years since 2018
+   * DDD is day of year, 0-padded, 001-366
+   * HH is hour of day, 00-23
+   * mm is minute of hour, 00-59
+
+  The last date seen with an 8-digit build ID is 2020-08-10.
+
+  Newer builds use a [10-digit format](
+    https://github.com/mozilla-mobile/fenix/blob/e6ee13dc/buildSrc/src/main/java/Config.kt#L55-L112)
+  where the integer represents a pattern consisting of 32 bits.
+  The 17 bits starting 13 bits from the left represent a number of hours since
+  UTC midnight beginning 2014-12-28.
+
+  This function tolerates both formats.
+
+  After using this you may wish to `DATETIME_TRUNC(result, DAY)` for grouping
+  by build date.

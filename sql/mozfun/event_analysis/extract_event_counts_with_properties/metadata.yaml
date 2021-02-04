@@ -1,0 +1,7 @@
+---
+description: >
+  Extract events with event properties and their associated counts.
+
+  Also extracts raw events and their counts. This allows for querying
+  with and without properties in the same dashboard.
+friendly_name: Extract Event Counts With Properties

@@ -1,0 +1,8 @@
+---
+friendly_name: JSON Extract Int Map
+description: >-
+  Returns an array of key/value structs from a string representing a JSON map.
+  Both keys and values are cast to integers.
+
+  This is the format for the "values" field in the desktop telemetry histogram
+  JSON representation.

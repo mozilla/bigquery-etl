@@ -1,0 +1,5 @@
+---
+description: For use by LTV revenue join only.
+  Maps the Bing country to a country code. Only keeps the
+  country codes we want to aggregate on.
+friendly_name: Map Bing Revenue Country To Country Code

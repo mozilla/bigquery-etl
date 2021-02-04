@@ -1,0 +1,28 @@
+---
+friendly_name: Mozilla VPN Waitlist
+description: >
+  A mirror of the waitlist table from the Mozilla VPN (Guardian)
+  CloudSQL database, updated daily to match the current state of
+  the table. The table history is not needed, because changes made
+  are not destructive, except in the case of self-serve
+  data deletion.
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: stripe
+  schedule: daily
+scheduling:
+  dag_name: bqetl_mozilla_vpn
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null
+  depends_on_past: true
+  parameters:
+    # The external_database_query argument in EXTERNAL_QUERY must
+    # be a literal string or query parameter, and cannot be generated
+    # at runtime using function calls like CONCAT or FORMAT, so the
+    # entire value must be provided as a STRING query parameter to
+    # handle specific dates:
+    - "external_database_query:STRING:SELECT * FROM vpn_waitlist
+  WHERE DATE(updated_at) = DATE '{{ds}}'"
+  referenced_tables: []

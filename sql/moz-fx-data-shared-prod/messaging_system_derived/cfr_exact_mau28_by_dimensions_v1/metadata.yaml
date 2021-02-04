@@ -1,0 +1,10 @@
+---
+friendly_name: Messaging System CFR Exact MAU by Dimensions
+description: >
+  Monthly active users using CFR aggregated across unique sets of dimensions.
+owners:
+  - najiang@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_messaging_system

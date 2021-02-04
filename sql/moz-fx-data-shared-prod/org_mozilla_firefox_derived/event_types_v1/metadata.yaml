@@ -1,0 +1,15 @@
+---
+friendly_name: Firefox Android Release Event Types
+description: Retrieve the set of [events, event_properties]
+ and record them in a table.
+owners:
+  - frank@mozilla.com
+labels:
+  application: firefox-android
+  incremental: false
+  schedule: daily
+# TODO: Uncomment this section to reschedule once logic is fixed.
+# See https://github.com/mozilla/bigquery-etl/pull/1624
+# scheduling:
+#   dag_name: bqetl_fenix_event_rollup
+#   depends_on_past: true

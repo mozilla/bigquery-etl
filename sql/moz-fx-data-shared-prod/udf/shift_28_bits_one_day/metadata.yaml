@@ -1,0 +1,3 @@
+---
+description: Shift input bits one day left and drop any bits beyond 28 days.
+friendly_name: Shift 28 Bits One Day

@@ -1,0 +1,9 @@
+---
+friendly_name: Smoot Usage New Profiles Compressed
+description: Compressed usage metrics for new profiles.
+owners:
+  - jklukas@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_gud

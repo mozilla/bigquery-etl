@@ -1,0 +1,16 @@
+---
+friendly_name: FxA Users Services Last Seen
+description: Usage aggregations per FxA user per FxA service
+ per day over a 28-day window
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+# # Descheduled for now. Last run was 2021-01-23.
+# # See https://github.com/mozilla/bigquery-etl/issues/1713
+# scheduling:
+#   dag_name: bqetl_fxa_events
+#   depends_on_past: true
+#   start_date: '2019-10-08'

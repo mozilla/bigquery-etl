@@ -1,0 +1,13 @@
+---
+friendly_name: Desktop Feature Usage
+description: >
+  Use of browser features by client_id and submission_date.
+  Feature fields are 1 or 0.  If no features are used for a
+  particular client_idXsubmission_date it is undefined whether
+  a row exists or not.
+owners:
+  - jmccrosky@mozilla.com
+labels:
+  application: firefox
+  incremental: true     # incremental queries add data to existing tables
+  schedule: daily       # scheduled in Airflow to run daily

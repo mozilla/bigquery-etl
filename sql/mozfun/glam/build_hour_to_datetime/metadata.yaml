@@ -1,0 +1,4 @@
+---
+description: |
+  Parses the custom build id used for Fenix builds in GLAM to a datetime.
+friendly_name: Parse custom build hours into a datetime

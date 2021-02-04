@@ -1,0 +1,17 @@
+---
+friendly_name: AET Desktop Clients Daily
+description: >
+  One row per desktop client per day aggregating all AET pings received
+  for that client.
+owners:
+  - jklukas@mozilla.com
+labels:
+  application: aet
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_account_ecosystem
+  # We access a restricted table for getting an HMAC key, so cannot dry run
+  # and must explicitly list referenced tables.
+  referenced_tables:
+    - ['moz-fx-data-shared-prod', 'telemetry_stable', 'account_ecosystem_v4']

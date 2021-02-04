@@ -1,0 +1,12 @@
+---
+friendly_name: Mobile Search Clients Daily
+description: >
+  A daily aggregate of baseline and metrics pings that have
+  searches from each mobile client, partitioned by day
+owners:
+  - bewu@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_mobile_search
+  allow_field_addition_on_date: 2020-07-13

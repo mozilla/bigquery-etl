@@ -1,0 +1,22 @@
+friendly_name: Clients Last Seen Joined
+description: >-
+  Captures history of activity of each client in 28 day
+  windows for each submission date, pulling usage criteria
+  from multiple ping types.
+
+  The clients_last_seen_v6 table is based on main pings only and serves as the
+  "driver" here, defining all the dimensions like geo, etc. We then do a
+  left join on clients_last_seen_event_v1 to pull in activity measures based on
+  event pings. A given client will appear in this table on a given only if
+  we received a main ping from that client on that day or in the preceding
+  27 days.
+labels:
+  application: firefox
+  schedule: daily
+owners:
+  - jklukas@mozilla.com
+scheduling:
+  dag_name: bqetl_main_summary
+  start_date: "2021-01-19"
+  priority: 85
+  depends_on_past: true

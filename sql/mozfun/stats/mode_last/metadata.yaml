@@ -1,0 +1,9 @@
+---
+description: |
+  Returns the most frequently occuring element in an array.
+
+  In the case of multiple values tied for the highest count, it returns
+  the value that appears latest in the array. Nulls are ignored.
+  See also: `stats.mode_last_retain_nulls`,
+  which retains nulls.
+friendly_name: Mode Last

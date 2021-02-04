@@ -1,0 +1,8 @@
+---
+description: >
+  Given an array of match strings, each representing a single
+  funnel step, aggregate them into a regex string that will
+  match only against the entire funnel.
+  If intermediate_steps is TRUE, this allows for there to be
+  events that occur between the funnel steps.
+friendly_name: Event Analysis Create Funnel Regex

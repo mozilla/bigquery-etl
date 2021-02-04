@@ -1,0 +1,4 @@
+---
+description: Combine entries from multiple maps, determine the value for
+ each key using mozfun.stats.mode_last.
+friendly_name: Map Mode Last

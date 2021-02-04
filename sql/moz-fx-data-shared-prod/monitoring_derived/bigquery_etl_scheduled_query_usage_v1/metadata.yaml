@@ -1,0 +1,12 @@
+---
+description: Number of accesses to destination tables of scheduled
+  bigquery-etl queries, partitioned by day.
+friendly_name: Bigquery-etl Scheduled Query Usage
+labels:
+  incremental: true
+  schedule: daily
+owners:
+  - ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring
+  arguments: ["--date", "{{ ds }}"]

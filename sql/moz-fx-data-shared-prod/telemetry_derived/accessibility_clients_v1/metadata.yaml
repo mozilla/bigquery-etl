@@ -1,0 +1,13 @@
+---
+friendly_name: Platform Accessibility Usage
+description: >
+  A daily number of platform accessibility clients (assistive technology),
+  partitioned by day.
+owners:
+  - yzenevich@mozilla.com
+labels:
+  application: firefox
+  schedule: daily
+scheduling:
+  dag_name: bqetl_desktop_platform
+  start_date: "2018-11-01"

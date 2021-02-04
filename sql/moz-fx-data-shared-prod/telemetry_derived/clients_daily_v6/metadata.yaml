@@ -1,7 +1,10 @@
 ---
 friendly_name: Clients Daily
-description: A daily aggregate of main pings from each Firefox
-  desktop client, partitioned by day
+description: >-
+  A daily aggregation over `main` pings from each Firefox
+  desktop client, partitioned by day.
+
+  See view: `telemetry.clients_daily`
 labels:
   application: firefox
   schedule: daily

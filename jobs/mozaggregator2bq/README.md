@@ -3,6 +3,10 @@
 A set of scripts for loading Firefox Telemetry aggregates into BigQuery. These
 aggregates power the Telemetry Dashboard and Evolution Viewer.
 
+This job was imported from
+[mozilla/mozaggregator2bq](https://github.com/mozilla/mozaggregator2bq). See the
+archived repository for historical commit logs.
+
 ## Overview
 
 Build the container and launch it:

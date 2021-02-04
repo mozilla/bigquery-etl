@@ -73,8 +73,8 @@ first_services_g AS (
   -- this means we have to use first_service_flow to join back on the original source table's flow_id,
   -- and take the first occurrence of `entrypoint` within the flow that the user first appeared in the service on.
 flows AS (
-  SELECT
-    DISTINCT s.first_service_flow,
+  SELECT DISTINCT
+    s.first_service_flow,
     FIRST_VALUE(f.entrypoint) OVER (
       PARTITION BY
         f.flow_id

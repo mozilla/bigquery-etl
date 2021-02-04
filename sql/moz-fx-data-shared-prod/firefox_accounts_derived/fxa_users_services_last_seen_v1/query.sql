@@ -69,8 +69,8 @@ previously_seen AS (
 ),
   --
 previously_seen_users AS (
-  SELECT
-    DISTINCT user_id
+  SELECT DISTINCT
+    user_id
   FROM
     previously_seen
 )

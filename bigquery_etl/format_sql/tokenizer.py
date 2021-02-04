@@ -53,6 +53,8 @@ TOP_LEVEL_KEYWORDS = [
     "ORDER BY",
     "OUTER JOIN",
     "PARTITION BY",
+    "RANGE BETWEEN",
+    "RANGE",
     "RIGHT JOIN",
     "RIGHT OUTER JOIN",
     "ROLLUP",

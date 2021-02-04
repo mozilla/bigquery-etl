@@ -1,0 +1,4 @@
+description: >
+  Used to parse provider_receipt_json in mozilla vpn subscriptions where
+  provider is "APPLE".
+friendly_name: Parse Apple Receipt from IAP

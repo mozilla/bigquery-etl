@@ -5,6 +5,21 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_experiments_hourly
+
+Built from bigquery-etl repo, [`dags/bqetl_experiments_hourly.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_experiments_hourly.py)
+
+#### Description
+
+The DAG schedules queries every hour that materialize experimentation related metrics (enrollment, search, ...) used for monitoring. Tasks are generally scheduled with some lag to account for BigQuery sink delays.
+
+#### Owner
+
+ascholtz@mozilla.com
+"""
+
+
 default_args = {
     "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2021, 1, 10, 0, 0),
@@ -21,6 +36,7 @@ with DAG(
     "bqetl_experiments_hourly",
     default_args=default_args,
     schedule_interval="30 * * * *",
+    doc_md=docs,
 ) as dag:
 
     experiment_enrollment_aggregates_hourly = bigquery_etl_query(
@@ -36,5 +52,21 @@ with DAG(
             'submission_timestamp:TIMESTAMP:{{ macros.ds_format(ts_nodash, "%Y%m%dT%H%M%S", "%Y-%m-%d %H:00:00") }}'
         ],
         sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql",
+        dag=dag,
+    )
+
+    experiment_search_aggregates_hourly = bigquery_etl_query(
+        task_id="experiment_search_aggregates_hourly",
+        destination_table='experiment_search_aggregates_hourly_v1${{ macros.ds_format((execution_date + macros.timedelta(hours=-1)).to_datetime_string(), "%Y-%m-%d %H:%M:%S", "%Y%m%d%H") }}',
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=[
+            'submission_timestamp:TIMESTAMP:{{ macros.ds_format(ts_nodash, "%Y%m%dT%H%M%S", "%Y-%m-%d %H:00:00") }}'
+        ],
+        sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_hourly_v1/query.sql",
         dag=dag,
     )

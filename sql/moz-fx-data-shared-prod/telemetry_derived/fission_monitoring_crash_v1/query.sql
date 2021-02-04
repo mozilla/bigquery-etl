@@ -35,6 +35,8 @@ crash_ping_data_unfiltered AS (
     END
     AS experiment_branch,
     environment.build.build_id,
+    environment.system.os.name AS os_name,
+    environment.system.os.version AS os_version,
     IF(payload.process_type = 'main' OR payload.process_type IS NULL, 1, 0) AS main_crash,
     IF(
       REGEXP_CONTAINS(payload.process_type, 'content')
@@ -101,6 +103,8 @@ main_ping_data_unfiltered AS (
     END
     AS experiment_branch,
     environment.build.build_id,
+    environment.system.os.name AS os_name,
+    environment.system.os.version AS os_version,
     0 AS main_crash,
     0 AS content_crash,
     0 AS startup_crash,
@@ -167,6 +171,8 @@ SELECT
   client_id,
   experiment_branch,
   build_id,
+  os_name,
+  os_version,
   COUNT(*) AS count,
   SUM(main_crash) AS main_crashes,
   SUM(content_crash) AS content_crashes,
@@ -188,4 +194,6 @@ GROUP BY
   submission_date,
   client_id,
   experiment_branch,
-  build_id
+  build_id,
+  os_name,
+  os_version

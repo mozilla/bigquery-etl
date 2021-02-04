@@ -5,6 +5,17 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_addons
+
+Built from bigquery-etl repo, [`dags/bqetl_addons.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_addons.py)
+
+#### Owner
+
+bmiroglio@mozilla.com
+"""
+
+
 default_args = {
     "owner": "bmiroglio@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
@@ -18,7 +29,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_addons", default_args=default_args, schedule_interval="0 3 * * *"
+    "bqetl_addons",
+    default_args=default_args,
+    schedule_interval="0 3 * * *",
+    doc_md=docs,
 ) as dag:
 
     telemetry_derived__addon_aggregates__v2 = bigquery_etl_query(

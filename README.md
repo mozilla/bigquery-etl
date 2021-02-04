@@ -304,6 +304,7 @@ Scheduling Queries in Airflow
   ```yaml
   bqetl_ssl_ratios:   # name of the DAG; must start with bqetl_
     schedule_interval: 0 2 * * *    # query schedule
+    description: The DAG schedules SSL ratios queries.
     default_args:
       owner: example@mozilla.com
       start_date: '2020-04-05'  # YYYY-MM-DD

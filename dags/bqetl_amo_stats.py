@@ -5,6 +5,21 @@ from airflow.operators.sensors import ExternalTaskSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
+docs = """
+### bqetl_amo_stats
+
+Built from bigquery-etl repo, [`dags/bqetl_amo_stats.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_amo_stats.py)
+
+#### Description
+
+Add-on download and install statistics to power the [addons.mozilla.org](https://addons.mozilla.org) (AMO) stats pages.
+See the [post on the Add-Ons Blog](https://blog.mozilla.org/addons/2020/06/10/improvements-to-statistics-processing-on-amo/).
+#### Owner
+
+jklukas@mozilla.com
+"""
+
+
 default_args = {
     "owner": "jklukas@mozilla.com",
     "start_date": datetime.datetime(2020, 6, 1, 0, 0),
@@ -18,7 +33,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_amo_stats", default_args=default_args, schedule_interval="0 3 * * *"
+    "bqetl_amo_stats",
+    default_args=default_args,
+    schedule_interval="0 3 * * *",
+    doc_md=docs,
 ) as dag:
 
     amo_dev__amo_stats_dau__v2 = bigquery_etl_query(

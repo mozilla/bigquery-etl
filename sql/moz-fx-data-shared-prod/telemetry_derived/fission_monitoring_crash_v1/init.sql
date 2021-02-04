@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS
     client_id STRING,
     experiment_branch STRING,
     build_id STRING,
+    os_name STRING,
+    os_version STRING,
     count INT64,
     main_crashes INT64,
     content_crashes INT64,

@@ -890,14 +890,14 @@
                 
                   <h1>account_ecosystem</h1>
                 
-                <h2 id="aet_clients_daily"><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily">aet_clients_daily</a></h2>
+                <h2 id="aet_clients_daily"><a href="">aet_clients_daily</a></h2>
 <p>One row per user per service per day, showing metrics across services.
 The <code>user_id</code> and <code>client_id</code> are directly related to the <code>ecosystem_user_id</code> and <code>ecosystem_client_id</code> primitive identifiers for Account Ecosystem Telemetry, but are abstracted to prevent fingerprinting and to provide continuity across user password reset events. In this view, we are guaranteed that a logical user is represented by a consistent <code>user_id</code> over time.
 For rows representing client telemetry, this view looks up <code>user_id</code> at runtime based on <code>client_id</code> so that we can have <code>user_id</code> values present for any client that has ever logged in to FxA, even for older rows before the first login.</p>
 <ul>
 <li>Friendly name: AET Clients Daily</li>
 </ul>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily">Source Directory</a> | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily/metadata.yaml">Metadata File</a> | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily/view.sql">View Definition</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily/view.sql">View Definition</a>  </p>
 <hr />
                 
                   

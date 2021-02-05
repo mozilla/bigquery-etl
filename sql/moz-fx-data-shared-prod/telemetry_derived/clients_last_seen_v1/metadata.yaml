@@ -7,8 +7,9 @@ description: >
   It also performs a join with `clients_first_seen_v1` in order to provide
   fields related to client activation that fall outside the 28-day window.
 
-  Currently, `telemetry.clients_last_seen` is a view directly on top of this table,
-  though by end of Q1 2021, it will transition to point at the downstream
+  It should normally be accessed through the user-facing view
+  `telemetry.clients_last_seen`.
+  Note that by end of Q1 2021, that view start referencing the downstream table
   `clients_last_seen_joined_v1` which merges in fields based on the `event` ping.
   See https://github.com/mozilla/bigquery-etl/issues/1761
 owners:

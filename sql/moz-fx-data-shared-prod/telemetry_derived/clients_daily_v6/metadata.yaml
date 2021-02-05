@@ -4,9 +4,10 @@ description: >-
   A daily aggregation over `main` pings from each Firefox
   desktop client, partitioned by day.
 
-  Currently, `telemetry.clients_daily` is a view directly on top of this table,
-  though by end of Q1 2021, it will transition to point at the downstream
-  `clients_daily_joined_v1` which merges in fields based on the `event` ping.
+  It should normally be accessed through the user-facing view
+  `telemetry.clients_daily`.
+  Note that by end of Q1 2021, that view start referencing the downstream table
+  `clients_last_seen_joined_v1` which merges in fields based on the `event` ping.
   See https://github.com/mozilla/bigquery-etl/issues/1761
 labels:
   application: firefox

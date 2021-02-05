@@ -1,0 +1,74 @@
+{% extends "main.html" %}
+
+<!-- Render hero under tabs -->
+{% block tabs %}
+  {{ super() }}
+
+   <!-- Additional styles for landing page -->
+  <style>
+
+    @media screen and (min-width: 900px) {
+      .tx-hero {
+      margin-top: 30px;
+      padding: 20px;
+      display: flex;
+    }
+    .tx-hero__content {
+      margin-top: 50px;
+      width: 40%;
+    }
+    }
+
+ @media screen and (max-width: 900px) {
+.tx-hero__content {
+    margin: 10px;
+    padding: 10px;  
+    text-align: center;
+    }
+}
+  </style>
+
+  <!-- Hero for landing page -->
+  <section class="tx-container">
+    <div class="md-grid md-typeset">
+      <div class="tx-hero">
+        <!-- Hero image -->
+        <div class="tx-hero__image">
+          <img
+            src="illustration.png"
+            alt=""
+            width="800"
+            height="800"
+            draggable="false"
+          >
+        </div>
+                       <!-- Hero content -->
+        <div class="tx-hero__content">
+          <h2>BigQuery ETL is Mozilla's framework for creating derived datasets and user-defined functions in BigQuery.</h2>
+          <p>At present, this site contains documentation for the Google Cloud Platform projects <code>mozdata</code> — the primary home for user analysis, and <code>mozfun</code> — the user-defined functions (UDFs) available in BigQuery.</p>
+
+          <a
+            href="https://github.com/mozilla/bigquery-etl#quick-start"
+            class="md-button md-button--primary"
+          >
+            Quick Start
+          </a>
+          <a
+            href="{{ page.next_page.url | url }}"
+            class="md-button md-button"
+          >
+            Documentation
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+<!-- Content -->
+{% block content %}{% endblock %}
+
+<!-- Application footer -->
+{% block footer %}
+{% endblock %}

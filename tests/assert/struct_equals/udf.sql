@@ -2,10 +2,8 @@ CREATE OR REPLACE FUNCTION assert.struct_equals(expected ANY TYPE, actual ANY TY
   IF(
     ARRAY_LENGTH(
       ARRAY(
-        SELECT
-          DISTINCT
-        AS
-          STRUCT *
+        SELECT DISTINCT AS STRUCT
+          *
         FROM
           (SELECT * FROM UNNEST([expected]) UNION ALL SELECT * FROM UNNEST([actual]))
       )

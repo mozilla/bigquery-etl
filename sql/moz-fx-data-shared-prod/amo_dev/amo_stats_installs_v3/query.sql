@@ -2,8 +2,8 @@
 -- we create a "unhashing" lookup table here from the DAU table, which should
 -- include all the same addon_ids that we see in install_stats events.
 WITH addon_id_lookup AS (
-  SELECT
-    DISTINCT addon_id,
+  SELECT DISTINCT
+    addon_id,
     TO_HEX(SHA256(addon_id)) AS hashed_addon_id
   FROM
     amo_dev.amo_stats_dau_v2

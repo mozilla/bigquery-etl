@@ -13,8 +13,8 @@ WITH hmac_key AS (
   WHERE
     key_id = 'fxa_hmac_prod'
 )
-SELECT
-  DISTINCT TO_HEX(
+SELECT DISTINCT
+  TO_HEX(
     udf.hmac_sha256((SELECT * FROM hmac_key), CAST(jsonPayload.fields.user_id AS BYTES))
   ) AS user_id
 FROM

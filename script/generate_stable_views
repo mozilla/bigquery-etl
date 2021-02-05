@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Generate one view definition file per document type in stable tables,
+# based on the metadata present in the generated-schemas branch of
+# mozilla-pipeline-schemas
+#
+# If there are existing view definitions in the destination directory then those will be
+# kept instead.
+
+cd "$(dirname "$0")/.."
+
+exec python3 -m bigquery_etl.view.generate_stable_views "$@"

@@ -150,15 +150,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
-      - &skip_forked_pr
-        run:
-          name: Early return if this build is from a forked PR
-          command: |
-            if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              echo "Cannot pass creds to forked PRs,
-                so marking this step successful"
-              circleci step halt
-            fi
+      - *skip_forked_pr
       - *build
       - run:
           name: Install dependencies
@@ -175,6 +167,42 @@ jobs:
             cd generated_docs/
             mkdocs gh-deploy \
               -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
+  generate-sql:
+    docker: *docker
+    steps:
+      - checkout
+      - *skip_forked_pr
+      - *build
+      - add_ssh_keys:
+          fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
+      - run:
+          name: Prepare git environment for generated-sql branch
+          command: |
+            rm -rf generated-sql/
+            git config --global user.name "CircleCI generate-sql job"
+            git config --global user.email "dataops+generated-sql@mozilla.com"
+            git clone --single-branch --branch generated-sql \
+              https://github.com/mozilla/bigquery-etl \
+              generated-sql
+      - run:
+          name: Generate SQL content
+          command: |
+            rm -rf generated-sql/sql
+            cp -r sql generated-sql/sql
+            # TODO: Replace with a call to ./script/generate_all_views
+            # once baseline ETL script is ported to avoid the need for
+            # BQ credentials.
+            PATH="venv/bin:$PATH" ./script/generate_stable_views \
+              --sql-dir generated-sql/sql/ \
+              --target-project moz-fx-data-shared-prod
+      - run:
+          name: Push to generated-sql branch
+          command: |
+            cd generated-sql/
+            git add .
+            git commit -m "Auto-push due to change on main branch [ci skip]" \
+              && git push \
+              || echo "Skipping push since it looks like there were no changes"
   deploy:
     parameters:
       image:
@@ -220,6 +248,12 @@ workflows:
           filters:
             branches:
               only: master
+      - generate-sql:
+          filters:
+            branches:
+              only:
+                - master
+                - gensql  # FIXME: Remove! This is just for testing the PR.
       - deploy:
           context: data-eng-bigquery-etl-dockerhub
           requires:

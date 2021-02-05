@@ -23,11 +23,15 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    *)    # unknown option
+    echo "ERROR: Unknown option: $1" >&2
+    exit 1
+    ;;
 esac
 done
 
 # Fill in any missing view definitions in the moz-fx-data-shared-prod/ folder
-./script/generate_views "${TARGET_PROJECT}:*_stable.*" --sql-dir "${SQL_DIR}"
+python -m bigquery_etl.view.generate_stable_views --sql-dir "${SQL_DIR}" --parallelism=20
 
 # Fill in views for generated Glean ETL
 PLACEHOLDER_DATE="2000-01-01"

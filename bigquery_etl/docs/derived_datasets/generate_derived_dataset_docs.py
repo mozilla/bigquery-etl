@@ -4,6 +4,7 @@ import os
 import yaml
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
+from bigquery_etl.dryrun import SKIP, DryRun
 
 VIEW_FILE = "view.sql"
 METADATA_FILE = "metadata.yaml"
@@ -57,6 +58,11 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                             print(error)
                 if VIEW_FILE in files:
                     source_urls["View Definition"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
+
+                    view_file = os.path.join(root, VIEW_FILE)
+                    referenced = DryRun(view_file).get_referenced_tables()
+                    if referenced:
+                        print('Referenced tables: ', referenced)
 
                 file_loader = FileSystemLoader(
                     "bigquery_etl/docs/derived_datasets/templates"

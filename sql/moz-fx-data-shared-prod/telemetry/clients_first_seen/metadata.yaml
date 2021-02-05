@@ -1,9 +1,17 @@
 ---
-friendly_name: Clients first seen
+friendly_name: Clients First Seen
 description: >-
-  Identical in schema to clients_daily except that each client appears only
-  once over all time; includes fields first_seen_date and second_seen_date
-  for determining user "activation"
+  Identical in schema to `clients_daily` except that each client appears only
+  once over all time; includes fields `first_seen_date` and `second_seen_date`
+  for determining user "activation".
+
+  Note that `first_seen_date` and `second_seen_date` are also pulled into
+  `clients_last_seen` to avoid needing to join with this view. Use this view
+  directly only when you're investigating client activation questions.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+
+  See also: `clients_daily`, `clients_last_seen`
 owners:
   - jklukas@mozilla.com
 labels:

@@ -1,9 +1,11 @@
 ---
-friendly_name: Clients first seen
+friendly_name: Clients First Seen
 description: >-
-  Identical in schema to clients_daily except that each client appears only
-  once over all time; includes fields first_seen_date and second_seen_date
-  for determining user "activation"
+  Picks out just the first and second observations per client based on
+  `clients_daily_v6`.
+
+  It should normally be accessed through the user-facing view
+  `telemetry.clients_first_seen`.
 owners:
   - jklukas@mozilla.com
 labels:

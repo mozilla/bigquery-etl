@@ -4,7 +4,8 @@ description: >-
   Picks out just the first and second observations per client based on
   `clients_daily_v6`.
 
-  See view: `telemetry.clients_first_seen`
+  The user-facing `telemetry.clients_first_seen` is a view directly on top
+  of this table.
 owners:
   - jklukas@mozilla.com
 labels:

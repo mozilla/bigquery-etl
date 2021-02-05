@@ -1,7 +1,15 @@
 ---
 friendly_name: Clients Daily
-description: A daily aggregate of main pings from each Firefox
-  desktop client, partitioned by day
+description: >-
+  A daily aggregation over `main` pings from each Firefox
+  desktop client, partitioned by day.
+
+  It should normally be accessed through the user-facing view
+  `telemetry.clients_daily`.
+  Note that by end of Q1 2021, that view start referencing the downstream table
+  `clients_last_seen_joined_v1` which merges in fields based on the `event`
+  ping.
+  See https://github.com/mozilla/bigquery-etl/issues/1761
 labels:
   application: firefox
   schedule: daily

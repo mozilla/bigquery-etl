@@ -1,15 +1,18 @@
 ---
 friendly_name: Clients Last Seen
 description: >
-  Captures history of activity of each client in 28 day
-  windows for each submission date.
+  Aggregations that show a rolling 28-day per-client summary on top of
+  `clients_daily_*` tables.
 
-  Generally, this is direct product of clients_daily and serves to make
-  certain query patterns more efficient by eliminating the need for
-  self-joins that would otherwise be needed to consider windows of activity.
-  As an exception, it pulls in first_seen_date and second_seen_date over all
-  time from clients_first_seen since first_seen_date is highly valuable for
-  providing a stable definition of when a profile was created.
+  It also performs a join with `clients_first_seen_v1` in order to provide
+  fields related to client activation that fall outside the 28-day window.
+
+  It should normally be accessed through the user-facing view
+  `telemetry.clients_last_seen`.
+  Note that by end of Q1 2021, that view start referencing the downstream table
+  `clients_last_seen_joined_v1` which merges in fields based on the `event`
+  ping.
+  See https://github.com/mozilla/bigquery-etl/issues/1761
 owners:
   - dthorn@mozilla.com
 labels:

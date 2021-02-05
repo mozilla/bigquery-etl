@@ -1,6 +1,6 @@
 WITH clients_today AS (
-  SELECT
-    DISTINCT client_id
+  SELECT DISTINCT
+    client_id
   FROM
     telemetry.core
   WHERE

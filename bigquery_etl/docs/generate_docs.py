@@ -5,11 +5,12 @@ import os
 from pathlib import Path
 import re
 import shutil
-
-from bigquery_etl.util import standard_args
 import yaml
 
-DEFAULT_PROJECTS_DIRS = ["sql/mozfun/"]
+from bigquery_etl.util import standard_args
+from bigquery_etl.docs.derived_datasets import generate_derived_dataset_docs
+
+DEFAULT_PROJECTS_DIRS = ["sql/mozfun/", "sql/moz-fx-data-shared-prod/"]
 DOCS_FILE = "README.md"
 UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
@@ -74,9 +75,18 @@ def main():
     """Generate documentation for project."""
     args = parser.parse_args()
     out_dir = os.path.join(args.output_dir, "docs")
-    if os.path.exists(out_dir):
+
+    # To customize Mkdocs, we need to extend the theme with an `overrides` folder
+    # https://squidfunk.github.io/mkdocs-material/customization/#overriding-partials
+    override_dir = os.path.join(args.output_dir, "overrides")
+
+    if os.path.exists(out_dir) and os.path.exists(override_dir):
         shutil.rmtree(out_dir)
+        shutil.rmtree(override_dir)
+
+    # copy assets from /docs and /overrides folders to output folder
     shutil.copytree(args.docs_dir, out_dir)
+    shutil.copytree("bigquery_etl/docs/overrides", override_dir)
 
     # move mkdocs.yml out of docs/
     mkdocs_path = os.path.join(args.output_dir, "mkdocs.yml")
@@ -84,16 +94,18 @@ def main():
 
     # move files to docs/
     for project_dir in args.project_dirs:
-        if os.path.isdir(project_dir):
-            for root, dirs, files in os.walk(project_dir):
-                if DOCS_FILE in files:
-                    # copy doc file to output and replace example references
-                    src = os.path.join(root, DOCS_FILE)
-                    # remove empty strings from path parts
-                    path_parts = list(filter(None, root.split(os.sep)))
-                    name = path_parts[-1]
-                    path = Path(os.sep.join(path_parts[1:-1]))
+        if not os.path.isdir(project_dir):
+            continue
 
+        for root, _dirs, files in os.walk(project_dir):
+            if DOCS_FILE in files:
+                # copy doc file to output and replace example references
+                src = os.path.join(root, DOCS_FILE)
+                # remove empty strings from path parts
+                path_parts = list(filter(None, root.split(os.sep)))
+                name = path_parts[-1]
+                path = Path(os.sep.join(path_parts[1:-1]))
+                if project_dir == "sql/mozfun/":
                     if os.path.split(root)[1] == "":
                         # project level-doc file
                         project_doc_dir = out_dir / path / name
@@ -140,6 +152,10 @@ def main():
                             # dataset-level doc; create a new doc file
                             dest = out_dir / path / f"{name}.md"
                             dest.write_text(load_with_examples(src))
+                else:
+                    generate_derived_dataset_docs.generate_derived_dataset_docs(
+                        out_dir, project_dir
+                    )
 
 
 if __name__ == "__main__":

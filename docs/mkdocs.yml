@@ -15,3 +15,16 @@ theme:
         - navigation.tabs
     palette:
         primary: teal
+    favicon: favicon.png
+    custom_dir: overrides
+
+
+plugins:
+    - search
+    - awesome-pages
+nav:
+    - index.md
+    - mozdata:
+        - ... | mozdata/**.md
+    - mozfun:
+        - ... | mozfun/**.md

@@ -12,8 +12,8 @@ CREATE OR REPLACE FUNCTION udf.active_values_from_days_seen_map(
   n_bits INT64
 ) AS (
   ARRAY(
-    SELECT
-      DISTINCT key
+    SELECT DISTINCT
+      key
     FROM
       UNNEST(days_seen_bits_map)
     WHERE

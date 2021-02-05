@@ -853,6 +853,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#truncate_version-udf" class="md-nav__link">
+    truncate_version (UDF)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -947,6 +954,13 @@
         <li class="md-nav__item">
   <a href="#product_info-udf" class="md-nav__link">
     product_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#truncate_version-udf" class="md-nav__link">
+    truncate_version (UDF)
   </a>
   
 </li>
@@ -1236,6 +1250,18 @@ the raw <code>app_name</code> value.</p>
 </tr>
 </tbody>
 </table>
+<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
+<p>Truncates a version string like "<major>.<minor>.<patch>" to
+either the major or minor version. For example, "5.1.0" would be
+truncated to "5.1" if the parameter is "minor" or "5" if the parameter
+is major.</p>
+<p>If the version is only a major and/or minor version, then it will be left
+unchanged (for example "10" would stay as "10" when run through this
+function, no matter what the arguments).</p>
+<p>This is useful for grouping Linux and Mac operating system versions inside
+aggregate datasets or queries where there may be many different patch
+releases in the field.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
                 
               
               

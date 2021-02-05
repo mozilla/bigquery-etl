@@ -43,18 +43,20 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                 if dirs:
                     continue
                 dataset_name = root.split("/")[-1]
-                source_urls["Source"] = f"{SOURCE_URL}/{root}"
+                source_urls["Source Directory"] = f"{SOURCE_URL}/{root}"
 
                 metadata = {}
                 if METADATA_FILE in files:
-                    source_urls["Metadata"] = f"{SOURCE_URL}/{root}/{METADATA_FILE}"
+                    source_urls[
+                        "Metadata File"
+                    ] = f"{SOURCE_URL}/{root}/{METADATA_FILE}"
                     with open(os.path.join(root, METADATA_FILE)) as stream:
                         try:
                             metadata = yaml.safe_load(stream)
                         except yaml.YAMLError as error:
                             print(error)
                 if VIEW_FILE in files:
-                    source_urls["View"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
+                    source_urls["View Definition"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
 
                 file_loader = FileSystemLoader(
                     "bigquery_etl/docs/derived_datasets/templates"

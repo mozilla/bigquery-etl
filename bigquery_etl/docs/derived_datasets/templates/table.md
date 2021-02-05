@@ -21,8 +21,9 @@
 {%- endfor %}
 {% endif %}
 
-
-[Source Directory]({{ source_urls["Source"] }}) | [Metadata File]({{ source_urls["Metadata"] }}) | [View Definition]({{ source_urls["View"] }}) 
+{% for key, value in source_urls.items() -%}
+[{{key}}]({{ value }}) {{ " | " if not loop.last else "" }}
+{%- endfor %} 
 
 ---
 

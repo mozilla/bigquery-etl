@@ -17,7 +17,7 @@ cattrs==1.2.0
 attrs==20.3.0
 typing==3.7.4.3
 click==7.1.2
-stripe==2.55.1
+stripe==2.55.2
 ujson==4.0.2
 pandas==1.2.1
 jsonschema==3.2.0

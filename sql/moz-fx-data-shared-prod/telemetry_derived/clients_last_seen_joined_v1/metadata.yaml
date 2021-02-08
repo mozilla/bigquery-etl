@@ -1,5 +1,5 @@
 friendly_name: Clients Last Seen Joined
-description: >-
+description: |-
   Captures history of activity of each client in 28 day
   windows for each submission date, pulling usage criteria
   from multiple ping types.

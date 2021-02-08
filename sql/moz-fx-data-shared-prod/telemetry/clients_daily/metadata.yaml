@@ -1,6 +1,6 @@
 ---
 friendly_name: Clients Daily
-description: >-
+description: |-
   A daily aggregate of main and event pings from each Firefox
   desktop client.
 

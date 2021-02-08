@@ -1,6 +1,6 @@
 ---
 friendly_name: Clients Daily
-description: >-
+description: |-
   A daily aggregation over `main` pings from each Firefox
   desktop client, partitioned by day.
 

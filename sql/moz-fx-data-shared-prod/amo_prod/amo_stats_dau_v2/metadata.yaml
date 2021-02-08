@@ -1,6 +1,6 @@
 ---
 friendly_name: AMO Stats DAU
-description: >-
+description: |-
   Daily user statistics to power addons.mozilla.org stats pages.
   See bug 1572873.
 

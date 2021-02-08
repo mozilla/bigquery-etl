@@ -1,7 +1,7 @@
 <script>
     import Routes from "./routes/Routes.svelte";
     import Nav from "./components/Nav.svelte";
-    import FrontMatter from "./components/FrontMatter.md";
+    import FrontMatter from "./components/FrontMatter.svx";
 </script>
 
 <style type="text/css">

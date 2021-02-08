@@ -1,6 +1,6 @@
 ---
 friendly_name: Search Clients Last Seen
-description: >-
+description: |-
   Captures history of activity of each search client in 28 day
   windows for each submission date.
 owners:

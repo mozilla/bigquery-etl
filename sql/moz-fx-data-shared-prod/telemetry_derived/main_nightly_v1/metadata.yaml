@@ -1,5 +1,5 @@
 friendly_name: Main Nightly
-description: >-
+description: |-
   A materialized subset of main pings intended as a performance
   optimization for exploratory queries. It contains only the most recent
   six months of data for the nightly channel of Firefox.

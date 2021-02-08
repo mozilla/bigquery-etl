@@ -1,6 +1,6 @@
 ---
 friendly_name: Experiment Search Aggregates
-description: >-
+description: |-
   Aggregates search metrics for experiments. Used in the
   Grafana Live Monitoring Dashboard.
 owners:

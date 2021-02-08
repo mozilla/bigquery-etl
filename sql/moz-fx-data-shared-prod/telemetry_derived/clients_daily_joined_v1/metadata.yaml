@@ -1,5 +1,5 @@
 friendly_name: Clients Daily Joined
-description: >-
+description: |-
   Daily per-client aggregations joined from multiple ping types.
 
   The clients_daily_v6 table is based on main pings only and serves as the

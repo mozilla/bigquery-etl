@@ -1,6 +1,6 @@
 ---
 friendly_name: Error aggregates
-description: >-
+description: |-
   Counts of various error measures aggregated across each unique
   set of dimensions.
 owners:

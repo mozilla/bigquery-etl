@@ -1,6 +1,6 @@
 ---
 friendly_name: Mobile Search Clients Last Seen
-description: >-
+description: |-
   Captures search activity of a single mobile client in the past 365 days
   for each submission date.
 owners:

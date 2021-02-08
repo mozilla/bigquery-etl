@@ -1,6 +1,6 @@
 ---
 friendly_name: Get Key with NULL
-description: >-
+description: |-
   Fetch the value associated with a given key from an array of
   key/value structs.
 

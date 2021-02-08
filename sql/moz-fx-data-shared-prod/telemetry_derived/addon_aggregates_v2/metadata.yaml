@@ -1,8 +1,8 @@
 ---
 friendly_name: Addon Aggregates
-description: >-
+description: |-
   Addon usages by clients, aggregated across unique sets of dimensions
-  and partitioned by day
+  and partitioned by day.
 owners:
   - bmiroglio@mozilla.com
 labels:

@@ -939,12 +939,17 @@
                 <h1 id="map">map</h1>
 <p>Functions for working with arrays of key/value structs.</p>
 <h2 id="get_key-udf">get_key (UDF)</h2>
-<p>Fetch the value associated with a given key from an array of key/value structs.
-Because map types aren't available in BigQuery, we model maps as arrays of structs instead, and this function provides map-like access to such fields.</p>
+<p>Fetch the value associated with a given key from an array of key/value
+structs.</p>
+<p>Because map types aren't available in BigQuery, we model maps as arrays
+of structs instead, and this function provides map-like access to such fields.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/map/get_key">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/map/get_key/metadata.yaml">Edit</a></p>
 <h2 id="get_key_with_null-udf">get_key_with_null (UDF)</h2>
-<p>Fetch the value associated with a given key from an array of key/value structs.
-Because map types aren't available in BigQuery, we model maps as arrays of structs instead, and this function provides map-like access to such fields. This version matches NULL keys as well.</p>
+<p>Fetch the value associated with a given key from an array of
+key/value structs.</p>
+<p>Because map types aren't available in BigQuery, we model maps as arrays
+of structs instead, and this function provides map-like access to such fields.
+This version matches NULL keys as well.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/map/get_key_with_null">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/map/get_key_with_null/metadata.yaml">Edit</a></p>
 <h2 id="mode_last-udf">mode_last (UDF)</h2>
 <p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>

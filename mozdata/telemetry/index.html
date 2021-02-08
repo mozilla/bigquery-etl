@@ -2635,9 +2635,10 @@
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/client_probe_counts_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/client_probe_counts_v1/view.sql">View Definition</a>  </p>
 <hr />
 <h2 id="clients_daily"><a href="">clients_daily</a></h2>
-<p>A daily aggregate of main and event pings from each Firefox desktop client.
-Clustering fields: <code>normalized_channel</code>, <code>sample_id</code>
-See also: <code>clients_last_seen</code>, <code>clients_first_seen</code></p>
+<p>A daily aggregate of main and event pings from each Firefox
+desktop client.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<p>See also: <code>clients_last_seen</code>, <code>clients_first_seen</code></p>
 <ul>
 <li>Friendly name: Clients Daily</li>
 <li>
@@ -2659,10 +2660,14 @@ See also: <code>clients_last_seen</code>, <code>clients_first_seen</code></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/clients_daily_v6">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/clients_daily_v6/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/clients_daily/metadata.yaml">Metadata File</a>  </p>
 <hr />
 <h2 id="clients_first_seen"><a href="">clients_first_seen</a></h2>
-<p>Identical in schema to <code>clients_daily</code> except that each client appears only once over all time; includes fields <code>first_seen_date</code> and <code>second_seen_date</code> for determining user &#34;activation&#34;.
-Note that <code>first_seen_date</code> and <code>second_seen_date</code> are also pulled into <code>clients_last_seen</code> to avoid needing to join with this view. Use this view directly only when you&#39;re investigating client activation questions.
-Clustering fields: <code>normalized_channel</code>, <code>sample_id</code>
-See also: <code>clients_daily</code>, <code>clients_last_seen</code></p>
+<p>Identical in schema to <code>clients_daily</code> except that each client appears only
+once over all time; includes fields <code>first_seen_date</code> and <code>second_seen_date</code>
+for determining user &#34;activation&#34;.</p>
+<p>Note that <code>first_seen_date</code> and <code>second_seen_date</code> are also pulled into
+<code>clients_last_seen</code> to avoid needing to join with this view. Use this view
+directly only when you&#39;re investigating client activation questions.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<p>See also: <code>clients_daily</code>, <code>clients_last_seen</code></p>
 <ul>
 <li>Friendly name: Clients First Seen</li>
 <li>
@@ -2678,12 +2683,21 @@ See also: <code>clients_daily</code>, <code>clients_last_seen</code></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/clients_first_seen/metadata.yaml">Metadata File</a>  </p>
 <hr />
 <h2 id="clients_last_seen"><a href="">clients_last_seen</a></h2>
-<p>Captures history of activity of each client in 28 day windows for each submission date.
-There will be one row per client per <code>submission_date</code>. A given client will stop appearing for new dates if they do not send a <code>main</code> ping for 28 days.
-Generally, this is a direct product of <code>clients_daily</code> and serves to make certain query patterns more efficient by eliminating the need for self-joins that would otherwise be needed to consider windows of activity. As an exception, it pulls in <code>first_seen_date</code> and <code>second_seen_date</code> over all time from <code>clients_first_seen</code> since <code>first_seen_date</code> is highly valuable for providing a stable definition of when a profile was created.
-See the [Working with Bit Patterns in Clients Last Seen] (https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html) article on docs.telemetry.mozilla.org for more detailed notes on usage.
-Clustering fields: <code>normalized_channel</code>, <code>sample_id</code>
-See also: <code>clients_daily</code>, <code>clients_first_seen</code></p>
+<p>Captures history of activity of each client in 28 day
+windows for each submission date.</p>
+<p>There will be one row per client per <code>submission_date</code>. A given client will
+stop appearing for new dates if they do not send a <code>main</code> ping for 28 days.</p>
+<p>Generally, this is a direct product of <code>clients_daily</code> and serves to make
+certain query patterns more efficient by eliminating the need for
+self-joins that would otherwise be needed to consider windows of activity.
+As an exception, it pulls in <code>first_seen_date</code> and <code>second_seen_date</code> over all
+time from <code>clients_first_seen</code> since <code>first_seen_date</code> is highly valuable for
+providing a stable definition of when a profile was created.</p>
+<p>See the
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html">Working with Bit Patterns in Clients Last Seen</a>
+article on docs.telemetry.mozilla.org for more detailed notes on usage.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<p>See also: <code>clients_daily</code>, <code>clients_first_seen</code></p>
 <ul>
 <li>Friendly name: Clients Last Seen</li>
 <li>
@@ -2903,11 +2917,25 @@ See also: <code>clients_daily</code>, <code>clients_first_seen</code></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/lockwise_mobile_events_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/lockwise_mobile_events_v1/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/desktop_retention_1_week/metadata.yaml">Metadata File</a>  </p>
 <hr />
 <h2 id="main_1pct"><a href="">main_1pct</a></h2>
-<p>A materialized 1 percent sample of main pings intended as a performance optimization for exploratory queries. It contains only the most recent six months of data.
-Queries on this table are logically equivalent to queries on top of <code>main_v4</code> with a filter on <code>sample_id = 0</code>, but this table has a few advantages. First, query estimates will be much more accurate; estimates of bytes scanned can&#39;t take into account clustering, so we sometimes see valid queries get rejected by Redash due to appearing expensive when they really aren&#39;t. Second, simple queries should complete much more quickly on this table compared to <code>main_v4</code>; for simple queries on a very wide table like this, the execution time appears to be dominated by BQ simply scanning metadata for all the blocks it might need to touch. Because this table contains only 1% of main ping data, it is likely to have many fewer blocks to scan through.
-An extra-experimental feature here is the addition of subsample_id, an additional clustering field that allows for queries to efficiently filter down to a 0.01% sample. Like sample_id, it ranges from 0 to 99.
-Clustering fields: <code>normalized_channel</code>, <code>sample_id</code>, <code>subsample_id</code>
-See also: <code>main_nightly</code></p>
+<p>A materialized 1 percent sample of main pings intended as a performance
+optimization for exploratory queries. It contains only the most recent
+six months of data.</p>
+<p>Queries on this table are logically equivalent to queries on top of <code>main_v4</code>
+with a filter on <code>sample_id = 0</code>, but this table has a few advantages.
+First, query estimates will be much more accurate; estimates of bytes scanned
+can&#39;t take into account clustering, so we sometimes see valid queries get
+rejected by Redash due to appearing expensive when they really aren&#39;t.
+Second, simple queries should complete much more quickly on this table
+compared to <code>main_v4</code>; for simple queries on a very wide table like this,
+the execution time appears to be dominated by BQ simply scanning metadata
+for all the blocks it might need to touch. Because this table contains
+only 1% of main ping data, it is likely to have many fewer blocks to
+scan through.</p>
+<p>An extra-experimental feature here is the addition of subsample_id, an
+additional clustering field that allows for queries to efficiently filter
+down to a 0.01% sample. Like sample_id, it ranges from 0 to 99.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code>, <code>subsample_id</code></p>
+<p>See also: <code>main_nightly</code></p>
 <ul>
 <li>Friendly name: Main 1 percent</li>
 <li>
@@ -2920,10 +2948,23 @@ See also: <code>main_nightly</code></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/main_1pct">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/main_1pct/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry/main_1pct/metadata.yaml">Metadata File</a>  </p>
 <hr />
 <h2 id="main_nightly"><a href="">main_nightly</a></h2>
-<p>A materialized subset of main pings intended as a performance optimization for exploratory queries. It contains only the most recent six months of data for the nightly channel of Firefox.
-Queries on this table are logically equivalent to queries on top of <code>main_v4</code> with a filter on <code>normalized_channel = &amp;#39;nightly&amp;#39;</code>, but this table has a few advantages. First, query estimates will be much more accurate; estimates of bytes scanned can&#39;t take into account clustering, so we sometimes see valid queries get rejected by Redash due to appearing expensive when they really aren&#39;t. Second, simple queries should complete much more quickly on this table compared to <code>main_v4</code>; for simple queries on a very wide table like this, the execution time appears to be dominated by BQ simply scanning metadata for all the blocks it might need to touch. Because this table contains only a fraction of main ping data, it is likely to have many fewer blocks to scan through.
-Clustering fields: <code>normalized_channel</code>, <code>sample_id</code>
-See also: <code>main_nightly</code></p>
+<p>A materialized subset of main pings intended as a performance
+optimization for exploratory queries. It contains only the most recent
+six months of data for the nightly channel of Firefox.</p>
+<p>Queries on this table are logically equivalent to queries on top of <code>main_v4</code>
+with a filter on <code>normalized_channel = &amp;#39;nightly&amp;#39;</code>, but this table has a few
+advantages.
+First, query estimates will be much more accurate; estimates of bytes scanned
+can&#39;t take into account clustering, so we sometimes see valid queries get
+rejected by Redash due to appearing expensive when they really aren&#39;t.
+Second, simple queries should complete much more quickly on this table
+compared to <code>main_v4</code>; for simple queries on a very wide table like this,
+the execution time appears to be dominated by BQ simply scanning metadata
+for all the blocks it might need to touch. Because this table contains
+only a fraction of main ping data, it is likely to have many fewer blocks to
+scan through.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<p>See also: <code>main_nightly</code></p>
 <ul>
 <li>Friendly name: Main Nightly</li>
 <li>

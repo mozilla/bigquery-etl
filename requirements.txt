@@ -229,9 +229,9 @@ grpcio==1.32.0 \
     --hash=sha256:f53f2dfc8ff9a58a993e414a016c8b21af333955ae83960454ad91798d467c7b \
     --hash=sha256:f7d508691301027033215d3662dab7e178f54d5cca2329f26a71ae175d94b83f
     # via google-api-core
-httplib2==0.18.1 \
-    --hash=sha256:8af66c1c52c7ffe1aa5dc4bcd7c769885254b0756e6e69f953c7f0ab49a70ba3 \
-    --hash=sha256:ca2914b015b6247791c4866782fa6042f495b94401a0f0bd3e1d6e0ba2236782
+httplib2==0.19.0 \
+    --hash=sha256:749c32603f9bf16c1277f59531d502e8f1c2ca19901ae653b49c4ed698f0820e \
+    --hash=sha256:e0d428dad43c72dbce7d163b7753ffc7a39c097e6788ef10f4198db69b92f08e
     # via
     #   gcloud
     #   oauth2client
@@ -476,7 +476,9 @@ pyflakes==2.2.0 \
 pyparsing==2.4.7 \
     --hash=sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1 \
     --hash=sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b
-    # via packaging
+    # via
+    #   httplib2
+    #   packaging
 pyrsistent==0.17.3 \
     --hash=sha256:2e636185d9eb976a18a8a8e96efce62f2905fea90041958d8cc2a189756ebf3e
     # via jsonschema

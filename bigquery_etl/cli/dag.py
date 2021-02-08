@@ -103,6 +103,11 @@ def info(name, dags_config, with_tasks):
     required=True,
 )
 @click.option(
+    "--description",
+    help=("Description for DAG"),
+    required=True,
+)
+@click.option(
     "--start_date",
     "--start-date",
     help=("First date for which scheduled queries should be executed"),
@@ -127,13 +132,15 @@ def info(name, dags_config, with_tasks):
     default="30m",
 )
 def create(
-    name, dags_config, schedule_interval, owner, start_date, email, retries, retry_delay
+    name, dags_config, schedule_interval, owner, description, start_date, email, retries, retry_delay
 ):
     """Create a new DAG."""
     # create a DAG and validate all properties
+    print(description)
     new_dag = Dag.from_dict(
         {
             name: {
+                "description": description,
                 "schedule_interval": schedule_interval,
                 "default_args": {
                     "owner": owner,

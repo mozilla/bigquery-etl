@@ -16,7 +16,7 @@ fenix AS (
     e.value.branch AS branch,
     client_info.client_id
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fenix.baseline`
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
 ),
@@ -27,7 +27,7 @@ fenix_nightly AS (
     e.value.branch AS branch,
     client_info.client_id
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.metrics_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline`
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
 ),
@@ -38,7 +38,7 @@ fenix_beta AS (
     e.value.branch AS branch,
     client_info.client_id
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.metrics_v1`
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline`
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
 ),
@@ -49,7 +49,7 @@ aurora AS (
     e.value.branch AS branch,
     client_info.client_id
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.metrics_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline`
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
 ),
@@ -60,7 +60,7 @@ org_mozilla_firefox AS (
     e.value.branch AS branch,
     client_info.client_id
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
+    `moz-fx-data-shared-prod.org_mozilla_firefox.baseline`
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
 )

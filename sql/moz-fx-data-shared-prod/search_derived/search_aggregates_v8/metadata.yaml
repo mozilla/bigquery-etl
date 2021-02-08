@@ -1,8 +1,8 @@
 ---
 friendly_name: Search Aggregates
-description: >-
+description: |-
   Daily search clients, aggregated across unique sets of dimensions
-  and partitioned by day
+  and partitioned by day.
 owners:
   - bewu@mozilla.com
 labels:

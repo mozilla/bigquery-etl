@@ -1,6 +1,6 @@
 ---
 friendly_name: FxA Log Content Events
-description: >-
+description: |-
   A subset of FxA content server logs that is sometimes useful
   for ad hoc longitudinal analysis.
 

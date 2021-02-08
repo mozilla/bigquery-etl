@@ -1,8 +1,8 @@
-description: >-
+description: |-
   This query creates a table based on search_aggregate containing
   search metrics aggregated by geo, locale, os, engine, app_version,
   submission_date.
-  Originally created fro the search report dashboard.
+  Originally created for the search report dashboard.
 friendly_name: Desktop Search Aggregates For Search Report
 labels:
   incremental: true

@@ -1,6 +1,7 @@
 ---
 friendly_name: Clients Last Seen
-description: >-
+# yamllint disable rule:line-length
+description: |- 
   Captures history of activity of each client in 28 day
   windows for each submission date.
 
@@ -15,8 +16,7 @@ description: >-
   providing a stable definition of when a profile was created.
 
   See the
-  [Working with Bit Patterns in Clients Last Seen]
-  (https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html)
+  [Working with Bit Patterns in Clients Last Seen](https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html)
   article on docs.telemetry.mozilla.org for more detailed notes on usage.
 
   Clustering fields: `normalized_channel`, `sample_id`

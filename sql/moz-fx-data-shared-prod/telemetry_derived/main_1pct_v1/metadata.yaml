@@ -1,5 +1,5 @@
 friendly_name: Main 1 percent
-description: >-
+description: |-
   A materialized 1 percent sample of main pings intended as a performance
   optimization for exploratory queries. It contains only the most recent
   six months of data. Also see main_nightly for a derived table containing

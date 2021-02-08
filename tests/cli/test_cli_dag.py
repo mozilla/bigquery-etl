@@ -61,6 +61,7 @@ class TestDag:
                     "invalid_dag_name",
                     "--schedule_interval=daily",
                     "--owner=test@example.org",
+                    "--description=test",
                     "--start_date=2020-01-01",
                 ],
             )
@@ -87,6 +88,7 @@ class TestDag:
                     "bqetl_new_dag",
                     "--schedule_interval=daily",
                     "--owner=test@example.org",
+                    "--description=test",
                     "--start_date=2020-01-01",
                 ],
             )
@@ -100,6 +102,7 @@ class TestDag:
                     dags_conf["bqetl_new_dag"]["default_args"]["owner"]
                     == "test@example.org"
                 )
+                assert dags_conf["bqetl_new_dag"]["description"] == "test"
                 assert (
                     dags_conf["bqetl_new_dag"]["default_args"]["start_date"]
                     == "2020-01-01"

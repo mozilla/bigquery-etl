@@ -16,22 +16,13 @@ WITH telemetry_live_and_stable AS (
 ),
 desktop AS (
   SELECT
-    date(submission_timestamp) AS submission_date,
+    submission_timestamp,
     dataset_id,
     unnested_experiments.key AS experiment,
     unnested_experiments.value AS branch,
-    TIMESTAMP_ADD(
-      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-      -- Aggregates event counts over 5-minute intervals
-      INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) * 5) MINUTE
-    ) AS window_start,
-    TIMESTAMP_ADD(
-      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-      INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
-    ) AS window_end,
-    SUM(unnested_ad_clicks.value) AS ad_clicks_count,
-    SUM(unnested_search_with_ads.value) AS search_with_ads_count,
-    SUM(unnested_search_counts.count) AS search_count,
+    unnested_ad_clicks.value AS ad_clicks_count,
+    unnested_search_with_ads.value AS search_with_ads_count,
+    unnested_search_counts.count AS search_count,
   FROM
     telemetry_live_and_stable,
     UNNEST(
@@ -53,65 +44,158 @@ desktop AS (
           UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+[.].'))]) AS pos
       )
     ) AS unnested_search_counts
-  GROUP BY
-    submission_date,
-    dataset_id,
-    experiment,
-    branch,
-    window_start,
-    window_end
 ),
 fenix_live_and_stable AS (
   SELECT
-    *,
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
     'org_mozilla_fenix_stable' AS dataset_id
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
   UNION ALL
   SELECT
-    *,
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
     'org_mozilla_fenix_live' AS dataset_id
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
+    'org_mozilla_fenix_nightly_stable' AS dataset_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.metrics_v1`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
+    'org_mozilla_fenix_nightly_live' AS dataset_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_live.metrics_v1`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
+    'org_mozilla_firefox_beta_stable' AS dataset_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.metrics_v1`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
+    'org_mozilla_firefox_beta_live' AS dataset_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.metrics_v1`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
+    'org_mozilla_fennec_aurora_stable' AS dataset_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.metrics_v1`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
+    'org_mozilla_fennec_aurora_live' AS dataset_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.metrics_v1`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
+    'org_mozilla_firefox_stable' AS dataset_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    ping_info.experiments AS experiments,
+    metrics.labeled_counter.browser_search_ad_clicks AS browser_search_ad_clicks,
+    metrics.labeled_counter.browser_search_with_ads AS browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS metrics_search_count,
+    'org_mozilla_firefox_live' AS dataset_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_live.metrics_v1`
 ),
 fenix AS (
   SELECT
-    date(submission_timestamp) AS submission_date,
-    "org_mozilla_fenix_live" AS dataset_id,
+    submission_timestamp,
+    dataset_id,
     experiment.key AS experiment,
     experiment.value.branch AS branch,
-    TIMESTAMP_ADD(
-      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-      -- Aggregates event counts over 5-minute intervals
-      INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) * 5) MINUTE
-    ) AS window_start,
-    TIMESTAMP_ADD(
-      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-      INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
-    ) AS window_end,
-    SUM(unnested_ad_clicks.value) AS ad_clicks_count,
-    SUM(unnested_search_with_ads.value) AS search_with_ads_count,
-    SUM(unnested_search_counts.value) AS search_count,
+    unnested_ad_clicks.value AS ad_clicks_count,
+    unnested_search_with_ads.value AS search_with_ads_count,
+    unnested_search_counts.value AS search_count,
   FROM
     fenix_live_and_stable,
-    UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS unnested_ad_clicks,
-    UNNEST(metrics.labeled_counter.browser_search_with_ads) AS unnested_search_with_ads,
-    UNNEST(metrics.labeled_counter.metrics_search_count) AS unnested_search_counts,
-    UNNEST(ping_info.experiments) AS experiment
-  GROUP BY
-    submission_date,
-    dataset_id,
-    experiment,
-    branch,
-    window_start,
-    window_end
+    UNNEST(browser_search_ad_clicks) AS unnested_ad_clicks,
+    UNNEST(browser_search_with_ads) AS unnested_search_with_ads,
+    UNNEST(metrics_search_count) AS unnested_search_counts,
+    UNNEST(experiments) AS experiment
+),
+all_events AS (
+  SELECT
+    *
+  FROM
+    desktop
+  UNION ALL
+  SELECT
+    *
+  FROM
+    fenix
 )
 SELECT
-  *
+  date(submission_timestamp) AS submission_date,
+  dataset_id,
+  experiment,
+  branch,
+  TIMESTAMP_ADD(
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    -- Aggregates event counts over 5-minute intervals
+    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) * 5) MINUTE
+  ) AS window_start,
+  TIMESTAMP_ADD(
+    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
+  ) AS window_end,
+  SUM(ad_clicks_count) AS ad_clicks_count,
+  SUM(search_with_ads_count) AS search_with_ads_count,
+  SUM(search_count) AS search_count,
 FROM
-  desktop
-UNION ALL
-SELECT
-  *
-FROM
-  fenix
+  all_events
+GROUP BY
+  submission_date,
+  dataset_id,
+  experiment,
+  branch,
+  window_start,
+  window_end

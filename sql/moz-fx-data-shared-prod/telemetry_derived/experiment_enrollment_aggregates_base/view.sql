@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_base`
 AS
-WITH telemetry AS (
+WITH desktop AS (
   SELECT
     timestamp,
     event_object AS `type`,
@@ -77,7 +77,7 @@ fenix AS (
 SELECT
   *
 FROM
-  telemetry
+  desktop
 UNION ALL
 SELECT
   *

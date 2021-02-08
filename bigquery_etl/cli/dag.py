@@ -132,11 +132,18 @@ def info(name, dags_config, with_tasks):
     default="30m",
 )
 def create(
-    name, dags_config, schedule_interval, owner, description, start_date, email, retries, retry_delay
+    name,
+    dags_config,
+    schedule_interval,
+    owner,
+    description,
+    start_date,
+    email,
+    retries,
+    retry_delay,
 ):
     """Create a new DAG."""
     # create a DAG and validate all properties
-    print(description)
     new_dag = Dag.from_dict(
         {
             name: {

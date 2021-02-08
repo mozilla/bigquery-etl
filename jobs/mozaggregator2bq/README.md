@@ -16,7 +16,7 @@ docker-compose build
 docker-compose run --rm app bash
 ```
 
-### Interacting with the database
+### Interacting with the PostgreSQL database
 
 To start a psql instance with the read-only replica of the production Postgres
 instance, run the following commands. Ensure that you have the appropriate AWS

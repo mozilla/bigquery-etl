@@ -317,7 +317,7 @@ Scheduling Queries in Airflow
   - `start_date` defines the first date for which the query should be executed
     - Airflow will not automatically backfill older dates if `start_date` is set in the past, backfilling can be done via the Airflow web interface
   - `email` lists email addresses alerts should be sent to in case of failures when running the query
-- Alternatively, new DAGs can also be created via the `bqetl` CLI by running `bqetl dag create bqetl_ssl_ratios --schedule_interval='0 2 * * *' --owner="example@mozilla.com" --start_date="2020-04-05"`
+- Alternatively, new DAGs can also be created via the `bqetl` CLI by running `bqetl dag create bqetl_ssl_ratios --schedule_interval='0 2 * * *' --owner="example@mozilla.com" --start_date="2020-04-05" --description="This DAG generates SSL ratios."`
 - To schedule a specific query, add a `metadata.yaml` file that includes a `scheduling` section, for example:
   ```yaml
   friendly_name: SSL ratios

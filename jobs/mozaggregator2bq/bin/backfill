@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -e
+
+export PROJECT="mozaggregator2bq"
+export DATA_DIR="data"
+START_DS=${START_DS?"must be set"}
+END_DS=${END_DS?"must be set"}
+
+function to_ds {
+    DS_NODASH=$1 python3 - <<EOD
+from datetime import datetime
+from os import environ
+ds = environ["DS_NODASH"]
+print(datetime.strptime(ds, "%Y%m%d").strftime("%Y-%m-%d"))
+EOD
+}
+
+function run_day {
+    local aggregate_type=$1
+    local ds_nodash=$2
+    
+    local input="$DATA_DIR/$aggregate_type/$ds_nodash"
+    local intermediate="$DATA_DIR/parquet/$aggregate_type/$ds_nodash"
+    local output=gs://$PROJECT/$DATA_DIR/$aggregate_type/$ds_nodash
+    
+    # check if this has already been done
+    if ! gsutil stat "$output/_SUCCESS"; then
+        # dump the table
+        if ! AGGREGATE_TYPE=$aggregate_type DS_NODASH=$ds_nodash bin/pg_dump_by_day; then
+            echo "Missing pg_dump for $ds_nodash for $aggregate_type"
+            return
+        fi
+
+        # create parquet
+        echo "running for $intermediate"
+        bin/submit-local bin/pg_dump_to_parquet.py \
+            --input-dir "$input" \
+            --output-dir "$intermediate"
+        
+        gsutil rsync -d -r "$intermediate/" "$output/"
+    fi
+}
+
+
+function ds_nodash_range {
+    DS_START=$1 DS_END=$2 python3 - <<EOD
+from datetime import date, timedelta, datetime
+from os import environ
+
+def parse(ds):
+    return datetime.strptime(ds, "%Y-%m-%d")
+
+start_date = parse(environ["DS_START"])
+end_date = parse(environ["DS_END"])
+
+dates = []
+for i in range((end_date - start_date).days):
+    dt = start_date + timedelta(i)
+    dates.append(dt.strftime("%Y%m%d"))
+print("\n".join(dates))
+EOD
+}
+
+
+cd "$(dirname "$0")/.."
+
+# checking if spark is enabled
+python3 -c "import pyspark; print(pyspark.__path__[0])"
+
+# checking if credentials are set, check export_credentials_s3 for full list
+: "${POSTGRES_USER?'POSTGRES_USER not set'}"
+
+mkdir -p "$DATA_DIR"
+for ds_nodash in $(ds_nodash_range "$START_DS" "$END_DS"); do
+    time run_day "submission_date" "$ds_nodash"
+    time run_day "build_id" "$ds_nodash"
+done

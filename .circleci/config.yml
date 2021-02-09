@@ -96,6 +96,20 @@ jobs:
           command: docker build -t app:build jobs/example_job/
 
 
+  build-job-mozaggregator2bq:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/mozaggregator2bq/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/mozaggregator2bq/
+
+
   build-job-pioneer-debug:
     docker:
       - image: docker:stable-git
@@ -108,6 +122,26 @@ jobs:
       - run:
           name: Build Docker image
           command: docker build -t app:build jobs/pioneer-debug/
+
+  build-play-store-export:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/play-store-export/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/play-store-export
+      - run:
+          name: Test Code
+          command: docker run app:build make test
+      - run:
+          name: Lint Code
+          command: docker run app:build make lint
+
 
 workflows:
   docker-etl:
@@ -147,6 +181,21 @@ workflows:
               only: main
 
 
+  job-mozaggregator2bq:
+    jobs:
+      - build-job-mozaggregator2bq
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/mozaggregator2bq/
+          path: jobs/mozaggregator2bq/
+          image: mozaggregator2bq_docker_etl
+          requires:
+            - build-job-mozaggregator2bq
+          filters:
+            branches:
+              only: main
+
+
   job-pioneer-debug:
     jobs:
       - build-job-pioneer-debug
@@ -159,3 +208,18 @@ workflows:
           filters:
             branches:
               only: main
+
+  play-store-export:
+    jobs:
+      - build-play-store-export
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/play-store-export/
+          path: jobs/play-store-export/
+          image: play-store-export
+          requires:
+            - build-play-store-export
+          filters:
+            branches:
+              only: main
+

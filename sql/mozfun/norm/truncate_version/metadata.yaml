@@ -1,12 +1,16 @@
 friendly_name: Truncate Version
 description: |
   Truncates a version string like "<major>.<minor>.<patch>" to
-  either the major or minor version. For example, "5.1.0" would be
-  truncated to "5.1" if the parameter is "minor" or "5" if the parameter
-  is major.
+  either the major or minor version. The return value is NUMERIC,
+  which means that you can sort the results without fear (e.g. 100
+  will be categorized as greater than 80, which isn't the case when
+  sorting lexigraphically).
+
+  For example, "5.1.0" would be translated to 5.1 if the parameter is
+  "minor" or 5 if the parameter is major.
 
   If the version is only a major and/or minor version, then it will be left
-  unchanged (for example "10" would stay as "10" when run through this
+  unchanged (for example "10" would stay as 10 when run through this
   function, no matter what the arguments).
 
   This is useful for grouping Linux and Mac operating system versions inside

@@ -12,7 +12,9 @@ CREATE TABLE IF NOT EXISTS
     update_count INT64,
     enroll_failed_count INT64,
     unenroll_failed_count INT64,
-    update_failed_count INT64
+    update_failed_count INT64,
+    disqualification_count INT64,
+    exposure_count INT64
   )
 CLUSTER BY
   experiment

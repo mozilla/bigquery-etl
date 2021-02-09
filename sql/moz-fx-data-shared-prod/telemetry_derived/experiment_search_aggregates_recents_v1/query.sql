@@ -12,4 +12,4 @@ WHERE
     FROM
       `moz-fx-data-shared-prod.telemetry.experiment_search_aggregates_hourly`
   )
-  AND submission_date > DATE(TIMESTAMP_SUB(@submission_timestamp, INTERVAL 2 HOUR))
+  AND submission_date >= DATE(TIMESTAMP_SUB(@submission_timestamp, INTERVAL 2 HOUR))

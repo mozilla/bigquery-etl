@@ -533,4 +533,4 @@ def initialize(name, sql_dir, project_id, dry_run):
                     dry_run=dry_run,
                     default_dataset=f"{project}.{dataset}",
                 )
-                client.query(init_sql, job_config=job_config)
+                client.query(init_sql, job_config=job_config).result()

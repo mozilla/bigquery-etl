@@ -17,7 +17,8 @@ import os.path
 
 from google.cloud import bigquery
 
-from .util.temp_table import get_temporary_table
+from .util import standard_args
+from .util.bigquery_id import sql_table_id
 
 
 def dirpath(string):
@@ -46,6 +47,7 @@ parser.add_argument(
 parser.add_argument(
     "--project_id", help="Default project, if not specified the sdk will determine one"
 )
+standard_args.add_temp_dataset(parser)
 parser.add_argument(
     "--destination_table",
     required=True,
@@ -109,15 +111,11 @@ parser.add_argument(
 )
 
 
-def _sql_table_id(table):
-    return f"{table.project}.{table.dataset_id}.{table.table_id}"
-
-
 def _run_part(client, part, args):
     with open(os.path.join(args.query_dir, part)) as sql_file:
         query = sql_file.read()
     job_config = bigquery.QueryJobConfig(
-        destination=get_temporary_table(client),
+        destination=args.temp_dataset.temp_table(),
         default_dataset=args.dataset_id,
         use_legacy_sql=False,
         dry_run=args.dry_run,
@@ -159,9 +157,9 @@ def main():
     if not args.dry_run:
         total_bytes = sum(job.total_bytes_processed for _, job in parts)
         query = (
-            f"SELECT\n  *\nFROM\n  `{_sql_table_id(parts[0][1].destination)}`"
+            f"SELECT\n  *\nFROM\n  `{sql_table_id(parts[0][1].destination)}`"
             + "".join(
-                f"\nFULL JOIN\n  `{_sql_table_id(job.destination)}`"
+                f"\nFULL JOIN\n  `{sql_table_id(job.destination)}`"
                 f"\nUSING\n  ({args.using})"
                 for _, job in parts[1:]
             )
@@ -185,7 +183,7 @@ def main():
             print(f"Processed {total_bytes:,d} bytes in total")
         finally:
             for _, job in parts:
-                client.delete_table(_sql_table_id(job.destination).split("$")[0])
+                client.delete_table(sql_table_id(job.destination).split("$")[0])
             print(f"Deleted {len(parts)} temporary tables")
 
 

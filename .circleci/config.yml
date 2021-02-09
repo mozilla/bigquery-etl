@@ -197,6 +197,7 @@ jobs:
       - run:
           name: Push to generated-sql branch
           command: |
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
             git config --global user.name "CircleCI generate-sql job"
             git config --global user.email "dataops+generated-sql@mozilla.com"
             git clone --single-branch --branch generated-sql \

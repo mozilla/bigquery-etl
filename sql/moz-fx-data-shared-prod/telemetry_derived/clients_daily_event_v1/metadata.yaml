@@ -1,5 +1,5 @@
 friendly_name: Clients Daily Event
-description: >-
+description: |-
   Daily per-client aggregations based on desktop event pings.
   We maintain no dimensions like geo or even release channel in this table
   as those are all calculated in the main ping-based clients_daily.

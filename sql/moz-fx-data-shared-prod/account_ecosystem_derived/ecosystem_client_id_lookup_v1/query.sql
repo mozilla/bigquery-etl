@@ -21,8 +21,8 @@ unioned AS (
   -- and also added to the list of referenced tables in metadata.yaml
 ),
 hashed AS (
-  SELECT
-    DISTINCT TO_HEX(
+  SELECT DISTINCT
+    TO_HEX(
       udf.hmac_sha256((SELECT * FROM hmac_key), CAST(ecosystem_client_id AS BYTES))
     ) AS ecosystem_client_id_hash,
     ecosystem_user_id,

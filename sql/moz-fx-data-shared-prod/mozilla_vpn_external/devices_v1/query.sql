@@ -1,5 +1,5 @@
 SELECT
-  COALESCE(_update, devices_v1).*
+  IF(_update.id IS NOT NULL, _update, devices_v1).*
 FROM
   EXTERNAL_QUERY(
     "moz-fx-guardian-prod-bfc7.us.guardian-sql-prod",

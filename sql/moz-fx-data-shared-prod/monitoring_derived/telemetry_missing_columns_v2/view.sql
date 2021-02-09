@@ -2,8 +2,8 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.monitoring_derived.telemetry_missing_columns_v2`
 AS
 WITH placeholder_table_names AS (
-  SELECT
-    DISTINCT table_name
+  SELECT DISTINCT
+    table_name
   FROM
     `moz-fx-data-shared-prod`.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS
   WHERE

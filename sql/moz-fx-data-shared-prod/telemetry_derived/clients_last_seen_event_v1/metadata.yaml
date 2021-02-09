@@ -1,5 +1,5 @@
 friendly_name: Clients Last Seen Event
-description: >-
+description: |-
   Captures history of activity of each client in 28 day
   windows for each submission date based on event pings.
 

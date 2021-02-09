@@ -8,7 +8,9 @@ import requests
 import attr
 import cattr
 import datetime
+import json
 import pytz
+import sys
 import time
 from typing import List, Optional
 
@@ -26,6 +28,7 @@ parser.add_argument("--project", default="moz-fx-data-experiments")
 parser.add_argument("--destination_dataset", default="monitoring")
 parser.add_argument("--destination_table", default="experimenter_experiments_v1")
 parser.add_argument("--sql_dir", default="sql/")
+parser.add_argument("--dry_run", action="store_true")
 
 
 @attr.s(auto_attribs=True)
@@ -46,6 +49,8 @@ class Experiment:
     proposed_enrollment: Optional[int]
     reference_branch: Optional[str]
     is_high_population: bool
+    app_name: str
+    app_id: str
 
 
 def _coerce_none_to_zero(x: Optional[int]) -> int:
@@ -112,6 +117,8 @@ class ExperimentV1:
             proposed_enrollment=self.proposed_enrollment,
             reference_branch=control_slug,
             is_high_population=self.is_high_population or False,
+            app_name="firefox_desktop",
+            app_id="firefox-desktop",
         )
 
 
@@ -125,6 +132,8 @@ class ExperimentV6:
     proposedEnrollment: int
     branches: List[Branch]
     referenceBranch: Optional[str]
+    appName: str
+    appId: str
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":
@@ -142,7 +151,8 @@ class ExperimentV6:
             experimenter_slug=None,
             type="v6",
             status="Live"
-            if self.endDate and self.endDate <= pytz.utc.localize(datetime.datetime.now())
+            if self.endDate
+            and self.endDate <= pytz.utc.localize(datetime.datetime.now())
             else "Complete",
             start_date=self.startDate,
             end_date=self.endDate,
@@ -150,6 +160,8 @@ class ExperimentV6:
             reference_branch=self.referenceBranch,
             is_high_population=False,
             branches=self.branches,
+            app_name=self.appName,
+            app_id=self.appId,
         )
 
 
@@ -193,8 +205,6 @@ def get_experiments() -> List[Experiment]:
 
 def main():
     args = parser.parse_args()
-    client = bigquery.Client(args.project)
-
     experiments = get_experiments()
 
     destination_table = (
@@ -220,6 +230,8 @@ def main():
                 bigquery.SchemaField("ratio", "INTEGER"),
             ],
         ),
+        bigquery.SchemaField("app_id", "STRING"),
+        bigquery.SchemaField("app_name", "STRING"),
     )
 
     job_config = bigquery.LoadJobConfig(
@@ -232,9 +244,13 @@ def main():
         datetime.datetime, lambda d: datetime.datetime.strftime(d, format="%Y-%m-%d")
     )
 
-    client.load_table_from_json(
-        converter.unstructure(experiments), destination_table, job_config=job_config
-    ).result()
+    blob = converter.unstructure(experiments)
+    if args.dry_run:
+        print(json.dumps(blob))
+        sys.exit(0)
+
+    client = bigquery.Client(args.project)
+    client.load_table_from_json(blob, destination_table, job_config=job_config).result()
     print(f"Loaded {len(experiments)} experiments")
 
 

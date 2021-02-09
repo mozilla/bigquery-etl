@@ -171,7 +171,6 @@ jobs:
     docker: *docker
     steps:
       - checkout
-      - *skip_forked_pr
       - *build
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"

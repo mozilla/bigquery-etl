@@ -3,10 +3,14 @@
 import logging
 import os
 import re
+import tempfile
+from functools import partial
 from pathlib import Path
 
+import requests
 from jinja2 import Environment, PackageLoader
 
+from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
 
@@ -35,40 +39,46 @@ def write_sql(output_dir, full_table_id, basename, sql):
         f.write("\n")
 
 
-def list_baseline_tables(client, pool, project_id, only_tables, table_filter):
-    """Make parallel BQ API calls to grab all Glean baseline stable tables.
+def baseline_exists_in_dataset(project_id, dataset_id):
+    with tempfile.TemporaryDirectory() as tdir:
+        tfile = Path(tdir) / "query.sql"
+        with tfile.open("w") as f:
+            f.write(
+                f"SELECT * FROM `{project_id}.{dataset_id}.baseline_v1`"
+                " WHERE DATE(submission_timestamp) = '2000-01-01'"
+            )
+            dryrun = DryRun(str(tfile))
+            exists = 404 not in [e.get("code") for e in dryrun.errors()]
+            return (dataset_id, exists)
 
-    See `util.standard_args` for more context on table filtering.
 
-    :param client:       A BigQuery client object
-    :param pool:         A process pool for handling concurrent calls
-    :param project_id:   Target project
-    :param only_tables:  An iterable of globs in `<stable_dataset>.<table>` format
-    :param table_filter: A function for determining whether to process a table
-    :return:             A list of matching tables
-    """
+def list_baseline_tables(pool, project_id, only_tables, table_filter):
+    """Return Glean app listings from the probeinfo API."""
     if only_tables and not _contains_glob(only_tables):
         # skip list calls when only_tables exists and contains no globs
         return [f"{project_id}.{t}" for t in only_tables if table_filter(t)]
     if only_tables and not _contains_glob(
         _extract_dataset_from_glob(t) for t in only_tables
     ):
-        # skip list_datasets call when only_tables exists and datasets contain no globs
-        stable_datasets = {
-            f"{project_id}.{_extract_dataset_from_glob(t)}" for t in only_tables
-        }
+        stable_datasets = {_extract_dataset_from_glob(t) for t in only_tables}
+        stable_datasets = {d for d in stable_datasets if d.endswith("_stable")}
     else:
+        response = requests.get(
+            "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
+        )
+        apps = response.json()
         stable_datasets = [
-            d.reference.dataset_id for d in client.list_datasets(project_id)
+            f"{app['bq_dataset_family']}_stable"
+            for app in apps
+            # TODO: consider filtering out deprecated app listings.
+            # if not app.get("deprecated", False)
         ]
-    stable_datasets = [d for d in stable_datasets if d.endswith("_stable")]
     return [
-        sql_table_id(t)
-        for tables in pool.map(client.list_tables, stable_datasets)
-        for t in tables
-        if table_filter(f"{t.dataset_id}.{t.table_id}")
-        and t.table_id == "baseline_v1"
-        and t.labels.get("schema_id") == "glean_ping_1"
+        f"{project_id}.{d}.baseline_v1"
+        for d, exists in pool.map(
+            partial(baseline_exists_in_dataset, project_id), stable_datasets
+        )
+        if exists and table_filter(f"{d}.baseline_v1")
     ]
 
 

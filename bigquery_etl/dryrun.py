@@ -260,7 +260,7 @@ class DryRun:
         """Dry run the provided SQL file and return errors."""
         if self.dry_run_result is None:
             return None
-        return self.dry_run_result["errors"]
+        return self.dry_run_result.get("errors", [])
 
 
 def sql_file_valid(sqlfile):

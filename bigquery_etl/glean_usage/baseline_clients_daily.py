@@ -1,22 +1,23 @@
 """Generating and run baseline_clients_daily queries for Glean apps."""
-
+import logging
+import tempfile
 from argparse import ArgumentParser
 from datetime import datetime
 from functools import partial
-import logging
 from multiprocessing.pool import ThreadPool
+from pathlib import Path
 
-from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import WriteDisposition, ScalarQueryParameter
 
-from bigquery_etl.util import standard_args  # noqa E402
+from bigquery_etl.dryrun import DryRun
 from bigquery_etl.glean_usage.common import (
     list_baseline_tables,
     render,
     table_names_from_baseline,
     write_sql,
 )
+from bigquery_etl.util import standard_args  # noqa E402
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -37,12 +38,14 @@ parser.add_argument(
     help="Also write the query text underneath the given sql dir",
 )
 parser.add_argument(
-    "--views_only",
-    "--views-only",
+    "--output_only",
+    "--output-only",
+    "--views_only",  # Deprecated name
+    "--views-only",  # Deprecated name
     action="store_true",
     help=(
-        "If set, we write out only view queries to --output-dir and we skip"
-        " running the queries; intended for stable use by Jenkins"
+        "If set, we only write out sql to --output-dir and we skip"
+        " running the queries"
     ),
 )
 standard_args.add_parallelism(parser)
@@ -67,30 +70,28 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    client = bigquery.Client(args.project_id)
-
     with ThreadPool(args.parallelism) as pool:
         baseline_tables = list_baseline_tables(
-            client=client,
             pool=pool,
             project_id=args.project_id,
             only_tables=getattr(args, "only_tables", None),
             table_filter=args.table_filter,
         )
+
         # Do a first pass with dry_run=True so we don't end up with a partial success;
         # we also write out queries in this pass if so configured.
         pool.map(
             partial(
                 run_query,
-                client,
+                args.project_id,
                 date=args.date,
                 dry_run=True,
                 output_dir=args.output_dir,
-                views_only=args.views_only,
+                output_only=args.output_only,
             ),
             baseline_tables,
         )
-        if args.views_only:
+        if args.output_only:
             return
         logging.info(
             f"Dry runs successful for {len(baseline_tables)}"
@@ -99,12 +100,14 @@ def main():
         # Now, actually run the queries.
         if not args.dry_run:
             pool.map(
-                partial(run_query, client, date=args.date, dry_run=False),
+                partial(run_query, args.project_id, date=args.date, dry_run=False),
                 baseline_tables,
             )
 
 
-def run_query(client, baseline_table, date, dry_run, output_dir=None, views_only=False):
+def run_query(
+    project_id, baseline_table, date, dry_run, output_dir=None, output_only=False
+):
     """Process a single table, potentially also writing out the generated queries."""
     tables = table_names_from_baseline(baseline_table)
 
@@ -119,10 +122,16 @@ def run_query(client, baseline_table, date, dry_run, output_dir=None, views_only
     view_sql = render(VIEW_FILENAME, **render_kwargs)
     sql = query_sql
 
-    try:
-        client.get_table(daily_table)
-    except NotFound:
-        if views_only:
+    table_missing = False
+    with tempfile.TemporaryDirectory() as tdir:
+        tfile = Path(tdir) / "view.sql"
+        with tfile.open("w") as f:
+            f.write(view_sql)
+        dryrun = DryRun(str(tfile))
+        if 404 in [e.get("code") for e in dryrun.errors()]:
+            table_missing = True
+    if table_missing:
+        if output_only:
             logging.info(f"Skipping view for table which doesn't exist: {daily_table}")
             return
         elif dry_run:
@@ -130,10 +139,9 @@ def run_query(client, baseline_table, date, dry_run, output_dir=None, views_only
         else:
             logging.info(f"Creating table: {daily_table}")
         sql = init_sql
+    elif output_only:
+        pass
     else:
-        if views_only:
-            write_sql(output_dir, daily_view, "view.sql", view_sql)
-            return
         # Table exists, so we will run the incremental query.
         job_kwargs.update(
             destination=f"{daily_table}${date.strftime('%Y%m%d')}",
@@ -147,7 +155,12 @@ def run_query(client, baseline_table, date, dry_run, output_dir=None, views_only
         write_sql(output_dir, daily_view, "view.sql", view_sql)
         write_sql(output_dir, daily_table, "query.sql", query_sql)
         write_sql(output_dir, daily_table, "init.sql", init_sql)
+    if output_only:
+        # Return before we initialize the BQ client so that we can generate SQL
+        # without having BQ credentials.
+        return
 
+    client = bigquery.Client(project_id)
     job_config = bigquery.QueryJobConfig(**job_kwargs)
     job = client.query(sql, job_config)
     if not dry_run:

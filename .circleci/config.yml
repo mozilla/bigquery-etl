@@ -200,7 +200,7 @@ jobs:
             git config --global user.name "CircleCI generate-sql job"
             git config --global user.email "dataops+generated-sql@mozilla.com"
             git clone --single-branch --branch generated-sql \
-              https://github.com/mozilla/bigquery-etl \
+              git@github.com:mozilla/bigquery-etl \
               generated-sql
             cd generated-sql/
             rm -rf sql/

@@ -5,4 +5,4 @@ FROM
 WHERE
   window_start >= TIMESTAMP_SUB(@submission_timestamp, INTERVAL 1 HOUR)
   AND window_start < @submission_timestamp
-  AND submission_date > DATE(TIMESTAMP_SUB(@submission_timestamp, INTERVAL 2 HOUR))
+  AND submission_date >= DATE(TIMESTAMP_SUB(@submission_timestamp, INTERVAL 2 HOUR))

@@ -147,6 +147,9 @@ with DAG(
         wait_for_event_events
     )
 
+    telemetry_derived__experiment_search_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",

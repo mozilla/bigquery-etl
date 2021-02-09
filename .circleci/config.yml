@@ -172,32 +172,39 @@ jobs:
     steps:
       - checkout
       - *build
+      - run:
+          name: Generate SQL content
+          command: |
+            mkdir /tmp/generated-sql
+            cp -r sql/ /tmp/generated-sql/sql
+            # TODO: Replace with a call to ./script/generate_all_views
+            # once baseline ETL script is ported to avoid the need for
+            # BQ credentials.
+            PATH="venv/bin:$PATH" ./script/generate_stable_views \
+              --sql-dir /tmp/generated-sql/sql/ \
+              --target-project moz-fx-data-shared-prod
+      - persist_to_workspace:
+          root: /tmp/generated-sql
+          paths:
+            - sql
+  push-generated-sql:
+    docker: *docker
+    steps:
+      - attach_workspace:
+          at: /tmp/generated-sql
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
       - run:
-          name: Prepare git environment for generated-sql branch
+          name: Push to generated-sql branch
           command: |
-            rm -rf generated-sql/
             git config --global user.name "CircleCI generate-sql job"
             git config --global user.email "dataops+generated-sql@mozilla.com"
             git clone --single-branch --branch generated-sql \
               https://github.com/mozilla/bigquery-etl \
               generated-sql
-      - run:
-          name: Generate SQL content
-          command: |
-            rm -rf generated-sql/sql
-            cp -r sql generated-sql/sql
-            # TODO: Replace with a call to ./script/generate_all_views
-            # once baseline ETL script is ported to avoid the need for
-            # BQ credentials.
-            PATH="venv/bin:$PATH" ./script/generate_stable_views \
-              --sql-dir generated-sql/sql/ \
-              --target-project moz-fx-data-shared-prod
-      - run:
-          name: Push to generated-sql branch
-          command: |
             cd generated-sql/
+            rm -rf sql/
+            cp -r /tmp/generated-sql/sql sql
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
@@ -243,11 +250,14 @@ workflows:
       - verify-dags-up-to-date
       - validate-docs
       - validate-views
+      - generate-sql
       - docs:
           filters:
             branches:
               only: master
-      - generate-sql:
+      - push-generated-sql:
+          requires:
+            - generate-sql
           filters:
             branches:
               only:

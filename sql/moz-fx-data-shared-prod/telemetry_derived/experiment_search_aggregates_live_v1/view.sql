@@ -15,7 +15,14 @@ WITH all_searches AS (
     `moz-fx-data-shared-prod.telemetry_derived.experiment_search_aggregates_v1`
   UNION ALL
   SELECT
-    *
+    dataset_id,
+    branch,
+    experiment,
+    window_start,
+    window_end,
+    ad_clicks_count,
+    search_with_ads_count,
+    search_count
   FROM
     `moz-fx-data-shared-prod.telemetry.experiment_search_aggregates_hourly`
   WHERE
@@ -27,7 +34,14 @@ WITH all_searches AS (
     )
   UNION ALL
   SELECT
-    *
+    dataset_id,
+    branch,
+    experiment,
+    window_start,
+    window_end,
+    ad_clicks_count,
+    search_with_ads_count,
+    search_count
   FROM
     `moz-fx-data-shared-prod.telemetry.experiment_search_aggregates_recents`
 )

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  telemetry_derived.deanonymized_events
+  `moz-fx-data-shared-prod`.telemetry_derived.deanonymized_events
 AS
 WITH events AS (
   SELECT

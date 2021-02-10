@@ -103,10 +103,10 @@ If there are no problems, you should see no output.
 
 BigQuery-ETL has some facilities in it to automatically add your query to [telemetry-airflow](https://github.com/mozilla/telemetry-airflow) (our instance of Airflow).
 
-Before scheduling your query, you'll need to find an [Airflow DAG](https://airflow.apache.org/docs/apache-airflow/stable/concepts.html#dags) to run it off of. In some cases, one may already exist but in this one, we don't have one -- so we'll create it:
+Before scheduling your query, you'll need to find an [Airflow DAG](https://airflow.apache.org/docs/apache-airflow/stable/concepts.html#dags) to run it off of. In some cases, one may already exist that makes sense to use for your dataset -- look in `dags.yaml` at the root or run `./bqetl dag info`. In this particular case, there's no DAG that really makes sense -- so we'll create a new one:
 
 ```bash
-./bqetl dag create bqetl_mozregression --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01
+./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01
 ```
 
 Most of the options above should be self-explanatory. We use a schedule interval of "0 4 \* \* \*" (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL.
@@ -116,7 +116,7 @@ Most of the options above should be self-explanatory. We use a schedule interval
 Once again, you access this functionality via the `bqetl` tool:
 
 ```bash
-./bqetl query schedule org_mozilla_mozregression_derived.mozregression_aggregates_v1 --dag bqetl_mozregression --task-name mozregression_aggregates__v1
+./bqetl query schedule org_mozilla_mozregression_derived.mozregression_aggregates_v1 --dag bqetl_internal_tooling --task-name mozregression_aggregates__v1
 ```
 
 Note that we are scheduling the generation of the underlying _table_ which is `org_mozilla_mozregression_derived.mozregression_aggregates_v1` rather than the view.
@@ -124,14 +124,14 @@ Note that we are scheduling the generation of the underlying _table_ which is `o
 After doing this, you will also want to generate the actual airflow configuration which telemetry-airflow will pick up. Run:
 
 ```bash
-./bqetl dag generate
+./bqetl dag generate bqetl_internal_tooling
 ```
 
 This may take a while, as it currently does a dry run through every query defined in bigquery-etl.
 
 ## Get Data Review
 
-_This is for public datasets only! You can skip this step if you're just creating a dataset for Mozilla-internal use._
+_This is for public datasets only! You can skip this step if you're only creating a dataset for Mozilla-internal use._
 
 Before a dataset can be made public, it needs to go through data review according to our [data publishing process](https://wiki.mozilla.org/Data_Publishing#Dataset_Publishing_Process_2). This means filing a bug, answering a few questions, and then finding a [data steward](https://wiki.mozilla.org/Firefox/Data_Collection) to review your proposal.
 
@@ -143,7 +143,7 @@ Now would be a good time to create a pull request with your changes to GitHub. T
 
 ```bash
 git checkout -b mozregression-aggregates
-git add dags.yaml dags/bqetl_mozregression.py sql/moz-fx-data-shared-prod/telemetry/mozregression_aggregates sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1
+git add dags.yaml dags/bqetl_internal_tooling.py sql/moz-fx-data-shared-prod/telemetry/mozregression_aggregates sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1
 git commit
 git push origin mozregression-aggregates
 ```

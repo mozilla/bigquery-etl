@@ -1,5 +1,6 @@
 """Query schema."""
 
+import io
 import attr
 import json
 import yaml
@@ -7,6 +8,10 @@ import yaml
 from google.cloud import bigquery
 from pathlib import Path
 from typing import Dict, Any
+
+from bigquery_etl.dryrun import DryRun
+
+SCHEMA_FILE = 'schema.yaml'
 
 
 @attr.s(auto_attribs=True)
@@ -20,17 +25,13 @@ class Schema:
         if not query_file.is_file() or query_file.suffix != ".sql":
             raise Exception(f"{query_file} is not a valid SQL file.")
 
-        with open(query_file) as query:
-            sql = query.read()
-            dataset = query_file.parent.parent.name
-            project = query_file.parent.parent.parent.name
-            schema = cls._schema_from_dry_run(sql, dataset, project)
-            return cls(schema)
+        schema = DryRun(str(query_file)).get_schema()
+        return cls(schema)
 
     @classmethod
     def from_schema_file(cls, schema_file: Path):
         """Create schema from a yaml schema file."""
-        if not schema_file.is_file() or schema_file.suffix != ".yml":
+        if not schema_file.is_file() or schema_file.suffix != ".yaml":
             raise Exception(f"{schema_file} is not a valid YAML schema file.")
 
         with open(schema_file) as file:
@@ -42,14 +43,27 @@ class Schema:
         """Create schema from JSON object."""
         return cls(json_schema)
 
+    @classmethod
+    def for_table(cls, project, dataset, table):
+        """Get the schema for a BigQuery table."""
+        client = bigquery.Client()
+        table = client.get_table(f"{project}.{dataset}.{table}")
+        table_schema = io.StringIO("")
+        client.schema_to_json(table.schema, table_schema)
+        return cls({"fields": json.loads(table_schema.getvalue())})
+
     def merge(self, other: "Schema"):
         """Merge another schema into the schema."""
-        self._traverse(self.schema["fields"], other["fields"], update=True)
+        self._traverse(
+            "root", self.schema["fields"], other.schema["fields"], update=True
+        )
 
     def equal(self, other: "Schema") -> bool:
         """Compare to another schema"""
         try:
-            self._traverse(self.schema["fields"], other["fields"], update=False)
+            self._traverse(
+                "root", self.schema["fields"], other.schema["fields"], update=False
+            )
         except Exception as e:
             print(e)
             return False
@@ -72,10 +86,19 @@ class Schema:
                         if update:
                             # add field attributes if not exists in schema
                             nodes[node_name][node_attr_key] = node_attr_value
-                        else:
-                            raise Exception(
-                                f"{node_attr_key} missing in {prefix}.{field_path}"
+                            print(
+                                f"Attribute {node_attr_key} added to {prefix}.{field_path}"
                             )
+                        else:
+                            if node_attr_key == "description":
+                                print(
+                                    "Warning: descriptions for "
+                                    f"{prefix}.{field_path} differ"
+                                )
+                            else:
+                                raise Exception(
+                                    f"{node_attr_key} missing in {prefix}.{field_path}"
+                                )
                     elif nodes[node_name][node_attr_key] != node_attr_value:
                         # check field attribute diffs
                         if node_attr_key == "description":
@@ -101,6 +124,7 @@ class Schema:
                 if update:
                     # node does not exist in schema, add to schema
                     nodes[node_name] = node.copy()
+                    print(f"Field {node_name} added to {prefix}")
                 else:
                     raise Exception(f"{prefix}.{field_path} is missing in schema")
 
@@ -112,18 +136,3 @@ class Schema:
     def to_json(self):
         """Return the schema data as JSON."""
         return json.dumps(self.schema)
-
-    # todo: change to use dryRun function once schema information gets returned
-    @staticmethod
-    def _schema_from_dry_run(sql, project, dataset) -> Dict[str, Any]:
-        """Perform a dry run to get schema information."""
-        config = bigquery.QueryJobConfig(
-            dry_run=True,
-            default_dataset=f"{project}.{dataset}",
-            query_parameters=[
-                bigquery.ScalarQueryParameter("submission_date", "DATE", "2000-01-01"),
-            ],
-        )
-        client = bigquery.Client()
-        schema = client.query(sql, config)._job_statistics()["schema"]
-        return schema

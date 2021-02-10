@@ -135,8 +135,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         if schema.bq_table == "baseline_v1":
             replacements += [
                 "mozfun.norm.glean_baseline_client_info"
-                "(client_info, metrics)"
-                " AS client_info"
+                "(client_info, metrics) AS client_info"
             ]
         if (
             schema.bq_dataset_family == "org_mozilla_fenix"
@@ -155,7 +154,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
                 "'Firefox' AS normalized_app_name",
             ]
     elif schema.schema_id.startswith("moz://mozilla.org/schemas/main/ping/"):
-        replacements += ["mozdata.udf.normalize_main_payload(payload)" " AS payload"]
+        replacements += ["mozdata.udf.normalize_main_payload(payload) AS payload"]
     replacements_str = ",\n    ".join(replacements)
     view_query = VIEW_QUERY_TEMPLATE.format(
         target=full_source_id, replacements=replacements_str

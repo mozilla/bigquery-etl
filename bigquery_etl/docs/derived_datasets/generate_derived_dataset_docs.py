@@ -1,10 +1,11 @@
 """Generate documentation for derived datasets."""
 
 import os
+import re
 import yaml
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
-from bigquery_etl.dryrun import SKIP, DryRun
+from bigquery_etl.dryrun import DryRun
 
 VIEW_FILE = "view.sql"
 METADATA_FILE = "metadata.yaml"
@@ -60,9 +61,21 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                     source_urls["View Definition"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
 
                     view_file = os.path.join(root, VIEW_FILE)
-                    referenced = DryRun(view_file).get_referenced_tables()
-                    if referenced:
-                        print('Referenced tables: ', referenced)
+                    content = ""
+
+                    with open(view_file) as f:
+                        view_content = f.read()
+                        # get the view content by removing CREATE OR REPLACE VIEW
+                        content = re.sub(
+                            "CREATE OR REPLACE VIEW.*?AS",
+                            "",
+                            view_content,
+                            flags=re.DOTALL,
+                        )
+
+                    referenced_tables = DryRun(
+                        view_file, content
+                    ).get_referenced_tables()
 
                 file_loader = FileSystemLoader(
                     "bigquery_etl/docs/derived_datasets/templates"
@@ -76,5 +89,7 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                     metadata=metadata,
                     table_name=dataset_name,
                     source_urls=source_urls,
+                    referenced_tables=referenced_tables,
+                    project_url=f"{SOURCE_URL}/sql",
                 )
                 dataset_doc.write(output)

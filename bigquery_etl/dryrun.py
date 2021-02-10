@@ -178,15 +178,18 @@ class DryRun:
         "bigquery-etl-dryrun"
     )
 
-    def __init__(self, sqlfile):
+    def __init__(self, sqlfile, content=None):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
+        self.content = content
 
     @cached_property
     def dry_run_result(self):
         """Dry run the provided SQL file."""
-        sql = open(self.sqlfile).read()
-
+        if self.content:
+            sql = self.content
+        else:
+            sql = open(self.sqlfile).read()
         try:
             r = urlopen(
                 Request(
@@ -222,7 +225,61 @@ class DryRun:
         ):
             return self.dry_run_result["referencedTables"]
 
-        return []
+        # Handle views that require a date filter
+        if (
+            self.dry_run_result
+            and not self.dry_run_result["valid"]
+            and self.get_error() == "DateFilterNeeded"
+            and self.sqlfile not in SKIP
+        ):
+
+            # Since different queries require different date filters
+            # (submission_date, crash_date, timestamp, submission_timestamp, ...)
+            # A trick we can use to get the date filter name is to extract it from
+            # the error message (capturing the next word after "column(s)")
+
+            # "Cannot query over table <table_name> without a filter over column(s)
+            # <date_filter_name> that can be used for partition elimination."
+
+            error = self.dry_run_result["errors"][0].get("message", "")
+            date_filter = find_next_word("column(s)", error)
+
+            if "date" in date_filter:
+                filtered_content = (
+                    f"{self.content}\nWHERE {date_filter} > current_date()"
+                )
+                # if the query already includes a WHERE clause, we need to
+                # append 'AND' instead of 'WHERE'
+                if (
+                    DryRun(self.sqlfile, filtered_content).get_error()
+                    == "DateFilterNeeded-AND"
+                ):
+                    filtered_content = (
+                        f"{self.content}\nAND {date_filter} > current_date()"
+                    )
+
+            if "timestamp" in date_filter:
+                filtered_content = (
+                    f"{self.content}\nWHERE {date_filter} > current_timestamp()"
+                )
+                if (
+                    DryRun(self.sqlfile, filtered_content).get_error()
+                    == "DateFilterNeeded-AND"
+                ):
+                    filtered_content = (
+                        f"{self.content}\nAND {date_filter} > current_timestamp()"
+                    )
+
+            if (
+                DryRun(self.sqlfile, filtered_content).get_error() == None
+                and "referencedTables"
+                in DryRun(self.sqlfile, filtered_content).dry_run_result
+            ):
+                return DryRun(self.sqlfile, filtered_content).dry_run_result[
+                    "referencedTables"
+                ]
+
+            return []
 
     def is_valid(self):
         """Dry run the provided SQL file and check if valid."""
@@ -250,8 +307,28 @@ class DryRun:
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
             print(f"{self.sqlfile:59} OK")
+        elif (
+            error
+            and error.get("code", None) in [400, 403]
+            and "without a filter over column(s)" in error.get("message", "")
+        ):
+            # Some queries require a date filter
+            # (submission_date, submission_timestamp, etc.)
+            # We mark these requests as valid and add a date filter
+            # in get_referenced_table()
+            print(f"{self.sqlfile:59} OK")
+        elif (
+            error
+            and error.get("code", None) in [400, 403]
+            and "Syntax error: Expected end of input but got keyword WHERE"
+            in error.get("message", "")
+        ):
+            # If the date filter (e.g. WHERE crash_date > current_date())
+            # is added to a query that already has a WHERE clause,
+            # it will throw an error.
+            print(f"{self.sqlfile:59} OK")
         else:
-            print(f"{self.sqlfile:59} ERROR\n", self.dry_run_result["errors"])
+            print(f"{self.sqlfile:59} INVALID ERROR\n", self.dry_run_result["errors"])
             return False
 
         return True
@@ -261,11 +338,33 @@ class DryRun:
         if self.dry_run_result is None:
             return None
         return self.dry_run_result["errors"]
+    def get_error(self):
+        error = {}
+        if "errors" in self.dry_run_result and len(self.dry_run_result["errors"]) == 1:
+            error = self.dry_run_result["errors"][0]
+        if "without a filter over column(s)" in error.get("message", ""):
+            return "DateFilterNeeded"
+        if "Syntax error: Expected end of input but got keyword WHERE" in error.get(
+            "message", ""
+        ):
+            return "DateFilterNeeded-AND"
+        return None
 
 
 def sql_file_valid(sqlfile):
     """Dry run SQL files."""
     return DryRun(sqlfile).is_valid()
+
+
+def find_next_word(target, source):
+    """Find the next word in a string.
+    We use this function to get the date filter name from the error message.
+    """
+    split = source.split()
+    for i, w in enumerate(split):
+        if w == target:
+            # get the next word, and remove quotations from column name
+            return split[i + 1].replace("'", "")
 
 
 def main():

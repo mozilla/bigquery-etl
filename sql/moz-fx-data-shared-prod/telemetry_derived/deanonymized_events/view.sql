@@ -6,7 +6,7 @@ WITH events AS (
     `moz-fx-data-shared-prod`.udf.deanonymize_event(e).*,
     *
   FROM
-    telemetry_stable.event_v4
+    `moz-fx-data-shared-prod`.telemetry_stable.event_v4
   LEFT JOIN
     UNNEST(
       [

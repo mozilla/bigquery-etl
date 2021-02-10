@@ -35,5 +35,5 @@ python -m bigquery_etl.view.generate_stable_views --sql-dir "${SQL_DIR}" --paral
 
 # Fill in views for generated Glean ETL
 PLACEHOLDER_DATE="2000-01-01"
-./script/run_glean_baseline_clients_daily --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}/${TARGET_PROJECT}" --views-only --date="${PLACEHOLDER_DATE}"
-./script/run_glean_baseline_clients_last_seen --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}/${TARGET_PROJECT}" --views-only --date="${PLACEHOLDER_DATE}"
+./script/run_glean_baseline_clients_daily --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}/${TARGET_PROJECT}" --output-only --date="${PLACEHOLDER_DATE}"
+./script/run_glean_baseline_clients_last_seen --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}/${TARGET_PROJECT}" --output-only --date="${PLACEHOLDER_DATE}"

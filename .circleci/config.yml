@@ -189,10 +189,7 @@ jobs:
           command: |
             mkdir /tmp/generated-sql
             cp -r sql/ /tmp/generated-sql/sql
-            # TODO: Replace with a call to ./script/generate_all_views
-            # once baseline ETL script is ported to avoid the need for
-            # BQ credentials.
-            PATH="venv/bin:$PATH" ./script/generate_stable_views \
+            PATH="venv/bin:$PATH" ./script/generate_all_views \
               --sql-dir /tmp/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
       - persist_to_workspace:

@@ -1,5 +1,5 @@
+# Generated via bigquery_etl.glean_usage
 ---
-{{ header }}
 
 friendly_name: Baseline Clients Last Seen
 description: |-

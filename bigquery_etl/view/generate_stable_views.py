@@ -159,11 +159,13 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     elif schema.schema_id.startswith("moz://mozilla.org/schemas/main/ping/"):
         replacements += ["mozdata.udf.normalize_main_payload(payload) AS payload"]
     replacements_str = ",\n    ".join(replacements)
-    full_sql = reformat(VIEW_QUERY_TEMPLATE.format(
-        target=full_source_id,
-        replacements=replacements_str,
-        full_view_id=full_view_id,
-    ))
+    full_sql = reformat(
+        VIEW_QUERY_TEMPLATE.format(
+            target=full_source_id,
+            replacements=replacements_str,
+            full_view_id=full_view_id,
+        )
+    )
     with tempfile.TemporaryDirectory() as tdir:
         tfile = Path(tdir) / "view.sql"
         with tfile.open("w") as f:

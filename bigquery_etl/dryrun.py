@@ -245,6 +245,7 @@ class DryRun:
 
         if self.sqlfile in SKIP:
             print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            return []
 
         if (
             self.dry_run_result
@@ -307,6 +308,24 @@ class DryRun:
                 return stripped_dml_result.dry_run_result["referencedTables"]
 
         return []
+
+    def get_schema(self):
+        """Return the query schema by dry running the SQL file."""
+        if self.sqlfile not in SKIP and not self.is_valid():
+            raise Exception(f"Error when dry running SQL file {self.sqlfile}")
+
+        if self.sqlfile in SKIP:
+            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            return {}
+
+        if (
+            self.dry_run_result
+            and self.dry_run_result["valid"]
+            and "schema" in self.dry_run_result
+        ):
+            return self.dry_run_result["schema"]
+
+        return {}
 
     def is_valid(self):
         """Dry run the provided SQL file and check if valid."""

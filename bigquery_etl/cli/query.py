@@ -1,7 +1,5 @@
 """bigquery-etl CLI query command."""
 
-import io
-import json
 import re
 import string
 import sys
@@ -21,6 +19,7 @@ from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..query_scheduling.dag_collection import DagCollection
 from ..run_query import run
+from ..schema import Schema, SCHEMA_FILE
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 SQL_FILE_RE = re.compile(
@@ -543,7 +542,7 @@ def schema():
 
 
 @schema.command(
-    help="Generate the query schema",
+    help="Update the query schema",
 )
 @click.argument("name")
 @sql_dir_option
@@ -554,7 +553,7 @@ def schema():
     default="moz-fx-data-shared-prod",
     callback=is_valid_project,
 )
-def generate(name, sql_dir, project_id):
+def update(name, sql_dir, project_id):
     """CLI command for generating the query schema."""
     if not is_authenticated():
         click.echo(
@@ -562,29 +561,21 @@ def generate(name, sql_dir, project_id):
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    client = bigquery.Client()
-
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
 
     for query_file in query_files:
         query_file_path = Path(query_file)
-        dataset = query_file_path.parent.parent.name
-        project = query_file_path.parent.parent.parent.name
+        query_schema = Schema.from_query_file(query_file_path)
+        existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
-        click.echo(f"Generate schema based on dry run of {query_file_path}")
-        with open(query_file_path) as f:
-            sql = f.read()
-        config = bigquery.QueryJobConfig(
-            dry_run=True,
-            default_dataset=f"{project}.{dataset}",
-            query_parameters=[
-                bigquery.ScalarQueryParameter("submission_date", "DATE", "2000-01-01"),
-            ],
-        )
-        new_schema = client.query(sql, config)._job_statistics()["schema"]
+        if existing_schema_path.is_file():
+            existing_schema = Schema.from_schema_file(existing_schema_path)
+            existing_schema.merge(query_schema)
+            existing_schema.to_yaml_file(existing_schema_path)
+        else:
+            query_schema.to_yaml_file(existing_schema_path)
 
-        with open(query_file_path.parent / "schema.json", "w+") as schema_file:
-            json.dump(new_schema, schema_file, indent=2)
+        click.echo(f"Schema {existing_schema_path} updated.")
 
 
 @schema.command(
@@ -599,8 +590,11 @@ def generate(name, sql_dir, project_id):
     default="moz-fx-data-shared-prod",
     callback=is_valid_project,
 )
-def deploy(name, sql_dir, project_id):
+@click.pass_context
+def deploy(ctx, name, sql_dir, project_id):
     """CLI command for deploying destination table schemas."""
+    ctx.forward(validate_schema)
+
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login` "
@@ -613,34 +607,21 @@ def deploy(name, sql_dir, project_id):
 
     for query_file in query_files:
         query_file_path = Path(query_file)
+        existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
-        if (query_file_path.parent / "schema.json").is_file():
+        if existing_schema_path.is_file():
             click.echo(f"Deploy schema for {query_file}")
 
             table_name = query_file_path.parent.name
             dataset_name = query_file_path.parent.parent.name
             project_name = query_file_path.parent.parent.parent.name
+            existing_schema = Schema.from_schema_file(existing_schema_path)
 
             table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
-            table_schema = io.StringIO("")
-            client.schema_to_json(table.schema, table_schema)
-            original_schema = json.loads(table_schema.getvalue())
-
-            with open(query_file_path.parent / "schema.json") as schema_file:
-                new_schema = json.load(schema_file)
-                table.schema = new_schema
-                table = client.update_table(table, ["schema"])
-
-                if len(table.schema) == len(original_schema) + 1 == len(new_schema):
-                    click.echo(
-                        "A new column has been added to "
-                        f"{project_name}.{dataset_name}.{table_name}"
-                    )
-                else:
-                    click.echo(
-                        f"The schema for {project_name}.{dataset_name}.{table_name} "
-                        "is unchanged"
-                    )
+            table.schema = existing_schema.to_json()
+            client.update_table(table, ["schema"])
+        else:
+            click.echo(f"No schema file found for {query_file}")
 
 
 @schema.command(help="Deploy the query schema", name="validate")
@@ -661,56 +642,38 @@ def validate_schema(name, sql_dir, project_id):
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    client = bigquery.Client()
-
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
 
     for query_file in query_files:
         query_file_path = Path(query_file)
+        query_schema = Schema.from_query_file(query_file_path)
+        existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
-        if not (query_file_path.parent / "schema.json").is_file():
-            click.echo(f"No schema defined for {query_file_path}", err=True)
-        else:
-            table_name = query_file_path.parent.name
-            dataset_name = query_file_path.parent.parent.name
-            project_name = query_file_path.parent.parent.parent.name
+        table_name = query_file_path.parent.name
+        dataset_name = query_file_path.parent.parent.name
+        project_name = query_file_path.parent.parent.parent.name
+        table_schema = Schema.for_table(project_name, dataset_name, table_name)
 
-            click.echo(f"Validate schema for {query_file_path}")
-            with open(query_file_path) as f:
-                sql = f.read()
-            config = bigquery.QueryJobConfig(
-                dry_run=True,
-                default_dataset=f"{project_name}.{dataset_name}",
-                query_parameters=[
-                    bigquery.ScalarQueryParameter(
-                        "submission_date", "DATE", "2000-01-01"
-                    ),
-                ],
+        if not query_schema.equal(table_schema):
+            click.echo(
+                f"Schema for query in {query_file_path} "
+                f"incompatible with schema deployed for "
+                f"{project_name}.{dataset_name}.{table_name}",
+                err=True,
             )
-            query_schema = client.query(sql, config)._job_statistics()["schema"]
+            sys.exit(1)
+        else:
+            if not (existing_schema_path).is_file():
+                click.echo(f"No schema file defined for {query_file_path}", err=True)
+            else:
+                existing_schema = Schema.from_schema_file(existing_schema_path)
 
-            with open(query_file_path.parent / "schema.json") as schema_file:
-                defined_schema = json.dumps(json.load(schema_file), sort_keys=True)
-
-                if query_schema != defined_schema:
+                if not existing_schema.equal(query_schema):
                     click.echo(
-                        f"Schema defined in {query_file_path.parent / 'schema.json'} "
+                        f"Schema defined in {existing_schema_path} "
                         f"incompatible with query {query_file_path}",
                         err=True,
                     )
-
-                table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
-                table_schema = io.StringIO("")
-                client.schema_to_json(table.schema, table_schema)
-
-                if defined_schema != json.dumps(
-                    json.loads(table_schema.getvalue()), sort_keys=True
-                ):
-                    click.echo(
-                        f"Schema defined in {query_file_path.parent / 'schema.json'} "
-                        f"incompatible with schema deployed for "
-                        f"{project_name}.{dataset_name}.{table_name}",
-                        err=True,
-                    )
                     sys.exit(1)
-            click.echo(f"Schemas for {query_file_path} are valid.")
+
+        click.echo(f"Schemas for {query_file_path} are valid.")

@@ -15,11 +15,14 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
 
 
-def render(sql_filename, **kwargs) -> str:
+def render(sql_filename, format=True, **kwargs) -> str:
     """Render a given template query using Jinja."""
     env = Environment(loader=PackageLoader("bigquery_etl", "glean_usage/templates"))
     main_sql = env.get_template(sql_filename)
-    return reformat(main_sql.render(**kwargs))
+    rendered = main_sql.render(**kwargs)
+    if format:
+        rendered = reformat(rendered)
+    return rendered
 
 
 def write_sql(output_dir, full_table_id, basename, sql):

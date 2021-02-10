@@ -59,6 +59,7 @@ standard_args.add_table_filter(parser)
 BASELINE_DAILY_TABLE_ID = "baseline_clients_daily_v1"
 QUERY_FILENAME = f"{BASELINE_DAILY_TABLE_ID}.sql"
 VIEW_FILENAME = f"{BASELINE_DAILY_TABLE_ID[:-3]}.view.sql"
+VIEW_METADATA_FILENAME = f"{BASELINE_DAILY_TABLE_ID[:-3]}.metadata.yaml"
 
 
 def main():
@@ -120,6 +121,7 @@ def run_query(
     query_sql = render(QUERY_FILENAME, **render_kwargs)
     init_sql = render(QUERY_FILENAME, init=True, **render_kwargs)
     view_sql = render(VIEW_FILENAME, **render_kwargs)
+    view_metadata = render(VIEW_METADATA_FILENAME, format=False, **render_kwargs)
     sql = query_sql
 
     table_missing = False
@@ -152,6 +154,7 @@ def run_query(
             logging.info(f"Running query for: {daily_table}")
 
     if output_dir:
+        write_sql(output_dir, daily_view, "metadata.yaml", view_metadata)
         write_sql(output_dir, daily_view, "view.sql", view_sql)
         write_sql(output_dir, daily_table, "query.sql", query_sql)
         write_sql(output_dir, daily_table, "init.sql", init_sql)

@@ -107,7 +107,6 @@ def load_tables(
     for table in tables:
         destination = dataset.table(table.name)
         job_config = bigquery.LoadJobConfig(
-            default_dataset=dataset,
             source_format=table.source_format,
             write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         )

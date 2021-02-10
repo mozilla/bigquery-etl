@@ -37,7 +37,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry.experiment_enrollment_aggregates_hourly`
 WHERE
-  timestamp > (
+  window_start > (
     SELECT
       MAX(window_end)
     FROM

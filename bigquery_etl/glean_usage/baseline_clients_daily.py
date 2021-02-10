@@ -1,21 +1,19 @@
 """Generating and run baseline_clients_daily queries for Glean apps."""
 import logging
-import tempfile
 from argparse import ArgumentParser
 from datetime import datetime
 from functools import partial
 from multiprocessing.pool import ThreadPool
-from pathlib import Path
 
 from google.cloud import bigquery
 from google.cloud.bigquery import WriteDisposition, ScalarQueryParameter
 
-from bigquery_etl.dryrun import DryRun
 from bigquery_etl.glean_usage.common import (
     list_baseline_tables,
     render,
     table_names_from_baseline,
     write_sql,
+    referenced_table_exists,
 )
 from bigquery_etl.util import standard_args  # noqa E402
 
@@ -124,15 +122,7 @@ def run_query(
     view_metadata = render(VIEW_METADATA_FILENAME, format=False, **render_kwargs)
     sql = query_sql
 
-    table_missing = False
-    with tempfile.TemporaryDirectory() as tdir:
-        tfile = Path(tdir) / "view.sql"
-        with tfile.open("w") as f:
-            f.write(view_sql)
-        dryrun = DryRun(str(tfile))
-        if 404 in [e.get("code") for e in dryrun.errors()]:
-            table_missing = True
-    if table_missing:
+    if not (referenced_table_exists(view_sql)):
         if output_only:
             logging.info(f"Skipping view for table which doesn't exist: {daily_table}")
             return

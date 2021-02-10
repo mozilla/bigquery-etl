@@ -100,6 +100,15 @@ def table_names_from_baseline(baseline_table):
     )
 
 
+def referenced_table_exists(view_sql):
+    with tempfile.TemporaryDirectory() as tdir:
+        tfile = Path(tdir) / "view.sql"
+        with tfile.open("w") as f:
+            f.write(view_sql)
+        dryrun = DryRun(str(tfile))
+        return 404 not in [e.get("code") for e in dryrun.errors()]
+
+
 def _contains_glob(patterns):
     return any({"*", "?", "["}.intersection(pattern) for pattern in patterns)
 

@@ -263,7 +263,6 @@ workflows:
             branches:
               only:
                 - master
-                - gensql  # FIXME: Remove! This is just for testing the PR.
       - deploy:
           context: data-eng-bigquery-etl-dockerhub
           requires:

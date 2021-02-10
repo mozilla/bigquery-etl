@@ -1,5 +1,6 @@
 WITH raw AS (
   SELECT
+    id,
     fxa_uid,
     created_at,
     mozfun.json.js_extract_string_map(attribution) AS attribution,

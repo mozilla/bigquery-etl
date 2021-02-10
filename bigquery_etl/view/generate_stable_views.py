@@ -23,6 +23,7 @@ from multiprocessing.pool import ThreadPool
 from pathlib import Path
 
 from bigquery_etl.dryrun import DryRun
+from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util import standard_args
 
 
@@ -158,11 +159,11 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     elif schema.schema_id.startswith("moz://mozilla.org/schemas/main/ping/"):
         replacements += ["mozdata.udf.normalize_main_payload(payload) AS payload"]
     replacements_str = ",\n    ".join(replacements)
-    full_sql = VIEW_QUERY_TEMPLATE.format(
+    full_sql = reformat(VIEW_QUERY_TEMPLATE.format(
         target=full_source_id,
         replacements=replacements_str,
         full_view_id=full_view_id,
-    ).strip()
+    ))
     with tempfile.TemporaryDirectory() as tdir:
         tfile = Path(tdir) / "view.sql"
         with tfile.open("w") as f:

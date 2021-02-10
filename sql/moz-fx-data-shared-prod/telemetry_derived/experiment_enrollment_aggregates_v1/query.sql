@@ -78,7 +78,6 @@ all_events AS (
     fenix
 )
 SELECT
-  `timestamp`,
   `type`,
   experiment,
   branch,
@@ -103,7 +102,6 @@ SELECT
 FROM
   all_events
 GROUP BY
-  timestamp,
   `type`,
   experiment,
   branch,

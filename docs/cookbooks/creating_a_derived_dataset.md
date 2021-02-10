@@ -16,9 +16,9 @@ Set up bigquery-etl on your system per the instructions in the [README.md](https
 
 ## Create the Query
 
-First, you'll need to create a query files to work off of. For this step, you'll need to know what you want your derived dataset to be called. In this case, we'll name it `org_mozilla_mozregression_derived.mozregression_aggregates`.
+First, you'll need to create a query file to work off of. For this step, you'll need to know what you want your derived dataset to be called. In this case, we'll name it `org_mozilla_mozregression_derived.mozregression_aggregates`.
 
-The `org_mozilla_mozregression_derived` part represents a "dataset" in BigQuery (which is Google's unfortunately-chosen identifier for a "group of tables"). By convention, we use the `_derived` postfix to hold derived tables like this one.
+The `org_mozilla_mozregression_derived` part represents a _BigQuery dataset_ (a concept that is essentially a container of tables). By convention, we use the `_derived` postfix to hold derived tables like this one.
 
 Run:
 
@@ -156,7 +156,7 @@ Speaking of forks, note that if you're making this pull request from a fork, man
 
 ## Creating an initial table
 
-To bootstrap an initial table, the normal best practice is to create another SQL attempt, similar to the incremental query above, which creates the dataset. We'll write out another file called `init.sql` in `sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1`:
+To bootstrap an initial table, the normal best practice is to create another SQL file, similar to the incremental query above, which creates the table. We'll write out another file called `init.sql` in `sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/mozregression_aggregates_v1`:
 
 ```sql
 CREATE OR REPLACE TABLE
@@ -186,7 +186,7 @@ GROUP BY
   os_version;
 ```
 
-Note the `PARTITION BY DATE(date)` in the statement. This makes it so BigQuery will partition the table by date. This isn't too big a deal for mozregression (where even the size of unaggregated data is very small) but [can be a godsend for datasets where each day is hundreds of gigabytes or terrabytes big](https://docs.telemetry.mozilla.org/cookbooks/bigquery/optimization.html).
+Note the `PARTITION BY DATE(date)` in the statement. This makes it so BigQuery will partition the table by date. This isn't too big a deal for mozregression (where even the size of unaggregated data is very small) but [can be a godsend for datasets where each day is hundreds of gigabytes or terabytes big](https://docs.telemetry.mozilla.org/cookbooks/bigquery/optimization.html).
 
 Go ahead and add this to your pull request. Now that we have an initial table definition, we can create a table using this command (if you're not in data engineering, you might have to get someone to run this for you as it implies modifying what we have in production):
 

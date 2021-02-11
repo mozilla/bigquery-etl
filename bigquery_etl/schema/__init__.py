@@ -11,7 +11,7 @@ from typing import Dict, Any
 
 from bigquery_etl.dryrun import DryRun
 
-SCHEMA_FILE = 'schema.yaml'
+SCHEMA_FILE = "schema.yaml"
 
 
 @attr.s(auto_attribs=True)
@@ -123,7 +123,7 @@ class Schema:
             else:
                 if update:
                     # node does not exist in schema, add to schema
-                    nodes[node_name] = node.copy()
+                    columns.append(node.copy())
                     print(f"Field {node_name} added to {prefix}")
                 else:
                     raise Exception(f"{prefix}.{field_path} is missing in schema")

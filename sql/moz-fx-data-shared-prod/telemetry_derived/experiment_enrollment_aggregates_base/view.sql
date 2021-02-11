@@ -69,7 +69,7 @@ all_events AS (
     fenix
 )
 SELECT
-  `timestamp`,
+  date(`timestamp`) AS submission_date,
   `type`,
   experiment,
   branch,
@@ -94,7 +94,7 @@ SELECT
 FROM
   all_events
 GROUP BY
-  timestamp,
+  submission_date,
   `type`,
   experiment,
   branch,

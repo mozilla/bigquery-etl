@@ -31,6 +31,6 @@ def is_authenticated(project_id="moz-fx-data-shared-prod"):
 
 def is_valid_project(ctx, param, value):
     """Check if the provided project_id corresponds to an existing project."""
-    if value in [Path(p).name for p in project_dirs()]:
+    if value is None or value in [Path(p).name for p in project_dirs()]:
         return value
     raise click.BadParameter(f"Invalid project {value}")

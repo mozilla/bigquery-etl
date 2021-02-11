@@ -10,3 +10,4 @@ venv/
 sql/**/docs
 sql/**/mkdocs.yml
 generated_docs/
+generated-sql/

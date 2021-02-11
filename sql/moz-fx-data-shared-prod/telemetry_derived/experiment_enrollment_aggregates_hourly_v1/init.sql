@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_hourly_v1`(
-    timestamp TIMESTAMP,
     `type` STRING,
     branch STRING,
     experiment STRING,
@@ -17,6 +16,6 @@ CREATE TABLE IF NOT EXISTS
     exposure_count INT64
   )
 PARTITION BY
-  TIMESTAMP_TRUNC(timestamp, HOUR)
+  TIMESTAMP_TRUNC(window_start, HOUR)
 CLUSTER BY
   experiment

@@ -342,6 +342,15 @@ bqetl_monitoring:
     retries: 2
     retry_delay: 30m
 
+bqetl_event_rollup:
+  schedule_interval: 0 3 * * *
+  default_args:
+    owner: frank@mozilla.com
+    start_date: "2020-11-03"
+    email: ["frank@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+
 bqetl_marketing_fetch:
   schedule_interval: 0 1 * * 1
   default_args:

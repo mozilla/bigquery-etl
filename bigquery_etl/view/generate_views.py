@@ -1,5 +1,9 @@
 """
-Generate one view definition file per document type in '_stable' tables.
+DEPRECATED in favor of generate_stable_views.
+
+This module will be removed once ops logic transitions to use the new module.
+
+Generates one view definition file per document type in '_stable' tables.
 
 If there are existing view definitions in the destination directory then those will be
 kept instead.

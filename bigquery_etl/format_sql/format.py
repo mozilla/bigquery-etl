@@ -12,6 +12,7 @@ from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 SKIP = {
     # files that existed before we started to enforce this script
     *glob.glob("bigquery_etl/glam/templates/*.sql"),
+    *glob.glob("bigquery_etl/events_daily/query_templates/**/*.sql"),
     "bigquery_etl/glean_usage/templates/baseline_clients_daily.view.sql",
     "bigquery_etl/glean_usage/templates/baseline_clients_daily_v1.sql",
     "bigquery_etl/glean_usage/templates/baseline_clients_last_seen.view.sql",
@@ -191,7 +192,7 @@ def format(paths, check=False):
             print("Error: must specify PATH or provide input via stdin")
             sys.exit(255)
         query = sys.stdin.read()
-        formatted = reformat(query) + "\n"
+        formatted = reformat(query, trailing_newline=True)
         if not check:
             print(formatted, end="")
         if check and query != formatted:
@@ -220,7 +221,7 @@ def format(paths, check=False):
         for path in sql_files:
             with open(path) as fp:
                 query = fp.read()
-            formatted = reformat(query) + "\n"
+            formatted = reformat(query, trailing_newline=True)
             if query != formatted:
                 if check:
                     print(f"would reformat {path}")

@@ -1,0 +1,8 @@
+friendly_name: Deanonymized Events
+description: >
+  Parent and content process events, broken out from event_v4 pings.
+  Used strictly for events_daily and event_types.
+owners:
+  - frank@mozilla.com
+labels:
+  application: firefox

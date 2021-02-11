@@ -44,3 +44,10 @@
   numeric_index: 3
   index: "\U00000003"
   event_properties: []
+- submission_date: "2020-01-02"
+  category: third_category
+  event: fourth_event
+  first_timestamp: "2020-01-02T00:00:05+00:00"
+  numeric_index: 4
+  index: "\U00000004"
+  event_properties: []

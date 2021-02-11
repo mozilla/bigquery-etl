@@ -62,14 +62,14 @@
 - submission_date: "2020-01-03"
   category: new_category
   event: new_event_no_props
-  first_timestamp: "2020-01-03T00:00:01+00:00"
+  first_timestamp: "2020-01-02T23:59:01+00:00"
   numeric_index: 4
   index: "\U00000004"
   event_properties: []
 - submission_date: "2020-01-03"
   category: new_category
   event: new_event_with_props
-  first_timestamp: "2020-01-03T00:00:02+00:00"
+  first_timestamp: "2020-01-02T23:59:02+00:00"
   numeric_index: 5
   index: "\U00000005"
   event_properties:

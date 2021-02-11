@@ -10,6 +10,7 @@ only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
+from argparse import ArgumentParser
 from functools import cached_property
 from multiprocessing.pool import Pool
 from os.path import basename, dirname
@@ -265,12 +266,21 @@ def sql_file_valid(sqlfile):
 
 def main():
     """Dry run all SQL files in the project directories."""
+    parser = ArgumentParser(description=main.__doc__)
+    parser.add_argument(
+        "--path",
+        help="Where dryrun queries will be searched for.",
+        default="sql",
+        required=False,
+    )
+    args = parser.parse_args()
+
     file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
 
     sql_files = [
         f
         for n in file_names
-        for f in glob.glob(f"sql/**/{n}", recursive=True)
+        for f in glob.glob(f"{args.path}/**/{n}", recursive=True)
         if f not in SKIP
     ]
 

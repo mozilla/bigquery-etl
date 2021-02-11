@@ -1,6 +1,8 @@
 ---
 -
   submission_timestamp: '2020-01-02 00:00:00'
+  ping_info:
+    parsed_start_time: '2020-01-02 00:00:00'
   events:
     -
       timestamp: 1000
@@ -35,6 +37,8 @@
       category: first_category
 -
   submission_timestamp: '2020-01-02 00:00:00'
+  ping_info:
+    parsed_start_time: '2020-01-02 00:00:00'
   events:
     -
       timestamp: 1000
@@ -47,3 +51,7 @@
         -
           key: second_property
           value: second_property_value_1
+    -
+      timestamp: 5000
+      name: fourth_event
+      category: third_category

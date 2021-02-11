@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -exo pipefail
+
+rm -rf generated-sql/
+git clone --single-branch --branch generated-sql https://github.com/mozilla/bigquery-etl generated-sql
+rm -rf generated-sql/sql
+cp -r sql generated-sql/sql
+./script/generate_all_views --sql-dir generated-sql/sql/ --target-project moz-fx-data-shared-prod
+git add .
+git commit -m "Auto-push from change to main branch [ci skip]"
+git push

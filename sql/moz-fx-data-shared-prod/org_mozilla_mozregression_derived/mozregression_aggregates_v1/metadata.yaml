@@ -1,0 +1,13 @@
+description: Aggregated metrics of mozregression usage
+friendly_name: mozregression aggregates
+labels:
+  incremental: true
+  public_bigquery: true
+  public_json: true
+  review_bugs:
+  - '1691105'
+owners:
+- wlachance@mozilla.com
+scheduling:
+  dag_name: bqetl_internal_tooling
+  task_name: mozregression_aggregates__v1

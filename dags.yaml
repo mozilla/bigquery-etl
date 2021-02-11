@@ -342,6 +342,15 @@ bqetl_monitoring:
     retries: 2
     retry_delay: 30m
 
+bqetl_event_rollup:
+  schedule_interval: 0 3 * * *
+  default_args:
+    owner: frank@mozilla.com
+    start_date: "2020-11-03"
+    email: ["frank@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+
 bqetl_marketing_fetch:
   schedule_interval: 0 1 * * 1
   default_args:
@@ -378,3 +387,22 @@ bqetl_desktop_platform:
       ]
     retries: 2
     retry_delay: 30m
+
+bqetl_internal_tooling:
+  description: >
+    This DAG schedules queries for populating queries related to Mozilla's
+    internal developer tooling (e.g. mozregression).
+  default_args:
+    depends_on_past: false
+    email:
+    - wlachance@mozilla.com
+    - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: wlachance@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2020-06-01'
+  schedule_interval: 0 4 * * *
+

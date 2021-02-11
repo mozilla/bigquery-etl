@@ -1,0 +1,81 @@
+---
+- submission_date: "2020-01-03"
+  category: first_category
+  event: first_event
+  first_timestamp: "2020-01-01T00:00:01+00:00"
+  numeric_index: 1
+  index: "\U00000001"
+  event_properties:
+    - key: first_property
+      index: 1
+      value:
+        - key: first_property_value_1
+          index: 1
+          value: "\U00000001"
+        - key: first_property_value_2
+          index: 2
+          value: "\U00000002"
+        - key: first_property_value_3
+          index: 3
+          value: "\U00000003"
+    - key: second_property
+      index: 2
+      value:
+        - key: second_property_value_1
+          index: 1
+          value: "\U00000001"
+- submission_date: "2020-01-03"
+  category: second_category
+  event: second_event
+  first_timestamp: "2020-01-01T00:00:02+00:00"
+  numeric_index: 2
+  index: "\U00000002"
+  event_properties:
+    - key: second_property
+      index: 1
+      value:
+        - key: second_property_value_1
+          index: 1
+          value: "\U00000001"
+        - key: second_property_value_2
+          index: 2
+          value: "\U00000002"
+    - key: third_property
+      index: 2
+      value:
+        - key: third_property_value_1
+          index: 1
+          value: "\U00000001"
+- submission_date: "2020-01-03"
+  category: first_category
+  event: third_event
+  first_timestamp: "2020-01-01T00:00:04+00:00"
+  numeric_index: 3
+  index: "\U00000003"
+  event_properties:
+    - key: third_event_prop
+      index: 1
+      value:
+        - key: third_event_prop_value_1
+          index: 1
+          value: "\U00000001"
+- submission_date: "2020-01-03"
+  category: new_category
+  event: new_event_no_props
+  first_timestamp: "2020-01-02T23:59:01+00:00"
+  numeric_index: 4
+  index: "\U00000004"
+  event_properties: []
+- submission_date: "2020-01-03"
+  category: new_category
+  event: new_event_with_props
+  first_timestamp: "2020-01-02T23:59:02+00:00"
+  numeric_index: 5
+  index: "\U00000005"
+  event_properties:
+    - key: new_event_prop
+      index: 1
+      value:
+        - key: new_event_prop_value_1
+          index: 1
+          value: "\U00000001"

@@ -235,7 +235,7 @@ def main():
     )
 
     job_config = bigquery.LoadJobConfig(
-        destination=destination_table, write_disposition="WRITE_TRUNCATE"
+        write_disposition="WRITE_TRUNCATE"
     )
     job_config.schema = bq_schema
 

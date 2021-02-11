@@ -1,0 +1,53 @@
+---
+- submission_date: "2020-01-02"
+  category: first_category
+  event: first_event
+  first_timestamp: "2020-01-02T00:00:01+00:00"
+  numeric_index: 1
+  index: "\U00000001"
+  event_properties:
+    - key: first_property
+      index: 1
+      value:
+        - key: first_property_value_1
+          index: 1
+          value: "\U00000001"
+        - key: first_property_value_2
+          index: 2
+          value: "\U00000002"
+    - key: second_property
+      index: 2
+      value:
+        - key: second_property_value_1
+          index: 1
+          value: "\U00000001"
+- submission_date: "2020-01-02"
+  category: second_category
+  event: second_event
+  first_timestamp: "2020-01-02T00:00:02+00:00"
+  numeric_index: 2
+  index: "\U00000002"
+  event_properties:
+    - key: second_property
+      index: 1
+      value:
+        - key: second_property_value_1
+          index: 1
+          value: "\U00000001"
+        - key: second_property_value_2
+          index: 2
+          value: "\U00000002"
+- submission_date: "2020-01-02"
+  category: first_category
+  event: third_event
+  first_timestamp: "2020-01-02T00:00:04+00:00"
+  numeric_index: 3
+  index: "\U00000003"
+  event_properties: []
+- submission_date: "2020-01-02"
+  category: third_category
+  event: fourth_event
+  first_timestamp: "2020-01-02T00:00:05+00:00"
+  numeric_index: 4
+  index: "\U00000004"
+  event_properties: []

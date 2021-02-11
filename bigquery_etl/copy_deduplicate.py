@@ -11,8 +11,9 @@ from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
-from uuid import uuid4
+import json
 import logging
+
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
@@ -96,6 +97,7 @@ standard_args.add_parallelism(parser)
 standard_args.add_dry_run(parser, debug_log_queries=False)
 standard_args.add_log_level(parser)
 standard_args.add_priority(parser)
+standard_args.add_temp_dataset(parser)
 parser.add_argument(
     "--slices",
     type=int,
@@ -130,52 +132,17 @@ parser.add_argument(
 standard_args.add_billing_projects(parser)
 standard_args.add_table_filter(parser)
 
-temporary_dataset = None
-
-
-def get_temporary_dataset(client):
-    """Get a cached reference to the dataset used for server-assigned destinations."""
-    global temporary_dataset
-    if temporary_dataset is None:
-        # look up the dataset used for query results without a destination
-        dry_run = bigquery.QueryJobConfig(dry_run=True)
-        destination = client.query("SELECT 1", dry_run).destination
-        temporary_dataset = client.dataset(destination.dataset_id, destination.project)
-    return temporary_dataset
-
-
-def get_temporary_table(client):
-    """Generate a temporary table and return the specified date partition.
-
-    Generates a table name that looks similar to, but won't collide with, a
-    server-assigned table and that the web console will consider temporary.
-    Table expiration can't be set from a query job, so the table is created
-    here.
-
-    Query destination must be explicity defined in order for results to use
-    partitioning, and by extension clustering. Additionally, the only way to
-    create a temporary table with both expiration and time partitioning as a
-    result of a query is to use a CREATE TABLE statement.
-
-    Query destination must be generated locally and never collide with
-    server-assigned table names, because server-assigned tables cannot be
-    modified. Server-assigned tables for a dry_run query cannot be detected by
-    client.list_tables and cannot be reused as that constitutes a modification.
-
-    Server-assigned tables have names that start with "anon" and follow with
-    either 40 hex characters or a uuid replacing "-" with "_", and cannot be
-    modified (i.e. reused).
-
-    The web console considers a table temporary if the dataset name starts with
-    "_" and table_id starts with "anon" and is followed by at least one
-    character.
-    """
-    dataset = get_temporary_dataset(client)
-    return sql_table_id(dataset.table(f"anon{uuid4().hex}"))
-
 
 def _get_query_job_configs(
-    client, live_table, date, dry_run, slices, priority, preceding_days, num_retries
+    client,
+    live_table,
+    date,
+    dry_run,
+    slices,
+    priority,
+    preceding_days,
+    num_retries,
+    temp_dataset,
 ):
     sql = QUERY_TEMPLATE.format(live_table=live_table)
     stable_table = f"{live_table.replace('_live.', '_stable.', 1)}${date:%Y%m%d}"
@@ -190,15 +157,21 @@ def _get_query_job_configs(
         ddl += f"\nPARTITION BY\n  DATE({stable_table.time_partitioning.field})"
         if stable_table.clustering_fields:
             ddl += f"\nCLUSTER BY\n  {', '.join(stable_table.clustering_fields)}"
-        ddl += "\nOPTIONS\n  (expiration_timestamp = "
-        ddl += "TIMESTAMP_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY))"
+        ddl += (
+            "\nOPTIONS"
+            "\n  ("
+            "\n    partition_expiration_days = CAST('inf' AS FLOAT64),"
+            "\n    expiration_timestamp = "
+            "TIMESTAMP_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY)"
+            "\n  )"
+        )
         slice_size = (end_time - start_time) / slices
         params = [start_time + slice_size * i for i in range(slices)] + [
             end_time
         ]  # explicitly use end_time to avoid rounding errors
         return [
             (
-                f"{ddl.format(dest=get_temporary_table(client))}\nAS\n{sql.strip()}",
+                f"{ddl.format(dest=temp_dataset.temp_table())}\nAS\n{sql.strip()}",
                 stable_table,
                 bigquery.QueryJobConfig(
                     query_parameters=[
@@ -266,7 +239,7 @@ def _run_deduplication_query(client, sql, stable_table, job_config, num_retries)
 def _copy_join_parts(client, stable_table, query_jobs):
     total_bytes = sum(query.total_bytes_processed for query in query_jobs)
     if query_jobs[0].dry_run:
-        api_repr = query_jobs[0].to_api_repr()
+        api_repr = json.dumps(query_jobs[0].to_api_repr())
         if len(query_jobs) > 1:
             logging.info(f"Would process {total_bytes} bytes: [{api_repr},...]")
             logging.info(f"Would copy {len(query_jobs)} results to {stable_table}")
@@ -351,6 +324,7 @@ def main():
                             args.priority,
                             args.preceding_days,
                             args.num_retries,
+                            args.temp_dataset,
                         )
                         for live_table in live_tables
                         for date in args.dates

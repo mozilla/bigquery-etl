@@ -120,6 +120,19 @@ with DAG(
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
         wait_for_bq_main_events
     )
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
     wait_for_event_events = ExternalTaskSensor(
         task_id="wait_for_event_events",
         external_dag_id="copy_deduplicate",
@@ -134,6 +147,9 @@ with DAG(
         wait_for_event_events
     )
 
+    telemetry_derived__experiment_search_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -148,6 +164,9 @@ with DAG(
         wait_for_copy_deduplicate_main_ping
     )
 
+    telemetry_derived__experiments_daily_active_clients__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
     wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily__v6",
         external_dag_id="bqetl_main_summary",

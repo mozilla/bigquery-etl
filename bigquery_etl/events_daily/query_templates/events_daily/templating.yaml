@@ -1,0 +1,4 @@
+org_mozilla_firefox:
+  app_id: org_mozilla_firefox
+telemetry:
+  app_id: telemetry

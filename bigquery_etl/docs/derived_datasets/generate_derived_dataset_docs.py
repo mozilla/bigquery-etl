@@ -1,7 +1,6 @@
 """Generate documentation for derived datasets."""
 
 import os
-import re
 import yaml
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
@@ -59,22 +58,10 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                             print(error)
                 if VIEW_FILE in files:
                     source_urls["View Definition"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
-
                     view_file = os.path.join(root, VIEW_FILE)
-                    content = ""
-
-                    with open(view_file) as f:
-                        view_content = f.read()
-                        # get the view content by removing CREATE OR REPLACE VIEW
-                        content = re.sub(
-                            "CREATE OR REPLACE VIEW.*?AS",
-                            "",
-                            view_content,
-                            flags=re.DOTALL,
-                        )
 
                     referenced_tables = DryRun(
-                        view_file, content
+                        sqlfile=view_file, strip_dml=True
                     ).get_referenced_tables()
 
                 file_loader = FileSystemLoader(

@@ -197,7 +197,7 @@
   tagged_sap: 2
 - <<: *new_field_base
   engine: engine2
-  source: in-content.sap-follow-on.none
+  source: in-content.sap-follow-on.none.ts
   search_count: 0
   tagged_follow_on: 3
 - <<: *base

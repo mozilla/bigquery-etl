@@ -4,7 +4,7 @@ SELECT
   metrics.string.usage_variant AS mozregression_variant,
   metrics.string.usage_app AS app_used,
   normalized_os AS os,
-  normalized_os_version AS os_version,
+  mozfun.norm.truncate_version(normalized_os_version, "minor") AS os_version,
   count(DISTINCT(client_info.client_id)) AS distinct_clients,
   count(*) AS total_uses
 FROM

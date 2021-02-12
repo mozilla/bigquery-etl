@@ -359,6 +359,7 @@ fenix_flattened_searches AS (
         STRPOS(search.key, '.') = 0,
         NULL,
         SUBSTR(search.key, STRPOS(search.key, '.') + 1, LENGTH(search.key))
+      )
     ELSE
       search.search_type
     END

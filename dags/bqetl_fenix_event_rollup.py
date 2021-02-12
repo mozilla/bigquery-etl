@@ -44,6 +44,7 @@ with DAG(
         email=["frank@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
         dag=dag,
     )
 

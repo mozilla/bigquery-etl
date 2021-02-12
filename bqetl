@@ -26,4 +26,4 @@ if [ ! -d "venv" ]; then
     exit 1
 fi
 
-venv/bin/bqetl $@
+venv/bin/bqetl "$@"

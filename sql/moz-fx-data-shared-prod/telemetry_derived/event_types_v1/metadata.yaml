@@ -13,5 +13,6 @@ labels:
 scheduling:
   dag_name: bqetl_event_rollup
   date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
   referenced_tables: [['moz-fx-data-shared-prod', 'telemetry_derived',
                        'event_types_history_v1']]

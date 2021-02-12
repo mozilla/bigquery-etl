@@ -24,7 +24,9 @@ plugins:
     - awesome-pages
 nav:
     - index.md
-    - mozdata:
+    - Cookbooks:
+        - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md
+    - Datasets:
         - ... | mozdata/**.md
-    - mozfun:
+    - UDFs:
         - ... | mozfun/**.md

@@ -4,14 +4,13 @@ from argparse import ArgumentParser
 import glob
 from multiprocessing.pool import Pool
 from pathlib import Path
-import re
 import sqlparse
 import sys
 
-from bigquery_etl.dryrun import DryRun, SKIP as DRYRUN_SKIP
+from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.util import standard_args
 
-SKIP = DRYRUN_SKIP | {
+SKIP = {
     # not matching directory structure, but created before validation was enforced
     "sql/moz-fx-data-shared-prod/stripe/subscription/view.sql",
     "sql/moz-fx-data-shared-prod/stripe/product/view.sql",
@@ -21,7 +20,6 @@ SKIP = DRYRUN_SKIP | {
     "sql/moz-fx-data-shared-prod/telemetry/clients_scalar_aggregates_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/search/search_aggregates/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/clients_probe_processes/view.sql",
 }
 
@@ -37,9 +35,7 @@ standard_args.add_log_level(parser)
 
 def validate_view_naming(view_file):
     """Validate that the created view naming matches the directory structure."""
-    with open(view_file) as f:
-        sql = f.read()
-    parsed = sqlparse.parse(sql)[0]
+    parsed = sqlparse.parse(view_file.read_text())[0]
     tokens = [
         t
         for t in parsed.tokens
@@ -77,38 +73,15 @@ def validate_view_naming(view_file):
 
 def validate_fully_qualified_references(view_file):
     """Check that referenced tables and views are fully qualified."""
-    with open(view_file) as f:
-        sql = f.read()
-
-    # dry run only returns referenced tables, not views
-    referenced_tables = DryRun(str(view_file)).get_referenced_tables()
-    for line in sqlparse.format(sql, strip_comments=True).split("\n"):
-        for referenced_table in referenced_tables:
-            # If a view is referenced in the query then instead of the view name,
-            # the tables that are referenced it the view definition are returned.
-            # Some of these tables are not part of the SQL of the view that is
-            # validated.
-            ref_dataset = referenced_table[1]
-            ref_table = referenced_table[2]
-            # check for references to standard view names
-            ref_view_dataset = ref_dataset.rsplit("_", 1)[0]
-            ref_view = re.match(r"^(.*?)(_v\d+)?$", ref_table)[1]
-            for ref_dataset, ref_table in [
-                (ref_dataset, ref_table),
-                (ref_view_dataset, ref_view),
-            ]:
-                if re.search(fr"(?<!\.)`?\b{ref_dataset}`?\.`?{ref_table}\b", line):
-                    print(
-                        f"{view_file} ERROR\n"
-                        f"{ref_dataset}.{ref_table} missing project ID qualifier."
-                    )
-                    return False
-        return True
+    for table in extract_table_references(view_file.read_text()):
+        if len(table.split(".")) < 3:
+            print(f"{view_file} ERROR\n{table} missing project_id qualifier")
+            return False
+    return True
 
 
 def validate(view_file):
     """Validate UDF docs."""
-    view_file = Path(view_file)
     if not validate_view_naming(view_file):
         return False
     if not validate_fully_qualified_references(view_file):
@@ -123,7 +96,7 @@ def main():
     args = parser.parse_args()
 
     view_files = [
-        f
+        Path(f)
         for f in glob.glob(f"{args.sql_dir}/**/view.sql", recursive=True)
         if f not in SKIP
     ]

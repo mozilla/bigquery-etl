@@ -111,6 +111,7 @@ class TestDryRun:
         """
         )
         multiple_tables = DryRun(str(view_file)).get_referenced_tables()
+        multiple_tables.sort(key=lambda x: x["datasetId"])
 
         assert len(multiple_tables) == 2
         assert multiple_tables[0]["datasetId"] == "org_mozilla_fenix_stable"

@@ -23,8 +23,8 @@
 
 
 {% if referenced_tables -%}
-- Referenced Tables
 <table>
+<caption>Referenced Tables</caption>
 	<tr>
 		<th>Project</th>
 		<th>Dataset</th>

@@ -88,7 +88,7 @@ class TestDryRun:
         """Test that DryRun returns referenced tables for
         queries that require a partition filter."""
 
-        # this query requires a submission_date filter
+        # this query requires a 'submission_date' filter
         view_file_1 = (
             TEST_DIR
             / "sql"
@@ -98,7 +98,7 @@ class TestDryRun:
             / "view.sql"
         )
 
-        # this query requires a submission_timestamp filter
+        # this query requires a 'submission_timestamp' filter
         view_file_2 = (
             TEST_DIR
             / "sql"

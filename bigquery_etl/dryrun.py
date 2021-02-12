@@ -192,24 +192,13 @@ class DryRun:
         self.content = content
         self.strip_dml = strip_dml
 
-    def get_sql(self):
-        sql = open(self.sqlfile).read()
-        if self.strip_dml:
-            sql = re.sub(
-                "CREATE OR REPLACE VIEW.*?AS",
-                "",
-                sql,
-                flags=re.DOTALL,
-            )
-        return sql
-
     @cached_property
     def dry_run_result(self):
         """Dry run the provided SQL file."""
         if self.content:
             sql = self.content
         else:
-            sql = self.get_sql()
+            sql = open(self.sqlfile).read()
         try:
             r = urlopen(
                 Request(
@@ -245,59 +234,30 @@ class DryRun:
         ):
             return self.dry_run_result["referencedTables"]
 
-        # Handle views that require a date filter
+        # # Handle views that require a partition filter
         if (
             self.dry_run_result
             and self.strip_dml
-            and self.get_error() == Errors.DATE_FILTER_NEEDED
+            and self.get_errors() == Errors.DATE_FILTER_NEEDED
         ):
-            # Since different queries require different partition filters
-            # (submission_date, crash_date, timestamp, submission_timestamp, ...)
-            # We can extract the filter name from the error message
-            # (by capturing the next word after "column(s)")
-
-            # Example error:
-            # "Cannot query over table <table_name> without a filter over column(s)
-            # <date_filter_name> that can be used for partition elimination."
-
+          
             error = self.dry_run_result["errors"][0].get("message", "")
             date_filter = find_next_word("column(s)", error)
 
             if "date" in date_filter:
                 filtered_content = (
-                    f"{self.get_sql()}WHERE {date_filter} > current_date()"
+                    f"{self.content}\nWHERE {date_filter} > current_date()"
                 )
-                if (
-                    DryRun(self.sqlfile, filtered_content).get_error()
-                    == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
-                ):
-                    # If the date filter (e.g. WHERE crash_date > current_date())
-                    # is added to a query that already has a WHERE clause,
-                    # it will throw an error. To fix this, we need to
-                    # append 'AND' instead of 'WHERE'
-                    filtered_content = (
-                        f"{self.get_sql()}AND {date_filter} > current_date()"
-                    )
 
             if "timestamp" in date_filter:
                 filtered_content = (
-                    f"{self.get_sql()}WHERE {date_filter} > current_timestamp()"
+                    f"{self.content}\nWHERE {date_filter} > current_timestamp()"
                 )
-                if (
-                    DryRun(sqlfile=self.sqlfile, content=filtered_content).get_error()
-                    == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
-                ):
-                    filtered_content = (
-                        f"{self.get_sql()}AND {date_filter} > current_timestamp()"
-                    )
-
-            stripped_dml_result = DryRun(sqlfile=self.sqlfile, content=filtered_content)
-            if (
-                stripped_dml_result.get_error() == None
-                and "referencedTables" in stripped_dml_result.dry_run_result
-            ):
-                return stripped_dml_result.dry_run_result["referencedTables"]
-
+  
+            if "errors" in DryRun(sqlfile=self.sqlfile, content=filtered_content).dry_run_result:
+                print(DryRun(sqlfile=self.sqlfile, content=filtered_content).dry_run_result["errors"])
+            else:
+                return DryRun(sqlfile=self.sqlfile, content=filtered_content).dry_run_result["referencedTables"]
         return []
 
     def is_valid(self):
@@ -307,12 +267,12 @@ class DryRun:
 
         if self.dry_run_result["valid"]:
             print(f"{self.sqlfile:59} OK")
-        elif self.get_error() == Errors.READ_ONLY:
+        elif self.get_errors() == Errors.READ_ONLY:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
             print(f"{self.sqlfile:59} OK")
-        elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
+        elif self.get_errors() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
             # Some queries require a partition filter
             # (submission_date, submission_timestamp, etc.)
             # We mark these requests as valid and add a date filter
@@ -329,7 +289,10 @@ class DryRun:
         if self.dry_run_result is None:
             return None
         return self.dry_run_result["errors"]
-    def get_error(self):
+
+    def get_errors(self):
+        """Get specific errors for edge case handling."""
+
         if "errors" in self.dry_run_result and len(self.dry_run_result["errors"]) == 1:
             error = self.dry_run_result["errors"][0]
         else:
@@ -341,13 +304,11 @@ class DryRun:
             ):
                 return Errors.READ_ONLY
             if "without a filter over column(s)" in error.get("message", ""):
-                print(error.get("message", ""))
                 return Errors.DATE_FILTER_NEEDED
             if (
                 "Syntax error: Expected end of input but got keyword WHERE"
                 in error.get("message", "")
             ):
-                print(error.get("message", ""))
                 return Errors.DATE_FILTER_NEEDED_AND_SYNTAX
         return error
 

@@ -59,11 +59,16 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                 if VIEW_FILE in files:
                     source_urls["View Definition"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
                     view_file = os.path.join(root, VIEW_FILE)
+                    
+                    view_file_split = view_file.split("/")
+
+                    view_name = ".".join(view_file_split[1:-1])
+                    view_content = f"SELECT * FROM {view_name}"
 
                     referenced_tables = DryRun(
-                        sqlfile=view_file, strip_dml=True
+                        sqlfile=view_file, content=view_content, strip_dml=True
                     ).get_referenced_tables()
-
+                    print(f"REFERENCED TABLES for {view_file}: ", referenced_tables)
                 file_loader = FileSystemLoader(
                     "bigquery_etl/docs/derived_datasets/templates"
                 )

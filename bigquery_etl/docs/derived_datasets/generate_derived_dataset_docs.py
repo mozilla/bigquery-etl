@@ -63,7 +63,6 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                     referenced_tables = DryRun(
                         sqlfile=view_file, strip_dml=True
                     ).get_referenced_tables()
-                    print(f"REFERENCED TABLES for {view_file}: ", referenced_tables)
                 file_loader = FileSystemLoader(
                     "bigquery_etl/docs/derived_datasets/templates"
                 )

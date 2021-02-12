@@ -320,8 +320,8 @@ class DryRun:
             # exceptions.
             print(f"{self.sqlfile:59} OK")
         elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
-            # Some queries require a partition filter
-            # (submission_date, submission_timestamp, etc.)
+            # With strip_dml flag, some queries require a partition filter
+            # (submission_date, submission_timestamp, etc.) to run
             # We mark these requests as valid and add a date filter
             # in get_referenced_table()
             print(f"{self.sqlfile:59} OK but DATE FILTER NEEDED")

@@ -1,9 +1,6 @@
 import os
 import pytest
-from pathlib import Path
 from bigquery_etl.dryrun import DryRun, Errors
-
-SQL_DIR = Path(__file__).parent.parent / "sql"
 
 
 class TestDryRun:

@@ -1,39 +1,11 @@
 #!/bin/bash
 
-# This script should call all routines that generate views.
-# It is called by Jenkins as the source of truth for what views should be published.
+# DEPRECATED
 
-set -e
+# Jenkins calls generate_all_views as part of its view publishing logic.
+# This script has been renamed to generate_sql since it also generates
+# some table queries. We maintain this script as an alias to generate_sql.
 
-: "${TARGET_PROJECT:=moz-fx-data-shar-nonprod-efed}"
-: "${SQL_DIR:=sql}"
+cd "$(dirname "$0")/.."
 
-while [[ $# -gt 0 ]]
-do
-key="$1"
-
-case $key in
-    --target-project)
-    TARGET_PROJECT="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    --sql-dir)
-    SQL_DIR="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    *)    # unknown option
-    echo "ERROR: Unknown option: $1" >&2
-    exit 1
-    ;;
-esac
-done
-
-# Fill in any missing view definitions in the moz-fx-data-shared-prod/ folder
-python -m bigquery_etl.view.generate_stable_views --sql-dir "${SQL_DIR}" --parallelism=20
-
-# Fill in views for generated Glean ETL
-PLACEHOLDER_DATE="2000-01-01"
-./script/run_glean_baseline_clients_daily --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}/${TARGET_PROJECT}" --output-only --date="${PLACEHOLDER_DATE}"
-./script/run_glean_baseline_clients_last_seen --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}/${TARGET_PROJECT}" --output-only --date="${PLACEHOLDER_DATE}"
+exec ./script/generate_sql "$@"

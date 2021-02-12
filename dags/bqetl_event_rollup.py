@@ -35,6 +35,43 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
+    messaging_system_derived__event_types__v1 = bigquery_etl_query(
+        task_id="messaging_system_derived__event_types__v1",
+        destination_table="event_types_v1",
+        dataset_id="messaging_system_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
+    messaging_system_derived__event_types_history__v1 = bigquery_etl_query(
+        task_id="messaging_system_derived__event_types_history__v1",
+        destination_table="event_types_history_v1",
+        dataset_id="messaging_system_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        dag=dag,
+    )
+
+    messaging_system_derived__events_daily__v1 = bigquery_etl_query(
+        task_id="messaging_system_derived__events_daily__v1",
+        destination_table="events_daily_v1",
+        dataset_id="messaging_system_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="frank@mozilla.com",
+        email=["frank@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     telemetry_derived__event_types__v1 = bigquery_etl_query(
         task_id="telemetry_derived__event_types__v1",
         destination_table="event_types_v1",
@@ -72,8 +109,8 @@ with DAG(
         dag=dag,
     )
 
-    telemetry_derived__event_types__v1.set_upstream(
-        telemetry_derived__event_types_history__v1
+    messaging_system_derived__event_types__v1.set_upstream(
+        messaging_system_derived__event_types_history__v1
     )
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
@@ -84,6 +121,18 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    messaging_system_derived__event_types_history__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    messaging_system_derived__events_daily__v1.set_upstream(
+        messaging_system_derived__event_types__v1
+    )
+
+    telemetry_derived__event_types__v1.set_upstream(
+        telemetry_derived__event_types_history__v1
     )
 
     telemetry_derived__event_types_history__v1.set_upstream(

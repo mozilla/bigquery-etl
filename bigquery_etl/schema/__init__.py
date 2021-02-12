@@ -1,12 +1,11 @@
 """Query schema."""
 
-import io
 import attr
 import json
 import yaml
 
-from google.cloud import bigquery
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Dict, Any
 
 from bigquery_etl.dryrun import DryRun
@@ -44,13 +43,23 @@ class Schema:
         return cls(json_schema)
 
     @classmethod
-    def for_table(cls, project, dataset, table):
+    def for_table(cls, project, dataset, table, partitioned_by=None):
         """Get the schema for a BigQuery table."""
-        client = bigquery.Client()
-        table = client.get_table(f"{project}.{dataset}.{table}")
-        table_schema = io.StringIO("")
-        client.schema_to_json(table.schema, table_schema)
-        return cls({"fields": json.loads(table_schema.getvalue())})
+        query = f"SELECT * FROM {project}.{dataset}.{table}"
+
+        if partitioned_by:
+            query += f" WHERE {partitioned_by} = DATE('2020-01-01')"
+
+        # write query to temporary file so it can get dry run
+        tmp = NamedTemporaryFile()
+        with open(tmp.name, "w") as f:
+            f.write(query)
+
+        try:
+            return cls(DryRun(str(tmp.name)).get_schema())
+        except Exception as e:
+            print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
+            return cls({"fields": []})
 
     def merge(self, other: "Schema"):
         """Merge another schema into the schema."""
@@ -132,6 +141,11 @@ class Schema:
         """Write schema to the YAML file path."""
         with open(yaml_path, "w") as out:
             yaml.dump(self.schema, out, default_flow_style=False)
+
+    def to_json_file(self, json_path: Path):
+        """Write schema to the JSON file path."""
+        with open(json_path, "w") as out:
+            json.dump(self.schema["fields"], out, indent=2)
 
     def to_json(self):
         """Return the schema data as JSON."""

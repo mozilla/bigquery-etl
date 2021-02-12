@@ -1,14 +1,59 @@
 """Parsing of metadata yaml files."""
 
+from google.cloud import bigquery
+import enum
 import re
+import json
 import yaml
 import os
 import attr
+import cattr
 from typing import List, Optional, Dict
 
 from bigquery_etl.query_scheduling.utils import is_email
 
 METADATA_FILE = "metadata.yaml"
+
+
+@attr.s(auto_attribs=True)
+class PartitionType(enum.Enum):
+    """Represents BigQuery table partition types."""
+
+    HOUR = "hour"
+    DAY = "day"
+    MONTH = "month"
+    YEAR = "year"
+
+    @property
+    def bigquery_type(self):
+        d = {
+            "hour": bigquery.TimePartitioningType.HOUR,
+            "day": bigquery.TimePartitioningType.DAY,
+            "month": bigquery.TimePartitioningType.MONTH,
+            "year": bigquery.TimePartitioningType.YEAR,
+        }
+        return d[self.value]
+
+
+@attr.s(auto_attribs=True)
+class PartitionMetadata:
+    """Metadata for defining BigQuery table partitions."""
+
+    field: str
+    type: PartitionType
+    require_partition_filter: bool = attr.ib(False)
+
+
+@attr.s(auto_attribs=True)
+class BigQueryMetadata:
+    """
+    Metadata related to BigQuery configurations for the query.
+
+    For example, partitioning or clustering of the destination table.
+    """
+
+    partition_by: Optional[PartitionMetadata] = attr.ib(None)
+    cluster_by: Optional[List[str]] = attr.ib(None)
 
 
 @attr.s(auto_attribs=True)
@@ -25,6 +70,7 @@ class Metadata:
     owners: List[str] = attr.ib()
     labels: Dict = attr.ib({})
     scheduling: Optional[Dict] = attr.ib({})
+    bigquery: Optional[BigQueryMetadata] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -119,10 +165,18 @@ class Metadata:
                 if "scheduling" in metadata:
                     scheduling = metadata["scheduling"]
 
+                if "bigquery" in metadata:
+                    converter = cattr.Converter()
+                    bigquery = converter.structure(
+                        metadata["bigquery"], BigQueryMetadata
+                    )
+
                 if "owners" in metadata:
                     owners = metadata["owners"]
 
-                return cls(friendly_name, description, owners, labels, scheduling)
+                return cls(
+                    friendly_name, description, owners, labels, scheduling, bigquery
+                )
             except yaml.YAMLError as e:
                 raise e
 
@@ -146,7 +200,11 @@ class Metadata:
                 if label_value == "":
                     metadata_dict["labels"][label_key] = True
 
-        file.write_text(yaml.dump(metadata_dict))
+        file.write_text(
+            yaml.dump(
+                json.loads(json.dumps(metadata_dict, default=lambda o: o.__dict__))
+            )
+        )
 
     def is_public_bigquery(self):
         """Return true if the public_bigquery flag is set."""
@@ -167,3 +225,26 @@ class Metadata:
     def review_bugs(self):
         """Return the bug ID of the data review bug in bugzilla."""
         return self.labels.get("review_bugs", None)
+
+    def set_bigquery_partitioning(self, field, partition_type, required):
+        """Update the BigQuery partitioning metadata."""
+        clustering = None
+        if self.bigquery and self.bigquery.cluster_by:
+            clustering = self.bigquery.cluster_by
+
+        self.bigquery = BigQueryMetadata(
+            partition_by=PartitionMetadata(
+                field=field, type=partition_type, require_partition_filter=required
+            ),
+            cluster_by=clustering,
+        )
+
+    def set_bigquery_clustering(self, clustering_fields):
+        """Update the BigQuery partitioning metadata."""
+        partitioning = None
+        if self.bigquery and self.bigquery.partition_by:
+            partitioning = self.bigquery.partition_by
+
+        self.bigquery = BigQueryMetadata(
+            partition_by=partitioning, cluster_by=clustering_fields
+        )

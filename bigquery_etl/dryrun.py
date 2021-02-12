@@ -239,10 +239,12 @@ class DryRun:
         elif (
             error
             and error.get("code", None) in [400, 403]
-            and "does not have bigquery.tables.create permission for dataset"
-            in error.get("message", "")
-            or "Permission bigquery.tables.create denied on dataset"
-            in error.get("message", "")
+            and (
+                "does not have bigquery.tables.create permission for dataset"
+                in error.get("message", "")
+                or "Permission bigquery.tables.create denied on dataset"
+                in error.get("message", "")
+            )
         ):
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific

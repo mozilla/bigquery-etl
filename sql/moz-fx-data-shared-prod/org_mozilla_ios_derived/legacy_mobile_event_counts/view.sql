@@ -3,23 +3,22 @@ WITH extracted AS (
     *,
     date(submission_timestamp) AS submission_date,
   FROM
-    `mozdata.telemetry.mobile_event`,
-    UNNEST(events) AS event
+    `mozdata.telemetry.mobile_event`
   WHERE
     DATE(submission_timestamp) = "2021-02-01"
+),
+meta AS (
+  SELECT
+    * EXCEPT (events)
+  FROM
+    extracted
 ),
 meta_ranked AS (
   SELECT
     t AS metadata,
-    row_number() OVER (
-      PARTITION BY
-        client_id,
-        submission_date
-      ORDER BY
-        submission_timestamp DESC
-    ) AS _n
+    row_number() OVER (PARTITION BY client_id ORDER BY submission_timestamp DESC) AS _n
   FROM
-    extracted t
+    meta t
 ),
 meta_recent AS (
   SELECT

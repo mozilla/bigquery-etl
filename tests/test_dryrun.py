@@ -1,8 +1,9 @@
 import os
+import pytest
 from pathlib import Path
-from bigquery_etl.dryrun import DryRun
+from bigquery_etl.dryrun import DryRun, Errors
 
-TEST_DIR = Path(__file__).parent
+SQL_DIR = Path(__file__).parent.parent / "sql"
 
 
 class TestDryRun:
@@ -29,24 +30,28 @@ class TestDryRun:
         dryrun = DryRun(str(query_file))
         assert dryrun.is_valid()
 
+    def test_view_file_valid(self, tmp_path):
+        view_file = tmp_path / "view.sql"
+        view_file.write_text(
+            """
+            SELECT
+            *
+            FROM
+            `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+        """
+        )
+
+        # this view file is only valid with strip_dml flag
+        dryrun = DryRun(sqlfile=str(view_file), strip_dml=True)
+        assert dryrun.get_error() is Errors.DATE_FILTER_NEEDED
+        assert dryrun.is_valid()
+
     def test_sql_file_invalid(self, tmp_path):
         query_file = tmp_path / "query.sql"
         query_file.write_text("SELECT INVALID 123")
 
         dryrun = DryRun(str(query_file))
         assert dryrun.is_valid() is False
-
-    def test_view_file_valid(self):
-        view_file = (
-            TEST_DIR
-            / "sql"
-            / "moz-fx-data-shared-prod"
-            / "messaging_system"
-            / "cfr_users_last_seen"
-            / "view.sql"
-        )
-        dryrun = DryRun(str(view_file))
-        assert dryrun.is_valid()
 
     def test_get_referenced_tables_empty(self, tmp_path):
         query_file = tmp_path / "query.sql"
@@ -55,6 +60,17 @@ class TestDryRun:
         dryrun = DryRun(str(query_file))
         assert dryrun.get_referenced_tables() == []
 
+    def test_get_sql(self, tmp_path):
+        os.makedirs(tmp_path / "telmetry_derived")
+        query_file = tmp_path / "telmetry_derived" / "query.sql"
+
+        sql_content = "SELECT 123 "
+        query_file.write_text(sql_content)
+
+        assert DryRun(sqlfile=str(query_file)).get_sql() == sql_content
+        with pytest.raises(ValueError):
+            DryRun(sqlfile="invalid path").get_sql()
+
     def test_get_referenced_tables(self, tmp_path):
         os.makedirs(tmp_path / "telmetry_derived")
         query_file = tmp_path / "telmetry_derived" / "query.sql"
@@ -62,61 +78,78 @@ class TestDryRun:
             "SELECT * FROM telemetry_derived.clients_daily_v6 "
             "WHERE submission_date = '2020-01-01'"
         )
-        dryrun = DryRun(str(query_file))
-        response = dryrun.get_referenced_tables()
+        view_file = tmp_path / "telmetry_derived" / "view.sql"
+        view_file.write_text(
+            """
+            CREATE OR REPLACE VIEW
+            `moz-fx-data-shared-prod.telemetry.clients_daily`
+            AS
+            SELECT
+            *
+            FROM
+            `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+        """
+        )
+        query_dryrun = DryRun(str(query_file)).get_referenced_tables()
+        view_dryrun = DryRun(str(view_file), strip_dml=True).get_referenced_tables()
 
-        assert len(response) == 1
-        assert response[0]["datasetId"] == "telemetry_derived"
-        assert response[0]["tableId"] == "clients_daily_v6"
+        assert len(query_dryrun) == 1
+        assert query_dryrun[0]["datasetId"] == "telemetry_derived"
+        assert query_dryrun[0]["tableId"] == "clients_daily_v6"
+        assert len(view_dryrun) == 1
+        assert view_dryrun[0]["datasetId"] == "telemetry_derived"
+        assert view_dryrun[0]["tableId"] == "clients_daily_v6"
 
-    def test_get_referenced_tables_dml_stripped(self):
+    def test_get_error(self, tmp_path):
+        os.makedirs(tmp_path / "telemetry")
+        view_file = tmp_path / "telemetry" / "view.sql"
 
-        view_file = (
-            TEST_DIR / "sql" / "moz-fx-data-shared-prod" / "telemetry" / "view.sql"
+        view_file.write_text(
+            """
+        CREATE OR REPLACE VIEW
+          `moz-fx-data-shared-prod.telemetry.clients_daily`
+        AS
+        SELECT
+        *
+        FROM
+          `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+        """
         )
 
-        dml_stripped = DryRun(sqlfile=str(view_file), strip_dml=True)
-        dml_unstripped = DryRun(str(view_file))
+        valid_dml_stripped = """
+        SELECT
+        *
+        FROM
+          `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+        WHERE submission_date > current_date()
+        """
 
+        invalid_dml_stripped = """
+        SELECT
+        *
+        FROM
+          `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+        WHERE something
+        WHERE submission_date > current_date()
+        """
+        print(
+            DryRun(
+                sqlfile=str(view_file), content=valid_dml_stripped, strip_dml=True
+            ).get_referenced_tables()
+        )
+
+        assert DryRun(sqlfile=str(view_file)).get_error() is Errors.READ_ONLY
         assert (
-            dml_stripped.get_referenced_tables()[0]["datasetId"] == "telemetry_derived"
+            DryRun(sqlfile=str(view_file), strip_dml=True).get_error()
+            is Errors.DATE_FILTER_NEEDED
         )
-        assert dml_stripped.get_referenced_tables()[0]["tableId"] == "clients_daily_v6"
-        assert dml_unstripped.get_referenced_tables() == []
-
-    def test_get_referenced_tables_partition_filter(self):
-        """Test that DryRun returns referenced tables for
-        queries that require a partition filter."""
-
-        # this query requires a 'submission_date' filter
-        view_file_1 = (
-            TEST_DIR
-            / "sql"
-            / "moz-fx-data-shared-prod"
-            / "messaging_system"
-            / "cfr_users_last_seen"
-            / "view.sql"
-        )
-
-        # this query requires a 'submission_timestamp' filter
-        view_file_2 = (
-            TEST_DIR
-            / "sql"
-            / "moz-fx-data-shared-prod"
-            / "messaging_system"
-            / "onboarding_events_amplitude"
-            / "view.sql"
-        )
-
-        view_1 = DryRun(sqlfile=str(view_file_1), strip_dml=True)
-        view_2 = DryRun(sqlfile=str(view_file_2), strip_dml=True)
-
         assert (
-            view_1.get_referenced_tables()[0]["datasetId"] == "messaging_system_derived"
+            DryRun(sqlfile=str(view_file), content=invalid_dml_stripped).get_error()
+            is Errors.DATE_FILTER_NEEDED_AND_SYNTAX
         )
-        assert view_1.get_referenced_tables()[0]["tableId"] == "cfr_users_last_seen_v1"
-
         assert (
-            view_2.get_referenced_tables()[0]["datasetId"] == "messaging_system_stable"
+            DryRun(
+                sqlfile=str(view_file), content=valid_dml_stripped, strip_dml=True
+            ).get_error()
+            is None
         )
-        assert view_2.get_referenced_tables()[0]["tableId"] == "onboarding_v1"

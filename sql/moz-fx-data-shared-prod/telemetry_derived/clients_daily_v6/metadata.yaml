@@ -1,21 +1,34 @@
----
-friendly_name: Clients Daily
-description: |-
-  A daily aggregation over `main` pings from each Firefox
+bigquery:
+  cluster_by:
+  - normalized_channel
+  - sample_id
+  partition_by:
+    field: submission_date
+    require_partition_filter: true
+    type: day
+description: 'A daily aggregation over `main` pings from each Firefox
+
   desktop client, partitioned by day.
 
+
   It should normally be accessed through the user-facing view
+
   `telemetry.clients_daily`.
+
   Note that by end of Q1 2021, that view start referencing the downstream table
+
   `clients_last_seen_joined_v1` which merges in fields based on the `event`
+
   ping.
-  See https://github.com/mozilla/bigquery-etl/issues/1761
+
+  See https://github.com/mozilla/bigquery-etl/issues/1761'
+friendly_name: Clients Daily
 labels:
   application: firefox
   schedule: daily
 owners:
-  - dthorn@mozilla.com
+- dthorn@mozilla.com
 scheduling:
+  allow_field_addition_on_date: '2020-11-13'
   dag_name: bqetl_main_summary
-  start_date: "2019-11-05"
-  allow_field_addition_on_date: "2020-11-13"
+  start_date: '2019-11-05'

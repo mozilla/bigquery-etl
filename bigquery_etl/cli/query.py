@@ -6,9 +6,11 @@ import sys
 from datetime import date, timedelta
 from fnmatch import fnmatchcase
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 import click
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
 from ..cli.dryrun import dryrun
 from ..cli.format import format
@@ -568,14 +570,48 @@ def update(name, sql_dir, project_id):
         query_schema = Schema.from_query_file(query_file_path)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
+        table_name = query_file_path.parent.name
+        dataset_name = query_file_path.parent.parent.name
+        project_name = query_file_path.parent.parent.parent.name
+        table_schema = Schema.for_table(project_name, dataset_name, table_name)
+
         if existing_schema_path.is_file():
             existing_schema = Schema.from_schema_file(existing_schema_path)
+            existing_schema.merge(table_schema)
             existing_schema.merge(query_schema)
             existing_schema.to_yaml_file(existing_schema_path)
         else:
+            query_schema.merge(table_schema)
             query_schema.to_yaml_file(existing_schema_path)
 
         click.echo(f"Schema {existing_schema_path} updated.")
+
+        # update bigquery metadata
+        try:
+            client = bigquery.Client()
+            table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
+            metadata = Metadata.of_query_file(str(query_file_path))
+            metadata_file_path = query_file_path.parent / METADATA_FILE
+
+            if table.time_partitioning and metadata.bigquery.partition_by is None:
+                metadata.set_bigquery_partitioning(
+                    field=table.time_partitioning.field,
+                    partition_type=table.time_partitioning.type_.lower(),
+                    required=table.time_partitioning.require_partition_filter,
+                )
+                click.echo(f"Partitioning metadata added to {metadata_file_path}")
+
+            if table.clustering_fields and metadata.bigquery.cluster_by is None:
+                metadata.set_bigquery_clustering(table.clustering_fields)
+                click.echo(f"Clustering metadata added to {metadata_file_path}")
+
+            metadata.write(metadata_file_path)
+        except NotFound:
+            click.echo(
+                f"Destination table {project_name}.{dataset_name}.{table_name} "
+                "does not exist in BigQuery. Run bqetl query schema deploy "
+                "<dataset>.<table> to create the destination table."
+            )
 
 
 @schema.command(
@@ -593,8 +629,6 @@ def update(name, sql_dir, project_id):
 @click.pass_context
 def deploy(ctx, name, sql_dir, project_id):
     """CLI command for deploying destination table schemas."""
-    ctx.forward(validate_schema)
-
     if not is_authenticated():
         click.echo(
             "Authentication to GCP required. Run `gcloud auth login` "
@@ -616,15 +650,40 @@ def deploy(ctx, name, sql_dir, project_id):
             dataset_name = query_file_path.parent.parent.name
             project_name = query_file_path.parent.parent.parent.name
             existing_schema = Schema.from_schema_file(existing_schema_path)
+            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
 
-            table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
-            table.schema = existing_schema.to_json()
-            client.update_table(table, ["schema"])
+            tmp_schema_file = NamedTemporaryFile()
+            existing_schema.to_json_file(Path(tmp_schema_file.name))
+            bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+
+            try:
+                # destination table already exists, update schema
+                table = client.get_table(full_table_id)
+                table.schema = bigquery_schema
+                client.update_table(table, ["schema"])
+                click.echo(f"Schema updated for {full_table_id}")
+            except NotFound:
+                # no destination table, create new table based on schema and metadata
+                metadata = Metadata.of_query_file(query_file_path)
+                new_table = bigquery.Table(full_table_id, schema=bigquery_schema)
+
+                if metadata.bigquery and metadata.bigquery.partition_by:
+                    new_table.time_partitioning = bigquery.TimePartitioning(
+                        metadata.bigquery.partition_by.type.bigquery_type(),
+                        metadata.bigquery.partition_by.field,
+                        metadata.bigquery.partition_by.require_partition_filter,
+                    )
+
+                if metadata.bigquery and metadata.bigquery.cluster_by:
+                    new_table.clustering_fields = metadata.bigquery.cluster_by
+
+                client.create_table(new_table)
+                click.echo(f"Destination table {full_table_id} created.")
         else:
             click.echo(f"No schema file found for {query_file}")
 
 
-@schema.command(help="Deploy the query schema", name="validate")
+@schema.command(help="Validate the query schema", name="validate")
 @click.argument("name")
 @sql_dir_option
 @click.option(
@@ -652,7 +711,16 @@ def validate_schema(name, sql_dir, project_id):
         table_name = query_file_path.parent.name
         dataset_name = query_file_path.parent.parent.name
         project_name = query_file_path.parent.parent.parent.name
-        table_schema = Schema.for_table(project_name, dataset_name, table_name)
+
+        metadata = Metadata.of_query_file(query_file_path)
+
+        partitioned_by = None
+        if metadata.bigquery and metadata.bigquery.partition_by:
+            partitioned_by = metadata.bigquery.partition_by.field
+
+        table_schema = Schema.for_table(
+            project_name, dataset_name, table_name, partitioned_by
+        )
 
         if not query_schema.equal(table_schema):
             click.echo(

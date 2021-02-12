@@ -300,7 +300,7 @@ class DryRun:
 
             stripped_dml_result = DryRun(sqlfile=self.sqlfile, content=filtered_content)
             if (
-                stripped_dml_result.get_error() == None
+                stripped_dml_result.get_error() is None
                 and "referencedTables" in stripped_dml_result.dry_run_result
             ):
                 return stripped_dml_result.dry_run_result["referencedTables"]

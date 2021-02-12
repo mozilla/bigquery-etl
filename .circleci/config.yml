@@ -149,6 +149,8 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
+      - *restore_mvn_cache
+      - *java_deps
       - run:
           name: Generate DAGs
           command: PATH="venv/bin:$PATH" script/generate_airflow_dags

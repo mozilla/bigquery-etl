@@ -1,4 +1,5 @@
 org_mozilla_firefox_derived:
+  include_normalized_fields: True
   glean: True
   app_id: org_mozilla_firefox
   start_date: 2020-01-01
@@ -25,6 +26,7 @@ org_mozilla_firefox_derived:
     - src: locale
       dest: locale
 telemetry_derived:
+  include_normalized_fields: True
   glean: False
   app_id: telemetry
   source_table: telemetry_derived.deanonymized_events
@@ -53,3 +55,21 @@ telemetry_derived:
       dest: attribution_ua
     - src: application.display_version
       dest: display_version
+messaging_system_derived:
+  include_normalized_fields: False
+  glean: False
+  app_id: messaging_system
+  source_table: messaging_system_derived.normalized_onboarding_events
+  start_date: 2020-01-01
+  dag_name: bqetl_event_rollup
+  user_properties:
+    - src: version
+      dest: app_version
+    - src: metadata.user_agent.os
+      dest: os
+    - src: addon_version
+      dest: addon_version
+    - src: locale
+      dest: locale
+    - src: normalized_channel
+      dest: normalized_channel

@@ -6,11 +6,9 @@ from datetime import datetime
 from functools import partial
 from multiprocessing.pool import ThreadPool
 
-from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import WriteDisposition, ScalarQueryParameter
 
-from bigquery_etl.util import standard_args  # noqa E402
 from bigquery_etl.glean_usage.common import (
     list_baseline_tables,
     render,
@@ -18,6 +16,7 @@ from bigquery_etl.glean_usage.common import (
     write_sql,
     referenced_table_exists,
 )
+from bigquery_etl.util import standard_args  # noqa E402
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(

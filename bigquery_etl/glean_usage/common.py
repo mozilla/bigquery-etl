@@ -43,6 +43,12 @@ def write_sql(output_dir, full_table_id, basename, sql):
 
 
 def baseline_exists_in_dataset(project_id, dataset_id):
+    """Dry run a simple query that tests if a baseline table exists.
+
+    It's possible that the generated-schemas branch contains new doctypes
+    that have yet gone through ops logic to create the associated BQ
+    resources, and this helper lets us skip those.
+    """
     with tempfile.TemporaryDirectory() as tdir:
         tfile = Path(tdir) / "query.sql"
         with tfile.open("w") as f:
@@ -101,6 +107,7 @@ def table_names_from_baseline(baseline_table):
 
 
 def referenced_table_exists(view_sql):
+    """Dry run the given view SQL to see if its referent exists."""
     with tempfile.TemporaryDirectory() as tdir:
         tfile = Path(tdir) / "view.sql"
         with tfile.open("w") as f:

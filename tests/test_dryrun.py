@@ -75,6 +75,12 @@ class TestDryRun:
             "SELECT * FROM telemetry_derived.clients_daily_v6 "
             "WHERE submission_date = '2020-01-01'"
         )
+        query_dryrun = DryRun(str(query_file)).get_referenced_tables()
+
+        assert len(query_dryrun) == 1
+        assert query_dryrun[0]["datasetId"] == "telemetry_derived"
+        assert query_dryrun[0]["tableId"] == "clients_daily_v6"
+
         view_file = tmp_path / "telmetry_derived" / "view.sql"
         view_file.write_text(
             """
@@ -87,15 +93,30 @@ class TestDryRun:
             `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
         """
         )
-        query_dryrun = DryRun(str(query_file)).get_referenced_tables()
         view_dryrun = DryRun(str(view_file), strip_dml=True).get_referenced_tables()
 
-        assert len(query_dryrun) == 1
-        assert query_dryrun[0]["datasetId"] == "telemetry_derived"
-        assert query_dryrun[0]["tableId"] == "clients_daily_v6"
         assert len(view_dryrun) == 1
         assert view_dryrun[0]["datasetId"] == "telemetry_derived"
         assert view_dryrun[0]["tableId"] == "clients_daily_v6"
+
+        view_file.write_text(
+            """
+        SELECT document_id
+        FROM mozdata.org_mozilla_firefox.baseline
+        WHERE submission_timestamp > current_timestamp()
+        UNION ALL
+        SELECT document_id
+        FROM mozdata.org_mozilla_fenix.baseline
+        WHERE submission_timestamp > current_timestamp()
+        """
+        )
+        multiple_tables = DryRun(str(view_file)).get_referenced_tables()
+
+        assert len(multiple_tables) == 2
+        assert multiple_tables[0]["datasetId"] == "org_mozilla_fenix_stable"
+        assert multiple_tables[0]["tableId"] == "baseline_v1"
+        assert multiple_tables[1]["datasetId"] == "org_mozilla_firefox_stable"
+        assert multiple_tables[1]["tableId"] == "baseline_v1"
 
     def test_get_error(self, tmp_path):
         os.makedirs(tmp_path / "telemetry")
@@ -129,11 +150,6 @@ class TestDryRun:
         WHERE something
         WHERE submission_date > current_date()
         """
-        print(
-            DryRun(
-                sqlfile=str(view_file), content=valid_dml_stripped, strip_dml=True
-            ).get_referenced_tables()
-        )
 
         assert DryRun(sqlfile=str(view_file)).get_error() is Errors.READ_ONLY
         assert (

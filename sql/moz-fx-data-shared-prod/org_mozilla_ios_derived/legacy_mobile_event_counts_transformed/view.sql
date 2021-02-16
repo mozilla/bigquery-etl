@@ -23,6 +23,7 @@ WITH extracted AS (
   SELECT
     *
   FROM
+    -- TODO: change this location
     `mozdata.tmp.mobile_event_flat`
 ),
 labeled AS (
@@ -81,6 +82,9 @@ SELECT
   SUM(
     IF(object = "reading-list-item" AND method = "mark-as-unread", value, 0)
   ) AS counter_reading_mark_unread,
+    SUM(
+    IF(object like "qr-code%" AND method = "scan", value, 0)
+  ) AS counter_qr_code_scanned,
 FROM
   extracted
 JOIN

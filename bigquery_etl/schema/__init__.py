@@ -21,6 +21,7 @@ class Schema:
 
     @classmethod
     def from_query_file(cls, query_file: Path):
+        """Create schema from a query file."""
         if not query_file.is_file() or query_file.suffix != ".sql":
             raise Exception(f"{query_file} is not a valid SQL file.")
 
@@ -68,10 +69,13 @@ class Schema:
         )
 
     def equal(self, other: "Schema") -> bool:
-        """Compare to another schema"""
+        """Compare to another schema."""
         try:
             self._traverse(
                 "root", self.schema["fields"], other.schema["fields"], update=False
+            )
+            self._traverse(
+                "root", other.schema["fields"], self.schema["fields"], update=False
             )
         except Exception as e:
             print(e)
@@ -79,7 +83,39 @@ class Schema:
 
         return True
 
-    def _traverse(self, prefix, columns, other_columns, update=False):
+    def compatible(self, other: "Schema") -> bool:
+        """
+        Check if schema is compatible with another schema.
+
+        If there is a field missing in the schema that is part of the "other" schema,
+        the schemas are still compatible. However, if there are fields missing in the
+        "other" schema they are not compatible since, e.g. inserting data into the "other"
+        schema that follows this schema would fail.
+        """
+        try:
+            self._traverse(
+                "root",
+                self.schema["fields"],
+                other.schema["fields"],
+                update=False,
+                ignore_missing_fields=True,
+            )
+            self._traverse(
+                "root",
+                other.schema["fields"],
+                self.schema["fields"],
+                update=False,
+                ignore_missing_fields=False,
+            )
+        except Exception as e:
+            print(e)
+            return False
+
+        return True
+
+    def _traverse(
+        self, prefix, columns, other_columns, update=False, ignore_missing_fields=False
+    ):
         """Traverses two schemas for validation and optionally updates the first schema."""
         nodes = {n["name"]: n for n in columns}
         other_nodes = {n["name"]: n for n in other_columns}
@@ -135,7 +171,10 @@ class Schema:
                     columns.append(node.copy())
                     print(f"Field {node_name} added to {prefix}")
                 else:
-                    raise Exception(f"{prefix}.{field_path} is missing in schema")
+                    if not ignore_missing_fields:
+                        raise Exception(
+                            f"Field {prefix}.{field_path} is missing in schema"
+                        )
 
     def to_yaml_file(self, yaml_path: Path):
         """Write schema to the YAML file path."""

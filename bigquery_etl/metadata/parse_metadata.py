@@ -3,7 +3,6 @@
 from google.cloud import bigquery
 import enum
 import re
-import json
 import yaml
 import os
 import attr
@@ -15,7 +14,6 @@ from bigquery_etl.query_scheduling.utils import is_email
 METADATA_FILE = "metadata.yaml"
 
 
-@attr.s(auto_attribs=True)
 class PartitionType(enum.Enum):
     """Represents BigQuery table partition types."""
 
@@ -26,6 +24,7 @@ class PartitionType(enum.Enum):
 
     @property
     def bigquery_type(self):
+        """Map to the BigQuery data type."""
         d = {
             "hour": bigquery.TimePartitioningType.HOUR,
             "day": bigquery.TimePartitioningType.DAY,
@@ -45,6 +44,13 @@ class PartitionMetadata:
 
 
 @attr.s(auto_attribs=True)
+class ClusteringMetadata:
+    """Metadata for defining BigQuery table clustering."""
+
+    fields: List[str]
+
+
+@attr.s(auto_attribs=True)
 class BigQueryMetadata:
     """
     Metadata related to BigQuery configurations for the query.
@@ -52,8 +58,8 @@ class BigQueryMetadata:
     For example, partitioning or clustering of the destination table.
     """
 
-    partition_by: Optional[PartitionMetadata] = attr.ib(None)
-    cluster_by: Optional[List[str]] = attr.ib(None)
+    time_partitioning: Optional[PartitionMetadata] = attr.ib(None)
+    clustering: Optional[ClusteringMetadata] = attr.ib(None)
 
 
 @attr.s(auto_attribs=True)
@@ -140,6 +146,7 @@ class Metadata:
         owners = []
         labels = {}
         scheduling = {}
+        bigquery = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -165,7 +172,7 @@ class Metadata:
                 if "scheduling" in metadata:
                     scheduling = metadata["scheduling"]
 
-                if "bigquery" in metadata:
+                if "bigquery" in metadata and metadata["bigquery"]:
                     converter = cattr.Converter()
                     bigquery = converter.structure(
                         metadata["bigquery"], BigQueryMetadata
@@ -200,11 +207,8 @@ class Metadata:
                 if label_value == "":
                     metadata_dict["labels"][label_key] = True
 
-        file.write_text(
-            yaml.dump(
-                json.loads(json.dumps(metadata_dict, default=lambda o: o.__dict__))
-            )
-        )
+        converter = cattr.Converter()
+        file.write_text(yaml.dump(converter.unstructure(metadata_dict)))
 
     def is_public_bigquery(self):
         """Return true if the public_bigquery flag is set."""
@@ -229,22 +233,25 @@ class Metadata:
     def set_bigquery_partitioning(self, field, partition_type, required):
         """Update the BigQuery partitioning metadata."""
         clustering = None
-        if self.bigquery and self.bigquery.cluster_by:
-            clustering = self.bigquery.cluster_by
+        if self.bigquery and self.bigquery.clustering:
+            clustering = self.bigquery.clustering
 
         self.bigquery = BigQueryMetadata(
-            partition_by=PartitionMetadata(
-                field=field, type=partition_type, require_partition_filter=required
+            time_partitioning=PartitionMetadata(
+                field=field,
+                type=PartitionType(partition_type),
+                require_partition_filter=required,
             ),
-            cluster_by=clustering,
+            clustering=clustering,
         )
 
     def set_bigquery_clustering(self, clustering_fields):
         """Update the BigQuery partitioning metadata."""
         partitioning = None
-        if self.bigquery and self.bigquery.partition_by:
-            partitioning = self.bigquery.partition_by
+        if self.bigquery and self.bigquery.time_partitioning:
+            partitioning = self.bigquery.time_partitioning
 
         self.bigquery = BigQueryMetadata(
-            partition_by=partitioning, cluster_by=clustering_fields
+            time_partitioning=partitioning,
+            clustering=ClusteringMetadata(fields=clustering_fields),
         )

@@ -5,6 +5,7 @@ import string
 import sys
 from datetime import date, timedelta
 from fnmatch import fnmatchcase
+from multiprocessing.pool import Pool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -12,7 +13,7 @@ import click
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
-from ..cli.dryrun import dryrun
+from ..cli.dryrun import dryrun, SKIP
 from ..cli.format import format
 from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
 from ..format_sql.formatter import reformat
@@ -566,14 +567,60 @@ def update(name, sql_dir, project_id):
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
 
     for query_file in query_files:
+        if str(query_file) in SKIP:
+            click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
+            continue
+
         query_file_path = Path(query_file)
         query_schema = Schema.from_query_file(query_file_path)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
-
         table_name = query_file_path.parent.name
         dataset_name = query_file_path.parent.parent.name
         project_name = query_file_path.parent.parent.parent.name
-        table_schema = Schema.for_table(project_name, dataset_name, table_name)
+
+        # update bigquery metadata
+        try:
+            client = bigquery.Client()
+            table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
+            metadata = Metadata.of_query_file(str(query_file_path))
+            metadata_file_path = query_file_path.parent / METADATA_FILE
+
+            if table.time_partitioning and (
+                metadata.bigquery is None or metadata.bigquery.time_partitioning is None
+            ):
+                metadata.set_bigquery_partitioning(
+                    field=table.time_partitioning.field,
+                    partition_type=table.time_partitioning.type_.lower(),
+                    required=table.time_partitioning.require_partition_filter,
+                )
+                click.echo(f"Partitioning metadata added to {metadata_file_path}")
+
+            if table.clustering_fields and (
+                metadata.bigquery is None or metadata.bigquery.clustering is None
+            ):
+                metadata.set_bigquery_clustering(table.clustering_fields)
+                click.echo(f"Clustering metadata added to {metadata_file_path}")
+
+            metadata.write(metadata_file_path)
+        except NotFound:
+            click.echo(
+                f"Destination table {project_name}.{dataset_name}.{table_name} "
+                "does not exist in BigQuery. Run bqetl query schema deploy "
+                "<dataset>.<table> to create the destination table."
+            )
+
+        partitioned_by = None
+        try:
+            metadata = Metadata.of_query_file(query_file_path)
+
+            if metadata.bigquery and metadata.bigquery.time_partitioning:
+                partitioned_by = metadata.bigquery.time_partitioning.field
+        except FileNotFoundError:
+            pass
+
+        table_schema = Schema.for_table(
+            project_name, dataset_name, table_name, partitioned_by
+        )
 
         if existing_schema_path.is_file():
             existing_schema = Schema.from_schema_file(existing_schema_path)
@@ -585,33 +632,6 @@ def update(name, sql_dir, project_id):
             query_schema.to_yaml_file(existing_schema_path)
 
         click.echo(f"Schema {existing_schema_path} updated.")
-
-        # update bigquery metadata
-        try:
-            client = bigquery.Client()
-            table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
-            metadata = Metadata.of_query_file(str(query_file_path))
-            metadata_file_path = query_file_path.parent / METADATA_FILE
-
-            if table.time_partitioning and metadata.bigquery.partition_by is None:
-                metadata.set_bigquery_partitioning(
-                    field=table.time_partitioning.field,
-                    partition_type=table.time_partitioning.type_.lower(),
-                    required=table.time_partitioning.require_partition_filter,
-                )
-                click.echo(f"Partitioning metadata added to {metadata_file_path}")
-
-            if table.clustering_fields and metadata.bigquery.cluster_by is None:
-                metadata.set_bigquery_clustering(table.clustering_fields)
-                click.echo(f"Clustering metadata added to {metadata_file_path}")
-
-            metadata.write(metadata_file_path)
-        except NotFound:
-            click.echo(
-                f"Destination table {project_name}.{dataset_name}.{table_name} "
-                "does not exist in BigQuery. Run bqetl query schema deploy "
-                "<dataset>.<table> to create the destination table."
-            )
 
 
 @schema.command(
@@ -640,6 +660,10 @@ def deploy(ctx, name, sql_dir, project_id):
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
 
     for query_file in query_files:
+        if str(query_file) in SKIP:
+            click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
+            continue
+
         query_file_path = Path(query_file)
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
@@ -651,6 +675,17 @@ def deploy(ctx, name, sql_dir, project_id):
             project_name = query_file_path.parent.parent.parent.name
             existing_schema = Schema.from_schema_file(existing_schema_path)
             full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+            query_schema = Schema.from_query_file(query_file_path)
+
+            if not existing_schema.equal(query_schema):
+                click.echo(
+                    f"Query {query_file_path} does not match "
+                    f"schema in {existing_schema_path}."
+                    "To update the local schema file, "
+                    f"run `./bqetl query schema update {dataset_name}.{table_name}`",
+                    err=True,
+                )
+                sys.exit(1)
 
             tmp_schema_file = NamedTemporaryFile()
             existing_schema.to_json_file(Path(tmp_schema_file.name))
@@ -667,20 +702,73 @@ def deploy(ctx, name, sql_dir, project_id):
                 metadata = Metadata.of_query_file(query_file_path)
                 new_table = bigquery.Table(full_table_id, schema=bigquery_schema)
 
-                if metadata.bigquery and metadata.bigquery.partition_by:
+                if metadata.bigquery and metadata.bigquery.time_partitioning:
                     new_table.time_partitioning = bigquery.TimePartitioning(
-                        metadata.bigquery.partition_by.type.bigquery_type(),
-                        metadata.bigquery.partition_by.field,
-                        metadata.bigquery.partition_by.require_partition_filter,
+                        metadata.bigquery.time_partitioning.type.bigquery_type(),
+                        metadata.bigquery.time_partitioning.field,
+                        metadata.bigquery.time_partitioning.require_partition_filter,
                     )
 
-                if metadata.bigquery and metadata.bigquery.cluster_by:
-                    new_table.clustering_fields = metadata.bigquery.cluster_by
+                if metadata.bigquery and metadata.bigquery.clustering:
+                    new_table.clustering_fields = metadata.bigquery.clustering.fields
 
                 client.create_table(new_table)
                 click.echo(f"Destination table {full_table_id} created.")
         else:
             click.echo(f"No schema file found for {query_file}")
+
+
+def _validate_schema(query_file):
+    if str(query_file) in SKIP or query_file.name == "script.sql":
+        click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
+        return
+
+    query_file_path = Path(query_file)
+    query_schema = Schema.from_query_file(query_file_path)
+    existing_schema_path = query_file_path.parent / SCHEMA_FILE
+
+    if not existing_schema_path.is_file():
+        click.echo(f"No schema file defined for {query_file_path}", err=True)
+        return True
+
+    table_name = query_file_path.parent.name
+    dataset_name = query_file_path.parent.parent.name
+    project_name = query_file_path.parent.parent.parent.name
+
+    partitioned_by = None
+    try:
+        metadata = Metadata.of_query_file(query_file_path)
+
+        if metadata.bigquery and metadata.bigquery.time_partitioning:
+            partitioned_by = metadata.bigquery.time_partitioning.field
+    except FileNotFoundError:
+        pass
+
+    table_schema = Schema.for_table(
+        project_name, dataset_name, table_name, partitioned_by
+    )
+
+    if not query_schema.compatible(table_schema):
+        click.echo(
+            f"Schema for query in {query_file_path} "
+            f"incompatible with schema deployed for "
+            f"{project_name}.{dataset_name}.{table_name}",
+            err=True,
+        )
+        return False
+    else:
+        existing_schema = Schema.from_schema_file(existing_schema_path)
+
+        if not existing_schema.equal(query_schema):
+            click.echo(
+                f"Schema defined in {existing_schema_path} "
+                f"incompatible with query {query_file_path}",
+                err=True,
+            )
+            return False
+
+    click.echo(f"Schemas for {query_file_path} are valid.")
+    return True
 
 
 @schema.command(help="Validate the query schema", name="validate")
@@ -695,53 +783,9 @@ def deploy(ctx, name, sql_dir, project_id):
 )
 def validate_schema(name, sql_dir, project_id):
     """Validate the defined query schema against the query and destination table."""
-    if not is_authenticated():
-        click.echo(
-            "Authentication to GCP required. Run `gcloud auth login` "
-            "and check that the project is set correctly."
-        )
-        sys.exit(1)
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
 
-    for query_file in query_files:
-        query_file_path = Path(query_file)
-        query_schema = Schema.from_query_file(query_file_path)
-        existing_schema_path = query_file_path.parent / SCHEMA_FILE
-
-        table_name = query_file_path.parent.name
-        dataset_name = query_file_path.parent.parent.name
-        project_name = query_file_path.parent.parent.parent.name
-
-        metadata = Metadata.of_query_file(query_file_path)
-
-        partitioned_by = None
-        if metadata.bigquery and metadata.bigquery.partition_by:
-            partitioned_by = metadata.bigquery.partition_by.field
-
-        table_schema = Schema.for_table(
-            project_name, dataset_name, table_name, partitioned_by
-        )
-
-        if not query_schema.equal(table_schema):
-            click.echo(
-                f"Schema for query in {query_file_path} "
-                f"incompatible with schema deployed for "
-                f"{project_name}.{dataset_name}.{table_name}",
-                err=True,
-            )
-            sys.exit(1)
-        else:
-            if not (existing_schema_path).is_file():
-                click.echo(f"No schema file defined for {query_file_path}", err=True)
-            else:
-                existing_schema = Schema.from_schema_file(existing_schema_path)
-
-                if not existing_schema.equal(query_schema):
-                    click.echo(
-                        f"Schema defined in {existing_schema_path} "
-                        f"incompatible with query {query_file_path}",
-                        err=True,
-                    )
-                    sys.exit(1)
-
-        click.echo(f"Schemas for {query_file_path} are valid.")
+    with Pool(8) as p:
+        result = p.map(_validate_schema, query_files, chunksize=1)
+    if not all(result):
+        sys.exit(1)

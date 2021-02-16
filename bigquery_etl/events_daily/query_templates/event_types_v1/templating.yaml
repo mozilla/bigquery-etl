@@ -4,3 +4,6 @@ org_mozilla_firefox_derived:
 telemetry_derived:
   app_id: telemetry
   dag_name: bqetl_event_rollup
+messaging_system_derived:
+  app_id: messaging_system
+  dag_name: bqetl_event_rollup

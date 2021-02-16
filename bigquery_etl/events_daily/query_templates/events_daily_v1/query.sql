@@ -58,9 +58,11 @@ SELECT
   mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.country)) AS country,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.subdivision1)) AS subdivision1,
   -- normalized fields
+  {% if include_normalized_fields %}
   mozfun.stats.mode_last(ARRAY_AGG(normalized_channel)) AS channel,
   mozfun.stats.mode_last(ARRAY_AGG(normalized_os)) AS os,
   mozfun.stats.mode_last(ARRAY_AGG(normalized_os_version)) AS os_version,
+  {% endif %}
   -- ping info
   mozfun.map.mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments
 FROM

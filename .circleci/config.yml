@@ -6,16 +6,19 @@ jobs:
       - image: python:3.8
     steps:
       - checkout
-      - restore_cache:
+      - &restore_venv_cache
+        restore_cache:
           keys:
             # when lock files change, use increasingly general
             # patterns to restore cache
             - &cache_key
-            # yamllint disable-line rule:line-length
-             python-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
-            - python-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
-            - python-packages-v1-{{ .Branch }}-
-            - python-packages-v1-
+              # yamllint disable-line rule:line-length
+              python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
+              # yamllint disable-line rule:line-length
+            - python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
+            - python-3.8-packages-v1-{{ .Branch }}-
+            - python-3.8-packages-v1-master-
+            - python-3.8-packages-v1-
       - &build
         run:
           name: Build
@@ -65,6 +68,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Verify that metadata files are valid
@@ -82,9 +86,9 @@ jobs:
                so marking this step successful"
               circleci step halt
             fi
+      - *restore_venv_cache
       - *build
-      - &pytest_integration_test
-        run:
+      - run:
           name: PyTest Integration Test
           # Google's client libraries will check for
           # GOOGLE_APPLICATION_CREDENTIALS
@@ -123,6 +127,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Generate DAGs
@@ -134,6 +139,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       # Additional query generation commands may be added here in the future.
       - run:
@@ -146,6 +152,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Validate doc examples
@@ -154,6 +161,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Validate views
@@ -163,6 +171,7 @@ jobs:
     steps:
       - checkout
       - *skip_forked_pr
+      - *restore_venv_cache
       - *build
       - attach_workspace:
           at: /tmp/generated-sql
@@ -186,6 +195,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Generate SQL content

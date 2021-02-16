@@ -13,11 +13,13 @@ proxy the queries through the dry run service endpoint.
 from argparse import ArgumentParser
 from functools import cached_property
 from multiprocessing.pool import Pool
-from os.path import basename, dirname
+from os.path import basename, dirname, exists
 from urllib.request import urlopen, Request
+from enum import Enum
 import glob
 import json
 import sys
+import re
 
 SKIP = {
     # Access Denied
@@ -169,6 +171,14 @@ SKIP = {
 }
 
 
+class Errors(Enum):
+    """DryRun errors that require special handling."""
+
+    READ_ONLY = 1
+    DATE_FILTER_NEEDED = 2
+    DATE_FILTER_NEEDED_AND_SYNTAX = 3
+
+
 class DryRun:
     """Dry run SQL files."""
 
@@ -178,15 +188,35 @@ class DryRun:
         "bigquery-etl-dryrun"
     )
 
-    def __init__(self, sqlfile):
+    def __init__(self, sqlfile, content=None, strip_dml=False):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
+        self.content = content
+        self.strip_dml = strip_dml
+
+    def get_sql(self):
+        """Get SQL content."""
+        if exists(self.sqlfile):
+            sql = open(self.sqlfile).read()
+        else:
+            raise ValueError(f"Invalid file path: {self.sqlfile}")
+        if self.strip_dml:
+            sql = re.sub(
+                "CREATE OR REPLACE VIEW.*?AS",
+                "",
+                sql,
+                flags=re.DOTALL,
+            )
+
+        return sql
 
     @cached_property
     def dry_run_result(self):
         """Dry run the provided SQL file."""
-        sql = open(self.sqlfile).read()
-
+        if self.content:
+            sql = self.content
+        else:
+            sql = self.get_sql()
         try:
             r = urlopen(
                 Request(
@@ -222,6 +252,59 @@ class DryRun:
         ):
             return self.dry_run_result["referencedTables"]
 
+        # Handle views that require a date filter
+        if (
+            self.dry_run_result
+            and self.strip_dml
+            and self.get_error() == Errors.DATE_FILTER_NEEDED
+        ):
+            # Since different queries require different partition filters
+            # (submission_date, crash_date, timestamp, submission_timestamp, ...)
+            # We can extract the filter name from the error message
+            # (by capturing the next word after "column(s)")
+
+            # Example error:
+            # "Cannot query over table <table_name> without a filter over column(s)
+            # <date_filter_name> that can be used for partition elimination."
+
+            error = self.dry_run_result["errors"][0].get("message", "")
+            date_filter = find_next_word("column(s)", error)
+
+            if "date" in date_filter:
+                filtered_content = (
+                    f"{self.get_sql()}WHERE {date_filter} > current_date()"
+                )
+                if (
+                    DryRun(self.sqlfile, filtered_content).get_error()
+                    == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
+                ):
+                    # If the date filter (e.g. WHERE crash_date > current_date())
+                    # is added to a query that already has a WHERE clause,
+                    # it will throw an error. To fix this, we need to
+                    # append 'AND' instead of 'WHERE'
+                    filtered_content = (
+                        f"{self.get_sql()}AND {date_filter} > current_date()"
+                    )
+
+            if "timestamp" in date_filter:
+                filtered_content = (
+                    f"{self.get_sql()}WHERE {date_filter} > current_timestamp()"
+                )
+                if (
+                    DryRun(sqlfile=self.sqlfile, content=filtered_content).get_error()
+                    == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
+                ):
+                    filtered_content = (
+                        f"{self.get_sql()}AND {date_filter} > current_timestamp()"
+                    )
+
+            stripped_dml_result = DryRun(sqlfile=self.sqlfile, content=filtered_content)
+            if (
+                stripped_dml_result.get_error() is None
+                and "referencedTables" in stripped_dml_result.dry_run_result
+            ):
+                return stripped_dml_result.dry_run_result["referencedTables"]
+
         return []
 
     def is_valid(self):
@@ -229,27 +312,19 @@ class DryRun:
         if self.dry_run_result is None:
             return False
 
-        if "errors" in self.dry_run_result and len(self.dry_run_result["errors"]) == 1:
-            error = self.dry_run_result["errors"][0]
-        else:
-            error = None
-
         if self.dry_run_result["valid"]:
             print(f"{self.sqlfile:59} OK")
-        elif (
-            error
-            and error.get("code", None) in [400, 403]
-            and (
-                "does not have bigquery.tables.create permission for dataset"
-                in error.get("message", "")
-                or "Permission bigquery.tables.create denied on dataset"
-                in error.get("message", "")
-            )
-        ):
+        elif self.get_error() == Errors.READ_ONLY:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
             print(f"{self.sqlfile:59} OK")
+        elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
+            # With strip_dml flag, some queries require a partition filter
+            # (submission_date, submission_timestamp, etc.) to run
+            # We mark these requests as valid and add a date filter
+            # in get_referenced_table()
+            print(f"{self.sqlfile:59} OK but DATE FILTER NEEDED")
         else:
             print(f"{self.sqlfile:59} ERROR\n", self.dry_run_result["errors"])
             return False
@@ -262,10 +337,42 @@ class DryRun:
             return None
         return self.dry_run_result.get("errors", [])
 
+    def get_error(self):
+        """Get specific errors for edge case handling."""
+        if "errors" in self.dry_run_result and len(self.dry_run_result["errors"]) == 1:
+            error = self.dry_run_result["errors"][0]
+        else:
+            error = None
+        if error and error.get("code", None) in [400, 403]:
+            if (
+                "does not have bigquery.tables.create permission for dataset"
+                in error.get("message", "")
+                or "Permission bigquery.tables.create denied"
+                in error.get("message", "")
+            ):
+                return Errors.READ_ONLY
+            if "without a filter over column(s)" in error.get("message", ""):
+                return Errors.DATE_FILTER_NEEDED
+            if (
+                "Syntax error: Expected end of input but got keyword WHERE"
+                in error.get("message", "")
+            ):
+                return Errors.DATE_FILTER_NEEDED_AND_SYNTAX
+        return error
+
 
 def sql_file_valid(sqlfile):
     """Dry run SQL files."""
     return DryRun(sqlfile).is_valid()
+
+
+def find_next_word(target, source):
+    """Find the next word in a string."""
+    split = source.split()
+    for i, w in enumerate(split):
+        if w == target:
+            # get the next word, and remove quotations from column name
+            return split[i + 1].replace("'", "")
 
 
 def main():

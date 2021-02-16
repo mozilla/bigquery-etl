@@ -42,25 +42,6 @@ def write_sql(output_dir, full_table_id, basename, sql):
         f.write("\n")
 
 
-def baseline_exists_in_dataset(project_id, dataset_id):
-    """Dry run a simple query that tests if a baseline table exists.
-
-    It's possible that the generated-schemas branch contains new doctypes
-    that have yet gone through ops logic to create the associated BQ
-    resources, and this helper lets us skip those.
-    """
-    with tempfile.TemporaryDirectory() as tdir:
-        tfile = Path(tdir) / "query.sql"
-        with tfile.open("w") as f:
-            f.write(
-                f"SELECT * FROM `{project_id}.{dataset_id}.baseline_v1`"
-                " WHERE DATE(submission_timestamp) = '2000-01-01'"
-            )
-            dryrun = DryRun(str(tfile))
-            exists = 404 not in [e.get("code") for e in dryrun.errors()]
-            return (dataset_id, exists)
-
-
 def list_baseline_tables(pool, project_id, only_tables, table_filter):
     """Return Glean app listings from the probeinfo API."""
     if only_tables and not _contains_glob(only_tables):
@@ -114,6 +95,20 @@ def referenced_table_exists(view_sql):
             f.write(view_sql)
         dryrun = DryRun(str(tfile))
         return 404 not in [e.get("code") for e in dryrun.errors()]
+
+
+def baseline_exists_in_dataset(project_id, dataset_id):
+    """Dry run a simple query that tests if a baseline table exists.
+
+    It's possible that the generated-schemas branch contains new doctypes
+    that have yet gone through ops logic to create the associated BQ
+    resources, and this helper lets us skip those.
+    """
+    view_sql = f"""\
+        SELECT * FROM `{project_id}.{dataset_id}.baseline_v1`
+        WHERE DATE(submission_timestamp) = '2000-01-01'
+    """
+    return dataset_id, referenced_table_exists(view_sql)
 
 
 def _contains_glob(patterns):

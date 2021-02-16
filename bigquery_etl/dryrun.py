@@ -335,7 +335,7 @@ class DryRun:
         """Dry run the provided SQL file and return errors."""
         if self.dry_run_result is None:
             return None
-        return self.dry_run_result["errors"]
+        return self.dry_run_result.get("errors", [])
 
     def get_error(self):
         """Get specific errors for edge case handling."""

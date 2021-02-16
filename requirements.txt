@@ -603,9 +603,8 @@ six==1.15.0 \
     #   packaging
     #   protobuf
     #   python-dateutil
-smart_open==4.1.2 \
-    --hash=sha256:027782b70c9b08f758a520b335aa98134ea714c4fb860b5842e604004e0c5a20 \
-    --hash=sha256:4bbb6233364fc1173cc0af6b7a56ed76fce32509514f1978a995a5835f3177f1
+smart_open==4.2.0 \
+    --hash=sha256:d9f5a0f173ccb9bbae528db5a3804f57145815774f77ef755b9b0f3b4b2a9dcb
     # via -r requirements.in
 smmap==3.0.4 \
     --hash=sha256:54c44c197c819d5ef1991799a7e30b662d1e520f2ac75c9efbeb54a742214cf4 \

@@ -105,7 +105,7 @@ def main():
                 path_parts = list(filter(None, root.split(os.sep)))
                 name = path_parts[-1]
                 path = Path(os.sep.join(path_parts[1:-1]))
-                if project_dir == "sql/mozfun/":
+                if "mozfun" in project_dir:
                     if os.path.split(root)[1] == "":
                         # project level-doc file
                         project_doc_dir = out_dir / path / name

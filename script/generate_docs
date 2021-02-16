@@ -1,8 +1,6 @@
 #!/bin/sh
 
 # Generate documentation for projects.
-#
-# Currently only supports generating documentation for the mozfun project.
 
 
 cd "$(dirname "$0")/.."

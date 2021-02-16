@@ -224,9 +224,11 @@ jobs:
           command: |
             mkdir /tmp/generated-sql
             cp -r sql/ /tmp/generated-sql/sql
+            # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" ./script/generate_sql \
               --sql-dir /tmp/generated-sql/sql/ \
-              --target-project moz-fx-data-shared-prod
+              --target-project moz-fx-data-shared-prod \
+              $(test "${CIRCLE_BRANCH}" = master || echo --no-dry-run)
       - persist_to_workspace:
           root: /tmp/generated-sql
           paths:

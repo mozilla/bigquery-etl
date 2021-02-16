@@ -390,21 +390,11 @@ WITH b AS (
     norm.product_info('Firefox', 'Windows')
 )
 SELECT
-  assert.equals(
-    STRUCT(
-      'firefox_desktop',
-      'Firefox',
-      'Firefox for Desktop',
-      'Firefox for Desktop',
-      TRUE,
-      TRUE,
-      TRUE
-    ),
-    b
-  ),
   assert.equals('firefox_desktop', b.looker_app_name),
   assert.equals('Firefox', b.product),
   assert.equals('Firefox for Desktop', b.canonical_app_name),
+  assert.equals('Firefox for Desktop', b.canonical_name),
+  assert.true(b.contributes_to_2020_kpi),
   assert.true(b.contributes_to_2021_kpi),
 FROM
   b;
@@ -417,6 +407,7 @@ SELECT
   assert.equals('firefox_ios', b.looker_app_name),
   assert.equals('Firefox iOS', b.product),
   assert.equals('Firefox for iOS', b.canonical_app_name),
+  assert.true(b.contributes_to_2020_kpi),
   assert.true(b.contributes_to_2021_kpi),
 FROM
   b;
@@ -430,6 +421,7 @@ SELECT
   assert.equals('Lockwise iOS', b.product),
   assert.equals('Lockwise for iOS', b.canonical_name),
   assert.equals('Lockwise for iOS', b.canonical_app_name),
+  assert.true(b.contributes_to_2020_kpi),
   assert.true(b.contributes_to_2021_kpi),
 FROM
   b;
@@ -443,6 +435,7 @@ SELECT
   assert.equals('Klar iOS', b.product),
   assert.equals('Firefox Klar for iOS', b.canonical_name),
   assert.equals('Firefox Klar for iOS', b.canonical_app_name),
+  assert.false(b.contributes_to_2020_kpi),
   assert.false(b.contributes_to_2021_kpi),
 FROM
   b;
@@ -457,5 +450,18 @@ SELECT
   assert.equals('Firefox for Android (Fenix)', b.canonical_app_name),
   assert.true(b.contributes_to_2020_kpi),
   assert.true(b.contributes_to_2021_kpi),
+FROM
+  b;
+
+WITH b AS (
+  SELECT AS VALUE
+    norm.product_info('foo', 'bar')
+)
+SELECT
+  assert.equals('other', b.looker_app_name),
+  assert.equals('Other', b.product),
+  assert.equals('Other', b.canonical_app_name),
+  assert.false(b.contributes_to_2020_kpi),
+  assert.false(b.contributes_to_2021_kpi),
 FROM
   b;

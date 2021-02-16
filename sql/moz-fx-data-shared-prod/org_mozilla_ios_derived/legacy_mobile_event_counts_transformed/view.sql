@@ -5,7 +5,7 @@ CREATE TEMPORARY FUNCTION labeled_counter(
   (
     WITH summed AS (
       SELECT
-        IF(a.key IN (select * from unnest(labels)), a.key, "__unknown__") AS k,
+        IF(a.key IN (SELECT * FROM UNNEST(labels)), a.key, "__unknown__") AS k,
         SUM(a.value) AS v
       FROM
         UNNEST(`values`) AS a
@@ -37,7 +37,13 @@ labeled AS (
     ARRAY_AGG(
       IF(object = "bookmark" AND method = "delete", (method, value), NULL) IGNORE NULLS
     ) AS bookmarks_delete,
-    -- bookmarks_view
+    -- TODO: bookmarks_view_list, have not observed view-list method yet
+    ARRAY_AGG(
+      IF(object = "reading-list" AND method = "add", (method, value), NULL) IGNORE NULLS
+    ) AS reading_list_add,
+    ARRAY_AGG(
+      IF(object = "reading-list" AND method = "delete", (method, value), NULL) IGNORE NULLS
+    ) AS reading_list_delete,
   FROM
     extracted
   GROUP BY
@@ -59,6 +65,22 @@ SELECT
   ) AS labeled_counter_bookmarks_delete,
   SUM(IF(object = "reader-mode-open-button", value, 0)) AS counter_reader_mode_open,
   SUM(IF(object = "reader-mode-close-button", value, 0)) AS counter_reader_mode_close,
+  any_value(
+    labeled_counter(
+      reading_list_add,
+      ["reader-mode-toolbar", "share-extension", "page-action-menu"]
+    )
+  ) AS labeled_counter_reading_list_add,
+  any_value(
+    labeled_counter(reading_list_delete, ["reader-mode-toolbar", "reading-list-panel"])
+  ) AS labeled_counter_reading_list_delete,
+  SUM(IF(object = "reading-list-item" AND method = "open", value, 0)) AS counter_reading_list_open,
+  SUM(
+    IF(object = "reading-list-item" AND method = "mark-as-read", value, 0)
+  ) AS counter_reading_mark_read,
+  SUM(
+    IF(object = "reading-list-item" AND method = "mark-as-unread", value, 0)
+  ) AS counter_reading_mark_unread,
 FROM
   extracted
 JOIN

@@ -150,6 +150,7 @@ class TestQuery:
                 schedule, ["telemetry_derived.query_v1", "--dag=bqetl_test"]
             )
 
+            print(result.output)
             assert result.exit_code == 0
 
     @pytest.mark.java

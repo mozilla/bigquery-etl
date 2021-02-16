@@ -190,6 +190,16 @@ jobs:
       - run:
           name: Validate views
           command: PATH="venv/bin:$PATH" script/validate_views
+  validate-schemas:
+    docker: *docker
+    steps:
+      - checkout
+      - *build
+      - run:
+          name: Validate query schemas
+          command: |
+            pip install .
+            bqetl query schema validate "*"
   docs:
     docker: *docker
     steps:

@@ -245,7 +245,6 @@ class DryRun:
 
         if self.sqlfile in SKIP:
             print(f"\t...Ignoring dryrun results for {self.sqlfile}")
-            return []
 
         if (
             self.dry_run_result

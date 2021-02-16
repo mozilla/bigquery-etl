@@ -1,9 +1,7 @@
 from pathlib import Path
 
 from bigquery_etl.schema import Schema
-import pytest
 from textwrap import dedent
-from unittest import mock
 import yaml
 
 
@@ -137,6 +135,9 @@ class TestQuerySchema:
             - mode: NULLABLE
               name: submission_date
               type: DATE
+            - mode: NULLABLE
+              name: client_id
+              type: STRING
             """
         )
 
@@ -214,6 +215,34 @@ class TestQuerySchema:
 
         assert schema_1.equal(schema_2) is True
         assert schema_2.equal(schema_1) is True
+
+    def test_schemas_compatible(self):
+        schema_1_yaml = dedent(
+            """
+            fields:
+            - mode: NULLABLE
+              name: submission_date
+              type: DATE
+            """
+        )
+
+        schema_2_yaml = dedent(
+            """
+            fields:
+            - mode: NULLABLE
+              name: submission_date
+              type: DATE
+            - mode: NULLABLE
+              name: client_id
+              type: STRING
+            """
+        )
+
+        schema_1 = Schema.from_json(yaml.safe_load(schema_1_yaml))
+        schema_2 = Schema.from_json(yaml.safe_load(schema_2_yaml))
+
+        assert schema_1.compatible(schema_2) is True
+        assert schema_2.compatible(schema_1) is False
 
     def test_merge_empty_schema(self):
         schema_yaml = dedent(

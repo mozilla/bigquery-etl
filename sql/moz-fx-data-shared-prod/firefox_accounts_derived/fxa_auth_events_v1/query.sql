@@ -10,11 +10,7 @@ WITH base AS (
           jsonPayload.* REPLACE (
             (
               SELECT AS STRUCT
-                jsonPayload.fields.* EXCEPT (device_id, user_id)
-                -- Type changed from STRING to FLOAT64 in source table,
-                -- so we cannot access this field in a wildcard query
-                -- without raising errors.
-                REPLACE(CAST(NULL AS STRING) AS id),
+                jsonPayload.fields.* EXCEPT (device_id, user_id),
                 TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id
             ) AS fields
           )

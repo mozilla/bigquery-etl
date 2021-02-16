@@ -32,7 +32,8 @@ description: |
   `product` is deprecated
   and is provided for continuity with some existing tables. Going forward,
   use `looker_app_name` which maps to the `app_name` returned by the `probeinfo`
-  API for Glean apps.
+  API for Glean apps. We are using these values consistently as we build
+  reporting functionality in Looker.
 
   The returned `canonical_app_name` is more verbose and is suited for displaying
   in visualizations. `canonical_name` is a synonym that we provide for

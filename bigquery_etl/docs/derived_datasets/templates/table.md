@@ -1,4 +1,4 @@
-## [{{ table_name }}]({{ source_urls["Source"] }})
+## [{{ table_name }}](#{{ table_name }})
 
 {{ metadata.description | e }}
 

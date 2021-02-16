@@ -4,6 +4,9 @@ AS
 SELECT
   DATE(submission_timestamp) AS submission_date,
   submission_timestamp AS timestamp,
+  -- message_id is not a category of events, but it _is_ the primary dimension
+  -- UJET needs to filter on, so it should be top-level (not an event property); 
+  -- we can rename it in the Looker view.
   message_id AS category,
   ARRAY(
     SELECT AS STRUCT

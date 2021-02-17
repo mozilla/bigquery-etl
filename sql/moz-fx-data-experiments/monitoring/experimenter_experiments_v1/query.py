@@ -51,6 +51,7 @@ class Experiment:
     is_high_population: bool
     app_name: str
     app_id: str
+    channel: str
 
 
 def _coerce_none_to_zero(x: Optional[int]) -> int:
@@ -75,6 +76,7 @@ class ExperimentV1:
     end_date: Optional[datetime.datetime]
     variants: List[Variant]
     proposed_enrollment: Optional[int] = attr.ib(converter=_coerce_none_to_zero)
+    firefox_channel: str
     normandy_slug: Optional[str] = None
     is_high_population: Optional[bool] = None
 
@@ -119,6 +121,7 @@ class ExperimentV1:
             is_high_population=self.is_high_population or False,
             app_name="firefox_desktop",
             app_id="firefox-desktop",
+            channel=self.firefox_channel.lower(),
         )
 
 
@@ -134,6 +137,7 @@ class ExperimentV6:
     referenceBranch: Optional[str]
     appName: str
     appId: str
+    channel: str
 
     @classmethod
     def from_dict(cls, d) -> "ExperimentV6":
@@ -162,6 +166,7 @@ class ExperimentV6:
             branches=self.branches,
             app_name=self.appName,
             app_id=self.appId,
+            channel=self.channel,
         )
 
 

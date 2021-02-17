@@ -23,8 +23,9 @@ WITH extracted AS (
   SELECT
     *
   FROM
-    -- TODO: change this location
-    `mozdata.tmp.mobile_event_flat_14_days`
+    `moz-fx-data-shared-prod.legacy_mobile_event_counts_v1`
+  WHERE
+    date(submission_timestamp) = @submission_date
 ),
 labeled AS (
   SELECT

@@ -7,8 +7,14 @@ This repository uses `pytest`:
 # create a venv
 python3.8 -m venv venv/
 
-# install requirements
-venv/bin/pip install -r requirements.txt
+# install pip-tools for managing dependencies
+venv/bin/pip install pip-tools -c requirements.in
+
+# install python dependencies with pip-sync (provided by pip-tools)
+venv/bin/pip-sync
+
+# install java dependencies with maven
+mvn dependency:copy-dependencies
 
 # run pytest with all linters and 4 workers in parallel
 venv/bin/pytest --black --docstyle --flake8 --mypy-ignore-missing-imports -n 4

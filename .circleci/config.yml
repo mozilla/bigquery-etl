@@ -11,7 +11,7 @@ jobs:
           keys:
             # when lock files change, use increasingly general
             # patterns to restore cache
-            - &cache_key
+            - &python_cache_key
               # yamllint disable-line rule:line-length
               python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
               # yamllint disable-line rule:line-length
@@ -35,7 +35,7 @@ jobs:
       - save_cache:
           paths:
             - venv/
-          key: *cache_key
+          key: *python_cache_key
   verify-format-sql:
     docker: *docker
     steps:
@@ -88,6 +88,22 @@ jobs:
             fi
       - *restore_venv_cache
       - *build
+      - &restore_mvn_cache
+        restore_cache:
+          keys:
+            # when lock files change, use increasingly general
+            # patterns to restore cache
+            - &mvn_cache_key
+              maven-packages-v1-{{ .Branch }}-{{ checksum "pom.xml" }}
+            - maven-packages-v1-{{ .Branch }}-
+            - maven-packages-v1-
+      - &java_deps
+        run:
+          name: Install maven and java and download dependency jars
+          command: |
+            apt update
+            apt install -y maven default-jdk-headless
+            mvn dependency:copy-dependencies
       - run:
           name: PyTest Integration Test
           # Google's client libraries will check for
@@ -97,7 +113,11 @@ jobs:
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
             echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-            PATH="venv/bin:$PATH" script/entrypoint -m integration
+            PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java'
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: *mvn_cache_key
   validate-dags:
     # based on
     # https://github.com/mozilla/telemetry-airflow/blob/master/.circleci/config.yml

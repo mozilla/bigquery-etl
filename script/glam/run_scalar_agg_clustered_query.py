@@ -27,17 +27,20 @@ SQL_BASE_DIR = (
 @click.command()
 @click.option("--submission-date", required=True, type=datetime.date.fromisoformat)
 @click.option("--dst-table", required=True)
-@click.option("--project", default="moz-fx-data-shared-prod")
+@click.option(
+    "--dst-project", default="moz-fx-data-shared-prod", help="Project for final table"
+)
+@click.option("--tmp-project", help="Project for temporary intermediate tables")
 @click.option("--dataset", default="telemetry_derived")
-def main(submission_date, dst_table, project, dataset):
+def main(submission_date, dst_table, dst_project, tmp_project, dataset):
     """Run query per app_version."""
-    bq_client = bigquery.Client(project=project)
+    bq_client = bigquery.Client(project=dst_project)
 
     app_versions = [
         row["app_version"]
         for row in bq_client.query(
             VERSION_QUERY_TEMPLATE.format(
-                date=submission_date, project=project, dataset=dataset
+                date=submission_date, project=dst_project, dataset=dataset
             )
         ).result()
     ]
@@ -53,7 +56,9 @@ def main(submission_date, dst_table, project, dataset):
     query_text = sql_path.read_text()
 
     # Write to intermediate table to avoid partial writes to destination table
-    intermediate_table = f"{project}.analysis.glam_temp_clustered_query_{dst_table}"
+    if tmp_project is None:
+        tmp_project = dst_project
+    intermediate_table = f"{tmp_project}.analysis.glam_temp_clustered_query_{dst_table}"
     print(f"Writing results to {intermediate_table}")
 
     for i, app_version in enumerate(app_versions):
@@ -68,7 +73,7 @@ def main(submission_date, dst_table, project, dataset):
             ],
             clustering_fields=["metric", "channel"],
             destination=intermediate_table,
-            default_dataset=f"{project}.{dataset}",
+            default_dataset=f"{dst_project}.{dataset}",
             write_disposition=(
                 bigquery.WriteDisposition.WRITE_TRUNCATE
                 if i == 0
@@ -96,10 +101,10 @@ def main(submission_date, dst_table, project, dataset):
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
 
-    print(f"Copying {intermediate_table} to {project}.{dataset}.{dst_table}")
+    print(f"Copying {intermediate_table} to {dst_project}.{dataset}.{dst_table}")
     bq_client.copy_table(
         intermediate_table,
-        f"{project}.{dataset}.{dst_table}",
+        f"{dst_project}.{dataset}.{dst_table}",
         job_config=copy_config,
     ).result()
 

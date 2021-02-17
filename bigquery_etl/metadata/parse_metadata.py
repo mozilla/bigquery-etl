@@ -207,8 +207,26 @@ class Metadata:
                 if label_value == "":
                     metadata_dict["labels"][label_key] = True
 
+        # Use literal yaml representation for descriptions
+        class Literal(str):
+            pass
+
+        def literal_presenter(dumper, data):
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
+
+        yaml.add_representer(Literal, literal_presenter)
+
+        if "description" in metadata_dict:
+            metadata_dict["description"] = Literal(metadata_dict["description"])
+
         converter = cattr.Converter()
-        file.write_text(yaml.dump(converter.unstructure(metadata_dict)))
+        file.write_text(
+            yaml.dump(
+                converter.unstructure(metadata_dict),
+                default_flow_style=False,
+                sort_keys=False,
+            )
+        )
 
     def is_public_bigquery(self):
         """Return true if the public_bigquery flag is set."""

@@ -750,7 +750,7 @@ def _validate_schema(query_file):
 
     if not query_schema.compatible(table_schema):
         click.echo(
-            f"Schema for query in {query_file_path} "
+            f"ERROR: Schema for query in {query_file_path} "
             f"incompatible with schema deployed for "
             f"{project_name}.{dataset_name}.{table_name}",
             err=True,

@@ -237,6 +237,7 @@ def main():
         ),
         bigquery.SchemaField("app_id", "STRING"),
         bigquery.SchemaField("app_name", "STRING"),
+        bigquery.SchemaField("channel", "STRING"),
     )
 
     job_config = bigquery.LoadJobConfig(

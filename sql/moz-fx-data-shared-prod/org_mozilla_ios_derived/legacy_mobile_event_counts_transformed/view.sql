@@ -13,7 +13,7 @@ CREATE TEMPORARY FUNCTION labeled_counter(
         a.key
     )
     SELECT
-      ARRAY_AGG(STRUCT<key STRING, value FLOAT64>(k, v))
+      ARRAY_AGG(STRUCT<key STRING, value INT64>(k, v))
     FROM
       summed
   )
@@ -56,29 +56,29 @@ aggregated AS (
   SELECT
     client_id,
     submission_date,
-  -- background can be calculated too
+    -- background can be calculated too
     SUM(
       IF(object = "app" AND method = "foreground", value, 0)
     ) AS counter_glean_validation_foreground_count,
-    any_value(
+    ANY_VALUE(
       labeled_counter(bookmarks_open, ["awesomebar-results", "bookmarks-panel"])
     ) AS labeled_counter_bookmarks_open,
-  -- NOTE: should share-menu actually be context-menu?
-    any_value(
+    -- NOTE: should share-menu actually be context-menu?
+    ANY_VALUE(
       labeled_counter(bookmarks_add, ["page-action-menu", "share-menu", "activity-stream"])
     ) AS labeled_counter_bookmarks_add,
-    any_value(
+    ANY_VALUE(
       labeled_counter(bookmarks_delete, ["page-action-menu", "activity-stream", "bookmarks-panel"])
     ) AS labeled_counter_bookmarks_delete,
     SUM(IF(object = "reader-mode-open-button", value, 0)) AS counter_reader_mode_open,
     SUM(IF(object = "reader-mode-close-button", value, 0)) AS counter_reader_mode_close,
-    any_value(
+    ANY_VALUE(
       labeled_counter(
         reading_list_add,
         ["reader-mode-toolbar", "share-extension", "page-action-menu"]
       )
     ) AS labeled_counter_reading_list_add,
-    any_value(
+    ANY_VALUE(
       labeled_counter(reading_list_delete, ["reader-mode-toolbar", "reading-list-panel"])
     ) AS labeled_counter_reading_list_delete,
     SUM(
@@ -103,7 +103,7 @@ aggregated AS (
 )
 SELECT
   submission_timestamp,
-  metadata,
+  (SELECT AS STRUCT metadata.* EXCEPT (uri)) AS metadata,
   normalized_app_name,
   normalized_channel,
   normalized_country_code,

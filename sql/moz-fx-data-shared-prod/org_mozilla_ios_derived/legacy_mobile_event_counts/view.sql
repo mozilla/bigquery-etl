@@ -5,7 +5,9 @@ WITH extracted AS (
   FROM
     `mozdata.telemetry.mobile_event`
   WHERE
-    DATE(submission_timestamp) = "2021-02-01"
+    DATE(submission_timestamp)
+    BETWEEN "2021-02-01"
+    AND "2021-02-14"
 ),
 meta AS (
   SELECT
@@ -16,7 +18,13 @@ meta AS (
 meta_ranked AS (
   SELECT
     t AS metadata,
-    row_number() OVER (PARTITION BY client_id ORDER BY submission_timestamp DESC) AS _n
+    row_number() OVER (
+      PARTITION BY
+        client_id,
+        submission_date
+      ORDER BY
+        submission_timestamp DESC
+    ) AS _n
   FROM
     meta t
 ),

@@ -1,3 +1,11 @@
+DECLARE start_date DATE;
+
+DECLARE end_date DATE;
+
+SET start_date = @start_date;
+
+SET end_date = @end_date;
+
 WITH extracted AS (
   SELECT
     *,
@@ -6,8 +14,8 @@ WITH extracted AS (
     `mozdata.telemetry.mobile_event`
   WHERE
     DATE(submission_timestamp)
-    BETWEEN "2021-02-01"
-    AND "2021-02-14"
+    BETWEEN start_date
+    AND end_date
     AND normalized_app_name = "Fennec"
     AND normalized_os = "iOS"
 ),

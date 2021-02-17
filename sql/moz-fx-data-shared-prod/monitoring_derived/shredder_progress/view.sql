@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring_derived.shredder_progress_v1`
+  `moz-fx-data-shared-prod.monitoring_derived.shredder_progress`
 AS
 WITH shredder AS (
   SELECT

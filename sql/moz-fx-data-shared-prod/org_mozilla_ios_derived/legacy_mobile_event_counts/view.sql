@@ -8,6 +8,8 @@ WITH extracted AS (
     DATE(submission_timestamp)
     BETWEEN "2021-02-01"
     AND "2021-02-14"
+    AND normalized_app_name = "Fennec"
+    AND normalized_os = "iOS"
 ),
 meta AS (
   SELECT

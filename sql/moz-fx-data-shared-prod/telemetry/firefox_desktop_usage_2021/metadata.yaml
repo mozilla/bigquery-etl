@@ -1,0 +1,30 @@
+friendly_name: Firefox Desktop Usage 2021
+description: |-
+  Stable source for 2021 KPI data on Firefox desktop usage, including
+  cumulative days of use (`cdou`) and new profiles, broken out by dimensions.
+
+  New profile counts are determined using the `first_seen_date` approach
+  where we consider a profile new on the day it first sends a `main` ping.
+
+  Queries should generally be `SUM` of the `cdou`, `new_profiles`, `dau`,
+  `wau`, or `mau` fields, grouped by any dimensions you want to compare
+  or filtered to only your target population.
+
+  Example query to see CDOU and new profiles over time for the Windows
+  population:
+
+  ```
+  SELECT
+    submission_date,
+    os,
+    SUM(cdou) AS cdou,
+    SUM(new_profiles) AS new_profiles
+  FROM mozdata.telemetry.firefox_desktop_usage_2021
+  WHERE os = 'Windows'
+  GROUP BY submission_date
+  ORDER BY submission_date
+  ```
+labels:
+  application: desktop
+owners:
+- jklukas@mozilla.com

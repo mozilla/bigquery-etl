@@ -112,7 +112,7 @@
           value: 1
         - key: engine1.in-content.sap.none
           value: 2
-        - key: engine2.in-content.sap-follow-on.none
+        - key: engine2.in-content.sap-follow-on.none.ts
           value: 3
     counter:
       events_total_uri_count: 22

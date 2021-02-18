@@ -150,10 +150,13 @@ fenix_flattened_searches AS (
     WHEN
       search.search_type = 'in-content'
     THEN
+      -- Drop engine from search key to get source
+      -- Key should look like `engine.in-content.sap.code` with possible
+      -- additional period-separated segments (e.g. .ts for top sites)
       IF(
-        ARRAY_LENGTH(SPLIT(search.key, '.')) < 2,
+        STRPOS(search.key, '.') IN (0, LENGTH(search.key)),
         NULL,
-        ARRAY_TO_STRING(udf.array_slice(SPLIT(search.key, '.'), 1, 3), '.')
+        SUBSTR(search.key, STRPOS(search.key, '.') + 1)
       )
     ELSE
       search.search_type

@@ -21,6 +21,7 @@ from io import BytesIO
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
+from typing import List
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
@@ -202,25 +203,8 @@ def write_view_if_not_exists(
             f.write(metadata_content)
 
 
-def main():
-    """
-    Fetch schema metadata and generate view definitions.
-
-    Metadata about document types is from the generated-schemas branch
-    of mozilla-pipeline-schemas. We write out generated views for each
-    document type in parallel.
-
-    There is a performance bottleneck here due to the need to dry-run each
-    view to ensure the source table actually exists.
-    """
-    args = parser.parse_args()
-
-    # set log level
-    try:
-        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
-    except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
-
+def get_stable_table_schemas() -> List[SchemaFile]:
+    """Fetch last schema metadata per doctype by version."""
     with urllib.request.urlopen(SCHEMAS_URI) as f:
         tarbytes = BytesIO(f.read())
 
@@ -232,7 +216,7 @@ def main():
                     "/"
                 )
                 version = int(basename.split(".")[1])
-                schema = json.load(tar.extractfile(tarinfo.name))
+                schema = json.load(tar.extractfile(tarinfo.name))  # type: ignore
                 pipeline_meta = schema.get("mozPipelineMetadata", None)
                 if pipeline_meta is None:
                     continue
@@ -250,12 +234,35 @@ def main():
         schemas,
         key=lambda t: f"{t.document_namespace}/{t.document_type}/{t.document_version:03d}",
     )
-    schemas = [
-        list(grp)[-1]
-        for k, grp in groupby(
+    return [
+        last
+        for k, (*_, last) in groupby(
             schemas, lambda t: f"{t.document_namespace}/{t.document_type}"
         )
     ]
+
+
+def main():
+    """
+    Generate view definitions.
+
+    Metadata about document types is from the generated-schemas branch
+    of mozilla-pipeline-schemas. We write out generated views for each
+    document type in parallel.
+
+    There is a performance bottleneck here due to the need to dry-run each
+    view to ensure the source table actually exists.
+    """
+    args = parser.parse_args()
+
+    # set log level
+    try:
+        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
+    except ValueError as e:
+        parser.error(f"argument --log-level: {e}")
+
+    schemas = get_stable_table_schemas()
+
     with ThreadPool(args.parallelism) as pool:
         pool.map(
             partial(

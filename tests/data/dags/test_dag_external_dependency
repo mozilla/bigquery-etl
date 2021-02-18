@@ -35,11 +35,11 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
-    {{ temporary_dataset }}__external_table__v1 = bigquery_etl_query(
-        task_id="{{ temporary_dataset }}__external_table__v1",
+    test__external_table__v1 = bigquery_etl_query(
+        task_id="test__external_table__v1",
         destination_table="external_table_v1",
-        dataset_id="{{ temporary_dataset }}",
-        project_id="bigquery-etl-integration-test",
+        dataset_id="test",
+        project_id="test-project",
         owner="test@example.org",
         email=["test@example.org"],
         date_partition_parameter="submission_date",

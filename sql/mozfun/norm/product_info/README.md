@@ -5,7 +5,7 @@ app_name         | normalized_os | looker_app_name  | product          | canonic
 Firefox          | *             | firefox_desktop  | Firefox          | Firefox for Desktop             | true  | true  | true
 Fenix            | Android       | fenix            | Fenix            | Firefox for Android (Fenix)     | true  | true  | true
 Fennec           | Android       | fennec           | Fennec           | Firefox for Android (Fennec)    | true  | true  | true
-Firefox Preview  | Android       | firefox_preview  | Firefox Preview  | Firefox Preview for Android     | true  | true  | false
+Firefox Preview  | Android       | firefox_preview  | Firefox Preview  | Firefox Preview for Android     | true  | true  | true
 Fennec           | iOS           | firefox_ios      | Firefox iOS      | Firefox for iOS                 | true  | true  | true
 FirefoxForFireTV | Android       | firefox_fire_tv  | Firefox Fire TV  | Firefox for Fire TV             | false | false | false
 FirefoxConnect   | Android       | firefox_connect  | Firefox Echo     | Firefox for Echo Show           | true  | true  | true

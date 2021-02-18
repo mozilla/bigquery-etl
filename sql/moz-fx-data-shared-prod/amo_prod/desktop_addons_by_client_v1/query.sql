@@ -32,11 +32,23 @@ WITH per_client AS (
         FROM
           UNNEST(SPLIT(payload.info.addons)) AS addon
       )
+      ORDER BY
+        submission_timestamp
     ) AS addons,
-    udf.mode_last(array_agg(application.version)) AS app_version,
-    udf.mode_last(array_agg(normalized_country_code)) AS country,
-    udf.mode_last(array_agg(environment.settings.locale)) AS locale,
-    udf.mode_last(array_agg(normalized_os)) AS app_os,
+    -- We always want to take the most recent seen version per
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1693308
+    ARRAY_AGG(
+      application.version
+      ORDER BY
+        mozfun.norm.truncate_version(application.version, "minor") DESC
+    )[SAFE_OFFSET(0)] AS app_version,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp)
+    ) AS country,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(environment.settings.locale ORDER BY submission_timestamp)
+    ) AS locale,
+    mozfun.stats.mode_last(ARRAY_AGG(normalized_os ORDER BY submission_timestamp)) AS app_os,
   FROM
     telemetry.main
   WHERE
@@ -52,9 +64,15 @@ SELECT
   ARRAY(
     SELECT AS STRUCT
       addon.id,
-      udf.mode_last(array_agg(addon.version)) AS version,
+      -- Same methodology as for app_version above.
+      ARRAY_AGG(
+        application.version
+        ORDER BY
+          mozfun.norm.truncate_version(addon.version, "minor") DESC
+      )[SAFE_OFFSET(0)] AS version,
     FROM
       UNNEST(addons) AS addon
+      WITH OFFSET AS i
     GROUP BY
       addon.id
   ) AS addons

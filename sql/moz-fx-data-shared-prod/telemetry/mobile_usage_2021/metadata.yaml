@@ -1,0 +1,21 @@
+friendly_name: Mobile Usage 2021
+description: |-
+  Stable source for 2021 KPI data on mobile usage, including
+  cumulative days of use (`cdou`) broken out by dimensions.
+
+  Queries should generally be `SUM` of the `cdou`, `dau`,
+  `wau`, or `mau` fields, grouped by any dimensions you want to compare
+  or filtered to only your target population.
+
+  Example query to see CDOU over time for Firefox for iOS:
+  ```
+  SELECT
+    submission_date,
+    SUM(cdou) AS cdou
+  FROM mozdata.telemetry.mobile_usage_2021
+  WHERE app_name = 'firefox_ios'
+  GROUP BY submission_date
+  ORDER BY submission_date
+  ```
+owners:
+- jklukas@mozilla.com

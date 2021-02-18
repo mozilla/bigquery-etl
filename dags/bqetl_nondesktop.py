@@ -71,6 +71,18 @@ with DAG(
         dag=dag,
     )
 
+    telemetry_derived__mobile_usage__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__mobile_usage__v1",
+        destination_table="mobile_usage_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
     wait_for_telemetry_derived__core_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
         external_dag_id="bqetl_core",

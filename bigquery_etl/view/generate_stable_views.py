@@ -74,6 +74,13 @@ parser.add_argument(
     default="moz-fx-data-shared-prod",
     help="The project where the stable tables live.",
 )
+parser.add_argument(
+    "--no-dry-run",
+    action="store_false",
+    default=True,
+    dest="dry_run",
+    help="Don't use dry run to check whether stable tables actually exist.",
+)
 standard_args.add_log_level(parser)
 standard_args.add_parallelism(parser)
 
@@ -112,7 +119,9 @@ class SchemaFile:
         )
 
 
-def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaFile):
+def write_view_if_not_exists(
+    target_project: str, sql_dir: Path, schema: SchemaFile, dry_run: bool
+):
     """If a view.sql does not already exist, write one to the target directory."""
     target_dir = (
         sql_dir
@@ -166,16 +175,19 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             full_view_id=full_view_id,
         )
     )
-    with tempfile.TemporaryDirectory() as tdir:
-        tfile = Path(tdir) / "view.sql"
-        with tfile.open("w") as f:
-            f.write(full_sql)
-        dryrun = DryRun(str(tfile))
-        if 404 in [e.get("code") for e in dryrun.errors()]:
-            print(
-                f"Not creating {schema.user_facing_view} since stable table does not exist"
-            )
-            return
+    if dry_run:
+        with tempfile.TemporaryDirectory() as tdir:
+            tfile = Path(tdir) / "view.sql"
+            with tfile.open("w") as f:
+                f.write(full_sql)
+            print(f"Dry running {schema.user_facing_view}")
+            dryrun = DryRun(str(tfile))
+            if 404 in [e.get("code") for e in dryrun.errors()]:
+                print(
+                    f"Not creating {schema.user_facing_view} since"
+                    " stable table does not exist"
+                )
+                return
     print(f"Creating {target_file}")
     target_dir.mkdir(parents=True, exist_ok=True)
     with target_file.open("w") as f:
@@ -250,6 +262,7 @@ def main():
                 write_view_if_not_exists,
                 args.target_project,
                 Path(args.sql_dir),
+                dry_run=args.dry_run,
             ),
             schemas,
             chunksize=1,

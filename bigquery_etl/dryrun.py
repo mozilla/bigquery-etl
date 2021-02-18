@@ -145,6 +145,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/init.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/init.sql",
+    "sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql",
     # Query parameter not found
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql",  # noqa E501
@@ -334,7 +335,7 @@ class DryRun:
     def errors(self):
         """Dry run the provided SQL file and return errors."""
         if self.dry_run_result is None:
-            return None
+            return []
         return self.dry_run_result.get("errors", [])
 
     def get_error(self):

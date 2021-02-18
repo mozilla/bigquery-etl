@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mozilla.telemetry</groupId>
+    <artifactId>mozilla-pipeline-schemas</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <properties>
+        <zetasql.version>2020.10.1</zetasql.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.zetasql</groupId>
+            <artifactId>zetasql-client</artifactId>
+            <version>${zetasql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zetasql</groupId>
+            <artifactId>zetasql-jni-channel</artifactId>
+            <version>${zetasql.version}</version>
+        </dependency>
+    </dependencies>
+</project>

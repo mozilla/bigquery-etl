@@ -6,16 +6,19 @@ jobs:
       - image: python:3.8
     steps:
       - checkout
-      - restore_cache:
+      - &restore_venv_cache
+        restore_cache:
           keys:
             # when lock files change, use increasingly general
             # patterns to restore cache
-            - &cache_key
-            # yamllint disable-line rule:line-length
-             python-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
-            - python-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
-            - python-packages-v1-{{ .Branch }}-
-            - python-packages-v1-
+            - &python_cache_key
+              # yamllint disable-line rule:line-length
+              python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
+              # yamllint disable-line rule:line-length
+            - python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
+            - python-3.8-packages-v1-{{ .Branch }}-
+            - python-3.8-packages-v1-master-
+            - python-3.8-packages-v1-
       - &build
         run:
           name: Build
@@ -32,7 +35,7 @@ jobs:
       - save_cache:
           paths:
             - venv/
-          key: *cache_key
+          key: *python_cache_key
   verify-format-sql:
     docker: *docker
     steps:
@@ -65,6 +68,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Verify that metadata files are valid
@@ -82,9 +86,25 @@ jobs:
                so marking this step successful"
               circleci step halt
             fi
+      - *restore_venv_cache
       - *build
-      - &pytest_integration_test
+      - &restore_mvn_cache
+        restore_cache:
+          keys:
+            # when lock files change, use increasingly general
+            # patterns to restore cache
+            - &mvn_cache_key
+              maven-packages-v1-{{ .Branch }}-{{ checksum "pom.xml" }}
+            - maven-packages-v1-{{ .Branch }}-
+            - maven-packages-v1-
+      - &java_deps
         run:
+          name: Install maven and java and download dependency jars
+          command: |
+            apt update
+            apt install -y maven default-jdk-headless
+            mvn dependency:copy-dependencies
+      - run:
           name: PyTest Integration Test
           # Google's client libraries will check for
           # GOOGLE_APPLICATION_CREDENTIALS
@@ -93,7 +113,11 @@ jobs:
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
             echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-            PATH="venv/bin:$PATH" script/entrypoint -m integration
+            PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java'
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: *mvn_cache_key
   validate-dags:
     # based on
     # https://github.com/mozilla/telemetry-airflow/blob/master/.circleci/config.yml
@@ -123,6 +147,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Generate DAGs
@@ -134,6 +159,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       # Additional query generation commands may be added here in the future.
       - run:
@@ -146,6 +172,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Validate doc examples
@@ -154,7 +181,10 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
+      - *restore_mvn_cache
+      - *java_deps
       - run:
           name: Validate views
           command: PATH="venv/bin:$PATH" script/validate_views
@@ -163,6 +193,7 @@ jobs:
     steps:
       - checkout
       - *skip_forked_pr
+      - *restore_venv_cache
       - *build
       - attach_workspace:
           at: /tmp/generated-sql
@@ -186,15 +217,18 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Generate SQL content
           command: |
             mkdir /tmp/generated-sql
             cp -r sql/ /tmp/generated-sql/sql
+            # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" ./script/generate_sql \
               --sql-dir /tmp/generated-sql/sql/ \
-              --target-project moz-fx-data-shared-prod
+              --target-project moz-fx-data-shared-prod \
+              $(test "${CIRCLE_BRANCH}" = master || echo --no-dry-run)
       - persist_to_workspace:
           root: /tmp/generated-sql
           paths:

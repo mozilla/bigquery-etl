@@ -154,9 +154,9 @@ fenix_flattened_searches AS (
       -- Key should look like `engine.in-content.sap.code` with possible
       -- additional period-separated segments (e.g. .ts for top sites)
       IF(
-        STRPOS(search.key, '.') = 0,
+        STRPOS(search.key, '.') IN (0, LENGTH(search.key)),
         NULL,
-        SUBSTR(search.key, STRPOS(search.key, '.') + 1, LENGTH(search.key))
+        SUBSTR(search.key, STRPOS(search.key, '.') + 1)
       )
     ELSE
       search.search_type

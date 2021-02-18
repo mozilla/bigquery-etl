@@ -9,6 +9,7 @@ set -e
 
 : "${TARGET_PROJECT:=moz-fx-data-shar-nonprod-efed}"
 : "${SQL_DIR:=sql}"
+NO_DRY_RUN=( )
 
 while [[ $# -gt 0 ]]
 do
@@ -25,6 +26,10 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    --no-dry-run)
+    NO_DRY_RUN=( "$1" )
+    shift # past argument
+    ;;
     *)    # unknown option
     echo "ERROR: Unknown option: $1" >&2
     exit 1
@@ -32,8 +37,14 @@ case $key in
 esac
 done
 
-# Fill in any missing view definitions in the moz-fx-data-shared-prod/ folder
-python -m bigquery_etl.view.generate_stable_views --sql-dir "${SQL_DIR}" --parallelism=20
+set -x
+
+# Fill in any missing view definitions in the target project folder
+time python -m bigquery_etl.view.generate_stable_views \
+    --target-project "${TARGET_PROJECT}" \
+    --sql-dir "${SQL_DIR}" \
+    "${NO_DRY_RUN[@]}" \
+    --parallelism=20
 
 # Fill in definitions for generated Glean ETL
 PLACEHOLDER_DATE="2000-01-01"

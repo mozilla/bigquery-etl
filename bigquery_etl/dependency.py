@@ -86,7 +86,7 @@ def dependency():
 
 
 @dependency.command(
-    help="Show table references in sql files.",
+    help="Show table references in sql files. Requires Java.",
 )
 @click.argument(
     "paths",

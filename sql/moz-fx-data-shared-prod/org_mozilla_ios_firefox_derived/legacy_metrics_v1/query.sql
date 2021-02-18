@@ -23,7 +23,7 @@ WITH extracted AS (
   SELECT
     *
   FROM
-    `moz-fx-data-shared-prod.legacy_mobile_event_counts_v1`
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_event_counts_v1`
   WHERE
     date(submission_timestamp) = @submission_date
 ),

@@ -24,6 +24,12 @@ description: |-
   GROUP BY submission_date
   ORDER BY submission_date
   ```
+
+  Note that some amount of the upstream data in `clients_last_seen` will be
+  deleted over time in response to user-initiated deletion requests, but the
+  aggregates in this view (which are no longer client-level) will remain stable.
+  Expect to see slightly higher results from this table compared to queries on
+  client-level tables. The underlying table was initially created on 2021-02-19.
 labels:
   application: desktop
 owners:

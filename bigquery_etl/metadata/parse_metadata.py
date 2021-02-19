@@ -14,6 +14,20 @@ from bigquery_etl.query_scheduling.utils import is_email
 METADATA_FILE = "metadata.yaml"
 
 
+class Literal(str):
+    """Represents a YAML literal."""
+
+    pass
+
+
+def literal_presenter(dumper, data):
+    """Literal representer for YAML output."""
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
+
+
+yaml.add_representer(Literal, literal_presenter)
+
+
 class PartitionType(enum.Enum):
     """Represents BigQuery table partition types."""
 
@@ -206,15 +220,6 @@ class Metadata:
                 # handle tags
                 if label_value == "":
                     metadata_dict["labels"][label_key] = True
-
-        # Use literal yaml representation for descriptions
-        class Literal(str):
-            pass
-
-        def literal_presenter(dumper, data):
-            return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
-
-        yaml.add_representer(Literal, literal_presenter)
 
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])

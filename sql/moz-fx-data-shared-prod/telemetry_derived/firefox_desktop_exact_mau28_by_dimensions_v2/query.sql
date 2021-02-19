@@ -10,6 +10,7 @@ SELECT
   MOD(ABS(FARM_FINGERPRINT(client_id)), 20) AS id_bucket,
   activity_segments_v1 AS activity_segment,
   mozfun.norm.os(os) AS os,
+  normalized_channel AS channel,
   -- requested fields from bug 1525689
   attribution.source,
   attribution.medium,
@@ -28,6 +29,7 @@ GROUP BY
   id_bucket,
   activity_segment,
   os,
+  normalized_channel,
   source,
   medium,
   campaign,

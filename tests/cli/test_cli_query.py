@@ -109,6 +109,7 @@ class TestQuery:
             result = runner.invoke(schedule, ["test.query_v1", "--dag=foo"])
             assert result.exit_code == 1
 
+    @pytest.mark.java
     def test_schedule_query(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
@@ -152,6 +153,7 @@ class TestQuery:
             print(result.output)
             assert result.exit_code == 0
 
+    @pytest.mark.java
     def test_reschedule_query(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")

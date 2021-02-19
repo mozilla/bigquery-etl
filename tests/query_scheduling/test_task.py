@@ -1,9 +1,7 @@
-from google.cloud import bigquery
 from pathlib import Path
 import os
 import pytest
 from typing import NewType
-from unittest import mock
 
 from bigquery_etl.query_scheduling.task import (
     Task,
@@ -13,14 +11,8 @@ from bigquery_etl.query_scheduling.task import (
 )
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
-from bigquery_etl.dryrun import DryRun
 
 TEST_DIR = Path(__file__).parent.parent
-# This Cloud Function has been manually deployed and might be outdated compared
-# to the shared-prod version
-TEST_DRY_RUN_URL = (
-    "https://us-central1-bigquery-etl-integration-test.cloudfunctions.net/dryrun"
-)
 
 
 class TestTask:
@@ -396,10 +388,9 @@ class TestTask:
             date_partition_parameter="import_date",
         )
 
-    @pytest.mark.integration
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
-    def test_task_get_dependencies_none(self, tmp_path, project_id):
-        query_file_path = tmp_path / project_id / "test" / "query_v1"
+    @pytest.mark.java
+    def test_task_get_dependencies_none(self, tmp_path):
+        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
@@ -414,29 +405,16 @@ class TestTask:
         task.with_dependencies(dags)
         assert task.dependencies == []
 
-    @pytest.mark.integration
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
-    def test_task_get_multiple_dependencies(
-        self, tmp_path, bigquery_client, project_id, temporary_dataset
-    ):
-        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
+    @pytest.mark.java
+    def test_task_get_multiple_dependencies(self, tmp_path):
+        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
         query_file.write_text(
-            f"SELECT * FROM {project_id}.{temporary_dataset}.table1_v1 "
-            + f"UNION ALL SELECT * FROM {project_id}.{temporary_dataset}.table2_v1"
+            "SELECT * FROM `test-project`.test.table1_v1 "
+            "UNION ALL SELECT * FROM `test-project`.test.table2_v1"
         )
-
-        schema = [bigquery.SchemaField("a", "STRING", mode="NULLABLE")]
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table1_v1", schema=schema
-        )
-        bigquery_client.create_table(table)
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table2_v1", schema=schema
-        )
-        bigquery_client.create_table(table)
 
         metadata = Metadata(
             "test", "test", ["test@example.org"], {}, self.default_scheduling
@@ -445,11 +423,11 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
             metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
             metadata,
         )
 
@@ -470,36 +448,19 @@ class TestTask:
 
         tables = [t.task_id for t in result]
 
-        assert f"{temporary_dataset}__table1__v1" in tables
-        assert f"{temporary_dataset}__table2__v1" in tables
+        assert "test__table1__v1" in tables
+        assert "test__table2__v1" in tables
 
-    @pytest.mark.integration
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
-    def test_multipart_task_get_dependencies(
-        self, tmp_path, bigquery_client, project_id, temporary_dataset
-    ):
-        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
+    @pytest.mark.java
+    def test_multipart_task_get_dependencies(self, tmp_path):
+        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
         query_file_part1 = query_file_path / "part1.sql"
-        query_file_part1.write_text(
-            f"SELECT * FROM {project_id}.{temporary_dataset}.table1_v1"
-        )
+        query_file_part1.write_text("SELECT * FROM `test-project`.test.table1_v1")
 
         query_file_part2 = query_file_path / "part2.sql"
-        query_file_part2.write_text(
-            f"SELECT * FROM {project_id}.{temporary_dataset}.table2_v1"
-        )
-
-        schema = [bigquery.SchemaField("a", "STRING", mode="NULLABLE")]
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table1_v1", schema=schema
-        )
-        bigquery_client.create_table(table)
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table2_v1", schema=schema
-        )
-        bigquery_client.create_table(table)
+        query_file_part2.write_text("SELECT * FROM `test-project`.test.table2_v1")
 
         metadata = Metadata(
             "test", "test", ["test@example.org"], {}, self.default_scheduling
@@ -508,11 +469,11 @@ class TestTask:
         task = Task.of_multipart_query(query_file_part1, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
             metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
             metadata,
         )
 
@@ -533,35 +494,28 @@ class TestTask:
 
         tables = [t.task_id for t in result]
 
-        assert f"{temporary_dataset}__table1__v1" in tables
-        assert f"{temporary_dataset}__table2__v1" in tables
+        assert "test__table1__v1" in tables
+        assert "test__table2__v1" in tables
 
-    @pytest.mark.integration
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
-    def test_task_get_view_dependencies(
-        self, tmp_path, bigquery_client, project_id, temporary_dataset
-    ):
-        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
+    @pytest.mark.java
+    def test_task_get_view_dependencies(self, tmp_path):
+        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
         query_file.write_text(
-            f"SELECT * FROM {project_id}.{temporary_dataset}.table1_v1 "
-            + f"UNION ALL SELECT * FROM {project_id}.{temporary_dataset}.test_view"
+            "SELECT * FROM `test-project`.test.table1_v1 "
+            "UNION ALL SELECT * FROM `test-project`.test.test_view"
         )
 
-        schema = [bigquery.SchemaField("a", "STRING", mode="NULLABLE")]
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table1_v1", schema=schema
+        view_file_path = tmp_path / "test-project" / "test" / "test_view"
+        os.makedirs(view_file_path)
+
+        view_file = view_file_path / "view.sql"
+        view_file.write_text(
+            "CREATE OR REPLACE VIEW `test-project`.test.test_view "
+            "AS SELECT * FROM `test-project`.test.table2_v1"
         )
-        bigquery_client.create_table(table)
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table2_v1", schema=schema
-        )
-        bigquery_client.create_table(table)
-        view = bigquery.Table(f"{project_id}.{temporary_dataset}.test_view")
-        view.view_query = f"SELECT * FROM {project_id}.{temporary_dataset}.table2_v1"
-        bigquery_client.create_table(view)
 
         metadata = Metadata(
             "test", "test", ["test@example.org"], {}, self.default_scheduling
@@ -570,11 +524,11 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
             metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
             metadata,
         )
 
@@ -595,38 +549,37 @@ class TestTask:
 
         tables = [t.task_id for t in result]
 
-        assert f"{temporary_dataset}__table1__v1" in tables
-        assert f"{temporary_dataset}__table2__v1" in tables
+        assert "test__table1__v1" in tables
+        assert "test__table2__v1" in tables
 
-    @pytest.mark.integration
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
-    def test_task_get_nested_view_dependencies(
-        self, tmp_path, bigquery_client, project_id, temporary_dataset
-    ):
-        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
+    @pytest.mark.java
+    def test_task_get_nested_view_dependencies(self, tmp_path):
+        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
         query_file.write_text(
-            f"SELECT * FROM {project_id}.{temporary_dataset}.table1_v1 "
-            + f"UNION ALL SELECT * FROM {project_id}.{temporary_dataset}.test_view"
+            "SELECT * FROM `test-project`.test.table1_v1 "
+            "UNION ALL SELECT * FROM `test-project`.test.test_view"
         )
 
-        schema = [bigquery.SchemaField("a", "STRING", mode="NULLABLE")]
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table1_v1", schema=schema
+        view_file_path = tmp_path / "test-project" / "test" / "test_view"
+        os.makedirs(view_file_path)
+
+        view_file = view_file_path / "view.sql"
+        view_file.write_text(
+            "CREATE OR REPLACE VIEW `test-project`.test.test_view "
+            "AS SELECT * FROM `test-project`.test.test_view2"
         )
-        bigquery_client.create_table(table)
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table2_v1", schema=schema
+
+        view2_file_path = tmp_path / "test-project" / "test" / "test_view2"
+        os.makedirs(view2_file_path)
+
+        view2_file = view2_file_path / "view.sql"
+        view2_file.write_text(
+            "CREATE OR REPLACE VIEW `test-project`.test.test_view2 "
+            "AS SELECT * FROM `test-project`.test.table2_v1"
         )
-        bigquery_client.create_table(table)
-        view = bigquery.Table(f"{project_id}.{temporary_dataset}.test_view2")
-        view.view_query = f"SELECT * FROM {project_id}.{temporary_dataset}.table2_v1"
-        bigquery_client.create_table(view)
-        view = bigquery.Table(f"{project_id}.{temporary_dataset}.test_view")
-        view.view_query = f"SELECT * FROM {project_id}.{temporary_dataset}.test_view2"
-        bigquery_client.create_table(view)
 
         metadata = Metadata(
             "test", "test", ["test@example.org"], {}, self.default_scheduling
@@ -635,11 +588,11 @@ class TestTask:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
             metadata,
         )
         table_task2 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
             metadata,
         )
 
@@ -659,8 +612,8 @@ class TestTask:
         result = task.dependencies
         tables = [t.task_id for t in result]
 
-        assert f"{temporary_dataset}__table1__v1" in tables
-        assert f"{temporary_dataset}__table2__v1" in tables
+        assert "test__table1__v1" in tables
+        assert "test__table2__v1" in tables
 
     def test_task_depends_on(self):
         query_file = (

@@ -3,14 +3,14 @@
 import attr
 import cattr
 from fnmatch import fnmatchcase
-import glob
 import os
 import re
 import logging
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 
-from bigquery_etl.dryrun import DryRun
+from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
@@ -311,13 +311,7 @@ class Task:
         return task
 
     def _get_referenced_tables(self):
-        """
-        Perform a dry_run to get tables the query depends on.
-
-        Queries that reference more than 50 tables will not have a complete list
-        of dependencies. See https://cloud.google.com/bigquery/docs/reference/
-        rest/v2/Job#JobStatistics2.FIELDS.referenced_tables
-        """
+        """Use zetasql to get tables the query depends on."""
         logging.info(f"Get dependencies for {self.task_name}")
 
         if self.is_python_script:
@@ -325,25 +319,17 @@ class Task:
             return self.referenced_tables or []
 
         if self.referenced_tables is None:
-            table_names = set()
-            query_files = [self.query_file]
+            query_files = [Path(self.query_file)]
 
             if self.multipart:
                 # dry_run all files if query is split into multiple parts
-                query_files = glob.glob(self.query_file_path + "/*.sql")
+                query_files = Path(self.query_file_path).glob("*.sql")
 
-            for query_file in query_files:
-                referenced_tables = DryRun(query_file).get_referenced_tables()
-
-                if len(referenced_tables) >= 50:
-                    logging.warn(
-                        "Query has 50 or more tables. Queries that reference more "
-                        "than 50 tables will not have a complete list of "
-                        "dependencies."
-                    )
-
-                for t in referenced_tables:
-                    table_names.add((t["projectId"], t["datasetId"], t["tableId"]))
+            table_names = {
+                tuple(table.split("."))
+                for query_file in query_files
+                for table in extract_table_references_without_views(query_file)
+            }
 
             # the order of table dependencies changes between requests
             # sort to maintain same order between DAG generation runs

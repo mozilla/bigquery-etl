@@ -16,6 +16,7 @@ from ..cli.routine import mozfun, routine
 from ..cli.view import view
 from ..glam.cli import glam
 from ..stripe import stripe_
+from ..dependency import dependency
 
 
 def cli(prog_name=None):
@@ -23,6 +24,7 @@ def cli(prog_name=None):
     commands = {
         "query": query,
         "dag": dag,
+        "dependency": dependency,
         "dryrun": dryrun,
         "format": format,
         "routine": routine,

@@ -27,9 +27,12 @@ SQL_BASE_DIR = (
 @click.command()
 @click.option("--submission-date", required=True, type=datetime.date.fromisoformat)
 @click.option("--dst-table", required=True)
-@click.option("--project", default="moz-fx-data-shared-prod")
+@click.option(
+    "--project", default="moz-fx-data-shared-prod", help="Project for final table"
+)
+@click.option("--tmp-project", help="Project for temporary intermediate tables")
 @click.option("--dataset", default="telemetry_derived")
-def main(submission_date, dst_table, project, dataset):
+def main(submission_date, dst_table, project, tmp_project, dataset):
     """Run query per app_version."""
     bq_client = bigquery.Client(project=project)
 
@@ -53,7 +56,9 @@ def main(submission_date, dst_table, project, dataset):
     query_text = sql_path.read_text()
 
     # Write to intermediate table to avoid partial writes to destination table
-    intermediate_table = f"{project}.analysis.glam_temp_clustered_query_{dst_table}"
+    if tmp_project is None:
+        tmp_project = project
+    intermediate_table = f"{tmp_project}.analysis.glam_temp_clustered_query_{dst_table}"
     print(f"Writing results to {intermediate_table}")
 
     for i, app_version in enumerate(app_versions):

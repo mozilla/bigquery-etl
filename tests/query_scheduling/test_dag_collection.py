@@ -1,22 +1,13 @@
-from google.cloud import bigquery
-from jinja2 import Environment, PackageLoader
 import os
 from pathlib import Path
 import pytest
-from unittest import mock
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.dag import InvalidDag, DagParseException
 from bigquery_etl.query_scheduling.task import Task
 from bigquery_etl.metadata.parse_metadata import Metadata
-from bigquery_etl.dryrun import DryRun
 
 TEST_DIR = Path(__file__).parent.parent
-# This Cloud Function has been manually deployed and might be outdated compared
-# to the shared-prod version
-TEST_DRY_RUN_URL = (
-    "https://us-central1-bigquery-etl-integration-test.cloudfunctions.net/dryrun"
-)
 
 
 class TestDagCollection:
@@ -223,7 +214,7 @@ class TestDagCollection:
                 }
             ).with_tasks(tasks)
 
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
+    @pytest.mark.java
     def test_to_airflow(self, tmp_path):
         query_file = (
             TEST_DIR
@@ -271,7 +262,6 @@ class TestDagCollection:
         expected = (TEST_DIR / "data" / "dags" / "simple_test_dag").read_text().strip()
         assert result == expected
 
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
     def test_python_script_to_airflow(self, tmp_path):
         query_file = (
             TEST_DIR
@@ -321,36 +311,17 @@ class TestDagCollection:
 
         assert result == expected
 
-    @pytest.mark.integration
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
-    def test_to_airflow_with_dependencies(
-        self, tmp_path, project_id, temporary_dataset, bigquery_client
-    ):
-        query_file_path = tmp_path / project_id / temporary_dataset / "query_v1"
+    @pytest.mark.java
+    def test_to_airflow_with_dependencies(self, tmp_path):
+        query_file_path = tmp_path / "test-project" / "test" / "query_v1"
         os.makedirs(query_file_path)
 
         query_file = query_file_path / "query.sql"
         query_file.write_text(
-            f"SELECT * FROM {project_id}.{temporary_dataset}.table1_v1 "
-            + f"UNION ALL SELECT * FROM {project_id}.{temporary_dataset}.table2_v1 "
-            + "UNION ALL SELECT * FROM "
-            + f"{project_id}.{temporary_dataset}.external_table_v1"
+            "SELECT * FROM `test-project`.test.table1_v1 "
+            "UNION ALL SELECT * FROM `test-project`.test.table2_v1 "
+            "UNION ALL SELECT * FROM `test-project`.test.external_table_v1"
         )
-
-        schema = [bigquery.SchemaField("a", "STRING", mode="NULLABLE")]
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table1_v1", schema=schema
-        )
-        bigquery_client.create_table(table)
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.table2_v1", schema=schema
-        )
-        bigquery_client.create_table(table)
-
-        table = bigquery.Table(
-            f"{project_id}.{temporary_dataset}.external_table_v1", schema=schema
-        )
-        bigquery_client.create_table(table)
 
         metadata = Metadata(
             "test",
@@ -366,25 +337,21 @@ class TestDagCollection:
         task = Task.of_query(query_file, metadata)
 
         table_task1 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table1_v1" / "query.sql",
             metadata,
         )
 
-        os.makedirs(tmp_path / project_id / temporary_dataset / "table1_v1")
-        query_file = (
-            tmp_path / project_id / temporary_dataset / "table1_v1" / "query.sql"
-        )
+        os.makedirs(tmp_path / "test-project" / "test" / "table1_v1")
+        query_file = tmp_path / "test-project" / "test" / "table1_v1" / "query.sql"
         query_file.write_text("SELECT 1")
 
         table_task2 = Task.of_query(
-            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql",
+            tmp_path / "test-project" / "test" / "table2_v1" / "query.sql",
             metadata,
         )
 
-        os.makedirs(tmp_path / project_id / temporary_dataset / "table2_v1")
-        query_file = (
-            tmp_path / project_id / temporary_dataset / "table2_v1" / "query.sql"
-        )
+        os.makedirs(tmp_path / "test-project" / "test" / "table2_v1")
+        query_file = tmp_path / "test-project" / "test" / "table2_v1" / "query.sql"
         query_file.write_text("SELECT 2")
 
         metadata = Metadata(
@@ -399,21 +366,13 @@ class TestDagCollection:
         )
 
         external_table_task = Task.of_query(
-            tmp_path
-            / project_id
-            / temporary_dataset
-            / "external_table_v1"
-            / "query.sql",
+            tmp_path / "test-project" / "test" / "external_table_v1" / "query.sql",
             metadata,
         )
 
-        os.makedirs(tmp_path / project_id / temporary_dataset / "external_table_v1")
+        os.makedirs(tmp_path / "test-project" / "test" / "external_table_v1")
         query_file = (
-            tmp_path
-            / project_id
-            / temporary_dataset
-            / "external_table_v1"
-            / "query.sql"
+            tmp_path / "test-project" / "test" / "external_table_v1" / "query.sql"
         )
         query_file.write_text("SELECT 3")
 
@@ -438,18 +397,16 @@ class TestDagCollection:
 
         dags.to_airflow_dags(tmp_path)
 
-        # we need to use templates since the temporary dataset name changes between runs
-        env = Environment(loader=PackageLoader("tests", "data/dags"))
-
-        dag_template_with_dependencies = env.get_template("test_dag_with_dependencies")
-        dag_template_external_dependency = env.get_template(
-            "test_dag_external_dependency"
+        expected_dag_with_dependencies = (
+            (TEST_DIR / "data" / "dags" / "test_dag_with_dependencies")
+            .read_text()
+            .strip()
         )
-
-        args = {"temporary_dataset": temporary_dataset}
-
-        expected_dag_with_dependencies = dag_template_with_dependencies.render(args)
-        expected_dag_external_dependency = dag_template_external_dependency.render(args)
+        expected_dag_external_dependency = (
+            (TEST_DIR / "data" / "dags" / "test_dag_external_dependency")
+            .read_text()
+            .strip()
+        )
 
         dag_with_dependencies = (tmp_path / "bqetl_test_dag.py").read_text().strip()
         dag_external_dependency = (
@@ -459,8 +416,7 @@ class TestDagCollection:
         assert dag_with_dependencies == expected_dag_with_dependencies
         assert dag_external_dependency == expected_dag_external_dependency
 
-    @pytest.mark.integration
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
+    @pytest.mark.java
     def test_public_json_dag_to_airflow(self, tmp_path):
         query_file = (
             TEST_DIR
@@ -505,8 +461,7 @@ class TestDagCollection:
 
         assert result == expected_dag
 
-    @pytest.mark.integration
-    @mock.patch.object(DryRun, "DRY_RUN_URL", TEST_DRY_RUN_URL)
+    @pytest.mark.java
     def test_to_airflow_duplicate_dependencies(self, tmp_path):
         query_file = (
             TEST_DIR

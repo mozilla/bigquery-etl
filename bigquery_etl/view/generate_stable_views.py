@@ -21,6 +21,7 @@ from io import BytesIO
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
+from typing import List
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
@@ -74,6 +75,13 @@ parser.add_argument(
     default="moz-fx-data-shared-prod",
     help="The project where the stable tables live.",
 )
+parser.add_argument(
+    "--no-dry-run",
+    action="store_false",
+    default=True,
+    dest="dry_run",
+    help="Don't use dry run to check whether stable tables actually exist.",
+)
 standard_args.add_log_level(parser)
 standard_args.add_parallelism(parser)
 
@@ -112,7 +120,9 @@ class SchemaFile:
         )
 
 
-def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaFile):
+def write_view_if_not_exists(
+    target_project: str, sql_dir: Path, schema: SchemaFile, dry_run: bool
+):
     """If a view.sql does not already exist, write one to the target directory."""
     target_dir = (
         sql_dir
@@ -166,16 +176,19 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             full_view_id=full_view_id,
         )
     )
-    with tempfile.TemporaryDirectory() as tdir:
-        tfile = Path(tdir) / "view.sql"
-        with tfile.open("w") as f:
-            f.write(full_sql)
-        dryrun = DryRun(str(tfile))
-        if 404 in [e.get("code") for e in dryrun.errors()]:
-            print(
-                f"Not creating {schema.user_facing_view} since stable table does not exist"
-            )
-            return
+    if dry_run:
+        with tempfile.TemporaryDirectory() as tdir:
+            tfile = Path(tdir) / "view.sql"
+            with tfile.open("w") as f:
+                f.write(full_sql)
+            print(f"Dry running {schema.user_facing_view}")
+            dryrun = DryRun(str(tfile))
+            if 404 in [e.get("code") for e in dryrun.errors()]:
+                print(
+                    f"Not creating {schema.user_facing_view} since"
+                    " stable table does not exist"
+                )
+                return
     print(f"Creating {target_file}")
     target_dir.mkdir(parents=True, exist_ok=True)
     with target_file.open("w") as f:
@@ -190,25 +203,8 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             f.write(metadata_content)
 
 
-def main():
-    """
-    Fetch schema metadata and generate view definitions.
-
-    Metadata about document types is from the generated-schemas branch
-    of mozilla-pipeline-schemas. We write out generated views for each
-    document type in parallel.
-
-    There is a performance bottleneck here due to the need to dry-run each
-    view to ensure the source table actually exists.
-    """
-    args = parser.parse_args()
-
-    # set log level
-    try:
-        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
-    except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
-
+def get_stable_table_schemas() -> List[SchemaFile]:
+    """Fetch last schema metadata per doctype by version."""
     with urllib.request.urlopen(SCHEMAS_URI) as f:
         tarbytes = BytesIO(f.read())
 
@@ -220,7 +216,7 @@ def main():
                     "/"
                 )
                 version = int(basename.split(".")[1])
-                schema = json.load(tar.extractfile(tarinfo.name))
+                schema = json.load(tar.extractfile(tarinfo.name))  # type: ignore
                 pipeline_meta = schema.get("mozPipelineMetadata", None)
                 if pipeline_meta is None:
                     continue
@@ -238,18 +234,42 @@ def main():
         schemas,
         key=lambda t: f"{t.document_namespace}/{t.document_type}/{t.document_version:03d}",
     )
-    schemas = [
-        list(grp)[-1]
-        for k, grp in groupby(
+    return [
+        last
+        for k, (*_, last) in groupby(
             schemas, lambda t: f"{t.document_namespace}/{t.document_type}"
         )
     ]
+
+
+def main():
+    """
+    Generate view definitions.
+
+    Metadata about document types is from the generated-schemas branch
+    of mozilla-pipeline-schemas. We write out generated views for each
+    document type in parallel.
+
+    There is a performance bottleneck here due to the need to dry-run each
+    view to ensure the source table actually exists.
+    """
+    args = parser.parse_args()
+
+    # set log level
+    try:
+        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
+    except ValueError as e:
+        parser.error(f"argument --log-level: {e}")
+
+    schemas = get_stable_table_schemas()
+
     with ThreadPool(args.parallelism) as pool:
         pool.map(
             partial(
                 write_view_if_not_exists,
                 args.target_project,
                 Path(args.sql_dir),
+                dry_run=args.dry_run,
             ),
             schemas,
             chunksize=1,

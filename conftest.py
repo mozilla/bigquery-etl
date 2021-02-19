@@ -2,10 +2,12 @@
 
 from google.cloud import bigquery
 from google.cloud import storage
+from pathlib import Path
 import os
 import pytest
 import random
 import string
+import subprocess
 
 
 TEST_BUCKET = "bigquery-etl-integration-test-bucket"
@@ -28,10 +30,18 @@ def pytest_collection_modifyitems(config, items):
         return
 
     skip_integration = pytest.mark.skip(reason="integration marker not selected")
+    requires_java = pytest.mark.skipif(
+        subprocess.call(["which", "javac"], stdout=subprocess.DEVNULL) != 0
+        or len(list(Path(__file__).parent.glob("target/dependency/*.jar"))) == 0,
+        reason="requires javac and target/dependency/*.jar from "
+        "`mvn dependency:copy-dependencies`",
+    )
 
     for item in items:
         if "integration" in item.keywords:
             item.add_marker(skip_integration)
+        if "java" in item.keywords:
+            item.add_marker(requires_java)
 
 
 @pytest.fixture

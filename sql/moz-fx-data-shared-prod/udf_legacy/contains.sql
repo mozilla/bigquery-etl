@@ -11,6 +11,6 @@ CREATE TEMP FUNCTION
   );
 
 -- Tests
-
-assert.true(udf_legacy_contains([1, 2, 3], 1)),
-asset_false(udf_legacy_contains([1, 2, 3], 5))
+SELECT
+  assert.true(udf_legacy_contains([1, 2, 3], 1)),
+  assert.false(udf_legacy_contains([1, 2, 3], 5))

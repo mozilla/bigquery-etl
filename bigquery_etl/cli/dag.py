@@ -168,7 +168,7 @@ def create(
     click.echo(f"Added new DAG definition to {dags_config}")
 
 
-@dag.command(help="Generate Airflow DAGs from DAG definitions")
+@dag.command(help="Generate Airflow DAGs from DAG definitions. Requires Java.")
 @click.argument("name", required=False)
 @dags_config_option
 @output_dir_option

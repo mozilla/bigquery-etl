@@ -62,11 +62,13 @@ per_client AS (
     DATE(submission_timestamp) AS submission_date,
     client_id,
     sample_id,
-    array_concat_agg(addons_enabled_addons) AS addons,
-    udf.mode_last(array_agg(app_version)) AS app_version,
-    udf.mode_last(array_agg(normalized_country_code)) AS country,
-    udf.mode_last(array_agg(locale)) AS locale,
-    udf.mode_last(array_agg(normalized_os)) AS app_os,
+    ARRAY_CONCAT_AGG(addons_enabled_addons ORDER BY submission_timestamp) AS addons,
+    ARRAY_AGG(app_version ORDER BY mozfun.norm.truncate_version(application.version, "minor") DESC)[
+      SAFE_OFFSET(0)
+    ] AS app_version,
+    udf.mode_last(ARRAY_AGG(normalized_country_code)) AS country,
+    udf.mode_last(ARRAY_AGG(locale)) AS locale,
+    udf.mode_last(ARRAY_AGG(normalized_os)) AS app_os,
   FROM
     cleaned
   WHERE

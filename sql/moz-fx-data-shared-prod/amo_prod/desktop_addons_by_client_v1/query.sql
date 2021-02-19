@@ -65,11 +65,9 @@ SELECT
     SELECT AS STRUCT
       addon.id,
       -- Same methodology as for app_version above.
-      ARRAY_AGG(
-        application.version
-        ORDER BY
-          mozfun.norm.truncate_version(addon.version, "minor") DESC
-      )[SAFE_OFFSET(0)] AS version,
+      ARRAY_AGG(addon.version ORDER BY mozfun.norm.truncate_version(addon.version, "minor") DESC)[
+        SAFE_OFFSET(0)
+      ] AS version,
     FROM
       UNNEST(addons) AS addon
       WITH OFFSET AS i

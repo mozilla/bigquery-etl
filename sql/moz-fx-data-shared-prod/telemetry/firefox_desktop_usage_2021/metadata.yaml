@@ -2,6 +2,7 @@ friendly_name: Firefox Desktop Usage 2021
 description: |-
   Stable source for 2021 KPI data on Firefox desktop usage, including
   cumulative days of use (`cdou`) and new profiles, broken out by dimensions.
+  Contains data back to 2017 for year-over-year comparisons.
 
   New profile counts are determined using the `first_seen_date` approach
   where we consider a profile new on the day it first sends a `main` ping.

@@ -12,6 +12,38 @@ CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
   )
 );
 
+-- Bug 1693141: Remove engine suffixes for continuity
+CREATE TEMP FUNCTION normalize_engine(engine STRING) AS (
+CASE
+  WHEN
+    ENDS_WITH(engine, ':organic')
+    OR ENDS_WITH(engine, ':sap')
+    OR ENDS_WITH(engine, ':sap-follow-on')
+  THEN
+    SPLIT(engine, ':')[OFFSET(0)]
+  ELSE engine
+END
+);
+
+-- Bug 1693141: add organic suffix to source or type if the engine suffix is "organic"
+CREATE TEMP FUNCTION organicize_source_or_type(engine STRING, original STRING) AS (
+CASE
+  WHEN
+    ENDS_WITH(engine, ':organic')
+  THEN
+    CASE
+      WHEN
+        # For some reason, the ad click source is "ad-click:" but type is "ad-click"
+        ENDS_WITH(original, ':')
+      THEN
+        CONCAT(original, 'organic')
+      ELSE
+        CONCAT(original, ':organic')
+      END
+  ELSE original
+END
+);
+
 WITH overactive AS (
   -- find client_ids with over 200,000 pings in a day
   SELECT
@@ -140,19 +172,19 @@ augmented AS (
       ),
       ARRAY(
         SELECT AS STRUCT
-          "ad-click:" AS source,
-          key AS engine,
+          organicize_source_or_type(key, "ad-click:") AS source,
+          normalize_engine(key) AS engine,
           value AS count,
-          "ad-click" AS type
+          organicize_source_or_type(key, "ad-click") AS type
         FROM
           UNNEST(scalar_parent_browser_search_ad_clicks)
       ),
       ARRAY(
         SELECT AS STRUCT
-          "search-with-ads:" AS source,
-          key AS engine,
+          organicize_source_or_type(key, "search-with-ads:") AS source,
+          normalize_engine(key) AS engine,
           value AS count,
-          "search-with-ads" AS type
+          organicize_source_or_type(key, "search-with-ads") AS type
         FROM
           UNNEST(scalar_parent_browser_search_with_ads)
       )
@@ -268,7 +300,9 @@ windowed AS (
     SUM(IF(type = 'tagged-follow-on', count, 0)) OVER w1 AS tagged_follow_on,
     SUM(IF(type = 'sap', count, 0)) OVER w1 AS sap,
     SUM(IF(type = 'ad-click', count, 0)) OVER w1 AS ad_click,
+    SUM(IF(type = 'ad-click:organic', count, 0)) OVER w1 AS ad_click_organic,
     SUM(IF(type = 'search-with-ads', count, 0)) OVER w1 AS search_with_ads,
+    SUM(IF(type = 'search-with-ads:organic', count, 0)) OVER w1 AS search_with_ads_organic,
     SUM(IF(type = 'unknown', count, 0)) OVER w1 AS unknown,
   FROM
     flattened

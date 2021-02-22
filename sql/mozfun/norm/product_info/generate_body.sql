@@ -17,9 +17,9 @@ lines AS (
 ),
 structured AS (
   SELECT AS STRUCT
-    fields[OFFSET(0)] AS app_name,
+    fields[OFFSET(0)] AS legacy_app_name,
     fields[OFFSET(1)] AS normalized_os,
-    fields[OFFSET(2)] AS looker_app_name,
+    fields[OFFSET(2)] AS app_name,
     fields[OFFSET(3)] AS product,
     fields[OFFSET(4)] AS canonical_app_name,
     fields[OFFSET(5)] AS contributes_to_2019_kpi,
@@ -39,21 +39,21 @@ unioned AS (
   -- so we duplicate some rows.
   UNION ALL
   SELECT
-    * REPLACE (product AS app_name)
+    * REPLACE (product AS legacy_app_name)
   FROM
     structured
   WHERE
-    product NOT IN (SELECT app_name FROM structured)
+    product NOT IN (SELECT legacy_app_name FROM structured)
 ),
 formatted AS (
   SELECT
     *,
     CONCAT(
       FORMAT(
-        "WHEN app_name LIKE %T AND normalized_os LIKE %T THEN STRUCT(%T AS looker_app_name, %T AS product, %T AS canonical_app_name, %T AS canonical_name, %s AS contributes_to_2019_kpi, %s AS contributes_to_2020_kpi, %s AS contributes_to_2021_kpi)",
-        app_name,
+        "WHEN legacy_app_name LIKE %T AND normalized_os LIKE %T THEN STRUCT(%T AS app_name, %T AS product, %T AS canonical_app_name, %T AS canonical_name, %s AS contributes_to_2019_kpi, %s AS contributes_to_2020_kpi, %s AS contributes_to_2021_kpi)",
+        legacy_app_name,
         normalized_os,
-        looker_app_name,
+        app_name,
         product,
         canonical_app_name,
         canonical_app_name,

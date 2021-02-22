@@ -1,6 +1,6 @@
 The mappings are as follows:
 
-app_name         | normalized_os | looker_app_name  | product          | canonical_app_name              | 2019  | 2020  | 2021
+legacy_app_name  | normalized_os | app_name         | product          | canonical_app_name              | 2019  | 2020  | 2021
 ---------------- | ------------- | ---------------- | ---------------- | ------------------------------- | ----- | ----  | ----
 Firefox          | *             | firefox_desktop  | Firefox          | Firefox for Desktop             | true  | true  | true
 Fenix            | Android       | fenix            | Fenix            | Firefox for Android (Fenix)     | true  | true  | true

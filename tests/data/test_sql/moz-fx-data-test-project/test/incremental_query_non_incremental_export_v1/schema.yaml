@@ -1,0 +1,10 @@
+fields:
+- mode: NULLABLE
+  name: d
+  type: DATE
+- mode: NULLABLE
+  name: a
+  type: STRING
+- mode: NULLABLE
+  name: b
+  type: INTEGER

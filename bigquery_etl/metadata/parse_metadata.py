@@ -1,14 +1,79 @@
 """Parsing of metadata yaml files."""
 
+from google.cloud import bigquery
+import enum
 import re
 import yaml
 import os
 import attr
+import cattr
 from typing import List, Optional, Dict
 
 from bigquery_etl.query_scheduling.utils import is_email
 
 METADATA_FILE = "metadata.yaml"
+
+
+class Literal(str):
+    """Represents a YAML literal."""
+
+    pass
+
+
+def literal_presenter(dumper, data):
+    """Literal representer for YAML output."""
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
+
+
+yaml.add_representer(Literal, literal_presenter)
+
+
+class PartitionType(enum.Enum):
+    """Represents BigQuery table partition types."""
+
+    HOUR = "hour"
+    DAY = "day"
+    MONTH = "month"
+    YEAR = "year"
+
+    @property
+    def bigquery_type(self):
+        """Map to the BigQuery data type."""
+        d = {
+            "hour": bigquery.TimePartitioningType.HOUR,
+            "day": bigquery.TimePartitioningType.DAY,
+            "month": bigquery.TimePartitioningType.MONTH,
+            "year": bigquery.TimePartitioningType.YEAR,
+        }
+        return d[self.value]
+
+
+@attr.s(auto_attribs=True)
+class PartitionMetadata:
+    """Metadata for defining BigQuery table partitions."""
+
+    field: str
+    type: PartitionType
+    require_partition_filter: bool = attr.ib(False)
+
+
+@attr.s(auto_attribs=True)
+class ClusteringMetadata:
+    """Metadata for defining BigQuery table clustering."""
+
+    fields: List[str]
+
+
+@attr.s(auto_attribs=True)
+class BigQueryMetadata:
+    """
+    Metadata related to BigQuery configurations for the query.
+
+    For example, partitioning or clustering of the destination table.
+    """
+
+    time_partitioning: Optional[PartitionMetadata] = attr.ib(None)
+    clustering: Optional[ClusteringMetadata] = attr.ib(None)
 
 
 @attr.s(auto_attribs=True)
@@ -25,6 +90,7 @@ class Metadata:
     owners: List[str] = attr.ib()
     labels: Dict = attr.ib({})
     scheduling: Optional[Dict] = attr.ib({})
+    bigquery: Optional[BigQueryMetadata] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -94,6 +160,7 @@ class Metadata:
         owners = []
         labels = {}
         scheduling = {}
+        bigquery = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -119,10 +186,18 @@ class Metadata:
                 if "scheduling" in metadata:
                     scheduling = metadata["scheduling"]
 
+                if "bigquery" in metadata and metadata["bigquery"]:
+                    converter = cattr.Converter()
+                    bigquery = converter.structure(
+                        metadata["bigquery"], BigQueryMetadata
+                    )
+
                 if "owners" in metadata:
                     owners = metadata["owners"]
 
-                return cls(friendly_name, description, owners, labels, scheduling)
+                return cls(
+                    friendly_name, description, owners, labels, scheduling, bigquery
+                )
             except yaml.YAMLError as e:
                 raise e
 
@@ -146,7 +221,17 @@ class Metadata:
                 if label_value == "":
                     metadata_dict["labels"][label_key] = True
 
-        file.write_text(yaml.dump(metadata_dict))
+        if "description" in metadata_dict:
+            metadata_dict["description"] = Literal(metadata_dict["description"])
+
+        converter = cattr.Converter()
+        file.write_text(
+            yaml.dump(
+                converter.unstructure(metadata_dict),
+                default_flow_style=False,
+                sort_keys=False,
+            )
+        )
 
     def is_public_bigquery(self):
         """Return true if the public_bigquery flag is set."""
@@ -167,3 +252,29 @@ class Metadata:
     def review_bugs(self):
         """Return the bug ID of the data review bug in bugzilla."""
         return self.labels.get("review_bugs", None)
+
+    def set_bigquery_partitioning(self, field, partition_type, required):
+        """Update the BigQuery partitioning metadata."""
+        clustering = None
+        if self.bigquery and self.bigquery.clustering:
+            clustering = self.bigquery.clustering
+
+        self.bigquery = BigQueryMetadata(
+            time_partitioning=PartitionMetadata(
+                field=field,
+                type=PartitionType(partition_type),
+                require_partition_filter=required,
+            ),
+            clustering=clustering,
+        )
+
+    def set_bigquery_clustering(self, clustering_fields):
+        """Update the BigQuery partitioning metadata."""
+        partitioning = None
+        if self.bigquery and self.bigquery.time_partitioning:
+            partitioning = self.bigquery.time_partitioning
+
+        self.bigquery = BigQueryMetadata(
+            time_partitioning=partitioning,
+            clustering=ClusteringMetadata(fields=clustering_fields),
+        )

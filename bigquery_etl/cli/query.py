@@ -5,12 +5,15 @@ import string
 import sys
 from datetime import date, timedelta
 from fnmatch import fnmatchcase
+from multiprocessing.pool import Pool
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 import click
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
-from ..cli.dryrun import dryrun
+from ..cli.dryrun import dryrun, SKIP
 from ..cli.format import format
 from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
 from ..format_sql.formatter import reformat
@@ -19,6 +22,7 @@ from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..query_scheduling.dag_collection import DagCollection
 from ..run_query import run
+from ..schema import Schema, SCHEMA_FILE
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 SQL_FILE_RE = re.compile(
@@ -532,3 +536,256 @@ def initialize(name, sql_dir, project_id, dry_run):
                     default_dataset=f"{project}.{dataset}",
                 )
                 client.query(init_sql, job_config=job_config).result()
+
+
+@query.group(help="Commands for managing query schemas.")
+def schema():
+    """Create the CLI group for the query schema command."""
+    pass
+
+
+@schema.command(
+    help="Update the query schema",
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--project-id",
+    "--project_id",
+    help="GCP project ID",
+    default="moz-fx-data-shared-prod",
+    callback=is_valid_project,
+)
+def update(name, sql_dir, project_id):
+    """CLI command for generating the query schema."""
+    if not is_authenticated():
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+
+    for query_file in query_files:
+        if str(query_file) in SKIP:
+            click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
+            continue
+
+        query_file_path = Path(query_file)
+        query_schema = Schema.from_query_file(query_file_path)
+        existing_schema_path = query_file_path.parent / SCHEMA_FILE
+        table_name = query_file_path.parent.name
+        dataset_name = query_file_path.parent.parent.name
+        project_name = query_file_path.parent.parent.parent.name
+
+        # update bigquery metadata
+        try:
+            client = bigquery.Client()
+            table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
+            metadata = Metadata.of_query_file(str(query_file_path))
+            metadata_file_path = query_file_path.parent / METADATA_FILE
+
+            if table.time_partitioning and (
+                metadata.bigquery is None or metadata.bigquery.time_partitioning is None
+            ):
+                metadata.set_bigquery_partitioning(
+                    field=table.time_partitioning.field,
+                    partition_type=table.time_partitioning.type_.lower(),
+                    required=table.time_partitioning.require_partition_filter,
+                )
+                click.echo(f"Partitioning metadata added to {metadata_file_path}")
+
+            if table.clustering_fields and (
+                metadata.bigquery is None or metadata.bigquery.clustering is None
+            ):
+                metadata.set_bigquery_clustering(table.clustering_fields)
+                click.echo(f"Clustering metadata added to {metadata_file_path}")
+
+            metadata.write(metadata_file_path)
+        except NotFound:
+            click.echo(
+                f"Destination table {project_name}.{dataset_name}.{table_name} "
+                "does not exist in BigQuery. Run bqetl query schema deploy "
+                "<dataset>.<table> to create the destination table."
+            )
+
+        partitioned_by = None
+        try:
+            metadata = Metadata.of_query_file(query_file_path)
+
+            if metadata.bigquery and metadata.bigquery.time_partitioning:
+                partitioned_by = metadata.bigquery.time_partitioning.field
+        except FileNotFoundError:
+            pass
+
+        table_schema = Schema.for_table(
+            project_name, dataset_name, table_name, partitioned_by
+        )
+
+        if existing_schema_path.is_file():
+            existing_schema = Schema.from_schema_file(existing_schema_path)
+            existing_schema.merge(table_schema)
+            existing_schema.merge(query_schema)
+            existing_schema.to_yaml_file(existing_schema_path)
+        else:
+            query_schema.merge(table_schema)
+            query_schema.to_yaml_file(existing_schema_path)
+
+        click.echo(f"Schema {existing_schema_path} updated.")
+
+
+@schema.command(
+    help="Deploy the query schema",
+)
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--project-id",
+    "--project_id",
+    help="GCP project ID",
+    default="moz-fx-data-shared-prod",
+    callback=is_valid_project,
+)
+@click.pass_context
+def deploy(ctx, name, sql_dir, project_id):
+    """CLI command for deploying destination table schemas."""
+    if not is_authenticated():
+        click.echo(
+            "Authentication to GCP required. Run `gcloud auth login` "
+            "and check that the project is set correctly."
+        )
+        sys.exit(1)
+    client = bigquery.Client()
+
+    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+
+    for query_file in query_files:
+        if str(query_file) in SKIP:
+            click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
+            continue
+
+        query_file_path = Path(query_file)
+        existing_schema_path = query_file_path.parent / SCHEMA_FILE
+
+        if existing_schema_path.is_file():
+            click.echo(f"Deploy schema for {query_file}")
+
+            table_name = query_file_path.parent.name
+            dataset_name = query_file_path.parent.parent.name
+            project_name = query_file_path.parent.parent.parent.name
+            existing_schema = Schema.from_schema_file(existing_schema_path)
+            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
+            query_schema = Schema.from_query_file(query_file_path)
+
+            if not existing_schema.equal(query_schema):
+                click.echo(
+                    f"Query {query_file_path} does not match "
+                    f"schema in {existing_schema_path}."
+                    "To update the local schema file, "
+                    f"run `./bqetl query schema update {dataset_name}.{table_name}`",
+                    err=True,
+                )
+                sys.exit(1)
+
+            tmp_schema_file = NamedTemporaryFile()
+            existing_schema.to_json_file(Path(tmp_schema_file.name))
+            bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+
+            try:
+                # destination table already exists, update schema
+                table = client.get_table(full_table_id)
+                table.schema = bigquery_schema
+                client.update_table(table, ["schema"])
+                click.echo(f"Schema updated for {full_table_id}")
+            except NotFound:
+                # no destination table, create new table based on schema and metadata
+                metadata = Metadata.of_query_file(query_file_path)
+                new_table = bigquery.Table(full_table_id, schema=bigquery_schema)
+
+                if metadata.bigquery and metadata.bigquery.time_partitioning:
+                    new_table.time_partitioning = bigquery.TimePartitioning(
+                        metadata.bigquery.time_partitioning.type.bigquery_type(),
+                        metadata.bigquery.time_partitioning.field,
+                        metadata.bigquery.time_partitioning.require_partition_filter,
+                    )
+
+                if metadata.bigquery and metadata.bigquery.clustering:
+                    new_table.clustering_fields = metadata.bigquery.clustering.fields
+
+                client.create_table(new_table)
+                click.echo(f"Destination table {full_table_id} created.")
+        else:
+            click.echo(f"No schema file found for {query_file}")
+
+
+def _validate_schema(query_file):
+    if str(query_file) in SKIP or query_file.name == "script.sql":
+        click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
+        return
+
+    query_file_path = Path(query_file)
+    query_schema = Schema.from_query_file(query_file_path)
+    existing_schema_path = query_file_path.parent / SCHEMA_FILE
+
+    if not existing_schema_path.is_file():
+        click.echo(f"No schema file defined for {query_file_path}", err=True)
+        return True
+
+    table_name = query_file_path.parent.name
+    dataset_name = query_file_path.parent.parent.name
+    project_name = query_file_path.parent.parent.parent.name
+
+    partitioned_by = None
+    try:
+        metadata = Metadata.of_query_file(query_file_path)
+
+        if metadata.bigquery and metadata.bigquery.time_partitioning:
+            partitioned_by = metadata.bigquery.time_partitioning.field
+    except FileNotFoundError:
+        pass
+
+    table_schema = Schema.for_table(
+        project_name, dataset_name, table_name, partitioned_by
+    )
+
+    if not query_schema.compatible(table_schema):
+        click.echo(
+            f"ERROR: Schema for query in {query_file_path} "
+            f"incompatible with schema deployed for "
+            f"{project_name}.{dataset_name}.{table_name}",
+            err=True,
+        )
+        return False
+    else:
+        existing_schema = Schema.from_schema_file(existing_schema_path)
+
+        if not existing_schema.equal(query_schema):
+            click.echo(
+                f"Schema defined in {existing_schema_path} "
+                f"incompatible with query {query_file_path}",
+                err=True,
+            )
+            return False
+
+    click.echo(f"Schemas for {query_file_path} are valid.")
+    return True
+
+
+@schema.command(help="Validate the query schema", name="validate")
+@click.argument("name")
+@sql_dir_option
+@click.option(
+    "--project-id",
+    "--project_id",
+    help="GCP project ID",
+    default="moz-fx-data-shared-prod",
+    callback=is_valid_project,
+)
+def validate_schema(name, sql_dir, project_id):
+    """Validate the defined query schema against the query and destination table."""
+    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+
+    with Pool(8) as p:
+        result = p.map(_validate_schema, query_files, chunksize=1)
+    if not all(result):
+        sys.exit(1)

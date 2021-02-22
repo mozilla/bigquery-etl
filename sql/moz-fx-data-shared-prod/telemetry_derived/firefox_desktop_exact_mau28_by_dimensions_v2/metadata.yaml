@@ -1,0 +1,14 @@
+friendly_name: Firefox Desktop Exact MAU28 By Dimensions v2
+description: |-
+  Base table for reporting of 2021 desktop MAU/WAU/DAU and new profiles,
+  broken out by dimensions. This is an intermediate step before
+  `firefox_desktop_usage_v1` which adds CDOU, which windows over time.
+labels:
+  application: desktop
+  schedule: daily
+  incremental: true
+owners:
+- jklukas@mozilla.com
+scheduling:
+  dag_name: bqetl_main_summary
+  task_name: firefox_desktop_exact_mau28_by_dimensions_v2

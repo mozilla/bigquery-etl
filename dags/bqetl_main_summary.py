@@ -77,6 +77,23 @@ with DAG(
         dag=dag,
     )
 
+    firefox_desktop_exact_mau28_by_dimensions_v2 = bigquery_etl_query(
+        task_id="firefox_desktop_exact_mau28_by_dimensions_v2",
+        destination_table="firefox_desktop_exact_mau28_by_dimensions_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     telemetry_derived__clients_daily__v6 = bigquery_etl_query(
         task_id="telemetry_derived__clients_daily__v6",
         destination_table="clients_daily_v6",
@@ -208,6 +225,23 @@ with DAG(
         dag=dag,
     )
 
+    telemetry_derived__firefox_desktop_usage__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__firefox_desktop_usage__v1",
+        destination_table="firefox_desktop_usage_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        dag=dag,
+    )
+
     telemetry_derived__main_1pct__v1 = bigquery_etl_query(
         task_id="telemetry_derived__main_1pct__v1",
         destination_table="main_1pct_v1",
@@ -273,6 +307,10 @@ with DAG(
     )
 
     firefox_desktop_exact_mau28_by_dimensions.set_upstream(
+        telemetry_derived__clients_last_seen__v1
+    )
+
+    firefox_desktop_exact_mau28_by_dimensions_v2.set_upstream(
         telemetry_derived__clients_last_seen__v1
     )
 
@@ -343,6 +381,10 @@ with DAG(
 
     telemetry_derived__clients_last_seen_joined__v1.set_upstream(
         telemetry_derived__clients_last_seen_event__v1
+    )
+
+    telemetry_derived__firefox_desktop_usage__v1.set_upstream(
+        firefox_desktop_exact_mau28_by_dimensions_v2
     )
 
     telemetry_derived__main_1pct__v1.set_upstream(wait_for_copy_deduplicate_main_ping)

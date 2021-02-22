@@ -231,7 +231,7 @@ def get_partition_expr(table):
     if table.range_partitioning:
         return table.range_partitioning.field
     if table.time_partitioning:
-        return f"CAST({table.time_partitioning.field} AS DATE)"
+        return f"CAST({table.time_partitioning.field or '_PARTITIONTIME'} AS DATE)"
 
 
 @dataclass

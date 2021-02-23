@@ -1,8 +1,3 @@
-CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod.telemetry_derived.mobile_usage_v1`
-PARTITION BY
-  submission_date
-AS
 SELECT
   submission_date,
   -- Cumulative days of use (CDOU) is a sum over the calendar year.

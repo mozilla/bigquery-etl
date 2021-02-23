@@ -240,18 +240,14 @@ class DryRun:
 
     def get_referenced_tables(self):
         """Return referenced tables by dry running the SQL file."""
-        if "tmp/generated-sql" in self.sqlfile:
-            # since docs are generated from 'tmp/generated-sql' dir
-            # at build time, we need to strip 'tmp/generated-sql'
-            # from file names so they can be checked against the SKIP list
-            sqlfile = self.sqlfile[self.sqlfile.find("/sql/") + 1 :]
-        else:
-            sqlfile = self.sqlfile
+        # strip file path to 'sql/project/dataset/table/*.sql' format
+        # to be checked against the SKIP list
+        filepath = self.sqlfile[self.sqlfile.find("/sql/") + 1 :]
 
-        if sqlfile not in SKIP and not self.is_valid():
+        if filepath not in SKIP and not self.is_valid():
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
-        if sqlfile in SKIP:
+        if filepath in SKIP:
             print(f"\t...Ignoring dryrun results for {self.sqlfile}")
 
         if (

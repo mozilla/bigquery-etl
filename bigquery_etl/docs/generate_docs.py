@@ -129,7 +129,9 @@ def main():
                         if UDF_FILE in files or PROCEDURE_FILE in files:
                             # UDF-level doc; append to dataset doc
                             dataset_name = os.path.basename(path)
-                            dataset_doc = out_dir / path.parent / f"{dataset_name}.md"
+                            dataset_doc = (
+                                Path(out_dir) / "mozfun" / f"{dataset_name}.md"
+                            )
                             docfile_content = load_with_examples(src)
                             with open(dataset_doc, "a") as dataset_doc_file:
                                 dataset_doc_file.write("\n\n")
@@ -150,7 +152,7 @@ def main():
                                 dataset_doc_file.write(f"{sourced}\n\n")
                         else:
                             # dataset-level doc; create a new doc file
-                            dest = out_dir / path / f"{name}.md"
+                            dest = Path(out_dir) / "mozfun" / f"{name}.md"
                             dest.write_text(load_with_examples(src))
                 else:
                     generate_derived_dataset_docs.generate_derived_dataset_docs(

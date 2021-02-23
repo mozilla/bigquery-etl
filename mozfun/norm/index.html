@@ -14,7 +14,7 @@
       
       
       <link rel="shortcut icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.0">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a3f8f96a.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.7fa14f5b.min.css">
         
           
           
@@ -39,7 +39,7 @@
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
       
     
     
@@ -78,24 +78,24 @@
       
 
 <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="../.." title="BigQuery ETL" class="md-header-nav__button md-logo" aria-label="BigQuery ETL">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
-    <label class="md-header-nav__button md-icon" for="__drawer">
+    <label class="md-header__button md-icon" for="__drawer">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
     </label>
-    <div class="md-header-nav__title" data-md-component="header-title">
-      <div class="md-header-nav__ellipsis">
-        <div class="md-header-nav__topic">
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
           <span class="md-ellipsis">
             BigQuery ETL
           </span>
         </div>
-        <div class="md-header-nav__topic">
+        <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
               norm
@@ -104,9 +104,12 @@
         </div>
       </div>
     </div>
+    <div class="md-header__options">
+      
+    </div>
     
-      <label class="md-header-nav__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
       </label>
       
 <div class="md-search" data-md-component="search" role="dialog">
@@ -115,10 +118,10 @@
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
       <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
       </label>
-      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
       </button>
     </form>
@@ -136,12 +139,12 @@
 </div>
     
     
-      <div class="md-header-nav__source">
+      <div class="md-header__source">
         
-<a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source">
+<a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     mozilla/bigquery-etl
@@ -228,7 +231,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../about/" class="md-tabs__link md-tabs__link--active">
+      <a href="../mozfun/" class="md-tabs__link md-tabs__link--active">
         UDFs
       </a>
     </li>
@@ -247,7 +250,7 @@
           
             
               
-              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -262,7 +265,7 @@
     <a href="../.." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
     BigQuery ETL
@@ -270,10 +273,10 @@
   
     <div class="md-nav__source">
       
-<a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source">
+<a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     mozilla/bigquery-etl
@@ -453,6 +456,42 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/burnham/" class="md-nav__link">
+        burnham
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/contextual_services/" class="md-nav__link">
+        contextual_services
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/coverage/" class="md-nav__link">
+        coverage
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/default_browser_agent/" class="md-nav__link">
         default_browser_agent
       </a>
@@ -465,8 +504,68 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/edge_validator/" class="md-nav__link">
+        edge_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/eng_workflow/" class="md-nav__link">
+        eng_workflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/firefox_accounts/" class="md-nav__link">
         firefox_accounts
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/firefox_desktop/" class="md-nav__link">
+        firefox_desktop
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/firefox_installer/" class="md-nav__link">
+        firefox_installer
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/firefox_launcher_process/" class="md-nav__link">
+        firefox_launcher_process
       </a>
     </li>
   
@@ -501,8 +600,56 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/mobile/" class="md-nav__link">
+        mobile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/monitoring/" class="md-nav__link">
         monitoring
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/mozdata/" class="md-nav__link">
+        mozdata
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/mozilla_lockbox/" class="md-nav__link">
+        mozilla_lockbox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/mozilla_mach/" class="md-nav__link">
+        mozilla_mach
       </a>
     </li>
   
@@ -525,8 +672,68 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/mozphab/" class="md-nav__link">
+        mozphab
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/mozza/" class="md-nav__link">
+        mozza
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_connect_firefox/" class="md-nav__link">
+        org_mozilla_connect_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/org_mozilla_fenix/" class="md-nav__link">
         org_mozilla_fenix
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_fenix_nightly/" class="md-nav__link">
+        org_mozilla_fenix_nightly
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_fennec_aurora/" class="md-nav__link">
+        org_mozilla_fennec_aurora
       </a>
     </li>
   
@@ -549,8 +756,128 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_firefox_beta/" class="md-nav__link">
+        org_mozilla_firefox_beta
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_firefoxreality/" class="md-nav__link">
+        org_mozilla_firefoxreality
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_ios_fennec/" class="md-nav__link">
+        org_mozilla_ios_fennec
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_ios_firefox/" class="md-nav__link">
+        org_mozilla_ios_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_ios_firefoxbeta/" class="md-nav__link">
+        org_mozilla_ios_firefoxbeta
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_ios_focus/" class="md-nav__link">
+        org_mozilla_ios_focus
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_ios_klar/" class="md-nav__link">
+        org_mozilla_ios_klar
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_ios_lockbox/" class="md-nav__link">
+        org_mozilla_ios_lockbox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/org_mozilla_mozregression/" class="md-nav__link">
         org_mozilla_mozregression
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_reference_browser/" class="md-nav__link">
+        org_mozilla_reference_browser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_tv_firefox/" class="md-nav__link">
+        org_mozilla_tv_firefox
       </a>
     </li>
   
@@ -688,6 +1015,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/webpagetest/" class="md-nav__link">
+        webpagetest
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -756,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../about/" class="md-nav__link">
+      <a href="../mozfun/" class="md-nav__link">
         mozfun
       </a>
     </li>
@@ -868,25 +1207,25 @@
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#fenix_app_info-udf" class="md-nav__link">
-    fenix_app_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
-  </a>
-  
-</li>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#glean_ping_info-udf" class="md-nav__link">
     glean_ping_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#truncate_version-udf" class="md-nav__link">
+    truncate_version (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_app_info-udf" class="md-nav__link">
+    fenix_app_info (UDF)
   </a>
   
 </li>
@@ -906,15 +1245,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#product_info-udf" class="md-nav__link">
-    product_info (UDF)
+  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
+    glean_baseline_client_info (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#truncate_version-udf" class="md-nav__link">
-    truncate_version (UDF)
+  <a href="#product_info-udf" class="md-nav__link">
+    product_info (UDF)
   </a>
   
 </li>
@@ -959,7 +1298,7 @@
             
             
               
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -973,25 +1312,25 @@
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#fenix_app_info-udf" class="md-nav__link">
-    fenix_app_info (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
-    glean_baseline_client_info (UDF)
-  </a>
-  
-</li>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#glean_ping_info-udf" class="md-nav__link">
     glean_ping_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#truncate_version-udf" class="md-nav__link">
+    truncate_version (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fenix_app_info-udf" class="md-nav__link">
+    fenix_app_info (UDF)
   </a>
   
 </li>
@@ -1011,15 +1350,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#product_info-udf" class="md-nav__link">
-    product_info (UDF)
+  <a href="#glean_baseline_client_info-udf" class="md-nav__link">
+    glean_baseline_client_info (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#truncate_version-udf" class="md-nav__link">
-    truncate_version (UDF)
+  <a href="#product_info-udf" class="md-nav__link">
+    product_info (UDF)
   </a>
   
 </li>
@@ -1032,13 +1371,31 @@
               </div>
             
           
-          <div class="md-content">
+          <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
                 
                 
                 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
+<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
+<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master//tmp/generated-sql/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master///tmp/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
+<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
+<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
+either the major or minor version. The return value is <code>NUMERIC</code>,
+which means that you can sort the results without fear (e.g. 100
+will be categorized as greater than 80, which isn't the case when
+sorting lexigraphically).</p>
+<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
+"minor" or <code>5</code> if the parameter is major.</p>
+<p>If the version is only a major and/or minor version, then it will be left
+unchanged (for example "10" would stay as <code>10</code> when run through this
+function, no matter what the arguments).</p>
+<p>This is useful for grouping Linux and Mac operating system versions inside
+aggregate datasets or queries where there may be many different patch
+releases in the field.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master//tmp/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master///tmp/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
 <h2 id="fenix_app_info-udf">fenix_app_info (UDF)</h2>
 <p>Returns canonical, human-understandable identification info for Fenix sources.</p>
 <p>The Glean telemetry library for Android by design routes pings based
@@ -1115,193 +1472,238 @@ GROUP BY
   submission_date,
   geckoview_version
 </code></pre>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/fenix_app_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/fenix_app_info/metadata.yaml">Edit</a></p>
-<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
-<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
-<h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
-<p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master//tmp/generated-sql/sql/mozfun/norm/fenix_app_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master///tmp/generated-sql/sql/mozfun/norm/fenix_app_info/metadata.yaml">Edit</a></p>
 <h2 id="metadata-udf">metadata (UDF)</h2>
 <p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master//tmp/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master///tmp/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
 <h2 id="os-udf">os (UDF)</h2>
 <p>Normalize an operating system string to one of the three major desktop
 platforms, one of the two major mobile platforms, or "Other".</p>
 <p>This is a reimplementation of 
 <a href="&lt;https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">logic used in the data pipeline</a>&gt;
   to populate <code>normalized_os</code>.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/os/metadata.yaml">Edit</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master//tmp/generated-sql/sql/mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master///tmp/generated-sql/sql/mozfun/norm/os/metadata.yaml">Edit</a></p>
+<h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
+<p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/master//tmp/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master///tmp/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
 <h2 id="product_info-udf">product_info (UDF)</h2>
-<p>Returns a normalized <code>product</code> name and a <code>canonical_name</code> for a product
-based on the raw <code>app_name</code> and <code>normalized_os</code> values that appear in pings.</p>
-<p>The returned <code>product</code> name is intended to be readable and unambiguous, but
-short and easy to type. This value is suitable for use as a key in derived
-tables.</p>
-<p>The returned <code>canonical_name</code> is more verbose and is suited for displaying
-in visualizations.</p>
-<p>The returned struct also contains boolean <code>contributes_to_2020_kpi</code> as the
+<p>Returns a normalized <code>app_name</code> and <code>canonical_app_name</code>
+for a product based on <code>legacy_app_name</code> and <code>normalized_os</code> values.
+Thus, this function serves as a bridge to get from legacy application
+identifiers to the consistent identifiers we are using for reporting in 2021.</p>
+<p>As of 2021, most Mozilla products are sending telemetry via the Glean SDK,
+with Glean telemetry in active development for desktop Firefox as well. The
+<code>probeinfo</code> API is the single source of truth for metadata about applications
+sending Glean telemetry; the values for <code>app_name</code> and
+<code>canonical_app_name</code> returned here correspond to the "end-to-end identifier"
+values documented in
+<a href="https://mozilla.github.io/probe-scraper/#operation/getAppListings">the v2 Glean app listings endpoint
+</a>.
+For non-Glean telemetry, we provide values in the same style to provide
+continuity as we continue the migration to Glean.</p>
+<p>For legacy telemetry pings like <code>main</code> ping for desktop and <code>core</code> ping for
+mobile products, the <code>legacy_app_name</code> given as input to this function
+should come from the submission URI (stored as
+<code>metadata.uri.app_name</code> in BigQuery ping tables).
+For Glean pings, we have invented <code>product</code> values that can be passed
+in to this function as the <code>legacy_app_name</code> parameter.</p>
+<p>The returned <code>app_name</code> values are intended to be
+readable and unambiguous, but short and easy to type.
+They are suitable for use as a key in derived tables.
+<code>product</code> is a deprecated field that was similar in intent.</p>
+<p>The returned <code>canonical_app_name</code> is more verbose and is suited for displaying
+in visualizations. <code>canonical_name</code> is a synonym that we provide for
+historical compatibility with previous versions of this function.</p>
+<p>The returned struct also contains boolean <code>contributes_to_2021_kpi</code> as the
 canonical reference for whether the given application is included in KPI
 reporting. Additional fields may be added for future years.</p>
 <p>The <code>normalized_os</code> value that's passed in should be the top-level
 <code>normalized_os</code> value present in any ping table or you may want
 to wrap a raw value in <code>mozfun.norm.os</code>
 like <code>mozfun.norm.product_info(app_name, mozfun.norm.os(os))</code>.</p>
-<p>For legacy telemetry pings like <code>main</code> ping for desktop and <code>core</code> ping for
-mobile products, <code>app_name</code> should come from the submission URI (stored as
-<code>metadata.uri.app_name</code> in BigQuery ping tables).</p>
-<p>For Glean pings, the concept of an <code>app_name</code> doesn't exist, since pings
-from different applications are routed to different BigQuery datasets.
-Instead, the <code>app_name</code> send in for Glean pings should be the same value as
-what's expected for <code>product</code>. So, a view on top of pings from Fenix should
-pass in "Fenix" for <code>app_name</code>.</p>
-<p>This function also tolerates passing in a <code>product</code> value as <code>app_name</code> so
-that this function is still useful for derived tables which have thrown away
-the raw <code>app_name</code> value.</p>
+<p>This function also tolerates passing in a <code>product</code> value as
+<code>legacy_app_name</code> so that this function is still useful for derived tables
+which have thrown away the raw <code>app_name</code> value from legacy pings.</p>
 <p>The mappings are as follows:</p>
 <table>
 <thead>
 <tr>
-<th>app_name</th>
+<th>legacy_app_name</th>
 <th>normalized_os</th>
+<th>app_name</th>
 <th>product</th>
-<th>canonical_name</th>
+<th>canonical_app_name</th>
 <th>2019</th>
 <th>2020</th>
+<th>2021</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Firefox</td>
 <td>*</td>
+<td>firefox_desktop</td>
 <td>Firefox</td>
 <td>Firefox for Desktop</td>
 <td>true</td>
 <td>true</td>
+<td>true</td>
 </tr>
 <tr>
 <td>Fenix</td>
 <td>Android</td>
+<td>fenix</td>
 <td>Fenix</td>
 <td>Firefox for Android (Fenix)</td>
 <td>true</td>
 <td>true</td>
+<td>true</td>
 </tr>
 <tr>
 <td>Fennec</td>
 <td>Android</td>
+<td>fennec</td>
 <td>Fennec</td>
 <td>Firefox for Android (Fennec)</td>
 <td>true</td>
 <td>true</td>
+<td>true</td>
 </tr>
 <tr>
 <td>Firefox Preview</td>
 <td>Android</td>
+<td>firefox_preview</td>
 <td>Firefox Preview</td>
 <td>Firefox Preview for Android</td>
+<td>true</td>
 <td>true</td>
 <td>true</td>
 </tr>
 <tr>
 <td>Fennec</td>
 <td>iOS</td>
+<td>firefox_ios</td>
 <td>Firefox iOS</td>
 <td>Firefox for iOS</td>
+<td>true</td>
 <td>true</td>
 <td>true</td>
 </tr>
 <tr>
 <td>FirefoxForFireTV</td>
 <td>Android</td>
+<td>firefox_fire_tv</td>
 <td>Firefox Fire TV</td>
 <td>Firefox for Fire TV</td>
+<td>false</td>
 <td>false</td>
 <td>false</td>
 </tr>
 <tr>
 <td>FirefoxConnect</td>
 <td>Android</td>
+<td>firefox_connect</td>
 <td>Firefox Echo</td>
 <td>Firefox for Echo Show</td>
+<td>true</td>
 <td>true</td>
 <td>true</td>
 </tr>
 <tr>
 <td>Zerda</td>
 <td>Android</td>
+<td>firefox_lite</td>
 <td>Firefox Lite</td>
 <td>Firefox Lite</td>
+<td>true</td>
 <td>true</td>
 <td>true</td>
 </tr>
 <tr>
 <td>Zerda_cn</td>
 <td>Android</td>
+<td>firefox_lite_cn</td>
 <td>Firefox Lite CN</td>
 <td>Firefox Lite (China)</td>
 <td>false</td>
 <td>false</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Focus</td>
 <td>Android</td>
+<td>focus_android</td>
 <td>Focus Android</td>
 <td>Firefox Focus for Android</td>
 <td>true</td>
 <td>true</td>
+<td>true</td>
 </tr>
 <tr>
 <td>Focus</td>
 <td>iOS</td>
+<td>focus_ios</td>
 <td>Focus iOS</td>
 <td>Firefox Focus for iOS</td>
 <td>true</td>
 <td>true</td>
+<td>true</td>
 </tr>
 <tr>
 <td>Klar</td>
 <td>Android</td>
+<td>klar_android</td>
 <td>Klar Android</td>
 <td>Firefox Klar for Android</td>
 <td>false</td>
 <td>false</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Klar</td>
 <td>iOS</td>
+<td>klar_ios</td>
 <td>Klar iOS</td>
 <td>Firefox Klar for iOS</td>
+<td>false</td>
 <td>false</td>
 <td>false</td>
 </tr>
 <tr>
 <td>Lockbox</td>
 <td>Android</td>
+<td>lockwise_android</td>
 <td>Lockwise Android</td>
 <td>Lockwise for Android</td>
+<td>true</td>
 <td>true</td>
 <td>true</td>
 </tr>
 <tr>
 <td>Lockbox</td>
 <td>iOS</td>
+<td>lockwise_ios</td>
 <td>Lockwise iOS</td>
 <td>Lockwise for iOS</td>
+<td>true</td>
 <td>true</td>
 <td>true</td>
 </tr>
 <tr>
 <td>FirefoxReality*</td>
 <td>Android</td>
+<td>firefox_reality</td>
 <td>Firefox Reality</td>
 <td>Firefox Reality</td>
+<td>false</td>
 <td>false</td>
 <td>false</td>
 </tr>
 <tr>
-<td><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/product_info">Source</a></td>
-<td><a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/product_info/metadata.yaml">Edit</a></td>
+<td><a href="https://github.com/mozilla/bigquery-etl/blob/master//tmp/generated-sql/sql/mozfun/norm/product_info">Source</a></td>
+<td><a href="https://github.com/mozilla/bigquery-etl/edit/master///tmp/generated-sql/sql/mozfun/norm/product_info/metadata.yaml">Edit</a></td>
+<td></td>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -1309,21 +1711,6 @@ the raw <code>app_name</code> value.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
-<p>Truncates a version string like "<major>.<minor>.<patch>" to
-either the major or minor version. The return value is NUMERIC,
-which means that you can sort the results without fear (e.g. 100
-will be categorized as greater than 80, which isn't the case when
-sorting lexigraphically).</p>
-<p>For example, "5.1.0" would be translated to 5.1 if the parameter is
-"minor" or 5 if the parameter is major.</p>
-<p>If the version is only a major and/or minor version, then it will be left
-unchanged (for example "10" would stay as 10 when run through this
-function, no matter what the arguments).</p>
-<p>This is useful for grouping Linux and Mac operating system versions inside
-aggregate datasets or queries where there may be many different patch
-releases in the field.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/master//sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
                 
               
               
@@ -1339,40 +1726,38 @@ releases in the field.</p>
         
 <footer class="md-footer">
   
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
-        
-          <a href="../map/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../map/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              map
             </div>
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                map
-              </div>
+          </div>
+        </a>
+      
+      
+        <a href="../stats/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              stats
             </div>
-          </a>
-        
-        
-          <a href="../stats/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                stats
-              </div>
-            </div>
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1389,19 +1774,13 @@ releases in the field.</p>
 </footer>
       
     </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.217ffd95.min.js", "version": null}</script>
     
-      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
-      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
-      
-      <script>
-        app = initialize({
-          base: "../..",
-          features: ['navigation.tabs'],
-          search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
-          }, typeof search !== "undefined" && search)
-        })
-      </script>
+    
+      <script src="../../assets/javascripts/bundle.926459b3.min.js"></script>
       
     
   </body>

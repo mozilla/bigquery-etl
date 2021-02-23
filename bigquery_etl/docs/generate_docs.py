@@ -18,8 +18,8 @@ METADATA_FILE = "metadata.yaml"
 DOCS_DIR = "docs/"
 INDEX_MD = "index.md"
 SQL_REF_RE = r"@sql\((.+)\)"
-SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/master"
-EDIT_URL = "https://github.com/mozilla/bigquery-etl/edit/master/"
+SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/generated-sql"
+EDIT_URL = "https://github.com/mozilla/bigquery-etl/edit/generated-sql"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -129,9 +129,7 @@ def main():
                         if UDF_FILE in files or PROCEDURE_FILE in files:
                             # UDF-level doc; append to dataset doc
                             dataset_name = os.path.basename(path)
-                            dataset_doc = (
-                                Path(out_dir) / "mozfun" / f"{dataset_name}.md"
-                            )
+                            dataset_doc = out_dir / path.parent / f"{dataset_name}.md"
                             docfile_content = load_with_examples(src)
                             with open(dataset_doc, "a") as dataset_doc_file:
                                 dataset_doc_file.write("\n\n")
@@ -152,7 +150,7 @@ def main():
                                 dataset_doc_file.write(f"{sourced}\n\n")
                         else:
                             # dataset-level doc; create a new doc file
-                            dest = Path(out_dir) / "mozfun" / f"{name}.md"
+                            dest = out_dir / path / f"{name}.md"
                             dest.write_text(load_with_examples(src))
                 else:
                     generate_derived_dataset_docs.generate_derived_dataset_docs(

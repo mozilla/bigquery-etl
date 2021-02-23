@@ -240,14 +240,10 @@ class DryRun:
 
     def get_referenced_tables(self):
         """Return referenced tables by dry running the SQL file."""
-        # strip file path to 'sql/project/dataset/table/*.sql' format
-        # to be checked against the SKIP list
-        filepath = self.sqlfile[self.sqlfile.find("/sql/") + 1 :]
-
-        if filepath not in SKIP and not self.is_valid():
+        if self.sqlfile not in SKIP and not self.is_valid():
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
-        if filepath in SKIP:
+        if self.sqlfile in SKIP:
             print(f"\t...Ignoring dryrun results for {self.sqlfile}")
 
         if (

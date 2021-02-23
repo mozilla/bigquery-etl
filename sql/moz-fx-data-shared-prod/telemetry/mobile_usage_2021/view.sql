@@ -15,9 +15,7 @@ WITH base AS (
 with_pinfo AS (
   SELECT
     *,
-    -- FIXME Use mozfun.norm.product_info once updates are merged:
-    -- https://github.com/mozilla/bigquery-etl/pull/1824
-    mozdata.analysis.klukas_product_info(product, os) AS pinfo,
+    mozfun.norm.product_info(product, os) AS pinfo,
   FROM
     base
 )

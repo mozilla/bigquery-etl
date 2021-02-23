@@ -1,17 +1,39 @@
 ---
 friendly_name: Normalize Product Info
 description: |
-  Returns a normalized `product` name and a `canonical_name` for a product
-  based on the raw `app_name` and `normalized_os` values that appear in pings.
+  Returns a normalized `app_name` and `canonical_app_name`
+  for a product based on `legacy_app_name` and `normalized_os` values.
+  Thus, this function serves as a bridge to get from legacy application
+  identifiers to the consistent identifiers we are using for reporting in 2021.
 
-  The returned `product` name is intended to be readable and unambiguous, but
-  short and easy to type. This value is suitable for use as a key in derived
-  tables.
+  As of 2021, most Mozilla products are sending telemetry via the Glean SDK,
+  with Glean telemetry in active development for desktop Firefox as well. The
+  `probeinfo` API is the single source of truth for metadata about applications
+  sending Glean telemetry; the values for `app_name` and
+  `canonical_app_name` returned here correspond to the "end-to-end identifier"
+  values documented in
+  [the v2 Glean app listings endpoint
+  ](https://mozilla.github.io/probe-scraper/#operation/getAppListings).
+  For non-Glean telemetry, we provide values in the same style to provide
+  continuity as we continue the migration to Glean.
 
-  The returned `canonical_name` is more verbose and is suited for displaying
-  in visualizations.
+  For legacy telemetry pings like `main` ping for desktop and `core` ping for
+  mobile products, the `legacy_app_name` given as input to this function
+  should come from the submission URI (stored as
+  `metadata.uri.app_name` in BigQuery ping tables).
+  For Glean pings, we have invented `product` values that can be passed
+  in to this function as the `legacy_app_name` parameter.
 
-  The returned struct also contains boolean `contributes_to_2020_kpi` as the
+  The returned `app_name` values are intended to be
+  readable and unambiguous, but short and easy to type.
+  They are suitable for use as a key in derived tables.
+  `product` is a deprecated field that was similar in intent.
+
+  The returned `canonical_app_name` is more verbose and is suited for displaying
+  in visualizations. `canonical_name` is a synonym that we provide for
+  historical compatibility with previous versions of this function.
+
+  The returned struct also contains boolean `contributes_to_2021_kpi` as the
   canonical reference for whether the given application is included in KPI
   reporting. Additional fields may be added for future years.
 
@@ -20,16 +42,6 @@ description: |
   to wrap a raw value in `mozfun.norm.os`
   like `mozfun.norm.product_info(app_name, mozfun.norm.os(os))`.
 
-  For legacy telemetry pings like `main` ping for desktop and `core` ping for
-  mobile products, `app_name` should come from the submission URI (stored as
-  `metadata.uri.app_name` in BigQuery ping tables).
-
-  For Glean pings, the concept of an `app_name` doesn't exist, since pings
-  from different applications are routed to different BigQuery datasets.
-  Instead, the `app_name` send in for Glean pings should be the same value as
-  what's expected for `product`. So, a view on top of pings from Fenix should
-  pass in "Fenix" for `app_name`.
-
-  This function also tolerates passing in a `product` value as `app_name` so
-  that this function is still useful for derived tables which have thrown away
-  the raw `app_name` value.
+  This function also tolerates passing in a `product` value as
+  `legacy_app_name` so that this function is still useful for derived tables
+  which have thrown away the raw `app_name` value from legacy pings.

@@ -120,3 +120,7 @@ with DAG(
     telemetry_derived__firefox_nondesktop_exact_mau28__v1.set_upstream(
         wait_for_telemetry_derived__core_clients_last_seen__v1
     )
+
+    telemetry_derived__mobile_usage__v1.set_upstream(
+        telemetry_derived__firefox_nondesktop_exact_mau28__v1
+    )

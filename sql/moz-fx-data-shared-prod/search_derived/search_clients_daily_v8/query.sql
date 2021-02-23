@@ -14,34 +14,36 @@ CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
 
 -- Bug 1693141: Remove engine suffixes for continuity
 CREATE TEMP FUNCTION normalize_engine(engine STRING) AS (
-CASE
+  CASE
   WHEN
     ENDS_WITH(engine, ':organic')
     OR ENDS_WITH(engine, ':sap')
     OR ENDS_WITH(engine, ':sap-follow-on')
   THEN
     SPLIT(engine, ':')[OFFSET(0)]
-  ELSE engine
-END
+  ELSE
+    engine
+  END
 );
 
 -- Bug 1693141: add organic suffix to source or type if the engine suffix is "organic"
 CREATE TEMP FUNCTION organicize_source_or_type(engine STRING, original STRING) AS (
-CASE
+  CASE
   WHEN
     ENDS_WITH(engine, ':organic')
   THEN
     CASE
-      WHEN
+    WHEN
         -- For some reason, the ad click source is "ad-click:" but type is "ad-click"
-        ENDS_WITH(original, ':')
-      THEN
-        CONCAT(original, 'organic')
-      ELSE
-        CONCAT(original, ':organic')
-      END
-  ELSE original
-END
+      ENDS_WITH(original, ':')
+    THEN
+      CONCAT(original, 'organic')
+    ELSE
+      CONCAT(original, ':organic')
+    END
+  ELSE
+    original
+  END
 );
 
 WITH overactive AS (

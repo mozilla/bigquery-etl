@@ -1,7 +1,7 @@
 """Utility functions for scheduling queries."""
 
-from datetime import datetime
 import re
+from datetime import datetime
 
 
 def is_timedelta_string(s):

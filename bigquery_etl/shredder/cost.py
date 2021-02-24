@@ -2,18 +2,17 @@
 
 """Report estimated cost to run shredder."""
 
+import warnings
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from math import ceil
 from textwrap import dedent
-import warnings
 
 from google.cloud import bigquery
 
-from .config import DELETE_TARGETS
-from ..util.bigquery_id import sql_table_id
 from ..util import standard_args
-
+from ..util.bigquery_id import sql_table_id
+from .config import DELETE_TARGETS
 
 JOBS_QUERY = """
 SELECT

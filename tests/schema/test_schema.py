@@ -1,9 +1,9 @@
 from pathlib import Path
-
-from bigquery_etl.schema import Schema
 from textwrap import dedent
+
 import yaml
 
+from bigquery_etl.schema import Schema
 
 TEST_DIR = Path(__file__).parent.parent
 

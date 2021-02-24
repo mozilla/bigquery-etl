@@ -11,8 +11,8 @@ from argparse import ArgumentParser
 
 from google.cloud import bigquery
 
-from ..util.bigquery_tables import get_tables_matching_patterns
 from ..util import standard_args
+from ..util.bigquery_tables import get_tables_matching_patterns
 
 DEFAULT_PATTERN = "mozilla-public-data:*.*"
 

@@ -2,17 +2,18 @@
 
 """Import experiments from Experimenter via the Experimenter API."""
 
-from argparse import ArgumentParser
-from google.cloud import bigquery
-import requests
-import attr
-import cattr
 import datetime
 import json
-import pytz
 import sys
 import time
+from argparse import ArgumentParser
 from typing import List, Optional
+
+import attr
+import cattr
+import pytz
+import requests
+from google.cloud import bigquery
 
 EXPERIMENTER_API_URL_V1 = (
     "https://experimenter.services.mozilla.com/api/v1/experiments/"

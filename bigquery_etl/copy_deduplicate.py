@@ -7,20 +7,19 @@ datasets. The script can be configured to exclude a list of tables
 or to process only a specific list of tables.
 """
 
+import json
+import logging
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
-import json
-import logging
 
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.util import standard_args
-from bigquery_etl.util.client_queue import ClientQueue
 from bigquery_etl.util.bigquery_id import sql_table_id
-
+from bigquery_etl.util.client_queue import ClientQueue
 
 QUERY_TEMPLATE = """
 WITH

@@ -1,25 +1,25 @@
 """PyTest plugin for running sql tests."""
 
-from typing import Dict
 import json
 import os.path
+from typing import Dict
 
+import pytest
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
-import pytest
 
 from ..routine import parse_routine
 from .sql_test import (
+    TABLE_EXTENSIONS,
+    Table,
     coerce_result,
     dataset,
     get_query_params,
     load,
     load_tables,
     load_views,
-    read,
-    Table,
-    TABLE_EXTENSIONS,
     print_and_test,
+    read,
 )
 
 expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}

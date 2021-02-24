@@ -1,14 +1,13 @@
 """PyTest configuration."""
 
-from google.cloud import bigquery
-from google.cloud import storage
-from pathlib import Path
 import os
-import pytest
 import random
 import string
 import subprocess
+from pathlib import Path
 
+import pytest
+from google.cloud import bigquery, storage
 
 TEST_BUCKET = "bigquery-etl-integration-test-bucket"
 

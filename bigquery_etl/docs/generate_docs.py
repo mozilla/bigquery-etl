@@ -1,14 +1,15 @@
 """Generates documentations for provided projects."""
 
-from argparse import ArgumentParser
 import os
-from pathlib import Path
 import re
 import shutil
+from argparse import ArgumentParser
+from pathlib import Path
+
 import yaml
 
-from bigquery_etl.util import standard_args
 from bigquery_etl.docs.derived_datasets import generate_derived_dataset_docs
+from bigquery_etl.util import standard_args
 
 DEFAULT_PROJECTS_DIRS = ["sql/mozfun/", "sql/moz-fx-data-shared-prod/"]
 DOCS_FILE = "README.md"

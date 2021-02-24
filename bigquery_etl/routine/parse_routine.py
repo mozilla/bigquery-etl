@@ -5,16 +5,16 @@ This should eventually be refactored to a more general library for
 parsing UDF dependencies in queries as well.
 """
 
-import attr
-import re
 import os
+import re
 from pathlib import Path
 from typing import List
+
+import attr
 import sqlparse
 import yaml
 
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE
-
 
 UDF_CHAR = "[a-zA-z0-9_]"
 UDF_FILE = "udf.sql"

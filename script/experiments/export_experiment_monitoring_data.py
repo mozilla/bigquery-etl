@@ -2,15 +2,15 @@
 
 """Exports experiment monitoring data to GCS as JSON."""
 
+import random
+import string
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from functools import partial
-from google.cloud import storage
-from google.cloud import bigquery
 from multiprocessing import Pool
-import random
+
 import smart_open
-import string
+from google.cloud import bigquery, storage
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(

@@ -1,8 +1,9 @@
-from pathlib import Path
-from google.cloud import bigquery
 import os
-import pytest
 import subprocess
+from pathlib import Path
+
+import pytest
+from google.cloud import bigquery
 
 ENTRYPOINT_SCRIPT = Path(__file__).parent.parent / "script" / "entrypoint"
 

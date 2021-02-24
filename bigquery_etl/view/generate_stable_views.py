@@ -9,12 +9,12 @@ present in the target directory, which allows manual overrides of views by
 checking them into the sql/ tree of the default branch of the repository.
 """
 
-import logging
-import tempfile
-from argparse import ArgumentParser
 import json
-import urllib.request
+import logging
 import tarfile
+import tempfile
+import urllib.request
+from argparse import ArgumentParser
 from dataclasses import dataclass
 from functools import partial
 from io import BytesIO
@@ -26,7 +26,6 @@ from typing import List
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util import standard_args
-
 
 SCHEMAS_URI = (
     "https://github.com/mozilla-services/mozilla-pipeline-schemas"

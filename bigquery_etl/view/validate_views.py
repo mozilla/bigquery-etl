@@ -1,11 +1,12 @@
 """Validates view definitions."""
 
-from argparse import ArgumentParser
 import glob
+import sys
+from argparse import ArgumentParser
 from multiprocessing.pool import Pool
 from pathlib import Path
+
 import sqlparse
-import sys
 
 from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.util import standard_args

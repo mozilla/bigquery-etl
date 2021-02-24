@@ -1,16 +1,17 @@
-from pathlib import Path
 import os
-import pytest
+from pathlib import Path
 from typing import NewType
 
-from bigquery_etl.query_scheduling.task import (
-    Task,
-    UnscheduledTask,
-    TaskParseException,
-    TaskRef,
-)
+import pytest
+
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
+from bigquery_etl.query_scheduling.task import (
+    Task,
+    TaskParseException,
+    TaskRef,
+    UnscheduledTask,
+)
 
 TEST_DIR = Path(__file__).parent.parent
 

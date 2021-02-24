@@ -1,9 +1,11 @@
 ---
 - &base
   ad_click: 0
+  ad_click_organic: 0
   organic: 0
   sap: 4
   search_with_ads: 0
+  search_with_ads_organic: 0
   sessions_started_on_this_day: 0
   source: urlbar
   submission_date: '2017-01-01'

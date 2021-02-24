@@ -4,9 +4,10 @@
 
 from argparse import ArgumentParser
 from fnmatch import fnmatchcase
-from google.cloud import bigquery
 from functools import partial
 from multiprocessing.pool import ThreadPool
+
+from google.cloud import bigquery
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd

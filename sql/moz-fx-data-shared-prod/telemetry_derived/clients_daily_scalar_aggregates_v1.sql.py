@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """clients_daily_scalar_aggregates query generator."""
-import sys
-import json
-import gzip
 import argparse
-import textwrap
+import gzip
+import json
 import subprocess
+import sys
+import textwrap
 import urllib.request
 from pathlib import Path
 from time import sleep
@@ -13,7 +13,6 @@ from time import sleep
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import snake_case
-
 
 PROBE_INFO_SERVICE = (
     "https://probeinfo.telemetry.mozilla.org/firefox/all/main/all_probes"

@@ -2,11 +2,12 @@
 
 """Generate view to unnest parquet-format list and map fields."""
 
-from argparse import ArgumentParser
-from google.cloud import bigquery
-from textwrap import dedent
 import json
 import sys
+from argparse import ArgumentParser
+from textwrap import dedent
+
+from google.cloud import bigquery
 
 
 def qualify(table, dataset, project):

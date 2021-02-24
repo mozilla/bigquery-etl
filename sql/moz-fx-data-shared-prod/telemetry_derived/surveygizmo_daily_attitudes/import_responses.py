@@ -2,15 +2,15 @@
 
 """Import data from daily attitudes heartbeat survey into BigQuery."""
 
-from argparse import ArgumentParser
 import datetime as dt
-from google.cloud import bigquery
 import itertools
-import pytz
 import re
-import requests
+from argparse import ArgumentParser
 from time import sleep
 
+import pytz
+import requests
+from google.cloud import bigquery
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)

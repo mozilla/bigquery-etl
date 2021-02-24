@@ -3,9 +3,10 @@
 """Determine column sizes by performing dry runs."""
 
 from argparse import ArgumentParser
-from google.cloud import bigquery
 from functools import partial
 from multiprocessing.pool import ThreadPool
+
+from google.cloud import bigquery
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd

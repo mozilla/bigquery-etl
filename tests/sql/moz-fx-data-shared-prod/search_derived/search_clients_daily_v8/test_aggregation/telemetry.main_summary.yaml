@@ -103,7 +103,7 @@
   scalar_parent_browser_search_ad_clicks:
     - key: google:organic
       value: 6
-    - key: google:sap-with-follow-on
+    - key: google:sap-follow-on
       value: 7
   active_ticks: 360
   search_counts:

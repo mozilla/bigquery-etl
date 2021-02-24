@@ -14,8 +14,7 @@ WITH
 SELECT
   submission_date,
   client_id,
-  STRUCT(ARRAY_AGG(event_name) AS key,
-    ARRAY_AGG(event_count) AS value) AS urlbar_event
+  ARRAY_AGG(STRUCT(event_name AS key, event_count AS value)) AS urlbar_event
 FROM
   urlbar_event_clients_daily_temp
 WHERE

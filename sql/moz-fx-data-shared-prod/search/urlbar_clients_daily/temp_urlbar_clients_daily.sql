@@ -3,7 +3,7 @@ SELECT
   client_id,
   DATE(submission_timestamp) AS submission_date,
   --  urlbar searchmode (needs to be added to clients_daily)
-  `mozfun.map.sum`(ARRAY_CONCAT_AGG(payload.processes.parent.keyed_scalars.urlbar_searchmode_bookmarkmenu)) AS searchmode_bookmarkmenu,
+  mozfun.map.sum(ARRAY_CONCAT_AGG(payload.processes.parent.keyed_scalars.urlbar_searchmode_bookmarkmenu)) AS searchmode_bookmarkmenu,
   `mozfun.map.sum`(ARRAY_CONCAT_AGG(payload.processes.parent.keyed_scalars.urlbar_searchmode_handoff)) AS searchmode_handoff,
   `mozfun.map.sum`(ARRAY_CONCAT_AGG(payload.processes.parent.keyed_scalars.urlbar_searchmode_keywordoffer)) AS searchmode_keywordoffer,
   `mozfun.map.sum`(ARRAY_CONCAT_AGG(payload.processes.parent.keyed_scalars.urlbar_searchmode_oneoff)) AS searchmode_oneoff,

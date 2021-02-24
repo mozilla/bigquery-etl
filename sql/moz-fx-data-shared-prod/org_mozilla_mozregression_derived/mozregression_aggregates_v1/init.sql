@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod`.org_mozilla_mozregression_derived.mozregression_aggregates_v1
+  `mozilla-public-data`.org_mozilla_mozregression_derived.mozregression_aggregates_v1
 PARTITION BY
   date
 AS

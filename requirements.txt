@@ -25,7 +25,9 @@ apipkg==1.5 \
 appdirs==1.4.4 \
     --hash=sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41 \
     --hash=sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128
-    # via black
+    # via
+    #   black
+    #   virtualenv
 async-timeout==3.0.1 \
     --hash=sha256:0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f \
     --hash=sha256:4291ca197d287d274d0b6cb5d6f8f8f82d434ed288f962539ff18cc9012f9ea3
@@ -93,6 +95,10 @@ cffi==1.14.3 \
     --hash=sha256:f92cdecb618e5fa4658aeb97d5eb3d2f47aa94ac6477c6daf0f306c5a3b9e6b1 \
     --hash=sha256:f92f789e4f9241cd262ad7a555ca2c648a98178a953af117ef7fad46aa1d5591
     # via google-crc32c
+cfgv==3.2.0 \
+    --hash=sha256:32e43d604bbe7896fe7c248a9c2276447dbef840feb28fe20494f62af110211d \
+    --hash=sha256:cf22deb93d4bcf92f345a5c3cd39d3d41d6340adc60c78bbbd6588c384fda6a1
+    # via pre-commit
 chardet==3.0.4 \
     --hash=sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae \
     --hash=sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691
@@ -144,6 +150,10 @@ cython==0.29.21 \
     --hash=sha256:e57acb89bd55943c8d8bf813763d20b9099cc7165c0f16b707631a7654be9cad \
     --hash=sha256:e93acd1f603a0c1786e0841f066ae7cef014cf4750e3cd06fd03cfdf46361419
     # via pyjnius
+distlib==0.3.1 \
+    --hash=sha256:8c09de2c67b3e7deef7184574fc060ab8a793e7adbb183d942c389c8b13c52fb \
+    --hash=sha256:edf6116872c863e1aa9d5bb7cb5e05a022c519a4594dc703843343a9ddd9bff1
+    # via virtualenv
 execnet==1.7.1 \
     --hash=sha256:cacb9df31c9680ec5f95553976c4da484d407e85e41c83cb812aa014f0eddc50 \
     --hash=sha256:d4efd397930c46415f62f8a31388d6be4f27a91d7550eb79bc64a756e0056547
@@ -151,7 +161,9 @@ execnet==1.7.1 \
 filelock==3.0.12 \
     --hash=sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59 \
     --hash=sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836
-    # via pytest-mypy
+    # via
+    #   pytest-mypy
+    #   virtualenv
 flake8==3.8.3 \
     --hash=sha256:15e351d19611c887e482fb960eae4d44845013cc142d42896e9862f775d8cf5c \
     --hash=sha256:f04b9fcbac03b0a3e58c0ab3a0ecc462e023a9faf046d57794184028123aa208
@@ -272,6 +284,10 @@ httplib2==0.19.0 \
     # via
     #   gcloud
     #   oauth2client
+identify==1.5.14 \
+    --hash=sha256:de7129142a5c86d75a52b96f394d94d96d497881d2aaf8eafe320cdbe8ac4bcc \
+    --hash=sha256:e0dae57c0397629ce13c289f6ddde0204edf518f557bfdb1e56474aa143e77c3
+    # via pre-commit
 idna==2.10 \
     --hash=sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6 \
     --hash=sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0
@@ -378,6 +394,10 @@ mypy==0.782 \
     --hash=sha256:eff7d4a85e9eea55afa34888dfeaccde99e7520b51f867ac28a48492c0b1130c \
     --hash=sha256:f05644db6779387ccdb468cc47a44b4356fc2ffa9287135d05b70a98dc83b89a
     # via pytest-mypy
+nodeenv==1.5.0 \
+    --hash=sha256:5304d424c529c997bc888453aeaa6362d242b6b4631e90f3d4bf1b290f1c84a9 \
+    --hash=sha256:ab45090ae383b716c4ef89e690c41ff8c2b257b85b309f01f3654df3d084bd7c
+    # via pre-commit
 numpy==1.19.2 \
     --hash=sha256:04c7d4ebc5ff93d9822075ddb1751ff392a4375e5885299445fcebf877f179d5 \
     --hash=sha256:0bfd85053d1e9f60234f28f63d4a5147ada7f432943c113a11afcf3e65d9d4c8 \
@@ -448,6 +468,10 @@ pluggy==0.13.1 \
     --hash=sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0 \
     --hash=sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d
     # via pytest
+pre-commit==2.10.1 \
+    --hash=sha256:16212d1fde2bed88159287da88ff03796863854b04dc9f838a55979325a3d20e \
+    --hash=sha256:399baf78f13f4de82a29b649afd74bef2c4e28eb4f021661fc7f29246e8c7a3a
+    # via -r requirements.in
 proto-plus==1.10.0 \
     --hash=sha256:899f2bdc081197e683e3e29d05cd75861efbdd3de883bfb8b78165d74fb587f1
     # via google-cloud-bigquery
@@ -610,6 +634,7 @@ pyyaml==5.4.1 \
     # via
     #   -r requirements.in
     #   mozilla-schema-generator
+    #   pre-commit
     #   yamllint
 regex==2020.9.27 \
     --hash=sha256:088afc8c63e7bd187a3c70a94b9e50ab3f17e1d3f52a32750b5b77dbe99ef5ef \
@@ -663,6 +688,7 @@ six==1.15.0 \
     #   protobuf
     #   pyjnius
     #   python-dateutil
+    #   virtualenv
 smart_open==4.2.0 \
     --hash=sha256:d9f5a0f173ccb9bbae528db5a3804f57145815774f77ef755b9b0f3b4b2a9dcb
     # via -r requirements.in
@@ -687,6 +713,7 @@ toml==0.10.1 \
     --hash=sha256:bda89d5935c2eac546d648028b9901107a595863cb36bae0c73ac804a9b4ce88
     # via
     #   black
+    #   pre-commit
     #   pytest
     #   pytest-black
 typed-ast==1.4.1 \
@@ -752,6 +779,10 @@ urllib3==1.25.10 \
     --hash=sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a \
     --hash=sha256:e7983572181f5e1522d9c98453462384ee92a0be7fac5f1413a1e35c56cc0461
     # via requests
+virtualenv==20.4.2 \
+    --hash=sha256:147b43894e51dd6bba882cf9c282447f780e2251cd35172403745fc381a0a80d \
+    --hash=sha256:2be72df684b74df0ea47679a7df93fd0e04e72520022c57b479d8f881485dbe3
+    # via pre-commit
 yamllint==1.26.0 \
     --hash=sha256:8a5f8e442f49309eaf3e9d7232ce76f2fc8026f5c0c0b164b83f33fed1399637 \
     --hash=sha256:b0e4c89985c7f5f8451c2eb8c67d804d10ac13a4abe031cbf49bdf3465d01087

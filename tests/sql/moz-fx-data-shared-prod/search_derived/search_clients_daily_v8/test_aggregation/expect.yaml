@@ -56,7 +56,7 @@
   sap: 28
   default_search_engine_data_load_path: 'jar:[app]/omni.ja!browser/google.xml'
   os_version: '10.0'
-  source: ad_click:
+  source: 'ad_click:'
   default_search_engine: google
   app_version: 54.0.1
   channel: release
@@ -105,7 +105,7 @@
   sap: 28
   default_search_engine_data_load_path: 'jar:[app]/omni.ja!browser/google.xml'
   os_version: '10.0'
-  source: ad_click:organic
+  source: 'ad_click:organic'
   default_search_engine: google
   app_version: 54.0.1
   channel: release

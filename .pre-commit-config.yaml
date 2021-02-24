@@ -18,3 +18,7 @@ repos:
   hooks:
   - id: yamllint
     args: [-c, .yamllint.yaml, .]
+- repo: https://github.com/PyCQA/isort
+  rev: 5.7.0
+  hooks:
+  - id: isort

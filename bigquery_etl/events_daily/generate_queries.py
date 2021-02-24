@@ -1,14 +1,14 @@
 """Generate query directories."""
 import os
-import yaml
-
 from argparse import ArgumentParser
-from bigquery_etl.format_sql.formatter import reformat
 from dataclasses import dataclass
-from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from typing import List, Optional
 
+import yaml
+from jinja2 import Environment, FileSystemLoader
+
+from bigquery_etl.format_sql.formatter import reformat
 
 TEMPLATED_FILES = {
     "init.sql",

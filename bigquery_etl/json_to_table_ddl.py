@@ -17,7 +17,6 @@ import argparse
 import json
 import sys
 
-
 TEMPLATE = """
 {table_create_mode_string} `{project}:{dataset}.{table_name}` (
     {columns_string}

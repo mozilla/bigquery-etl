@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """clients_daily_histogram_aggregates query generator."""
-import sys
+import argparse
 import gzip
 import json
-import argparse
+import sys
 import textwrap
 import urllib.request
 from pathlib import Path
@@ -13,7 +13,6 @@ from google.cloud import bigquery
 
 sys.path.append(str(Path(__file__).parent.parent.parent.resolve()))
 from bigquery_etl.format_sql.formatter import reformat
-
 
 PROBE_INFO_SERVICE = (
     "https://probeinfo.telemetry.mozilla.org/firefox/all/main/all_probes"

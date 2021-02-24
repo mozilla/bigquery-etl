@@ -1,19 +1,18 @@
 """Generate and upload JSON metadata files for public datasets on GCS."""
 
-from argparse import ArgumentParser
 import json
 import logging
 import os
 import re
-import smart_open
-
-from google.cloud import storage
+from argparse import ArgumentParser
 from itertools import groupby
+
+import smart_open
+from google.cloud import storage
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
-
 
 DEFAULT_BUCKET = "mozilla-public-data-http"
 DEFAULT_API_VERSION = "v1"

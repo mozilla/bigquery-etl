@@ -1,12 +1,14 @@
+import datetime
+
+import pytest
+
 from bigquery_etl.query_scheduling.formatters import (
-    format_schedule_interval,
     format_attr,
     format_date,
-    format_timedelta,
     format_optional_string,
+    format_schedule_interval,
+    format_timedelta,
 )
-import datetime
-import pytest
 
 
 class TestFormatters:

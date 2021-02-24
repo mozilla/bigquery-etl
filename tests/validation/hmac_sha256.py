@@ -5,13 +5,15 @@ The vectors are located in tests/validation/data/hmac_sha256_validation.json.
 """
 
 import json
+
 import pytest
+from google.cloud import bigquery
+
 from bigquery_etl.routine.parse_routine import (
-    read_routine_dir,
     RawRoutine,
+    read_routine_dir,
     routine_tests_sql,
 )
-from google.cloud import bigquery
 
 validation_data_file = "tests/validation/data/hmac_sha256_validation.json"
 

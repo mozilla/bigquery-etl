@@ -1,6 +1,7 @@
-from click.testing import CliRunner
 import os
+
 import pytest
+from click.testing import CliRunner
 
 from bigquery_etl.dependency import show as dependency_show
 

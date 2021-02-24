@@ -1,5 +1,7 @@
 """Delete user data from long term storage."""
 
+import logging
+import warnings
 from argparse import ArgumentParser
 from collections import defaultdict
 from dataclasses import dataclass, replace
@@ -10,8 +12,6 @@ from multiprocessing.pool import ThreadPool
 from operator import attrgetter
 from textwrap import dedent
 from typing import Callable, Iterable, Optional, Tuple
-import logging
-import warnings
 
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
@@ -22,13 +22,12 @@ from ..util.bigquery_id import FULL_JOB_ID_RE, full_job_id, sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.exceptions import BigQueryInsertError
 from .config import (
-    DeleteSource,
     DELETE_TARGETS,
-    find_glean_targets,
+    DeleteSource,
     find_experiment_analysis_targets,
+    find_glean_targets,
     find_pioneer_targets,
 )
-
 
 NULL_PARTITION_ID = "__NULL__"
 OUTSIDE_RANGE_PARTITION_ID = "__UNPARTITIONED__"

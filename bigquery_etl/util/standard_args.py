@@ -1,12 +1,12 @@
 """Standard definitions for reusable script arguments."""
 
+import fnmatch
+import logging
+import re
+import warnings
 from argparse import Action
 from functools import partial
 from uuid import uuid4
-import fnmatch
-import re
-import logging
-import warnings
 
 from google.cloud import bigquery
 

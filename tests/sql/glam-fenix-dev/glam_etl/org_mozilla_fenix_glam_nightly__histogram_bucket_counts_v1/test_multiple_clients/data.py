@@ -1,7 +1,7 @@
 """Testing data for query."""
 
-from pathlib import Path
 from itertools import product
+from pathlib import Path
 from uuid import uuid4
 
 import yaml

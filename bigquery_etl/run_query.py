@@ -5,12 +5,12 @@ When executing a query associated metadata is parsed to determine whether
 results should be written to a corresponding public dataset.
 """
 
-from argparse import ArgumentParser
 import re
 import subprocess
 import sys
-import yaml
+from argparse import ArgumentParser
 
+import yaml
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import validate_public_data

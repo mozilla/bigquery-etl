@@ -1,13 +1,13 @@
 """Format SQL."""
 
-from dataclasses import replace
 import re
+from dataclasses import replace
 
 from .tokenizer import (
     AliasSeparator,
+    BlockEndKeyword,
     BlockKeyword,
     BlockStartKeyword,
-    BlockEndKeyword,
     ClosingBracket,
     Comment,
     ExpressionSeparator,
@@ -15,8 +15,8 @@ from .tokenizer import (
     Identifier,
     Literal,
     NewlineKeyword,
-    Operator,
     OpeningBracket,
+    Operator,
     ReservedKeyword,
     SpaceBeforeBracketKeyword,
     StatementSeparator,

@@ -2,16 +2,15 @@
 
 """Meta data about tables and ids for self serve deletion."""
 
+import logging
+import re
 from dataclasses import dataclass
 from functools import partial
 from typing import Tuple, Union
-import logging
-import re
 
 from google.cloud import bigquery
 
 from ..util.bigquery_id import qualified_table_id
-
 
 SHARED_PROD = "moz-fx-data-shared-prod"
 GLEAN_SCHEMA_ID = "glean_ping_1"

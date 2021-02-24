@@ -1,10 +1,11 @@
 import os
-import pytest
-from click.testing import CliRunner
 from pathlib import Path
-import yaml
 
-from bigquery_etl.cli.dag import info, create, remove
+import pytest
+import yaml
+from click.testing import CliRunner
+
+from bigquery_etl.cli.dag import create, info, remove
 
 TEST_DIR = Path(__file__).parent.parent
 

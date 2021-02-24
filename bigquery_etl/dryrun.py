@@ -10,16 +10,16 @@ only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
+import glob
+import json
+import re
+import sys
 from argparse import ArgumentParser
+from enum import Enum
 from functools import cached_property
 from multiprocessing.pool import Pool
 from os.path import basename, dirname, exists
-from urllib.request import urlopen, Request
-from enum import Enum
-import glob
-import json
-import sys
-import re
+from urllib.request import Request, urlopen
 
 SKIP = {
     # Access Denied

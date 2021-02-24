@@ -1,9 +1,11 @@
 """Generate documentation for derived datasets."""
 
 import os
-import yaml
 from pathlib import Path
+
+import yaml
 from jinja2 import Environment, FileSystemLoader
+
 from bigquery_etl.dryrun import DryRun
 
 VIEW_FILE = "view.sql"

@@ -1,13 +1,14 @@
 """Parsing of metadata yaml files."""
 
-from google.cloud import bigquery
 import enum
-import re
-import yaml
 import os
+import re
+from typing import Dict, List, Optional
+
 import attr
 import cattr
-from typing import List, Optional, Dict
+import yaml
+from google.cloud import bigquery
 
 from bigquery_etl.query_scheduling.utils import is_email
 

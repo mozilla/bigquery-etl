@@ -3,8 +3,9 @@
 """Determine cost of previously scheduled bigquery-etl queries."""
 
 from argparse import ArgumentParser
-from google.cloud import bigquery
 from pathlib import Path
+
+from google.cloud import bigquery
 
 DEFAULT_PROJECTS = [
     "moz-fx-data-shared-prod",

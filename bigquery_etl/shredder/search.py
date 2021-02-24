@@ -2,15 +2,14 @@
 
 """Search for tables and user ids that may be eligible for self serve deletion."""
 
-from argparse import ArgumentParser
 import re
 import warnings
+from argparse import ArgumentParser
 
 from google.cloud import bigquery
 
-from .config import SHARED_PROD, SEARCH_IGNORE_TABLES, SEARCH_IGNORE_FIELDS
 from ..util import standard_args
-
+from .config import SEARCH_IGNORE_FIELDS, SEARCH_IGNORE_TABLES, SHARED_PROD
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(

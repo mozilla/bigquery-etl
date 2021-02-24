@@ -1,13 +1,12 @@
 """Format SQL."""
 
-from argparse import ArgumentParser
 import glob
 import os
 import os.path
 import sys
+from argparse import ArgumentParser
 
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
-
 
 SKIP = {
     # files that existed before we started to enforce this script

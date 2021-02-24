@@ -160,7 +160,7 @@ To bootstrap an initial table, the normal best practice is to create another SQL
 
 ```sql
 CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod`.org_mozilla_mozregression_derived.mozregression_aggregates
+  `mozilla-public-data`.org_mozilla_mozregression_derived.mozregression_aggregates
 PARTITION BY
   DATE(date)
 AS
@@ -185,6 +185,8 @@ GROUP BY
   os,
   os_version;
 ```
+
+As the dataset will be published in both Mozilla's public BigQuery project, the table will need to be created in the `mozilla-public-data` project. Once the ETL is running, a view `org_mozilla_mozregression_derived.mozregression_aggregates` to the public table will be automatically created in `moz-fx-data-shared-prod`.
 
 Note the `PARTITION BY DATE(date)` in the statement. This makes it so BigQuery will partition the table by date. This isn't too big a deal for mozregression (where even the size of unaggregated data is very small) but [can be a godsend for datasets where each day is hundreds of gigabytes or terabytes big](https://docs.telemetry.mozilla.org/cookbooks/bigquery/optimization.html).
 

@@ -1,5 +1,6 @@
-import pytest
 from pathlib import Path
+
+import pytest
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 

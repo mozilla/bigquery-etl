@@ -1,26 +1,25 @@
 """Represents a scheduled Airflow task."""
 
-import attr
-import cattr
-from fnmatch import fnmatchcase
+import logging
 import os
 import re
-import logging
+from fnmatch import fnmatchcase
 from pathlib import Path
 from typing import List, Optional, Tuple
 
+import attr
+import cattr
 
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.query_scheduling.utils import (
     is_date_string,
     is_email,
-    is_valid_dag_name,
-    is_timedelta_string,
-    schedule_interval_delta,
     is_schedule_interval,
+    is_timedelta_string,
+    is_valid_dag_name,
+    schedule_interval_delta,
 )
-
 
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(

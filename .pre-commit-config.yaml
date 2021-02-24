@@ -1,0 +1,24 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v3.4.0
+  hooks:
+  - id: trailing-whitespace
+  - id: no-commit-to-branch
+    args: [--branch, main, --branch, master]
+- repo: https://github.com/psf/black
+  rev: 20.8b1
+  hooks:
+  - id: black
+- repo: https://github.com/PyCQA/flake8
+  rev: 3.8.3
+  hooks:
+  - id: flake8
+- repo: https://github.com/adrienverge/yamllint
+  rev: v1.26.0
+  hooks:
+  - id: yamllint
+    args: [-c, .yamllint.yaml, .]
+- repo: https://github.com/PyCQA/isort
+  rev: 5.7.0
+  hooks:
+  - id: isort

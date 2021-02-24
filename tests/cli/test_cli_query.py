@@ -1,13 +1,14 @@
 import os
+
 import pytest
-from click.testing import CliRunner
 import yaml
+from click.testing import CliRunner
 
 from bigquery_etl.cli.query import (
-    create,
-    schedule,
-    info,
     _queries_matching_name_pattern,
+    create,
+    info,
+    schedule,
 )
 
 

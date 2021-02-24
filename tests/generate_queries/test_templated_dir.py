@@ -1,9 +1,9 @@
 import os
-import pytest
-
-from bigquery_etl.events_daily.generate_queries import TemplatedDir, Template
 from pathlib import Path
 
+import pytest
+
+from bigquery_etl.events_daily.generate_queries import Template, TemplatedDir
 
 BASE_DIR = Path(os.path.dirname(__file__)).parent
 

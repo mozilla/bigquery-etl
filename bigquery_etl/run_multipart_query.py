@@ -11,9 +11,9 @@ complexity limit, and then join those results to generate a final wide result.
 The query files must be in the same directory and all be prefixed with `part`.
 """
 
+import os.path
 from argparse import ArgumentParser
 from multiprocessing.pool import ThreadPool
-import os.path
 
 from google.cloud import bigquery
 

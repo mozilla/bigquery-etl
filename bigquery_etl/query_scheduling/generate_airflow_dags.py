@@ -3,13 +3,13 @@
 import logging
 import os
 from argparse import ArgumentParser
-from ..util import standard_args
 from pathlib import Path
 
 from bigquery_etl.query_scheduling.dag_collection import DagCollection
 from bigquery_etl.query_scheduling.task import Task, UnscheduledTask
 from bigquery_etl.util.common import project_dirs
 
+from ..util import standard_args
 
 DEFAULT_DAGS_FILE = "dags.yaml"
 QUERY_FILE = "query.sql"

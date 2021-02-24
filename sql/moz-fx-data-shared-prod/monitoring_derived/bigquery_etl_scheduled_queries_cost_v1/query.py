@@ -4,8 +4,9 @@
 
 from argparse import ArgumentParser
 from fnmatch import fnmatchcase
-from google.cloud import bigquery
 from pathlib import Path
+
+from google.cloud import bigquery
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd

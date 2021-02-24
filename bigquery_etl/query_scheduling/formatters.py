@@ -1,7 +1,7 @@
 """This file contains custom filters for formatting data types in Jinja templates."""
 
-from datetime import datetime, timedelta
 import re
+from datetime import datetime, timedelta
 
 from bigquery_etl import query_scheduling
 

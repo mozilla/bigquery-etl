@@ -1,7 +1,7 @@
-import os
 import csv
-
+import os
 from pathlib import Path
+
 from bigquery_etl.util.common import snake_case
 
 

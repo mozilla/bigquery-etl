@@ -23,23 +23,28 @@ Install and set up the GCP command line tools:
 
 Install the [virtualenv](https://virtualenv.pypa.io/en/latest/) Python environment management tool
 ```bash
-$ pip install virtualenv
+pip install virtualenv
 ```
 
 Clone the repository
 ```bash
-$ git clone git@github.com:mozilla/bigquery-etl.git
-$ cd bigquery-etl
+git clone git@github.com:mozilla/bigquery-etl.git
+cd bigquery-etl
 ```
 
 Install the `bqetl` command line tool
 ```bash
-$ ./bqetl bootstrap
+./bqetl bootstrap
+```
+
+Install standard pre-commit hooks
+```bash
+venv/bin/pre-commit install
 ```
 
 Optionally, download java dependencies
 ```bash
-$ mvn dependency:copy-dependencies
+mvn dependency:copy-dependencies
 ```
 
 And you should now be set up to start working in the repo! The easiest way to do this is for many tasks is to use `bqetl`, which is described below.
@@ -193,7 +198,7 @@ Recommended practices
       compatibility functions for queries migrated from Athena/Presto.
 - Functions must be defined as [persistent UDFs](https://cloud.google.com/bigquery/docs/reference/standard-sql/user-defined-functions#temporary-udf-syntax)
   using `CREATE OR REPLACE FUNCTION` syntax
-  - Function names must be prefixed with a dataset of `<dir_name>.` so, for example, 
+  - Function names must be prefixed with a dataset of `<dir_name>.` so, for example,
     all functions in `udf/*.sql` are part of the `udf` dataset
     - The final syntax for creating a function in a file will look like
       `CREATE OR REPLACE FUNCTION <dir_name>.<file_name>`
@@ -267,7 +272,7 @@ Query Metadata
 ```yaml
 friendly_name: SSL Ratios
 description: >
-  Percentages of page loads Firefox users have performed that were 
+  Percentages of page loads Firefox users have performed that were
   conducted over SSL broken down by country.
 owners:
   - example@mozilla.com
@@ -277,18 +282,18 @@ labels:
   schedule: daily       # scheduled in Airflow to run daily
   public_json: true
   public_bigquery: true
-  review_bugs: 
+  review_bugs:
    - 1414839   # Bugzilla bug ID of data review
   incremental_export: false  # non-incremental JSON export writes all data to a single location
 ```
 
 ### Publishing Datasets
 
-- To make query results publicly available, the `public_bigquery` flag must be set in 
+- To make query results publicly available, the `public_bigquery` flag must be set in
   `metadata.yaml`
-  - Tables will get published in the `mozilla-public-data` GCP project which is accessible 
+  - Tables will get published in the `mozilla-public-data` GCP project which is accessible
     by everyone, also external users
-- To make query results publicly available as JSON, `public_json` flag must be set in 
+- To make query results publicly available as JSON, `public_json` flag must be set in
   `metadata.yaml`
   - Data will be accessible under https://public-data.telemetry.mozilla.org
     - A list of all available datasets is published under https://public-data.telemetry.mozilla.org/all-datasets.json
@@ -317,7 +322,7 @@ Scheduling Queries in Airflow
       start_date: '2020-04-05'  # YYYY-MM-DD
       email: ['example@mozilla.com']
       retries: 2    # number of retries if the query execution fails
-      retry_delay: 30m  
+      retry_delay: 30m
   ```
   - All DAG names need to have `bqetl_` as prefix.
   - `schedule_interval` is either defined as a [CRON expression](https://en.wikipedia.org/wiki/Cron) or alternatively as one of the following [CRON presets](https://airflow.readthedocs.io/en/latest/dag-run.html): `once`, `hourly`, `daily`, `weekly`, `monthly`

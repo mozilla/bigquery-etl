@@ -2,9 +2,9 @@
 
 """Get experiment list for a given date from the recipe server."""
 
-from argparse import ArgumentParser
 import json
 import time
+from argparse import ArgumentParser
 
 import requests
 

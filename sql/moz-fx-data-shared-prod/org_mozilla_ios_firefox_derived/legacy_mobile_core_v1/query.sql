@@ -37,7 +37,7 @@ searches_grouped AS (
   SELECT
     submission_date,
     client_id,
-    ARRAY_AGG(STRUCT(key, value)) AS labeled_metric_search_counts
+    ARRAY_AGG(STRUCT(key, value)) AS labeled_counter_search_counts
   FROM
     searches
   GROUP BY

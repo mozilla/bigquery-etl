@@ -24,3 +24,4 @@ jsonschema==3.2.0
 yamllint==1.26.0
 pip-tools==5.5.0
 pyjnius==1.3.0
+pre-commit==2.10.1

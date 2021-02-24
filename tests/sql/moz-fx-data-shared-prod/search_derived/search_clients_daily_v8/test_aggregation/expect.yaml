@@ -203,7 +203,7 @@
   sap: 0
   default_search_engine_data_load_path: 'jar:[app]/omni.ja!browser/google.xml'
   os_version: '10.0'
-  source: search_with_ads:
+  source: 'search_with_ads:'
   default_search_engine: google
   app_version: 54.0.1
   channel: release

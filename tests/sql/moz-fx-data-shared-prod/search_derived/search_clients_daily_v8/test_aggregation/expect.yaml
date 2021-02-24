@@ -72,15 +72,19 @@
 - <<: *client_a
   source: 'ad-click:'
   ad_click: 10
+  sap: 0
 - <<: *client_a
   source: 'search-with-ads:organic'
   search_with_ads_organic: 4
+  sap: 0
 - <<: *client_a
   source: 'search-with-ads:'
   search_with_ads: 7
+  sap: 0
 - <<: *client_a
   source: 'ad-click:organic'
   ad_click_organic: 6
+  sap: 0
 - <<: *client_a
   engine: bing
   source: urlbar
@@ -114,6 +118,7 @@
   client_id: e
   source: urlbar
   engine: google
+  sap: 4
   addon_version: null
   is_default_browser: true
   default_private_search_engine: engine1

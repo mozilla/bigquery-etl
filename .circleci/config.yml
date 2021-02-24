@@ -235,9 +235,9 @@ jobs:
       - run:
           name: Build and deploy docs
           command: |
+            rm -r sql/ && cp -r /tmp/generated-sql/sql sql/
             PATH="venv/bin:$PATH" script/generate_docs \
-              --project_dirs /tmp/generated-sql/sql/moz-fx-data-shared-prod \
-              /tmp/generated-sql/sql/mozfun --output_dir=generated_docs/
+               --output_dir=generated_docs/
             cd generated_docs/
             mkdocs gh-deploy \
               -m "[ci skip] Deployed {sha} with MkDocs version: {version}"

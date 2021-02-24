@@ -14,7 +14,7 @@ NON_USER_FACING_DATASET_SUFFIXES = (
     "_bi",
     "_restricted",
 )
-SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/master"
+SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/generated-sql"
 
 
 def generate_derived_dataset_docs(out_dir, project_dir):

@@ -1,6 +1,6 @@
 """PyTest plugin for collecting mypy tests on python scripts."""
 
-from pytest_mypy import mypy_argv, MypyFile
+from pytest_mypy import MypyFile, mypy_argv
 
 from . import is_python_executable
 

@@ -1,19 +1,19 @@
 """Import Stripe data into BigQuery."""
 
-from datetime import datetime, timedelta, timezone
-from hashlib import sha256
-from tempfile import TemporaryFile
-from typing import Any, Dict, IO, List, Optional, Type
 import os.path
 import re
 import sys
-import ujson
 import warnings
+from datetime import datetime, timedelta, timezone
+from hashlib import sha256
+from tempfile import TemporaryFile
+from typing import IO, Any, Dict, List, Optional, Type
 
-from google.cloud import bigquery
-from stripe.api_resources.abstract import ListableAPIResource
 import click
 import stripe
+import ujson
+from google.cloud import bigquery
+from stripe.api_resources.abstract import ListableAPIResource
 
 # event data types with separate events and a defined schema
 EVENT_DATA_TYPES = (

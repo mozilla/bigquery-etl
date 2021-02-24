@@ -13,8 +13,9 @@ from pathlib import Path
 
 import click
 import yaml
-from bigquery_etl.glam.utils import run
 from google.cloud import bigquery
+
+from bigquery_etl.glam.utils import run
 
 warnings.filterwarnings(
     "ignore", "Your application has authenticated using end user credentials"

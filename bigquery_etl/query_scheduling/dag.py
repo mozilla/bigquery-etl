@@ -1,21 +1,21 @@
 """Represents an Airflow DAG."""
 
+from typing import List, Optional
+
 import attr
 import cattr
 from jinja2 import Environment, PackageLoader
-from typing import List, Optional
 
-from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling import formatters
+from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling.utils import (
-    is_timedelta_string,
     is_date_string,
     is_email,
     is_schedule_interval,
+    is_timedelta_string,
     is_valid_dag_name,
     schedule_interval_delta,
 )
-
 
 AIRFLOW_DAG_TEMPLATE = "airflow_dag.j2"
 PUBLIC_DATA_JSON_DAG_TEMPLATE = "public_data_json_airflow_dag.j2"

@@ -3,12 +3,15 @@
 # file, you can obtain one at http://mozilla.org/MPL/2.0/.
 """Utilities."""
 
+import codecs
+import json
+import os
+import os.path
+import pprint
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
-from google.api_core.exceptions import BadRequest, NotFound
-from google.cloud import bigquery
 from io import BytesIO, TextIOWrapper
 from typing import (
     Any,
@@ -22,12 +25,9 @@ from typing import (
     Union,
 )
 
-import codecs
-import json
-import os
-import os.path
-import pprint
 import yaml
+from google.api_core.exceptions import BadRequest, NotFound
+from google.cloud import bigquery
 
 QueryParameter = Union[
     bigquery.ArrayQueryParameter,

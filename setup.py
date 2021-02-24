@@ -1,11 +1,12 @@
-from setuptools import setup, find_namespace_packages
+from setuptools import find_namespace_packages, setup
+
 
 def get_version():
     version = {}
-    with open('bigquery_etl/_version.py') as fp:
+    with open("bigquery_etl/_version.py") as fp:
         exec(fp.read(), version)
 
-    return version['__version__']
+    return version["__version__"]
 
 
 setup(
@@ -16,7 +17,9 @@ setup(
     description="Tooling for building derived datasets in BigQuery",
     url="https://github.com/mozilla/bigquery-etl",
     packages=find_namespace_packages(include=["bigquery_etl.*", "bigquery_etl"]),
-    package_data={'bigquery_etl': ['query_scheduling/templates/*.j2', 'alchemer/*.json']},
+    package_data={
+        "bigquery_etl": ["query_scheduling/templates/*.j2", "alchemer/*.json"]
+    },
     include_package_data=True,
     install_requires=[
         "gcloud",
@@ -24,7 +27,7 @@ setup(
         "google-cloud-storage",
         "Jinja2",
         "pytest-black",
-        "pytest-docstyle",
+        #   "pytest-docstyle",
         "pytest-flake8",
         "pytest-mypy",
         "pytest",

@@ -1,12 +1,12 @@
 """Query schema."""
 
-import attr
 import json
-import yaml
-
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import Dict, Any
+from typing import Any, Dict
+
+import attr
+import yaml
 
 from bigquery_etl.dryrun import DryRun
 

@@ -3,7 +3,6 @@ import os
 import re
 from typing import List
 
-
 # Search for all camelCase situations in reverse with arbitrary lookaheads.
 REV_WORD_BOUND_PAT = re.compile(
     r"""

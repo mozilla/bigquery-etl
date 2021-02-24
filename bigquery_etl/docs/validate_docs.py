@@ -1,10 +1,10 @@
 """Validates SQL examples in documentations."""
 
-from argparse import ArgumentParser
 import os
-from pathlib import Path
-import tempfile
 import sys
+import tempfile
+from argparse import ArgumentParser
+from pathlib import Path
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.routine.parse_routine import read_routine_dir, sub_local_routines

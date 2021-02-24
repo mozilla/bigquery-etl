@@ -1,11 +1,10 @@
 import json
-import pytest
 import subprocess
-
-from pathlib import Path
 from datetime import datetime
-from google.cloud import bigquery
+from pathlib import Path
 
+import pytest
+from google.cloud import bigquery
 
 TEST_DIR = Path(__file__).parent.parent
 

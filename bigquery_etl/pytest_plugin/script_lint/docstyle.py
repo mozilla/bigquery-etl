@@ -1,7 +1,7 @@
 """PyTest plugin for collecting docstyle tests on python scripts."""
 
-from pytest_pydocstyle import _patch_sys_argv, File
 import pydocstyle
+from pytest_pydocstyle import File, _patch_sys_argv
 
 from . import is_python_executable
 

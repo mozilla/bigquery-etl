@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 import pytest
 
 from bigquery_etl.docs.generate_docs import load_with_examples

@@ -13,16 +13,16 @@ import click
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
-from ..cli.dryrun import dryrun, SKIP
+from ..cli.dryrun import SKIP, dryrun
 from ..cli.format import format
 from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
-from ..query_scheduling.generate_airflow_dags import get_dags
 from ..query_scheduling.dag_collection import DagCollection
+from ..query_scheduling.generate_airflow_dags import get_dags
 from ..run_query import run
-from ..schema import Schema, SCHEMA_FILE
+from ..schema import SCHEMA_FILE, Schema
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 SQL_FILE_RE = re.compile(

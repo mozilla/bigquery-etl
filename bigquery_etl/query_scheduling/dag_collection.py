@@ -1,14 +1,15 @@
 """Represents a collection of configured Airflow DAGs."""
 
-from black import format_file_contents, FileMode
+from functools import partial
 from itertools import groupby
+from multiprocessing.pool import ThreadPool
 from operator import attrgetter
 from pathlib import Path
+
 import yaml
+from black import FileMode, format_file_contents
 
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag, PublicDataJsonDag
-from functools import partial
-from multiprocessing.pool import ThreadPool
 
 
 class DagCollection:

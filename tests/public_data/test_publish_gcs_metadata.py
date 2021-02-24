@@ -1,13 +1,12 @@
 import json
+from datetime import datetime
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, call
+
 import pytest
 import smart_open
-from pathlib import Path
-
-from datetime import datetime
-from unittest.mock import call, Mock, MagicMock
 
 import bigquery_etl.public_data.publish_gcs_metadata as pgm
-
 
 TEST_DIR = Path(__file__).parent.parent
 

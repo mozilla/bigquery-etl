@@ -1,8 +1,9 @@
 """Publish csv files as BigQuery tables."""
 
-import os
 import json
+import os
 from argparse import ArgumentParser
+
 from google.cloud import bigquery
 
 from bigquery_etl.util.common import project_dirs

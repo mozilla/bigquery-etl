@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 from functools import partial
 from multiprocessing.pool import ThreadPool
 
-from google.api_core.exceptions import NotFound, Forbidden
+from google.api_core.exceptions import Forbidden, NotFound
 from google.cloud import bigquery
 
 from bigquery_etl.util import standard_args  # noqa E402

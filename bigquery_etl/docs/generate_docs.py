@@ -1,14 +1,15 @@
 """Generates documentations for provided projects."""
 
-from argparse import ArgumentParser
 import os
-from pathlib import Path
 import re
 import shutil
+from argparse import ArgumentParser
+from pathlib import Path
+
 import yaml
 
-from bigquery_etl.util import standard_args
 from bigquery_etl.docs.derived_datasets import generate_derived_dataset_docs
+from bigquery_etl.util import standard_args
 
 DEFAULT_PROJECTS_DIRS = ["sql/mozfun/", "sql/moz-fx-data-shared-prod/"]
 DOCS_FILE = "README.md"
@@ -18,8 +19,8 @@ METADATA_FILE = "metadata.yaml"
 DOCS_DIR = "docs/"
 INDEX_MD = "index.md"
 SQL_REF_RE = r"@sql\((.+)\)"
-SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/master"
-EDIT_URL = "https://github.com/mozilla/bigquery-etl/edit/master/"
+SOURCE_URL = "https://github.com/mozilla/bigquery-etl/blob/generated-sql"
+EDIT_URL = "https://github.com/mozilla/bigquery-etl/edit/generated-sql"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(

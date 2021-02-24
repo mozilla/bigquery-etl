@@ -1,19 +1,15 @@
 """Publish UDFs and resources to the public mozfun GCP project."""
 
-from argparse import ArgumentParser
 import json
 import os
 import re
+from argparse import ArgumentParser
 
-from google.cloud import bigquery
-from google.cloud import storage
+from google.cloud import bigquery, storage
 
+from bigquery_etl.routine.parse_routine import accumulate_dependencies, read_routine_dir
 from bigquery_etl.util import standard_args
 from bigquery_etl.util.common import project_dirs
-from bigquery_etl.routine.parse_routine import (
-    read_routine_dir,
-    accumulate_dependencies,
-)
 
 DEFAULT_UDF_DEPENDENCY_DIR = "udf_js_lib/"
 DEFAULT_GCS_BUCKET = "moz-fx-data-prod-bigquery-etl"

@@ -1,8 +1,8 @@
 """Queue for balancing jobs across billing projects."""
 
+import asyncio
 from contextlib import contextmanager
 from queue import Queue
-import asyncio
 
 from google.cloud import bigquery
 

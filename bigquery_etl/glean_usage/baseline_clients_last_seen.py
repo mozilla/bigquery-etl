@@ -7,14 +7,14 @@ from functools import partial
 from multiprocessing.pool import ThreadPool
 
 from google.cloud import bigquery
-from google.cloud.bigquery import WriteDisposition, ScalarQueryParameter
+from google.cloud.bigquery import ScalarQueryParameter, WriteDisposition
 
 from bigquery_etl.glean_usage.common import (
     list_baseline_tables,
+    referenced_table_exists,
     render,
     table_names_from_baseline,
     write_sql,
-    referenced_table_exists,
 )
 from bigquery_etl.util import standard_args  # noqa E402
 

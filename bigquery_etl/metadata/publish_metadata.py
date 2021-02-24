@@ -1,17 +1,16 @@
 """Update metadata of BigQuery tables and views."""
 
-from argparse import ArgumentParser
 import logging
 import os
-import yaml
+from argparse import ArgumentParser
 
+import yaml
 from google.cloud import bigquery
 
-from .parse_metadata import Metadata
 from ..util import standard_args
 from ..util.bigquery_tables import get_tables_matching_patterns
 from ..util.common import project_dirs
-
+from .parse_metadata import Metadata
 
 METADATA_FILE = "metadata.yaml"
 DEFAULT_PATTERN = "moz-fx-data-shared-prod:*.*"

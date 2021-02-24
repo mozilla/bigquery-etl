@@ -1,11 +1,11 @@
 import json
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, call
+
 import pytest
 import smart_open
-from pathlib import Path
-from unittest.mock import call, Mock, MagicMock
 
 from bigquery_etl.public_data.publish_json import JsonPublisher
-
 
 TEST_DIR = Path(__file__).parent.parent
 

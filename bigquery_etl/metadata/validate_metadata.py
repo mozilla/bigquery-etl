@@ -1,13 +1,13 @@
 """Validate metadata files."""
 
-from argparse import ArgumentParser
 import logging
 import os
 import sys
+from argparse import ArgumentParser
 
-from .parse_metadata import Metadata
 from ..util import standard_args
 from ..util.common import project_dirs
+from .parse_metadata import Metadata
 
 parser = ArgumentParser(description=__doc__)
 

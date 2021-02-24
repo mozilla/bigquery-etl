@@ -2,11 +2,11 @@
 
 """Read a table from BigQuery and write it as parquet."""
 
-from argparse import ArgumentParser
-from textwrap import dedent
 import json
 import re
 import sys
+from argparse import ArgumentParser
+from textwrap import dedent
 
 try:
     from google.cloud import bigquery

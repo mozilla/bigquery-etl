@@ -1,21 +1,20 @@
 """Forward deletion requests from BigQuery to Amplitude."""
 
+import json
+import logging
+import warnings
 from argparse import ArgumentParser
 from datetime import datetime
 from multiprocessing.pool import ThreadPool
-from time import time, sleep
 from os import environ
-import warnings
-import logging
-import json
+from time import sleep, time
 
+import requests
 from google.cloud import bigquery
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-import requests
 
 from ..util import standard_args
-
 
 AMPLITUDE_API_KEY = "AMPLITUDE_API_KEY"
 AMPLITUDE_SECRET_KEY = "AMPLITUDE_SECRET_KEY"

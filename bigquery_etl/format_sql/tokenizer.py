@@ -1,8 +1,8 @@
 """Tokenize SQL so that it can be formatted."""
 
-from dataclasses import dataclass, field
 import re
 import sys
+from dataclasses import dataclass, field
 
 # These words get their own line followed by increased indent
 TOP_LEVEL_KEYWORDS = [

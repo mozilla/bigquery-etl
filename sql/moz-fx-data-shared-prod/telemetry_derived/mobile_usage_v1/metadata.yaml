@@ -1,0 +1,18 @@
+friendly_name: Mobile Usage
+description: |-
+  Simple layer on top of `firefox_nondesktop_exact_mau28_v1` that adds the
+  CDOU field, which is a windowed sum.
+
+  Should normally be accessed through the user-facing view
+  `telemetry.mobile_usage_2021`.
+labels:
+  schedule: daily
+owners:
+- jklukas@mozilla.com
+scheduling:
+  dag_name: bqetl_nondesktop
+  # The source table is already small here, so we completely recreate this
+  # every night. We could express this incrementally by taking CDOU from the
+  # previous day and adding dau from the new day, but this would make each
+  # query dependent on history. Recreating the table is simpler and more robust.
+  date_partition_parameter: null

@@ -1,12 +1,12 @@
 """Run a query with a series of @submission_date values."""
 
+import os.path
+import subprocess
+import sys
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from functools import partial
 from multiprocessing import Pool
-import os.path
-import subprocess
-import sys
 
 
 def fromisoformat(string):

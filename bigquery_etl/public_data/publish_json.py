@@ -1,20 +1,19 @@
 """Machinery for exporting query results as JSON to Cloud storage."""
 
-from argparse import ArgumentParser
-from google.cloud import storage
-from google.cloud import bigquery
 import datetime
 import json
-import smart_open
 import logging
-import sys
-import re
 import random
+import re
 import string
+import sys
+from argparse import ArgumentParser
+
+import smart_open
+from google.cloud import bigquery, storage
 
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import validate_public_data
-
 
 SUBMISSION_DATE_RE = re.compile(r"^submission_date:DATE:(\d\d\d\d-\d\d-\d\d)$")
 QUERY_FILE_RE = re.compile(r"^.*/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)_(v[0-9]+)/query\.sql$")

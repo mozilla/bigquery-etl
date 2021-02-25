@@ -189,7 +189,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../cookbooks/creating_a_derived_dataset/" class="md-tabs__link">
+      <a href="../../cookbooks/common_workflows/" class="md-tabs__link">
         Cookbooks
       </a>
     </li>
@@ -328,6 +328,18 @@
           Cookbooks
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/common_workflows/" class="md-nav__link">
+        Common workflows
+      </a>
+    </li>
+  
+
           
             
   
@@ -1173,6 +1185,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#threshold_count-udf" class="md-nav__link">
+    threshold_count (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#percentiles-udf" class="md-nav__link">
+    percentiles (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mean-udf" class="md-nav__link">
     mean (UDF)
   </a>
@@ -1203,20 +1229,6 @@
         <li class="md-nav__item">
   <a href="#extract-udf" class="md-nav__link">
     extract (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#threshold_count-udf" class="md-nav__link">
-    threshold_count (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#percentiles-udf" class="md-nav__link">
-    percentiles (UDF)
   </a>
   
 </li>
@@ -1314,6 +1326,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#threshold_count-udf" class="md-nav__link">
+    threshold_count (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#percentiles-udf" class="md-nav__link">
+    percentiles (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mean-udf" class="md-nav__link">
     mean (UDF)
   </a>
@@ -1348,20 +1374,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#threshold_count-udf" class="md-nav__link">
-    threshold_count (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#percentiles-udf" class="md-nav__link">
-    percentiles (UDF)
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1377,6 +1389,17 @@
                 
                 <h1 id="hist">hist</h1>
 <p>Functions for working with string encodings of histograms from desktop telemetry.</p>
+<h2 id="threshold_count-udf">threshold_count (UDF)</h2>
+<p>Return the number of recorded observations greater than threshold for
+the histogram.  CAUTION: Does not count any buckets that have any values
+less than the threshold. For example, a bucket with range (1, 10) will
+not be counted for a threshold of 2. Use threshold that are not bucket
+boundaries with caution.</p>
+<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/threshold_count">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/threshold_count/metadata.yaml">Edit</a></p>
+<h2 id="percentiles-udf">percentiles (UDF)</h2>
+<p>Given histogram and list of percentiles,calculate what those percentiles are for the histogram. If the histogram is empty, returns NULL.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/percentiles">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/percentiles/metadata.yaml">Edit</a></p>
 <h2 id="mean-udf">mean (UDF)</h2>
 <p>Given histogram h, return floor(mean) of the measurements in the bucket.
 That is, the histogram sum divided by the number of measurements taken.</p>
@@ -1424,17 +1447,6 @@ formed, which gives us some flexibility.</p>
 -- 5
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/extract">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/extract/metadata.yaml">Edit</a></p>
-<h2 id="threshold_count-udf">threshold_count (UDF)</h2>
-<p>Return the number of recorded observations greater than threshold for
-the histogram.  CAUTION: Does not count any buckets that have any values
-less than the threshold. For example, a bucket with range (1, 10) will
-not be counted for a threshold of 2. Use threshold that are not bucket
-boundaries with caution.</p>
-<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/threshold_count">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/threshold_count/metadata.yaml">Edit</a></p>
-<h2 id="percentiles-udf">percentiles (UDF)</h2>
-<p>Given histogram and list of percentiles,calculate what those percentiles are for the histogram. If the histogram is empty, returns NULL.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/percentiles">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/percentiles/metadata.yaml">Edit</a></p>
                 
               
               

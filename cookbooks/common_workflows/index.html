@@ -18,7 +18,7 @@
     
     
       
-        <title>org_mozilla_ios_firefox - BigQuery ETL</title>
+        <title>Common workflows - BigQuery ETL</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#baseline" class="md-skip">
+        <a href="#common-bigquery-etl-workflows" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              org_mozilla_ios_firefox
+              Common workflows
             
           </span>
         </div>
@@ -183,13 +183,15 @@
         
   
   
+    
+  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../../cookbooks/common_workflows/" class="md-tabs__link">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
         Cookbooks
       </a>
     </li>
@@ -199,8 +201,6 @@
         
   
   
-    
-  
 
 
   
@@ -212,7 +212,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../introduction/" class="md-tabs__link md-tabs__link--active">
+      <a href="../../mozdata/introduction/" class="md-tabs__link">
         Datasets
       </a>
     </li>
@@ -311,12 +311,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
       <label class="md-nav__link" for="__nav_2">
         Cookbooks
@@ -332,11 +334,98 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../cookbooks/common_workflows/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Common workflows
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Common workflows
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-new-scheduled-query" class="md-nav__link">
+    Adding a new scheduled query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-an-existing-query" class="md-nav__link">
+    Update an existing query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-new-mozfun-udf" class="md-nav__link">
+    Adding a new mozfun UDF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-new-internal-udf" class="md-nav__link">
+    Adding a new internal UDF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-stored-procedure" class="md-nav__link">
+    Adding a stored procedure
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#updating-an-existing-udf" class="md-nav__link">
+    Updating an existing UDF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renaming-an-existing-udf" class="md-nav__link">
+    Renaming an existing UDF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing-data" class="md-nav__link">
+    Publishing data
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -346,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cookbooks/creating_a_derived_dataset/" class="md-nav__link">
+      <a href="../creating_a_derived_dataset/" class="md-nav__link">
         Creating a derived dataset
       </a>
     </li>
@@ -365,14 +454,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
       <label class="md-nav__link" for="__nav_3">
         Datasets
@@ -388,14 +475,12 @@
             
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
       
       <label class="md-nav__link" for="__nav_3_1">
         Mozdata
@@ -413,7 +498,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../introduction/" class="md-nav__link">
+      <a href="../../mozdata/introduction/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -425,7 +510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../account_ecosystem/" class="md-nav__link">
+      <a href="../../mozdata/account_ecosystem/" class="md-nav__link">
         account_ecosystem
       </a>
     </li>
@@ -437,7 +522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../activity_stream/" class="md-nav__link">
+      <a href="../../mozdata/activity_stream/" class="md-nav__link">
         activity_stream
       </a>
     </li>
@@ -449,7 +534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../amo_dev/" class="md-nav__link">
+      <a href="../../mozdata/amo_dev/" class="md-nav__link">
         amo_dev
       </a>
     </li>
@@ -461,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../amo_prod/" class="md-nav__link">
+      <a href="../../mozdata/amo_prod/" class="md-nav__link">
         amo_prod
       </a>
     </li>
@@ -473,7 +558,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../burnham/" class="md-nav__link">
+      <a href="../../mozdata/burnham/" class="md-nav__link">
         burnham
       </a>
     </li>
@@ -485,7 +570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../contextual_services/" class="md-nav__link">
+      <a href="../../mozdata/contextual_services/" class="md-nav__link">
         contextual_services
       </a>
     </li>
@@ -497,7 +582,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../coverage/" class="md-nav__link">
+      <a href="../../mozdata/coverage/" class="md-nav__link">
         coverage
       </a>
     </li>
@@ -509,7 +594,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../default_browser_agent/" class="md-nav__link">
+      <a href="../../mozdata/default_browser_agent/" class="md-nav__link">
         default_browser_agent
       </a>
     </li>
@@ -521,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../edge_validator/" class="md-nav__link">
+      <a href="../../mozdata/edge_validator/" class="md-nav__link">
         edge_validator
       </a>
     </li>
@@ -533,7 +618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../eng_workflow/" class="md-nav__link">
+      <a href="../../mozdata/eng_workflow/" class="md-nav__link">
         eng_workflow
       </a>
     </li>
@@ -545,7 +630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_accounts/" class="md-nav__link">
+      <a href="../../mozdata/firefox_accounts/" class="md-nav__link">
         firefox_accounts
       </a>
     </li>
@@ -557,7 +642,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_desktop/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop/" class="md-nav__link">
         firefox_desktop
       </a>
     </li>
@@ -569,7 +654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_installer/" class="md-nav__link">
+      <a href="../../mozdata/firefox_installer/" class="md-nav__link">
         firefox_installer
       </a>
     </li>
@@ -581,7 +666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../firefox_launcher_process/" class="md-nav__link">
+      <a href="../../mozdata/firefox_launcher_process/" class="md-nav__link">
         firefox_launcher_process
       </a>
     </li>
@@ -593,7 +678,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../internet_outages/" class="md-nav__link">
+      <a href="../../mozdata/internet_outages/" class="md-nav__link">
         internet_outages
       </a>
     </li>
@@ -605,7 +690,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../messaging_system/" class="md-nav__link">
+      <a href="../../mozdata/messaging_system/" class="md-nav__link">
         messaging_system
       </a>
     </li>
@@ -617,7 +702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mobile/" class="md-nav__link">
+      <a href="../../mozdata/mobile/" class="md-nav__link">
         mobile
       </a>
     </li>
@@ -629,7 +714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../monitoring/" class="md-nav__link">
+      <a href="../../mozdata/monitoring/" class="md-nav__link">
         monitoring
       </a>
     </li>
@@ -641,7 +726,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozdata/" class="md-nav__link">
+      <a href="../../mozdata/mozdata/" class="md-nav__link">
         mozdata
       </a>
     </li>
@@ -653,7 +738,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_lockbox/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_lockbox/" class="md-nav__link">
         mozilla_lockbox
       </a>
     </li>
@@ -665,7 +750,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_mach/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_mach/" class="md-nav__link">
         mozilla_mach
       </a>
     </li>
@@ -677,7 +762,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozilla_vpn/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_vpn/" class="md-nav__link">
         mozilla_vpn
       </a>
     </li>
@@ -689,7 +774,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozphab/" class="md-nav__link">
+      <a href="../../mozdata/mozphab/" class="md-nav__link">
         mozphab
       </a>
     </li>
@@ -701,7 +786,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mozza/" class="md-nav__link">
+      <a href="../../mozdata/mozza/" class="md-nav__link">
         mozza
       </a>
     </li>
@@ -713,7 +798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_connect_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_connect_firefox/" class="md-nav__link">
         org_mozilla_connect_firefox
       </a>
     </li>
@@ -725,7 +810,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_fenix/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fenix/" class="md-nav__link">
         org_mozilla_fenix
       </a>
     </li>
@@ -737,7 +822,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_fenix_nightly/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fenix_nightly/" class="md-nav__link">
         org_mozilla_fenix_nightly
       </a>
     </li>
@@ -749,7 +834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_fennec_aurora/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fennec_aurora/" class="md-nav__link">
         org_mozilla_fennec_aurora
       </a>
     </li>
@@ -761,7 +846,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox/" class="md-nav__link">
         org_mozilla_firefox
       </a>
     </li>
@@ -773,7 +858,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefox_beta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox_beta/" class="md-nav__link">
         org_mozilla_firefox_beta
       </a>
     </li>
@@ -785,7 +870,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_firefoxreality/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefoxreality/" class="md-nav__link">
         org_mozilla_firefoxreality
       </a>
     </li>
@@ -797,7 +882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_fennec/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_fennec/" class="md-nav__link">
         org_mozilla_ios_fennec
       </a>
     </li>
@@ -807,80 +892,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          org_mozilla_ios_firefox
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_ios_firefox/" class="md-nav__link">
         org_mozilla_ios_firefox
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#baseline" class="md-nav__link">
-    baseline
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#baseline_clients_daily" class="md-nav__link">
-    baseline_clients_daily
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#baseline_clients_last_seen" class="md-nav__link">
-    baseline_clients_last_seen
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deletion_request" class="md-nav__link">
-    deletion_request
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#events" class="md-nav__link">
-    events
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#metrics" class="md-nav__link">
-    metrics
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -890,7 +906,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_firefoxbeta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefoxbeta/" class="md-nav__link">
         org_mozilla_ios_firefoxbeta
       </a>
     </li>
@@ -902,7 +918,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_focus/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_focus/" class="md-nav__link">
         org_mozilla_ios_focus
       </a>
     </li>
@@ -914,7 +930,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_klar/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_klar/" class="md-nav__link">
         org_mozilla_ios_klar
       </a>
     </li>
@@ -926,7 +942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_ios_lockbox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_lockbox/" class="md-nav__link">
         org_mozilla_ios_lockbox
       </a>
     </li>
@@ -938,7 +954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_mozregression/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_mozregression/" class="md-nav__link">
         org_mozilla_mozregression
       </a>
     </li>
@@ -950,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_reference_browser/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_reference_browser/" class="md-nav__link">
         org_mozilla_reference_browser
       </a>
     </li>
@@ -962,7 +978,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_tv_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_tv_firefox/" class="md-nav__link">
         org_mozilla_tv_firefox
       </a>
     </li>
@@ -974,7 +990,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../org_mozilla_vrbrowser/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_vrbrowser/" class="md-nav__link">
         org_mozilla_vrbrowser
       </a>
     </li>
@@ -986,7 +1002,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../pocket/" class="md-nav__link">
+      <a href="../../mozdata/pocket/" class="md-nav__link">
         pocket
       </a>
     </li>
@@ -998,7 +1014,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../regrets_reporter/" class="md-nav__link">
+      <a href="../../mozdata/regrets_reporter/" class="md-nav__link">
         regrets_reporter
       </a>
     </li>
@@ -1010,7 +1026,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../search/" class="md-nav__link">
+      <a href="../../mozdata/search/" class="md-nav__link">
         search
       </a>
     </li>
@@ -1022,7 +1038,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../static/" class="md-nav__link">
+      <a href="../../mozdata/static/" class="md-nav__link">
         static
       </a>
     </li>
@@ -1034,7 +1050,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stripe/" class="md-nav__link">
+      <a href="../../mozdata/stripe/" class="md-nav__link">
         stripe
       </a>
     </li>
@@ -1046,7 +1062,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../telemetry/" class="md-nav__link">
+      <a href="../../mozdata/telemetry/" class="md-nav__link">
         telemetry
       </a>
     </li>
@@ -1058,7 +1074,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf/" class="md-nav__link">
+      <a href="../../mozdata/udf/" class="md-nav__link">
         udf
       </a>
     </li>
@@ -1070,7 +1086,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf_js/" class="md-nav__link">
+      <a href="../../mozdata/udf_js/" class="md-nav__link">
         udf_js
       </a>
     </li>
@@ -1082,7 +1098,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf_js_lib/" class="md-nav__link">
+      <a href="../../mozdata/udf_js_lib/" class="md-nav__link">
         udf_js_lib
       </a>
     </li>
@@ -1094,7 +1110,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../udf_legacy/" class="md-nav__link">
+      <a href="../../mozdata/udf_legacy/" class="md-nav__link">
         udf_legacy
       </a>
     </li>
@@ -1106,7 +1122,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../webpagetest/" class="md-nav__link">
+      <a href="../../mozdata/webpagetest/" class="md-nav__link">
         webpagetest
       </a>
     </li>
@@ -1305,6 +1321,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1313,43 +1331,57 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#baseline" class="md-nav__link">
-    baseline
+  <a href="#adding-a-new-scheduled-query" class="md-nav__link">
+    Adding a new scheduled query
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#baseline_clients_daily" class="md-nav__link">
-    baseline_clients_daily
+  <a href="#update-an-existing-query" class="md-nav__link">
+    Update an existing query
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#baseline_clients_last_seen" class="md-nav__link">
-    baseline_clients_last_seen
+  <a href="#adding-a-new-mozfun-udf" class="md-nav__link">
+    Adding a new mozfun UDF
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deletion_request" class="md-nav__link">
-    deletion_request
+  <a href="#adding-a-new-internal-udf" class="md-nav__link">
+    Adding a new internal UDF
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#events" class="md-nav__link">
-    events
+  <a href="#adding-a-stored-procedure" class="md-nav__link">
+    Adding a stored procedure
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#metrics" class="md-nav__link">
-    metrics
+  <a href="#updating-an-existing-udf" class="md-nav__link">
+    Updating an existing UDF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renaming-an-existing-udf" class="md-nav__link">
+    Renaming an existing UDF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing-data" class="md-nav__link">
+    Publishing data
   </a>
   
 </li>
@@ -1367,177 +1399,126 @@
               
                 
                 
-                  <h1>org_mozilla_ios_firefox</h1>
-                
-                <h2 id="baseline"><a href="#baseline">baseline</a></h2>
-<p>A historical view of pings sent for the
-<code>org-mozilla-ios-firefox/baseline</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<ul>
-<li>Friendly name: Historical Pings for <code>org-mozilla-ios-firefox/baseline</code></li>
+                <h1 id="common-bigquery-etl-workflows">Common bigquery-etl workflows</h1>
+<p>This is a quick guide of how to perform common workflows in bigquery-etl using the <code>bqetl</code> CLI.</p>
+<p>For any workflow, the bigquery-etl repositiory needs to be locally available, for example by cloning the repository, and the <code>bqetl</code> CLI needs to be installed by running <code>./bqetl bootstrap</code>.</p>
+<h2 id="adding-a-new-scheduled-query">Adding a new scheduled query</h2>
+<p>The <a href="https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/">Creating derived datasets tutorial</a> provides a more detailed guide on creating scheduled queries.</p>
+<ol>
+<li>Run <code>./bqetl query create &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code><ul>
+<li>Specify the desired destination dataset and table name for <code>&lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code></li>
+<li>Directories and files are generated automatically </li>
 </ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_stable>org_mozilla_ios_firefox_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_stable/baseline_v1>baseline_v1</a></td>
-        </tr>   
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline/view.sql">View Definition</a> </p>
-<hr />
-<h2 id="baseline_clients_daily"><a href="#baseline_clients_daily">baseline_clients_daily</a></h2>
-<p>A daily aggregate of baseline pings per <code>client_id</code>.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<p>See also: <code>baseline_clients_last_seen</code></p>
-<ul>
-<li>Friendly name: Baseline Clients Daily</li>
-<li>
-<p>Owners: </p>
-<ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a> </li>
+</li>
+<li>Open <code>query.sql</code> file that has been created in <code>sql/moz-fx-data-shared-prod/&lt;dataset&gt;/&lt;table&gt;_&lt;version&gt;/</code> to write the query</li>
+<li>[Optional] Run <code>./bqetl query schema update &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code> to generate the <code>schema.yaml</code> file<ul>
+<li>Optionally add column descriptions to <code>schema.yaml</code></li>
+</ul>
+</li>
+<li>Open the <code>metadata.yaml</code> file in <code>sql/moz-fx-data-shared-prod/&lt;dataset&gt;/&lt;table&gt;_&lt;version&gt;/</code><ul>
+<li>Add a description of the query</li>
+<li>Add BigQuery information such as table partitioning or clustering<ul>
+<li>See <a href="https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml">clients_daily_v6</a> for reference</li>
 </ul>
 </li>
 </ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_derived>org_mozilla_ios_firefox_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_derived/baseline_clients_daily_v1>baseline_clients_daily_v1</a></td>
-        </tr>   
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline_clients_daily/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline_clients_daily/view.sql">View Definition</a> </p>
-<hr />
-<h2 id="baseline_clients_last_seen"><a href="#baseline_clients_last_seen">baseline_clients_last_seen</a></h2>
-<p>Captures activity history of each client in 28-day
-windows for each submission date based on baseline pings.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<p>See also: <code>baseline_clients_daily</code></p>
-<ul>
-<li>Friendly name: Baseline Clients Last Seen</li>
-<li>
-<p>Owners: </p>
-<ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a> </li>
+</li>
+<li>Run <code>./bqetl query validate &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code> to dry run and format the query</li>
+<li>To schedule the query, first select a DAG from the <code>./bqetl dag info</code> list or create a new DAG <code>./bqetl dag create &lt;bqetl_new_dag&gt;</code> </li>
+<li>Run <code>./bqetl query schedule &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt; --dag &lt;bqetl_dag&gt;</code> to schedule the query</li>
+<li>Run <code>./bqetl dag generate &lt;bqetl_dag&gt;</code> to update the DAG file</li>
+<li>Create a pull request<ul>
+<li>CI fails since table doesn't exist yet</li>
 </ul>
 </li>
+<li>PR gets reviewed and eventually approved</li>
+<li>Create destination table: <code>./bqetl query schema deploy</code> (requires a <code>schema.yaml</code> file to be present)<ul>
+<li>This step needs to be performed by a data engineer as it requires DE credentials.</li>
 </ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_derived>org_mozilla_ios_firefox_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_derived/baseline_clients_last_seen_v1>baseline_clients_last_seen_v1</a></td>
-        </tr>   
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline_clients_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline_clients_last_seen/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline_clients_last_seen/view.sql">View Definition</a> </p>
-<hr />
-<h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
-<p>A historical view of pings sent for the
-<code>org-mozilla-ios-firefox/deletion-request</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<ul>
-<li>Friendly name: Historical Pings for <code>org-mozilla-ios-firefox/deletion-request</code></li>
+</li>
+<li>Merge pull-request</li>
+<li>Backfill data<ul>
+<li>Option 1: via Airflow interface</li>
+<li>Option 2: <code>./bqetl query backfill &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code></li>
 </ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_stable>org_mozilla_ios_firefox_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_stable/deletion_request_v1>deletion_request_v1</a></td>
-        </tr>   
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/deletion_request">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/deletion_request/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/deletion_request/view.sql">View Definition</a> </p>
-<hr />
-<h2 id="events"><a href="#events">events</a></h2>
-<p>A historical view of pings sent for the
-<code>org-mozilla-ios-firefox/events</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<ul>
-<li>Friendly name: Historical Pings for <code>org-mozilla-ios-firefox/events</code></li>
+</li>
+</ol>
+<h2 id="update-an-existing-query">Update an existing query</h2>
+<ol>
+<li>Open the <code>query.sql</code> file of the query to be updated and make changes</li>
+<li>Run <code>./bqetl query validate &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code> to dry run and format the query</li>
+<li>If the query scheduling metadata has changed, run <code>./bqetl dag generate &lt;bqetl_dag&gt;</code> to update the DAG file</li>
+<li>If the query adds new columns, run <code>./bqetl query schema update &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code> to make local <code>schema.yaml</code> updates</li>
+<li>Open PR with changes<ul>
+<li>CI can fail if schema updates haven't been propagated to destination tables, for example when adding new fields</li>
 </ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_stable>org_mozilla_ios_firefox_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_stable/events_v1>events_v1</a></td>
-        </tr>   
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/events">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/events/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/events/view.sql">View Definition</a> </p>
-<hr />
-<h2 id="metrics"><a href="#metrics">metrics</a></h2>
-<p>A historical view of pings sent for the
-<code>org-mozilla-ios-firefox/metrics</code>
-document type.</p>
-<p>This view is guaranteed to contain only complete days
-(per <code>submission_timestamp</code>)
-and to contain only one row per distinct <code>document_id</code> within a given date.</p>
-<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
-<ul>
-<li>Friendly name: Historical Pings for <code>org-mozilla-ios-firefox/metrics</code></li>
+</li>
+<li>PR reviewed and approved</li>
+<li>Deploy schema changes by running <code>./bqetl query schema deploy &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code></li>
+<li>Merge pull-request</li>
+</ol>
+<h2 id="adding-a-new-mozfun-udf">Adding a new mozfun UDF</h2>
+<ol>
+<li>Run <code>./bqetl mozfun create &lt;dataset&gt;.&lt;name&gt; --udf</code></li>
+<li>Navigate to the <code>udf.sql</code> file in <code>sql/mozfun/&lt;dataset&gt;/&lt;name&gt;/</code> and add UDF the definition and tests</li>
+<li>Run <code>./bqetl mozfun validate &lt;dataset&gt;.&lt;name&gt;</code> for formatting and running tests</li>
+<li>Open a PR</li>
+<li>PR gets reviewed and approved and merged</li>
+<li>To publish UDF immediately:<ul>
+<li>Go to Airflow <code>mozfun</code> DAG and clear latest run</li>
+<li>Or else it will get published within a day when mozfun is executed next</li>
 </ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_stable>org_mozilla_ios_firefox_stable</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_stable/metrics_v1>metrics_v1</a></td>
-        </tr>   
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/metrics">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/metrics/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/metrics/view.sql">View Definition</a> </p>
-<hr />
-                
-                  
+</li>
+</ol>
+<h2 id="adding-a-new-internal-udf">Adding a new internal UDF</h2>
+<p>Internal UDFs are usually only used by specific queries. If your UDF might be useful to others consider publishing it as a <code>mozfun</code> UDF.</p>
+<ol>
+<li>Run <code>./bqetl routine create &lt;dataset&gt;.&lt;name&gt; --udf</code></li>
+<li>Navigate to the <code>udf.sql</code> in <code>sql/moz-fx-data-shared-prod/&lt;dataset&gt;/&lt;name&gt;/</code> file and add UDF definition and tests</li>
+<li>Run <code>./bqetl routine validate &lt;dataset&gt;.&lt;name&gt;</code> for formatting and running tests</li>
+<li>Open a PR</li>
+<li>PR gets reviewed and approved and merged</li>
+<li>To publish UDF immediately:<ul>
+<li>Run <code>./bqetl routine publish</code></li>
+<li>Or else it will take a day until UDF gets published automatically</li>
+</ul>
+</li>
+</ol>
+<h2 id="adding-a-stored-procedure">Adding a stored procedure</h2>
+<p>The same steps as creating a new UDF apply for creating stored procedures, except when initially creating the procedure execute <code>./bqetl mozfun create &lt;dataset&gt;.&lt;name&gt; --stored_procedure</code> or <code>./bqetl routine create &lt;dataset&gt;.&lt;name&gt; --stored_procedure</code> for internal stored procedures.</p>
+<h2 id="updating-an-existing-udf">Updating an existing UDF</h2>
+<ol>
+<li>Navigate to the <code>udf.sql</code> file and make updates</li>
+<li>Run <code>./bqetl mozfun validate &lt;dataset&gt;.&lt;name&gt;</code> or <code>./bqetl routine validate &lt;dataset&gt;.&lt;name&gt;</code> for formatting and running tests</li>
+<li>Open a PR</li>
+<li>PR gets reviewed, approved and merged</li>
+</ol>
+<h2 id="renaming-an-existing-udf">Renaming an existing UDF</h2>
+<ol>
+<li>Run <code>./bqetl mozfun rename &lt;dataset&gt;.&lt;name&gt; &lt;new_dataset&gt;.&lt;new_name&gt;</code><ul>
+<li>References in queries to the UDF are automatically updated</li>
+</ul>
+</li>
+<li>Open a PR</li>
+<li>PR gets reviews, approved and merged</li>
+</ol>
+<h2 id="publishing-data">Publishing data</h2>
+<ol>
+<li>Get a data review by following the <a href="https://wiki.mozilla.org/Data_Publishing#Dataset_Publishing_Process_2">data publishing process</a></li>
+<li>Update the <code>metadata.yaml</code> file of the query to be published<ul>
+<li>Set <code>public_bigquery: true</code> and optionally <code>public_json: true</code></li>
+<li>Specify the <code>review_bugs</code>    </li>
+</ul>
+</li>
+<li>If an internal dataset already exists, move it to <code>mozilla-public-data</code></li>
+<li>If an <code>init.sql</code> file exists for the query, change the destination project for the created table to <code>mozilla-public-data</code></li>
+<li>Run <code>./bqetl dag generate bqetl_public_public_data_json</code> to update the DAG</li>
+<li>Open a PR</li>
+<li>PR gets reviewed, approved and merged<ul>
+<li>Once, ETL is running a view will get automatically published to <code>moz-fx-data-shared-prod</code> referencing the public dataset</li>
+</ul>
+</li>
+</ol>
                 
               
               
@@ -1555,7 +1536,7 @@ and to contain only one row per distinct <code>document_id</code> within a given
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../org_mozilla_ios_fennec/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../.." class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1564,19 +1545,19 @@ and to contain only one row per distinct <code>document_id</code> within a given
               <span class="md-footer__direction">
                 Previous
               </span>
-              org_mozilla_ios_fennec
+              Home
             </div>
           </div>
         </a>
       
       
-        <a href="../org_mozilla_ios_firefoxbeta/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../creating_a_derived_dataset/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              org_mozilla_ios_firefoxbeta
+              Creating a derived dataset
             </div>
           </div>
           <div class="md-footer__button md-icon">

@@ -10,6 +10,7 @@ only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
+import fnmatch
 import glob
 import json
 import re
@@ -18,7 +19,8 @@ from argparse import ArgumentParser
 from enum import Enum
 from functools import cached_property
 from multiprocessing.pool import Pool
-from os.path import basename, dirname, exists
+from os.path import basename, dirname, exists, isdir
+from typing import Set
 from urllib.request import Request, urlopen
 
 SKIP = {
@@ -398,24 +400,39 @@ def main():
     """Dry run all SQL files in the project directories."""
     parser = ArgumentParser(description=main.__doc__)
     parser.add_argument(
-        "--path",
-        help="Where dryrun queries will be searched for.",
-        default="sql",
-        required=False,
+        "paths",
+        metavar="PATH",
+        nargs="*",
+        help="Paths to search for queries to dry run. CI passes 'sql' on the default "
+        "branch, and the paths that have been modified since branching otherwise",
     )
     args = parser.parse_args()
 
     file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
+    file_pattern = re.compile("|".join(map(fnmatch.translate, file_names)))
 
-    sql_files = [
-        f
-        for n in file_names
-        for f in glob.glob(f"{args.path}/**/{n}", recursive=True)
-        if f not in SKIP
-    ]
+    sql_files: Set[str] = set()
+    for path in args.paths:
+        if isdir(path):
+            sql_files.union(
+                sql_file
+                for glob in file_names
+                for sql_file in glob.glob(f"{args.path}/**/{glob}", recursive=True)
+            )
+        elif file_pattern.fullmatch(basename(path)):
+            sql_files.add(path)
+    sql_files -= SKIP
+
+    if not sql_files:
+        print("Skipping dry run because no queries were modified")
+        sys.exit(0)
+    elif args.paths == ["sql"]:
+        print("Checking dry run for all queries")
+    else:
+        print("Limiting dry run to modified queries")
 
     with Pool(8) as p:
-        result = p.map(sql_file_valid, sql_files, chunksize=1)
+        result = p.map(sql_file_valid, sorted(sql_files), chunksize=1)
     if all(result):
         exitcode = 0
     else:

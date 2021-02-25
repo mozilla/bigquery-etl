@@ -137,17 +137,27 @@ jobs:
       - run:
           name: Early return when job not modified
           command: |
+            YAML_DUMP_JOB=(
+              docker run --rm --interactive ruby:latest
+              ruby -r yaml -ei
+              'puts YAML.dump(YAML.load(ARGF)["jobs"]["validate-dags"])'
+            )
             if [ "$CIRCLE_BRANCH" = master ]; then
               echo "Run job because branch is $CIRCLE_BRANCH"
             elif git log --format=%B --no-merges -n 1 |
                 grep -qF '[run-tests]'; then
               echo "Run job because [run-tests] in commit message"
-            elif ! git diff --quiet origin/master... \
-                -- "$(git rev-parse --show-toplevel)"/{.circleci,dags}; then
-              echo "Run job because .circleci/ and/or dags/ were modified" \
-                "since branching off master"
+            elif ! git diff --quiet origin/master... -- dags; then
+              echo "Run job because dags/ was modified"
+            elif ! (
+              git apply --cached --reverse \
+                <(git diff origin/master... -- .circleci/config.yaml) &&
+              test "$(cat .circleci/config.yml | "${YAML_DUMP_JOB[@]}")" = \
+                "$(git show HEAD:.circleci/config.yml | "${YAML_DUMP_JOB[@]}")"
+            ); then
+              echo "Run job because job definition was modified"
             else
-              echo "Skipping job because .circleci/ and dags/ were not modified"
+              echo "Skipping job because it was not modified"
               circleci step halt
             fi
       - run:

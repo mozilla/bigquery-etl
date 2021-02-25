@@ -6,6 +6,7 @@ to be able to union two tables, even if the set of columns are the same."""
 import requests
 import json
 from bigquery_etl.format_sql.formatter import reformat
+from google.cloud import bigquery
 
 
 def get_columns(schema):
@@ -79,6 +80,11 @@ def main():
     """
 
     # TODO: update schema for the legacy table
+    bq = bigquery.Client()
+    legacy_table = "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_metrics_v1"
+    table = bq.get_table(legacy_table)
+    table.schema = schema
+    bq.update_table(legacy_table, ["schema"])
 
     stripped = [c.split()[0].lstrip("root.") for c in column_summary]
     query_glean = generate_query(
@@ -88,7 +94,7 @@ def main():
     )
     query_legacy = generate_query(
         ['"legacy" as telemetry_system', *stripped],
-        "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_metrics_v1",
+        legacy_table,
         "2021-02-01",
     )
     view_body = reformat(f"{query_glean} UNION ALL {query_legacy}")

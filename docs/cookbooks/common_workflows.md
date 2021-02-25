@@ -6,39 +6,42 @@ For any workflow, the bigquery-etl repositiory needs to be locally available, fo
 
 ## Adding a new scheduled query
 
-1. Run `./bqetl query create <dataset>.<table>`
-    * Specifiy the desired destination dataset and table name for `<dataset>.<table>`
+The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/) provides a more detailed guide on creating scheduled queries.
+
+1. Run `./bqetl query create <dataset>.<table>_<version>`
+    * Specify the desired destination dataset and table name for `<dataset>.<table>_<version>`
     * Directories and files are generated automatically 
-1. Open `query.sql` file that has been created in `sql/moz-fx-data-shared-prod/<dataset>/<table>/` to write the query
-1. Run `./bqetl query schema update <dataset>.<table>` to generate the `schema.yaml` file
+1. Open `query.sql` file that has been created in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/` to write the query
+1. Run `./bqetl query schema update <dataset>.<table>_<version>` to generate the `schema.yaml` file
     * Optionally add column descriptions to `schema.yaml`
-1. Open the `metadata.yaml` file in `sql/moz-fx-data-shared-prod/<dataset>/<table>/`
+1. Open the `metadata.yaml` file in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/`
     * Add a description of the query
     * Add BigQuery information such as table partitioning or clustering
         * See [clients_daily_v6](https://github.com/mozilla/bigquery-etl/blob/master/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml) for reference
-1. Run `./bqetl query validate <dataset>.<table>` to dry run and format the query
+1. Run `./bqetl query validate <dataset>.<table>_<version>` to dry run and format the query
 1. To schedule the query, first select a DAG from the `./bqetl dag info` list or create a new DAG `./bqetl dag create <bqetl_new_dag>` 
-1. Run `./bqetl query schedule <dataset>.<table> --dag <bqetl_dag>` to schedule the query
+1. Run `./bqetl query schedule <dataset>.<table>_<version> --dag <bqetl_dag>` to schedule the query
 1. Run `./bqetl dag generate <bqetl_dag>` to update the DAG file
 1. Create a pull request
     * CI fails since table doesn't exist yet
 1. PR gets reviewed and eventually approved
 1. Create destination table: `./bqetl query schema deploy`
+    * This step needs to be performed by a data engineer as it requires DE credentials.
 1. Merge pull-request
 1. Backfill data
     * Option 1: via Airflow interface
-    * Option 2: `./bqetl query backfill <dataset>.<table>`
+    * Option 2: `./bqetl query backfill <dataset>.<table>_<version>`
 
 ## Update an existing query
 
 1. Open the `query.sql` file of the query to be updated and make changes
-1. Run `./bqetl query validate <dataset>.<table>` to dry run and format the query
-1. If the query is scheduled, run `./bqetl dag generate <bqetl_dag>` to update the DAG file
-1. Optionally, run `./bqetl query schema update <dataset>.<table>` to make local `schema.yaml` updates
+1. Run `./bqetl query validate <dataset>.<table>_<version>` to dry run and format the query
+1. If the query scheduling metadata has changed, run `./bqetl dag generate <bqetl_dag>` to update the DAG file
+1. If the query adds new columns, run `./bqetl query schema update <dataset>.<table>_<version>` to make local `schema.yaml` updates
 1. Open PR with changes
     * CI can fail if schema updates haven't been propagated to destination tables, for example when adding new fields
 1. PR reviewed and approved
-1. Deploy schema changes by running `./bqetl query schema deploy <dataset>.<table>`
+1. Deploy schema changes by running `./bqetl query schema deploy <dataset>.<table>_<version>`
 1. Merge pull-request
 
 ## Adding a new mozfun UDF

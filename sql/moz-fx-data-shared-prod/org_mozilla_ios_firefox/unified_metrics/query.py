@@ -80,31 +80,12 @@ def main():
     This will need to be processed yet again so we can query via bigquery
     """
 
-    # TODO: update schema for the legacy table
     bq = bigquery.Client()
     legacy_table = (
         "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_metrics_v1"
     )
     table = bq.get_table(legacy_table)
-    old_schema = table.schema[:]
-    new_schema = bq.schema_from_json(io.StringIO(json.dumps(schema)))
-
-    # overwrite the metadata header field...
-    # google.api_core.exceptions.BadRequest: 400 PATCH https://bigquery.googleapis.com/bigquery/v2/projects/moz-fx-data-shared-prod/datasets/org_mozilla_ios_firefox_derived/tables/legacy_metrics_v1: Provided Schema does not match Table moz-fx-data-shared-prod:org_mozilla_ios_firefox_derived.legacy_metrics_v1. Field metadata.header.parsed_date is missing in new schema
-
-    # get the old metadata field
-    for column in old_schema:
-        if column.name == "metadata":
-            old_metadata = column
-            break
-    # Note: did you know you can use the temporary column variable in this scope?
-    assert old_metadata, "missing metadata field from the old schema"
-    for i, v in enumerate(new_schema):
-        if v.name == "metadata":
-            new_schema[i] = old_metadata
-            break
-
-    table.schema = new_schema
+    table.schema = bq.schema_from_json(io.StringIO(json.dumps(schema)))
     bq.update_table(table, ["schema"])
 
     stripped = [c.split()[0].lstrip("root.") for c in column_summary]

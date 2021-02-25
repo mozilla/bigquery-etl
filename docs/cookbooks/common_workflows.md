@@ -12,7 +12,7 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
     * Specify the desired destination dataset and table name for `<dataset>.<table>_<version>`
     * Directories and files are generated automatically 
 1. Open `query.sql` file that has been created in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/` to write the query
-1. Run `./bqetl query schema update <dataset>.<table>_<version>` to generate the `schema.yaml` file
+1. [Optional] Run `./bqetl query schema update <dataset>.<table>_<version>` to generate the `schema.yaml` file
     * Optionally add column descriptions to `schema.yaml`
 1. Open the `metadata.yaml` file in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/`
     * Add a description of the query
@@ -25,7 +25,7 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Create a pull request
     * CI fails since table doesn't exist yet
 1. PR gets reviewed and eventually approved
-1. Create destination table: `./bqetl query schema deploy`
+1. Create destination table: `./bqetl query schema deploy` (requires a `schema.yaml` file to be present)
     * This step needs to be performed by a data engineer as it requires DE credentials.
 1. Merge pull-request
 1. Backfill data

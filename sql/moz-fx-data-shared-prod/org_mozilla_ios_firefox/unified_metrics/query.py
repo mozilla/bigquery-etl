@@ -6,7 +6,7 @@ to be able to union two tables, even if the set of columns are the same."""
 import requests
 import json
 from bigquery_etl.format_sql.formatter import reformat
-from google.cloud import bigquery
+from google.cloud import bigquery, exceptions
 import io
 
 
@@ -32,15 +32,9 @@ def get_columns(schema):
     return sorted(res)
 
 
-def generate_query(columns, table, submission_date):
+def generate_query(columns, table):
     formatted_columns = ",\n".join(columns)
-    return reformat(
-        f"""
-        select {formatted_columns}
-        from `{table}`
-        where date(submission_timestamp) = "{submission_date}"
-    """
-    )
+    return reformat(f"select {formatted_columns} from `{table}`")
 
 
 def main():
@@ -92,15 +86,22 @@ def main():
     query_glean = generate_query(
         ['"glean" as telemetry_system', *stripped],
         "mozdata.org_mozilla_ios_firefox.metrics",
-        "2021-02-01",
     )
     query_legacy = generate_query(
         ['"legacy" as telemetry_system', *stripped],
         legacy_table,
-        "2021-02-01",
     )
     view_body = reformat(f"{query_glean} UNION ALL {query_legacy}")
-    print(view_body)
+
+    view_id = "moz-fx-data-shared-prod.org_mozilla_ios_firefox.unified_metrics"
+    try:
+        bq.delete_table(bq.get_table(view_id))
+    except exceptions.NotFound:
+        pass
+    view = bigquery.Table(view_id)
+    view.view_query = view_body
+    bq.create_table(view)
+    print(f"updated view at {view_id}")
 
 
 if __name__ == "__main__":

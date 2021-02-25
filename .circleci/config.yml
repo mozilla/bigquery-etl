@@ -62,8 +62,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Verify that BigQuery validates each query
-          command: script/dryrun
+          name: Dry run queries
+          command: |
+            if [ "$CIRCLE_BRANCH" = master ]; then
+              PATHS=sql
+            else
+              PATHS="$(git diff origin/master... --name-only -- sql)"
+            fi
+            script/dryrun $PATHS
   validate-metadata:
     docker: *docker
     steps:
@@ -228,7 +234,7 @@ jobs:
       - run:
           name: Install dependencies
           command: >
-            pip install mkdocs mkdocs-material markdown-include 
+            pip install mkdocs mkdocs-material markdown-include
             mkdocs-awesome-pages-plugin
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"

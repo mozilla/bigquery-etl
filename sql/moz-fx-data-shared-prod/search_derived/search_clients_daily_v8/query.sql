@@ -34,7 +34,7 @@ CREATE TEMP FUNCTION organicize_source_or_type(engine STRING, original STRING) A
   THEN
     CASE
     WHEN
-        -- For some reason, the ad click source is "ad-click:" but type is "ad-click"
+      -- For some reason, the ad click source is "ad-click:" but type is "ad-click"
       ENDS_WITH(original, ':')
     THEN
       CONCAT(original, 'organic')

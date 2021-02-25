@@ -416,8 +416,8 @@ def main():
         if isdir(path):
             sql_files.union(
                 sql_file
-                for glob in file_names
-                for sql_file in glob.glob(f"{args.path}/**/{glob}", recursive=True)
+                for pattern in file_names
+                for sql_file in glob.glob(f"{args.path}/**/{pattern}", recursive=True)
             )
         elif file_pattern.fullmatch(basename(path)):
             sql_files.add(path)

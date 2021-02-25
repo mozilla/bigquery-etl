@@ -3,7 +3,7 @@ WITH extracted AS (
     *,
     date(submission_timestamp) AS submission_date,
   FROM
-    `mozdata.telemetry.mobile_event`
+    `moz-fx-data-shared-prod.telemetry_stable.mobile_event_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND normalized_app_name = "Fennec"

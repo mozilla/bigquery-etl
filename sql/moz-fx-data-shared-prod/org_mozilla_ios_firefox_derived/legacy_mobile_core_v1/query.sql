@@ -13,7 +13,7 @@ WITH extracted AS (
     default_new_tab_experience,
     open_tab_count
   FROM
-    `mozdata.telemetry.core`
+    `moz-fx-data-shared-prod.telemetry_stable.core_v4`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND normalized_os = 'iOS'

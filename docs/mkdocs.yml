@@ -34,3 +34,11 @@ nav:
       - ... | mozdata/**.md
   - UDFs:
       - ... | mozfun/**.md
+    - index.md
+    - Cookbooks:
+        - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md
+    - Datasets:
+        - ... | mozdata/**.md
+    - UDFs:
+        - ... | mozfun/**.md
+    - bqetl CLI: bqetl.md

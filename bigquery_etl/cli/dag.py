@@ -39,7 +39,14 @@ def dag():
 
 
 @dag.command(
-    help="List all available DAGs",
+    help="""List all available DAGs
+    
+    Examples:
+
+    ./bqetl dag info
+
+    ./bqetl dag info --with_tasks bqetl_ssl_ratios
+    """,
 )
 @click.argument("name", required=False)
 @dags_config_option
@@ -83,7 +90,15 @@ def info(name, dags_config, with_tasks):
 
 
 @dag.command(
-    help="Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search"
+    help="""Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search
+
+    Examples:
+
+    ./bqetl dag create bqetl_core --schedule-interval="0 2 * * *"
+     --owner=example@mozilla.com
+     --description="Tables derived from `core` pings sent by mobile applications."
+     --start-date=2019-07-25
+    """
 )
 @click.argument("name")
 @dags_config_option
@@ -168,7 +183,14 @@ def create(
     click.echo(f"Added new DAG definition to {dags_config}")
 
 
-@dag.command(help="Generate Airflow DAGs from DAG definitions. Requires Java.")
+@dag.command(help="""Generate Airflow DAGs from DAG definitions. Requires Java.
+
+Examples:
+
+./bqetl dag generate
+
+./bqetl dag generate bqetl_ssl_ratios
+""")
 @click.argument("name", required=False)
 @dags_config_option
 @output_dir_option
@@ -191,7 +213,12 @@ def generate(name, dags_config, output_dir):
         click.echo("DAG generation complete.")
 
 
-@dag.command(help="Remove a DAG")
+@dag.command(help="""Remove a DAG
+
+Examples:
+
+./bqetl dag remove bqetl_vrbrowser
+""")
 @click.argument("name", required=False)
 @dags_config_option
 @output_dir_option

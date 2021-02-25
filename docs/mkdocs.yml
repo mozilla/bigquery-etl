@@ -18,6 +18,9 @@ theme:
     favicon: favicon.png
     custom_dir: overrides
 
+google_analytics:
+  - UA-104326577-3
+  - auto
 
 plugins:
     - search

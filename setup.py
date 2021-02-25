@@ -25,7 +25,7 @@ setup(
         "google-cloud-storage",
         "Jinja2",
         "pytest-black",
-        "pytest-docstyle",
+        "pytest-pydocstyle",
         "pytest-flake8",
         "pytest-mypy",
         "pytest",

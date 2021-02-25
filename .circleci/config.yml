@@ -64,11 +64,17 @@ jobs:
       - run:
           name: Dry run queries
           command: |
-            if [ "$CIRCLE_BRANCH" = master ] ||
-                git log --format=%B --no-merges -n 1 |
+            if [ "$CIRCLE_BRANCH" = master ]; then
+              echo "Check dry run for all queries because branch is" \
+                "$CIRCLE_BRANCH"
+              PATHS=sql
+            elif git log --format=%B --no-merges -n 1 |
                 grep -qF '[run-tests]'; then
+              echo "Check dry run for all queries because [run-tests] in" \
+                "commit message"
               PATHS=sql
             else
+              echo "Check dry run for modified queries"
               PATHS="$(git diff origin/master... --name-only -- sql)"
             fi
             script/dryrun $PATHS

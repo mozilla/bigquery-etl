@@ -19,7 +19,9 @@ SELECT
   SUM(tagged_follow_on) AS tagged_follow_on,
   SUM(sap) AS sap,
   SUM(ad_click) AS ad_click,
+  SUM(ad_click_organic) AS ad_click_organic,
   SUM(search_with_ads) AS search_with_ads,
+  SUM(search_with_ads_organic) AS search_with_ads_organic,
   SUM(unknown) AS unknown
 FROM
   search_clients_daily_v8

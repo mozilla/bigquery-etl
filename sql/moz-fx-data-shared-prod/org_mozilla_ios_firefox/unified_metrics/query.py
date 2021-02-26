@@ -33,8 +33,44 @@ def get_columns(schema):
 
 
 def generate_query(columns, table):
-    formatted_columns = ",\n".join(columns)
-    return reformat(f"select {formatted_columns} from `{table}`")
+    """Generate a SQL query given column names."""
+    # You would think that it's this simple (e.g. selecting columns), but it's
+    # not because we want to maintain the nested structure afterwards
+    #   formatted_columns = ",\n".join(columns)
+
+    acc = ""
+    prev = []
+    # sorting the columns is important
+    for col in sorted(columns):
+        split = col.split(".")
+        # check if we go deeper
+        if len(split) > 1 and len(split) > len(prev):
+            acc += "struct(" * (len(split) - len(prev))
+        # sometimes we have two structs that are the same depth e.g. metrics
+        if len(split) > 1 and len(split) == len(prev) and split[-2] != prev[-2]:
+            # ensure that we are not ending a struct with a comma
+            acc = acc.rstrip(",")
+            acc += f") as {prev[-2]},"
+            acc += "struct("
+        # pop out of the struct
+        if len(split) < len(prev):
+            diff = len(prev) - len(split)
+            # ignore the leaf
+            prev.pop()
+            for _ in range(diff):
+                c = prev.pop()
+                acc = acc.rstrip(",")
+                acc += f") as {c},"
+        acc += f"{col},"
+        prev = split
+    # clean up any columns
+    if len(prev) > 1:
+        prev.pop()
+        for c in reversed(prev):
+            acc = acc.rstrip(",")
+            acc += f") as {c},"
+
+    return reformat(f"select {acc} from `{table}`")
 
 
 def main():
@@ -92,7 +128,6 @@ def main():
         legacy_table,
     )
     view_body = reformat(f"{query_glean} UNION ALL {query_legacy}")
-
     view_id = "moz-fx-data-shared-prod.org_mozilla_ios_firefox.unified_metrics"
     try:
         bq.delete_table(bq.get_table(view_id))

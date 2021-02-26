@@ -141,7 +141,17 @@
   },
   {
     "type": "INTEGER",
+    "name": "ad_click_organic",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
     "name": "search_with_ads",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "INTEGER",
+    "name": "search_with_ads_organic",
     "mode": "NULLABLE"
   },
   {

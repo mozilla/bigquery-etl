@@ -196,11 +196,11 @@ SELECT
   ) AS metrics
 FROM
   aggregated
-JOIN
+FULL JOIN
   extracted_event
 USING
   (client_id, submission_date)
-JOIN
+FULL JOIN
   extracted_core
 USING
   (client_id, submission_date)

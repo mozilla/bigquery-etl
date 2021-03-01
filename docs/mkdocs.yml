@@ -28,6 +28,7 @@ plugins:
 nav:
     - index.md
     - Cookbooks:
+        - Common workflows: cookbooks/common_workflows.md
         - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md
     - Datasets:
         - ... | mozdata/**.md

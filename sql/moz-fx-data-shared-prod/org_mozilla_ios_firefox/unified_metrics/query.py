@@ -33,19 +33,37 @@ def get_columns(schema):
 
 
 def generate_query(columns, table):
-    """Generate a SQL query given column names."""
-    # You would think that it's this simple (e.g. selecting columns), but it's
-    # not because we want to maintain the nested structure afterwards
-    #   formatted_columns = ",\n".join(columns)
+    """Generate a SQL query given column names.
 
+    We construct a query that selects columns into nested structs. Naive selection
+    of all the columns will strip the namespace from the columns.
+    """
+
+    # Build a string that contains the selected columns. We take the set of
+    # columns and split them up by namespace. Each namespace is put inside of a
+    # STRUCT call. For example, foo.a and foo.b will be translated into a
+    # `STRUCT(foo.a, foo.b) as foo` nested column.
     acc = ""
+
+    # Maintain the last element in the columns to determine when a transition
+    # must be made.
     prev = []
-    # sorting the columns is important
+
+    # Iterate over the sorted set of columns. This ensures that columns are
+    # grouped together correctly. Every time the column goes into a namespace,
+    # we push an opening struct statement onto the string. Every time we
+    # complete nested struct, we close out the string by aliasing the struct to
+    # the namespace.
     for col in sorted(columns):
         split = col.split(".")
         # check if we go deeper
         if len(split) > 1 and len(split) > len(prev):
-            acc += "struct(" * (len(split) - len(prev))
+            # the number of times to start nesting
+            if len(prev) == 0:
+                k = len(split) - 1
+            else:
+                k = len(split) - len(prev)
+            acc += "struct(" * k
         # sometimes we have two structs that are the same depth e.g. metrics
         if len(split) > 1 and len(split) == len(prev) and split[-2] != prev[-2]:
             # ensure that we are not ending a struct with a comma
@@ -69,6 +87,7 @@ def generate_query(columns, table):
         for c in reversed(prev):
             acc = acc.rstrip(",")
             acc += f") as {c},"
+    acc = acc.rstrip(",")
 
     return reformat(f"select {acc} from `{table}`")
 
@@ -139,5 +158,66 @@ def main():
     print(f"updated view at {view_id}")
 
 
+def test_generate_query_simple():
+    columns = ["a", "b"]
+    res = generate_query(columns, "test")
+    expect = reformat("select a, b from `test`")
+    assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
+
+
+def test_generate_query_nested():
+    columns = ["a", "b.c", "b.d"]
+    res = generate_query(columns, "test")
+    expect = reformat("select a, struct(b.c, b.d) as b from `test`")
+    assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
+
+
+def test_generate_query_nested_deep_skip():
+    columns = ["b.c.e", "b.d.f"]
+    res = generate_query(columns, "test")
+    expect = reformat(
+        """
+    select struct(
+        struct(
+            b.c.e
+        ) as c,
+        struct(
+            b.d.f
+        ) as d
+    ) as b
+    from `test`
+    """
+    )
+    assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
+
+
+def test_generate_query_nested_deep():
+    columns = ["a.b", "a.c", "a.d.x.y.e", "a.d.x.y.f", "g"]
+    res = generate_query(columns, "test")
+    expect = reformat(
+        """
+        select struct(
+            a.b,
+            a.c,
+            struct(
+                struct(
+                    struct(
+                        a.d.x.y.e,
+                        a.d.x.y.f
+                    ) as y
+                ) as x
+            ) as d
+        ) as a,
+        g
+        from `test`
+    """
+    )
+    assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
+
+
 if __name__ == "__main__":
+    test_generate_query_simple()
+    test_generate_query_nested()
+    test_generate_query_nested_deep_skip()
+    test_generate_query_nested_deep()
     main()

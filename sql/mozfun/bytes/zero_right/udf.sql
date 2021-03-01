@@ -1,10 +1,6 @@
 CREATE OR REPLACE FUNCTION bytes.zero_right(b BYTES, length INT64)
 RETURNS BYTES AS (
-  IF(
-    length > LENGTH(b) * 8,
-    ERROR("Cannot zero out more bits than are present"),
-    b >> length << length
-  )
+  b >> length << length
 );
 
 -- Tests

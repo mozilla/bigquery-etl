@@ -1,5 +1,6 @@
 CREATE MATERIALIZED VIEW telemetry_derived.experiment_events_live_v1
-OPTIONS (enable_refresh = true, refresh_interval_minutes = 5)
+OPTIONS
+  (enable_refresh = TRUE, refresh_interval_minutes = 5)
 AS
 WITH desktop_live AS (
   SELECT
@@ -11,10 +12,20 @@ WITH desktop_live AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_live.event_v4`
   CROSS JOIN
-    UNNEST(payload.events.parent) AS event
+    UNNEST(
+      ARRAY_CONCAT(
+        payload.events.parent,
+        payload.events.content,
+        payload.events.dynamic,
+        payload.events.extension,
+        payload.events.gpu
+      )
+    ) AS event
   CROSS JOIN
     UNNEST(event.f5_) AS event_map_value
-  WHERE event.f1_ = 'normandy' AND event_map_value.key = 'branch'
+  WHERE
+    event.f1_ = 'normandy'
+    AND event_map_value.key = 'branch'
 )
 SELECT
   date(`timestamp`) AS submission_date,
@@ -41,6 +52,8 @@ SELECT
   COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count
 FROM
   desktop_live
+WHERE
+  timestamp > TIMESTAMP('2021-03-01')
 GROUP BY
   submission_date,
   `type`,
@@ -48,5 +61,3 @@ GROUP BY
   branch,
   window_start,
   window_end
-
--- use CROSS JOIN unnest(array_concat(payload.events.content, payload.events.dynamic)) as x

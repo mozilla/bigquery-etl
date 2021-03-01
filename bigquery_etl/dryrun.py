@@ -342,7 +342,7 @@ class DryRun:
             and self.dry_run_result["valid"]
             and "datasetLabels" in self.dry_run_result
         ):
-            return self.dry_run_result["dataset_labels"]
+            return self.dry_run_result["datasetLabels"]
 
         return {}
 

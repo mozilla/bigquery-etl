@@ -17,32 +17,9 @@ SELECT
   disqualification_count,
   exposure_count
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_v1`
-UNION ALL
-SELECT
-  type,
-  experiment,
-  branch,
-  window_start,
-  window_end,
-  enroll_count,
-  unenroll_count,
-  graduate_count,
-  update_count,
-  enroll_failed_count,
-  unenroll_failed_count,
-  update_failed_count,
-  disqualification_count,
-  exposure_count
-FROM
-  `moz-fx-data-shared-prod.telemetry.experiment_enrollment_aggregates_hourly`
+  `moz-fx-data-shared-prod.telemetry_derived.experiment_events_live_v1`
 WHERE
-  window_start > (
-    SELECT
-      MAX(window_end)
-    FROM
-      `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_v1`
-  )
+  window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
 UNION ALL
 SELECT
   type,
@@ -60,4 +37,6 @@ SELECT
   disqualification_count,
   exposure_count
 FROM
-  `moz-fx-data-shared-prod.telemetry.experiment_enrollment_aggregates_recents`
+  `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_v1`
+WHERE
+  window_start <= TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))

@@ -94,21 +94,14 @@ def generate_query(columns, table):
 
 def main():
     # get the most schema deploy (to the nearest 15 minutes)
-    deploys_url = (
-        "https://protosaur.dev/mps-deploys/data/mozilla_pipeline_schemas/deploys.json"
+    bq = bigquery.Client()
+    label = bq.get_dataset("moz-fx-data-shared-prod.telemetry").labels.get(
+        "schemas_build_id"
     )
-    resp = requests.get(deploys_url)
-    deploys_data = resp.json()
-    # get the last element that has reached production
-    last_prod_deploy = [
-        row
-        for row in sorted(deploys_data, key=lambda x: x["submission_timestamp"])
-        if row["project"] == "moz-fx-data-shared-prod"
-    ][-1]
-    print(f"last deploy: {last_prod_deploy}")
+    print(f"last deploy: {label}")
 
     # get the schema corresponding to the last commit
-    commit_hash = last_prod_deploy["commit_hash"]
+    commit_hash = label.split("_")[-1]
     schema_url = (
         "https://raw.githubusercontent.com/mozilla-services/mozilla-pipeline-schemas/"
         f"{commit_hash}/schemas/org-mozilla-ios-firefox/metrics/metrics.1.bq"

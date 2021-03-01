@@ -72,7 +72,14 @@ def validate(project_dirs):
                         )
 
                         # store sql in temporary file for dry_run
-                        tmp_dir = Path(tempfile.mkdtemp()) / Path(root)
+                        # DryRun will use tmp_example_file.parent.parent.name as the
+                        # default dataset, which must exist in moz-fx-data-shared-prod
+                        tmp_dir = (
+                            Path(tempfile.mkdtemp())
+                            / "moz-fx-data-shared-prod"
+                            / "tmp"
+                            / "test"
+                        )
                         tmp_dir.mkdir(parents=True, exist_ok=True)
                         tmp_example_file = tmp_dir / file
                         tmp_example_file.write_text(dry_run_sql)

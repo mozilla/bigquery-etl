@@ -9,29 +9,48 @@ TEST_DIR = Path(__file__).parent.parent
 
 
 class TestQuerySchema:
-    def test_from_schema_file(self):
-        schema_file = (
-            TEST_DIR
-            / "data"
-            / "test_sql"
-            / "moz-fx-data-test-project"
-            / "test"
-            / "incremental_query_v1"
-            / "schema.yaml"
+    def test_from_schema_file(self, tmp_path):
+        schema_file = tmp_path / "schema.yaml"
+        schema_file.write_text(
+            """
+            fields:
+            - mode: NULLABLE
+              name: d
+              type: DATE
+            - mode: NULLABLE
+              name: a
+              type: STRING
+            - mode: NULLABLE
+              name: b
+              type: INTEGER
+            """
         )
 
         schema = Schema.from_schema_file(schema_file)
         assert len(schema.schema["fields"]) == 3
 
-    def test_from_query_file(self):
-        query_file = (
-            TEST_DIR
-            / "data"
-            / "test_sql"
-            / "moz-fx-data-test-project"
-            / "test"
-            / "incremental_query_non_incremental_export_v1"
-            / "query.sql"
+    def test_from_query_file(self, tmp_path):
+        # DryRun will use query_file.parent.parent.name as the
+        # default dataset, which must exist in moz-fx-data-shared-prod
+        query_file = tmp_path / "tmp" / "test" / "query.sql"
+        query_file.parent.mkdir(parents=True, exist_ok=True)
+        query_file.write_text(
+            """
+            SELECT
+              DATE '2020-03-15' AS d,
+              "val1" AS a,
+              2 AS b
+            UNION ALL
+            SELECT
+              DATE '2020-03-15' AS d,
+              "val2" AS a,
+              34 AS b
+            UNION ALL
+            SELECT
+              DATE '2020-03-16' AS d,
+              "val3" AS a,
+              5 AS b
+            """
         )
 
         schema = Schema.from_query_file(query_file)

@@ -378,8 +378,9 @@ class DryRun:
 
     def get_error(self):
         """Get specific errors for edge case handling."""
-        if "errors" in self.dry_run_result and len(self.dry_run_result["errors"]) == 1:
-            error = self.dry_run_result["errors"][0]
+        errors = self.dry_run_result.get("errors", None)
+        if errors and len(errors) == 1:
+            error = errors[0]
         else:
             error = None
         if error and error.get("code", None) in [400, 403]:

@@ -1,23 +1,13 @@
-CREATE OR REPLACE FUNCTION bytes.extract_bits(b BYTES, BEGIN
-  INT64,
-  length INT64
-)
+CREATE OR REPLACE FUNCTION bytes.extract_bits(b BYTES, `begin` INT64, length INT64)
 RETURNS BYTES AS (
-  SUBSTR(mozfun.bytes.right_left_shift(b << MOD(IF(BEGIN
-  >0,
-BEGIN
-  -1,
-  LENGTH(b) * 8 +
-BEGIN
-),
-8
-),
-(mozfun.bytes.bit_pos_to_byte_pos(length) * 8 - length)
-),
-mozfun.bytes.bit_pos_to_byte_pos(BEGIN
-),
-mozfun.bytes.bit_pos_to_byte_pos(length - 1)
-)
+  SUBSTR(
+    mozfun.bytes.zero_right(
+      b << MOD(IF(`begin` > 0, `begin` - 1, LENGTH(b) * 8 + `begin`), 8),
+      (mozfun.bytes.bit_pos_to_byte_pos(length) * 8 - length)
+    ),
+    mozfun.bytes.bit_pos_to_byte_pos(`begin`),
+    mozfun.bytes.bit_pos_to_byte_pos(length - 1)
+  )
 );
 
 -- Tests

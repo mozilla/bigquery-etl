@@ -1,0 +1,18 @@
+---
+description: |
+  Extract bits from a byte array. Roughly matches substr
+  with three arguments:
+    b: bytes - The byte string we need to extract from
+    start: int - The position of the first bit we want to extract.
+      Can be negative to start from the end of the byte array.
+      One-indexed, like substring.
+    length: int - The number of bits we want to extract
+
+  The return byte array will have CEIL(length/8) bytes. The bits of
+  interest will start at the beginning of the byte string. In other words,
+  the byte array will have trailing 0s for any non-relevant fields.
+
+  Examples:
+  bytes.extract_bits(b'\x0F\xF0', 5, 8) = b'\xFF'
+  bytes.extract_bits(b'\x0C\xC0', -12, 8) = b'\xCC'
+friendly_name: Extract Bits

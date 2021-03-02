@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from bigquery_etl.docs.validate_docs import sql_for_dry_run
+from bigquery_etl.routine.parse_routine import sub_local_routines
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -17,5 +17,5 @@ class TestValidateDocs:
             / "example1.sql"
         )
 
-        sql = sql_for_dry_run(file, {}, "")
-        assert sql == open(file).read()
+        sql = sub_local_routines(file.read_text(), project="", raw_routines={})
+        assert sql == file.read_text()

@@ -1,0 +1,4 @@
+description: |
+  Given a bit position, get the byte that bit appears in.
+  1-indexed (to match substr), and accepts negative values.
+friendly_name: Bit Position to Byte Position

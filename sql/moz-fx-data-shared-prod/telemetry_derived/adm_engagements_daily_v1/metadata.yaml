@@ -1,0 +1,17 @@
+---
+friendly_name: adMarketplace Daily Engagements
+description: >
+  Click Volume, partitioned by day with the following facets:
+    - submission_date
+    - phase
+    - country
+    - placement
+    - partner
+    - version
+    - normalized_channel
+owners:
+  - tbrooks@mozilla.com
+labels:
+  application: firefox
+  schedule: daily
+  incremental: true

@@ -72,9 +72,7 @@ def extract_table_references_without_views(path: Path):
                         tuple(schema.user_facing_view.split(".")): tuple(
                             schema.stable_table.split(".")
                         )
-                        for schema in get_stable_table_schemas(
-                            "moz-fx-data-shared-prod"
-                        )
+                        for schema in get_stable_table_schemas()
                     }
                 if parts[-2:] in stable_views:
                     parts = ("moz-fx-data-shared-prod", *stable_views[parts[-2:]])

@@ -177,9 +177,9 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
             f.write(metadata_content)
 
 
-def get_stable_table_schemas(target_project) -> List[SchemaFile]:
+def get_stable_table_schemas() -> List[SchemaFile]:
     """Fetch last schema metadata per doctype by version."""
-    schemas_uri = schemas_uri_for_project(target_project)
+    schemas_uri = prod_schemas_uri()
     with urllib.request.urlopen(schemas_uri) as f:
         tarbytes = BytesIO(f.read())
 
@@ -217,8 +217,8 @@ def get_stable_table_schemas(target_project) -> List[SchemaFile]:
     ]
 
 
-def schemas_uri_for_project(target_project):
-    """Return URI for the schemas tarball deployed to the given project.
+def prod_schemas_uri():
+    """Return URI for the schemas tarball deployed to shared-prod.
 
     We construct a fake query and send it to the dry run service in order
     to read dataset labels, which contains the commit hash associated
@@ -249,7 +249,7 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    schemas = get_stable_table_schemas(args.target_project)
+    schemas = get_stable_table_schemas()
 
     with ThreadPool(args.parallelism) as pool:
         pool.map(

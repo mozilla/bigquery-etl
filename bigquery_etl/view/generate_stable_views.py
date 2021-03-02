@@ -12,7 +12,6 @@ checking them into the sql/ tree of the default branch of the repository.
 import json
 import logging
 import tarfile
-import tempfile
 import urllib.request
 from argparse import ArgumentParser
 from dataclasses import dataclass
@@ -21,6 +20,7 @@ from io import BytesIO
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
+
 from typing import List
 
 from bigquery_etl.dryrun import DryRun

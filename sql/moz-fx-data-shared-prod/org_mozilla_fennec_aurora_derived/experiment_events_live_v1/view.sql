@@ -1,4 +1,4 @@
-CREATE MATERIALIZED VIEW org_mozilla_fenix_derived.experiment_events_live_v1
+CREATE MATERIALIZED VIEW org_mozilla_fennec_aurora_derived.experiment_events_live_v1
 OPTIONS
   (enable_refresh = TRUE, refresh_interval_minutes = 5)
 AS
@@ -7,7 +7,7 @@ WITH fenix_all_events AS (
     submission_timestamp,
     events
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_live.events_v1`
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.events_v1`
 ),
 fenix AS (
   SELECT

@@ -23,11 +23,6 @@ VIEWS_TO_SKIP = (
     # Dataset glam-fenix-dev:glam_etl was not found
     # TODO: this should be removed if views are to be automatically deployed
     *[str(path) for path in Path("sql/glam-fenix-dev").glob("glam_etl/**/view.sql")],
-    # Materialized views
-    "telemetry_derived/experiment_events_live_v1/view.sql",
-    "org_mozilla_firefox_derived/experiment_events_live_v1/view.sql",
-    "org_mozilla_firefox_beta_derived/experiment_events_live_v1/view.sql",
-    "org_mozilla_fenix_derived/experiment_events_live_v1/view.sql",
 )
 
 # suffixes of datasets with non-user-facing views

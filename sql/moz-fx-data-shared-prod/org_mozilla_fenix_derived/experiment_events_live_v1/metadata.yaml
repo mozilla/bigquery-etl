@@ -1,7 +1,7 @@
 friendly_name: Experiment Events Live
 description: |-
   Materialized view of experimentation related events
-  coming from Fenix clients.
+  coming from Fenix nightly clients.
 owners:
 - ascholtz@mozilla.com
 labels:

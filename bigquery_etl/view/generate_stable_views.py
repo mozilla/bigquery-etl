@@ -71,13 +71,6 @@ parser.add_argument(
     default="moz-fx-data-shared-prod",
     help="The project where the stable tables live.",
 )
-parser.add_argument(
-    "--no-dry-run",
-    action="store_false",
-    default=True,
-    dest="dry_run",
-    help="Don't use dry run to check whether stable tables actually exist.",
-)
 standard_args.add_log_level(parser)
 standard_args.add_parallelism(parser)
 
@@ -186,9 +179,9 @@ def write_view_if_not_exists(
             f.write(metadata_content)
 
 
-def get_stable_table_schemas() -> List[SchemaFile]:
+def get_stable_table_schemas(target_project) -> List[SchemaFile]:
     """Fetch last schema metadata per doctype by version."""
-    schemas_uri = prod_schemas_uri()
+    schemas_uri = schemas_uri_for_project(target_project)
     with urllib.request.urlopen(schemas_uri) as f:
         tarbytes = BytesIO(f.read())
 
@@ -226,15 +219,15 @@ def get_stable_table_schemas() -> List[SchemaFile]:
     ]
 
 
-def prod_schemas_uri():
-    """Return URI for the schemas tarball associated with prod environment.
+def schemas_uri_for_project(target_project):
+    """Return URI for the schemas tarball deployed to the given project.
 
     We construct a fake query and send it to the dry run service in order
     to read dataset labels, which contains the commit hash associated
     with the most recent production schemas deploy.
     """
     with tempfile.TemporaryDirectory() as tdir:
-        d = Path(tdir) / "moz-fx-data-shared-prod" / "telemetry_derived" / "myquery"
+        d = Path(tdir) / target_project / "telemetry_derived" / "myquery"
         d.mkdir(parents=True)
         tfile = Path(d) / "query.sql"
         with tfile.open("w") as f:
@@ -264,7 +257,7 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    schemas = get_stable_table_schemas()
+    schemas = get_stable_table_schemas(args.target_project)
 
     with ThreadPool(args.parallelism) as pool:
         pool.map(

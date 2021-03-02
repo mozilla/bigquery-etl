@@ -109,9 +109,7 @@ class SchemaFile:
         )
 
 
-def write_view_if_not_exists(
-    target_project: str, sql_dir: Path, schema: SchemaFile, dry_run: bool
-):
+def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaFile):
     """If a view.sql does not already exist, write one to the target directory."""
     target_dir = (
         sql_dir
@@ -265,7 +263,6 @@ def main():
                 write_view_if_not_exists,
                 args.target_project,
                 Path(args.sql_dir),
-                dry_run=args.dry_run,
             ),
             schemas,
             chunksize=1,

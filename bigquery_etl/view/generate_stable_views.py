@@ -224,14 +224,8 @@ def schemas_uri_for_project(target_project):
     to read dataset labels, which contains the commit hash associated
     with the most recent production schemas deploy.
     """
-    with tempfile.TemporaryDirectory() as tdir:
-        d = Path(tdir) / target_project / "telemetry_derived" / "myquery"
-        d.mkdir(parents=True)
-        tfile = Path(d) / "query.sql"
-        with tfile.open("w") as f:
-            f.write("SELECT 1")
-        dryrun = DryRun(str(tfile))
-        build_id = dryrun.get_dataset_labels()["schemas_build_id"]
+    dryrun = DryRun("telemetry_derived/foo/query.sql", content="SELECT 1")
+    build_id = dryrun.get_dataset_labels()["schemas_build_id"]
     commit_hash = build_id.split("_")[-1]
     return f"{MPS_URI}/archive/{commit_hash}.tar.gz"
 

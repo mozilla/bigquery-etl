@@ -27,10 +27,7 @@ from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util import standard_args
 
-SCHEMAS_URI = (
-    "https://github.com/mozilla-services/mozilla-pipeline-schemas"
-    "/archive/generated-schemas.tar.gz"
-)
+MPS_URI = "https://github.com/mozilla-services/mozilla-pipeline-schemas"
 
 SKIP_PREFIXES = (
     "pioneer",
@@ -175,19 +172,6 @@ def write_view_if_not_exists(
             full_view_id=full_view_id,
         )
     )
-    if dry_run:
-        with tempfile.TemporaryDirectory() as tdir:
-            tfile = Path(tdir) / "view.sql"
-            with tfile.open("w") as f:
-                f.write(full_sql)
-            print(f"Dry running {schema.user_facing_view}")
-            dryrun = DryRun(str(tfile))
-            if 404 in [e.get("code") for e in dryrun.errors()]:
-                print(
-                    f"Not creating {schema.user_facing_view} since"
-                    " stable table does not exist"
-                )
-                return
     print(f"Creating {target_file}")
     target_dir.mkdir(parents=True, exist_ok=True)
     with target_file.open("w") as f:
@@ -204,7 +188,8 @@ def write_view_if_not_exists(
 
 def get_stable_table_schemas() -> List[SchemaFile]:
     """Fetch last schema metadata per doctype by version."""
-    with urllib.request.urlopen(SCHEMAS_URI) as f:
+    schemas_uri = prod_schemas_uri()
+    with urllib.request.urlopen(schemas_uri) as f:
         tarbytes = BytesIO(f.read())
 
     schemas = []
@@ -239,6 +224,25 @@ def get_stable_table_schemas() -> List[SchemaFile]:
             schemas, lambda t: f"{t.document_namespace}/{t.document_type}"
         )
     ]
+
+
+def prod_schemas_uri():
+    """Return URI for the schemas tarball associated with prod environment.
+
+    We construct a fake query and send it to the dry run service in order
+    to read dataset labels, which contains the commit hash associated
+    with the most recent production schemas deploy.
+    """
+    with tempfile.TemporaryDirectory() as tdir:
+        d = Path(tdir) / "moz-fx-data-shared-prod" / "telemetry_derived" / "myquery"
+        d.mkdir(parents=True)
+        tfile = Path(d) / "query.sql"
+        with tfile.open("w") as f:
+            f.write("SELECT 1")
+        dryrun = DryRun(str(tfile))
+        build_id = dryrun.get_dataset_labels()["schemas_build_id"]
+    commit_hash = build_id.split("_")[-1]
+    return f"{MPS_URI}/archive/{commit_hash}.tar.gz"
 
 
 def main():

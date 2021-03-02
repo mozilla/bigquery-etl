@@ -1,3 +1,7 @@
+-- This and the following materialized view need to be kept in sync:
+-- - org_mozilla_firefox_beta_derived.experiment_events_live_v1
+-- - org_mozilla_fenix_derived.experiment_events_live_v1
+-- - org_mozilla_firefox_derived.experiment_events_live_v1
 CREATE MATERIALIZED VIEW org_mozilla_firefox_derived.experiment_events_live_v1
 OPTIONS
   (enable_refresh = TRUE, refresh_interval_minutes = 5)

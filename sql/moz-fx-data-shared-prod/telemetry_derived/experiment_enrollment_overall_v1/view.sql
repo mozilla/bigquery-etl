@@ -7,7 +7,7 @@ SELECT
   branch,
   sum(`enroll_count`) AS value
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+  `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
 GROUP BY
   1,
   2,

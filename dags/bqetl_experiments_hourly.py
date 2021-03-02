@@ -39,22 +39,6 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
-    experiment_enrollment_aggregates_hourly = bigquery_etl_query(
-        task_id="experiment_enrollment_aggregates_hourly",
-        destination_table='experiment_enrollment_aggregates_hourly_v1${{ macros.ds_format((execution_date + macros.timedelta(hours=-1)).to_datetime_string(), "%Y-%m-%d %H:%M:%S", "%Y%m%d%H") }}',
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=[
-            'submission_timestamp:TIMESTAMP:{{ macros.ds_format(ts_nodash, "%Y%m%dT%H%M%S", "%Y-%m-%d %H:00:00") }}'
-        ],
-        sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql",
-        dag=dag,
-    )
-
     experiment_search_aggregates_hourly = bigquery_etl_query(
         task_id="experiment_search_aggregates_hourly",
         destination_table='experiment_search_aggregates_hourly_v1${{ macros.ds_format((execution_date + macros.timedelta(hours=-1)).to_datetime_string(), "%Y-%m-%d %H:%M:%S", "%Y%m%d%H") }}',

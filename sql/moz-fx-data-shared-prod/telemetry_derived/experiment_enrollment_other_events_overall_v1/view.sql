@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_other_events_overall_v1`
+AS
 WITH pivot AS (
   SELECT
     window_start,
@@ -6,7 +9,7 @@ WITH pivot AS (
     "graduated" AS event,
     graduate_count AS count
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
   UNION ALL
   SELECT
     window_start,
@@ -15,7 +18,7 @@ WITH pivot AS (
     "enroll_failed" AS event,
     enroll_failed_count AS count
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
   UNION ALL
   SELECT
     window_start,
@@ -24,7 +27,7 @@ WITH pivot AS (
     "unenroll_failed" AS event,
     unenroll_failed_count AS count
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
   UNION ALL
   SELECT
     window_start,
@@ -33,7 +36,7 @@ WITH pivot AS (
     "updated" AS event,
     update_count AS count
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
   UNION ALL
   SELECT
     window_start,
@@ -42,7 +45,7 @@ WITH pivot AS (
     "update_failed" AS event,
     update_failed_count AS count
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
 )
 SELECT
   window_start AS `time`,

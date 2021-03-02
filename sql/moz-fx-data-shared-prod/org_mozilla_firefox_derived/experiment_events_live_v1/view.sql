@@ -1,43 +1,8 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_base`
+CREATE MATERIALIZED VIEW org_mozilla_firefox_derived.experiment_events_live_v1
+OPTIONS
+  (enable_refresh = TRUE, refresh_interval_minutes = 5)
 AS
-WITH desktop AS (
-  SELECT
-    timestamp,
-    event_object AS `type`,
-    event_string_value AS experiment,
-    mozfun.map.get_key(event_map_values, 'branch') AS branch,
-    event_method
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.events_live`
-  WHERE
-    event_category = 'normandy'
-),
-fenix_all_events AS (
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_live.events_v1`
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_live.events_v1`
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.events_v1`
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.events_v1`
-  UNION ALL
+WITH fenix_all_events AS (
   SELECT
     submission_timestamp,
     events
@@ -48,25 +13,20 @@ fenix AS (
   SELECT
     submission_timestamp AS `timestamp`,
     event.category AS `type`,
-    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
-    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    extra1.value AS experiment,
+    extra2.value AS branch,
     event.name AS event_method
   FROM
     fenix_all_events,
     UNNEST(events) AS event
+  CROSS JOIN
+    UNNEST(event.extra) AS extra1
+  CROSS JOIN
+    UNNEST(event.extra) AS extra2
   WHERE
     event.category = 'nimbus_events'
-),
-all_events AS (
-  SELECT
-    *
-  FROM
-    desktop
-  UNION ALL
-  SELECT
-    *
-  FROM
-    fenix
+    AND extra1.key = 'experiment'
+    AND extra2.key = 'branch'
 )
 SELECT
   date(`timestamp`) AS submission_date,
@@ -92,7 +52,9 @@ SELECT
   COUNTIF(event_method = 'disqualification') AS disqualification_count,
   COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count
 FROM
-  all_events
+  fenix
+WHERE
+  timestamp > TIMESTAMP('2021-03-01')
 GROUP BY
   submission_date,
   `type`,

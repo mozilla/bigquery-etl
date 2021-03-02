@@ -1,10 +1,13 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_cumulative_population_estimate_v1`
+AS
 WITH all_branches AS (
   -- We need to determine all available branches for this experiment
   SELECT DISTINCT
     branch,
     experiment
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
 ),
 non_null_branches AS (
   -- We need to determine if the experiment is a rollout. Rollouts do not have any branches,
@@ -49,7 +52,7 @@ branches_per_window AS (
       SELECT DISTINCT
         window_start
       FROM
-        `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+        `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
     )
 ),
 cumulative_populations AS (
@@ -68,7 +71,7 @@ cumulative_populations AS (
         * EXCEPT (branch),
         IF(branch IS NULL, 'null', branch) AS branch
       FROM
-        `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live`
+        `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
     )
   USING
     (window_start, branch, experiment)

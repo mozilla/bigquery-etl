@@ -3,16 +3,14 @@
 import logging
 import os
 import re
-import tempfile
-from functools import partial
 from pathlib import Path
 
-import requests
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
+from bigquery_etl.view import generate_stable_views
 
 
 def render(sql_filename, format=True, **kwargs) -> str:
@@ -42,33 +40,36 @@ def write_sql(output_dir, full_table_id, basename, sql):
         f.write("\n")
 
 
-def list_baseline_tables(pool, project_id, only_tables, table_filter):
-    """Return Glean app listings from the probeinfo API."""
+def list_baseline_tables(project_id, only_tables, table_filter):
+    """Return names of all matching baseline tables in shared-prod."""
+    prod_baseline_tables = [
+        s.stable_table
+        for s in generate_stable_views.get_stable_table_schemas()
+        if s.schema_id == "moz://mozilla.org/schemas/glean/ping/1"
+        and s.bq_table == "baseline_v1"
+    ]
+    prod_datasets_with_baseline = [t.split(".")[0] for t in prod_baseline_tables]
+    stable_datasets = prod_datasets_with_baseline
     if only_tables and not _contains_glob(only_tables):
         # skip list calls when only_tables exists and contains no globs
-        return [f"{project_id}.{t}" for t in only_tables if table_filter(t)]
+        return [
+            f"{project_id}.{t}"
+            for t in only_tables
+            if table_filter(t) and t in prod_baseline_tables
+        ]
     if only_tables and not _contains_glob(
         _extract_dataset_from_glob(t) for t in only_tables
     ):
         stable_datasets = {_extract_dataset_from_glob(t) for t in only_tables}
-        stable_datasets = {d for d in stable_datasets if d.endswith("_stable")}
-    else:
-        response = requests.get(
-            "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
-        )
-        apps = response.json()
-        stable_datasets = [
-            f"{app['bq_dataset_family']}_stable"
-            for app in apps
-            # TODO: consider filtering out deprecated app listings.
-            # if not app.get("deprecated", False)
-        ]
+        stable_datasets = {
+            d
+            for d in stable_datasets
+            if d.endswith("_stable") and d in prod_datasets_with_baseline
+        }
     return [
         f"{project_id}.{d}.baseline_v1"
-        for d, exists in pool.map(
-            partial(baseline_exists_in_dataset, project_id), stable_datasets
-        )
-        if exists and table_filter(f"{d}.baseline_v1")
+        for d in stable_datasets
+        if table_filter(f"{d}.baseline_v1")
     ]
 
 
@@ -89,26 +90,8 @@ def table_names_from_baseline(baseline_table):
 
 def referenced_table_exists(view_sql):
     """Dry run the given view SQL to see if its referent exists."""
-    with tempfile.TemporaryDirectory() as tdir:
-        tfile = Path(tdir) / "view.sql"
-        with tfile.open("w") as f:
-            f.write(view_sql)
-        dryrun = DryRun(str(tfile))
-        return 404 not in [e.get("code") for e in dryrun.errors()]
-
-
-def baseline_exists_in_dataset(project_id, dataset_id):
-    """Dry run a simple query that tests if a baseline table exists.
-
-    It's possible that the generated-schemas branch contains new doctypes
-    that have yet gone through ops logic to create the associated BQ
-    resources, and this helper lets us skip those.
-    """
-    view_sql = f"""\
-        SELECT * FROM `{project_id}.{dataset_id}.baseline_v1`
-        WHERE DATE(submission_timestamp) = '2000-01-01'
-    """
-    return dataset_id, referenced_table_exists(view_sql)
+    dryrun = DryRun("foo/bar/view.sql", content=view_sql)
+    return 404 not in [e.get("code") for e in dryrun.errors()]
 
 
 def _contains_glob(patterns):

@@ -69,14 +69,13 @@ def main():
     except ValueError as e:
         parser.error(f"argument --log-level: {e}")
 
-    with ThreadPool(args.parallelism) as pool:
-        baseline_tables = list_baseline_tables(
-            pool=pool,
-            project_id=args.project_id,
-            only_tables=getattr(args, "only_tables", None),
-            table_filter=args.table_filter,
-        )
+    baseline_tables = list_baseline_tables(
+        project_id=args.project_id,
+        only_tables=getattr(args, "only_tables", None),
+        table_filter=args.table_filter,
+    )
 
+    with ThreadPool(args.parallelism) as pool:
         # Do a first pass with dry_run=True so we don't end up with a partial success;
         # we also write out queries in this pass if so configured.
         pool.map(

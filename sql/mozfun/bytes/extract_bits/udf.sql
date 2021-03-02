@@ -6,7 +6,7 @@ RETURNS BYTES AS (
       (mozfun.bytes.bit_pos_to_byte_pos(length) * 8 - length)
     ),
     mozfun.bytes.bit_pos_to_byte_pos(`begin`),
-    mozfun.bytes.bit_pos_to_byte_pos(length - 1)
+    mozfun.bytes.bit_pos_to_byte_pos(length)
   )
 );
 
@@ -19,4 +19,5 @@ SELECT
   bytes.extract_bits(b'\x0F\x77', 0, 8) = b'\x0F',
   bytes.extract_bits(b'\x0F\xF0', -10, 8) = b'\xFC',
   bytes.extract_bits(b'\x0F\xF0', 5, 8) = b'\xFF',
-  bytes.extract_bits(b'\x0C\xC0', -12, 8) = b'\xCC'
+  bytes.extract_bits(b'\x0C\xC0', -12, 8) = b'\xCC',
+  bytes.extract_bits(b'\xFF', -4, 1) = b'\x80'

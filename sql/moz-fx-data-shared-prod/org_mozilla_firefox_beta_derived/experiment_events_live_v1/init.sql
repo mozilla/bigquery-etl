@@ -17,20 +17,18 @@ fenix AS (
   SELECT
     submission_timestamp AS `timestamp`,
     event.category AS `type`,
-    extra1.value AS experiment,
-    extra2.value AS branch,
+    -- using UNNEST twice on the same field doesn't work in materialized views
+    REGEXP_EXTRACT(TO_JSON_STRING(event.extra), '.*{"key":"branch","value":"([^"]*)"}.*') AS branch,
+    REGEXP_EXTRACT(
+      TO_JSON_STRING(event.extra),
+      '.*{"key":"experiment","value":"([^"]*)"}.*'
+    ) AS experiment,
     event.name AS event_method
   FROM
     fenix_all_events,
     UNNEST(events) AS event
-  CROSS JOIN
-    UNNEST(event.extra) AS extra1
-  CROSS JOIN
-    UNNEST(event.extra) AS extra2
   WHERE
     event.category = 'nimbus_events'
-    AND extra1.key = 'experiment'
-    AND extra2.key = 'branch'
 )
 SELECT
   date(`timestamp`) AS submission_date,

@@ -8,7 +8,7 @@ WITH desktop_live AS (
     event.f2_ AS event_method,
     event.f3_ AS `type`,
     event.f4_ AS experiment,
-    event_map_value.value AS branch
+    IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch
   FROM
     `moz-fx-data-shared-prod.telemetry_live.event_v4`
   CROSS JOIN
@@ -25,7 +25,15 @@ WITH desktop_live AS (
     UNNEST(event.f5_) AS event_map_value
   WHERE
     event.f1_ = 'normandy'
-    AND event_map_value.key = 'branch'
+    AND (
+      (event_map_value.key = 'branch' AND event.f3_ = 'preference_study')
+      OR (
+        (event.f3_ = 'addon_study' OR event.f3_ = 'preference_rollout')
+        AND event_map_value.key = 'enrollmentId'
+      )
+      OR event.f2_ = 'enrollFailed'
+      OR event.f2_ = 'unenrollFailed'
+    )
 )
 SELECT
   date(`timestamp`) AS submission_date,

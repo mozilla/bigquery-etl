@@ -63,7 +63,9 @@ per_client AS (
     client_id,
     sample_id,
     ARRAY_CONCAT_AGG(addons_enabled_addons ORDER BY submission_timestamp) AS addons,
-    ARRAY_AGG(app_version ORDER BY mozfun.norm.truncate_version(application.version, "minor") DESC)[
+    -- We always want to take the most recent seen version per
+    -- https://bugzilla.mozilla.org/show_bug.cgi?id=1693308
+    ARRAY_AGG(app_version ORDER BY mozfun.norm.truncate_version(app_version, "minor") DESC)[
       SAFE_OFFSET(0)
     ] AS app_version,
     udf.mode_last(ARRAY_AGG(normalized_country_code)) AS country,

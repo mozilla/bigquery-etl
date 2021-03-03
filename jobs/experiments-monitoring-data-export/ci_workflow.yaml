@@ -1,0 +1,13 @@
+job-experiments-monitoring-data-export:
+  jobs:
+    - build-job-experiments-monitoring-data-export
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/experiments-monitoring-data-export/
+        path: jobs/experiments-monitoring-data-export/
+        image: experiments-monitoring-data-export_docker_etl
+        requires:
+          - build-job-experiments-monitoring-data-export
+        filters:
+          branches:
+            only: main

@@ -96,6 +96,19 @@ jobs:
           command: docker build -t app:build jobs/example_job/
 
 
+  build-job-experiments-monitoring-data-export:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/experiments-monitoring-data-export/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/experiments-monitoring-data-export/
+
   build-job-mozaggregator2bq:
     docker:
       - image: docker:stable-git
@@ -180,6 +193,20 @@ workflows:
             branches:
               only: main
 
+
+  job-experiments-monitoring-data-export:
+    jobs:
+      - build-job-experiments-monitoring-data-export
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/experiments-monitoring-data-export/
+          path: jobs/experiments-monitoring-data-export/
+          image: experiments-monitoring-data-export_docker_etl
+          requires:
+            - build-job-experiments-monitoring-data-export
+          filters:
+            branches:
+              only: main
 
   job-mozaggregator2bq:
     jobs:

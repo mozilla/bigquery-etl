@@ -77,6 +77,7 @@ jobs:
               echo "Check dry run for modified queries"
               PATHS="$(git diff origin/master... --name-only -- sql)"
             fi
+            echo $PATHS
             script/dryrun $PATHS
   validate-metadata:
     docker: *docker

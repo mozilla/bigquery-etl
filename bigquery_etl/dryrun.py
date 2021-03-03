@@ -130,6 +130,10 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/messaging_system_derived/onboarding_users_last_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/messaging_system_derived/snippets_users_last_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/experiment_events_live_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/experiment_events_live_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived/experiment_events_live_v1/init.sql",  # noqa E501
     # Reference table not found
     "sql/moz-fx-data-shared-prod/monitoring_derived/structured_detailed_error_counts_v1/view.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/monitoring/structured_detailed_error_counts/view.sql",  # noqa E501
@@ -162,8 +166,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/asn_aggregates_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_recents_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_hourly_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_recents_v1/query.sql",  # noqa E501
     # Dataset sql/glam-fenix-dev:glam_etl was not found

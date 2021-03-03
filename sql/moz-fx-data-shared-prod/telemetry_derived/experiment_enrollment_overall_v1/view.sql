@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry_derived.experiment_unenrollment_overall_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_overall_v1`
 AS
 SELECT
   window_start AS `time`,

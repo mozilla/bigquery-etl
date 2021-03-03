@@ -10,6 +10,11 @@ SELECT
       campaign,
       country,
       distribution_id
+    ORDER BY
+      submission_date
+    ROWS BETWEEN
+      UNBOUNDED PRECEDING
+      AND CURRENT ROW
   ) AS cdou,
   mau,
   wau,

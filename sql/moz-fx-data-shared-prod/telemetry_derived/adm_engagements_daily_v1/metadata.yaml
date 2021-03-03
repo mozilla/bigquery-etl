@@ -10,7 +10,7 @@ description: >
     - version
     - normalized_channel
 owners:
-  - tbrooks@mozilla.com
+  - rharter@mozilla.com
 labels:
   application: firefox
   schedule: daily

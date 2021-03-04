@@ -35,10 +35,13 @@ done
 set -x
 
 # Fill in any missing view definitions in the target project folder
-time python -m bigquery_etl.view.generate_stable_views \
+python -m bigquery_etl.view.generate_stable_views \
     --target-project "${TARGET_PROJECT}" \
     --sql-dir "${SQL_DIR}" \
     --parallelism=20
+
+# Record dependencies in yaml files
+./script/bqetl dependency record "${SQL_DIR}"
 
 # Fill in definitions for generated Glean ETL
 PLACEHOLDER_DATE="2000-01-01"

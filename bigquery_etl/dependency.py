@@ -1,12 +1,14 @@
 """Build and use query dependency graphs."""
 
 import sys
+from itertools import groupby
 from pathlib import Path
 from subprocess import CalledProcessError
-from typing import Tuple
+from typing import Iterator, List, Tuple
 
 import click
 import jnius_config
+import yaml
 
 from .view.generate_stable_views import get_stable_table_schemas
 
@@ -17,7 +19,7 @@ for path in (Path(__file__).parent.parent / "target" / "dependency").glob("*.jar
 stable_views = None
 
 
-def extract_table_references(sql: str):
+def extract_table_references(sql: str) -> List[str]:
     """Return a list of tables referenced in the given SQL."""
     # import jnius here so this module can be imported safely without java installed
     import jnius  # noqa: E402
@@ -48,7 +50,7 @@ def extract_table_references(sql: str):
     return [".".join(table.toArray()) for table in result.toArray()]
 
 
-def extract_table_references_without_views(path: Path):
+def extract_table_references_without_views(path: Path) -> Iterator[str]:
     """Recursively search for non-view tables referenced in the given SQL file."""
     global stable_views
 
@@ -79,6 +81,33 @@ def extract_table_references_without_views(path: Path):
             yield ".".join(parts)
 
 
+def _get_references(
+    paths: Tuple[str, ...], without_views: bool = False
+) -> Iterator[Tuple[Path, List[str]]]:
+    file_paths = {
+        path
+        for parent in map(Path, paths or ["sql"])
+        for path in (parent.glob("**/*.sql") if parent.is_dir() else [parent])
+        if not path.name.endswith(".template.sql")  # skip templates
+    }
+    fail = False
+    for path in sorted(file_paths):
+        try:
+            if without_views:
+                yield path, list(extract_table_references_without_views(path))
+            else:
+                yield path, extract_table_references(path.read_text())
+        except CalledProcessError as e:
+            raise click.ClickException(f"failed to import jnius: {e}")
+        except ImportError as e:
+            raise click.ClickException(*e.args)
+        except ValueError as e:
+            fail = True
+            print(f"Failed to parse {path}: {e}", file=sys.stderr)
+    if fail:
+        raise click.ClickException("Some paths could not be analyzed")
+
+
 @click.group(help=__doc__)
 def dependency():
     """Create the CLI group for dependency commands."""
@@ -101,30 +130,30 @@ def dependency():
 )
 def show(paths: Tuple[str, ...], without_views: bool):
     """Show table references in sql files."""
-    distinct_paths = {
-        path
-        for parent in map(Path, paths or ["sql"])
-        for path in (parent.glob("**/*.sql") if parent.is_dir() else [parent])
-        if not path.name.endswith(".template.sql")  # skip templates
-    }
-    fail = False
-    for path in sorted(distinct_paths):
-        try:
-            if without_views:
-                table_references = list(extract_table_references_without_views(path))
-            else:
-                table_references = extract_table_references(path.read_text())
-        except CalledProcessError as e:
-            raise click.ClickException(f"failed to import jnius: {e}")
-        except ImportError as e:
-            raise click.ClickException(*e.args)
-        except ValueError as e:
-            fail = True
-            print(f"Failed to parse {path}: {e}", file=sys.stderr)
+    for path, table_references in _get_references(paths, without_views):
         if table_references:
             for table in table_references:
                 print(f"{path}: {table}")
         else:
             print(f"{path} contains no table references", file=sys.stderr)
-    if fail:
-        raise click.ClickException("Some paths could not be analyzed")
+
+
+@dependency.command(
+    help="Record table references in yaml. Requires Java.",
+)
+@click.argument(
+    "paths",
+    nargs=-1,
+    type=click.Path(file_okay=True),
+)
+def record(paths: Tuple[str, ...]):
+    """Record table references in yaml."""
+    for parent, group in groupby(_get_references(paths), lambda e: e[0].parent):
+        references = {
+            path.name: table_references
+            for path, table_references in group
+            if table_references
+        }
+        if not references:
+            continue
+        (parent / "references.yaml").write_text(yaml.dump(references))

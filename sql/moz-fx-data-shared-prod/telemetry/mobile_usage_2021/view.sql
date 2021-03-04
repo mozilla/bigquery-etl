@@ -22,10 +22,10 @@ with_pinfo AS (
 -- Names here should be consistent with the desktop_usage_2021 view.
 SELECT
   submission_date,
-  cdou,
-  mau,
-  wau,
-  dau,
+  COALESCE(cdou, 0) AS cdou,
+  COALESCE(wau, 0) AS wau,
+  COALESCE(mau, 0) AS mau,
+  COALESCE(dau, 0) AS dau,
   id_bucket,
   pinfo.app_name,
   pinfo.canonical_app_name,

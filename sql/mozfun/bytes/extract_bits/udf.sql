@@ -24,3 +24,4 @@ SELECT
   assert.equals(b'\xC0', bytes.extract_bits(b'\xFF\xFF', 2, 2)),
   assert.equals(b'\x80', bytes.extract_bits(b'\xFF\xFF', 6, 1)),
   assert.equals(b'\x80', bytes.extract_bits(b'\xFF\xFF', 1, 1)),
+  assert.equals(b'\xFF', bytes.extract_bits(b'\xFF', 1, 20)),

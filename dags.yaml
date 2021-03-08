@@ -210,20 +210,6 @@ bqetl_experiments_daily:
     retries: 2
     retry_delay: 30m
 
-bqetl_experiments_hourly:
-  schedule_interval: 30 * * * *
-  description: >
-    The DAG schedules queries every hour that materialize experimentation
-    related metrics (enrollment, search, ...) used for monitoring. Tasks
-    are generally scheduled with some lag to account for BigQuery sink
-    delays.
-  default_args:
-    owner: ascholtz@mozilla.com
-    start_date: "2021-01-10"
-    email: ["telemetry-alerts@mozilla.com", "ascholtz@mozilla.com"]
-    retries: 2
-    retry_delay: 10m
-
 bqetl_document_sample:
   schedule_interval: daily
   default_args:

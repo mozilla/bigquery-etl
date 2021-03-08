@@ -70,7 +70,6 @@ SELECT
       ] AS version,
     FROM
       UNNEST(addons) AS addon
-      WITH OFFSET AS i
     GROUP BY
       addon.id
   ) AS addons

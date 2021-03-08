@@ -15,13 +15,9 @@ scheduling:
   parameters:
     - "date:DATE:{{ds}}"
   referenced_tables:
-    - [
-        "moz-fx-data-shared-prod",
-        "firefox_accounts_derived",
-        "fxa_auth_events_v1",
-      ]
-    - [
-        "moz-fx-data-shared-prod",
-        "firefox_accounts_derived",
-        "fxa_content_events_v1",
-      ]
+    - - "moz-fx-data-shared-prod"
+      - "firefox_accounts_derived"
+      - "fxa_auth_events_v1"
+    - - "moz-fx-data-shared-prod"
+      - "firefox_accounts_derived"
+      - "fxa_content_events_v1"

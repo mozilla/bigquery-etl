@@ -1,4 +1,4 @@
-description: Cost of executed experiment analysis queries. 
+description: Cost of executed experiment analysis queries.
 friendly_name: Experiment Analysis Query Costs
 labels:
   incremental: true

@@ -7,4 +7,3 @@ owners:
   - bewu@mozilla.com
 scheduling:
   dag_name: bqetl_google_analytics_derived
-

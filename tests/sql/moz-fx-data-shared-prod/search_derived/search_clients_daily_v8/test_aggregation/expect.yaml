@@ -53,7 +53,6 @@
   addon_version: 0.9.6
   total_uri_count: 1
   is_default_browser: false
-  user_pref_browser_search_region: null
   user_pref_browser_search_region: DE
 - &client_a
   <<: *base

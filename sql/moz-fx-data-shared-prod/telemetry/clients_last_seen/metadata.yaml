@@ -1,7 +1,7 @@
 ---
 friendly_name: Clients Last Seen
 # yamllint disable rule:line-length
-description: |- 
+description: |-
   Captures history of activity of each client in 28 day
   windows for each submission date.
 

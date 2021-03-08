@@ -1,4 +1,4 @@
-CREATE OR REPLACE MATERIALIZED VIEW `moz-fx-data-shared-prod.telemetry_derived.experiment_search_events_live_v1`
+CREATE MATERIALIZED VIEW `moz-fx-data-shared-prod.telemetry_derived.experiment_search_events_live_v1`
 OPTIONS
   (enable_refresh = TRUE, refresh_interval_minutes = 5)
 AS

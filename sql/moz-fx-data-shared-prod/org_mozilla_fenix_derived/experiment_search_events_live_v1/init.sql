@@ -1,4 +1,6 @@
 CREATE OR REPLACE MATERIALIZED VIEW `moz-fx-data-shared-prod.org_mozilla_fenix_derived.experiment_search_events_live_v1`
+OPTIONS
+  (enable_refresh = TRUE, refresh_interval_minutes = 5)
 AS
 WITH fenix AS (
   SELECT
@@ -33,6 +35,8 @@ SELECT
   SUM(search_count) AS search_count,
 FROM
   fenix
+WHERE
+  DATE(submission_timestamp) >= DATE('2021-03-01')
 GROUP BY
   submission_date,
   experiment,

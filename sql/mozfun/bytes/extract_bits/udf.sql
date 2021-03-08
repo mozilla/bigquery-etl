@@ -3,7 +3,7 @@ RETURNS BYTES AS (
   SUBSTR(
     mozfun.bytes.zero_right(
       b << IF(`begin` >= 0, GREATEST(`begin` - 1, 0), LENGTH(b) * 8 + `begin`),
-      8 * LENGTH(b) - length
+      GREATEST(8 * LENGTH(b) - length, 0)
     ),
     1,
     mozfun.bytes.bit_pos_to_byte_pos(length)

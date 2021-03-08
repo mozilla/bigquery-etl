@@ -40,9 +40,6 @@ python -m bigquery_etl.view.generate_stable_views \
     --sql-dir "${SQL_DIR}" \
     --parallelism=20
 
-# Record dependencies in yaml files
-./script/bqetl dependency record "${SQL_DIR}"
-
 # Fill in definitions for generated Glean ETL
 PLACEHOLDER_DATE="2000-01-01"
 ./script/run_glean_baseline_clients_daily \
@@ -55,3 +52,6 @@ PLACEHOLDER_DATE="2000-01-01"
     --output-dir "${SQL_DIR}/${TARGET_PROJECT}" \
     --output-only \
     --date="${PLACEHOLDER_DATE}"
+
+# Record dependencies in yaml files
+./script/bqetl dependency record "${SQL_DIR}"

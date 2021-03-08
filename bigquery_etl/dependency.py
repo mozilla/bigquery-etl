@@ -156,4 +156,5 @@ def record(paths: Tuple[str, ...]):
         }
         if not references:
             continue
-        (parent / "references.yaml").write_text(yaml.dump(references))
+        with open(parent / "metadata.yaml", "a") as f:
+            f.write(yaml.dump(references))

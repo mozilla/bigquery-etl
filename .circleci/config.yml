@@ -262,6 +262,8 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
+      - *restore_mvn_cache
+      - *java_deps
       - run:
           name: Generate SQL content
           command: |

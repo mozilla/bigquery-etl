@@ -1323,7 +1323,7 @@ outages for different countries in the world.</p>
   - <code>proportion_undefined</code>: the proportion of users who failed to send
   telemetry for a reason that was not listed in the other cases.
   - <code>proportion_timeout</code>: the proportion of users that had their connection
-  timeout while uploading telemetry 
+  timeout while uploading telemetry
   (<a href="https://searchfox.org/mozilla-central/rev/fa2df28a49883612bd7af4dacd80cdfedcccd2f6/toolkit/components/telemetry/app/TelemetrySend.jsm#81">after 90s, in Firefox Desktop</a>).
   - <code>proportion_abort</code>: the proportion of users that had their connection
   terminated by the client (for example, terminating open connections before
@@ -1377,6 +1377,20 @@ exhaustive.
 </ul>
 </li>
 </ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser_stable>org_mozilla_vrbrowser_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser_stable/sync_v1>sync_v1</a></td>
+        </tr>   
+</table>
+
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/internet_outages/global_outages_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/internet_outages/global_outages_v1/metadata.yaml">Metadata File</a> </p>
 <hr />
                 

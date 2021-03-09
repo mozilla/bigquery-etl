@@ -1,8 +1,0 @@
-friendly_name: Experiment Enrollment Aggregates Recents
-description: >
-  Experiment enrollment aggregates data that has not been processed by
-  the hourly job.
-labels:
-  incremental: false
-owners:
-- ascholtz@mozilla.com

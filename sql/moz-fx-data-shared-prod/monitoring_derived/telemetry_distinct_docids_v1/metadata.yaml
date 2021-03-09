@@ -11,8 +11,8 @@ labels:
 scheduling:
   dag_name: bqetl_monitoring
   referenced_tables:
-    - ['moz-fx-data-shared-prod', 
-       'payload_bytes_decoded', 
+    - ['moz-fx-data-shared-prod',
+       'payload_bytes_decoded',
        'telemetry_telemetry__*']
     - ['moz-fx-data-shared-prod', 'telemetry_stable', '*']
     - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v4']

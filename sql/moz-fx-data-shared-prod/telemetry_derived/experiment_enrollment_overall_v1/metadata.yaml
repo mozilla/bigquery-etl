@@ -1,5 +1,5 @@
 friendly_name: Experiment Enrollment Overall
-description: > 
+description: >
   Overall number of clients enrolled in experiments,
   clustered by experiment.
 labels:

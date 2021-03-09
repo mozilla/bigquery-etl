@@ -54,4 +54,4 @@ PLACEHOLDER_DATE="2000-01-01"
     --date="${PLACEHOLDER_DATE}"
 
 # Record dependencies in yaml files
-./script/bqetl dependency record "${SQL_DIR}"
+time ./script/bqetl dependency record "${SQL_DIR}"

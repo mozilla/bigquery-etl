@@ -7,14 +7,18 @@ WITH desktop AS (
     unnested_search_with_ads.value AS search_with_ads_count,
     unnested_search_counts.count AS search_count,
   FROM
-    `moz-fx-data-shared-prod.telemetry_stable.main_v4`,
+    `moz-fx-data-shared-prod.telemetry_stable.main_v4`
+  LEFT JOIN
     UNNEST(
       ARRAY(SELECT AS STRUCT key, value.branch AS value FROM UNNEST(environment.experiments))
-    ) AS unnested_experiments,
-    UNNEST(payload.processes.parent.keyed_scalars.browser_search_ad_clicks) AS unnested_ad_clicks,
+    ) AS unnested_experiments
+  LEFT JOIN
+    UNNEST(payload.processes.parent.keyed_scalars.browser_search_ad_clicks) AS unnested_ad_clicks
+  LEFT JOIN
     UNNEST(
       payload.processes.parent.keyed_scalars.browser_search_with_ads
-    ) AS unnested_search_with_ads,
+    ) AS unnested_search_with_ads
+  LEFT JOIN
     UNNEST(
       ARRAY(
         SELECT AS STRUCT

@@ -1,6 +1,6 @@
 -- This and the following materialized view need to be kept in sync:
 -- - org_mozilla_fenix_derived.experiment_search_events_live_v1
--- - org_mozilla_fenix_beta_derived.experiment_search_events_live_v1
+-- - org_mozilla_firefox_beta_derived.experiment_search_events_live_v1
 -- - org_mozilla_firefox_derived.experiment_search_events_live_v1
 CREATE MATERIALIZED VIEW
 IF
@@ -17,10 +17,14 @@ IF
       unnested_search_with_ads.value AS search_with_ads_count,
       unnested_search_counts.value AS search_count,
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_firefox_live.metrics_v1`,
-      UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS unnested_ad_clicks,
-      UNNEST(metrics.labeled_counter.browser_search_with_ads) AS unnested_search_with_ads,
-      UNNEST(metrics.labeled_counter.metrics_search_count) AS unnested_search_counts,
+      `moz-fx-data-shared-prod.org_mozilla_firefox_live.metrics_v1`
+    LEFT JOIN
+      UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS unnested_ad_clicks
+    LEFT JOIN
+      UNNEST(metrics.labeled_counter.browser_search_with_ads) AS unnested_search_with_ads
+    LEFT JOIN
+      UNNEST(metrics.labeled_counter.metrics_search_count) AS unnested_search_counts
+    LEFT JOIN
       UNNEST(ping_info.experiments) AS experiment
   )
   SELECT

@@ -1,5 +1,5 @@
 friendly_name: Experiment Unenrollment Overall
-description: > 
+description: >
   Overall number of clients that unenrolled from experiments,
   clustered by experiment.
 labels:

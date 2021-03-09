@@ -14,3 +14,4 @@ scheduling:
   parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
   referenced_tables: [['moz-fx-data-shared-prod', '{{ app_id }}_derived',
                        'event_types_history_v1']]
+

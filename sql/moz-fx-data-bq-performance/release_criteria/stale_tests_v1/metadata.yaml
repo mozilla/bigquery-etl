@@ -1,0 +1,15 @@
+---
+description: >
+  Firefox performance tests that have not run as recently as expected by their
+  test tier
+labels:
+  application: firefox
+  schedule: daily
+owners:
+  - esmyth@mozilla.com
+scheduling:
+  dag_name: bqetl_release_criteria
+  start_date: "2020-12-03"
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null

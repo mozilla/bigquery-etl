@@ -117,6 +117,11 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/stripe_external/setup_intents_v1/init.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/plans_v1/init.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/prices_v1/init.sql",
+    "sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql",
+    "sql/moz-fx-data-bq-performance/release_criteria/rc_flattened_test_data_v1/query.sql",
+    "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_summary_v1/query.sql",
+    "sql/moz-fx-data-bq-performance/release_criteria/stale_tests_v1/query.sql",
+    "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_v1/query.sql",
     # Already exists (and lacks an "OR REPLACE" clause)
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql",  # noqa E501

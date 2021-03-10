@@ -1,0 +1,14 @@
+---
+friendly_name: Flattened Performance Test Data
+description: Firefox performance test data flattened to 1 row per replicate
+labels:
+  application: firefox
+  schedule: daily
+owners:
+  - esmyth@mozilla.com
+scheduling:
+  dag_name: bqetl_release_criteria
+  start_date: "2020-12-03"
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null

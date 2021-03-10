@@ -49,7 +49,7 @@ class Schema:
         query = f"SELECT * FROM {project}.{dataset}.{table}"
 
         if partitioned_by:
-            query += f" WHERE {partitioned_by} = DATE('2020-01-01')"
+            query += f" WHERE DATE({partitioned_by}) = DATE('2020-01-01')"
 
         # write query to temporary file so it can get dry run
         tmp = NamedTemporaryFile()

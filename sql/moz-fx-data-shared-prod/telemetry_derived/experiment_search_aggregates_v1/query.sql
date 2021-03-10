@@ -105,7 +105,6 @@ all_events AS (
     fenix
 )
 SELECT
-  date(submission_timestamp) AS submission_date,
   experiment,
   branch,
   TIMESTAMP_ADD(
@@ -125,7 +124,6 @@ FROM
 WHERE
   date(submission_timestamp) = @submission_date
 GROUP BY
-  submission_date,
   experiment,
   branch,
   window_start,

@@ -1,0 +1,5 @@
+friendly_name: Rolling Monthly Active User Counts
+description: |-
+  Rolling count of monthly active users (MAU) for Pocket.
+owners:
+  - jklukas@mozilla.com

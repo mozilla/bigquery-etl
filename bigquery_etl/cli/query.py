@@ -704,9 +704,11 @@ def deploy(ctx, name, sql_dir, project_id):
 
                 if metadata.bigquery and metadata.bigquery.time_partitioning:
                     new_table.time_partitioning = bigquery.TimePartitioning(
-                        metadata.bigquery.time_partitioning.type.bigquery_type(),
-                        metadata.bigquery.time_partitioning.field,
-                        metadata.bigquery.time_partitioning.require_partition_filter,
+                        metadata.bigquery.time_partitioning.type.bigquery_type,
+                        field=metadata.bigquery.time_partitioning.field,
+                        require_partition_filter=(
+                            metadata.bigquery.time_partitioning.require_partition_filter
+                        ),
                     )
 
                 if metadata.bigquery and metadata.bigquery.clustering:

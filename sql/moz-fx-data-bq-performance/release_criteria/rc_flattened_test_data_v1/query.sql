@@ -37,7 +37,7 @@ SELECT
   subtest_replicate_offset,
   test_run.type AS test_type
 FROM
-  `moz-fx-data-taskclu-prod-8fbf.taskclusteretl.perfherder` AS test_run
+  mozdata.taskclusteretl.perfherder AS test_run
 LEFT JOIN
   UNNEST(suites) AS test_suite
 LEFT JOIN

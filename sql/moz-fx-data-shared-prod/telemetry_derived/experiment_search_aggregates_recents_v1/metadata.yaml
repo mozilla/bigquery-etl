@@ -1,8 +1,0 @@
-friendly_name: Experiment Search Aggregates Recents
-description: >
-  Experiment search aggregates data that has not been processed by
-  the hourly job.
-labels:
-  incremental: false
-owners:
-- ascholtz@mozilla.com

@@ -6,27 +6,31 @@ site_author: Mozilla Data Platform Team
 # Repository
 repo_name: mozilla/bigquery-etl
 repo_url: https://github.com/mozilla/bigquery-etl/
-edit_uri: "" 
+edit_uri: ""
 
 # Configuration
 theme:
-    name: material
-    features:
-        - navigation.tabs
-    palette:
-        primary: teal
-    favicon: favicon.png
-    custom_dir: overrides
+  name: material
+  features:
+    - navigation.tabs
+  palette:
+    primary: teal
+  favicon: favicon.png
+  custom_dir: overrides
 
+google_analytics:
+  - UA-104326577-3
+  - auto
 
 plugins:
-    - search
-    - awesome-pages
+  - search
+  - awesome-pages
 nav:
-    - index.md
-    - Cookbooks:
-        - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md
-    - Datasets:
-        - ... | mozdata/**.md
-    - UDFs:
-        - ... | mozfun/**.md
+  - index.md
+  - Cookbooks:
+      - Common workflows: cookbooks/common_workflows.md
+      - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md
+  - Datasets:
+      - ... | mozdata/**.md
+  - UDFs:
+      - ... | mozfun/**.md

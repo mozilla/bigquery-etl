@@ -9,6 +9,6 @@ labels:
   schedule: daily
   public_json: true
   public_bigquery: true
-  review_bugs: 
-   - 1624528
+  review_bugs:
+    - 1624528
   incremental_export: false

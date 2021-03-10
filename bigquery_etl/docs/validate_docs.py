@@ -27,35 +27,6 @@ parser.add_argument(
 standard_args.add_log_level(parser)
 
 
-def sql_for_dry_run(file, parsed_routines, project_dir):
-    """
-    Return the example SQL used for the dry run.
-
-    Injects all UDFs the example depends on as temporary functions.
-    """
-    dry_run_sql = ""
-
-    with open(file) as sql:
-        example_sql = sql.read()
-
-        # add UDFs that example depends on as temporary functions
-        for udf, raw_routine in parsed_routines.items():
-            if udf in example_sql:
-                query = "".join(raw_routine.definitions)
-                dry_run_sql += sub_local_routines(query, project_dir, parsed_routines)
-
-        dry_run_sql += example_sql
-
-        for udf, _ in parsed_routines.items():
-            # temporary UDFs cannot contain dots, rename UDFS
-            dry_run_sql = dry_run_sql.replace(udf, udf.replace(".", "_"))
-
-        # remove explicit project references
-        dry_run_sql = dry_run_sql.replace(os.path.basename(project_dir) + ".", "")
-
-    return dry_run_sql
-
-
 def validate(project_dirs):
     """Validate UDF docs."""
     is_valid = True
@@ -67,8 +38,10 @@ def validate(project_dirs):
             for root, dirs, files in os.walk(project_dir):
                 if os.path.basename(root) == EXAMPLE_DIR:
                     for file in files:
-                        dry_run_sql = sql_for_dry_run(
-                            os.path.join(root, file), parsed_routines, project_dir
+                        dry_run_sql = sub_local_routines(
+                            (Path(root) / file).read_text(),
+                            project_dir,
+                            parsed_routines,
                         )
 
                         # store sql in temporary file for dry_run

@@ -65,10 +65,19 @@ jobs:
           name: Dry run queries
           command: |
             if [ "$CIRCLE_BRANCH" = master ]; then
+              echo "Check dry run for all queries because branch is" \
+                "$CIRCLE_BRANCH"
+              PATHS=sql
+            elif git log --format=%B --no-merges -n 1 |
+                grep -qF '[run-tests]'; then
+              echo "Check dry run for all queries because [run-tests] in" \
+                "commit message"
               PATHS=sql
             else
+              echo "Check dry run for modified queries"
               PATHS="$(git diff origin/master... --name-only -- sql)"
             fi
+            echo $PATHS
             script/dryrun $PATHS
   validate-metadata:
     docker: *docker
@@ -253,6 +262,8 @@ jobs:
       - checkout
       - *restore_venv_cache
       - *build
+      - *restore_mvn_cache
+      - *java_deps
       - run:
           name: Generate SQL content
           command: |
@@ -261,8 +272,7 @@ jobs:
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" ./script/generate_sql \
               --sql-dir /tmp/generated-sql/sql/ \
-              --target-project moz-fx-data-shared-prod \
-              $(test "${CIRCLE_BRANCH}" = master || echo --no-dry-run)
+              --target-project moz-fx-data-shared-prod
       - persist_to_workspace:
           root: /tmp/generated-sql
           paths:
@@ -304,7 +314,7 @@ jobs:
       - run:
           name: Determine docker image name
           command:
-          # yamllint disable-line rule:line-length
+            # yamllint disable-line rule:line-length
             echo 'IMAGE="${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}:${CIRCLE_TAG:-latest}"' > $BASH_ENV
       - run:
           name: Build docker image

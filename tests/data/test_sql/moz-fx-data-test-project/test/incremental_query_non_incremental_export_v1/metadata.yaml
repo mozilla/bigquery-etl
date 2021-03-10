@@ -9,7 +9,7 @@ labels:
   public_json: true
   incremental: true
   incremental_export: false
-  review_bugs: 
+  review_bugs:
     - 123456
 scheduling:
   dag_name: "bqetl_events"

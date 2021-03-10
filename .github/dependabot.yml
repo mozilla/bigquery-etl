@@ -8,5 +8,9 @@ updates:
     reviewers:
       - relud
       - jklukas
-    labels:
-      - dependencies
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: daily
+    reviewers:
+      - relud

@@ -14,13 +14,9 @@ scheduling:
   # We access a restricted table for getting an HMAC key, so cannot dry run
   # and must explicitly list referenced tables.
   referenced_tables:
-    - [
-        "moz-fx-data-shared-prod",
-        "firefox_accounts_stable",
-        "account_ecosystem_v1",
-      ]
-    - [
-        "moz-fx-data-shared-prod",
-        "account_ecosystem_derived",
-        "ecosystem_user_id_lookup_v1",
-      ]
+    - - "moz-fx-data-shared-prod"
+      - "firefox_accounts_stable"
+      - "account_ecosystem_v1"
+    - - "moz-fx-data-shared-prod"
+      - "account_ecosystem_derived"
+      - "ecosystem_user_id_lookup_v1"

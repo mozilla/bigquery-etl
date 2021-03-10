@@ -8,9 +8,9 @@ labels:
   public_json: true
   incremental: false
   incremental_export: false
-  review_bugs: 
-   - 1999999
-   - 12121212
+  review_bugs:
+    - 1999999
+    - 12121212
 scheduling:
   dag_name: "bqetl_core"
   depends_on_past: true

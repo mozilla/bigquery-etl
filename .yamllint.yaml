@@ -1,9 +1,15 @@
 ---
+extends: default
+
 rules:
   line-length:
     allow-non-breakable-words: true
     allow-non-breakable-inline-mappings: true
-  
+  document-start: disable
+  indentation:
+    indent-sequences: consistent
+
 ignore: |
+  .git/
   venv/
   bigquery_etl/events_daily/

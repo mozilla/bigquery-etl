@@ -5,32 +5,39 @@ import pytest
 from bigquery_etl.dryrun import DryRun, Errors
 
 
+@pytest.fixture
+def tmp_query_path(tmp_path):
+    p = tmp_path / "telemetry_derived" / "mytable"
+    p.mkdir(parents=True)
+    return p
+
+
 class TestDryRun:
-    def test_dry_run_sql_file(self, tmp_path):
-        query_file = tmp_path / "query.sql"
+    def test_dry_run_sql_file(self, tmp_query_path):
+        query_file = tmp_query_path / "query.sql"
         query_file.write_text("SELECT 123")
 
         dryrun = DryRun(str(query_file))
         response = dryrun.dry_run_result
         assert response["valid"]
 
-    def test_dry_run_invalid_sql_file(self, tmp_path):
-        query_file = tmp_path / "query.sql"
+    def test_dry_run_invalid_sql_file(self, tmp_query_path):
+        query_file = tmp_query_path / "query.sql"
         query_file.write_text("SELECT INVALID 123")
 
         dryrun = DryRun(str(query_file))
         response = dryrun.dry_run_result
         assert response["valid"] is False
 
-    def test_sql_file_valid(self, tmp_path):
-        query_file = tmp_path / "query.sql"
+    def test_sql_file_valid(self, tmp_query_path):
+        query_file = tmp_query_path / "query.sql"
         query_file.write_text("SELECT 123")
 
         dryrun = DryRun(str(query_file))
         assert dryrun.is_valid()
 
-    def test_view_file_valid(self, tmp_path):
-        view_file = tmp_path / "view.sql"
+    def test_view_file_valid(self, tmp_query_path):
+        view_file = tmp_query_path / "view.sql"
         view_file.write_text(
             """
             SELECT
@@ -45,15 +52,15 @@ class TestDryRun:
         assert dryrun.get_error() is Errors.DATE_FILTER_NEEDED
         assert dryrun.is_valid()
 
-    def test_sql_file_invalid(self, tmp_path):
-        query_file = tmp_path / "query.sql"
+    def test_sql_file_invalid(self, tmp_query_path):
+        query_file = tmp_query_path / "query.sql"
         query_file.write_text("SELECT INVALID 123")
 
         dryrun = DryRun(str(query_file))
         assert dryrun.is_valid() is False
 
-    def test_get_referenced_tables_empty(self, tmp_path):
-        query_file = tmp_path / "query.sql"
+    def test_get_referenced_tables_empty(self, tmp_query_path):
+        query_file = tmp_query_path / "query.sql"
         query_file.write_text("SELECT 123")
 
         dryrun = DryRun(str(query_file))
@@ -70,9 +77,8 @@ class TestDryRun:
         with pytest.raises(ValueError):
             DryRun(sqlfile="invalid path").get_sql()
 
-    def test_get_referenced_tables(self, tmp_path):
-        os.makedirs(tmp_path / "telmetry_derived")
-        query_file = tmp_path / "telmetry_derived" / "query.sql"
+    def test_get_referenced_tables(self, tmp_query_path):
+        query_file = tmp_query_path / "query.sql"
         query_file.write_text(
             "SELECT * FROM telemetry_derived.clients_daily_v6 "
             "WHERE submission_date = '2020-01-01'"
@@ -83,7 +89,7 @@ class TestDryRun:
         assert query_dryrun[0]["datasetId"] == "telemetry_derived"
         assert query_dryrun[0]["tableId"] == "clients_daily_v6"
 
-        view_file = tmp_path / "telmetry_derived" / "view.sql"
+        view_file = tmp_query_path / "view.sql"
         view_file.write_text(
             """
             CREATE OR REPLACE VIEW
@@ -121,9 +127,8 @@ class TestDryRun:
         assert multiple_tables[1]["datasetId"] == "org_mozilla_firefox_stable"
         assert multiple_tables[1]["tableId"] == "baseline_v1"
 
-    def test_get_error(self, tmp_path):
-        os.makedirs(tmp_path / "telemetry")
-        view_file = tmp_path / "telemetry" / "view.sql"
+    def test_get_error(self, tmp_query_path):
+        view_file = tmp_query_path / "view.sql"
 
         view_file.write_text(
             """

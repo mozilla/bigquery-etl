@@ -162,15 +162,13 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/asn_aggregates_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_hourly_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_recents_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_hourly_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_recents_v1/query.sql",  # noqa E501
     # Dataset sql/glam-fenix-dev:glam_etl was not found
     *glob.glob("sql/glam-fenix-dev/glam_etl/**/*.sql", recursive=True),
     # Query templates
     "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa
+    "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501
 }
 
 
@@ -328,6 +326,24 @@ class DryRun:
 
         return {}
 
+    def get_dataset_labels(self):
+        """Return the labels on the default dataset by dry running the SQL file."""
+        if self.sqlfile not in SKIP and not self.is_valid():
+            raise Exception(f"Error when dry running SQL file {self.sqlfile}")
+
+        if self.sqlfile in SKIP:
+            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            return {}
+
+        if (
+            self.dry_run_result
+            and self.dry_run_result["valid"]
+            and "datasetLabels" in self.dry_run_result
+        ):
+            return self.dry_run_result["datasetLabels"]
+
+        return {}
+
     def is_valid(self):
         """Dry run the provided SQL file and check if valid."""
         if self.dry_run_result is None:
@@ -360,8 +376,9 @@ class DryRun:
 
     def get_error(self):
         """Get specific errors for edge case handling."""
-        if "errors" in self.dry_run_result and len(self.dry_run_result["errors"]) == 1:
-            error = self.dry_run_result["errors"][0]
+        errors = self.dry_run_result.get("errors", None)
+        if errors and len(errors) == 1:
+            error = errors[0]
         else:
             error = None
         if error and error.get("code", None) in [400, 403]:
@@ -409,27 +426,23 @@ def main():
     args = parser.parse_args()
 
     file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
-    file_pattern = re.compile("|".join(map(fnmatch.translate, file_names)))
+    file_re = re.compile("|".join(map(fnmatch.translate, file_names)))
 
     sql_files: Set[str] = set()
     for path in args.paths:
         if isdir(path):
-            sql_files.union(
+            sql_files |= {
                 sql_file
-                for glob in file_names
-                for sql_file in glob.glob(f"{args.path}/**/{glob}", recursive=True)
-            )
-        elif file_pattern.fullmatch(basename(path)):
+                for pattern in file_names
+                for sql_file in glob.glob(f"{path}/**/{pattern}", recursive=True)
+            }
+        elif file_re.fullmatch(basename(path)):
             sql_files.add(path)
     sql_files -= SKIP
 
     if not sql_files:
-        print("Skipping dry run because no queries were modified")
+        print("Skipping dry run because no queries matched")
         sys.exit(0)
-    elif args.paths == ["sql"]:
-        print("Checking dry run for all queries")
-    else:
-        print("Limiting dry run to modified queries")
 
     with Pool(8) as p:
         result = p.map(sql_file_valid, sorted(sql_files), chunksize=1)

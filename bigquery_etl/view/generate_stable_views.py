@@ -12,7 +12,6 @@ checking them into the sql/ tree of the default branch of the repository.
 import json
 import logging
 import tarfile
-import tempfile
 import urllib.request
 from argparse import ArgumentParser
 from dataclasses import dataclass
@@ -21,16 +20,14 @@ from io import BytesIO
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
+
 from typing import List
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util import standard_args
 
-SCHEMAS_URI = (
-    "https://github.com/mozilla-services/mozilla-pipeline-schemas"
-    "/archive/generated-schemas.tar.gz"
-)
+MPS_URI = "https://github.com/mozilla-services/mozilla-pipeline-schemas"
 
 SKIP_PREFIXES = (
     "pioneer",
@@ -74,13 +71,6 @@ parser.add_argument(
     default="moz-fx-data-shared-prod",
     help="The project where the stable tables live.",
 )
-parser.add_argument(
-    "--no-dry-run",
-    action="store_false",
-    default=True,
-    dest="dry_run",
-    help="Don't use dry run to check whether stable tables actually exist.",
-)
 standard_args.add_log_level(parser)
 standard_args.add_parallelism(parser)
 
@@ -119,9 +109,7 @@ class SchemaFile:
         )
 
 
-def write_view_if_not_exists(
-    target_project: str, sql_dir: Path, schema: SchemaFile, dry_run: bool
-):
+def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaFile):
     """If a view.sql does not already exist, write one to the target directory."""
     target_dir = (
         sql_dir
@@ -175,19 +163,6 @@ def write_view_if_not_exists(
             full_view_id=full_view_id,
         )
     )
-    if dry_run:
-        with tempfile.TemporaryDirectory() as tdir:
-            tfile = Path(tdir) / "view.sql"
-            with tfile.open("w") as f:
-                f.write(full_sql)
-            print(f"Dry running {schema.user_facing_view}")
-            dryrun = DryRun(str(tfile))
-            if 404 in [e.get("code") for e in dryrun.errors()]:
-                print(
-                    f"Not creating {schema.user_facing_view} since"
-                    " stable table does not exist"
-                )
-                return
     print(f"Creating {target_file}")
     target_dir.mkdir(parents=True, exist_ok=True)
     with target_file.open("w") as f:
@@ -204,7 +179,8 @@ def write_view_if_not_exists(
 
 def get_stable_table_schemas() -> List[SchemaFile]:
     """Fetch last schema metadata per doctype by version."""
-    with urllib.request.urlopen(SCHEMAS_URI) as f:
+    schemas_uri = prod_schemas_uri()
+    with urllib.request.urlopen(schemas_uri) as f:
         tarbytes = BytesIO(f.read())
 
     schemas = []
@@ -241,6 +217,19 @@ def get_stable_table_schemas() -> List[SchemaFile]:
     ]
 
 
+def prod_schemas_uri():
+    """Return URI for the schemas tarball deployed to shared-prod.
+
+    We construct a fake query and send it to the dry run service in order
+    to read dataset labels, which contains the commit hash associated
+    with the most recent production schemas deploy.
+    """
+    dryrun = DryRun("telemetry_derived/foo/query.sql", content="SELECT 1")
+    build_id = dryrun.get_dataset_labels()["schemas_build_id"]
+    commit_hash = build_id.split("_")[-1]
+    return f"{MPS_URI}/archive/{commit_hash}.tar.gz"
+
+
 def main():
     """
     Generate view definitions.
@@ -268,7 +257,6 @@ def main():
                 write_view_if_not_exists,
                 args.target_project,
                 Path(args.sql_dir),
-                dry_run=args.dry_run,
             ),
             schemas,
             chunksize=1,

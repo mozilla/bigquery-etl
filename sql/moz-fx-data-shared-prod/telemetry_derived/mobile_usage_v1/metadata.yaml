@@ -1,10 +1,19 @@
 friendly_name: Mobile Usage
 description: |-
-  Simple layer on top of `firefox_nondesktop_exact_mau28_v1` that adds the
+  Layer on top of `firefox_nondesktop_exact_mau28_v1` that adds the
   CDOU field, which is a windowed sum.
 
   Should normally be accessed through the user-facing view
   `telemetry.mobile_usage_2021`.
+
+  See also `telemetry.firefox_desktop_usage_2021`.
+
+  This query can _almost_ be expressed as a single windowed sum over
+  the base table, but has to deal with the edge case of very small
+  slices in the underlying table. Very small slices may not show up
+  every day, so we need to add extra logic to produce a dense that accounts
+  for each slice consistently throughout the year, carrying over the accumulated
+  CDOU for that slice even on days with no active clients.
 labels:
   schedule: daily
 owners:

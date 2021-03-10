@@ -1,0 +1,5 @@
+friendly_name: Experiment Enrollment Aggregates Live
+description: >
+  View for live experiment enrollment events.
+labels:
+  incremental: false

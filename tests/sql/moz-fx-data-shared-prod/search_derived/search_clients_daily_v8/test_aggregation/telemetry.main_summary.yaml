@@ -1,0 +1,155 @@
+---
+- &base
+  locale: de
+  default_search_engine_data_submission_url: 'https://www.google.com/search?q=&ie=utf-8&oe=utf-8&client=firefox-b'
+  submission_date: '2017-01-01'
+  user_pref_browser_search_region: DE
+  subsession_length: 3600
+  search_cohort: null
+  scalar_parent_browser_search_with_ads: []
+  sample_id: 42
+  default_search_engine_data_load_path: 'jar:[app]/omni.ja!browser/google.xml'
+  os_version: '10.0'
+  distribution_id: null
+  default_search_engine: google
+  app_version: 54.0.1
+  channel: release
+  scalar_parent_browser_search_ad_clicks: []
+  active_ticks: 360
+  search_counts:
+    - engine: google
+      source: urlbar
+      count: 4
+  scalar_parent_browser_engagement_max_concurrent_tab_count: 10
+  client_id: b
+  document_id: x
+  scalar_parent_browser_engagement_tab_open_event_count: 5
+  active_addons_count: 2
+  country: US
+  subsession_start_date: '2017-01-01 10:00:00'
+  subsession_counter: 1
+  profile_creation_date: 16801
+  os: windows
+  active_addons:
+    - addon_id: random@mozilla.com
+      version: '0.1'
+      name: random
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.6
+      name: Follow-on Search Telemetry
+  scalar_parent_browser_engagement_total_uri_count: 1
+  experiments: []
+  is_default_browser: false
+- &client_a
+  <<: *base
+  client_id: a
+  country: DE
+  active_addons:
+    - addon_id: random@mozilla.com
+      version: '0.1'
+      name: random
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.5
+      name: Follow-on Search Telemetry
+  scalar_parent_browser_engagement_total_uri_count: 2
+  is_default_browser: null
+- <<: *client_a
+  scalar_parent_browser_search_with_ads:
+    - key: google
+      value: 2
+  app_version: 52.0.3
+  scalar_parent_browser_search_ad_clicks:
+    - key: google
+      value: 3
+- <<: *client_a
+  scalar_parent_browser_search_with_ads:
+    - key: google:organic
+      value: 4
+    - key: google:sap
+      value: 5
+  distribution_id: totally not null
+  scalar_parent_browser_search_ad_clicks:
+    - key: google:organic
+      value: 6
+    - key: google:sap-follow-on
+      value: 7
+- <<: *client_a
+  search_counts:
+    - engine: bing
+      source: urlbar
+      count: 4
+    - engine: yahoo
+      source: urlbar
+      count: 4
+- <<: *client_a
+- <<: *client_a
+- <<: *client_a
+- <<: *client_a
+- <<: *base
+  search_counts: []
+  client_id: c
+  country: DE
+  active_addons:
+    - addon_id: random@mozilla.com
+      version: '0.1'
+      name: random
+  scalar_parent_browser_engagement_total_uri_count: 2
+  is_default_browser: null
+  user_pref_browser_search_region: null
+- <<: *base
+  search_counts:
+    - engine: google
+      source: urlbar
+      count: 4
+    - engine: bing
+      source: urlbar
+      count: 4
+  client_id: d
+  country: DE
+  active_addons:
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.4
+      name: Follow-on Search Telemetry
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.4
+      name: Follow-on Search Telemetry
+  scalar_parent_browser_engagement_total_uri_count: 3
+  is_default_browser: null
+- <<: *base
+  default_search_engine_data_submission_url: 'https://www.google.com/search?q=&ie=utf-8&oe=utf-8&client=firefox-b'
+  client_id: d
+  country: DE
+  active_addons:
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.4
+      name: Follow-on Search Telemetry
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.4
+      name: Follow-on Search Telemetry
+  scalar_parent_browser_engagement_total_uri_count: 2
+  is_default_browser: null
+- <<: *base
+  search_counts:
+    - engine: yahoo
+      source: urlbar
+      count: 4
+  client_id: d
+  country: DE
+  active_addons:
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.4
+      name: Follow-on Search Telemetry
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.4
+      name: Follow-on Search Telemetry
+  scalar_parent_browser_engagement_total_uri_count: 2
+  is_default_browser: null
+- <<: *base
+  client_id: e
+  country: DE
+  active_addons: []
+  scalar_parent_browser_engagement_total_uri_count: 2
+  default_private_search_engine_data_submission_url: 'https://www.engine.com'
+  default_private_search_engine_data_load_path: engine1.load_path
+  default_private_search_engine: engine1
+  is_default_browser: true

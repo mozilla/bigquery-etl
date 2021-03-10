@@ -1,7 +1,7 @@
 ---
 friendly_name: Italy's mid-pandemic internet outage (May 2020)
 # yamllint disable rule:line-length
-description: |- 
+description: |-
   The released data includes aggregated Firefox Desktop data for Italy
   from “health” and some fields of the “main” pings that were created
   between January 1st, 2020 up until March 31st, 2020. The different types

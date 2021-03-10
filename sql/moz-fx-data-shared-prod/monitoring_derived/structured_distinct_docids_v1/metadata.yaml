@@ -12,8 +12,8 @@ scheduling:
   dag_name: bqetl_monitoring
   arguments: ["--date", "{{ ds }}"]
   referenced_tables:
-    - ['moz-fx-data-shared-prod', 
-       'payload_bytes_decoded', 
+    - ['moz-fx-data-shared-prod',
+       'payload_bytes_decoded',
        'structured_*']
     - ['moz-fx-data-shared-prod', 'payload_bytes_decoded', 'stub_installer_*']
     - ['moz-fx-data-shared-prod', '*_stable', '*']

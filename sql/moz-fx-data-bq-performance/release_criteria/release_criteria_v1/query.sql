@@ -68,11 +68,11 @@ kurtosis_parts AS (
       'median'
     THEN
       PERCENTILE_CONT(subtest_replicate, 0.5) OVER (replicate_window)
-        -- Adding 1 to the replicate value then subtracting 1 from the result ensures that a value is always returned.
-        -- Maintaining here to be consistent with how the perf test framework calculates geomean: https://searchfox.org/mozilla-central/source/testing/talos/talos/filter.py#174
     WHEN
       'geomean'
     THEN
+        -- Adding 1 to the replicate value then subtracting 1 from the result ensures that a value is always returned.
+        -- Maintaining here to be consistent with how the perf test framework calculates geomean: https://searchfox.org/mozilla-central/source/testing/talos/talos/filter.py#174
       EXP(
         AVG(LN(IF(rc_replicate_aggregator = 'geomean', subtest_replicate + 1, NULL))) OVER (
           replicate_window
@@ -164,11 +164,11 @@ tests AS (
       'median'
     THEN
       PERCENTILE_CONT(rc_subtest_value, 0.5) OVER (subtest_window)
-      -- Adding 1 to the subtest value then subtracting 1 from the result ensures that a value is always returned.
-      -- Maintaining here to be consistent with how the perf test framework calculates geomean: https://searchfox.org/mozilla-central/source/testing/talos/talos/filter.py#174
     WHEN
       'geomean'
     THEN
+      -- Adding 1 to the subtest value then subtracting 1 from the result ensures that a value is always returned.
+      -- Maintaining here to be consistent with how the perf test framework calculates geomean: https://searchfox.org/mozilla-central/source/testing/talos/talos/filter.py#174
       EXP(
         AVG(LN(IF(rc_subtest_aggregator = 'geomean', rc_subtest_value + 1, NULL))) OVER (
           subtest_window

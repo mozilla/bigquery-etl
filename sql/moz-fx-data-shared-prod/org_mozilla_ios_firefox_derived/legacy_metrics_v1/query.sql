@@ -116,6 +116,7 @@ aggregated AS (
 )
 SELECT
   submission_timestamp,
+  document_id,
   (SELECT AS STRUCT metadata.* EXCEPT (uri)) AS metadata,
   normalized_app_name,
   normalized_channel,

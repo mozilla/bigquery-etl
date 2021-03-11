@@ -5,6 +5,8 @@ CREATE TEMP FUNCTION rename_search(value STRING) AS (
 
 WITH extracted AS (
   SELECT
+    document_id,
+    submission_timestamp,
     client_id,
     DATE(submission_timestamp) AS submission_date,
     searches,
@@ -48,6 +50,8 @@ rest_grouped AS (
   SELECT
     submission_date,
     client_id,
+    ANY_VALUE(document_id) AS document_id,
+    min(submission_timestamp) AS submission_timestamp,
     mozfun.stats.mode_last(ARRAY_AGG(default_search)) AS string_search_default_engine,
     mozfun.stats.mode_last(ARRAY_AGG(default_mail_client)) AS string_preferences_mail_client,
     mozfun.stats.mode_last(

@@ -67,19 +67,18 @@ def generate_query(columns, table):
         # the two structs are different now, figure out how much we need to pop
         # off before we continue
         if len(split) > 1 and len(split) == len(prev):
-            # for every element that does not match, ensure that we alias the
-            # struct correctly
+            # find the common ancestor
             depth = 0
-            for a, b in reversed(list(zip(split[:-1], prev[:-1]))):
-                if a == b:
+            for a, b in list(zip(split[:-1], prev[:-1])):
+                if a != b:
                     break
-                # ensure that we are not ending a struct with a comma
-                acc = acc.rstrip(",")
-                acc += f") as {b},"
                 depth += 1
-
+            # now pop off until we reach the ancestor
+            for alias in reversed(prev[depth:-1]):
+                acc = acc.rstrip(",")
+                acc += f") as {alias},"
             # now enter the new struct
-            acc += "struct(" * depth
+            acc += "struct(" * (len(split) - 1 - depth)
         # pop out of the struct
         if len(split) < len(prev):
             diff = len(prev) - len(split)
@@ -215,6 +214,26 @@ def test_generate_query_nested_deep_anscestor():
     assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
 
 
+def test_generate_query_nested_deep_anscestor_shared_descendent_names():
+    columns = ["a.b.c.d", "a.f.c.g"]
+    res = generate_query(columns, "test")
+    expect = reformat(
+        """
+    select
+    struct(
+        struct(struct(
+            a.b.c.d
+        ) as c) as b,
+        struct(struct(
+            a.f.c.g
+        ) as c) as f
+    ) as a
+    from `test`
+    """
+    )
+    assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
+
+
 def test_generate_query_nested_deep():
     columns = ["a.b", "a.c", "a.d.x.y.e", "a.d.x.y.f", "g"]
     res = generate_query(columns, "test")
@@ -244,5 +263,6 @@ if __name__ == "__main__":
     test_generate_query_nested()
     test_generate_query_nested_deep_skip()
     test_generate_query_nested_deep_anscestor()
+    test_generate_query_nested_deep_anscestor_shared_descendent_names()
     test_generate_query_nested_deep()
     main()

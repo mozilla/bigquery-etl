@@ -79,7 +79,7 @@ def generate_query(columns, table):
                 depth += 1
 
             # now enter the new struct
-            acc += "struct("*depth
+            acc += "struct(" * depth
         # pop out of the struct
         if len(split) < len(prev):
             diff = len(prev) - len(split)
@@ -194,6 +194,7 @@ def test_generate_query_nested_deep_skip():
     )
     assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
 
+
 def test_generate_query_nested_deep_anscestor():
     columns = ["a.b.c.d", "a.e.f.g"]
     res = generate_query(columns, "test")
@@ -212,6 +213,7 @@ def test_generate_query_nested_deep_anscestor():
     """
     )
     assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
+
 
 def test_generate_query_nested_deep():
     columns = ["a.b", "a.c", "a.d.x.y.e", "a.d.x.y.f", "g"]

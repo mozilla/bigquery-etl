@@ -16,41 +16,140 @@ WITH all_searches AS (
     window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
   UNION ALL
   SELECT
-    branch,
     experiment,
-    window_start,
-    window_end,
-    ad_clicks_count,
-    search_with_ads_count,
-    search_count
+    branch,
+    TIMESTAMP_ADD(
+      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    -- Aggregates event counts over 5-minute intervals
+      INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) * 5) MINUTE
+    ) AS window_start,
+    TIMESTAMP_ADD(
+      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+      INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
+    ) AS window_end,
+    SUM(
+      (
+        SELECT
+          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+        FROM
+          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS x
+      )
+    ) AS ad_clicks,
+    SUM(
+      (
+        SELECT
+          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+        FROM
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS x
+      )
+    ) AS search_with_ads,
+    SUM(
+      (
+        SELECT
+          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+        FROM
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS x
+      )
+    ) AS searches,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_derived.experiment_search_events_live_v1`
+  GROUP BY
+    branch,
+    experiment,
+    window_start,
+    window_end
   WHERE
     window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
   UNION ALL
   SELECT
-    branch,
     experiment,
-    window_start,
-    window_end,
-    ad_clicks_count,
-    search_with_ads_count,
-    search_count
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_derived.experiment_search_events_live_v1`
-  WHERE
-    window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
-  UNION ALL
-  SELECT
     branch,
-    experiment,
-    window_start,
-    window_end,
-    ad_clicks_count,
-    search_with_ads_count,
-    search_count
+    TIMESTAMP_ADD(
+      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    -- Aggregates event counts over 5-minute intervals
+      INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) * 5) MINUTE
+    ) AS window_start,
+    TIMESTAMP_ADD(
+      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+      INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
+    ) AS window_end,
+    SUM(
+      (
+        SELECT
+          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+        FROM
+          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS x
+      )
+    ) AS ad_clicks,
+    SUM(
+      (
+        SELECT
+          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+        FROM
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS x
+      )
+    ) AS search_with_ads,
+    SUM(
+      (
+        SELECT
+          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+        FROM
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS x
+      )
+    ) AS searches,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.experiment_search_events_live_v1`
+  GROUP BY
+    branch,
+    experiment,
+    window_start,
+    window_end
+  WHERE
+    window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+  UNION ALL
+  SELECT
+    experiment,
+    branch,
+    TIMESTAMP_ADD(
+      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+    -- Aggregates event counts over 5-minute intervals
+      INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) * 5) MINUTE
+    ) AS window_start,
+    TIMESTAMP_ADD(
+      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
+      INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
+    ) AS window_end,
+    SUM(
+      (
+        SELECT
+          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+        FROM
+          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS x
+      )
+    ) AS ad_clicks,
+    SUM(
+      (
+        SELECT
+          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+        FROM
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS x
+      )
+    ) AS search_with_ads,
+    SUM(
+      (
+        SELECT
+          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+        FROM
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS x
+      )
+    ) AS searches,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_derived.experiment_search_events_live_v1`
+  GROUP BY
+    branch,
+    experiment,
+    window_start,
+    window_end
   WHERE
     window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
   UNION ALL

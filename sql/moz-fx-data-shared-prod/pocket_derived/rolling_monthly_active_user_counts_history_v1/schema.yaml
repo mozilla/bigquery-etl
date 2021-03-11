@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date of the MAU export from pocket
+- mode: NULLABLE
+  name: measured_at
+  type: DATE
+  description: Activity date represented by this row
+- mode: NULLABLE
+  name: user_count
+  type: INTEGER
+  description: Number of monthly active users on this measured_at date

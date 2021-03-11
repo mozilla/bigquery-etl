@@ -10,7 +10,7 @@ CREATE TEMPORARY FUNCTION labeled_counter(
       FROM
         UNNEST(`values`) AS a
       GROUP BY
-        a.key
+        k
     )
     SELECT
       ARRAY_AGG(STRUCT<key STRING, value INT64>(k, v))
@@ -35,57 +35,6 @@ extracted_core AS (
   WHERE
     submission_date = @submission_date
 ),
-labeled AS (
-  SELECT
-    client_id,
-    submission_date,
-    ARRAY_AGG(
-      IF(object = "bookmark" AND method = "open", (method, value), NULL) IGNORE NULLS
-    ) AS bookmarks_open,
-    ARRAY_AGG(
-      IF(object = "bookmark" AND method = "add", (method, value), NULL) IGNORE NULLS
-    ) AS bookmarks_add,
-    ARRAY_AGG(
-      IF(object = "bookmark" AND method = "delete", (method, value), NULL) IGNORE NULLS
-    ) AS bookmarks_delete,
-    ARRAY_AGG(
-      IF(
-        object = "bookmarks-panel",
-        CASE
-        WHEN
-          string_value = "app-menu"
-        THEN
-          ("app-menu", value)
-        WHEN
-          string_value LIKE "home-panel%"
-        THEN
-          ("home-panel", value)
-        ELSE
-          NULL
-        END
-        ,
-        NULL
-      ) IGNORE NULLS
-    ) AS bookmarks_view_list,
-    ARRAY_AGG(
-      IF(object = "reading-list" AND method = "add", (method, value), NULL) IGNORE NULLS
-    ) AS reading_list_add,
-    ARRAY_AGG(
-      IF(object = "reading-list" AND method = "delete", (method, value), NULL) IGNORE NULLS
-    ) AS reading_list_delete,
-    -- tabs
-    ARRAY_AGG(
-      IF(object = "tab" AND method = "add", (method, value), NULL) IGNORE NULLS
-    ) AS tabs_open,
-    ARRAY_AGG(
-      IF(object = "tab" AND method = "close", (method, value), NULL) IGNORE NULLS
-    ) AS tabs_close
-  FROM
-    extracted_event
-  GROUP BY
-    client_id,
-    submission_date
-),
 aggregated AS (
   SELECT
     client_id,
@@ -94,35 +43,60 @@ aggregated AS (
     SUM(
       IF(object = "app" AND method = "foreground", value, 0)
     ) AS counter_glean_validation_foreground_count,
-    ANY_VALUE(
-      labeled_counter(bookmarks_open, ["awesomebar-results", "bookmarks-panel"])
+    labeled_counter(
+      ARRAY_AGG(IF(object = "bookmark" AND method = "open", (method, value), NULL) IGNORE NULLS),
+      ["awesomebar-results", "bookmarks-panel"]
     ) AS labeled_counter_bookmarks_open,
     -- NOTE: should share-menu actually be context-menu?
-    ANY_VALUE(
-      labeled_counter(bookmarks_add, ["page-action-menu", "share-menu", "activity-stream"])
+    labeled_counter(
+      ARRAY_AGG(IF(object = "bookmark" AND method = "add", (method, value), NULL) IGNORE NULLS),
+      ["page-action-menu", "share-menu", "activity-stream"]
     ) AS labeled_counter_bookmarks_add,
-    ANY_VALUE(
-      labeled_counter(bookmarks_delete, ["page-action-menu", "activity-stream", "bookmarks-panel"])
+    labeled_counter(
+      ARRAY_AGG(IF(object = "bookmark" AND method = "delete", (method, value), NULL) IGNORE NULLS),
+      ["page-action-menu", "activity-stream", "bookmarks-panel"]
     ) AS labeled_counter_bookmarks_delete,
-    ANY_VALUE(
-      labeled_counter(bookmarks_view_list, ["home-panel", "app-menu"])
+    labeled_counter(
+      ARRAY_AGG(
+        IF(
+          object = "bookmarks-panel",
+          CASE
+          WHEN
+            string_value = "app-menu"
+          THEN
+            ("app-menu", value)
+          WHEN
+            string_value LIKE "home-panel%"
+          THEN
+            ("home-panel", value)
+          ELSE
+            NULL
+          END
+          ,
+          NULL
+        ) IGNORE NULLS
+      ),
+      ["home-panel", "app-menu"]
     ) AS labeled_counter_bookmarks_view_list,
-    ANY_VALUE(
-      labeled_counter(tabs_open, ["normal-tab", "private-tab"])
+    labeled_counter(
+      ARRAY_AGG(IF(object = "tab" AND method = "add", (method, value), NULL) IGNORE NULLS),
+      ["normal-tab", "private-tab"]
     ) AS labeled_counter_tabs_open,
-    ANY_VALUE(
-      labeled_counter(tabs_close, ["normal-tab", "private-tab"])
+    labeled_counter(
+      ARRAY_AGG(IF(object = "tab" AND method = "close", (method, value), NULL) IGNORE NULLS),
+      ["normal-tab", "private-tab"]
     ) AS labeled_counter_tabs_close,
     SUM(IF(object = "reader-mode-open-button", value, 0)) AS counter_reader_mode_open,
     SUM(IF(object = "reader-mode-close-button", value, 0)) AS counter_reader_mode_close,
-    ANY_VALUE(
-      labeled_counter(
-        reading_list_add,
-        ["reader-mode-toolbar", "share-extension", "page-action-menu"]
-      )
+    labeled_counter(
+      ARRAY_AGG(IF(object = "reading-list" AND method = "add", (method, value), NULL) IGNORE NULLS),
+      ["reader-mode-toolbar", "share-extension", "page-action-menu"]
     ) AS labeled_counter_reading_list_add,
-    ANY_VALUE(
-      labeled_counter(reading_list_delete, ["reader-mode-toolbar", "reading-list-panel"])
+    labeled_counter(
+      ARRAY_AGG(
+        IF(object = "reading-list" AND method = "delete", (method, value), NULL) IGNORE NULLS
+      ),
+      ["reader-mode-toolbar", "reading-list-panel"]
     ) AS labeled_counter_reading_list_delete,
     SUM(
       IF(object = "reading-list-item" AND method = "open", value, 0)
@@ -136,10 +110,6 @@ aggregated AS (
     SUM(IF(object LIKE "qr-code%" AND method = "scan", value, 0)) AS counter_qr_code_scanned,
   FROM
     extracted_event
-  JOIN
-    labeled
-  USING
-    (client_id, submission_date)
   GROUP BY
     client_id,
     submission_date

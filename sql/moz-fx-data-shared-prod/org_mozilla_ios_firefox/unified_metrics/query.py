@@ -64,12 +64,22 @@ def generate_query(columns, table):
             else:
                 k = len(split) - len(prev)
             acc += "struct(" * k
-        # sometimes we have two structs that are the same depth e.g. metrics
-        if len(split) > 1 and len(split) == len(prev) and split[-2] != prev[-2]:
-            # ensure that we are not ending a struct with a comma
-            acc = acc.rstrip(",")
-            acc += f") as {prev[-2]},"
-            acc += "struct("
+        # the two structs are different now, figure out how much we need to pop
+        # off before we continue
+        if len(split) > 1 and len(split) == len(prev):
+            # for every element that does not match, ensure that we alias the
+            # struct correctly
+            depth = 0
+            for a, b in reversed(list(zip(split[:-1], prev[:-1]))):
+                if a == b:
+                    break
+                # ensure that we are not ending a struct with a comma
+                acc = acc.rstrip(",")
+                acc += f") as {b},"
+                depth += 1
+
+            # now enter the new struct
+            acc += "struct("*depth
         # pop out of the struct
         if len(split) < len(prev):
             diff = len(prev) - len(split)
@@ -140,6 +150,7 @@ def main():
         legacy_table,
     )
     view_body = reformat(f"{query_glean} UNION ALL {query_legacy}")
+    print(view_body)
     view_id = "moz-fx-data-shared-prod.org_mozilla_ios_firefox.unified_metrics"
     try:
         bq.delete_table(bq.get_table(view_id))
@@ -183,6 +194,24 @@ def test_generate_query_nested_deep_skip():
     )
     assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
 
+def test_generate_query_nested_deep_anscestor():
+    columns = ["a.b.c.d", "a.e.f.g"]
+    res = generate_query(columns, "test")
+    expect = reformat(
+        """
+    select
+    struct(
+        struct(struct(
+            a.b.c.d
+        ) as c) as b,
+        struct(struct(
+            a.e.f.g
+        ) as f) as e
+    ) as a
+    from `test`
+    """
+    )
+    assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
 
 def test_generate_query_nested_deep():
     columns = ["a.b", "a.c", "a.d.x.y.e", "a.d.x.y.f", "g"]
@@ -212,5 +241,6 @@ if __name__ == "__main__":
     test_generate_query_simple()
     test_generate_query_nested()
     test_generate_query_nested_deep_skip()
+    test_generate_query_nested_deep_anscestor()
     test_generate_query_nested_deep()
     main()

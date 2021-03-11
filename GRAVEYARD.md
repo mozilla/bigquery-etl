@@ -2,6 +2,10 @@
 
 This document records interesting code that we've deleted for the sake of discoverability for the future.
 
+## 2021-03 Removal of Account Ecosystem Telemetry (AET)
+
+- 
+
 ## 2020-04 Fenix baseline_daily and clients_last_seen
 
 - [Removal PR](https://github.com/mozilla/bigquery-etl/pull/925)

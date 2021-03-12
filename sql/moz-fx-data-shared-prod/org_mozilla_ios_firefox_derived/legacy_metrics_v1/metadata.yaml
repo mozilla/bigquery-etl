@@ -1,4 +1,4 @@
-description: Glean-ified legacy mobile metrics 
+description: Glean-ified legacy mobile metrics
 friendly_name: legacy metrics
 labels:
   incremental: true

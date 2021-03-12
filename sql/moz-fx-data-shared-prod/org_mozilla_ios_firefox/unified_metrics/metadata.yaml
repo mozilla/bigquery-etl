@@ -1,0 +1,6 @@
+description: Union of legacy metrics and glean metrics
+friendly_name: unified metrics
+labels:
+  incremental: true
+owners:
+  - amiyaguchi@mozilla.com

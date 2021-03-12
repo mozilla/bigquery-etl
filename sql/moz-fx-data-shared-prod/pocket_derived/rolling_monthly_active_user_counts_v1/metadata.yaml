@@ -4,6 +4,8 @@ description: |-
 owners:
   - jklukas@mozilla.com
 labels:
-  incremental: true
+  incremental: false
 scheduling:
   dag_name: bqetl_pocket
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]

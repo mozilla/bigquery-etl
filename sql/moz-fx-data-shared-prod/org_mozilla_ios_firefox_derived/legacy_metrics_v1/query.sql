@@ -25,7 +25,7 @@ WITH extracted_event AS (
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_event_counts_v1`
   WHERE
-    submission_date = @submission_date
+    DATE(_PARTITIONTIME) = @submission_date
 ),
 extracted_core AS (
   SELECT
@@ -33,7 +33,7 @@ extracted_core AS (
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_core_v1`
   WHERE
-    submission_date = @submission_date
+    DATE(_PARTITIONTIME) = @submission_date
 ),
 aggregated AS (
   SELECT

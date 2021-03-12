@@ -145,7 +145,16 @@ def main():
         "mozdata.org_mozilla_ios_firefox.metrics",
     )
     query_legacy = generate_query(
-        ['"legacy" as telemetry_system', *stripped],
+        [
+            '"legacy" as telemetry_system',
+            *[
+                # replace submission date with _PARTITIONTIME
+                "DATE(_PARTITIONTIME) as submission_date"
+                if c == "submission_date"
+                else c
+                for c in stripped
+            ],
+        ],
         legacy_table,
     )
     view_body = reformat(f"{query_glean} UNION ALL {query_legacy}")
@@ -193,6 +202,7 @@ def test_generate_query_nested_deep_skip():
     )
     assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
 
+
 def test_generate_query_nested_deep_uneven():
     columns = ["a.b.c.d", "a.b.e"]
     res = generate_query(columns, "test")
@@ -209,6 +219,7 @@ def test_generate_query_nested_deep_uneven():
     """
     )
     assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
+
 
 def test_generate_query_nested_deep_anscestor():
     columns = ["a.b.c.d", "a.e.f.g"]

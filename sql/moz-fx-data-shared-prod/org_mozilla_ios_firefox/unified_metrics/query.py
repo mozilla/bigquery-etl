@@ -193,6 +193,22 @@ def test_generate_query_nested_deep_skip():
     )
     assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
 
+def test_generate_query_nested_deep_uneven():
+    columns = ["a.b.c.d", "a.b.e"]
+    res = generate_query(columns, "test")
+    expect = reformat(
+        """
+    select struct(struct(
+            struct(
+                a.b.c.d
+            ) as c,
+            a.b.e
+        ) as b
+    ) as a
+    from `test`
+    """
+    )
+    assert res == expect, f"expected:\n{expect}\ngot:\n{res}"
 
 def test_generate_query_nested_deep_anscestor():
     columns = ["a.b.c.d", "a.e.f.g"]
@@ -262,6 +278,7 @@ if __name__ == "__main__":
     test_generate_query_simple()
     test_generate_query_nested()
     test_generate_query_nested_deep_skip()
+    test_generate_query_nested_deep_uneven()
     test_generate_query_nested_deep_anscestor()
     test_generate_query_nested_deep_anscestor_shared_descendent_names()
     test_generate_query_nested_deep()

@@ -1,0 +1,6 @@
+description: Event counts of legacy mobile events
+friendly_name: legacy mobile event counts
+labels:
+  incremental: true
+owners:
+  - amiyaguchi@mozilla.com

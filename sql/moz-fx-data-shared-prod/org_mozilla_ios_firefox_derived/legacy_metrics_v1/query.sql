@@ -115,8 +115,8 @@ aggregated AS (
     submission_date
 )
 SELECT
-  submission_timestamp,
-  document_id,
+  coalesce(t1.submission_timestamp, t2.submission_timestamp) AS submission_timestamp,
+  coalesce(t1.document_id, t2.document_id) AS document_id,
   (SELECT AS STRUCT metadata.* EXCEPT (uri)) AS metadata,
   normalized_app_name,
   normalized_channel,
@@ -168,10 +168,10 @@ SELECT
 FROM
   aggregated
 FULL JOIN
-  extracted_event
+  extracted_core t1
 USING
   (client_id, submission_date)
 FULL JOIN
-  extracted_core
+  extracted_event t2
 USING
   (client_id, submission_date)

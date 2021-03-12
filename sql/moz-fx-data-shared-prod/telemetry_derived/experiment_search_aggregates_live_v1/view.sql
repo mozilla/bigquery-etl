@@ -17,17 +17,17 @@ WITH all_searches AS (
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS value
       )
     ) AS ad_clicks_count,
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS value
       )
     ) AS search_with_ads_count,
     SUM(
@@ -36,15 +36,15 @@ WITH all_searches AS (
           SUM(
             SAFE_CAST(
               COALESCE(
-                JSON_EXTRACT_SCALAR(REPLACE(x, '"', ''), '$.sum'),
-                SPLIT(REPLACE(x, '"', ''), ';')[SAFE_OFFSET(2)],
-                SPLIT(REPLACE(x, '"', ''), ',')[SAFE_OFFSET(1)],
-                REPLACE(x, '"', '')
+                JSON_EXTRACT_SCALAR(REPLACE(value, '"', ''), '$.sum'),
+                SPLIT(REPLACE(value, '"', ''), ';')[SAFE_OFFSET(2)],
+                SPLIT(REPLACE(value, '"', ''), ',')[SAFE_OFFSET(1)],
+                REPLACE(value, '"', '')
               ) AS INT64
             )
           )
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS value
       )
     ) AS search_count,
   FROM
@@ -72,25 +72,25 @@ WITH all_searches AS (
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS value
       )
     ) AS ad_clicks_count,
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS value
       )
     ) AS search_with_ads_count,
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS value
       )
     ) AS search_count,
   FROM
@@ -118,25 +118,25 @@ WITH all_searches AS (
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS value
       )
     ) AS ad_clicks_count,
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS value
       )
     ) AS search_with_ads_count,
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS value
       )
     ) AS search_count,
   FROM
@@ -164,25 +164,25 @@ WITH all_searches AS (
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_ad_clicks)) AS value
       )
     ) AS ad_clicks_count,
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_with_ads)) AS value
       )
     ) AS search_with_ads_count,
     SUM(
       (
         SELECT
-          SUM(CAST(REPLACE(x, '"', '') AS INT64))
+          SUM(CAST(REPLACE(value, '"', '') AS INT64))
         FROM
-          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS x
+          UNNEST(JSON_EXTRACT_ARRAY(nested_search_count)) AS value
       )
     ) AS search_count,
   FROM

@@ -12,6 +12,8 @@ IF
     submission_timestamp,
     experiment.key AS experiment,
     experiment.value.branch AS branch,
+    -- Materialized views do not support sub-queries for UNNESTing fields
+    -- Extract the counts from the JSON of the nested struct AS single array
     TO_JSON_STRING(
       REGEXP_EXTRACT_ALL(
         TO_JSON_STRING(metrics.labeled_counter.browser_search_ad_clicks),

@@ -113,6 +113,29 @@ aggregated AS (
   GROUP BY
     client_id,
     submission_date
+),
+-- there are many rows per client in the event table, so we need to prune it to
+-- a single set of attributes to use as the metadata
+meta_ranked AS (
+  SELECT
+    t AS metadata,
+    row_number() OVER (
+      PARTITION BY
+        client_id,
+        submission_date
+      ORDER BY
+        submission_timestamp DESC
+    ) AS _n
+  FROM
+    extracted_event t
+),
+meta AS (
+  SELECT
+    metadata.*
+  FROM
+    meta_ranked
+  WHERE
+    _n = 1
 )
 SELECT
   coalesce(t1.submission_timestamp, t2.submission_timestamp) AS submission_timestamp,
@@ -172,6 +195,6 @@ FULL JOIN
 USING
   (client_id, submission_date)
 FULL JOIN
-  extracted_event t2
+  meta t2
 USING
   (client_id, submission_date)

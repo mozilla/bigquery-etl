@@ -116,6 +116,22 @@ SELECT
     ORDER BY
       submission_date
   ) AS cdou,
+  SUM(new_profiles) OVER (
+    PARTITION BY
+      submission_year,
+      id_bucket,
+      activity_segment,
+      os,
+      channel,
+      `source`,
+      medium,
+      campaign,
+      content,
+      country,
+      distribution_id
+    ORDER BY
+      submission_date
+  ) AS cumulative_new_profiles,
   *
 FROM
   exploded

@@ -100,38 +100,25 @@ exploded AS (
 --
 -- Finally, we can do our windowed SUM to materialize CDOU.
 SELECT
-  SUM(dau) OVER (
-    PARTITION BY
-      submission_year,
-      id_bucket,
-      activity_segment,
-      os,
-      channel,
-      `source`,
-      medium,
-      campaign,
-      content,
-      country,
-      distribution_id
-    ORDER BY
-      submission_date
-  ) AS cdou,
-  SUM(new_profiles) OVER (
-    PARTITION BY
-      submission_year,
-      id_bucket,
-      activity_segment,
-      os,
-      channel,
-      `source`,
-      medium,
-      campaign,
-      content,
-      country,
-      distribution_id
-    ORDER BY
-      submission_date
-  ) AS cumulative_new_profiles,
+  SUM(dau) OVER (year_slice) AS cdou,
+  SUM(new_profiles) OVER (year_slice) AS cumulative_new_profiles,
   *
 FROM
   exploded
+WINDOW
+  year_slice AS (
+    PARTITION BY
+      submission_year,
+      id_bucket,
+      activity_segment,
+      os,
+      channel,
+      `source`,
+      medium,
+      campaign,
+      content,
+      country,
+      distribution_id
+    ORDER BY
+      submission_date
+  )

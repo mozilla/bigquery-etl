@@ -35,8 +35,15 @@ def get_columns(schema):
 def generate_query(columns, table):
     """Generate a SQL query given column names.
 
-    We construct a query that selects columns into nested structs. Naive selection
-    of all the columns will strip the namespace from the columns.
+    We construct a query that selects columns into nested structs. Naive
+    selection of all the columns will strip the namespace from the columns.
+
+    The legacy core and legacy event tables are converted as subsets of the
+    metrics glean ping. There may be more than one row per client, but this
+    matches the existing semantics of the metrics ping. We use this method over
+    joining the core and legacy pings because of the non-overlapping nature of
+    these two pings and difficulty in using coalesce with a deeply nested
+    structure.
     """
 
     # Build a string that contains the selected columns. We take the set of
@@ -100,6 +107,12 @@ def generate_query(columns, table):
 
     return reformat(f"select {acc} from `{table}`")
 
+def update_schema(bq, table_id, schema):
+    """Update the schema and return the table"""
+    table = bq.get_table(table_id)
+    table.schema = bq.schema_from_json(io.StringIO(json.dumps(schema)))
+    bq.update_table(table, ["schema"])
+
 
 def main():
     # get the most schema deploy (to the nearest 15 minutes)
@@ -132,19 +145,21 @@ def main():
     """
 
     bq = bigquery.Client()
-    legacy_table = (
-        "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_metrics_v1"
+    legacy_core = (
+        "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_core_v2"
     )
-    table = bq.get_table(legacy_table)
-    table.schema = bq.schema_from_json(io.StringIO(json.dumps(schema)))
-    bq.update_table(table, ["schema"])
+    legacy_event = (
+        "moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_event_counts_v2"
+    )
+    update_schema(bq, legacy_core, schema)
+    update_schema(bq, legacy_event, schema)
 
     stripped = [c.split()[0].lstrip("root.") for c in column_summary]
     query_glean = generate_query(
         ['"glean" as telemetry_system', *stripped],
         "mozdata.org_mozilla_ios_firefox.metrics",
     )
-    query_legacy = generate_query(
+    query_legacy_events = generate_query(
         [
             '"legacy" as telemetry_system',
             *[
@@ -155,9 +170,23 @@ def main():
                 for c in stripped
             ],
         ],
-        legacy_table,
+        legacy_core,
     )
-    view_body = reformat(f"{query_glean} UNION ALL {query_legacy}")
+    query_legacy_core = generate_query(
+        [
+            '"legacy" as telemetry_system',
+            *[
+                # replace submission date with _PARTITIONTIME
+                "DATE(_PARTITIONTIME) as submission_date"
+                if c == "submission_date"
+                else c
+                for c in stripped
+            ],
+        ],
+        legacy_event,
+    )
+
+    view_body = reformat(" UNION ALL ".join([query_glean, query_legacy_core, query_legacy_events]))
     print(view_body)
     view_id = "moz-fx-data-shared-prod.org_mozilla_ios_firefox.unified_metrics"
     try:

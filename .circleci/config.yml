@@ -75,6 +75,7 @@ jobs:
               PATHS=sql
             else
               echo "Check dry run for modified queries"
+              # yamllint disable-line rule:line-length
               PATHS="$(git diff origin/master... --name-only --diff-filter=d -- sql)"
             fi
             echo $PATHS

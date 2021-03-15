@@ -1,0 +1,18 @@
+friendly_name: adMarketplace Daily Engagements
+description: |-
+  Click Volume, partitioned by day with the following facets:
+    - submission_date
+    - phase
+    - country
+    - placement
+    - partner
+    - version
+    - normalized_channel
+owners:
+  - akomar@mozilla.com
+  - rharter@mozilla.com
+  - tbrooks@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+bigquery: null

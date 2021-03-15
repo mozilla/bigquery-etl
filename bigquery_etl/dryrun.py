@@ -34,6 +34,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/monitoring_derived/deletion_request_volume_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/document_sample_nonprod_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v1/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v2/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring/schema_error_counts_v1/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/structured_error_counts_v1/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/structured_error_counts/view.sql",

@@ -17,7 +17,6 @@ from google.cloud import bigquery
 VIEWS_TO_SKIP = (
     # Access Denied
     "activity_stream/tile_id_types/view.sql",
-    "firefox_accounts/fxa_amplitude_email_clicks/view.sql",
     "pocket/pocket_reach_mau/view.sql",
     "telemetry/buildhub2/view.sql",
     # Dataset glam-fenix-dev:glam_etl was not found

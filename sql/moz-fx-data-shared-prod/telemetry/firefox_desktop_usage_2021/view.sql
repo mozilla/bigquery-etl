@@ -8,6 +8,7 @@ SELECT
     COALESCE(wau, 0) AS wau,
     COALESCE(dau, 0) AS dau,
     COALESCE(new_profiles, 0) AS new_profiles
-  )
+  ),
+  (source IS NOT NULL OR campaign IS NOT NULL) AS attributed,
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_usage_v1`

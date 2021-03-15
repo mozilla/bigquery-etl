@@ -1,4 +1,22 @@
-WITH pop AS (
+WITH distinct_countries AS (
+  -- Some country codes appear multiple times as some countries have multiple names.
+  -- Ensure that each code appears only once and go with name that appears first.
+  SELECT
+    code,
+    name
+  FROM
+    (
+      SELECT
+        row_number() OVER (PARTITION BY code ORDER BY name) AS rn,
+        code,
+        name
+      FROM
+        `moz-fx-data-derived-datasets`.static.country_names_v1 country_names
+    )
+  WHERE
+    rn = 1
+),
+pop AS (
   SELECT DISTINCT
     client_id,
     normalized_country_code AS country_code,
@@ -72,7 +90,7 @@ SELECT
 FROM
   client_conditions
 LEFT JOIN
-  `moz-fx-data-derived-datasets`.static.country_names_v1 country_names
+  distinct_countries country_names
 ON
   (country_names.code = country_code)
 WHERE

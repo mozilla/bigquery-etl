@@ -5,4 +5,4 @@ friendly_name: Firefox Desktop Funnel Activation
 labels:
   incremental: true
 owners:
-  - wlachance@mozilla.com
+  - ascholtz@mozilla.com

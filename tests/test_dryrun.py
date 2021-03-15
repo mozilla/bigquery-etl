@@ -42,8 +42,8 @@ class TestDryRun:
         assert dryrun.get_referenced_tables() == []
 
     def test_get_referenced_tables(self, tmp_path):
-        os.makedirs(tmp_path / "telmetry_derived")
-        query_file = tmp_path / "telmetry_derived" / "query.sql"
+        os.makedirs(tmp_path / "telemetry_derived")
+        query_file = tmp_path / "telemetry_derived" / "query.sql"
         query_file.write_text(
             "SELECT * FROM telemetry_derived.clients_daily_v6 "
             "WHERE submission_date = '2020-01-01'"

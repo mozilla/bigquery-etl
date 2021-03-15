@@ -1,0 +1,6 @@
+description: Event counts of legacy core pings
+friendly_name: legacy core pings
+labels:
+  incremental: true
+owners:
+  - amiyaguchi@mozilla.com

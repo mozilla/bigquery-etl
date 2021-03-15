@@ -5,4 +5,4 @@ friendly_name: Desktop Funnel Installs
 labels:
   incremental: true
 owners:
-  - wlachance@mozilla.com
+  - ascholtz@mozilla.com

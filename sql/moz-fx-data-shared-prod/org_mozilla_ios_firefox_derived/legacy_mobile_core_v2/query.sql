@@ -72,9 +72,9 @@ WITH unioned AS (
 ),
 extracted AS (
   SELECT
-    * except(client_id, document_id),
-    lower(client_id) as client_id,
-    lower(document_id) as document_id,
+    * EXCEPT (client_id, document_id),
+    lower(client_id) AS client_id,
+    lower(document_id) AS document_id,
     DATE(submission_timestamp) AS submission_date,
   FROM
     unioned

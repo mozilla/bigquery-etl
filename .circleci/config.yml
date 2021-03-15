@@ -75,7 +75,7 @@ jobs:
               PATHS=sql
             else
               echo "Check dry run for modified queries"
-              PATHS="$(git diff origin/master... --name-only -- sql)"
+              PATHS="$(git diff origin/master... --name-only --diff-filter=d -- sql)"
             fi
             echo $PATHS
             script/dryrun $PATHS

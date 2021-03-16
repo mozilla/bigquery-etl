@@ -46,11 +46,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=[
-            'submission_date:DATE:{{ macros.ds_format((execution_date + macros.timedelta(days=-8)).to_datetime_string(), "%Y-%m-%d %H:%M:%S", "%Y-%m-%d") }}'
-        ],
         dag=dag,
     )
 

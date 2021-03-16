@@ -1,23 +1,6 @@
-WITH distinct_countries AS (
-  -- Some country codes appear multiple times as some countries have multiple names.
-  -- Ensure that each code appears only once and go with name that appears first.
+WITH pop AS (
   SELECT
-    code,
-    name
-  FROM
-    (
-      SELECT
-        row_number() OVER (PARTITION BY code ORDER BY name) AS rn,
-        code,
-        name
-      FROM
-        `moz-fx-data-derived-datasets`.static.country_names_v1 country_names
-    )
-  WHERE
-    rn = 1
-),
-pop AS (
-  SELECT DISTINCT
+    ROW_NUMBER() OVER (PARTITION BY client_id) AS rn,
     client_id,
     normalized_country_code AS country_code,
     normalized_channel AS channel,
@@ -34,27 +17,33 @@ pop AS (
     DATE(submission_timestamp) = @submission_date
     AND payload.processes.parent.scalars.startup_profile_selection_reason = 'firstrun-created-default'
 ),
+dist_pop AS (
+  -- make sure that we only get one entry per client
+  SELECT
+    * EXCEPT (rn)
+  FROM
+    pop
+  WHERE
+    rn = 1
+),
 raw_info AS (
   SELECT
     client_id,
     submission_date,
-    any_value(days_seen_bits) AS days_seen_bits
+    days_seen_bits
   FROM
     telemetry.clients_last_seen
   WHERE
     submission_date
-    BETWEEN @submission_date
-    AND DATE_ADD(@submission_date, INTERVAL 8 DAY)
-  GROUP BY
-    client_id,
-    submission_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 8 DAY)
+    AND @submission_date
 ),
 eight_days_later AS (
   SELECT
     a.*,
     b.days_seen_bits
   FROM
-    pop a
+    dist_pop a
   LEFT JOIN
     raw_info b
   ON
@@ -78,11 +67,11 @@ client_conditions AS (
 )
 SELECT
   date,
-  country_names.name AS country_name,
+  country_codes.name AS country_name,
   channel,
   build_id,
   os,
-  os_version,
+  CAST(os_version AS STRING) AS os_version,
   attribution_source,
   distribution_id,
   attribution_ua,
@@ -90,11 +79,11 @@ SELECT
 FROM
   client_conditions
 LEFT JOIN
-  distinct_countries country_names
+  mozdata.static.country_codes_v1 country_codes
 ON
-  (country_names.code = country_code)
+  (country_codes.code = country_code)
 WHERE
-  date = @submission_date
+  date = DATE_SUB(@submission_date, INTERVAL 8 DAY)
   AND activated = TRUE
 GROUP BY
   date,

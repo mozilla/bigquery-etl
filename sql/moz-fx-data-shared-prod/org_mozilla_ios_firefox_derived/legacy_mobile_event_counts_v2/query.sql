@@ -19,21 +19,70 @@ CREATE TEMPORARY FUNCTION labeled_counter(
   )
 );
 
-WITH extracted_event AS (
+WITH extracted AS (
   SELECT
-    *
+    *,
+    date(submission_timestamp) AS submission_date,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_event_counts_v1`
+    `moz-fx-data-shared-prod.telemetry_stable.mobile_event_v1`
   WHERE
-    DATE(_PARTITIONTIME) = @submission_date
+    DATE(submission_timestamp) = @submission_date
+    AND normalized_app_name = "Fennec"
+    AND normalized_os = "iOS"
 ),
-extracted_core AS (
+meta AS (
   SELECT
-    *
+    * EXCEPT (events)
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.legacy_mobile_core_v1`
+    extracted
+),
+meta_ranked AS (
+  SELECT
+    t AS metadata,
+    row_number() OVER (
+      PARTITION BY
+        client_id,
+        submission_date
+      ORDER BY
+        submission_timestamp DESC
+    ) AS _n
+  FROM
+    meta t
+),
+meta_recent AS (
+  SELECT
+    metadata.*
+  FROM
+    meta_ranked
   WHERE
-    DATE(_PARTITIONTIME) = @submission_date
+    _n = 1
+),
+unnested AS (
+  SELECT
+    * EXCEPT (events),
+    mozdata.udf.deanonymize_event(event).*
+  FROM
+    extracted,
+    UNNEST(events) AS event
+),
+counts AS (
+  SELECT
+    client_id,
+    submission_date,
+    event_category AS category,
+    event_method AS method,
+    event_object AS object,
+    event_string_value AS string_value,
+    COUNT(*) AS value
+  FROM
+    unnested
+  GROUP BY
+    client_id,
+    submission_date,
+    category,
+    method,
+    object,
+    string_value
 ),
 aggregated AS (
   SELECT
@@ -109,37 +158,14 @@ aggregated AS (
     ) AS counter_reading_list_mark_unread,
     SUM(IF(object LIKE "qr-code%" AND method = "scan", value, 0)) AS counter_qr_code_scanned,
   FROM
-    extracted_event
+    counts
   GROUP BY
     client_id,
     submission_date
-),
--- there are many rows per client in the event table, so we need to prune it to
--- a single set of attributes to use as the metadata
-meta_ranked AS (
-  SELECT
-    t AS metadata,
-    row_number() OVER (
-      PARTITION BY
-        client_id,
-        submission_date
-      ORDER BY
-        submission_timestamp DESC
-    ) AS _n
-  FROM
-    extracted_event t
-),
-meta AS (
-  SELECT
-    metadata.*
-  FROM
-    meta_ranked
-  WHERE
-    _n = 1
 )
 SELECT
-  coalesce(t1.submission_timestamp, t2.submission_timestamp) AS submission_timestamp,
-  coalesce(t1.document_id, t2.document_id) AS document_id,
+  submission_timestamp,
+  document_id,
   (SELECT AS STRUCT metadata.* EXCEPT (uri)) AS metadata,
   normalized_app_name,
   normalized_channel,
@@ -162,12 +188,6 @@ SELECT
   ) AS client_info,
   STRUCT(
     STRUCT(
-      string_search_default_engine AS search_default_engine,
-      string_preferences_mail_client AS preferences_mail_client,
-      string_preferences_new_tab_experience AS preferences_new_tab_experience
-    ) AS string,
-    STRUCT(
-      counter_tabs_cumulative_count AS tabs_cumulative_count,
       counter_glean_validation_foreground_count AS glean_validation_foreground_count,
       counter_reader_mode_open AS reader_mode_open,
       counter_reader_mode_close AS reader_mode_close,
@@ -177,7 +197,6 @@ SELECT
       counter_qr_code_scanned AS qr_code_scanned
     ) AS counter,
     STRUCT(
-      labeled_counter_search_counts AS search_counts,
       labeled_counter_bookmarks_view_list AS bookmarks_view_list,
       labeled_counter_bookmarks_open AS bookmarks_open,
       labeled_counter_bookmarks_add AS bookmarks_add,
@@ -190,11 +209,7 @@ SELECT
   ) AS metrics
 FROM
   aggregated
-FULL JOIN
-  extracted_core t1
-USING
-  (client_id, submission_date)
-FULL JOIN
-  meta t2
+JOIN
+  meta_recent
 USING
   (client_id, submission_date)

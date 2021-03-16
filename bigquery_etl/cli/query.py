@@ -421,8 +421,22 @@ def info(name, sql_dir, project_id, cost, last_updated):
     default=[],
 )
 @click.option("--dry_run/--no_dry_run", help="Dry run the backfill")
+@click.option(
+    "--allow-field-addition/--no-allow-field-addition",
+    help="Allow schema additions during query time",
+)
 @click.pass_context
-def backfill(ctx, name, sql_dir, project_id, start_date, end_date, exclude, dry_run):
+def backfill(
+    ctx,
+    name,
+    sql_dir,
+    project_id,
+    start_date,
+    end_date,
+    exclude,
+    dry_run,
+    allow_field_addition,
+):
     """Run a backfill."""
     if not is_authenticated():
         click.echo(
@@ -449,13 +463,21 @@ def backfill(ctx, name, sql_dir, project_id, start_date, end_date, exclude, dry_
                     f"with @submission_date={backfill_date}"
                 )
 
-                arguments = [
-                    "query",
-                    "--time_partitioning_type=DAY",
-                    f"--parameter=submission_date:DATE:{backfill_date}",
-                    "--use_legacy_sql=false",
-                    "--replace",
-                ] + ctx.args
+                arguments = (
+                    [
+                        "query",
+                        "--time_partitioning_type=DAY",
+                        f"--parameter=submission_date:DATE:{backfill_date}",
+                        "--use_legacy_sql=false",
+                        "--replace",
+                    ]
+                    + (
+                        ["--schema_update_option=ALLOW_FIELD_ADDITION"]
+                        if allow_field_addition
+                        else []
+                    )
+                    + ctx.args
+                )
                 if dry_run:
                     arguments += ["--dry_run"]
 

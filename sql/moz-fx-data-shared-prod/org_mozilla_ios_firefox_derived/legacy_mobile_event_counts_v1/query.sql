@@ -52,7 +52,7 @@ counts AS (
     event_method AS method,
     event_object AS object,
     event_string_value AS string_value,
-    COUNT(DISTINCT document_id) AS value
+    COUNT(*) AS value
   FROM
     unnested
   GROUP BY

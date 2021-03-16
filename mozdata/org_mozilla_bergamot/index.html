@@ -18,7 +18,7 @@
     
     
       
-        <title>account_ecosystem - BigQuery ETL</title>
+        <title>org_mozilla_bergamot - BigQuery ETL</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aet_clients_daily" class="md-skip">
+        <a href="#custom" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              account_ecosystem
+              org_mozilla_bergamot
             
           </span>
         </div>
@@ -419,52 +419,6 @@
             
   
   
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          account_ecosystem
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        account_ecosystem
-      </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#aet_clients_daily" class="md-nav__link">
-    aet_clients_daily
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-          
-            
-  
-  
   
     <li class="md-nav__item">
       <a href="../activity_stream/" class="md-nav__link">
@@ -734,6 +688,59 @@
       <a href="../mozza/" class="md-nav__link">
         mozza
       </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          org_mozilla_bergamot
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        org_mozilla_bergamot
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#custom" class="md-nav__link">
+    custom
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deletion_request" class="md-nav__link">
+    deletion_request
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1286,8 +1293,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#aet_clients_daily" class="md-nav__link">
-    aet_clients_daily
+  <a href="#custom" class="md-nav__link">
+    custom
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deletion_request" class="md-nav__link">
+    deletion_request
   </a>
   
 </li>
@@ -1305,14 +1319,18 @@
               
                 
                 
-                  <h1>account_ecosystem</h1>
+                  <h1>org_mozilla_bergamot</h1>
                 
-                <h2 id="aet_clients_daily"><a href="#aet_clients_daily">aet_clients_daily</a></h2>
-<p>One row per user per service per day, showing metrics across services.
-The <code>user_id</code> and <code>client_id</code> are directly related to the <code>ecosystem_user_id</code> and <code>ecosystem_client_id</code> primitive identifiers for Account Ecosystem Telemetry, but are abstracted to prevent fingerprinting and to provide continuity across user password reset events. In this view, we are guaranteed that a logical user is represented by a consistent <code>user_id</code> over time.
-For rows representing client telemetry, this view looks up <code>user_id</code> at runtime based on <code>client_id</code> so that we can have <code>user_id</code> values present for any client that has ever logged in to FxA, even for older rows before the first login.</p>
+                <h2 id="custom"><a href="#custom">custom</a></h2>
+<p>A historical view of pings sent for the
+<code>org-mozilla-bergamot/custom</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <ul>
-<li>Friendly name: AET Clients Daily</li>
+<li>Friendly name: Historical Pings for <code>org-mozilla-bergamot/custom</code></li>
 </ul>
 <table>
 <caption>Referenced Tables</caption>
@@ -1323,20 +1341,39 @@ For rows representing client telemetry, this view looks up <code>user_id</code> 
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/account_ecosystem_derived>account_ecosystem_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1>ecosystem_client_id_lookup_v1</a></td>
-        </tr><tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/account_ecosystem_derived>account_ecosystem_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1>desktop_clients_daily_v1</a></td>
-        </tr><tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/account_ecosystem_derived>account_ecosystem_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/account_ecosystem_derived/fxa_logging_users_daily_v1>fxa_logging_users_daily_v1</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot_stable>org_mozilla_bergamot_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot_stable/custom_v1>custom_v1</a></td>
         </tr>   
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/account_ecosystem/aet_clients_daily/view.sql">View Definition</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot/custom">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot/custom/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot/custom/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
+<p>A historical view of pings sent for the
+<code>org-mozilla-bergamot/deletion-request</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<ul>
+<li>Friendly name: Historical Pings for <code>org-mozilla-bergamot/deletion-request</code></li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot_stable>org_mozilla_bergamot_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot_stable/deletion_request_v1>deletion_request_v1</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot/deletion_request">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot/deletion_request/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/org_mozilla_bergamot/deletion_request/view.sql">View Definition</a> </p>
 <hr />
                 
                   
@@ -1357,7 +1394,7 @@ For rows representing client telemetry, this view looks up <code>user_id</code> 
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../introduction/" class="md-footer__link md-footer__link--prev" rel="prev">
+        <a href="../mozza/" class="md-footer__link md-footer__link--prev" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1366,19 +1403,19 @@ For rows representing client telemetry, this view looks up <code>user_id</code> 
               <span class="md-footer__direction">
                 Previous
               </span>
-              Introduction
+              mozza
             </div>
           </div>
         </a>
       
       
-        <a href="../activity_stream/" class="md-footer__link md-footer__link--next" rel="next">
+        <a href="../org_mozilla_connect_firefox/" class="md-footer__link md-footer__link--next" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              activity_stream
+              org_mozilla_connect_firefox
             </div>
           </div>
           <div class="md-footer__button md-icon">

@@ -1,4 +1,4 @@
-friendly_name: Forecasts Cache
+friendly_name: Looker Forecasts Cache
 description: |-
   Cache for 2021 DAU and New Profiles forecasts.
   These forecasts are created on-the-fly in Looker using BQ ML,

@@ -2,6 +2,14 @@
 
 This document records interesting code that we've deleted for the sake of discoverability for the future.
 
+## 2021-03 Account Ecosystem Telemetry (AET) derived tables
+
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/1894)
+
+AET was never released except for a short test in the beta population,
+and now the project has been decommissioned, so there is no longer
+any need for these derived tables.
+
 ## 2020-04 Fenix baseline_daily and clients_last_seen
 
 - [Removal PR](https://github.com/mozilla/bigquery-etl/pull/925)

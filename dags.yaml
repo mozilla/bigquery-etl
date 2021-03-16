@@ -271,18 +271,6 @@ bqetl_fenix_event_rollup:
     retries: 2
     retry_delay: 30m
 
-bqetl_account_ecosystem:
-  schedule_interval: 0 2 * * *
-  description: >-
-    Tables related to the v1 implementation of Account Ecosystem Telemetry (AET)
-    which is currently on hold.
-  default_args:
-    owner: jklukas@mozilla.com
-    start_date: "2020-09-17"
-    email: ["jklukas@mozilla.com"]
-    retries: 2
-    retry_delay: 30m
-
 bqetl_stripe:
   schedule_interval: daily
   default_args:

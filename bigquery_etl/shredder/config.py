@@ -72,9 +72,6 @@ IMPRESSION_ID = "impression_id"
 USER_ID = "user_id"
 POCKET_ID = "pocket_id"
 SHIELD_ID = "shield_id"
-ECOSYSTEM_CLIENT_ID = "ecosystem_client_id"
-ECOSYSTEM_CLIENT_ID_HASH = f"{ECOSYSTEM_CLIENT_ID}_hash"
-DESKTOP_ECOSYSTEM_CLIENT_ID = f"payload.{ECOSYSTEM_CLIENT_ID}"
 PIONEER_ID = "pioneer_id"
 ID = "id"
 CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
@@ -94,14 +91,6 @@ CFR_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4`,"
     f" UNNEST([{CLIENT_ID}, {IMPRESSION_SRC.field}]) AS `_",
     field="_",
-)
-ECOSYSTEM_CLIENT_ID_HMAC_SRC = DeleteSource(
-    table="account_ecosystem_restricted.ecosystem_client_id_deletion_v1",
-    field=ECOSYSTEM_CLIENT_ID_HASH,
-)
-ECOSYSTEM_CLIENT_ID_SRC = DeleteSource(
-    table="account_ecosystem_restricted.ecosystem_client_id_deletion_v1",
-    field=ECOSYSTEM_CLIENT_ID,
 )
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts_derived.fxa_delete_events_v1", field="hmac_user_id"
@@ -138,8 +127,6 @@ SOURCES = (
         DESKTOP_SRC,
         IMPRESSION_SRC,
         CFR_SRC,
-        ECOSYSTEM_CLIENT_ID_HMAC_SRC,
-        ECOSYSTEM_CLIENT_ID_SRC,
         FXA_HMAC_SRC,
         FXA_SRC,
     ]
@@ -274,21 +261,6 @@ DELETE_TARGETS = {
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_last_seen_v1"
     ): FXA_SRC,
-    # account ecosystem telemetry (AET)
-    DeleteTarget(
-        table="telemetry_stable.account_ecosystem_v4", field=DESKTOP_ECOSYSTEM_CLIENT_ID
-    ): ECOSYSTEM_CLIENT_ID_SRC,
-    DeleteTarget(
-        table="firefox_accounts_stable.account_ecosystem_v1", field=ECOSYSTEM_CLIENT_ID
-    ): ECOSYSTEM_CLIENT_ID_SRC,
-    DeleteTarget(
-        table="account_ecosystem_derived.ecosystem_client_id_lookup_v1",
-        field=ECOSYSTEM_CLIENT_ID_HASH,
-    ): ECOSYSTEM_CLIENT_ID_HMAC_SRC,
-    DeleteTarget(
-        table="account_ecosystem_derived.desktop_clients_daily_v1",
-        field=ECOSYSTEM_CLIENT_ID_HASH,
-    ): ECOSYSTEM_CLIENT_ID_HMAC_SRC,
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",
@@ -369,9 +341,6 @@ SEARCH_IGNORE_TABLES |= {
         client_id_target(table="eng_workflow_stable.build_v1"),
         # other
         DeleteTarget(table="telemetry_stable.pioneer_study_v4", field=PIONEER_ID),
-        DeleteTarget(
-            table="telemetry_stable.pre_account_v4", field=DESKTOP_ECOSYSTEM_CLIENT_ID
-        ),
     ]
 }
 

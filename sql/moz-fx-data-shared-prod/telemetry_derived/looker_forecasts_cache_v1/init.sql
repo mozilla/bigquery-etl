@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  telemetry_derived.forecasts_cache_v1
+  telemetry_derived.looker_forecasts_cache_v1
 CLUSTER BY
   key
 AS

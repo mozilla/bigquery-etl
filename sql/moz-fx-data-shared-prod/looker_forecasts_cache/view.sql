@@ -1,14 +1,20 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.forecasts_cache`
+  `moz-fx-data-shared-prod.telemetry.looker_forecasts_cache`
 AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.forecasts_cache_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.looker_forecasts_cache_v1`
 UNION ALL
 SELECT
+  -- Key for the cache is the filters used. When no filters are used,
+  -- we want to retrieve the official forecast, hence the empty string
   '' AS key,
+
+  -- Looker is better suited to deal with timestamp types, since some of
+  -- the filters are timestamp comparisons which fail on dates
   CAST(ds AS TIMESTAMP) AS submission_date,
+
   -- DAU
   dau_forecast.dau_forecast,
   dau_forecast.dau_forecast * 1.05 AS dau_target,

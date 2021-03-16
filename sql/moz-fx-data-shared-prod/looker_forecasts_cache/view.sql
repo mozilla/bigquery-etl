@@ -10,11 +10,9 @@ SELECT
   -- Key for the cache is the filters used. When no filters are used,
   -- we want to retrieve the official forecast, hence the empty string
   '' AS key,
-
   -- Looker is better suited to deal with timestamp types, since some of
   -- the filters are timestamp comparisons which fail on dates
   CAST(ds AS TIMESTAMP) AS submission_date,
-
   -- DAU
   dau_forecast.dau_forecast,
   dau_forecast.dau_forecast * 1.05 AS dau_target,

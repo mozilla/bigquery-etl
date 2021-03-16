@@ -6,3 +6,5 @@ labels:
   incremental: true
 owners:
   - ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_desktop_funnel  

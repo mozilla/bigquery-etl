@@ -6,3 +6,11 @@ labels:
   incremental: true
 owners:
   - ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_desktop_funnel  
+  parameters: [
+    # Set the submission_date to the date from 8 days ago
+    'submission_date:DATE:{{ macros.ds_format((execution_date + macros.timedelta(days=-8)).to_datetime_string(), "%Y-%m-%d %H:%M:%S", "%Y-%m-%d") }}' # yamllint disable-line rule:line-length
+  ]
+  date_partition_parameter: null
+  destination_table: desktop_funnel_activation_v1${{ macros.ds_format((execution_date + macros.timedelta(days=-8)).to_datetime_string(), "%Y-%m-%d %H:%M:%S", "%Y%m%d") }} # yamllint disable-line rule:line-length

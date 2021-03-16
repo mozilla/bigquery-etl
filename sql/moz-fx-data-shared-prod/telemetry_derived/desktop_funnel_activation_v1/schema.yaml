@@ -16,7 +16,7 @@ fields:
   type: STRING
 - mode: NULLABLE
   name: os_version
-  type: NUMERIC
+  type: STRING
 - mode: NULLABLE
   name: attribution_source
   type: STRING

@@ -39,7 +39,7 @@ with DAG(
 ) as dag:
 
     telemetry_derived__adm_engagements_daily__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__adm_engagements_daily__v11",
+        task_id="telemetry_derived__adm_engagements_daily__v1",
         destination_table="adm_engagements_daily_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",

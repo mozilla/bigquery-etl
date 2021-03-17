@@ -1,30 +1,53 @@
-DECLARE phase_2_experiments,
-phase_3_experiments,
-rollout_experiments ARRAY<STRING>;
+CREATE TEMP FUNCTION contains_phase_2_experiment(map ANY TYPE) AS (
+  (
+    SELECT
+      LOGICAL_OR(
+        key_value.key IN UNNEST(
+          [
+            'bug-1655185-pref-topsites-redirect-launch-us-v5-release-80-80',
+            'bug-1678672-pref-topsites-redirect-launch-us-v5-v2-release-80-82',
+            'bug-1657450-pref-topsites-url-redirect-germany-launch-release-80-80',
+            'bug-1678671-pref-topsites-url-redirect-germany-launch-v2-release-80-82',
+            'bug-1657447-pref-topsites-url-redirect-uk-launch-v5-release-80-80',
+            'bug-1678673-pref-topsites-url-redirect-uk-launch-v5-v2-release-80-82'
+          ]
+        )
+      )
+    FROM
+      UNNEST(map) AS key_value
+  )
+);
 
-SET phase_2_experiments = [
-  'bug-1655185-pref-topsites-redirect-launch-us-v5-release-80-80',
-  'bug-1678672-pref-topsites-redirect-launch-us-v5-v2-release-80-82',
-  'bug-1657450-pref-topsites-url-redirect-germany-launch-release-80-80',
-  'bug-1678671-pref-topsites-url-redirect-germany-launch-v2-release-80-82',
-  'bug-1657447-pref-topsites-url-redirect-uk-launch-v5-release-80-80',
-  'bug-1678673-pref-topsites-url-redirect-uk-launch-v5-v2-release-80-82'
-];
+CREATE TEMP FUNCTION contains_phase_3_experiment(map ANY TYPE) AS (
+  (
+    SELECT
+      LOGICAL_OR(
+        key_value.key IN UNNEST(
+          [
+            'bug-1665061-pref-topsites-launch-phase-3-us-release-83-85',
+            'bug-1678683-pref-topsites-launch-phase-3-us-v2-release-83-85',
+            'bug-1676316-pref-topsites-launch-phase-3-de-release-83-85',
+            'bug-1676315-pref-topsites-launch-phase-3-gb-release-83-85',
+            'bug-1682646-pref-topsites-launch-phase3-group2-fr-release-84-86',
+            'bug-1682644-pref-topsites-launch-phase3-group2-ca-release-84-86',
+            'bug-1682645-pref-topsites-launch-phase3-group2-au-release-84-86'
+          ]
+        )
+      )
+    FROM
+      UNNEST(map) AS key_value
+  )
+);
 
-SET phase_3_experiments = [
-  'bug-1665061-pref-topsites-launch-phase-3-us-release-83-85',
-  'bug-1678683-pref-topsites-launch-phase-3-us-v2-release-83-85',
-  'bug-1676316-pref-topsites-launch-phase-3-de-release-83-85',
-  'bug-1676315-pref-topsites-launch-phase-3-gb-release-83-85',
-  'bug-1682646-pref-topsites-launch-phase3-group2-fr-release-84-86',
-  'bug-1682644-pref-topsites-launch-phase3-group2-ca-release-84-86',
-  'bug-1682645-pref-topsites-launch-phase3-group2-au-release-84-86'
-];
-
-SET rollout_experiments = ['bug-1693420-rollout-sponsored-top-sites-rollout-release-84-100'];
-
-CREATE TEMP FUNCTION contains_any_of(map ANY TYPE, k ANY TYPE) AS (
-  (SELECT LOGICAL_OR(key_value.key IN UNNEST(k)) FROM UNNEST(map) AS key_value)
+CREATE TEMP FUNCTION contains_rollout_experiment(map ANY TYPE) AS (
+  (
+    SELECT
+      LOGICAL_OR(
+        key_value.key IN UNNEST(['bug-1693420-rollout-sponsored-top-sites-rollout-release-84-100'])
+      )
+    FROM
+      UNNEST(map) AS key_value
+  )
 );
 
 WITH topsites_temp AS (
@@ -35,7 +58,7 @@ WITH topsites_temp AS (
     -- for phase 2, the events were structured differently. info contained in map
     CASE
     WHEN
-      contains_any_of(experiments, phase_2_experiments)
+      contains_phase_2_experiment(experiments)
     THEN
       mozdata.udf.get_key(event_map_values, 'source')
     ELSE
@@ -44,7 +67,7 @@ WITH topsites_temp AS (
     AS placement,
     CASE
     WHEN
-      contains_any_of(experiments, phase_2_experiments)
+      contains_phase_2_experiment(experiments)
     THEN
       mozdata.udf.get_key(event_map_values, 'partner')
     ELSE
@@ -53,7 +76,7 @@ WITH topsites_temp AS (
     AS partner,
     CASE
     WHEN
-      contains_any_of(experiments, phase_2_experiments)
+      contains_phase_2_experiment(experiments)
     THEN
       event_object
     ELSE
@@ -64,15 +87,15 @@ WITH topsites_temp AS (
     normalized_channel,
     CASE
     WHEN
-      contains_any_of(experiments, phase_2_experiments)
+      contains_phase_2_experiment(experiments)
     THEN
       'phase2'
     WHEN
-      contains_any_of(experiments, phase_3_experiments)
+      contains_phase_3_experiment(experiments)
     THEN
       'phase3'
     WHEN
-      contains_any_of(experiments, rollout_experiments)
+      contains_rollout_experiment(experiments)
     THEN
       'rollout'
     ELSE
@@ -99,15 +122,15 @@ searchmode_temp AS (
     channel AS normalized_channel,
     CASE
     WHEN
-      contains_any_of(experiments, phase_2_experiments)
+      contains_phase_2_experiment(experiments)
     THEN
       'phase2'
     WHEN
-      contains_any_of(experiments, phase_3_experiments)
+      contains_phase_3_experiment(experiments)
     THEN
       'phase3'
     WHEN
-      contains_any_of(experiments, rollout_experiments)
+      contains_rollout_experiment(experiments)
     THEN
       'rollout'
     ELSE

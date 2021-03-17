@@ -63,6 +63,7 @@ jobs:
       - checkout
       - run:
           name: Dry run queries
+          # yamllint disable rule:line-length
           command: |
             if [ "$CIRCLE_BRANCH" = master ]; then
               echo "Check dry run for all queries because branch is" \
@@ -75,10 +76,11 @@ jobs:
               PATHS=sql
             else
               echo "Check dry run for modified queries"
-              PATHS="$(git diff origin/master... --name-only -- sql)"
+              PATHS="$(git diff origin/master... --name-only --diff-filter=d -- sql)"
             fi
             echo $PATHS
             script/dryrun $PATHS
+          # yamllint enable rule:line-length
   validate-metadata:
     docker: *docker
     steps:

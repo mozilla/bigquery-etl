@@ -409,3 +409,13 @@ bqetl_pocket:
     Originally created for [Bug 1695336](
     https://bugzilla.mozilla.org/show_bug.cgi?id=1695336).
   schedule_interval: 0 12 * * *
+
+bqetl_adm_engagements_daily:
+  schedule_interval: 0 2 * * *
+  description: adMarketplace engagement queries
+  default_args:
+    owner: akomar@mozilla.com
+    start_date: '2020-01-01'
+    email: ['akomar@mozilla.com']
+    retries: 2
+    retry_delay: 30m

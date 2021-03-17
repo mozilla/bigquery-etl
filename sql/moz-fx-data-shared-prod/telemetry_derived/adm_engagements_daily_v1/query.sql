@@ -103,7 +103,7 @@ WITH topsites_temp AS (
     END
     AS phase
   FROM
-    `moz-fx-data-shared-prod.telemetry.events`
+    telemetry.events
   WHERE
     submission_date = @submission_date
     AND event_category = 'partner_link'

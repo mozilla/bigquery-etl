@@ -138,7 +138,7 @@ searchmode_temp AS (
     END
     AS phase
   FROM
-    `moz-fx-data-shared-prod.search.search_clients_daily`
+    search.search_clients_daily
   WHERE
     submission_date = @submission_date
     -- looks as though search engine replacement is only for amazon

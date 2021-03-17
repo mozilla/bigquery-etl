@@ -60,7 +60,7 @@ WITH topsites_temp AS (
     WHEN
       contains_phase_2_experiment(experiments)
     THEN
-      mozdata.udf.get_key(event_map_values, 'source')
+      udf.get_key(event_map_values, 'source')
     ELSE
       event_object
     END
@@ -69,7 +69,7 @@ WITH topsites_temp AS (
     WHEN
       contains_phase_2_experiment(experiments)
     THEN
-      mozdata.udf.get_key(event_map_values, 'partner')
+      udf.get_key(event_map_values, 'partner')
     ELSE
       event_string_value
     END
@@ -103,7 +103,7 @@ WITH topsites_temp AS (
     END
     AS phase
   FROM
-    mozdata.telemetry.events
+    `moz-fx-data-shared-prod.telemetry.events`
   WHERE
     submission_date = @submission_date
     AND event_category = 'partner_link'
@@ -138,7 +138,7 @@ searchmode_temp AS (
     END
     AS phase
   FROM
-    mozdata.search.search_clients_daily
+    `moz-fx-data-shared-prod.search.search_clients_daily`
   WHERE
     submission_date = @submission_date
     -- looks as though search engine replacement is only for amazon

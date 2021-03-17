@@ -15,4 +15,5 @@ owners:
 labels:
   schedule: daily
   incremental: true
-bigquery: null
+scheduling:
+  dag_name: bqetl_adm_engagements_daily

@@ -1,7 +1,7 @@
 -- Generated via script/experiments_monitoring/generate_search_metrics_views.py
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS `moz-fx-data-shared-prod.{{ dataset }}.experiment_{{ metric }}_live_v1`
+  NOT EXISTS `moz-fx-data-shared-prod.telemetry_derived.experiment_search_count_live_v1`
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
@@ -10,7 +10,6 @@ IF
       submission_timestamp,
       experiment.key AS experiment,
       experiment.value.branch AS branch,
-      {% if probe == "payload.keyed_histograms.search_counts" -%}
       -- We cannot make UDF calls in a materialized view, so we have to reimplement part of
       -- mozfun.hist.extract here.
       SAFE_CAST(
@@ -21,13 +20,10 @@ IF
           search_counts.value
         ) AS INT64
       ) AS search_count,
-      {% else -%}
-         {{ probe.split(".")[-1] }}.value AS {{ metric }}
-      {% endif -%}
-    FROM
-      `{{ base_table }}`,
-      UNNEST({{ experiment }}) AS experiment,
-      UNNEST({{ probe }}) AS {{ probe.split(".")[-1] }}
+      FROM
+      `moz-fx-data-shared-prod.telemetry_live.main_v4`,
+      UNNEST(environment.experiments) AS experiment,
+      UNNEST(payload.keyed_histograms.search_counts) AS search_counts
   )
   SELECT
     date(submission_timestamp) AS submission_date,
@@ -42,7 +38,7 @@ IF
       TIMESTAMP_TRUNC(submission_timestamp, HOUR),
       INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
     ) AS window_end,
-    SUM({{ metric }}) AS {{ metric }}
+    SUM(search_count) AS search_count
   FROM
     desktop
   WHERE

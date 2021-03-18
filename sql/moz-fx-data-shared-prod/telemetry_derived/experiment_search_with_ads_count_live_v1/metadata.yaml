@@ -1,0 +1,8 @@
+friendly_name: Experiment search with ads count live
+description: |-
+  Materialized view of aggregated number of search_with_ads_count of clients enrolled in experiments.
+owners:
+- ascholtz@mozilla.com
+labels:
+  materialized_view: true
+bigquery: null

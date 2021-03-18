@@ -40,6 +40,7 @@ SEARCH_METRICS = {
             },
             {"search_count": "metrics.labeled_counter.metrics_search_count"},
         ],
+        "experiment_field": "ping_info.experiments",
     },
     "desktop": {
         "base_tables": ["moz-fx-data-shared-prod.telemetry_live.main_v4"],
@@ -52,6 +53,7 @@ SEARCH_METRICS = {
             },
             {"search_count": "payload.keyed_histograms.search_counts"},
         ],
+        "experiment_field": "environment.experiments",
     },
 }
 
@@ -74,6 +76,8 @@ def generate_materialized_views(owner):
                     metric=metric_name,
                     probe=list(metric.values())[0],
                     dataset=derived_dataset,
+                    base_table=base_table,
+                    experiment=search_metrics["experiment_field"],
                 )
 
                 # create target directory
@@ -90,7 +94,7 @@ def generate_materialized_views(owner):
 
                 # Generate metadata file
                 metadata = Metadata(
-                    friendly_name=f"Experiment {metric_name} live",
+                    friendly_name=f"Experiment {metric_name.replace('_', ' ')} live",
                     description=(
                         f"Materialized view of aggregated number of {metric_name} "
                         "of clients enrolled in experiments."

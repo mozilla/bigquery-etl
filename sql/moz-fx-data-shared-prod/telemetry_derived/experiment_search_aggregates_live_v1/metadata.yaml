@@ -1,0 +1,8 @@
+friendly_name: Experiment Search Aggregates Live
+description: |-
+  View for live experiment search metric aggregates.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+bigquery: null

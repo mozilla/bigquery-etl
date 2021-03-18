@@ -478,7 +478,7 @@ def backfill(
                         f"--parameter=submission_date:DATE:{backfill_date}",
                         "--use_legacy_sql=false",
                         "--replace",
-                        f"--max_rows={max_rows}"
+                        f"--max_rows={max_rows}",
                     ]
                     + (
                         ["--schema_update_option=ALLOW_FIELD_ADDITION"]

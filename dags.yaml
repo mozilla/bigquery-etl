@@ -119,8 +119,7 @@ bqetl_mozilla_vpn:
 
 bqetl_gud:
   schedule_interval: 0 3 * * *
-  description:
-    Optimized tables that power the
+  description: Optimized tables that power the
     [Mozilla Growth and Usage Dashboard](https://gud.telemetry.mozilla.org).
   default_args:
     owner: jklukas@mozilla.com
@@ -322,8 +321,8 @@ bqetl_google_analytics_derived:
     for user activity to appear in these tables.
   default_args:
     owner: bewu@mozilla.com
-    email: ['bewu@mozilla.com']
-    start_date: '2020-10-31'
+    email: ["bewu@mozilla.com"]
+    start_date: "2020-10-31"
     retries: 2
     retry_delay: 30m
 
@@ -334,8 +333,8 @@ bqetl_monitoring:
     used for monitoring of the data platform.
   default_args:
     owner: ascholtz@mozilla.com
-    email: ['ascholtz@mozilla.com']
-    start_date: '2018-10-30'
+    email: ["ascholtz@mozilla.com"]
+    start_date: "2018-10-30"
     retries: 2
     retry_delay: 30m
 
@@ -353,7 +352,7 @@ bqetl_marketing_fetch:
   default_args:
     owner: bewu@mozilla.com
     email: ["bewu@mozilla.com"]
-    start_date: '2020-11-30'
+    start_date: "2020-11-30"
     retries: 2
     retry_delay: 30m
 
@@ -368,7 +367,7 @@ bqetl_search_dashboard:
     owner: ssuh@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2020-12-14'
+    start_date: "2020-12-14"
   schedule_interval: 0 4 * * *
 
 bqetl_desktop_platform:
@@ -400,7 +399,7 @@ bqetl_internal_tooling:
     owner: wlachance@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2020-06-01'
+    start_date: "2020-06-01"
   schedule_interval: 0 4 * * *
 
 bqetl_release_criteria:
@@ -425,7 +424,7 @@ bqetl_pocket:
     owner: jklukas@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2021-03-10'
+    start_date: "2021-03-10"
   description: |
     Import of data from Pocket's Snowflake warehouse.
 
@@ -438,8 +437,8 @@ bqetl_adm_engagements_daily:
   description: adMarketplace engagement queries
   default_args:
     owner: akomar@mozilla.com
-    start_date: '2020-01-01'
-    email: ['akomar@mozilla.com']
+    start_date: "2020-01-01"
+    email: ["akomar@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -463,15 +462,14 @@ bqetl_org_mozilla_ios_firefox:
   default_args:
     depends_on_past: false
     email:
-    - amiyaguchi@mozilla.com
-    - telemetry-alerts@mozilla.com
+      - amiyaguchi@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
     owner: amiyaguchi@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2021-03-18'
+    start_date: "2021-03-18"
   description: Schedule daily ios firefox ETL
   schedule_interval: 0 2 * * *
-

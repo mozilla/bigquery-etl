@@ -33,6 +33,11 @@ SELECT
   os,
   campaign,
   country,
+  cc.name AS country_name,
   distribution_id
 FROM
-  with_pinfo
+  with_pinfo AS usage
+LEFT JOIN
+  `moz-fx-data-shared-prod.static.country_codes_v1` AS cc
+ON
+  (usage.country = cc.code)

@@ -5,7 +5,7 @@ IF
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  WITH desktop AS (
+  WITH counts AS (
     SELECT
       submission_timestamp,
       experiment.key AS experiment,
@@ -21,8 +21,10 @@ IF
         ) AS INT64
       ) AS search_count,
     FROM
-      `moz-fx-data-shared-prod.telemetry_live.main_v4`,
-      UNNEST(environment.experiments) AS experiment,
+      `moz-fx-data-shared-prod.telemetry_live.main_v4`
+    LEFT JOIN
+      UNNEST(environment.experiments) AS experiment
+    LEFT JOIN
       UNNEST(payload.keyed_histograms.search_counts) AS search_counts
   )
   SELECT
@@ -40,7 +42,7 @@ IF
     ) AS window_end,
     SUM(search_count) AS search_count
   FROM
-    desktop
+    counts
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.

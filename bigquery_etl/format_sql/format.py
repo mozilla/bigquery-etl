@@ -157,6 +157,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql",
     "sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql",
     "stored_procedures/safe_crc32_uuid.sql",
+    *glob.glob("script/experiment_monitoring/templates/*.sql"),
 }
 
 parser = ArgumentParser(description=__doc__)

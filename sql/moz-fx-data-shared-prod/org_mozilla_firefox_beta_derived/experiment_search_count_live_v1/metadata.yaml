@@ -1,7 +1,6 @@
 friendly_name: Experiment search count live
-description: >-
-  Materialized view of aggregated number of search_count
-  of clients enrolled in experiments.
+description: |-
+  Materialized view of aggregated number of search_count of clients enrolled in experiments.
 owners:
 - ascholtz@mozilla.com
 labels:

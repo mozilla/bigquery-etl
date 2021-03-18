@@ -5,15 +5,17 @@ IF
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  WITH desktop AS (
+  WITH counts AS (
     SELECT
       submission_timestamp,
       experiment.key AS experiment,
       experiment.value.branch AS branch,
       browser_search_with_ads.value AS search_with_ads_count
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`,
-      UNNEST(ping_info.experiments) AS experiment,
+      `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`
+    LEFT JOIN
+      UNNEST(ping_info.experiments) AS experiment
+    LEFT JOIN
       UNNEST(metrics.labeled_counter.browser_search_with_ads) AS browser_search_with_ads
   )
   SELECT
@@ -31,7 +33,7 @@ IF
     ) AS window_end,
     SUM(search_with_ads_count) AS search_with_ads_count
   FROM
-    desktop
+    counts
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.

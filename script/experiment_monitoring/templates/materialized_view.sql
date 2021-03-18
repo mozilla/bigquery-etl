@@ -5,14 +5,12 @@ IF
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  WITH desktop AS (
+  WITH counts AS (
     SELECT
       submission_timestamp,
       experiment.key AS experiment,
       experiment.value.branch AS branch,
-      { %
-      IF
-        probe = ="payload.keyed_histograms.search_counts" - % }
+      {% if probe == "payload.keyed_histograms.search_counts" -%}
       -- We cannot make UDF calls in a materialized view, so we have to reimplement part of
       -- mozfun.hist.extract here.
         SAFE_CAST(
@@ -23,17 +21,17 @@ IF
             search_counts.value
           ) AS INT64
         ) AS search_count,
-        { %
-      ELSE
-        - % } { {probe.split(".")[-1] } }.value
-        AS
-          { {metric } } { %endif - % }
+        {% else -%} 
+        {{ probe.split(".")[-1] }}.value AS {{ metric }} 
+        {% endif -%}
         FROM
-          `{{ base_table }}`,
-          UNNEST({ {experiment } }) AS experiment,
-          UNNEST({ {probe } })
+          `{{ base_table }}`
+        LEFT JOIN
+          UNNEST({{ experiment }}) AS experiment
+        LEFT JOIN
+          UNNEST({{ probe }})
         AS
-          { {probe.split(".")[-1] } }
+          {{ probe.split(".")[-1] }}
   )
   SELECT
     date(submission_timestamp) AS submission_date,
@@ -48,11 +46,11 @@ IF
       TIMESTAMP_TRUNC(submission_timestamp, HOUR),
       INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 5) + 1) * 5) MINUTE
     ) AS window_end,
-    SUM({ {metric } })
+    SUM({{ metric }})
   AS
-    { {metric } }
+    {{ metric }}
   FROM
-    desktop
+    counts
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.

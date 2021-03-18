@@ -20,7 +20,7 @@ IF
           search_counts.value
         ) AS INT64
       ) AS search_count,
-      FROM
+    FROM
       `moz-fx-data-shared-prod.telemetry_live.main_v4`,
       UNNEST(environment.experiments) AS experiment,
       UNNEST(payload.keyed_histograms.search_counts) AS search_counts

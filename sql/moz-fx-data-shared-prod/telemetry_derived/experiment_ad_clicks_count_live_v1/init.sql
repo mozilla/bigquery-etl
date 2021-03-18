@@ -11,10 +11,12 @@ IF
       experiment.key AS experiment,
       experiment.value.branch AS branch,
       browser_search_ad_clicks.value AS ad_clicks_count
-      FROM
+    FROM
       `moz-fx-data-shared-prod.telemetry_live.main_v4`,
       UNNEST(environment.experiments) AS experiment,
-      UNNEST(payload.processes.parent.keyed_scalars.browser_search_ad_clicks) AS browser_search_ad_clicks
+      UNNEST(
+        payload.processes.parent.keyed_scalars.browser_search_ad_clicks
+      ) AS browser_search_ad_clicks
   )
   SELECT
     date(submission_timestamp) AS submission_date,

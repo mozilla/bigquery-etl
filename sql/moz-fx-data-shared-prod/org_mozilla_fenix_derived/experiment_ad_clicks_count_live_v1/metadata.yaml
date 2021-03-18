@@ -1,6 +1,7 @@
 friendly_name: Experiment ad clicks count live
-description: |-
-  Materialized view of aggregated number of ad_clicks_count of clients enrolled in experiments.
+description: >-
+  Materialized view of aggregated number of ad_clicks_count
+  of clients enrolled in experiments.
 owners:
 - ascholtz@mozilla.com
 labels:

@@ -11,7 +11,7 @@ IF
       experiment.key AS experiment,
       experiment.value.branch AS branch,
       metrics_search_count.value AS search_count
-      FROM
+    FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`,
       UNNEST(ping_info.experiments) AS experiment,
       UNNEST(metrics.labeled_counter.metrics_search_count) AS metrics_search_count

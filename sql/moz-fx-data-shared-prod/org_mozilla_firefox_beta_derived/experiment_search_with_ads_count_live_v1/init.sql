@@ -11,7 +11,7 @@ IF
       experiment.key AS experiment,
       experiment.value.branch AS branch,
       browser_search_with_ads.value AS search_with_ads_count
-      FROM
+    FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.metrics_v1`,
       UNNEST(ping_info.experiments) AS experiment,
       UNNEST(metrics.labeled_counter.browser_search_with_ads) AS browser_search_with_ads

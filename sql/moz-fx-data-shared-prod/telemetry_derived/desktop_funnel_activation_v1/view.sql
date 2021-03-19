@@ -13,4 +13,4 @@ SELECT
   attribution_ua,
   num_activated
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.desktop_funnel_activation_6_day_offset_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.desktop_funnel_activation_day_6_v1`

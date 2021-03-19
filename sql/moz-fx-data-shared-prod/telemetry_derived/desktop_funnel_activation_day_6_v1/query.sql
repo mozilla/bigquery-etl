@@ -56,7 +56,7 @@ client_conditions AS (
     dist_pop_with_days_seen
 )
 SELECT
-  date AS submission_date,
+  date(@submission_date) AS submission_date,
   country_codes.name AS country_name,
   channel,
   build_id,

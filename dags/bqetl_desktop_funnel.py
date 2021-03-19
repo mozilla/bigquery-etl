@@ -39,9 +39,9 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
-    telemetry_derived__desktop_funnel_activation_6_day_offset__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__desktop_funnel_activation_6_day_offset__v1",
-        destination_table="desktop_funnel_activation_6_day_offset_v1",
+    telemetry_derived__desktop_funnel_activation_day_6__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__desktop_funnel_activation_day_6__v1",
+        destination_table="desktop_funnel_activation_day_6_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
@@ -85,7 +85,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    telemetry_derived__desktop_funnel_activation_6_day_offset__v1.set_upstream(
+    telemetry_derived__desktop_funnel_activation_day_6__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
@@ -98,7 +98,7 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    telemetry_derived__desktop_funnel_activation_6_day_offset__v1.set_upstream(
+    telemetry_derived__desktop_funnel_activation_day_6__v1.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1
     )
 

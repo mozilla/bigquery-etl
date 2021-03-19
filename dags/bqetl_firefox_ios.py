@@ -6,9 +6,9 @@ import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
 docs = """
-### bqetl_org_mozilla_ios_firefox
+### bqetl_firefox_ios
 
-Built from bigquery-etl repo, [`dags/bqetl_org_mozilla_ios_firefox.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_org_mozilla_ios_firefox.py)
+Built from bigquery-etl repo, [`dags/bqetl_firefox_ios.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_firefox_ios.py)
 
 #### Description
 
@@ -32,7 +32,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_org_mozilla_ios_firefox",
+    "bqetl_firefox_ios",
     default_args=default_args,
     schedule_interval="0 2 * * *",
     doc_md=docs,

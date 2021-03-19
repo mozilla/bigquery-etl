@@ -458,7 +458,7 @@ bqetl_desktop_funnel:
     retries: 2
     retry_delay: 30m
 
-bqetl_org_mozilla_ios_firefox:
+bqetl_firefox_ios:
   default_args:
     depends_on_past: false
     email:

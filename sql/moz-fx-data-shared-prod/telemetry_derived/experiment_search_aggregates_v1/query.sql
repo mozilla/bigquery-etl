@@ -34,9 +34,9 @@ WITH desktop AS (
       ARRAY(SELECT AS STRUCT key, value.branch AS value FROM UNNEST(environment.experiments))
     ) AS unnested_experiments
   GROUP BY
-    1,
-    2,
-    3
+    submission_timestamp,
+    experiment,
+    branch
 ),
 fenix AS (
   SELECT
@@ -67,9 +67,9 @@ fenix AS (
   LEFT JOIN
     UNNEST(ping_info.experiments) AS experiment
   GROUP BY
-    1,
-    2,
-    3
+    submission_timestamp,
+    experiment,
+    branch
   UNION ALL
   SELECT
     submission_timestamp,
@@ -99,9 +99,9 @@ fenix AS (
   LEFT JOIN
     UNNEST(ping_info.experiments) AS experiment
   GROUP BY
-    1,
-    2,
-    3
+    submission_timestamp,
+    experiment,
+    branch
   UNION ALL
   SELECT
     submission_timestamp,
@@ -131,9 +131,9 @@ fenix AS (
   LEFT JOIN
     UNNEST(ping_info.experiments) AS experiment
   GROUP BY
-    1,
-    2,
-    3
+    submission_timestamp,
+    experiment,
+    branch
 ),
 all_events AS (
   SELECT

@@ -32,7 +32,7 @@ LEFT JOIN
 ON
   (country_codes.code = country_code)
 WHERE
-  rn = 1  -- make sure that we only get one entry per client
+  rn = 1
 GROUP BY
   date,
   country_name,

@@ -24,7 +24,8 @@ SELECT
   attribution_source,
   distribution_id,
   attribution_ua,
-  country_codes.name AS country_name
+  country_codes.name AS country_name,
+  count(client_id) AS new_profiles
 FROM
   pop
 LEFT JOIN

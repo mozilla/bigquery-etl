@@ -35,13 +35,13 @@ default_args = {
 with DAG(
     "bqetl_desktop_funnel",
     default_args=default_args,
-    schedule_interval="0 3 * * *",
+    schedule_interval="0 4 * * *",
     doc_md=docs,
 ) as dag:
 
-    telemetry_derived__desktop_funnel_activation__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__desktop_funnel_activation__v1",
-        destination_table='desktop_funnel_activation_v1${{ macros.ds_format((execution_date + macros.timedelta(days=-8)).to_datetime_string(), "%Y-%m-%d %H:%M:%S", "%Y%m%d") }}',
+    telemetry_derived__desktop_funnel_activation_6_day_offset__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__desktop_funnel_activation_6_day_offset__v1",
+        destination_table="desktop_funnel_activation_6_day_offset_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
@@ -79,26 +79,26 @@ with DAG(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=7200),
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    telemetry_derived__desktop_funnel_activation__v1.set_upstream(
+    telemetry_derived__desktop_funnel_activation_6_day_offset__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
     wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    telemetry_derived__desktop_funnel_activation__v1.set_upstream(
+    telemetry_derived__desktop_funnel_activation_6_day_offset__v1.set_upstream(
         wait_for_telemetry_derived__clients_last_seen__v1
     )
 

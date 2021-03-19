@@ -14,7 +14,7 @@ WITH pop AS (
   FROM
     telemetry.new_profile
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 6 day)
     AND payload.processes.parent.scalars.startup_profile_selection_reason = 'firstrun-created-default'
 ),
 dist_pop AS (
@@ -26,28 +26,18 @@ dist_pop AS (
   WHERE
     rn = 1
 ),
-raw_info AS (
-  SELECT
-    client_id,
-    submission_date,
-    days_seen_bits
-  FROM
-    telemetry.clients_last_seen
-  WHERE
-    submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 8 DAY)
-    AND @submission_date
-),
-eight_days_later AS (
+dist_pop_with_days_seen AS (
   SELECT
     a.*,
     b.days_seen_bits
   FROM
     dist_pop a
   LEFT JOIN
-    raw_info b
+    telemetry.clients_last_seen b
   ON
-    (a.client_id = b.client_id AND DATE_DIFF(b.submission_date, a.date, DAY) = 6)
+    (a.client_id = b.client_id)
+  WHERE
+    b.submission_date = @submission_date
 ),
 client_conditions AS (
   SELECT
@@ -63,10 +53,10 @@ client_conditions AS (
     attribution_ua,
     coalesce(udf.bitcount_lowest_7(days_seen_bits), 0) >= 5 AS activated
   FROM
-    eight_days_later
+    dist_pop_with_days_seen
 )
 SELECT
-  date,
+  date AS submission_date,
   country_codes.name AS country_name,
   channel,
   build_id,
@@ -83,10 +73,9 @@ LEFT JOIN
 ON
   (country_codes.code = country_code)
 WHERE
-  date = DATE_SUB(@submission_date, INTERVAL 8 DAY)
-  AND activated = TRUE
+  activated = TRUE
 GROUP BY
-  date,
+  submission_date,
   country_name,
   channel,
   build_id,

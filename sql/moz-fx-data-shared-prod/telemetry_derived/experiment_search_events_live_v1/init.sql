@@ -69,11 +69,32 @@ IF
             -- (3)
             REGEXP_REPLACE(
               -- (2)
-              TO_JSON_STRING(
-                REGEXP_EXTRACT_ALL(
-                  -- (1)
-                  TO_JSON_STRING(payload.keyed_histograms.search_counts),
-                  '"value":([^,}]+)'
+              CONCAT(
+                TO_JSON_STRING(
+                  ARRAY_CONCAT(
+                    -- extract sum from histogram
+                    -- acount for compact and JSON histograms
+                    REGEXP_EXTRACT_ALL(
+                      -- (1)
+                      TO_JSON_STRING(payload.keyed_histograms.search_counts),
+                      r'\\"sum\\":([^},]+)'
+                    ),
+                    REGEXP_EXTRACT_ALL(
+                      -- (1)
+                      TO_JSON_STRING(payload.keyed_histograms.search_counts),
+                      r'"value":"(\d+)"'
+                    ),
+                    REGEXP_EXTRACT_ALL(
+                      -- (1)
+                      TO_JSON_STRING(payload.keyed_histograms.search_counts),
+                      r'"value":"\d+;(\d+);'
+                    ),
+                    REGEXP_EXTRACT_ALL(
+                      -- (1)
+                      TO_JSON_STRING(payload.keyed_histograms.search_counts),
+                      r'"value":"(\d+),\d+"'
+                    )
+                  )
                 )
               ),
               r'"([^"]+)"',
@@ -83,7 +104,8 @@ IF
         )
       ) AS nested_counts
     FROM
-      `moz-fx-data-shared-prod.telemetry_live.main_v4`,
+      `moz-fx-data-shared-prod.telemetry_live.main_v4`
+    LEFT JOIN
       UNNEST(environment.experiments) AS experiment
     WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.

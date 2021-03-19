@@ -87,7 +87,8 @@ IF
         )
       ) AS nested_counts
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`,
+      `moz-fx-data-shared-prod.org_mozilla_fenix_live.metrics_v1`
+    LEFT JOIN
       UNNEST(ping_info.experiments) AS experiment
     WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.

@@ -425,6 +425,13 @@ def info(name, sql_dir, project_id, cost, last_updated):
     "--allow-field-addition/--no-allow-field-addition",
     help="Allow schema additions during query time",
 )
+@click.option(
+    "--max_rows",
+    "-n",
+    type=int,
+    default=100,
+    help="How many rows to return in the result",
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -436,6 +443,7 @@ def backfill(
     exclude,
     dry_run,
     allow_field_addition,
+    max_rows,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -470,6 +478,7 @@ def backfill(
                         f"--parameter=submission_date:DATE:{backfill_date}",
                         "--use_legacy_sql=false",
                         "--replace",
+                        f"--max_rows={max_rows}",
                     ]
                     + (
                         ["--schema_update_option=ALLOW_FIELD_ADDITION"]

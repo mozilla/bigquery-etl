@@ -114,6 +114,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     org_mozilla_vrbrowser_derived__baseline_daily__v1.set_upstream(

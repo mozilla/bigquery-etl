@@ -59,6 +59,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     internet_outages__global_outages__v1.set_upstream(wait_for_copy_deduplicate_all)
@@ -70,6 +71,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     internet_outages__global_outages__v1.set_upstream(
@@ -83,6 +85,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     internet_outages__global_outages__v1.set_upstream(

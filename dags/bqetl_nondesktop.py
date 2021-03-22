@@ -91,6 +91,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     firefox_nondesktop_exact_mau28_by_client_count_dimensions.set_upstream(
@@ -105,6 +106,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__firefox_nondesktop_day_2_7_activation__v1.set_upstream(

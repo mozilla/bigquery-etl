@@ -129,6 +129,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     amo_prod__amo_stats_installs__v3.set_upstream(wait_for_bq_main_events)
@@ -140,6 +141,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     amo_prod__amo_stats_installs__v3.set_upstream(wait_for_event_events)
@@ -152,6 +154,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     amo_prod__desktop_addons_by_client__v1.set_upstream(
@@ -166,6 +169,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     amo_prod__fenix_addons_by_client__v1.set_upstream(wait_for_copy_deduplicate_all)

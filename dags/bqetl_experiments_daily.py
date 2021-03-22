@@ -115,6 +115,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
@@ -128,6 +129,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
@@ -141,6 +143,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
@@ -158,6 +161,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__experiment_search_aggregates__v1.set_upstream(
@@ -175,6 +179,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__experiments_daily_active_clients__v1.set_upstream(

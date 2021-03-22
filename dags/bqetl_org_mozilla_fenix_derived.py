@@ -55,6 +55,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     org_mozilla_fenix_derived__geckoview_version__v1.set_upstream(

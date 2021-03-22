@@ -77,6 +77,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__devtools_accessiblility_panel_usage__v1.set_upstream(
@@ -91,6 +92,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__devtools_panel_usage__v1.set_upstream(

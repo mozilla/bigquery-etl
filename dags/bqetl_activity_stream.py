@@ -74,6 +74,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     activity_stream_bi__impression_stats_flat__v1.set_upstream(

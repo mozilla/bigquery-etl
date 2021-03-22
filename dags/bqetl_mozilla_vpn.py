@@ -326,6 +326,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     mozilla_vpn_derived__login_flows__v1.set_upstream(
@@ -339,6 +340,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     mozilla_vpn_derived__login_flows__v1.set_upstream(

@@ -58,6 +58,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__adm_engagements_daily__v1.set_upstream(wait_for_bq_main_events)
@@ -69,6 +70,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__adm_engagements_daily__v1.set_upstream(wait_for_event_events)
@@ -80,6 +82,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     telemetry_derived__adm_engagements_daily__v1.set_upstream(

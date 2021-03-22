@@ -84,6 +84,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     search_derived__mobile_search_clients_daily__v1.set_upstream(

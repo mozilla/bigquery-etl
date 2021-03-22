@@ -121,6 +121,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     messaging_system_derived__event_types_history__v1.set_upstream(

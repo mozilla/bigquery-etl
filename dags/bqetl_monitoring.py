@@ -167,6 +167,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     monitoring_derived__average_ping_sizes__v1.set_upstream(
@@ -185,6 +186,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     monitoring_derived__column_size__v1.set_upstream(

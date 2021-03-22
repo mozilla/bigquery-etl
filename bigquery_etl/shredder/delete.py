@@ -539,7 +539,7 @@ def main():
         jobs_by_table[tasks[i].table].append(job)
     bytes_processed = rows_deleted = 0
     for table, jobs in jobs_by_table.items():
-        table_bytes_processed = sum(job.total_bytes_processed for job in jobs)
+        table_bytes_processed = sum(job.total_bytes_processed or 0 for job in jobs)
         bytes_processed += table_bytes_processed
         table_id = sql_table_id(table)
         if args.dry_run:

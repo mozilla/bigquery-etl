@@ -419,3 +419,19 @@ bqetl_adm_engagements_daily:
     email: ['akomar@mozilla.com']
     retries: 2
     retry_delay: 30m
+
+bqetl_desktop_funnel:
+  description: >
+    This DAG schedules desktop funnel queries used to power the
+    [Numbers that Matter dashboard](https://protosaur.dev/numbers-that-matter/)
+  schedule_interval: 0 4 * * *
+  default_args:
+    owner: ascholtz@mozilla.com
+    start_date: "2021-01-01"
+    email:
+      [
+        "telemetry-alerts@mozilla.com",
+        "ascholtz@mozilla.com",
+      ]
+    retries: 2
+    retry_delay: 30m

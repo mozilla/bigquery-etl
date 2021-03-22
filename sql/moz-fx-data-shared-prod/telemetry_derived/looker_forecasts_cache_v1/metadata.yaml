@@ -1,0 +1,9 @@
+friendly_name: Looker Forecasts Cache
+description: |-
+  Cache for 2021 DAU and New Profiles forecasts.
+  These forecasts are created on-the-fly in Looker using BQ ML,
+  and inserted into this table for re-use.
+owners:
+  - frank@mozilla.com
+labels:
+  incremental: false

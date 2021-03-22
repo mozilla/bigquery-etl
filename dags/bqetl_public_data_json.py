@@ -77,6 +77,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     export_public_data_json_mozregression_aggregates__v1.set_upstream(
@@ -91,6 +92,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     export_public_data_json_telemetry_derived__ssl_ratios__v1.set_upstream(

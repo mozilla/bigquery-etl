@@ -59,6 +59,7 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        email_on_retry=False,
     )
 
     export_public_data_json_test__non_incremental_query__v1.set_upstream(

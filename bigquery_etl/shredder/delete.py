@@ -545,7 +545,7 @@ def main():
         if args.dry_run:
             logging.info(f"Would scan {table_bytes_processed} bytes from {table_id}")
         else:
-            table_rows_deleted = sum(job.num_dml_affected_rows for job in jobs)
+            table_rows_deleted = sum(job.num_dml_affected_rows or 0 for job in jobs)
             rows_deleted += table_rows_deleted
             logging.info(
                 f"Scanned {table_bytes_processed} bytes and "

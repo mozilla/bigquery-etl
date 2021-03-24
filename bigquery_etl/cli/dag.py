@@ -40,7 +40,7 @@ def dag():
 
 @dag.command(
     help="""List all available DAGs
-    
+
     Examples:
 
     ./bqetl dag info
@@ -183,14 +183,16 @@ def create(
     click.echo(f"Added new DAG definition to {dags_config}")
 
 
-@dag.command(help="""Generate Airflow DAGs from DAG definitions. Requires Java.
+@dag.command(
+    help="""Generate Airflow DAGs from DAG definitions. Requires Java.
 
 Examples:
 
 ./bqetl dag generate
 
 ./bqetl dag generate bqetl_ssl_ratios
-""")
+"""
+)
 @click.argument("name", required=False)
 @dags_config_option
 @output_dir_option
@@ -213,12 +215,14 @@ def generate(name, dags_config, output_dir):
         click.echo("DAG generation complete.")
 
 
-@dag.command(help="""Remove a DAG
+@dag.command(
+    help="""Remove a DAG
 
 Examples:
 
 ./bqetl dag remove bqetl_vrbrowser
-""")
+"""
+)
 @click.argument("name", required=False)
 @dags_config_option
 @output_dir_option

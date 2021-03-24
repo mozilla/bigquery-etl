@@ -39,12 +39,17 @@ def dag():
 
 
 @dag.command(
-    help="""List all available DAGs
+    help="""Get information about available DAGs.
 
     Examples:
 
+    # Get information about all available DAGs
     ./bqetl dag info
 
+    # Get information about a specific DAG
+    ./bqetl dag info bqetl_ssl_ratios
+
+    # Get information about a specific DAG including scheduled tasks
     ./bqetl dag info --with_tasks bqetl_ssl_ratios
     """,
 )
@@ -91,14 +96,28 @@ def info(name, dags_config, with_tasks):
 
 @dag.command(
     help="""Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search
+When creating new DAGs, the DAG name must have a `bqetl_` prefix.
+Created DAGs are added to the `dags.yaml` file.
 
-    Examples:
+Examples:
 
-    ./bqetl dag create bqetl_core --schedule-interval="0 2 * * *"
-     --owner=example@mozilla.com
-     --description="Tables derived from `core` pings sent by mobile applications."
-     --start-date=2019-07-25
-    """
+\b
+./bqetl dag create bqetl_core \\
+  --schedule-interval="0 2 * * *" \\
+  --owner=example@mozilla.com \\
+  --description="Tables derived from `core` pings sent by mobile applications." \\
+  --start-date=2019-07-25
+
+\b
+# Create DAG and overwrite default settings
+./bqetl dag create bqetl_ssl_ratios --schedule-interval="0 2 * * *" \\
+  --owner=example@mozilla.com \\
+  --description="The DAG schedules SSL ratios queries." \\
+  --start-date=2019-07-20 \\
+  --email=example2@mozilla.com,example3@mozilla.com \\
+  --retries=2 \\
+  --retry_delay=30m
+"""
 )
 @click.argument("name")
 @dags_config_option
@@ -188,8 +207,10 @@ def create(
 
 Examples:
 
+# Generate all DAGs
 ./bqetl dag generate
 
+# Generate a specific DAG
 ./bqetl dag generate bqetl_ssl_ratios
 """
 )
@@ -216,11 +237,14 @@ def generate(name, dags_config, output_dir):
 
 
 @dag.command(
-    help="""Remove a DAG
+    help="""Remove a DAG.
+    This will also remove the scheduling information from the queries that were scheduled
+    as part of the DAG.
 
-Examples:
+    Examples:
 
-./bqetl dag remove bqetl_vrbrowser
+    # Remove a specific DAG
+    ./bqetl dag remove bqetl_vrbrowser
 """
 )
 @click.argument("name", required=False)

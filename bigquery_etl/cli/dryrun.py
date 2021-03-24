@@ -13,7 +13,18 @@ from ..dryrun import SKIP, DryRun
 
 
 @click.command(
-    help="Dry run SQL.",
+    help="""Dry run SQL.
+        Uses the dryrun Cloud Function by default which only has access to shared-prod.
+        To dryrun queries accessing tables in another project use set
+        `--use-cloud-function=false` and ensure that the command line has access to a
+        GCP service account.
+
+    Examples:
+    ./bqetl dryrun sql/moz-fx-data-shared-prod/telemetry_derived/
+
+    # Dry run SQL with tables that are not in shared prod
+    ./bqetl dryrun --use-cloud-function=false sql/moz-fx-data-marketing-prod/
+    """,
 )
 @click.argument(
     "path",

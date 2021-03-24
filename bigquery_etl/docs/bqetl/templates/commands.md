@@ -11,7 +11,16 @@
 ##### Usage
 
 ```bash
-$ bqetl {{ command_group.name }} {{ command.name }} [OPTIONS]
+$ ./bqetl {{ command_group.name }} {{ command.name }} [OPTIONS]  
+{%- for arg in command.arguments -%}
+  {{ "" }} [{{ arg.name }}]
+{%- endfor %}
+
+Options:
+
+{% for option in command.options -%}
+  --{{ option.name }}: {{ option.description }}
+{% endfor -%}
 ```
 
 {% if command.examples -%}
@@ -27,7 +36,16 @@ $ bqetl {{ command_group.name }} {{ command.name }} [OPTIONS]
 #### Usage
 
 ```bash
-$ bash bqetl {{ command_group.name }} [OPTIONS]
+$ ./bqetl {{ command_group.name }} [OPTIONS] 
+{%- for arg in command_group.arguments -%}
+  {{ "" }}[{{ arg.name }}]
+{%- endfor %}
+
+Options:
+
+{% for option in command_group.options -%}
+  --{{ option.name }}: {{ option.description }}
+{% endfor -%}
 ```
 
 {% if command_group.examples -%}

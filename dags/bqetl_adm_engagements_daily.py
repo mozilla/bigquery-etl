@@ -34,7 +34,7 @@ default_args = {
 with DAG(
     "bqetl_adm_engagements_daily",
     default_args=default_args,
-    schedule_interval="0 2 * * *",
+    schedule_interval="0 4 * * *",
     doc_md=docs,
 ) as dag:
 
@@ -54,7 +54,7 @@ with DAG(
         task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
         external_task_id="bq_main_events",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -65,7 +65,7 @@ with DAG(
         task_id="wait_for_event_events",
         external_dag_id="copy_deduplicate",
         external_task_id="event_events",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -76,7 +76,7 @@ with DAG(
         task_id="wait_for_search_derived__search_clients_daily__v8",
         external_dag_id="bqetl_search",
         external_task_id="search_derived__search_clients_daily__v8",
-        execution_delta=datetime.timedelta(days=-1, seconds=82800),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

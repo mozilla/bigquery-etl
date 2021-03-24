@@ -8,6 +8,7 @@ from pathlib import Path
 
 import yaml
 
+from bigquery_etl.docs.bqetl.generate_bqetl_docs import generate_bqetl_docs
 from bigquery_etl.docs.derived_datasets import generate_derived_dataset_docs
 from bigquery_etl.util import standard_args
 
@@ -92,6 +93,9 @@ def main():
     # move mkdocs.yml out of docs/
     mkdocs_path = os.path.join(args.output_dir, "mkdocs.yml")
     shutil.move(os.path.join(out_dir, "mkdocs.yml"), mkdocs_path)
+
+    # generate bqetl command docs
+    generate_bqetl_docs(Path(out_dir) / "bqetl.md")
 
     # move files to docs/
     for project_dir in args.project_dirs:

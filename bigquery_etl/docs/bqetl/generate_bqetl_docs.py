@@ -1,3 +1,4 @@
+import click
 from jinja2 import Environment, FileSystemLoader
 import os
 from pathlib import Path
@@ -38,14 +39,29 @@ def extract_examples_from_help_text(help_text):
     help_text = help_text.split("\n\n")
 
     if len(help_text) > 1:
-        examples = "\n\n".join(help_text[:1])
+        examples = "\n\n".join(help_text[1:])
+        examples = examples.replace("Examples:\n\n", "")
 
     return examples
 
 
+def extract_options_from_command(cmd):
+    """Extract options with descriptions from click command."""
+    return [
+        {"name": option.name, "description": option.help}
+        for option in cmd.params
+        if isinstance(option, click.Option)
+    ]
+
+
+def extract_arguments_from_command(cmd):
+    """Extract options with descriptions from click command."""
+    return [{"name": arg.name} for arg in cmd.params if isinstance(arg, click.Argument)]
+
+
 def generate_bqetl_docs(out_file):
     """Generate documentation for bqetl CLI commands."""
-    print("Generate bqelt command docs.")
+    print("Generate bqetl command docs.")
     command_groups = []
 
     for command_group_name, command_group in COMMANDS.items():
@@ -57,10 +73,18 @@ def generate_bqetl_docs(out_file):
                         "name": command.name,
                         "description": extract_description_from_help_text(command.help),
                         "examples": extract_examples_from_help_text(command.help),
+                        "options": extract_options_from_command(command),
+                        "arguments": extract_arguments_from_command(command),
                     }
                 )
 
-            command_groups.append({"name": command_group_name, "commands": commands})
+            command_groups.append(
+                {
+                    "name": command_group_name,
+                    "commands": commands,
+                    "description": command_group.help,
+                }
+            )
         except Exception:
             # command is not a group, but simply a click.Command
             command_groups.append(
@@ -71,6 +95,8 @@ def generate_bqetl_docs(out_file):
                     "description": extract_description_from_help_text(
                         command_group.help
                     ),
+                    "options": extract_options_from_command(command_group),
+                    "arguments": extract_arguments_from_command(command_group),
                 }
             )
 

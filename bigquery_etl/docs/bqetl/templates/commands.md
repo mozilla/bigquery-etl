@@ -16,11 +16,13 @@ $ ./bqetl {{ command_group.name }} {{ command.name }} [OPTIONS]
   {{ "" }} [{{ arg.name }}]
 {%- endfor %}
 
+{% if command.options | length > 1 -%}
 Options:
 
 {% for option in command.options -%}
   --{{ option.name }}: {{ option.description }}
 {% endfor -%}
+{% endif %}
 ```
 
 {% if command.examples -%}
@@ -41,11 +43,13 @@ $ ./bqetl {{ command_group.name }} [OPTIONS]
   {{ "" }}[{{ arg.name }}]
 {%- endfor %}
 
+{% if command_group.options | length > 1 -%}
 Options:
 
 {% for option in command_group.options -%}
   --{{ option.name }}: {{ option.description }}
 {% endfor -%}
+{% endif -%}
 ```
 
 {% if command_group.examples -%}

@@ -6,7 +6,22 @@ import click
 from bigquery_etl.alchemer.survey import get_survey_data, insert_to_bq
 
 
-@click.group(help="Commands for importing alchemer data.")
+@click.group(
+    help="""Commands for importing alchemer data.
+
+Examples:
+
+\b
+# Import data from alchemer (surveygizmo) surveys into BigQuery.
+# The date range is inclusive of the start and end values.
+$ ./bqetl alchemer backfill --start-date=2021-01-01
+    --end-date=2021-02-01
+    --survey_id=xxxxxxxxxxx
+    --api_token=xxxxxxxxxxxxxx
+    --api_secret=xxxxxxxxxxxxxxx
+    --destination_table=moz-fx-data-shared-prod.telemetry_derived.survey_gizmo_daily_attitudes
+"""
+)
 def alchemer():
     """Create the CLI group for the alchemer command."""
     pass

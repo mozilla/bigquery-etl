@@ -83,10 +83,23 @@ def query():
 
 
 @query.command(
-    help="Create a new query with name "
-    "<dataset>.<query_name>, for example: telemetry_derived.asn_aggregates. "
-    "Use the --project_id option to change the project the query is added to; "
-    "default is moz-fx-data-shared-prod",
+    help="""Create a new query with name
+    <dataset>.<query_name>, for example: telemetry_derived.asn_aggregates.
+    Use the `--project_id` option to change the project the query is added to;
+    default is `moz-fx-data-shared-prod`. Views are automatically generated
+    in the publicly facing dataset.
+
+    Examples:
+
+    \b
+    ./bqetl query create telemetry_derived.deviations_v1 \\
+      --owner=example@mozilla.com
+
+    \b
+    # The query version gets autocompleted to v1. Queries are created in the
+    # _derived dataset and accompanying views in the public dataset.
+    ./bqetl query create telemetry.deviations --owner=example@mozilla.com
+    """,
 )
 @click.argument("name")
 @sql_dir_option
@@ -204,7 +217,20 @@ def create(name, sql_dir, project_id, owner, init):
 
 
 @query.command(
-    help="Schedule an existing query",
+    help="""Schedule an existing query
+
+    Examples:
+
+    \b
+    ./bqetl query schedule telemetry_derived.deviations_v1 \\
+      --dag=bqetl_deviations
+
+    \b
+    # Set a specific name for the task
+    ./bqetl query schedule telemetry_derived.deviations_v1 \\
+      --dag=bqetl_deviations \\
+      --task-name=deviations
+    """,
 )
 @click.argument("name")
 @sql_dir_option
@@ -305,7 +331,19 @@ def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
 
 
 @query.command(
-    help="Get information about all or specific queries.",
+    help="""Get information about all or specific queries.
+
+    Examples:
+
+    \b
+    # Get info for specific queries
+    ./bqetl query info telemetry_derived.*
+
+    \b
+    # Get cost and last update timestamp information
+    ./bqetl query info telemetry_derived.clients_daily_v6 \\
+      --cost --last_updated
+    """,
 )
 @click.argument("name", required=False)
 @sql_dir_option
@@ -389,7 +427,24 @@ def info(name, sql_dir, project_id, cost, last_updated):
 
 
 @query.command(
-    help="Run a backfill for a query. Additional parameters will get passed to bq.",
+    help="""Run a backfill for a query. Additional parameters will get passed to bq.
+
+    Examples:
+
+    \b
+    # Backfill for specific date range
+    ./bqetl query backfill telemetry_derived.ssl_ratios_v1 \\
+      --start_date=2021-03-01 \\
+      --end_date=2021-03-31
+
+    \b
+    # Dryrun backfill for specific date range and exclude date
+    ./bqetl query backfill telemetry_derived.ssl_ratios_v1 \\
+      --start_date=2021-03-01 \\
+      --end_date=2021-03-31 \\
+      --exclude=2021-03-03 \\
+      --dry_run
+    """,
     context_settings=dict(
         ignore_unknown_options=True,
         allow_extra_args=True,
@@ -496,7 +551,20 @@ def backfill(
 
 
 @query.command(
-    help="Validate a query.",
+    help="""Validate a query.
+    Checks formatting, scheduling information and dry runs the query.
+
+    Examples:
+
+    ./bqetl query validate telemetry_derived.clients_daily_v6
+
+    \b
+    # Validate query not in shared-prod
+    ./bqetl query validate \\
+      --use_cloud_function=false \\
+      --project_id=moz-fx-data-marketing-prod \\
+      ga_derived.blogs_goals_v1
+    """,
 )
 @click.argument("name", required=False)
 @sql_dir_option
@@ -534,7 +602,13 @@ def validate(ctx, name, sql_dir, project_id, use_cloud_function):
 
 
 @query.command(
-    help="Create and initialize the destination table for the query.",
+    help="""Create and initialize the destination table for the query.
+    Only for queries that have an `init.sql` file.
+
+    Examples:
+
+    ./bqetl query initialize telemetry_derived.ssl_ratios_v1
+    """,
 )
 @click.argument("name")
 @sql_dir_option
@@ -576,7 +650,13 @@ def schema():
 
 
 @schema.command(
-    help="Update the query schema",
+    help="""Update the query schema based on the destination table schema and the query schema.
+    If no schema.yaml file exists for a query, one will be created.
+
+    Examples:
+
+    ./bqetl query schema update telemetry_derived.clients_daily_v6
+    """,
 )
 @click.argument("name")
 @sql_dir_option
@@ -666,7 +746,12 @@ def update(name, sql_dir, project_id):
 
 
 @schema.command(
-    help="Deploy the query schema",
+    help="""Deploy the query schema.
+
+    Examples:
+
+    ./bqetl query schema deploy telemetry_derived.clients_daily_v6
+    """,
 )
 @click.argument("name")
 @sql_dir_option
@@ -804,7 +889,15 @@ def _validate_schema(query_file):
     return True
 
 
-@schema.command(help="Validate the query schema", name="validate")
+@schema.command(
+    help="""Validate the query schema
+
+Examples:
+
+./bqetl query schema validate telemetry_derived.clients_daily_v6
+""",
+    name="validate",
+)
 @click.argument("name")
 @sql_dir_option
 @click.option(

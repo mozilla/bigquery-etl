@@ -6,7 +6,16 @@ from bigquery_etl.format_sql.format import format as format_sql
 
 
 @click.command(
-    help="Format SQL.",
+    help="""Format SQL files.
+
+    Examples:
+
+    # Format all SQL files
+    ./bqetl format
+
+    # Format a specific file
+    ./bqetl format sql/moz-fx-data-shared-prod/telemetry/core/view.sql
+    """,
 )
 @click.argument(
     "path",

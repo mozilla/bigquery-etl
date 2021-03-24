@@ -1,3 +1,5 @@
+"""Generate docs for bqetl commands."""
+
 import click
 from jinja2 import Environment, FileSystemLoader
 import os

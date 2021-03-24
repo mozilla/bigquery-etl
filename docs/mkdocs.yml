@@ -41,4 +41,5 @@ nav:
         - ... | mozdata/**.md
     - UDFs:
         - ... | mozfun/**.md
-    - bqetl CLI: bqetl.md
+    - Reference:    
+      - bqetl CLI: bqetl.md

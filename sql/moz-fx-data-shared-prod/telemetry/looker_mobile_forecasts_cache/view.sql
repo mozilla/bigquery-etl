@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.looker_mobile_forecasts_cache`
+  `moz-fx-data-shared-prod.telemetry_derived.looker_mobile_forecasts_cache`
 AS
 SELECT
   *
@@ -12,13 +12,13 @@ SELECT
   '' AS key,
   -- Looker is better suited to deal with timestamp types, since some of
   -- the filters are timestamp comparisons which fail on dates
-  CAST(o.date AS TIMESTAMP) AS submission_date,
-  o.app_name,
-  o.yhat AS dau_forecast,
-  o.yhat * (1 + target_lift) AS dau_target,
-  o.yhat_cumulative AS cdou_forecast,
-  o.target_pace AS cdou_target,
-  o.yhat_p10 AS dau_forecast_lower,
-  o.yhat_p90 AS dau_forecast_upper
+  CAST(date AS TIMESTAMP) AS submission_date,
+  app_name,
+  yhat AS dau_forecast,
+  yhat * (1 + target_lift) AS dau_target,
+  yhat_cumulative AS cdou_forecast,
+  target_pace AS cdou_target,
+  yhat_p10 AS dau_forecast_lower,
+  yhat_p90 AS dau_forecast_upper
 FROM
-  `moz-fx-data-shared-prod.static.mobile_forecasts_official_2021` o
+  `moz-fx-data-shared-prod.static.mobile_forecasts_official_2021`

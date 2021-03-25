@@ -10,7 +10,6 @@ SELECT
     COALESCE(new_profiles, 0) AS new_profiles,
     COALESCE(cumulative_new_profiles, 0) AS cumulative_new_profiles
   ),
-  (source IS NOT NULL OR campaign IS NOT NULL) AS attributed,
   cc.name AS country_name,
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.firefox_desktop_usage_v1` AS usage

@@ -102,6 +102,7 @@ exploded AS (
 SELECT
   SUM(dau) OVER (year_slice) AS cdou,
   SUM(new_profiles) OVER (year_slice) AS cumulative_new_profiles,
+  (source IS NOT NULL OR campaign IS NOT NULL) AS attributed,
   *
 FROM
   exploded

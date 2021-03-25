@@ -25,3 +25,12 @@ scheduling:
   # previous day and adding dau from the new day, but this would make each
   # query dependent on history. Recreating the table is simpler and more robust.
   date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false
+  clustering:
+    fields:
+    - attributed
+    - country

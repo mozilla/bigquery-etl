@@ -89,6 +89,8 @@ Options:
   --help                Show this message and exit.
 ```
 
+Documentation of all `bqetl` commands including usage examples can be found in the [bigquery-etl docs](https://github.com/mozilla/bigquery-etl#the-bqetl-cli).
+
 Running some commands, for example to create or query tables, will [require access to Mozilla's GCP Account](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
 
 Formatting SQL

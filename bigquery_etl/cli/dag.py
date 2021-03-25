@@ -96,28 +96,28 @@ def info(name, dags_config, with_tasks):
 
 @dag.command(
     help="""Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search
-When creating new DAGs, the DAG name must have a `bqetl_` prefix.
-Created DAGs are added to the `dags.yaml` file.
+    When creating new DAGs, the DAG name must have a `bqetl_` prefix.
+    Created DAGs are added to the `dags.yaml` file.
 
-Examples:
+    Examples:
 
-\b
-./bqetl dag create bqetl_core \\
-  --schedule-interval="0 2 * * *" \\
-  --owner=example@mozilla.com \\
-  --description="Tables derived from `core` pings sent by mobile applications." \\
-  --start-date=2019-07-25
+    \b
+    ./bqetl dag create bqetl_core \\
+    --schedule-interval="0 2 * * *" \\
+    --owner=example@mozilla.com \\
+    --description="Tables derived from `core` pings sent by mobile applications." \\
+    --start-date=2019-07-25
 
-\b
-# Create DAG and overwrite default settings
-./bqetl dag create bqetl_ssl_ratios --schedule-interval="0 2 * * *" \\
-  --owner=example@mozilla.com \\
-  --description="The DAG schedules SSL ratios queries." \\
-  --start-date=2019-07-20 \\
-  --email=example2@mozilla.com,example3@mozilla.com \\
-  --retries=2 \\
-  --retry_delay=30m
-"""
+    \b
+    # Create DAG and overwrite default settings
+    ./bqetl dag create bqetl_ssl_ratios --schedule-interval="0 2 * * *" \\
+    --owner=example@mozilla.com \\
+    --description="The DAG schedules SSL ratios queries." \\
+    --start-date=2019-07-20 \\
+    --email=example2@mozilla.com,example3@mozilla.com \\
+    --retries=2 \\
+    --retry_delay=30m
+    """
 )
 @click.argument("name")
 @dags_config_option
@@ -205,14 +205,14 @@ def create(
 @dag.command(
     help="""Generate Airflow DAGs from DAG definitions. Requires Java.
 
-Examples:
+    Examples:
 
-# Generate all DAGs
-./bqetl dag generate
+    # Generate all DAGs
+    ./bqetl dag generate
 
-# Generate a specific DAG
-./bqetl dag generate bqetl_ssl_ratios
-"""
+    # Generate a specific DAG
+    ./bqetl dag generate bqetl_ssl_ratios
+    """
 )
 @click.argument("name", required=False)
 @dags_config_option
@@ -245,7 +245,7 @@ def generate(name, dags_config, output_dir):
 
     # Remove a specific DAG
     ./bqetl dag remove bqetl_vrbrowser
-"""
+    """
 )
 @click.argument("name", required=False)
 @dags_config_option

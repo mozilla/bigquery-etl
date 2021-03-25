@@ -433,6 +433,7 @@ def info(name, sql_dir, project_id, cost, last_updated):
 
     \b
     # Backfill for specific date range
+    # second comment line
     ./bqetl query backfill telemetry_derived.ssl_ratios_v1 \\
       --start_date=2021-03-01 \\
       --end_date=2021-03-31
@@ -892,10 +893,10 @@ def _validate_schema(query_file):
 @schema.command(
     help="""Validate the query schema
 
-Examples:
+    Examples:
 
-./bqetl query schema validate telemetry_derived.clients_daily_v6
-""",
+    ./bqetl query schema validate telemetry_derived.clients_daily_v6
+    """,
     name="validate",
 )
 @click.argument("name")

@@ -1,0 +1,2538 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mozilla BigQuery ETL">
+      
+      
+      
+        <meta name="author" content="Mozilla Data Platform Team">
+      
+      
+      <link rel="icon" href="../favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.6">
+    
+    
+      
+        <title>bqetl CLI - BigQuery ETL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2c0c5eaf.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+        
+<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-104326577-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="teal" data-md-color-accent="">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bqetl-cli" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            BigQuery ETL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              bqetl CLI
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href=".." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../cookbooks/common_workflows/" class="md-tabs__link">
+        Cookbooks
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../mozdata/introduction/" class="md-tabs__link">
+        Datasets
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../mozfun/about/" class="md-tabs__link">
+        UDFs
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
+        Reference
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    BigQuery ETL
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        Cookbooks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Cookbooks" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Cookbooks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbooks/common_workflows/" class="md-nav__link">
+        Common workflows
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbooks/creating_a_derived_dataset/" class="md-nav__link">
+        Creating a derived dataset
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Datasets
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Datasets" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Datasets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
+      
+      <label class="md-nav__link" for="__nav_3_1">
+        Mozdata
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Mozdata" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          Mozdata
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/activity_stream/" class="md-nav__link">
+        activity_stream
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/amo_dev/" class="md-nav__link">
+        amo_dev
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/amo_prod/" class="md-nav__link">
+        amo_prod
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/burnham/" class="md-nav__link">
+        burnham
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/contextual_services/" class="md-nav__link">
+        contextual_services
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/coverage/" class="md-nav__link">
+        coverage
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/default_browser_agent/" class="md-nav__link">
+        default_browser_agent
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/edge_validator/" class="md-nav__link">
+        edge_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/eng_workflow/" class="md-nav__link">
+        eng_workflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_accounts/" class="md-nav__link">
+        firefox_accounts
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_desktop/" class="md-nav__link">
+        firefox_desktop
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_installer/" class="md-nav__link">
+        firefox_installer
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_launcher_process/" class="md-nav__link">
+        firefox_launcher_process
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/internet_outages/" class="md-nav__link">
+        internet_outages
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/messaging_system/" class="md-nav__link">
+        messaging_system
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mobile/" class="md-nav__link">
+        mobile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/monitoring/" class="md-nav__link">
+        monitoring
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozdata/" class="md-nav__link">
+        mozdata
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozilla_lockbox/" class="md-nav__link">
+        mozilla_lockbox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozilla_mach/" class="md-nav__link">
+        mozilla_mach
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozilla_vpn/" class="md-nav__link">
+        mozilla_vpn
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozphab/" class="md-nav__link">
+        mozphab
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozza/" class="md-nav__link">
+        mozza
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_bergamot/" class="md-nav__link">
+        org_mozilla_bergamot
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_connect_firefox/" class="md-nav__link">
+        org_mozilla_connect_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_fenix/" class="md-nav__link">
+        org_mozilla_fenix
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_fenix_nightly/" class="md-nav__link">
+        org_mozilla_fenix_nightly
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_fennec_aurora/" class="md-nav__link">
+        org_mozilla_fennec_aurora
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_firefox/" class="md-nav__link">
+        org_mozilla_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_firefox_beta/" class="md-nav__link">
+        org_mozilla_firefox_beta
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_firefoxreality/" class="md-nav__link">
+        org_mozilla_firefoxreality
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_fennec/" class="md-nav__link">
+        org_mozilla_ios_fennec
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_firefox/" class="md-nav__link">
+        org_mozilla_ios_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_firefoxbeta/" class="md-nav__link">
+        org_mozilla_ios_firefoxbeta
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_focus/" class="md-nav__link">
+        org_mozilla_ios_focus
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_klar/" class="md-nav__link">
+        org_mozilla_ios_klar
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_lockbox/" class="md-nav__link">
+        org_mozilla_ios_lockbox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_mozregression/" class="md-nav__link">
+        org_mozilla_mozregression
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_reference_browser/" class="md-nav__link">
+        org_mozilla_reference_browser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_tv_firefox/" class="md-nav__link">
+        org_mozilla_tv_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_vrbrowser/" class="md-nav__link">
+        org_mozilla_vrbrowser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/pocket/" class="md-nav__link">
+        pocket
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/regrets_reporter/" class="md-nav__link">
+        regrets_reporter
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/search/" class="md-nav__link">
+        search
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/static/" class="md-nav__link">
+        static
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/stripe/" class="md-nav__link">
+        stripe
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/telemetry/" class="md-nav__link">
+        telemetry
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/udf/" class="md-nav__link">
+        udf
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/udf_js/" class="md-nav__link">
+        udf_js
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/udf_js_lib/" class="md-nav__link">
+        udf_js_lib
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/udf_legacy/" class="md-nav__link">
+        udf_legacy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/webpagetest/" class="md-nav__link">
+        webpagetest
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        UDFs
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="UDFs" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          UDFs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_1" type="checkbox" id="__nav_4_1" >
+      
+      <label class="md-nav__link" for="__nav_4_1">
+        Mozfun
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Mozfun" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_1">
+          <span class="md-nav__icon md-icon"></span>
+          Mozfun
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/about/" class="md-nav__link">
+        mozfun
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/bits28/" class="md-nav__link">
+        bits28
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/bytes/" class="md-nav__link">
+        Bytes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/event_analysis/" class="md-nav__link">
+        event_analysis
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/glean/" class="md-nav__link">
+        glean
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/hist/" class="md-nav__link">
+        hist
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/json/" class="md-nav__link">
+        json
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/map/" class="md-nav__link">
+        map
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/norm/" class="md-nav__link">
+        norm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozfun/stats/" class="md-nav__link">
+        stats
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      <label class="md-nav__link" for="__nav_5">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          bqetl CLI
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        bqetl CLI
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query" class="md-nav__link">
+    query
+  </a>
+  
+    <nav class="md-nav" aria-label="query">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schedule" class="md-nav__link">
+    schedule
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info" class="md-nav__link">
+    info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backfill" class="md-nav__link">
+    backfill
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    validate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize" class="md-nav__link">
+    initialize
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema" class="md-nav__link">
+    schema
+  </a>
+  
+    <nav class="md-nav" aria-label="schema">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update" class="md-nav__link">
+    update
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    deploy
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_1" class="md-nav__link">
+    validate
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dag" class="md-nav__link">
+    dag
+  </a>
+  
+    <nav class="md-nav" aria-label="dag">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#info_1" class="md-nav__link">
+    info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create_1" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    generate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove" class="md-nav__link">
+    remove
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependency" class="md-nav__link">
+    dependency
+  </a>
+  
+    <nav class="md-nav" aria-label="dependency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#show" class="md-nav__link">
+    show
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#record" class="md-nav__link">
+    record
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dryrun" class="md-nav__link">
+    dryrun
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format" class="md-nav__link">
+    format
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routine" class="md-nav__link">
+    routine
+  </a>
+  
+    <nav class="md-nav" aria-label="routine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_2" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_2" class="md-nav__link">
+    info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_2" class="md-nav__link">
+    validate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish" class="md-nav__link">
+    publish
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename" class="md-nav__link">
+    rename
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mozfun" class="md-nav__link">
+    mozfun
+  </a>
+  
+    <nav class="md-nav" aria-label="mozfun">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_3" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_3" class="md-nav__link">
+    info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_3" class="md-nav__link">
+    validate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish_1" class="md-nav__link">
+    publish
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename_1" class="md-nav__link">
+    rename
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    Commands
+  </a>
+  
+    <nav class="md-nav" aria-label="Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query" class="md-nav__link">
+    query
+  </a>
+  
+    <nav class="md-nav" aria-label="query">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schedule" class="md-nav__link">
+    schedule
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info" class="md-nav__link">
+    info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backfill" class="md-nav__link">
+    backfill
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    validate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialize" class="md-nav__link">
+    initialize
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema" class="md-nav__link">
+    schema
+  </a>
+  
+    <nav class="md-nav" aria-label="schema">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update" class="md-nav__link">
+    update
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    deploy
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_1" class="md-nav__link">
+    validate
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dag" class="md-nav__link">
+    dag
+  </a>
+  
+    <nav class="md-nav" aria-label="dag">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#info_1" class="md-nav__link">
+    info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create_1" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate" class="md-nav__link">
+    generate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove" class="md-nav__link">
+    remove
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependency" class="md-nav__link">
+    dependency
+  </a>
+  
+    <nav class="md-nav" aria-label="dependency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#show" class="md-nav__link">
+    show
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#record" class="md-nav__link">
+    record
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dryrun" class="md-nav__link">
+    dryrun
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#format" class="md-nav__link">
+    format
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routine" class="md-nav__link">
+    routine
+  </a>
+  
+    <nav class="md-nav" aria-label="routine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_2" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_2" class="md-nav__link">
+    info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_2" class="md-nav__link">
+    validate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish" class="md-nav__link">
+    publish
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename" class="md-nav__link">
+    rename
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mozfun" class="md-nav__link">
+    mozfun
+  </a>
+  
+    <nav class="md-nav" aria-label="mozfun">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create_3" class="md-nav__link">
+    create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#info_3" class="md-nav__link">
+    info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_3" class="md-nav__link">
+    validate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish_1" class="md-nav__link">
+    publish
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename_1" class="md-nav__link">
+    rename
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="bqetl-cli">bqetl CLI</h1>
+<p>The <code>bqetl</code> command-line tool aims to simplify working with the bigquery-etl repository by supporting common workflows, such as creating, validating and scheduling queries or adding new UDFs.</p>
+<h2 id="installation">Installation</h2>
+<p>Follow the <a href="https://github.com/mozilla/bigquery-etl#quick-start">Quick Start</a> to set up bigquery-etl and the bqetl CLI.</p>
+<h2 id="commands">Commands</h2>
+<p>To list all available commands in the bqetl CLI:</p>
+<pre><code class="language-bash">$ ./bqetl
+
+Usage: bqetl [OPTIONS] COMMAND [ARGS]...
+
+  CLI tools for working with bigquery-etl.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  alchemer    Commands for importing alchemer data.
+  dag         Commands for managing DAGs.
+  dependency  Build and use query dependency graphs.
+  dryrun      Dry run SQL.
+  format      Format SQL.
+  glam        Tools for GLAM ETL.
+  mozfun      Commands for managing mozfun routines.
+  query       Commands for managing queries.
+  routine     Commands for managing routines.
+  stripe      Commands for Stripe ETL.
+  view        Commands for managing views.
+</code></pre>
+<p>See help for any command:</p>
+<pre><code class="language-bash">$ ./bqetl [command] --help
+</code></pre>
+<!--- Documentation for comments is generated via bigquery_etl/docs/generate_docs -->
+<h3 id="query"><code>query</code></h3>
+<p>Commands for managing queries.</p>
+<h4 id="create"><code>create</code></h4>
+<p>Create a new query with name
+<dataset>.<query_name>, for example: telemetry_derived.asn_aggregates.
+Use the <code>--project_id</code> option to change the project the query is added to;
+default is <code>moz-fx-data-shared-prod</code>. Views are automatically generated
+in the publicly facing dataset.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query create [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--owner: Owner of the query (email address)
+--init: Create an init.sql file to initialize the table
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash">./bqetl query create telemetry_derived.deviations_v1 \
+  --owner=example@mozilla.com
+
+
+# The query version gets autocompleted to v1. Queries are created in the
+# _derived dataset and accompanying views in the public dataset.
+./bqetl query create telemetry.deviations --owner=example@mozilla.com
+</code></pre>
+<h4 id="schedule"><code>schedule</code></h4>
+<p>Schedule an existing query</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query schedule [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--dag: Name of the DAG the query should be scheduled under. To see available DAGs run `bqetl dag info`. To create a new DAG run `bqetl dag create`.
+--depends_on_past: Only execute query if previous scheduled run succeeded.
+--task_name: Custom name for the Airflow task. By default the task name is a combination of the dataset and table name.
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash">./bqetl query schedule telemetry_derived.deviations_v1 \
+  --dag=bqetl_deviations
+
+
+# Set a specific name for the task
+./bqetl query schedule telemetry_derived.deviations_v1 \
+  --dag=bqetl_deviations \
+  --task-name=deviations
+</code></pre>
+<h4 id="info"><code>info</code></h4>
+<p>Get information about all or specific queries.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query info [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--cost: Include information about query costs
+--last_updated: Include timestamps when destination tables were last updated
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Get info for specific queries
+./bqetl query info telemetry_derived.*
+
+
+# Get cost and last update timestamp information
+./bqetl query info telemetry_derived.clients_daily_v6 \
+  --cost --last_updated
+</code></pre>
+<h4 id="backfill"><code>backfill</code></h4>
+<p>Run a backfill for a query. Additional parameters will get passed to bq.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query backfill [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--start_date: First date to be backfilled
+--end_date: Last date to be backfilled
+--exclude: Dates excluded from backfill. Date format: yyyy-mm-dd
+--dry_run: Dry run the backfill
+--allow_field_addition: Allow schema additions during query time
+--max_rows: How many rows to return in the result
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Backfill for specific date range
+# second comment line
+./bqetl query backfill telemetry_derived.ssl_ratios_v1 \
+  --start_date=2021-03-01 \
+  --end_date=2021-03-31
+
+
+# Dryrun backfill for specific date range and exclude date
+./bqetl query backfill telemetry_derived.ssl_ratios_v1 \
+  --start_date=2021-03-01 \
+  --end_date=2021-03-31 \
+  --exclude=2021-03-03 \
+  --dry_run
+</code></pre>
+<h4 id="validate"><code>validate</code></h4>
+<p>Validate a query.
+Checks formatting, scheduling information and dry runs the query.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query validate [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--use_cloud_function: Use the Cloud Function for dry running SQL, if set to `True`. The Cloud Function can only access tables in shared-prod. If set to `False`, use active GCP credentials for the dry run.
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash">./bqetl query validate telemetry_derived.clients_daily_v6
+
+
+# Validate query not in shared-prod
+./bqetl query validate \
+  --use_cloud_function=false \
+  --project_id=moz-fx-data-marketing-prod \
+  ga_derived.blogs_goals_v1
+</code></pre>
+<h4 id="initialize"><code>initialize</code></h4>
+<p>Create and initialize the destination table for the query.
+Only for queries that have an <code>init.sql</code> file.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query initialize [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--dry_run: Dry run the backfill
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash">./bqetl query initialize telemetry_derived.ssl_ratios_v1
+</code></pre>
+<h4 id="schema"><code>schema</code></h4>
+<p>Commands for managing query schemas.</p>
+<h5 id="update"><code>update</code></h5>
+<p>Update the query schema based on the destination table schema and the query schema.
+If no schema.yaml file exists for a query, one will be created.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query schema update [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash">./bqetl query schema update telemetry_derived.clients_daily_v6
+</code></pre>
+<h5 id="deploy"><code>deploy</code></h5>
+<p>Deploy the query schema.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query schema deploy [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash">./bqetl query schema deploy telemetry_derived.clients_daily_v6
+</code></pre>
+<h5 id="validate_1"><code>validate</code></h5>
+<p>Validate the query schema</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl query schema validate [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash">./bqetl query schema validate telemetry_derived.clients_daily_v6
+</code></pre>
+<h3 id="dag"><code>dag</code></h3>
+<p>Commands for managing DAGs.</p>
+<h4 id="info_1"><code>info</code></h4>
+<p>Get information about available DAGs.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl dag info [OPTIONS] [name]
+
+Options:
+
+--dags_config: Path to dags.yaml config file
+--with_tasks: Include scheduled tasks
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Get information about all available DAGs
+./bqetl dag info
+
+# Get information about a specific DAG
+./bqetl dag info bqetl_ssl_ratios
+
+# Get information about a specific DAG including scheduled tasks
+./bqetl dag info --with_tasks bqetl_ssl_ratios
+</code></pre>
+<h4 id="create_1"><code>create</code></h4>
+<p>Create a new DAG with name bqetl_<dag_name>, for example: bqetl_search
+When creating new DAGs, the DAG name must have a <code>bqetl_</code> prefix.
+Created DAGs are added to the <code>dags.yaml</code> file.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl dag create [OPTIONS] [name]
+
+Options:
+
+--dags_config: Path to dags.yaml config file
+--schedule_interval: Schedule interval of the new DAG. Schedule intervals can be either in CRON format or one of: once, hourly, daily, weekly, monthly, yearly or a timedelta []d[]h[]m
+--owner: Email address of the DAG owner
+--description: Description for DAG
+--start_date: First date for which scheduled queries should be executed
+--email: List of email addresses that Airflow will send alerts to
+--retries: Number of retries Airflow will attempt in case of failures
+--retry_delay: Time period Airflow will wait after failures before running failed tasks again
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash">./bqetl dag create bqetl_core \
+--schedule-interval=&quot;0 2 * * *&quot; \
+--owner=example@mozilla.com \
+--description=&quot;Tables derived from `core` pings sent by mobile applications.&quot; \
+--start-date=2019-07-25
+
+
+# Create DAG and overwrite default settings
+./bqetl dag create bqetl_ssl_ratios --schedule-interval=&quot;0 2 * * *&quot; \
+--owner=example@mozilla.com \
+--description=&quot;The DAG schedules SSL ratios queries.&quot; \
+--start-date=2019-07-20 \
+--email=example2@mozilla.com,example3@mozilla.com \
+--retries=2 \
+--retry_delay=30m
+</code></pre>
+<h4 id="generate"><code>generate</code></h4>
+<p>Generate Airflow DAGs from DAG definitions. Requires Java.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl dag generate [OPTIONS] [name]
+
+Options:
+
+--dags_config: Path to dags.yaml config file
+--output_dir: Path directory with generated DAGs
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Generate all DAGs
+./bqetl dag generate
+
+# Generate a specific DAG
+./bqetl dag generate bqetl_ssl_ratios
+</code></pre>
+<h4 id="remove"><code>remove</code></h4>
+<p>Remove a DAG.
+This will also remove the scheduling information from the queries that were scheduled
+as part of the DAG.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl dag remove [OPTIONS] [name]
+
+Options:
+
+--dags_config: Path to dags.yaml config file
+--output_dir: Path directory with generated DAGs
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Remove a specific DAG
+./bqetl dag remove bqetl_vrbrowser
+</code></pre>
+<h3 id="dependency"><code>dependency</code></h3>
+<p>Build and use query dependency graphs.</p>
+<h4 id="show"><code>show</code></h4>
+<p>Show table references in sql files. Requires Java.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl dependency show [OPTIONS] [paths]
+
+</code></pre>
+<h4 id="record"><code>record</code></h4>
+<p>Record table references in metadata. Fails if metadata already contains references section. Requires Java.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl dependency record [OPTIONS] [paths]
+
+</code></pre>
+<h3 id="dryrun"><code>dryrun</code></h3>
+<p>Dry run SQL.
+    Uses the dryrun Cloud Function by default which only has access to shared-prod.
+    To dryrun queries accessing tables in another project use set
+    <code>--use-cloud-function=false</code> and ensure that the command line has access to a
+    GCP service account.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl dryrun [OPTIONS] [path]
+
+Options:
+
+--use_cloud_function: Use the Cloud Function for dry running SQL, if set to `True`. The Cloud Function can only access tables in shared-prod. If set to `False`, use active GCP credentials for the dry run.
+--project: GCP project to perform dry run in when --use_cloud_function=False
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash">Examples:
+./bqetl dryrun sql/moz-fx-data-shared-prod/telemetry_derived/
+
+# Dry run SQL with tables that are not in shared prod
+./bqetl dryrun --use-cloud-function=false sql/moz-fx-data-marketing-prod/
+</code></pre>
+<h3 id="format"><code>format</code></h3>
+<p>Format SQL files.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl format [OPTIONS] [path]
+
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Format all SQL files
+./bqetl format
+
+# Format a specific file
+./bqetl format sql/moz-fx-data-shared-prod/telemetry/core/view.sql
+</code></pre>
+<h3 id="routine"><code>routine</code></h3>
+<p>Commands for managing routines for internal use.</p>
+<h4 id="create_2"><code>create</code></h4>
+<p>Create a new routine. Specify whether the routine is a UDF or
+stored procedure by adding a --udf or --stored_prodecure flag.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl routine create [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--udf: Create a new UDF
+--stored_procedure: Create a new stored procedure
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Create a UDF
+./bqetl routine create --udf udf.array_slice
+
+
+# Create a stored procedure
+./bqetl routine create --stored_procedure udf.events_daily
+
+
+# Create a UDF in a project other than shared-prod
+./bqetl routine create --udf udf.active_last_week --project=moz-fx-data-marketing-prod
+</code></pre>
+<h4 id="info_2"><code>info</code></h4>
+<p>Get routine information.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl routine info [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--usages: Show routine usages
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Get information about all internal routines in a specific dataset
+./bqetl routine info udf.*
+
+
+# Get usage information of specific routine
+./bqetl routine info --usages udf.get_key
+</code></pre>
+<h4 id="validate_2"><code>validate</code></h4>
+<p>Validate formatting of routines and run tests.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl routine validate [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Validate all routines
+./bqetl routine validate
+
+
+# Validate selected routines
+./bqetl routine validate udf.*
+</code></pre>
+<h4 id="publish"><code>publish</code></h4>
+<p>Publish routines to BigQuery. Requires service account access.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl routine publish [OPTIONS] [path]
+
+Options:
+
+--project_id: GCP project ID
+--dependency_dir: The directory JavaScript dependency files for UDFs are stored.
+--gcs_bucket: The GCS bucket where dependency files are uploaded to.
+--gcs_path: The GCS path in the bucket where dependency files are uploaded to.
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Publish all routines
+./bqetl routine publish
+</code></pre>
+<h4 id="rename"><code>rename</code></h4>
+<p>Rename routine or routine dataset. Replaces all usages in queries with
+the new name.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl routine rename [OPTIONS] [name] [new_name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Rename routine
+./bqetl routine rename udf.array_slice udf.list_slice
+
+
+# Rename routine matching a specific pattern
+./bqetl routine rename udf.array_* udf.list_*
+</code></pre>
+<h3 id="mozfun"><code>mozfun</code></h3>
+<p>Commands for managing public mozfun routines.</p>
+<h4 id="create_3"><code>create</code></h4>
+<p>Create a new mozfun routine. Specify whether the routine is a UDF or
+stored procedure by adding a --udf or --stored_prodecure flag. UDFs
+are added to the <code>mozfun</code> project.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl mozfun create [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--udf: Create a new UDF
+--stored_procedure: Create a new stored procedure
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Create a UDF
+./bqetl mozfun create --udf bytes.zero_right
+
+
+# Create a stored procedure
+./bqetl mozfun create --stored_procedure event_analysis.events_daily
+</code></pre>
+<h4 id="info_3"><code>info</code></h4>
+<p>Get mozfun routine information.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl mozfun info [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+--usages: Show routine usages
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Get information about all internal routines in a specific dataset
+./bqetl mozfun info hist.*
+
+
+# Get usage information of specific routine
+./bqetl mozfun info --usages hist.mean
+</code></pre>
+<h4 id="validate_3"><code>validate</code></h4>
+<p>Validate formatting of mozfun routines and run tests.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl mozfun validate [OPTIONS] [name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Validate all routines
+./bqetl mozfun validate
+
+
+# Validate selected routines
+./bqetl mozfun validate hist.*
+</code></pre>
+<h4 id="publish_1"><code>publish</code></h4>
+<p>Publish mozfun routines. This command is used
+by Airflow only.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl mozfun publish [OPTIONS] [path]
+
+Options:
+
+--project_id: GCP project ID
+--dependency_dir: The directory JavaScript dependency files for UDFs are stored.
+--gcs_bucket: The GCS bucket where dependency files are uploaded to.
+--gcs_path: The GCS path in the bucket where dependency files are uploaded to.
+</code></pre>
+<h4 id="rename_1"><code>rename</code></h4>
+<p>Rename mozfun routine or mozfun routine dataset.
+Replaces all usages in queries with the new name.</p>
+<p><strong>Usage</strong></p>
+<pre><code class="language-bash">$ ./bqetl mozfun rename [OPTIONS] [name] [new_name]
+
+Options:
+
+--sql_dir: Path to directory which contains queries.
+--project_id: GCP project ID
+</code></pre>
+<p><strong>Examples</strong></p>
+<pre><code class="language-bash"># Rename routine
+./bqetl mozfun rename hist.extract hist.ext
+
+
+# Rename routine matching a specific pattern
+./bqetl mozfun rename *.array_* *.list_*
+
+
+# Rename routine dataset
+./bqetl mozfun rename hist.* histogram.*
+</code></pre>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../mozfun/stats/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              stats
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a1c7c35e.min.js"></script>
+      
+    
+  </body>
+</html>

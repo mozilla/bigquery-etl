@@ -41,6 +41,10 @@ def extract_examples_from_help_text(help_text):
     if len(help_text) > 1:
         examples = "\n\n".join(help_text[1:])
         examples = examples.replace("Examples:\n\n", "")
+        # Examples have \b markers to preserve formatting for the following block
+        # when rendered using Click:
+        # https://click.palletsprojects.com/en/7.x/documentation/#preventing-rewrapping
+        # Removing it, otherwise it shows up as newline in rendered Markdown
         examples = examples.replace("\b", "")
         examples = examples.strip()
 

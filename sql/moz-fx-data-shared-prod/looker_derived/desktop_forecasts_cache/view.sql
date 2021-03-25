@@ -1,10 +1,10 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.looker_forecasts_cache`
+  `moz-fx-data-shared-prod.looker_derived.desktop_forecasts_cache`
 AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.looker_forecasts_cache_v1`
+  `moz-fx-data-shared-prod.looker_derived.desktop_forecasts_cache_v1`
 UNION ALL
 SELECT
   -- Key for the cache is the filters used. When no filters are used,

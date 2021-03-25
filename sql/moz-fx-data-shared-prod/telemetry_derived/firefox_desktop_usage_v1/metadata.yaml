@@ -34,3 +34,4 @@ bigquery:
     fields:
     - attributed
     - country
+    - country_name

@@ -10,7 +10,6 @@ from bigquery_etl.cli.dryrun import dryrun
 from bigquery_etl.cli.format import format
 from bigquery_etl.cli.query import query
 from bigquery_etl.cli.routine import mozfun, routine
-from bigquery_etl.cli.view import view
 from bigquery_etl.dependency import dependency
 
 
@@ -23,7 +22,6 @@ COMMANDS = {
     "format": format,
     "routine": routine,
     "mozfun": mozfun,
-    "view": view,
 }
 FILE_PATH = Path(os.path.dirname(__file__))
 BASE_DIR = FILE_PATH.parent.parent

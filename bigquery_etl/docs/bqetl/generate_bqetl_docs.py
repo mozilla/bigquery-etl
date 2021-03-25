@@ -30,7 +30,7 @@ TEMPLATE = FILE_PATH / "templates" / "commands.md"
 
 def extract_description_from_help_text(help_text):
     """Return the description from the command help text."""
-    return help_text.split("\n\n")[0]
+    return help_text.split("\n\n")[0].strip()
 
 
 def extract_examples_from_help_text(help_text):
@@ -41,6 +41,8 @@ def extract_examples_from_help_text(help_text):
     if len(help_text) > 1:
         examples = "\n\n".join(help_text[1:])
         examples = examples.replace("Examples:\n\n", "")
+        examples = examples.replace("\b", "")
+        examples = examples.strip()
 
     return examples
 
@@ -59,46 +61,29 @@ def extract_arguments_from_command(cmd):
     return [{"name": arg.name} for arg in cmd.params if isinstance(arg, click.Argument)]
 
 
+def parse_commands(cmd, path):
+    """Parse click commands and store in dict."""
+    commands = []
+    # full command path; reflect click group nesting
+    path = path + " " + cmd.name
+    if isinstance(cmd, click.Group):
+        commands = [parse_commands(c, path) for _, c in cmd.commands.items()]
+
+    return {
+        "name": cmd.name,
+        "commands": commands,
+        "examples": extract_examples_from_help_text(cmd.help),
+        "description": extract_description_from_help_text(cmd.help),
+        "options": extract_options_from_command(cmd),
+        "arguments": extract_arguments_from_command(cmd),
+        "path": path,
+    }
+
+
 def generate_bqetl_docs(out_file):
     """Generate documentation for bqetl CLI commands."""
     print("Generate bqetl command docs.")
-    command_groups = []
-
-    for command_group_name, command_group in COMMANDS.items():
-        commands = []
-        try:
-            for _, command in command_group.commands.items():
-                commands.append(
-                    {
-                        "name": command.name,
-                        "description": extract_description_from_help_text(command.help),
-                        "examples": extract_examples_from_help_text(command.help),
-                        "options": extract_options_from_command(command),
-                        "arguments": extract_arguments_from_command(command),
-                    }
-                )
-
-            command_groups.append(
-                {
-                    "name": command_group_name,
-                    "commands": commands,
-                    "description": command_group.help,
-                }
-            )
-        except Exception:
-            # command is not a group, but simply a click.Command
-            command_groups.append(
-                {
-                    "name": command_group_name,
-                    "commands": [],
-                    "examples": extract_examples_from_help_text(command_group.help),
-                    "description": extract_description_from_help_text(
-                        command_group.help
-                    ),
-                    "options": extract_options_from_command(command_group),
-                    "arguments": extract_arguments_from_command(command_group),
-                }
-            )
+    command_groups = [parse_commands(group, "") for _, group in COMMANDS.items()]
 
     # render md docs
     file_loader = FileSystemLoader(TEMPLATE.parent)
@@ -109,7 +94,3 @@ def generate_bqetl_docs(out_file):
     # append to bqetl docs page
     with open(out_file, "a") as out:
         out.write(output)
-
-
-if __name__ == "__main__":
-    generate_bqetl_docs()

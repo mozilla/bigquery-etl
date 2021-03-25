@@ -4,7 +4,7 @@ The `bqetl` command-line tool aims to simplify working with the bigquery-etl rep
 
 ## Installation
 
-Please follow the [Quick Start](https://github.com/mozilla/bigquery-etl#quick-start) for setting up bigquery-etl and the bqetl CLI.
+Follow the [Quick Start](https://github.com/mozilla/bigquery-etl#quick-start) to set up bigquery-etl and the bqetl CLI.
 
 ## Commands
 

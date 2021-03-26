@@ -31,7 +31,7 @@ default_args = {
 with DAG(
     "bqetl_org_mozilla_fenix_derived",
     default_args=default_args,
-    schedule_interval="@daily",
+    schedule_interval="0 2 * * *",
     doc_md=docs,
 ) as dag:
 
@@ -51,7 +51,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(days=-1, seconds=82800),
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

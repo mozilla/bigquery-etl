@@ -13,7 +13,11 @@ Built from bigquery-etl repo, [`dags/bqetl_public_data_json.py`](https://github.
 
 #### Description
 
-The DAG exports query data marked as public to GCS
+Daily exports of query data marked as public to GCS.
+
+Depends on the results of several upstream DAGs, the latest of which
+runs at 04:00 UTC.
+
 #### Owner
 
 ascholtz@mozilla.com
@@ -35,7 +39,7 @@ default_args = {
 with DAG(
     "bqetl_public_data_json",
     default_args=default_args,
-    schedule_interval="0 4 * * *",
+    schedule_interval="0 5 * * *",
     doc_md=docs,
 ) as dag:
     docker_image = "mozilla/bigquery-etl:latest"
@@ -74,6 +78,7 @@ with DAG(
         task_id="wait_for_mozregression_aggregates__v1",
         external_dag_id="bqetl_internal_tooling",
         external_task_id="mozregression_aggregates__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -87,7 +92,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__ssl_ratios__v1",
         external_dag_id="bqetl_ssl_ratios",
         external_task_id="telemetry_derived__ssl_ratios__v1",
-        execution_delta=datetime.timedelta(seconds=7200),
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

@@ -10,6 +10,13 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_google_analytics_derived.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_google_analytics_derived.py)
 
+#### Description
+
+Daily aggregations of data exported from Google Analytics.
+
+The GA export runs at 15:00 UTC, so there's an effective 2-day delay
+for user activity to appear in these tables.
+
 #### Owner
 
 bewu@mozilla.com

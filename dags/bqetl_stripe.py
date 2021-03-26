@@ -10,6 +10,14 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_stripe.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_stripe.py)
 
+#### Description
+
+Daily derived tables on top of data imported from Stripe.
+
+Depends on the `stripe` DAG which starts at midnight UTC;
+we allow 30 minutes for that DAG to complete before this one
+is scheduled to start.
+
 #### Owner
 
 dthorn@mozilla.com
@@ -29,7 +37,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_stripe", default_args=default_args, schedule_interval="@daily", doc_md=docs
+    "bqetl_stripe",
+    default_args=default_args,
+    schedule_interval="30 0 * * *",
+    doc_md=docs,
 ) as dag:
 
     stripe_derived__customers__v1 = bigquery_etl_query(

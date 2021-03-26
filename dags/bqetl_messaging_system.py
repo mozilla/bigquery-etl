@@ -12,7 +12,9 @@ Built from bigquery-etl repo, [`dags/bqetl_messaging_system.py`](https://github.
 
 #### Description
 
-Daily aggregations on top of pings sent for the `messaging_system` namespace by desktop Firefox.
+Daily aggregations on top of pings sent for the `messaging_system`
+namespace by desktop Firefox.
+
 #### Owner
 
 najiang@mozilla.com

@@ -12,7 +12,8 @@ Built from bigquery-etl repo, [`dags/bqetl_desktop_funnel.py`](https://github.co
 
 #### Description
 
-This DAG schedules desktop funnel queries used to power the [Numbers that Matter dashboard](https://protosaur.dev/numbers-that-matter/)
+This DAG schedules desktop funnel queries used to power the
+[Numbers that Matter dashboard](https://protosaur.dev/numbers-that-matter/)
 
 #### Owner
 

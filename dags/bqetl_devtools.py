@@ -13,6 +13,7 @@ Built from bigquery-etl repo, [`dags/bqetl_devtools.py`](https://github.com/mozi
 #### Description
 
 Summarizes usage of the Dev Tools component of desktop Firefox.
+
 #### Owner
 
 jklukas@mozilla.com

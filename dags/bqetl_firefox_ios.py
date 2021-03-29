@@ -34,7 +34,7 @@ default_args = {
 with DAG(
     "bqetl_firefox_ios",
     default_args=default_args,
-    schedule_interval="0 2 * * *",
+    schedule_interval="0 4 * * *",
     doc_md=docs,
 ) as dag:
 

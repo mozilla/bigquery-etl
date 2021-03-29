@@ -4,3 +4,6 @@ labels:
   incremental: true
 owners:
   - amiyaguchi@mozilla.com
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false

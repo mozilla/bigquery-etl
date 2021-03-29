@@ -12,7 +12,9 @@ Built from bigquery-etl repo, [`dags/bqetl_experiments_daily.py`](https://github
 
 #### Description
 
-The DAG schedules queries that query experimentation related metrics (enrollments, search, ...) from stable tables to finalize numbers of experiment monitoring datasets for a specific date.
+The DAG schedules queries that query experimentation related
+metrics (enrollments, search, ...) from stable tables to finalize
+numbers of experiment monitoring datasets for a specific date.
 
 #### Owner
 

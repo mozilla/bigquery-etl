@@ -10,6 +10,12 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_addons.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_addons.py)
 
+#### Description
+
+Daily rollups of addon data from `main` pings.
+
+Depends on `bqetl_search`, so is scheduled after that DAG.
+
 #### Owner
 
 bmiroglio@mozilla.com
@@ -31,7 +37,7 @@ default_args = {
 with DAG(
     "bqetl_addons",
     default_args=default_args,
-    schedule_interval="0 3 * * *",
+    schedule_interval="0 4 * * *",
     doc_md=docs,
 ) as dag:
 
@@ -88,7 +94,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_main_ping",
-        execution_delta=datetime.timedelta(seconds=7200),
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -106,6 +112,7 @@ with DAG(
         task_id="wait_for_search_derived__search_clients_daily__v8",
         external_dag_id="bqetl_search",
         external_task_id="search_derived__search_clients_daily__v8",
+        execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -118,7 +125,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

@@ -27,7 +27,7 @@ bqetl_ssl_ratios:
 bqetl_amo_stats:
   schedule_interval: 0 3 * * *
   # yamllint disable rule:line-length
-  description: >-
+  description: |
     Add-on download and install statistics to power the
     [addons.mozilla.org](https://addons.mozilla.org) (AMO) stats pages.
 
@@ -42,7 +42,7 @@ bqetl_amo_stats:
 
 bqetl_vrbrowser:
   schedule_interval: 0 2 * * *
-  description: >-
+  description: |
     Custom ETL based on Glean pings from Mozilla VR Browser.
   default_args:
     owner: jklukas@mozilla.com
@@ -88,7 +88,7 @@ bqetl_mobile_search:
 
 bqetl_fxa_events:
   schedule_interval: 30 1 * * *
-  description: >-
+  description: |
     Copies data from a Firefox Accounts (FxA) project. Those source tables
     are populated via Cloud Logging (Stackdriver). We hash various fields
     as part of the import.
@@ -103,8 +103,13 @@ bqetl_fxa_events:
     retry_delay: 10m
 
 bqetl_mozilla_vpn:
-  # Depends on bqetl_fxa_events, so run a bit after that one.
   schedule_interval: 45 1 * * *
+  description: |
+    Daily extracts from the Mozilla VPN operational DB to BigQuery
+    as well as derived tables based on that data.
+
+    Depends on `bqetl_fxa_events`, so is scheduled to run a bit
+    after that one.
   default_args:
     owner: dthorn@mozilla.com
     start_date: "2020-10-08"
@@ -126,7 +131,7 @@ bqetl_gud:
 
 bqetl_messaging_system:
   schedule_interval: 0 2 * * *
-  description: >-
+  description: |
     Daily aggregations on top of pings sent for the `messaging_system`
     namespace by desktop Firefox.
   default_args:
@@ -138,7 +143,7 @@ bqetl_messaging_system:
 
 bqetl_activity_stream:
   schedule_interval: 0 2 * * *
-  description: >-
+  description: |
     Daily aggregations on top of pings sent for the `activity_stream`
     namespace by desktop Firefox. These are largely related to activity
     on the newtab page and engagement with Pocket content.
@@ -160,7 +165,11 @@ bqetl_search:
     retry_delay: 30m
 
 bqetl_addons:
-  schedule_interval: 0 3 * * *
+  schedule_interval: 0 4 * * *
+  description: |
+    Daily rollups of addon data from `main` pings.
+
+    Depends on `bqetl_search`, so is scheduled after that DAG.
   default_args:
     owner: bmiroglio@mozilla.com
     start_date: "2018-11-27"
@@ -170,7 +179,7 @@ bqetl_addons:
 
 bqetl_devtools:
   schedule_interval: 0 3 * * *
-  description: >-
+  description: |
     Summarizes usage of the Dev Tools component of desktop Firefox.
   default_args:
     owner: jklukas@mozilla.com
@@ -181,7 +190,7 @@ bqetl_devtools:
 
 bqetl_main_summary:
   schedule_interval: 0 2 * * *
-  description: >-
+  description: |
     General-purpose derived tables for analyzing usage of desktop Firefox.
     This is one of our highest-impact DAGs and should be handled carefully.
   default_args:
@@ -199,7 +208,7 @@ bqetl_main_summary:
 
 bqetl_experiments_daily:
   schedule_interval: 0 3 * * *
-  description: >
+  description: |
     The DAG schedules queries that query experimentation related
     metrics (enrollments, search, ...) from stable tables to finalize
     numbers of experiment monitoring datasets for a specific date.
@@ -232,8 +241,12 @@ bqetl_asn_aggregates:
 # DAG for exporting query data marked as public to GCS
 # queries should not be explicitly assigned to this DAG (done automatically)
 bqetl_public_data_json:
-  schedule_interval: 0 4 * * *
-  description: The DAG exports query data marked as public to GCS
+  schedule_interval: 0 5 * * *
+  description: |
+    Daily exports of query data marked as public to GCS.
+
+    Depends on the results of several upstream DAGs, the latest of which
+    runs at 04:00 UTC.
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2020-04-14"
@@ -243,7 +256,7 @@ bqetl_public_data_json:
 
 bqetl_internet_outages:
   schedule_interval: 0 3 * * *
-  description: >
+  description: |
     DAG for building the internet outages datasets.
     See [bug 1640204](https://bugzilla.mozilla.org/show_bug.cgi?id=1640204).
   default_args:
@@ -272,7 +285,13 @@ bqetl_fenix_event_rollup:
     retry_delay: 30m
 
 bqetl_stripe:
-  schedule_interval: daily
+  schedule_interval: 30 0 * * *
+  description: |
+    Daily derived tables on top of data imported from Stripe.
+
+    Depends on the `stripe` DAG which starts at midnight UTC;
+    we allow 30 minutes for that DAG to complete before this one
+    is scheduled to start.
   default_args:
     owner: dthorn@mozilla.com
     start_date: "2020-10-05"
@@ -281,6 +300,7 @@ bqetl_stripe:
     retry_delay: 5m
 
 bqetl_org_mozilla_fenix_derived:
+  schedule_interval: 0 2 * * *
   default_args:
     depends_on_past: false
     email:
@@ -292,11 +312,14 @@ bqetl_org_mozilla_fenix_derived:
     retries: 2
     retry_delay: 30m
     start_date: "2020-10-18"
-  schedule_interval: daily
 
 bqetl_google_analytics_derived:
-  # GA export runs at 15:00 UTC so there's an effectively 2-day delay on ETL
   schedule_interval: 0 23 * * *
+  description: |
+    Daily aggregations of data exported from Google Analytics.
+
+    The GA export runs at 15:00 UTC, so there's an effective 2-day delay
+    for user activity to appear in these tables.
   default_args:
     owner: bewu@mozilla.com
     email: ['bewu@mozilla.com']
@@ -306,7 +329,7 @@ bqetl_google_analytics_derived:
 
 bqetl_monitoring:
   schedule_interval: 0 2 * * *
-  description: >
+  description: |
     This DAG schedules queries and scripts for populating datasets
     used for monitoring of the data platform.
   default_args:
@@ -363,7 +386,7 @@ bqetl_desktop_platform:
     retry_delay: 30m
 
 bqetl_internal_tooling:
-  description: >
+  description: |
     This DAG schedules queries for populating queries related to Mozilla's
     internal developer tooling (e.g. mozregression).
   default_args:
@@ -421,7 +444,7 @@ bqetl_adm_engagements_daily:
     retry_delay: 30m
 
 bqetl_desktop_funnel:
-  description: >
+  description: |
     This DAG schedules desktop funnel queries used to power the
     [Numbers that Matter dashboard](https://protosaur.dev/numbers-that-matter/)
   schedule_interval: 0 4 * * *

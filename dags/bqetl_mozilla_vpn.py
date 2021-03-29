@@ -10,6 +10,14 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_mozilla_vpn.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_mozilla_vpn.py)
 
+#### Description
+
+Daily extracts from the Mozilla VPN operational DB to BigQuery
+as well as derived tables based on that data.
+
+Depends on `bqetl_fxa_events`, so is scheduled to run a bit
+after that one.
+
 #### Owner
 
 dthorn@mozilla.com

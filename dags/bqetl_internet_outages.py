@@ -12,7 +12,8 @@ Built from bigquery-etl repo, [`dags/bqetl_internet_outages.py`](https://github.
 
 #### Description
 
-DAG for building the internet outages datasets. See [bug 1640204](https://bugzilla.mozilla.org/show_bug.cgi?id=1640204).
+DAG for building the internet outages datasets.
+See [bug 1640204](https://bugzilla.mozilla.org/show_bug.cgi?id=1640204).
 
 #### Owner
 

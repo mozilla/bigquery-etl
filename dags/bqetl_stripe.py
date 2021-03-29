@@ -259,7 +259,7 @@ with DAG(
         task_id="wait_for_stripe_import_events",
         external_dag_id="stripe",
         external_task_id="stripe_import_events",
-        execution_delta=datetime.timedelta(0),
+        execution_delta=datetime.timedelta(seconds=1800),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

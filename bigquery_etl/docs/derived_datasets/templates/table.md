@@ -32,9 +32,9 @@
  	</tr>
 {% for table in referenced_tables -%}
  	<tr>
-  		<td><a href={{ project_url + "/" + table.projectId }}>{{ table.projectId }}</a></td>
-  		<td><a href={{ project_url + "/" + table.projectId+ "/" + table.datasetId }}>{{ table.datasetId }}</a></td>
-        <td><a href={{ project_url + "/" + table.projectId + "/" + table.datasetId + "/" + table.tableId }}>{{ table.tableId }}</a></td>
+  		<td><a href={{ project_url + "/" + table.project_id }}>{{ table.project_id }}</a></td>
+  		<td><a href={{ project_url + "/" + table.project_id+ "/" + table.dataset_id }}>{{ table.dataset_id }}</a></td>
+        <td><a href={{ project_url + "/" + table.project_id + "/" + table.dataset_id + "/" + table.table_id }}>{{ table.table_id }}</a></td>
         </tr>
 {%- endfor %}	
 </table>

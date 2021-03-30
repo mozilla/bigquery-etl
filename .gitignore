@@ -4,6 +4,7 @@
 *.egg-info/
 .DS_Store
 .mypy_cache/
+.vscode/
 venv/
 target/
 

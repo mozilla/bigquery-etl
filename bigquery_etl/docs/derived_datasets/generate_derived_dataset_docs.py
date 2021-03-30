@@ -47,6 +47,7 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                     continue
                 dataset_name = root.split("/")[-1]
                 source_urls["Source Directory"] = f"{SOURCE_URL}/{root}"
+                referenced_tables = []
 
                 metadata = {}
                 if METADATA_FILE in files:

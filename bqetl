@@ -19,6 +19,8 @@ if [ "$CMD" == "bootstrap" ]; then
     fi
     venv/bin/pip install -r requirements.txt
     venv/bin/pip install -e .
+    echo "bqetl configured! It should now be ready for use."
+    exit 0
 fi
 
 if [ ! -d "venv" ]; then

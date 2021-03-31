@@ -133,11 +133,14 @@ fenix_flattened_searches AS (
     WHEN
       search.search_type = 'in-content'
     THEN
+      -- key format is engine.in-content.type.code
       SPLIT(search.key, '.')[SAFE_OFFSET(0)]
     WHEN
       search.search_type = 'ad-click' OR search.search_type = 'search-with-ads'
     THEN
-      search.key
+      -- ad-click key format is engine.in-content.type.code for builds starting 2021-03-16
+      -- otherwise key is engine
+      SPLIT(search.key, '.')[SAFE_OFFSET(0)]
     ELSE
       NULL
     END AS engine,
@@ -157,6 +160,14 @@ fenix_flattened_searches AS (
         STRPOS(search.key, '.') IN (0, LENGTH(search.key)),
         NULL,
         SUBSTR(search.key, STRPOS(search.key, '.') + 1)
+      )
+    WHEN
+      search.search_type = 'ad-click'
+    THEN
+      IF(
+        REGEXP_CONTAINS(search.key, '\\.'),
+        SUBSTR(search.key, STRPOS(search.key, '.') + 1),
+        search.search_type
       )
     ELSE
       search.search_type
@@ -220,6 +231,10 @@ combined_search_clients AS (
 
     CASE
     WHEN
+      search_type = 'ad-click'
+    THEN
+      IF(STARTS_WITH(source, 'in-content.organic'), 'ad-click-organic', search_type)
+    WHEN
       STARTS_WITH(source, 'in-content.sap.')
     THEN
       'tagged-sap'
@@ -269,6 +284,7 @@ unfiltered_search_clients AS (
     IF(search_count > 10000, NULL, source) AS source,
     app_name,
     normalized_app_name,
+    -- Filter out results with aggregated search count > 10000
     SUM(
       IF(search_type != 'sap' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS search_count,
@@ -284,6 +300,9 @@ unfiltered_search_clients AS (
     SUM(
       IF(search_type != 'ad-click' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS ad_click,
+    SUM(
+      IF(search_type != 'ad-click-organic' OR engine IS NULL OR search_count > 10000, 0, search_count)
+    ) AS ad_click_organic,
     SUM(
       IF(search_type != 'search-with-ads' OR engine IS NULL OR search_count > 10000, 0, search_count)
     ) AS search_with_ads,

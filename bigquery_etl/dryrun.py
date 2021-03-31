@@ -23,10 +23,10 @@ from typing import Set
 from urllib.request import Request, urlopen
 
 try:
-    from functools import cached_property
+    from functools import cached_property  # type: ignore
 except ImportError:
     # python 3.7 compatibility
-    from backports.cached_property import cached_property
+    from backports.cached_property import cached_property  # type: ignore
 
 
 SKIP = {

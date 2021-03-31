@@ -17,7 +17,10 @@ import re
 import sys
 from argparse import ArgumentParser
 from enum import Enum
-from functools import cached_property
+try:
+    from functools import cached_property
+except ImportError:
+    from backports.cached_property import cached_property
 from multiprocessing.pool import Pool
 from os.path import basename, dirname, exists, isdir
 from typing import Set

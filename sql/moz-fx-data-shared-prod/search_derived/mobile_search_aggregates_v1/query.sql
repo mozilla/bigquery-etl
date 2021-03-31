@@ -18,6 +18,7 @@ SELECT
   SUM(tagged_sap) AS tagged_sap,
   SUM(tagged_follow_on) AS tagged_follow_on,
   SUM(ad_click) AS ad_click,
+  SUM(ad_click_organic) AS ad_click_organic,
   SUM(search_with_ads) AS search_with_ads,
   SUM(unknown) AS unknown,
 FROM

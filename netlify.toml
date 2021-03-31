@@ -1,0 +1,5 @@
+[build]
+publish = "docs-output"
+command = """
+    ./script/generate_sql --sql-dir sql-output --target-project moz-fx-data-shared-prod
+"""

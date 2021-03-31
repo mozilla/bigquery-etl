@@ -1,7 +1,7 @@
 [build]
 publish = "docs-output"
 command = """
-    pip install importlib-metadata  # HACK: for python 3.7 support
+    mvn dependency:copy-dependencies
     ./script/generate_sql --sql-dir sql-output --target-project moz-fx-data-shared-prod
 """
 environment = { PYTHON_VERSION = "3.7" }

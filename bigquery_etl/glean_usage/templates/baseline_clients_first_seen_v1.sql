@@ -14,7 +14,6 @@ AS
 SELECT
   DATE(submission_timestamp) as submission_date,
   sample_id,
-  submission_timestamp,
   client_info.client_id
 FROM
   `{{ baseline_table }}`
@@ -26,7 +25,6 @@ WHERE
 WITH _current AS (
   SELECT
     sample_id,
-    submission_timestamp,
     client_info.client_id
   FROM
     `{{ baseline_table }}`

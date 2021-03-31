@@ -1,5 +1,4 @@
 [build]
-publish = "docs-output"
 command = """
     # Install Maven
     wget http://apache.mirrors.pair.com/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
@@ -9,5 +8,8 @@ command = """
     mvn dependency:copy-dependencies
     # Generate SQL
     ./script/generate_sql --sql-dir sql-output --target-project moz-fx-data-shared-prod
+    rm -r sql/ && cp -r sql-output/sql sql/
+    ./script/generate_docs --output_dir=build-output/
 """
 environment = { PYTHON_VERSION = "3.7" }
+publish = "build-output/"

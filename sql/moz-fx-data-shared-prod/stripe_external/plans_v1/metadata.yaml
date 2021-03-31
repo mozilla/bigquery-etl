@@ -13,8 +13,3 @@ scheduling:
   date_partition_parameter:
   parameters:
     - "date:DATE:{{ds}}"
-  depends_on:
-    - dag_name: stripe
-      task_id: stripe_import_events
-      schedule_interval: daily
-  referenced_tables: []

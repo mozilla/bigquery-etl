@@ -12,7 +12,9 @@ Built from bigquery-etl repo, [`dags/bqetl_main_summary.py`](https://github.com/
 
 #### Description
 
-General-purpose derived tables for analyzing usage of desktop Firefox. This is one of our highest-impact DAGs and should be handled carefully.
+General-purpose derived tables for analyzing usage of desktop Firefox.
+This is one of our highest-impact DAGs and should be handled carefully.
+
 #### Owner
 
 dthorn@mozilla.com
@@ -225,6 +227,25 @@ with DAG(
         dag=dag,
     )
 
+    telemetry_derived__events_1pct__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__events_1pct__v1",
+        destination_table="events_1pct_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        start_date=datetime.datetime(2020, 8, 1, 0, 0),
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+        dag=dag,
+    )
+
     telemetry_derived__firefox_desktop_usage__v1 = bigquery_etl_query(
         task_id="telemetry_derived__firefox_desktop_usage__v1",
         destination_table="firefox_desktop_usage_v1",
@@ -382,6 +403,9 @@ with DAG(
     telemetry_derived__clients_last_seen_joined__v1.set_upstream(
         telemetry_derived__clients_last_seen_event__v1
     )
+
+    telemetry_derived__events_1pct__v1.set_upstream(wait_for_bq_main_events)
+    telemetry_derived__events_1pct__v1.set_upstream(wait_for_event_events)
 
     telemetry_derived__firefox_desktop_usage__v1.set_upstream(
         firefox_desktop_exact_mau28_by_dimensions_v2

@@ -242,6 +242,8 @@ jobs:
       - *skip_forked_pr
       - *restore_venv_cache
       - *build
+      - *restore_mvn_cache
+      - *java_deps
       - attach_workspace:
           at: /tmp/generated-sql
       - run:

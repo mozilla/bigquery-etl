@@ -10,6 +10,14 @@ docs = """
 
 Built from bigquery-etl repo, [`dags/bqetl_stripe.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_stripe.py)
 
+#### Description
+
+Daily derived tables on top of data imported from Stripe.
+
+Depends on the `stripe` DAG which starts at midnight UTC;
+we allow 30 minutes for that DAG to complete before this one
+is scheduled to start.
+
 #### Owner
 
 dthorn@mozilla.com
@@ -29,7 +37,10 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_stripe", default_args=default_args, schedule_interval="@daily", doc_md=docs
+    "bqetl_stripe",
+    default_args=default_args,
+    schedule_interval="30 0 * * *",
+    doc_md=docs,
 ) as dag:
 
     stripe_derived__customers__v1 = bigquery_etl_query(
@@ -244,42 +255,36 @@ with DAG(
 
     stripe_derived__subscriptions__v1.set_upstream(stripe_external__subscriptions__v1)
 
-    wait_for_stripe_stripe_import_events = ExternalTaskSensor(
-        task_id="wait_for_stripe_stripe_import_events",
+    wait_for_stripe_import_events = ExternalTaskSensor(
+        task_id="wait_for_stripe_import_events",
         external_dag_id="stripe",
         external_task_id="stripe_import_events",
+        execution_delta=datetime.timedelta(seconds=1800),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-        dag=dag,
     )
 
-    stripe_external__charges__v1.set_upstream(wait_for_stripe_stripe_import_events)
+    stripe_external__charges__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__credit_notes__v1.set_upstream(wait_for_stripe_stripe_import_events)
+    stripe_external__credit_notes__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__customers__v1.set_upstream(wait_for_stripe_stripe_import_events)
+    stripe_external__customers__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__disputes__v1.set_upstream(wait_for_stripe_stripe_import_events)
+    stripe_external__disputes__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__invoices__v1.set_upstream(wait_for_stripe_stripe_import_events)
+    stripe_external__invoices__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__payment_intents__v1.set_upstream(
-        wait_for_stripe_stripe_import_events
-    )
+    stripe_external__payment_intents__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__payouts__v1.set_upstream(wait_for_stripe_stripe_import_events)
+    stripe_external__payouts__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__plans__v1.set_upstream(wait_for_stripe_stripe_import_events)
+    stripe_external__plans__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__prices__v1.set_upstream(wait_for_stripe_stripe_import_events)
+    stripe_external__prices__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__products__v1.set_upstream(wait_for_stripe_stripe_import_events)
+    stripe_external__products__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__setup_intents__v1.set_upstream(
-        wait_for_stripe_stripe_import_events
-    )
+    stripe_external__setup_intents__v1.set_upstream(wait_for_stripe_import_events)
 
-    stripe_external__subscriptions__v1.set_upstream(
-        wait_for_stripe_stripe_import_events
-    )
+    stripe_external__subscriptions__v1.set_upstream(wait_for_stripe_import_events)

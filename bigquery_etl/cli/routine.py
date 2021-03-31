@@ -9,6 +9,7 @@ from fnmatch import fnmatchcase
 from pathlib import Path
 
 import click
+import copy
 import pytest
 import yaml
 
@@ -86,7 +87,7 @@ def get_project_id(ctx, project_id=None):
     sys.exit(1)
 
 
-@click.group(help="Commands for managing routines.")
+@click.group(help="Commands for managing routines for internal use.")
 @click.pass_context
 def routine(ctx):
     """Create the CLI group for the routine command."""
@@ -94,7 +95,7 @@ def routine(ctx):
     ctx.obj["DEFAULT_PROJECT"] = "moz-fx-data-shared-prod"
 
 
-@click.group(help="Commands for managing mozfun routines.")
+@click.group(help="Commands for managing public mozfun routines.")
 @click.pass_context
 def mozfun(ctx):
     """Create the CLI group for the mozfun command."""
@@ -103,9 +104,23 @@ def mozfun(ctx):
 
 
 @routine.command(
-    help="Create a new routine. Specify whether the routine is a UDF or "
-    "stored procedure by adding a --udf or --stored_prodecure flag: "
-    "bqetl routine create <dataset>.<name> --udf"
+    help="""Create a new routine. Specify whether the routine is a UDF or
+    stored procedure by adding a --udf or --stored_prodecure flag.
+
+    Examples:
+
+    \b
+    # Create a UDF
+    ./bqetl routine create --udf udf.array_slice
+
+    \b
+    # Create a stored procedure
+    ./bqetl routine create --stored_procedure udf.events_daily
+
+    \b
+    # Create a UDF in a project other than shared-prod
+    ./bqetl routine create --udf udf.active_last_week --project=moz-fx-data-marketing-prod
+    """
 )
 @click.argument("name")
 @sql_dir_option
@@ -219,10 +234,40 @@ def create(ctx, name, sql_dir, project_id, udf, stored_procedure):
     )
 
 
-mozfun.add_command(create)
+mozfun.add_command(copy.copy(create))
+mozfun.commands[
+    "create"
+].help = """
+Create a new mozfun routine. Specify whether the routine is a UDF or
+stored procedure by adding a --udf or --stored_prodecure flag. UDFs
+are added to the `mozfun` project.
+
+Examples:
+
+\b
+# Create a UDF
+./bqetl mozfun create --udf bytes.zero_right
+
+\b
+# Create a stored procedure
+./bqetl mozfun create --stored_procedure event_analysis.events_daily
+"""
 
 
-@routine.command(help="Get routine information")
+@routine.command(
+    help="""Get routine information.
+
+    Examples:
+
+    \b
+    # Get information about all internal routines in a specific dataset
+    ./bqetl routine info udf.*
+
+    \b
+    # Get usage information of specific routine
+    ./bqetl routine info --usages udf.get_key
+    """
+)
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option
@@ -274,11 +319,36 @@ def info(ctx, name, sql_dir, project_id, usages):
         click.echo("")
 
 
-mozfun.add_command(info)
+mozfun.add_command(copy.copy(info))
+mozfun.commands[
+    "info"
+].help = """Get mozfun routine information.
+
+Examples:
+
+\b
+# Get information about all internal routines in a specific dataset
+./bqetl mozfun info hist.*
+
+\b
+# Get usage information of specific routine
+./bqetl mozfun info --usages hist.mean
+"""
 
 
 @routine.command(
-    help="Validate routines.",
+    help="""Validate formatting of routines and run tests.
+
+    Examples:
+
+    \b
+    # Validate all routines
+    ./bqetl routine validate
+
+    \b
+    # Validate selected routines
+    ./bqetl routine validate udf.*
+    """,
 )
 @click.argument("name", required=False)
 @sql_dir_option
@@ -299,11 +369,32 @@ def validate(ctx, name, sql_dir, project_id):
         pytest.main([str(routine_file.parent)])
 
 
-mozfun.add_command(validate)
+mozfun.add_command(copy.copy(validate))
+mozfun.commands[
+    "validate"
+].help = """Validate formatting of mozfun routines and run tests.
+
+Examples:
+
+\b
+# Validate all routines
+./bqetl mozfun validate
+
+\b
+# Validate selected routines
+./bqetl mozfun validate hist.*
+"""
 
 
 @routine.command(
-    help="Publish routines to BigQuery.",
+    help="""Publish routines to BigQuery. Requires service account access.
+
+    Examples:
+
+    \b
+    # Publish all routines
+    ./bqetl routine publish
+    """,
 )
 @click.argument("path", type=click.Path(file_okay=False), required=False)
 @project_id_option
@@ -351,11 +442,27 @@ def publish(ctx, path, project_id, dependency_dir, gcs_bucket, gcs_path):
             click.echo(f"Published routines to {project_id}")
 
 
-mozfun.add_command(publish)
+mozfun.add_command(copy.copy(publish))
+mozfun.commands[
+    "publish"
+].help = """Publish mozfun routines. This command is used
+by Airflow only."""
 
 
 @routine.command(
-    help="Rename routine or routine dataset.",
+    help="""Rename routine or routine dataset. Replaces all usages in queries with
+    the new name.
+
+    Examples:
+
+    \b
+    # Rename routine
+    ./bqetl routine rename udf.array_slice udf.list_slice
+
+    \b
+    # Rename routine matching a specific pattern
+    ./bqetl routine rename udf.array_* udf.list_*
+    """,
 )
 @click.argument("name", required=True)
 @click.argument("new_name", required=True)
@@ -421,4 +528,23 @@ def rename(ctx, name, new_name, sql_dir, project_id):
         click.echo(f"Renamed {old_full_routine_name} to {new_full_routine_name}")
 
 
-mozfun.add_command(rename)
+mozfun.add_command(copy.copy(rename))
+mozfun.commands[
+    "rename"
+].help = """Rename mozfun routine or mozfun routine dataset.
+Replaces all usages in queries with the new name.
+
+Examples:
+
+\b
+# Rename routine
+./bqetl mozfun rename hist.extract hist.ext
+
+\b
+# Rename routine matching a specific pattern
+./bqetl mozfun rename *.array_* *.list_*
+
+\b
+# Rename routine dataset
+./bqetl mozfun rename hist.* histogram.*
+"""

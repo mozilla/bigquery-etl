@@ -12,7 +12,8 @@ Built from bigquery-etl repo, [`dags/bqetl_internal_tooling.py`](https://github.
 
 #### Description
 
-This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression).
+This DAG schedules queries for populating queries related to Mozilla's
+internal developer tooling (e.g. mozregression).
 
 #### Owner
 

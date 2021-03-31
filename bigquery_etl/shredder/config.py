@@ -479,12 +479,25 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
         for table in tables
     ]
 
+    # Each derived deletion request view is a union of:
+    # * corresponding deletion_request table from the _stable dataset
+    # * uninstall_deletion pings from pioneer_core_stable dataset
+    derived_deletion_request_views = [
+        table
+        for tables in pool.map(client.list_tables, derived_datasets, chunksize=1)
+        for table in tables
+        if (table.table_type == "VIEW" and table.table_id == "deletion_requests")
+    ]
+
+    # There is a derived dataset for each stable one
+    # For simplicity when accessing this map later on, keys are changed to `_stable` here
     sources = {
-        table.dataset_id: DeleteSource(qualified_table_id(table), PIONEER_ID, project)
+        table.dataset_id.replace("_derived", "_stable"): DeleteSource(
+            qualified_table_id(table), PIONEER_ID, project
+        )
         # dict comprehension will only keep the last value for a given key, so
         # sort by table_id to use the latest version
-        for table in sorted(stable_tables, key=lambda t: t.table_id)
-        if table.table_id.startswith("deletion_request_")
+        for table in sorted(derived_deletion_request_views, key=lambda t: t.table_id)
     }
 
     # Dictionary mapping analysis dataset names to corresponding study names.

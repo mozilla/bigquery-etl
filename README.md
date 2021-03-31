@@ -47,6 +47,12 @@ Optionally, download java dependencies
 mvn dependency:copy-dependencies
 ```
 
+Finally, if you are using Visual Studio Code, you may also wish to use our recommended defaults:
+
+```bash
+cp .vscode/settings.json.default .vscode/settings.json
+```
+
 And you should now be set up to start working in the repo! The easiest way to do this is for many tasks is to use `bqetl`, which is described below.
 
 
@@ -88,6 +94,8 @@ Options:
   -i, --init            Create an init.sql file to initialize the table
   --help                Show this message and exit.
 ```
+
+Documentation of all `bqetl` commands including usage examples can be found in the [bigquery-etl docs](https://github.com/mozilla/bigquery-etl#the-bqetl-cli).
 
 Running some commands, for example to create or query tables, will [require access to Mozilla's GCP Account](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
 

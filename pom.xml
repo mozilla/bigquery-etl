@@ -6,7 +6,7 @@
     <artifactId>mozilla-pipeline-schemas</artifactId>
     <version>0.1-SNAPSHOT</version>
     <properties>
-        <zetasql.version>2021.02.1</zetasql.version>
+        <zetasql.version>2021.03.2</zetasql.version>
     </properties>
     <dependencies>
         <dependency>

@@ -12,7 +12,8 @@ Built from bigquery-etl repo, [`dags/bqetl_monitoring.py`](https://github.com/mo
 
 #### Description
 
-This DAG schedules queries and scripts for populating datasets used for monitoring of the data platform.
+This DAG schedules queries and scripts for populating datasets
+used for monitoring of the data platform.
 
 #### Owner
 

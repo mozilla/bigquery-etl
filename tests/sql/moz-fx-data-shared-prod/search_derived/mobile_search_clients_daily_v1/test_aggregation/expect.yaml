@@ -9,6 +9,7 @@
   tagged_sap: 0
   tagged_follow_on: 0
   ad_click: 0
+  ad_click_organic: 0
   search_with_ads: 0
   unknown: 0
   app_version: 68.2.1
@@ -174,6 +175,12 @@
   ad_click: 3
   total_uri_count: 23
 - <<: *new_field_base
+  engine: engine4
+  source: in-content.sap.code
+  search_count: 0
+  ad_click: 2
+  total_uri_count: 22
+- <<: *new_field_base
   engine: engine3
   source: search-with-ads
   search_count: 0
@@ -200,6 +207,12 @@
   source: in-content.sap-follow-on.none.ts
   search_count: 0
   tagged_follow_on: 3
+- <<: *new_field_base
+  engine: engine5
+  source: in-content.organic.none
+  search_count: 0
+  ad_click_organic: 3
+  total_uri_count: 22
 - <<: *base
   client_id: e
   channel: beta

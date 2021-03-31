@@ -102,6 +102,10 @@
           value: 3
         - key: engine4
           value: 2
+        - key: engine4.in-content.sap.code
+          value: 2
+        - key: engine5.in-content.organic.none
+          value: 3
       browser_search_with_ads:
         - key: engine3
           value: 1

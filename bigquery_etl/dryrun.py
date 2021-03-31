@@ -17,11 +17,17 @@ import re
 import sys
 from argparse import ArgumentParser
 from enum import Enum
-from functools import cached_property
 from multiprocessing.pool import Pool
 from os.path import basename, dirname, exists, isdir
 from typing import Set
 from urllib.request import Request, urlopen
+
+try:
+    from functools import cached_property  # type: ignore
+except ImportError:
+    # python 3.7 compatibility
+    from backports.cached_property import cached_property  # type: ignore
+
 
 SKIP = {
     # Access Denied

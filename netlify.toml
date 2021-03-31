@@ -9,7 +9,7 @@ command = """
     # Generate SQL
     ./script/generate_sql --sql-dir sql-output --target-project moz-fx-data-shared-prod
     rm -r sql/ && cp -r sql-output sql/
-    ./script/generate_docs --output_dir=build-output/
+    ./script/generate_docs --output_dir=build-output/site
 """
 environment = { PYTHON_VERSION = "3.7" }
 publish = "build-output/"

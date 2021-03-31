@@ -47,6 +47,12 @@ Optionally, download java dependencies
 mvn dependency:copy-dependencies
 ```
 
+Finally, if you are using Visual Studio Code, you may also wish to use our recommended defaults:
+
+```bash
+cp .vscode/settings.json.default .vscode/settings.json
+```
+
 And you should now be set up to start working in the repo! The easiest way to do this is for many tasks is to use `bqetl`, which is described below.
 
 

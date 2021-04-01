@@ -57,8 +57,9 @@ standard_args.add_table_filter(parser)
 
 TARGET_TABLE_ID = "baseline_clients_first_seen_v1"
 QUERY_FILENAME = f"{TARGET_TABLE_ID}.sql"
-VIEW_FILENAME = f"{TARGET_TABLE_ID[:-3]}.view.sql"
-VIEW_METADATA_FILENAME = f"{TARGET_TABLE_ID[:-3]}.metadata.yaml"
+# TODO: add in user facing view
+# VIEW_FILENAME = f"{TARGET_TABLE_ID[:-3]}.view.sql"
+# VIEW_METADATA_FILENAME = f"{TARGET_TABLE_ID[:-3]}.metadata.yaml"
 
 
 def main():
@@ -120,8 +121,9 @@ def run_query(
 
     query_sql = render(QUERY_FILENAME, **render_kwargs)
     init_sql = render(QUERY_FILENAME, init=True, **render_kwargs)
-    view_sql = render(VIEW_FILENAME, **render_kwargs)
-    view_metadata = render(VIEW_METADATA_FILENAME, format=False, **render_kwargs)
+    # TODO: render user facing views
+    # view_sql = render(VIEW_FILENAME, **render_kwargs)
+    # view_metadata = render(VIEW_METADATA_FILENAME, format=False, **render_kwargs)
     sql = query_sql
 
     if not (referenced_table_exists(view_sql)):
@@ -148,8 +150,9 @@ def run_query(
             logging.info(f"Running query for: {table_id}")
 
     if output_dir:
-        write_sql(output_dir, view_id, "metadata.yaml", view_metadata)
-        write_sql(output_dir, view_id, "view.sql", view_sql)
+        # TODO: write out user facing views
+        # write_sql(output_dir, view_id, "metadata.yaml", view_metadata)
+        # write_sql(output_dir, view_id, "view.sql", view_sql)
         write_sql(output_dir, table_id, "query.sql", query_sql)
         write_sql(output_dir, table_id, "init.sql", init_sql)
     if output_only:

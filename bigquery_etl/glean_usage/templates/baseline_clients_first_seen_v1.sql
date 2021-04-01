@@ -65,7 +65,7 @@ _current AS (
 ),
 {% else %}
 _current AS (
-  SELECT
+  SELECT DISTINCT
     @submission_date as submission_date,
     sample_id,
     client_info.client_id
@@ -73,25 +73,27 @@ _current AS (
     `{{ baseline_table }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
+    and client_info.client_id IS NOT NULL
 ),
 {% endif %}
-  --
+  -- query over all of history to see whether the client_id has shown up before
 _previous AS (
   SELECT
     *
   FROM
     `{{ first_seen_table }}`
   WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
+    submission_date < @submission_date
 )
   --
 SELECT
-  IF(_previous.client_id IS NOT NULL, _previous, _current).*
+  _current.*
 FROM
   _current
-FULL JOIN
+LEFT JOIN
   _previous
 USING
   (client_id)
+WHERE _previous.client_id IS NULL
 
 {% endif %}

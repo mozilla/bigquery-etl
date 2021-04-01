@@ -32,7 +32,7 @@ default_args = {
 }
 
 with DAG(
-    "bqetl_core", default_args=default_args, schedule_interval="0 2 * * *", doc_md=docs
+    "bqetl_core", default_args=default_args, schedule_interval="15 2 * * *", doc_md=docs
 ) as dag:
 
     telemetry_derived__core_clients_daily__v1 = bigquery_etl_query(
@@ -65,7 +65,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=4500),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

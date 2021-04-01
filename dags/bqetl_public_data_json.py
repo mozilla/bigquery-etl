@@ -92,7 +92,7 @@ with DAG(
         task_id="wait_for_telemetry_derived__ssl_ratios__v1",
         external_dag_id="bqetl_ssl_ratios",
         external_task_id="telemetry_derived__ssl_ratios__v1",
-        execution_delta=datetime.timedelta(seconds=10800),
+        execution_delta=datetime.timedelta(seconds=9900),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

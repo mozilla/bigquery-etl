@@ -15,7 +15,10 @@ bqetl_error_aggregates:
     depends_on_past: false
 
 bqetl_ssl_ratios:
-  schedule_interval: 0 2 * * *
+  # As of 2021-03-31, the copy_deduplicate DAG commonly finishes between
+  # 02:00 and 02:15, so we schedule DAGs that depend directly on copy_deduplicate
+  # to start at 02:15 UTC.
+  schedule_interval: 15 2 * * *
   description: The DAG schedules SSL ratios queries.
   default_args:
     owner: chutten@mozilla.com
@@ -41,7 +44,7 @@ bqetl_amo_stats:
     retry_delay: 30m
 
 bqetl_vrbrowser:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 0 4 * * *
   description: |
     Custom ETL based on Glean pings from Mozilla VR Browser.
   default_args:
@@ -57,7 +60,7 @@ bqetl_vrbrowser:
     retry_delay: 5m
 
 bqetl_core:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 15 2 * * *
   description:
     Tables derived from the legacy telemetry `core` ping sent by various
     mobile applications.
@@ -78,7 +81,7 @@ bqetl_nondesktop:
     retry_delay: 5m
 
 bqetl_mobile_search:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 15 2 * * *
   default_args:
     owner: bewu@mozilla.com
     start_date: "2019-07-25"
@@ -129,7 +132,7 @@ bqetl_gud:
     retry_delay: 5m
 
 bqetl_messaging_system:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 15 2 * * *
   description: |
     Daily aggregations on top of pings sent for the `messaging_system`
     namespace by desktop Firefox.
@@ -141,7 +144,7 @@ bqetl_messaging_system:
     retry_delay: 5m
 
 bqetl_activity_stream:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 15 2 * * *
   description: |
     Daily aggregations on top of pings sent for the `activity_stream`
     namespace by desktop Firefox. These are largely related to activity
@@ -188,7 +191,7 @@ bqetl_devtools:
     retry_delay: 30m
 
 bqetl_main_summary:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 15 2 * * *
   description: |
     General-purpose derived tables for analyzing usage of desktop Firefox.
     This is one of our highest-impact DAGs and should be handled carefully.
@@ -228,7 +231,7 @@ bqetl_document_sample:
     retry_delay: 30m
 
 bqetl_asn_aggregates:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 15 2 * * *
   description: The DAG schedules ASN aggregates queries.
   default_args:
     owner: ascholtz@mozilla.com
@@ -275,7 +278,7 @@ bqetl_deletion_request_volume:
     retry_delay: 30m
 
 bqetl_fenix_event_rollup:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 15 2 * * *
   default_args:
     owner: frank@mozilla.com
     start_date: "2020-09-09"
@@ -299,7 +302,7 @@ bqetl_stripe:
     retry_delay: 5m
 
 bqetl_org_mozilla_fenix_derived:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 15 2 * * *
   default_args:
     depends_on_past: false
     email:
@@ -327,7 +330,7 @@ bqetl_google_analytics_derived:
     retry_delay: 30m
 
 bqetl_monitoring:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 15 2 * * *
   description: |
     This DAG schedules queries and scripts for populating datasets
     used for monitoring of the data platform.

@@ -39,7 +39,7 @@ default_args = {
 with DAG(
     "bqetl_vrbrowser",
     default_args=default_args,
-    schedule_interval="0 2 * * *",
+    schedule_interval="0 4 * * *",
     doc_md=docs,
 ) as dag:
 
@@ -111,7 +111,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=3600),
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

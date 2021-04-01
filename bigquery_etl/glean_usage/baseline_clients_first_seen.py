@@ -113,7 +113,17 @@ def run_query(
     table_id = tables["first_seen_table"]
     view_id = tables["first_seen_view"]
     render_kwargs = dict(
-        header="-- Generated via bigquery_etl.glean_usage\n"
+        header="-- Generated via bigquery_etl.glean_usage\n",
+        fennec_id=any(
+            (app_id in baseline_table)
+            for app_id in [
+                "org_mozilla_firefox",
+                "org_mozilla_fenix_nightly",
+                "org_mozilla_fennec_aurora",
+                "org_mozilla_firefox_beta",
+                "org_mozilla_fenix",
+            ]
+        ),
     )
     render_kwargs.update(tables)
     job_kwargs = dict(use_legacy_sql=False, dry_run=dry_run)
@@ -126,9 +136,7 @@ def run_query(
 
     if not (referenced_table_exists(view_sql)):
         if output_only:
-            logging.info(
-                "Skipping view for table which doesn't exist:" f" {table_id}"
-            )
+            logging.info("Skipping view for table which doesn't exist:" f" {table_id}")
             return
         elif dry_run:
             logging.info(f"Table does not yet exist: {table_id}")

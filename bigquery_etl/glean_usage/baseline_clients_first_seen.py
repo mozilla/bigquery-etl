@@ -56,7 +56,8 @@ standard_args.add_table_filter(parser)
 
 
 TARGET_TABLE_ID = "baseline_clients_first_seen_v1"
-QUERY_FILENAME = f"{TARGET_TABLE_ID}.sql"
+INIT_FILENAME = f"{TARGET_TABLE_ID}.init.sql"
+QUERY_FILENAME = f"{TARGET_TABLE_ID}.query.sql"
 VIEW_FILENAME = f"{TARGET_TABLE_ID[:-3]}.view.sql"
 VIEW_METADATA_FILENAME = f"{TARGET_TABLE_ID[:-3]}.metadata.yaml"
 
@@ -129,7 +130,7 @@ def run_query(
     job_kwargs = dict(use_legacy_sql=False, dry_run=dry_run)
 
     query_sql = render(QUERY_FILENAME, **render_kwargs)
-    init_sql = render(QUERY_FILENAME, init=True, **render_kwargs)
+    init_sql = render(INIT_FILENAME, **render_kwargs)
     view_sql = render(VIEW_FILENAME, **render_kwargs)
     view_metadata = render(VIEW_METADATA_FILENAME, format=False, **render_kwargs)
     sql = query_sql
@@ -146,9 +147,9 @@ def run_query(
     elif output_only:
         pass
     else:
-        # Table exists, so we will run the incremental query.
+        # Table exists, so just overwrite the entire table with the day's results
         job_kwargs.update(
-            destination=f"{table_id}${date.strftime('%Y%m%d')}",
+            destination=table_id,
             write_disposition=WriteDisposition.WRITE_TRUNCATE,
             query_parameters=[ScalarQueryParameter("submission_date", "DATE", date)],
         )

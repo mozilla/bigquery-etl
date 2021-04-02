@@ -8,7 +8,7 @@ PARTITION BY
 CLUSTER BY
   sample_id
 OPTIONS
-  (require_partition_filter = TRUE)
+  (require_partition_filter = FALSE)
 AS
 WITH
   baseline AS (

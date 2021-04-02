@@ -34,28 +34,46 @@ _core_clients_first_seen AS (
   ON
     _fennec_id_lookup.fennec_client_id = _core.client_id
 ),
-_current AS (
-  SELECT
-    coalesce(first_seen_date, @submission_date) AS first_seen_date,
+_baseline AS (
+  -- extract the client_id into the top level for the `USING` clause
+  SELECT DISTINCT
     sample_id,
     client_info.client_id
   FROM
     `org_mozilla_fenix_stable.baseline_v1`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+),
+_current AS (
+  SELECT DISTINCT
+    coalesce(first_seen_date, @submission_date) AS first_seen_date,
+    sample_id,
+    client_id
+  FROM
+    _baseline
   LEFT JOIN
     _core_clients_first_seen
   USING
     (client_id)
-  WHERE
-    DATE(submission_timestamp) = @submission_date
 ),
-  -- query over all of history to see whether the client_id has shown up before
 _previous AS (
   SELECT
-    *
+    IF(
+      core IS NOT NULL
+      AND core.first_seen_date <= fs.first_seen_date,
+      core.first_seen_date,
+      fs.first_seen_date
+    ) AS first_seen_date,
+    sample_id,
+    client_id
   FROM
-    `org_mozilla_fenix_derived.baseline_clients_first_seen_v1`
+    `org_mozilla_fenix_derived.baseline_clients_first_seen_v1` fs
+  LEFT JOIN
+    _core_clients_first_seen core
+  USING
+    (client_id)
   WHERE
-    first_seen_date > "2010-01-01"
+    fs.first_seen_date > "2010-01-01"
 )
   --
 SELECT

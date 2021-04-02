@@ -52,6 +52,11 @@ PLACEHOLDER_DATE="2000-01-01"
     --output-dir "${SQL_DIR}/${TARGET_PROJECT}" \
     --output-only \
     --date="${PLACEHOLDER_DATE}"
+./script/run_glean_baseline_clients_first_seen \
+    --project-id "${TARGET_PROJECT}" \
+    --output-dir "${SQL_DIR}/${TARGET_PROJECT}" \
+    --output-only \
+    --date="${PLACEHOLDER_DATE}"
 
 # Record dependencies in yaml files
 ./script/bqetl dependency record "${SQL_DIR}"

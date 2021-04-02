@@ -1,0 +1,8 @@
+---
+- sample_id: 0
+  client_info:
+    client_id: updated-existing-instance
+  submission_timestamp: 2021-03-02T00:00:00
+  metrics:
+    uuid:
+      migration_telemetry_identifiers_fennec_client_id: updated-existing-instance

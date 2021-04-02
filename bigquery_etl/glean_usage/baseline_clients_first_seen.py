@@ -126,7 +126,11 @@ def run_query(
             ]
         ),
     )
-    render_kwargs.update(tables)
+    render_kwargs.update(
+        # Remove the project from the table name, which is implicit in the
+        # query. It also doesn't play well with tests.
+        {key: ".".join(table_id.split(".")[1:]) for key, table_id in tables.items()}
+    )
     job_kwargs = dict(use_legacy_sql=False, dry_run=dry_run)
 
     query_sql = render(QUERY_FILENAME, **render_kwargs)

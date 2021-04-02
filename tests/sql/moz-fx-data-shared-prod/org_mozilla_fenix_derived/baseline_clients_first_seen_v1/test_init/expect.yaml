@@ -1,0 +1,10 @@
+---
+- client_id: single-instance
+  first_seen_date: 2021-03-01
+  sample_id: 0
+- client_id: multiple-instances
+  first_seen_date: 2021-03-01
+  sample_id: 0
+- client_id: core-first-seen
+  first_seen_date: 2021-02-01
+  sample_id: 0

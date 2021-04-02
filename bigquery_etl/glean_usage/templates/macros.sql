@@ -12,6 +12,11 @@ _fennec_id_lookup AS (
     AND metrics.uuid.migration_telemetry_identifiers_fennec_client_id IS NOT NULL
   GROUP BY 1
 ),
+_core AS (
+  SELECT *
+  FROM `telemetry_derived.core_clients_first_seen_v1`
+  WHERE first_seen_date > "2010-01-01"
+),
 -- scanning this table is ~25GB
 _core_clients_first_seen AS (
   SELECT
@@ -20,7 +25,7 @@ _core_clients_first_seen AS (
   FROM
     _fennec_id_lookup
   JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.core_clients_first_seen_v1` core
-  ON _fennec_id_lookup.fennec_client_id = core.client_id
+     _core
+  ON _fennec_id_lookup.fennec_client_id = _core.client_id
 )
 {% endmacro %}

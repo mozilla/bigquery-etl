@@ -1,0 +1,8 @@
+---
+- sample_id: 0
+  client_info:
+    client_id: core-first-seen
+  submission_timestamp: 2021-03-01T00:00:00
+  metrics:
+    uuid:
+      migration_telemetry_identifiers_fennec_client_id: core-id

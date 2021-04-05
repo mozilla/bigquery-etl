@@ -1,7 +1,5 @@
 """Generating and run baseline_clients_daily queries for Glean apps."""
 import logging
-from argparse import ArgumentParser
-from datetime import datetime
 from functools import partial
 from multiprocessing.pool import ThreadPool
 
@@ -9,50 +7,13 @@ from google.cloud import bigquery
 from google.cloud.bigquery import ScalarQueryParameter, WriteDisposition
 
 from bigquery_etl.glean_usage.common import (
+    get_argument_parser,
     list_baseline_tables,
     referenced_table_exists,
     render,
     table_names_from_baseline,
     write_sql,
 )
-from bigquery_etl.util import standard_args  # noqa E402
-
-parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "--project_id",
-    "--project-id",
-    default="moz-fx-data-shar-nonprod-efed",
-    help="ID of the project in which to find tables",
-)
-parser.add_argument(
-    "--date",
-    required=True,
-    type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
-    help="Date partition to process, in format 2019-01-01",
-)
-parser.add_argument(
-    "--output_dir",
-    "--output-dir",
-    help="Also write the query text underneath the given sql dir",
-)
-parser.add_argument(
-    "--output_only",
-    "--output-only",
-    "--views_only",  # Deprecated name
-    "--views-only",  # Deprecated name
-    action="store_true",
-    help=(
-        "If set, we only write out sql to --output-dir and we skip"
-        " running the queries"
-    ),
-)
-standard_args.add_parallelism(parser)
-standard_args.add_dry_run(parser, debug_log_queries=False)
-standard_args.add_log_level(parser)
-standard_args.add_priority(parser)
-standard_args.add_billing_projects(parser)
-standard_args.add_table_filter(parser)
-
 
 BASELINE_DAILY_TABLE_ID = "baseline_clients_daily_v1"
 QUERY_FILENAME = f"{BASELINE_DAILY_TABLE_ID}.sql"
@@ -62,7 +23,7 @@ VIEW_METADATA_FILENAME = f"{BASELINE_DAILY_TABLE_ID[:-3]}.metadata.yaml"
 
 def main():
     """Generate and run queries based on CLI args."""
-    args = parser.parse_args()
+    args = get_argument_parser(__doc__)
 
     try:
         logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")

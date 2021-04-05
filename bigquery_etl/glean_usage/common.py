@@ -3,12 +3,15 @@
 import logging
 import os
 import re
+from argparse import ArgumentParser
+from datetime import datetime
 from pathlib import Path
 
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.util import standard_args  # noqa E402
 from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
 from bigquery_etl.view import generate_stable_views
 
@@ -104,3 +107,43 @@ def _contains_glob(patterns):
 def _extract_dataset_from_glob(pattern):
     # Assumes globs are in <dataset>.<table> form without a project specified.
     return pattern.split(".", 1)[0]
+
+
+def get_argument_parser(description):
+    """Get the argument parser for the shared glean usage queries."""
+    parser = ArgumentParser(description=description)
+    parser.add_argument(
+        "--project_id",
+        "--project-id",
+        default="moz-fx-data-shar-nonprod-efed",
+        help="ID of the project in which to find tables",
+    )
+    parser.add_argument(
+        "--date",
+        required=True,
+        type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
+        help="Date partition to process, in format 2019-01-01",
+    )
+    parser.add_argument(
+        "--output_dir",
+        "--output-dir",
+        help="Also write the query text underneath the given sql dir",
+    )
+    parser.add_argument(
+        "--output_only",
+        "--output-only",
+        "--views_only",  # Deprecated name
+        "--views-only",  # Deprecated name
+        action="store_true",
+        help=(
+            "If set, we only write out sql to --output-dir and we skip"
+            " running the queries"
+        ),
+    )
+    standard_args.add_parallelism(parser)
+    standard_args.add_dry_run(parser, debug_log_queries=False)
+    standard_args.add_log_level(parser)
+    standard_args.add_priority(parser)
+    standard_args.add_billing_projects(parser)
+    standard_args.add_table_filter(parser)
+    return parser.parse_args()

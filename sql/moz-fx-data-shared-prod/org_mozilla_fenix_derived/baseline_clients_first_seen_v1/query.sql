@@ -46,6 +46,7 @@ _baseline AS (
 ),
 _current AS (
   SELECT DISTINCT
+    @submission_date AS submission_date,
     coalesce(first_seen_date, @submission_date) AS first_seen_date,
     sample_id,
     client_id
@@ -58,6 +59,7 @@ _current AS (
 ),
 _previous AS (
   SELECT
+    fs.submission_date,
     IF(
       core IS NOT NULL
       AND core.first_seen_date <= fs.first_seen_date,

@@ -16,6 +16,7 @@ _baseline AS (
 ),
 _current AS (
   SELECT DISTINCT
+    @submission_date as submission_date,
     coalesce(first_seen_date, @submission_date) as first_seen_date,
     sample_id,
     client_id
@@ -28,6 +29,7 @@ _current AS (
 ),
 _previous AS (
   SELECT
+    fs.submission_date,
     IF(
       core IS NOT NULL AND core.first_seen_date <= fs.first_seen_date,
       core.first_seen_date,
@@ -47,6 +49,7 @@ _previous AS (
 {% else %}
 _current AS (
   SELECT DISTINCT
+    @submission_date as submission_date,
     @submission_date as first_seen_date,
     sample_id,
     client_info.client_id
@@ -59,6 +62,7 @@ _current AS (
   -- query over all of history to see whether the client_id has shown up before
 _previous AS (
   SELECT
+    submission_date,
     first_seen_date,
     sample_id,
     client_id

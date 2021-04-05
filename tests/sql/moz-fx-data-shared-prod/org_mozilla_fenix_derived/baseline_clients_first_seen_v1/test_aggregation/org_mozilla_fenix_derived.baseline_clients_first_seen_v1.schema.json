@@ -5,6 +5,10 @@
   },
   {
     "type": "DATE",
+    "name": "submission_date"
+  },
+  {
+    "type": "DATE",
     "name": "first_seen_date"
   },
   {

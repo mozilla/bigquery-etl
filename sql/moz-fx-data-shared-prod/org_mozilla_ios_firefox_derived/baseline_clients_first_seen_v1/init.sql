@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS
 PARTITION BY
   first_seen_date
 CLUSTER BY
-  sample_id
+  sample_id,
+  submission_date
 OPTIONS
   (require_partition_filter = FALSE)
 AS
@@ -12,6 +13,7 @@ WITH baseline AS (
   SELECT
     client_info.client_id,
     sample_id,
+    DATE(MIN(submission_timestamp)) AS submission_date,
     DATE(MIN(submission_timestamp)) AS first_seen_date,
   FROM
     `org_mozilla_ios_firefox_stable.baseline_v1`

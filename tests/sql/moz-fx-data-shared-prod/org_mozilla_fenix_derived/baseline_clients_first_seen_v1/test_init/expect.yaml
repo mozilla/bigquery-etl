@@ -1,10 +1,13 @@
 ---
 - client_id: single-instance
+  submission_date: 2021-03-01
   first_seen_date: 2021-03-01
   sample_id: 0
 - client_id: multiple-instances
+  submission_date: 2021-03-01
   first_seen_date: 2021-03-01
   sample_id: 0
 - client_id: core-first-seen
+  submission_date: 2021-03-01
   first_seen_date: 2021-02-01
   sample_id: 0

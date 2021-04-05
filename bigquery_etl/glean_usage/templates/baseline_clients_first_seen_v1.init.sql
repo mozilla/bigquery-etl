@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS
 PARTITION BY
   first_seen_date
 CLUSTER BY
-  sample_id
+  sample_id,
+  submission_date
 OPTIONS
   (require_partition_filter = FALSE)
 AS
@@ -15,6 +16,7 @@ WITH
     SELECT
       client_info.client_id,
       sample_id,
+      DATE(MIN(submission_timestamp)) as submission_date,
       DATE(MIN(submission_timestamp)) as first_seen_date,
     FROM
       `{{ baseline_table }}`
@@ -30,6 +32,7 @@ WITH
   {{ core_clients_first_seen(migration_table) }}
   SELECT
     client_id,
+    submission_date,
     COALESCE(core.first_seen_date, baseline.first_seen_date) as first_seen_date,
     sample_id
   FROM baseline

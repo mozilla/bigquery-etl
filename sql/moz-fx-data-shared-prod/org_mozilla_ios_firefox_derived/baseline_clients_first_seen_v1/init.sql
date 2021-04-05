@@ -11,15 +11,16 @@ AS
 WITH baseline AS (
   SELECT
     client_info.client_id,
+    sample_id,
     DATE(MIN(submission_timestamp)) AS first_seen_date,
-    MIN(sample_id) AS sample_id
   FROM
     `org_mozilla_ios_firefox_stable.baseline_v1`
     -- initialize by looking over all of history
   WHERE
     DATE(submission_timestamp) > "2010-01-01"
   GROUP BY
-    client_id
+    client_id,
+    sample_id
 )
 SELECT
   *

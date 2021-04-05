@@ -5,7 +5,7 @@ friendly_name: Baseline Clients First Seen
 description: |-
   Captures the earliest server timestamp that we observe a particular client.
 
-  Clustering fields: `normalized_channel`, `sample_id`
+  Clustering fields: `sample_id`
 
   See also: `baseline_clients_daily` and `baseline_clients_last_seen`.
 owners:

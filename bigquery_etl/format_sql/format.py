@@ -12,11 +12,7 @@ SKIP = {
     # files that existed before we started to enforce this script
     *glob.glob("bigquery_etl/glam/templates/*.sql"),
     *glob.glob("bigquery_etl/events_daily/query_templates/**/*.sql"),
-    "bigquery_etl/glean_usage/templates/baseline_clients_daily.view.sql",
-    "bigquery_etl/glean_usage/templates/baseline_clients_daily_v1.sql",
-    "bigquery_etl/glean_usage/templates/baseline_clients_last_seen.view.sql",
-    "bigquery_etl/glean_usage/templates/baseline_clients_last_seen_v1.sql",
-    "sql/moz-fx-data-shared-prod/telemetry/experiments_aggregates_v1/view.sql",
+    *glob.glob("bigquery_etl/glean_usage/templates/*.sql"),
     "sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql",

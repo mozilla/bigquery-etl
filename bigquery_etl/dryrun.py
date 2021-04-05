@@ -178,6 +178,12 @@ SKIP = {
     # Query templates
     "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501
+    # Temporary table does not exist
+    # TODO: remove this in a follow up PR
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/*/baseline_clients_first_seen_v1/*.sql",
+        recursive=True,
+    ),
 }
 
 

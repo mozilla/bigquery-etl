@@ -81,10 +81,13 @@ def table_names_from_baseline(baseline_table):
     prefix = re.sub(r"_stable\..+", "", baseline_table)
     return dict(
         baseline_table=baseline_table,
+        migration_table=f"{prefix}_stable.migration_v1",
         daily_table=f"{prefix}_derived.baseline_clients_daily_v1",
         last_seen_table=f"{prefix}_derived.baseline_clients_last_seen_v1",
+        first_seen_table=f"{prefix}_derived.baseline_clients_first_seen_v1",
         daily_view=f"{prefix}.baseline_clients_daily",
         last_seen_view=f"{prefix}.baseline_clients_last_seen",
+        first_seen_view=f"{prefix}.baseline_clients_first_seen",
     )
 
 

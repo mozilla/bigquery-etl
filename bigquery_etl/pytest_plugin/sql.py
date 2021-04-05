@@ -20,6 +20,7 @@ from .sql_test import (
     load_views,
     print_and_test,
     read,
+    default_encoding,
 )
 
 expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}
@@ -176,7 +177,22 @@ class SqlTest(pytest.Item, pytest.File):
                 job = bq.query(query, job_config=job_config)
 
             result = list(coerce_result(*job.result()))
-            result.sort(key=lambda row: json.dumps(row, sort_keys=True))
-            expect.sort(key=lambda row: json.dumps(row, sort_keys=True))
+            result.sort(
+                key=lambda row: json.dumps(
+                    row, sort_keys=True, default=default_encoding
+                )
+            )
+            # make sure we encode dates correctly
+            expect = json.loads(
+                json.dumps(
+                    sorted(
+                        expect,
+                        key=lambda row: json.dumps(
+                            row, sort_keys=True, default=default_encoding
+                        ),
+                    ),
+                    default=default_encoding,
+                )
+            )
 
             print_and_test(expect, result)

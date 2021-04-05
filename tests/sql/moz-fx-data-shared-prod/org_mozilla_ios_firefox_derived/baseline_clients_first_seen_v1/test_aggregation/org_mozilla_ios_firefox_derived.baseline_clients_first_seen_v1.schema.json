@@ -1,0 +1,20 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "DATE",
+    "name": "submission_date"
+  },
+  {
+    "type": "DATE",
+    "name": "first_seen_date"
+  },
+  {
+    "description": "Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99",
+    "type": "INTEGER",
+    "name": "sample_id",
+    "mode": "NULLABLE"
+  }
+]

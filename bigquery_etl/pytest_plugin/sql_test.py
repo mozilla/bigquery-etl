@@ -100,6 +100,13 @@ def dataset(bq: bigquery.Client, dataset_id: str):
         bq.delete_dataset(dataset_id, delete_contents=True)
 
 
+def default_encoding(obj):
+    """Add custom logic for serializing rows into JSON for BigQuery."""
+    if isinstance(obj, date) or isinstance(obj, datetime):
+        return obj.isoformat()
+    return obj
+
+
 def load_tables(
     bq: bigquery.Client, dataset: bigquery.Dataset, tables: Iterable[Table]
 ):
@@ -132,13 +139,18 @@ def load_tables(
         else:
             file_obj = BytesIO()
             for row in load(*table.source_path):
-                file_obj.write(json.dumps(row).encode() + b"\n")
+                file_obj.write(
+                    json.dumps(row, default=default_encoding).encode() + b"\n"
+                )
             file_obj.seek(0)
             job = bq.load_table_from_file(file_obj, destination, job_config=job_config)
 
         try:
             job.result()
         except BadRequest:
+            # print the first 5 rows for debugging errors
+            for row in job.errors[:5]:
+                print(row)
             raise
 
 

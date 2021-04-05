@@ -1,0 +1,5 @@
+---
+- sample_id: 0
+  client_info:
+    client_id: new-instance
+  submission_timestamp: 2021-03-02T00:00:00

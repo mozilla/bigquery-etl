@@ -1,15 +1,12 @@
 """Generate and run baseline_clients_first_seen queries for Glean apps."""
 
 import logging
-from functools import partial
-from multiprocessing.pool import ThreadPool
 
 from google.cloud import bigquery
 from google.cloud.bigquery import ScalarQueryParameter, WriteDisposition
 
 from bigquery_etl.glean_usage.common import (
-    get_argument_parser,
-    list_baseline_tables,
+    generate_and_run_query,
     referenced_table_exists,
     render,
     table_names_from_baseline,
@@ -25,45 +22,7 @@ VIEW_METADATA_FILENAME = f"{TARGET_TABLE_ID[:-3]}.metadata.yaml"
 
 def main():
     """Generate and run queries based on CLI args."""
-    args = get_argument_parser(__doc__)
-
-    try:
-        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
-    except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
-
-    baseline_tables = list_baseline_tables(
-        project_id=args.project_id,
-        only_tables=getattr(args, "only_tables", None),
-        table_filter=args.table_filter,
-    )
-
-    with ThreadPool(args.parallelism) as pool:
-        # Do a first pass with dry_run=True so we don't end up with a partial success;
-        # we also write out queries in this pass if so configured.
-        pool.map(
-            partial(
-                run_query,
-                args.project_id,
-                date=args.date,
-                dry_run=True,
-                output_dir=args.output_dir,
-                output_only=args.output_only,
-            ),
-            baseline_tables,
-        )
-        if args.output_only:
-            return
-        logging.info(
-            f"Dry runs successful for {len(baseline_tables)}"
-            " baseline_clients_first_seen table(s)"
-        )
-        # Now, actually run the queries.
-        if not args.dry_run:
-            pool.map(
-                partial(run_query, args.project_id, date=args.date, dry_run=False),
-                baseline_tables,
-            )
+    generate_and_run_query(run_query, __doc__)
 
 
 def run_query(

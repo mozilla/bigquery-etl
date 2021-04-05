@@ -5,6 +5,8 @@ import os
 import re
 from argparse import ArgumentParser
 from datetime import datetime
+from functools import partial
+from multiprocessing.pool import ThreadPool
 from pathlib import Path
 
 from jinja2 import Environment, PackageLoader
@@ -146,4 +148,46 @@ def get_argument_parser(description):
     standard_args.add_priority(parser)
     standard_args.add_billing_projects(parser)
     standard_args.add_table_filter(parser)
-    return parser.parse_args()
+    return parser
+
+
+def generate_and_run_query(run_query_callback, description):
+    parser = get_argument_parser(description)
+    args = parser.parse_args()
+
+    try:
+        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
+    except ValueError as e:
+        parser.error(f"argument --log-level: {e}")
+
+    baseline_tables = list_baseline_tables(
+        project_id=args.project_id,
+        only_tables=getattr(args, "only_tables", None),
+        table_filter=args.table_filter,
+    )
+
+    with ThreadPool(args.parallelism) as pool:
+        # Do a first pass with dry_run=True so we don't end up with a partial success;
+        # we also write out queries in this pass if so configured.
+        pool.map(
+            partial(
+                run_query_callback,
+                args.project_id,
+                date=args.date,
+                dry_run=True,
+                output_dir=args.output_dir,
+                output_only=args.output_only,
+            ),
+            baseline_tables,
+        )
+        if args.output_only:
+            return
+        logging.info(f"Dry runs successful for {len(baseline_tables)} table(s)")
+        # Now, actually run the queries.
+        if not args.dry_run:
+            pool.map(
+                partial(
+                    run_query_callback, args.project_id, date=args.date, dry_run=False
+                ),
+                baseline_tables,
+            )

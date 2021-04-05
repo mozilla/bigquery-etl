@@ -3,7 +3,7 @@
 
 friendly_name: Baseline Clients First Seen
 description: |-
-  Captures the earliest server timestamp that we observe a particular client.
+  Captures the earliest server date that we observe a particular client.
 
   Clustering fields: `sample_id`
 

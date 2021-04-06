@@ -10,7 +10,7 @@ AS
   '''
   function sample_to_bucket_index(sample) {
     // Get the index of the sample
-    // https://github.com/mozilla/glean/blob/master/glean-core/src/histogram/functional.rs
+    // https://github.com/mozilla/glean/blob/main/glean-core/src/histogram/functional.rs
     let exponent = Math.pow(log_base, 1.0/buckets_per_magnitude);
     return Math.ceil(Math.log(sample + 1) / Math.log(exponent));
   }

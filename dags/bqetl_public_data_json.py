@@ -1,4 +1,4 @@
-# Generated via https://github.com/mozilla/bigquery-etl/blob/master/bigquery_etl/query_scheduling/generate_airflow_dags.py
+# Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
 from airflow.operators.sensors import ExternalTaskSensor
@@ -9,7 +9,7 @@ from utils.gcp import gke_command
 docs = """
 ### bqetl_public_data_json
 
-Built from bigquery-etl repo, [`dags/bqetl_public_data_json.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_public_data_json.py)
+Built from bigquery-etl repo, [`dags/bqetl_public_data_json.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_public_data_json.py)
 
 #### Description
 

@@ -409,7 +409,7 @@ Tests
 
 [See the documentation in tests/](tests/README.md)
 
-[script/generate_incremental_table]: https://github.com/mozilla/bigquery-etl/blob/master/script/generate_incremental_table
+[script/generate_incremental_table]: https://github.com/mozilla/bigquery-etl/blob/main/script/generate_incremental_table
 [expression subqueries]: https://cloud.google.com/bigquery/docs/reference/standard-sql/expression_subqueries
 [dags.utils.gcp.bigquery_etl_query]: https://github.com/mozilla/telemetry-airflow/blob/89a6dc3/dags/utils/gcp.py#L364
 [dags.main_summary.exact_mau28_by_dimensions]: https://github.com/mozilla/telemetry-airflow/blob/89a6dc3/dags/main_summary.py#L385-L390

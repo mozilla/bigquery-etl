@@ -12,7 +12,7 @@ In this case, we want to create a simple table of aggregated metrics related to 
 
 ## Initial steps
 
-Set up bigquery-etl on your system per the instructions in the [README.md](https://github.com/mozilla/bigquery-etl/blob/master/README.md).
+Set up bigquery-etl on your system per the instructions in the [README.md](https://github.com/mozilla/bigquery-etl/blob/main/README.md).
 
 ## Create the Query
 

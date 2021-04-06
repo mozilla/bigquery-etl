@@ -192,7 +192,7 @@ SELECT
   udf.extract_histogram_sum(mozfun.map.get_key(payload.keyed_histograms.subprocess_kill_hard, 'ShutDownKill')) AS shutdown_kill,
   -- format:on
   ARRAY_LENGTH(environment.addons.active_addons) AS active_addons_count,
-  -- See https://github.com/mozilla-services/data-pipeline/blob/master/hindsight/modules/fx/ping.lua#L82
+  -- See https://github.com/mozilla-services/data-pipeline/blob/main/hindsight/modules/fx/ping.lua#L82
   (
     SELECT
       version

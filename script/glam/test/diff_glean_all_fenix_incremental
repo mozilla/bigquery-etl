@@ -20,7 +20,7 @@ function generate() {
 }
 
 head=${1-HEAD}
-base=${2:-master}
+base=${2:-main}
 result=glean_all_fenix_incremental_diff
 
 root=$(git rev-parse --show-toplevel)

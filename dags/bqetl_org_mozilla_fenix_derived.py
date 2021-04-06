@@ -1,4 +1,4 @@
-# Generated via https://github.com/mozilla/bigquery-etl/blob/master/bigquery_etl/query_scheduling/generate_airflow_dags.py
+# Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
 from airflow.operators.sensors import ExternalTaskSensor
@@ -8,7 +8,7 @@ from utils.gcp import bigquery_etl_query, gke_command
 docs = """
 ### bqetl_org_mozilla_fenix_derived
 
-Built from bigquery-etl repo, [`dags/bqetl_org_mozilla_fenix_derived.py`](https://github.com/mozilla/bigquery-etl/blob/master/dags/bqetl_org_mozilla_fenix_derived.py)
+Built from bigquery-etl repo, [`dags/bqetl_org_mozilla_fenix_derived.py`](https://github.com/mozilla/bigquery-etl/blob/main/dags/bqetl_org_mozilla_fenix_derived.py)
 
 #### Owner
 

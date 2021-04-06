@@ -12,6 +12,9 @@ scripts=(
     "run_glean_baseline_clients_last_seen"
 )
 
+# kill all children in the case when we kill the parent script
+# https://stackoverflow.com/a/360275
+trap "jobs -p | xargs -r kill" EXIT
 for script in ${scripts[@]}; do
     echo "running $script"
     ./script/$script \
@@ -19,15 +22,17 @@ for script in ${scripts[@]}; do
         --date 2021-03-01 \
         --only 'org_mozilla_fenix_stable.baseline_v1' \
         --output-dir sql/moz-fx-data-shared-prod/ \
-        --dry-run
+        --dry-run &
 
     ./script/$script \
         --project-id moz-fx-data-shared-prod \
         --date 2021-03-01 \
         --only 'org_mozilla_ios_firefox_stable.baseline_v1' \
         --output-dir sql/moz-fx-data-shared-prod/ \
-        --dry-run
+        --dry-run &
 done
+wait
+trap - EXIT
 
 # remove some views that can't be tested and are useless checked in
 rm -r sql/moz-fx-data-shared-prod/org_mozilla_fenix/baseline_clients_first_seen

@@ -67,7 +67,16 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                     for referenced_table in extract_table_references(
                         view_file.read_text()
                     ):
-                        [project_id, dataset_id, table_id] = referenced_table.split(".")
+                        table_split = referenced_table.split(".")
+                        if len(table_split) == 2:
+                            # missing project ID, retrieve from file path
+                            [dataset_id, table_id] = table_split
+                            project_id = view_file.parent.parent.parent.name
+                        elif len(table_split) == 3:
+                            [project_id, dataset_id, table_id] = table_split
+                        else:
+                            continue
+
                         referenced_tables.append(
                             {
                                 "project_id": project_id,

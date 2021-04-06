@@ -1514,7 +1514,7 @@
 <p>While in some ways mozregression might seem dissimilar from, say, Firefox most of the concepts illustrated here will apply straightforwardly to the products we ship to customers which use (or will use) the Glean SDK.</p>
 <p>In this case, we want to create a simple table of aggregated metrics related to mozregression's use that we can use to power dashboards (to prioritize feature development internally inside Mozilla), as well as syndication as a <a href="https://blog.mozilla.org/data/2020/09/25/data-publishing-mozilla/">public dataset</a>.</p>
 <h2 id="initial-steps">Initial steps</h2>
-<p>Set up bigquery-etl on your system per the instructions in the <a href="https://github.com/mozilla/bigquery-etl/blob/master/README.md">README.md</a>.</p>
+<p>Set up bigquery-etl on your system per the instructions in the <a href="https://github.com/mozilla/bigquery-etl/blob/main/README.md">README.md</a>.</p>
 <h2 id="create-the-query">Create the Query</h2>
 <p>First, you'll need to create a query file to work off of. For this step, you'll need to know what you want your derived dataset to be called. In this case, we'll name it <code>org_mozilla_mozregression_derived.mozregression_aggregates</code>.</p>
 <p>The <code>org_mozilla_mozregression_derived</code> part represents a <em>BigQuery dataset</em> (a concept that is essentially a container of tables). By convention, we use the <code>_derived</code> postfix to hold derived tables like this one.</p>

@@ -35,8 +35,9 @@ def run_query(
     view_id = tables["first_seen_view"]
     render_kwargs = dict(
         header="-- Generated via bigquery_etl.glean_usage\n",
+        # do not match on org_mozilla_firefoxreality
         fennec_id=any(
-            (app_id in baseline_table)
+            (f"{app_id}_stable" in baseline_table)
             for app_id in [
                 "org_mozilla_firefox",
                 "org_mozilla_fenix_nightly",

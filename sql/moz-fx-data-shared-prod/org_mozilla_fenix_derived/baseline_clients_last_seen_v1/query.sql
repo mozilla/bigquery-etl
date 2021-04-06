@@ -10,7 +10,7 @@ WITH _current AS (
     ) AS days_created_profile_bits,
     * EXCEPT (submission_date)
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_derived.baseline_clients_daily_v1`
+    `org_mozilla_fenix_derived.baseline_clients_daily_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -19,7 +19,7 @@ _previous AS (
   SELECT
     * EXCEPT (submission_date)
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_derived.baseline_clients_last_seen_v1`
+    `org_mozilla_fenix_derived.baseline_clients_last_seen_v1`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

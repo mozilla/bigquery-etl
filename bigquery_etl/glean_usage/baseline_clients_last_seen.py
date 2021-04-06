@@ -29,7 +29,7 @@ def run_query(
     project_id, baseline_table, date, dry_run, output_dir=None, output_only=False
 ):
     """Process a single table, potentially also writing out the generated queries."""
-    tables = table_names_from_baseline(baseline_table)
+    tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
     last_seen_table = tables["last_seen_table"]
     last_seen_view = tables["last_seen_view"]
@@ -61,7 +61,7 @@ def run_query(
     else:
         # Table exists, so we will run the incremental query.
         job_kwargs.update(
-            destination=f"{last_seen_table}${date.strftime('%Y%m%d')}",
+            destination=f"{project_id}.{last_seen_table}${date.strftime('%Y%m%d')}",
             write_disposition=WriteDisposition.WRITE_TRUNCATE,
             query_parameters=[ScalarQueryParameter("submission_date", "DATE", date)],
         )

@@ -29,7 +29,7 @@ def run_query(
     project_id, baseline_table, date, dry_run, output_dir=None, output_only=False
 ):
     """Process a single table, potentially also writing out the generated queries."""
-    tables = table_names_from_baseline(baseline_table)
+    tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
     table_id = tables["first_seen_table"]
     view_id = tables["first_seen_view"]
@@ -47,11 +47,7 @@ def run_query(
             ]
         ),
     )
-    render_kwargs.update(
-        # Remove the project from the table name, which is implicit in the
-        # query. It also doesn't play well with tests.
-        {key: ".".join(table_id.split(".")[1:]) for key, table_id in tables.items()}
-    )
+    render_kwargs.update(tables)
     job_kwargs = dict(use_legacy_sql=False, dry_run=dry_run)
 
     query_sql = render(QUERY_FILENAME, **render_kwargs)

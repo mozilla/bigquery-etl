@@ -85,7 +85,7 @@ class TaskRef:
 
 
 # Know tasks in telemetry-airflow, like stable table tasks
-# https://github.com/mozilla/telemetry-airflow/blob/master/dags/copy_deduplicate.py
+# https://github.com/mozilla/telemetry-airflow/blob/main/dags/copy_deduplicate.py
 EXTERNAL_TASKS = {
     TaskRef(
         dag_name="copy_deduplicate",

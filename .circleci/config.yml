@@ -137,7 +137,7 @@ jobs:
           key: *mvn_cache_key
   validate-dags:
     # based on
-    # https://github.com/mozilla/telemetry-airflow/blob/master/.circleci/config.yml
+    # https://github.com/mozilla/telemetry-airflow/blob/main/.circleci/config.yml
     machine:
       image: ubuntu-1604:201903-01
       docker_layer_caching: true

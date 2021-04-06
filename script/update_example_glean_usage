@@ -16,21 +16,23 @@ scripts=(
 # https://stackoverflow.com/a/360275
 trap "jobs -p | xargs -r kill" EXIT
 for script in ${scripts[@]}; do
-    echo "running $script"
+    echo "running $script for fenix nightly"
     ./script/$script \
         --project-id moz-fx-data-shared-prod \
         --date 2021-03-01 \
         --only 'org_mozilla_fenix_stable.baseline_v1' \
         --output-dir sql/moz-fx-data-shared-prod/ \
         --dry-run &
-
-    ./script/$script \
-        --project-id moz-fx-data-shared-prod \
-        --date 2021-03-01 \
-        --only 'org_mozilla_ios_firefox_stable.baseline_v1' \
-        --output-dir sql/moz-fx-data-shared-prod/ \
-        --dry-run &
 done
+
+echo "running run_glean_baseline_clients_first_seen for ios"
+./script/run_glean_baseline_clients_first_seen \
+    --project-id moz-fx-data-shared-prod \
+    --date 2021-03-01 \
+    --only 'org_mozilla_ios_firefox_stable.baseline_v1' \
+    --output-dir sql/moz-fx-data-shared-prod/ \
+    --dry-run &
+
 wait
 trap - EXIT
 

@@ -1,59 +1,17 @@
 """Generate and run baseline_clients_last_seen queries for Glean apps."""
 
 import logging
-from argparse import ArgumentParser
-from datetime import datetime
-from functools import partial
-from multiprocessing.pool import ThreadPool
 
 from google.cloud import bigquery
 from google.cloud.bigquery import ScalarQueryParameter, WriteDisposition
 
 from bigquery_etl.glean_usage.common import (
-    list_baseline_tables,
+    generate_and_run_query,
     referenced_table_exists,
     render,
     table_names_from_baseline,
     write_sql,
 )
-from bigquery_etl.util import standard_args  # noqa E402
-
-parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "--project_id",
-    "--project-id",
-    default="moz-fx-data-shar-nonprod-efed",
-    help="ID of the project in which to find tables",
-)
-parser.add_argument(
-    "--date",
-    required=True,
-    type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
-    help="Date partition to process, in format 2019-01-01",
-)
-parser.add_argument(
-    "--output_dir",
-    "--output-dir",
-    help="Also write the query text underneath the given sql dir",
-)
-parser.add_argument(
-    "--output_only",
-    "--output-only",
-    "--views_only",  # Deprecated name
-    "--views-only",  # Deprecated name
-    action="store_true",
-    help=(
-        "If set, we only write out sql to --output-dir and we skip"
-        " running the queries"
-    ),
-)
-standard_args.add_parallelism(parser)
-standard_args.add_dry_run(parser, debug_log_queries=False)
-standard_args.add_log_level(parser)
-standard_args.add_priority(parser)
-standard_args.add_billing_projects(parser)
-standard_args.add_table_filter(parser)
-
 
 TARGET_TABLE_ID = "baseline_clients_last_seen_v1"
 QUERY_FILENAME = f"{TARGET_TABLE_ID}.sql"
@@ -64,45 +22,7 @@ USAGE_TYPES = ("seen", "created_profile", "seen_session_start", "seen_session_en
 
 def main():
     """Generate and run queries based on CLI args."""
-    args = parser.parse_args()
-
-    try:
-        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
-    except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
-
-    baseline_tables = list_baseline_tables(
-        project_id=args.project_id,
-        only_tables=getattr(args, "only_tables", None),
-        table_filter=args.table_filter,
-    )
-
-    with ThreadPool(args.parallelism) as pool:
-        # Do a first pass with dry_run=True so we don't end up with a partial success;
-        # we also write out queries in this pass if so configured.
-        pool.map(
-            partial(
-                run_query,
-                args.project_id,
-                date=args.date,
-                dry_run=True,
-                output_dir=args.output_dir,
-                output_only=args.output_only,
-            ),
-            baseline_tables,
-        )
-        if args.output_only:
-            return
-        logging.info(
-            f"Dry runs successful for {len(baseline_tables)}"
-            " baseline_clients_last_seen table(s)"
-        )
-        # Now, actually run the queries.
-        if not args.dry_run:
-            pool.map(
-                partial(run_query, args.project_id, date=args.date, dry_run=False),
-                baseline_tables,
-            )
+    generate_and_run_query(run_query, __doc__)
 
 
 def run_query(

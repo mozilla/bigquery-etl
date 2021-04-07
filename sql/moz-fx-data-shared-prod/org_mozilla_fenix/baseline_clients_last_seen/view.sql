@@ -15,4 +15,4 @@ SELECT
   ) AS days_since_seen_session_end,
   *
 FROM
-  `org_mozilla_fenix_derived.baseline_clients_last_seen_v1`
+  `moz-fx-data-shared-prod.org_mozilla_fenix_derived.baseline_clients_last_seen_v1`

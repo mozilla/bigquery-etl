@@ -5,4 +5,4 @@ AS
 SELECT
   *
 FROM
-  `org_mozilla_fenix_derived.baseline_clients_daily_v1`
+  `moz-fx-data-shared-prod.org_mozilla_fenix_derived.baseline_clients_daily_v1`

@@ -6,4 +6,4 @@ AS
 SELECT
   *
 FROM
-  `{{ first_seen_table }}`
+  `{{ project_id }}.{{ first_seen_table }}`

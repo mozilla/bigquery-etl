@@ -35,6 +35,7 @@ def run_query(
     view_id = tables["first_seen_view"]
     render_kwargs = dict(
         header="-- Generated via bigquery_etl.glean_usage\n",
+        project_id=project_id,
         # do not match on org_mozilla_firefoxreality
         fennec_id=any(
             (f"{app_id}_stable" in baseline_table)
@@ -70,7 +71,7 @@ def run_query(
     else:
         # Table exists, so just overwrite the entire table with the day's results
         job_kwargs.update(
-            destination=table_id,
+            destination=f"{project_id}.{table_id}",
             write_disposition=WriteDisposition.WRITE_TRUNCATE,
             query_parameters=[ScalarQueryParameter("submission_date", "DATE", date)],
         )

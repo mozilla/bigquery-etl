@@ -34,7 +34,9 @@ def run_query(
     last_seen_table = tables["last_seen_table"]
     last_seen_view = tables["last_seen_view"]
     render_kwargs = dict(
-        header="-- Generated via bigquery_etl.glean_usage\n", usage_types=USAGE_TYPES
+        header="-- Generated via bigquery_etl.glean_usage\n",
+        project_id=project_id,
+        usage_types=USAGE_TYPES,
     )
     render_kwargs.update(tables)
     job_kwargs = dict(use_legacy_sql=False, dry_run=dry_run)

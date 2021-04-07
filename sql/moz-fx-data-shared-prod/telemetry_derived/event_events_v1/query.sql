@@ -42,4 +42,13 @@ CROSS JOIN
 CROSS JOIN
   UNNEST(events) AS e
 WHERE
-  date(submission_timestamp) = @submission_date
+  DATE(submission_timestamp) = @submission_date
+  -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1703362
+  AND NOT (
+    e.f1_ = 'security'
+    AND e.f2_ = 'unexpectedload'
+    AND mozfun.map.get_key(e.f5_, 'contenttype') = 'TYPE_STYLESHEET'
+    AND mozfun.norm.truncate_version(app_version, 'major')
+    BETWEEN 84
+    AND 87
+  )

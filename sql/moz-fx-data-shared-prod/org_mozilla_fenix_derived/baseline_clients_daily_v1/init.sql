@@ -122,11 +122,23 @@ windowed AS (
       ORDER BY
         submission_timestamp
     )
+),
+joined AS (
+  SELECT
+    cd.* EXCEPT (_n),
+    cfs.first_seen_date,
+    cfs.submission_date AS baseline_first_seen_date
+  FROM
+    windowed cd
+  LEFT JOIN
+    `org_mozilla_fenix_derived.baseline_clients_first_seen_v1` cfs
+  USING
+    (client_id)
+  WHERE
+    _n = 1
 )
 --
 SELECT
-  * EXCEPT (_n)
+  *
 FROM
-  windowed
-WHERE
-  _n = 1
+  joined

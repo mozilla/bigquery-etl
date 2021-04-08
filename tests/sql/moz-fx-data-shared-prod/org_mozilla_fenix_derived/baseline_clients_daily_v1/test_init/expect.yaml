@@ -5,15 +5,21 @@
   first_run_date: 2021-03-01
   durations: 60
   app_channel: release
+  first_seen_date: 2021-03-01
+  baseline_first_seen_date: 2021-03-01
 - submission_date: 2021-04-01
   client_id: client-2
   sample_id: 0
   first_run_date: 2021-03-01
   durations: 120
   app_channel: not-release
+  first_seen_date: 2021-03-01
+  baseline_first_seen_date: 2021-03-01
 - submission_date: 2021-04-02
   client_id: client-3
   sample_id: 0
   first_run_date: 2021-03-01
   durations: 60
   app_channel: release
+  first_seen_date: 2021-03-01
+  baseline_first_seen_date: 2021-03-01

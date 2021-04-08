@@ -1,0 +1,20 @@
+#!/bin/bash
+
+## Updates glean usage queries to utilize first seen columns
+: << EOF
+# some configuration in a backfill project for testing
+gcloud config set project moz-fx-data-backfill-8
+bq mk org_mozilla_fenix_stable
+bq mk org_mozilla_fenix_derived
+bq cp moz-fx-data-shared-prod:org_mozilla_fenix_stable.baseline_v1 org_mozilla_fenix_stable.baseline_v1
+
+
+./script/run_glean_baseline_migrate_first_seen \
+    --project-id moz-fx-data-backfill-8  \
+    --only 'org_mozilla_fenix_stable.baseline_v1' \
+    --date 2021-03-03 \
+    --output-only \
+    --dry-run
+EOF
+
+exec python3 -m bigquery_etl.glean_usage.migrate_first_seen "$@"

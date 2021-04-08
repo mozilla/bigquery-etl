@@ -1,7 +1,7 @@
 {{ header }}
 
 CREATE OR REPLACE VIEW
-  `{{ daily_view }}`
+  `{{ project_id }}.{{ daily_view }}`
 AS
 SELECT
   *

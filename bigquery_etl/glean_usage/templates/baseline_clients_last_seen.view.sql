@@ -1,7 +1,7 @@
 {{ header }}
 
 CREATE OR REPLACE VIEW
-  `{{ last_seen_view }}`
+  `{{ project_id }}.{{ last_seen_view }}`
 AS
 SELECT
   {% for ut in usage_types %}

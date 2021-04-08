@@ -1,6 +1,6 @@
 -- Generated via bigquery_etl.glean_usage
 CREATE OR REPLACE VIEW
-  `firefox_desktop.baseline_clients_daily`
+  `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_daily`
 AS
 SELECT
   *

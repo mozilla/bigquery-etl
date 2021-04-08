@@ -1,6 +1,6 @@
 -- Generated via bigquery_etl.glean_usage
 CREATE OR REPLACE VIEW
-  `org_mozilla_reference_browser.baseline_clients_last_seen`
+  `moz-fx-data-shared-prod.org_mozilla_reference_browser.baseline_clients_last_seen`
 AS
 SELECT
   `moz-fx-data-shared-prod`.udf.pos_of_trailing_set_bit(days_seen_bits) AS days_since_seen,

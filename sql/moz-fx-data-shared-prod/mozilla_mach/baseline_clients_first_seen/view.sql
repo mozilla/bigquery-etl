@@ -5,4 +5,4 @@ AS
 SELECT
   *
 FROM
-  `mozilla_mach_derived.baseline_clients_first_seen_v1`
+  `moz-fx-data-shared-prod.mozilla_mach_derived.baseline_clients_first_seen_v1`

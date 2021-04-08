@@ -5,4 +5,4 @@ AS
 SELECT
   *
 FROM
-  `org_mozilla_ios_lockbox_derived.baseline_clients_first_seen_v1`
+  `moz-fx-data-shared-prod.org_mozilla_ios_lockbox_derived.baseline_clients_first_seen_v1`

@@ -5,4 +5,4 @@ AS
 SELECT
   *
 FROM
-  `burnham_derived.baseline_clients_first_seen_v1`
+  `moz-fx-data-shared-prod.burnham_derived.baseline_clients_first_seen_v1`

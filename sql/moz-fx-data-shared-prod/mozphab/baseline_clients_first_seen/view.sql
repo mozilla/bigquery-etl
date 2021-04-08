@@ -5,4 +5,4 @@ AS
 SELECT
   *
 FROM
-  `mozphab_derived.baseline_clients_first_seen_v1`
+  `moz-fx-data-shared-prod.mozphab_derived.baseline_clients_first_seen_v1`

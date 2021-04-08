@@ -1,6 +1,6 @@
 -- Generated via bigquery_etl.glean_usage
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.burnham.baseline_clients_daily`
+  `burnham.baseline_clients_daily`
 AS
 SELECT
   *

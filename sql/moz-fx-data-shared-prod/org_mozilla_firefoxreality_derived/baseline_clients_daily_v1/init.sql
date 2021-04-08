@@ -1,6 +1,6 @@
 -- Generated via bigquery_etl.glean_usage
 CREATE TABLE IF NOT EXISTS
-  `moz-fx-data-shared-prod.org_mozilla_firefoxreality_derived.baseline_clients_daily_v1`
+  `org_mozilla_firefoxreality_derived.baseline_clients_daily_v1`
 PARTITION BY
   submission_date
 CLUSTER BY
@@ -33,7 +33,7 @@ WITH base AS (
     normalized_os,
     normalized_os_version,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefoxreality_stable.baseline_v1`
+    `org_mozilla_firefoxreality_stable.baseline_v1`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
   -- we initially excluded them from baseline_clients_daily so that we could measure
   -- effects on KPIs. On 2020-08-25, we removed the filter on reason and backfilled. See:

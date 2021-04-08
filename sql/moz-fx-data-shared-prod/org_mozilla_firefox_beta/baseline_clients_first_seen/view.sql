@@ -5,4 +5,4 @@ AS
 SELECT
   *
 FROM
-  `org_mozilla_firefox_beta_derived.baseline_clients_first_seen_v1`
+  `moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.baseline_clients_first_seen_v1`

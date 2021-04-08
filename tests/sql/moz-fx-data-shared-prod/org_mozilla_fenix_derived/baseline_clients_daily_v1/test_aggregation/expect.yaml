@@ -6,7 +6,7 @@
   durations: 60
   app_channel: release
   first_seen_date: 2021-03-01
-  is_new_profile: False
+  is_new_profile: false
 - submission_date: 2021-04-01
   client_id: client-2
   sample_id: 0
@@ -14,4 +14,4 @@
   durations: 120
   app_channel: not-release
   first_seen_date: 2021-03-01
-  is_new_profile: True
+  is_new_profile: true

@@ -9,4 +9,4 @@ SELECT
   {% endfor %}
   *
 FROM
-  `{{ last_seen_table }}`
+  `{{ project_id }}.{{ last_seen_table }}`

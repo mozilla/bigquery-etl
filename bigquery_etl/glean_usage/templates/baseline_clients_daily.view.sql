@@ -6,4 +6,4 @@ AS
 SELECT
   *
 FROM
-  `{{ daily_table }}`
+  `{{ project_id }}.{{ daily_table }}`

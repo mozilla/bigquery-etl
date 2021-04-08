@@ -78,14 +78,16 @@ def list_baseline_tables(project_id, only_tables, table_filter):
     ]
 
 
-def table_names_from_baseline(baseline_table):
+def table_names_from_baseline(baseline_table, include_project_id=True):
     """Return a dict with full table IDs for derived tables and views.
 
     :param baseline_table: stable table ID in project.dataset.table form
     """
     prefix = re.sub(r"_stable\..+", "", baseline_table)
+    if not include_project_id:
+        prefix = ".".join(prefix.split(".")[1:])
     return dict(
-        baseline_table=baseline_table,
+        baseline_table=f"{prefix}_stable.baseline_v1",
         migration_table=f"{prefix}_stable.migration_v1",
         daily_table=f"{prefix}_derived.baseline_clients_daily_v1",
         last_seen_table=f"{prefix}_derived.baseline_clients_last_seen_v1",

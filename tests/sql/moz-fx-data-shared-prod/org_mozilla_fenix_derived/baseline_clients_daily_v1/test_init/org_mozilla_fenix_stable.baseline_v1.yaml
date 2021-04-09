@@ -33,3 +33,4 @@
   client_info:
     <<: *client_info
     client_id: client-3
+    first_run_date: 2021-04-02T00:00:00

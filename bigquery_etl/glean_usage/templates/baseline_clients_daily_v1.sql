@@ -137,7 +137,7 @@ joined as (
     cfs.first_seen_date,
     -- the first seen date may be earlier than the submission date since it also
     -- takes into account the migration ping
-    cd.submission_date = cfs.submission_date as is_new_profile
+    (cd.submission_date = cfs.first_seen_date) as is_new_profile
   FROM
     windowed cd
   LEFT JOIN

@@ -8,4 +8,5 @@
   client_id: client-2
 - <<: *first_seen
   client_id: client-3
+  first_seen_date: 2021-04-02
   submission_date: 2021-04-02

@@ -150,5 +150,5 @@ joined as (
 --
 SELECT
   *
-from
+FROM
   joined

@@ -148,7 +148,7 @@ joined as (
     _n = 1
 )
 --
-select
+SELECT
   *
 from
   joined

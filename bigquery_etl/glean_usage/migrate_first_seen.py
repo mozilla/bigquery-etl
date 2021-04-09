@@ -35,11 +35,6 @@ def run_query(
     bcd_sql = render("migrate_baseline_clients_daily_v1.sql", **render_kwargs)
     cls_sql = render("migrate_baseline_clients_last_seen_v1.sql", **render_kwargs)
 
-    # We're doing a full table rewrite of the tables
-    job_kwargs.update(
-        destination=f"{project_id}.{daily_table}",
-        write_disposition=WriteDisposition.WRITE_TRUNCATE,
-    )
     if not dry_run:
         logging.info(f"Running query for: {daily_table}")
         logging.info(f"Running query for: {last_seen_table}")

@@ -1,5 +1,13 @@
 {{ header }}
 
+CREATE OR REPLACE TABLE
+  `{{ last_seen_table }}`
+PARTITION BY submission_date
+CLUSTER BY normalized_channel, sample_id
+OPTIONS
+  (require_partition_filter = TRUE)
+AS
+
 SELECT
     t.*,
     cfs.first_seen_date,

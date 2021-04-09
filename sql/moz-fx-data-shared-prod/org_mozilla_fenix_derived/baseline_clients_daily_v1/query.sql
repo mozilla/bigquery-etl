@@ -121,9 +121,9 @@ joined AS (
     -- takes into account the migration ping
     (cd.submission_date = cfs.first_seen_date) AS is_new_profile
   FROM
-    windowed cd
+    windowed AS cd
   LEFT JOIN
-    `org_mozilla_fenix_derived.baseline_clients_first_seen_v1` cfs
+    `org_mozilla_fenix_derived.baseline_clients_first_seen_v1` AS cfs
   USING
     (client_id)
   WHERE

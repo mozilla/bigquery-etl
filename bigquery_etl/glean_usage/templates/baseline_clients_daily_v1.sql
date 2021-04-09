@@ -139,9 +139,9 @@ joined as (
     -- takes into account the migration ping
     (cd.submission_date = cfs.first_seen_date) as is_new_profile
   FROM
-    windowed cd
+    windowed AS cd
   LEFT JOIN
-    `{{ first_seen_table }}` cfs
+    `{{ first_seen_table }}` AS cfs
   USING
     (client_id)
   WHERE

@@ -12,7 +12,7 @@ bq cp moz-fx-data-shared-prod:org_mozilla_fenix_derived.baseline_clients_last_se
 bq cp moz-fx-data-shared-prod:org_mozilla_fenix_derived.baseline_clients_first_seen_v1 org_mozilla_fenix_derived.baseline_clients_first_seen_v1
 
 ./script/run_glean_baseline_migrate_first_seen \
-    --project-id moz-fx-data-backfill-8  \
+    --project-id moz-fx-data-shared-prod  \
     --only 'org_mozilla_fenix_stable.baseline_v1' \
     --date 2021-03-03 \
     --output-only \

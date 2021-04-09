@@ -1,7 +1,7 @@
 {{ header }}
 
 CREATE OR REPLACE TABLE
-  `{{ last_seen_table }}`
+  `moz-fx-data-backfill-8.{{ daily_table }}`
 PARTITION BY submission_date
 CLUSTER BY is_new_profile, normalized_channel, sample_id
 OPTIONS

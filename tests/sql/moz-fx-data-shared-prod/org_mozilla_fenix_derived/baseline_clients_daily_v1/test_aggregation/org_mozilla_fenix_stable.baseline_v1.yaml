@@ -21,9 +21,11 @@
   client_info:
     <<: *client_info
     client_id: client-2
+    first_run_date: 2021-04-01T01:00:00
 # the channel changes
 - <<: *ping
   client_info:
     <<: *client_info
     client_id: client-2
+    first_run_date: 2021-04-01T01:00:00
     app_channel: not-release

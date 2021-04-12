@@ -35,7 +35,3 @@ echo "running run_glean_baseline_clients_first_seen for ios"
 
 wait
 trap - EXIT
-
-# remove some views that can't be tested and are useless checked in
-rm -r sql/moz-fx-data-shared-prod/org_mozilla_fenix/baseline_clients_first_seen
-rm -r sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/baseline_clients_first_seen

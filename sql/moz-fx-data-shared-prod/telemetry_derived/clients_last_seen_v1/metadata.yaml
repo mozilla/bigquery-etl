@@ -22,6 +22,6 @@ scheduling:
   dag_name: bqetl_main_summary
   priority: 85
   start_date: '2019-04-15'
-  allow_field_addition_on_date: '2020-10-20'
+  allow_field_addition_on_date: '2021-04-13'
   email: ['dthorn@mozilla.com', 'jklukas@mozilla.com']
   depends_on_past: true

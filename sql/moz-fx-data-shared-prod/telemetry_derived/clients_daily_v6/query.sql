@@ -323,6 +323,8 @@ clients_summary AS (
     payload.processes.parent.scalars.devtools_toolbar_eyedropper_opened AS scalar_parent_devtools_toolbar_eyedropper_opened,
     payload.processes.parent.scalars.navigator_storage_estimate_count AS scalar_parent_navigator_storage_estimate_count,
     payload.processes.parent.scalars.navigator_storage_persist_count AS scalar_parent_navigator_storage_persist_count,
+    payload.processes.parent.scalars.os_environment_is_taskbar_pinned AS scalar_parent_os_environment_is_taskbar_pinned,
+    payload.processes.parent.scalars.os_environment_launch_method AS scalar_parent_os_environment_launch_method,
     payload.processes.parent.scalars.storage_sync_api_usage_extensions_using AS scalar_parent_storage_sync_api_usage_extensions_using,
     payload.processes.parent.keyed_scalars.urlbar_searchmode_bookmarkmenu AS scalar_parent_urlbar_searchmode_bookmarkmenu,
     payload.processes.parent.keyed_scalars.urlbar_searchmode_handoff AS scalar_parent_urlbar_searchmode_handoff,
@@ -801,6 +803,24 @@ aggregates AS (
     SUM(
       scalar_parent_navigator_storage_persist_count
     ) AS scalar_parent_navigator_storage_persist_count_sum,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(scalar_parent_os_environment_is_taskbar_pinned ORDER BY submission_timestamp)
+    ) AS scalar_parent_os_environment_is_taskbar_pinned,
+    COUNTIF(
+      'Desktop' = scalar_parent_os_environment_launch_method
+    ) > 0 AS scalar_parent_os_environment_launched_via_desktop,
+    COUNTIF(
+      'StartMenu' = scalar_parent_os_environment_launch_method
+    ) > 0 AS scalar_parent_os_environment_launched_via_start_menu,
+    COUNTIF(
+      'Taskbar' = scalar_parent_os_environment_launch_method
+    ) > 0 AS scalar_parent_os_environment_launched_via_taskbar,
+    COUNTIF(
+      'OtherShortcut' = scalar_parent_os_environment_launch_method
+    ) > 0 AS scalar_parent_os_environment_launched_via_other_shortcut,
+    COUNTIF(
+      'Other' = scalar_parent_os_environment_launch_method
+    ) > 0 AS scalar_parent_os_environment_launched_via_other,
     SUM(
       scalar_parent_storage_sync_api_usage_extensions_using
     ) AS scalar_parent_storage_sync_api_usage_extensions_using_sum,

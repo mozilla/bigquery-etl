@@ -555,6 +555,8 @@
           devtools_toolbar_eyedropper_opened: 1
           navigator_storage_estimate_count: 1
           navigator_storage_persist_count: 1
+          os_environment_is_taskbar_pinned: true
+          os_environment_launch_method: 'StartMenu'
           storage_sync_api_usage_extensions_using: 1
           webrtc_nicer_stun_retransmits: 1
           webrtc_nicer_turn_401s: 1

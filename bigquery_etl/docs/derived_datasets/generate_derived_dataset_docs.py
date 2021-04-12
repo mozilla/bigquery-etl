@@ -31,9 +31,8 @@ def generate_derived_dataset_docs(out_dir, project_dir):
         if os.path.isdir(os.path.join(project_dir, item))
         and all(name not in item for name in NON_USER_FACING_DATASET_SUFFIXES)
     ]
-    with open(project_doc_dir / f"index.json", "w") as index_json:
-        index_json.write(json.dumps(datasets))
 
+    dataset_dict = {}
     for dataset in datasets:
         source_urls = {}
         dataset_list = []
@@ -96,14 +95,19 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                 # Create template with the markdown source text
                 template = env.get_template("table.md")
 
-                table_data = dict(metadata=metadata,
+                table_data = dict(
+                    metadata=metadata,
                     table_name=dataset_name,
                     source_urls=source_urls,
                     referenced_tables=referenced_tables,
-                    project_url=f"{SOURCE_URL}/sql")
+                    project_url=f"{SOURCE_URL}/sql",
+                )
                 dataset_list.append(table_data)
                 dataset_doc.write(template.render(table_data))
 
-            # Dump a JSON version of the same data, for the Glean Dictionary
-            with open(project_doc_dir / f"{dataset}.json", "w") as dataset_json:
-                dataset_json.write(json.dumps(dataset_list))
+            dataset_dict[dataset] = dataset_list
+
+        # dump a JSON representation of the dataset -> table mappings, for use
+        # by the glean dictionary
+        with open(project_doc_dir / f"api.json", "w") as api_json:
+            api_json.write(json.dumps(dataset_dict))

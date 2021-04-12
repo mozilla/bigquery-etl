@@ -1756,6 +1756,18 @@
                     "description": "Number of times navigator.storage.persist has been used.\n"
                   },
                   {
+                    "name": "os_environment_is_taskbar_pinned",
+                    "type": "BOOLEAN",
+                    "mode": "NULLABLE",
+                    "description": "Whether this app was pinned to taskbar on startup\n"
+                  },
+                  {
+                    "name": "os_environment_launch_method",
+                    "type": "STRING",
+                    "mode": "NULLABLE",
+                    "description": "Records how Firefox was started on Windows. Currently will be one of \"Desktop\", \"StartMenu\" (including pins), \"Taskbar\", \"OtherShortcut\", or \"Other\"\n"
+                  },
+                  {
                     "name": "storage_sync_api_usage_extensions_using",
                     "type": "INTEGER",
                     "mode": "NULLABLE",

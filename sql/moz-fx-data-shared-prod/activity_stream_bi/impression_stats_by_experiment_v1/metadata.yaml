@@ -13,5 +13,7 @@ scheduling:
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:mozilla-confidential
+      # to avoid permissions desync mozilla-confidential access is only granted
+      # at the dataset-level for now
+      # - workgroup:mozilla-confidential
       - workgroup:pocket/external

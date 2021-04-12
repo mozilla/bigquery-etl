@@ -1,0 +1,12 @@
+---
+- &first_seen
+  client_id: client-1
+  submission_date: 2021-03-01
+  first_seen_date: 2021-03-01
+  sample_id: 0
+- <<: *first_seen
+  client_id: client-2
+- <<: *first_seen
+  client_id: client-3
+  first_seen_date: 2021-04-02
+  submission_date: 2021-04-02

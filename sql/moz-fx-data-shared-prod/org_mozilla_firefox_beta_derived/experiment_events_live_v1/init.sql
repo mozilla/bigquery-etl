@@ -2,6 +2,7 @@
 -- - org_mozilla_firefox_beta_derived.experiment_events_live_v1
 -- - org_mozilla_fenix_derived.experiment_events_live_v1
 -- - org_mozilla_firefox_derived.experiment_events_live_v1
+-- - org_mozilla_ios_firefox_derived.experiment_events_live_v1
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS org_mozilla_firefox_beta_derived.experiment_events_live_v1

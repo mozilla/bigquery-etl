@@ -6,7 +6,7 @@
 -- - org_mozilla_ios_firefoxbeta_derived.experiment_search_events_live_v1
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.experiment_search_events_live_v1`
+  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.experiment_search_events_live_v1`
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
@@ -89,7 +89,7 @@ IF
         )
       ) AS nested_counts
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.metrics_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.metrics_v1`
     LEFT JOIN
       UNNEST(ping_info.experiments) AS experiment
     WHERE

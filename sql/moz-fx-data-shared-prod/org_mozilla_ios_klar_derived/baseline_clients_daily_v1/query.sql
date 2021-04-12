@@ -112,11 +112,25 @@ windowed AS (
       ORDER BY
         submission_timestamp
     )
+),
+joined AS (
+  SELECT
+    cd.* EXCEPT (_n),
+    cfs.first_seen_date,
+    -- the first seen date may be earlier than the submission date since it also
+    -- takes into account the migration ping
+    (cd.submission_date = cfs.first_seen_date) AS is_new_profile
+  FROM
+    windowed AS cd
+  LEFT JOIN
+    `org_mozilla_ios_klar_derived.baseline_clients_first_seen_v1` AS cfs
+  USING
+    (client_id)
+  WHERE
+    _n = 1
 )
 --
 SELECT
-  * EXCEPT (_n)
+  *
 FROM
-  windowed
-WHERE
-  _n = 1
+  joined

@@ -5,4 +5,6 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.burnham_derived.baseline_clients_first_seen_v1`
+  `moz-fx-data-shared-prod.burnham_derived.baseline_clients_daily_v1`
+WHERE
+  is_new_profile

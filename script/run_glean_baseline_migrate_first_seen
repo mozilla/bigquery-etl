@@ -1,0 +1,48 @@
+#!/bin/bash
+
+## Updates glean usage queries to utilize first seen columns
+: << EOF
+# some configuration in a backfill project for testing
+gcloud config set project moz-fx-data-backfill-8
+bq mk org_mozilla_fenix_stable
+bq mk org_mozilla_fenix_derived
+bq cp moz-fx-data-shared-prod:org_mozilla_fenix_stable.baseline_v1 org_mozilla_fenix_stable.baseline_v1
+bq cp moz-fx-data-shared-prod:org_mozilla_fenix_derived.baseline_clients_daily_v1 org_mozilla_fenix_derived.baseline_clients_daily_v1
+bq cp moz-fx-data-shared-prod:org_mozilla_fenix_derived.baseline_clients_last_seen_v1 org_mozilla_fenix_derived.baseline_clients_last_seen_v1
+bq cp moz-fx-data-shared-prod:org_mozilla_fenix_derived.baseline_clients_first_seen_v1 org_mozilla_fenix_derived.baseline_clients_first_seen_v1
+
+./script/run_glean_baseline_migrate_first_seen \
+    --project-id moz-fx-data-shared-prod  \
+    --only 'org_mozilla_fenix_stable.baseline_v1' \
+    --date 2021-03-03 \
+    --output-only \
+    --dry-run
+
+## The following commands were used to backfill into shared prod
+
+for x in $(bq ls -n 1000 --project_id=moz-fx-data-shared-prod | grep derived); do
+    bq mk moz-fx-data-backfill-8:$x
+done
+
+./script/run_glean_baseline_migrate_first_seen \
+    --project-id moz-fx-data-shared-prod  \
+    --only 'org_mozilla_fenix_stable.baseline_v1' \
+    --date 2021-03-03
+
+# remove empty datasets
+for x in $(bq ls -n 1000 --project_id=moz-fx-data-backfill-8 | grep derived); do
+    count=$(bq ls moz-fx-data-backfill-8:$x | wc -l)
+    if (($count == 0)); then
+        bq rm -f moz-fx-data-backfill-8:$x
+    fi
+done
+
+for x in $(bq ls -n 1000 --project_id=moz-fx-data-backfill-8 | grep derived); do
+    for table in $(bq ls --project_id moz-fx-data-backfill-8 --format json $x | jq -r '.[] | .tableReference.tableId'); do
+        bq rm -f moz-fx-data-shared-prod:$x.$table
+        bq cp -f moz-fx-data-backfill-8:$x.$table moz-fx-data-shared-prod:$x.$table
+    done
+done
+EOF
+
+exec python3 -m bigquery_etl.glean_usage.migrate_first_seen "$@"

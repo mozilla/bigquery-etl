@@ -1,5 +1,6 @@
 """Generate documentation for derived datasets."""
 
+import json
 import os
 from pathlib import Path
 
@@ -24,23 +25,25 @@ def generate_derived_dataset_docs(out_dir, project_dir):
     project_doc_dir = Path(out_dir) / "mozdata"
 
     # get a list of all user-facing datasets
-    data_sets = [
+    datasets = [
         item
         for item in os.listdir(project_dir)
         if os.path.isdir(os.path.join(project_dir, item))
         and all(name not in item for name in NON_USER_FACING_DATASET_SUFFIXES)
     ]
+    with open(project_doc_dir / f"index.json", "w") as index_json:
+        index_json.write(json.dumps(datasets))
 
-    for table in data_sets:
-        output = []
+    for dataset in datasets:
         source_urls = {}
-        with open(project_doc_dir / f"{table}.md", "w") as dataset_doc:
+        dataset_list = []
+        with open(project_doc_dir / f"{dataset}.md", "w") as dataset_doc:
             # Manually set title to prevent Mkdocs from removing
             # underscores and capitalizing file names
             # https://github.com/mkdocs/mkdocs/issues/1915#issuecomment-561311801
-            dataset_doc.write(f"---\ntitle: {table}\n---\n\n")
+            dataset_doc.write(f"---\ntitle: {dataset}\n---\n\n")
 
-            for root, dirs, files in os.walk(Path(project_dir) / table):
+            for root, dirs, files in os.walk(Path(project_dir) / dataset):
                 # show views in an alphabetical order
                 dirs.sort()
                 if dirs:
@@ -93,11 +96,14 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                 # Create template with the markdown source text
                 template = env.get_template("table.md")
 
-                output = template.render(
-                    metadata=metadata,
+                table_data = dict(metadata=metadata,
                     table_name=dataset_name,
                     source_urls=source_urls,
                     referenced_tables=referenced_tables,
-                    project_url=f"{SOURCE_URL}/sql",
-                )
-                dataset_doc.write(output)
+                    project_url=f"{SOURCE_URL}/sql")
+                dataset_list.append(table_data)
+                dataset_doc.write(template.render(table_data))
+
+            # Dump a JSON version of the same data, for the Glean Dictionary
+            with open(project_doc_dir / f"{dataset}.json", "w") as dataset_json:
+                dataset_json.write(json.dumps(dataset_list))

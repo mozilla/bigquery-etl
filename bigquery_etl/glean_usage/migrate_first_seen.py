@@ -2,14 +2,11 @@
 import logging
 
 from google.cloud import bigquery
-from google.cloud.bigquery import ScalarQueryParameter, WriteDisposition
 
 from bigquery_etl.glean_usage.common import (
     generate_and_run_query,
-    referenced_table_exists,
     render,
     table_names_from_baseline,
-    write_sql,
 )
 
 

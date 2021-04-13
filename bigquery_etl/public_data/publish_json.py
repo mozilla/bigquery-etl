@@ -55,7 +55,12 @@ class JsonPublisher:
         self.storage_client = storage_client
         self.temp_table = None
         self.date = None
-        self.stage_gcs_path = self.gcs_path + "stage/json/"
+        self.stage_gcs_path = (
+            self.gcs_path
+            + "stage/json/"
+            + "".join(random.choice(string.ascii_lowercase) for i in range(12))
+            + "/"
+        )
 
         self.metadata = Metadata.of_query_file(self.query_file)
 

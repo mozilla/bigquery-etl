@@ -941,7 +941,7 @@
         "type": "TIMESTAMP"
       },
       {
-        "name": "marked_uncollectable_at",
+        "name": "marked_uncollectible_at",
         "type": "TIMESTAMP"
       },
       {

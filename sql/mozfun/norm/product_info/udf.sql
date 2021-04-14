@@ -208,7 +208,7 @@ RETURNS STRUCT<
       "Lockwise for iOS" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "FirefoxReality%"
@@ -364,7 +364,7 @@ RETURNS STRUCT<
       "Lockwise for iOS" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "Firefox Reality"

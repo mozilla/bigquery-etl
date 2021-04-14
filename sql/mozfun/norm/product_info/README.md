@@ -16,5 +16,5 @@ Focus            | iOS           | focus_ios        | Focus iOS        | Firefox
 Klar             | Android       | klar_android     | Klar Android     | Firefox Klar for Android        | false | false | false
 Klar             | iOS           | klar_ios         | Klar iOS         | Firefox Klar for iOS            | false | false | false
 Lockbox          | Android       | lockwise_android | Lockwise Android | Lockwise for Android            | true  | true  | false
-Lockbox          | iOS           | lockwise_ios     | Lockwise iOS     | Lockwise for iOS                | true  | true  | true
+Lockbox          | iOS           | lockwise_ios     | Lockwise iOS     | Lockwise for iOS                | true  | true  | false
 FirefoxReality*  | Android       | firefox_reality  | Firefox Reality  | Firefox Reality                 | false | false | false

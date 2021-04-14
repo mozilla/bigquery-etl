@@ -1,0 +1,8 @@
+friendly_name: Releases
+description: |-
+  Fenix release information imported from
+  https://product-details.mozilla.org/1.0/mobile_android.json
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false

@@ -6,4 +6,3 @@ owners:
 - ascholtz@mozilla.com
 labels:
   incremental: false
-bigquery: null

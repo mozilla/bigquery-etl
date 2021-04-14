@@ -104,7 +104,7 @@ RETURNS STRUCT<
       "Firefox for Echo Show" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "Zerda"
@@ -117,7 +117,7 @@ RETURNS STRUCT<
       "Firefox Lite" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "Zerda_cn"
@@ -195,7 +195,7 @@ RETURNS STRUCT<
       "Lockwise for Android" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "Lockbox"
@@ -208,7 +208,7 @@ RETURNS STRUCT<
       "Lockwise for iOS" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "FirefoxReality%"
@@ -260,7 +260,7 @@ RETURNS STRUCT<
       "Firefox for Echo Show" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "Firefox Lite"
@@ -273,7 +273,7 @@ RETURNS STRUCT<
       "Firefox Lite" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "Firefox Lite CN"
@@ -351,7 +351,7 @@ RETURNS STRUCT<
       "Lockwise for Android" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "Lockwise iOS"
@@ -364,7 +364,7 @@ RETURNS STRUCT<
       "Lockwise for iOS" AS canonical_name,
       TRUE AS contributes_to_2019_kpi,
       TRUE AS contributes_to_2020_kpi,
-      TRUE AS contributes_to_2021_kpi
+      FALSE AS contributes_to_2021_kpi
     )
   WHEN
     legacy_app_name LIKE "Firefox Reality"
@@ -422,7 +422,7 @@ SELECT
   assert.equals('Lockwise for iOS', b.canonical_name),
   assert.equals('Lockwise for iOS', b.canonical_app_name),
   assert.true(b.contributes_to_2020_kpi),
-  assert.true(b.contributes_to_2021_kpi),
+  assert.false(b.contributes_to_2021_kpi),
 FROM
   b;
 

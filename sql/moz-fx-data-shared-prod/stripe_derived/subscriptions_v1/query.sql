@@ -10,6 +10,7 @@ SELECT
   id,
   metadata,
   plan.id AS plan,
+  plan.product,
   start_date,
   status,
   trial_end,

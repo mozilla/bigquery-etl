@@ -1,0 +1,6 @@
+description: >
+  Take output purchase_date and expires_date from mozfun.iap.parse_apple_receipt
+  and return the subscription interval to use for accounting. Values must be
+  DATETIME in America/Los_Angeles to get correct results because of how timezone
+  and daylight savings impact the time of day and the length of a month.
+friendly_name: Derive Apple Subscription Interval from IAP Receipt

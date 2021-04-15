@@ -489,4 +489,7 @@ bqetl_releases:
     start_date: "2021-04-14"
   description: |
     Schedule release data import from https://product-details.mozilla.org/1.0
+
+    For more context, see
+    https://wiki.mozilla.org/Release_Management/Product_details
   schedule_interval: 0 4 * * *

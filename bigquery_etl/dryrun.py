@@ -92,10 +92,16 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/stripe_external/products_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/setup_intents_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/subscriptions_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/all_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/funnel_ga_to_subscriptions_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/login_flows_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/new_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/retention_by_subscription_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_summary_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/users_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/waitlist_v1/query.sql",

@@ -7,7 +7,3 @@ description: |-
   https://wiki.mozilla.org/Release_Management/Product_details
 owners:
 - ascholtz@mozilla.com
-labels:
-  incremental: false
-scheduling:
-  dag_name: bqetl_releases

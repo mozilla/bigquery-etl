@@ -14,6 +14,9 @@ Built from bigquery-etl repo, [`dags/bqetl_releases.py`](https://github.com/mozi
 
 Schedule release data import from https://product-details.mozilla.org/1.0
 
+For more context, see
+https://wiki.mozilla.org/Release_Management/Product_details
+
 #### Owner
 
 ascholtz@mozilla.com

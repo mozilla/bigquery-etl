@@ -22,6 +22,7 @@ def main():
     client = bigquery.Client(args.project)
 
     release_json = json.loads(requests.get(URL).text)
+    # ignoring the key here since it is <product>-<version>
     release_data = [r for _, r in release_json["releases"].items()]
 
     schema_dict = yaml.safe_load(SCHEMA_FILE.read_text())["fields"]

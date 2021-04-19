@@ -3,7 +3,7 @@ SELECT
   COUNTIF(days_since_seen < 28) AS mau,
   COUNTIF(days_since_seen < 7) AS wau,
   COUNTIF(days_since_seen < 1) AS dau,
-  COUNTIF(is_new_profile) AS new_profiles,
+  COUNTIF(first_seen_date = submission_date) AS new_profiles,
   -- We hash client_ids into 20 buckets to aid in computing
   -- confidence intervals for mau/wau/dau sums; the particular hash
   -- function and number of buckets is subject to change in the future.

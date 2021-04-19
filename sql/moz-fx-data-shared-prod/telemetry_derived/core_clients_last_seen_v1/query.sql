@@ -29,7 +29,6 @@ IF
   (_current.client_id IS NOT NULL,
     _current,
     _previous).* REPLACE ( --
-    _current.is_new_profile AS is_new_profile,
     udf.combine_adjacent_days_28_bits(_previous.days_seen_bits,
       _current.days_seen_bits) AS days_seen_bits,
     udf.coalesce_adjacent_days_28_bits(_previous.days_created_profile_bits,

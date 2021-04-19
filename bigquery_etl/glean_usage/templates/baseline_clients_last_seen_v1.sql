@@ -58,7 +58,6 @@ _previous AS (
 SELECT
   @submission_date AS submission_date,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
-    _current.is_new_profile AS is_new_profile,
     {% for ut in usage_types %}
       udf.combine_adjacent_days_28_bits(
         _previous.days_{{ ut }}_bits,

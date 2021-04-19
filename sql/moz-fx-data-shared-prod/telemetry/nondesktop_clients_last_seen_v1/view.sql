@@ -41,12 +41,11 @@ unioned AS (
   SELECT
     submission_date,
     client_id,
+    first_seen_date,
     days_seen_bits,
     days_since_seen,
     days_created_profile_bits,
     days_since_created_profile,
-    first_seen_date,
-    is_new_profile,
     app_name,
     os,
     osversion AS os_version,
@@ -63,12 +62,11 @@ unioned AS (
   SELECT
     submission_date,
     client_id,
+    first_seen_date,
     days_seen_bits,
     days_since_seen,
     days_created_profile_bits,
     days_since_created_profile,
-    first_seen_date,
-    is_new_profile,
     app_name,
     normalized_os AS os,
     normalized_os_version AS os_version,
@@ -88,5 +86,6 @@ SELECT
   pinfo.canonical_name,
   pinfo.contributes_to_2019_kpi,
   pinfo.contributes_to_2020_kpi
+  pinfo.contributes_to_2021_kpi
 FROM
   unioned

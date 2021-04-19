@@ -28,5 +28,15 @@
     "mode": "NULLABLE",
     "name": "country",
     "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "first_seen_date",
+    "type": "DATE"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "is_new_profile",
+    "type": "BOOLEAN"
   }
 ]

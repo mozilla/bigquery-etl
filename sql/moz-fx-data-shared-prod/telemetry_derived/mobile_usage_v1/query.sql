@@ -36,7 +36,7 @@ nested_counts_by_slice_year_sparse AS (
     campaign,
     country,
     distribution_id,
-    ARRAY_AGG(STRUCT(submission_date, dau, wau, mau)) AS counts_array,
+    ARRAY_AGG(STRUCT(submission_date, dau, wau, mau, new_profiles)) AS counts_array,
   FROM
     base
   GROUP BY
@@ -92,7 +92,13 @@ exploded AS (
 --
 -- Finally, we can do our windowed SUM to materialize CDOU.
 SELECT
-  SUM(dau) OVER (
+  SUM(dau) OVER year_slice AS cdou,
+  SUM(new_profiles) OVER (year_slice) AS cumulative_new_profiles,
+  *
+FROM
+  exploded
+WINDOW
+  year_slice AS (
     PARTITION BY
       submission_year,
       id_bucket,
@@ -103,7 +109,4 @@ SELECT
       distribution_id
     ORDER BY
       submission_date
-  ) AS cdou,
-  *
-FROM
-  exploded
+  )

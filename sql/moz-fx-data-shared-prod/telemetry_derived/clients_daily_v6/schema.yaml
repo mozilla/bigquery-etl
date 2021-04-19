@@ -1046,3 +1046,21 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_searchmode_typed_sum
   type: RECORD
+- mode: NULLABLE
+  name: scalar_parent_os_environment_is_taskbar_pinned
+  type: BOOLEAN
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_desktop
+  type: BOOLEAN
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_taskbar
+  type: BOOLEAN
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_other
+  type: BOOLEAN
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_start_menu
+  type: BOOLEAN
+- mode: NULLABLE
+  name: scalar_parent_os_environment_launched_via_other_shortcut
+  type: BOOLEAN

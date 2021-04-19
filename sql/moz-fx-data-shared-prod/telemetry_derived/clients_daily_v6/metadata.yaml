@@ -15,7 +15,7 @@ labels:
   application: firefox
   schedule: daily
 scheduling:
-  allow_field_addition_on_date: '2020-11-13'
+  allow_field_addition_on_date: '2021-04-19'
   dag_name: bqetl_main_summary
   start_date: '2019-11-05'
 bigquery:

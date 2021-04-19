@@ -56,7 +56,7 @@ nested_counts_by_slice_year_dense AS (
     * REPLACE (
       ARRAY(
         SELECT
-          STRUCT(submission_date, c.dau, c.mau, c.wau)
+          STRUCT(submission_date, c.dau, c.mau, c.wau, c.new_profiles)
         FROM
           UNNEST(counts_array) AS c
         FULL JOIN

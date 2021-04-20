@@ -170,7 +170,6 @@ with DAG(
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
         priority_weight=80,
-        allow_field_addition_on_date="2021-04-19",
         dag=dag,
     )
 

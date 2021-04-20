@@ -67,7 +67,7 @@ WITH core_flattened_searches AS (
       IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
     ) AS searches
 ),
--- baseline for org_mozilla_fenix (Firefox Preview beta)
+-- baseline for Firefox Preview beta
 baseline_org_mozilla_fenix AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -76,7 +76,7 @@ baseline_org_mozilla_fenix AS (
   FROM
     org_mozilla_fenix.baseline
 ),
--- baseline for org_mozilla_fenix (Firefox Preview beta)
+-- metrics for Firefox Preview beta
 metrics_org_mozilla_fenix AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -91,10 +91,10 @@ metrics_org_mozilla_fenix AS (
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
-    metrics.labeled_counter.metrics_search_count,
-    metrics.labeled_counter.browser_search_ad_clicks,
-    metrics.labeled_counter.browser_search_in_content,
-    metrics.labeled_counter.browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
@@ -102,7 +102,7 @@ metrics_org_mozilla_fenix AS (
   FROM
     org_mozilla_fenix.metrics AS org_mozilla_fenix_metrics
 ),
--- baseline for org_mozilla_fenix_nightly (Firefox Preview nightly)
+-- baseline for Firefox Preview nightly
 baseline_org_mozilla_fenix_nightly AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -111,7 +111,7 @@ baseline_org_mozilla_fenix_nightly AS (
   FROM
     org_mozilla_fenix_nightly.baseline
 ),
--- baseline for org_mozilla_fenix_nightly (Firefox Preview nightly)
+-- metrics for Firefox Preview nightly
 metrics_org_mozilla_fenix_nightly AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -126,10 +126,10 @@ metrics_org_mozilla_fenix_nightly AS (
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
-    metrics.labeled_counter.metrics_search_count,
-    metrics.labeled_counter.browser_search_ad_clicks,
-    metrics.labeled_counter.browser_search_in_content,
-    metrics.labeled_counter.browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
@@ -137,7 +137,7 @@ metrics_org_mozilla_fenix_nightly AS (
   FROM
     org_mozilla_fenix_nightly.metrics AS org_mozilla_fenix_nightly_metrics
 ),
--- baseline for org_mozilla_fennec_aurora (Fenix nightly)
+-- baseline for Fenix nightly
 baseline_org_mozilla_fennec_aurora AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -146,7 +146,7 @@ baseline_org_mozilla_fennec_aurora AS (
   FROM
     org_mozilla_fennec_aurora.baseline
 ),
--- baseline for org_mozilla_fennec_aurora (Fenix nightly)
+-- metrics for Fenix nightly
 metrics_org_mozilla_fennec_aurora AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -161,10 +161,10 @@ metrics_org_mozilla_fennec_aurora AS (
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
-    metrics.labeled_counter.metrics_search_count,
-    metrics.labeled_counter.browser_search_ad_clicks,
-    metrics.labeled_counter.browser_search_in_content,
-    metrics.labeled_counter.browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
@@ -172,7 +172,7 @@ metrics_org_mozilla_fennec_aurora AS (
   FROM
     org_mozilla_fennec_aurora.metrics AS org_mozilla_fennec_aurora_metrics
 ),
--- baseline for org_mozilla_firefox_beta (Fenix beta)
+-- baseline for Fenix beta
 baseline_org_mozilla_firefox_beta AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -181,7 +181,7 @@ baseline_org_mozilla_firefox_beta AS (
   FROM
     org_mozilla_firefox_beta.baseline
 ),
--- baseline for org_mozilla_firefox_beta (Fenix beta)
+-- metrics for Fenix beta
 metrics_org_mozilla_firefox_beta AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -196,10 +196,10 @@ metrics_org_mozilla_firefox_beta AS (
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
-    metrics.labeled_counter.metrics_search_count,
-    metrics.labeled_counter.browser_search_ad_clicks,
-    metrics.labeled_counter.browser_search_in_content,
-    metrics.labeled_counter.browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
@@ -207,7 +207,7 @@ metrics_org_mozilla_firefox_beta AS (
   FROM
     org_mozilla_firefox_beta.metrics AS org_mozilla_firefox_beta_metrics
 ),
--- baseline for org_mozilla_firefox (Fenix release)
+-- baseline for Fenix release
 baseline_org_mozilla_firefox AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -216,7 +216,7 @@ baseline_org_mozilla_firefox AS (
   FROM
     org_mozilla_firefox.baseline
 ),
--- baseline for org_mozilla_firefox (Fenix release)
+-- metrics for Fenix release
 metrics_org_mozilla_firefox AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -231,16 +231,97 @@ metrics_org_mozilla_firefox AS (
     metrics.string.search_default_engine_code AS default_search_engine,
     metrics.string.search_default_engine_submission_url AS default_search_engine_submission_url,
     sample_id,
-    metrics.labeled_counter.metrics_search_count,
-    metrics.labeled_counter.browser_search_ad_clicks,
-    metrics.labeled_counter.browser_search_in_content,
-    metrics.labeled_counter.browser_search_with_ads,
+    metrics.labeled_counter.metrics_search_count AS search_count,
+    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    metrics.labeled_counter.browser_search_in_content AS search_in_content,
+    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
   FROM
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
+),
+-- metrics for Firefox iOS release
+metrics_org_mozilla_ios_firefox AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code AS country,
+    'Firefox iOS' AS app_name,
+    'Firefox iOS' AS normalized_app_name,
+    client_info.app_display_version AS app_version,
+    'release' AS channel,
+    normalized_os AS os,
+    client_info.os_version AS os_version,
+    metrics.string.search_default_engine AS default_search_engine,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
+    sample_id,
+    metrics.labeled_counter.search_counts AS search_count,
+    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_ad_clicks,
+    metrics.labeled_counter.search_in_content AS search_in_content,
+    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_with_ads,
+    client_info.first_run_date,
+    ping_info.end_time,
+    ping_info.experiments,
+    NULL AS total_uri_count,
+    client_info.locale,
+  FROM
+    org_mozilla_ios_firefox.metrics AS org_mozilla_ios_firefox_metrics
+),
+-- metrics for Firefox iOS beta
+metrics_org_mozilla_ios_firefoxbeta AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code AS country,
+    'Firefox iOS' AS app_name,
+    'Firefox iOS' AS normalized_app_name,
+    client_info.app_display_version AS app_version,
+    'beta' AS channel,
+    normalized_os AS os,
+    client_info.os_version AS os_version,
+    metrics.string.search_default_engine AS default_search_engine,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
+    sample_id,
+    metrics.labeled_counter.search_counts AS search_count,
+    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_ad_clicks,
+    metrics.labeled_counter.search_in_content AS search_in_content,
+    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_with_ads,
+    client_info.first_run_date,
+    ping_info.end_time,
+    ping_info.experiments,
+    NULL AS total_uri_count,
+    client_info.locale,
+  FROM
+    org_mozilla_ios_firefoxbeta.metrics AS org_mozilla_ios_firefoxbeta_metrics
+),
+-- metrics for Firefox iOS nightly
+metrics_org_mozilla_ios_fennec AS (
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    client_info.client_id,
+    normalized_country_code AS country,
+    'Firefox iOS' AS app_name,
+    'Firefox iOS' AS normalized_app_name,
+    client_info.app_display_version AS app_version,
+    'nightly' AS channel,
+    normalized_os AS os,
+    client_info.os_version AS os_version,
+    metrics.string.search_default_engine AS default_search_engine,
+    CAST(NULL AS STRING) AS default_search_engine_submission_url,
+    sample_id,
+    metrics.labeled_counter.search_counts AS search_count,
+    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_ad_clicks,
+    metrics.labeled_counter.search_in_content AS search_in_content,
+    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_with_ads,
+    client_info.first_run_date,
+    ping_info.end_time,
+    ping_info.experiments,
+    NULL AS total_uri_count,
+    client_info.locale,
+  FROM
+    org_mozilla_ios_fennec.metrics AS org_mozilla_ios_fennec_metrics
 ),
 fenix_baseline AS (
   SELECT
@@ -294,6 +375,22 @@ fenix_metrics AS (
   FROM
     metrics_org_mozilla_firefox
 ),
+ios_metrics AS (
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_ios_firefox
+  UNION ALL
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_ios_firefoxbeta
+  UNION ALL
+  SELECT
+    *
+  FROM
+    metrics_org_mozilla_ios_fennec
+),
 --  older fenix clients don't send locale in the metrics ping
 fenix_client_locales AS (
   SELECT
@@ -306,24 +403,46 @@ fenix_client_locales AS (
   GROUP BY
     client_id
 ),
-fenix_combined_searches AS (
+fenix_metrics_with_locale AS (
   SELECT
-    * EXCEPT (
-      metrics_search_count,
-      browser_search_ad_clicks,
-      browser_search_in_content,
-      browser_search_with_ads
-    ),
-    ARRAY_CONCAT(
-      add_search_type(metrics_search_count, 'sap'),
-      add_search_type(browser_search_in_content, 'in-content'),
-      add_search_type(browser_search_ad_clicks, 'ad-click'),
-      add_search_type(browser_search_with_ads, 'search-with-ads')
-    ) AS searches,
+    fenix_metrics.*,
+    locale,
   FROM
     fenix_metrics
+  LEFT JOIN
+    fenix_client_locales
+  USING
+    (client_id)
 ),
-fenix_flattened_searches AS (
+glean_metrics AS (
+  SELECT
+    *
+  FROM
+    fenix_metrics_with_locale
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_metrics
+),
+glean_combined_searches AS (
+  SELECT
+    * EXCEPT (
+      search_count,
+      search_ad_clicks,
+      search_in_content,
+      search_with_ads
+    ),
+    ARRAY_CONCAT(
+      add_search_type(search_count, 'sap'),
+      add_search_type(search_in_content, 'in-content'),
+      add_search_type(search_ad_clicks, 'ad-click'),
+      add_search_type(search_with_ads, 'search-with-ads')
+    ) AS searches,
+  FROM
+    glean_metrics
+),
+glean_flattened_searches AS (
   SELECT
     *,
     CASE
@@ -383,11 +502,7 @@ fenix_flattened_searches AS (
       DAY
     ) AS profile_age_in_days,
   FROM
-    fenix_combined_searches
-  LEFT JOIN
-    fenix_client_locales
-  USING
-    (client_id)
+    glean_combined_searches
   CROSS JOIN
     UNNEST(
       -- Add a null search to pings that have no searches
@@ -436,7 +551,7 @@ combined_search_clients AS (
     THEN
       'tagged-sap'
     WHEN
-      STARTS_WITH(source, 'in-content.sap-follow-on.')
+      REGEXP_CONTAINS(source, '^in-content.*-follow-on')
     THEN
       'tagged-follow-on'
     WHEN
@@ -471,7 +586,7 @@ combined_search_clients AS (
     normalize_fenix_experiments(experiments) AS experiments,
     total_uri_count,
   FROM
-    fenix_flattened_searches
+    glean_flattened_searches
 ),
 unfiltered_search_clients AS (
   SELECT

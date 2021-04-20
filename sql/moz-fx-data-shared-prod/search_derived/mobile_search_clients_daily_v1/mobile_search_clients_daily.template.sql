@@ -94,6 +94,9 @@ fenix_baseline AS (
 fenix_metrics AS (
   {fenix_metrics}
 ),
+ios_metrics AS (
+  {ios_metrics}
+),
 --  older fenix clients don't send locale in the metrics ping
 fenix_client_locales AS (
   SELECT
@@ -106,22 +109,46 @@ fenix_client_locales AS (
   GROUP BY
     client_id
 ),
-fenix_combined_searches AS (
+fenix_metrics_with_locale AS (
   SELECT
-    * EXCEPT (
-      metrics_search_count, browser_search_ad_clicks,
-      browser_search_in_content, browser_search_with_ads
-    ),
-    ARRAY_CONCAT(
-      add_search_type(metrics_search_count, 'sap'),
-      add_search_type(browser_search_in_content, 'in-content'),
-      add_search_type(browser_search_ad_clicks, 'ad-click'),
-      add_search_type(browser_search_with_ads, 'search-with-ads')
-    ) AS searches,
+    fenix_metrics.*,
+    locale,
   FROM
     fenix_metrics
+  LEFT JOIN
+    fenix_client_locales
+  USING
+    (client_id)
 ),
-fenix_flattened_searches AS (
+glean_metrics AS (
+  SELECT
+    *
+  FROM
+    fenix_metrics_with_locale
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_metrics
+),
+glean_combined_searches AS (
+  SELECT
+    * EXCEPT (
+      search_count,
+      search_ad_clicks,
+      search_in_content,
+      search_with_ads
+    ),
+    ARRAY_CONCAT(
+      add_search_type(search_count, 'sap'),
+      add_search_type(search_in_content, 'in-content'),
+      add_search_type(search_ad_clicks, 'ad-click'),
+      add_search_type(search_with_ads, 'search-with-ads')
+    ) AS searches,
+  FROM
+    glean_metrics
+),
+glean_flattened_searches AS (
   SELECT
     *,
 
@@ -181,11 +208,7 @@ fenix_flattened_searches AS (
       DAY
     ) AS profile_age_in_days,
   FROM
-    fenix_combined_searches
-  LEFT JOIN
-    fenix_client_locales
-  USING
-    (client_id)
+    glean_combined_searches
   CROSS JOIN
     UNNEST(
       -- Add a null search to pings that have no searches
@@ -239,7 +262,7 @@ combined_search_clients AS (
     THEN
       'tagged-sap'
     WHEN
-      STARTS_WITH(source, 'in-content.sap-follow-on.')
+      REGEXP_CONTAINS(source, '^in-content.*-follow-on')
     THEN
       'tagged-follow-on'
     WHEN
@@ -274,7 +297,7 @@ combined_search_clients AS (
     normalize_fenix_experiments(experiments) AS experiments,
     total_uri_count,
   FROM
-    fenix_flattened_searches
+    glean_flattened_searches
 ),
 unfiltered_search_clients AS (
   SELECT

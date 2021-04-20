@@ -7,25 +7,25 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Dict, Set
 from uuid import uuid4
-from zipfile import ZipFile
+from zipfile import BadZipFile, ZipFile
 
 import click
-from google.cloud import bigquery
-
-load_job_config = bigquery.LoadJobConfig(
-    create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
-    write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
-    autodetect=True,
-    skip_leading_rows=2,
-    source_format=bigquery.SourceFormat.CSV,
-    quote_character="",
-)
+from google.cloud import bigquery, exceptions
 
 
 def load_csv(
     bq_client: bigquery.Client, file_path: str, dataset_id: str, table_suffix: str
 ) -> str:
     with open(file_path, "rb") as f:
+        load_job_config = bigquery.LoadJobConfig(
+            create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
+            write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
+            autodetect=True,
+            skip_leading_rows=2,
+            source_format=bigquery.SourceFormat.CSV,
+            quote_character="",
+        )
+
         # first line is a title e.g. Fee-Orders reports from 12-01-2020 to 12-31-2020
         title = f.readline().decode(encoding="utf-8").strip()
 
@@ -51,7 +51,11 @@ def load_csv(
             rewind=True,
         )
 
-    load_job.result()
+    try:
+        load_job.result()
+    except exceptions.BadRequest as e:
+        print(e, file=sys.stderr)
+
 
     return table_name
 
@@ -65,21 +69,23 @@ def load_temp_tables(
 
     with TemporaryDirectory() as tmpdir:
         for zip_file_path in zip_files:
-            with ZipFile(zip_file_path) as zip_file:
-                files = zip_file.namelist()
+            try:
+                with ZipFile(zip_file_path) as zip_file:
+                    files = zip_file.namelist()
 
-                if len(files) != 1:
-                    print(
-                        f"{zip_file_path.name} contains more than one file",
-                        file=sys.stderr,
+                    if len(files) != 1:
+                        print(
+                            f"{zip_file_path.name} contains more than one file",
+                            file=sys.stderr,
+                        )
+                        continue
+
+                    data_file = zip_file.extract(files[0], path=tmpdir)
+                    table_names.add(
+                        load_csv(bq_client, data_file, tmp_dataset, table_suffix)
                     )
-                    continue
-
-                data_file = zip_file.extract(files[0], path=tmpdir)
-
-                table_names.add(
-                    load_csv(bq_client, data_file, tmp_dataset, table_suffix)
-                )
+            except BadZipFile:
+                print(f"{zip_file_path.name} is not a valid zip file", file=sys.stderr)
 
     return table_names
 
@@ -147,15 +153,16 @@ ORDER BY
 @click.command()
 @click.option("--project", required=True)
 @click.option("--dst-dataset", required=True)
-@click.option("--tmp-dataset", required=True)
+@click.option("--dst-table-suffix", default="")
+@click.option("--tmp-dataset")
 @click.option("--source-dir", required=True, type=Path)
-def load_reports(project, dst_dataset, source_dir, tmp_dataset):
+def load_reports(project, dst_dataset, dst_table_suffix, source_dir, tmp_dataset):
     bq_client = bigquery.Client(project=project)
 
-    table_suffix = str(uuid4()).replace(
+    tmp_table_suffix = str(uuid4()).replace(
         "-", ""
     )  # add suffix to temp tables to ensure idempotency
-    table_names = load_temp_tables(bq_client, source_dir, tmp_dataset, table_suffix)
+    table_names = load_temp_tables(bq_client, source_dir, tmp_dataset, tmp_table_suffix)
 
     for table_name in table_names:
         tmp_table = bq_client.get_table(f"{tmp_dataset}.{table_name}")
@@ -172,9 +179,12 @@ def load_reports(project, dst_dataset, source_dir, tmp_dataset):
             partitioning_field = "date_shipped"
 
         dst_table = re.sub(r"^tmp_", "amazon_", table_name).replace(
-            f"_{table_suffix}", ""
+            f"_{tmp_table_suffix}", ""
         )
         dst_table = f"{project}.{dst_dataset}.{dst_table}"
+
+        if dst_table_suffix is not None:
+            dst_table = f"{dst_table}_{dst_table_suffix}"
 
         # Create partial to use with process pool
         run_query_for_date = partial(

@@ -3,6 +3,7 @@ import json
 import shutil
 import sys
 import time
+from collections import OrderedDict
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -201,7 +202,7 @@ def fetch_reports(
         "X-CSRF-Token": csrf_token,
     }
 
-    export_ids = {}
+    export_ids = OrderedDict()
 
     interval_start_date = start_date
     while interval_start_date <= end_date:
@@ -219,8 +220,11 @@ def fetch_reports(
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    timed_out_exports = set()
+
     # poll for completion of export
     for export_id, date_range in export_ids.items():
+        time.sleep(20)  # start loop with timeout to avoid rate limit
         time_elapsed = 0
         while time_elapsed <= 1200:
             exported_reports = check_report_status(
@@ -244,9 +248,12 @@ def fetch_reports(
                     f"Status check for request id {export_id} timed out",
                     file=sys.stderr,
                 )
+                timed_out_exports.add(export_id)
                 break
-            else:
-                time.sleep(20)
+
+    print("Timed out exports:")
+    for timed_out in timed_out_exports:
+        print(f"{timed_out} for {export_ids[timed_out]}")
 
 
 if __name__ == "__main__":

@@ -41,6 +41,7 @@ unioned AS (
   SELECT
     submission_date,
     client_id,
+    first_seen_date,
     days_seen_bits,
     days_since_seen,
     days_created_profile_bits,
@@ -61,6 +62,7 @@ unioned AS (
   SELECT
     submission_date,
     client_id,
+    first_seen_date,
     days_seen_bits,
     days_since_seen,
     days_created_profile_bits,
@@ -83,6 +85,7 @@ SELECT
   pinfo.product,
   pinfo.canonical_name,
   pinfo.contributes_to_2019_kpi,
-  pinfo.contributes_to_2020_kpi
+  pinfo.contributes_to_2020_kpi,
+  pinfo.contributes_to_2021_kpi
 FROM
   unioned

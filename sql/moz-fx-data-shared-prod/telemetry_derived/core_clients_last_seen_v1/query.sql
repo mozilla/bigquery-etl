@@ -7,7 +7,7 @@ WITH
     CAST(TRUE AS INT64) AS days_seen_bits,
     udf.days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, profile_date, DAY)) AS days_created_profile_bits,
-    * EXCEPT (submission_date)
+    * EXCEPT (submission_date, is_new_profile)
   FROM
     core_clients_daily_v1
   WHERE

@@ -66,10 +66,24 @@ WITH
       client_id,
       submission_date
     ORDER BY
-      submission_timestamp) )
+      submission_timestamp) ),
+  --
+  deduped AS (
+    SELECT
+      * EXCEPT (_n)
+    FROM
+      windowed
+    WHERE
+      _n = 1
+  )
+--
 SELECT
-  * EXCEPT (_n)
+  deduped.*,
+  cfs.first_seen_date,
+  (cfs.first_seen_date = deduped.submission_date) AS is_new_profile,
 FROM
-  windowed
-WHERE
-  _n = 1
+  deduped
+LEFT JOIN
+  core_clients_first_seen_v1 AS cfs
+USING
+  (client_id)

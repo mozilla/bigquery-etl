@@ -38,5 +38,10 @@
     "mode": "NULLABLE",
     "name": "country",
     "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "first_seen_date",
+    "type": "DATE"
   }
 ]

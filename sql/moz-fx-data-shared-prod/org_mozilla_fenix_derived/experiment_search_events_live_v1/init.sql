@@ -2,6 +2,8 @@
 -- - org_mozilla_fenix_derived.experiment_search_events_live_v1
 -- - org_mozilla_firefox_beta_derived.experiment_search_events_live_v1
 -- - org_mozilla_firefox_derived.experiment_search_events_live_v1
+-- - org_mozilla_ios_firefox_derived.experiment_search_events_live_v1
+-- - org_mozilla_ios_firefoxbeta_derived.experiment_search_events_live_v1
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_fenix_derived.experiment_search_events_live_v1`

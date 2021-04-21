@@ -1,22 +1,23 @@
 -- This and the following materialized view need to be kept in sync:
 -- - org_mozilla_firefox_beta_derived.experiment_events_live_v1
--- - org_mozilla_fenix_derived.experiment_events_live_v1
+-- - org_mozilla_ios_derived.experiment_events_live_v1
 -- - org_mozilla_firefox_derived.experiment_events_live_v1
 -- - org_mozilla_ios_firefox_derived.experiment_events_live_v1
+-- - org_mozilla_ios_firefoxbeta_derived.experiment_events_live_v1
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS org_mozilla_fenix_derived.experiment_events_live_v1
+  NOT EXISTS org_mozilla_ios_firefox_derived.experiment_events_live_v1
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  WITH fenix_all_events AS (
+  WITH ios_all_events AS (
     SELECT
       submission_timestamp,
       events
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_fenix_live.events_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.events_v1`
   ),
-  fenix AS (
+  ios AS (
     SELECT
       submission_timestamp AS `timestamp`,
       event.category AS `type`,
@@ -31,7 +32,7 @@ IF
       ) AS experiment,
       event.name AS event_method
     FROM
-      fenix_all_events,
+      ios_all_events,
       UNNEST(events) AS event
     WHERE
       event.category = 'nimbus_events'
@@ -60,11 +61,11 @@ IF
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
     COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count
   FROM
-    fenix
+    ios
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('2021-03-01')
+    timestamp > TIMESTAMP('2021-04-15')
   GROUP BY
     submission_date,
     `type`,

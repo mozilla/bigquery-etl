@@ -6,7 +6,7 @@
 -- - org_mozilla_ios_firefoxbeta_derived.experiment_search_events_live_v1
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.experiment_search_events_live_v1`
+  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.experiment_search_events_live_v1`
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
@@ -40,62 +40,30 @@ IF
       experiment.value.branch AS branch,
       -- (4)
       TO_JSON_STRING(
-        ARRAY_CONCAT(
-          JSON_EXTRACT_ARRAY(
-            -- (3)
-            REGEXP_REPLACE(
-              -- (2)
-              TO_JSON_STRING(
-                REGEXP_EXTRACT_ALL(
-                  -- (1)
-                  TO_JSON_STRING(metrics.labeled_counter.browser_search_ad_clicks),
-                  '"value":([^,}]+)'
-                )
-              ),
-              r'"([^"]+)"',
-              r'[\1, 0, 0]'
-            )
-          ),
-          JSON_EXTRACT_ARRAY(
-            -- (3)
-            REGEXP_REPLACE(
-              -- (2)
-              TO_JSON_STRING(
-                REGEXP_EXTRACT_ALL(
-                  -- (1)
-                  TO_JSON_STRING(metrics.labeled_counter.browser_search_with_ads),
-                  '"value":([^,}]+)'
-                )
-              ),
-              r'"([^"]+)"',
-              r'[0, \1, 0]'
-            )
-          ),
-          JSON_EXTRACT_ARRAY(
-            -- (3)
-            REGEXP_REPLACE(
-              -- (2)
-              TO_JSON_STRING(
-                REGEXP_EXTRACT_ALL(
-                  -- (1)
-                  TO_JSON_STRING(metrics.labeled_counter.metrics_search_count),
-                  '"value":([^,}]+)'
-                )
-              ),
-              r'"([^"]+)"',
-              r'[0, 0, \1]'
-            )
+        JSON_EXTRACT_ARRAY(
+          -- (3)
+          REGEXP_REPLACE(
+            -- (2)
+            TO_JSON_STRING(
+              REGEXP_EXTRACT_ALL(
+                -- (1)
+                TO_JSON_STRING(metrics.labeled_counter.search_counts),
+                '"value":([^,}]+)'
+              )
+            ),
+            r'"([^"]+)"',
+            r'[0, 0, \1]'
           )
         )
       ) AS nested_counts
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.metrics_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.metrics_v1`
     LEFT JOIN
       UNNEST(ping_info.experiments) AS experiment
     WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-      DATE(submission_timestamp) > '2021-03-12'
+      DATE(submission_timestamp) > '2021-04-01'
   )
   SELECT
     date(submission_timestamp) AS submission_date,

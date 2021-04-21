@@ -1,22 +1,22 @@
--- baseline for {app_name} {channel}
-baseline_{namespace} AS (
+-- baseline for {{ app_name }} {{ channel }}
+baseline_{{ namespace }} AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     client_info.locale
   FROM
-    {namespace}.baseline
+    {{ namespace }}.baseline
 ),
--- metrics for {app_name} {channel}
-metrics_{namespace} AS (
+-- metrics for {{ app_name }} {{ channel }}
+metrics_{{ namespace }} AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    '{app_name}' AS app_name,
+    '{{ app_name }}' AS app_name,
     'Fenix' AS normalized_app_name,
     client_info.app_display_version AS app_version,
-    '{channel}' AS channel,
+    '{{ channel }}' AS channel,
     normalized_os AS os,
     client_info.android_sdk_version AS os_version,
     metrics.string.search_default_engine_code AS default_search_engine,
@@ -31,5 +31,5 @@ metrics_{namespace} AS (
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
   FROM
-    {namespace}.metrics AS {namespace}_metrics
+    {{ namespace }}.metrics AS {{ namespace }}_metrics
 ),

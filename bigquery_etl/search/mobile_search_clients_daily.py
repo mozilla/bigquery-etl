@@ -2,12 +2,21 @@
 """
 Generate mobile search clients_daily query by creating a combined CTE for
 metrics and baseline for all Firefox Android apps, then print query to stdout
+
+To update query file:
+python -m bigquery_etl.search.mobile_search_clients_daily \
+    > sql/moz-fx-data-shared-prod/\
+    search_derived/mobile_search_clients_daily_v1/query.sql
 """
-import os
+from pathlib import Path
 from typing import List
 
+from jinja2 import Environment, FileSystemLoader
+
+from bigquery_etl.format_sql.formatter import reformat
+
 # fmt: off
-ANDROID_APP_TUPLES = [
+APP_CHANNEL_TUPLES = [
     ("org_mozilla_fenix",           "Firefox Preview",  "beta",      "android"),
     ("org_mozilla_fenix_nightly",   "Firefox Preview",  "nightly",   "android"),
     ("org_mozilla_fennec_aurora",   "Fenix",            "nightly",   "android"),
@@ -26,58 +35,57 @@ def union_statements(statements: List[str]):
 
 
 def main():
-    base_dir = os.path.dirname(__file__)
+    """Generate mobile search clients daily query and print to stdout."""
+    base_dir = Path(__file__).parent
 
-    with open(os.path.join(base_dir, "fenix_metrics.template.sql")) as f:
-        android_query_template = f.read()
+    env = Environment(loader=FileSystemLoader(base_dir / "templates"))
 
-    with open(os.path.join(base_dir, "ios_metrics.template.sql")) as f:
-        ios_query_template = f.read()
+    android_query_template = env.get_template("fenix_metrics.template.sql")
+    ios_query_template = env.get_template("ios_metrics.template.sql")
 
     queries = [
-        android_query_template.format(
+        android_query_template.render(
             namespace=app_channel[0], app_name=app_channel[1], channel=app_channel[2]
         )
         if app_channel[3] == "android"
-        else ios_query_template.format(
+        else ios_query_template.render(
             namespace=app_channel[0], app_name=app_channel[1], channel=app_channel[2]
         )
-        for app_channel in ANDROID_APP_TUPLES
+        for app_channel in APP_CHANNEL_TUPLES
     ]
 
-    with open(os.path.join(base_dir, "mobile_search_clients_daily.template.sql")) as f:
-        search_query_template = f.read()
+    search_query_template = env.get_template("mobile_search_clients_daily.template.sql")
 
     fenix_combined_baseline = union_statements(
         [
             f"SELECT * FROM baseline_{namespace}"
-            for namespace, _, _, platform in ANDROID_APP_TUPLES
+            for namespace, _, _, platform in APP_CHANNEL_TUPLES
             if platform == "android"
         ]
     )
     fenix_combined_metrics = union_statements(
         [
             f"SELECT * FROM metrics_{namespace}"
-            for namespace, _, _, platform in ANDROID_APP_TUPLES
+            for namespace, _, _, platform in APP_CHANNEL_TUPLES
             if platform == "android"
         ]
     )
     ios_combined_metrics = union_statements(
         [
             f"SELECT * FROM metrics_{namespace}"
-            for namespace, _, _, platform in ANDROID_APP_TUPLES
+            for namespace, _, _, platform in APP_CHANNEL_TUPLES
             if platform == "ios"
         ]
     )
 
-    search_query = search_query_template.format(
+    search_query = search_query_template.render(
         baseline_and_metrics_by_namespace="\n".join(queries),
         fenix_baseline=fenix_combined_baseline,
         fenix_metrics=fenix_combined_metrics,
         ios_metrics=ios_combined_metrics,
     )
 
-    print(search_query)
+    print(reformat(search_query))
 
 
 if __name__ == "__main__":

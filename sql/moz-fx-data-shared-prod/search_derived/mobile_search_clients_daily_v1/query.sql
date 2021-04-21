@@ -427,12 +427,7 @@ glean_metrics AS (
 ),
 glean_combined_searches AS (
   SELECT
-    * EXCEPT (
-      search_count,
-      search_ad_clicks,
-      search_in_content,
-      search_with_ads
-    ),
+    * EXCEPT (search_count, search_ad_clicks, search_in_content, search_with_ads),
     ARRAY_CONCAT(
       add_search_type(search_count, 'sap'),
       add_search_type(search_in_content, 'in-content'),

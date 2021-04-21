@@ -530,7 +530,6 @@ def backfill(
                 arguments = (
                     [
                         "query",
-                        "--time_partitioning_type=DAY",
                         f"--parameter=submission_date:DATE:{backfill_date}",
                         "--use_legacy_sql=false",
                         "--replace",

@@ -229,7 +229,7 @@ histogram_data_sample AS (
       payload.processes.content.histograms.http_page_tls_handshake
     ).values AS tls_handshake,
   FROM
-    telemetry.main
+    telemetry_stable.main_v4
   WHERE
     DATE(submission_timestamp) = @submission_date
     -- Restrict to Firefox.

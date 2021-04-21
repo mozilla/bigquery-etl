@@ -87,15 +87,15 @@ WITH core_flattened_searches AS (
       IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
     ) AS searches
 ),
-{baseline_and_metrics_by_namespace}
+{{ baseline_and_metrics_by_namespace }}
 fenix_baseline AS (
-  {fenix_baseline}
+  {{ fenix_baseline }}
 ),
 fenix_metrics AS (
-  {fenix_metrics}
+  {{ fenix_metrics }}
 ),
 ios_metrics AS (
-  {ios_metrics}
+  {{ ios_metrics }}
 ),
 --  older fenix clients don't send locale in the metrics ping
 fenix_client_locales AS (

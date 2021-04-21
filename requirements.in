@@ -3,4 +3,4 @@ Jinja2==2.11.2
 pytest==6.0.2
 pytest-black==0.3.11
 pytest-flake8==1.0.6
-pyyaml==5.3.1
+pyyaml==5.4

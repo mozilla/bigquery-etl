@@ -10,7 +10,6 @@ labels:
 owners:
 - mmccorquodale@mozilla.com
 - xluo@mozilla.com
-- ssuh@mozilla.com
 scheduling:
   dag_name: bqetl_search_dashboard
   depends_on_past: false

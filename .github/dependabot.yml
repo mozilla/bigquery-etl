@@ -6,3 +6,9 @@ updates:
       interval: "daily"
       # check 2 hours before Airflow deploys
       time: "22:00"
+  - package-ecosystem: pip
+      directory: /
+      schedule:
+        interval: daily
+      reviewers:
+        - BenWu

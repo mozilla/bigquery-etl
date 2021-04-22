@@ -117,6 +117,21 @@ bqetl_mozilla_vpn:
     retries: 2
     retry_delay: 30m
 
+bqetl_mozilla_vpn_site_metrics:
+  schedule_interval: 0 23 * * *
+  description: |
+    Daily extracts from the Google Analytics tables for Mozilla VPN as well as
+    derived tables based on that data.
+
+    Depends on Google Analytics exports, which have highly variable timing, so
+    is scheduled to run very late in the UTC day.
+  default_args:
+    owner: dthorn@mozilla.com
+    start_date: "2021-04-22"
+    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+
 bqetl_gud:
   schedule_interval: 0 3 * * *
   description: Optimized tables that power the

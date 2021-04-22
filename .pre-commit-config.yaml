@@ -13,6 +13,7 @@ repos:
   rev: 3.8.3
   hooks:
   - id: flake8
+    exclude: dags/
 - repo: https://github.com/adrienverge/yamllint
   rev: v1.26.0
   hooks:
@@ -26,4 +27,4 @@ repos:
   rev: 5.1.1
   hooks:
   - id: pydocstyle
-    exclude: (.*/)?test_.*\.py
+    exclude: dags/|(.*/)?test_.*\.py

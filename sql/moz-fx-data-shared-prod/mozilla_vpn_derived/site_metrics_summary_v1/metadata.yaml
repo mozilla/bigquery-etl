@@ -1,0 +1,12 @@
+friendly_name: GA Site Metrics Summary for Mozilla VPN
+description: >
+  GA Site Metrics Summary for Mozilla VPN
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: mozilla_vpn
+  schedule: daily
+scheduling:
+  # GA data arrives hours later than the rest, so this has a separate DAG
+  dag_name: bqetl_mozilla_vpn_site_metrics
+  date_partition_parameter: date

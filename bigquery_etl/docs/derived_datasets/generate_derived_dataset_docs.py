@@ -11,6 +11,7 @@ from bigquery_etl.dependency import extract_table_references
 
 VIEW_FILE = "view.sql"
 METADATA_FILE = "metadata.yaml"
+SCHEMA_FILE = "schema.yaml"
 NON_USER_FACING_DATASET_SUFFIXES = (
     "_derived",
     "_external",
@@ -51,16 +52,17 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                 source_urls["Source Directory"] = f"{SOURCE_URL}/{root}"
                 referenced_tables = []
 
-                metadata = {}
-                if METADATA_FILE in files:
-                    source_urls[
-                        "Metadata File"
-                    ] = f"{SOURCE_URL}/{root}/{METADATA_FILE}"
-                    with open(os.path.join(root, METADATA_FILE)) as stream:
-                        try:
-                            metadata = yaml.safe_load(stream)
-                        except yaml.YAMLError as error:
-                            print(error)
+                # metadata, schemas
+                base_table_data = {}
+                for (type, filename) in (('metadata', METADATA_FILE), ('schema', SCHEMA_FILE)):
+                    if filename in files:
+                        source_urls[
+                            f"{type.capitalize()} File"
+                        ] = f"{SOURCE_URL}/{root}/{METADATA_FILE}"
+                        with open(os.path.join(root, filename)) as stream:
+                            base_table_data[type] = yaml.safe_load(stream)
+                    else:
+                        base_table_data[type] = {}
                 if VIEW_FILE in files:
                     source_urls["View Definition"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
                     view_file = Path(os.path.join(root, VIEW_FILE))
@@ -95,8 +97,7 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                 # Create template with the markdown source text
                 template = env.get_template("table.md")
 
-                table_data = dict(
-                    metadata=metadata,
+                table_data = dict(base_table_data,
                     table_name=dataset_name,
                     source_urls=source_urls,
                     referenced_tables=referenced_tables,

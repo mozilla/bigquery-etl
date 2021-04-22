@@ -175,6 +175,17 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     if not metadata_file.exists():
         with metadata_file.open("w") as f:
             f.write(metadata_content)
+            # GIANT HACK: append glean app information where we have it
+            # (we should really generate this metadata earlier in the pipeline and use it)
+            bq_dataset_family_to_app_name_mapping = {
+                'org_mozilla_fenix': 'fenix',
+                'org_mozilla_firefox': 'fenix',
+                'org_mozilla_firefox_beta': 'fenix',
+                'org_mozilla_fenix_nightly': 'fenix',
+                'org_mozilla_fennec_aurora': 'fenix'
+            }
+            if schema.schema_id == "moz://mozilla.org/schemas/glean/ping/1" and bq_dataset_family_to_app_name_mapping.get(schema.bq_dataset_family):
+                f.write('glean:\n  app_names: [{}]\n'.format(bq_dataset_family_to_app_name_mapping[schema.bq_dataset_family]))
 
 
 def get_stable_table_schemas() -> List[SchemaFile]:

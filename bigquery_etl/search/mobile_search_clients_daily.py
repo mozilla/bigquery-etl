@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Generate mobile search clients_daily query by creating a combined CTE for
-metrics and baseline for all Firefox Android apps, then print query to stdout
+Generate mobile search clients_daily query.
+
+Creates a combined CTE for metrics and baseline for Android and iOS Glean
+apps, then print query to stdout
 
 To update query file:
 python -m bigquery_etl.search.mobile_search_clients_daily \
@@ -17,20 +19,20 @@ from bigquery_etl.format_sql.formatter import reformat
 
 # fmt: off
 APP_CHANNEL_TUPLES = [
-    ("org_mozilla_fenix",           "Firefox Preview",  "beta",      "android"),
-    ("org_mozilla_fenix_nightly",   "Firefox Preview",  "nightly",   "android"),
-    ("org_mozilla_fennec_aurora",   "Fenix",            "nightly",   "android"),
-    ("org_mozilla_firefox_beta",    "Fenix",            "beta",      "android"),
-    ("org_mozilla_firefox",         "Fenix",            "release",   "android"),
-    ("org_mozilla_ios_firefox",     "Firefox iOS",      "release",   "ios"),
-    ("org_mozilla_ios_firefoxbeta", "Firefox iOS",      "beta",      "ios"),
-    ("org_mozilla_ios_fennec",      "Firefox iOS",      "nightly",   "ios"),
+    ("org_mozilla_fenix",           "Firefox Preview",  "beta",      "android"),  # noqa E241 E501
+    ("org_mozilla_fenix_nightly",   "Firefox Preview",  "nightly",   "android"),  # noqa E241 E501
+    ("org_mozilla_fennec_aurora",   "Fenix",            "nightly",   "android"),  # noqa E241 E501
+    ("org_mozilla_firefox_beta",    "Fenix",            "beta",      "android"),  # noqa E241 E501
+    ("org_mozilla_firefox",         "Fenix",            "release",   "android"),  # noqa E241 E501
+    ("org_mozilla_ios_firefox",     "Firefox iOS",      "release",   "ios"),  # noqa E241 E501
+    ("org_mozilla_ios_firefoxbeta", "Firefox iOS",      "beta",      "ios"),  # noqa E241 E501
+    ("org_mozilla_ios_fennec",      "Firefox iOS",      "nightly",   "ios"),  # noqa E241 E501
 ]
 # fmt: on
 
 
 def union_statements(statements: List[str]):
-    """Join a list of strings together by UNION ALL"""
+    """Join a list of strings together by UNION ALL."""
     return "\nUNION ALL\n".join(statements)
 
 

@@ -256,7 +256,7 @@
 - <<: *ios_base
   default_search_engine: engine2
   engine: engine2
-  source: in-content.organic.none
+  source: organic.none
   organic: 7
 - <<: *ios_base
   client_id: beta_ios

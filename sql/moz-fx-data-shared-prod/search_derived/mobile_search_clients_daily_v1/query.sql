@@ -637,7 +637,7 @@ unfiltered_search_clients AS (
     udf.mode_last(ARRAY_AGG(country)) AS country,
     udf.mode_last(ARRAY_AGG(locale)) AS locale,
     udf.mode_last(ARRAY_AGG(app_version)) AS app_version,
-    udf.mode_last(ARRAY_AGG(channel)) AS channel,
+    channel,
     udf.mode_last(ARRAY_AGG(os)) AS os,
     udf.mode_last(ARRAY_AGG(os_version)) AS os_version,
     udf.mode_last(ARRAY_AGG(default_search_engine)) AS default_search_engine,
@@ -661,7 +661,8 @@ unfiltered_search_clients AS (
     source,
     search_type,
     app_name,
-    normalized_app_name
+    normalized_app_name,
+    channel
 )
 SELECT
   *

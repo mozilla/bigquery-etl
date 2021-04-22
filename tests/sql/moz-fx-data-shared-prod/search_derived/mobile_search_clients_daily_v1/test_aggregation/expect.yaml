@@ -230,3 +230,43 @@
   experiments:
   - key: test_experiment
     value: test_branch
+- &ios_base
+  <<: *base
+  client_id: release_ios
+  os: iOS
+  os_version: "13.0"
+  app_version: "31.0"
+  app_name: Firefox iOS
+  normalized_app_name: Firefox iOS
+  channel: release
+  country: US
+  locale: en-US
+  profile_creation_date: 18201
+  profile_age_in_days: 30
+- <<: *ios_base
+  default_search_engine: engine2
+  engine: engine2
+  source: actionbar
+  search_count: 1
+- <<: *ios_base
+  default_search_engine: engine2
+  engine: engine2
+  source: suggestion
+  search_count: 2
+- <<: *ios_base
+  default_search_engine: engine2
+  engine: engine2
+  source: in-content.organic.none
+  organic: 7
+- <<: *ios_base
+  client_id: beta_ios
+  channel: beta
+  engine: engine2
+  source: in-content.sap.code
+  tagged_sap: 2
+- <<: *ios_base
+  client_id: nightly_ios
+  channel: nightly
+  engine: engine2
+  source: in-content.sap-follow-on.code
+  tagged_follow_on: 1

@@ -24,7 +24,7 @@
         - key: engine2.suggestion
           value: "2"
       search_in_content:
-        - key: engine2.in-content.organic.none
+        - key: engine2.organic.none
           value: "3"
 - <<: *base
   metrics:
@@ -32,5 +32,5 @@
       search_default_engine: engine2
     labeled_counter:
       search_in_content:
-        - key: engine2.in-content.organic.none
+        - key: engine2.organic.none
           value: "4"

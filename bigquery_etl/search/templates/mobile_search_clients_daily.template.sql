@@ -267,6 +267,7 @@ combined_search_clients AS (
       'tagged-follow-on'
     WHEN
       STARTS_WITH(source, 'in-content.organic')
+      OR STARTS_WITH(source, 'organic.')  -- for ios
     THEN
         'organic'
     WHEN

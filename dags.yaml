@@ -118,13 +118,14 @@ bqetl_mozilla_vpn:
     retry_delay: 30m
 
 bqetl_mozilla_vpn_site_metrics:
-  schedule_interval: 0 23 * * *
+  schedule_interval: 0 15 * * *
   description: |
     Daily extracts from the Google Analytics tables for Mozilla VPN as well as
     derived tables based on that data.
 
     Depends on Google Analytics exports, which have highly variable timing, so
-    is scheduled to run very late in the UTC day.
+    queries depend on site_metrics_empty_check_v1, which retries every 30
+    minutes to wait for data to be available.
   default_args:
     owner: dthorn@mozilla.com
     start_date: "2021-04-22"

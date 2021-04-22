@@ -16,7 +16,8 @@ Daily extracts from the Google Analytics tables for Mozilla VPN as well as
 derived tables based on that data.
 
 Depends on Google Analytics exports, which have highly variable timing, so
-is scheduled to run very late in the UTC day.
+queries depend on site_metrics_empty_check_v1, which retries every 30
+minutes to wait for data to be available.
 
 #### Owner
 
@@ -39,7 +40,7 @@ default_args = {
 with DAG(
     "bqetl_mozilla_vpn_site_metrics",
     default_args=default_args,
-    schedule_interval="0 23 * * *",
+    schedule_interval="0 15 * * *",
     doc_md=docs,
 ) as dag:
 
@@ -52,6 +53,23 @@ with DAG(
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
         depends_on_past=False,
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__site_metrics_empty_check__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__site_metrics_empty_check__v1",
+        destination_table=None,
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql",
+        retry_delay=datetime.timedelta(seconds=1800),
+        retries=18,
+        email_on_retry=False,
         dag=dag,
     )
 
@@ -71,7 +89,7 @@ with DAG(
         task_id="wait_for_mozilla_vpn_derived__all_subscriptions__v1",
         external_dag_id="bqetl_mozilla_vpn",
         external_task_id="mozilla_vpn_derived__all_subscriptions__v1",
-        execution_delta=datetime.timedelta(seconds=76500),
+        execution_delta=datetime.timedelta(seconds=47700),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -83,4 +101,8 @@ with DAG(
 
     mozilla_vpn_derived__funnel_ga_to_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__site_metrics_summary__v1
+    )
+
+    mozilla_vpn_derived__site_metrics_summary__v1.set_upstream(
+        mozilla_vpn_derived__site_metrics_empty_check__v1
     )

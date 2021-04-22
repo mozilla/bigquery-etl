@@ -1,0 +1,15 @@
+---
+- submission_timestamp: 2020-05-01 09:13:09.842719 UTC
+  normalized_channel: Other
+  normalized_os: iOS
+  sample_id: 1
+  client_info:
+    app_display_version: "31.0"
+    client_id: b
+    os_version: "13.0"
+  normalized_country_code: US
+  metrics:
+    labeled_counter:
+      search_counts:
+        - key: engine1.actionbar
+          value: "10"

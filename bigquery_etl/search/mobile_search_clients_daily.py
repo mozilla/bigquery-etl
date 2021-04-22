@@ -5,8 +5,8 @@ metrics and baseline for all Firefox Android apps, then print query to stdout
 
 To update query file:
 python -m bigquery_etl.search.mobile_search_clients_daily \
-    > sql/moz-fx-data-shared-prod/\
-    search_derived/mobile_search_clients_daily_v1/query.sql
+> sql/moz-fx-data-shared-prod/\
+search_derived/mobile_search_clients_daily_v1/query.sql
 """
 from pathlib import Path
 from typing import List

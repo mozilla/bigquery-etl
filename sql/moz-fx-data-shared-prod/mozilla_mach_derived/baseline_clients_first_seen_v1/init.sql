@@ -12,7 +12,9 @@ AS
 WITH baseline AS (
   SELECT
     client_info.client_id,
-    sample_id,
+      -- Some Glean data from 2019 contains incorrect sample_id, so we
+      -- recalculate here; see bug 1707640
+    udf.safe_sample_id(client_info.client_id) AS sample_id,
     DATE(MIN(submission_timestamp)) AS submission_date,
     DATE(MIN(submission_timestamp)) AS first_seen_date,
   FROM

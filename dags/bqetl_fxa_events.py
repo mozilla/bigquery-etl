@@ -19,6 +19,11 @@ as part of the import.
 The DAG also provides daily aggregations on top of the raw log data,
 which eventually power high-level reporting about FxA usage.
 
+Tasks here have occasionally failed due to incompatible schema changes
+in the tables populated by Cloud Logging.
+See https://github.com/mozilla/bigquery-etl/issues/1684 for an example
+mitigation.
+
 #### Owner
 
 jklukas@mozilla.com

@@ -12,6 +12,8 @@ WITH base AS (
               SELECT AS STRUCT
                 jsonPayload.fields.* EXCEPT (device_id, user_id) REPLACE(
                   -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1707571
+                  CAST(NULL AS FLOAT64) AS emailverified,
+                  CAST(NULL AS FLOAT64) AS isprimary,
                   CAST(NULL AS FLOAT64) AS isverified
                 ),
                 TO_HEX(SHA256(jsonPayload.fields.user_id)) AS user_id

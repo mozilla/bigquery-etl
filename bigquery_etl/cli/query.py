@@ -623,14 +623,17 @@ def initialize(name, sql_dir, project_id, dry_run):
         click.echo("Authentication required for creating tables.", err=True)
         sys.exit(1)
 
-    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    if Path(name).exists():
+        # allow name to be a path
+        query_files = [Path(name)]
+    else:
+        query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
 
     for query_file in query_files:
         init_files = Path(query_file.parent).rglob("init.sql")
         client = bigquery.Client()
 
         for init_file in init_files:
-            click.echo(f"Create destination table for {init_file}")
             project = init_file.parent.parent.parent.name
 
             with open(init_file) as init_file_stream:
@@ -640,6 +643,17 @@ def initialize(name, sql_dir, project_id, dry_run):
                     dry_run=dry_run,
                     default_dataset=f"{project}.{dataset}",
                 )
+
+                if "CREATE MATERIALIZED VIEW" in init_sql:
+                    click.echo(f"Create materialized view for {init_file}")
+                    # existing materialized view have to be deleted before re-creation
+                    view_name = query_file.parent.name
+                    client.delete_table(
+                        f"{project}.{dataset}.{view_name}", not_found_ok=True
+                    )
+                else:
+                    click.echo(f"Create destination table for {init_file}")
+
                 client.query(init_sql, job_config=job_config).result()
 
 

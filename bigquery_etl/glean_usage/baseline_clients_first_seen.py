@@ -93,8 +93,6 @@ def run_query(
     job = client.query(sql, job_config)
     if not dry_run:
         job.result()
-        logging.info(f"Recreating view {view_id}")
-        client.query(view_sql, bigquery.QueryJobConfig(use_legacy_sql=False)).result()
 
 
 if __name__ == "__main__":

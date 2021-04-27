@@ -53,8 +53,14 @@
   numeric_index: 3
   index: "\U00000003"
   event_properties:
-    - key: third_event_prop
+    - key: first_property
       index: 1
+      value:
+        - key: first_property_value_1
+          index: 1
+          value: "\U00000001"
+    - key: third_event_prop
+      index: 2
       value:
         - key: third_event_prop_value_1
           index: 1

@@ -163,10 +163,12 @@ new_event_property_value_indices AS (
         event_types,
         UNNEST(event_properties) AS existing_event_property,
         UNNEST(value) AS values
-    ) AS event_types
+    ) AS existing_event_type_values
   ON
-    event_property.key = event_types.existing_event_property.key
-    AND event_property.value = event_types.values.key
+    current_events.category = existing_event_type_values.category
+    AND current_events.event = existing_event_type_values.event
+    AND event_property.key = existing_event_type_values.existing_event_property.key
+    AND event_property.value = existing_event_type_values.values.key
   JOIN
     all_event_property_indices
   ON
@@ -174,7 +176,7 @@ new_event_property_value_indices AS (
     AND all_event_property_indices.event = current_events.event
     AND all_event_property_indices.event_property = event_property.key
   WHERE
-    event_types.event IS NULL
+    existing_event_type_values.event IS NULL
   GROUP BY
     category,
     event,

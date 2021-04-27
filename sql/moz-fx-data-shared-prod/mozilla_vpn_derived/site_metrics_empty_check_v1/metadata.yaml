@@ -1,0 +1,20 @@
+friendly_name: Site Metrics Empty Check
+description: >
+  Check if there is Google Analytics data for vpn.mozilla.org
+  and mozilla.org for the given date
+owners:
+  - dthorn@mozilla.com
+labels:
+  application: mozilla_vpn
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_mozilla_vpn_site_metrics
+  destination_table: null
+  query_file_path:
+    sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql
+  parameters: ['date:DATE:{{ds}}']
+  # dag starts at 15:00 UTC, give up if it's not done before midnight
+  retry_delay: 30m
+  retries: 18
+  email_on_retry: false

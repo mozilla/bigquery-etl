@@ -101,6 +101,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/new_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/retention_by_subscription_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_summary_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/users_v1/query.sql",

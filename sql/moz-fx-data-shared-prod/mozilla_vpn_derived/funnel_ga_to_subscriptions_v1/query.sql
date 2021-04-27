@@ -1,5 +1,6 @@
-CREATE TEMP FUNCTION in_available_geos(country STRING) AS (
+CREATE TEMP FUNCTION in_available_geos(`date` DATE, country STRING) AS (
   country IN ("United States", "United Kingdom", "Canada", "Malaysia", "Singapore", "New Zealand")
+  OR (`date` >= "2021-04-28" AND country IN ("France", "Germany"))
 );
 
 WITH website_base AS (
@@ -40,10 +41,10 @@ website AS (
       ERROR("website_channel_group must have one value per group")
     ) AS website_channel_group,
     SUM(sessions) AS sessions,
-    SUM(IF(in_available_geos(country), sessions, 0)) AS sessions_in_available_geos,
+    SUM(IF(in_available_geos(`date`, country), sessions, 0)) AS sessions_in_available_geos,
     SUM(subscribe_intent_goal) AS subscribe_intent,
     SUM(
-      IF(in_available_geos(country), subscribe_intent_goal, 0)
+      IF(in_available_geos(`date`, country), subscribe_intent_goal, 0)
     ) AS subscription_intent_in_available_geos
   FROM
     website_base

@@ -29,21 +29,21 @@ IF
       CAST(
         ARRAY_CONCAT(metrics.labeled_counter.browser_search_ad_clicks, [('', 0)])[
           SAFE_OFFSET(i)
-        ].value AS int64
+        ].value AS INT64
       )
     ) AS ad_clicks_count,
     SUM(
       CAST(
         ARRAY_CONCAT(metrics.labeled_counter.browser_search_with_ads, [('', 0)])[
           SAFE_OFFSET(i)
-        ].value AS int64
+        ].value AS INT64
       )
     ) AS search_with_ads_count,
     SUM(
       CAST(
         ARRAY_CONCAT(metrics.labeled_counter.metrics_search_count, [('', 0)])[
           SAFE_OFFSET(i)
-        ].value AS int64
+        ].value AS INT64
       )
     ) AS search_count
   FROM

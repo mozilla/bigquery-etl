@@ -23,44 +23,63 @@ IF
       CAST(
         ARRAY_CONCAT(payload.processes.parent.keyed_scalars.browser_search_ad_clicks, [('', 0)])[
           SAFE_OFFSET(i)
-        ].value AS int64
+        ].value AS INT64
       )
     ) AS ad_clicks_count,
     SUM(
       CAST(
         ARRAY_CONCAT(payload.processes.parent.keyed_scalars.browser_search_with_ads, [('', 0)])[
           SAFE_OFFSET(i)
-        ].value AS int64
+        ].value AS INT64
       )
     ) AS search_with_ads_count,
     SUM(
-      [
-        CAST(
-          REGEXP_EXTRACT(
-            payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
-            r'"sum":([^},]+)'
-          ) AS int64
+      IF(
+        REGEXP_CONTAINS(
+          payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
+          r'"sum":([^},]+)'
         ),
         CAST(
           REGEXP_EXTRACT(
             payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
+            r'"sum":([^},]+)'
+          ) AS INT64
+        ),
+        0
+      ) + IF(
+        REGEXP_CONTAINS(payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value, r'^"(\d+)"$'),
+        CAST(
+          REGEXP_EXTRACT(
+            payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
             r'^"(\d+)"$'
-          ) AS int64
+          ) AS INT64
+        ),
+        0
+      ) + IF(
+        REGEXP_CONTAINS(
+          payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
+          r'^"\d+;(\d+);'
         ),
         CAST(
           REGEXP_EXTRACT(
             payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
             r'^"\d+;(\d+);'
-          ) AS int64
+          ) AS INT64
+        ),
+        0
+      ) + IF(
+        REGEXP_CONTAINS(
+          payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
+          r'^"(\d+),\d+"'
         ),
         CAST(
           REGEXP_EXTRACT(
             payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
             r'^"(\d+),\d+"'
-          ) AS int64
+          ) AS INT64
         ),
         0
-      ][SAFE_OFFSET(j)]
+      )
     ) AS search_count
   FROM
     `moz-fx-data-shared-prod.telemetry_live.main_v4`
@@ -69,8 +88,6 @@ IF
   CROSS JOIN
     -- Max. number of entries is around 10
     UNNEST(GENERATE_ARRAY(0, 50)) AS i
-  CROSS JOIN
-    UNNEST(GENERATE_ARRAY(0, 5)) AS j
   WHERE
       -- Limit the amount of data the materialized view is going to backfill when created.
       -- This date can be moved forward whenever new changes of the materialized views need to be deployed.

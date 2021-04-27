@@ -31,7 +31,7 @@ IF
       CAST(
         ARRAY_CONCAT(metrics.labeled_counter.search_counts, [('', 0)])[
           SAFE_OFFSET(i)
-        ].value AS int64
+        ].value AS INT64
       )
     ) AS search_count
   FROM

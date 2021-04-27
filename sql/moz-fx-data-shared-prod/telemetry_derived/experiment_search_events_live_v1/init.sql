@@ -22,14 +22,14 @@ IF
     SUM(
       CAST(
         ARRAY_CONCAT(payload.processes.parent.keyed_scalars.browser_search_ad_clicks, [('', 0)])[
-          safe_offset(i)
+          SAFE_OFFSET(i)
         ].value AS int64
       )
     ) AS ad_clicks_count,
     SUM(
       CAST(
         ARRAY_CONCAT(payload.processes.parent.keyed_scalars.browser_search_with_ads, [('', 0)])[
-          safe_offset(i)
+          SAFE_OFFSET(i)
         ].value AS int64
       )
     ) AS search_with_ads_count,
@@ -37,25 +37,25 @@ IF
       [
         CAST(
           REGEXP_EXTRACT(
-            payload.keyed_histograms.search_counts[safe_offset(i)].value,
+            payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
             r'"sum":([^},]+)'
           ) AS int64
         ),
         CAST(
           REGEXP_EXTRACT(
-            payload.keyed_histograms.search_counts[safe_offset(i)].value,
+            payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
             r'^"(\d+)"$'
           ) AS int64
         ),
         CAST(
           REGEXP_EXTRACT(
-            payload.keyed_histograms.search_counts[safe_offset(i)].value,
+            payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
             r'^"\d+;(\d+);'
           ) AS int64
         ),
         CAST(
           REGEXP_EXTRACT(
-            payload.keyed_histograms.search_counts[safe_offset(i)].value,
+            payload.keyed_histograms.search_counts[SAFE_OFFSET(i)].value,
             r'^"(\d+),\d+"'
           ) AS int64
         ),
@@ -65,14 +65,16 @@ IF
   FROM
     `moz-fx-data-shared-prod.telemetry_live.main_v4`
   LEFT JOIN
-    UNNEST(environment.experiments) AS experiment,
+    UNNEST(environment.experiments) AS experiment
+  CROSS JOIN
     -- Max. number of entries is around 10
-    UNNEST(GENERATE_ARRAY(0, 50)) AS i,
+    UNNEST(GENERATE_ARRAY(0, 50)) AS i
+  CROSS JOIN
     UNNEST(GENERATE_ARRAY(0, 5)) AS j
   WHERE
       -- Limit the amount of data the materialized view is going to backfill when created.
       -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    DATE(submission_timestamp) > '2021-04-20'
+    DATE(submission_timestamp) > '2021-04-25'
   GROUP BY
     submission_date,
     experiment,

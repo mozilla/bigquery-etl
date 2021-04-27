@@ -37,8 +37,10 @@ _core_clients_first_seen AS (
 _baseline AS (
   -- extract the client_id into the top level for the `USING` clause
   SELECT DISTINCT
-    sample_id,
-    client_info.client_id
+    client_info.client_id,
+    -- Some Glean data from 2019 contains incorrect sample_id, so we
+    -- recalculate here; see bug 1707640
+    udf.safe_sample_id(client_info.client_id) AS sample_id,
   FROM
     `org_mozilla_fenix_stable.baseline_v1`
   WHERE
@@ -47,7 +49,7 @@ _baseline AS (
 _current AS (
   SELECT DISTINCT
     @submission_date AS submission_date,
-    coalesce(first_seen_date, @submission_date) AS first_seen_date,
+    COALESCE(first_seen_date, @submission_date) AS first_seen_date,
     sample_id,
     client_id
   FROM

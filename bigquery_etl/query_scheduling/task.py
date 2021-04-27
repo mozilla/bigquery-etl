@@ -158,6 +158,9 @@ class Task:
     allow_field_addition_on_date: Optional[str] = attr.ib(None)
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
     is_python_script: bool = attr.ib(False)
+    retry_delay: Optional[str] = attr.ib(None)
+    retries: Optional[int] = attr.ib(None)
+    email_on_retry: Optional[bool] = attr.ib(None)
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -197,6 +200,15 @@ class Task:
                     f"Invalid task name {value}. "
                     + "The task name has to be 1 to 62 characters long."
                 )
+
+    @retry_delay.validator
+    def validate_retry_delay(self, attribute, value):
+        """Check that retry_delay is in a valid timedelta format."""
+        if value is not None and not is_timedelta_string(value):
+            raise ValueError(
+                f"Invalid timedelta definition for {attribute}: {value}."
+                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
+            )
 
     def __attrs_post_init__(self):
         """Extract information from the query file name."""

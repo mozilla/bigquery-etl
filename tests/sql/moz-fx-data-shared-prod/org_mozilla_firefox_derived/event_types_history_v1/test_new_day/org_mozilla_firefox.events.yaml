@@ -18,6 +18,8 @@
       extra:
         - key: third_event_prop
           value: third_event_prop_value_1
+        - key: first_property
+          value: first_property_value_1
     - timestamp: 3000
       name: second_event
       category: second_category

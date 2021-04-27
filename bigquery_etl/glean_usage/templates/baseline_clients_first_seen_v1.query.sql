@@ -7,8 +7,10 @@ WITH
 _baseline AS (
   -- extract the client_id into the top level for the `USING` clause
   SELECT DISTINCT
-    sample_id,
-    client_info.client_id
+    client_info.client_id,
+    -- Some Glean data from 2019 contains incorrect sample_id, so we
+    -- recalculate here; see bug 1707640
+    udf.safe_sample_id(client_info.client_id) AS sample_id,
   FROM
     `{{ baseline_table }}`
   WHERE
@@ -17,7 +19,7 @@ _baseline AS (
 _current AS (
   SELECT DISTINCT
     @submission_date as submission_date,
-    coalesce(first_seen_date, @submission_date) as first_seen_date,
+    COALESCE(first_seen_date, @submission_date) as first_seen_date,
     sample_id,
     client_id
   FROM

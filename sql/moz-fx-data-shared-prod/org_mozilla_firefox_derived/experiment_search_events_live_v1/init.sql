@@ -28,34 +28,35 @@ IF
     SUM(
       CAST(
         ARRAY_CONCAT(metrics.labeled_counter.browser_search_ad_clicks, [('', 0)])[
-          safe_offset(i)
+          SAFE_OFFSET(i)
         ].value AS int64
       )
     ) AS ad_clicks_count,
     SUM(
       CAST(
         ARRAY_CONCAT(metrics.labeled_counter.browser_search_with_ads, [('', 0)])[
-          safe_offset(i)
+          SAFE_OFFSET(i)
         ].value AS int64
       )
     ) AS search_with_ads_count,
     SUM(
       CAST(
         ARRAY_CONCAT(metrics.labeled_counter.metrics_search_count, [('', 0)])[
-          safe_offset(i)
+          SAFE_OFFSET(i)
         ].value AS int64
       )
     ) AS search_count
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_live.metrics_v1`
   LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment,
+    UNNEST(ping_info.experiments) AS experiment
+  CROSS JOIN
     -- Max. number of entries is around 10
     UNNEST(GENERATE_ARRAY(0, 50)) AS i
   WHERE
       -- Limit the amount of data the materialized view is going to backfill when created.
       -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    DATE(submission_timestamp) > '2021-04-20'
+    DATE(submission_timestamp) > '2021-04-25'
   GROUP BY
     submission_date,
     experiment,

@@ -48,8 +48,8 @@ def generate_reports(
             "linktype": {"enabled": True},
             "trends": {"enabled": True},
             "bounty": {"enabled": True},
-            "earnings_hva": {"enabled": True},
-            "orders_with_clicks": {"enabled": True},
+            # "earnings_hva": {"enabled": True},
+            # "orders_with_clicks": {"enabled": True},
             "start_date": str(start_date),
             "end_date": str(end_date),
             "cache_filter": "custom",
@@ -57,19 +57,19 @@ def generate_reports(
                 "orders",
                 "earnings",
                 "tracking",
-                "linktype",
+                # "linktype",
                 "trends",
                 "bounty",
-                "earnings_hva",
-                "orderswithclicks",
+                # "earnings_hva",
+                # "orderswithclicks",
             ],
             "orders_filter": {"tag_id": "all"},
             "earnings_filter": {"tag_id": "all"},
             "tracking_filter": {"tag_id": "all"},
-            "linktype_filter": {"tag_id": "all"},
+            # "linktype_filter": {"tag_id": "all"},
             "trends_filter": {"tag_id": "all"},
             "bounty_filter": {"tag_id": "all"},
-            "orders_with_clicks_filter": {"tag_id": "all"},
+            # "orders_with_clicks_filter": {"tag_id": "all"},
         },
         "store_id": store_id,
     }
@@ -114,7 +114,9 @@ def check_report_status(
         )
     )
 
-    print(f"Export {export_id}: {len(exported_reports)} out of {len(report_list)} complete")
+    print(
+        f"Export {export_id}: {len(exported_reports)} out of {len(report_list)} complete"
+    )
 
     if len(exported_reports) == len(report_list):
         return exported_reports
@@ -184,6 +186,11 @@ def download_reports(
     type=Path,
     help="Directory to put downloaded file in",
 )
+@click.option(
+    "--fail-on-timeout/--nofail-on-timeout",
+    default=False,
+    help="End job if an export fails",
+)
 def fetch_reports(
     start_date,
     end_date,
@@ -193,6 +200,7 @@ def fetch_reports(
     country,
     store_id,
     output_dir,
+    fail_on_timeout,
 ):
     base_url, cookie_suffix = get_country_info(country)
 
@@ -204,29 +212,29 @@ def fetch_reports(
 
     export_ids = OrderedDict()
 
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    timed_out_exports = set()
+
     interval_start_date = start_date
     while interval_start_date <= end_date:
         interval_end_date = min(
             end_date,
             interval_start_date + datetime.timedelta(days=max_export_interval - 1),
         )
-        export_id = generate_reports(interval_start_date, interval_end_date, store_id, base_url, headers)
+        export_id = generate_reports(
+            interval_start_date, interval_end_date, store_id, base_url, headers
+        )
 
-        export_ids[export_id] = f"{interval_start_date}-{interval_end_date}"
+        date_range = f"{interval_start_date}-{interval_end_date}"
 
         interval_start_date = interval_end_date + datetime.timedelta(days=1)
 
-        time.sleep(10)  # pause to avoid hitting API rate limit
-
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    timed_out_exports = set()
-
-    # poll for completion of export
-    for export_id, date_range in export_ids.items():
-        time.sleep(20)  # start loop with timeout to avoid rate limit
+        # poll for completion of export
+        # Only generate one date range at a time because many simultaneous exports
+        # can corrupt output files
         time_elapsed = 0
-        while time_elapsed <= 1200:
+        while time_elapsed <= 2400:
             exported_reports = check_report_status(
                 store_id, base_url, headers, export_id
             )
@@ -242,12 +250,13 @@ def fetch_reports(
                 )
                 break
 
+            time.sleep(20)
             time_elapsed += 20
-            if time_elapsed >= 1200:  # large reports can take a long time to generate
-                print(
-                    f"Status check for request id {export_id} timed out",
-                    file=sys.stderr,
-                )
+            if time_elapsed >= 2400:  # large reports can take a long time to generate
+                error_msg = f"Status check for request id {export_id} timed out"
+                if fail_on_timeout:
+                    raise TimeoutError(error_msg)
+                print(error_msg, file=sys.stderr)
                 timed_out_exports.add(export_id)
                 break
 

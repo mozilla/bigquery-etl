@@ -1,0 +1,110 @@
+SELECT
+  -- Translate category
+  CASE
+    WHEN field_0 = 'Computer, Tablets & Komponenten' THEN 'Computers, Tablets & Components'
+    WHEN field_0 = 'Baumarkt' THEN 'Home Improvement'
+    WHEN field_0 = 'Home' THEN 'Home'
+    WHEN field_0 = 'Mobiltelefone & Zubehör' THEN 'Mobile Phones & Accessories'
+    WHEN field_0 = 'Sport und Fitness' THEN 'Sports & Fitness'
+    WHEN field_0 = 'Bücher & Lehrbücher' THEN 'Books & Textbooks'
+    WHEN field_0 = 'Bekleidung & Zubehör' THEN 'Clothing & Accessories'
+    WHEN field_0 = 'Spielzeug und Spiele' THEN 'Toys & Games'
+    WHEN field_0 = 'Elektronische Komponenten & Home Audio' THEN 'Electronic Components & Home Audio'
+    WHEN field_0 = 'Terrassen- und Gartenprodukte' THEN 'Patio, Lawn & Garden'
+    WHEN field_0 = 'Küche & Essen' THEN 'Kitchen & Dining'
+    WHEN field_0 = 'Möbel' THEN 'Furniture'
+    WHEN field_0 = 'Gesundheit und Haushalt' THEN 'Health & Household'
+    WHEN field_0 = 'Büro- & Schulmaterial' THEN 'Office & School Supplies'
+    WHEN field_0 = 'Schuhe, Handtaschen, Geldbörsen, Sonnenbrille' THEN 'Shoes, Handbags, Wallets, Sunglasses'
+    WHEN field_0 = 'Auto & Motorrad' THEN 'Car & Motorbike'
+    WHEN field_0 = 'Kamera, Foto & Video' THEN 'Camera, Photo & Video'
+    WHEN field_0 = 'Home Entertainment' THEN 'Home Entertainment'
+    WHEN field_0 = 'Geräte für Gesundheit & Körperpflege' THEN 'Health & Personal Care'
+    WHEN field_0 = 'Elektrogroßgeräte' THEN 'Large Appliances'
+    WHEN field_0 = 'Beauty und Pflege' THEN 'Beauty & Grooming'
+    WHEN field_0 = 'Zubehör für Gewerbe und Industrie' THEN 'Business & Industrial Supplies'
+    WHEN field_0 = 'Lebensmittel & Feinkost' THEN 'Grocery & Gourmet Food'
+    WHEN field_0 = 'Haustiernahrung & -zubehör' THEN 'Pet Food & Supplies'
+    WHEN field_0 = 'Videospiele' THEN 'Video Games'
+    WHEN field_0 = 'Blu-Ray & DVD' THEN 'Blu-Ray & DVD'
+    WHEN field_0 = 'CDs und Vinyl' THEN 'CDs & Vinyl'
+    WHEN field_0 = 'Musikinstrumente & DJ-Equipment' THEN 'Musical Instruments'
+    WHEN field_0 = 'Amazon Geschenkgutscheine' THEN 'Amazon Gift Cards'
+    WHEN field_0 = 'Baby & Kinderzimmer' THEN 'Baby & Nursery'
+    WHEN field_0 = 'Koffer, Rucksäcke & Taschen' THEN 'Luggage'
+    WHEN field_0 = 'Video-On-Demand Ausleihen oder kaufen' THEN 'Video On Demand: Rent or Buy'
+    WHEN field_0 = 'Wein, Spirituosen & Bier' THEN 'Wine, Spirits & Beer'
+    WHEN field_0 = 'Schmuck' THEN 'Jewelry'
+    WHEN field_0 = 'Uhren' THEN 'Watches'
+    WHEN field_0 = 'Kindle-Bücher' THEN 'Kindle Books'
+    WHEN field_0 = 'Videospiel-Downloads' THEN 'Video Game Downloads'
+    WHEN field_0 = 'Software' THEN 'Software'
+    WHEN field_0 = 'Digitale Musik' THEN 'Digital Music'
+    WHEN field_0 = 'Software-Download' THEN 'Software Download'
+    WHEN field_0 = 'Echo-Geräte' THEN 'Echo Devices'
+    WHEN field_0 = 'Softlines Private Label' THEN 'Softlines Private Label'
+    WHEN field_0 = 'Fire TV-Geräte' THEN 'Fire TV Devices'
+    WHEN field_0 = 'Kindle E-Reader' THEN 'Kindle E-readers'
+    WHEN field_0 = 'Fire Tablets' THEN 'Fire Tablets'
+    WHEN field_0 = 'Handmade' THEN 'Handmade'
+    WHEN field_0 = 'Andere Geschenkgutscheine Marken' THEN 'Other Gift Card Brands'
+    WHEN field_0 = 'Elektro- und Handwerkzeuge' THEN 'Power & Hand Tools'
+    WHEN field_0 = 'Naturnahe Erholung' THEN 'Outdoor Recreation'
+    WHEN field_0 = 'Kindle E-Reader-Zubehör' THEN 'Kindle E-readers Accessories'
+    WHEN field_0 = 'Ring Video Türklingel und Kameras' THEN 'Ring Video Doorbells and Cameras'
+    WHEN field_0 = 'Amazon Cloud-Kamera' THEN 'Amazon Cloud Cam'
+    WHEN field_0 = 'Prime Pantry' THEN 'Prime Pantry'
+    WHEN field_0 = 'Fire-Tablets Zubehör' THEN 'Fire Tablets Accessories'
+    WHEN field_0 = 'Sonstige' THEN 'Miscellaneous'
+    WHEN field_0 = 'Audible-Hörbücher' THEN 'Audible Audiobooks'
+    WHEN field_0 = 'Amazon Coins' THEN 'Amazon Coins'
+    WHEN field_0 = 'Andere' THEN 'Other'
+    WHEN field_0 = 'Fresh Ambient' THEN 'Fresh Ambient'
+    WHEN field_0 = 'Fire TV Zubehör' THEN 'Fire TV Accessories'
+    WHEN field_0 = 'Echo & Alexa Zubehör' THEN 'Echo & Alexa Accessories'
+    WHEN field_0 = 'Digitales Video-Abonnement' THEN 'Digital Video Subscription'
+    WHEN field_0 = 'Kindle Unlimited-Mitgliedschaften' THEN 'Kindle Unlimited Memberships'
+    WHEN field_0 = 'Andere Geschenkgutscheine Marken' THEN 'Other Gift Card Brands'
+    WHEN field_0 = 'Ringalarme und intelligente Beleuchtung' THEN 'Ring Alarms and Smart Lighting'
+    WHEN field_0 = 'eero Geräte' THEN 'eero Devices'
+    WHEN field_0 = 'Element Smart TV' THEN 'Element Smart TV'
+    WHEN field_0 = 'Kunst, Handwerk & Handarbeit' THEN 'Arts, Crafts & Sewing'
+    WHEN field_0 = 'Häusliche Dienstleistungen' THEN 'Home Services'
+    WHEN field_0 = 'Andere' THEN 'Other'
+    WHEN field_0 = 'VHS' THEN 'VHS'
+    WHEN field_0 = 'Luxuskörperpflege' THEN 'Luxury Beauty'
+    WHEN field_0 = 'Zeitschriften' THEN 'Magazines'
+    WHEN field_0 = 'Mobilzubehör' THEN 'Wireless Accessories'
+    WHEN field_0 = 'Kindle Zeitschriften' THEN 'Kindle Periodicals'
+    WHEN field_0 = 'Geschützte Kollektion' THEN 'Protected Collection'
+    WHEN field_0 = 'Amazon Fresh Produkte' THEN 'Amazon Fresh Products'
+    WHEN field_0 = 'Mobile Elektronik' THEN 'Mobile Electronics'
+    WHEN field_0 = 'Authority Non Buyable' THEN 'Authority Non Buyable'
+    WHEN field_0 = 'Zubehör für digitale Produkte' THEN 'Digital Products Accessory'
+    WHEN field_0 = 'Sammlerstücke im Bereich Unterhaltung' THEN 'Entertainment Collectibles'
+    WHEN field_0 = 'Zubereitete Frischwaren' THEN 'Fresh & Chilled'
+    WHEN field_0 = 'Speisen und Getränke' THEN 'Food & Grocery'
+    WHEN field_0 = 'Bildende Kunst' THEN 'Fine Art'
+    WHEN field_0 = 'Sport-Sammlerstücke' THEN 'Sports Collectibles'
+    WHEN field_0 = 'Appstore für Android' THEN 'Appstore for Android'
+    ELSE field_0
+  END AS category,
+  field_1 AS name,
+  field_2 AS asin,
+  field_3 AS seller,
+  field_4 AS tracking_id,
+  SAFE_CAST(field_5 AS TIMESTAMP) AS date_shipped,
+  SAFE_CAST(field_6 AS FLOAT64) AS price_{{ currency }},
+  SAFE_CAST(field_7 AS INT64) AS items_shipped,
+  SAFE_CAST(field_8 AS INT64) AS returns,
+  SAFE_CAST(field_9 AS FLOAT64) AS revenue_{{ currency }},
+  SAFE_CAST(field_10 AS FLOAT64) AS ad_fees_{{ currency }},
+  field_11 AS device_type_group,
+  CASE
+    WHEN field_12 = 'Y' THEN TRUE
+    WHEN field_12 = 'N' THEN FALSE
+  END AS direct,
+FROM
+  {{ table_id }}
+WHERE
+  {date_filter}

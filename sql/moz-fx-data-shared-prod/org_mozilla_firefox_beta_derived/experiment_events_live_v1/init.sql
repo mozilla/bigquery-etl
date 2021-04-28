@@ -20,21 +20,21 @@ IF
     SELECT
       submission_timestamp AS `timestamp`,
       event.category AS `type`,
-    -- using UNNEST twice on the same field doesn't work in materialized views
-      REGEXP_EXTRACT(
-        TO_JSON_STRING(event.extra),
-        '.*{"key":"branch","value":"([^"]*)"}.*'
-      ) AS branch,
-      REGEXP_EXTRACT(
-        TO_JSON_STRING(event.extra),
-        '.*{"key":"experiment","value":"([^"]*)"}.*'
-      ) AS experiment,
+      CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
+      CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
       event.name AS event_method
     FROM
       fenix_all_events,
-      UNNEST(events) AS event
+      UNNEST(events) AS event,
+            -- Workaround for https://issuetracker.google.com/issues/182829918
+      -- To prevent having the branch name set to the experiment slug,
+      -- the number of generated array indices needs to be different.
+      UNNEST(GENERATE_ARRAY(0, 50)) AS i,
+      UNNEST(GENERATE_ARRAY(0, 51)) AS j
     WHERE
       event.category = 'nimbus_events'
+      AND CAST(event.extra[safe_offset(i)].key AS STRING) = 'branch'
+      AND CAST(event.extra[safe_offset(j)].key AS STRING) = 'experiment'
   )
   SELECT
     date(`timestamp`) AS submission_date,
@@ -64,7 +64,7 @@ IF
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('2021-03-01')
+    timestamp > TIMESTAMP('2021-04-25')
   GROUP BY
     submission_date,
     `type`,

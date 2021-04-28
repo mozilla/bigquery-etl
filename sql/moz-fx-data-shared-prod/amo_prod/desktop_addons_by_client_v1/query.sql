@@ -27,10 +27,10 @@ WITH per_client AS (
       -- Previous logic in https://github.com/mozilla/bigquery-etl/blob/55a429924beee3c31aca4fee0063d655f1d527f2/sql/amo_prod/desktop_addons_by_client_v1/query.sql
       ARRAY(
         SELECT AS STRUCT
-          decode_uri_component(REGEXP_EXTRACT(addon, "(.+):")) AS id,
-          REGEXP_EXTRACT(addon, ":(.+)") AS version
+          decode_uri_component(REGEXP_EXTRACT(TRIM(addon), "(.+):")) AS id,
+          REGEXP_EXTRACT(TRIM(addon), ":(.+)") AS version
         FROM
-          UNNEST(SPLIT(payload.info.addons)) AS addon
+          UNNEST(SPLIT(payload.info.addons, ",")) AS addon
       )
       ORDER BY
         submission_timestamp

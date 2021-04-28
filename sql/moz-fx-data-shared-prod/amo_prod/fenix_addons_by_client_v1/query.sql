@@ -85,7 +85,7 @@ SELECT
   * EXCEPT (addons),
   ARRAY(
     SELECT AS STRUCT
-      addon,
+      TRIM(addon) AS addon,
       -- As of 2020-07-01, the metrics ping from Fenix contains no data about
       -- the version of installed addons, so we inject null and replace with
       -- an appropriate placeholder value when we get to the app-facing view.
@@ -93,7 +93,7 @@ SELECT
     FROM
       UNNEST(addons) AS addon
     GROUP BY
-      addon
+      TRIM(addon)
   ) AS addons
 FROM
   per_client

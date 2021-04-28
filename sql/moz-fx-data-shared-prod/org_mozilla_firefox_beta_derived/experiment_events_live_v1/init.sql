@@ -26,6 +26,9 @@ IF
     FROM
       fenix_all_events,
       UNNEST(events) AS event,
+            -- Workaround for https://issuetracker.google.com/issues/182829918
+      -- To prevent having the branch name set to the experiment slug,
+      -- the number of generated array indices needs to be different.
       UNNEST(GENERATE_ARRAY(0, 50)) AS i,
       UNNEST(GENERATE_ARRAY(0, 51)) AS j
     WHERE

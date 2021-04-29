@@ -3,7 +3,7 @@ description: |-
   Derived data from the activity-stream namespace,
   made available for Pocket's BI tools.
 dataset_base_acl: stable
-user_facing: true
+user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

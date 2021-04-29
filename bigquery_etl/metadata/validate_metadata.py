@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 
 from ..util import standard_args
 from ..util.common import project_dirs
-from .parse_metadata import Metadata
+from .parse_metadata import Metadata, DatasetMetadata
 
 parser = ArgumentParser(description=__doc__)
 
@@ -35,7 +35,7 @@ def validate(target):
         for root, dirs, files in os.walk(target):
             for file in files:
                 if Metadata.is_metadata_file(file):
-                    path = os.path.join(root, *dirs, file)
+                    path = os.path.join(root, file)
                     metadata = Metadata.from_file(path)
 
                     if not validate_public_data(metadata, path):
@@ -43,6 +43,25 @@ def validate(target):
 
                     # todo more validation
                     # e.g. https://github.com/mozilla/bigquery-etl/issues/924
+
+    else:
+        logging.error(f"Invalid target: {target}, target must be a directory.")
+        sys.exit(1)
+
+    if failed:
+        sys.exit(1)
+
+
+def validate_datasets(target):
+    """Validate dataset metadata files."""
+    failed = False
+
+    if os.path.isdir(target):
+        for root, dirs, files in os.walk(target):
+            for file in files:
+                if DatasetMetadata.is_dataset_metadata_file(file):
+                    path = os.path.join(root, file)
+                    dataset_metadata = DatasetMetadata.from_file(path)
     else:
         logging.error(f"Invalid target: {target}, target must be a directory.")
         sys.exit(1)

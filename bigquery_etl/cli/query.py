@@ -18,7 +18,7 @@ from ..cli.format import format
 from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
-from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..metadata.parse_metadata import METADATA_FILE, Metadata, DatasetMetadata
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..run_query import run
@@ -214,6 +214,31 @@ def create(name, sql_dir, project_id, owner, init):
             )
             + "\n"
         )
+
+    dataset_metadata_file = derived_path.parent / "dataset_metadata.yaml"
+    if not dataset_metadata_file.exists():
+        dataset_name = str(dataset_metadata_file.parent.name)
+        dataset_metadata = DatasetMetadata(
+            friendly_name=string.capwords(dataset_name.replace("_", " ")),
+            description="Please provide a description for the dataset",
+            dataset_base_acl="derived",
+            user_facing=False,
+        )
+        dataset_metadata.write(dataset_metadata_file)
+        click.echo(f"Created dataset metadata in {dataset_metadata_file}")
+
+    if view_path:
+        dataset_metadata_file = view_path.parent / "dataset_metadata.yaml"
+        if not dataset_metadata_file.exists():
+            dataset_name = str(dataset_metadata_file.parent.name)
+            dataset_metadata = DatasetMetadata(
+                friendly_name=string.capwords(dataset_name.replace("_", " ")),
+                description="Please provide a description for the dataset",
+                dataset_base_acl="view",
+                user_facing=True,
+            )
+            dataset_metadata.write(dataset_metadata_file)
+            click.echo(f"Created dataset metadata in {dataset_metadata_file}")
 
 
 @query.command(
@@ -587,6 +612,7 @@ def validate(ctx, name, sql_dir, project_id, use_cloud_function):
         name = "*.*"
 
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    dataset_dirs = set()
     for query in query_files:
         project = query.parent.parent.parent.name
         ctx.invoke(format, path=str(query))
@@ -597,6 +623,10 @@ def validate(ctx, name, sql_dir, project_id, use_cloud_function):
             project=project,
         )
         validate_metadata.validate(query.parent)
+        dataset_dirs.add(query.parent.parent)
+
+    for dataset_dir in dataset_dirs:
+        validate_metadata.validate_datasets(dataset_dir)
 
     # todo: validate if new fields get added
 

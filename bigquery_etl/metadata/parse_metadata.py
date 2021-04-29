@@ -13,6 +13,10 @@ from google.cloud import bigquery
 from bigquery_etl.query_scheduling.utils import is_email
 
 METADATA_FILE = "metadata.yaml"
+DATASET_METADATA_FILE = "dataset_metadata.yaml"
+DEFAULT_WORKGROUP_ACCESS = [
+    dict(role="roles/bigquery.dataViewer", members=["workgroup:mozilla-confidential"])
+]
 
 
 class Literal(str):
@@ -80,7 +84,7 @@ class BigQueryMetadata:
 @attr.s(auto_attribs=True)
 class Metadata:
     """
-    Representation of a Metadata configuration.
+    Representation of a table or view Metadata configuration.
 
     Uses attrs to simplify the class definition and provide validation.
     Docs: https://www.attrs.org
@@ -279,3 +283,70 @@ class Metadata:
             time_partitioning=partitioning,
             clustering=ClusteringMetadata(fields=clustering_fields),
         )
+
+
+@attr.s(auto_attribs=True)
+class DatasetMetadata:
+    """
+    Representation of a dataset-level metadata configuration.
+
+    Uses attrs to simplify the class definition and provide validation.
+    Docs: https://www.attrs.org
+    """
+
+    friendly_name: str = attr.ib()
+    description: str = attr.ib()
+    dataset_base_acl: str = attr.ib()
+    user_facing: bool = attr.ib(False)
+    labels: Dict = attr.ib({})
+    workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
+
+    @staticmethod
+    def is_dataset_metadata_file(file_path):
+        """
+        Check if the provided file is a metadata file.
+
+        Checks if the name and file format match the metadata file requirements.
+        """
+        # todo: we should probably also check if the file actually exists etc.
+        return os.path.basename(file_path) == DATASET_METADATA_FILE
+
+    def write(self, file):
+        """Write dataset metadata information to the provided file."""
+        metadata_dict = self.__dict__
+
+        if metadata_dict["labels"]:
+            for label_key, label_value in metadata_dict["labels"].items():
+                # handle tags
+                if label_value == "":
+                    metadata_dict["labels"][label_key] = True
+
+        if "description" in metadata_dict:
+            metadata_dict["description"] = Literal(metadata_dict["description"])
+
+        converter = cattr.Converter()
+        file.write_text(
+            yaml.dump(
+                converter.unstructure(metadata_dict),
+                default_flow_style=False,
+                sort_keys=False,
+            )
+        )
+
+    @classmethod
+    def from_file(cls, metadata_file):
+        """Parse dataset metadata from the provided file and create a new
+        DatasetMetadata instance."""
+        friendly_name = None
+        description = None
+        owners = []
+        labels = {}
+        scheduling = {}
+        bigquery = None
+
+        with open(metadata_file, "r") as yaml_stream:
+            try:
+                metadata = yaml.safe_load(yaml_stream)
+                return cls(**metadata)
+            except yaml.YAMLError as e:
+                raise e

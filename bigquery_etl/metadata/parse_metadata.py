@@ -335,15 +335,10 @@ class DatasetMetadata:
 
     @classmethod
     def from_file(cls, metadata_file):
-        """Parse dataset metadata from the provided file and create a new
-        DatasetMetadata instance."""
-        friendly_name = None
-        description = None
-        owners = []
-        labels = {}
-        scheduling = {}
-        bigquery = None
+        """Parse dataset metadata from the provided file.
 
+        Returns a new DatasetMetadata instance.
+        """
         with open(metadata_file, "r") as yaml_stream:
             try:
                 metadata = yaml.safe_load(yaml_stream)

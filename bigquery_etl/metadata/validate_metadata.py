@@ -61,7 +61,7 @@ def validate_datasets(target):
             for file in files:
                 if DatasetMetadata.is_dataset_metadata_file(file):
                     path = os.path.join(root, file)
-                    dataset_metadata = DatasetMetadata.from_file(path)
+                    _ = DatasetMetadata.from_file(path)
     else:
         logging.error(f"Invalid target: {target}, target must be a directory.")
         sys.exit(1)

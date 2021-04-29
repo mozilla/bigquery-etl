@@ -35,7 +35,10 @@ class TestQuery:
             result = runner.invoke(create, ["test.test_query"])
             assert result.exit_code == 0
             assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
-            assert os.listdir("sql/moz-fx-data-shared-prod/test") == ["test_query_v1"]
+            assert os.listdir("sql/moz-fx-data-shared-prod/test") == [
+                "dataset_metadata.yaml",
+                "test_query_v1",
+            ]
             assert "query.sql" in os.listdir(
                 "sql/moz-fx-data-shared-prod/test/test_query_v1"
             )
@@ -48,7 +51,10 @@ class TestQuery:
             os.makedirs("sql/moz-fx-data-shared-prod")
             result = runner.invoke(create, ["test.test_query_v4"])
             assert result.exit_code == 0
-            assert os.listdir("sql/moz-fx-data-shared-prod/test") == ["test_query_v4"]
+            assert os.listdir("sql/moz-fx-data-shared-prod/test") == [
+                "dataset_metadata.yaml",
+                "test_query_v4",
+            ]
 
     def test_create_derived_query_with_view(self, runner):
         with runner.isolated_filesystem():
@@ -58,9 +64,13 @@ class TestQuery:
             assert "test_derived" in os.listdir("sql/moz-fx-data-shared-prod")
             assert "test" in os.listdir("sql/moz-fx-data-shared-prod")
             assert os.listdir("sql/moz-fx-data-shared-prod/test_derived") == [
+                "dataset_metadata.yaml",
                 "test_query_v1"
             ]
-            assert os.listdir("sql/moz-fx-data-shared-prod/test") == ["test_query"]
+            assert os.listdir("sql/moz-fx-data-shared-prod/test") == [
+                "dataset_metadata.yaml",
+                "test_query",
+            ]
             assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
                 "view.sql"
             ]
@@ -75,9 +85,13 @@ class TestQuery:
             assert "test_derived" in os.listdir("sql/moz-fx-data-shared-prod")
             assert "test" in os.listdir("sql/moz-fx-data-shared-prod")
             assert os.listdir("sql/moz-fx-data-shared-prod/test_derived") == [
-                "test_query_v1"
+                "dataset_metadata.yaml",
+                "test_query_v1",
             ]
-            assert os.listdir("sql/moz-fx-data-shared-prod/test") == ["test_query"]
+            assert os.listdir("sql/moz-fx-data-shared-prod/test") == [
+                "dataset_metadata.yaml",
+                "test_query",
+            ]
             assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
                 "view.sql"
             ]
@@ -87,7 +101,10 @@ class TestQuery:
             os.makedirs("sql/moz-fx-data-shared-prod")
             result = runner.invoke(create, ["test.test_query", "--init"])
             assert result.exit_code == 0
-            assert os.listdir("sql/moz-fx-data-shared-prod/test") == ["test_query_v1"]
+            assert os.listdir("sql/moz-fx-data-shared-prod/test") == [
+                "dataset_metadata.yaml",
+                "test_query_v1",
+            ]
             assert "query.sql" in os.listdir(
                 "sql/moz-fx-data-shared-prod/test/test_query_v1"
             )

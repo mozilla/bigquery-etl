@@ -1,0 +1,10 @@
+friendly_name: contextual_services Derived
+description: |-
+  Derived data related to Contextual Services
+dataset_base_acl: derived_restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:contextual-services

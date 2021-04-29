@@ -25,6 +25,7 @@ from typing import List
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.metadata.parse_metadata import DatasetMetadata
 from bigquery_etl.util import standard_args
 
 MPS_URI = "https://github.com/mozilla-services/mozilla-pipeline-schemas"
@@ -109,6 +110,38 @@ class SchemaFile:
         )
 
 
+def write_dataset_metadata_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaFile):
+    """Write default dataset_metadata.yaml files where none exist."""
+    dataset_family = schema.bq_dataset_family
+    project_dir = sql_dir / target_project
+
+    # Derived dataset
+    dataset_name = f"{dataset_family}_derived"
+    target = project_dir / dataset_name / "dataset_metadata.yaml"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if not target.exists():
+        print(f"Creating {target}")
+        DatasetMetadata(
+            friendly_name=dataset_name,
+            description=f"Derived tables related to namespace {schema.document_namespace}",
+            dataset_base_acl="derived",
+            user_facing=False,
+        ).write(target)
+
+    # User-facing dataset
+    dataset_name = dataset_family
+    target = project_dir / dataset_name / "dataset_metadata.yaml"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if not target.exists():
+        print(f"Creating {target}")
+        DatasetMetadata(
+            friendly_name=dataset_name,
+            description=f"Data related to namespace {schema.document_namespace}",
+            dataset_base_acl="view",
+            user_facing=True,
+        ).write(target)
+
+
 def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaFile):
     """If a view.sql does not already exist, write one to the target directory."""
     target_dir = (
@@ -117,6 +150,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         / schema.bq_dataset_family
         / schema.bq_table_unversioned
     )
+
     target_file = target_dir / "view.sql"
 
     if target_file.exists():
@@ -250,6 +284,11 @@ def main():
         parser.error(f"argument --log-level: {e}")
 
     schemas = get_stable_table_schemas()
+    dataset_families = set([s.bq_dataset_family for s in schemas])
+    one_schema_per_dataset = [
+        last
+        for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
+    ]
 
     with ThreadPool(args.parallelism) as pool:
         pool.map(
@@ -259,6 +298,15 @@ def main():
                 Path(args.sql_dir),
             ),
             schemas,
+            chunksize=1,
+        )
+        pool.map(
+            partial(
+                write_dataset_metadata_if_not_exists,
+                args.target_project,
+                Path(args.sql_dir),
+            ),
+            one_schema_per_dataset,
             chunksize=1,
         )
 

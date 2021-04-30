@@ -45,6 +45,7 @@ venv/bin/pre-commit install
 Optionally, download java dependencies
 ```bash
 mvn dependency:copy-dependencies
+venv/bin/pip-sync requirements.txt java-requirements.txt
 ```
 
 Finally, if you are using Visual Studio Code, you may also wish to use our recommended defaults:

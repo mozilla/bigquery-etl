@@ -173,11 +173,6 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
     if target_file.exists():
         return
 
-    # Exclude doctypes maintained in separate projects.
-    for prefix in SKIP_PREFIXES:
-        if schema.bq_dataset_family.startswith(prefix):
-            return
-
     full_source_id = f"{target_project}.{schema.stable_table}"
     full_view_id = f"{target_project}.{schema.user_facing_view}"
     replacements = ["mozfun.norm.metadata(metadata) AS metadata"]
@@ -256,16 +251,28 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                         document_version=version,
                     )
                 )
+
+    # Exclude doctypes maintained in separate projects.
+    for prefix in SKIP_PREFIXES:
+        schemas = [
+            schema
+            for schema in schemas
+            if not schema.document_namespace.startswith(prefix)
+        ]
+
+    # Retain only the highest version per doctype.
     schemas = sorted(
         schemas,
         key=lambda t: f"{t.document_namespace}/{t.document_type}/{t.document_version:03d}",
     )
-    return [
+    schemas = [
         last
         for k, (*_, last) in groupby(
             schemas, lambda t: f"{t.document_namespace}/{t.document_type}"
         )
     ]
+
+    return schemas
 
 
 def prod_schemas_uri():

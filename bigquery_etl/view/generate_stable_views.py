@@ -113,7 +113,11 @@ class SchemaFile:
 def write_dataset_metadata_if_not_exists(
     target_project: str, sql_dir: Path, schema: SchemaFile
 ):
-    """Write default dataset_metadata.yaml files where none exist."""
+    """Write default dataset_metadata.yaml files where none exist.
+
+    This function expects to be handed one representative `SchemaFile`
+    object representing the dataset.
+    """
     dataset_family = schema.bq_dataset_family
     project_dir = sql_dir / target_project
 
@@ -297,7 +301,6 @@ def main():
         parser.error(f"argument --log-level: {e}")
 
     schemas = get_stable_table_schemas()
-    dataset_families = set([s.bq_dataset_family for s in schemas])
     one_schema_per_dataset = [
         last for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
     ]

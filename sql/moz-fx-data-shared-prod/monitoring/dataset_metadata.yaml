@@ -1,7 +1,7 @@
-friendly_name: Activity Stream
+friendly_name: Monitoring
 description: |-
-  Views related to data from the activity-stream namespace,
-  capturing activity on the desktop Firefox newtab page.
+  User-facing views for pipeline monitoring,
+  including views on `payload_bytes` tables
 dataset_base_acl: view
 user_facing: true
 labels: {}

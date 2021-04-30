@@ -1,7 +1,7 @@
-friendly_name: Activity Stream Derived
+friendly_name: Telemetry Derived
 description: |-
-  Derived data from the activity-stream namespace,
-  capturing activity on the desktop Firefox newtab page.
+  Derived data based on pings from legacy Firefox telemetry, plus many other
+  general-purpose derived tables
 dataset_base_acl: derived
 user_facing: false
 labels: {}

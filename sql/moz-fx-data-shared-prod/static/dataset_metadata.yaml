@@ -1,9 +1,8 @@
-friendly_name: Activity Stream
+friendly_name: Static Data
 description: |-
-  Views related to data from the activity-stream namespace,
-  capturing activity on the desktop Firefox newtab page.
-dataset_base_acl: view
-user_facing: true
+  Static tables, often useful for data-enriching joins
+dataset_base_acl: udf
+user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

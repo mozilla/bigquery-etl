@@ -1,11 +1,12 @@
-friendly_name: Activity Stream
+friendly_name: Telemetry
 description: |-
-  Views related to data from the activity-stream namespace,
-  capturing activity on the desktop Firefox newtab page.
+  Views on data from legacy Firefox telemetry, plus many other
+  general-purpose datasets
 dataset_base_acl: view
 user_facing: true
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential

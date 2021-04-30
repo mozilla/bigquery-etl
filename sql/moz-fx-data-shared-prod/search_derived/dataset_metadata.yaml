@@ -1,8 +1,8 @@
-friendly_name: Mozilla VPN
+friendly_name: Search Derived
 description: |-
-  Data related to the Mozilla VPN service
-dataset_base_acl: view
-user_facing: true
+  Derived tables related to client search counts
+dataset_base_acl: derived
+user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

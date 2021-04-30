@@ -1,6 +1,6 @@
-friendly_name: User-Defined Functions
+friendly_name: User-Defined Functions (Javascript)
 description: |-
-  Peristent user-defined functions
+  Peristent user-defined functions written in Javascript
 dataset_base_acl: udf
 user_facing: true
 labels: {}

@@ -1,0 +1,10 @@
+friendly_name: Regrets Reporter Derived
+description: |-
+  Derived tables related to MoFo's YouTube Regrets campaign
+dataset_base_acl: derived_restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:regrets-reporter

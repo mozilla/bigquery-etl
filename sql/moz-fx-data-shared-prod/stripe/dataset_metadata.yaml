@@ -1,7 +1,6 @@
-friendly_name: Activity Stream
+friendly_name: Stripe
 description: |-
-  Views related to data from the activity-stream namespace,
-  capturing activity on the desktop Firefox newtab page.
+  Views related to data extracted from payment provider Stripe
 dataset_base_acl: view
 user_facing: true
 labels: {}

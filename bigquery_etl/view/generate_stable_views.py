@@ -123,7 +123,10 @@ def write_dataset_metadata_if_not_exists(target_project: str, sql_dir: Path, sch
         print(f"Creating {target}")
         DatasetMetadata(
             friendly_name=dataset_name,
-            description=f"Derived tables related to namespace {schema.document_namespace}",
+            description=(f"Derived tables related to document namespace"
+                         f"{schema.document_namespace}, usually populated via queries"
+                         f" defined in https://github.com/mozilla/bigquery-etl"
+                         " and managed by Airflow"),
             dataset_base_acl="derived",
             user_facing=False,
         ).write(target)
@@ -136,7 +139,10 @@ def write_dataset_metadata_if_not_exists(target_project: str, sql_dir: Path, sch
         print(f"Creating {target}")
         DatasetMetadata(
             friendly_name=dataset_name,
-            description=f"Data related to namespace {schema.document_namespace}",
+            description=(f"User-facing views related to document namespace"
+                         f" {schema.document_namesspace};\nsee https://github.com/"
+                         f"mozilla-services/mozilla-pipeline-schemas/tree/"
+                         f"generated-schemas/schemas/{schema.document_namespace}"),
             dataset_base_acl="view",
             user_facing=True,
         ).write(target)

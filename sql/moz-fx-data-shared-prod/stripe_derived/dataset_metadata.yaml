@@ -1,7 +1,6 @@
-friendly_name: Activity Stream Derived
+friendly_name: Stripe Derived
 description: |-
-  Derived data from the activity-stream namespace,
-  capturing activity on the desktop Firefox newtab page.
+  Derived data based on extract from payment provider Stripe
 dataset_base_acl: derived
 user_facing: false
 labels: {}

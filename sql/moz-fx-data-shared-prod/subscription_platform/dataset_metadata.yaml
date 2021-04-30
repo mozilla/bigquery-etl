@@ -1,8 +1,8 @@
-friendly_name: Activity Stream
+friendly_name: Subscription Platform
 description: |-
-  Views related to data from the activity-stream namespace,
-  capturing activity on the desktop Firefox newtab page.
-dataset_base_acl: view
+  Combined subscription information from multiple products and payment platforms;
+  see bug 1703340
+dataset_base_acl: view_restricted
 user_facing: true
 labels: {}
 workgroup_access:

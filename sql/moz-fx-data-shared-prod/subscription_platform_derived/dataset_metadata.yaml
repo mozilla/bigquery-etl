@@ -2,7 +2,7 @@ friendly_name: Subscription Platform Derived
 description: |-
   Tables combining subscription information from multiple products
   and payment platforms
-dataset_base_acl: derived
+dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}
 workgroup_access: []

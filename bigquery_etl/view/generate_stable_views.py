@@ -110,7 +110,9 @@ class SchemaFile:
         )
 
 
-def write_dataset_metadata_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaFile):
+def write_dataset_metadata_if_not_exists(
+    target_project: str, sql_dir: Path, schema: SchemaFile
+):
     """Write default dataset_metadata.yaml files where none exist."""
     dataset_family = schema.bq_dataset_family
     project_dir = sql_dir / target_project
@@ -123,10 +125,13 @@ def write_dataset_metadata_if_not_exists(target_project: str, sql_dir: Path, sch
         print(f"Creating {target}")
         DatasetMetadata(
             friendly_name=dataset_name,
-            description=(f"Derived tables related to document namespace"
-                         f"{schema.document_namespace}, usually populated via queries"
-                         f" defined in https://github.com/mozilla/bigquery-etl"
-                         " and managed by Airflow"),
+            description=(
+                f"Derived tables related to document namespace"
+                f" {schema.document_namespace},"
+                f"\nnusually populated via queries defined in"
+                f" https://github.com/mozilla/bigquery-etl"
+                f" and managed by Airflow"
+            ),
             dataset_base_acl="derived",
             user_facing=False,
         ).write(target)
@@ -139,10 +144,12 @@ def write_dataset_metadata_if_not_exists(target_project: str, sql_dir: Path, sch
         print(f"Creating {target}")
         DatasetMetadata(
             friendly_name=dataset_name,
-            description=(f"User-facing views related to document namespace"
-                         f" {schema.document_namesspace};\nsee https://github.com/"
-                         f"mozilla-services/mozilla-pipeline-schemas/tree/"
-                         f"generated-schemas/schemas/{schema.document_namespace}"),
+            description=(
+                f"User-facing views related to document namespace"
+                f" {schema.document_namespace};\nsee https://github.com/"
+                f"mozilla-services/mozilla-pipeline-schemas/tree/"
+                f"generated-schemas/schemas/{schema.document_namespace}"
+            ),
             dataset_base_acl="view",
             user_facing=True,
         ).write(target)
@@ -292,8 +299,7 @@ def main():
     schemas = get_stable_table_schemas()
     dataset_families = set([s.bq_dataset_family for s in schemas])
     one_schema_per_dataset = [
-        last
-        for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
+        last for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
     ]
 
     with ThreadPool(args.parallelism) as pool:

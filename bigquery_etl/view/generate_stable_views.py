@@ -132,7 +132,7 @@ def write_dataset_metadata_if_not_exists(
             description=(
                 f"Derived tables related to document namespace"
                 f" {schema.document_namespace},"
-                f"\nnusually populated via queries defined in"
+                f" usually populated via queries defined in"
                 f" https://github.com/mozilla/bigquery-etl"
                 f" and managed by Airflow"
             ),
@@ -150,7 +150,7 @@ def write_dataset_metadata_if_not_exists(
             friendly_name=dataset_name,
             description=(
                 f"User-facing views related to document namespace"
-                f" {schema.document_namespace};\nsee https://github.com/"
+                f" {schema.document_namespace}; see https://github.com/"
                 f"mozilla-services/mozilla-pipeline-schemas/tree/"
                 f"generated-schemas/schemas/{schema.document_namespace}"
             ),

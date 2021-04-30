@@ -1,7 +1,8 @@
-friendly_name: Regrets Reporter Derived
+friendly_name: regrets-reporter Derived
+# yamllint disable-line rule:line-length
 description: |-
-  Derived tables related to MoFo's YouTube Regrets campaign
-dataset_base_acl: derived_restricted
+  Derived tables related to document namespace regrets-reporter, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
+dataset_base_acl: derived
 user_facing: false
 labels: {}
 workgroup_access:

@@ -128,7 +128,7 @@ def write_dataset_metadata_if_not_exists(
     if not target.exists():
         print(f"Creating {target}")
         DatasetMetadata(
-            friendly_name=dataset_name,
+            friendly_name=f"{schema.document_namespace} Derived",
             description=(
                 f"Derived tables related to document namespace"
                 f" {schema.document_namespace},"
@@ -147,7 +147,7 @@ def write_dataset_metadata_if_not_exists(
     if not target.exists():
         print(f"Creating {target}")
         DatasetMetadata(
-            friendly_name=dataset_name,
+            friendly_name=f"{schema.document_namespace}",
             description=(
                 f"User-facing views related to document namespace"
                 f" {schema.document_namespace}; see https://github.com/"

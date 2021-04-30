@@ -1,7 +1,8 @@
-friendly_name: Regrets Reporter
+friendly_name: regrets-reporter
+# yamllint disable-line rule:line-length
 description: |-
-  Views related to MoFo's YouTube Regrets campaign
-dataset_base_acl: view_restricted
+  User-facing views related to document namespace regrets-reporter; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/regrets-reporter
+dataset_base_acl: view
 user_facing: true
 labels: {}
 workgroup_access:

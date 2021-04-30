@@ -1,5 +1,5 @@
 friendly_name: contextual-services Derived
-# yamllint disable-line rule:line-length
+# yamllint disable rule:line-length
 description: |-
   Derived tables related to document namespace contextual-services, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
 dataset_base_acl: derived

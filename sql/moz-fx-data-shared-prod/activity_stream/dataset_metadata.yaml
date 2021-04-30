@@ -1,5 +1,5 @@
 friendly_name: Activity Stream
-# yamllint disable-line rule:line-length
+# yamllint disable rule:line-length
 description: |-
   User-facing views related to document namespace activity-stream; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/activity-stream
 dataset_base_acl: view

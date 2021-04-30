@@ -1,5 +1,5 @@
 friendly_name: regrets-reporter
-# yamllint disable-line rule:line-length
+# yamllint disable rule:line-length
 description: |-
   User-facing views related to document namespace regrets-reporter; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/regrets-reporter
 dataset_base_acl: view

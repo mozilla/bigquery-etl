@@ -1,6 +1,6 @@
 friendly_name: User-Defined Functions (Legacy)
 description: |-
-  Peristent user-defined functions intended for compatibility with queries
+  Persistent user-defined functions intended for compatibility with queries
   from legacy AWS infrastructure
 dataset_base_acl: udf
 user_facing: true

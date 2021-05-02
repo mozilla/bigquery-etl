@@ -1,6 +1,6 @@
 friendly_name: Looker Derived
 description: |-
-  Cache tables populated and used by Looker.
+  Cache tables populated and used by Looker
 dataset_base_acl: derived
 user_facing: false
 labels: {}

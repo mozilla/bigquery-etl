@@ -1,0 +1,10 @@
+friendly_name: org-mozilla-vrbrowser
+description: |-
+  User-facing views related to document namespace org-mozilla-vrbrowser; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/org-mozilla-vrbrowser
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

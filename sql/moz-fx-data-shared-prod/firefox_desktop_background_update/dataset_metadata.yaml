@@ -1,0 +1,10 @@
+friendly_name: firefox-desktop-background-update
+description: |-
+  User-facing views related to document namespace firefox-desktop-background-update; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/firefox-desktop-background-update
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

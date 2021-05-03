@@ -1,0 +1,10 @@
+friendly_name: firefox-launcher-process
+description: |-
+  User-facing views related to document namespace firefox-launcher-process; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/firefox-launcher-process
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

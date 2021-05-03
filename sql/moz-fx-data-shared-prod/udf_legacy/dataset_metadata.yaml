@@ -1,0 +1,11 @@
+friendly_name: User-Defined Functions (Legacy)
+description: |-
+  Persistent user-defined functions intended for compatibility with queries
+  from legacy AWS infrastructure
+dataset_base_acl: udf
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

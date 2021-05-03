@@ -1,0 +1,11 @@
+friendly_name: AMO Stats Prod
+description: |-
+  Derived data used to power the AMO stats dashboards
+dataset_base_acl: stable
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:amo/prod

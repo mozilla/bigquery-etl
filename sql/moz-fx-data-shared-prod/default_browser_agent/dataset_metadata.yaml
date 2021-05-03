@@ -1,0 +1,10 @@
+friendly_name: default-browser-agent
+description: |-
+  User-facing views related to document namespace default-browser-agent; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/default-browser-agent
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

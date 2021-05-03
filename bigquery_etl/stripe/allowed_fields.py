@@ -3,7 +3,7 @@
 import re
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Generator, Iterable, List, Type
+from typing import Any, Generator, Tuple, Type
 
 import click
 import stripe
@@ -18,7 +18,9 @@ def _snake_case(resource: Type[ListableAPIResource]) -> str:
 
 
 # event data types with separate events and a defined schema
-ALLOWED_FIELDS = yaml.load((Path(__file__).parent / "allowed_fields.yaml").read_text())
+ALLOWED_FIELDS = yaml.safe_load(
+    (Path(__file__).parent / "allowed_fields.yaml").read_text()
+)
 
 
 def _valid_float(value: str):
@@ -36,7 +38,7 @@ class FilteredSchema:
     type: str
     allowed: dict
     root: bigquery.SchemaField
-    filtered: List[bigquery.SchemaField]
+    filtered: Tuple[bigquery.SchemaField, ...]
 
     def __init__(self, resource: Type[ListableAPIResource]):
         """Get filtered schema and allowed fields for a Stripe resource type."""
@@ -46,25 +48,27 @@ class FilteredSchema:
         self.root = bigquery.SchemaField.from_api_repr(
             {"name": "root", "type": "RECORD", "fields": ujson.loads(path.read_text())}
         )
-        self.filtered = list(self._filter_schema(self.root.fields, self.allowed))
+        self.filtered = self._filter_schema(self.root.fields, self.allowed)
 
     def _filter_schema(
-        self, fields: List[bigquery.SchemaField], allowed: dict
-    ) -> Iterable[bigquery.SchemaField]:
-        for field in fields:
-            if field.name not in allowed:
-                continue
-            if field.field_type != "RECORD":
-                yield field
-            else:
-                yield bigquery.SchemaField.from_api_repr(
-                    {
-                        **field.to_api_repr(),
-                        fields: list(
-                            self._filter_schema(field.fields, allowed[field.name])
-                        ),
-                    }
-                )
+        self, fields: Tuple[bigquery.SchemaField], allowed: dict
+    ) -> Tuple[bigquery.SchemaField, ...]:
+        return tuple(
+            bigquery.SchemaField(
+                **{
+                    ("field_type" if key == "type" else key): self._filter_schema(
+                        field.fields, allowed[field.name]
+                    )
+                    if key == "fields"
+                    else value
+                    for key, value in field.to_api_repr().items()
+                }
+            )
+            if field.field_type == "RECORD"
+            else field
+            for field in fields
+            if field.name in allowed
+        )
 
     def format_row(self, row: dict) -> bytes:
         """Format stripe object for BigQuery, and validate against original schema."""

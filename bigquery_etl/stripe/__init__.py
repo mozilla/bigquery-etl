@@ -8,6 +8,7 @@ from typing import IO, Any, Dict, Optional, Type
 
 import click
 import stripe
+import ujson
 from google.cloud import bigquery
 from stripe.api_resources.abstract import ListableAPIResource
 
@@ -55,6 +56,19 @@ def _open_file(
 def stripe_():
     """Create the CLI group for stripe commands."""
     pass
+
+
+@stripe_.command("schema", help="Print BigQuery schema for Stripe resource types.")
+@click.option(
+    "--resource",
+    default="Event",
+    type=StripeResourceType(),
+    help="Print the schema of this Stripe resource type",
+)
+def schema(resource: Type[ListableAPIResource]):
+    """Print BigQuery schema for Stripe resource types."""
+    filtered_schema = FilteredSchema(resource)
+    click.echo(ujson.dumps([f.to_api_repr() for f in filtered_schema.filtered]))
 
 
 @stripe_.command("import", help=__doc__)
@@ -154,14 +168,14 @@ def import_(
                 ),
             )
             try:
-                print(f"Waiting for {job.job_id}", file=sys.stderr)
+                click.echo(f"Waiting for {job.job_id}", file=sys.stderr)
                 job.result()
             except Exception as e:
-                print(f"{job.job_id} failed: {e}", file=sys.stderr)
+                click.echo(f"{job.job_id} failed: {e}", file=sys.stderr)
                 for error in job.errors or ():
                     message = error.get("message")
                     if message and message != getattr(e, "message", None):
-                        print(message, file=sys.stderr)
+                        click.echo(message, file=sys.stderr)
                 sys.exit(1)
             else:
-                print(f"{job.job_id} succeeded", file=sys.stderr)
+                click.echo(f"{job.job_id} succeeded", file=sys.stderr)

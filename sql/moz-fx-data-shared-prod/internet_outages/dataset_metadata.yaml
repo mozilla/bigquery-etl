@@ -1,0 +1,15 @@
+friendly_name: Internet Outages
+# yamllint disable rule:line-length
+description: |-
+  Derived data useful for detecting regional internet outages,
+  shared with some trusted external partners.
+
+  See https://docs.google.com/document/d/15HvdPS3UwGhAir6HyWHDLDRaxUFycx4jagJ_ZrHr9D8/edit
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:internet-outages/external

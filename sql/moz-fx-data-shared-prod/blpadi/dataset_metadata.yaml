@@ -1,0 +1,12 @@
+friendly_name: Blocklist ADI
+description: |-
+  Historical data for Firefox active daily installations.
+
+  See https://wiki.mozilla.org/ADI
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

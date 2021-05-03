@@ -1,0 +1,10 @@
+friendly_name: Static Data
+description: |-
+  Static tables, often useful for data-enriching joins
+dataset_base_acl: udf
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

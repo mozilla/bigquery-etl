@@ -5,6 +5,7 @@ import string
 import sys
 from datetime import date, timedelta
 from fnmatch import fnmatchcase
+from functools import partial
 from multiprocessing.pool import Pool
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -451,6 +452,50 @@ def info(name, sql_dir, project_id, cost, last_updated):
         click.echo("")
 
 
+def _backfill_query(
+    query_file_path,
+    allow_field_addition,
+    exclude,
+    max_rows,
+    dry_run,
+    args,
+    backfill_date,
+):
+    """Run a query backfill for a specific date."""
+    table = query_file_path.parent.name
+    dataset = query_file_path.parent.parent.name
+    project = query_file_path.parent.parent.parent.name
+    backfill_date = backfill_date.strftime("%Y-%m-%d")
+    if backfill_date not in exclude:
+        partition = backfill_date.replace("-", "")
+        click.echo(
+            f"Run backfill for {project}.{dataset}.{table}${partition} "
+            f"with @submission_date={backfill_date}"
+        )
+
+        arguments = (
+            [
+                "query",
+                f"--parameter=submission_date:DATE:{backfill_date}",
+                "--use_legacy_sql=false",
+                "--replace",
+                f"--max_rows={max_rows}",
+            ]
+            + (
+                ["--schema_update_option=ALLOW_FIELD_ADDITION"]
+                if allow_field_addition
+                else []
+            )
+            + args
+        )
+        if dry_run:
+            arguments += ["--dry_run"]
+
+        run(query_file_path, dataset, f"{table}${partition}", arguments)
+    else:
+        click.echo(f"Skip {query_file_path} with @submission_date={backfill_date}")
+
+
 @query.command(
     help="""Run a backfill for a query. Additional parameters will get passed to bq.
 
@@ -513,6 +558,13 @@ def info(name, sql_dir, project_id, cost, last_updated):
     default=100,
     help="How many rows to return in the result",
 )
+@click.option(
+    "--parallelism",
+    "-p",
+    type=int,
+    default=8,
+    help="How many threads to run backfill in parallel",
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -525,6 +577,7 @@ def backfill(
     dry_run,
     allow_field_addition,
     max_rows,
+    parallelism,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -539,40 +592,35 @@ def backfill(
 
     for query_file in query_files:
         query_file_path = Path(query_file)
-        table = query_file_path.parent.name
-        dataset = query_file_path.parent.parent.name
-        project = query_file_path.parent.parent.parent.name
+        metadata = Metadata.of_query_file(str(query_file_path))
+        depends_on_past = metadata.scheduling.get("depends_on_past", False)
 
-        for backfill_date in dates:
-            backfill_date = backfill_date.strftime("%Y-%m-%d")
-            if backfill_date not in exclude:
-                partition = backfill_date.replace("-", "")
-                click.echo(
-                    f"Run backfill for {project}.{dataset}.{table}${partition} "
-                    f"with @submission_date={backfill_date}"
-                )
+        if depends_on_past and exclude != []:
+            click.echo(
+                f"Warning: depends_on_past = True for {query_file_path} but the"
+                f"following dates will be excluded from the backfill: {exclude}"
+            )
 
-                arguments = (
-                    [
-                        "query",
-                        f"--parameter=submission_date:DATE:{backfill_date}",
-                        "--use_legacy_sql=false",
-                        "--replace",
-                        f"--max_rows={max_rows}",
-                    ]
-                    + (
-                        ["--schema_update_option=ALLOW_FIELD_ADDITION"]
-                        if allow_field_addition
-                        else []
-                    )
-                    + ctx.args
-                )
-                if dry_run:
-                    arguments += ["--dry_run"]
+        backfill_query = partial(
+            _backfill_query,
+            query_file_path,
+            allow_field_addition,
+            exclude,
+            max_rows,
+            dry_run,
+            ctx.args,
+        )
 
-                run(query_file_path, dataset, f"{table}${partition}", arguments)
-            else:
-                click.echo(f"Skip {query_file} with @submission_date={backfill_date}")
+        if not depends_on_past:
+            # run backfill for dates in parallel if depends_on_past is false
+            with Pool(parallelism) as p:
+                result = p.map(backfill_query, dates, chunksize=1)
+            if not all(result):
+                sys.exit(1)
+        else:
+            # if data depends on previous runs, then execute backfill sequentially
+            for backfill_date in dates:
+                backfill_query(backfill_date)
 
 
 @query.command(

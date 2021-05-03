@@ -11,7 +11,7 @@ from bigquery_etl.stripe.allowed_fields import FilteredSchema
 
 def test_filter_schema():
     filtered_schema = FilteredSchema(stripe.Customer)
-    assert filtered_schema.filtered == [
+    assert filtered_schema.filtered == (
         bigquery.SchemaField(name="created", field_type="TIMESTAMP"),
         bigquery.SchemaField(name="id", field_type="STRING"),
         bigquery.SchemaField(
@@ -23,7 +23,13 @@ def test_filter_schema():
                 bigquery.SchemaField(name="value", field_type="STRING"),
             ],
         ),
-    ]
+    )
+    customer_schema = filtered_schema.filtered
+
+    event_schema = FilteredSchema(stripe.Event).filtered
+    data_schema = next(f.fields for f in event_schema if f.name == "data")
+    event_customer_schema = next(f.fields for f in data_schema if f.name == "customer")
+    assert customer_schema == event_customer_schema
 
 
 def test_format_row():

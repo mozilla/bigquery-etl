@@ -31,6 +31,10 @@ FROM
   decoded
 WHERE
   DATE(submission_timestamp) = '{date}'
+  -- Stable tables have this filter applied, so we apply to all inputs here.
+  AND 'automation' NOT IN (
+    SELECT TRIM(t) FROM UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
+  )
 GROUP BY
   namespace,
   doc_type,
@@ -46,6 +50,10 @@ FROM
   `moz-fx-data-shared-prod.{namespace}_{type}.*`
 WHERE
   DATE(submission_timestamp) = '{date}'
+  -- Stable tables have this filter applied, so we apply to all inputs here.
+  AND 'automation' NOT IN (
+    SELECT TRIM(t) FROM UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
+  )
 GROUP BY
   doc_type,
   submission_date

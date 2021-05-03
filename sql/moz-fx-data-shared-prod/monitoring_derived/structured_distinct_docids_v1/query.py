@@ -10,17 +10,19 @@ from google.cloud import bigquery
 
 DECODED_QUERY = """
 WITH decoded AS (
-  SELECT 
+  SELECT
     * EXCEPT (metadata),  -- Some tables have different field order in metadata
+    metadata.header.x_source_tags,
     _TABLE_SUFFIX,
   FROM
     `moz-fx-data-shared-prod.payload_bytes_decoded.structured_*`
   UNION ALL
   SELECT
     * EXCEPT (metadata),
+    metadata.header.x_source_tags,
     _TABLE_SUFFIX,
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_decoded.stub_installer_*` 
+    `moz-fx-data-shared-prod.payload_bytes_decoded.stub_installer_*`
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,
@@ -33,7 +35,7 @@ WHERE
   DATE(submission_timestamp) = '{date}'
   -- Stable tables have this filter applied, so we apply to all inputs here.
   AND 'automation' NOT IN (
-    SELECT TRIM(t) FROM UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
+    SELECT TRIM(t) FROM UNNEST(SPLIT(x_source_tags, ',')) AS t
   )
 GROUP BY
   namespace,
@@ -52,7 +54,7 @@ WHERE
   DATE(submission_timestamp) = '{date}'
   -- Stable tables have this filter applied, so we apply to all inputs here.
   AND 'automation' NOT IN (
-    SELECT TRIM(t) FROM UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
+    SELECT TRIM(t) FROM UNNEST(SPLIT(metadata.header.x_source_tags, ',')) AS t
   )
 GROUP BY
   doc_type,

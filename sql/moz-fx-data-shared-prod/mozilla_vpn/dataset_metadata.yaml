@@ -1,0 +1,10 @@
+friendly_name: Mozilla VPN
+description: |-
+  Data related to the Mozilla VPN service
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -1,0 +1,10 @@
+friendly_name: Stripe Derived
+description: |-
+  Derived data based on extract from payment provider Stripe
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

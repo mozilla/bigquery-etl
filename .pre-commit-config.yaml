@@ -27,4 +27,4 @@ repos:
   rev: 5.1.1
   hooks:
   - id: pydocstyle
-    exclude: dags/|(.*/)?test_.*\.py
+    exclude: dags/|(.*/)?test_.*\.py|setup.py

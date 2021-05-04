@@ -1,0 +1,11 @@
+friendly_name: Monitoring
+description: |-
+  User-facing views for pipeline monitoring,
+  including views on `payload_bytes` tables
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

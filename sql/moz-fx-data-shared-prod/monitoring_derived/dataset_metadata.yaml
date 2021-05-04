@@ -1,0 +1,10 @@
+friendly_name: Monitoring Derived
+description: |-
+  Derived tables used for various pipeline monitoring purposes.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

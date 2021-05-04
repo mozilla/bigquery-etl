@@ -11,12 +11,12 @@ RETURNS STRUCT<
         SELECT
           TIMESTAMP_MILLIS(purchase_date_ms) AS start_time,
           TIMESTAMP_MILLIS(expires_date_ms) AS end_time,
-          iap.derive_apple_subscription_interval(
+          mozfun.iap.derive_apple_subscription_interval(
             DATETIME(TIMESTAMP_MILLIS(purchase_date_ms), "America/Los_Angeles"),
             DATETIME(TIMESTAMP_MILLIS(expires_date_ms), "America/Los_Angeles")
           ) AS `interval`,
         FROM
-          UNNEST(apple_receipt.receipt.in_app)
+          UNNEST(apple_receipt.latest_receipt_info)
         WHERE
           is_trial_period = "false"
       ),
@@ -103,18 +103,16 @@ SELECT
     iap.scrub_apple_receipt(
       STRUCT(
         "Production" AS environment,
-        STRUCT(
-          [
-            STRUCT(
-              UNIX_MILLIS(TIMESTAMP "2020-01-01") AS purchase_date_ms,
-              UNIX_MILLIS(TIMESTAMP "2020-01-02") AS expires_date_ms,
-              "false" AS is_trial_period
-            ),
-            (UNIX_MILLIS(TIMESTAMP "2020-01-02"), UNIX_MILLIS(TIMESTAMP "2020-01-03"), "false"),
-            (UNIX_MILLIS(TIMESTAMP "2020-01-04"), UNIX_MILLIS(TIMESTAMP "2020-01-05"), "false"),
-            (UNIX_MILLIS(TIMESTAMP "2020-01-07"), UNIX_MILLIS(TIMESTAMP "2020-01-08"), "false")
-          ] AS in_app
-        ) AS receipt
+        [
+          STRUCT(
+            UNIX_MILLIS(TIMESTAMP "2020-01-01") AS purchase_date_ms,
+            UNIX_MILLIS(TIMESTAMP "2020-01-02") AS expires_date_ms,
+            "false" AS is_trial_period
+          ),
+          (UNIX_MILLIS(TIMESTAMP "2020-01-02"), UNIX_MILLIS(TIMESTAMP "2020-01-03"), "false"),
+          (UNIX_MILLIS(TIMESTAMP "2020-01-04"), UNIX_MILLIS(TIMESTAMP "2020-01-05"), "false"),
+          (UNIX_MILLIS(TIMESTAMP "2020-01-07"), UNIX_MILLIS(TIMESTAMP "2020-01-08"), "false")
+        ] AS latest_receipt_info
       )
     )
   )

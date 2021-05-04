@@ -7,20 +7,23 @@ from subprocess import CalledProcessError
 from typing import Iterator, List, Tuple
 
 import click
-import jnius_config
 import yaml
 
 from .view.generate_stable_views import get_stable_table_schemas
-
-# this has to run before jnius can be imported
-for path in (Path(__file__).parent.parent / "target" / "dependency").glob("*.jar"):
-    jnius_config.add_classpath(path.resolve().as_posix())
 
 stable_views = None
 
 
 def extract_table_references(sql: str) -> List[str]:
     """Return a list of tables referenced in the given SQL."""
+    import jnius_config  # noqa: E402
+
+    if not jnius_config.vm_running:
+        # this has to run before jnius is imported the first time
+        root = Path(__file__).parent.parent / "target" / "dependency"
+        for path in root.glob("*.jar"):
+            jnius_config.add_classpath(path.resolve().as_posix())
+
     # import jnius here so this module can be imported safely without java installed
     import jnius  # noqa: E402
 

@@ -7,20 +7,37 @@ RETURNS STRUCT<
     apple_receipt.environment,
     -- extract a list of start and end dates that doesn't overlap or repeat
     ARRAY(
-      WITH receipts AS (
+      WITH stage_1 AS (
+        SELECT
+          original_purchase_date_ms,
+          purchase_date_ms,
+          expires_date_ms,
+          is_trial_period
+        FROM
+          UNNEST(apple_receipt.receipt.in_app)
+        UNION ALL
+        SELECT
+          original_purchase_date_ms,
+          purchase_date_ms,
+          expires_date_ms,
+          is_trial_period
+        FROM
+          UNNEST(apple_receipt.latest_receipt_info)
+      ),
+      stage_2 AS (
         SELECT
           TIMESTAMP_MILLIS(purchase_date_ms) AS start_time,
           TIMESTAMP_MILLIS(expires_date_ms) AS end_time,
-          mozfun.iap.derive_apple_subscription_interval(
+          iap.derive_apple_subscription_interval(
             DATETIME(TIMESTAMP_MILLIS(purchase_date_ms), "America/Los_Angeles"),
             DATETIME(TIMESTAMP_MILLIS(expires_date_ms), "America/Los_Angeles")
           ) AS `interval`,
         FROM
-          UNNEST(apple_receipt.latest_receipt_info)
+          stage_1
         WHERE
           is_trial_period = "false"
       ),
-      exploded AS (
+      stage_3 AS (
         SELECT DISTINCT
           date,
           IF(
@@ -53,7 +70,7 @@ RETURNS STRUCT<
           ) AS end_date,
           `interval`,
         FROM
-          receipts
+          stage_2
         CROSS JOIN
           UNNEST(
             GENERATE_DATE_ARRAY(
@@ -63,7 +80,7 @@ RETURNS STRUCT<
             )
           ) AS date
       ),
-      matched AS (
+      stage_4 AS (
         SELECT
           start_date,
           -- MIN(end_date) where end_date > start_date
@@ -78,12 +95,12 @@ RETURNS STRUCT<
           ) AS end_date,
           `interval`,
         FROM
-          exploded
+          stage_3
       )
       SELECT AS STRUCT
         *
       FROM
-        matched
+        stage_4
       WHERE
         start_date IS NOT NULL
     ) AS active_periods
@@ -105,14 +122,34 @@ SELECT
         "Production" AS environment,
         [
           STRUCT(
-            UNIX_MILLIS(TIMESTAMP "2020-01-01") AS purchase_date_ms,
-            UNIX_MILLIS(TIMESTAMP "2020-01-02") AS expires_date_ms,
+            UNIX_MILLIS(TIMESTAMP "2020-01-07") AS original_purchase_date_ms,
+            UNIX_MILLIS(TIMESTAMP "2020-01-07") AS purchase_date_ms,
+            UNIX_MILLIS(TIMESTAMP "2020-01-08") AS expires_date_ms,
             "false" AS is_trial_period
-          ),
-          (UNIX_MILLIS(TIMESTAMP "2020-01-02"), UNIX_MILLIS(TIMESTAMP "2020-01-03"), "false"),
-          (UNIX_MILLIS(TIMESTAMP "2020-01-04"), UNIX_MILLIS(TIMESTAMP "2020-01-05"), "false"),
-          (UNIX_MILLIS(TIMESTAMP "2020-01-07"), UNIX_MILLIS(TIMESTAMP "2020-01-08"), "false")
-        ] AS latest_receipt_info
+          )
+        ] AS latest_receipt_info,
+        STRUCT(
+          [
+            STRUCT(
+              UNIX_MILLIS(TIMESTAMP "2020-01-01") AS original_purchase_date_ms,
+              UNIX_MILLIS(TIMESTAMP "2020-01-01") AS purchase_date_ms,
+              UNIX_MILLIS(TIMESTAMP "2020-01-02") AS expires_date_ms,
+              "false" AS is_trial_period
+            ),
+            (
+              UNIX_MILLIS(TIMESTAMP "2020-01-02"),
+              UNIX_MILLIS(TIMESTAMP "2020-01-02"),
+              UNIX_MILLIS(TIMESTAMP "2020-01-03"),
+              "false"
+            ),
+            (
+              UNIX_MILLIS(TIMESTAMP "2020-01-04"),
+              UNIX_MILLIS(TIMESTAMP "2020-01-04"),
+              UNIX_MILLIS(TIMESTAMP "2020-01-05"),
+              "false"
+            )
+          ] AS in_app
+        ) AS receipt
       )
     )
   )

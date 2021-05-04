@@ -135,6 +135,8 @@ class FilteredSchema:
             fields_by_name = {f.name: f for f in field.fields}
             result = {}
             for key, value in obj.items():
+                if value in (None, [], {}):
+                    continue  # drop empty values without checking schema
                 if key == "use_stripe_sdk":
                     # drop use_stripe_sdk because the contents are only for use in Stripe.js
                     # https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_action-use_stripe_sdk
@@ -160,15 +162,13 @@ class FilteredSchema:
             raise click.ClickException(
                 f"expected ARRAY at {'.'.join(path)} but got {obj!r}"
             )
-        if field.field_type == "RECORD" and obj is not None:
+        if field.field_type == "RECORD":
             raise click.ClickException(
                 f"expected RECORD at {'.'.join(path)} but got {obj!r}"
             )
         if not (
-            # None is valid for all types
-            obj is None
             # STRING can be any primitive type
-            or field.field_type == "STRING"
+            field.field_type == "STRING"
             # TIMESTAMP can be int or string
             or (field.field_type == "TIMESTAMP" and isinstance(obj, (int, str)))
             # INT64 can be int or digit string

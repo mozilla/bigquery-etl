@@ -62,9 +62,15 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
         parts = tuple(table.split("."))
         for _ in parts:
             ref_base = ref_base.parent
-        view_path = ref_base.joinpath(*parts, "view.sql")
-        if view_path.is_file():
-            yield from extract_table_references_without_views(view_path)
+        view_paths = [ref_base.joinpath(*parts, "view.sql")]
+        if parts[:1] == ("mozdata",):
+            view_paths.append(
+                ref_base.joinpath("moz-fx-data-shared-prod", *parts[1:], "view.sql"),
+            )
+        for view_path in view_paths:
+            if view_path.is_file():
+                yield from extract_table_references_without_views(view_path)
+                break
         else:
             # use directory structure to fully qualify table names
             while len(parts) < 3:

@@ -1,0 +1,10 @@
+friendly_name: Firefox Accounts
+description: |-
+  Data related to Firefox Accounts
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

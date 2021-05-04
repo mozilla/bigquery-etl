@@ -3,7 +3,8 @@ CREATE OR REPLACE TABLE
 PARTITION BY
   submission_date
 CLUSTER BY
-  source, event_type
+  source,
+  event_type
 OPTIONS
   (require_partition_filter = TRUE)
 AS

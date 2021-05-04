@@ -68,6 +68,3 @@ GROUP BY
   advertiser,
   release_channel,
   position
-ORDER BY
-  source,
-  event_type

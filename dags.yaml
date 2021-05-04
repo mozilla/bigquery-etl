@@ -519,8 +519,8 @@ bqetl_ctxsvc_derived:
   default_args:
     depends_on_past: false
     email:
-    - bewu@mozilla.com
-    - telemetry-alerts@mozilla.com
+      - bewu@mozilla.com
+      - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null

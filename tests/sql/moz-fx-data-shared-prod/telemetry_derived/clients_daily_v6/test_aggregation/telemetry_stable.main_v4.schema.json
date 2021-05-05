@@ -363,6 +363,16 @@
                 "type": "STRING",
                 "mode": "NULLABLE",
                 "description": "Referring partner domain, when install happens via a known partner."
+              },
+              {
+                "name": "experiment",
+                "type": "STRING",
+                "mode": "NULLABLE"
+              },
+              {
+                "name": "variation",
+                "type": "STRING",
+                "mode": "NULLABLE"
               }
             ]
           },

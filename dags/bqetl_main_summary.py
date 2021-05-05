@@ -183,7 +183,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=True,
         priority_weight=85,
-        allow_field_addition_on_date="2021-04-13",
         dag=dag,
     )
 

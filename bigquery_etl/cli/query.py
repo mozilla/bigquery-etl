@@ -854,8 +854,13 @@ def update(name, sql_dir, project_id):
     default="moz-fx-data-shared-prod",
     callback=is_valid_project,
 )
+@click.option(
+    "--force/--noforce",
+    help="Deploy the schema file without validating that it matches the query",
+    default=False,
+)
 @click.pass_context
-def deploy(ctx, name, sql_dir, project_id):
+def deploy(ctx, name, sql_dir, project_id, force):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
         click.echo(
@@ -883,17 +888,19 @@ def deploy(ctx, name, sql_dir, project_id):
             project_name = query_file_path.parent.parent.parent.name
             existing_schema = Schema.from_schema_file(existing_schema_path)
             full_table_id = f"{project_name}.{dataset_name}.{table_name}"
-            query_schema = Schema.from_query_file(query_file_path)
 
-            if not existing_schema.equal(query_schema):
-                click.echo(
-                    f"Query {query_file_path} does not match "
-                    f"schema in {existing_schema_path}."
-                    "To update the local schema file, "
-                    f"run `./bqetl query schema update {dataset_name}.{table_name}`",
-                    err=True,
-                )
-                sys.exit(1)
+            if not force:
+                query_schema = Schema.from_query_file(query_file_path)
+                if not existing_schema.equal(query_schema):
+                    click.echo(
+                        f"Query {query_file_path} does not match "
+                        f"schema in {existing_schema_path}. "
+                        f"To update the local schema file, "
+                        f"run `./bqetl query schema update "
+                        f"{dataset_name}.{table_name}`",
+                        err=True,
+                    )
+                    sys.exit(1)
 
             tmp_schema_file = NamedTemporaryFile()
             existing_schema.to_json_file(Path(tmp_schema_file.name))

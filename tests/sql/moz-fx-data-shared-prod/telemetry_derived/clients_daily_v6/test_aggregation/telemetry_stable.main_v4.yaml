@@ -86,6 +86,8 @@
         content: first
         medium: first
         source: first
+        experiment: first
+        variation: first
       blocklist_enabled: false
       default_search_engine: first
       default_search_engine_data:
@@ -197,6 +199,8 @@
         content: second
         medium: second
         source: second
+        experiment: second
+        variation: second
       blocklist_enabled: true
       default_search_engine: second
       default_search_engine_data:

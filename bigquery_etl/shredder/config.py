@@ -151,7 +151,6 @@ DELETE_TARGETS = {
     ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_daily_v8"): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_last_seen_v1"): DESKTOP_SRC,
-    client_id_target(table="telemetry_derived.attitudes_daily_v1"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.clients_daily_histogram_aggregates_v1"
     ): DESKTOP_SRC,
@@ -346,7 +345,6 @@ SEARCH_IGNORE_TABLES |= {
 
 # these fields should be ignored by search because they are not user identifiers
 SEARCH_IGNORE_FIELDS = {
-    ("telemetry_derived.survey_gizmo_daily_attitudes", SHIELD_ID),
     # id is the source for document_id in these tables
     ("firefox_launcher_process_stable.launcher_process_failure_v1", ID),
     ("telemetry_derived.origin_content_blocking", ID),

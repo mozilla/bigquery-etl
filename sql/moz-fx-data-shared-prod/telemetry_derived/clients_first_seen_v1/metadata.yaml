@@ -7,7 +7,7 @@ description: |-
   It should normally be accessed through the user-facing view
   `telemetry.clients_first_seen`.
 owners:
-  - jklukas@mozilla.com
+- jklukas@mozilla.com
 labels:
   application: firefox
   incremental: true

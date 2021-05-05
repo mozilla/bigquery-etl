@@ -14,7 +14,7 @@ description: >
   ping.
   See https://github.com/mozilla/bigquery-etl/issues/1761
 owners:
-  - dthorn@mozilla.com
+- dthorn@mozilla.com
 labels:
   application: firefox
   schedule: daily
@@ -34,8 +34,8 @@ scheduling:
   email: ['dthorn@mozilla.com', 'jklukas@mozilla.com']
   depends_on_past: true
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      # managed at the dataset-level
-      # - workgroup:mozilla-confidential
-      - workgroup:dataops-managed/taar
+- role: roles/bigquery.dataViewer
+  members:
+  # managed at the dataset-level
+  # - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/taar

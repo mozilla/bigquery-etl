@@ -11,7 +11,7 @@ labels:
   application: firefox
   schedule: daily
 owners:
-  - jklukas@mozilla.com
+- jklukas@mozilla.com
 scheduling:
   dag_name: bqetl_main_summary
   start_date: "2021-01-19"

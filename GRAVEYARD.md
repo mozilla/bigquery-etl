@@ -2,6 +2,16 @@
 
 This document records interesting code that we've deleted for the sake of discoverability for the future.
 
+## 2021-05 attitudes_daily
+
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2003);
+- [DAG removal PR](https://github.com/mozilla/telemetry-airflow/pull/1299)
+- [Bug 1707965](https://bugzilla.mozilla.org/show_bug.cgi?id=)
+
+This pipeline was no longer being actively used. There may be need for
+a similar pipeline for an upcoming survey, so this removed code can
+serve as a useful reference in that effort.
+
 ## 2021-03 Account Ecosystem Telemetry (AET) derived tables
 
 - [Removal PR](https://github.com/mozilla/bigquery-etl/pull/1894)
@@ -9,6 +19,16 @@ This document records interesting code that we've deleted for the sake of discov
 AET was never released except for a short test in the beta population,
 and now the project has been decommissioned, so there is no longer
 any need for these derived tables.
+
+## 2020-12 Deviations
+
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2005)
+- [DAG Removal PR](https://github.com/mozilla/bigquery-etl/pull/1637)
+- [Blog Post](https://blog.mozilla.org/data/2020/03/30/opening-data-to-understand-social-distancing/)
+
+The `deviations_v1` table was used to understand the change of Firefox
+desktop usage during Covid-19 pandemic in 2020. The data is no longer being
+actively used.
 
 ## 2020-04 Fenix baseline_daily and clients_last_seen
 

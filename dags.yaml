@@ -514,3 +514,19 @@ bqetl_releases:
     For more context, see
     https://wiki.mozilla.org/Release_Management/Product_details
   schedule_interval: 0 4 * * *
+
+bqetl_ctxsvc_derived:
+  default_args:
+    depends_on_past: false
+    email:
+      - bewu@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: bewu@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2021-05-01'
+  description: Contextual services derived tables
+  schedule_interval: 0 3 * * *

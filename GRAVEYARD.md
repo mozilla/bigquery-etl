@@ -2,6 +2,16 @@
 
 This document records interesting code that we've deleted for the sake of discoverability for the future.
 
+## 2021-05 attitudes_daily
+
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2003);
+- [DAG removal PR](https://github.com/mozilla/telemetry-airflow/pull/1299)
+- [Bug 1707965](https://bugzilla.mozilla.org/show_bug.cgi?id=)
+
+This pipeline was no longer being actively used. There may be need for
+a similar pipeline for an upcoming survey, so this removed code can
+serve as a useful reference in that effort.
+
 ## 2021-03 Account Ecosystem Telemetry (AET) derived tables
 
 - [Removal PR](https://github.com/mozilla/bigquery-etl/pull/1894)

@@ -47,8 +47,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry/windows_10_aggregate/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/windows_10_build_distribution/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/windows_10_patch_adoption/view.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/attitudes_daily_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/telemetry_derived/attitudes_daily_v1/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",  # noqa E501
@@ -83,7 +81,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_desktop_v2/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_fxa_v2/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/surveygizmo_daily_attitudes/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/udf/active_n_weeks_ago.sql",

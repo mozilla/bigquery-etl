@@ -17,8 +17,7 @@ jobs:
               # yamllint disable-line rule:line-length
             - python-3.8-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
             - python-3.8-packages-v1-{{ .Branch }}-
-            - python-3.8-packages-v1-master-
-            - python-3.8-packages-v1-
+            - python-3.8-packages-v1-main-
       - &build
         run:
           name: Build
@@ -56,7 +55,9 @@ jobs:
           command: |
             pip install pip-tools --constraint requirements.in
             pip-compile --quiet --allow-unsafe --generate-hashes
-            git diff --exit-code requirements.txt
+            pip-compile --quiet --allow-unsafe --generate-hashes \
+              java-requirements.in
+            git diff --exit-code requirements.txt java-requirements.txt
   dry-run-sql:
     docker: *docker
     steps:
@@ -113,14 +114,15 @@ jobs:
             - &mvn_cache_key
               maven-packages-v1-{{ .Branch }}-{{ checksum "pom.xml" }}
             - maven-packages-v1-{{ .Branch }}-
-            - maven-packages-v1-
+            - maven-packages-v1-main-
       - &java_deps
         run:
-          name: Install maven and java and download dependency jars
+          name: Install maven and java and download dependencies
           command: |
             apt update
             apt install -y maven default-jdk-headless
             mvn dependency:copy-dependencies
+            venv/bin/pip-sync requirements.txt java-requirements.txt
       - run:
           name: PyTest Integration Test
           # Google's client libraries will check for

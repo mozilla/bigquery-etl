@@ -33,6 +33,7 @@ IF
           (event.f3_ = 'addon_study' OR event.f3_ = 'preference_rollout')
           AND event_map_value.key = 'enrollmentId'
         )
+        OR event.f3_ = 'nimbus_experiment'
         OR event.f2_ = 'enrollFailed'
         OR event.f2_ = 'unenrollFailed'
       )
@@ -65,7 +66,7 @@ IF
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('2021-03-01')
+    timestamp > TIMESTAMP('2021-04-27')
   GROUP BY
     submission_date,
     `type`,

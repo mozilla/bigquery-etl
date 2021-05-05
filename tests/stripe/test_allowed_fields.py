@@ -74,8 +74,8 @@ def test_format_row():
     "row,message",
     [
         ({"extra field": "value"}, "dispute contained unexpected field: extra field"),
-        ({"id": {}}, "expected STRING at dispute.id but got RECORD"),
-        ({"id": []}, "expected STRING at dispute.id but got ARRAY"),
+        ({"id": {"": ""}}, "expected STRING at dispute.id but got RECORD"),
+        ({"id": [""]}, "expected STRING at dispute.id but got ARRAY"),
         ({"livemode": "false"}, "expected BOOLEAN at dispute.livemode but got 'false'"),
         ({"amount": "1.23"}, "expected INTEGER at dispute.amount but got '1.23'"),
         (
@@ -88,7 +88,7 @@ def test_format_row():
             "expected RECORD at dispute.balance_transactions[0] but got ''",
         ),
         (
-            {"balance_transactions": {}},
+            {"balance_transactions": {"": ""}},
             "expected ARRAY at dispute.balance_transactions but got RECORD",
         ),
     ],

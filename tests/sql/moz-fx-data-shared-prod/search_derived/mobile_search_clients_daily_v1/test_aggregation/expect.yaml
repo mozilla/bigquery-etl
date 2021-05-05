@@ -254,11 +254,6 @@
   source: suggestion
   search_count: 2
 - <<: *ios_base
-  default_search_engine: engine2
-  engine: engine2
-  source: organic.none
-  organic: 7
-- <<: *ios_base
   client_id: beta_ios
   channel: beta
   engine: engine2

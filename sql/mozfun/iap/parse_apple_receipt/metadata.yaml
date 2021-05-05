@@ -1,4 +1,5 @@
 description: >
   Used to parse provider_receipt_json in mozilla vpn subscriptions where
-  provider is "APPLE".
+  provider is "APPLE". The content is documented at
+  https://developer.apple.com/documentation/appstorereceipts/responsebody
 friendly_name: Parse Apple Receipt from IAP

@@ -9,10 +9,12 @@ CREATE OR REPLACE FUNCTION iap.derive_apple_subscription_interval(
     "year"
   WHEN
     DATETIME_ADD(purchase_datetime_pst, INTERVAL 1 QUARTER) = expires_datetime_pst
+    OR DATETIME_SUB(expires_datetime_pst, INTERVAL 1 QUARTER) = purchase_datetime_pst
   THEN
     "quarter"
   WHEN
     DATETIME_ADD(purchase_datetime_pst, INTERVAL 1 MONTH) = expires_datetime_pst
+    OR DATETIME_SUB(expires_datetime_pst, INTERVAL 1 MONTH) = purchase_datetime_pst
   THEN
     "month"
   WHEN

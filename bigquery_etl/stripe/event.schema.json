@@ -5028,6 +5028,12 @@
             "type": "STRING"
           },
           {
+            "name": "payment_settings",
+            "type": "RECORD",
+            "fields": [
+            ]
+          },
+          {
             "name": "period_end",
             "type": "TIMESTAMP"
           },

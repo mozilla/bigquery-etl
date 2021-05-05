@@ -3,10 +3,10 @@ from setuptools import find_namespace_packages, setup
 
 def get_version():
     version = {}
-    with open('bigquery_etl/_version.py') as fp:
+    with open("bigquery_etl/_version.py") as fp:
         exec(fp.read(), version)
 
-    return version['__version__']
+    return version["__version__"]
 
 
 setup(
@@ -17,7 +17,14 @@ setup(
     description="Tooling for building derived datasets in BigQuery",
     url="https://github.com/mozilla/bigquery-etl",
     packages=find_namespace_packages(include=["bigquery_etl.*", "bigquery_etl"]),
-    package_data={'bigquery_etl': ['query_scheduling/templates/*.j2', 'alchemer/*.json']},
+    package_data={
+        "bigquery_etl": [
+            "query_scheduling/templates/*.j2",
+            "alchemer/*.json",
+            "stripe/*.json",
+            "stripe/*.yaml",
+        ]
+    },
     include_package_data=True,
     install_requires=[
         "gcloud",
@@ -42,6 +49,7 @@ setup(
         "ujson",
         "stripe",
     ],
+    extras_require={"java": ["pyjnius"]},
     long_description="Tooling for building derived datasets in BigQuery",
     long_description_content_type="text/markdown",
     python_requires=">=3.7",

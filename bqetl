@@ -13,7 +13,7 @@ fi
 
 if [ "$CMD" == "bootstrap" ]; then
     if [ -d "venv" ]; then
-        echo "venv subdirectory already exists, execute "rm -rf venv" and re-run this command if you want to recreate it"
+        echo 'venv subdirectory already exists, execute "rm -rf venv" and re-run this command if you want to recreate it'
     else
         virtualenv -p python3 venv
     fi

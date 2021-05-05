@@ -61,8 +61,8 @@ downstream tables, so this is a more complex case.
    ```
    ./bqetl query schema deploy telemetry_derived.clients_daily_v6
    ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1
-   ./bqetl query schema deploy telemetry_derived.clients_last_seen_v1
-   ./bqetl query schema deploy telemetry_derived.clients_first_seen_v1
+   ./bqetl query schema deploy --force telemetry_derived.clients_last_seen_v1
+   ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1
    ```
 1. Rerun CI to ensure all dry runs are successful
 1. Merge pull-request

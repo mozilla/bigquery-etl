@@ -22,3 +22,12 @@ scheduling:
   # pass submission_date as a generic param.
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
+bigquery:
+  time_partitioning:
+    field: first_seen_date
+    type: day
+    require_partition_filter: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id

@@ -13,6 +13,8 @@
     content: second
     medium: second
     source: second
+    experiment: second
+    variation: second
   addon_compatibility_check_enabled: true
   app_build_id: second
   app_display_version: second

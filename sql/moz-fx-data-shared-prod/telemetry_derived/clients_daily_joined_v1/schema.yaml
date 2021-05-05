@@ -1070,3 +1070,12 @@ fields:
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_other_shortcut
   type: BOOLEAN
+- mode: NULLABLE
+  name: n_logged_event
+  type: INTEGER
+- mode: NULLABLE
+  name: n_created_pictureinpicture
+  type: INTEGER
+- mode: NULLABLE
+  name: n_viewed_protection_report
+  type: INTEGER

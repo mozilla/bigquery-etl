@@ -186,7 +186,9 @@ clients_summary AS (
         environment.settings.attribution.source,
         environment.settings.attribution.medium,
         environment.settings.attribution.campaign,
-        environment.settings.attribution.content
+        environment.settings.attribution.content,
+        environment.settings.attribution.experiment,
+        environment.settings.attribution.variation
       ),
       NULL
     ) AS attribution,

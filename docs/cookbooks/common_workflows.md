@@ -44,6 +44,27 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Deploy schema changes by running `./bqetl query schema deploy <dataset>.<table>_<version>`
 1. Merge pull-request
 
+## Add a new field to clients_daily
+
+Adding a new field to `clients_daily` also means that field has to propagate to several
+downstream tables, so this is a more complex case.
+
+1. Open the `clients_daily_v6` `query.sql` file and add new field definitions
+1. Run `./bqetl query validate telemetry_derived.clients_daily_v6` to dry run and format the query
+1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6` to make local `schema.yaml` updates
+1. Copy and paste the new fields in `schema.yaml` to the schemas for `clients_last_seen_v1` and `clients_first_seen_v1`
+1. Open PR with changes
+    * CI may be failing at this point due too mismatch of deployed schemas
+1. PR reviewed and approved
+1. Deploy schema changes by running:
+   ```
+   ./bqetl query schema deploy telemetry_derived.clients_daily_v6
+   ./bqetl query schema deploy telemetry_derived.clients_last_seen_v1
+   ./bqetl query schema deploy telemetry_derived.clients_first_seen_v1
+   ```
+1. Rerun CI to ensure all dry runs are successful
+1. Merge pull-request
+
 ## Adding a new mozfun UDF
 
 1. Run `./bqetl mozfun create <dataset>.<name> --udf`

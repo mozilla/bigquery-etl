@@ -109,6 +109,12 @@ fields:
   - mode: NULLABLE
     name: content
     type: STRING
+  - mode: NULLABLE
+    name: experiment
+    type: STRING
+  - mode: NULLABLE
+    name: variation
+    type: STRING
   mode: NULLABLE
   name: attribution
   type: RECORD

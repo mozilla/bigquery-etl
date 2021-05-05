@@ -395,6 +395,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#add-a-new-field-to-clients_daily" class="md-nav__link">
+    Add a new field to clients_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#adding-a-new-mozfun-udf" class="md-nav__link">
     Adding a new mozfun UDF
   </a>
@@ -1462,6 +1469,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#add-a-new-field-to-clients_daily" class="md-nav__link">
+    Add a new field to clients_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#adding-a-new-mozfun-udf" class="md-nav__link">
     Adding a new mozfun UDF
   </a>
@@ -1572,6 +1586,28 @@
 </li>
 <li>PR reviewed and approved</li>
 <li>Deploy schema changes by running <code>./bqetl query schema deploy &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code></li>
+<li>Merge pull-request</li>
+</ol>
+<h2 id="add-a-new-field-to-clients_daily">Add a new field to clients_daily</h2>
+<p>Adding a new field to <code>clients_daily</code> also means that field has to propagate to several
+downstream tables, so this is a more complex case.</p>
+<ol>
+<li>Open the <code>clients_daily_v6</code> <code>query.sql</code> file and add new field definitions</li>
+<li>Run <code>./bqetl query validate telemetry_derived.clients_daily_v6</code> to dry run and format the query</li>
+<li>Run <code>./bqetl query schema update telemetry_derived.clients_daily_v6</code> to make local <code>schema.yaml</code> updates</li>
+<li>Copy and paste the new fields in <code>schema.yaml</code> to the schemas for <code>clients_daily_joined_v1</code>, <code>clients_last_seen_v1</code> and <code>clients_first_seen_v1</code></li>
+<li>Run <code>pytest tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6</code> and update the test cases as needed to tolerate the new fields</li>
+<li>Open PR with changes<ul>
+<li>CI may be failing at this point due too mismatch of deployed schemas</li>
+</ul>
+</li>
+<li>PR reviewed and approved</li>
+<li>Deploy schema changes by running:
+   <code>./bqetl query schema deploy telemetry_derived.clients_daily_v6
+   ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1
+   ./bqetl query schema deploy --force telemetry_derived.clients_last_seen_v1
+   ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1</code></li>
+<li>Rerun CI to ensure all dry runs are successful</li>
 <li>Merge pull-request</li>
 </ol>
 <h2 id="adding-a-new-mozfun-udf">Adding a new mozfun UDF</h2>

@@ -4,7 +4,7 @@ import sys
 import warnings
 from datetime import datetime, timedelta, timezone
 from tempfile import TemporaryFile
-from typing import IO, Any, Dict, Optional, Type
+from typing import Any, Dict, Optional, Type
 
 import click
 import stripe
@@ -35,21 +35,43 @@ class StripeResourceType(click.ParamType):
         return result
 
 
-def _open_file(
-    api_key: Optional[str], file: Optional[str], table: Optional[str]
-) -> IO[bytes]:
-    if file is not None:
-        if api_key is None:
-            mode = "rb"
-        else:
-            mode = "w+b"
-        return open(file, mode=mode)
-    elif table is None:
-        return sys.stdout.buffer
-    elif api_key is None:
-        return sys.stdin.buffer
+def _get_rows(
+    api_key: Optional[str],
+    date: Optional[datetime],
+    resource: Type[ListableAPIResource],
+):
+    if api_key is None:
+        yield from (ujson.loads(line) for line in sys.stdin)
     else:
-        return TemporaryFile(mode="w+b")
+        stripe.api_key = api_key
+        kwargs: Dict[str, Any] = {}
+        if date:
+            start = date.replace(tzinfo=timezone.utc)
+            kwargs["created"] = {
+                "gte": int(start.timestamp()),
+                # make sure to use timedelta before converting to timestamp,
+                # so that leap seconds are properly accounted for.
+                "lt": int((start + timedelta(days=1)).timestamp()),
+            }
+        if resource is stripe.Subscription:
+            # list subscriptions api does not list canceled subscriptions by default
+            # https://stripe.com/docs/api/subscriptions/list
+            kwargs["status"] = "all"
+        for instance in resource.list(**kwargs).auto_paging_iter():
+            row: Dict[str, Any] = {
+                "created": datetime.utcfromtimestamp(instance.created).isoformat()
+            }
+            if resource is stripe.Event:
+                event_resource = instance.data.object.object.replace(".", "_")
+                if event_resource not in ALLOWED_FIELDS["event"]["data"]:
+                    continue  # skip events for resources that aren't allowed
+                row["data"] = {
+                    event_resource: instance.data.object,
+                }
+            for key, value in instance.items():
+                if key not in row:
+                    row[key] = value
+            yield FilteredSchema.expand(row)
 
 
 @click.group(help="Commands for Stripe ETL.")
@@ -75,79 +97,50 @@ def schema(resource: Type[ListableAPIResource]):
 @click.option(
     "--api-key",
     help="Stripe API key to use for authentication; If not set resources will be read "
-    "from stdin, or --file if set",
+    "from stdin",
 )
 @click.option(
     "--date",
     type=click.DateTime(formats=["%Y-%m-%d"]),
-    help="Creation date of resources to pull from stripe API; Added to table if set "
+    help="Creation date of resources to pull from stripe API; Added to --table "
     "to ensure only that date partition is replaced",
 )
 @click.option(
     "--table",
     help="BigQuery Standard SQL format table ID where resources will be written; "
-    "if not set resources will be writtent to stdout, or --file if set",
+    "if not set resources will be written to stdout",
 )
 @click.option(
-    "--file",
-    help="Optional persistent file where resources are or will be stored in newline "
-    "delimited json format for uploading to BigQuery",
+    "--format-resources",
+    is_flag=True,
+    help="Format resources before writing to stdout, or after reading from stdin",
 )
 @click.option(
     "--resource",
     default="Event",
     type=StripeResourceType(),
-    help="Type of stripe resource to export",
+    help="Type of stripe resource to import",
 )
 def import_(
-    api_key: str,
-    date: datetime,
-    table: str,
-    file: str,
+    api_key: Optional[str],
+    date: Optional[datetime],
+    table: Optional[str],
+    format_resources: bool,
     resource: Type[ListableAPIResource],
 ):
     """Import Stripe data into BigQuery."""
     if resource is stripe.Event and not date:
         click.echo("must specify --date for --resource=Event")
         sys.exit(1)
-    if api_key is None and table is None:
-        click.echo("must specify --api-key and/or --table")
-        sys.exit(1)
     if table and date:
         table = f"{table}${date:%Y%m%d}"
-    with _open_file(api_key, file, table) as file_obj:
+    with (TemporaryFile(mode="w+b") if table else sys.stdout.buffer) as file_obj:
         filtered_schema = FilteredSchema(resource)
-        if api_key:
-            stripe.api_key = api_key
-            kwargs: Dict[str, Any] = {}
-            if date:
-                start = date.replace(tzinfo=timezone.utc)
-                kwargs["created"] = {
-                    "gte": int(start.timestamp()),
-                    # make sure to use timedelta before converting to timestamp,
-                    # so that leap seconds are properly accounted for.
-                    "lt": int((start + timedelta(days=1)).timestamp()),
-                }
-            if resource is stripe.Subscription:
-                # list subscriptions api does not list canceled subscriptions by default
-                # https://stripe.com/docs/api/subscriptions/list
-                kwargs["status"] = "all"
-            for instance in resource.list(**kwargs).auto_paging_iter():
-                row: Dict[str, Any] = {
-                    "created": datetime.utcfromtimestamp(instance.created).isoformat()
-                }
-                if resource is stripe.Event:
-                    event_resource = instance.data.object.object.replace(".", "_")
-                    if event_resource not in ALLOWED_FIELDS["event"]["data"]:
-                        continue  # skip events for resources that aren't allowed
-                    row["data"] = {
-                        event_resource: instance.data.object,
-                    }
-                for key, value in instance.items():
-                    if key not in row:
-                        row[key] = value
-                file_obj.write(filtered_schema.format_row(row))
-                file_obj.write(b"\n")
+        for row in _get_rows(api_key, date, resource):
+            if format_resources or (table and api_key):
+                row = filtered_schema.format_row(row)
+            file_obj.write(ujson.dumps(row).encode("UTF-8"))
+            file_obj.write(b"\n")
         if table:
             if file_obj.writable():
                 file_obj.seek(0)

@@ -3,7 +3,6 @@ from hashlib import sha256
 import click
 import pytest
 import stripe
-import ujson
 from google.cloud import bigquery
 
 from bigquery_etl.stripe.allowed_fields import FilteredSchema
@@ -46,15 +45,11 @@ def test_format_row():
             "phone": "555-555-5555",
         },
     }
-    expect = ujson.dumps(
-        {
-            "created": "2020-01-01 00:00:00",
-            "id": "cus_1",
-            "metadata": [
-                {"key": "fxa_uid", "value": sha256(b"raw_user_id").hexdigest()}
-            ],
-        }
-    ).encode("UTF-8")
+    expect = {
+        "created": "2020-01-01 00:00:00",
+        "id": "cus_1",
+        "metadata": [{"key": "fxa_uid", "value": sha256(b"raw_user_id").hexdigest()}],
+    }
     assert filtered_schema.format_row(customer) == expect
 
     filtered_schema = FilteredSchema(stripe.Dispute)
@@ -67,7 +62,7 @@ def test_format_row():
             },
         ],
     }
-    assert filtered_schema.format_row(dispute) == ujson.dumps(dispute).encode("UTF-8")
+    assert filtered_schema.format_row(dispute) == dispute
 
 
 @pytest.mark.parametrize(

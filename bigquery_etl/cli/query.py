@@ -454,7 +454,6 @@ def info(name, sql_dir, project_id, cost, last_updated):
 
 def _backfill_query(
     query_file_path,
-    allow_field_addition,
     exclude,
     max_rows,
     dry_run,
@@ -481,11 +480,6 @@ def _backfill_query(
                 "--replace",
                 f"--max_rows={max_rows}",
             ]
-            + (
-                ["--schema_update_option=ALLOW_FIELD_ADDITION"]
-                if allow_field_addition
-                else []
-            )
             + args
         )
         if dry_run:
@@ -548,10 +542,6 @@ def _backfill_query(
 )
 @click.option("--dry_run/--no_dry_run", help="Dry run the backfill")
 @click.option(
-    "--allow-field-addition/--no-allow-field-addition",
-    help="Allow schema additions during query time",
-)
-@click.option(
     "--max_rows",
     "-n",
     type=int,
@@ -575,7 +565,6 @@ def backfill(
     end_date,
     exclude,
     dry_run,
-    allow_field_addition,
     max_rows,
     parallelism,
 ):
@@ -604,7 +593,6 @@ def backfill(
         backfill_query = partial(
             _backfill_query,
             query_file_path,
-            allow_field_addition,
             exclude,
             max_rows,
             dry_run,

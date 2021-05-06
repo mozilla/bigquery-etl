@@ -44,7 +44,6 @@ with DAG(
         email=["bewu@mozilla.com", "frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        allow_field_addition_on_date="2020-11-21",
         dag=dag,
     )
 
@@ -57,7 +56,6 @@ with DAG(
         email=["bewu@mozilla.com", "frank@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        allow_field_addition_on_date="2020-11-21",
         dag=dag,
     )
 

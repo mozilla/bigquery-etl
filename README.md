@@ -353,7 +353,6 @@ Scheduling Queries in Airflow
     - `arguments` - a list of arguments passed when running the query, for example: `["--append_table"]`
     - `referenced_tables` - manually curated list of tables the query depends on; used to speed up the DAG generation process or to specify tables that the dry run doesn't have permissions to access, e. g. `[['telemetry_stable', 'main_v4']]`
     - `multipart` indicates whether a query is split over multiple files `part1.sql`, `part2.sql`, ...
-    - `allow_field_addition_on_date`: date for which new fields are allowed to be added to the existing destination table query results are written to
     - `depends_on` defines external dependencies in telemetry-airflow that are not detected automatically:
     ```yaml
       depends_on:

@@ -12,18 +12,14 @@ description: |-
   every day, so we need to add extra logic to produce a dense that accounts
   for each slice consistently throughout the year, carrying over the accumulated
   CDOU for that slice even on days with no active clients.
+owners:
+- jklukas@mozilla.com
 labels:
   application: desktop
   schedule: daily
   incremental: true
-owners:
-- jklukas@mozilla.com
 scheduling:
   dag_name: bqetl_main_summary
-  # The source table is already small here, so we completely recreate this
-  # every night. We could express this incrementally by taking CDOU from the
-  # previous day and adding dau from the new day, but this would make each
-  # query dependent on history. Recreating the table is simpler and more robust.
   date_partition_parameter: null
 bigquery:
   time_partitioning:

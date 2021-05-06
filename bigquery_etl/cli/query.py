@@ -774,6 +774,7 @@ def update(name, sql_dir, project_id):
 
         for d in dependencies:
             if d not in query_files:
+                click.echo(f"Update downstream dependency schema for {d}")
                 query_files.append(d)
 
 
@@ -820,6 +821,12 @@ def _update_query_schema(query_file):
             "does not exist in BigQuery. Run bqetl query schema deploy "
             "<dataset>.<table> to create the destination table."
         )
+    except FileNotFoundError:
+        click.echo(
+            f"No metadata file for {project_name}.{dataset_name}.{table_name}."
+            "Skip schema update."
+        )
+        return
 
     partitioned_by = None
     try:

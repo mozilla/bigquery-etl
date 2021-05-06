@@ -1,0 +1,77 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
+  name: usage
+  type: STRING
+- mode: NULLABLE
+  name: id_bucket
+  type: INTEGER
+- mode: NULLABLE
+  name: country
+  type: STRING
+- mode: NULLABLE
+  name: locale
+  type: STRING
+- mode: NULLABLE
+  name: os
+  type: STRING
+- mode: NULLABLE
+  name: channel
+  type: STRING
+- mode: NULLABLE
+  name: attributed
+  type: BOOLEAN
+- fields:
+  - fields:
+    - mode: NULLABLE
+      name: dau
+      type: INTEGER
+    - mode: NULLABLE
+      name: wau
+      type: INTEGER
+    - mode: NULLABLE
+      name: mau
+      type: INTEGER
+    - mode: NULLABLE
+      name: active_days_in_week
+      type: INTEGER
+    mode: NULLABLE
+    name: day_0
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: new_profiles
+      type: INTEGER
+    mode: NULLABLE
+    name: day_6
+    type: RECORD
+  - fields:
+    - mode: NULLABLE
+      name: new_profiles
+      type: INTEGER
+    - mode: NULLABLE
+      name: active_in_week_0
+      type: INTEGER
+    - mode: NULLABLE
+      name: active_in_week_1
+      type: INTEGER
+    - mode: NULLABLE
+      name: active_in_weeks_0_and_1
+      type: INTEGER
+    - mode: NULLABLE
+      name: new_profile_active_in_week_0
+      type: INTEGER
+    - mode: NULLABLE
+      name: new_profile_active_in_week_1
+      type: INTEGER
+    - mode: NULLABLE
+      name: new_profile_active_in_weeks_0_and_1
+      type: INTEGER
+    mode: NULLABLE
+    name: day_13
+    type: RECORD
+  mode: NULLABLE
+  name: metrics
+  type: RECORD

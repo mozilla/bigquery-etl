@@ -52,18 +52,21 @@ downstream tables, so this is a more complex case.
 1. Open the `clients_daily_v6` `query.sql` file and add new field definitions
 1. Run `./bqetl query validate telemetry_derived.clients_daily_v6` to dry run and format the query
 1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6` to make local `schema.yaml` updates
-1. Copy and paste the new fields in `schema.yaml` to the schemas for `clients_daily_joined_v1`, `clients_last_seen_v1` and `clients_first_seen_v1`
+1. Copy and paste the new fields in `schema.yaml` to the schemas for `clients_daily_joined_v1`, `clients_last_seen_v1`, `clients_last_seen_joined_v1`  and `clients_first_seen_v1`
 1. Run `pytest tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6` and update the test cases as needed to tolerate the new fields
 1. Open PR with changes
     * CI may be failing at this point due too mismatch of deployed schemas
 1. PR reviewed and approved
 1. Deploy schema changes by running:
+
    ```
    ./bqetl query schema deploy telemetry_derived.clients_daily_v6
    ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1
    ./bqetl query schema deploy --force telemetry_derived.clients_last_seen_v1
+   ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1
    ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1
    ```
+
 1. Rerun CI to ensure all dry runs are successful
 1. Merge pull-request
 

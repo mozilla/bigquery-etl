@@ -97,7 +97,6 @@
         "type": "STRING"
       }
     ]
-
   },
   {
     "name": "charge",
@@ -116,7 +115,27 @@
     "type": "RECORD",
     "fields": [
       {
+        "name": "access_activity_log",
+        "type": "STRING"
+      },
+      {
         "name": "billing_address",
+        "type": "STRING"
+      },
+      {
+        "name": "cancellation_policy",
+        "type": "STRING"
+      },
+      {
+        "name": "cancellation_policy_disclosure",
+        "type": "STRING"
+      },
+      {
+        "name": "cancellation_rebuttal",
+        "type": "STRING"
+      },
+      {
+        "name": "customer_communication",
         "type": "STRING"
       },
       {
@@ -129,6 +148,78 @@
       },
       {
         "name": "customer_purchase_ip",
+        "type": "STRING"
+      },
+      {
+        "name": "customer_signature",
+        "type": "STRING"
+      },
+      {
+        "name": "duplicate_charge_documentation",
+        "type": "STRING"
+      },
+      {
+        "name": "duplicate_charge_explanation",
+        "type": "STRING"
+      },
+      {
+        "name": "duplicate_charge_id",
+        "type": "STRING"
+      },
+      {
+        "name": "product_description",
+        "type": "STRING"
+      },
+      {
+        "name": "receipt",
+        "type": "STRING"
+      },
+      {
+        "name": "refund_policy",
+        "type": "STRING"
+      },
+      {
+        "name": "refund_policy_disclosure",
+        "type": "STRING"
+      },
+      {
+        "name": "refund_refusal_explanation",
+        "type": "STRING"
+      },
+      {
+        "name": "service_date",
+        "type": "STRING"
+      },
+      {
+        "name": "service_documentation",
+        "type": "STRING"
+      },
+      {
+        "name": "shipping_address",
+        "type": "STRING"
+      },
+      {
+        "name": "shipping_carrier",
+        "type": "STRING"
+      },
+      {
+        "name": "shipping_date",
+        "type": "STRING"
+      },
+      {
+        "name": "shipping_documentation",
+        "type": "STRING"
+      },
+      {
+        "name": "shipping_tracking_number",
+        "type": "STRING"
+      },
+      {
+        "name": "uncategorized_file",
+        "type": "STRING"
+      },
+      {
+        "name": "uncategorized_text",
         "type": "STRING"
       }
     ]

@@ -50,10 +50,10 @@ parser.add_argument(
 parser.add_argument(
     "query_options",
     nargs="*",
-    help="Arguments to pass directly to `script/entrypoint query`",
+    help="Arguments to pass directly to `bq query`",
 )
 parser.add_argument(
-    "query_file", type=path, help="Path to the query file for `script/entrypoint query`"
+    "query_file", type=path, help="Path to the query file for `bq query`"
 )
 
 
@@ -74,35 +74,36 @@ def _date_range(start=None, end=None, step=None):
         yield start + (offset * step)
 
 
-def _query(day, entrypoint, destination_table, query_options, query_file):
-    proc = subprocess.Popen(
-        [
-            entrypoint,
-            "query",
-            "--replace",
-            "--dataset_id=telemetry",
-            "--destination_table=" + destination_table + day.strftime("$%Y%m%d"),
-            "--parameter=submission_date:DATE:" + day.isoformat(),
-            "--max_rows=0",
-            "--nouse_legacy_sql",
-            "--quiet",
-        ]
-        + query_options
-        + [query_file],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    prefix = day.isoformat() + ": "
-    sys.stderr.write(prefix + "processing\n")
-    for data, dest in zip(proc.communicate(), (sys.stdout, sys.stderr)):
-        lines = data.split(b"\n")
-        if len(lines[-1]) == 0:
-            lines = lines[:-1]
-        for line in lines:
-            dest.write(prefix)
-            dest.write(line.decode())
-            dest.write("\n")
-        dest.flush()
+def _query(day, destination_table, query_options, query_file):
+    with open(query_file) as query_stream:
+        proc = subprocess.Popen(
+            [
+                "bq",
+                "query",
+                "--replace",
+                "--dataset_id=telemetry",
+                "--destination_table=" + destination_table + day.strftime("$%Y%m%d"),
+                "--parameter=submission_date:DATE:" + day.isoformat(),
+                "--max_rows=0",
+                "--nouse_legacy_sql",
+                "--quiet",
+            ]
+            + query_options,
+            stdin=query_stream,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        prefix = day.isoformat() + ": "
+        sys.stderr.write(prefix + "processing\n")
+        for data, dest in zip(proc.communicate(), (sys.stdout, sys.stderr)):
+            lines = data.split(b"\n")
+            if len(lines[-1]) == 0:
+                lines = lines[:-1]
+            for line in lines:
+                dest.write(prefix)
+                dest.write(line.decode())
+                dest.write("\n")
+            dest.flush()
     return proc.returncode
 
 
@@ -113,7 +114,6 @@ def main():
     args.query_options.extend(unknown_args)
     target = partial(
         _query,
-        entrypoint=os.path.join(os.path.dirname(sys.argv[0]), "entrypoint"),
         destination_table=args.destination_table,
         query_options=args.query_options,
         query_file=args.query_file,

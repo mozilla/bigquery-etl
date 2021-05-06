@@ -846,7 +846,19 @@ def _update_query_schema(query_file, tmp_tables={}):
                 sql_content = sql_content.replace(".".join(table_parts[i:]), tmp_table)
                 break
 
-    query_schema = Schema.from_query_file(query_file_path, sql_content)
+    try:
+        query_schema = Schema.from_query_file(query_file_path, sql_content)
+    except Exception:
+        click.echo(
+            click.style(
+                f"Cannot automatically update {query_file_path}. "
+                f"Please update {query_file_path / SCHEMA_FILE} manually.",
+                fg="red",
+            ),
+            err=True,
+        )
+        return
+
     existing_schema_path = query_file_path.parent / SCHEMA_FILE
     table_name = query_file_path.parent.name
     dataset_name = query_file_path.parent.parent.name

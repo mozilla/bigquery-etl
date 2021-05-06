@@ -1,5 +1,6 @@
 """bigquery-etl CLI query command."""
 
+import copy
 import re
 import string
 import sys
@@ -757,29 +758,33 @@ def update(name, sql_dir, project_id):
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
 
     for query_file in query_files:
-        _update_query_schema(query_file)
+        changed = _update_query_schema(query_file)
 
-        # update downstream dependencies
-        table = query_file.parent.name
-        dataset = query_file.parent.parent.name
-        project = query_file.parent.parent.parent.name
-        identifier = f"{project}.{dataset}.{table}"
+        if changed:
+            # update downstream dependencies
+            table = query_file.parent.name
+            dataset = query_file.parent.parent.name
+            project = query_file.parent.parent.parent.name
+            identifier = f"{project}.{dataset}.{table}"
 
-        dependencies = [
-            p
-            for k, refs in dependency_graph.items()
-            for p in _queries_matching_name_pattern(k, sql_dir, project_id)
-            if identifier in refs
-        ]
+            dependencies = [
+                p
+                for k, refs in dependency_graph.items()
+                for p in _queries_matching_name_pattern(k, sql_dir, project_id)
+                if identifier in refs
+            ]
 
-        for d in dependencies:
-            if d not in query_files:
+            for d in dependencies:
                 click.echo(f"Update downstream dependency schema for {d}")
                 query_files.append(d)
 
 
 def _update_query_schema(query_file):
-    """Update the schema of a specific query file"""
+    """
+    Update the schema of a specific query file.
+
+    Return True if the schema changed, False if it is unchanged.
+    """
     if str(query_file) in SKIP:
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
@@ -841,16 +846,21 @@ def _update_query_schema(query_file):
         project_name, dataset_name, table_name, partitioned_by
     )
 
+    changed = True
+
     if existing_schema_path.is_file():
         existing_schema = Schema.from_schema_file(existing_schema_path)
+        old_schema = copy.deepcopy(existing_schema)
         existing_schema.merge(table_schema)
         existing_schema.merge(query_schema)
         existing_schema.to_yaml_file(existing_schema_path)
+        changed = not existing_schema.equal(old_schema)
     else:
         query_schema.merge(table_schema)
         query_schema.to_yaml_file(existing_schema_path)
 
     click.echo(f"Schema {existing_schema_path} updated.")
+    return changed
 
 
 @schema.command(

@@ -155,7 +155,6 @@ class Task:
     query_file_path: Optional[str] = None
     priority: Optional[int] = None
     referenced_tables: Optional[List[Tuple[str, str, str]]] = attr.ib(None)
-    allow_field_addition_on_date: Optional[str] = attr.ib(None)
     destination_table: Optional[str] = attr.ib(default=DEFAULT_DESTINATION_TABLE_STR)
     is_python_script: bool = attr.ib(False)
     retry_delay: Optional[str] = attr.ib(None)

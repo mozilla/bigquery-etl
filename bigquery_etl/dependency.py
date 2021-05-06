@@ -4,7 +4,7 @@ import sys
 from itertools import groupby
 from pathlib import Path
 from subprocess import CalledProcessError
-from typing import Iterator, List, Tuple
+from typing import Dict, Iterator, List, Tuple
 
 import click
 import yaml
@@ -115,6 +115,22 @@ def _get_references(
             print(f"Failed to parse {path}: {e}", file=sys.stderr)
     if fail:
         raise click.ClickException("Some paths could not be analyzed")
+
+
+def get_dependency_graph(
+    paths: Tuple[str, ...], without_views: bool = False
+) -> Dict[str, List[str]]:
+    """Return the query dependency graph."""
+    refs = _get_references(paths, without_views=without_views)
+    dependency_graph = {}
+
+    for ref in refs:
+        table = ref[0].parent.name
+        dataset = ref[0].parent.parent.name
+        project = ref[0].parent.parent.parent.name
+        dependency_graph[f"{project}.{dataset}.{table}"] = ref[1]
+
+    return dependency_graph
 
 
 @click.group(help=__doc__)

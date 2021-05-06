@@ -20,7 +20,7 @@ class Schema:
     schema: Dict[str, Any]
 
     @classmethod
-    def from_query_file(cls, query_file: Path, content):
+    def from_query_file(cls, query_file: Path, content=None):
         """Create schema from a query file."""
         if not query_file.is_file() or query_file.suffix != ".sql":
             raise Exception(f"{query_file} is not a valid SQL file.")

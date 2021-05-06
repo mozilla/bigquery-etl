@@ -897,7 +897,7 @@ def _update_query_schema(query_file, tmp_tables={}):
     except FileNotFoundError:
         click.echo(
             f"No metadata file for {project_name}.{dataset_name}.{table_name}."
-            "Skip schema update."
+            " Skip schema update."
         )
         return
 

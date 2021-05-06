@@ -20,12 +20,12 @@ class Schema:
     schema: Dict[str, Any]
 
     @classmethod
-    def from_query_file(cls, query_file: Path):
+    def from_query_file(cls, query_file: Path, content):
         """Create schema from a query file."""
         if not query_file.is_file() or query_file.suffix != ".sql":
             raise Exception(f"{query_file} is not a valid SQL file.")
 
-        schema = DryRun(str(query_file)).get_schema()
+        schema = DryRun(str(query_file), content=content).get_schema()
         return cls(schema)
 
     @classmethod

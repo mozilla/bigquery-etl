@@ -1,6 +1,7 @@
 """bigquery-etl CLI query command."""
 
 import copy
+import random
 import re
 import string
 import sys
@@ -746,7 +747,20 @@ def schema():
     default="moz-fx-data-shared-prod",
     callback=is_valid_project,
 )
-def update(name, sql_dir, project_id):
+@click.option(
+    "--update-downstream",
+    "--update_downstream",
+    help="Update downstream dependencies. GCP authentication required.",
+    default=False,
+    is_flag=True,
+)
+@click.option(
+    "--tmp-dataset",
+    "--tmp_dataset",
+    help="GCP datasets for creating updated tables temporarily.",
+    default="analysis",
+)
+def update(name, sql_dir, project_id, update_downstream, tmp_dataset):
     """CLI command for generating the query schema."""
     if not is_authenticated():
         click.echo(
@@ -756,30 +770,61 @@ def update(name, sql_dir, project_id):
         sys.exit(1)
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
+    tmp_tables = {}
 
     for query_file in query_files:
-        changed = _update_query_schema(query_file)
+        changed = _update_query_schema(query_file, tmp_tables)
 
-        if changed:
+        if update_downstream:
             # update downstream dependencies
-            table = query_file.parent.name
-            dataset = query_file.parent.parent.name
-            project = query_file.parent.parent.parent.name
-            identifier = f"{project}.{dataset}.{table}"
+            if changed:
+                if not is_authenticated():
+                    click.echo(
+                        "Cannot update downstream dependencies."
+                        "Authentication to GCP required. Run `gcloud auth login` "
+                        "and check that the project is set correctly."
+                    )
+                    sys.exit(1)
 
-            dependencies = [
-                p
-                for k, refs in dependency_graph.items()
-                for p in _queries_matching_name_pattern(k, sql_dir, project_id)
-                if identifier in refs
-            ]
+                table = query_file.parent.name
+                dataset = query_file.parent.parent.name
+                project = query_file.parent.parent.parent.name
+                identifier = f"{project}.{dataset}.{table}"
+                tmp_identifier = f"{project}.{tmp_dataset}.{table}_" + "".join(
+                    random.choice(string.ascii_lowercase) for i in range(12)
+                )
 
-            for d in dependencies:
-                click.echo(f"Update downstream dependency schema for {d}")
-                query_files.append(d)
+                # create temporary table with updated schema
+                client = bigquery.Client()
+
+                tmp_schema_file = NamedTemporaryFile()
+                schema = Schema.from_schema_file(query_file.parent / SCHEMA_FILE)
+                schema.to_json_file(Path(tmp_schema_file.name))
+                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+                tmp_table = bigquery.Table(tmp_identifier, schema=bigquery_schema)
+                client.create_table(tmp_table)
+
+                tmp_tables[identifier] = tmp_identifier
+
+                # get downstream dependencies that will be updated in the next iteration
+                dependencies = [
+                    p
+                    for k, refs in dependency_graph.items()
+                    for p in _queries_matching_name_pattern(k, sql_dir, project_id)
+                    if identifier in refs
+                ]
+
+                for d in dependencies:
+                    click.echo(f"Update downstream dependency schema for {d}")
+                    query_files.append(d)
+
+    if update_downstream:
+        # delete temporary tables
+        for _, table in tmp_tables.items():
+            client.delete_table(table, not_found_ok=True)
 
 
-def _update_query_schema(query_file):
+def _update_query_schema(query_file, tmp_tables={}):
     """
     Update the schema of a specific query file.
 
@@ -790,7 +835,18 @@ def _update_query_schema(query_file):
         return
 
     query_file_path = Path(query_file)
-    query_schema = Schema.from_query_file(query_file_path)
+
+    # replace temporary table references
+    sql_content = query_file_path.read_text()
+
+    for orig_table, tmp_table in tmp_tables.items():
+        table_parts = orig_table.split(".")
+        for i in range(len(table_parts)):
+            if ".".join(table_parts[i:]) in sql_content:
+                sql_content = sql_content.replace(".".join(table_parts[i:]), tmp_table)
+                break
+
+    query_schema = Schema.from_query_file(query_file_path, sql_content)
     existing_schema_path = query_file_path.parent / SCHEMA_FILE
     table_name = query_file_path.parent.name
     dataset_name = query_file_path.parent.parent.name

@@ -12,12 +12,12 @@ description: |-
   every day, so we need to add extra logic to produce a dense that accounts
   for each slice consistently throughout the year, carrying over the accumulated
   CDOU for that slice even on days with no active clients.
+owners:
+- jklukas@mozilla.com
 labels:
   application: desktop
   schedule: daily
   incremental: true
-owners:
-- jklukas@mozilla.com
 scheduling:
   dag_name: bqetl_main_summary
   # The source table is already small here, so we completely recreate this

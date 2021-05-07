@@ -1,0 +1,10 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+- mode: NULLABLE
+  name: tool
+  type: STRING
+- mode: NULLABLE
+  name: dau
+  type: INTEGER

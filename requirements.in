@@ -1,4 +1,4 @@
-attrs==20.3.0
+attrs==21.2.0
 backports.cached-property==1.0.1  # python 3.7 backwards compat
 cattrs==1.6.0
 click==7.1.2

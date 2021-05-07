@@ -1120,13 +1120,12 @@ def validate_schema(name, sql_dir, project_id):
 
     all_valid = True
 
-    for r in result:
-        if r[0] is False:
+    for is_valid, query_file_path in result:
+        if is_valid is False:
             if all_valid:
                 click.echo("\nSchemas for the following queries are invalid:")
-
             all_valid = False
-            click.echo(r[1])
+            click.echo(query_file_path)
 
     if not all_valid:
         sys.exit(1)

@@ -1,10 +1,10 @@
-attrs==20.3.0
+attrs==21.2.0
 backports.cached-property==1.0.1  # python 3.7 backwards compat
 cattrs==1.6.0
 click==7.1.2
 gcloud==0.18.3
 gitpython==3.1.14
-google-cloud-bigquery==2.15.0
+google-cloud-bigquery==2.16.0
 google-cloud-storage==1.38.0
 importlib-metadata==4.0.1  # python 3.7 backwards compat
 Jinja2==2.11.3

@@ -14,9 +14,9 @@ appdirs==1.4.4 \
     # via
     #   black
     #   virtualenv
-attrs==20.3.0 \
-    --hash=sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6 \
-    --hash=sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700
+attrs==21.2.0 \
+    --hash=sha256:149e90d6d8ac20db7a955ad60cf0e6881a3f20d37096140088356da6c716b0b1 \
+    --hash=sha256:ef6aaac3ca6cd92904cdd0d83f629a15f18053ec84e6432106f7a4d04ae4f5fb
     # via
     #   -r requirements.in
     #   cattrs
@@ -140,9 +140,9 @@ google-auth==1.30.0 \
     #   google-api-core
     #   google-cloud-core
     #   google-cloud-storage
-google-cloud-bigquery==2.15.0 \
-    --hash=sha256:096c352c70045243cf809b509b21de0936c87e8191acff5b25b7f0f3ec748cd1 \
-    --hash=sha256:c73270c96fe55bdad320bf01cfc9e176df5f28947215181ba5304bacd771ce00
+google-cloud-bigquery==2.16.0 \
+    --hash=sha256:69d3b82a2466de3f51d7ca63c1430e691ddccf7039dc6510e874d894548581f2 \
+    --hash=sha256:b659c2d7177578a17b614c6f67f6920dc74b3384d372a1b81bf898137615bd69
     # via -r requirements.in
 google-cloud-core==1.6.0 \
     --hash=sha256:40d9c2da2d03549b5ac3dcccf289d4f15e6d1210044c6381ce45c92913e62904 \

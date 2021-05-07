@@ -1037,7 +1037,7 @@ def _validate_schema(query_file):
     """
     if str(query_file) in SKIP or query_file.name == "script.sql":
         click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
-        return
+        return (True, query_file)
 
     query_file_path = Path(query_file)
     query_schema = Schema.from_query_file(query_file_path)
@@ -1130,3 +1130,5 @@ def validate_schema(name, sql_dir, project_id):
 
     if not all_valid:
         sys.exit(1)
+    else:
+        click.echo("\nAll schemas are valid.")

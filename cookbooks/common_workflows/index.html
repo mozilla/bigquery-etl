@@ -1594,8 +1594,11 @@ downstream tables, so this is a more complex case.</p>
 <ol>
 <li>Open the <code>clients_daily_v6</code> <code>query.sql</code> file and add new field definitions</li>
 <li>Run <code>./bqetl query validate telemetry_derived.clients_daily_v6</code> to dry run and format the query</li>
-<li>Run <code>./bqetl query schema update telemetry_derived.clients_daily_v6</code> to make local <code>schema.yaml</code> updates</li>
-<li>Copy and paste the new fields in <code>schema.yaml</code> to the schemas for <code>clients_daily_joined_v1</code>, <code>clients_last_seen_v1</code>, <code>clients_last_seen_joined_v1</code>  and <code>clients_first_seen_v1</code></li>
+<li>Run <code>./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream</code> to make local <code>schema.yaml</code> updates and update schemas of downstream dependencies<ul>
+<li>Warnings that <code>clients_last_seen_v1</code> and <code>clients_first_seen_v1</code> cannot be updated automatically will be printed out</li>
+</ul>
+</li>
+<li>Copy and paste the new fields in <code>schema.yaml</code> to the schemas for <code>clients_last_seen_v1</code> and <code>clients_first_seen_v1</code></li>
 <li>Run <code>pytest tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6</code> and update the test cases as needed to tolerate the new fields</li>
 <li>Open PR with changes<ul>
 <li>CI may be failing at this point due too mismatch of deployed schemas</li>

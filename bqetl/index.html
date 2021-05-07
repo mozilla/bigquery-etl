@@ -2095,7 +2095,6 @@ Options:
 --end_date: Last date to be backfilled
 --exclude: Dates excluded from backfill. Date format: yyyy-mm-dd
 --dry_run: Dry run the backfill
---allow_field_addition: Allow schema additions during query time
 --max_rows: How many rows to return in the result
 --parallelism: How many threads to run backfill in parallel
 </code></pre>
@@ -2163,6 +2162,8 @@ Options:
 
 --sql_dir: Path to directory which contains queries.
 --project_id: GCP project ID
+--update_downstream: Update downstream dependencies. GCP authentication required.
+--tmp_dataset: GCP datasets for creating updated tables temporarily.
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash">./bqetl query schema update telemetry_derived.clients_daily_v6

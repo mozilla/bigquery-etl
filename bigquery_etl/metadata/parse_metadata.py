@@ -220,12 +220,16 @@ class Metadata:
 
                 if "schema" in metadata:
                     converter = cattr.Converter()
-                    schema = converter.structure(
-                        metadata["schema"], SchemaMetadata
-                    )
+                    schema = converter.structure(metadata["schema"], SchemaMetadata)
 
                 return cls(
-                    friendly_name, description, owners, labels, scheduling, bigquery, schema
+                    friendly_name,
+                    description,
+                    owners,
+                    labels,
+                    scheduling,
+                    bigquery,
+                    schema,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -252,6 +256,9 @@ class Metadata:
 
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])
+
+        if metadata_dict["schema"] is None:
+            del metadata_dict["schema"]
 
         converter = cattr.Converter()
         file.write_text(

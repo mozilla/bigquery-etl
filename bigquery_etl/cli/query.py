@@ -867,14 +867,19 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
         return
 
     query_file_path = Path(query_file)
-    metadata = Metadata.of_query_file(str(query_file_path))
     existing_schema_path = query_file_path.parent / SCHEMA_FILE
     table_name = query_file_path.parent.name
     dataset_name = query_file_path.parent.parent.name
     project_name = query_file_path.parent.parent.parent.name
 
+    try:
+        metadata = Metadata.of_query_file(str(query_file_path))
+    except FileNotFoundError:
+        metadata = None
+        click.echo(f"No metadata defined for {query_file_path}")
+
     # pull in updates from parent schemas
-    if metadata.schema and metadata.schema.derived_from:
+    if metadata and metadata.schema and metadata.schema.derived_from:
         parent_queries = _queries_matching_name_pattern(
             metadata.schema.derived_from.query, sql_dir, project_id
         )
@@ -885,8 +890,9 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
                 err=True,
             )
         else:
-            parent_schema = Schema.from_query_file(parent_queries[0])
-
+            parent_schema = Schema.from_schema_file(
+                parent_queries[0].parent / SCHEMA_FILE
+            )
             parent_table = parent_queries[0].parent.name
             parent_dataset = parent_queries[0].parent.parent.name
             parent_project = parent_queries[0].parent.parent.parent.name
@@ -902,7 +908,9 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
 
             if existing_schema_path.is_file():
                 existing_schema = Schema.from_schema_file(existing_schema_path)
-                existing_schema.merge(parent_schema)
+                existing_schema.merge(
+                    parent_schema, exclude=metadata.schema.derived_from.exclude
+                )
 
                 # use temporary table
                 tmp_identifier = (
@@ -923,8 +931,6 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
             if ".".join(table_parts[i:]) in sql_content:
                 sql_content = sql_content.replace(".".join(table_parts[i:]), tmp_table)
                 break
-
-    print(sql_content)
 
     try:
         query_schema = Schema.from_query_file(query_file_path, sql_content)

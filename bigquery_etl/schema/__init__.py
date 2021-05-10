@@ -1,7 +1,9 @@
 """Query schema."""
 
+from google.cloud import bigquery
 import json
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Any, Dict
 
 import attr
@@ -61,7 +63,16 @@ class Schema:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
             return cls({"fields": []})
 
-    def merge(self, other: "Schema"):
+    def deploy(self, destination_table: str):
+        """Deploy the schema to BigQuery named after destination_table."""
+        client = bigquery.Client()
+        tmp_schema_file = NamedTemporaryFile()
+        self.to_json_file(Path(tmp_schema_file.name))
+        bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+        table = bigquery.Table(destination_table, schema=bigquery_schema)
+        client.create_table(table)
+
+    def merge(self, other: "Schema", exlude):
         """Merge another schema into the schema."""
         self._traverse(
             "root", self.schema["fields"], other.schema["fields"], update=True

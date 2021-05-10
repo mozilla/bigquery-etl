@@ -82,6 +82,22 @@ class BigQueryMetadata:
 
 
 @attr.s(auto_attribs=True)
+class SchemaDerivedMetadata:
+    """Metadata specifying parent schema."""
+
+    query: str
+    # list of excluded columns
+    exclude: Optional[List[str]] = attr.ib(None)
+
+
+@attr.s(auto_attribs=True)
+class SchemaMetadata:
+    """Metadata related to additional schema information."""
+
+    derived_from: SchemaDerivedMetadata
+
+
+@attr.s(auto_attribs=True)
 class Metadata:
     """
     Representation of a table or view Metadata configuration.
@@ -96,6 +112,7 @@ class Metadata:
     labels: Dict = attr.ib({})
     scheduling: Optional[Dict] = attr.ib({})
     bigquery: Optional[BigQueryMetadata] = attr.ib(None)
+    schema: Optional[SchemaMetadata] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -166,6 +183,7 @@ class Metadata:
         labels = {}
         scheduling = {}
         bigquery = None
+        schema = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -200,8 +218,14 @@ class Metadata:
                 if "owners" in metadata:
                     owners = metadata["owners"]
 
+                if "schema" in metadata:
+                    converter = cattr.Converter()
+                    schema = converter.structure(
+                        metadata["schema"], SchemaMetadata
+                    )
+
                 return cls(
-                    friendly_name, description, owners, labels, scheduling, bigquery
+                    friendly_name, description, owners, labels, scheduling, bigquery, schema
                 )
             except yaml.YAMLError as e:
                 raise e

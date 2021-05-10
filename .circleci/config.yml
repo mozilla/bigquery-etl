@@ -347,6 +347,7 @@ workflows:
       - verify-requirements
       - dry-run-sql
       - validate-metadata
+      - validate-schemas
       - integration
       - validate-dags
       - verify-dags-up-to-date

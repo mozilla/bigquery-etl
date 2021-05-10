@@ -9,4 +9,3 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_search
-  allow_field_addition_on_date: "2020-11-21"

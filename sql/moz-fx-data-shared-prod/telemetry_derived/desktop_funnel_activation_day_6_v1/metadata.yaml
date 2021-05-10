@@ -1,13 +1,13 @@
+friendly_name: Firefox Desktop Funnel Activation Day 6
 description: >
   Measures the number of activated new profiles in the Firefox desktop
   funnel. The acitvation date is offset by 6 days to reduce complexity
   for scheduling in Airflow. For querying desktop funnel activation data,
   use telemetry_derived.desktop_funnel_activation_v1 instead.
-friendly_name: Firefox Desktop Funnel Activation Day 6
+owners:
+- ascholtz@mozilla.com
 labels:
   incremental: true
-owners:
-  - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_desktop_funnel
 bigquery:
@@ -15,3 +15,4 @@ bigquery:
     field: submission_date
     type: day
     require_partition_filter: false
+  clustering: null

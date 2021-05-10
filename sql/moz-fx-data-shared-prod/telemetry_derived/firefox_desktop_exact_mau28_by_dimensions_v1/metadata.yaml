@@ -1,10 +1,9 @@
----
 friendly_name: Firefox Desktop Exact MAU by Dimensions
 description: >
   Monthly active users with desktop clients aggregated across
   unique sets of dimensions.
 owners:
-  - dthorn@mozilla.com
+- dthorn@mozilla.com
 labels:
   application: desktop
   schedule: daily
@@ -12,3 +11,9 @@ labels:
 scheduling:
   dag_name: bqetl_main_summary
   task_name: firefox_desktop_exact_mau28_by_dimensions
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false
+  clustering: null

@@ -32,3 +32,9 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  # managed at the dataset-level
+  # - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/taar

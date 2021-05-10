@@ -66,7 +66,7 @@ def ping_type_from_table(qualified_table):
 def get_custom_distribution_metadata(product_name) -> List[CustomDistributionMeta]:
     """Get metadata for reconstructing custom distribution buckets in Glean metrics."""
     # GleanPing.get_repos -> List[Tuple[name: str, app_id: str]]
-    glean = GleanPing(product_name)
+    glean = GleanPing(dict(name=product_name, app_id=product_name))
     probes = glean.get_probes()
 
     custom = []

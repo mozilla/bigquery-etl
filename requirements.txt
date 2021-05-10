@@ -126,7 +126,9 @@ gitdb==4.0.7 \
 gitpython==3.1.14 \
     --hash=sha256:3283ae2fba31c913d857e12e5ba5f9a7772bbc064ae2bb09efafa71b0dd4939b \
     --hash=sha256:be27633e7509e58391f10207cd32b2a6cf5b908f92d9cd30da2e514e1137af61
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   mozilla-schema-generator
 google-api-core[grpc]==1.26.3 \
     --hash=sha256:099762d4b4018cd536bcf85136bf337957da438807572db52f21dc61251be089 \
     --hash=sha256:b914345c7ea23861162693a27703bab804a55504f7e6e9abcaff174d80df32ac
@@ -343,9 +345,9 @@ mccabe==0.6.1 \
     --hash=sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42 \
     --hash=sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f
     # via flake8
-mozilla-schema-generator==0.1.4 \
-    --hash=sha256:49a63fc586fa42349dc218fda7a4bb738986bfb525237c798667a8060b50a0e4 \
-    --hash=sha256:f99218f75b74b23469d56594a2366d9b59bbda32bf129e3caa2891e4412cbe7a
+mozilla-schema-generator==0.3.0 \
+    --hash=sha256:294c14bff0b751b80d4973fafd3cc9cdc47328dea53ee17b749642bdb967fe6f \
+    --hash=sha256:401edb5c6f89eb0e311ce53fd63322ecfcd5a74f03fcaa73885d1fe28841cf67
     # via -r requirements.in
 mypy-extensions==0.4.3 \
     --hash=sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d \

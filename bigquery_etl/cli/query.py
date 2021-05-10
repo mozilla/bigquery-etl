@@ -1030,9 +1030,14 @@ def deploy(ctx, name, sql_dir, project_id, force):
 
 
 def _validate_schema(query_file):
+    """
+    Check whether schema is valid.
+
+    Returns tuple for whether schema is valid and path to schema.
+    """
     if str(query_file) in SKIP or query_file.name == "script.sql":
         click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
-        return
+        return (True, query_file)
 
     query_file_path = Path(query_file)
     query_schema = Schema.from_query_file(query_file_path)
@@ -1040,7 +1045,7 @@ def _validate_schema(query_file):
 
     if not existing_schema_path.is_file():
         click.echo(f"No schema file defined for {query_file_path}", err=True)
-        return True
+        return (True, query_file_path)
 
     table_name = query_file_path.parent.name
     dataset_name = query_file_path.parent.parent.name
@@ -1061,25 +1066,31 @@ def _validate_schema(query_file):
 
     if not query_schema.compatible(table_schema):
         click.echo(
-            f"ERROR: Schema for query in {query_file_path} "
-            f"incompatible with schema deployed for "
-            f"{project_name}.{dataset_name}.{table_name}",
+            click.style(
+                f"ERROR: Schema for query in {query_file_path} "
+                f"incompatible with schema deployed for "
+                f"{project_name}.{dataset_name}.{table_name}",
+                fg="red",
+            ),
             err=True,
         )
-        return False
+        return (False, query_file_path)
     else:
         existing_schema = Schema.from_schema_file(existing_schema_path)
 
         if not existing_schema.equal(query_schema):
             click.echo(
-                f"Schema defined in {existing_schema_path} "
-                f"incompatible with query {query_file_path}",
+                click.style(
+                    f"Schema defined in {existing_schema_path} "
+                    f"incompatible with query {query_file_path}",
+                    fg="red",
+                ),
                 err=True,
             )
-            return False
+            return (False, query_file_path)
 
     click.echo(f"Schemas for {query_file_path} are valid.")
-    return True
+    return (True, query_file_path)
 
 
 @schema.command(
@@ -1106,5 +1117,17 @@ def validate_schema(name, sql_dir, project_id):
 
     with Pool(8) as p:
         result = p.map(_validate_schema, query_files, chunksize=1)
-    if not all(result):
+
+    all_valid = True
+
+    for is_valid, query_file_path in result:
+        if is_valid is False:
+            if all_valid:
+                click.echo("\nSchemas for the following queries are invalid:")
+            all_valid = False
+            click.echo(query_file_path)
+
+    if not all_valid:
         sys.exit(1)
+    else:
+        click.echo("\nAll schemas are valid.")

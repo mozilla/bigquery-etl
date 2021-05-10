@@ -2,10 +2,10 @@
 
 import json
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from typing import Any, Dict
 
 import attr
+import os
 import yaml
 
 from bigquery_etl.dryrun import DryRun
@@ -20,12 +20,12 @@ class Schema:
     schema: Dict[str, Any]
 
     @classmethod
-    def from_query_file(cls, query_file: Path):
+    def from_query_file(cls, query_file: Path, content=None):
         """Create schema from a query file."""
         if not query_file.is_file() or query_file.suffix != ".sql":
             raise Exception(f"{query_file} is not a valid SQL file.")
 
-        schema = DryRun(str(query_file)).get_schema()
+        schema = DryRun(str(query_file), content=content).get_schema()
         return cls(schema)
 
     @classmethod
@@ -46,18 +46,17 @@ class Schema:
     @classmethod
     def for_table(cls, project, dataset, table, partitioned_by=None):
         """Get the schema for a BigQuery table."""
-        query = f"SELECT * FROM {project}.{dataset}.{table}"
+        query = f"SELECT * FROM `{project}.{dataset}.{table}`"
 
         if partitioned_by:
             query += f" WHERE DATE({partitioned_by}) = DATE('2020-01-01')"
 
-        # write query to temporary file so it can get dry run
-        tmp = NamedTemporaryFile()
-        with open(tmp.name, "w") as f:
-            f.write(query)
-
         try:
-            return cls(DryRun(str(tmp.name)).get_schema())
+            return cls(
+                DryRun(
+                    os.path.join(project, dataset, table, "query.sql"), query
+                ).get_schema()
+            )
         except Exception as e:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
             return cls({"fields": []})

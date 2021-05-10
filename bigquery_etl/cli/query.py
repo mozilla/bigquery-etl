@@ -808,7 +808,9 @@ def update(name, sql_dir, project_id, update_downstream, tmp_dataset):
     tmp_tables = {}
 
     for query_file in query_files:
-        changed = _update_query_schema(query_file, tmp_tables)
+        changed = _update_query_schema(
+            query_file, sql_dir, project_id, tmp_dataset, tmp_tables
+        )
 
         if update_downstream:
             # update downstream dependencies
@@ -830,16 +832,10 @@ def update(name, sql_dir, project_id, update_downstream, tmp_dataset):
                 )
 
                 # create temporary table with updated schema
-                client = bigquery.Client()
-
-                tmp_schema_file = NamedTemporaryFile()
-                schema = Schema.from_schema_file(query_file.parent / SCHEMA_FILE)
-                schema.to_json_file(Path(tmp_schema_file.name))
-                bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-                tmp_table = bigquery.Table(tmp_identifier, schema=bigquery_schema)
-                client.create_table(tmp_table)
-
-                tmp_tables[identifier] = tmp_identifier
+                if identifier not in tmp_tables:
+                    schema = Schema.from_schema_file(query_file.parent / SCHEMA_FILE)
+                    schema.deploy(tmp_identifier)
+                    tmp_tables[identifier] = tmp_identifier
 
                 # get downstream dependencies that will be updated in the next iteration
                 dependencies = [
@@ -853,13 +849,14 @@ def update(name, sql_dir, project_id, update_downstream, tmp_dataset):
                     click.echo(f"Update downstream dependency schema for {d}")
                     query_files.append(d)
 
-    if update_downstream:
+    if len(tmp_tables) > 0:
+        client = bigquery.Client()
         # delete temporary tables
         for _, table in tmp_tables.items():
             client.delete_table(table, not_found_ok=True)
 
 
-def _update_query_schema(query_file, tmp_tables={}):
+def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_tables={}):
     """
     Update the schema of a specific query file.
 
@@ -870,6 +867,52 @@ def _update_query_schema(query_file, tmp_tables={}):
         return
 
     query_file_path = Path(query_file)
+    metadata = Metadata.of_query_file(str(query_file_path))
+    existing_schema_path = query_file_path.parent / SCHEMA_FILE
+    table_name = query_file_path.parent.name
+    dataset_name = query_file_path.parent.parent.name
+    project_name = query_file_path.parent.parent.parent.name
+
+    # pull in updates from parent schemas
+    if metadata.schema and metadata.schema.derived_from:
+        parent_queries = _queries_matching_name_pattern(
+            metadata.schema.derived_from.query, sql_dir, project_id
+        )
+
+        if len(parent_queries) == 0:
+            click.echo(
+                f"derived_from query {metadata.schema.derived_from.query} does not exist.",
+                err=True,
+            )
+        else:
+            parent_schema = Schema.from_query_file(parent_queries[0])
+
+            parent_table = parent_queries[0].parent.name
+            parent_dataset = parent_queries[0].parent.parent.name
+            parent_project = parent_queries[0].parent.parent.parent.name
+            parent_identifier = f"{parent_project}.{parent_dataset}.{parent_table}"
+
+            if parent_identifier not in tmp_tables:
+                tmp_parent_identifier = (
+                    f"{parent_project}.{tmp_dataset}.{parent_table}_"
+                    + "".join(random.choice(string.ascii_lowercase) for i in range(12))
+                )
+                parent_schema.deploy(tmp_parent_identifier)
+                tmp_tables[parent_identifier] = tmp_parent_identifier
+
+            if existing_schema_path.is_file():
+                existing_schema = Schema.from_schema_file(existing_schema_path)
+                existing_schema.merge(parent_schema)
+
+                # use temporary table
+                tmp_identifier = (
+                    f"{project_name}.{tmp_dataset}.{table_name}_"
+                    + "".join(random.choice(string.ascii_lowercase) for i in range(12))
+                )
+                existing_schema.deploy(tmp_identifier)
+                tmp_tables[
+                    f"{project_name}.{dataset_name}.{table_name}"
+                ] = tmp_identifier
 
     # replace temporary table references
     sql_content = query_file_path.read_text()
@@ -880,6 +923,8 @@ def _update_query_schema(query_file, tmp_tables={}):
             if ".".join(table_parts[i:]) in sql_content:
                 sql_content = sql_content.replace(".".join(table_parts[i:]), tmp_table)
                 break
+
+    print(sql_content)
 
     try:
         query_schema = Schema.from_query_file(query_file_path, sql_content)
@@ -894,16 +939,10 @@ def _update_query_schema(query_file, tmp_tables={}):
         )
         return
 
-    existing_schema_path = query_file_path.parent / SCHEMA_FILE
-    table_name = query_file_path.parent.name
-    dataset_name = query_file_path.parent.parent.name
-    project_name = query_file_path.parent.parent.parent.name
-
     # update bigquery metadata
     try:
         client = bigquery.Client()
         table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
-        metadata = Metadata.of_query_file(str(query_file_path))
         metadata_file_path = query_file_path.parent / METADATA_FILE
 
         if table.time_partitioning and (

@@ -96,7 +96,7 @@ subscriptions AS (
   WHERE
     DATE(subscription_start_date) = @date
     AND product_name = "Mozilla VPN"
-    AND provider = "FXA"
+    AND provider LIKE "FxA %"
     AND normalized_acquisition_channel LIKE "Website%"
   GROUP BY
     `date`,

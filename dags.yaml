@@ -305,12 +305,12 @@ bqetl_fenix_event_rollup:
     retry_delay: 30m
 
 bqetl_stripe:
-  schedule_interval: 30 0 * * *
+  schedule_interval: 30 1 * * *
   description: |
     Daily derived tables on top of data imported from Stripe.
 
-    Depends on the `stripe` DAG which starts at midnight UTC;
-    we allow 30 minutes for that DAG to complete before this one
+    Depends on the `stripe` DAG which starts at midnight UTC, and FxA logs;
+    we allow 1 hour 30 minutes for FxA logs to be delivered before this
     is scheduled to start.
   default_args:
     owner: dthorn@mozilla.com

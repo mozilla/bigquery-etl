@@ -14,8 +14,8 @@ Built from bigquery-etl repo, [`dags/bqetl_stripe.py`](https://github.com/mozill
 
 Daily derived tables on top of data imported from Stripe.
 
-Depends on the `stripe` DAG which starts at midnight UTC;
-we allow 30 minutes for that DAG to complete before this one
+Depends on the `stripe` DAG which starts at midnight UTC, and FxA logs;
+we allow 1 hour 30 minutes for FxA logs to be delivered before this
 is scheduled to start.
 
 #### Owner
@@ -39,7 +39,7 @@ default_args = {
 with DAG(
     "bqetl_stripe",
     default_args=default_args,
-    schedule_interval="30 0 * * *",
+    schedule_interval="30 1 * * *",
     doc_md=docs,
 ) as dag:
 
@@ -140,6 +140,18 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
+    stripe_external__fxa_pay_setup_complete__v1 = bigquery_etl_query(
+        task_id="stripe_external__fxa_pay_setup_complete__v1",
+        destination_table="fxa_pay_setup_complete_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
         dag=dag,
     )
 
@@ -259,7 +271,7 @@ with DAG(
         task_id="wait_for_stripe_import_events",
         external_dag_id="stripe",
         external_task_id="stripe_import_events",
-        execution_delta=datetime.timedelta(seconds=1800),
+        execution_delta=datetime.timedelta(seconds=5400),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",

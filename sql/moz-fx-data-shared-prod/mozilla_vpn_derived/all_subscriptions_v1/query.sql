@@ -32,17 +32,78 @@ stripe_customers AS (
   FROM
     mozdata.stripe.customers
 ),
-stripe_customer_country AS (
+fxa_logs_provider_country AS (
   SELECT
-    customer AS customer_id,
-    LOWER(
-      -- LAST_VALUE(country ORDER BY created)
-      ARRAY_AGG(payment_method_details.card.country ORDER BY created DESC LIMIT 1)[OFFSET(0)]
-    ) AS country,
+    fxa_uid,
+    plan_id,
+    ARRAY_AGG(
+      STRUCT(payment_provider AS provider, source_country AS country)
+      ORDER BY
+        event_timestamp DESC
+      LIMIT
+        1
+    )[OFFSET(1)].*,
   FROM
-    `moz-fx-data-shared-prod`.stripe_external.charges_v1
+    `moz-fx-data-shared-prod`.stripe_external.fxa_pay_setup_complete_v1
   GROUP BY
-    customer_id
+    fxa_uid,
+    plan_id
+),
+stripe_invoice_lines AS (
+  SELECT
+    lines.subscription AS subscription_id,
+    INITCAP(
+      COALESCE(
+        fxa_logs_provider_country.provider,
+        IF(
+          "paypalTransactionId" IN (SELECT key FROM UNNEST(invoices_v1.metadata)),
+          "Paypal",
+          "Stripe"
+        )
+      )
+    ) AS provider,
+    LOWER(
+      COALESCE(fxa_logs_provider_country.country, charges_v1.payment_method_details.card.country)
+    ) AS country,
+    invoices_v1.event_timestamp,
+  FROM
+    `moz-fx-data-shared-prod`.stripe_external.invoices_v1
+  CROSS JOIN
+    UNNEST(lines) AS lines
+  LEFT JOIN
+    stripe_customers
+  ON
+    invoices_v1.customer = stripe_customers.customer_id
+  LEFT JOIN
+    `moz-fx-data-shared-prod`.stripe_external.charges_v1
+  ON
+    invoices_v1.charge = charges_v1.id
+  LEFT JOIN
+    fxa_logs_provider_country
+  ON
+    stripe_customers.fxa_uid = fxa_logs_provider_country.fxa_uid
+    AND lines.plan.id = fxa_logs_provider_country.plan_id
+  WHERE
+    -- ignore invoices where no payment occurred
+    invoices_v1.status = "paid"
+    AND invoices_v1.amount_due > 0
+),
+stripe_subscription_provider_country AS (
+  SELECT
+    subscription_id,
+    ARRAY_AGG(
+      STRUCT(provider, country)
+      ORDER BY
+        -- prefer rows with country
+        IF(country IS NULL, 0, 1) DESC,
+        event_timestamp DESC
+      LIMIT
+        1
+    )[OFFSET(0)].*
+  FROM
+    stripe_invoice_lines
+  GROUP BY
+    subscription_id
 ),
 standardized_country AS (
   SELECT
@@ -111,7 +172,7 @@ fxa_subscriptions AS (
     utm_campaign,
     attribution_category,
     coarse_attribution_category,
-    "FXA" AS provider,
+    CONCAT("FxA ", provider) AS provider,
     plan_amount,
     billing_scheme,
     plan_currency,
@@ -125,17 +186,17 @@ fxa_subscriptions AS (
   USING
     (plan_id)
   LEFT JOIN
-    stripe_customers
+    stripe_subscription_provider_country
   USING
-    (customer_id)
-  LEFT JOIN
-    stripe_customer_country
-  USING
-    (customer_id)
+    (subscription_id)
   LEFT JOIN
     standardized_country
   USING
     (country)
+  LEFT JOIN
+    stripe_customers
+  USING
+    (customer_id)
   LEFT JOIN
     attribution
   USING
@@ -177,9 +238,9 @@ apple_iap_subscriptions AS (
     attribution_category,
     coarse_attribution_category,
     "Apple Store IAP" AS provider,
-    NULL AS plan_amount,
+    IF(`interval` = "month", 499, NULL) AS plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
-    CAST(NULL AS STRING) AS plan_currency,
+    IF(`interval` = "month", "USD", NULL) AS plan_currency,
     `interval` AS plan_interval,
     CAST(NULL AS STRING) AS product_id,
     "Mozilla VPN" AS product_name,

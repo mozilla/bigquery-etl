@@ -387,7 +387,7 @@ with DAG(
         task_id="wait_for_stripe_derived__customers__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_derived__customers__v1",
-        execution_delta=datetime.timedelta(seconds=4500),
+        execution_delta=datetime.timedelta(seconds=900),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -400,7 +400,7 @@ with DAG(
         task_id="wait_for_stripe_derived__plans__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_derived__plans__v1",
-        execution_delta=datetime.timedelta(seconds=4500),
+        execution_delta=datetime.timedelta(seconds=900),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -413,7 +413,7 @@ with DAG(
         task_id="wait_for_stripe_derived__products__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_derived__products__v1",
-        execution_delta=datetime.timedelta(seconds=4500),
+        execution_delta=datetime.timedelta(seconds=900),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -426,7 +426,7 @@ with DAG(
         task_id="wait_for_stripe_derived__subscriptions__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_derived__subscriptions__v1",
-        execution_delta=datetime.timedelta(seconds=4500),
+        execution_delta=datetime.timedelta(seconds=900),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -439,7 +439,7 @@ with DAG(
         task_id="wait_for_stripe_external__charges__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_external__charges__v1",
-        execution_delta=datetime.timedelta(seconds=4500),
+        execution_delta=datetime.timedelta(seconds=900),
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
@@ -447,6 +447,32 @@ with DAG(
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         wait_for_stripe_external__charges__v1
+    )
+    wait_for_stripe_external__fxa_pay_setup_complete__v1 = ExternalTaskSensor(
+        task_id="wait_for_stripe_external__fxa_pay_setup_complete__v1",
+        external_dag_id="bqetl_stripe",
+        external_task_id="stripe_external__fxa_pay_setup_complete__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
+        wait_for_stripe_external__fxa_pay_setup_complete__v1
+    )
+    wait_for_stripe_external__invoices__v1 = ExternalTaskSensor(
+        task_id="wait_for_stripe_external__invoices__v1",
+        external_dag_id="bqetl_stripe",
+        external_task_id="stripe_external__invoices__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
+        wait_for_stripe_external__invoices__v1
     )
 
     mozilla_vpn_derived__devices__v1.set_upstream(mozilla_vpn_external__devices__v1)
@@ -485,16 +511,6 @@ with DAG(
     mozilla_vpn_derived__retention_by_subscription__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1
     )
-    wait_for_stripe_external__invoices__v1 = ExternalTaskSensor(
-        task_id="wait_for_stripe_external__invoices__v1",
-        external_dag_id="bqetl_stripe",
-        external_task_id="stripe_external__invoices__v1",
-        execution_delta=datetime.timedelta(seconds=4500),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     mozilla_vpn_derived__retention_by_subscription__v1.set_upstream(
         wait_for_stripe_external__invoices__v1
     )

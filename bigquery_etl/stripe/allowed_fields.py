@@ -3,7 +3,7 @@
 import re
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Generator, Tuple, Type
+from typing import Any, Tuple, Type
 
 import click
 import stripe
@@ -70,41 +70,40 @@ class FilteredSchema:
             if field.name in allowed
         )
 
-    def format_row(self, row: dict) -> bytes:
+    @staticmethod
+    def expand(obj: Any) -> Any:
+        """Recursively expand paged lists provided by stripe."""
+        if isinstance(obj, stripe.ListObject):
+            if obj.data and _snake_case(type(obj.data[0])) in ALLOWED_FIELDS:
+                # don't expand lists of resources that get updated in separate events
+                return []
+            # expand paged list
+            return list(map(FilteredSchema.expand, obj.auto_paging_iter()))
+        if isinstance(obj, list):
+            return list(map(FilteredSchema.expand, obj))
+        if isinstance(obj, dict):
+            return {key: FilteredSchema.expand(value) for key, value in obj.items()}
+        return obj
+
+    def format_row(self, row: Any) -> Any:
         """Format stripe object for BigQuery, and validate against original schema."""
-        return ujson.dumps(
-            self._format_helper(
-                self.type, obj=row, allowed=self.allowed, field=self.root
-            )
-        ).encode("UTF-8")
+        return self._format_helper(row, self.allowed, self.root, (self.type,))
 
     def _format_helper(
         self,
-        *path,
         obj: Any,
         allowed: dict,
         field: bigquery.SchemaField,
+        path: Tuple[str, ...],
         is_list_item: bool = False,
     ) -> Any:
-        # override obj for metadata and paged lists
-        if (
-            field.name in ("metadata", "custom_fields")
-            and isinstance(obj, dict)
-            and not is_list_item
-        ):
+        if path[-1] in ("metadata", "custom_fields"):
             if "userid" in obj:
                 # hash fxa uid before it reaches BigQuery
                 obj["fxa_uid"] = sha256(obj.pop("userid").encode("UTF-8")).hexdigest()
             # format metadata as a key-value list
             obj = [{"key": key, "value": value} for key, value in obj.items()]
-        elif isinstance(obj, stripe.ListObject):
-            if obj.data and _snake_case(type(obj.data[0])) in ALLOWED_FIELDS:
-                # don't expand lists of resources that get updated in separate events
-                return []
-            # expand paged list
-            obj = obj.auto_paging_iter()
-
-        if isinstance(obj, (list, Generator)):
+        if isinstance(obj, list):
             # enforce schema
             if field.mode != "REPEATED":
                 raise click.ClickException(
@@ -112,11 +111,10 @@ class FilteredSchema:
                 )
             return [
                 self._format_helper(
-                    *path[:-1],
-                    f"{field.name}[{i}]",
                     obj=e,
                     allowed=allowed,
                     field=field,
+                    path=(*path[:-1], f"{path[-1]}[{i}]"),
                     is_list_item=True,
                 )
                 for i, e in enumerate(obj)
@@ -147,11 +145,10 @@ class FilteredSchema:
                         f"{'.'.join(path)} contained unexpected field: {key}"
                     )
                 formatted = self._format_helper(
-                    *path,
-                    key,
                     obj=value,
                     allowed=allowed.get(key) or {},
                     field=fields_by_name[key],
+                    path=(*path, key),
                 )
                 # apply allow list after formatting to enforce schema
                 if formatted not in (None, [], {}) and key in allowed:

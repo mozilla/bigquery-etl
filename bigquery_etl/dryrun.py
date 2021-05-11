@@ -84,6 +84,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/stripe_external/credit_notes_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/customers_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/disputes_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/stripe_external/fxa_pay_setup_complete_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/invoices_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/payment_intents_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/payouts_v1/query.sql",

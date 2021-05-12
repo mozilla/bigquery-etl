@@ -42,6 +42,34 @@ def write_sql(output_dir, full_table_id, basename, sql):
         f.write("\n")
 
 
+def write_dataset_metadata(output_dir, full_table_id):
+    """
+    Add dataset_metadata.yaml to public facing datasets.
+
+    Does not overwrite existing dataset_metadata.yaml files.
+    """
+    d = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+    target = d.parent / "dataset_metadata.yaml"
+
+    public_facing = all(
+        [postfix not in d.parent.name for postfix in ("_derived", "_stable")]
+    )
+    if public_facing and not target.exists():
+        env = Environment(loader=PackageLoader("bigquery_etl", "glean_usage/templates"))
+        dataset_metadata = env.get_template("dataset_metadata.yaml")
+        rendered = dataset_metadata.render(
+            {
+                "friendly_name": " ".join(
+                    [p.capitalize() for p in d.parent.name.split("_")]
+                ),
+                "dataset": d.parent.name,
+            }
+        )
+
+        logging.info(f"Writing {target}")
+        target.write_text(rendered)
+
+
 def list_baseline_tables(project_id, only_tables, table_filter):
     """Return names of all matching baseline tables in shared-prod."""
     prod_baseline_tables = [
@@ -148,7 +176,9 @@ def generate(
             init_sql = render(query_filename, init=True, **render_kwargs)
 
     if not (referenced_table_exists(view_sql)):
-        logging.info("Skipping view for table which doesn't exist:" f" {target_table_id}")
+        logging.info(
+            "Skipping view for table which doesn't exist:" f" {target_table_id}"
+        )
         return
 
     if output_dir:
@@ -158,6 +188,8 @@ def generate(
 
         if not no_init:
             write_sql(output_dir, table, "init.sql", init_sql)
+
+        write_dataset_metadata(output_dir, view)
 
     if output_only:
         return

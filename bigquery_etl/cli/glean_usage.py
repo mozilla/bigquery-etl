@@ -9,13 +9,17 @@ from ..cli.utils import (
 )
 from ..glean_usage import (
     baseline_clients_daily,
-    # baseline_clients_first_seen,
-    # baseline_clients_last_seen,
+    baseline_clients_first_seen,
+    baseline_clients_last_seen,
 )
 from ..glean_usage.common import list_baseline_tables
 
 # list of methods for generating queries
-GENERATE_QUERIES = [baseline_clients_daily.generate]
+GENERATE_QUERIES = [
+    baseline_clients_daily.generate,
+    baseline_clients_first_seen.generate,
+    baseline_clients_last_seen.generate,
+]
 
 
 @click.group(help="Commands for managing Glean usage.")

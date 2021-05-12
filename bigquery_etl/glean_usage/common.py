@@ -3,6 +3,7 @@
 import logging
 import os
 import re
+import requests
 from jinja2 import TemplateNotFound
 from pathlib import Path
 
@@ -13,6 +14,8 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util import standard_args  # noqa E402
 from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
 from bigquery_etl.view import generate_stable_views
+
+APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
 def render(sql_filename, format=True, **kwargs) -> str:
@@ -138,64 +141,120 @@ def _extract_dataset_from_glob(pattern):
     return pattern.split(".", 1)[0]
 
 
-def generate(
-    project_id,
-    baseline_table,
-    prefix,
-    target_table_id,
-    custom_render_kwargs={},
-    no_init=True,
-    output_dir=None,
-    output_only=False,
-):
-    """Generate the baseline table query."""
-    tables = table_names_from_baseline(baseline_table, include_project_id=False)
+def get_app_info():
+    """Return a list of applications from the probeinfo API."""
+    resp = requests.get(APP_LISTINGS_URL)
+    resp.raise_for_status()
+    apps_json = resp.json()
+    app_info = {}
 
-    init_filename = f"{target_table_id}.init.sql"
-    query_filename = f"{target_table_id}.query.sql"
-    view_filename = f"{target_table_id[:-3]}.view.sql"
-    view_metadata_filename = f"{target_table_id[:-3]}.metadata.yaml"
+    for app in apps_json:
+        if app["app_name"] not in app_info:
+            app_info[app["app_name"]] = [app]
+        else:
+            app_info[app["app_name"]].append(app)
 
-    table = tables[f"{prefix}_table"]
-    view = tables[f"{prefix}_view"]
-    render_kwargs = dict(
-        header="-- Generated via bigquery_etl.glean_usage\n",
-        project_id=project_id,
-    )
-    render_kwargs.update(custom_render_kwargs)
-    render_kwargs.update(tables)
+    return app_info
 
-    query_sql = render(query_filename, **render_kwargs)
-    view_sql = render(view_filename, **render_kwargs)
-    view_metadata = render(view_metadata_filename, format=False, **render_kwargs)
 
-    if not no_init:
-        try:
-            init_sql = render(init_filename, **render_kwargs)
-        except TemplateNotFound:
-            init_sql = render(query_filename, init=True, **render_kwargs)
+class GleanTable:
+    """Represents a generated Glean table."""
 
-    if not (referenced_table_exists(view_sql)):
-        logging.info(
-            "Skipping view for table which doesn't exist:" f" {target_table_id}"
+    def __init__(self):
+        """Init Glean table."""
+        self.target_table_id = ""
+        self.prefix = ""
+        self.custom_render_kwargs = {}
+        self.no_init = True
+
+    def generate_per_app_id(
+        self,
+        project_id,
+        baseline_table,
+        output_dir=None,
+        output_only=False,
+    ):
+        """Generate the baseline table query per app_id."""
+        tables = table_names_from_baseline(baseline_table, include_project_id=False)
+
+        init_filename = f"{self.target_table_id}.init.sql"
+        query_filename = f"{self.target_table_id}.query.sql"
+        view_filename = f"{self.target_table_id[:-3]}.view.sql"
+        view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
+
+        table = tables[f"{self.prefix}_table"]
+        view = tables[f"{self.prefix}_view"]
+        render_kwargs = dict(
+            header="-- Generated via bigquery_etl.glean_usage\n",
+            project_id=project_id,
         )
-        return
 
-    if output_dir:
-        write_sql(output_dir, view, "metadata.yaml", view_metadata)
-        write_sql(output_dir, view, "view.sql", view_sql)
-        write_sql(output_dir, table, "query.sql", query_sql)
+        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(tables)
 
-        if not no_init:
-            write_sql(output_dir, table, "init.sql", init_sql)
+        query_sql = render(query_filename, **render_kwargs)
+        view_sql = render(view_filename, **render_kwargs)
+        view_metadata = render(view_metadata_filename, format=False, **render_kwargs)
 
-        write_dataset_metadata(output_dir, view)
+        if not self.no_init:
+            try:
+                init_sql = render(init_filename, **render_kwargs)
+            except TemplateNotFound:
+                init_sql = render(query_filename, init=True, **render_kwargs)
 
-    if output_only:
-        return
+        if not (referenced_table_exists(view_sql)):
+            logging.info(
+                "Skipping view for table which doesn't exist:"
+                f" {self.target_table_id}"
+            )
+            return
 
-    # dry run generated query
-    DryRun(
-        os.path.join(output_dir, *list(baseline_table.split(".")[-2:]), query_filename),
-        query_sql,
-    ).is_valid()
+        if output_dir:
+            write_sql(output_dir, view, "metadata.yaml", view_metadata)
+            write_sql(output_dir, view, "view.sql", view_sql)
+            write_sql(output_dir, table, "query.sql", query_sql)
+
+            if not self.no_init:
+                write_sql(output_dir, table, "init.sql", init_sql)
+
+            write_dataset_metadata(output_dir, view)
+
+        if output_only:
+            return
+
+        # dry run generated query
+        DryRun(
+            os.path.join(
+                output_dir, *list(baseline_table.split(".")[-2:]), query_filename
+            ),
+            query_sql,
+        ).is_valid()
+
+    def generate_per_app(self, project_id, app_info, output_dir=None):
+
+        target_view_name = "_".join(self.target_table_id.split("_")[:-1])
+        target_dataset = app_info[0]["app_name"]
+
+        datasets = [
+            (a["bq_dataset_family"], a["app_channel"])
+            for a in app_info
+            if "app_channel" in a
+        ]
+
+        if len(datasets) == 0:
+            return
+
+        render_kwargs = dict(
+            header="-- Generated via bigquery_etl.glean_usage\n",
+            project_id=project_id,
+            target_view=f"{target_dataset}.{target_view_name}",
+            datasets=datasets,
+            table=target_view_name,
+        )
+
+        sql = render("cross_channel.view.sql", **render_kwargs)
+        view = f"{project_id}.{target_dataset}.{target_view_name}"
+
+        if output_dir:
+            write_sql(output_dir, view, "view.sql", sql)
+            write_dataset_metadata(output_dir, view)

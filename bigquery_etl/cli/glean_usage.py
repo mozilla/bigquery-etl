@@ -12,13 +12,13 @@ from ..glean_usage import (
     baseline_clients_first_seen,
     baseline_clients_last_seen,
 )
-from ..glean_usage.common import list_baseline_tables
+from ..glean_usage.common import list_baseline_tables, get_app_info
 
 # list of methods for generating queries
-GENERATE_QUERIES = [
-    baseline_clients_daily.generate,
-    baseline_clients_first_seen.generate,
-    baseline_clients_last_seen.generate,
+GLEAN_TABLES = [
+    baseline_clients_daily.BaselineClientsDailyTable(),
+    baseline_clients_first_seen.BaselineClientsFirstSeenTable(),
+    baseline_clients_last_seen.BaselineClientsLastSeenTable(),
 ]
 
 
@@ -82,14 +82,23 @@ def generate(project_id, output_dir, parallelism, exclude, only, output_only):
         table_filter=table_filter,
     )
 
-    for generate in GENERATE_QUERIES:
+    for table in GLEAN_TABLES:
         with ThreadPool(parallelism) as pool:
             pool.map(
                 partial(
-                    generate,
+                    table.generate_per_app_id,
                     project_id,
                     output_dir=output_dir,
                     output_only=output_only,
                 ),
                 baseline_tables,
+            )
+
+        # per app specific datasets
+        app_info = get_app_info().values()
+
+        with ThreadPool(parallelism) as pool:
+            pool.map(
+                partial(table.generate_per_app, project_id, output_dir=output_dir),
+                app_info,
             )

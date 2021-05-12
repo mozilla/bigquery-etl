@@ -2231,7 +2231,7 @@ Options:
 --owner: Email address of the DAG owner
 --description: Description for DAG
 --start_date: First date for which scheduled queries should be executed
---email: List of email addresses that Airflow will send alerts to
+--email: Email addresses that Airflow will send alerts to
 --retries: Number of retries Airflow will attempt in case of failures
 --retry_delay: Time period Airflow will wait after failures before running failed tasks again
 </code></pre>
@@ -2248,7 +2248,8 @@ Options:
 --owner=example@mozilla.com \
 --description=&quot;The DAG schedules SSL ratios queries.&quot; \
 --start-date=2019-07-20 \
---email=example2@mozilla.com,example3@mozilla.com \
+--email=example2@mozilla.com \
+--email=example3@mozilla.com \
 --retries=2 \
 --retry_delay=30m
 </code></pre>

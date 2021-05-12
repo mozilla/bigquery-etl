@@ -114,7 +114,8 @@ def info(name, dags_config, with_tasks):
     --owner=example@mozilla.com \\
     --description="The DAG schedules SSL ratios queries." \\
     --start-date=2019-07-20 \\
-    --email=example2@mozilla.com,example3@mozilla.com \\
+    --email=example2@mozilla.com \\
+    --email=example3@mozilla.com \\
     --retries=2 \\
     --retry_delay=30m
     """
@@ -149,8 +150,9 @@ def info(name, dags_config, with_tasks):
 )
 @click.option(
     "--email",
-    help=("List of email addresses that Airflow will send alerts to"),
+    help=("Email addresses that Airflow will send alerts to"),
     default=["telemetry-alerts@mozilla.com"],
+    multiple=True,
 )
 @click.option(
     "--retries",
@@ -186,7 +188,7 @@ def create(
                 "default_args": {
                     "owner": owner,
                     "start_date": start_date,
-                    "email": set(email + [owner]),
+                    "email": (*email, owner),
                     "retries": retries,
                     "retry_delay": retry_delay,
                 },

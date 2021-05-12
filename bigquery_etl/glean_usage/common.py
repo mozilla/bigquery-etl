@@ -153,8 +153,8 @@ def get_argument_parser(description):
     return parser
 
 
-def generate_and_run_query(run_query_callback, description):
-    """Generate and run queries using a threadpool.
+def generate_query(run_query_callback, description):
+    """Generate queries using a threadpool.
 
     The callback function is reponsible for generating and running the queries.
     This was the original main entrypoint for each of the usage queries.

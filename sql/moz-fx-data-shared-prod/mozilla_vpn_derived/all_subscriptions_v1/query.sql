@@ -42,7 +42,7 @@ fxa_logs_provider_country AS (
         event_timestamp DESC
       LIMIT
         1
-    )[OFFSET(1)].*,
+    )[OFFSET(0)].*,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.fxa_pay_setup_complete_v1
   GROUP BY

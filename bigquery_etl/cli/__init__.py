@@ -16,6 +16,7 @@ from ..cli.routine import mozfun, routine
 from ..cli.view import view
 from ..dependency import dependency
 from ..glam.cli import glam
+from ..cli.glean_usage import glean_usage
 from ..stripe import stripe_
 
 
@@ -31,6 +32,7 @@ def cli(prog_name=None):
         "mozfun": mozfun,
         "stripe": stripe_,
         "glam": glam,
+        "glean_usage": glean_usage,
         "view": view,
         "alchemer": alchemer_,
     }

@@ -40,8 +40,7 @@ def glean_usage():
     "--output-dir",
     "--output_dir",
     help="Output directory generated SQL is written to",
-    default="moz-fx-data-shared-prod",
-    callback=is_valid_project,
+    type=click.Path(file_okay=False),
 )
 @click.option(
     "--parallelism",
@@ -60,13 +59,7 @@ def glean_usage():
     "-o",
     help="Process only the given tables",
 )
-@click.option(
-    "--output_only",
-    "--output-only",
-    is_flag=True,
-    help="Only generate queries and skip dry run.",
-)
-def generate(project_id, output_dir, parallelism, exclude, only, output_only):
+def generate(project_id, output_dir, parallelism, exclude, only):
     """Generate per-appId queries, views along, per-app dataset metadata and union views."""
 
     table_filter = partial(table_matches_patterns, "*", False)
@@ -89,7 +82,6 @@ def generate(project_id, output_dir, parallelism, exclude, only, output_only):
                     table.generate_per_app_id,
                     project_id,
                     output_dir=output_dir,
-                    output_only=output_only,
                 ),
                 baseline_tables,
             )

@@ -6,6 +6,6 @@ AS
 {% if not loop.first -%}
 UNION ALL
 {% endif -%}
-SELECT "{{ channel }}" AS channel, *
+SELECT * REPLACE("{{ channel }}" AS normalized_channel)
 FROM {{ dataset }}.{{ table }}
 {% endfor %}

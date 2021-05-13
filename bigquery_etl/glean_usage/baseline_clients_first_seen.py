@@ -13,13 +13,7 @@ class BaselineClientsFirstSeenTable(GleanTable):
         self.no_init = False
         self.custom_render_kwargs = {}
 
-    def generate_per_app_id(
-        self,
-        project_id,
-        baseline_table,
-        output_dir=None,
-        output_only=False,
-    ):
+    def generate_per_app_id(self, project_id, baseline_table, output_dir=None):
         self.custom_render_kwargs = dict(
             # do not match on org_mozilla_firefoxreality
             fennec_id=any(
@@ -39,5 +33,4 @@ class BaselineClientsFirstSeenTable(GleanTable):
             project_id,
             baseline_table,
             output_dir=output_dir,
-            output_only=output_only,
         )

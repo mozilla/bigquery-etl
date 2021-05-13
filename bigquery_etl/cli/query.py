@@ -489,6 +489,8 @@ def _backfill_query(
     else:
         click.echo(f"Skip {query_file_path} with @submission_date={backfill_date}")
 
+    return True
+
 
 @query.command(
     help="""Run a backfill for a query. Additional parameters will get passed to bq.
@@ -555,6 +557,7 @@ def _backfill_query(
     default=8,
     help="How many threads to run backfill in parallel",
 )
+@click.option("--init", is_flag=True, help="Run init.sql before backfilling.")
 @click.pass_context
 def backfill(
     ctx,
@@ -567,6 +570,7 @@ def backfill(
     dry_run,
     max_rows,
     parallelism,
+    init,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -581,14 +585,21 @@ def backfill(
 
     for query_file in query_files:
         query_file_path = Path(query_file)
-        metadata = Metadata.of_query_file(str(query_file_path))
-        depends_on_past = metadata.scheduling.get("depends_on_past", False)
+
+        try:
+            metadata = Metadata.of_query_file(str(query_file_path))
+            depends_on_past = metadata.scheduling.get("depends_on_past", False)
+        except FileNotFoundError:
+            depends_on_past = False
 
         if depends_on_past and exclude != []:
             click.echo(
                 f"Warning: depends_on_past = True for {query_file_path} but the"
                 f"following dates will be excluded from the backfill: {exclude}"
             )
+
+        if init:
+            ctx.invoke(initialize, name=query_file, dry_run=dry_run)
 
         backfill_query = partial(
             _backfill_query,
@@ -681,7 +692,7 @@ def validate(ctx, name, sql_dir, project_id, use_cloud_function):
 @project_id_option()
 @click.option(
     "--dry_run/--no_dry_run",
-    help="Dry run the backfill",
+    help="Dry run the initialization",
 )
 def initialize(name, sql_dir, project_id, dry_run):
     """Create the destination table for the provided query."""
@@ -720,7 +731,10 @@ def initialize(name, sql_dir, project_id, dry_run):
                 else:
                     click.echo(f"Create destination table for {init_file}")
 
-                client.query(init_sql, job_config=job_config).result()
+                job = client.query(init_sql, job_config=job_config)
+
+                if not dry_run:
+                    job.result()
 
 
 @query.group(help="Commands for managing query schemas.")

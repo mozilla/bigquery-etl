@@ -167,13 +167,7 @@ class GleanTable:
         self.custom_render_kwargs = {}
         self.no_init = True
 
-    def generate_per_app_id(
-        self,
-        project_id,
-        baseline_table,
-        output_dir=None,
-        output_only=False,
-    ):
+    def generate_per_app_id(self, project_id, baseline_table, output_dir=None):
         """Generate the baseline table query per app_id."""
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
@@ -219,17 +213,6 @@ class GleanTable:
 
             write_dataset_metadata(output_dir, view)
 
-        if output_only:
-            return
-
-        # dry run generated query
-        DryRun(
-            os.path.join(
-                output_dir, *list(baseline_table.split(".")[-2:]), query_filename
-            ),
-            query_sql,
-        ).is_valid()
-
     def generate_per_app(self, project_id, app_info, output_dir=None):
 
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
@@ -241,6 +224,8 @@ class GleanTable:
             if "app_channel" in a
         ]
 
+        # Some apps only have a single channel, in which case the per-app_id dataset
+        # is already sufficient.
         if len(datasets) == 0:
             return
 
@@ -253,6 +238,14 @@ class GleanTable:
         )
 
         sql = render("cross_channel.view.sql", **render_kwargs)
+
+        if not (referenced_table_exists(sql)):
+            logging.info(
+                "Skipping view for table which doesn't exist:"
+                f" {self.target_table_id}"
+            )
+            return
+
         view = f"{project_id}.{target_dataset}.{target_view_name}"
 
         if output_dir:

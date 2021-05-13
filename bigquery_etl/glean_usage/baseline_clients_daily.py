@@ -10,6 +10,7 @@ class BaselineClientsDailyTable(GleanTable):
 
     def __init__(self):
         """Initialize baseline_clients_daily table."""
+        GleanTable.__init__(self)
         self.target_table_id = BASELINE_DAILY_TABLE_ID
         self.prefix = PREFIX
         self.custom_render_kwargs = {}

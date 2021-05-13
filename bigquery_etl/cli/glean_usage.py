@@ -1,4 +1,4 @@
-"""bigquery-etl CLI glean_usage command"""
+"""bigquery-etl CLI glean_usage command."""
 from functools import partial
 from multiprocessing.pool import ThreadPool
 import click
@@ -59,9 +59,13 @@ def glean_usage():
     "-o",
     help="Process only the given tables",
 )
-def generate(project_id, output_dir, parallelism, exclude, only):
+@click.option(
+    "--app_name",
+    "--app-name",
+    help="Generate app-specific datasets only for the specific app name",
+)
+def generate(project_id, output_dir, parallelism, exclude, only, app_name):
     """Generate per-appId queries, views along, per-app dataset metadata and union views."""
-
     table_filter = partial(table_matches_patterns, "*", False)
 
     if only:
@@ -87,7 +91,13 @@ def generate(project_id, output_dir, parallelism, exclude, only):
             )
 
         # per app specific datasets
-        app_info = get_app_info().values()
+        app_info = get_app_info()
+        if app_name:
+            app_info = {
+                name: info for name, info in app_info.items() if name == app_name
+            }
+
+        app_info = app_info.values()
 
         with ThreadPool(parallelism) as pool:
             pool.map(

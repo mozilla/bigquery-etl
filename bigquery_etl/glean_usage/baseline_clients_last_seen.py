@@ -8,7 +8,10 @@ USAGE_TYPES = ("seen", "created_profile", "seen_session_start", "seen_session_en
 
 
 class BaselineClientsLastSeenTable(GleanTable):
+    """Represents generated baseline_clients_last_seen table."""
+
     def __init__(self):
+        """Initialize baseline_clients_last_seen table."""
         self.target_table_id = TARGET_TABLE_ID
         self.prefix = PREFIX
         self.custom_render_kwargs = dict(

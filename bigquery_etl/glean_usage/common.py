@@ -214,7 +214,7 @@ class GleanTable:
             write_dataset_metadata(output_dir, view)
 
     def generate_per_app(self, project_id, app_info, output_dir=None):
-
+        """Generate the baseline table query per app_name."""
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
         target_dataset = app_info[0]["app_name"]
 

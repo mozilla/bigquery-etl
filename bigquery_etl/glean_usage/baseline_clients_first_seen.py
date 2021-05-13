@@ -7,13 +7,17 @@ PREFIX = "first_seen"
 
 
 class BaselineClientsFirstSeenTable(GleanTable):
+    """Represents generated baseline_clients_first_seen table."""
+
     def __init__(self):
+        """Initialize baseline_clients_first_seen table."""
         self.target_table_id = TARGET_TABLE_ID
         self.prefix = PREFIX
         self.no_init = False
         self.custom_render_kwargs = {}
 
     def generate_per_app_id(self, project_id, baseline_table, output_dir=None):
+        """Generate per-app_id datasets."""
         self.custom_render_kwargs = dict(
             # do not match on org_mozilla_firefoxreality
             fennec_id=any(

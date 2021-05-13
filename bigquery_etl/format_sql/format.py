@@ -13,6 +13,7 @@ SKIP = {
     *glob.glob("bigquery_etl/glam/templates/*.sql"),
     *glob.glob("bigquery_etl/events_daily/query_templates/**/*.sql"),
     *glob.glob("bigquery_etl/glean_usage/templates/*.sql"),
+    *glob.glob("bigquery_etl/search/templates/*.sql"),
     "sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql",
@@ -81,8 +82,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_desktop_v2/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_fxa_v2/query.sql",
     "sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_new_profiles_v2/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/udf/active_n_weeks_ago.sql",
     "sql/moz-fx-data-shared-prod/udf/add_monthly_engine_searches.sql",
     "sql/moz-fx-data-shared-prod/udf/add_monthly_searches.sql",

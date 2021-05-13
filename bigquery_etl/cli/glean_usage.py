@@ -12,6 +12,7 @@ from ..glean_usage import (
     baseline_clients_daily,
     baseline_clients_first_seen,
     baseline_clients_last_seen,
+    events_unnested,
 )
 from ..glean_usage.common import list_baseline_tables, get_app_info
 
@@ -109,3 +110,14 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
                 partial(table.generate_per_app, project_id, output_dir=output_dir),
                 app_info,
             )
+
+    # generate per-app events_unnested views
+    with ThreadPool(parallelism) as pool:
+        pool.map(
+            partial(
+                events_unnested.EventsUnnestedTable().generate_per_app,
+                project_id,
+                output_dir=output_dir,
+            ),
+            app_info,
+        )

@@ -167,6 +167,7 @@ class GleanTable:
         self.prefix = ""
         self.custom_render_kwargs = {}
         self.no_init = True
+        self.cross_channel_template = "cross_channel.view.sql"
 
     def generate_per_app_id(self, project_id, baseline_table, output_dir=None):
         """Generate the baseline table query per app_id."""
@@ -233,9 +234,10 @@ class GleanTable:
             target_view=f"{target_dataset}.{target_view_name}",
             datasets=datasets,
             table=target_view_name,
+            app_name=app_info[0]["app_name"],
         )
 
-        sql = render("cross_channel.view.sql", **render_kwargs)
+        sql = render(self.cross_channel_template, **render_kwargs)
         view = f"{project_id}.{target_dataset}.{target_view_name}"
 
         if output_dir:

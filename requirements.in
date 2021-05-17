@@ -3,7 +3,7 @@ backports.cached-property==1.0.1  # python 3.7 backwards compat
 cattrs==1.6.0
 click==8.0.0
 gcloud==0.18.3
-gitpython==3.1.14
+gitpython==3.1.17
 google-cloud-bigquery==2.16.1
 google-cloud-storage==1.38.0
 importlib-metadata==4.0.1  # python 3.7 backwards compat

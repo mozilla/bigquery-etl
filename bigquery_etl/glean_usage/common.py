@@ -52,6 +52,7 @@ def write_dataset_metadata(output_dir, full_table_id):
     Does not overwrite existing dataset_metadata.yaml files.
     """
     d = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+    d.mkdir(parents=True, exist_ok=True)
     target = d.parent / "dataset_metadata.yaml"
 
     public_facing = all(
@@ -197,10 +198,7 @@ class GleanTable:
                 init_sql = render(query_filename, init=True, **render_kwargs)
 
         if not (referenced_table_exists(view_sql)):
-            logging.info(
-                "Skipping view for table which doesn't exist:"
-                f" {self.target_table_id}"
-            )
+            logging.info("Skipping view for table which doesn't exist:" f" {table}")
             return
 
         if output_dir:
@@ -238,16 +236,14 @@ class GleanTable:
         )
 
         sql = render("cross_channel.view.sql", **render_kwargs)
-
-        if not (referenced_table_exists(sql)):
-            logging.info(
-                "Skipping view for table which doesn't exist:"
-                f" {self.target_table_id}"
-            )
-            return
-
         view = f"{project_id}.{target_dataset}.{target_view_name}"
 
         if output_dir:
-            write_sql(output_dir, view, "view.sql", sql)
             write_dataset_metadata(output_dir, view)
+
+        if not (referenced_table_exists(sql)):
+            logging.info("Skipping view for table which doesn't exist:" f" {view}")
+            return
+
+        if output_dir:
+            write_sql(output_dir, view, "view.sql", sql)

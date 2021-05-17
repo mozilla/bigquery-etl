@@ -1,6 +1,7 @@
 """bigquery-etl CLI glean_usage command."""
 from functools import partial
 from multiprocessing.pool import ThreadPool
+from pathlib import Path
 import click
 
 from ..cli.utils import (
@@ -22,7 +23,10 @@ GLEAN_TABLES = [
 ]
 
 
-@click.group(help="Commands for managing Glean usage.")
+@click.group(
+    help="Commands for managing ETL about usage of Glean apps. "
+    "(baseline_clients_daily, etc.)"
+)
 def glean_usage():
     """Create the CLI group for the glean_usage command."""
     pass
@@ -41,6 +45,7 @@ def glean_usage():
     "--output_dir",
     help="Output directory generated SQL is written to",
     type=click.Path(file_okay=False),
+    default="sql",
 )
 @click.option(
     "--parallelism",
@@ -62,7 +67,7 @@ def glean_usage():
 @click.option(
     "--app_name",
     "--app-name",
-    help="Generate app-specific datasets only for the specific app name",
+    help="Generate per-app_id queries+views and per-app dataset metadata and union views.",
 )
 def generate(project_id, output_dir, parallelism, exclude, only, app_name):
     """Generate per-appId queries, views along, per-app dataset metadata and union views."""
@@ -79,6 +84,15 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
         table_filter=table_filter,
     )
 
+    output_dir = Path(output_dir) / project_id
+
+    # per app specific datasets
+    app_info = get_app_info()
+    if app_name:
+        app_info = {name: info for name, info in app_info.items() if name == app_name}
+
+    app_info = app_info.values()
+
     for table in GLEAN_TABLES:
         with ThreadPool(parallelism) as pool:
             pool.map(
@@ -89,15 +103,6 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
                 ),
                 baseline_tables,
             )
-
-        # per app specific datasets
-        app_info = get_app_info()
-        if app_name:
-            app_info = {
-                name: info for name, info in app_info.items() if name == app_name
-            }
-
-        app_info = app_info.values()
 
         with ThreadPool(parallelism) as pool:
             pool.map(

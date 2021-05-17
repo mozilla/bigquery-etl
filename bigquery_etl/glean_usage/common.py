@@ -52,7 +52,7 @@ def write_dataset_metadata(output_dir, full_table_id):
     Does not overwrite existing dataset_metadata.yaml files.
     """
     d = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
-    d.mkdir(parents=True, exist_ok=True)
+    d.parent.mkdir(parents=True, exist_ok=True)
     target = d.parent / "dataset_metadata.yaml"
 
     public_facing = all(

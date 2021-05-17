@@ -27,6 +27,7 @@ from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..run_query import run
 from ..schema import SCHEMA_FILE, Schema
+from ..util import extract_from_query_path
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 SQL_FILE_RE = re.compile(
@@ -464,9 +465,8 @@ def _backfill_query(
     backfill_date,
 ):
     """Run a query backfill for a specific date."""
-    table = query_file_path.parent.name
-    dataset = query_file_path.parent.parent.name
-    project = query_file_path.parent.parent.parent.name
+    project, dataset, table = extract_from_query_path(query_file_path)
+
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
         partition = backfill_date.replace("-", "")
@@ -557,7 +557,6 @@ def _backfill_query(
     default=8,
     help="How many threads to run backfill in parallel",
 )
-@click.option("--init", is_flag=True, help="Run init.sql before backfilling.")
 @click.pass_context
 def backfill(
     ctx,
@@ -570,7 +569,6 @@ def backfill(
     dry_run,
     max_rows,
     parallelism,
-    init,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -598,7 +596,11 @@ def backfill(
                 f"following dates will be excluded from the backfill: {exclude}"
             )
 
-        if init:
+        client = bigquery.Client()
+        try:
+            project, dataset, table = extract_from_query_path(query_file_path)
+            client.get_table(f"{project}.{dataset}.{table}")
+        except NotFound:
             ctx.invoke(initialize, name=query_file, dry_run=dry_run)
 
         backfill_query = partial(

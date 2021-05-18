@@ -85,7 +85,7 @@ class BigQueryMetadata:
 class SchemaDerivedMetadata:
     """Metadata specifying parent schema."""
 
-    query: str
+    table: List[str]
     # list of excluded columns
     exclude: Optional[List[str]] = attr.ib(None)
 
@@ -94,7 +94,15 @@ class SchemaDerivedMetadata:
 class SchemaMetadata:
     """Metadata related to additional schema information."""
 
-    derived_from: SchemaDerivedMetadata
+    derived_from: List[SchemaDerivedMetadata]
+
+
+@attr.s(auto_attribs=True)
+class WorkgroupAccessMetadata:
+    """Workgroup access metadata."""
+
+    role: str
+    members: List[str]
 
 
 @attr.s(auto_attribs=True)
@@ -113,6 +121,7 @@ class Metadata:
     scheduling: Optional[Dict] = attr.ib({})
     bigquery: Optional[BigQueryMetadata] = attr.ib(None)
     schema: Optional[SchemaMetadata] = attr.ib(None)
+    workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -184,6 +193,7 @@ class Metadata:
         scheduling = {}
         bigquery = None
         schema = None
+        workgroup_access = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -222,6 +232,12 @@ class Metadata:
                     converter = cattr.Converter()
                     schema = converter.structure(metadata["schema"], SchemaMetadata)
 
+                if "workgroup_access" in metadata:
+                    converter = cattr.Converter()
+                    workgroup_access = converter.structure(
+                        metadata["workgroup_access"], List[WorkgroupAccessMetadata]
+                    )
+
                 return cls(
                     friendly_name,
                     description,
@@ -230,6 +246,7 @@ class Metadata:
                     scheduling,
                     bigquery,
                     schema,
+                    workgroup_access,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -244,7 +261,9 @@ class Metadata:
 
     def write(self, file):
         """Write metadata information to the provided file."""
-        metadata_dict = self.__dict__
+        converter = cattr.Converter()
+        metadata_dict = converter.unstructure(self)
+
         if metadata_dict["scheduling"] == {}:
             del metadata_dict["scheduling"]
 
@@ -260,7 +279,9 @@ class Metadata:
         if metadata_dict["schema"] is None:
             del metadata_dict["schema"]
 
-        converter = cattr.Converter()
+        if metadata_dict["workgroup_access"] is None:
+            del metadata_dict["workgroup_access"]
+
         file.write_text(
             yaml.dump(
                 converter.unstructure(metadata_dict),

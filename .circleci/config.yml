@@ -234,12 +234,13 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - *build
       - run:
           name: Validate query schemas
           command: |
-            pip install .
-            bqetl query schema validate "*"
+            ./bqetl bootstrap
+            ./bqetl query schema validate "*"
   docs:
     docker: *docker
     steps:

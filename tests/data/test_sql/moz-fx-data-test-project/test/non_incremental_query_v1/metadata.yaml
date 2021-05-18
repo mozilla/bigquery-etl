@@ -15,3 +15,7 @@ scheduling:
   dag_name: "bqetl_core"
   depends_on_past: true
   arguments: ["--append_table"]
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:dataops-managed/taar

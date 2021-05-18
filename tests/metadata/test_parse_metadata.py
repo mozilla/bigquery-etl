@@ -106,6 +106,11 @@ class TestParseMetadata(object):
         assert metadata.friendly_name == "Test table for a non-incremental query"
         assert metadata.description == "Test table for a non-incremental query"
         assert metadata.review_bugs() == ["1999999", "12121212"]
+        assert metadata.workgroup_access is not None
+        assert metadata.workgroup_access[0].role == "roles/bigquery.dataViewer"
+        assert (
+            metadata.workgroup_access[0].members[0] == "workgroup:dataops-managed/taar"
+        )
 
     def test_of_query_file_no_metadata(self):
         metadata_file = (

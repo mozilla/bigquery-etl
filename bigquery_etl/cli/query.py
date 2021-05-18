@@ -596,7 +596,7 @@ def backfill(
                 f"following dates will be excluded from the backfill: {exclude}"
             )
 
-        client = bigquery.Client()
+        client = bigquery.Client(project=project_id)
         try:
             project, dataset, table = extract_from_query_path(query_file_path)
             client.get_table(f"{project}.{dataset}.{table}")

@@ -1,7 +1,6 @@
 """bigquery-etl CLI query command."""
 
 import copy
-import random
 import re
 import string
 import sys
@@ -28,6 +27,7 @@ from ..query_scheduling.generate_airflow_dags import get_dags
 from ..run_query import run
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
+from ..util.common import random_str
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 SQL_FILE_RE = re.compile(
@@ -771,6 +771,9 @@ def schema():
     Examples:
 
     ./bqetl query schema update telemetry_derived.clients_daily_v6
+
+    # Update schema including downstream dependencies (requires GCP)
+    ./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
     """,
 )
 @click.argument("name")
@@ -823,13 +826,9 @@ def update(name, sql_dir, project_id, update_downstream, tmp_dataset):
                     )
                     sys.exit(1)
 
-                table = query_file.parent.name
-                dataset = query_file.parent.parent.name
-                project = query_file.parent.parent.parent.name
+                project, dataset, table = extract_from_query_path(query_file)
                 identifier = f"{project}.{dataset}.{table}"
-                tmp_identifier = f"{project}.{tmp_dataset}.{table}_" + "".join(
-                    random.choice(string.ascii_lowercase) for i in range(12)
-                )
+                tmp_identifier = f"{project}.{tmp_dataset}.{table}_{random_str(12)}"
 
                 # create temporary table with updated schema
                 if identifier not in tmp_tables:
@@ -868,9 +867,7 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
 
     query_file_path = Path(query_file)
     existing_schema_path = query_file_path.parent / SCHEMA_FILE
-    table_name = query_file_path.parent.name
-    dataset_name = query_file_path.parent.parent.name
-    project_name = query_file_path.parent.parent.parent.name
+    project_name, dataset_name, table_name = extract_from_query_path(query_file_path)
 
     try:
         metadata = Metadata.of_query_file(str(query_file_path))
@@ -897,17 +894,15 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
                 parent_schema = Schema.from_schema_file(
                     parent_queries[0].parent / SCHEMA_FILE
                 )
-                parent_table = parent_queries[0].parent.name
-                parent_dataset = parent_queries[0].parent.parent.name
-                parent_project = parent_queries[0].parent.parent.parent.name
+                parent_project, parent_dataset, parent_table = extract_from_query_path(
+                    parent_queries[0]
+                )
                 parent_identifier = f"{parent_project}.{parent_dataset}.{parent_table}"
 
                 if parent_identifier not in tmp_tables:
                     tmp_parent_identifier = (
                         f"{parent_project}.{tmp_dataset}.{parent_table}_"
-                        + "".join(
-                            random.choice(string.ascii_lowercase) for i in range(12)
-                        )
+                        + random_str(12)
                     )
                     parent_schema.deploy(tmp_parent_identifier)
                     tmp_tables[parent_identifier] = tmp_parent_identifier
@@ -918,10 +913,7 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
 
                     # use temporary table
                     tmp_identifier = (
-                        f"{project_name}.{tmp_dataset}.{table_name}_"
-                        + "".join(
-                            random.choice(string.ascii_lowercase) for i in range(12)
-                        )
+                        f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
                     )
                     existing_schema.deploy(tmp_identifier)
                     tmp_tables[

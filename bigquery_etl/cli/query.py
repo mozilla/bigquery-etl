@@ -880,47 +880,53 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
 
     # pull in updates from parent schemas
     if metadata and metadata.schema and metadata.schema.derived_from:
-        parent_queries = _queries_matching_name_pattern(
-            metadata.schema.derived_from.query, sql_dir, project_id
-        )
-
-        if len(parent_queries) == 0:
-            click.echo(
-                f"derived_from query {metadata.schema.derived_from.query} does not exist.",
-                err=True,
-            )
-        else:
-            parent_schema = Schema.from_schema_file(
-                parent_queries[0].parent / SCHEMA_FILE
-            )
-            parent_table = parent_queries[0].parent.name
-            parent_dataset = parent_queries[0].parent.parent.name
-            parent_project = parent_queries[0].parent.parent.parent.name
-            parent_identifier = f"{parent_project}.{parent_dataset}.{parent_table}"
-
-            if parent_identifier not in tmp_tables:
-                tmp_parent_identifier = (
-                    f"{parent_project}.{tmp_dataset}.{parent_table}_"
-                    + "".join(random.choice(string.ascii_lowercase) for i in range(12))
+        for derived_from in metadata.schema.derived_from:
+            parent_queries = [
+                query
+                for query in _queries_matching_name_pattern(
+                    ".".join(derived_from.table), sql_dir, project_id
                 )
-                parent_schema.deploy(tmp_parent_identifier)
-                tmp_tables[parent_identifier] = tmp_parent_identifier
+            ]
 
-            if existing_schema_path.is_file():
-                existing_schema = Schema.from_schema_file(existing_schema_path)
-                existing_schema.merge(
-                    parent_schema, exclude=metadata.schema.derived_from.exclude
+            if len(parent_queries) == 0:
+                click.echo(
+                    f"derived_from query {derived_from.table} does not exist.",
+                    err=True,
                 )
+            else:
+                parent_schema = Schema.from_schema_file(
+                    parent_queries[0].parent / SCHEMA_FILE
+                )
+                parent_table = parent_queries[0].parent.name
+                parent_dataset = parent_queries[0].parent.parent.name
+                parent_project = parent_queries[0].parent.parent.parent.name
+                parent_identifier = f"{parent_project}.{parent_dataset}.{parent_table}"
 
-                # use temporary table
-                tmp_identifier = (
-                    f"{project_name}.{tmp_dataset}.{table_name}_"
-                    + "".join(random.choice(string.ascii_lowercase) for i in range(12))
-                )
-                existing_schema.deploy(tmp_identifier)
-                tmp_tables[
-                    f"{project_name}.{dataset_name}.{table_name}"
-                ] = tmp_identifier
+                if parent_identifier not in tmp_tables:
+                    tmp_parent_identifier = (
+                        f"{parent_project}.{tmp_dataset}.{parent_table}_"
+                        + "".join(
+                            random.choice(string.ascii_lowercase) for i in range(12)
+                        )
+                    )
+                    parent_schema.deploy(tmp_parent_identifier)
+                    tmp_tables[parent_identifier] = tmp_parent_identifier
+
+                if existing_schema_path.is_file():
+                    existing_schema = Schema.from_schema_file(existing_schema_path)
+                    existing_schema.merge(parent_schema, exclude=derived_from.exclude)
+
+                    # use temporary table
+                    tmp_identifier = (
+                        f"{project_name}.{tmp_dataset}.{table_name}_"
+                        + "".join(
+                            random.choice(string.ascii_lowercase) for i in range(12)
+                        )
+                    )
+                    existing_schema.deploy(tmp_identifier)
+                    tmp_tables[
+                        f"{project_name}.{dataset_name}.{table_name}"
+                    ] = tmp_identifier
 
     # replace temporary table references
     sql_content = query_file_path.read_text()
@@ -951,8 +957,12 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
         table = client.get_table(f"{project_name}.{dataset_name}.{table_name}")
         metadata_file_path = query_file_path.parent / METADATA_FILE
 
-        if table.time_partitioning and (
-            metadata.bigquery is None or metadata.bigquery.time_partitioning is None
+        if (
+            table.time_partitioning
+            and metadata
+            and (
+                metadata.bigquery is None or metadata.bigquery.time_partitioning is None
+            )
         ):
             metadata.set_bigquery_partitioning(
                 field=table.time_partitioning.field,
@@ -961,13 +971,16 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
             )
             click.echo(f"Partitioning metadata added to {metadata_file_path}")
 
-        if table.clustering_fields and (
-            metadata.bigquery is None or metadata.bigquery.clustering is None
+        if (
+            table.clustering_fields
+            and metadata
+            and (metadata.bigquery is None or metadata.bigquery.clustering is None)
         ):
             metadata.set_bigquery_clustering(table.clustering_fields)
             click.echo(f"Clustering metadata added to {metadata_file_path}")
 
-        metadata.write(metadata_file_path)
+        if metadata:
+            metadata.write(metadata_file_path)
     except NotFound:
         click.echo(
             f"Destination table {project_name}.{dataset_name}.{table_name} "

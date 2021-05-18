@@ -33,5 +33,5 @@ bigquery:
     - sample_id
 schema:
   derived_from:
-    tables: ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_daily_v6']
+  - table: ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_daily_v6']
     exclude: [submission_date]

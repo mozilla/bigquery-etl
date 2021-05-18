@@ -25,7 +25,7 @@ bigquery:
     - sample_id
 schema:
   derived_from:
-    query: telemetry_derived.clients_daily_v6
+  - table: ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_daily_v6']
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

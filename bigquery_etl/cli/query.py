@@ -458,6 +458,7 @@ def info(name, sql_dir, project_id, cost, last_updated):
 
 def _backfill_query(
     query_file_path,
+    project_id,
     exclude,
     max_rows,
     dry_run,
@@ -481,6 +482,7 @@ def _backfill_query(
             "--use_legacy_sql=false",
             "--replace",
             f"--max_rows={max_rows}",
+            f"--project_id={project_id}",
         ] + args
         if dry_run:
             arguments += ["--dry_run"]
@@ -606,6 +608,7 @@ def backfill(
         backfill_query = partial(
             _backfill_query,
             query_file_path,
+            project_id,
             exclude,
             max_rows,
             dry_run,

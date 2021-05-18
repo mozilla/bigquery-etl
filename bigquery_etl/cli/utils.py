@@ -25,10 +25,14 @@ def is_valid_file(ctx, param, value):
     return value
 
 
-def is_authenticated(project_id="moz-fx-data-shared-prod"):
+def is_authenticated(project_id=None):
     """Check if the user is authenticated to GCP and can access the project."""
     client = bigquery.Client()
-    return client.project == project_id
+
+    if project_id:
+        return client.project == project_id
+
+    return True
 
 
 def is_valid_project(ctx, param, value):

@@ -74,6 +74,7 @@ USER_ID = "user_id"
 POCKET_ID = "pocket_id"
 SHIELD_ID = "shield_id"
 PIONEER_ID = "pioneer_id"
+RALLY_ID = "rally_id"
 ID = "id"
 CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
 FXA_USER_ID = "jsonPayload.fields.user_id"
@@ -149,7 +150,6 @@ impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 cfr_id_target = partial(DeleteTarget, field=CFR_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
-pioneer_target = partial(DeleteTarget, field=PIONEER_ID)
 
 DELETE_TARGETS = {
     client_id_target(
@@ -467,15 +467,23 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             table_ref = client.get_table(table)
             if (
                 any(field.name == PIONEER_ID for field in table_ref.schema)
-                and table_ref.table_type != "VIEW"
-            ):
+                or any(field.name == RALLY_ID for field in table_ref.schema)
+            ) and table_ref.table_type != "VIEW":
                 tables_with_pioneer_id.append(table_ref)
         return tables_with_pioneer_id
+
+    def __get_client_id_field__(table):
+        """Determine which column should be used as client id for a given table."""
+        if table.dataset_id.startswith("rally_"):
+            return RALLY_ID
+        else:
+            return PIONEER_ID
 
     datasets = {
         dataset.reference
         for dataset in client.list_datasets(project)
         if dataset.reference.dataset_id.startswith("pioneer_")
+        or dataset.reference.dataset_id.startswith("rally_")
     }
     # There should be a single stable and derived dataset per study
     stable_datasets = {dr for dr in datasets if dr.dataset_id.endswith("_stable")}
@@ -501,7 +509,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     # For simplicity when accessing this map later on, keys are changed to `_stable` here
     sources = {
         table.dataset_id.replace("_derived", "_stable"): DeleteSource(
-            qualified_table_id(table), PIONEER_ID, project
+            qualified_table_id(table), __get_client_id_field__(table), project
         )
         # dict comprehension will only keep the last value for a given key, so
         # sort by table_id to use the latest version
@@ -527,8 +535,10 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     return {
         **{
             # stable tables
-            pioneer_target(
-                table=qualified_table_id(table), project=PIONEER_PROD
+            DeleteTarget(
+                table=qualified_table_id(table),
+                field=__get_client_id_field__(table),
+                project=PIONEER_PROD,
             ): sources[table.dataset_id]
             for table in stable_tables
             if not table.table_id.startswith("deletion_request_")
@@ -536,16 +546,20 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
         },
         **{
             # derived tables with pioneer_id
-            pioneer_target(
-                table=qualified_table_id(table), project=PIONEER_PROD
+            DeleteTarget(
+                table=qualified_table_id(table),
+                field=__get_client_id_field__(table),
+                project=PIONEER_PROD,
             ): sources[table.dataset_id]
             for dataset in derived_datasets
             for table in __get_tables_with_pioneer_id__(dataset)
         },
         **{
             # tables with pioneer_id located in study analysis projects
-            pioneer_target(
-                table=qualified_table_id(table), project=table.project
+            DeleteTarget(
+                table=qualified_table_id(table),
+                field=__get_client_id_field__(table),
+                project=table.project,
             ): sources[study.replace("-", "_") + "_stable"]
             for dataset, study in analysis_datasets.items()
             for table in __get_tables_with_pioneer_id__(dataset)

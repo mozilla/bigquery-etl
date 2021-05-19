@@ -458,9 +458,11 @@ def info(name, sql_dir, project_id, cost, last_updated):
 
 def _backfill_query(
     query_file_path,
+    project_id,
     exclude,
     max_rows,
     dry_run,
+    no_partition,
     args,
     backfill_date,
 ):
@@ -470,8 +472,14 @@ def _backfill_query(
     backfill_date = backfill_date.strftime("%Y-%m-%d")
     if backfill_date not in exclude:
         partition = backfill_date.replace("-", "")
+
+        if no_partition:
+            destination_table = table
+        else:
+            destination_table = f"{table}${partition}"
+
         click.echo(
-            f"Run backfill for {project}.{dataset}.{table}${partition} "
+            f"Run backfill for {project}.{dataset}.{destination_table} "
             f"with @submission_date={backfill_date}"
         )
 
@@ -481,11 +489,12 @@ def _backfill_query(
             "--use_legacy_sql=false",
             "--replace",
             f"--max_rows={max_rows}",
+            f"--project_id={project_id}",
         ] + args
         if dry_run:
             arguments += ["--dry_run"]
 
-        run(query_file_path, dataset, f"{table}${partition}", arguments)
+        run(query_file_path, dataset, destination_table, arguments)
     else:
         click.echo(f"Skip {query_file_path} with @submission_date={backfill_date}")
 
@@ -557,6 +566,13 @@ def _backfill_query(
     default=8,
     help="How many threads to run backfill in parallel",
 )
+@click.option(
+    "--no_partition",
+    "--no-partition",
+    is_flag=True,
+    default=False,
+    help="Disable writing results to a partition. Overwrites entire destination table.",
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -569,6 +585,7 @@ def backfill(
     dry_run,
     max_rows,
     parallelism,
+    no_partition,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -596,7 +613,7 @@ def backfill(
                 f"following dates will be excluded from the backfill: {exclude}"
             )
 
-        client = bigquery.Client()
+        client = bigquery.Client(project=project_id)
         try:
             project, dataset, table = extract_from_query_path(query_file_path)
             client.get_table(f"{project}.{dataset}.{table}")
@@ -606,9 +623,11 @@ def backfill(
         backfill_query = partial(
             _backfill_query,
             query_file_path,
+            project_id,
             exclude,
             max_rows,
             dry_run,
+            no_partition,
             ctx.args,
         )
 

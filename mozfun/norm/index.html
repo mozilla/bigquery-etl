@@ -1319,13 +1319,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#truncate_version-udf" class="md-nav__link">
-    truncate_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#fenix_app_info-udf" class="md-nav__link">
     fenix_app_info (UDF)
   </a>
@@ -1363,6 +1356,13 @@
         <li class="md-nav__item">
   <a href="#product_info-udf" class="md-nav__link">
     product_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#truncate_version-udf" class="md-nav__link">
+    truncate_version (UDF)
   </a>
   
 </li>
@@ -1467,13 +1467,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#truncate_version-udf" class="md-nav__link">
-    truncate_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#fenix_app_info-udf" class="md-nav__link">
     fenix_app_info (UDF)
   </a>
@@ -1515,6 +1508,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#truncate_version-udf" class="md-nav__link">
+    truncate_version (UDF)
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1530,21 +1530,6 @@
                 
                 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
-<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
-<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
-either the major or minor version. The return value is <code>NUMERIC</code>,
-which means that you can sort the results without fear (e.g. 100
-will be categorized as greater than 80, which isn't the case when
-sorting lexigraphically).</p>
-<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
-"minor" or <code>5</code> if the parameter is major.</p>
-<p>If the version is only a major and/or minor version, then it will be left
-unchanged (for example "10" would stay as <code>10</code> when run through this
-function, no matter what the arguments).</p>
-<p>This is useful for grouping Linux and Mac operating system versions inside
-aggregate datasets or queries where there may be many different patch
-releases in the field.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
 <h2 id="fenix_app_info-udf">fenix_app_info (UDF)</h2>
 <p>Returns canonical, human-understandable identification info for Fenix sources.</p>
 <p>The Glean telemetry library for Android by design routes pings based
@@ -1863,6 +1848,21 @@ which have thrown away the raw <code>app_name</code> value from legacy pings.</p
 </tr>
 </tbody>
 </table>
+<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
+<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
+either the major or minor version. The return value is <code>NUMERIC</code>,
+which means that you can sort the results without fear (e.g. 100
+will be categorized as greater than 80, which isn't the case when
+sorting lexigraphically).</p>
+<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
+"minor" or <code>5</code> if the parameter is major.</p>
+<p>If the version is only a major and/or minor version, then it will be left
+unchanged (for example "10" would stay as <code>10</code> when run through this
+function, no matter what the arguments).</p>
+<p>This is useful for grouping Linux and Mac operating system versions inside
+aggregate datasets or queries where there may be many different patch
+releases in the field.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
                 
               
               

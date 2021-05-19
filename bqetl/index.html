@@ -2192,6 +2192,9 @@ Options:
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash">./bqetl query schema update telemetry_derived.clients_daily_v6
+
+# Update schema including downstream dependencies (requires GCP)
+./bqetl query schema update telemetry_derived.clients_daily_v6 --update-downstream
 </code></pre>
 <h5 id="deploy"><code>deploy</code></h5>
 <p>Deploy the query schema.</p>

@@ -1,0 +1,7 @@
+---
+friendly_name: Search Clients Engines Sources Last Seen
+description: |
+  Captures search history of each desktop (client_id, engine, source)
+  combination in 28 day windows for each submission date.
+owners:
+  - frank@mozilla.com

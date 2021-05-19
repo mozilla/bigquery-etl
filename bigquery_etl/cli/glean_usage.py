@@ -21,6 +21,7 @@ GLEAN_TABLES = [
     baseline_clients_daily.BaselineClientsDailyTable(),
     baseline_clients_first_seen.BaselineClientsFirstSeenTable(),
     baseline_clients_last_seen.BaselineClientsLastSeenTable(),
+    events_unnested.EventsUnnestedTable(),
 ]
 
 
@@ -110,14 +111,3 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
                 partial(table.generate_per_app, project_id, output_dir=output_dir),
                 app_info,
             )
-
-    # generate per-app events_unnested views
-    with ThreadPool(parallelism) as pool:
-        pool.map(
-            partial(
-                events_unnested.EventsUnnestedTable().generate_per_app,
-                project_id,
-                output_dir=output_dir,
-            ),
-            app_info,
-        )

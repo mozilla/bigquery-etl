@@ -7,7 +7,7 @@ gitpython==3.1.17
 google-cloud-bigquery==2.16.1
 google-cloud-storage==1.38.0
 importlib-metadata==4.0.1  # python 3.7 backwards compat
-Jinja2==3.0.0
+Jinja2==3.0.1
 jsonschema==3.2.0
 mozilla-schema-generator==0.3.0
 pandas==1.2.4

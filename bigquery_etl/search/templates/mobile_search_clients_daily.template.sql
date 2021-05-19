@@ -88,6 +88,12 @@ WITH core_flattened_searches AS (
       -- Add a null search to pings that have no searches
       IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
     ) AS searches
+  WHERE
+    NOT (  -- Filter out newer versions of Firefox iOS in favour of Glean pings
+      normalized_os = 'iOS'
+      AND normalized_app_name = 'Fennec'
+      AND mozfun.norm.truncate_version(metadata.uri.app_version, 'major') >= 28
+    )
 ),
 {{ baseline_and_metrics_by_namespace }}
 fenix_baseline AS (
@@ -127,6 +133,11 @@ glean_metrics AS (
     *
   FROM
     fenix_metrics_with_locale
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_metrics
 ),
 glean_combined_searches AS (
   SELECT

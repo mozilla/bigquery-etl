@@ -5,7 +5,8 @@ metrics_{{ namespace }} AS (
     client_info.client_id,
     normalized_country_code AS country,
     '{{ app_name }}' AS app_name,
-    'Firefox iOS' AS normalized_app_name,
+    -- Fennec is used to be consistent with core pings
+    'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     '{{ channel }}' AS channel,
     normalized_os AS os,
@@ -26,4 +27,6 @@ metrics_{{ namespace }} AS (
     {{ namespace }}.metrics
   AS
     {{ namespace }}_metrics
+  WHERE
+    mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),

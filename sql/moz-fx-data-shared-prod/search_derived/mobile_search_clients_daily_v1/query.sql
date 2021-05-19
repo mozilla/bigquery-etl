@@ -68,6 +68,12 @@ WITH core_flattened_searches AS (
       -- Add a null search to pings that have no searches
       IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
     ) AS searches
+  WHERE
+    NOT (  -- Filter out newer versions of Firefox iOS in favour of Glean pings
+      normalized_os = 'iOS'
+      AND normalized_app_name = 'Fennec'
+      AND mozfun.norm.truncate_version(metadata.uri.app_version, 'major') >= 28
+    )
 ),
 -- baseline for Firefox Preview beta
 baseline_org_mozilla_fenix AS (
@@ -244,14 +250,15 @@ metrics_org_mozilla_firefox AS (
   FROM
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
 ),
--- metrics for Firefox iOS release
+-- metrics for Fennec release
 metrics_org_mozilla_ios_firefox AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Firefox iOS' AS app_name,
-    'Firefox iOS' AS normalized_app_name,
+    'Fennec' AS app_name,
+    -- Fennec is used to be consistent with core pings
+    'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'release' AS channel,
     normalized_os AS os,
@@ -270,15 +277,18 @@ metrics_org_mozilla_ios_firefox AS (
     client_info.locale,
   FROM
     org_mozilla_ios_firefox.metrics AS org_mozilla_ios_firefox_metrics
+  WHERE
+    mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
--- metrics for Firefox iOS beta
+-- metrics for Fennec beta
 metrics_org_mozilla_ios_firefoxbeta AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Firefox iOS' AS app_name,
-    'Firefox iOS' AS normalized_app_name,
+    'Fennec' AS app_name,
+    -- Fennec is used to be consistent with core pings
+    'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'beta' AS channel,
     normalized_os AS os,
@@ -297,15 +307,18 @@ metrics_org_mozilla_ios_firefoxbeta AS (
     client_info.locale,
   FROM
     org_mozilla_ios_firefoxbeta.metrics AS org_mozilla_ios_firefoxbeta_metrics
+  WHERE
+    mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
--- metrics for Firefox iOS nightly
+-- metrics for Fennec nightly
 metrics_org_mozilla_ios_fennec AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Firefox iOS' AS app_name,
-    'Firefox iOS' AS normalized_app_name,
+    'Fennec' AS app_name,
+    -- Fennec is used to be consistent with core pings
+    'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'nightly' AS channel,
     normalized_os AS os,
@@ -324,6 +337,8 @@ metrics_org_mozilla_ios_fennec AS (
     client_info.locale,
   FROM
     org_mozilla_ios_fennec.metrics AS org_mozilla_ios_fennec_metrics
+  WHERE
+    mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
 fenix_baseline AS (
   SELECT
@@ -421,6 +436,11 @@ glean_metrics AS (
     *
   FROM
     fenix_metrics_with_locale
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_metrics
 ),
 glean_combined_searches AS (
   SELECT

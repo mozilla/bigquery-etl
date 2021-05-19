@@ -1,8 +1,10 @@
 ---
 friendly_name: Mobile Search Clients Last Seen
-description: |-
-  Captures search activity of a single mobile client in the past 365 days
-  for each submission date.
+description: |
+  Captures search activity of each (client_id, engine, source) combination
+  for mobile clients in the past 365 days for each submission date.
+
+  Exposed to users as `search.mobile_search_clients_engines_sources_last_seen`.
 owners:
   - bewu@mozilla.com
 labels:

@@ -18,6 +18,7 @@ from ..dependency import dependency
 from ..glam.cli import glam
 from ..cli.glean_usage import glean_usage
 from ..stripe import stripe_
+from ..operational_monitoring import operational_monitoring
 
 
 def cli(prog_name=None):
@@ -35,6 +36,7 @@ def cli(prog_name=None):
         "glean_usage": glean_usage,
         "view": view,
         "alchemer": alchemer_,
+        "opmon": operational_monitoring,
     }
 
     @click.group(commands=commands)

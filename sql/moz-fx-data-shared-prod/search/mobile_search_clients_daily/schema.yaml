@@ -1,0 +1,94 @@
+fields:
+  - name: submission_date
+    type: DATE
+    description: The data on which the client submitted this information.
+  - name: client_id
+    type: STRING
+    description: A UUID uniquely identifying the client.
+  - name: engine
+    type: STRING
+    description: The search engine used.
+  - name: source
+    type: STRING
+    description: The source of the search (sap, in-content, or other).
+  - name: app_name
+    type: STRING
+    description: The name of the application.
+  - name: normalized_app_name
+    type: STRING
+    description: Normalized application name (applicable across application ids and channels).
+  - name: search_count
+    type: INTEGER
+    description: Total search count.
+  - name: organic
+    type: INTEGER
+    description: Number of organic searches.
+  - name: tagged_sap
+    type: INTEGER
+    description: Number of tagged sap searches.
+  - name: tagged_follow_on
+    type: INTEGER
+    description: Number of tagged follow-on searches.
+  - name: ad_click
+    type: INTEGER
+    description: Number of ad clicks made.
+  - name: search_with_ads
+    type: INTEGER
+    description: Number of searches with ads shown.
+  - name: unknown
+    type: INTEGER
+  - name: country
+    type: STRING
+    description: An ISO 3166-1 alpha-2 country code.
+  - name: locale
+    type: STRING
+    description: The locale of the application.
+  - name: app_version
+    type: STRING
+    description: The version of the application.
+  - name: channel
+    type: STRING
+    description: The channel the application is being distributed on.
+  - name: os
+    type: STRING
+    description: "The operating system (example: iOS, Android)."
+  - name: os_version
+    type: STRING
+    description: The user-visible version of the operating system (e.g. "1.2.3").
+  - name: default_search_engine
+    type: STRING
+    description: The identifier of the search engine set as default.
+  - name: default_search_engine_submission_url
+    type: STRING
+    description: The base URL we use to build the search query for the search engine.
+  - name: distribution_id
+    type: STRING
+    description: The value of the `distribution.id` pref that identifies the Firefox distribution.
+  - name: profile_creation_date
+    type: INTEGER
+    description: The creation date of the user profile as the integer number of days since UNIX epoch.
+  - name: profile_age_in_days
+    type: INTEGER
+    description: The age of the profile in days.
+  - name: sample_id
+    type: INTEGER
+    description: Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99
+  - name: experiments
+    type: RECORD
+    mode: REPEATED
+    fields:
+      - name: key
+        type: STRING
+      - name: value
+        type: STRING
+  - name: total_uri_count
+    type: INTEGER
+    description: A counter of URIs visited by a client in that day.
+  - name: ad_click_organic
+    type: INTEGER
+    description: Total ad clicks made from organic searches.
+  - name: normalized_engine
+    type: STRING
+  - name: sap
+    type: INTEGER
+    description: Count of searches made through a search access point (sap).

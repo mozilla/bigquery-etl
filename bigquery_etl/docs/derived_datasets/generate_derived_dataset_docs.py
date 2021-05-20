@@ -1,5 +1,6 @@
 """Generate documentation for derived datasets."""
 
+import json
 import os
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from bigquery_etl.dependency import extract_table_references
 
 VIEW_FILE = "view.sql"
 METADATA_FILE = "metadata.yaml"
+SCHEMA_FILE = "schema.yaml"
 NON_USER_FACING_DATASET_SUFFIXES = (
     "_derived",
     "_external",
@@ -24,23 +26,24 @@ def generate_derived_dataset_docs(out_dir, project_dir):
     project_doc_dir = Path(out_dir) / "mozdata"
 
     # get a list of all user-facing datasets
-    data_sets = [
+    datasets = [
         item
         for item in os.listdir(project_dir)
         if os.path.isdir(os.path.join(project_dir, item))
         and all(name not in item for name in NON_USER_FACING_DATASET_SUFFIXES)
     ]
 
-    for table in data_sets:
-        output = []
+    dataset_dict = {}
+    for dataset in datasets:
         source_urls = {}
-        with open(project_doc_dir / f"{table}.md", "w") as dataset_doc:
+        dataset_list = []
+        with open(project_doc_dir / f"{dataset}.md", "w") as dataset_doc:
             # Manually set title to prevent Mkdocs from removing
             # underscores and capitalizing file names
             # https://github.com/mkdocs/mkdocs/issues/1915#issuecomment-561311801
-            dataset_doc.write(f"---\ntitle: {table}\n---\n\n")
+            dataset_doc.write(f"---\ntitle: {dataset}\n---\n\n")
 
-            for root, dirs, files in os.walk(Path(project_dir) / table):
+            for root, dirs, files in os.walk(Path(project_dir) / dataset):
                 # show views in an alphabetical order
                 dirs.sort()
                 if dirs:
@@ -49,16 +52,17 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                 source_urls["Source Directory"] = f"{SOURCE_URL}/{root}"
                 referenced_tables = []
 
-                metadata = {}
-                if METADATA_FILE in files:
-                    source_urls[
-                        "Metadata File"
-                    ] = f"{SOURCE_URL}/{root}/{METADATA_FILE}"
-                    with open(os.path.join(root, METADATA_FILE)) as stream:
-                        try:
-                            metadata = yaml.safe_load(stream)
-                        except yaml.YAMLError as error:
-                            print(error)
+                # metadata, schemas
+                base_table_data = {}
+                for (type, filename) in (('metadata', METADATA_FILE), ('schema', SCHEMA_FILE)):
+                    if filename in files:
+                        source_urls[
+                            f"{type.capitalize()} File"
+                        ] = f"{SOURCE_URL}/{root}/{METADATA_FILE}"
+                        with open(os.path.join(root, filename)) as stream:
+                            base_table_data[type] = yaml.safe_load(stream)
+                    else:
+                        base_table_data[type] = {}
                 if VIEW_FILE in files:
                     source_urls["View Definition"] = f"{SOURCE_URL}/{root}/{VIEW_FILE}"
                     view_file = Path(os.path.join(root, VIEW_FILE))
@@ -93,11 +97,18 @@ def generate_derived_dataset_docs(out_dir, project_dir):
                 # Create template with the markdown source text
                 template = env.get_template("table.md")
 
-                output = template.render(
-                    metadata=metadata,
+                table_data = dict(base_table_data,
                     table_name=dataset_name,
                     source_urls=source_urls,
                     referenced_tables=referenced_tables,
                     project_url=f"{SOURCE_URL}/sql",
                 )
-                dataset_doc.write(output)
+                dataset_list.append(table_data)
+                dataset_doc.write(template.render(table_data))
+
+            dataset_dict[dataset] = dataset_list
+
+        # dump a JSON representation of the dataset -> table mappings, for use
+        # by the glean dictionary
+        with open(project_doc_dir / f"api.json", "w") as api_json:
+            api_json.write(json.dumps(dataset_dict))

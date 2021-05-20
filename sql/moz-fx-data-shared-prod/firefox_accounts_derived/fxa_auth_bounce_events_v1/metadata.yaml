@@ -8,7 +8,10 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
-scheduling:
-  dag_name: bqetl_fxa_events
-  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
-  referenced_tables: []
+# # The source table appears to no longer receive relevant events, so we are
+# # descheduling the query for now; see
+# # https://github.com/mozilla/bigquery-etl/issues/2051
+# scheduling:
+#   dag_name: bqetl_fxa_events
+#   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
+#   referenced_tables: []

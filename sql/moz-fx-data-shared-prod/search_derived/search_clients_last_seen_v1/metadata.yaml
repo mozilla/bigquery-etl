@@ -1,10 +1,11 @@
 ---
 friendly_name: Search Clients Last Seen
 description: |
-  Captures search history of each (client_id, engine, source) combination
-  in 28 day windows for each submission date.
+  Captures search activity of each desktop client
+  in the past 365 days for each submission date.
 
-  Exposed to users as view `search.search_clients_engines_sources_last_seen`.
+  Exposed to users as view `search.search_clients_last_seen` and used
+  as the basis for LTV calculations.
 owners:
   - frank@mozilla.com
 labels:

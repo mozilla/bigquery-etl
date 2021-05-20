@@ -14,6 +14,7 @@ SKIP = {
     *glob.glob("bigquery_etl/events_daily/query_templates/**/*.sql"),
     *glob.glob("bigquery_etl/glean_usage/templates/*.sql"),
     *glob.glob("bigquery_etl/search/templates/*.sql"),
+    *glob.glob("bigquery_etl/operational_monitoring/templates/*.sql"),
     "sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql",

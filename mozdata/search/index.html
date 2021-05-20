@@ -1077,6 +1077,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mobile_search_clients_engines_sources_daily" class="md-nav__link">
+    mobile_search_clients_engines_sources_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mobile_search_clients_engines_sources_last_seen" class="md-nav__link">
+    mobile_search_clients_engines_sources_last_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mobile_search_clients_last_seen" class="md-nav__link">
     mobile_search_clients_last_seen
   </a>
@@ -1093,6 +1107,20 @@
         <li class="md-nav__item">
   <a href="#search_clients_daily" class="md-nav__link">
     search_clients_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search_clients_engines_sources_daily" class="md-nav__link">
+    search_clients_engines_sources_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search_clients_engines_sources_last_seen" class="md-nav__link">
+    search_clients_engines_sources_last_seen
   </a>
   
 </li>
@@ -1524,6 +1552,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mobile_search_clients_engines_sources_daily" class="md-nav__link">
+    mobile_search_clients_engines_sources_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mobile_search_clients_engines_sources_last_seen" class="md-nav__link">
+    mobile_search_clients_engines_sources_last_seen
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mobile_search_clients_last_seen" class="md-nav__link">
     mobile_search_clients_last_seen
   </a>
@@ -1540,6 +1582,20 @@
         <li class="md-nav__item">
   <a href="#search_clients_daily" class="md-nav__link">
     search_clients_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search_clients_engines_sources_daily" class="md-nav__link">
+    search_clients_engines_sources_daily
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#search_clients_engines_sources_last_seen" class="md-nav__link">
+    search_clients_engines_sources_last_seen
   </a>
   
 </li>
@@ -1665,6 +1721,63 @@
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/mobile_search_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/mobile_search_clients_daily/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/mobile_search_clients_daily/view.sql">View Definition</a> </p>
 <hr />
+<h2 id="mobile_search_clients_engines_sources_daily"><a href="#mobile_search_clients_engines_sources_daily">mobile_search_clients_engines_sources_daily</a></h2>
+<p>A daily aggregate of baseline and metrics pings that have
+searches from each (client_id, engine, source) combination,
+partitioned by day.</p>
+<ul>
+<li>Friendly name: Mobile Search Clients Engines Sources Daily</li>
+<li>
+<p>Owners: </p>
+<ul>
+<li><a href="mailto:bewu@mozilla.com">bewu@mozilla.com</a> </li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived>search_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1>mobile_search_clients_daily_v1</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/mobile_search_clients_engines_sources_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/mobile_search_clients_engines_sources_daily/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/mobile_search_clients_engines_sources_daily/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="mobile_search_clients_engines_sources_last_seen"><a href="#mobile_search_clients_engines_sources_last_seen">mobile_search_clients_engines_sources_last_seen</a></h2>
+<p>Captures search activity of each (client_id, engine, source) combination
+for mobile clients in the past 365 days for each submission date.</p>
+<ul>
+<li>Friendly name: Mobile Search Clients Engines Sources Last Seen</li>
+<li>
+<p>Owners: </p>
+<ul>
+<li><a href="mailto:bewu@mozilla.com">bewu@mozilla.com</a> </li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived>search_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_last_seen_v1>mobile_search_clients_last_seen_v1</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/mobile_search_clients_engines_sources_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/mobile_search_clients_engines_sources_last_seen/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/mobile_search_clients_engines_sources_last_seen/view.sql">View Definition</a> </p>
+<hr />
 <h2 id="mobile_search_clients_last_seen"><a href="#mobile_search_clients_last_seen">mobile_search_clients_last_seen</a></h2>
 <table>
 <caption>Referenced Tables</caption>
@@ -1715,6 +1828,61 @@
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_daily/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_daily/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="search_clients_engines_sources_daily"><a href="#search_clients_engines_sources_daily">search_clients_engines_sources_daily</a></h2>
+<p>A daily aggregate of desktop searches per (client_id, engine, source).</p>
+<ul>
+<li>Friendly name: Search Clients Engines Sources Daily</li>
+<li>
+<p>Owners: </p>
+<ul>
+<li><a href="mailto:bewu@mozilla.com">bewu@mozilla.com</a> </li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived>search_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8>search_clients_daily_v8</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_engines_sources_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_engines_sources_daily/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_engines_sources_daily/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="search_clients_engines_sources_last_seen"><a href="#search_clients_engines_sources_last_seen">search_clients_engines_sources_last_seen</a></h2>
+<p>Captures search history of each desktop (client_id, engine, source)
+combination in 28 day windows for each submission date.</p>
+<ul>
+<li>Friendly name: Search Clients Engines Sources Last Seen</li>
+<li>
+<p>Owners: </p>
+<ul>
+<li><a href="mailto:frank@mozilla.com">frank@mozilla.com</a> </li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived>search_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_derived/search_clients_last_seen_v1>search_clients_last_seen_v1</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_engines_sources_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_engines_sources_last_seen/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search/search_clients_engines_sources_last_seen/view.sql">View Definition</a> </p>
 <hr />
 <h2 id="search_clients_last_seen"><a href="#search_clients_last_seen">search_clients_last_seen</a></h2>
 <table>

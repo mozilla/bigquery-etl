@@ -1,20 +1,27 @@
-WITH clients_today AS (
+WITH _current AS (
   SELECT DISTINCT
     client_id
   FROM
     telemetry.core
   WHERE
     DATE(submission_timestamp) = @submission_date
+),
+_previous AS (
+  SELECT
+    *
+  FROM
+    telemetry_derived.core_clients_first_seen_v1
+  WHERE
+    first_seen_date > "2010-01-01"
 )
 SELECT
   client_id,
   @submission_date AS first_seen_date
 FROM
-  clients_today
-LEFT JOIN
-  telemetry_derived.core_clients_first_seen_v1 AS cfs
+  _current
+FULL JOIN
+  _previous
 USING
   (client_id)
 WHERE
-  cfs.first_seen_date < @submission_date
-  AND cfs.client_id IS NULL
+  _previous.client_id IS NULL

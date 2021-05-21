@@ -12,7 +12,9 @@ _previous AS (
   FROM
     telemetry_derived.core_clients_first_seen_v1
   WHERE
-    first_seen_date > "2010-01-01"
+    -- In the case we need to backfill older partitions of this table, we don't want newer partitions
+    -- to alter results of the query.
+    first_seen_date < @submission_date
 )
 SELECT
   client_id,

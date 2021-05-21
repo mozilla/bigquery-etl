@@ -1,7 +1,5 @@
 """Generate unnested events queries for Glean apps."""
 
-import logging
-
 from bigquery_etl.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "events_unnested_v1"

@@ -58,6 +58,8 @@ stripe_invoice_lines AS (
   SELECT
     lines.subscription AS subscription_id,
     IF(
+      -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1712027#c1
+      -- for why presence of "paypalTransactionId" alone is insufficient
       "paypalTransactionId" IN (SELECT key FROM UNNEST(invoices_v1.metadata))
       OR (invoices_v1.charge IS NULL AND invoices_v1.status = "paid"),
       STRUCT("Paypal" AS provider, paypal_country.country),

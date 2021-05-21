@@ -150,7 +150,9 @@ def get_app_info():
     app_info = {}
 
     for app in apps_json:
-        if app["app_name"] not in app_info:
+        if app["app_id"].startswith("rally-"):
+            pass
+        elif app["app_name"] not in app_info:
             app_info[app["app_name"]] = [app]
         else:
             app_info[app["app_name"]].append(app)
@@ -226,8 +228,7 @@ class GleanTable:
         target_dataset = app_info[0]["app_name"]
 
         datasets = [
-            (a["bq_dataset_family"], a.get("app_channel", "release"))
-            for a in app_info
+            (a["bq_dataset_family"], a.get("app_channel", "release")) for a in app_info
         ]
 
         if len(datasets) == 1 and target_dataset == datasets[0][0]:
@@ -237,7 +238,6 @@ class GleanTable:
             # per-app dataset, thus we don't have to provision
             # union views.
             if self.per_app_id_enabled:
-                print("skipping")
                 return
 
         render_kwargs = dict(

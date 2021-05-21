@@ -19,7 +19,7 @@ SELECT
   @submission_date AS first_seen_date
 FROM
   _current
-FULL JOIN
+LEFT JOIN
   _previous
 USING
   (client_id)

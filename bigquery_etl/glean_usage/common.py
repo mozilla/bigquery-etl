@@ -167,10 +167,15 @@ class GleanTable:
         self.prefix = ""
         self.custom_render_kwargs = {}
         self.no_init = True
+        self.per_app_id_enabled = True
+        self.per_app_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
 
     def generate_per_app_id(self, project_id, baseline_table, output_dir=None):
         """Generate the baseline table query per app_id."""
+        if not self.per_app_id_enabled:
+            return
+
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
         init_filename = f"{self.target_table_id}.init.sql"
@@ -214,19 +219,26 @@ class GleanTable:
 
     def generate_per_app(self, project_id, app_info, output_dir=None):
         """Generate the baseline table query per app_name."""
+        if not self.per_app_enabled:
+            return
+
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
         target_dataset = app_info[0]["app_name"]
 
         datasets = [
-            (a["bq_dataset_family"], a["app_channel"])
+            (a["bq_dataset_family"], a.get("app_channel", "release"))
             for a in app_info
-            if "app_channel" in a
         ]
 
-        # Some apps only have a single channel, in which case the per-app_id dataset
-        # is already sufficient.
-        if len(datasets) == 0:
-            return
+        if len(datasets) == 1 and target_dataset == datasets[0][0]:
+            # This app only has a single channel, and the app_name
+            # exactly matches the generated bq_dataset_family, so
+            # the existing per-app_id dataset also serves as the
+            # per-app dataset, thus we don't have to provision
+            # union views.
+            if self.per_app_id_enabled:
+                print("skipping")
+                return
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",

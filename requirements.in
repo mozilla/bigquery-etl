@@ -1,7 +1,7 @@
 attrs==21.2.0
 backports.cached-property==1.0.1  # python 3.7 backwards compat
 cattrs==1.6.0
-click==8.0.0
+click==8.0.1
 gcloud==0.18.3
 gitpython==3.1.17
 google-cloud-bigquery==2.16.1
@@ -23,7 +23,7 @@ pytest==6.2.4
 PyYAML==5.4.1
 smart_open==5.0.0
 sqlparse==0.4.1
-stripe==2.56.0
+stripe==2.57.0
 typing==3.7.4.3
 ujson==4.0.2
 yamllint==1.26.1

@@ -50,7 +50,7 @@ with_dates AS (
     *,
     -- For explanation of session start time calculation, see Glean docs:
     -- https://mozilla.github.io/glean/book/user/pings/baseline.html#contents
-    DATE(TIMESTAMP_SUB(parsed_end_time, INTERVAL duration SECOND)) AS session_start_date,
+    DATE(SAFE.TIMESTAMP_SUB(parsed_end_time, INTERVAL duration SECOND)) AS session_start_date,
     DATE(parsed_end_time) AS session_end_date,
   FROM
     base

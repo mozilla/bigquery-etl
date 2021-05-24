@@ -1,5 +1,5 @@
 CREATE TABLE
-  `moz-fx-data-shared-prod.telemetry_derived.core_clients_first_seen_v1`
+  `telemetry_derived.core_clients_first_seen_v1`
 PARTITION BY
   (first_seen_date)
 AS

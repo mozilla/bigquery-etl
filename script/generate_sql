@@ -44,4 +44,4 @@ python -m bigquery_etl.view.generate_stable_views \
 ./script/bqetl glean_usage generate --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
 
 # Record dependencies in yaml files
-./script/bqetl dependency record "${SQL_DIR}"
+./script/bqetl dependency record --skip-existing "${SQL_DIR}"

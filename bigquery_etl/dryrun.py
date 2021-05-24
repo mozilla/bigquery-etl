@@ -10,17 +10,20 @@ only dry runs can be performed. In order to reduce risk of CI or local users
 accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
-import fnmatch
+
 import glob
 import json
 import re
-import sys
-from argparse import ArgumentParser
 from enum import Enum
-from multiprocessing.pool import Pool
-from os.path import basename, dirname, exists, isdir
-from typing import Set
+from os.path import basename, dirname, exists
+from pathlib import Path
 from urllib.request import Request, urlopen
+
+import click
+from google.cloud import bigquery
+
+from .metadata.parse_metadata import Metadata
+from .schema import SCHEMA_FILE, Schema
 
 try:
     from functools import cached_property  # type: ignore
@@ -224,11 +227,20 @@ class DryRun:
         "bigquery-etl-dryrun"
     )
 
-    def __init__(self, sqlfile, content=None, strip_dml=False):
+    def __init__(
+        self,
+        sqlfile,
+        content=None,
+        strip_dml=False,
+        use_cloud_function=True,
+        client=None,
+    ):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
         self.content = content
         self.strip_dml = strip_dml
+        self.use_cloud_function = use_cloud_function
+        self.client = client if use_cloud_function or client else bigquery.Client()
 
     def get_sql(self):
         """Get SQL content."""
@@ -253,25 +265,53 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
+        dataset = basename(dirname(dirname(self.sqlfile)))
         try:
-            r = urlopen(
-                Request(
-                    self.DRY_RUN_URL,
-                    headers={"Content-Type": "application/json"},
-                    data=json.dumps(
-                        {
-                            "dataset": basename(dirname(dirname(self.sqlfile))),
-                            "query": sql,
-                        }
-                    ).encode("utf8"),
-                    method="POST",
+            if self.use_cloud_function:
+                r = urlopen(
+                    Request(
+                        self.DRY_RUN_URL,
+                        headers={"Content-Type": "application/json"},
+                        data=json.dumps(
+                            {
+                                "dataset": dataset,
+                                "query": sql,
+                            }
+                        ).encode("utf8"),
+                        method="POST",
+                    )
                 )
-            )
+                return json.load(r)
+            else:
+                project = basename(dirname(dirname(dirname(self.sqlfile))))
+                job_config = bigquery.QueryJobConfig(
+                    dry_run=True,
+                    use_query_cache=False,
+                    default_dataset=f"{project}.{dataset}",
+                    query_parameters=[
+                        bigquery.ScalarQueryParameter(
+                            "submission_date", "DATE", "2019-01-01"
+                        )
+                    ],
+                )
+                job = self.client.query(sql, job_config=job_config)
+                return {
+                    "valid": True,
+                    "referencedTables": [
+                        ref.to_api_repr() for ref in job.referenced_tables
+                    ],
+                    "schema": (
+                        job._properties.get("statistics", {})
+                        .get("query", {})
+                        .get("schema", {})
+                    ),
+                    "datasetLabels": (
+                        self.client.get_dataset(job.default_dataset).labels
+                    ),
+                }
         except Exception as e:
             print(f"{self.sqlfile:59} ERROR\n", e)
             return None
-
-        return json.load(r)
 
     def get_referenced_tables(self):
         """Return referenced tables by dry running the SQL file."""
@@ -433,6 +473,65 @@ class DryRun:
                 return Errors.DATE_FILTER_NEEDED_AND_SYNTAX
         return error
 
+    def validate_schema(self):
+        """Check whether schema is valid."""
+        if self.sqlfile in SKIP or basename(self.sqlfile) == "script.sql":
+            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            return True
+
+        query_file_path = Path(self.sqlfile)
+        query_schema = Schema.from_json(self.get_schema())
+        existing_schema_path = query_file_path.parent / SCHEMA_FILE
+
+        if not existing_schema_path.is_file():
+            click.echo(f"No schema file defined for {query_file_path}", err=True)
+            return True
+
+        table_name = query_file_path.parent.name
+        dataset_name = query_file_path.parent.parent.name
+        project_name = query_file_path.parent.parent.parent.name
+
+        partitioned_by = None
+        try:
+            metadata = Metadata.of_query_file(query_file_path)
+
+            if metadata.bigquery and metadata.bigquery.time_partitioning:
+                partitioned_by = metadata.bigquery.time_partitioning.field
+        except FileNotFoundError:
+            pass
+
+        table_schema = Schema.for_table(
+            project_name, dataset_name, table_name, partitioned_by
+        )
+
+        if not query_schema.compatible(table_schema):
+            click.echo(
+                click.style(
+                    f"ERROR: Schema for query in {query_file_path} "
+                    f"incompatible with schema deployed for "
+                    f"{project_name}.{dataset_name}.{table_name}",
+                    fg="red",
+                ),
+                err=True,
+            )
+            return False
+        else:
+            existing_schema = Schema.from_schema_file(existing_schema_path)
+
+            if not existing_schema.equal(query_schema):
+                click.echo(
+                    click.style(
+                        f"Schema defined in {existing_schema_path} "
+                        f"incompatible with query {query_file_path}",
+                        fg="red",
+                    ),
+                    err=True,
+                )
+                return False
+
+        click.echo(f"Schemas for {query_file_path} are valid.")
+        return True
+
 
 def sql_file_valid(sqlfile):
     """Dry run SQL files."""
@@ -446,47 +545,3 @@ def find_next_word(target, source):
         if w == target:
             # get the next word, and remove quotations from column name
             return split[i + 1].replace("'", "")
-
-
-def main():
-    """Dry run all SQL files in the project directories."""
-    parser = ArgumentParser(description=main.__doc__)
-    parser.add_argument(
-        "paths",
-        metavar="PATH",
-        nargs="*",
-        help="Paths to search for queries to dry run. CI passes 'sql' on the default "
-        "branch, and the paths that have been modified since branching otherwise",
-    )
-    args = parser.parse_args()
-
-    file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
-    file_re = re.compile("|".join(map(fnmatch.translate, file_names)))
-
-    sql_files: Set[str] = set()
-    for path in args.paths:
-        if isdir(path):
-            sql_files |= {
-                sql_file
-                for pattern in file_names
-                for sql_file in glob.glob(f"{path}/**/{pattern}", recursive=True)
-            }
-        elif file_re.fullmatch(basename(path)):
-            sql_files.add(path)
-    sql_files -= SKIP
-
-    if not sql_files:
-        print("Skipping dry run because no queries matched")
-        sys.exit(0)
-
-    with Pool(8) as p:
-        result = p.map(sql_file_valid, sorted(sql_files), chunksize=1)
-    if all(result):
-        exitcode = 0
-    else:
-        exitcode = 1
-    sys.exit(exitcode)
-
-
-if __name__ == "__main__":
-    main()

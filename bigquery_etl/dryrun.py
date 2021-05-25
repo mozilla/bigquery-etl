@@ -476,11 +476,15 @@ class DryRun:
     def validate_schema(self):
         """Check whether schema is valid."""
         if self.sqlfile in SKIP or basename(self.sqlfile) == "script.sql":
-            print(f"\t...Ignoring dryrun results for {self.sqlfile}")
+            print(f"\t...Ignoring schema validation for {self.sqlfile}")
             return True
 
         query_file_path = Path(self.sqlfile)
         query_schema = Schema.from_json(self.get_schema())
+        if self.errors():
+            # ignore file when there are errors that self.get_schema() did not raise
+            click.echo(f"\t...Ignoring schema validation for {self.sqlfile}")
+            return True
         existing_schema_path = query_file_path.parent / SCHEMA_FILE
 
         if not existing_schema_path.is_file():

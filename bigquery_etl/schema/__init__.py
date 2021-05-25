@@ -127,6 +127,13 @@ class Schema:
 
         return True
 
+    @staticmethod
+    def _node_with_mode(node):
+        """Add default value for mode to node."""
+        if "mode" in node:
+            return node
+        return {"mode": "NULLABLE", **node}
+
     def _traverse(
         self,
         prefix,
@@ -137,9 +144,9 @@ class Schema:
         exclude=None,
     ):
         """Traverses two schemas for validation and optionally updates the first schema."""
-        nodes = {n["name"]: n for n in columns}
+        nodes = {n["name"]: Schema._node_with_mode(n) for n in columns}
         other_nodes = {
-            n["name"]: n
+            n["name"]: Schema._node_with_mode(n)
             for n in other_columns
             if exclude is None or n["name"] not in exclude
         }

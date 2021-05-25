@@ -1,16 +1,16 @@
 """Query schema."""
 
-from google.cloud import bigquery
 import json
+import os
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, List, Optional
 
 import attr
-import os
 import yaml
+from google.cloud import bigquery
 
-from bigquery_etl.dryrun import DryRun
+from .. import dryrun
 
 SCHEMA_FILE = "schema.yaml"
 
@@ -27,7 +27,7 @@ class Schema:
         if not query_file.is_file() or query_file.suffix != ".sql":
             raise Exception(f"{query_file} is not a valid SQL file.")
 
-        schema = DryRun(str(query_file), content=content).get_schema()
+        schema = dryrun.DryRun(str(query_file), content=content).get_schema()
         return cls(schema)
 
     @classmethod
@@ -55,7 +55,7 @@ class Schema:
 
         try:
             return cls(
-                DryRun(
+                dryrun.DryRun(
                     os.path.join(project, dataset, table, "query.sql"), query
                 ).get_schema()
             )
@@ -127,6 +127,13 @@ class Schema:
 
         return True
 
+    @staticmethod
+    def _node_with_mode(node):
+        """Add default value for mode to node."""
+        if "mode" in node:
+            return node
+        return {"mode": "NULLABLE", **node}
+
     def _traverse(
         self,
         prefix,
@@ -137,9 +144,9 @@ class Schema:
         exclude=None,
     ):
         """Traverses two schemas for validation and optionally updates the first schema."""
-        nodes = {n["name"]: n for n in columns}
+        nodes = {n["name"]: Schema._node_with_mode(n) for n in columns}
         other_nodes = {
-            n["name"]: n
+            n["name"]: Schema._node_with_mode(n)
             for n in other_columns
             if exclude is None or n["name"] not in exclude
         }

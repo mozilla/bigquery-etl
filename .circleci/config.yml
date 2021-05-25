@@ -319,7 +319,7 @@ jobs:
           at: /tmp/generated-sql
       - run:
           name: Move generated-sql into place
-          command:
+          command: |
             rm -rf sql/
             cp -r /tmp/generated-sql/sql sql
       - run:

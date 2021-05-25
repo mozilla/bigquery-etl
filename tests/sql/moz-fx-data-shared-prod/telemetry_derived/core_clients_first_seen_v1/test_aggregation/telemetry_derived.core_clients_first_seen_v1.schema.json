@@ -1,0 +1,10 @@
+[
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "DATE",
+    "name": "first_seen_date"
+  }
+]

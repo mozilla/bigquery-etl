@@ -38,6 +38,7 @@ class StripeResourceType(click.ParamType):
 def _get_rows(
     api_key: Optional[str],
     date: Optional[datetime],
+    before_date: Optional[datetime],
     resource: Type[ListableAPIResource],
 ):
     if api_key is None:
@@ -52,6 +53,11 @@ def _get_rows(
                 # make sure to use timedelta before converting to timestamp,
                 # so that leap seconds are properly accounted for.
                 "lt": int((start + timedelta(days=1)).timestamp()),
+            }
+        elif before_date:
+            end = before_date.replace(tzinfo=timezone.utc)
+            kwargs["created"] = {
+                "lt": int(end.timestamp()),
             }
         if resource is stripe.Subscription:
             # list subscriptions api does not list canceled subscriptions by default
@@ -74,7 +80,7 @@ def _get_rows(
             yield FilteredSchema.expand(row)
 
 
-@click.group(help="Commands for Stripe ETL.")
+@click.group("stripe", help="Commands for Stripe ETL.")
 def stripe_():
     """Create the CLI group for stripe commands."""
     pass
@@ -106,6 +112,12 @@ def schema(resource: Type[ListableAPIResource]):
     "to ensure only that date partition is replaced",
 )
 @click.option(
+    "--before-date",
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    help="Only pull resources from stripe API with a creation date before this; "
+    "Used when importing resources older than the earliest available events",
+)
+@click.option(
     "--table",
     help="BigQuery Standard SQL format table ID where resources will be written; "
     "if not set resources will be written to stdout",
@@ -124,6 +136,7 @@ def schema(resource: Type[ListableAPIResource]):
 def import_(
     api_key: Optional[str],
     date: Optional[datetime],
+    before_date: Optional[datetime],
     table: Optional[str],
     format_resources: bool,
     resource: Type[ListableAPIResource],
@@ -136,29 +149,36 @@ def import_(
         table = f"{table}${date:%Y%m%d}"
     with (TemporaryFile(mode="w+b") if table else sys.stdout.buffer) as file_obj:
         filtered_schema = FilteredSchema(resource)
-        for row in _get_rows(api_key, date, resource):
+        has_rows = False
+        for row in _get_rows(api_key, date, before_date, resource):
             if format_resources or (table and api_key):
                 row = filtered_schema.format_row(row)
             file_obj.write(ujson.dumps(row).encode("UTF-8"))
             file_obj.write(b"\n")
-        if table:
+            has_rows = True
+        if not has_rows:
+            click.echo(f"no {filtered_schema.type}s returned")
+            sys.exit(1)
+        elif table:
             if file_obj.writable():
                 file_obj.seek(0)
             warnings.filterwarnings("ignore", module="google.auth._default")
+            job_config = bigquery.LoadJobConfig(
+                clustering_fields=["created"],
+                ignore_unknown_values=False,
+                schema=filtered_schema.filtered,
+                source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+                time_partitioning=bigquery.TimePartitioning(field="created"),
+                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+            )
+            if "$" in table:
+                job_config.schema_update_options = [
+                    bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
+                ]
             job = bigquery.Client().load_table_from_file(
                 file_obj=file_obj,
                 destination=table,
-                job_config=bigquery.LoadJobConfig(
-                    clustering_fields=["created"],
-                    ignore_unknown_values=False,
-                    schema=filtered_schema.filtered,
-                    source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-                    time_partitioning=bigquery.TimePartitioning(field="created"),
-                    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-                    schema_update_options=[
-                        bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
-                    ],
-                ),
+                job_config=job_config,
             )
             try:
                 click.echo(f"Waiting for {job.job_id}", file=sys.stderr)

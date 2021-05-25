@@ -32,39 +32,39 @@ stripe_customers AS (
   FROM
     mozdata.stripe.customers
 ),
-fxa_logs_provider_country AS (
+paypal_country AS (
   SELECT
     fxa_uid,
     plan_id,
-    ARRAY_AGG(
-      STRUCT(payment_provider AS provider, source_country AS country)
-      ORDER BY
-        event_timestamp DESC
-      LIMIT
-        1
-    )[OFFSET(0)].*,
+    ARRAY_AGG(source_country ORDER BY event_timestamp DESC LIMIT 1)[OFFSET(0)] AS country,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.fxa_pay_setup_complete_v1
+  WHERE
+    LOWER(payment_provider) = "paypal"
   GROUP BY
     fxa_uid,
     plan_id
 ),
+stripe_charges AS (
+  SELECT
+    id AS charge_id,
+    payment_method_details.card.country,
+  FROM
+    `moz-fx-data-shared-prod`.stripe_external.charges_v1
+  WHERE
+    status = "succeeded"
+),
 stripe_invoice_lines AS (
   SELECT
     lines.subscription AS subscription_id,
-    INITCAP(
-      COALESCE(
-        fxa_logs_provider_country.provider,
-        IF(
-          "paypalTransactionId" IN (SELECT key FROM UNNEST(invoices_v1.metadata)),
-          "Paypal",
-          "Stripe"
-        )
-      )
-    ) AS provider,
-    LOWER(
-      COALESCE(fxa_logs_provider_country.country, charges_v1.payment_method_details.card.country)
-    ) AS country,
+    IF(
+      -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1712027#c1
+      -- for why presence of "paypalTransactionId" alone is insufficient
+      "paypalTransactionId" IN (SELECT key FROM UNNEST(invoices_v1.metadata))
+      OR (invoices_v1.charge IS NULL AND invoices_v1.status = "paid"),
+      STRUCT("Paypal" AS provider, paypal_country.country),
+      ("Stripe", stripe_charges.country)
+    ).*,
     invoices_v1.event_timestamp,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.invoices_v1
@@ -75,24 +75,20 @@ stripe_invoice_lines AS (
   ON
     invoices_v1.customer = stripe_customers.customer_id
   LEFT JOIN
-    `moz-fx-data-shared-prod`.stripe_external.charges_v1
+    stripe_charges
   ON
-    invoices_v1.charge = charges_v1.id
+    invoices_v1.charge = stripe_charges.charge_id
   LEFT JOIN
-    fxa_logs_provider_country
+    paypal_country
   ON
-    stripe_customers.fxa_uid = fxa_logs_provider_country.fxa_uid
-    AND lines.plan.id = fxa_logs_provider_country.plan_id
-  WHERE
-    -- ignore invoices where no payment occurred
-    invoices_v1.status = "paid"
-    AND invoices_v1.amount_due > 0
+    stripe_customers.fxa_uid = paypal_country.fxa_uid
+    AND lines.plan.id = paypal_country.plan_id
 ),
 stripe_subscription_provider_country AS (
   SELECT
     subscription_id,
     ARRAY_AGG(
-      STRUCT(provider, country)
+      STRUCT(provider, LOWER(country) AS country)
       ORDER BY
         -- prefer rows with country
         IF(country IS NULL, 0, 1) DESC,

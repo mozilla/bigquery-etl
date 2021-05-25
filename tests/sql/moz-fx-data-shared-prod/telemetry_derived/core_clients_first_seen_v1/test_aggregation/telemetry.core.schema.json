@@ -1,0 +1,427 @@
+[
+  {
+    "mode": "REPEATED",
+    "name": "accessibility_services",
+    "type": "STRING"
+  },
+  {
+    "name": "additional_properties",
+    "type": "STRING"
+  },
+  {
+    "name": "arch",
+    "type": "STRING"
+  },
+  {
+    "name": "bug_1501329_affected",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "campaign",
+    "type": "STRING"
+  },
+  {
+    "name": "client_id",
+    "type": "STRING"
+  },
+  {
+    "name": "created",
+    "type": "STRING"
+  },
+  {
+    "name": "default_browser",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "default_search",
+    "type": "STRING"
+  },
+  {
+    "name": "device",
+    "type": "STRING"
+  },
+  {
+    "name": "display_version",
+    "type": "STRING"
+  },
+  {
+    "name": "distribution_id",
+    "type": "STRING"
+  },
+  {
+    "name": "document_id",
+    "type": "STRING"
+  },
+  {
+    "name": "durations",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "REPEATED",
+    "name": "experiments",
+    "type": "STRING"
+  },
+  {
+    "name": "flash_usage",
+    "type": "INTEGER"
+  },
+  {
+    "name": "locale",
+    "type": "STRING"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "name": "city",
+            "type": "STRING"
+          },
+          {
+            "name": "country",
+            "type": "STRING"
+          },
+          {
+            "name": "db_version",
+            "type": "STRING"
+          },
+          {
+            "name": "subdivision1",
+            "type": "STRING"
+          },
+          {
+            "name": "subdivision2",
+            "type": "STRING"
+          }
+        ],
+        "name": "geo",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "date",
+            "type": "STRING"
+          },
+          {
+            "name": "dnt",
+            "type": "STRING"
+          },
+          {
+            "name": "x_debug_id",
+            "type": "STRING"
+          },
+          {
+            "name": "x_pingsender_version",
+            "type": "STRING"
+          }
+        ],
+        "name": "header",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "app_build_id",
+            "type": "STRING"
+          },
+          {
+            "name": "app_name",
+            "type": "STRING"
+          },
+          {
+            "name": "app_update_channel",
+            "type": "STRING"
+          },
+          {
+            "name": "app_version",
+            "type": "STRING"
+          }
+        ],
+        "name": "uri",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "browser",
+            "type": "STRING"
+          },
+          {
+            "name": "os",
+            "type": "STRING"
+          },
+          {
+            "name": "version",
+            "type": "STRING"
+          }
+        ],
+        "name": "user_agent",
+        "type": "RECORD"
+      }
+    ],
+    "name": "metadata",
+    "type": "RECORD"
+  },
+  {
+    "name": "normalized_app_name",
+    "type": "STRING"
+  },
+  {
+    "name": "normalized_channel",
+    "type": "STRING"
+  },
+  {
+    "name": "normalized_country_code",
+    "type": "STRING"
+  },
+  {
+    "name": "normalized_os",
+    "type": "STRING"
+  },
+  {
+    "name": "normalized_os_version",
+    "type": "STRING"
+  },
+  {
+    "name": "os",
+    "type": "STRING"
+  },
+  {
+    "name": "osversion",
+    "type": "STRING"
+  },
+  {
+    "name": "profile_date",
+    "type": "INTEGER"
+  },
+  {
+    "name": "sample_id",
+    "type": "INTEGER"
+  },
+  {
+    "fields": [
+      {
+        "name": "key",
+        "type": "STRING"
+      },
+      {
+        "name": "value",
+        "type": "INTEGER"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "searches",
+    "type": "RECORD"
+  },
+  {
+    "name": "seq",
+    "type": "INTEGER"
+  },
+  {
+    "name": "sessions",
+    "type": "INTEGER"
+  },
+  {
+    "name": "show_tracker_stats_share",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "submission_timestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "name": "tz",
+    "type": "INTEGER"
+  },
+  {
+    "name": "v",
+    "type": "INTEGER"
+  },
+  {
+    "name": "campaign_id",
+    "type": "STRING"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "mode": "REPEATED",
+            "name": "active",
+            "type": "STRING"
+          },
+          {
+            "mode": "REPEATED",
+            "name": "disabled",
+            "type": "STRING"
+          }
+        ],
+        "name": "addons",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "pocket_stories_clicked",
+            "type": "INTEGER"
+          },
+          {
+            "name": "top_sites_clicked",
+            "type": "INTEGER"
+          }
+        ],
+        "name": "new_tab",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "bookmark_with_star",
+            "type": "INTEGER"
+          },
+          {
+            "name": "print",
+            "type": "INTEGER"
+          },
+          {
+            "name": "save_as_pdf",
+            "type": "INTEGER"
+          },
+          {
+            "name": "total_added_search_engines",
+            "type": "INTEGER"
+          },
+          {
+            "name": "total_sites_pinned_to_topsites",
+            "type": "INTEGER"
+          },
+          {
+            "name": "view_source",
+            "type": "INTEGER"
+          }
+        ],
+        "name": "page_options",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "restore_tabs",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "show_images",
+            "type": "STRING"
+          },
+          {
+            "name": "show_web_fonts",
+            "type": "BOOLEAN"
+          }
+        ],
+        "name": "settings_advanced",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "compact_tabs",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "full_screen_browsing",
+            "type": "BOOLEAN"
+          },
+          {
+            "fields": [
+              {
+                "name": "bookmarks_enabled",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "custom_homepage",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "custom_homepage_use_for_newtab",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "history_enabled",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "pocket_enabled",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "recent_bookmarks_enabled",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "topsites_enabled",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "visited_enabled",
+                "type": "BOOLEAN"
+              }
+            ],
+            "name": "homepage",
+            "type": "RECORD"
+          },
+          {
+            "name": "tab_queue",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "tab_queue_usage_count",
+            "type": "INTEGER"
+          }
+        ],
+        "name": "settings_general",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "product_feature_tips",
+            "type": "BOOLEAN"
+          }
+        ],
+        "name": "settings_notifications",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "do_not_track",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "master_password",
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "master_password_usage_count",
+            "type": "INTEGER"
+          }
+        ],
+        "name": "settings_privacy",
+        "type": "RECORD"
+      },
+      {
+        "fields": [
+          {
+            "name": "only_over_wifi",
+            "type": "BOOLEAN"
+          }
+        ],
+        "name": "sync",
+        "type": "RECORD"
+      }
+    ],
+    "name": "fennec",
+    "type": "RECORD"
+  }
+]

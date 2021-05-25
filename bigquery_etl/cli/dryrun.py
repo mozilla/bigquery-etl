@@ -94,10 +94,7 @@ def dryrun(paths, use_cloud_function, validate_schemas, project):
         """Dry run the SQL file."""
         result = DryRun(sqlfile, use_cloud_function=use_cloud_function, client=client)
         if validate_schemas:
-            valid = result.validate_schema()
-            if not valid:
-                click.echo(f"{sqlfile:59} ERROR schema invalid")
-            return valid
+            return result.validate_schema()
         return result.is_valid()
 
     with ThreadPool(8) as p:

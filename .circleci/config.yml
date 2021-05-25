@@ -62,6 +62,8 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
+      - *build
       - run:
           name: Dry run queries
           # yamllint disable rule:line-length
@@ -80,7 +82,7 @@ jobs:
               PATHS="$(git diff origin/main... --name-only --diff-filter=d -- sql)"
             fi
             echo $PATHS
-            script/dryrun $PATHS
+            PATH="venv/bin:$PATH" script/dryrun --validate-schemas $PATHS
           # yamllint enable rule:line-length
   validate-metadata:
     docker: *docker
@@ -230,17 +232,6 @@ jobs:
       - run:
           name: Validate views
           command: PATH="venv/bin:$PATH" script/validate_views
-  validate-schemas:
-    docker: *docker
-    steps:
-      - checkout
-      - *restore_venv_cache
-      - *build
-      - run:
-          name: Validate query schemas
-          command: |
-            ./bqetl bootstrap
-            ./bqetl query schema validate "*"
   docs:
     docker: *docker
     steps:
@@ -356,7 +347,6 @@ workflows:
       - verify-requirements
       - dry-run-sql
       - validate-metadata
-      - validate-schemas
       - integration
       - validate-dags
       - verify-dags-up-to-date

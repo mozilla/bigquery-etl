@@ -15,19 +15,20 @@ import click
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
-from ..cli.dryrun import SKIP, dryrun
 from ..cli.format import format
 from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
 from ..dependency import get_dependency_graph
+from ..dryrun import SKIP, DryRun
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
-from ..metadata.parse_metadata import METADATA_FILE, Metadata, DatasetMetadata
+from ..metadata.parse_metadata import METADATA_FILE, DatasetMetadata, Metadata
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..run_query import run
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.common import random_str
+from .dryrun import dryrun
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 SQL_FILE_RE = re.compile(
@@ -673,8 +674,15 @@ def backfill(
     type=bool,
     default=True,
 )
+@click.option(
+    "--validate_schemas",
+    "--validate-schemas",
+    help="Require dry run schema to match destination table and file if present.",
+    is_flag=True,
+    default=False,
+)
 @click.pass_context
-def validate(ctx, name, sql_dir, project_id, use_cloud_function):
+def validate(ctx, name, sql_dir, project_id, use_cloud_function, validate_schemas):
     """Validate queries by dry running, formatting and checking scheduling configs."""
     if name is None:
         name = "*.*"
@@ -686,17 +694,16 @@ def validate(ctx, name, sql_dir, project_id, use_cloud_function):
         ctx.invoke(format, path=str(query))
         ctx.invoke(
             dryrun,
-            path=str(query),
+            paths=[str(query)],
             use_cloud_function=use_cloud_function,
             project=project,
+            validate_schemas=validate_schemas,
         )
         validate_metadata.validate(query.parent)
         dataset_dirs.add(query.parent.parent)
 
     for dataset_dir in dataset_dirs:
         validate_metadata.validate_datasets(dataset_dir)
-
-    # todo: validate if new fields get added
 
 
 @query.command(
@@ -1114,70 +1121,6 @@ def deploy(ctx, name, sql_dir, project_id, force):
             click.echo(f"No schema file found for {query_file}")
 
 
-def _validate_schema(query_file):
-    """
-    Check whether schema is valid.
-
-    Returns tuple for whether schema is valid and path to schema.
-    """
-    if str(query_file) in SKIP or query_file.name == "script.sql":
-        click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
-        return (True, query_file)
-
-    query_file_path = Path(query_file)
-    query_schema = Schema.from_query_file(query_file_path)
-    existing_schema_path = query_file_path.parent / SCHEMA_FILE
-
-    if not existing_schema_path.is_file():
-        click.echo(f"No schema file defined for {query_file_path}", err=True)
-        return (True, query_file_path)
-
-    table_name = query_file_path.parent.name
-    dataset_name = query_file_path.parent.parent.name
-    project_name = query_file_path.parent.parent.parent.name
-
-    partitioned_by = None
-    try:
-        metadata = Metadata.of_query_file(query_file_path)
-
-        if metadata.bigquery and metadata.bigquery.time_partitioning:
-            partitioned_by = metadata.bigquery.time_partitioning.field
-    except FileNotFoundError:
-        pass
-
-    table_schema = Schema.for_table(
-        project_name, dataset_name, table_name, partitioned_by
-    )
-
-    if not query_schema.compatible(table_schema):
-        click.echo(
-            click.style(
-                f"ERROR: Schema for query in {query_file_path} "
-                f"incompatible with schema deployed for "
-                f"{project_name}.{dataset_name}.{table_name}",
-                fg="red",
-            ),
-            err=True,
-        )
-        return (False, query_file_path)
-    else:
-        existing_schema = Schema.from_schema_file(existing_schema_path)
-
-        if not existing_schema.equal(query_schema):
-            click.echo(
-                click.style(
-                    f"Schema defined in {existing_schema_path} "
-                    f"incompatible with query {query_file_path}",
-                    fg="red",
-                ),
-                err=True,
-            )
-            return (False, query_file_path)
-
-    click.echo(f"Schemas for {query_file_path} are valid.")
-    return (True, query_file_path)
-
-
 @schema.command(
     help="""Validate the query schema
 
@@ -1199,6 +1142,9 @@ def _validate_schema(query_file):
 def validate_schema(name, sql_dir, project_id):
     """Validate the defined query schema against the query and destination table."""
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+
+    def _validate_schema(query_file_path):
+        return DryRun(query_file_path).validate_schema(), query_file_path
 
     with Pool(8) as p:
         result = p.map(_validate_schema, query_files, chunksize=1)

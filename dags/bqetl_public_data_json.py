@@ -56,6 +56,7 @@ with DAG(
         + ["--project_id=moz-fx-data-shared-prod"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
+        queue="dedicated",
         dag=dag,
     )
 
@@ -71,6 +72,7 @@ with DAG(
         + ["--project_id=moz-fx-data-shared-prod"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
+        queue="dedicated",
         dag=dag,
     )
 
@@ -106,6 +108,7 @@ with DAG(
         task_id="public_data_gcs_metadata",
         command=["script/publish_public_data_gcs_metadata"],
         docker_image=docker_image,
+        queue="dedicated",
         dag=dag,
     )
 

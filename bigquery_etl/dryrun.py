@@ -234,6 +234,7 @@ class DryRun:
         strip_dml=False,
         use_cloud_function=True,
         client=None,
+        respect_skip=True,
     ):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
@@ -241,6 +242,11 @@ class DryRun:
         self.strip_dml = strip_dml
         self.use_cloud_function = use_cloud_function
         self.client = client if use_cloud_function or client else bigquery.Client()
+        self.respect_skip = respect_skip
+
+    def skip(self):
+        """Determine if dry run should be skipped."""
+        return self.respect_skip and self.sqlfile in SKIP
 
     def get_sql(self):
         """Get SQL content."""
@@ -315,10 +321,10 @@ class DryRun:
 
     def get_referenced_tables(self):
         """Return referenced tables by dry running the SQL file."""
-        if self.sqlfile not in SKIP and not self.is_valid():
+        if not self.skip() and not self.is_valid():
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
-        if self.sqlfile in SKIP:
+        if self.skip():
             print(f"\t...Ignoring dryrun results for {self.sqlfile}")
 
         if (
@@ -385,10 +391,10 @@ class DryRun:
 
     def get_schema(self):
         """Return the query schema by dry running the SQL file."""
-        if self.sqlfile not in SKIP and not self.is_valid():
+        if not self.skip() and not self.is_valid():
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
-        if self.sqlfile in SKIP:
+        if self.skip():
             print(f"\t...Ignoring dryrun results for {self.sqlfile}")
             return {}
 
@@ -403,10 +409,10 @@ class DryRun:
 
     def get_dataset_labels(self):
         """Return the labels on the default dataset by dry running the SQL file."""
-        if self.sqlfile not in SKIP and not self.is_valid():
+        if not self.skip() and not self.is_valid():
             raise Exception(f"Error when dry running SQL file {self.sqlfile}")
 
-        if self.sqlfile in SKIP:
+        if self.skip():
             print(f"\t...Ignoring dryrun results for {self.sqlfile}")
             return {}
 
@@ -475,7 +481,7 @@ class DryRun:
 
     def validate_schema(self):
         """Check whether schema is valid."""
-        if self.sqlfile in SKIP or basename(self.sqlfile) == "script.sql":
+        if self.skip() or basename(self.sqlfile) == "script.sql":
             print(f"\t...Ignoring schema validation for {self.sqlfile}")
             return True
 

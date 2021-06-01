@@ -187,7 +187,8 @@ class Task:
         """Validate the DAG name."""
         if not is_valid_dag_name(value):
             raise ValueError(
-                f"Invalid DAG name {value} for task. Name must start with 'bqetl_'."
+                f"Invalid DAG name {value} for task. Name must start with 'bqetl_' "
+                f"or 'private_bqetl_'."
             )
 
     @task_name.validator

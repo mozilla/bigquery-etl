@@ -30,7 +30,7 @@ def is_email(s):
     return re.match(r"[^@]+@[^@]+\.[^@]+", s)
 
 
-DAG_NAME_RE = re.compile("^bqetl_.+$")
+DAG_NAME_RE = re.compile("^(private_)?bqetl_.+$")
 
 
 def is_valid_dag_name(name):

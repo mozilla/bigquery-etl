@@ -377,16 +377,3 @@ workflows:
               only: main
             tags:
               only: /.*/
-  nightly:
-    jobs: *build_jobs
-    triggers:
-      - schedule:
-          # Scheduled queries start running at 01:00 UTC; we push a new build
-          # at midnight UTC to ensure the generated content in the container
-          # reflects any changes to deployed tables in production since the
-          # last code change pushed to this repository.
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - main

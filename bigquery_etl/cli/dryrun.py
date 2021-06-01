@@ -53,11 +53,16 @@ from ..dryrun import SKIP, DryRun
     default=False,
 )
 @click.option(
+    "--respect-skip/--ignore-skip",
+    help="Respect or ignore query SKIP configuration. Default is --respect-skip.",
+    default=True,
+)
+@click.option(
     "--project",
     help="GCP project to perform dry run in when --use_cloud_function=False",
     default="moz-fx-data-shared-prod",
 )
-def dryrun(paths, use_cloud_function, validate_schemas, project):
+def dryrun(paths, use_cloud_function, validate_schemas, respect_skip, project):
     """Perform a dry run."""
     file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
     file_re = re.compile("|".join(map(fnmatch.translate, file_names)))
@@ -76,7 +81,8 @@ def dryrun(paths, use_cloud_function, validate_schemas, project):
         else:
             click.echo(f"Invalid path {path}", err=True)
             sys.exit(1)
-    sql_files -= SKIP
+    if respect_skip:
+        sql_files -= SKIP
 
     if not sql_files:
         print("Skipping dry run because no queries matched")
@@ -92,7 +98,12 @@ def dryrun(paths, use_cloud_function, validate_schemas, project):
 
     def sql_file_valid(sqlfile):
         """Dry run the SQL file."""
-        result = DryRun(sqlfile, use_cloud_function=use_cloud_function, client=client)
+        result = DryRun(
+            sqlfile,
+            use_cloud_function=use_cloud_function,
+            client=client,
+            respect_skip=respect_skip,
+        )
         if validate_schemas:
             return result.validate_schema()
         return result.is_valid()

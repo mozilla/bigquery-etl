@@ -681,8 +681,17 @@ def backfill(
     is_flag=True,
     default=False,
 )
+@click.option(
+    "--respect-dryrun-skip/--ignore-dryrun-skip",
+    "respect_skip",
+    help="Respect or ignore dry run SKIP configuration. "
+    "Default is --ignore-dryrun-skip.",
+    default=False,
+)
 @click.pass_context
-def validate(ctx, name, sql_dir, project_id, use_cloud_function, validate_schemas):
+def validate(
+    ctx, name, sql_dir, project_id, use_cloud_function, validate_schemas, respect_skip
+):
     """Validate queries by dry running, formatting and checking scheduling configs."""
     if name is None:
         name = "*.*"
@@ -698,6 +707,7 @@ def validate(ctx, name, sql_dir, project_id, use_cloud_function, validate_schema
             use_cloud_function=use_cloud_function,
             project=project,
             validate_schemas=validate_schemas,
+            respect_skip=respect_skip,
         )
         validate_metadata.validate(query.parent)
         dataset_dirs.add(query.parent.parent)

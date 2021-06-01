@@ -2306,6 +2306,7 @@ Options:
 --project_id: GCP project ID
 --use_cloud_function: Use the Cloud Function for dry running SQL, if set to `True`. The Cloud Function can only access tables in shared-prod. If set to `False`, use active GCP credentials for the dry run.
 --validate_schemas: Require dry run schema to match destination table and file if present.
+--respect_skip: Respect or ignore dry run SKIP configuration. Default is --ignore-dryrun-skip.
 </code></pre>
 <p><strong>Examples</strong></p>
 <pre><code class="language-bash">./bqetl query validate telemetry_derived.clients_daily_v6
@@ -2498,6 +2499,7 @@ Options:
 
 --use_cloud_function: Use the Cloud Function for dry running SQL, if set to `True`. The Cloud Function can only access tables in shared-prod. If set to `False`, use active GCP credentials for the dry run.
 --validate_schemas: Require dry run schema to match destination table and file if present.
+--respect_skip: Respect or ignore query SKIP configuration. Default is --respect-skip.
 --project: GCP project to perform dry run in when --use_cloud_function=False
 </code></pre>
 <p><strong>Examples</strong></p>

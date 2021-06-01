@@ -2607,6 +2607,10 @@
                     "type": "TIMESTAMP"
                   },
                   {
+                    "name": "country",
+                    "type": "STRING"
+                  },
+                  {
                     "name": "description",
                     "type": "STRING"
                   },
@@ -2652,6 +2656,10 @@
                   {
                     "name": "percentage",
                     "type": "NUMERIC"
+                  },
+                  {
+                    "name": "state",
+                    "type": "STRING"
                   }
                 ]
               },
@@ -3150,6 +3158,10 @@
                         "type": "TIMESTAMP"
                       },
                       {
+                        "name": "country",
+                        "type": "STRING"
+                      },
+                      {
                         "name": "description",
                         "type": "STRING"
                       },
@@ -3195,6 +3207,10 @@
                       {
                         "name": "percentage",
                         "type": "NUMERIC"
+                      },
+                      {
+                        "name": "state",
+                        "type": "STRING"
                       }
                     ]
                   }
@@ -3618,6 +3634,10 @@
                             "type": "TIMESTAMP"
                           },
                           {
+                            "name": "country",
+                            "type": "STRING"
+                          },
+                          {
                             "name": "description",
                             "type": "STRING"
                           },
@@ -3663,6 +3683,10 @@
                           {
                             "name": "percentage",
                             "type": "NUMERIC"
+                          },
+                          {
+                            "name": "state",
+                            "type": "STRING"
                           }
                         ]
                       }
@@ -3914,6 +3938,38 @@
                     "type": "STRING"
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "name": "tax_info",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "tax_id",
+                "type": "STRING"
+              },
+              {
+                "name": "type",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
+            "name": "tax_info_verification",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "status",
+                "type": "STRING"
+              },
+              {
+                "name": "verified_address",
+                "type": "STRING"
+              },
+              {
+                "name": "verified_name",
+                "type": "STRING"
               }
             ]
           }
@@ -4422,6 +4478,10 @@
                 "type": "TIMESTAMP"
               },
               {
+                "name": "country",
+                "type": "STRING"
+              },
+              {
                 "name": "description",
                 "type": "STRING"
               },
@@ -4467,6 +4527,10 @@
               {
                 "name": "percentage",
                 "type": "NUMERIC"
+              },
+              {
+                "name": "state",
+                "type": "STRING"
               }
             ]
           },
@@ -5021,6 +5085,10 @@
                     "type": "TIMESTAMP"
                   },
                   {
+                    "name": "country",
+                    "type": "STRING"
+                  },
+                  {
                     "name": "description",
                     "type": "STRING"
                   },
@@ -5066,6 +5134,10 @@
                   {
                     "name": "percentage",
                     "type": "NUMERIC"
+                  },
+                  {
+                    "name": "state",
+                    "type": "STRING"
                   }
                 ]
               },
@@ -5189,6 +5261,10 @@
           },
           {
             "name": "subtotal",
+            "type": "INTEGER"
+          },
+          {
+            "name": "tax",
             "type": "INTEGER"
           },
           {
@@ -5641,6 +5717,10 @@
                 "type": "TIMESTAMP"
               },
               {
+                "name": "country",
+                "type": "STRING"
+              },
+              {
                 "name": "description",
                 "type": "STRING"
               },
@@ -5686,6 +5766,10 @@
               {
                 "name": "percentage",
                 "type": "NUMERIC"
+              },
+              {
+                "name": "state",
+                "type": "STRING"
               }
             ]
           },
@@ -10313,6 +10397,10 @@
                 "type": "TIMESTAMP"
               },
               {
+                "name": "country",
+                "type": "STRING"
+              },
+              {
                 "name": "description",
                 "type": "STRING"
               },
@@ -10358,6 +10446,10 @@
               {
                 "name": "percentage",
                 "type": "NUMERIC"
+              },
+              {
+                "name": "state",
+                "type": "STRING"
               }
             ]
           },
@@ -10856,6 +10948,10 @@
                     "type": "TIMESTAMP"
                   },
                   {
+                    "name": "country",
+                    "type": "STRING"
+                  },
+                  {
                     "name": "description",
                     "type": "STRING"
                   },
@@ -10901,6 +10997,10 @@
                   {
                     "name": "percentage",
                     "type": "NUMERIC"
+                  },
+                  {
+                    "name": "state",
+                    "type": "STRING"
                   }
                 ]
               }
@@ -11324,6 +11424,10 @@
                         "type": "TIMESTAMP"
                       },
                       {
+                        "name": "country",
+                        "type": "STRING"
+                      },
+                      {
                         "name": "description",
                         "type": "STRING"
                       },
@@ -11369,6 +11473,10 @@
                       {
                         "name": "percentage",
                         "type": "NUMERIC"
+                      },
+                      {
+                        "name": "state",
+                        "type": "STRING"
                       }
                     ]
                   }

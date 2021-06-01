@@ -271,6 +271,7 @@ event:
         tax_rates:
           active:
           created:
+          country:
           description:
           display_name:
           id:
@@ -280,6 +281,7 @@ event:
             key:
             value:
           percentage:
+          state:
         type:
         unique_id:
       metadata:
@@ -577,6 +579,7 @@ event:
         tax_rates:
           active:
           created:
+          country:
           description:
           display_name:
           id:
@@ -586,6 +589,7 @@ event:
             key:
             value:
           percentage:
+          state:
       latest_invoice:
       metadata:
         key:
@@ -673,6 +677,7 @@ event:
           tax_rates:
             active:
             created:
+            country:
             description:
             display_name:
             id:
@@ -682,6 +687,7 @@ event:
               key:
               value:
             percentage:
+            state:
         trial_end:
         trial_from_plan:
       plan:

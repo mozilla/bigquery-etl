@@ -31,6 +31,12 @@ RETURNS STRUCT<
           -- strip prefix from google and yahoo patterns
           "(?:www[.]|search[.])?(.*)"
         ) AS organic_referrer,
+        STRUCT(
+          COALESCE(utm_campaign, "(not set)") AS campaign,
+          COALESCE(utm_content, "(not set)") AS content,
+          COALESCE(utm_medium, "(none)") AS medium,
+          COALESCE(utm_source, "(direct)") AS source
+        ) AS utm,
     ),
     stage_2 AS (
       SELECT
@@ -38,12 +44,9 @@ RETURNS STRUCT<
         -- normalized_medium
         CASE
         WHEN
-          utm_medium IS NOT NULL
-          OR utm_source IS NOT NULL
-          OR utm_content IS NOT NULL
-          OR utm_campaign IS NOT NULL
+          utm != ("(not set)", "(not set)", "(none)", "(direct)")
         THEN
-          utm_medium
+          utm.medium
         WHEN
           organic_referrer IS NOT NULL
         THEN
@@ -52,10 +55,8 @@ RETURNS STRUCT<
           internal_referrer IS NOT NULL
         THEN
           "referral"
-        WHEN
-          referrer IS NULL
-        THEN
-          "(none)"
+        ELSE
+          utm.medium
         END
         AS normalized_medium,
       FROM
@@ -66,21 +67,18 @@ RETURNS STRUCT<
         -- normalized_acquisition_channel
         CASE
         WHEN
-          utm_source = "firefox-browser"
+          utm.source = "firefox-browser"
         THEN
           "Website: Firefox Browser"
         WHEN
-          utm_medium = '["referral","referral"]'
+          utm.medium = '["referral","referral"]'
           -- preserve legacy behavior
           AND (referrer LIKE "%app-store%") IS NOT TRUE
         THEN
           "Possible Attribution Error - Monitor"
         WHEN
           referrer LIKE "%app-store%"
-          AND utm_medium IS NULL
-          AND utm_source IS NULL
-          AND utm_campaign IS NULL
-          AND utm_content IS NULL
+          AND utm = ("(not set)", "(not set)", "(none)", "(direct)")
         THEN
           CONCAT("App Store: ", SPLIT(referrer, "-")[offset(2)])
         WHEN
@@ -88,78 +86,39 @@ RETURNS STRUCT<
         THEN
           provider
         WHEN
-          normalized_medium IS NOT NULL
-          OR utm_source IS NOT NULL
-          OR utm_campaign IS NOT NULL
-          OR utm_content IS NOT NULL
+          normalized_medium != "(none)"
+          OR utm != ("(not set)", "(not set)", "(none)", "(direct)")
+          OR referrer IS NULL
         THEN
           "Website"
         ELSE
           "Unknown"
         END
         AS normalized_acquisition_channel,
-        -- normalized_campaign
-        IF(
-          utm_campaign IS NULL
-          AND (
-            (utm_content IS NULL AND utm_medium IS NULL AND utm_source IS NULL AND referrer IS NULL)
-            OR utm_source = "firefox-browser"
-            OR NULLIF(normalized_medium, '["referral","referral"]') IS NOT NULL
-          ),
-          "(not set)",
-          utm_campaign
-        ) AS normalized_campaign,
-        -- normalized_content
-        IF(
-          utm_content IS NULL
-          AND (
-            (
-              utm_campaign IS NULL
-              AND utm_medium IS NULL
-              AND utm_source IS NULL
-              AND referrer IS NULL
-            )
-            OR utm_source = "firefox-browser"
-            OR NULLIF(normalized_medium, '["referral","referral"]') IS NOT NULL
-          ),
-          "(not set)",
-          utm_content
-        ) AS normalized_content,
-        --
+        utm.campaign AS normalized_campaign,
+        utm.content AS normalized_content,
         normalized_medium,
         -- normalized_source
         CASE
         WHEN
-          utm_medium IS NULL
-          AND utm_source IS NULL
-          AND utm_content IS NULL
-          AND utm_campaign IS NULL
+          utm.source LIKE "mozilla.org-whatsnew%"
         THEN
-          CASE
-          WHEN
-            organic_referrer IS NOT NULL
-          THEN
-            organic_referrer
-          WHEN
-            internal_referrer IS NOT NULL
-          THEN
-            internal_referrer
-          WHEN
-            referrer IS NULL
-          THEN
-            "(direct)"
-          END
+          "www.mozilla.org-whatsnew"
         WHEN
-          utm_medium = "referral"
+          utm.medium = "referral"
           AND (
-            utm_source IS NULL
+            utm.source = "(direct)"
             AND referrer LIKE "%www.mozilla.org%"
-            OR utm_source = "www.mozilla.org-vpn-product-page"
+            OR utm.source = "www.mozilla.org-vpn-product-page"
           )
         THEN
           "www.mozilla.org"
+        WHEN
+          utm = ("(not set)", "(not set)", "(none)", "(direct)")
+        THEN
+          COALESCE(organic_referrer, internal_referrer, utm.source)
         ELSE
-          utm_source
+          utm.source
         END
         AS normalized_source,
       FROM
@@ -176,12 +135,15 @@ RETURNS STRUCT<
         "Paid Channels"
       WHEN
         normalized_medium IN ("email", "snippet")
-        OR utm_source IN ("leanplum-push-notification")
-        OR utm_source LIKE "%whatsnew%"
+        OR normalized_source IN (
+          "leanplum-push-notification",
+          "www.mozilla.org-whatsnew",
+          "www.mozilla.org-welcome"
+        )
       THEN
         "Marketing Owned Media Channels"
       WHEN
-        utm_source = "firefox-browser"
+        normalized_source = "firefox-browser"
       THEN
         "Owned In-Product Channels"
       ELSE
@@ -246,7 +208,7 @@ FROM
         "Website: Firefox Browser" AS normalized_acquisition_channel,
         "(not set)" AS normalized_campaign,
         "(not set)" AS normalized_content,
-        NULL AS normalized_medium,
+        "(none)" AS normalized_medium,
         "firefox-browser" AS normalized_source,
         "Owned In-Product Channels" AS website_channel_group,
         -- inputs
@@ -292,25 +254,41 @@ FROM
       STRUCT(
         -- expect
         "Website" AS normalized_acquisition_channel,
-        NULL AS normalized_campaign,
-        NULL AS normalized_content,
-        NULL AS normalized_medium,
-        "whatsnew" AS normalized_source,
+        "whatsnew85" AS normalized_campaign,
+        "(not set)" AS normalized_content,
+        "(none)" AS normalized_medium,
+        "www.mozilla.org-whatsnew" AS normalized_source,
         "Marketing Owned Media Channels" AS website_channel_group,
         -- inputs
         NULL AS provider,
         NULL AS referrer,
-        NULL AS utm_campaign,
+        "whatsnew85" AS utm_campaign,
         NULL AS utm_content,
         NULL AS utm_medium,
-        "whatsnew" AS utm_source
+        "mozilla.org-whatsnew85" AS utm_source
       ),
       STRUCT(
         -- expect
         "Website" AS normalized_acquisition_channel,
-        NULL AS normalized_campaign,
-        NULL AS normalized_content,
-        NULL AS normalized_medium,
+        "welcome10" AS normalized_campaign,
+        "(not set)" AS normalized_content,
+        "(none)" AS normalized_medium,
+        "www.mozilla.org-welcome" AS normalized_source,
+        "Marketing Owned Media Channels" AS website_channel_group,
+        -- inputs
+        NULL AS provider,
+        NULL AS referrer,
+        "welcome10" AS utm_campaign,
+        NULL AS utm_content,
+        NULL AS utm_medium,
+        "www.mozilla.org-welcome" AS utm_source
+      ),
+      STRUCT(
+        -- expect
+        "Website" AS normalized_acquisition_channel,
+        "(not set)" AS normalized_campaign,
+        "(not set)" AS normalized_content,
+        "(none)" AS normalized_medium,
         "leanplum-push-notification" AS normalized_source,
         "Marketing Owned Media Channels" AS website_channel_group,
         -- inputs
@@ -327,7 +305,7 @@ FROM
         "(not set)" AS normalized_campaign,
         "(not set)" AS normalized_content,
         "banner" AS normalized_medium,
-        NULL AS normalized_source,
+        "(direct)" AS normalized_source,
         "Paid Channels" AS website_channel_group,
         -- inputs
         NULL AS provider,
@@ -343,7 +321,7 @@ FROM
         "(not set)" AS normalized_campaign,
         "(not set)" AS normalized_content,
         "email" AS normalized_medium,
-        NULL AS normalized_source,
+        "(direct)" AS normalized_source,
         "Marketing Owned Media Channels" AS website_channel_group,
         -- inputs
         NULL AS provider,
@@ -356,10 +334,10 @@ FROM
       STRUCT(
         -- expect
         "Possible Attribution Error - Monitor" AS normalized_acquisition_channel,
-        NULL AS normalized_campaign,
-        NULL AS normalized_content,
+        "(not set)" AS normalized_campaign,
+        "(not set)" AS normalized_content,
         '["referral","referral"]' AS normalized_medium,
-        NULL AS normalized_source,
+        "(direct)" AS normalized_source,
         "Unpaid Channels" AS website_channel_group,
         -- inputs
         NULL AS provider,
@@ -372,10 +350,10 @@ FROM
       STRUCT(
         -- expect
         "Unknown" AS normalized_acquisition_channel,
-        NULL AS normalized_campaign,
-        NULL AS normalized_content,
-        NULL AS normalized_medium,
-        NULL AS normalized_source,
+        "(not set)" AS normalized_campaign,
+        "(not set)" AS normalized_content,
+        "(none)" AS normalized_medium,
+        "(direct)" AS normalized_source,
         "Unpaid Channels" AS website_channel_group,
         -- inputs
         NULL AS provider,
@@ -436,10 +414,10 @@ FROM
       STRUCT(
         -- expect
         "App Store: mozilla vpn" AS normalized_acquisition_channel,
-        NULL AS normalized_campaign,
-        NULL AS normalized_content,
-        NULL AS normalized_medium,
-        NULL AS normalized_source,
+        "(not set)" AS normalized_campaign,
+        "(not set)" AS normalized_content,
+        "(none)" AS normalized_medium,
+        "(direct)" AS normalized_source,
         "Unpaid Channels" AS website_channel_group,
         -- inputs
         NULL AS provider,

@@ -1,5 +1,9 @@
 ---
-version: 2
+version: 2.1
+
+orbs:
+  gcp-gcr: circleci/gcp-gcr@0.13.0
+
 jobs:
   build:
     docker: &docker
@@ -305,9 +309,6 @@ jobs:
               && git push \
               || echo "Skipping push since it looks like there were no changes"
   deploy:
-    parameters:
-      image:
-        type: string
     docker:
       # bash required for step: Determine docker image name
       - image: relud/docker-bash
@@ -336,6 +337,24 @@ jobs:
            echo "${DOCKER_PASS:?}" | \
             docker login -u "${DOCKER_USER:?}" --password-stdin
             docker push "$IMAGE"
+  deploy-to-private-gcr:
+    executor: gcp-gcr/default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/generated-sql
+      - run:
+          name: Move generated-sql into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/generated-sql/sql sql
+      - gcp-gcr/gcr-auth
+      - gcp-gcr/build-image:
+          image: bigquery-etl
+          tag: ${CIRCLE_TAG:-latest}
+      - gcp-gcr/push-image:
+          image: bigquery-etl
+          tag: ${CIRCLE_TAG:-latest}
 
 workflows:
   version: 2
@@ -371,6 +390,17 @@ workflows:
           requires:
             - generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same
+            - build
+          filters:
+            branches:
+              only: main
+            tags:
+              only: /.*/
+      - deploy-to-private-gcr:
+          name: Build and push Docker image to private GCR repository
+          context: data-eng-airflow-gcr
+          requires:
+            - generate-sql
             - build
           filters:
             branches:

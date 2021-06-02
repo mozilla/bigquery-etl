@@ -11,7 +11,10 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
       COALESCE(SUM(IF(source = "urlbar", count, 0)), 0) AS search_count_urlbar,
       COALESCE(SUM(IF(source = "webextension", count, 0)), 0) AS search_count_webextension,
       COALESCE(SUM(IF(source = "alias", count, 0)), 0) AS search_count_alias,
-      COALESCE(SUM(IF(source = "urlbar-searchmode", count, 0)), 0) AS search_count_urlbar_searchmode,
+      COALESCE(
+        SUM(IF(source = "urlbar-searchmode", count, 0)),
+        0
+      ) AS search_count_urlbar_searchmode,
       COALESCE(
         SUM(
           IF(

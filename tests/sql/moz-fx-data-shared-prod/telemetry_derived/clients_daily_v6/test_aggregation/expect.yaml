@@ -212,7 +212,7 @@
     value: 2
   search_cohort: second
   search_count_abouthome: 2
-  search_count_all: 2
+  search_count_all: 6
   search_count_contextmenu: 0
   search_count_newtab: 0
   search_count_organic: 0
@@ -223,7 +223,7 @@
   search_count_urlbar: 0
   search_count_webextension: 0
   search_count_alias: 0
-  search_count_urlbar_searchmode: 0
+  search_count_urlbar_searchmode: 4
   search_with_ads_count_all: 2
   session_restored_mean: 2
   sessions_started_on_this_day: 1

@@ -221,6 +221,9 @@
   search_count_tagged_follow_on: 0
   search_count_tagged_sap: 0
   search_count_urlbar: 0
+  search_count_webextension: 0
+  search_count_alias: 0
+  search_count_urlbar_searchmode: 0
   search_with_ads_count_all: 2
   session_restored_mean: 2
   sessions_started_on_this_day: 1

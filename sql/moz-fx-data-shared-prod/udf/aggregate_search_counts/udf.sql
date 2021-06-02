@@ -9,6 +9,9 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
       COALESCE(SUM(IF(source = "searchbar", count, 0)), 0) AS search_count_searchbar,
       COALESCE(SUM(IF(source = "system", count, 0)), 0) AS search_count_system,
       COALESCE(SUM(IF(source = "urlbar", count, 0)), 0) AS search_count_urlbar,
+      COALESCE(SUM(IF(source = "webextension", count, 0)), 0) AS search_count_webextension,
+      COALESCE(SUM(IF(source = "alias", count, 0)), 0) AS search_count_alias,
+      COALESCE(SUM(IF(source = "urlbar-searchmode", count, 0)), 0) AS search_count_urlbar_searchmode,
       COALESCE(
         SUM(
           IF(
@@ -65,6 +68,9 @@ SELECT
       0 AS search_count_searchbar,
       0 AS search_count_system,
       0 AS search_count_urlbar,
+      0 AS search_count_webextension,
+      0 AS search_count_alias,
+      0 AS search_count_urlbar_searchmode,
       6 AS search_count_all,
       0 AS search_count_tagged_sap,
       0 AS search_count_tagged_follow_on,
@@ -88,6 +94,9 @@ SELECT
       0 AS search_count_searchbar,
       0 AS search_count_system,
       0 AS search_count_urlbar,
+      0 AS search_count_webextension,
+      0 AS search_count_alias,
+      0 AS search_count_urlbar_searchmode,
       0 AS search_count_tagged_sap,
       0 AS search_count_tagged_follow_on,
       0 AS search_count_organic

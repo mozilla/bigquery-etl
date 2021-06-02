@@ -856,3 +856,12 @@ fields:
 - mode: NULLABLE
   name: scalar_parent_os_environment_launched_via_other
   type: BOOLEAN
+- mode: NULLABLE
+  name: search_count_webextension
+  type: INTEGER
+- mode: NULLABLE
+  name: search_count_alias
+  type: INTEGER
+- mode: NULLABLE
+  name: search_count_urlbar_searchmode
+  type: INTEGER

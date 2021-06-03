@@ -9,3 +9,6 @@ workgroup_access:
   members:
   - workgroup:stripe
   - workgroup:data-science/stripe
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:platform-infra/internal

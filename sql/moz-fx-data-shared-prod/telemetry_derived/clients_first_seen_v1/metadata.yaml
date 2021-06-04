@@ -31,3 +31,7 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
+schema:
+  derived_from:
+  - table: ['moz-fx-data-shared-prod', 'telemetry_derived', 'clients_daily_v6']
+    exclude: [submission_date]

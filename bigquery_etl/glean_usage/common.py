@@ -3,10 +3,8 @@
 import logging
 import os
 import re
-from argparse import ArgumentParser
-from datetime import datetime
-from functools import partial
-from multiprocessing.pool import ThreadPool
+import requests
+from jinja2 import TemplateNotFound
 from pathlib import Path
 
 from jinja2 import Environment, PackageLoader
@@ -16,6 +14,8 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util import standard_args  # noqa E402
 from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
 from bigquery_etl.view import generate_stable_views
+
+APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
 def render(sql_filename, format=True, **kwargs) -> str:
@@ -43,6 +43,35 @@ def write_sql(output_dir, full_table_id, basename, sql):
     with target.open("w") as f:
         f.write(sql)
         f.write("\n")
+
+
+def write_dataset_metadata(output_dir, full_table_id):
+    """
+    Add dataset_metadata.yaml to public facing datasets.
+
+    Does not overwrite existing dataset_metadata.yaml files.
+    """
+    d = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+    d.parent.mkdir(parents=True, exist_ok=True)
+    target = d.parent / "dataset_metadata.yaml"
+
+    public_facing = all(
+        [postfix not in d.parent.name for postfix in ("_derived", "_stable")]
+    )
+    if public_facing and not target.exists():
+        env = Environment(loader=PackageLoader("bigquery_etl", "glean_usage/templates"))
+        dataset_metadata = env.get_template("dataset_metadata.yaml")
+        rendered = dataset_metadata.render(
+            {
+                "friendly_name": " ".join(
+                    [p.capitalize() for p in d.parent.name.split("_")]
+                ),
+                "dataset": d.parent.name,
+            }
+        )
+
+        logging.info(f"Writing {target}")
+        target.write_text(rendered)
 
 
 def list_baseline_tables(project_id, only_tables, table_filter):
@@ -113,88 +142,122 @@ def _extract_dataset_from_glob(pattern):
     return pattern.split(".", 1)[0]
 
 
-def get_argument_parser(description):
-    """Get the argument parser for the shared glean usage queries."""
-    parser = ArgumentParser(description=description)
-    parser.add_argument(
-        "--project_id",
-        "--project-id",
-        default="moz-fx-data-shar-nonprod-efed",
-        help="ID of the project in which to find tables",
-    )
-    parser.add_argument(
-        "--date",
-        required=True,
-        type=lambda d: datetime.strptime(d, "%Y-%m-%d").date(),
-        help="Date partition to process, in format 2019-01-01",
-    )
-    parser.add_argument(
-        "--output_dir",
-        "--output-dir",
-        help="Also write the query text underneath the given sql dir",
-    )
-    parser.add_argument(
-        "--output_only",
-        "--output-only",
-        "--views_only",  # Deprecated name
-        "--views-only",  # Deprecated name
-        action="store_true",
-        help=(
-            "If set, we only write out sql to --output-dir and we skip"
-            " running the queries"
-        ),
-    )
-    standard_args.add_parallelism(parser)
-    standard_args.add_dry_run(parser, debug_log_queries=False)
-    standard_args.add_log_level(parser)
-    standard_args.add_priority(parser)
-    standard_args.add_billing_projects(parser)
-    standard_args.add_table_filter(parser)
-    return parser
+def get_app_info():
+    """Return a list of applications from the probeinfo API."""
+    resp = requests.get(APP_LISTINGS_URL)
+    resp.raise_for_status()
+    apps_json = resp.json()
+    app_info = {}
+
+    for app in apps_json:
+        if app["app_id"].startswith("rally"):
+            pass
+        elif app["app_name"] not in app_info:
+            app_info[app["app_name"]] = [app]
+        else:
+            app_info[app["app_name"]].append(app)
+
+    return app_info
 
 
-def generate_and_run_query(run_query_callback, description):
-    """Generate and run queries using a threadpool.
+class GleanTable:
+    """Represents a generated Glean table."""
 
-    The callback function is reponsible for generating and running the queries.
-    This was the original main entrypoint for each of the usage queries.
-    """
-    parser = get_argument_parser(description)
-    args = parser.parse_args()
+    def __init__(self):
+        """Init Glean table."""
+        self.target_table_id = ""
+        self.prefix = ""
+        self.custom_render_kwargs = {}
+        self.no_init = True
+        self.per_app_id_enabled = True
+        self.per_app_enabled = True
+        self.cross_channel_template = "cross_channel.view.sql"
 
-    try:
-        logging.basicConfig(level=args.log_level, format="%(levelname)s %(message)s")
-    except ValueError as e:
-        parser.error(f"argument --log-level: {e}")
-
-    baseline_tables = list_baseline_tables(
-        project_id=args.project_id,
-        only_tables=getattr(args, "only_tables", None),
-        table_filter=args.table_filter,
-    )
-
-    with ThreadPool(args.parallelism) as pool:
-        # Do a first pass with dry_run=True so we don't end up with a partial success;
-        # we also write out queries in this pass if so configured.
-        pool.map(
-            partial(
-                run_query_callback,
-                args.project_id,
-                date=args.date,
-                dry_run=True,
-                output_dir=args.output_dir,
-                output_only=args.output_only,
-            ),
-            baseline_tables,
-        )
-        if args.output_only:
+    def generate_per_app_id(self, project_id, baseline_table, output_dir=None):
+        """Generate the baseline table query per app_id."""
+        if not self.per_app_id_enabled:
             return
-        logging.info(f"Dry runs successful for {len(baseline_tables)} table(s)")
-        # Now, actually run the queries.
-        if not args.dry_run:
-            pool.map(
-                partial(
-                    run_query_callback, args.project_id, date=args.date, dry_run=False
-                ),
-                baseline_tables,
-            )
+
+        tables = table_names_from_baseline(baseline_table, include_project_id=False)
+
+        init_filename = f"{self.target_table_id}.init.sql"
+        query_filename = f"{self.target_table_id}.query.sql"
+        view_filename = f"{self.target_table_id[:-3]}.view.sql"
+        view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
+
+        table = tables[f"{self.prefix}_table"]
+        view = tables[f"{self.prefix}_view"]
+        render_kwargs = dict(
+            header="-- Generated via bigquery_etl.glean_usage\n",
+            project_id=project_id,
+        )
+
+        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(tables)
+
+        query_sql = render(query_filename, **render_kwargs)
+        view_sql = render(view_filename, **render_kwargs)
+        view_metadata = render(view_metadata_filename, format=False, **render_kwargs)
+
+        if not self.no_init:
+            try:
+                init_sql = render(init_filename, **render_kwargs)
+            except TemplateNotFound:
+                init_sql = render(query_filename, init=True, **render_kwargs)
+
+        if not (referenced_table_exists(view_sql)):
+            logging.info("Skipping view for table which doesn't exist:" f" {table}")
+            return
+
+        if output_dir:
+            write_sql(output_dir, view, "metadata.yaml", view_metadata)
+            write_sql(output_dir, view, "view.sql", view_sql)
+            write_sql(output_dir, table, "query.sql", query_sql)
+
+            if not self.no_init:
+                write_sql(output_dir, table, "init.sql", init_sql)
+
+            write_dataset_metadata(output_dir, view)
+
+    def generate_per_app(self, project_id, app_info, output_dir=None):
+        """Generate the baseline table query per app_name."""
+        if not self.per_app_enabled:
+            return
+
+        target_view_name = "_".join(self.target_table_id.split("_")[:-1])
+        target_dataset = app_info[0]["app_name"]
+
+        datasets = [
+            (a["bq_dataset_family"], a.get("app_channel", "release")) for a in app_info
+        ]
+
+        if len(datasets) == 1 and target_dataset == datasets[0][0]:
+            # This app only has a single channel, and the app_name
+            # exactly matches the generated bq_dataset_family, so
+            # the existing per-app_id dataset also serves as the
+            # per-app dataset, thus we don't have to provision
+            # union views.
+            if self.per_app_id_enabled:
+                return
+
+        render_kwargs = dict(
+            header="-- Generated via bigquery_etl.glean_usage\n",
+            project_id=project_id,
+            target_view=f"{target_dataset}.{target_view_name}",
+            datasets=datasets,
+            table=target_view_name,
+            app_name=app_info[0]["app_name"],
+        )
+
+        sql = render(self.cross_channel_template, **render_kwargs)
+        view = f"{project_id}.{target_dataset}.{target_view_name}"
+
+        if output_dir:
+            write_dataset_metadata(output_dir, view)
+
+        if not (referenced_table_exists(sql)):
+            logging.info("Skipping view for table which doesn't exist:" f" {view}")
+            return
+
+        if output_dir:
+            write_sql(output_dir, view, "view.sql", sql)

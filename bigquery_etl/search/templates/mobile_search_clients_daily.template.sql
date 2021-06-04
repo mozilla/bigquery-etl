@@ -127,11 +127,6 @@ glean_metrics AS (
     *
   FROM
     fenix_metrics_with_locale
-  UNION ALL
-  SELECT
-    *
-  FROM
-    ios_metrics
 ),
 glean_combined_searches AS (
   SELECT

@@ -1,9 +1,11 @@
 """Utility functions used by the CLI."""
 
 import os
+import fnmatch
 from pathlib import Path
 
 import click
+import re
 from google.cloud import bigquery
 
 from bigquery_etl.util.common import project_dirs
@@ -23,10 +25,14 @@ def is_valid_file(ctx, param, value):
     return value
 
 
-def is_authenticated(project_id="moz-fx-data-shared-prod"):
+def is_authenticated(project_id=None):
     """Check if the user is authenticated to GCP and can access the project."""
     client = bigquery.Client()
-    return client.project == project_id
+
+    if project_id:
+        return client.project == project_id
+
+    return True
 
 
 def is_valid_project(ctx, param, value):
@@ -34,3 +40,9 @@ def is_valid_project(ctx, param, value):
     if value is None or value in [Path(p).name for p in project_dirs()]:
         return value
     raise click.BadParameter(f"Invalid project {value}")
+
+
+def table_matches_patterns(pattern, invert, table):
+    """Check if tables match pattern."""
+    pattern = re.compile(fnmatch.translate(pattern))
+    return (pattern.match(table) is not None) != invert

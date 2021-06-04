@@ -874,3 +874,12 @@ fields:
 - mode: NULLABLE
   name: n_viewed_protection_report
   type: INTEGER
+- mode: NULLABLE
+  name: search_count_webextension
+  type: INTEGER
+- mode: NULLABLE
+  name: search_count_alias
+  type: INTEGER
+- mode: NULLABLE
+  name: search_count_urlbar_searchmode
+  type: INTEGER

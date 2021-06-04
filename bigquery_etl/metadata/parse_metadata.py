@@ -82,6 +82,30 @@ class BigQueryMetadata:
 
 
 @attr.s(auto_attribs=True)
+class SchemaDerivedMetadata:
+    """Metadata specifying parent schema."""
+
+    table: List[str]
+    # list of excluded columns
+    exclude: Optional[List[str]] = attr.ib(None)
+
+
+@attr.s(auto_attribs=True)
+class SchemaMetadata:
+    """Metadata related to additional schema information."""
+
+    derived_from: List[SchemaDerivedMetadata]
+
+
+@attr.s(auto_attribs=True)
+class WorkgroupAccessMetadata:
+    """Workgroup access metadata."""
+
+    role: str
+    members: List[str]
+
+
+@attr.s(auto_attribs=True)
 class Metadata:
     """
     Representation of a table or view Metadata configuration.
@@ -96,6 +120,8 @@ class Metadata:
     labels: Dict = attr.ib({})
     scheduling: Optional[Dict] = attr.ib({})
     bigquery: Optional[BigQueryMetadata] = attr.ib(None)
+    schema: Optional[SchemaMetadata] = attr.ib(None)
+    workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -166,6 +192,8 @@ class Metadata:
         labels = {}
         scheduling = {}
         bigquery = None
+        schema = None
+        workgroup_access = None
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -200,8 +228,25 @@ class Metadata:
                 if "owners" in metadata:
                     owners = metadata["owners"]
 
+                if "schema" in metadata:
+                    converter = cattr.Converter()
+                    schema = converter.structure(metadata["schema"], SchemaMetadata)
+
+                if "workgroup_access" in metadata:
+                    converter = cattr.Converter()
+                    workgroup_access = converter.structure(
+                        metadata["workgroup_access"], List[WorkgroupAccessMetadata]
+                    )
+
                 return cls(
-                    friendly_name, description, owners, labels, scheduling, bigquery
+                    friendly_name,
+                    description,
+                    owners,
+                    labels,
+                    scheduling,
+                    bigquery,
+                    schema,
+                    workgroup_access,
                 )
             except yaml.YAMLError as e:
                 raise e
@@ -216,7 +261,9 @@ class Metadata:
 
     def write(self, file):
         """Write metadata information to the provided file."""
-        metadata_dict = self.__dict__
+        converter = cattr.Converter()
+        metadata_dict = converter.unstructure(self)
+
         if metadata_dict["scheduling"] == {}:
             del metadata_dict["scheduling"]
 
@@ -229,7 +276,12 @@ class Metadata:
         if "description" in metadata_dict:
             metadata_dict["description"] = Literal(metadata_dict["description"])
 
-        converter = cattr.Converter()
+        if metadata_dict["schema"] is None:
+            del metadata_dict["schema"]
+
+        if metadata_dict["workgroup_access"] is None:
+            del metadata_dict["workgroup_access"]
+
         file.write_text(
             yaml.dump(
                 converter.unstructure(metadata_dict),

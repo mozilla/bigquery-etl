@@ -52,8 +52,8 @@ downstream tables, so this is a more complex case.
 1. Open the `clients_daily_v6` `query.sql` file and add new field definitions
 1. Run `./bqetl query validate telemetry_derived.clients_daily_v6` to dry run and format the query
 1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream` to make local `schema.yaml` updates and update schemas of downstream dependencies
-    * Warnings that `clients_last_seen_v1` and `clients_first_seen_v1` cannot be updated automatically will be printed out
-1. Copy and paste the new fields in `schema.yaml` to the schemas for `clients_last_seen_v1` and `clients_first_seen_v1`
+    * This requires GCP access
+    * `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1`, will be automatically updated
 1. Run `pytest tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6` and update the test cases as needed to tolerate the new fields
 1. Open PR with changes
     * CI may be failing at this point due too mismatch of deployed schemas

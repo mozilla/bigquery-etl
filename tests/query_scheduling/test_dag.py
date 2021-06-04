@@ -121,6 +121,11 @@ class TestDag:
         with pytest.raises(ValueError):
             Dag("test_dag", "daily", self.default_args)
 
+    def test_private_dag_name(self):
+        dag = Dag("private_bqetl_test_dag", "daily", self.default_args)
+
+        assert dag.name == "private_bqetl_test_dag"
+
     def test_schedule_interval_format(self):
         assert Dag("bqetl_test_dag", "daily", self.default_args)
         assert Dag("bqetl_test_dag", "weekly", self.default_args)

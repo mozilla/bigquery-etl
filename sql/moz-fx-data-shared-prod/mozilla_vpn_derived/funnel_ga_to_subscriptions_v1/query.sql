@@ -27,7 +27,7 @@ website AS (
   SELECT
     `date`,
     IF(
-      COUNT(DISTINCT COALESCE(normalized_acquisition_channel, "NULL")) = 1,
+      COUNT(DISTINCT normalized_acquisition_channel) = 1,
       ANY_VALUE(normalized_acquisition_channel),
       ERROR("normalized_acquisition_channel must have one value per group")
     ) AS normalized_acquisition_channel,
@@ -36,7 +36,7 @@ website AS (
     normalized_campaign,
     normalized_content,
     IF(
-      COUNT(DISTINCT COALESCE(website_channel_group, "NULL")) = 1,
+      COUNT(DISTINCT website_channel_group) = 1,
       ANY_VALUE(website_channel_group),
       ERROR("website_channel_group must have one value per group")
     ) AS website_channel_group,
@@ -61,7 +61,7 @@ subscriptions AS (
   SELECT
     DATE(subscription_start_date) AS `date`,
     IF(
-      COUNT(DISTINCT COALESCE(normalized_acquisition_channel, "NULL")) = 1,
+      COUNT(DISTINCT normalized_acquisition_channel) = 1,
       ANY_VALUE(normalized_acquisition_channel),
       ERROR("normalized_acquisition_channel must have one value per group")
     ) AS normalized_acquisition_channel,
@@ -70,27 +70,14 @@ subscriptions AS (
     normalized_campaign,
     normalized_content,
     IF(
-      COUNT(DISTINCT COALESCE(website_channel_group, "NULL")) = 1,
+      COUNT(DISTINCT website_channel_group) = 1,
       ANY_VALUE(website_channel_group),
       ERROR("website_channel_group must have one value per group")
     ) AS website_channel_group,
     COUNT(DISTINCT subscription_id) AS total_new_subscriptions,
     COUNT(
-      DISTINCT
-      CASE
-      WHEN
-        DATE(customer_start_date) < DATE(subscription_start_date)
-      THEN
-        subscription_id
-      ELSE
-        NULL
-      END
+      DISTINCT IF(DATE(customer_start_date) < DATE(subscription_start_date), subscription_id, NULL)
     ) AS returning_subscriptions,
-    IF(
-      COUNT(DISTINCT COALESCE(utm_content, "NULL")) = 1,
-      ANY_VALUE(utm_content),
-      ERROR("utm_content must have one value per group")
-    ) AS utm_content,
   FROM
     all_subscriptions_v1
   WHERE

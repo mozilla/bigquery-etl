@@ -11,7 +11,7 @@ WITH ga_sessions_union AS (
   FROM
     `moz-fx-data-marketing-prod.220432379.ga_sessions_*` AS ga_sessions
 ),
-base_table AS (
+ga_sessions_hits AS (
   SELECT
     `date`,
     CONCAT(fullVisitorId, visitId) AS visit_identifier,
@@ -33,6 +33,7 @@ base_table AS (
     IF(
       site = "vpn.mozilla.org",
       STRUCT(
+        CAST(NULL AS STRING) AS source_param,
         hits.eventInfo.eventLabel LIKE "%Subscribe%" AS subscribe_intent,
         hits.eventInfo.eventLabel LIKE "%Join%" AS join_waitlist_intent,
         hits.eventInfo.eventLabel LIKE "%Submit waitlist form%" AS join_waitlist_success,
@@ -41,6 +42,10 @@ base_table AS (
         hits.eventInfo.eventLabel LIKE "%Download installer%" AS download_installer_intent
       ),
       STRUCT(
+        REGEXP_EXTRACT(
+          hits.page.pagePath,
+          "[?&]source=((?:whatsnew|welcome)[^&]+)"
+        ) AS source_param,
         hits.eventInfo.eventAction = "cta: fxa-vpn"
         AND (
           hits.eventInfo.eventLabel = "Try Mozilla VPN"
@@ -68,6 +73,22 @@ base_table AS (
       site = "vpn.mozilla.org"
       OR (site = "mozilla.org" AND hits.page.pagePath LIKE "%/products/vpn/%")
     )
+),
+base_table AS (
+  SELECT
+    * EXCEPT (source_param, campaign, content, medium, source),
+    IF(
+      source_param IS NOT NULL,
+      STRUCT(
+        source_param AS campaign,
+        "(not set)" AS content,
+        "(none)" AS medium,
+        CONCAT("www.mozilla.org-", REGEXP_EXTRACT(source_param, "^[^0-9]+")) AS source
+      ),
+      STRUCT(campaign, content, medium, source)
+    ).*,
+  FROM
+    ga_sessions_hits
 ),
 sessions_table AS (
   SELECT

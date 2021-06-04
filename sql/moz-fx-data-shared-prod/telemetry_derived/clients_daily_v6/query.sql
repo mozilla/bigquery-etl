@@ -926,6 +926,6 @@ SELECT
   map_sum_aggregates[OFFSET(11)].map AS scalar_parent_urlbar_searchmode_topsites_newtab_sum,
   map_sum_aggregates[OFFSET(12)].map AS scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
   map_sum_aggregates[OFFSET(13)].map AS scalar_parent_urlbar_searchmode_touchbar_sum,
-  map_sum_aggregates[OFFSET(14)].map AS scalar_parent_urlbar_searchmode_typed_sum,
+  map_sum_aggregates[OFFSET(14)].map AS scalar_parent_urlbar_searchmode_typed_sum
 FROM
   udf_aggregates

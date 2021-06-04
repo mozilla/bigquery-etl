@@ -1,6 +1,8 @@
 """Generic utility functions."""
 import os
+import random
 import re
+import string
 from typing import List
 
 # Search for all camelCase situations in reverse with arbitrary lookaheads.
@@ -34,3 +36,8 @@ def project_dirs(project_id=None) -> List[str]:
         ]
     else:
         return [os.path.join(SQL_DIR, project_id)]
+
+
+def random_str(length: int = 12) -> str:
+    """Return a random string of the specified length."""
+    return "".join(random.choice(string.ascii_lowercase) for i in range(length))

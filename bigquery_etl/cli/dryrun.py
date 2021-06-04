@@ -1,9 +1,12 @@
 """bigquery-etl CLI dryrun command."""
 
+import fnmatch
+import glob
 import os
+import re
 import sys
 from multiprocessing.pool import ThreadPool
-from pathlib import Path
+from typing import Set
 
 import click
 from google.cloud import bigquery
@@ -27,8 +30,8 @@ from ..dryrun import SKIP, DryRun
     """,
 )
 @click.argument(
-    "path",
-    default="sql/",
+    "paths",
+    nargs=-1,
     type=click.Path(file_okay=True),
 )
 @click.option(
@@ -43,60 +46,67 @@ from ..dryrun import SKIP, DryRun
     default=True,
 )
 @click.option(
+    "--validate_schemas",
+    "--validate-schemas",
+    help="Require dry run schema to match destination table and file if present.",
+    is_flag=True,
+    default=False,
+)
+@click.option(
+    "--respect-skip/--ignore-skip",
+    help="Respect or ignore query SKIP configuration. Default is --respect-skip.",
+    default=True,
+)
+@click.option(
     "--project",
     help="GCP project to perform dry run in when --use_cloud_function=False",
     default="moz-fx-data-shared-prod",
 )
-def dryrun(path, use_cloud_function, project):
+def dryrun(paths, use_cloud_function, validate_schemas, respect_skip, project):
     """Perform a dry run."""
-    if os.path.isdir(path) and os.path.exists(path):
-        sql_files = [f for f in Path(path).rglob("*.sql") if str(f) not in SKIP]
-    elif os.path.isfile(path) and os.path.exists(path):
-        sql_files = [path]
-    else:
-        click.echo(f"Invalid path {path}", err=True)
-        sys.exit(1)
+    file_names = ("query.sql", "view.sql", "part*.sql", "init.sql")
+    file_re = re.compile("|".join(map(fnmatch.translate, file_names)))
+
+    sql_files: Set[str] = set()
+    for path in paths:
+        if os.path.isdir(path):
+            sql_files |= {
+                sql_file
+                for pattern in file_names
+                for sql_file in glob.glob(f"{path}/**/{pattern}", recursive=True)
+            }
+        elif os.path.isfile(path):
+            if file_re.fullmatch(os.path.basename(path)):
+                sql_files.add(path)
+        else:
+            click.echo(f"Invalid path {path}", err=True)
+            sys.exit(1)
+    if respect_skip:
+        sql_files -= SKIP
+
+    if not sql_files:
+        print("Skipping dry run because no queries matched")
+        sys.exit(0)
 
     if use_cloud_function:
-
-        def cloud_function_dryrun(sqlfile):
-            """Dry run SQL files."""
-            return DryRun(sqlfile).is_valid()
-
-        sql_file_valid = cloud_function_dryrun
+        client = None
     else:
         if not is_authenticated():
             click.echo("Not authenticated to GCP. Run `gcloud auth login` to login.")
             sys.exit(1)
+        client = bigquery.Client(project=project)
 
-        client = bigquery.Client()
-
-        def gcp_dryrun(sqlfile):
-            """Dry run the SQL file."""
-            dataset = Path(sqlfile).parent.parent.name
-            job_config = bigquery.QueryJobConfig(
-                dry_run=True,
-                use_query_cache=False,
-                default_dataset=f"{project}.{dataset}",
-                query_parameters=[
-                    bigquery.ScalarQueryParameter(
-                        "submission_date", "DATE", "2019-01-01"
-                    )
-                ],
-            )
-
-            with open(sqlfile) as query_stream:
-                query = query_stream.read()
-
-                try:
-                    client.query(query, job_config=job_config)
-                    click.echo(f"{sqlfile:59} OK")
-                    return True
-                except Exception as e:
-                    click.echo(f"{sqlfile:59} ERROR: {e}")
-                    return False
-
-        sql_file_valid = gcp_dryrun
+    def sql_file_valid(sqlfile):
+        """Dry run the SQL file."""
+        result = DryRun(
+            sqlfile,
+            use_cloud_function=use_cloud_function,
+            client=client,
+            respect_skip=respect_skip,
+        )
+        if validate_schemas:
+            return result.validate_schema()
+        return result.is_valid()
 
     with ThreadPool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)

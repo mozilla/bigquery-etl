@@ -456,6 +456,8 @@
       search_counts:
       - key: foo.abouthome
         value: '{"sum":1}'
+      - key: foo.urlbar-searchmode
+        value: '{"sum":2}'
       subprocess_abnormal_abort:
       - key: content
         value: '{"sum":1}'

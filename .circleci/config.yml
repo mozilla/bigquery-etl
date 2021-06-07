@@ -93,19 +93,10 @@ jobs:
       - run:
           name: Verify that metadata files are valid
           command: PATH="venv/bin:$PATH" script/validate_metadata
-  integration:
+  integration: &integration
     docker: *docker
     steps:
       - checkout
-      - &skip_forked_pr
-        run:
-          name: Early return if this build is from a forked PR
-          command: |
-            if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              echo "Cannot pass creds to forked PRs," \
-                "so marking this step successful"
-              circleci step halt
-            fi
       - *restore_venv_cache
       - *build
       - &restore_mvn_cache
@@ -139,6 +130,8 @@ jobs:
           paths:
             - ~/.m2
           key: *mvn_cache_key
+  integration-for-fork:
+    <<: *integration
   validate-dags:
     # based on
     # https://github.com/mozilla/telemetry-airflow/blob/main/.circleci/config.yml
@@ -232,11 +225,40 @@ jobs:
       - run:
           name: Validate views
           command: PATH="venv/bin:$PATH" script/validate_views
+  push-upstream:
+    docker: *docker
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
+      - run:
+          name: push upstream
+          command: |
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+            git config --global user.name "CircleCI generate-sql job"
+            git config --global user.email "dataops+generated-sql@mozilla.com"
+
+            # GPF_INSTALL_LOCATION=/usr/local/bin/git-push-fork-to-upstream-branch
+            # GPF_URL=https://raw.githubusercontent.com/jklukas/git-push-fork-to-upstream-branch/master/git-push-fork-to-upstream-branch
+            # curl -sL $GPF_URL > $GPF_INSTALL_LOCATION
+            # chmod 755 $GPF_INSTALL_LOCATION
+            # export GPF_USE_SSH=true
+            git remote add fork-to-test git@github.com:scholtzan/bigquery-etl.git
+            git fetch --all
+            git push -f git@github.com:mozilla/bigquery-etl.git "refs/remotes/fork-to-test/circleci-approval:refs/heads/trigger-integration"
   docs:
     docker: *docker
     steps:
       - checkout
-      - *skip_forked_pr
+      - &skip_forked_pr
+        run:
+          name: Early return if this build is from a forked PR
+          command: |
+            if [ -n "$CIRCLE_PR_NUMBER" ]; then
+              echo "Cannot pass creds to forked PRs," \
+                "so marking this step successful"
+              circleci step halt
+            fi
       - *restore_venv_cache
       - *build
       - *restore_mvn_cache
@@ -347,7 +369,23 @@ workflows:
       - verify-requirements
       - dry-run-sql
       - validate-metadata
-      - integration
+      - approve-fork:
+          context: data-eng-circleci-tests
+          type: approval
+          filters:
+            branches:
+              only: /^pull\/.*$/
+      - push-upstream:
+          context: data-eng-circleci-tests
+          requires:
+            - approve-fork
+          filters:
+            branches:
+              only: /^pull\/.*$/
+      - integration:
+          filters:
+            branches:
+              only: /^(?!pull\/).*$/
       - validate-dags
       - verify-dags-up-to-date
       - validate-docs
@@ -377,3 +415,4 @@ workflows:
               only: main
             tags:
               only: /.*/
+

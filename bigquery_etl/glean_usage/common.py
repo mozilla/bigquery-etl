@@ -10,39 +10,12 @@ from pathlib import Path
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.dryrun import DryRun
-from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util import standard_args  # noqa E402
+from bigquery_etl.util.common import render, write_sql
 from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
 from bigquery_etl.view import generate_stable_views
 
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
-
-
-def render(sql_filename, format=True, **kwargs) -> str:
-    """Render a given template query using Jinja."""
-    env = Environment(loader=PackageLoader("bigquery_etl", "glean_usage/templates"))
-    main_sql = env.get_template(sql_filename)
-    rendered = main_sql.render(**kwargs)
-    if format:
-        rendered = reformat(rendered)
-    return rendered
-
-
-def write_sql(output_dir, full_table_id, basename, sql):
-    """Write out a query to a location based on the table ID.
-
-    :param output_dir:    Base target directory (probably sql/moz-fx-data-shared-prod/)
-    :param full_table_id: Table ID in project.dataset.table form
-    :param basename:      The name to give the written file (like query.sql)
-    :param sql:           The query content to write out
-    """
-    d = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
-    d.mkdir(parents=True, exist_ok=True)
-    target = d / basename
-    logging.info(f"Writing {target}")
-    with target.open("w") as f:
-        f.write(sql)
-        f.write("\n")
 
 
 def write_dataset_metadata(output_dir, full_table_id):

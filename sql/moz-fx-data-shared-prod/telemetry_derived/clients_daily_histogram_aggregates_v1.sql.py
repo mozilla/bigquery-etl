@@ -481,6 +481,16 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
             data_details = data[key]["history"][channel][0]["details"]
             probe = key.replace("histogram/", "").replace(".", "_").lower()
 
+            # Some keyed GPU metrics aren't correctly flagged as type
+            # "keyed_histograms", so we filter those out here.
+            if processes_to_output is None or "gpu" in processes_to_output:
+                if data_details["keyed"] == (histogram_type == "histograms"):
+                    try:
+                        del relevant_probes[probe]
+                    except KeyError:
+                        pass
+                    continue
+
             if probe in relevant_probes:
                 relevant_probes[probe]["type"] = data_details["kind"]
 

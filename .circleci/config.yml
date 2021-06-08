@@ -351,6 +351,7 @@ jobs:
       - gcp-gcr/gcr-auth
       - gcp-gcr/build-image:
           image: bigquery-etl
+          extra_build_args: "--pull"
           tag: ${CIRCLE_TAG:-latest}
       - gcp-gcr/push-image:
           image: bigquery-etl

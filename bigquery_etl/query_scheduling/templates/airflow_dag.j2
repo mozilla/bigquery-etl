@@ -38,7 +38,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
                 'python',
                 'sql/{{ task.project }}/{{ task.dataset }}/{{ task.table }}_{{ task.version }}/query.py',
             ] + {{ task.arguments }},
-            docker_image='mozilla/bigquery-etl:latest',
+            docker_image='gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest',
             owner='{{ task.owner }}',
             email={{ task.email | sort }},
         )

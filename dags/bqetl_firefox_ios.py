@@ -45,7 +45,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/unified_metrics_v1/query.py",
         ]
         + [],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="amiyaguchi@mozilla.com",
         email=["amiyaguchi@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

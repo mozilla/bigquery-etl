@@ -39,7 +39,7 @@ with DAG(
             "sql/moz-fx-data-test-project/test/python_script_query_v1/query.py",
         ]
         + ["--date", "{{ds}}"],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="test@example.com",
         email=["test@example.com"],
     )

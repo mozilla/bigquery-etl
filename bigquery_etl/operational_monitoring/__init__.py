@@ -21,6 +21,7 @@ BUCKET_NAME = "operational_monitoring"
 PROJECTS_FOLDER = "projects/"
 OUTPUT_DIR = "sql/moz-fx-data-shared-prod/"
 PROD_PROJECT = "moz-fx-data-shared-prod"
+DEFAULT_DATASET = "operational_monitoring_derived"
 
 
 def _download_json_file(project, bucket, filename):
@@ -52,6 +53,18 @@ def _write_sql(project, dataset, slug, kwargs, init):
 
 def _bq_normalize_name(name):
     return re.sub(r"[^a-zA-Z0-9_]", "_", name)
+
+
+def _get_view_text(project, table):
+    return f"""
+        CREATE OR REPLACE VIEW
+          `{project}.operational_monitoring.{table}`
+        AS
+        SELECT
+          *
+        FROM
+          `{project}`.{DEFAULT_DATASET}.{table}
+    """
 
 
 def _query_up_to_date(dataset, slug, basename, project_last_modified):
@@ -134,9 +147,11 @@ def _run_project_sql(bq_client, project, dataset, submission_date, slug):
     )
     init_query_text = init_sql_path.read_text()
     query_text = sql_path.read_text()
+    view_text = _get_view_text(project, normalized_slug)
 
     # Wait for init to complete before running queries
     init_query_job = bq_client.query(init_query_text)
+    view_query_job = bq_client.query(view_text)
     results = init_query_job.result()
 
     query_job = bq_client.query(query_text, job_config=query_config)
@@ -154,6 +169,9 @@ def _run_project_sql(bq_client, project, dataset, submission_date, slug):
 
     print(f"Query job {query_job.job_id} finished")
     print(f"{results.total_rows} rows in {destination_table}")
+
+    # Add a view once the derived table is generated.
+    view_query_job.result()
 
 
 def _run_sql(project, dataset, submission_date, parallelism):
@@ -180,7 +198,7 @@ def operational_monitoring():
 
 @operational_monitoring.command("run")
 @click.option("--project", default=PROD_PROJECT)
-@click.option("--dataset", default="operational_monitoring_derived")
+@click.option("--dataset", default=DEFAULT_DATASET)
 @click.option(
     "--submission-date",
     required=True,

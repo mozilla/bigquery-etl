@@ -158,13 +158,15 @@ def _run_project_sql(bq_client, project, dataset, submission_date, slug):
 
 def _run_sql(project, dataset, submission_date, parallelism):
     bq_client = bigquery.Client(project=PROD_PROJECT)
+    derived_dir = os.path.join(OUTPUT_DIR, dataset)
 
     with ThreadPool(parallelism) as pool:
         pool.starmap(
             _run_project_sql,
             [
                 (bq_client, project, dataset, submission_date, slug)
-                for slug in os.listdir(os.path.join(OUTPUT_DIR, dataset))
+                for slug in os.listdir(derived_dir)
+                if os.path.isdir(os.path.join(derived_dir, slug))
             ],
             chunksize=1,
         )
@@ -178,7 +180,7 @@ def operational_monitoring():
 
 @operational_monitoring.command("run")
 @click.option("--project", default=PROD_PROJECT)
-@click.option("--dataset", default="operational_monitoring")
+@click.option("--dataset", default="operational_monitoring_derived")
 @click.option(
     "--submission-date",
     required=True,

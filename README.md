@@ -337,6 +337,7 @@ friendly_name: Telemetry Derived
 description: |-
   Derived data based on pings from legacy Firefox telemetry, plus many other
   general-purpose derived tables
+labels: {}
 
 # Base ACL should can be:
 #   "derived" for `_derived` datasets that contain concrete tables
@@ -346,10 +347,11 @@ dataset_base_acl: derived
 # Datasets with user-facing set to true will be created both in shared-prod
 # and in mozdata; this should be false for all `_derived` datasets
 user_facing: false
-labels: {}
 
 # Most datasets can have mozilla-confidential access like below,
 # but some datasets will be defined with more restricted access.
+# Access changes will not be automatically deployed;
+# they trigger manual operator approval.
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

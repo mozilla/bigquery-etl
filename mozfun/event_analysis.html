@@ -1,0 +1,2172 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mozilla BigQuery ETL">
+      
+      
+      
+        <meta name="author" content="Mozilla Data Platform Team">
+      
+      
+      <link rel="icon" href="../favicon.png">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.7">
+    
+    
+      
+        <title>event_analysis - BigQuery ETL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ca7ac06f.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+        
+<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-104326577-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="teal" data-md-color-accent="">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#event_analysis" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            BigQuery ETL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              event_analysis
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../index.html" class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../cookbooks/common_workflows.html" class="md-tabs__link">
+        Cookbooks
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../mozdata/introduction.html" class="md-tabs__link">
+        Datasets
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="about.html" class="md-tabs__link md-tabs__link--active">
+        UDFs
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../bqetl.html" class="md-tabs__link">
+        Reference
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    BigQuery ETL
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        Cookbooks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Cookbooks" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Cookbooks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbooks/common_workflows.html" class="md-nav__link">
+        Common workflows
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookbooks/creating_a_derived_dataset.html" class="md-nav__link">
+        Creating a derived dataset
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Datasets
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Datasets" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Datasets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
+      
+      <label class="md-nav__link" for="__nav_3_1">
+        Mozdata
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Mozdata" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          Mozdata
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/introduction.html" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/activity_stream.html" class="md-nav__link">
+        activity_stream
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/amo_dev.html" class="md-nav__link">
+        amo_dev
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/amo_prod.html" class="md-nav__link">
+        amo_prod
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/analysis.html" class="md-nav__link">
+        analysis
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/bergamot.html" class="md-nav__link">
+        bergamot
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/blpadi.html" class="md-nav__link">
+        blpadi
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/burnham.html" class="md-nav__link">
+        burnham
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/contextual_services.html" class="md-nav__link">
+        contextual_services
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/coverage.html" class="md-nav__link">
+        coverage
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/default_browser_agent.html" class="md-nav__link">
+        default_browser_agent
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/edge_validator.html" class="md-nav__link">
+        edge_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/eng_workflow.html" class="md-nav__link">
+        eng_workflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/fenix.html" class="md-nav__link">
+        fenix
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_accounts.html" class="md-nav__link">
+        firefox_accounts
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_desktop.html" class="md-nav__link">
+        firefox_desktop
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_desktop_background_update.html" class="md-nav__link">
+        firefox_desktop_background_update
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_echo_show.html" class="md-nav__link">
+        firefox_echo_show
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_fire_tv.html" class="md-nav__link">
+        firefox_fire_tv
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_installer.html" class="md-nav__link">
+        firefox_installer
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_ios.html" class="md-nav__link">
+        firefox_ios
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_launcher_process.html" class="md-nav__link">
+        firefox_launcher_process
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_reality.html" class="md-nav__link">
+        firefox_reality
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/firefox_reality_pc.html" class="md-nav__link">
+        firefox_reality_pc
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/focus_ios.html" class="md-nav__link">
+        focus_ios
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/internet_outages.html" class="md-nav__link">
+        internet_outages
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/klar_ios.html" class="md-nav__link">
+        klar_ios
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/lockwise_android.html" class="md-nav__link">
+        lockwise_android
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/lockwise_ios.html" class="md-nav__link">
+        lockwise_ios
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mach.html" class="md-nav__link">
+        mach
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/messaging_system.html" class="md-nav__link">
+        messaging_system
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mobile.html" class="md-nav__link">
+        mobile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/monitoring.html" class="md-nav__link">
+        monitoring
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozdata.html" class="md-nav__link">
+        mozdata
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozilla_lockbox.html" class="md-nav__link">
+        mozilla_lockbox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozilla_mach.html" class="md-nav__link">
+        mozilla_mach
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozilla_vpn.html" class="md-nav__link">
+        mozilla_vpn
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozillavpn.html" class="md-nav__link">
+        mozillavpn
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozphab.html" class="md-nav__link">
+        mozphab
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozregression.html" class="md-nav__link">
+        mozregression
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/mozza.html" class="md-nav__link">
+        mozza
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_bergamot.html" class="md-nav__link">
+        org_mozilla_bergamot
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_connect_firefox.html" class="md-nav__link">
+        org_mozilla_connect_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_fenix.html" class="md-nav__link">
+        org_mozilla_fenix
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_fenix_nightly.html" class="md-nav__link">
+        org_mozilla_fenix_nightly
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_fennec_aurora.html" class="md-nav__link">
+        org_mozilla_fennec_aurora
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_firefox.html" class="md-nav__link">
+        org_mozilla_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_firefox_beta.html" class="md-nav__link">
+        org_mozilla_firefox_beta
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_firefoxreality.html" class="md-nav__link">
+        org_mozilla_firefoxreality
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_fennec.html" class="md-nav__link">
+        org_mozilla_ios_fennec
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_firefox.html" class="md-nav__link">
+        org_mozilla_ios_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_firefoxbeta.html" class="md-nav__link">
+        org_mozilla_ios_firefoxbeta
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_focus.html" class="md-nav__link">
+        org_mozilla_ios_focus
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_klar.html" class="md-nav__link">
+        org_mozilla_ios_klar
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_ios_lockbox.html" class="md-nav__link">
+        org_mozilla_ios_lockbox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_mozregression.html" class="md-nav__link">
+        org_mozilla_mozregression
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_reference_browser.html" class="md-nav__link">
+        org_mozilla_reference_browser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_tv_firefox.html" class="md-nav__link">
+        org_mozilla_tv_firefox
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/org_mozilla_vrbrowser.html" class="md-nav__link">
+        org_mozilla_vrbrowser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/pocket.html" class="md-nav__link">
+        pocket
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/reference_browser.html" class="md-nav__link">
+        reference_browser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/regrets_reporter.html" class="md-nav__link">
+        regrets_reporter
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/search.html" class="md-nav__link">
+        search
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/static.html" class="md-nav__link">
+        static
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/stripe.html" class="md-nav__link">
+        stripe
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/subscription_platform.html" class="md-nav__link">
+        subscription_platform
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/telemetry.html" class="md-nav__link">
+        telemetry
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/udf.html" class="md-nav__link">
+        udf
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/udf_js.html" class="md-nav__link">
+        udf_js
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/udf_js_lib.html" class="md-nav__link">
+        udf_js_lib
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/udf_legacy.html" class="md-nav__link">
+        udf_legacy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mozdata/webpagetest.html" class="md-nav__link">
+        webpagetest
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      <label class="md-nav__link" for="__nav_4">
+        UDFs
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="UDFs" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          UDFs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_1" type="checkbox" id="__nav_4_1" checked>
+      
+      <label class="md-nav__link" for="__nav_4_1">
+        Mozfun
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Mozfun" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_1">
+          <span class="md-nav__icon md-icon"></span>
+          Mozfun
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="about.html" class="md-nav__link">
+        mozfun
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bits28.html" class="md-nav__link">
+        bits28
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bytes.html" class="md-nav__link">
+        Bytes
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          event_analysis
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="event_analysis.html" class="md-nav__link md-nav__link--active">
+        event_analysis
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#extract_event_counts_with_properties-udf" class="md-nav__link">
+    extract_event_counts_with_properties (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_event_counts_with_properties (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caveats" class="md-nav__link">
+    Caveats
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create_events_view-stored-procedure" class="md-nav__link">
+    create_events_view (Stored Procedure)
+  </a>
+  
+    <nav class="md-nav" aria-label="create_events_view (Stored Procedure)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage_1" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recommended-pattern" class="md-nav__link">
+    Recommended Pattern
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure-of-the-resulting-view" class="md-nav__link">
+    Structure of the Resulting View
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure of the Resulting View">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funnels" class="md-nav__link">
+    Funnels
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-counts" class="md-nav__link">
+    Event Counts
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_event_counts-udf" class="md-nav__link">
+    extract_event_counts (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_event_counts (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage_2" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glean.html" class="md-nav__link">
+        glean
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hist.html" class="md-nav__link">
+        hist
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="json.html" class="md-nav__link">
+        json
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="map.html" class="md-nav__link">
+        map
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="norm.html" class="md-nav__link">
+        norm
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="stats.html" class="md-nav__link">
+        stats
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bqetl.html" class="md-nav__link">
+        bqetl CLI
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#extract_event_counts_with_properties-udf" class="md-nav__link">
+    extract_event_counts_with_properties (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_event_counts_with_properties (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caveats" class="md-nav__link">
+    Caveats
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create_events_view-stored-procedure" class="md-nav__link">
+    create_events_view (Stored Procedure)
+  </a>
+  
+    <nav class="md-nav" aria-label="create_events_view (Stored Procedure)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage_1" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recommended-pattern" class="md-nav__link">
+    Recommended Pattern
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#structure-of-the-resulting-view" class="md-nav__link">
+    Structure of the Resulting View
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure of the Resulting View">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funnels" class="md-nav__link">
+    Funnels
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-counts" class="md-nav__link">
+    Event Counts
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract_event_counts-udf" class="md-nav__link">
+    extract_event_counts (UDF)
+  </a>
+  
+    <nav class="md-nav" aria-label="extract_event_counts (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage_2" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example_1" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="event_analysis">event_analysis</h1>
+<p>These functions are specific for use with the <code>events_daily</code> and <code>event_types</code> tables.
+By themselves, these two tables are nearly impossible to use since the event history
+is compressed; however, these stored procedures should make the data accessible.</p>
+<p>The <code>events_daily</code> table is created as a result of two steps:
+1. Map each event to a single UTF8 char which will represent it
+2. Group each client-day and store a string that records, using the
+    compressed format, that clients' event history for that day.
+    The characters are ordered by the timestamp which they appeared
+    that day.</p>
+<p>The best way to access this data is to create a view to do the heavy lifting.
+For example, to see which clients completed a certain action, you can create a view using these functions that
+knows what that action's representation is (using the compressed mapping from 1.) and
+create a regex string that checks for the presence of that event. The view makes this
+transparent, and allows users to simply query a boolean field representing the presence
+of that event on that day.</p>
+<h2 id="extract_event_counts_with_properties-udf">extract_event_counts_with_properties (UDF)</h2>
+<p>Extract events with event properties and their associated counts.
+Also extracts raw events and their counts. This allows for querying with and without properties in the same dashboard.</p>
+<h3 id="usage">Usage</h3>
+<pre><code>extract_event_counts_with_properties(
+    events STRING
+)
+</code></pre>
+<p><code>events</code> - A comma-separated events string,
+where each event is represented as a string
+of unicode chars.</p>
+<h3 id="example">Example</h3>
+<p>See <a href="https://sql.telemetry.mozilla.org/queries/75082">this query</a>
+for example usage.</p>
+<h3 id="caveats">Caveats</h3>
+<p>This function extracts both counts for events with each property,
+and for all events without their properties.</p>
+<p>This allows us to include both total counts for an event (with any
+property value), and events that don't have properties.
+<a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/extract_event_counts_with_properties">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/extract_event_counts_with_properties/metadata.yaml">Edit</a></p>
+<h2 id="create_events_view-stored-procedure">create_events_view (Stored Procedure)</h2>
+<p>Create a view that queries the <code>events_daily</code> table. This view currently supports both funnels and event counts.
+Funnels are created as a struct, with each step in the funnel as a boolean column in the struct, indicating whether the user completed that step on that day.
+Event counts are simply integers.</p>
+<h3 id="usage_1">Usage</h3>
+<pre><code class="language-sql">create_events_view(
+    view_name STRING,
+    project STRING,
+    dataset STRING,
+    funnels ARRAY&lt;STRUCT&lt;
+        funnel_name STRING,
+        funnel ARRAY&lt;STRUCT&lt;
+            step_name STRING,
+            events ARRAY&lt;STRUCT&lt;
+                category STRING,
+                event_name STRING&gt;&gt;&gt;&gt;&gt;&gt;,
+    counts ARRAY&lt;STRUCT&lt;
+        count_name STRING,
+        events ARRAY&lt;STRUCT&lt;
+            category STRING,
+            event_name STRING&gt;&gt;&gt;&gt;
+  )
+</code></pre>
+<ul>
+<li>
+<p><code>view_name</code>: The name of the view that will be created. This view
+    will be in the shared-prod project, in the analysis bucket,
+    and so will be queryable at:
+        <code>sql
+        `moz-fx-data-shared-prod`.analysis.{view_name}</code></p>
+</li>
+<li>
+<p><code>project</code>: The project where the <code>dataset</code> is located.</p>
+</li>
+<li>
+<p><code>dataset</code>: The dataset that must contain both the <code>events_daily</code> and
+    <code>event_types</code> tables.</p>
+</li>
+<li>
+<p><code>funnels</code>: An array of funnels that will be created. Each funnel has
+    two parts:</p>
+<ol>
+<li><code>funnel_name</code>: The name of the funnel is what the column representing
+    the funnel will be named in the view. For example, with the value
+    <code>"onboarding"</code>, the view can be selected as follows:
+    <code>sql
+    SELECT onboarding
+    FROM `moz-fx-data-shared-prod`.analysis.{view_name}</code></li>
+<li><code>funnel</code>: The ordered series of steps that make up a funnel.
+    Each step also has:<ol>
+<li><code>step_name</code>: Used to name the column
+    within the funnel and represents whether the user completed
+    that step on that day. For example, within <code>onboarding</code> a user may
+    have <code>completed_first_card</code> as a step; this can be queried at
+    <code>sql
+    SELECT onboarding.completed_first_step
+    FROM `moz-fx-data-shared-prod`.analysis.{view_name}</code></li>
+<li><code>events</code>: The set of events which indicate the user completed
+    that step of the funnel. Most of the time this is a single event.
+    Each event has a <code>category</code> and <code>event_name</code>.</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p><code>counts</code>: An array of counts. Each count has two parts, similar to funnel steps:</p>
+<ol>
+<li><code>count_name</code>: Used to name the column representing the event count. E.g.
+    <code>"clicked_settings_count"</code> would be queried at
+    <code>sql
+    SELECT clicked_settings_count
+    FROM `moz-fx-data-shared-prod`.analysis.{view_name}</code></li>
+<li><code>events</code>: The set of events you want to count. Each event has
+    a <code>category</code> and <code>event_name</code>.</li>
+</ol>
+</li>
+</ul>
+<h4 id="recommended-pattern">Recommended Pattern</h4>
+<p>Because the view definitions themselves are not informative about the contents of the events fields,
+it is best to put your query immediately after the procedure invocation, rather than invoking the procedure and running a separate query.</p>
+<p><a href="https://sql.telemetry.mozilla.org/queries/75243/source">This STMO query</a> is an example of doing so.
+This allows viewers of the query to easily interpret what the funnel and count columns represent.</p>
+<h4 id="structure-of-the-resulting-view">Structure of the Resulting View</h4>
+<p>The view will be created at </p>
+<pre><code>`moz-fx-data-shared-prod`.analysis.{event_name}.
+</code></pre>
+<p>The view will have a schema roughly matching the following:</p>
+<pre><code>root
+ |-- submission_date: date
+ |-- client_id: string
+ |-- {funnel_1_name}: record
+ |  |-- {funnel_step_1_name} boolean
+ |  |-- {funnel_step_2_name} boolean
+ ...
+ |-- {funnel_N_name}: record
+ |  |-- {funnel_step_M_name}: boolean
+ |-- {count_1_name}: integer
+ ...
+ |-- {count_N_name}: integer
+ ...dimensions...
+</code></pre>
+<h5 id="funnels">Funnels</h5>
+<p>Each funnel will be a <code>STRUCT</code> with nested columns representing completion of each step
+The types of those columns are boolean, and represent whether the user completed that
+step on that day.</p>
+<pre><code class="language-sql">STRUCT(
+    completed_step_1 BOOLEAN,
+    completed_step_2 BOOLEAN,
+    ...
+) AS funnel_name
+</code></pre>
+<p>With one row per-user per-day, you can use <code>COUNTIF(funnel_name.completed_step_N)</code> to query
+these fields. See below for an example.</p>
+<h5 id="event-counts">Event Counts</h5>
+<p>Each event count is simply an <code>INT64</code> representing the number of times the user completed
+those events on that day. If there are multiple events represented within one count,
+the values are summed. For example, if you wanted to know the number of times a user
+opened or closed the app, you could create a single event count with those two
+events.</p>
+<pre><code class="language-sql">event_count_name INT64
+</code></pre>
+<h3 id="examples">Examples</h3>
+<p>The following creates a few fields:
+- <code>collection_flow</code> is a funnel for those that started creating
+    a collection within Fenix, and then finished, either by adding
+    those tabs to an existing collection or saving it as a new
+    collection.
+- <code>collection_flow_saved</code> represents users who started the collection
+    flow then saved it as a new collection.
+- <code>number_of_collections_created</code> is the number of collections created
+- <code>number_of_collections_deleted</code> is the number of collections deleted</p>
+<pre><code class="language-sql">CALL mozfun.event_analysis.create_events_view(
+  'fenix_collection_funnels',
+  'moz-fx-data-shared-prod',
+  'org_mozilla_firefox',
+
+  -- Funnels
+  [
+    STRUCT(
+      &quot;collection_flow&quot; AS funnel_name,
+      [STRUCT(
+        &quot;started_collection_creation&quot; AS step_name,
+        [STRUCT('collections' AS category, 'tab_select_opened' AS event_name)] AS events),
+      STRUCT(
+        &quot;completed_collection_creation&quot; AS step_name,
+        [STRUCT('collections' AS category, 'saved' AS event_name),
+        STRUCT('collections' AS category, 'tabs_added' AS event_name)] AS events)
+    ] AS funnel),
+
+    STRUCT(
+      &quot;collection_flow_saved&quot; AS funnel_name,
+      [STRUCT(
+        &quot;started_collection_creation&quot; AS step_name,
+        [STRUCT('collections' AS category, 'tab_select_opened' AS event_name)] AS events),
+      STRUCT(
+        &quot;saved_collection&quot; AS step_name,
+        [STRUCT('collections' AS category, 'saved' AS event_name)] AS events)
+    ] AS funnel)
+  ],
+
+  -- Event Counts
+  [
+    STRUCT(
+      &quot;number_of_collections_created&quot; AS count_name,
+      [STRUCT('collections' AS category, 'saved' AS event_name)] AS events
+    ),
+    STRUCT(
+      &quot;number_of_collections_deleted&quot; AS count_name,
+      [STRUCT('collections' AS category, 'removed' AS event_name)] AS events
+    )
+  ]
+);
+</code></pre>
+<p>From there, you can query a few things. For example, the fraction 
+of users who completed each step of the collection flow over time:</p>
+<pre><code class="language-sql">SELECT
+    submission_date,
+    COUNTIF(collection_flow.started_collection_creation) / COUNT(*) AS started_collection_creation,
+    COUNTIF(collection_flow.completed_collection_creation) / COUNT(*) AS completed_collection_creation,
+FROM
+    `moz-fx-data-shared-prod`.analysis.fenix_collection_funnels
+WHERE
+    submission_date &gt;= DATE_SUB(current_date, INTERVAL 28 DAY)
+GROUP BY
+    submission_date
+</code></pre>
+<p>Or you can see the number of collections created and deleted:</p>
+<pre><code class="language-sql">SELECT
+    submission_date,
+    SUM(number_of_collections_created) AS number_of_collections_created,
+    SUM(number_of_collections_deleted) AS number_of_collections_deleted,
+FROM
+    `moz-fx-data-shared-prod`.analysis.fenix_collection_funnels
+WHERE
+    submission_date &gt;= DATE_SUB(current_date, INTERVAL 28 DAY)
+GROUP BY
+    submission_date
+</code></pre>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/create_events_view">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/create_events_view/metadata.yaml">Edit</a></p>
+<h2 id="extract_event_counts-udf">extract_event_counts (UDF)</h2>
+<p>Extract the events and their counts from an events string.
+This function explicitly ignores event properties, and retrieves just the counts of the top-level events.</p>
+<h3 id="usage_2">Usage</h3>
+<pre><code>extract_event_counts(
+    events STRING
+)
+</code></pre>
+<p><code>events</code> - A comma-separated events string,
+where each event is represented as a string
+of unicode chars.</p>
+<h3 id="example_1">Example</h3>
+<p>See <a href="https://sql.telemetry.mozilla.org/dashboard/fenix-events">this dashboard</a>
+for example usage.
+<a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/extract_event_counts">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/extract_event_counts/metadata.yaml">Edit</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="bytes.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Bytes" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Bytes
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="glean.html" class="md-footer__link md-footer__link--next" aria-label="Next: glean" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              glean
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.76f349be.min.js"></script>
+      
+    
+  </body>
+</html>

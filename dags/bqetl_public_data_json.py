@@ -42,7 +42,7 @@ with DAG(
     schedule_interval="0 5 * * *",
     doc_md=docs,
 ) as dag:
-    docker_image = "mozilla/bigquery-etl:latest"
+    docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
 
     export_public_data_json_mozregression_aggregates__v1 = GKEPodOperator(
         task_id="export_public_data_json_mozregression_aggregates__v1",

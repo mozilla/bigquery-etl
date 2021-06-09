@@ -47,7 +47,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/average_ping_sizes_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
@@ -59,7 +59,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_scheduled_queries_cost_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
@@ -71,7 +71,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_scheduled_query_usage_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
@@ -83,7 +83,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/column_size_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
@@ -107,7 +107,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/stable_table_sizes_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
@@ -119,7 +119,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/structured_distinct_docids_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="bewu@mozilla.com",
         email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
     )
@@ -131,7 +131,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/monitoring_derived/structured_missing_columns_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="amiyaguchi@mozilla.com",
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
     )

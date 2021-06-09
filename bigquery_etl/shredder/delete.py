@@ -200,9 +200,9 @@ def delete_from_partition(
                FROM
                  `{sql_table_id(source)}`
                WHERE
-                 {source_condition}
-             )
             """
+            + " AND ".join((source_condition, *source.conditions))
+            + ")"
             for field, source in zip(target.fields, sources)
         )
         query = reformat(

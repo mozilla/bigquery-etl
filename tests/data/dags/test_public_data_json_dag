@@ -35,7 +35,7 @@ with DAG(
     schedule_interval="@daily",
     doc_md=docs,
 ) as dag:
-    docker_image = "mozilla/bigquery-etl:latest"
+    docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
 
     export_public_data_json_test__non_incremental_query__v1 = GKEPodOperator(
         task_id="export_public_data_json_test__non_incremental_query__v1",

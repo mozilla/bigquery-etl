@@ -388,19 +388,20 @@ workflows:
       - deploy:
           context: data-eng-bigquery-etl-dockerhub
           requires:
-            - generate-sql
-            # can't run in parallel because CIRCLE_BUILD_NUM is same
-            - build
+            # Public image must be pushed after the private one because of
+            # webhooks used in Ops logic. For details, see:
+            # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
+            - deploy-to-private-gcr
           filters:
             branches:
               only: main
             tags:
               only: /.*/
       - deploy-to-private-gcr:
-          name: Build and push Docker image to private GCR repository
           context: data-eng-airflow-gcr
           requires:
             - generate-sql
+            # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
           filters:
             branches:

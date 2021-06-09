@@ -9,5 +9,4 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential

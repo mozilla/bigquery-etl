@@ -91,11 +91,11 @@ class JsonDecodeError(Exception):
 def dataset(bq: bigquery.Client, dataset_id: str):
     """Context manager for creating and deleting the BigQuery dataset for a test."""
     try:
-        bq.get_dataset(dataset_id)
+        result = bq.get_dataset(dataset_id)
     except NotFound:
-        bq.create_dataset(dataset_id)
+        result = bq.create_dataset(dataset_id)
     try:
-        yield bq.dataset(dataset_id)
+        yield result.reference
     finally:
         bq.delete_dataset(dataset_id, delete_contents=True)
 

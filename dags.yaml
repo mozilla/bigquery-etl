@@ -530,3 +530,13 @@ bqetl_ctxsvc_derived:
     start_date: '2021-05-01'
   description: Contextual services derived tables
   schedule_interval: 0 3 * * *
+
+bqetl_app_store_connect:
+  schedule_interval: 0 23 * * *
+  description: |
+    Reports from Apple's App Store Connect API.
+  default_args:
+    owner: dthorn@mozilla.com
+    start_date: "2021-06-14"
+    retries: 2
+    retry_delay: 30m

@@ -17,9 +17,11 @@ SELECT
     CAST(NULL AS {% if 'type' in property %}{{property.type}}{% else %}STRING{% endif %}) AS {{ property.dest }},
   {% endfor %}
   -- metadata
+  {% if include_metadata_fields %}
   CAST(NULL AS STRING) AS city,
   CAST(NULL AS STRING) AS country,
   CAST(NULL AS STRING) AS subdivision1,
+  {% endif %}
   -- normalized fields
   {% if include_normalized_fields %}
   CAST(NULL AS STRING) AS channel,

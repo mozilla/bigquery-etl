@@ -174,6 +174,7 @@ fxa_subscriptions AS (
     billing_scheme,
     plan_currency,
     plan_interval,
+    plan_interval_count,
     product_id,
     product_name,
   FROM

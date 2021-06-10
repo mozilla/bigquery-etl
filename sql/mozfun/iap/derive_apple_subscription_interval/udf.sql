@@ -1,10 +1,10 @@
 CREATE OR REPLACE FUNCTION iap.derive_apple_subscription_interval(start DATETIME, `end` DATETIME)
 RETURNS STRUCT<`interval` STRING, interval_count INT64> AS (
   (
-    WITH _ AS (
+    WITH interval_counts AS (
       SELECT
-        DATETIME_DIFF(`end`, start, YEAR) years,
-        DATETIME_DIFF(`end`, start, MONTH) months,
+        DATETIME_DIFF(`end`, start, YEAR) AS years,
+        DATETIME_DIFF(`end`, start, MONTH) AS months,
         DATETIME_DIFF(`end`, start, WEEK) AS weeks,
         DATETIME_DIFF(`end`, start, DAY) AS days,
     )
@@ -27,7 +27,7 @@ RETURNS STRUCT<`interval` STRING, interval_count INT64> AS (
         ("day", days)
       END
     FROM
-      _
+      interval_counts
   )
 );
 

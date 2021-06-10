@@ -343,11 +343,22 @@ jobs:
       - checkout
       - attach_workspace:
           at: /tmp/generated-sql
+      - add_ssh_keys:
+          # deploy key to private-bigquery-etl
+          fingerprints: "5b:7b:00:df:da:e1:9f:07:c7:69:60:1a:3f:16:a5:ed"
       - run:
           name: Move generated-sql into place
           command: |
             rm -rf sql/
             cp -r /tmp/generated-sql/sql sql
+      - run:
+          name: Move private sql into place
+          command: |
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+            git clone --single-branch --branch main \
+                          git@github.com:mozilla/private-bigquery-etl.git \
+            ~/private-bigquery-etl
+            cp -r ~/private-bigquery-etl/sql/. sql/
       - gcp-gcr/gcr-auth
       - gcp-gcr/build-image:
           image: bigquery-etl

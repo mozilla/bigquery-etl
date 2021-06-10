@@ -296,7 +296,10 @@ labels:
   incremental_export: false  # non-incremental JSON export writes all data to a single location
 ```
 
-### Publishing Datasets
+### Publishing a Table Publicly
+
+For background, see [Accessing Public Data](https://docs.telemetry.mozilla.org/cookbooks/public_data.html)
+on `docs.telemetry.mozilla.org`.
 
 - To make query results publicly available, the `public_bigquery` flag must be set in
   `metadata.yaml`
@@ -315,6 +318,45 @@ labels:
       - https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/2020-03-15/000000000000.json
 - For each dataset, a `metadata.json` gets published listing all available files, for example: https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/files/metadata.json
 - The timestamp when the dataset was last updated is recorded in `last_updated`, e.g.: https://public-data.telemetry.mozilla.org/api/v1/tables/telemetry_derived/ssl_ratios/v1/last_updated
+
+Dataset Metadata
+---
+
+To provision a new BigQuery dataset for holding tables, you'll need to
+create a `dataset_metadata.yaml` which will cause the dataset to be
+automatically deployed a few hours after merging. Changes to existing
+datasets may trigger manual operator approval (such as changing access policies).
+
+The `bqetl query create` command will automatically generate a skeleton
+`dataset_metadata.yaml` file if the query name contains a dataset that
+is not yet defined.
+
+See example with commentary for `telemetry_derived`:
+
+```yaml
+friendly_name: Telemetry Derived
+description: |-
+  Derived data based on pings from legacy Firefox telemetry, plus many other
+  general-purpose derived tables
+labels: {}
+
+# Base ACL should can be:
+#   "derived" for `_derived` datasets that contain concrete tables
+#   "view" for user-facing datasets containing virtual views
+dataset_base_acl: derived
+
+# Datasets with user-facing set to true will be created both in shared-prod
+# and in mozdata; this should be false for all `_derived` datasets
+user_facing: false
+
+# Most datasets can have mozilla-confidential access like below,
+# but some datasets will be defined with more restricted access
+# or with additional access for services.
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+```
 
 Scheduling Queries in Airflow
 ---

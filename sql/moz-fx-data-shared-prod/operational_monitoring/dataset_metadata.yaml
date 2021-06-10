@@ -1,0 +1,12 @@
+friendly_name: Operational Monitoring
+description: |-
+  Views on data for operational monitoring projects. Queries
+  are generate via an airflow task here:
+  https://github.com/mozilla/telemetry-airflow/blob/main/dags/operational_monitoring.py
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

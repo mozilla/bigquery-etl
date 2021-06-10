@@ -431,7 +431,7 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
 
             if payload_field["name"] == "processes":
                 for processes_field in payload_field["fields"]:
-                    if processes_field["name"] == "content":
+                    if processes_field["name"] in ["content", "gpu"]:
                         process_field = processes_field["name"]
                         for type_field in processes_field["fields"]:
                             if type_field["name"] == histogram_type:
@@ -445,7 +445,6 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
 
     for histograms_and_process in histograms_field:
         for histogram in histograms_and_process["histograms"].get("fields", {}):
-            histograms_dict = None
             if "name" not in histogram:
                 continue
 
@@ -481,6 +480,16 @@ def get_histogram_probes_and_buckets(histogram_type, processes_to_output):
 
             data_details = data[key]["history"][channel][0]["details"]
             probe = key.replace("histogram/", "").replace(".", "_").lower()
+
+            # Some keyed GPU metrics aren't correctly flagged as type
+            # "keyed_histograms", so we filter those out here.
+            if processes_to_output is None or "gpu" in processes_to_output:
+                if data_details["keyed"] == (histogram_type == "histograms"):
+                    try:
+                        del relevant_probes[probe]
+                    except KeyError:
+                        pass
+                    continue
 
             if probe in relevant_probes:
                 relevant_probes[probe]["type"] = data_details["kind"]

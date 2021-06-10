@@ -49,7 +49,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/releases_v1/query.py",
         ]
         + [],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
@@ -61,7 +61,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/telemetry_derived/releases_v1/query.py",
         ]
         + [],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

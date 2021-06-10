@@ -62,7 +62,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/pocket_derived/rolling_monthly_active_user_counts_history_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
-        docker_image="mozilla/bigquery-etl:latest",
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="jklukas@mozilla.com",
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
     )

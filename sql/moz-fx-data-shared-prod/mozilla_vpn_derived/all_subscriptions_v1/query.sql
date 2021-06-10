@@ -130,6 +130,7 @@ stripe_vpn_plans AS (
     plans.billing_scheme,
     plans.currency AS plan_currency,
     plans.interval AS plan_interval,
+    plans.interval_count AS plan_interval_count,
     plans.product AS product_id,
     products.name AS product_name,
   FROM
@@ -234,10 +235,11 @@ apple_iap_subscriptions AS (
     attribution_category,
     coarse_attribution_category,
     "Apple Store IAP" AS provider,
-    IF(`interval` = "month", 499, NULL) AS plan_amount,
+    IF(`interval` = "month" AND interval_count = 1, 499, NULL) AS plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
-    IF(`interval` = "month", "USD", NULL) AS plan_currency,
+    IF(`interval` = "month" AND interval_count = 1, "USD", NULL) AS plan_currency,
     `interval` AS plan_interval,
+    interval_count AS plan_interval_count,
     CAST(NULL AS STRING) AS product_id,
     "Mozilla VPN" AS product_name,
   FROM
@@ -264,7 +266,15 @@ vpn_subscriptions AS (
 )
 SELECT
   *,
-  CONCAT(plan_interval, "-", plan_currency, "-", (plan_amount / 100)) AS pricing_plan,
+  CONCAT(
+    plan_interval_count,
+    "-",
+    plan_interval,
+    "-",
+    plan_currency,
+    "-",
+    (plan_amount / 100)
+  ) AS pricing_plan,
   mozfun.norm.vpn_attribution(
     provider,
     referrer,
@@ -275,3 +285,6 @@ SELECT
   ).*,
 FROM
   vpn_subscriptions
+WHERE
+  -- exclude subscriptions that never left the trial period
+  DATE(subscription_start_date) < DATE(end_date)

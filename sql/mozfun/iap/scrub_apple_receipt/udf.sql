@@ -1,7 +1,9 @@
 CREATE OR REPLACE FUNCTION iap.scrub_apple_receipt(apple_receipt ANY TYPE)
 RETURNS STRUCT<
   environment STRING,
-  active_periods ARRAY<STRUCT<start_date DATE, end_date DATE, `interval` STRING>>
+  active_periods ARRAY<
+    STRUCT<start_date DATE, end_date DATE, `interval` STRING, interval_count INT64>
+  >
 > AS (
   STRUCT(
     apple_receipt.environment,
@@ -31,7 +33,7 @@ RETURNS STRUCT<
           iap.derive_apple_subscription_interval(
             DATETIME(TIMESTAMP_MILLIS(purchase_date_ms), "America/Los_Angeles"),
             DATETIME(TIMESTAMP_MILLIS(expires_date_ms), "America/Los_Angeles")
-          ) AS `interval`,
+          ).*,
         FROM
           stage_1
         WHERE
@@ -44,7 +46,8 @@ RETURNS STRUCT<
             -- TRUE when date - 1 is missing
             ANY_VALUE(date) OVER (
               PARTITION BY
-                `interval`
+                `interval`,
+                interval_count
               ORDER BY
                 UNIX_DATE(date)
               RANGE BETWEEN
@@ -58,7 +61,8 @@ RETURNS STRUCT<
             -- TRUE when date + 1 is missing
             ANY_VALUE(date) OVER (
               PARTITION BY
-                `interval`
+                `interval`,
+                interval_count
               ORDER BY
                 UNIX_DATE(date)
               RANGE BETWEEN
@@ -69,6 +73,7 @@ RETURNS STRUCT<
             NULL
           ) AS end_date,
           `interval`,
+          interval_count,
         FROM
           stage_2
         CROSS JOIN
@@ -86,7 +91,8 @@ RETURNS STRUCT<
           -- MIN(end_date) where end_date > start_date
           MIN(end_date) OVER (
             PARTITION BY
-              `interval`
+              `interval`,
+              interval_count
             ORDER BY
               date
             ROWS BETWEEN
@@ -94,6 +100,7 @@ RETURNS STRUCT<
               AND UNBOUNDED FOLLOWING
           ) AS end_date,
           `interval`,
+          interval_count,
         FROM
           stage_3
       )
@@ -112,9 +119,14 @@ SELECT
     STRUCT(
       "Production" AS environment,
       [
-        STRUCT(DATE "2020-01-01" AS start_date, "2020-01-03" AS end_date, "day" AS `interval`),
-        ("2020-01-04", "2020-01-05", "day"),
-        ("2020-01-07", "2020-01-08", "day")
+        STRUCT(
+          DATE "2020-01-01" AS start_date,
+          "2020-01-03" AS end_date,
+          "day" AS `interval`,
+          1 AS interval_count
+        ),
+        ("2020-01-04", "2020-01-05", "day", 1),
+        ("2020-01-07", "2020-01-08", "day", 1)
       ] AS active_periods
     ),
     iap.scrub_apple_receipt(

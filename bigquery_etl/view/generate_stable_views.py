@@ -20,12 +20,14 @@ from io import BytesIO
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
+import re
 
 from typing import List
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata
+from bigquery_etl.schema import Schema
 from bigquery_etl.util import standard_args
 
 MPS_URI = "https://github.com/mozilla-services/mozilla-pipeline-schemas"
@@ -80,6 +82,7 @@ standard_args.add_parallelism(parser)
 class SchemaFile:
     """Container for metadata about a JSON schema and corresponding BQ table."""
 
+    schema: dict
     schema_id: str
     bq_dataset_family: str
     bq_table: str
@@ -222,6 +225,19 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
         with metadata_file.open("w") as f:
             f.write(metadata_content)
 
+    # get view schema with descriptions
+    try:
+        regex = re.compile(r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE)
+        content = regex.sub("", target_file.read_text())
+        content += " WHERE DATE(submission_timestamp) = '2020-01-01'"
+        view_schema = Schema.from_query_file(target_file, content=content)
+
+        stable_table_schema = Schema.from_json({"fields": schema.schema})
+        view_schema.merge(stable_table_schema, add_missing_fields=False)
+        view_schema.to_yaml_file(target_dir / "schema.yaml")
+    except Exception as e:
+        print(f"Cannot generate schema.yaml for {target_file}: {e}")
+
 
 def get_stable_table_schemas() -> List[SchemaFile]:
     """Fetch last schema metadata per doctype by version."""
@@ -238,11 +254,22 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 )
                 version = int(basename.split(".")[1])
                 schema = json.load(tar.extractfile(tarinfo.name))  # type: ignore
+                bq_schema = {}
+
+                try:
+                    bq_schema_file = tar.extractfile(
+                        tarinfo.name.replace(".schema.json", ".bq")
+                    )
+                    bq_schema = json.load(bq_schema_file)  # type: ignore
+                except Exception as e:
+                    print(f"Cannot get Bigquery schema for {tarinfo.name}: {e}")
+
                 pipeline_meta = schema.get("mozPipelineMetadata", None)
                 if pipeline_meta is None:
                     continue
                 schemas.append(
                     SchemaFile(
+                        schema=bq_schema,
                         schema_id=schema.get("$id", ""),
                         bq_dataset_family=pipeline_meta["bq_dataset_family"],
                         bq_table=pipeline_meta["bq_table"],

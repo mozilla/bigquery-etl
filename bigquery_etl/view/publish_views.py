@@ -14,6 +14,8 @@ import sqlparse
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
+from bigquery_etl.schema import Schema
+
 VIEWS_TO_SKIP = (
     # Access Denied
     "activity_stream/tile_id_types/view.sql",
@@ -87,6 +89,14 @@ def _process_file(client, args, filepath):
                     client.query(sql, job_config).result()
                 else:
                     raise
+
+            try:
+                view_schema = Schema.from_schema_file(
+                    Path(filepath).parent / "schema.yaml"
+                )
+                view_schema.deploy(target_view[1:-1])  # strip leading and trailing "`"
+            except Exception as e:
+                print(f"Could not update field descriptions for {target_view}: {e}")
             print(f"Published view {target_view}")
     else:
         print(

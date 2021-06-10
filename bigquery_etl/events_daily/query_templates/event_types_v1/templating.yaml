@@ -7,3 +7,6 @@ telemetry_derived:
 messaging_system_derived:
   app_id: messaging_system
   dag_name: bqetl_event_rollup
+firefox_accounts_derived:
+  app_id: firefox_accounts
+  dag_name: bqetl_event_rollup

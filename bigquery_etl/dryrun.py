@@ -188,6 +188,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_content_v1/query.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_gpu_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_parent_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql",  # noqa E501

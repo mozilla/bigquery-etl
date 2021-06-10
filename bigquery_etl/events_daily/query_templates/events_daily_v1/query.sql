@@ -54,9 +54,11 @@ SELECT
     mozfun.stats.mode_last(ARRAY_AGG({{ property.src }})) AS {{ property.dest }},
   {% endfor %}
   -- metadata
+  {% if include_metadata_fields %}
   mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.city)) AS city,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.country)) AS country,
   mozfun.stats.mode_last(ARRAY_AGG(metadata.geo.subdivision1)) AS subdivision1,
+  {% endif %}
   -- normalized fields
   {% if include_normalized_fields %}
   mozfun.stats.mode_last(ARRAY_AGG(normalized_channel)) AS channel,

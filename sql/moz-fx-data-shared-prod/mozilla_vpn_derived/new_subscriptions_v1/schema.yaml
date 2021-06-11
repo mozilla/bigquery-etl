@@ -1,4 +1,4 @@
----
+fields:
 - name: customer_id
   type: STRING
   mode: NULLABLE

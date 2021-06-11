@@ -357,7 +357,7 @@ jobs:
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
             git clone --single-branch --branch main \
                           git@github.com:mozilla/private-bigquery-etl.git \
-            ~/private-bigquery-etl
+                          ~/private-bigquery-etl
             cp -r ~/private-bigquery-etl/sql/. sql/
       - gcp-gcr/gcr-auth
       - gcp-gcr/build-image:

@@ -200,7 +200,8 @@ counted AS (
     SUM(IF(type = 'search-with-ads', count, 0)) OVER w1 AS search_with_ads,
     SUM(IF(type = 'search-with-ads:organic', count, 0)) OVER w1 AS search_with_ads_organic,
     SUM(IF(type = 'unknown', count, 0)) OVER w1 AS unknown,
-    ROW_NUMBER() OVER w1 AS _n,  -- for deduping over window
+    ROW_NUMBER(
+    ) OVER w1 AS _n,  -- for deduping over window
   FROM
     flattened
   WHERE

@@ -65,6 +65,10 @@ description: |-
   Clustering fields: `normalized_channel`, `sample_id`
 """
 
+VIEW_CREATE_REGEX = re.compile(
+    r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE
+)
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
     "--sql-dir", default="sql/", help="The path where generated SQL files are stored."
@@ -227,8 +231,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, schema: SchemaF
 
     # get view schema with descriptions
     try:
-        regex = re.compile(r"CREATE OR REPLACE VIEW\n\s*[^\s]+\s*\nAS", re.IGNORECASE)
-        content = regex.sub("", target_file.read_text())
+        content = VIEW_CREATE_REGEX.sub("", target_file.read_text())
         content += " WHERE DATE(submission_timestamp) = '2020-01-01'"
         view_schema = Schema.from_query_file(target_file, content=content)
 
@@ -261,7 +264,7 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                         tarinfo.name.replace(".schema.json", ".bq")
                     )
                     bq_schema = json.load(bq_schema_file)  # type: ignore
-                except Exception as e:
+                except KeyError as e:
                     print(f"Cannot get Bigquery schema for {tarinfo.name}: {e}")
 
                 pipeline_meta = schema.get("mozPipelineMetadata", None)

@@ -95,13 +95,10 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/stripe_external/products_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/setup_intents_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/subscriptions_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/active_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/all_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/funnel_ga_to_subscriptions_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/login_flows_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/new_subscriptions_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/query.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/retention_by_subscription_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/site_metrics_empty_check_v1/query.sql",  # noqa E501
@@ -243,6 +240,10 @@ class DryRun:
         self.use_cloud_function = use_cloud_function
         self.client = client if use_cloud_function or client else bigquery.Client()
         self.respect_skip = respect_skip
+        try:
+            self.metadata = Metadata.of_query_file(self.sqlfile)
+        except FileNotFoundError:
+            self.metadata = None
 
     def skip(self):
         """Determine if dry run should be skipped."""
@@ -271,6 +272,28 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
+            if self.metadata:
+                # use metadata to rewrite date-type query params as submission_date
+                date_params = [
+                    query_param
+                    for query_param in (
+                        self.metadata.scheduling.get("date_partition_parameter"),
+                        *(
+                            param.split(":", 1)[0]
+                            for param in self.metadata.scheduling.get("parameters", [])
+                            if re.fullmatch(r"[^:]+:DATE:{{\s*ds\s*}}", param)
+                        ),
+                    )
+                    if query_param and query_param != "submission_date"
+                ]
+                if date_params:
+                    pattern = re.compile(
+                        "@("
+                        + "|".join(date_params)
+                        # match whole query parameter names
+                        + ")(?![a-zA-Z0-9_])"
+                    )
+                    sql = pattern.sub("@submission_date", sql)
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
             if self.use_cloud_function:
@@ -505,13 +528,12 @@ class DryRun:
         project_name = query_file_path.parent.parent.parent.name
 
         partitioned_by = None
-        try:
-            metadata = Metadata.of_query_file(query_file_path)
-
-            if metadata.bigquery and metadata.bigquery.time_partitioning:
-                partitioned_by = metadata.bigquery.time_partitioning.field
-        except FileNotFoundError:
-            pass
+        if (
+            self.metadata
+            and self.metadata.bigquery
+            and self.metadata.bigquery.time_partitioning
+        ):
+            partitioned_by = self.metadata.bigquery.time_partitioning.field
 
         table_schema = Schema.for_table(
             project_name, dataset_name, table_name, partitioned_by

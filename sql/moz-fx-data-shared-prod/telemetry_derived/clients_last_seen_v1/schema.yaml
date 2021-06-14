@@ -865,3 +865,173 @@ fields:
 - mode: NULLABLE
   name: search_count_urlbar_searchmode
   type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_browser_ui_interaction_preferences_pane_home_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_autofill_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_bookmark_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_dynamic_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_extension_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_formhistory_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_history_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_keyword_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_remotetab_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_searchengine_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_searchsuggestion_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_switchtab_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_tabtosearch_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_tip_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_topsite_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_unknown_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: scalar_parent_urlbar_picked_visiturl_sum
+  type: RECORD

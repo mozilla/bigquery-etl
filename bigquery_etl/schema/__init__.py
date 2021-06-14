@@ -28,12 +28,12 @@ class Schema:
     }
 
     @classmethod
-    def from_query_file(cls, query_file: Path, content=None):
+    def from_query_file(cls, query_file: Path, *args, **kwargs):
         """Create schema from a query file."""
         if not query_file.is_file() or query_file.suffix != ".sql":
             raise Exception(f"{query_file} is not a valid SQL file.")
 
-        schema = dryrun.DryRun(str(query_file), content=content).get_schema()
+        schema = dryrun.DryRun(str(query_file), *args, **kwargs).get_schema()
         return cls(schema)
 
     @classmethod

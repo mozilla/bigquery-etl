@@ -54,14 +54,13 @@ cohorts_expanded AS (
     DATE_DIFF(activity_month, cohort_month, MONTH) AS renewal_period,
   FROM
     cohort
-  LEFT JOIN
+  -- inner join to only include valid vpn subscriptions as defined by all_subscriptions_v1
+  JOIN
     attribution
   USING
     (subscription_id)
   CROSS JOIN
     UNNEST(GENERATE_DATE_ARRAY(cohort_month, CURRENT_DATE, INTERVAL 1 MONTH)) AS activity_month
-  WHERE
-    product_name = "Mozilla VPN"
 ),
 renewals AS (
   SELECT DISTINCT

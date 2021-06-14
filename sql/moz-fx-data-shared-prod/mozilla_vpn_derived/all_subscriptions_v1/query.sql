@@ -144,6 +144,7 @@ stripe_vpn_plans AS (
 ),
 fxa_subscriptions AS (
   SELECT
+    user_id,
     customer_id,
     subscription_id,
     plan_id,
@@ -177,6 +178,15 @@ fxa_subscriptions AS (
     plan_interval_count,
     product_id,
     product_name,
+    CONCAT(
+      plan_interval_count,
+      "-",
+      plan_interval,
+      "-",
+      plan_currency,
+      "-",
+      (plan_amount / 100)
+    ) AS pricing_plan,
   FROM
     stripe_subscriptions
   JOIN -- exclude subscriptions to non-vpn products
@@ -202,6 +212,7 @@ fxa_subscriptions AS (
 ),
 apple_iap_subscriptions AS (
   SELECT
+    user_id,
     CAST(user_id AS STRING) AS customer_id,
     CAST(id AS STRING) AS subscription_id,
     CAST(NULL AS STRING) AS plan_id,
@@ -236,13 +247,14 @@ apple_iap_subscriptions AS (
     attribution_category,
     coarse_attribution_category,
     "Apple Store IAP" AS provider,
-    IF(`interval` = "month" AND interval_count = 1, 499, NULL) AS plan_amount,
+    NULL AS plan_amount,
     CAST(NULL AS STRING) AS billing_scheme,
-    IF(`interval` = "month" AND interval_count = 1, "USD", NULL) AS plan_currency,
+    CAST(NULL AS STRING) AS plan_currency,
     `interval` AS plan_interval,
     interval_count AS plan_interval_count,
     CAST(NULL AS STRING) AS product_id,
     "Mozilla VPN" AS product_name,
+    CONCAT(interval_count, "-", `interval`, "-", "apple") AS pricing_plan,
   FROM
     mozdata.mozilla_vpn.subscriptions
   CROSS JOIN
@@ -267,15 +279,6 @@ vpn_subscriptions AS (
 )
 SELECT
   *,
-  CONCAT(
-    plan_interval_count,
-    "-",
-    plan_interval,
-    "-",
-    plan_currency,
-    "-",
-    (plan_amount / 100)
-  ) AS pricing_plan,
   mozfun.norm.vpn_attribution(
     provider,
     referrer,

@@ -23,7 +23,6 @@ import click
 from google.cloud import bigquery
 
 from .metadata.parse_metadata import Metadata
-from .schema import SCHEMA_FILE, Schema
 
 try:
     from functools import cached_property  # type: ignore
@@ -505,6 +504,9 @@ class DryRun:
 
     def validate_schema(self):
         """Check whether schema is valid."""
+        # delay import to prevent circular imports in 'bigquery_etl.schema'
+        from .schema import SCHEMA_FILE, Schema
+
         if self.skip() or basename(self.sqlfile) == "script.sql":
             print(f"\t...Ignoring schema validation for {self.sqlfile}")
             return True

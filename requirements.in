@@ -1,4 +1,5 @@
 attrs==21.2.0
+authlib==0.15.4
 backports.cached-property==1.0.1  # python 3.7 backwards compat
 cattrs==1.7.1
 click==8.0.1

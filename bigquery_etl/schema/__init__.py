@@ -7,6 +7,7 @@ from tempfile import NamedTemporaryFile
 from typing import Any, Dict, List, Optional
 
 import attr
+from google.api_core.exceptions import NotFound
 import yaml
 from google.cloud import bigquery
 
@@ -20,6 +21,11 @@ class Schema:
     """Query schema representation and helpers."""
 
     schema: Dict[str, Any]
+    _type_mapping: Dict[str, str] = {
+        "INT64": "INTEGER",
+        "BOOL": "BOOLEAN",
+        "FLOAT64": "FLOAT",
+    }
 
     @classmethod
     def from_query_file(cls, query_file: Path, *args, **kwargs):
@@ -69,10 +75,22 @@ class Schema:
         tmp_schema_file = NamedTemporaryFile()
         self.to_json_file(Path(tmp_schema_file.name))
         bigquery_schema = client.schema_from_json(tmp_schema_file.name)
-        table = bigquery.Table(destination_table, schema=bigquery_schema)
-        client.create_table(table)
 
-    def merge(self, other: "Schema", exclude: Optional[List[str]] = None):
+        try:
+            # destination table already exists, update schema
+            table = client.get_table(destination_table)
+            table.schema = bigquery_schema
+            client.update_table(table, ["schema"])
+        except NotFound:
+            table = bigquery.Table(destination_table, schema=bigquery_schema)
+            client.create_table(table)
+
+    def merge(
+        self,
+        other: "Schema",
+        exclude: Optional[List[str]] = None,
+        add_missing_fields=True,
+    ):
         """Merge another schema into the schema."""
         self._traverse(
             "root",
@@ -80,6 +98,7 @@ class Schema:
             other.schema["fields"],
             update=True,
             exclude=exclude,
+            add_missing_fields=add_missing_fields,
         )
 
     def equal(self, other: "Schema") -> bool:
@@ -140,6 +159,7 @@ class Schema:
         columns,
         other_columns,
         update=False,
+        add_missing_fields=True,
         ignore_missing_fields=False,
         exclude=None,
     ):
@@ -158,6 +178,17 @@ class Schema:
             if node_name in nodes:
                 # node exists in schema, update attributes where necessary
                 for node_attr_key, node_attr_value in node.items():
+                    if node_attr_key == "type":
+                        # sometimes types have multiple names (e.g. INT64 and INTEGER)
+                        # make it consistent here
+                        node_attr_value = self._type_mapping.get(
+                            node_attr_value, node_attr_value
+                        )
+                        nodes[node_name][node_attr_key] = self._type_mapping.get(
+                            nodes[node_name][node_attr_key],
+                            nodes[node_name][node_attr_key],
+                        )
+
                     if node_attr_key not in nodes[node_name]:
                         if update:
                             # add field attributes if not exists in schema
@@ -197,7 +228,7 @@ class Schema:
                         update,
                     )
             else:
-                if update:
+                if update and add_missing_fields:
                     # node does not exist in schema, add to schema
                     columns.append(node.copy())
                     print(f"Field {node_name} added to {prefix}")

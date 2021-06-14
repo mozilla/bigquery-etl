@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.7">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
     
     
       
@@ -46,10 +46,19 @@
     
     
       
-        
-<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-104326577-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
-<script async src="https://www.google-analytics.com/analytics.js"></script>
-      
+  
+
+
+
+  
+  
+
+
+
+  <script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-104326577-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
+
+
     
     
   </head>
@@ -1791,19 +1800,18 @@ downstream tables, so this is a more complex case.</p>
 <li><code>schema.yaml</code> files of downstream dependencies, like <code>clients_last_seen_v1</code>, will be automatically updated</li>
 </ul>
 </li>
-<li>Run <code>pytest tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6</code> and update the test cases as needed to tolerate the new fields</li>
 <li>Open PR with changes<ul>
-<li>CI may be failing at this point due too mismatch of deployed schemas</li>
+<li>The <code>dry-run-sql</code> task is expected to fail at this point due to mismatch with deployed schemas</li>
 </ul>
 </li>
 <li>PR reviewed and approved</li>
 <li>Deploy schema changes by running:</li>
 </ol>
-<p><code>./bqetl query schema deploy telemetry_derived.clients_daily_v6
-   ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1
-   ./bqetl query schema deploy --force telemetry_derived.clients_last_seen_v1
-   ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1
-   ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1</code></p>
+<p><code>./bqetl query schema deploy telemetry_derived.clients_daily_v6;
+   ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
+   ./bqetl query schema deploy --force telemetry_derived.clients_last_seen_v1;
+   ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1;
+   ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1;</code></p>
 <ol>
 <li>Rerun CI to ensure all dry runs are successful</li>
 <li>Merge pull-request</li>

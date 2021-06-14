@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.7">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
     
     
       
@@ -46,10 +46,19 @@
     
     
       
-        
-<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-104326577-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
-<script async src="https://www.google-analytics.com/analytics.js"></script>
-      
+  
+
+
+
+  
+  
+
+
+
+  <script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-104326577-3","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
+
+
     
     
   </head>
@@ -1439,15 +1448,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#timespan_nanos-udf" class="md-nav__link">
-    timespan_nanos (UDF)
+  <a href="#timespan_seconds-udf" class="md-nav__link">
+    timespan_seconds (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#timespan_seconds-udf" class="md-nav__link">
-    timespan_seconds (UDF)
+  <a href="#timespan_nanos-udf" class="md-nav__link">
+    timespan_nanos (UDF)
   </a>
   
 </li>
@@ -1600,15 +1609,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#timespan_nanos-udf" class="md-nav__link">
-    timespan_nanos (UDF)
+  <a href="#timespan_seconds-udf" class="md-nav__link">
+    timespan_seconds (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#timespan_seconds-udf" class="md-nav__link">
-    timespan_seconds (UDF)
+  <a href="#timespan_nanos-udf" class="md-nav__link">
+    timespan_nanos (UDF)
   </a>
   
 </li>
@@ -1628,15 +1637,15 @@
                 
                 <h1 id="glean">glean</h1>
 <p>Functions for working with Glean data.</p>
-<h2 id="timespan_nanos-udf">timespan_nanos (UDF)</h2>
-<p>Returns the number of nanoseconds represented by a Glean timespan struct.</p>
-<p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glean/timespan_nanos">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glean/timespan_nanos/metadata.yaml">Edit</a></p>
 <h2 id="timespan_seconds-udf">timespan_seconds (UDF)</h2>
 <p>Returns the number of seconds represented by a Glean timespan struct,
 rounded down to full seconds.</p>
 <p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glean/timespan_seconds">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glean/timespan_seconds/metadata.yaml">Edit</a></p>
+<h2 id="timespan_nanos-udf">timespan_nanos (UDF)</h2>
+<p>Returns the number of nanoseconds represented by a Glean timespan struct.</p>
+<p>See <a href="https://mozilla.github.io/glean/book/user/metrics/timespan.html">https://mozilla.github.io/glean/book/user/metrics/timespan.html</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/glean/timespan_nanos">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/glean/timespan_nanos/metadata.yaml">Edit</a></p>
                 
               
               

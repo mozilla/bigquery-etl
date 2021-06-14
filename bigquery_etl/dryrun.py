@@ -481,6 +481,7 @@ class DryRun:
 
     def validate_schema(self):
         """Check whether schema is valid."""
+        # delay import to prevent circular imports in 'bigquery_etl.schema'
         from .schema import SCHEMA_FILE, Schema
 
         if self.skip() or basename(self.sqlfile) == "script.sql":

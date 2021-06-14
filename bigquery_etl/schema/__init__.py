@@ -21,7 +21,11 @@ class Schema:
     """Query schema representation and helpers."""
 
     schema: Dict[str, Any]
-    _type_mapping: Dict[str, str] = {"INT64": "INTEGER", "BOOL": "BOOLEAN"}
+    _type_mapping: Dict[str, str] = {
+        "INT64": "INTEGER",
+        "BOOL": "BOOLEAN",
+        "FLOAT64": "FLOAT",
+    }
 
     @classmethod
     def from_query_file(cls, query_file: Path, content=None):

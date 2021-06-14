@@ -146,7 +146,8 @@ flattened AS (
 -- Get count based on search type
 counted AS (
   SELECT
-    ROW_NUMBER() OVER w1 AS _n,  -- for deduping over window
+    -- use row number to dedupe over window
+    ROW_NUMBER() OVER w1 AS _n,
     submission_date,
     client_id,
     engine,

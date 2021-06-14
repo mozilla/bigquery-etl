@@ -70,6 +70,29 @@ sql_dir_option = click.option(
     callback=is_valid_dir,
 )
 
+use_cloud_function_option = click.option(
+    "--use_cloud_function",
+    "--use-cloud-function",
+    help=(
+        "Use the Cloud Function for dry running SQL, if set to `True`. "
+        "The Cloud Function can only access tables in shared-prod. "
+        "If set to `False`, use active GCP credentials for the dry run."
+    ),
+    type=bool,
+    default=True,
+)
+
+
+def respect_dryrun_skip_option(default=True):
+    """Generate a respect_dryrun_skip option."""
+    flags = {True: "--respect-dryrun-skip", False: "--ignore-dryrun-skip"}
+    return click.option(
+        f"{flags[True]}/{flags[False]}",
+        help="Respect or ignore dry run SKIP configuration. "
+        f"Default is {flags[default]}.",
+        default=default,
+    )
+
 
 def project_id_option(default=None):
     """Generate a project-id option, with optional default."""
@@ -663,17 +686,7 @@ def backfill(
 @click.argument("name", required=False)
 @sql_dir_option
 @project_id_option()
-@click.option(
-    "--use_cloud_function",
-    "--use-cloud-function",
-    help=(
-        "Use the Cloud Function for dry running SQL, if set to `True`. "
-        "The Cloud Function can only access tables in shared-prod. "
-        "If set to `False`, use active GCP credentials for the dry run."
-    ),
-    type=bool,
-    default=True,
-)
+@use_cloud_function_option
 @click.option(
     "--validate_schemas",
     "--validate-schemas",
@@ -681,16 +694,16 @@ def backfill(
     is_flag=True,
     default=False,
 )
-@click.option(
-    "--respect-dryrun-skip/--ignore-dryrun-skip",
-    "respect_skip",
-    help="Respect or ignore dry run SKIP configuration. "
-    "Default is --ignore-dryrun-skip.",
-    default=False,
-)
+@respect_dryrun_skip_option(default=False)
 @click.pass_context
 def validate(
-    ctx, name, sql_dir, project_id, use_cloud_function, validate_schemas, respect_skip
+    ctx,
+    name,
+    sql_dir,
+    project_id,
+    use_cloud_function,
+    validate_schemas,
+    respect_dryrun_skip,
 ):
     """Validate queries by dry running, formatting and checking scheduling configs."""
     if name is None:
@@ -707,7 +720,7 @@ def validate(
             use_cloud_function=use_cloud_function,
             project=project,
             validate_schemas=validate_schemas,
-            respect_skip=respect_skip,
+            respect_skip=respect_dryrun_skip,
         )
         validate_metadata.validate(query.parent)
         dataset_dirs.add(query.parent.parent)
@@ -815,7 +828,17 @@ def schema():
     help="GCP datasets for creating updated tables temporarily.",
     default="analysis",
 )
-def update(name, sql_dir, project_id, update_downstream, tmp_dataset):
+@use_cloud_function_option
+@respect_dryrun_skip_option(default=True)
+def update(
+    name,
+    sql_dir,
+    project_id,
+    update_downstream,
+    tmp_dataset,
+    use_cloud_function,
+    respect_dryrun_skip,
+):
     """CLI command for generating the query schema."""
     if not is_authenticated():
         click.echo(
@@ -829,7 +852,13 @@ def update(name, sql_dir, project_id, update_downstream, tmp_dataset):
 
     for query_file in query_files:
         changed = _update_query_schema(
-            query_file, sql_dir, project_id, tmp_dataset, tmp_tables
+            query_file,
+            sql_dir,
+            project_id,
+            tmp_dataset,
+            tmp_tables,
+            use_cloud_function,
+            respect_dryrun_skip,
         )
 
         if update_downstream:
@@ -872,13 +901,21 @@ def update(name, sql_dir, project_id, update_downstream, tmp_dataset):
             client.delete_table(table, not_found_ok=True)
 
 
-def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_tables={}):
+def _update_query_schema(
+    query_file,
+    sql_dir,
+    project_id,
+    tmp_dataset,
+    tmp_tables={},
+    use_cloud_function=True,
+    respect_dryrun_skip=True,
+):
     """
     Update the schema of a specific query file.
 
     Return True if the schema changed, False if it is unchanged.
     """
-    if str(query_file) in SKIP:
+    if respect_dryrun_skip and str(query_file) in SKIP:
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
@@ -948,7 +985,12 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
                 break
 
     try:
-        query_schema = Schema.from_query_file(query_file_path, sql_content)
+        query_schema = Schema.from_query_file(
+            query_file_path,
+            content=sql_content,
+            use_cloud_function=use_cloud_function,
+            respect_skip=respect_dryrun_skip,
+        )
     except Exception:
         click.echo(
             click.style(
@@ -1055,8 +1097,12 @@ def _update_query_schema(query_file, sql_dir, project_id, tmp_dataset, tmp_table
     help="Deploy the schema file without validating that it matches the query",
     default=False,
 )
+@use_cloud_function_option
+@respect_dryrun_skip_option(default=True)
 @click.pass_context
-def deploy(ctx, name, sql_dir, project_id, force):
+def deploy(
+    ctx, name, sql_dir, project_id, force, use_cloud_function, respect_dryrun_skip
+):
     """CLI command for deploying destination table schemas."""
     if not is_authenticated():
         click.echo(
@@ -1069,7 +1115,7 @@ def deploy(ctx, name, sql_dir, project_id, force):
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
 
     for query_file in query_files:
-        if str(query_file) in SKIP:
+        if respect_dryrun_skip and str(query_file) in SKIP:
             click.echo(f"{query_file} dry runs are skipped. Cannot validate schemas.")
             continue
 
@@ -1086,7 +1132,11 @@ def deploy(ctx, name, sql_dir, project_id, force):
             full_table_id = f"{project_name}.{dataset_name}.{table_name}"
 
             if not force:
-                query_schema = Schema.from_query_file(query_file_path)
+                query_schema = Schema.from_query_file(
+                    query_file_path,
+                    use_cloud_function=use_cloud_function,
+                    respect_skip=respect_dryrun_skip,
+                )
                 if not existing_schema.equal(query_schema):
                     click.echo(
                         f"Query {query_file_path} does not match "
@@ -1149,12 +1199,21 @@ def deploy(ctx, name, sql_dir, project_id, force):
     default="moz-fx-data-shared-prod",
     callback=is_valid_project,
 )
-def validate_schema(name, sql_dir, project_id):
+@use_cloud_function_option
+@respect_dryrun_skip_option(default=True)
+def validate_schema(name, sql_dir, project_id, use_cloud_function, respect_dryrun_skip):
     """Validate the defined query schema against the query and destination table."""
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
 
     def _validate_schema(query_file_path):
-        return DryRun(query_file_path).validate_schema(), query_file_path
+        return (
+            DryRun(
+                query_file_path,
+                use_cloud_function=use_cloud_function,
+                respect_skip=respect_dryrun_skip,
+            ).validate_schema(),
+            query_file_path,
+        )
 
     with Pool(8) as p:
         result = p.map(_validate_schema, query_files, chunksize=1)

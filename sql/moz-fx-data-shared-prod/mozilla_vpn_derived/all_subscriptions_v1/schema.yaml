@@ -1,4 +1,7 @@
----
+fields:
+- name: user_id
+  type: INTEGER
+  mode: NULLABLE
 - name: customer_id
   type: STRING
   mode: NULLABLE
@@ -88,6 +91,9 @@
   mode: NULLABLE
 - name: plan_interval
   type: STRING
+  mode: NULLABLE
+- name: plan_interval_count
+  type: INTEGER
   mode: NULLABLE
 - name: product_id
   type: STRING

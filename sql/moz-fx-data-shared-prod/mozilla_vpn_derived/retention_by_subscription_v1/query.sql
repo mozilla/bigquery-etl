@@ -30,6 +30,8 @@ attribution AS (
     plan_currency,
     plan_id,
     plan_interval,
+    plan_interval_count,
+    pricing_plan,
     provider,
     country,
     country_name,

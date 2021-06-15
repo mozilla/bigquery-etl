@@ -54,8 +54,6 @@ with DAG(
             "sql/moz-fx-data-marketing-prod/apple_app_store/report_subscriber_detailed_v13/query.py",
         ]
         + [
-            "apple",
-            "import",
             "--key-id",
             "{{ var.value.app_store_connect_key_id }}",
             "--issuer-id",

@@ -14,6 +14,14 @@ Built from bigquery-etl repo, [`dags/bqetl_app_store_connect.py`](https://github
 
 Reports from Apple's App Store Connect API.
 
+Reports are based on Pacific Standard Time (PST). A day includes
+transactions that happened from 12:00 a.m. to 11:59 p.m. PST.
+https://help.apple.com/app-store-connect/#/dev061699fdb
+
+Daily reports for the Americas are available by 5 am Pacific Time, which
+can be either 12:00 or 13:00 UTC, depending on Daylight Savings Time, so
+this dag runs at 13:00 UTC.
+
 #### Owner
 
 dthorn@mozilla.com
@@ -22,7 +30,7 @@ dthorn@mozilla.com
 
 default_args = {
     "owner": "dthorn@mozilla.com",
-    "start_date": datetime.datetime(2021, 6, 14, 0, 0),
+    "start_date": datetime.datetime(2021, 1, 15, 0, 0),
     "end_date": None,
     "email": [],
     "depends_on_past": False,
@@ -35,7 +43,7 @@ default_args = {
 with DAG(
     "bqetl_app_store_connect",
     default_args=default_args,
-    schedule_interval="0 23 * * *",
+    schedule_interval="0 13 * * *",
     doc_md=docs,
 ) as dag:
 

@@ -75,6 +75,7 @@ POCKET_ID = "pocket_id"
 SHIELD_ID = "shield_id"
 PIONEER_ID = "pioneer_id"
 RALLY_ID = "metrics.uuid.rally_id"
+RALLY_ID_DELETION_REQUEST_VIEW = "rally_id"
 ID = "id"
 CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
 FXA_USER_ID = "jsonPayload.fields.user_id"
@@ -472,10 +473,14 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
                 tables_with_pioneer_id.append(table_ref)
         return tables_with_pioneer_id
 
-    def __get_client_id_field__(table):
+    def __get_client_id_field__(table, deletion_request_view=False):
         """Determine which column should be used as client id for a given table."""
         if table.dataset_id.startswith("rally_"):
-            return RALLY_ID
+            # deletion request views expose rally_id as a top-level field
+            if deletion_request_view:
+                return RALLY_ID_DELETION_REQUEST_VIEW
+            else:
+                return RALLY_ID
         else:
             return PIONEER_ID
 
@@ -509,7 +514,9 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     # For simplicity when accessing this map later on, keys are changed to `_stable` here
     sources = {
         table.dataset_id.replace("_derived", "_stable"): DeleteSource(
-            qualified_table_id(table), __get_client_id_field__(table), project
+            qualified_table_id(table),
+            __get_client_id_field__(table, deletion_request_view=True),
+            project,
         )
         # dict comprehension will only keep the last value for a given key, so
         # sort by table_id to use the latest version

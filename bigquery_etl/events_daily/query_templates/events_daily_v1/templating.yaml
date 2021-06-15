@@ -81,7 +81,7 @@ firefox_accounts_derived:
   include_metadata_fields: False
   glean: False
   app_id: firefox_accounts
-  source_table: firefox_accounts_derived.funnel_events_source
+  source_table: firefox_accounts_derived.funnel_events_source_v1
   start_date: 2020-01-01
   dag_name: bqetl_event_rollup
   user_properties:

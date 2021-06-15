@@ -18,3 +18,9 @@ messaging_system_derived:
   start_date: 2020-01-01
   max_property_values: 1000
   dag_name: bqetl_event_rollup
+firefox_accounts_derived:
+  app_id: firefox_accounts
+  source_table: firefox_accounts_derived.funnel_events_source
+  start_date: 2020-01-01
+  max_property_values: 1000
+  dag_name: bqetl_event_rollup

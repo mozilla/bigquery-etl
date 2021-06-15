@@ -204,6 +204,9 @@ SKIP = {
         "sql/moz-fx-data-shared-prod/*/baseline_clients_first_seen_v1/*.sql",
         recursive=True,
     ),
+    # Query too complex
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/init.sql",
 }
 
 

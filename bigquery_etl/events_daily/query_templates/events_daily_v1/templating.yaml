@@ -1,5 +1,6 @@
 org_mozilla_firefox_derived:
   include_normalized_fields: True
+  include_metadata_fields: True
   glean: True
   app_id: org_mozilla_firefox
   start_date: 2020-01-01
@@ -27,6 +28,7 @@ org_mozilla_firefox_derived:
       dest: locale
 telemetry_derived:
   include_normalized_fields: True
+  include_metadata_fields: True
   glean: False
   app_id: telemetry
   source_table: telemetry_derived.deanonymized_events
@@ -57,6 +59,7 @@ telemetry_derived:
       dest: display_version
 messaging_system_derived:
   include_normalized_fields: False
+  include_metadata_fields: True
   glean: False
   app_id: messaging_system
   source_table: messaging_system_derived.normalized_onboarding_events
@@ -73,3 +76,46 @@ messaging_system_derived:
       dest: locale
     - src: normalized_channel
       dest: normalized_channel
+firefox_accounts_derived:
+  include_normalized_fields: False
+  include_metadata_fields: False
+  glean: False
+  app_id: firefox_accounts
+  source_table: firefox_accounts_derived.funnel_events_source
+  start_date: 2020-01-01
+  dag_name: bqetl_event_rollup
+  user_properties:
+    - src: utm_term
+      dest: utm_term
+    - src: utm_source
+      dest: utm_source
+    - src: utm_medium
+      dest: utm_medium
+    - src: utm_campaign
+      dest: utm_campaign
+    - src: ua_version
+      dest: ua_version
+    - src: ua_browser
+      dest: ua_browser
+    - src: entrypoint
+      dest: entrypoint
+    - src: flow_id
+      dest: flow_id
+    - src: sync_device_count
+      dest: sync_device_count
+    - src: sync_active_devices_day
+      dest: sync_active_devices_day
+    - src: sync_active_devices_week
+      dest: sync_active_devices_week
+    - src: sync_active_devices_month
+      dest: sync_active_devices_month
+    - src: app_version
+      dest: app_version
+    - src: os_name
+      dest: os_name
+    - src: os_version
+      dest: os_version
+    - src: country
+      dest: country
+    - src: language
+      dest: language

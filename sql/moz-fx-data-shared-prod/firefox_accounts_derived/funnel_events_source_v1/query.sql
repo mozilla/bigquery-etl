@@ -1,6 +1,3 @@
-CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod`.firefox_accounts_derived.funnel_events_source
-AS
 SELECT
   DATE(timestamp) AS submission_date,
   user_id AS client_id,
@@ -23,3 +20,5 @@ SELECT
   *,
 FROM
   `moz-fx-data-shared-prod`.firefox_accounts.fxa_content_auth_oauth_events
+WHERE
+  submission_date = @submission_date

@@ -8,7 +8,7 @@ description: |-
   otherwise.
 owners:
 - frank@mozilla.com
-labels:
+labels: {}
 scheduling:
   dag_name: bqetl_event_rollup
   task_name: funnel_events_source__v1

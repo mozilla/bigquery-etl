@@ -22,4 +22,4 @@ SELECT
   CAST([] AS ARRAY<STRUCT<key STRING, value STRING>>) AS experiments,
   *,
 FROM
-  firefox_accounts.fxa_content_auth_oauth_events
+  `moz-fx-data-shared-prod`.firefox_accounts.fxa_content_auth_oauth_events

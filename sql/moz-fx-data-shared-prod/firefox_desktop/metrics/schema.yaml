@@ -219,6 +219,12 @@ fields:
       mode: NULLABLE
       name: fog_failed_idle_registration
       type: BOOLEAN
+    - description: 'True if the Proton default theme is enabled.
+
+        '
+      mode: NULLABLE
+      name: browser_ui_proton_enabled
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

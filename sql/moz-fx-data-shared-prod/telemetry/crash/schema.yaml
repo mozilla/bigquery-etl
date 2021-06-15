@@ -1472,6 +1472,22 @@ fields:
       mode: REPEATED
       name: threads
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: base_addr
+        type: STRING
+      - mode: NULLABLE
+        name: code_id
+        type: STRING
+      - mode: NULLABLE
+        name: end_addr
+        type: STRING
+      - mode: NULLABLE
+        name: filename
+        type: STRING
+      mode: REPEATED
+      name: unloaded_modules
+      type: RECORD
     mode: NULLABLE
     name: stack_traces
     type: RECORD

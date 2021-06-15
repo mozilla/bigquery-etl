@@ -48249,6 +48249,14 @@ fields:
           mode: NULLABLE
           name: os_environment_is_kept_in_dock
           type: BOOLEAN
+        - description: 'The number of times a process crashed early but we could verify
+            it was not because of buildID mismatch between the parent and the content
+            processes.
+
+            '
+          mode: NULLABLE
+          name: dom_contentprocess_build_id_mismatch_false_positive
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

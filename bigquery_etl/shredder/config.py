@@ -75,7 +75,7 @@ POCKET_ID = "pocket_id"
 SHIELD_ID = "shield_id"
 PIONEER_ID = "pioneer_id"
 RALLY_ID = "metrics.uuid.rally_id"
-RALLY_ID_DELETION_REQUEST_VIEW = "rally_id"
+RALLY_ID_TOP_LEVEL = "rally_id"
 ID = "id"
 CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
 FXA_USER_ID = "jsonPayload.fields.user_id"
@@ -476,9 +476,13 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     def __get_client_id_field__(table, deletion_request_view=False):
         """Determine which column should be used as client id for a given table."""
         if table.dataset_id.startswith("rally_"):
+            # `rally_zero_one` is a special case where top-level rally_id is used
+            # both in the ping tables and the deletion_requests view
+            if table.dataset_id == "rally_zero_one":
+                return RALLY_ID_TOP_LEVEL
             # deletion request views expose rally_id as a top-level field
             if deletion_request_view:
-                return RALLY_ID_DELETION_REQUEST_VIEW
+                return RALLY_ID_TOP_LEVEL
             else:
                 return RALLY_ID
         else:

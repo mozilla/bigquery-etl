@@ -162,6 +162,10 @@ with DAG(
         firefox_accounts_derived__event_types_history__v1
     )
 
+    firefox_accounts_derived__event_types_history__v1.set_upstream(
+        funnel_events_source__v1
+    )
+
     firefox_accounts_derived__events_daily__v1.set_upstream(
         firefox_accounts_derived__event_types__v1
     )

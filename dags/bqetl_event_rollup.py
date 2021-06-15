@@ -163,7 +163,6 @@ with DAG(
     firefox_accounts_derived__event_types_history__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_auth_events__v1
     )
-
     wait_for_firefox_accounts_derived__fxa_content_events__v1 = ExternalTaskSensor(
         task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
         external_dag_id="bqetl_fxa_events",

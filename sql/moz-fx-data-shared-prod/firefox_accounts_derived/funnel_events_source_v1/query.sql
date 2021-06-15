@@ -21,4 +21,4 @@ SELECT
 FROM
   `moz-fx-data-shared-prod`.firefox_accounts.fxa_content_auth_oauth_events
 WHERE
-  submission_date = @submission_date
+  DATE(timestamp) = @submission_date

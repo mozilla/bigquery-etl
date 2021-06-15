@@ -22,8 +22,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/clients_probe_processes/view.sql",
-    # Java errors
-    "sql/moz-fx-data-shared-prod/firefox_accounts_derived/funnel_events_source/view.sql",
 }
 
 parser = ArgumentParser(description=__doc__)

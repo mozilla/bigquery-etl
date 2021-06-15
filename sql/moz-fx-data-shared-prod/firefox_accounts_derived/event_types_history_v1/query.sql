@@ -3,7 +3,7 @@ WITH all_events AS (
   SELECT
     *
   FROM
-    firefox_accounts_derived.funnel_events_source
+    firefox_accounts_derived.funnel_events_source_v1
 ),
 current_events AS (
   SELECT

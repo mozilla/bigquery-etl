@@ -1,4 +1,4 @@
----
+fields:
 - name: plan_id
   type: STRING
   mode: NULLABLE

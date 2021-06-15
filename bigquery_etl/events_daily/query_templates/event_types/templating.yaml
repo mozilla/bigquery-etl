@@ -4,3 +4,5 @@ telemetry:
   app_id: telemetry # For legacy telemetry, treat the namespace as app_id
 messaging_system:
   app_id: messaging_system
+firefox_accounts:
+  app_id: firefox_accounts

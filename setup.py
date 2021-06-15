@@ -48,6 +48,7 @@ setup(
         "pandas",
         "ujson",
         "stripe",
+        "authlib",
     ],
     extras_require={"java": ["pyjnius"]},
     long_description="Tooling for building derived datasets in BigQuery",

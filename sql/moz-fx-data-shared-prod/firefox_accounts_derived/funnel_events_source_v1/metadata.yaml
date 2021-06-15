@@ -1,0 +1,15 @@
+friendly_name: Funnel Events Source
+description: |-
+  The materialized events used to create the events_daily rollup.
+  Not exposed as a view since it's not meant for consumption;
+  use firefox_accounts.fxa_content_auth_oauth_events
+  instead. This is materialized solely because
+  the events_daily queries are too complex for BigQuery
+  otherwise.
+owners:
+- frank@mozilla.com
+labels: {}
+scheduling:
+  dag_name: bqetl_event_rollup
+  task_name: funnel_events_source__v1
+bigquery: null

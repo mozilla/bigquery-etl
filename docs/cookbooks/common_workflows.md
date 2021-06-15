@@ -54,18 +54,17 @@ downstream tables, so this is a more complex case.
 1. Run `./bqetl query schema update telemetry_derived.clients_daily_v6 --update_downstream` to make local `schema.yaml` updates and update schemas of downstream dependencies
     * This requires GCP access
     * `schema.yaml` files of downstream dependencies, like `clients_last_seen_v1`, will be automatically updated
-1. Run `pytest tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6` and update the test cases as needed to tolerate the new fields
 1. Open PR with changes
-    * CI may be failing at this point due too mismatch of deployed schemas
+    * The `dry-run-sql` task is expected to fail at this point due to mismatch with deployed schemas
 1. PR reviewed and approved
 1. Deploy schema changes by running:
 
    ```
-   ./bqetl query schema deploy telemetry_derived.clients_daily_v6
-   ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1
-   ./bqetl query schema deploy --force telemetry_derived.clients_last_seen_v1
-   ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1
-   ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1
+   ./bqetl query schema deploy telemetry_derived.clients_daily_v6;
+   ./bqetl query schema deploy telemetry_derived.clients_daily_joined_v1;
+   ./bqetl query schema deploy --force telemetry_derived.clients_last_seen_v1;
+   ./bqetl query schema deploy telemetry_derived.clients_last_seen_joined_v1;
+   ./bqetl query schema deploy --force telemetry_derived.clients_first_seen_v1;
    ```
 
 1. Rerun CI to ensure all dry runs are successful

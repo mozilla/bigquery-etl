@@ -11,14 +11,15 @@ from ..cli.alchemer import alchemer as alchemer_
 from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.format import format
+from ..cli.glean_usage import glean_usage
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.view import view
 from ..dependency import dependency
 from ..glam.cli import glam
-from ..cli.glean_usage import glean_usage
-from ..stripe import stripe_
 from ..operational_monitoring import operational_monitoring
+from ..stripe import stripe_
+from ..subplat.apple import apple
 
 
 def cli(prog_name=None):
@@ -37,6 +38,7 @@ def cli(prog_name=None):
         "view": view,
         "alchemer": alchemer_,
         "opmon": operational_monitoring,
+        "apple": apple,
     }
 
     @click.group(commands=commands)

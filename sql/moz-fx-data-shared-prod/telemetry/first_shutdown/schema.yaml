@@ -19107,6 +19107,13 @@ fields:
       mode: NULLABLE
       name: pwmgr_num_improved_generated_passwords
       type: STRING
+    - description: A count of the query stripping. ('Navigation' = There was a top-level
+        loading via navigation, 'Redirect' = There was a top-level loading via redirect,
+        'StripForNavigation' = There was a stripping happened for a top-level navigation,
+        'StripForRedirect' = There was a stripping happened for a top-level redirect.
+      mode: NULLABLE
+      name: query_stripping_count
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -39356,6 +39363,14 @@ fields:
             event
           mode: NULLABLE
           name: pwmgr_num_form_has_possible_username_event_per_doc
+          type: STRING
+        - description: A count of the query stripping. ('Navigation' = There was a
+            top-level loading via navigation, 'Redirect' = There was a top-level loading
+            via redirect, 'StripForNavigation' = There was a stripping happened for
+            a top-level navigation, 'StripForRedirect' = There was a stripping happened
+            for a top-level redirect.
+          mode: NULLABLE
+          name: query_stripping_count
           type: STRING
         mode: NULLABLE
         name: histograms

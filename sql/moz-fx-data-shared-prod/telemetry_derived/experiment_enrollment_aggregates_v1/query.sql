@@ -52,6 +52,19 @@ fenix_all_events AS (
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox.events`
 ),
+ios_all_events AS (
+  SELECT
+    submission_timestamp,
+    events
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox.events`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    events
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.events`
+),
 fenix AS (
   SELECT
     submission_timestamp AS `timestamp`,
@@ -61,6 +74,20 @@ fenix AS (
     event.name AS event_method
   FROM
     fenix_all_events,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events' AND
+    DATE(submission_timestamp) = @submission_date
+),
+ios AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    ios_all_events,
     UNNEST(events) AS event
   WHERE
     event.category = 'nimbus_events' AND
@@ -76,6 +103,11 @@ all_events AS (
     *
   FROM
     fenix
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios
 )
 SELECT
   `type`,

@@ -160,6 +160,8 @@ class Task:
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
     email_on_retry: Optional[bool] = attr.ib(None)
+    sla: Optional[str] = attr.ib(None)  # todo: set to 3h
+    execution_timeout: Optional[str] = attr.ib(None)  # todo: set to 24h
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -204,6 +206,24 @@ class Task:
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):
         """Check that retry_delay is in a valid timedelta format."""
+        if value is not None and not is_timedelta_string(value):
+            raise ValueError(
+                f"Invalid timedelta definition for {attribute}: {value}."
+                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
+            )
+
+    @sla.validator
+    def validate_sla(self, attribute, value):
+        """Check that sla is in a valid timedelta format."""
+        if value is not None and not is_timedelta_string(value):
+            raise ValueError(
+                f"Invalid timedelta definition for {attribute}: {value}."
+                "Timedeltas should be specified like: 1h, 30m, 1h15m, 1d4h45m, ..."
+            )
+
+    @execution_timeout.validator
+    def validate_execution_timeout(self, attribute, value):
+        """Check that execution_timeout is in a valid timedelta format."""
         if value is not None and not is_timedelta_string(value):
             raise ValueError(
                 f"Invalid timedelta definition for {attribute}: {value}."

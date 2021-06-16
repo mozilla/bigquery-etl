@@ -49,6 +49,8 @@ with DAG(
         + ["--project_id=moz-fx-data-test-project"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
+        sla=datetime.timedelta(minutes=5),
+        execution_timeout=datetime.timedelta(minutes=10),
         dag=dag,
     )
 
@@ -59,6 +61,8 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        sla=datetime.timedelta(minutes=5),
+        execution_timeout=datetime.timedelta(minutes=10),
     )
 
     export_public_data_json_test__non_incremental_query__v1.set_upstream(

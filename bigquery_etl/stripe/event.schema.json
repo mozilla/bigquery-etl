@@ -4308,6 +4308,20 @@
             "type": "BOOLEAN"
           },
           {
+            "name": "automatic_tax",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "enabled",
+                "type": "BOOLEAN"
+              },
+              {
+                "name": "status",
+                "type": "STRING"
+              }
+            ]
+          },
+          {
             "name": "billing",
             "type": "STRING",
             "description": "undocumented"
@@ -10313,6 +10327,16 @@
         "name": "subscription",
         "type": "RECORD",
         "fields": [
+          {
+            "name": "automatic_tax",
+            "type": "RECORD",
+            "fields": [
+              {
+                "name": "enabled",
+                "type": "BOOLEAN"
+              }
+            ]
+          },
           {
             "name": "billing",
             "type": "STRING",

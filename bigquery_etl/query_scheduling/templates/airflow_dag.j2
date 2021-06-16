@@ -29,7 +29,7 @@ default_args = {{
     format_attr("retry_delay", "format_timedelta")
 }}
 
-with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs) as dag:
+with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval is not none -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs) as dag:
 {% for task in tasks | sort(attribute='task_name') %}
     {% if task.is_python_script -%}
         {{ task.task_name }} = gke_command(
@@ -41,10 +41,10 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             docker_image='gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest',
             owner='{{ task.owner }}',
             email={{ task.email | sort }},
-            {%+ if task.sla != None -%}
+            {%+ if task.sla is not none -%}
             sla={{ task.sla }},
             {%+ endif -%}
-            {%+ if task.execution_timeout != None -%}
+            {%+ if task.execution_timeout is not none -%}
             execution_timeout={{ task.execution_timeout }},
             {%+ endif -%}
         )
@@ -82,19 +82,19 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ if task.priority -%}
             priority_weight={{ task.priority }},
             {%+ endif -%}
-            {%+ if task.retry_delay != None -%}
+            {%+ if task.retry_delay is not none -%}
             retry_delay={{ task.retry_delay | format_timedelta | format_repr }},
             {%+ endif -%}
-            {%+ if task.retries != None -%}
+            {%+ if task.retries is not none -%}
             retries={{ task.retries }},
             {%+ endif -%}
-            {%+ if task.email_on_retry != None -%}
+            {%+ if task.email_on_retry is not none -%}
             email_on_retry={{ task.email_on_retry }},
             {%+ endif -%}
-            {%+ if task.sla != None -%}
+            {%+ if task.sla is not none -%}
             sla={{ task.sla }},
             {%+ endif -%}
-            {%+ if task.execution_timeout != None -%}
+            {%+ if task.execution_timeout is not none -%}
             execution_timeout={{ task.execution_timeout }},
             {%+ endif -%}
             dag=dag,
@@ -121,10 +121,10 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         check_existence=True,
         mode='reschedule',
         pool='DATA_ENG_EXTERNALTASKSENSOR',
-        {%+ if task.sla != None -%}
+        {%+ if task.sla is not none -%}
         sla={{ task.sla }},
         {%+ endif -%}
-        {%+ if task.execution_timeout != None -%}
+        {%+ if task.execution_timeout is not none -%}
         execution_timeout={{ task.execution_timeout }},
         {%+ endif -%}
     )
@@ -149,10 +149,10 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         mode='reschedule',
         pool='DATA_ENG_EXTERNALTASKSENSOR',
         dag=dag,
-        {%+ if task.sla != None -%}
+        {%+ if task.sla is not none -%}
         sla={{ task.sla }},
         {%+ endif -%}
-        {%+ if task.execution_timeout != None -%}
+        {%+ if task.execution_timeout is not none -%}
         execution_timeout={{ task.execution_timeout }},
         {%+ endif -%}
     )

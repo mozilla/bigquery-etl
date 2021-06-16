@@ -171,6 +171,24 @@ ios AS (
     submission_timestamp,
     experiment,
     branch
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(0) AS ad_clicks_count,
+    SUM(0) AS search_with_ads_count,
+    SUM(
+      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.search_counts) AS value)
+    ) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
 ),
 all_events AS (
   SELECT

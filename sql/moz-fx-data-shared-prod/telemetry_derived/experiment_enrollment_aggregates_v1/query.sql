@@ -64,6 +64,12 @@ ios_all_events AS (
     events
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.events`
+  UNION ALL
+  SELECT
+    submission_timestamp,
+    events
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_fennec.events`
 ),
 fenix AS (
   SELECT

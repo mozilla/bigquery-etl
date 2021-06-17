@@ -64,7 +64,6 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         check_existence=True,
         mode='reschedule',
         pool='DATA_ENG_EXTERNALTASKSENSOR',
-        sla=datetime.timedelta(hours=3)
     )
 
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_id }})

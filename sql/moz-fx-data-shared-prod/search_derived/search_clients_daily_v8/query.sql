@@ -163,7 +163,7 @@ counted AS (
     os_version,
     channel,
     is_default_browser,
-    profile_creation_date,
+    UNIX_DATE(DATE(profile_creation_date)) AS profile_creation_date,
     default_search_engine,
     default_search_engine_data_load_path,
     default_search_engine_data_submission_url,

@@ -26,4 +26,7 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline
   - moz-fx-data-shared-prod.org_mozilla_firefox.baseline
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline
   - telemetry.clients_daily

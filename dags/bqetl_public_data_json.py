@@ -56,6 +56,9 @@ with DAG(
         + ["--project_id=moz-fx-data-shared-prod"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
+        sla=datetime.timedelta(minutes=5),
+        execution_timeout=datetime.timedelta(minutes=10),
+        email_on_retry=False,
         dag=dag,
     )
 
@@ -71,6 +74,9 @@ with DAG(
         + ["--project_id=moz-fx-data-shared-prod"]
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
+        sla=datetime.timedelta(minutes=5),
+        execution_timeout=datetime.timedelta(minutes=10),
+        email_on_retry=False,
         dag=dag,
     )
 
@@ -82,6 +88,9 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        sla=datetime.timedelta(minutes=5),
+        execution_timeout=datetime.timedelta(minutes=10),
+        email_on_retry=False,
     )
 
     export_public_data_json_mozregression_aggregates__v1.set_upstream(
@@ -96,6 +105,9 @@ with DAG(
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+        sla=datetime.timedelta(minutes=5),
+        execution_timeout=datetime.timedelta(minutes=10),
+        email_on_retry=False,
     )
 
     export_public_data_json_telemetry_derived__ssl_ratios__v1.set_upstream(

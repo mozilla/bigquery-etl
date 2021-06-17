@@ -51,7 +51,6 @@ with DAG(
         image=docker_image,
         sla=datetime.timedelta(minutes=5),
         execution_timeout=datetime.timedelta(minutes=10),
-        email_on_retry=False,
         dag=dag,
     )
 
@@ -64,7 +63,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
         sla=datetime.timedelta(minutes=5),
         execution_timeout=datetime.timedelta(minutes=10),
-        email_on_retry=False,
     )
 
     export_public_data_json_test__non_incremental_query__v1.set_upstream(

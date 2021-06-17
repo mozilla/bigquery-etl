@@ -63,6 +63,39 @@ org_mozilla_firefox AS (
     `moz-fx-data-shared-prod.org_mozilla_firefox.baseline`
   CROSS JOIN
     UNNEST(ping_info.experiments) AS e
+),
+ios_fennec AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+),
+ios_beta AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+),
+ios AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
 )
 SELECT
   submission_date,
@@ -100,6 +133,21 @@ FROM
       *
     FROM
       org_mozilla_firefox
+    UNION ALL
+    SELECT
+      *
+    FROM
+      ios_fennec
+    UNION ALL
+    SELECT
+      *
+    FROM
+      ios_beta
+    UNION ALL
+    SELECT
+      *
+    FROM
+      ios
   )
 WHERE
   submission_date = @submission_date

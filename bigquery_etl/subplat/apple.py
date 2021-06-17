@@ -15,32 +15,33 @@ from authlib.jose import jwt
 from google.cloud import bigquery
 
 SUBSCRIBER_SCHEMA = [
+    bigquery.SchemaField("report_date", "DATE"),
     bigquery.SchemaField("event_date", "DATE"),
     bigquery.SchemaField("app_name", "STRING"),
-    bigquery.SchemaField("app_apple_id", "STRING"),
+    bigquery.SchemaField("app_apple_id", "INT64"),
     bigquery.SchemaField("subscription_name", "STRING"),
-    bigquery.SchemaField("subscription_apple_id", "STRING"),
-    bigquery.SchemaField("subscription_group_id", "STRING"),
+    bigquery.SchemaField("subscription_apple_id", "INT64"),
+    bigquery.SchemaField("subscription_group_id", "INT64"),
     bigquery.SchemaField("standard_subscription_duration", "STRING"),
     bigquery.SchemaField("subscription_offer_name", "STRING"),
     bigquery.SchemaField("promotional_offer_id", "STRING"),
     bigquery.SchemaField("subscription_offer_type", "STRING"),
     bigquery.SchemaField("subscription_offer_duration", "STRING"),
     bigquery.SchemaField("marketing_opt_in_duration", "STRING"),
-    bigquery.SchemaField("customer_price", "STRING"),
+    bigquery.SchemaField("customer_price", "NUMERIC"),
     bigquery.SchemaField("customer_currency", "STRING"),
-    bigquery.SchemaField("developer_proceeds", "STRING"),
+    bigquery.SchemaField("developer_proceeds", "NUMERIC"),
     bigquery.SchemaField("proceeds_currency", "STRING"),
     bigquery.SchemaField("preserved_pricing", "STRING"),
     bigquery.SchemaField("proceeds_reason", "STRING"),
     bigquery.SchemaField("client", "STRING"),
     bigquery.SchemaField("device", "STRING"),
     bigquery.SchemaField("country", "STRING"),
-    bigquery.SchemaField("subscriber_id", "STRING"),
+    bigquery.SchemaField("subscriber_id", "INT64"),
     bigquery.SchemaField("subscriber_id_reset", "STRING"),
     bigquery.SchemaField("refund", "STRING"),
-    bigquery.SchemaField("purchase_date", "STRING"),
-    bigquery.SchemaField("units", "STRING"),
+    bigquery.SchemaField("purchase_date", "DATE"),
+    bigquery.SchemaField("units", "NUMERIC"),
 ]
 
 
@@ -141,7 +142,9 @@ def apple_import(
         table = f"{table}${date:%Y%m%d}"
     with (TemporaryFile(mode="w+b") if table else sys.stdout.buffer) as file_obj:
         has_rows = False
+        report_date = f"{date:%F}\t".encode("UTF-8")
         for line in _get_lines(key_id, issuer_id, private_key, vendor_number, date):
+            file_obj.write(report_date)  # prefix lines with report date column
             file_obj.write(line)
             has_rows = True
         if not has_rows:
@@ -154,7 +157,7 @@ def apple_import(
                 file_obj=file_obj,
                 destination=table,
                 job_config=bigquery.LoadJobConfig(
-                    all_jagged_rows=False,
+                    allow_jagged_rows=False,
                     field_delimiter="\t",
                     ignore_unknown_values=False,
                     schema=SUBSCRIBER_SCHEMA,  # only report type supported
@@ -163,7 +166,7 @@ def apple_import(
                     ],
                     skip_leading_rows=1,
                     source_format=bigquery.SourceFormat.CSV,
-                    time_partitioning=bigquery.TimePartitioning(field="event_date"),
+                    time_partitioning=bigquery.TimePartitioning(field="report_date"),
                     write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
                 ),
             )

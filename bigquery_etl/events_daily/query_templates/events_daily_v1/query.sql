@@ -27,8 +27,11 @@ WITH sample AS (
   FROM
     sample
   WHERE
-    submission_date = @submission_date
-    OR (@submission_date IS NULL AND submission_date >= '{{ start_date }}')
+    (
+      submission_date = @submission_date
+      OR (@submission_date IS NULL AND submission_date >= '{{ start_date }}')
+    )
+    AND client_id IS NOT NULL
 ),
 joined AS (
   SELECT

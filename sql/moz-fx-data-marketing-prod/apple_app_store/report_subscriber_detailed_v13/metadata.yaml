@@ -11,8 +11,6 @@ scheduling:
   dag_name: bqetl_app_store_connect
   arguments:
     [
-      "apple",
-      "import",
       "--key-id",
       "{{ var.value.app_store_connect_key_id }}",
       "--issuer-id",

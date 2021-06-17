@@ -1,4 +1,4 @@
----
+fields:
 - name: subscription_id
   type: STRING
   mode: NULLABLE
@@ -21,6 +21,12 @@
   type: STRING
   mode: NULLABLE
 - name: plan_interval
+  type: STRING
+  mode: NULLABLE
+- name: plan_interval_count
+  type: INTEGER
+  mode: NULLABLE
+- name: pricing_plan
   type: STRING
   mode: NULLABLE
 - name: provider

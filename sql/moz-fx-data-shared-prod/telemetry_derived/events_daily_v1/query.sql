@@ -11,8 +11,11 @@ events AS (
   FROM
     sample
   WHERE
-    submission_date = @submission_date
-    OR (@submission_date IS NULL AND submission_date >= '2020-01-01')
+    (
+      submission_date = @submission_date
+      OR (@submission_date IS NULL AND submission_date >= '2020-01-01')
+    )
+    AND client_id IS NOT NULL
 ),
 joined AS (
   SELECT

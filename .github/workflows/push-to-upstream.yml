@@ -17,7 +17,7 @@ jobs:
     - name: webfactory/ssh-agent
       uses: webfactory/ssh-agent@v0.5.1
       with:
-          ssh-private-key: ${{ secrets.GH_ACTION_SSH_KEY }}
+        ssh-private-key: ${{ secrets.GH_ACTION_SSH_KEY }}
     - name: push-upstream
       run: |
         ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
@@ -34,4 +34,6 @@ jobs:
         git clone git@github.com:mozilla/bigquery-etl.git
         cd gh-actions-test
 
-        ../bin/git-push-fork-to-upstream-branch git@github.com:mozilla/bigquery-etl.git ${{ github.event.inputs.name }}
+        ../bin/git-push-fork-to-upstream-branch \
+          git@github.com:mozilla/bigquery-etl.git \
+          ${{ github.event.inputs.name }}

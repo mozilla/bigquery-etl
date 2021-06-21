@@ -366,11 +366,31 @@ jobs:
       - gcp-gcr/push-image:
           image: bigquery-etl
           tag: ${CIRCLE_TAG:-latest}
+  manual-trigger-required-for-fork:
+    docker: *docker
+    steps:
+      - checkout
+      - run:
+          name: Manually trigger integration tests for fork
+          command: |
+            echo "Integration tests for this fork need to be triggered manually"
+            echo "Users with write access to the repository can trigger" \
+              " integration tests by visiting: "
+            echo "https://github.com/mozilla/bigquery-etl/actions/workflows" \
+              "/push-to-upstream.yml".
+            echo "Trigger via 'Run workflow' and provide the " \
+              "<username>:<branch>" of this PR as parameters."
+
+            exit 1
 
 workflows:
   version: 2
   build:
     jobs: &build_jobs
+      - manual-trigger-required-for-fork:
+          filters:
+            branches:
+              only: /^pull\/.*$/
       - build:
           context: data-eng-circleci-tests
       - verify-format-sql

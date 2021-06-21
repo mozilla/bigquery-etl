@@ -95,6 +95,9 @@ fields:
 - name: plan_interval_count
   type: INTEGER
   mode: NULLABLE
+- name: plan_interval_timezone
+  type: STRING
+  mode: NULLABLE
 - name: product_id
   type: STRING
   mode: NULLABLE

@@ -176,6 +176,7 @@ fxa_subscriptions AS (
     plan_currency,
     plan_interval,
     plan_interval_count,
+    "Etc/UTC" AS plan_interval_timezone,
     product_id,
     product_name,
     CONCAT(
@@ -219,7 +220,7 @@ apple_iap_subscriptions AS (
     CAST(NULL AS STRING) AS status,
     updated_at AS event_timestamp,
     TIMESTAMP(
-      MIN(start_date) OVER (
+      MIN(start_time) OVER (
         PARTITION BY
           user_id
         ROWS BETWEEN
@@ -227,14 +228,14 @@ apple_iap_subscriptions AS (
           AND UNBOUNDED FOLLOWING
       )
     ) AS customer_start_date,
-    TIMESTAMP(start_date) AS subscription_start_date,
+    start_time AS subscription_start_date,
     created_at AS created,
     CAST(NULL AS TIMESTAMP) AS trial_end,
     CAST(NULL AS TIMESTAMP) AS canceled_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
-    IF(end_date < CURRENT_DATE, TIMESTAMP(end_date), NULL) AS ended_at,
-    TIMESTAMP(LEAST(end_date, CURRENT_DATE)) AS end_date,
+    IF(end_time < CURRENT_DATE, end_time, NULL) AS ended_at,
+    LEAST(end_time, TIMESTAMP(CURRENT_DATE)) AS end_date,
     fxa_uid,
     CAST(NULL AS STRING) AS country,
     CAST(NULL AS STRING) AS country_name,
@@ -252,6 +253,7 @@ apple_iap_subscriptions AS (
     CAST(NULL AS STRING) AS plan_currency,
     `interval` AS plan_interval,
     interval_count AS plan_interval_count,
+    "America/Los_Angeles" AS plan_interval_timezone,
     CAST(NULL AS STRING) AS product_id,
     "Mozilla VPN" AS product_name,
     CONCAT(interval_count, "-", `interval`, "-", "apple") AS pricing_plan,

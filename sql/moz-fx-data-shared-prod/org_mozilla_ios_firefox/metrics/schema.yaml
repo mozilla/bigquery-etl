@@ -759,6 +759,22 @@ fields:
       mode: NULLABLE
       name: pocket_section_impressions
       type: INTEGER
+    - description: 'Counts the number of times a bookmarked item in
+
+        the Recently Saved section is tapped
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_recently_saved_bookmark_item
+      type: INTEGER
+    - description: 'Counts the number of times a user taps the Show All
+
+        button of the Recently Saved Section
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_recently_saved_show_all
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

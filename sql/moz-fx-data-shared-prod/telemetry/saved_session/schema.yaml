@@ -22033,6 +22033,17 @@ fields:
       mode: REPEATED
       name: http3_upload_time_gt_100m
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: The time that a transaction is waiting for HTTPS RR
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: https_rr_waiting_time
+      type: RECORD
     mode: NULLABLE
     name: keyed_histograms
     type: RECORD
@@ -48736,6 +48747,17 @@ fields:
           mode: REPEATED
           name: trr_skip_reason_trr_first2
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time that a transaction is waiting for HTTPS RR
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: https_rr_waiting_time
+          type: RECORD
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -48811,6 +48833,17 @@ fields:
             type: STRING
           mode: REPEATED
           name: trr_skip_reason_trr_first2
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time that a transaction is waiting for HTTPS RR
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: https_rr_waiting_time
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms

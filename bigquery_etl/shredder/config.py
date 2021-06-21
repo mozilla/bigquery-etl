@@ -473,12 +473,17 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
                 tables_with_pioneer_id.append(table_ref)
         return tables_with_pioneer_id
 
-    def __get_client_id_field__(table, deletion_request_view=False):
+    def __get_client_id_field__(table, deletion_request_view=False, study_name=None):
         """Determine which column should be used as client id for a given table."""
-        if table.dataset_id.startswith("rally_"):
+        if table.dataset_id.startswith("rally_") or (
+            study_name and study_name.startswith("rally_")
+        ):
             # `rally_zero_one` is a special case where top-level rally_id is used
             # both in the ping tables and the deletion_requests view
-            if table.dataset_id == "rally_zero_one":
+            if (
+                table.dataset_id in ["rally_zero_one_stable", "rally_zero_one_derived"]
+                or study_name == "rally_zero_one"
+            ):
                 return RALLY_ID_TOP_LEVEL
             # deletion request views expose rally_id as a top-level field
             if deletion_request_view:
@@ -569,7 +574,7 @@ def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
             # tables with pioneer_id located in study analysis projects
             DeleteTarget(
                 table=qualified_table_id(table),
-                field=__get_client_id_field__(table),
+                field=__get_client_id_field__(table, study_name=study),
                 project=table.project,
             ): sources[study.replace("-", "_") + "_stable"]
             for dataset, study in analysis_datasets.items()

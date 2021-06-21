@@ -1,0 +1,11 @@
+---
+friendly_name: Normalize Subscription Months Renewed
+description: >
+  Take subscription start and end and determine the number of months for which
+  the subscription has been renewed. Values must be datetime in the correct time
+  zone, because the definition of month is timezone sensitive. For example, a
+  subscription from 2021-01-01 to 2021-03-01 was renewed 1 time. Also don't
+  count subscriptions as renewed if it end during the billing grace period,
+  usually 2 days. For example, a subscription from 2021-01-01 to 2021-03-03 was
+  renewed one time because it ended during the grace period, but if it ended on
+  2021-03-04 then it was renewed twice

@@ -234,7 +234,7 @@ apple_iap_subscriptions AS (
     CAST(NULL AS TIMESTAMP) AS canceled_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
-    IF(end_time < CURRENT_DATE, end_time, NULL) AS ended_at,
+    IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
     LEAST(end_time, TIMESTAMP(CURRENT_DATE)) AS end_date,
     fxa_uid,
     CAST(NULL AS STRING) AS country,

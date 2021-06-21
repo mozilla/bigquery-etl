@@ -543,9 +543,6 @@ with DAG(
     mozilla_vpn_derived__retention_by_subscription__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1
     )
-    mozilla_vpn_derived__retention_by_subscription__v1.set_upstream(
-        wait_for_stripe_external__invoices__v1
-    )
 
     mozilla_vpn_derived__subscriptions__v1.set_upstream(
         mozilla_vpn_external__subscriptions__v1

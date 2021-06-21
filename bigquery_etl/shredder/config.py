@@ -462,13 +462,22 @@ PIONEER_PROD = "moz-fx-data-pioneer-prod"
 def find_pioneer_targets(pool, client, project=PIONEER_PROD, study_projects=[]):
     """Return a dict like DELETE_TARGETS for Pioneer tables."""
 
+    def has_nested_rally_id(field):
+        """Check if any of the fields contains nested `metrics.uuid_rally_id`."""
+        if field.name == "metrics" and field.field_type == "RECORD":
+            uuid_field = next(filter(lambda f: f.name == "uuid", field.fields), None)
+            if uuid_field and uuid_field.field_type == "RECORD":
+                return any(field.name == "rally_id" for field in uuid_field.fields)
+        return False
+
     def __get_tables_with_pioneer_id__(dataset):
         tables_with_pioneer_id = []
         for table in client.list_tables(dataset):
             table_ref = client.get_table(table)
             if (
                 any(field.name == PIONEER_ID for field in table_ref.schema)
-                or any(field.name == RALLY_ID for field in table_ref.schema)
+                or any(field.name == RALLY_ID_TOP_LEVEL for field in table_ref.schema)
+                or any(has_nested_rally_id(field) for field in table_ref.schema)
             ) and table_ref.table_type != "VIEW":
                 tables_with_pioneer_id.append(table_ref)
         return tables_with_pioneer_id

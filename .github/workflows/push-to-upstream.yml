@@ -1,0 +1,37 @@
+# Workflow manually triggered to push fork to upstream
+name: Push to upstream
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Push PR to upstream <username>:<branch>'
+        default: ''
+        required: true
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: webfactory/ssh-agent
+      uses: webfactory/ssh-agent@v0.5.1
+      with:
+          ssh-private-key: ${{ secrets.GH_ACTION_SSH_KEY }}
+    - name: push-upstream
+      run: |
+        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+        git config --global user.name "Github Action"
+        git config --global user.email "gh-action+bigquery-etl@mozilla.com"
+
+        mkdir bin
+        GPF_INSTALL_LOCATION=bin/git-push-fork-to-upstream-branch
+        GPF_URL=https://raw.githubusercontent.com/jklukas/git-push-fork-to-upstream-branch/master/git-push-fork-to-upstream-branch
+        sudo curl -sL $GPF_URL > $GPF_INSTALL_LOCATION
+        chmod 755 $GPF_INSTALL_LOCATION
+        export GPF_USE_SSH=true
+
+        git clone git@github.com:mozilla/bigquery-etl.git
+        cd gh-actions-test
+
+        ../bin/git-push-fork-to-upstream-branch git@github.com:mozilla/bigquery-etl.git ${{ github.event.inputs.name }}

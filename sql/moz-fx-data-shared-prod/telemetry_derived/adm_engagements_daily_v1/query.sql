@@ -138,7 +138,7 @@ searchmode_temp AS (
     END
     AS phase
   FROM
-    search.search_clients_daily
+    search.search_clients_engines_sources_daily
   WHERE
     submission_date = @submission_date
     -- looks as though search engine replacement is only for amazon

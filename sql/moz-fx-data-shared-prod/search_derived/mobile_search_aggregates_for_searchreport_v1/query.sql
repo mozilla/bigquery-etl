@@ -54,7 +54,7 @@ SELECT
   sum(search_with_ads) AS search_with_ads,
   sum(organic) AS organic
 FROM
-  search.mobile_search_clients_daily
+  search.mobile_search_clients_engines_sources_daily
 WHERE
   app_name IN ('Fenix', 'Fennec', 'Firefox Preview', 'Focus')
   AND app_name IS NOT NULL

@@ -687,6 +687,10 @@ fields:
         mode: NULLABLE
         name: effective_content_process_level
         type: INTEGER
+      - description: The status of Win32k Lockdown for Content process.
+        mode: NULLABLE
+        name: content_win32k_lockdown_state
+        type: INTEGER
       mode: NULLABLE
       name: sandbox
       type: RECORD

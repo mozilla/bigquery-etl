@@ -124,7 +124,7 @@ WITH augmented AS (
       )
     ) AS _searches,
   FROM
-    mozdata.tmp.clients_daily_with_search
+    telemetry.clients_daily
 ),
 flattened AS (
   SELECT

@@ -1,24 +1,10 @@
 ---
 - &base
-  ad_click: 0
-  ad_click_organic: 0
-  organic: 0
-  sap: 4
-  search_with_ads: 0
-  search_with_ads_organic: 0
-  sessions_started_on_this_day: 0
-  source: urlbar
   submission_date: '2017-01-01'
-  tagged_follow_on: 0
-  tagged_sap: 0
-  unknown: 0
   client_id: a
-  engine: bing
-  experiments:
-  - key: exp1
-    value: active
-  - key: exp2
-    value: active
+  country: US
+  profile_creation_date: '2019-09-06 00:00:00'
+  experiments: []
   scalar_parent_urlbar_searchmode_bookmarkmenu_sum: []
   scalar_parent_urlbar_searchmode_handoff_sum: []
   scalar_parent_urlbar_searchmode_keywordoffer_sum: []
@@ -32,28 +18,23 @@
   scalar_parent_urlbar_searchmode_topsites_urlbar_sum: []
   scalar_parent_urlbar_searchmode_touchbar_sum: []
   scalar_parent_urlbar_searchmode_typed_sum: []
-- <<: *base
-  client_id: a
-  sap: 4
-  engine: yahoo
-  experiments:
-  - key: exp1
-    value: active
-  - key: exp2
-    value: active
-- <<: *base
-  client_id: a
-  sap: 8
-  engine: google
-  experiments:
-  - key: exp1
-    value: active
-  - key: exp2
-    value: active
+  search_counts: []
+  ad_clicks: []
+  search_with_ads: []
 - <<: *base
   client_id: b
-  sap: 4
-  engine: google
-  experiments:
-  - key: exp1
-    value: active
+  active_addons:
+    - addon_id: random@mozilla.com
+      version: '0.1'
+    - addon_id: followonsearch@mozilla.com
+      version: 0.9.6
+  search_counts:
+    - source: searchbar
+      engine: engine1
+      count: 1
+  ad_clicks:
+    - key: engine1
+      value: 2
+  search_with_ads:
+    - key: engine1
+      value: 3

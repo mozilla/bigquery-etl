@@ -67,7 +67,7 @@ WITH client_searches AS (
         SUM(COALESCE(ad_click, 0)) AS ad_click,
         SUM(COALESCE(search_with_ads, 0)) AS searches_with_ads
       FROM
-        `moz-fx-data-shared-prod.search.search_clients_daily`
+        `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
       WHERE
         submission_date = @submission_date
       GROUP BY

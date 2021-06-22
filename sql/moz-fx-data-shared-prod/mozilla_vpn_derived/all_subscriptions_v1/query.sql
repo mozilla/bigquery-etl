@@ -234,7 +234,7 @@ apple_iap_subscriptions AS (
     created_at AS created,
     CAST(NULL AS TIMESTAMP) AS trial_end,
     CAST(NULL AS TIMESTAMP) AS canceled_at,
-    CAST(NULL AS STRING) AS cancelled_for_customer_at,
+    CAST(NULL AS STRING) AS canceled_for_customer_at,
     CAST(NULL AS TIMESTAMP) AS cancel_at,
     CAST(NULL AS BOOL) AS cancel_at_period_end,
     IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,

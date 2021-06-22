@@ -29,19 +29,42 @@
   scalar_parent_urlbar_searchmode_typed_sum: []
 - <<: *base
   client_id: b
-  addon_version: 0.9.6
   engine: engine1
   source: searchbar
   sap: 1
 - <<: *base
   client_id: b
-  addon_version: 0.9.6
+  engine: engine2
+  source: 'in-content:sap:code'
+  tagged_sap: 2
+- <<: *base
+  client_id: b
+  engine: engine2
+  source: 'in-content:sap-follow-on:code'
+  tagged_follow_on: 3
+- <<: *base
+  client_id: b
+  engine: engine2
+  source: 'in-content:organic:none'
+  organic: 4
+- <<: *base
+  client_id: b
   engine: engine1
   source: 'ad-click:'
   ad_click: 2
 - <<: *base
   client_id: b
-  addon_version: 0.9.6
+  engine: engine1
+  source: 'ad-click:organic'
+  ad_click_organic: 3
+- <<: *base
+  client_id: b
   engine: engine1
   source: 'search-with-ads:'
   search_with_ads: 3
+- <<: *base
+  client_id: c
+  addon_version: 0.9.6
+  engine: engine2
+  source: contextmenu
+  sap: 2

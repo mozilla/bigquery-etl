@@ -7,7 +7,7 @@ gcloud==0.18.3
 gitpython==3.1.18
 google-api-core==1.30.0  # transitive dep that needs dependabot updates
 google-cloud-bigquery==2.20.0
-google-cloud-storage==1.38.0
+google-cloud-storage==1.39.0
 googleapis-common-protos==1.53.0  # transitive dep that needs dependabot updates
 importlib-metadata==4.5.0  # python 3.7 backwards compat
 Jinja2==3.0.1

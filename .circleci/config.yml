@@ -372,16 +372,23 @@ jobs:
       - checkout
       - run:
           name: Manually trigger integration tests for fork
+          # yamllint disable rule:line-length
           command: |
+            apt update
+            apt install jq -y
+
+            CIRCLE_PR_BRANCH=`curl -s https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PR_NUMBER} | jq -r '.head.label'`
+
             echo "Integration tests for this fork need to be triggered manually"
             echo "Users with write access to the repository can trigger" \
               " integration tests by visiting: "
             echo "https://github.com/mozilla/bigquery-etl/actions/workflows" \
               "/push-to-upstream.yml".
-            echo "Trigger via 'Run workflow' and provide the " \
-              "<username>:<branch>" of this PR as parameters."
+            echo "Trigger via 'Run workflow' and provide " \
+              '$CIRCLE_PR_BRANCH' as parameter."
 
             exit 1
+          # yamllint enable rule:line-length
 
 workflows:
   version: 2

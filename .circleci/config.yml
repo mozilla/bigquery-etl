@@ -26,6 +26,7 @@ jobs:
         run:
           name: Build
           command: |
+            echo "test"
             python3.8 -m venv venv/
             venv/bin/pip install pip-tools --constraint requirements.in
             venv/bin/pip-sync
@@ -369,6 +370,14 @@ jobs:
   manual-trigger-required-for-fork:
     docker: *docker
     steps:
+      - &skip_upstream
+        run:
+          name: Early return if this build is running on upstream
+          command: |
+            if [ "$CIRCLE_PR_NUMBER" ]; then
+              echo "Build on upstream"
+              circleci step halt
+            fi
       - checkout
       - run:
           name: Manually trigger integration tests for fork

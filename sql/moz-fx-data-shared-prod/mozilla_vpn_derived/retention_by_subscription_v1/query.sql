@@ -1,7 +1,7 @@
 WITH base AS (
   SELECT
     *,
-    DATE_TRUNC(subscription_start_date, MONTH) AS cohort_month,
+    DATE_TRUNC(DATE(subscription_start_date), MONTH) AS cohort_month,
     mozfun.norm.subscription_months_renewed(
       -- month is timezone sensitive, so use localized datetime to calculate monthly retention
       DATETIME(subscription_start_date, plan_interval_timezone),

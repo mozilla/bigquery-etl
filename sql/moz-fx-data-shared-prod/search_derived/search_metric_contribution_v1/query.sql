@@ -6,7 +6,7 @@ WITH monthly_client_aggregates AS (
     SUM(active_hours_sum) AS active_hours_sum,
     SUM(ad_click) AS ad_click,
   FROM
-    `moz-fx-data-shared-prod.search.search_clients_daily`
+    `moz-fx-data-shared-prod.search.search_clients_engines_sources_daily`
   WHERE
     submission_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)

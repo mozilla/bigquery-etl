@@ -247,6 +247,7 @@ event:
             interval_count:
             trial_period_days:
             usage_type:
+          tax_behavior:
           tiers:
             flat_amount:
             flat_amount_decimal:
@@ -415,6 +416,7 @@ event:
         interval_count:
         trial_period_days:
         usage_type:
+      tax_behavior:
       tiers:
         flat_amount:
         flat_amount_decimal:
@@ -561,6 +563,7 @@ event:
             interval_count:
             trial_period_days:
             usage_type:
+          tax_behavior:
           tiers:
             flat_amount:
             flat_amount_decimal:
@@ -659,6 +662,7 @@ event:
               interval_count:
               trial_period_days:
               usage_type:
+            tax_behavior:
             tiers:
               flat_amount:
               flat_amount_decimal:

@@ -717,6 +717,10 @@
             ]
           },
           {
+            "name": "tax_behavior",
+            "type": "STRING"
+          },
+          {
             "name": "tiers",
             "type": "RECORD",
             "mode": "REPEATED",

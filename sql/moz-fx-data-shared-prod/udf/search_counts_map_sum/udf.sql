@@ -15,7 +15,6 @@ CREATE OR REPLACE FUNCTION udf.search_counts_map_sum(
 );
 
 -- Tests
-
 SELECT
   assert_array_equals(
     ARRAY<STRUCT<engine STRING, source STRING, count INT64>>[],

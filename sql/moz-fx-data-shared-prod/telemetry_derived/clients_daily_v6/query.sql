@@ -231,6 +231,11 @@ clients_summary AS (
     environment.settings.default_search_engine_data.origin AS default_search_engine_data_origin,
     environment.settings.default_search_engine_data.submission_url AS default_search_engine_data_submission_url,
     environment.settings.default_search_engine,
+    environment.settings.default_private_search_engine_data.name AS default_private_search_engine_data_name,
+    environment.settings.default_private_search_engine_data.load_path AS default_private_search_engine_data_load_path,
+    environment.settings.default_private_search_engine_data.origin AS default_private_search_engine_data_origin,
+    environment.settings.default_private_search_engine_data.submission_url AS default_private_search_engine_data_submission_url,
+    environment.settings.default_private_search_engine,
     hist_sums[OFFSET(0)] AS devtools_toolbox_opened_count,
     hist_sums[OFFSET(1)] AS push_api_notify,
     hist_sums[OFFSET(2)] AS web_notification_shown,
@@ -413,6 +418,10 @@ clients_summary AS (
     count_histograms[OFFSET(27)].histogram AS histogram_parent_devtools_webaudioeditor_opened_count,
     count_histograms[OFFSET(28)].histogram AS histogram_parent_devtools_webconsole_opened_count,
     count_histograms[OFFSET(29)].histogram AS histogram_parent_devtools_webide_opened_count,
+    mozfun.map.get_key(
+      environment.settings.user_prefs,
+      'browser.search.region'
+    ) AS user_pref_browser_search_region,
   FROM
     base
   LEFT JOIN
@@ -493,6 +502,21 @@ aggregates AS (
     mozfun.stats.mode_last(
       ARRAY_AGG(default_search_engine_data_submission_url ORDER BY submission_timestamp)
     ) AS default_search_engine_data_submission_url,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(default_private_search_engine ORDER BY submission_timestamp)
+    ) AS default_private_search_engine,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(default_private_search_engine_data_load_path ORDER BY submission_timestamp)
+    ) AS default_private_search_engine_data_load_path,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(default_private_search_engine_data_name ORDER BY submission_timestamp)
+    ) AS default_private_search_engine_data_name,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(default_private_search_engine_data_origin ORDER BY submission_timestamp)
+    ) AS default_private_search_engine_data_origin,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(default_private_search_engine_data_submission_url ORDER BY submission_timestamp)
+    ) AS default_private_search_engine_data_submission_url,
     SUM(devtools_toolbox_opened_count) AS devtools_toolbox_opened_count_sum,
     mozfun.stats.mode_last(
       ARRAY_AGG(distribution_id ORDER BY submission_timestamp)
@@ -923,8 +947,14 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_tip)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_topsite)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_unknown)),
-      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_visiturl))
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_visiturl)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_search_with_ads)),
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_search_ad_clicks))
     ] AS map_sum_aggregates,
+    udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(user_pref_browser_search_region)
+    ) AS user_pref_browser_search_region,
   FROM
     clients_summary
   GROUP BY
@@ -980,5 +1010,7 @@ SELECT
   map_sum_aggregates[OFFSET(29)].map AS scalar_parent_urlbar_picked_topsite_sum,
   map_sum_aggregates[OFFSET(30)].map AS scalar_parent_urlbar_picked_unknown_sum,
   map_sum_aggregates[OFFSET(31)].map AS scalar_parent_urlbar_picked_visiturl_sum,
+  map_sum_aggregates[OFFSET(32)].map AS search_with_ads,
+  map_sum_aggregates[OFFSET(33)].map AS ad_clicks,
 FROM
   udf_aggregates

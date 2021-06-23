@@ -1,9 +1,10 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from airflow.utils.state import State
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
+from operators.task_sensor import ExternalTaskCompletedSensor
 from utils.gcp import gke_command
 
 docs = """
@@ -54,7 +55,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {% if dependency.dag_name == name -%}
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
     {% else -%}
-    wait_for_{{ dependency.task_id }} = ExternalTaskSensor(
+    wait_for_{{ dependency.task_id }} = ExternalTaskCompletedSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
         external_task_id='{{ dependency.task_id }}',
@@ -63,6 +64,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% endif -%}
         check_existence=True,
         mode='reschedule',
+        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
         pool='DATA_ENG_EXTERNALTASKSENSOR',
     )
 

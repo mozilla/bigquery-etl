@@ -16,17 +16,17 @@ CREATE OR REPLACE FUNCTION udf.search_counts_map_sum(
 
 -- Tests
 SELECT
-  assert_array_equals(
+  assert.array_equals(
     ARRAY<STRUCT<engine STRING, source STRING, count INT64>>[],
-    udf_search_counts_map_sum(ARRAY<STRUCT<engine STRING, source STRING, count INT64>>[])
+    udf.search_counts_map_sum(ARRAY<STRUCT<engine STRING, source STRING, count INT64>>[])
   ),
-  assert_array_equals(
+  assert.array_equals(
     ARRAY<STRUCT<engine STRING, source STRING, count INT64>>[
       ('engine1', 'urlbar', 3),
       ('engine1', 'contextmenu', 7),
       ('engine2', 'urlbar', 5)
     ],
-    udf_search_counts_map_sum(
+    udf.search_counts_map_sum(
       ARRAY<STRUCT<engine STRING, source STRING, count INT64>>[
         ('engine1', 'urlbar', 1),
         ('engine1', 'contextmenu', 3),

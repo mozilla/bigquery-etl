@@ -14,13 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: webfactory/ssh-agent
-      uses: webfactory/ssh-agent@v0.5.1
-      with:
-        ssh-private-key: ${{ secrets.GH_ACTION_SSH_KEY }}
     - name: push-upstream
       run: |
-        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+        eval "$(ssh-agent -s)"
+        ssh-add - <<< "${{ secrets.GH_ACTION_SSH_KEY }}"
+
         git config --global user.name "Github Action"
         git config --global user.email "gh-action+bigquery-etl@mozilla.com"
 

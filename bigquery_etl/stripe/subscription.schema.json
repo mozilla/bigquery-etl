@@ -564,6 +564,10 @@
             ]
           },
           {
+            "name": "tax_behavior",
+            "type": "STRING"
+          },
+          {
             "name": "tiers",
             "type": "RECORD",
             "mode": "REPEATED",
@@ -1038,6 +1042,10 @@
                     "type": "STRING"
                   }
                 ]
+              },
+              {
+                "name": "tax_behavior",
+                "type": "STRING"
               },
               {
                 "name": "tiers",

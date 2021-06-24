@@ -373,9 +373,11 @@ jobs:
         run:
           name: Early return if this build is running on upstream
           command: |
-            if [ "$CIRCLE_PR_NUMBER" ]; then
-              echo "Build on upstream"
+            if [ -n "$CIRCLE_PR_NUMBER" ]; then
+              echo "Build on fork"
+            else
               circleci step halt
+              echo "Build on upstream"
             fi
       - checkout
       - run:
@@ -400,10 +402,7 @@ workflows:
   version: 2
   build:
     jobs: &build_jobs
-      - manual-trigger-required-for-fork:
-          filters:
-            branches:
-              only: /^pull\/.*$/
+      - manual-trigger-required-for-fork
       - build:
           context: data-eng-circleci-tests
       - verify-format-sql

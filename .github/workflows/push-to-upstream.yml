@@ -18,6 +18,7 @@ jobs:
       run: |
         eval "$(ssh-agent -s)"
         ssh-add - <<< "${{ secrets.GH_ACTION_SSH_KEY }}"
+        mkdir -p ~/.ssh
         ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
         git config --global user.name "Github Action"

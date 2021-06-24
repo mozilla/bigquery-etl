@@ -63,12 +63,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_log_device_command_events_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_last_seen_v1/query.sql",  # noqa E501
-    "sql/moz-fx-data-shared-prod/telemetry_derived/addons_daily_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/search_derived/search_clients_last_seen_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/search_derived/search_clients_last_seen_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/search/search_rfm/view.sql",
-    "sql/moz-fx-data-shared-prod/search/search_clients_last_seen_v1/view.sql",
-    "sql/moz-fx-data-shared-prod/search/search_clients_last_seen/view.sql",
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501

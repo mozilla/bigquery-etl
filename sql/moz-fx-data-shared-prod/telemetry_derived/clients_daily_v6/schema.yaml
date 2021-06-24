@@ -1249,3 +1249,54 @@ fields:
   mode: REPEATED
   name: scalar_parent_urlbar_picked_visiturl_sum
   type: RECORD
+- mode: NULLABLE
+  name: default_private_search_engine
+  type: STRING
+- mode: NULLABLE
+  name: default_private_search_engine_data_load_path
+  type: STRING
+- mode: NULLABLE
+  name: default_private_search_engine_data_name
+  type: STRING
+- mode: NULLABLE
+  name: default_private_search_engine_data_origin
+  type: STRING
+- mode: NULLABLE
+  name: default_private_search_engine_data_submission_url
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: engine
+    type: STRING
+  - mode: NULLABLE
+    name: source
+    type: STRING
+  - mode: NULLABLE
+    name: count
+    type: INTEGER
+  mode: REPEATED
+  name: search_counts
+  type: RECORD
+- mode: NULLABLE
+  name: user_pref_browser_search_region
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_with_ads
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: ad_clicks
+  type: RECORD

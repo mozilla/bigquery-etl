@@ -1,9 +1,10 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from airflow.utils.state import State
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
+from operators.task_sensor import ExternalTaskCompletedSensor
 from utils.gcp import gke_command
 
 docs = """
@@ -74,13 +75,14 @@ with DAG(
         dag=dag,
     )
 
-    wait_for_mozregression_aggregates__v1 = ExternalTaskSensor(
+    wait_for_mozregression_aggregates__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_mozregression_aggregates__v1",
         external_dag_id="bqetl_internal_tooling",
         external_task_id="mozregression_aggregates__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
+        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
@@ -88,13 +90,14 @@ with DAG(
         wait_for_mozregression_aggregates__v1
     )
 
-    wait_for_telemetry_derived__ssl_ratios__v1 = ExternalTaskSensor(
+    wait_for_telemetry_derived__ssl_ratios__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_telemetry_derived__ssl_ratios__v1",
         external_dag_id="bqetl_ssl_ratios",
         external_task_id="telemetry_derived__ssl_ratios__v1",
         execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
+        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 

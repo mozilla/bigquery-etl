@@ -446,6 +446,14 @@ pip-compile --generate-hashes requirements.in
 deactivate
 ```
 
+When opening a pull-request to merge a fork, the `manual-trigger-required-for-fork` CI task will
+fail and some integration test tasks will be skipped. A user with repository write permissions
+will have to run the [Push to upstream workflow](https://github.com/mozilla/bigquery-etl/actions/workflows/push-to-upstream.yml)
+and provide the `<username>:<branch>` of the fork as parameter. The parameter will also show up
+in the logs of the `manual-trigger-required-for-fork` CI task together with more detailed instructions.
+Once the workflow has been executed, the CI tasks, including the integration tests, of the PR will be
+executed.
+
 Tests
 ---
 

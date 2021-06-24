@@ -39378,6 +39378,10 @@ fields:
           mode: NULLABLE
           name: query_stripping_count
           type: STRING
+        - description: Whether and how window.open opens a new popup or a new tab
+          mode: NULLABLE
+          name: window_open_type
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD

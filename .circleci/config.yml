@@ -108,7 +108,7 @@ jobs:
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
               echo "Cannot pass creds to forked PRs," \
                 "so marking this step successful"
-              circleci step halt
+              circleci-agent step halt
             fi
       - *restore_venv_cache
       - *build
@@ -165,7 +165,7 @@ jobs:
                 "since branching off main"
             else
               echo "Skipping job because .circleci/ and dags/ were not modified"
-              circleci step halt
+              circleci-agent step halt
             fi
       - run:
           name: Pull telemetry-airflow
@@ -376,8 +376,8 @@ jobs:
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
               echo "Build on fork"
             else
-              circleci step halt
               echo "Build on upstream"
+              circleci-agent step halt
             fi
       - checkout
       - run:

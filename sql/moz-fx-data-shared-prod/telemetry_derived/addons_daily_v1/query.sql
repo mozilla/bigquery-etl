@@ -97,7 +97,7 @@ client_meta AS (
     tagged_follow_on,
     organic,
     searches_with_ads,
-    ad_clicks,
+    client_searches.ad_clicks,
     active_addons
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_last_seen_v1`

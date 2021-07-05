@@ -1,7 +1,7 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from operators.task_sensor import ExternalTaskCompletedSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -50,7 +50,7 @@ with DAG(
         dag=dag,
     )
 
-    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+    wait_for_copy_deduplicate_main_ping = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_main_ping",

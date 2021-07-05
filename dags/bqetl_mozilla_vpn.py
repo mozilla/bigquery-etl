@@ -1,7 +1,7 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from operators.task_sensor import ExternalTaskCompletedSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -395,7 +395,7 @@ with DAG(
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__users__v1
     )
-    wait_for_stripe_derived__customers__v1 = ExternalTaskSensor(
+    wait_for_stripe_derived__customers__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_stripe_derived__customers__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_derived__customers__v1",
@@ -408,7 +408,7 @@ with DAG(
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         wait_for_stripe_derived__customers__v1
     )
-    wait_for_stripe_derived__plans__v1 = ExternalTaskSensor(
+    wait_for_stripe_derived__plans__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_stripe_derived__plans__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_derived__plans__v1",
@@ -421,7 +421,7 @@ with DAG(
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         wait_for_stripe_derived__plans__v1
     )
-    wait_for_stripe_derived__products__v1 = ExternalTaskSensor(
+    wait_for_stripe_derived__products__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_stripe_derived__products__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_derived__products__v1",
@@ -434,7 +434,7 @@ with DAG(
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         wait_for_stripe_derived__products__v1
     )
-    wait_for_stripe_derived__subscriptions__v1 = ExternalTaskSensor(
+    wait_for_stripe_derived__subscriptions__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_stripe_derived__subscriptions__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_derived__subscriptions__v1",
@@ -447,7 +447,7 @@ with DAG(
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         wait_for_stripe_derived__subscriptions__v1
     )
-    wait_for_stripe_external__charges__v1 = ExternalTaskSensor(
+    wait_for_stripe_external__charges__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_stripe_external__charges__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_external__charges__v1",
@@ -460,7 +460,7 @@ with DAG(
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         wait_for_stripe_external__charges__v1
     )
-    wait_for_stripe_external__fxa_pay_setup_complete__v1 = ExternalTaskSensor(
+    wait_for_stripe_external__fxa_pay_setup_complete__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_stripe_external__fxa_pay_setup_complete__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_external__fxa_pay_setup_complete__v1",
@@ -473,7 +473,7 @@ with DAG(
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         wait_for_stripe_external__fxa_pay_setup_complete__v1
     )
-    wait_for_stripe_external__invoices__v1 = ExternalTaskSensor(
+    wait_for_stripe_external__invoices__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_stripe_external__invoices__v1",
         external_dag_id="bqetl_stripe",
         external_task_id="stripe_external__invoices__v1",
@@ -509,27 +509,31 @@ with DAG(
         mozilla_vpn_derived__users__v1
     )
 
-    wait_for_firefox_accounts_derived__fxa_auth_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_auth_events__v1",
-        execution_delta=datetime.timedelta(seconds=900),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    wait_for_firefox_accounts_derived__fxa_auth_events__v1 = (
+        ExternalTaskCompletedSensor(
+            task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            external_dag_id="bqetl_fxa_events",
+            external_task_id="firefox_accounts_derived__fxa_auth_events__v1",
+            execution_delta=datetime.timedelta(seconds=900),
+            check_existence=True,
+            mode="reschedule",
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
     )
 
     mozilla_vpn_derived__login_flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_auth_events__v1
     )
-    wait_for_firefox_accounts_derived__fxa_content_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_content_events__v1",
-        execution_delta=datetime.timedelta(seconds=900),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    wait_for_firefox_accounts_derived__fxa_content_events__v1 = (
+        ExternalTaskCompletedSensor(
+            task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            external_dag_id="bqetl_fxa_events",
+            external_task_id="firefox_accounts_derived__fxa_content_events__v1",
+            execution_delta=datetime.timedelta(seconds=900),
+            check_existence=True,
+            mode="reschedule",
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
     )
 
     mozilla_vpn_derived__login_flows__v1.set_upstream(

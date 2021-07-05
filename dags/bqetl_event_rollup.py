@@ -1,7 +1,7 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from operators.task_sensor import ExternalTaskCompletedSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -170,27 +170,31 @@ with DAG(
         firefox_accounts_derived__event_types__v1
     )
 
-    wait_for_firefox_accounts_derived__fxa_auth_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_auth_events__v1",
-        execution_delta=datetime.timedelta(seconds=5400),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    wait_for_firefox_accounts_derived__fxa_auth_events__v1 = (
+        ExternalTaskCompletedSensor(
+            task_id="wait_for_firefox_accounts_derived__fxa_auth_events__v1",
+            external_dag_id="bqetl_fxa_events",
+            external_task_id="firefox_accounts_derived__fxa_auth_events__v1",
+            execution_delta=datetime.timedelta(seconds=5400),
+            check_existence=True,
+            mode="reschedule",
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
     )
 
     funnel_events_source__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_auth_events__v1
     )
-    wait_for_firefox_accounts_derived__fxa_content_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_content_events__v1",
-        execution_delta=datetime.timedelta(seconds=5400),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    wait_for_firefox_accounts_derived__fxa_content_events__v1 = (
+        ExternalTaskCompletedSensor(
+            task_id="wait_for_firefox_accounts_derived__fxa_content_events__v1",
+            external_dag_id="bqetl_fxa_events",
+            external_task_id="firefox_accounts_derived__fxa_content_events__v1",
+            execution_delta=datetime.timedelta(seconds=5400),
+            check_existence=True,
+            mode="reschedule",
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
     )
 
     funnel_events_source__v1.set_upstream(
@@ -201,7 +205,7 @@ with DAG(
         messaging_system_derived__event_types_history__v1
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+    wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",

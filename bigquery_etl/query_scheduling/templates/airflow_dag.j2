@@ -1,7 +1,7 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from operators.task_sensor import ExternalTaskCompletedSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -99,7 +99,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {% endif -%}
     {% else -%}
     {% if (dependency.dag_name, dependency.task_id) not in wait_for_seen -%}
-    wait_for_{{ dependency.task_id }} = ExternalTaskSensor(
+    wait_for_{{ dependency.task_id }} = ExternalTaskCompletedSensor(
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
         external_task_id='{{ dependency.task_id }}',
@@ -120,7 +120,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {% for task_ref in task.depends_on | sort(attribute='task_id') -%}
     {% if (task_ref.dag_name, task_ref.task_id) not in wait_for_seen -%}
-    wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }} = ExternalTaskSensor(
+    wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }} = ExternalTaskCompletedSensor(
         task_id="wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }}",
         external_dag_id="{{ task_ref.dag_name }}",
         external_task_id="{{ task_ref.task_id }}",

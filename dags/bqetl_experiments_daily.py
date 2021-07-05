@@ -1,7 +1,7 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from operators.task_sensor import ExternalTaskCompletedSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -109,7 +109,7 @@ with DAG(
         telemetry_derived__experiments_daily_active_clients__v1
     )
 
-    wait_for_bq_main_events = ExternalTaskSensor(
+    wait_for_bq_main_events = ExternalTaskCompletedSensor(
         task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
         external_task_id="bq_main_events",
@@ -122,7 +122,7 @@ with DAG(
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
         wait_for_bq_main_events
     )
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+    wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
@@ -135,7 +135,7 @@ with DAG(
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    wait_for_event_events = ExternalTaskSensor(
+    wait_for_event_events = ExternalTaskCompletedSensor(
         task_id="wait_for_event_events",
         external_dag_id="copy_deduplicate",
         external_task_id="event_events",
@@ -152,7 +152,7 @@ with DAG(
     telemetry_derived__experiment_search_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+    wait_for_copy_deduplicate_main_ping = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_main_ping",
@@ -169,7 +169,7 @@ with DAG(
     telemetry_derived__experiments_daily_active_clients__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
-    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskCompletedSensor(
         task_id="wait_for_telemetry_derived__clients_daily__v6",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__clients_daily__v6",

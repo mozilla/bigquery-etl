@@ -1,7 +1,7 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from operators.task_sensor import ExternalTaskCompletedSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -85,7 +85,7 @@ with DAG(
         dag=dag,
     )
 
-    wait_for_mozilla_vpn_derived__all_subscriptions__v1 = ExternalTaskSensor(
+    wait_for_mozilla_vpn_derived__all_subscriptions__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_mozilla_vpn_derived__all_subscriptions__v1",
         external_dag_id="bqetl_mozilla_vpn",
         external_task_id="mozilla_vpn_derived__all_subscriptions__v1",

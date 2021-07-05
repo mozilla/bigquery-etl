@@ -1,7 +1,7 @@
 # Generated via https://github.com/mozilla/bigquery-etl/blob/main/bigquery_etl/query_scheduling/generate_airflow_dags.py
 
 from airflow import DAG
-from airflow.operators.sensors import ExternalTaskSensor
+from operators.task_sensor import ExternalTaskCompletedSensor
 import datetime
 from utils.gcp import bigquery_etl_query, gke_command
 
@@ -90,7 +90,7 @@ with DAG(
         dag=dag,
     )
 
-    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+    wait_for_copy_deduplicate_main_ping = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_main_ping",
@@ -108,7 +108,7 @@ with DAG(
 
     telemetry_derived__addons__v2.set_upstream(wait_for_copy_deduplicate_main_ping)
 
-    wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
+    wait_for_search_derived__search_clients_daily__v8 = ExternalTaskCompletedSensor(
         task_id="wait_for_search_derived__search_clients_daily__v8",
         external_dag_id="bqetl_search",
         external_task_id="search_derived__search_clients_daily__v8",
@@ -121,7 +121,7 @@ with DAG(
     telemetry_derived__addons_daily__v1.set_upstream(
         wait_for_search_derived__search_clients_daily__v8
     )
-    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskSensor(
+    wait_for_telemetry_derived__clients_last_seen__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_telemetry_derived__clients_last_seen__v1",
         external_dag_id="bqetl_main_summary",
         external_task_id="telemetry_derived__clients_last_seen__v1",

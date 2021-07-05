@@ -101,7 +101,7 @@ WITH base AS (
     AND document_id IS NOT NULL
 ),
 overactive AS (
-  -- Find client_ids with over 200,000 pings in a day, which could errors in the
+  -- Find client_ids with over 150,000 pings in a day, which could errors in the
   -- next step due to aggregation overflows.
   SELECT
     client_id
@@ -110,7 +110,7 @@ overactive AS (
   GROUP BY
     client_id
   HAVING
-    COUNT(*) > 200000
+    COUNT(*) > 150000
 ),
 clients_summary AS (
   SELECT

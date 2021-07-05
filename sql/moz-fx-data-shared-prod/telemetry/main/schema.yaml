@@ -4857,7 +4857,7 @@ fields:
       mode: NULLABLE
       name: input_event_queued_apz_wheel_ms
       type: STRING
-    - description: Time (ms) for the mouse click event to dispatch, but before handlers
+    - description: Time (ms) for the mouse up/down event to dispatch, but before handlers
         executing.
       mode: NULLABLE
       name: input_event_queued_click_ms
@@ -25476,7 +25476,7 @@ fields:
           mode: NULLABLE
           name: input_event_queued_apz_wheel_ms
           type: STRING
-        - description: Time (ms) for the mouse click event to dispatch, but before
+        - description: Time (ms) for the mouse up/down event to dispatch, but before
             handlers executing.
           mode: NULLABLE
           name: input_event_queued_click_ms

@@ -3,6 +3,7 @@ authlib==0.15.4
 backports.cached-property==1.0.1  # python 3.7 backwards compat
 cattrs==1.7.1
 click==8.0.1
+gcsfs==2021.6.1
 gcloud==0.18.3
 gitpython==3.1.18
 google-api-core==1.30.0  # transitive dep that needs dependabot updates

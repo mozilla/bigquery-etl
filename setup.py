@@ -28,6 +28,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "gcloud",
+        "gcsfs",
         "google-cloud-bigquery",
         "google-cloud-storage",
         "Jinja2",

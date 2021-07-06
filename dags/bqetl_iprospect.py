@@ -45,7 +45,7 @@ with DAG(
             "python",
             "sql/moz-fx-data-marketing-prod/iprospect/detail_export_v1/query.py",
         ]
-        + [],
+        + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],

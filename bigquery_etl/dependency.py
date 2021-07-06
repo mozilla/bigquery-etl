@@ -13,9 +13,7 @@ from .view.generate_stable_views import get_stable_table_schemas
 
 stable_views = None
 
-
-def extract_table_references(sql: str) -> List[str]:
-    """Return a list of tables referenced in the given SQL."""
+try:
     import jnius_config  # noqa: E402
 
     if not jnius_config.vm_running:
@@ -23,7 +21,13 @@ def extract_table_references(sql: str) -> List[str]:
         root = Path(__file__).parent.parent / "target" / "dependency"
         for path in root.glob("*.jar"):
             jnius_config.add_classpath(path.resolve().as_posix())
+except ImportError:
+    # ignore so this module can be imported safely without java installed
+    pass
 
+
+def extract_table_references(sql: str) -> List[str]:
+    """Return a list of tables referenced in the given SQL."""
     # import jnius here so this module can be imported safely without java installed
     import jnius  # noqa: E402
 

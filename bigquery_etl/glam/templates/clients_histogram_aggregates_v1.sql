@@ -26,7 +26,8 @@ AS (
     SELECT AS STRUCT agg.key, SUM(agg.value) AS value
     FROM UNNEST(aggs) agg
     -- Prevent overflows by only keeping buckets where value is less than 2^40
-    -- allowing 2^24 entries.
+    -- allowing 2^24 entries. This value was chosen somewhat abitrarily, typically
+    -- the max histogram value is somewhere on the order of ~20 bits.
     WHERE agg.value <= POW(2, 40)
     GROUP BY agg.key
   )

@@ -32,6 +32,7 @@ setup(
         "google-cloud-bigquery",
         "google-cloud-storage",
         "Jinja2",
+        "pyarrow",
         "pytest-black",
         "pytest-pydocstyle",
         "pytest-flake8",

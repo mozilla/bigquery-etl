@@ -114,10 +114,9 @@ def main():
     partition = date.replace("-", "")
     destination = f"{args.project}.{args.dataset}.{args.table}${partition}"
     job = client.load_table_from_dataframe(new_data, destination, job_config=job_config)
+    
     print(f"Running job {job.job_id}")
-
     job.result()
-
     print(f"Loaded {uri} for {date}")
 
 

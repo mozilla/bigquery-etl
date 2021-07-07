@@ -19,6 +19,19 @@
       {% endif %}
 {% endset %}
 
+CREATE TEMP FUNCTION filter_values(aggs ARRAY<STRUCT<key STRING, value INT64>>)
+RETURNS ARRAY<STRUCT<key STRING, value INT64>>
+AS (
+  ARRAY(
+    SELECT AS STRUCT agg.key, SUM(agg.value) AS value
+    FROM UNNEST(aggs) agg
+    -- Prevent overflows by only keeping buckets where value is less than 2^40
+    -- allowing 2^24 entries.
+    WHERE agg.value <= POW(2, 40)
+    GROUP BY agg.key
+  )
+);
+
 WITH extracted_accumulated AS (
   SELECT
     *
@@ -69,7 +82,7 @@ aggregated_daily AS (
   SELECT
     {{ attributes }},
     {{ metric_attributes }},
-    mozfun.map.sum(ARRAY_CONCAT_AGG(value)) AS value
+    mozfun.map.sum(ARRAY_CONCAT_AGG(filter_values(value))) AS value
   FROM
     filtered_daily
   GROUP BY

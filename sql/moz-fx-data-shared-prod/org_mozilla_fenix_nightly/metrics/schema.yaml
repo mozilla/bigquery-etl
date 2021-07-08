@@ -153,6 +153,10 @@ fields:
       mode: NULLABLE
       name: x_telemetry_agent
       type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
     - mode: NULLABLE
       name: parsed_date
       type: TIMESTAMP
@@ -5210,6 +5214,44 @@ fields:
       mode: NULLABLE
       name: javascript_pageload_xdr_encode_time
       type: RECORD
+    - description: 'Time spent deserializing structured data
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: performance_clone_deserialize_time
+      type: RECORD
     mode: NULLABLE
     name: timing_distribution
     type: RECORD
@@ -5496,6 +5538,26 @@ fields:
       mode: NULLABLE
       name: js_xdr_encode_percentage
       type: RECORD
+    - description: 'Size of deserialized data, in items
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: performance_clone_deserialize_items
+      type: RECORD
     mode: NULLABLE
     name: custom_distribution
     type: RECORD
@@ -5683,6 +5745,26 @@ fields:
         type: RECORD
       mode: NULLABLE
       name: glean_database_size
+      type: RECORD
+    - description: 'Size of deserialized data, in bytes
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: performance_clone_deserialize_size
       type: RECORD
     mode: NULLABLE
     name: memory_distribution

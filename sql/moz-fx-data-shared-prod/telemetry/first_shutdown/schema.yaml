@@ -60,6 +60,10 @@ fields:
       mode: NULLABLE
       name: x_telemetry_agent
       type: STRING
+    - description: X-Foxsec-IP-Reputation header
+      mode: NULLABLE
+      name: x_foxsec_ip_reputation
+      type: STRING
     - mode: NULLABLE
       name: parsed_date
       type: TIMESTAMP
@@ -19117,6 +19121,18 @@ fields:
         'StripForRedirect' = There was a stripping happened for a top-level redirect.
       mode: NULLABLE
       name: query_stripping_count
+      type: STRING
+    - description: Size of deserialized data, in bytes
+      mode: NULLABLE
+      name: deserialize_bytes
+      type: STRING
+    - description: Size of deserialized data, in items
+      mode: NULLABLE
+      name: deserialize_items
+      type: STRING
+    - description: Time spent deserializing structured data
+      mode: NULLABLE
+      name: deserialize_us
       type: STRING
     mode: NULLABLE
     name: histograms
@@ -39390,6 +39406,18 @@ fields:
         - description: Whether and how window.open opens a new popup or a new tab
           mode: NULLABLE
           name: window_open_type
+          type: STRING
+        - description: Size of deserialized data, in bytes
+          mode: NULLABLE
+          name: deserialize_bytes
+          type: STRING
+        - description: Size of deserialized data, in items
+          mode: NULLABLE
+          name: deserialize_items
+          type: STRING
+        - description: Time spent deserializing structured data
+          mode: NULLABLE
+          name: deserialize_us
           type: STRING
         mode: NULLABLE
         name: histograms

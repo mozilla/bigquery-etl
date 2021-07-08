@@ -64,6 +64,111 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.startup_timeline_clock_ticks_per_second AS INT64))
       ),
       (
+        'startup_timeline_clock_ticks_per_second_v2',
+        'quantity',
+        '',
+        'avg',
+        avg(CAST(metrics.quantity.startup_timeline_clock_ticks_per_second_v2 AS INT64))
+      ),
+      (
+        'startup_timeline_clock_ticks_per_second_v2',
+        'quantity',
+        '',
+        'count',
+        IF(MIN(metrics.quantity.startup_timeline_clock_ticks_per_second_v2) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'startup_timeline_clock_ticks_per_second_v2',
+        'quantity',
+        '',
+        'max',
+        max(CAST(metrics.quantity.startup_timeline_clock_ticks_per_second_v2 AS INT64))
+      ),
+      (
+        'startup_timeline_clock_ticks_per_second_v2',
+        'quantity',
+        '',
+        'min',
+        min(CAST(metrics.quantity.startup_timeline_clock_ticks_per_second_v2 AS INT64))
+      ),
+      (
+        'startup_timeline_clock_ticks_per_second_v2',
+        'quantity',
+        '',
+        'sum',
+        sum(CAST(metrics.quantity.startup_timeline_clock_ticks_per_second_v2 AS INT64))
+      ),
+      (
+        'startup_timeline_framework_primary',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.startup_timeline_framework_primary.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_primary',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.startup_timeline_framework_primary.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'startup_timeline_framework_primary',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.startup_timeline_framework_primary.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_primary',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.startup_timeline_framework_primary.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_primary',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.startup_timeline_framework_primary.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_secondary',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.startup_timeline_framework_secondary.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_secondary',
+        'timespan',
+        '',
+        'count',
+        IF(MIN(metrics.timespan.startup_timeline_framework_secondary.value) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'startup_timeline_framework_secondary',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.startup_timeline_framework_secondary.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_secondary',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.startup_timeline_framework_secondary.value AS INT64))
+      ),
+      (
+        'startup_timeline_framework_secondary',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.startup_timeline_framework_secondary.value AS INT64))
+      ),
+      (
         'startup_timeline_framework_start',
         'timespan',
         '',

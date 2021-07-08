@@ -30,6 +30,16 @@ histograms AS (
     channel,
     ARRAY<STRUCT<metric STRING, metric_type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
       (
+        "engine_tab_kill_background_age",
+        "timing_distribution",
+        metrics.timing_distribution.engine_tab_kill_background_age.values
+      ),
+      (
+        "engine_tab_kill_foreground_age",
+        "timing_distribution",
+        metrics.timing_distribution.engine_tab_kill_foreground_age.values
+      ),
+      (
         "geckoview_content_process_lifetime",
         "timing_distribution",
         metrics.timing_distribution.geckoview_content_process_lifetime.values
@@ -215,6 +225,41 @@ histograms AS (
         metrics.timing_distribution.javascript_gc_total_time.values
       ),
       (
+        "javascript_pageload_baseline_compile_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_pageload_baseline_compile_time.values
+      ),
+      (
+        "javascript_pageload_delazification_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_pageload_delazification_time.values
+      ),
+      (
+        "javascript_pageload_execution_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_pageload_execution_time.values
+      ),
+      (
+        "javascript_pageload_gc_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_pageload_gc_time.values
+      ),
+      (
+        "javascript_pageload_parse_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_pageload_parse_time.values
+      ),
+      (
+        "javascript_pageload_protect_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_pageload_protect_time.values
+      ),
+      (
+        "javascript_pageload_xdr_encode_time",
+        "timing_distribution",
+        metrics.timing_distribution.javascript_pageload_xdr_encode_time.values
+      ),
+      (
         "js_baseline_compile_percentage",
         "custom_distribution",
         metrics.custom_distribution.js_baseline_compile_percentage.values
@@ -325,9 +370,79 @@ histograms AS (
         metrics.timing_distribution.perf_awesomebar_synced_tabs_suggestions.values
       ),
       (
+        "perf_startup_app_on_create_to_glean_init",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_app_on_create_to_glean_init.values
+      ),
+      (
+        "perf_startup_app_on_create_to_megazord_init",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_app_on_create_to_megazord_init.values
+      ),
+      (
+        "perf_startup_app_on_create_to_setup_in_main",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_app_on_create_to_setup_in_main.values
+      ),
+      (
+        "perf_startup_application_on_create",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_application_on_create.values
+      ),
+      (
+        "perf_startup_base_bfragment_on_create_view",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_base_bfragment_on_create_view.values
+      ),
+      (
+        "perf_startup_base_bfragment_on_view_created",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_base_bfragment_on_view_created.values
+      ),
+      (
+        "perf_startup_cold_main_app_to_first_frame",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_cold_main_app_to_first_frame.values
+      ),
+      (
+        "perf_startup_cold_unknwn_app_to_first_frame",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_cold_unknwn_app_to_first_frame.values
+      ),
+      (
+        "perf_startup_cold_view_app_to_first_frame",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_cold_view_app_to_first_frame.values
+      ),
+      (
+        "perf_startup_home_activity_on_create",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_home_activity_on_create.values
+      ),
+      (
+        "perf_startup_home_activity_on_start",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_home_activity_on_start.values
+      ),
+      (
+        "perf_startup_home_fragment_on_create_view",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_home_fragment_on_create_view.values
+      ),
+      (
+        "perf_startup_home_fragment_on_view_created",
+        "timing_distribution",
+        metrics.timing_distribution.perf_startup_home_fragment_on_view_created.values
+      ),
+      (
         "performance_interaction_keypress_present_latency",
         "timing_distribution",
         metrics.timing_distribution.performance_interaction_keypress_present_latency.values
+      ),
+      (
+        "performance_interaction_mouseup_click_present_latency",
+        "timing_distribution",
+        metrics.timing_distribution.performance_interaction_mouseup_click_present_latency.values
       ),
       (
         "performance_interaction_tab_switch_composite",

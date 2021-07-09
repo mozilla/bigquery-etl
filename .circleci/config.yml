@@ -374,7 +374,7 @@ jobs:
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
-            - private-generated-sql/sql
+            - private-generated-sql
   push-private-generated-sql:
     docker: *docker
     steps:

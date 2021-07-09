@@ -135,10 +135,10 @@ jobs:
           # GOOGLE_APPLICATION_CREDENTIALS
           # and use a file in that location for credentials if present;
           # See https://cloud.google.com/docs/authentication/production
+          # yamllint disable rule:line-length
           command: |
-            export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
-            echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-            PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java'
+            PATH="venv/bin:$PATH" script/entrypoint -m 'routine or sql or integration or java' --numprocesses 20
+          # yamllint enable rule:line-length
       - save_cache:
           paths:
             - ~/.m2
@@ -341,6 +341,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *skip_forked_pr
       - *restore_venv_cache
       - *build
       - *restore_mvn_cache

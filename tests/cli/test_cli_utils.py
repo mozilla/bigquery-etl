@@ -30,6 +30,7 @@ class TestUtils:
             TEST_DIR / "data" / "dags.yaml"
         )
 
+    @pytest.mark.integration
     def test_is_authenticated(self):
         assert is_authenticated("non-existing-project") is False
 

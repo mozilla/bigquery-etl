@@ -190,11 +190,6 @@ grouped_labeled_metrics AS (
         'labeled_counter',
         metrics.labeled_counter.glean_error_invalid_value
       ),
-      (
-        'glean_validation_pings_submitted',
-        'labeled_counter',
-        metrics.labeled_counter.glean_validation_pings_submitted
-      ),
       ('metrics_search_count', 'labeled_counter', metrics.labeled_counter.metrics_search_count)
     ] AS metrics
   FROM

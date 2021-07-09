@@ -169,6 +169,9 @@ scalar_aggregates_new AS (
     --format:on
   FROM
     version_filtered_new
+  WHERE
+    -- avoid overflows from very large numbers that are typically anomalies
+    value <= POW(2, 40)
   GROUP BY
     client_id,
     ping_type,

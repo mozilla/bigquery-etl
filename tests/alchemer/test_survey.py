@@ -316,11 +316,13 @@ def test_response_schema():
     assert response_schema()
 
 
+@pytest.mark.integration
 def test_insert_to_bq(testing_table_id):
     transformed = construct_data(EXAMPLE_RESPONSE, SUBMISSION_DATE)
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
+@pytest.mark.integration
 def test_insert_to_bq_options(testing_table_id):
     # Override survey data, but make sure to deep copy to prevent mutating state
     # in other tests.
@@ -353,6 +355,7 @@ def test_insert_to_bq_options(testing_table_id):
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
+@pytest.mark.integration
 def test_insert_to_bq_subquestions(testing_table_id):
     # Override survey data. Note that the subquestion object is incompatible.
     # https://apihelp.alchemer.com/help/surveyresponse-per-question-v5#checkboxgrid
@@ -435,6 +438,7 @@ def test_insert_to_bq_subquestions(testing_table_id):
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
+@pytest.mark.integration
 def test_cli(patch_api_requests, testing_table_id):
     res = CliRunner().invoke(
         main,

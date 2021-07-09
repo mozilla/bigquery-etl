@@ -19,7 +19,8 @@ fi
 
 if [ "$#" = 0 ]; then
     # Default to 20 workers because most of the tests are io-bound
-    exec pytest --black --flake8 --mypy-ignore-missing-imports --pydocstyle --numprocesses 20
+    # Ignore running routine and SQL tests since they require GCP access
+    exec pytest --black --flake8 --mypy-ignore-missing-imports --pydocstyle --numprocesses 20 -m "not (routine or sql or integration or java)"
 elif [ "${1:0:1}" = - ]; then
     # First argument is a flag, assume intended executable is pytest
     exec pytest "$@"

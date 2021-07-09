@@ -383,7 +383,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: "cf:d6:25:9a:ee:26:66:39:c8:cc:48:f6:bb:3e:34:68"
       - run:
-          name: Push to generated-sql branch
+          name: Push to private-generated-sql branch
           # yamllint disable rule:line-length
           command: |
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
@@ -503,7 +503,7 @@ workflows:
       - deploy-to-private-gcr:
           context: data-eng-airflow-gcr
           requires:
-            - generate-sql
+            - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
           filters:

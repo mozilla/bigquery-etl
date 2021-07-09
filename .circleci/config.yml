@@ -274,7 +274,7 @@ jobs:
       - run:
           name: Generate SQL content
           command: |
-            mkdir /tmp/workspace/generated-sql
+            mkdir -p /tmp/workspace/generated-sql
             cp -r sql/ /tmp/workspace/generated-sql/sql
             ./bqetl bootstrap
             # Don't depend on dry run for PRs
@@ -364,7 +364,7 @@ jobs:
       - run:
           name: Generate SQL content
           command: |
-            mkdir /tmp/workspace/private-generated-sql
+            mkdir -p /tmp/workspace/private-generated-sql
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
             ./bqetl bootstrap
             # Don't depend on dry run for PRs

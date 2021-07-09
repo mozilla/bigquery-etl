@@ -246,7 +246,7 @@ jobs:
       - *restore_mvn_cache
       - *java_deps
       - attach_workspace:
-          at: /tmp/generated-sql
+          at: /tmp/workspace
       - run:
           name: Install dependencies
           command: >
@@ -257,7 +257,7 @@ jobs:
       - run:
           name: Build and deploy docs
           command: |
-            rm -r sql/ && cp -r /tmp/generated-sql/sql sql/
+            rm -r sql/ && cp -r /tmp/workspace/generated-sql/sql sql/
             PATH="venv/bin:$PATH" script/generate_docs \
                --output_dir=generated_docs/
             cd generated_docs/
@@ -274,22 +274,22 @@ jobs:
       - run:
           name: Generate SQL content
           command: |
-            mkdir /tmp/generated-sql
-            cp -r sql/ /tmp/generated-sql/sql
+            mkdir /tmp/workspace/generated-sql
+            cp -r sql/ /tmp/workspace/generated-sql/sql
             ./bqetl bootstrap
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" ./script/generate_sql \
-              --sql-dir /tmp/generated-sql/sql/ \
+              --sql-dir /tmp/workspace/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
       - persist_to_workspace:
-          root: /tmp/generated-sql
+          root: /tmp/workspace
           paths:
-            - sql
+            - generated-sql/sql
   push-generated-sql:
     docker: *docker
     steps:
       - attach_workspace:
-          at: /tmp/generated-sql
+          at: /tmp/workspace
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
       - run:
@@ -303,7 +303,7 @@ jobs:
               generated-sql
             cd generated-sql/
             rm -rf sql/
-            cp -r /tmp/generated-sql/sql sql
+            cp -r /tmp/workspace/generated-sql/sql sql
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
@@ -317,12 +317,12 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - attach_workspace:
-          at: /tmp/generated-sql
+          at: /tmp/workspace
       - run:
           name: Move generated-sql into place
           command: |
             rm -rf sql/
-            cp -r /tmp/generated-sql/sql sql
+            cp -r /tmp/workspace/generated-sql/sql sql
       - run:
           name: Determine docker image name
           command:
@@ -364,22 +364,22 @@ jobs:
       - run:
           name: Generate SQL content
           command: |
-            mkdir /tmp/private-generated-sql
-            cp -r sql/ /tmp/private-generated-sql/sql
+            mkdir /tmp/workspace/private-generated-sql
+            cp -r sql/ /tmp/workspace/private-generated-sql/sql
             ./bqetl bootstrap
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" ./script/generate_sql \
-              --sql-dir /tmp/private-generated-sql/sql/ \
+              --sql-dir /tmp/workspace/private-generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
       - persist_to_workspace:
-          root: /tmp/private-generated-sql
+          root: /tmp/workspace
           paths:
-            - sql
+            - private-generated-sql/sql
   push-private-generated-sql:
     docker: *docker
     steps:
       - attach_workspace:
-          at: /tmp/private-generated-sql
+          at: /tmp/workspace
       - add_ssh_keys:
           fingerprints: "cf:d6:25:9a:ee:26:66:39:c8:cc:48:f6:bb:3e:34:68"
       - run:
@@ -394,7 +394,7 @@ jobs:
               private-generated-sql
             cd private-generated-sql/
             rm -rf sql/
-            cp -r /tmp/private-generated-sql/sql sql
+            cp -r /tmp/workspace/private-generated-sql/sql sql
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
@@ -405,12 +405,12 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/private-generated-sql
+          at: /tmp/workspace
       - run:
           name: Move generated-sql into place
           command: |
             rm -rf sql/
-            cp -r /tmp/private-generated-sql/sql sql
+            cp -r /tmp/workspace/private-generated-sql/sql sql
       - gcp-gcr/gcr-auth
       - gcp-gcr/build-image:
           image: bigquery-etl

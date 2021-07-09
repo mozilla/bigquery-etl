@@ -492,6 +492,12 @@ workflows:
               only: main
             tags:
               only: /.*/
+      # The following "private" jobs are basically clones of the public jobs for generate-sql,
+      # deploy, and push-generated-sql, except that they pull in some additional content from
+      # an internal Mozilla repository for cases where ETL code cannot be public.
+      # Although the CI logic is consolidated in this public repository, note that we are both pulling
+      # from the internal repository and pushing generated results back to a branch on that internal
+      # repository, which may be initially surprising.
       - private-generate-sql
       - push-private-generated-sql:
           requires:

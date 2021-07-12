@@ -1,0 +1,11 @@
+friendly_name: Detail Export Diff
+description: >
+  This table tracks changes of historic iprospect data
+  that has been imported into BigQuery but changed in
+  subsequent CSV data updates.
+labels:
+  incremental: true
+owners:
+  - ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_iprospect

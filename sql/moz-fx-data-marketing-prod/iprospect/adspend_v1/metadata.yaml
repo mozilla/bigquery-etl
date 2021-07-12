@@ -1,10 +1,7 @@
-friendly_name: Detail Export Raw
+friendly_name: Adspend
 description: >
-  Import detail export iProspect CSV data from
+  Import detailed adspend iProspect CSV data from
   moz-fx-data-marketing-prod-iprospect storage bucket.
-
-  Each partition represents CSV data that was uploaded
-  for that date.
 labels:
   incremental: true
 owners:

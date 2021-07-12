@@ -4,13 +4,7 @@
 Import iProspect CSV data from moz-fx-data-marketing-prod-iprospect storage bucket.
 
 The CSV files are updated daily and contain the last 30 days of data. This script
-will import only CSV data of the file that was uploaded on the specified date into BigQuery.
-The destination table will contain the data of all files, with submission_date
-being used for partitioning and specifying when the CSV file was uploaded.
-
-Historic data can change in more recent CSV files. The raw data will be used for
-debugging and for reporting changes of specific values in 
-moz-fx-data-marketing-prod.iprospect.detail_export_diff_v1
+will import only data for the specified date into BigQuery.
 """
 
 from argparse import ArgumentParser
@@ -26,7 +20,7 @@ parser.add_argument("--project", default="moz-fx-data-marketing-prod")
 parser.add_argument("--bucket", default="moz-fx-data-marketing-prod-iprospect")
 parser.add_argument("--prefix", default="mozilla_detail_export")
 parser.add_argument("--dataset", default="iprospect")
-parser.add_argument("--table", default="detail_export_raw_v1")
+parser.add_argument("--table", default="adspend_v1")
 
 
 def main():
@@ -44,16 +38,23 @@ def main():
             f"No iProspect data available for {args.date} in {args.bucket}/{args.prefix}"
         )
 
+    # subtract one day because CSV data lags one day behind
+    # CSV file for 2021-07-02 will only have data up to 2021-07-01
+    date = (
+        datetime.datetime.strptime(args.date, "%Y-%m-%d") - datetime.timedelta(days=1)
+    ).strftime("%Y-%m-%d")
+
     uri = f"gs://{args.bucket}/{blobs[0].name}"
     df = pd.read_csv(uri)
-    df["submission_date"] = pd.to_datetime(args.date)
-    df["date"] = pd.to_datetime(df["date"]).dt.date
+    # only import data for the specified date
+    new_data = df[df["date"] == date]
+    new_data["date"] = pd.to_datetime(df["date"]).dt.date
 
     job_config = bigquery.LoadJobConfig(
         write_disposition="WRITE_TRUNCATE",
         time_partitioning=bigquery.TimePartitioning(
             type_=bigquery.TimePartitioningType.DAY,
-            field="submission_date",
+            field="date",
         ),
         schema=[
             bigquery.SchemaField("date", "DATE"),
@@ -107,17 +108,16 @@ def main():
             bigquery.SchemaField("dcm_active_view_eligible_impressions", "INT64"),
             bigquery.SchemaField("dcm_active_view_measurable_impressions", "INT64"),
             bigquery.SchemaField("dcm_active_view_viewable_impressions", "INT64"),
-            bigquery.SchemaField("submission_date", "DATE"),
         ],
     )
 
-    partition = args.date.replace("-", "")
+    partition = date.replace("-", "")
     destination = f"{args.project}.{args.dataset}.{args.table}${partition}"
-    job = client.load_table_from_dataframe(df, destination, job_config=job_config)
-
+    job = client.load_table_from_dataframe(new_data, destination, job_config=job_config)
+    
     print(f"Running job {job.job_id}")
     job.result()
-    print(f"Loaded {uri} for {args.date}")
+    print(f"Loaded {uri} for {date}")
 
 
 if __name__ == "__main__":

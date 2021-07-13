@@ -27,6 +27,7 @@ SELECT
       ) AS service
     WHERE
       service IS NOT NULL
+    ORDER BY service
   ) AS services_used,
 FROM
   _previous

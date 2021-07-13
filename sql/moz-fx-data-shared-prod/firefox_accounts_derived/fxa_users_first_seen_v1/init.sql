@@ -8,7 +8,7 @@ AS
 SELECT
   user_id,
   DATE(MIN(submission_timestamp)) AS first_seen_date,
-  ARRAY_AGG(DISTINCT service) AS services_used,
+  ARRAY_AGG(DISTINCT service ORDER BY service) AS services_used,
 FROM
   firefox_accounts.fxa_all_events
 WHERE

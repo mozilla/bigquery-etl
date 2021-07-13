@@ -34,7 +34,16 @@ jobs:
           command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
       - run:
           name: PyTest with linters
-          command: PATH="venv/bin:$PATH" script/entrypoint
+          # yamllint disable rule:line-length
+          command: |
+            if [ -n "$CIRCLE_PR_NUMBER" ]; then
+              echo "Cannot pass creds to forked PRs," \
+                "so skipping routine and SQL tests"
+              PATH="venv/bin:$PATH" script/entrypoint -m "not (routine or sql or integration or java)"
+            else
+              PATH="venv/bin:$PATH" script/entrypoint
+            fi
+          # yamllint enable rule:line-length
       - save_cache:
           paths:
             - venv/
@@ -246,7 +255,7 @@ jobs:
       - *restore_mvn_cache
       - *java_deps
       - attach_workspace:
-          at: /tmp/generated-sql
+          at: /tmp/workspace
       - run:
           name: Install dependencies
           command: >
@@ -257,7 +266,7 @@ jobs:
       - run:
           name: Build and deploy docs
           command: |
-            rm -r sql/ && cp -r /tmp/generated-sql/sql sql/
+            rm -r sql/ && cp -r /tmp/workspace/generated-sql/sql sql/
             PATH="venv/bin:$PATH" script/generate_docs \
                --output_dir=generated_docs/
             cd generated_docs/
@@ -274,22 +283,22 @@ jobs:
       - run:
           name: Generate SQL content
           command: |
-            mkdir /tmp/generated-sql
-            cp -r sql/ /tmp/generated-sql/sql
+            mkdir -p /tmp/workspace/generated-sql
+            cp -r sql/ /tmp/workspace/generated-sql/sql
             ./bqetl bootstrap
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" ./script/generate_sql \
-              --sql-dir /tmp/generated-sql/sql/ \
+              --sql-dir /tmp/workspace/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
       - persist_to_workspace:
-          root: /tmp/generated-sql
+          root: /tmp/workspace
           paths:
-            - sql
+            - generated-sql
   push-generated-sql:
     docker: *docker
     steps:
       - attach_workspace:
-          at: /tmp/generated-sql
+          at: /tmp/workspace
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
       - run:
@@ -303,7 +312,7 @@ jobs:
               generated-sql
             cd generated-sql/
             rm -rf sql/
-            cp -r /tmp/generated-sql/sql sql
+            cp -r /tmp/workspace/generated-sql/sql sql
             git add .
             git commit -m "Auto-push due to change on main branch [ci skip]" \
               && git push \
@@ -317,12 +326,12 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - attach_workspace:
-          at: /tmp/generated-sql
+          at: /tmp/workspace
       - run:
           name: Move generated-sql into place
           command: |
             rm -rf sql/
-            cp -r /tmp/generated-sql/sql sql
+            cp -r /tmp/workspace/generated-sql/sql sql
       - run:
           name: Determine docker image name
           command:
@@ -337,28 +346,81 @@ jobs:
            echo "${DOCKER_PASS:?}" | \
             docker login -u "${DOCKER_USER:?}" --password-stdin
             docker push "$IMAGE"
-  deploy-to-private-gcr:
-    executor: gcp-gcr/default
+  private-generate-sql:
+    docker: *docker
     steps:
       - checkout
-      - attach_workspace:
-          at: /tmp/generated-sql
+      - *skip_forked_pr
+      - *restore_venv_cache
+      - *build
+      - *restore_mvn_cache
+      - *java_deps
       - add_ssh_keys:
           # deploy key to private-bigquery-etl
-          fingerprints: "5b:7b:00:df:da:e1:9f:07:c7:69:60:1a:3f:16:a5:ed"
+          fingerprints: "cf:d6:25:9a:ee:26:66:39:c8:cc:48:f6:bb:3e:34:68"
       - run:
-          name: Move generated-sql into place
+          name: Install rsync
           command: |
-            rm -rf sql/
-            cp -r /tmp/generated-sql/sql sql
+            apt update
+            apt install -y rsync
       - run:
-          name: Move private sql into place
+          name: Pull down private SQL content
           command: |
             ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
             git clone --single-branch --branch main \
                           git@github.com:mozilla/private-bigquery-etl.git \
                           ~/private-bigquery-etl
             rsync --archive --ignore-existing ~/private-bigquery-etl/sql/ sql/
+      - run:
+          name: Generate SQL content
+          command: |
+            mkdir -p /tmp/workspace/private-generated-sql
+            cp -r sql/ /tmp/workspace/private-generated-sql/sql
+            ./bqetl bootstrap
+            # Don't depend on dry run for PRs
+            PATH="venv/bin:$PATH" ./script/generate_sql \
+              --sql-dir /tmp/workspace/private-generated-sql/sql/ \
+              --target-project moz-fx-data-shared-prod
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - private-generated-sql
+  push-private-generated-sql:
+    docker: *docker
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - add_ssh_keys:
+          fingerprints: "cf:d6:25:9a:ee:26:66:39:c8:cc:48:f6:bb:3e:34:68"
+      - run:
+          name: Push to private-generated-sql branch
+          # yamllint disable rule:line-length
+          command: |
+            ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+            git config --global user.name "CircleCI private-generate-sql job"
+            git config --global user.email "dataops+private-generated-sql@mozilla.com"
+            git clone --single-branch --branch private-generated-sql \
+              git@github.com:mozilla/private-bigquery-etl \
+              private-generated-sql
+            cd private-generated-sql/
+            rm -rf sql/
+            cp -r /tmp/workspace/private-generated-sql/sql sql
+            git add .
+            git commit -m "Auto-push due to change on main branch [ci skip]" \
+              && git push \
+              || echo "Skipping push since it looks like there were no changes"
+          # yamllint enable rule:line-length
+  deploy-to-private-gcr:
+    executor: gcp-gcr/default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Move generated-sql into place
+          command: |
+            rm -rf sql/
+            cp -r /tmp/workspace/private-generated-sql/sql sql
       - gcp-gcr/gcr-auth
       - gcp-gcr/build-image:
           image: bigquery-etl
@@ -431,6 +493,7 @@ workflows:
       - deploy:
           context: data-eng-bigquery-etl-dockerhub
           requires:
+            - generate-sql
             # Public image must be pushed after the private one because of
             # webhooks used in Ops logic. For details, see:
             # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
@@ -440,10 +503,26 @@ workflows:
               only: main
             tags:
               only: /.*/
+      # The following "private" jobs are basically clones of the public jobs
+      # for generate-sql, deploy, and push-generated-sql, except that they pull
+      # in some additional content from an internal Mozilla repository for
+      # cases where ETL code cannot be public. Although the CI logic is
+      # consolidated in this public repository, note that we are both pulling
+      # from the internal repository and pushing generated results back to
+      # a branch on that internal repository, which may be initially
+      # surprising.
+      - private-generate-sql
+      - push-private-generated-sql:
+          requires:
+            - private-generate-sql
+          filters:
+            branches:
+              only:
+                - main
       - deploy-to-private-gcr:
           context: data-eng-airflow-gcr
           requires:
-            - generate-sql
+            - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
           filters:

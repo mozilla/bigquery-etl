@@ -11,3 +11,11 @@ scheduling:
   arguments: ["--date", "{{ ds }}"]
   referenced_tables:
     - ['moz-fx-data-marketing-prod', 'iprospect', 'adspend_raw_v1']
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false
+  clustering:
+    fields:
+      - fetch_ad_name

@@ -1,4 +1,4 @@
-CREATE TABLE
+CREATE OR REPLACE TABLE
   `firefox_accounts_derived.fxa_users_first_seen_v1`
 PARTITION BY
   first_seen_date

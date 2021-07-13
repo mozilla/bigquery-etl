@@ -23,7 +23,7 @@ SELECT
       service
     FROM
       UNNEST(
-        COALESCE(_previous.services_used, []) | |COALESCE(_current.services_used, [])
+        ARRAY_CONCAT(COALESCE(_previous.services_used, []), COALESCE(_current.services_used, []))
       ) AS service
     WHERE
       service IS NOT NULL

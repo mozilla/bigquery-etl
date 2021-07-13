@@ -9,3 +9,5 @@ owners:
 scheduling:
   dag_name: bqetl_iprospect
   arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-marketing-prod', 'iprospect', 'adspend_raw_v1']

@@ -3,9 +3,11 @@ description: >
   This table tracks changes of historic iprospect data
   that has been imported into BigQuery but changed in
   subsequent CSV data updates.
+  See https://mozilla-hub.atlassian.net/browse/DS-1643
 labels:
   incremental: true
 owners:
   - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_iprospect
+  depends_on_past: true

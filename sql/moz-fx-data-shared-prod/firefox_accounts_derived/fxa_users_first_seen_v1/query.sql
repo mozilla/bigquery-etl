@@ -19,9 +19,14 @@ SELECT
   user_id,
   COALESCE(_previous.first_seen_date, @submission_date) AS first_seen_date,
   ARRAY(
-    SELECT DISTINCT service
-    FROM UNNEST(COALESCE(_previous.services_used, []) || COALESCE(_current.services_used, [])) AS service
-    WHERE service IS NOT NULL
+    SELECT DISTINCT
+      service
+    FROM
+      UNNEST(
+        COALESCE(_previous.services_used, []) | |COALESCE(_current.services_used, [])
+      ) AS service
+    WHERE
+      service IS NOT NULL
   ) AS services_used,
 FROM
   _previous

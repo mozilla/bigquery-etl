@@ -5,6 +5,8 @@ description: >
 
   Each partition represents CSV data that was uploaded
   for that date.
+
+  See https://mozilla-hub.atlassian.net/browse/DS-1643
 labels:
   incremental: true
 owners:

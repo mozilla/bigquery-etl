@@ -9,7 +9,7 @@ The destination table will contain the data of all files, with submission_date
 being used for partitioning and specifying when the CSV file was uploaded.
 
 Historic data can change in more recent CSV files. The raw data will be used for
-debugging and for reporting changes of specific values in 
+debugging and for reporting changes of specific values in
 moz-fx-data-marketing-prod.iprospect.detail_export_diff_v1
 """
 
@@ -17,7 +17,6 @@ from argparse import ArgumentParser
 from google.cloud import bigquery
 from google.cloud import storage
 
-import datetime
 import pandas as pd
 
 parser = ArgumentParser(description=__doc__)

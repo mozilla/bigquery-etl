@@ -1,5 +1,5 @@
 SELECT
-  today.date AS submission_date,
+  @submission_date AS submission_date,
   COUNT(DISTINCT today.date) = 30 AS has_30_days_of_data,
   COUNT(DISTINCT today.date) = 0 AS has_missing_data,
   COUNTIF(yesterday.fetch_ad_name IS NULL AND yesterday.date < @submission_date) AS new_row_count,

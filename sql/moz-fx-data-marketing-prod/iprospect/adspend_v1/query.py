@@ -4,7 +4,7 @@
 Import iProspect data from moz-fx-data-marketing-prod.iprospect.adspend_raw_v1.
 
 The raw table represents the data in the CSV files that are updated daily and
-contain the last 30 days of data. This script will import and update data for 
+contain the last 30 days of data. This script will import and update data for
 the specified date and the 30 days prior to that date into BigQuery.
 """
 

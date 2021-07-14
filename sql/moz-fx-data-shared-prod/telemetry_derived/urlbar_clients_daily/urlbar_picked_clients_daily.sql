@@ -1,86 +1,42 @@
-  -- urlbar picked type count
-WITH
-  urlbar_picked_clients_daily_temp AS (
-  SELECT
-    submission_date,
-    client_id,
-    result_type,
-    result.key AS result_index,
-    result.value AS n_engagements
-  FROM
-    `moz-fx-data-bq-data-science.teon.temp_urlbar_clients_daily`
-  CROSS JOIN
-    UNNEST ([ STRUCT("urlbar_autofill" AS result_type,
-        urlbar_autofill AS probe), STRUCT("urlbar_bookmark" AS result_type,
-        urlbar_bookmark AS probe), STRUCT("urlbar_dynamic" AS result_type,
-        urlbar_dynamic AS probe), STRUCT("urlbar_extension" AS result_type,
-        urlbar_extension AS probe), STRUCT("urlbar_formhistory" AS result_type,
-        urlbar_formhistory AS probe), STRUCT("urlbar_history" AS result_type,
-        urlbar_history AS probe), STRUCT("urlbar_keyword" AS result_type,
-        urlbar_keyword AS probe), STRUCT("urlbar_remotetab" AS result_type,
-        urlbar_remotetab AS probe), STRUCT("urlbar_searchengine" AS result_type,
-        urlbar_searchengine AS probe), STRUCT("urlbar_searchsuggestion" AS result_type,
-        urlbar_searchsuggestion AS probe), STRUCT("urlbar_switchtab" AS result_type,
-        urlbar_switchtab AS probe), STRUCT("urlbar_tabtosearch" AS result_type,
-        urlbar_tabtosearch AS probe), STRUCT("urlbar_tip" AS result_type,
-        urlbar_tip AS probe), STRUCT("urlbar_topsite" AS result_type,
-        urlbar_topsite AS probe), STRUCT("urlbar_unknown" AS result_type,
-        urlbar_unknown AS probe), STRUCT("urlbar_visiturl" AS result_type,
-        urlbar_visiturl AS probe) ])
-  CROSS JOIN
-    UNNEST(probe) AS result),
-  urlbar_picked_clients_daily_by_type_temp AS (
-  SELECT
-    submission_date,
-    client_id,
-    result_type,
-    SUM(n_engagements) AS n_engagements
-  FROM
-    urlbar_picked_clients_daily_temp
-  GROUP BY
-    submission_date,
-    client_id,
-    result_type ),
-  urlbar_picked_clients_daily_by_type AS (
-  SELECT
-    client_id,
-    submission_date,
-    STRUCT(ARRAY_AGG(result_type) AS key,
-      ARRAY_AGG(n_engagements) AS value) AS urlbar_picked_by_type
-  FROM
-    urlbar_picked_clients_daily_by_type_temp
-  GROUP BY
-    submission_date,
-    client_id ),
-  urlbar_picked_clients_daily_by_index_temp AS (
-  SELECT
-    submission_date,
-    client_id,
-    result_index,
-    SUM(n_engagements) AS n_engagements
-  FROM
-    urlbar_picked_clients_daily_temp
-  GROUP BY
-    submission_date,
-    client_id,
-    result_index ),
-  urlbar_picked_clients_daily_by_index AS (
-  SELECT
-    submission_date,
-    client_id,
-    STRUCT(ARRAY_AGG(result_index) AS key,
-      ARRAY_AGG(n_engagements) AS value) AS urlbar_picked_by_index
-  FROM
-    urlbar_picked_clients_daily_by_index_temp
-  GROUP BY
-    submission_date,
-    client_id )
 SELECT
-  *
+  @submission_date,
+  client_id,
+  mozfun.map.sum(
+    ARRAY_AGG(
+      STRUCT(result_type AS key, probe_picked.value AS value)
+    )
+  ) AS picked_by_type,
+  mozfun.map.sum(
+    ARRAY_AGG(
+      -- convert to 1-based index for consistency
+      STRUCT(SAFE_CAST(probe_picked.key as INT64) + 1 AS key, probe_picked.value AS value)
+    )
+  ) AS picked_by_position,
 FROM
-  urlbar_picked_clients_daily_by_index
-FULL OUTER JOIN
-  urlbar_picked_clients_daily_by_type
-USING
-  (submission_date,
-    client_id)
+  mozdata.telemetry.clients_daily
+CROSS JOIN
+  UNNEST ([
+    STRUCT("autofill" AS result_type, scalar_parent_urlbar_picked_autofill_sum AS probe),
+    STRUCT("bookmark" AS result_type, scalar_parent_urlbar_picked_bookmark_sum AS probe),
+    STRUCT("dynamic" AS result_type, scalar_parent_urlbar_picked_dynamic_sum AS probe),
+    STRUCT("extension" AS result_type, scalar_parent_urlbar_picked_extension_sum AS probe),
+    STRUCT("formhistory" AS result_type, scalar_parent_urlbar_picked_formhistory_sum AS probe),
+    STRUCT("history" AS result_type, scalar_parent_urlbar_picked_history_sum AS probe),
+    STRUCT("keyword" AS result_type, scalar_parent_urlbar_picked_keyword_sum AS probe),
+    STRUCT("remotetab" AS result_type, scalar_parent_urlbar_picked_remotetab_sum AS probe),
+    STRUCT("searchengine" AS result_type, scalar_parent_urlbar_picked_searchengine_sum AS probe),
+    STRUCT("searchsuggestion" AS result_type, scalar_parent_urlbar_picked_searchsuggestion_sum AS probe),
+    STRUCT("switchtab" AS result_type, scalar_parent_urlbar_picked_switchtab_sum AS probe),
+    STRUCT("tabtosearch" AS result_type, scalar_parent_urlbar_picked_tabtosearch_sum AS probe),
+    STRUCT("tip" AS result_type, scalar_parent_urlbar_picked_tip_sum AS probe),
+    STRUCT("topsite" AS result_type, scalar_parent_urlbar_picked_topsite_sum AS probe),
+    STRUCT("unknown" AS result_type, scalar_parent_urlbar_picked_unknown_sum AS probe),
+    STRUCT("visiturl" AS result_type, scalar_parent_urlbar_picked_visiturl_sum AS probe)
+  ])
+CROSS JOIN
+  UNNEST(probe) AS probe_picked
+WHERE
+  submission_date = @submission_date
+GROUP BY
+  submission_date,
+  client_id

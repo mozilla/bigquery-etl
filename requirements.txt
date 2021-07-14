@@ -186,16 +186,16 @@ flake8==3.9.1 \
     --hash=sha256:1aa8990be1e689d96c745c5682b687ea49f2e05a443aff1f8251092b0014e378 \
     --hash=sha256:3b9f848952dddccf635be78098ca75010f073bfe14d2c6bda867154bea728d2a
     # via pytest-flake8
-fsspec==2021.06.1 \
-    --hash=sha256:0ca23992f425c1ba61bf11d3cb3af8ad5363be8612e26732b520090556f173f2 \
-    --hash=sha256:2cdaafb51dd71e062afffcabcbc4925acef95f9bdd8d822d2010e4bf92951bd7
+fsspec==2021.07.0 \
+    --hash=sha256:792ebd3b54de0b30f1ce73f0ba0a8bcc864724f2d9f248cb8d0ece47db0cbde8 \
+    --hash=sha256:86822ccf367da99957f49db64f7d5fd3d8d21444fac4dfdc8ebc38ee93d478c6
     # via gcsfs
 gcloud==0.18.3 \
     --hash=sha256:0af2dec59fce20561752f86e42d981c6a255e306a6c5e5d1fa3d358a8857e4fb
     # via -r requirements.in
-gcsfs==2021.6.1 \
-    --hash=sha256:481a399ed60f72f859100f5eed79731409490e0a1e04a5b456497d9534ef995f \
-    --hash=sha256:ff2b2c9ef1971b72971aa8580173aa840472fe3604d9751ab8918217300fe3d5
+gcsfs==2021.7.0 \
+    --hash=sha256:8ac2ed5ca689ac26c78e074240a57bf51331e8627be4120e62555c68432c4847 \
+    --hash=sha256:ca07037a6ce29f112733c875a0e6a34c14d0ca3227f6bf0e16d7e8d92000accf
     # via -r requirements.in
 gitdb==4.0.7 \
     --hash=sha256:6c4cc71933456991da20917998acbe6cf4fb41eeaab7d6d67fbc05ecd4c865b0 \

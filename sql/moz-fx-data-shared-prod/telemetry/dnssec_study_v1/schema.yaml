@@ -999,6 +999,11 @@ fields:
       mode: NULLABLE
       name: virtual_max_mb
       type: FLOAT
+    - description: Is the process running with a package identity (e.g. from an MSIX
+        install)? See bug 1709892. This is Windows only.
+      mode: NULLABLE
+      name: has_win_package_id
+      type: BOOLEAN
     mode: NULLABLE
     name: system
     type: RECORD

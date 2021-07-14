@@ -989,6 +989,11 @@ fields:
     - mode: NULLABLE
       name: is_wow_arm64
       type: BOOLEAN
+    - description: Is the process running with a package identity (e.g. from an MSIX
+        install)? See bug 1709892. This is Windows only.
+      mode: NULLABLE
+      name: has_win_package_id
+      type: BOOLEAN
     mode: NULLABLE
     name: system
     type: RECORD
@@ -19124,6 +19129,166 @@ fields:
     - description: Time spent deserializing structured data
       mode: NULLABLE
       name: deserialize_us
+      type: STRING
+    - description: Whether a document calls execCommand with contentReadOnly
+      mode: NULLABLE
+      name: use_counter2_documentexeccommandcontentreadonly_document
+      type: STRING
+    - description: Whether a page calls execCommand with contentReadOnly
+      mode: NULLABLE
+      name: use_counter2_documentexeccommandcontentreadonly_page
+      type: STRING
+    - description: Whether a document calls execCommand with decreasefontsize
+      mode: NULLABLE
+      name: use_counter2_documentexeccommanddecreasefontsize_document
+      type: STRING
+    - description: Whether a page calls execCommand with decreasefontsize
+      mode: NULLABLE
+      name: use_counter2_documentexeccommanddecreasefontsize_page
+      type: STRING
+    - description: Whether a document calls execCommand with heading
+      mode: NULLABLE
+      name: use_counter2_documentexeccommandheading_document
+      type: STRING
+    - description: Whether a page calls execCommand with heading
+      mode: NULLABLE
+      name: use_counter2_documentexeccommandheading_page
+      type: STRING
+    - description: Whether a document calls execCommand with increasefontsize
+      mode: NULLABLE
+      name: use_counter2_documentexeccommandincreasefontsize_document
+      type: STRING
+    - description: Whether a page calls execCommand with increasefontsize
+      mode: NULLABLE
+      name: use_counter2_documentexeccommandincreasefontsize_page
+      type: STRING
+    - description: Whether a document calls execCommand with readonly
+      mode: NULLABLE
+      name: use_counter2_documentexeccommandreadonly_document
+      type: STRING
+    - description: Whether a page calls execCommand with readonly
+      mode: NULLABLE
+      name: use_counter2_documentexeccommandreadonly_page
+      type: STRING
+    - description: Whether a document calls queryCommandState or queryCommandValue
+        with contentReadOnly
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvaluecontentreadonly_document
+      type: STRING
+    - description: Whether a page calls queryCommandState or queryCommandValue with
+        contentReadOnly
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvaluecontentreadonly_page
+      type: STRING
+    - description: Whether a document calls queryCommandState or queryCommandValue
+        with gethtml
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvaluegethtml_document
+      type: STRING
+    - description: Whether a page calls queryCommandState or queryCommandValue with
+        gethtml
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvaluegethtml_page
+      type: STRING
+    - description: Whether a document calls queryCommandState or queryCommandValue
+        with heading
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvalueheading_document
+      type: STRING
+    - description: Whether a page calls queryCommandState or queryCommandValue with
+        heading
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvalueheading_page
+      type: STRING
+    - description: Whether a document calls queryCommandState or queryCommandValue
+        with insertBrOnReturn
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvalueinsertbronreturn_document
+      type: STRING
+    - description: Whether a page calls queryCommandState or queryCommandValue with
+        insertBrOnReturn
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvalueinsertbronreturn_page
+      type: STRING
+    - description: Whether a document calls queryCommandState or queryCommandValue
+        with readonly
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvaluereadonly_document
+      type: STRING
+    - description: Whether a page calls queryCommandState or queryCommandValue with
+        readonly
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandstateorvaluereadonly_page
+      type: STRING
+    - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+        with contentReadOnly
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledcontentreadonly_document
+      type: STRING
+    - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+        with contentReadOnly
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledcontentreadonly_page
+      type: STRING
+    - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+        with decreasefontsize
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenableddecreasefontsize_document
+      type: STRING
+    - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+        with decreasefontsize
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenableddecreasefontsize_page
+      type: STRING
+    - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+        with gethtml
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledgethtml_document
+      type: STRING
+    - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+        with gethtml
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledgethtml_page
+      type: STRING
+    - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+        with heading
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledheading_document
+      type: STRING
+    - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+        with heading
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledheading_page
+      type: STRING
+    - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+        with increasefontsize
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledincreasefontsize_document
+      type: STRING
+    - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+        with increasefontsize
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledincreasefontsize_page
+      type: STRING
+    - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+        with insertBrOnReturn
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledinsertbronreturn_document
+      type: STRING
+    - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+        with insertBrOnReturn
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledinsertbronreturn_page
+      type: STRING
+    - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+        with readonly
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledreadonly_document
+      type: STRING
+    - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+        with readonly
+      mode: NULLABLE
+      name: use_counter2_documentquerycommandsupportedorenabledreadonly_page
       type: STRING
     mode: NULLABLE
     name: histograms
@@ -39409,6 +39574,166 @@ fields:
         - description: Time spent deserializing structured data
           mode: NULLABLE
           name: deserialize_us
+          type: STRING
+        - description: Whether a document calls execCommand with contentReadOnly
+          mode: NULLABLE
+          name: use_counter2_documentexeccommandcontentreadonly_document
+          type: STRING
+        - description: Whether a page calls execCommand with contentReadOnly
+          mode: NULLABLE
+          name: use_counter2_documentexeccommandcontentreadonly_page
+          type: STRING
+        - description: Whether a document calls execCommand with decreasefontsize
+          mode: NULLABLE
+          name: use_counter2_documentexeccommanddecreasefontsize_document
+          type: STRING
+        - description: Whether a page calls execCommand with decreasefontsize
+          mode: NULLABLE
+          name: use_counter2_documentexeccommanddecreasefontsize_page
+          type: STRING
+        - description: Whether a document calls execCommand with heading
+          mode: NULLABLE
+          name: use_counter2_documentexeccommandheading_document
+          type: STRING
+        - description: Whether a page calls execCommand with heading
+          mode: NULLABLE
+          name: use_counter2_documentexeccommandheading_page
+          type: STRING
+        - description: Whether a document calls execCommand with increasefontsize
+          mode: NULLABLE
+          name: use_counter2_documentexeccommandincreasefontsize_document
+          type: STRING
+        - description: Whether a page calls execCommand with increasefontsize
+          mode: NULLABLE
+          name: use_counter2_documentexeccommandincreasefontsize_page
+          type: STRING
+        - description: Whether a document calls execCommand with readonly
+          mode: NULLABLE
+          name: use_counter2_documentexeccommandreadonly_document
+          type: STRING
+        - description: Whether a page calls execCommand with readonly
+          mode: NULLABLE
+          name: use_counter2_documentexeccommandreadonly_page
+          type: STRING
+        - description: Whether a document calls queryCommandState or queryCommandValue
+            with contentReadOnly
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvaluecontentreadonly_document
+          type: STRING
+        - description: Whether a page calls queryCommandState or queryCommandValue
+            with contentReadOnly
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvaluecontentreadonly_page
+          type: STRING
+        - description: Whether a document calls queryCommandState or queryCommandValue
+            with gethtml
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvaluegethtml_document
+          type: STRING
+        - description: Whether a page calls queryCommandState or queryCommandValue
+            with gethtml
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvaluegethtml_page
+          type: STRING
+        - description: Whether a document calls queryCommandState or queryCommandValue
+            with heading
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvalueheading_document
+          type: STRING
+        - description: Whether a page calls queryCommandState or queryCommandValue
+            with heading
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvalueheading_page
+          type: STRING
+        - description: Whether a document calls queryCommandState or queryCommandValue
+            with insertBrOnReturn
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvalueinsertbronreturn_document
+          type: STRING
+        - description: Whether a page calls queryCommandState or queryCommandValue
+            with insertBrOnReturn
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvalueinsertbronreturn_page
+          type: STRING
+        - description: Whether a document calls queryCommandState or queryCommandValue
+            with readonly
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvaluereadonly_document
+          type: STRING
+        - description: Whether a page calls queryCommandState or queryCommandValue
+            with readonly
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandstateorvaluereadonly_page
+          type: STRING
+        - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+            with contentReadOnly
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledcontentreadonly_document
+          type: STRING
+        - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+            with contentReadOnly
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledcontentreadonly_page
+          type: STRING
+        - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+            with decreasefontsize
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenableddecreasefontsize_document
+          type: STRING
+        - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+            with decreasefontsize
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenableddecreasefontsize_page
+          type: STRING
+        - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+            with gethtml
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledgethtml_document
+          type: STRING
+        - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+            with gethtml
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledgethtml_page
+          type: STRING
+        - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+            with heading
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledheading_document
+          type: STRING
+        - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+            with heading
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledheading_page
+          type: STRING
+        - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+            with increasefontsize
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledincreasefontsize_document
+          type: STRING
+        - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+            with increasefontsize
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledincreasefontsize_page
+          type: STRING
+        - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+            with insertBrOnReturn
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledinsertbronreturn_document
+          type: STRING
+        - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+            with insertBrOnReturn
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledinsertbronreturn_page
+          type: STRING
+        - description: Whether a document calls queryCommandSupported or queryCommandEnabled
+            with readonly
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledreadonly_document
+          type: STRING
+        - description: Whether a page calls queryCommandSupported or queryCommandEnabled
+            with readonly
+          mode: NULLABLE
+          name: use_counter2_documentquerycommandsupportedorenabledreadonly_page
           type: STRING
         mode: NULLABLE
         name: histograms

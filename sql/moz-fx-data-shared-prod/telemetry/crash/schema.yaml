@@ -986,6 +986,11 @@ fields:
     - mode: NULLABLE
       name: is_wow_arm64
       type: BOOLEAN
+    - description: Is the process running with a package identity (e.g. from an MSIX
+        install)? See bug 1709892. This is Windows only.
+      mode: NULLABLE
+      name: has_win_package_id
+      type: BOOLEAN
     mode: NULLABLE
     name: system
     type: RECORD

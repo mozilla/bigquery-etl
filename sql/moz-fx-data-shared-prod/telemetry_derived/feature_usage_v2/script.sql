@@ -1,3 +1,30 @@
+CREATE TEMP FUNCTION coalesce_version(metric STRING, version INT64, val ANY TYPE) AS (
+  (
+    WITH versions AS (
+      SELECT
+        [
+          STRUCT('video_play_time_ms' AS metric, 70 AS min_version, 'INT64' AS type),
+          ('video_encrypted_play_time_ms', 82, 'BOOL')
+        ] AS v
+    )
+    SELECT
+      IF(
+        COUNT(metric) > 0,
+        IF(
+          MIN(v.min_version) <= version,
+          COALESCE(val, CASE v.type WHEN "BOOL" THEN FALSE WHEN "INT64" THEN 0 ELSE 0 END),
+          NULL
+        ),
+        val
+      )
+    FROM
+      versions,
+      UNNEST(versions.v) AS v
+    WHERE
+      v.metric = metric
+  )
+);
+
 WITH user_type AS (
   SELECT
     cls.client_id,
@@ -609,7 +636,7 @@ activity_stream_events AS (
   FROM
     activity_stream.events
   WHERE
-    DATE(submission_timestamp) > start_date
+    DATE(submission_timestamp) = @submission_date
     AND sample_id = 0
     AND normalized_channel = 'release'
   GROUP BY
@@ -631,7 +658,7 @@ activity_stream_sessions AS (
   FROM
     activity_stream.sessions
   WHERE
-    DATE(submission_timestamp) > start_date
+    DATE(submission_timestamp) = @submission_date
     AND sample_id = 0
     AND normalized_channel = 'release'
   GROUP BY
@@ -702,3 +729,49 @@ LEFT JOIN
   activity_stream_sessions
 USING
   (client_id, submission_date)
+
+
+-- CREATE TEMP TABLE version_metadata AS (
+--   WITH versions AS (
+--     SELECT [
+--       STRUCT("activitystream_reported_newtab_search_off" as metric, 80 as version, "BOOL" AS t),
+--       ("activitystream_sessions_abouthome", 78, "INT64")
+--     ] v
+--   )
+--   SELECT v.metric, v.version, v.t from versions, UNNEST(versions.v) AS v
+-- );
+
+-- CREATE TEMP TABLE activity_stream AS (
+-- SELECT
+--     client_id,
+--     DATE(submission_timestamp) AS submission_date,
+--     MAX(user_prefs & 1 = 0) AS activitystream_reported_newtab_search_off,
+--     MAX(user_prefs & 2 = 0) AS activitystream_reported_topsites_off,
+--     MAX(user_prefs & 4 = 0) AS activitystream_reported_pocket_off,
+--     MAX(user_prefs & 8 = 0) AS activitystream_reported_highlights_off,
+--     MAX(user_prefs & 256 = 0) AS activitystream_reported_sponsored_topsites_off,
+--     COUNTIF(page = 'about:home') AS activitystream_sessions_abouthome,
+--     COUNTIF(page = 'about:newtab') AS activitystream_sessions_newtab,
+--     COUNTIF(page IN ('about:newtab', 'about:home')) AS activitystream_sessions_both
+--   FROM
+--     activity_stream.sessions
+--   WHERE
+--     DATE(submission_timestamp) = '2021-07-13'
+--     AND sample_id = 0
+--     AND normalized_channel = 'release'
+--   GROUP BY
+--     client_id,
+--     submission_date
+-- );
+
+
+-- execute immediate (SELECT 'SELECT ' || STRING_AGG(IF(t IS NULL, column, 'COALESCE(' || column || ', CAST(0 AS ' || t ||')) AS ' || column)) || ' FROM activity_stream'
+--   FROM (
+--     SELECT regexp_extract_all(to_json_string(a), r'"([^"]*)":') as columns
+--     FROM activity_stream a
+--     LIMIT 1
+--   ), UNNEST(columns) column
+-- LEFT JOIN
+-- version_metadata
+-- ON metric = column
+-- )

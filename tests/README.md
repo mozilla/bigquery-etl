@@ -8,24 +8,24 @@ This repository uses `pytest`:
 python3.8 -m venv venv/
 
 # install pip-tools for managing dependencies
-venv/bin/pip install pip-tools -c requirements.in
+./venv/bin/pip install pip-tools -c requirements.in
 
 # install python dependencies with pip-sync (provided by pip-tools)
-venv/bin/pip-sync
+./venv/bin/pip-sync
 
 # install java dependencies with maven
 mvn dependency:copy-dependencies
 
 # run pytest with all linters and 4 workers in parallel
-venv/bin/pytest --black --docstyle --flake8 --mypy-ignore-missing-imports -n 4
+./venv/bin/pytest --black --pydocstyle --flake8 --mypy-ignore-missing-imports -n 4
 
 # use -k to selectively run a set of tests that matches the expression `udf`
-venv/bin/pytest -k udf
+./venv/bin/pytest -k udf
 
 # run integration tests with 4 workers in parallel
 gcloud auth application-default login # or set GOOGLE_APPLICATION_CREDENTIALS
 export GOOGLE_PROJECT_ID="bigquery-etl-integration-test"
-venv/bin/pytest -m integration -n 4
+./venv/bin/pytest -m integration -n 4
 ```
 
 To provide [authentication credentials for the Google Cloud API](https://cloud.google.com/docs/authentication/getting-started) the `GOOGLE_APPLICATION_CREDENTIALS` environment variable must be set to the file path of the JSON file that contains the service account key.

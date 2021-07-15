@@ -64,6 +64,21 @@ def test_format_row():
     }
     assert filtered_schema.format_row(dispute) == dispute
 
+    filtered_schema = FilteredSchema(stripe.Invoice)
+    invoice = {
+        "amount_due": 5,
+        "custom_fields": [
+            {"name": "userid", "value": "raw_user_id"},
+        ],
+    }
+    expect = {
+        "amount_due": 5,
+        "custom_fields": [
+            {"name": "fxa_uid", "value": sha256(b"raw_user_id").hexdigest()}
+        ],
+    }
+    assert filtered_schema.format_row(invoice) == expect
+
 
 @pytest.mark.parametrize(
     "row,message",

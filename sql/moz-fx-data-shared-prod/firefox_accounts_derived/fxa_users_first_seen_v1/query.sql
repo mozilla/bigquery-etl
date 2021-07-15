@@ -14,6 +14,8 @@ _previous AS (
     *
   FROM
     firefox_accounts_derived.fxa_users_first_seen_v1
+  WHERE
+    first_seen_date < @submission_date
 )
 SELECT
   user_id,
@@ -27,7 +29,8 @@ SELECT
       ) AS service
     WHERE
       service IS NOT NULL
-    ORDER BY service
+    ORDER BY
+      service
   ) AS services_used,
 FROM
   _previous

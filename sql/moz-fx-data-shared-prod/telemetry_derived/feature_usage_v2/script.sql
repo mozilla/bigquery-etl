@@ -1,4 +1,23 @@
+-- This script generates the feature usage data for a specific submission_date.
+-- Coercions of values is done automatically based on the type and min_version provided
+-- in the temporary `version_metadata` table. In particular, all nulls for numerical measures
+-- are coalesced to 0 in cases where the client was on an eligible browser version (i.e. a
+-- version where the underlying telemetry was implemented); otherwise leave the measure as null
+-- for ineligible versions.
+
+-- For adding a new metric:
+-- (1) Add metadata to `version_metadata` for the new metric. Metadata is specified as a list of
+--   STRUCTs where `metric` specifies the column name for the new feature metric in the result table, 
+--   `min_version` specifies the minimum eligible browser version and `type` the data type of the
+--   computed metric value.
+-- (2) Update `feature_usages` and specify the feature metric
+-- (3) Update the schema.yaml file and add the new field to the schema
+-- (4) Run ./bqetl query schema update telemetry_derived.feature_usage_v2 to update the destination
+--   table schema. 
+
 CREATE TEMP TABLE
+  -- This temporary table contains information about metric types and
+  -- eligible browser versions.
   version_metadata AS (
     WITH versions AS (
       SELECT
@@ -116,6 +135,7 @@ CREATE TEMP TABLE
       UNNEST(versions.v) AS v
   );
 
+-- This table defines the specific features we are interested in
 CREATE TEMP TABLE
   feature_usages AS (
     WITH user_type AS (
@@ -691,24 +711,45 @@ CREATE TEMP TABLE
       (client_id, submission_date)
   );
 
+-- To ensure backfills replace existing data in the feature usage table,
+-- existing data needs to be deleted explicitly since scripts do not
+-- allow to replace table partitions or writing of results to tables.
 DELETE FROM
   telemetry_derived.feature_usage_v2
 WHERE
   submission_date = @submission_date;
 
+-- The following part applies COALESCE to feature metrics and checks for
+-- eligible versions.
+-- The query that is generated and executed here looks like the following:
+--   INSERT INTO telemetry_derived.feature_usage_v2
+--   SELECT
+--     client_id,
+--     ...
+--     IF("78" > f.app_version, NULL, COALESCE(password_filled, CAST(0 AS INT64))) AS password_filled,
+--     ...
+--     IF("52" > f.app_version, NULL, COALESCE(attributed, CAST(0 AS BOOL))) AS attributed,
+--     ...
+--   FROM feature_usages f 
 EXECUTE IMMEDIATE(
   SELECT
-    'INSERT INTO telemetry_derived.feature_usage_v2 ' || 'SELECT ' || STRING_AGG(
+    -- Scripts do not return result data that could be written to a partition with
+    -- our existing machinery, so we have to INSERT the data into the destintion table.
+    'INSERT INTO telemetry_derived.feature_usage_v2 ' || 
+    'SELECT ' || STRING_AGG(
       IF(
-        `type` IS NULL,
+        `type` IS NULL, -- if no metadata is provided in `version_metadata` take the value as is
         column,
+        -- otherwise use 'IF("<version>" > f.app_version, NULL, COALESCE(<metric>, CAST(0 AS <type>))) AS <metric>,'
+        -- in query
         'IF("' || min_version || '" > f.app_version, NULL, COALESCE(' || column || ', CAST(0 AS ' || `type` || '))) AS ' || column
       )
     ) || ' FROM feature_usages f'
   FROM
     (
+      -- This extracts all the column names (=metrics) from the temporary feature usage table.
       SELECT
-        regexp_extract_all(to_json_string(f), r'"([^"]*)":') AS columns
+        REGEXP_EXTRACT_ALL(to_json_string(f), r'"([^"]*)":') AS columns
       FROM
         feature_usages f
       LIMIT

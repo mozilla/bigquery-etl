@@ -1,7 +1,7 @@
 WITH _current AS (
   SELECT
     user_id,
-    ARRAY_AGG(DISTINCT service) AS services_used,
+    ARRAY_AGG(DISTINCT service IGNORE NULLS) AS services_used,
   FROM
     firefox_accounts.fxa_all_events
   WHERE

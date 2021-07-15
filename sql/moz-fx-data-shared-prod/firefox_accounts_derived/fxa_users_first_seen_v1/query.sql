@@ -15,6 +15,9 @@ _previous AS (
   FROM
     firefox_accounts_derived.fxa_users_first_seen_v1
   WHERE
+    -- In reprocessing scenarios, we must always backfill from the first affected date
+    -- all the way to the present; to enforce that, we explicitly drop any data after
+    -- the target @submission_date
     first_seen_date < @submission_date
 )
 SELECT

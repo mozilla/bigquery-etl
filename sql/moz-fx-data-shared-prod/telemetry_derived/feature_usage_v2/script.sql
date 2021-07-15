@@ -4,17 +4,15 @@
 -- are coalesced to 0 in cases where the client was on an eligible browser version (i.e. a
 -- version where the underlying telemetry was implemented); otherwise leave the measure as null
 -- for ineligible versions.
-
 -- For adding a new metric:
 -- (1) Add metadata to `version_metadata` for the new metric. Metadata is specified as a list of
---   STRUCTs where `metric` specifies the column name for the new feature metric in the result table, 
+--   STRUCTs where `metric` specifies the column name for the new feature metric in the result table,
 --   `min_version` specifies the minimum eligible browser version and `type` the data type of the
 --   computed metric value.
 -- (2) Update `feature_usages` and specify the feature metric
 -- (3) Update the schema.yaml file and add the new field to the schema
--- (4) Run ./bqetl query schema update telemetry_derived.feature_usage_v2 to update the destination
---   table schema. 
-
+-- (4) Run `./bqetl query schema deploy telemetry_derived.feature_usage_v2 --force` to update the destination
+--   table schema.
 CREATE TEMP TABLE
   -- This temporary table contains information about metric types and
   -- eligible browser versions.
@@ -730,13 +728,12 @@ WHERE
 --     ...
 --     IF("52" > f.app_version, NULL, COALESCE(attributed, CAST(0 AS BOOL))) AS attributed,
 --     ...
---   FROM feature_usages f 
+--   FROM feature_usages f
 EXECUTE IMMEDIATE(
   SELECT
     -- Scripts do not return result data that could be written to a partition with
     -- our existing machinery, so we have to INSERT the data into the destintion table.
-    'INSERT INTO telemetry_derived.feature_usage_v2 ' || 
-    'SELECT ' || STRING_AGG(
+    'INSERT INTO telemetry_derived.feature_usage_v2 ' || 'SELECT ' || STRING_AGG(
       IF(
         `type` IS NULL, -- if no metadata is provided in `version_metadata` take the value as is
         column,

@@ -17,4 +17,10 @@ labels:
 scheduling:
   dag_name: bqetl_main_summary
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+    - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false

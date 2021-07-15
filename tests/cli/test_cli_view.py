@@ -4,6 +4,7 @@ from click.testing import CliRunner
 from bigquery_etl.cli.view import view
 
 
+@pytest.mark.integration
 class TestPublish:
     @pytest.fixture
     def runner(self):

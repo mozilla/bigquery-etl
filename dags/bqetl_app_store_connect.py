@@ -18,9 +18,13 @@ Reports are based on Pacific Standard Time (PST). A day includes
 transactions that happened from 12:00 a.m. to 11:59 p.m. PST.
 https://help.apple.com/app-store-connect/#/dev061699fdb
 
-Daily reports for the Americas are available by 5 am Pacific Time, which
-can be either 12:00 or 13:00 UTC, depending on Daylight Savings Time, so
-this dag runs at 13:00 UTC.
+Daily reports for the Americas are available by 5 am Pacific Time, which can
+be either 12:00 or 13:00 UTC, depending on Daylight Savings Time. Daily
+reports for Japan, Australia, and New Zealand by 5 am Japan Standard Time;
+and 5 am Central European Time for all other territories.
+
+Based on [bug 1720767](https://bugzilla.mozilla.org/show_bug.cgi?id=1720767)
+imports have been adjusted to 20:00 UTC.
 
 #### Owner
 
@@ -43,7 +47,7 @@ default_args = {
 with DAG(
     "bqetl_app_store_connect",
     default_args=default_args,
-    schedule_interval="0 13 * * *",
+    schedule_interval="0 20 * * *",
     doc_md=docs,
 ) as dag:
 

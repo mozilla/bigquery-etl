@@ -81,6 +81,25 @@ event:
         invoice_line_item:
         invoice_line_item_unique_id:
         quantity:
+        tax_amounts:
+          amount:
+          inclusive:
+          tax_rate:
+        tax_rates:
+          active:
+          created:
+          country:
+          description:
+          display_name:
+          id:
+          inclusive:
+          jurisdiction:
+          metadata:
+            key:
+            value:
+          percentage:
+          state:
+          tax_type:
         type:
         unit_amount:
         unit_amount_decimal:
@@ -283,6 +302,7 @@ event:
             value:
           percentage:
           state:
+          tax_type:
         type:
         unique_id:
       metadata:
@@ -593,6 +613,7 @@ event:
             value:
           percentage:
           state:
+          tax_type:
       latest_invoice:
       metadata:
         key:
@@ -692,6 +713,7 @@ event:
               value:
             percentage:
             state:
+            tax_type:
         trial_end:
         trial_from_plan:
       plan:

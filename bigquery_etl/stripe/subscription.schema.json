@@ -146,6 +146,10 @@
       {
         "name": "state",
         "type": "STRING"
+      },
+      {
+        "name": "tax_type",
+        "type": "STRING"
       }
     ]
   },
@@ -701,6 +705,10 @@
           {
             "name": "state",
             "type": "STRING"
+          },
+          {
+            "name": "tax_type",
+            "type": "STRING"
           }
         ]
       }
@@ -1181,6 +1189,10 @@
               {
                 "name": "state",
                 "type": "STRING"
+              },
+              {
+                "name": "tax_type",
+                "type": "STRING"
               }
             ]
           }
@@ -1349,6 +1361,10 @@
   {
     "name": "status",
     "type": "STRING"
+  },
+  {
+    "name": "tax_percent",
+    "type": "NUMERIC"
   },
   {
     "name": "transfer_data",

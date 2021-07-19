@@ -269,6 +269,10 @@
       {
         "name": "state",
         "type": "STRING"
+      },
+      {
+        "name": "tax_type",
+        "type": "STRING"
       }
     ]
   },
@@ -410,7 +414,6 @@
         "type": "STRING"
       }
     ]
-
   },
   {
     "name": "due_date",
@@ -881,6 +884,10 @@
           {
             "name": "state",
             "type": "STRING"
+          },
+          {
+            "name": "tax_type",
+            "type": "STRING"
           }
         ]
       },
@@ -933,6 +940,11 @@
   {
     "name": "payment_intent",
     "type": "STRING"
+  },
+  {
+    "name": "payment_settings",
+    "type": "RECORD",
+    "fields": []
   },
   {
     "name": "period_end",
@@ -999,6 +1011,14 @@
   {
     "name": "subtotal",
     "type": "INTEGER"
+  },
+  {
+    "name": "tax",
+    "type": "INTEGER"
+  },
+  {
+    "name": "tax_percent",
+    "type": "NUMERIC"
   },
   {
     "name": "threshold_reason",

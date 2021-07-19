@@ -171,7 +171,7 @@ counted AS (
     default_private_search_engine_data_load_path,
     default_private_search_engine_data_submission_url,
     sample_id,
-    subsession_hours_sum,
+    SAFE_CAST(subsession_hours_sum AS FLOAT64) AS subsession_hours_sum,
     sessions_started_on_this_day,
     active_addons_count_mean,
     scalar_parent_browser_engagement_max_concurrent_tab_count_max AS max_concurrent_tab_count_max,

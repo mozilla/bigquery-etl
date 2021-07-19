@@ -13,19 +13,19 @@
         <meta name="author" content="Mozilla Data Platform Team">
       
       
-      <link rel="icon" href="/favicon.png">
+      <link rel="icon" href="../../favicon.png">
       <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.1.11">
     
     
       
-        <title>BigQuery ETL</title>
+        <title>Bytes - BigQuery ETL</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.3754935a.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.3754935a.min.css">
       
         
-        <link rel="stylesheet" href="/assets/stylesheets/palette.f1a3b89f.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f1a3b89f.min.css">
         
           
           
@@ -72,12 +72,17 @@
     <body dir="ltr" data-md-color-scheme="" data-md-color-primary="teal" data-md-color-accent="">
   
     
-    <script>function __prefix(e){return new URL("/",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#extract_bits-udf" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -86,7 +91,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+    <a href="../.." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -105,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Bytes
             
           </span>
         </div>
@@ -176,7 +181,7 @@
 
 
   <li class="md-tabs__item">
-    <a href="/." class="md-tabs__link">
+    <a href="../.." class="md-tabs__link">
       Home
     </a>
   </li>
@@ -191,7 +196,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/cookbooks/common_workflows/" class="md-tabs__link">
+      <a href="../../cookbooks/common_workflows/" class="md-tabs__link">
         Cookbooks
       </a>
     </li>
@@ -212,7 +217,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/mozdata/introduction/" class="md-tabs__link">
+      <a href="../../mozdata/introduction/" class="md-tabs__link">
         Datasets
       </a>
     </li>
@@ -223,6 +228,8 @@
       
         
   
+  
+    
   
 
 
@@ -235,7 +242,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/mozfun/about/" class="md-tabs__link">
+      <a href="../about/" class="md-tabs__link md-tabs__link--active">
         UDFs
       </a>
     </li>
@@ -253,7 +260,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/bqetl/" class="md-tabs__link">
+      <a href="../../bqetl/" class="md-tabs__link">
         Reference
       </a>
     </li>
@@ -280,7 +287,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+    <a href="../.." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -312,7 +319,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         Home
       </a>
     </li>
@@ -348,7 +355,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/cookbooks/common_workflows/" class="md-nav__link">
+      <a href="../../cookbooks/common_workflows/" class="md-nav__link">
         Common workflows
       </a>
     </li>
@@ -360,7 +367,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/cookbooks/creating_a_derived_dataset/" class="md-nav__link">
+      <a href="../../cookbooks/creating_a_derived_dataset/" class="md-nav__link">
         Creating a derived dataset
       </a>
     </li>
@@ -423,7 +430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/introduction/" class="md-nav__link">
+      <a href="../../mozdata/introduction/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -435,7 +442,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/activity_stream/" class="md-nav__link">
+      <a href="../../mozdata/activity_stream/" class="md-nav__link">
         activity_stream
       </a>
     </li>
@@ -447,7 +454,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/amo_dev/" class="md-nav__link">
+      <a href="../../mozdata/amo_dev/" class="md-nav__link">
         amo_dev
       </a>
     </li>
@@ -459,7 +466,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/amo_prod/" class="md-nav__link">
+      <a href="../../mozdata/amo_prod/" class="md-nav__link">
         amo_prod
       </a>
     </li>
@@ -471,7 +478,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/analysis/" class="md-nav__link">
+      <a href="../../mozdata/analysis/" class="md-nav__link">
         analysis
       </a>
     </li>
@@ -483,7 +490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/bergamot/" class="md-nav__link">
+      <a href="../../mozdata/bergamot/" class="md-nav__link">
         bergamot
       </a>
     </li>
@@ -495,7 +502,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/blpadi/" class="md-nav__link">
+      <a href="../../mozdata/blpadi/" class="md-nav__link">
         blpadi
       </a>
     </li>
@@ -507,7 +514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/burnham/" class="md-nav__link">
+      <a href="../../mozdata/burnham/" class="md-nav__link">
         burnham
       </a>
     </li>
@@ -519,7 +526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/contextual_services/" class="md-nav__link">
+      <a href="../../mozdata/contextual_services/" class="md-nav__link">
         contextual_services
       </a>
     </li>
@@ -531,7 +538,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/coverage/" class="md-nav__link">
+      <a href="../../mozdata/coverage/" class="md-nav__link">
         coverage
       </a>
     </li>
@@ -543,7 +550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/default_browser_agent/" class="md-nav__link">
+      <a href="../../mozdata/default_browser_agent/" class="md-nav__link">
         default_browser_agent
       </a>
     </li>
@@ -555,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/edge_validator/" class="md-nav__link">
+      <a href="../../mozdata/edge_validator/" class="md-nav__link">
         edge_validator
       </a>
     </li>
@@ -567,7 +574,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/eng_workflow/" class="md-nav__link">
+      <a href="../../mozdata/eng_workflow/" class="md-nav__link">
         eng_workflow
       </a>
     </li>
@@ -579,7 +586,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/fenix/" class="md-nav__link">
+      <a href="../../mozdata/fenix/" class="md-nav__link">
         fenix
       </a>
     </li>
@@ -591,7 +598,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_accounts/" class="md-nav__link">
+      <a href="../../mozdata/firefox_accounts/" class="md-nav__link">
         firefox_accounts
       </a>
     </li>
@@ -603,7 +610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_desktop/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop/" class="md-nav__link">
         firefox_desktop
       </a>
     </li>
@@ -615,7 +622,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_desktop_background_update/" class="md-nav__link">
+      <a href="../../mozdata/firefox_desktop_background_update/" class="md-nav__link">
         firefox_desktop_background_update
       </a>
     </li>
@@ -627,7 +634,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_echo_show/" class="md-nav__link">
+      <a href="../../mozdata/firefox_echo_show/" class="md-nav__link">
         firefox_echo_show
       </a>
     </li>
@@ -639,7 +646,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_fire_tv/" class="md-nav__link">
+      <a href="../../mozdata/firefox_fire_tv/" class="md-nav__link">
         firefox_fire_tv
       </a>
     </li>
@@ -651,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_installer/" class="md-nav__link">
+      <a href="../../mozdata/firefox_installer/" class="md-nav__link">
         firefox_installer
       </a>
     </li>
@@ -663,7 +670,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_ios/" class="md-nav__link">
+      <a href="../../mozdata/firefox_ios/" class="md-nav__link">
         firefox_ios
       </a>
     </li>
@@ -675,7 +682,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_launcher_process/" class="md-nav__link">
+      <a href="../../mozdata/firefox_launcher_process/" class="md-nav__link">
         firefox_launcher_process
       </a>
     </li>
@@ -687,7 +694,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_reality/" class="md-nav__link">
+      <a href="../../mozdata/firefox_reality/" class="md-nav__link">
         firefox_reality
       </a>
     </li>
@@ -699,7 +706,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/firefox_reality_pc/" class="md-nav__link">
+      <a href="../../mozdata/firefox_reality_pc/" class="md-nav__link">
         firefox_reality_pc
       </a>
     </li>
@@ -711,7 +718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/focus_ios/" class="md-nav__link">
+      <a href="../../mozdata/focus_ios/" class="md-nav__link">
         focus_ios
       </a>
     </li>
@@ -723,7 +730,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/internet_outages/" class="md-nav__link">
+      <a href="../../mozdata/internet_outages/" class="md-nav__link">
         internet_outages
       </a>
     </li>
@@ -735,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/klar_ios/" class="md-nav__link">
+      <a href="../../mozdata/klar_ios/" class="md-nav__link">
         klar_ios
       </a>
     </li>
@@ -747,7 +754,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/lockwise_android/" class="md-nav__link">
+      <a href="../../mozdata/lockwise_android/" class="md-nav__link">
         lockwise_android
       </a>
     </li>
@@ -759,7 +766,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/lockwise_ios/" class="md-nav__link">
+      <a href="../../mozdata/lockwise_ios/" class="md-nav__link">
         lockwise_ios
       </a>
     </li>
@@ -771,7 +778,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mach/" class="md-nav__link">
+      <a href="../../mozdata/mach/" class="md-nav__link">
         mach
       </a>
     </li>
@@ -783,7 +790,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/messaging_system/" class="md-nav__link">
+      <a href="../../mozdata/messaging_system/" class="md-nav__link">
         messaging_system
       </a>
     </li>
@@ -795,7 +802,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mobile/" class="md-nav__link">
+      <a href="../../mozdata/mobile/" class="md-nav__link">
         mobile
       </a>
     </li>
@@ -807,7 +814,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/monitoring/" class="md-nav__link">
+      <a href="../../mozdata/monitoring/" class="md-nav__link">
         monitoring
       </a>
     </li>
@@ -819,7 +826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mozdata/" class="md-nav__link">
+      <a href="../../mozdata/mozdata/" class="md-nav__link">
         mozdata
       </a>
     </li>
@@ -831,7 +838,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mozilla_lockbox/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_lockbox/" class="md-nav__link">
         mozilla_lockbox
       </a>
     </li>
@@ -843,7 +850,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mozilla_mach/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_mach/" class="md-nav__link">
         mozilla_mach
       </a>
     </li>
@@ -855,7 +862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mozilla_vpn/" class="md-nav__link">
+      <a href="../../mozdata/mozilla_vpn/" class="md-nav__link">
         mozilla_vpn
       </a>
     </li>
@@ -867,7 +874,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mozillavpn/" class="md-nav__link">
+      <a href="../../mozdata/mozillavpn/" class="md-nav__link">
         mozillavpn
       </a>
     </li>
@@ -879,7 +886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mozphab/" class="md-nav__link">
+      <a href="../../mozdata/mozphab/" class="md-nav__link">
         mozphab
       </a>
     </li>
@@ -891,7 +898,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mozregression/" class="md-nav__link">
+      <a href="../../mozdata/mozregression/" class="md-nav__link">
         mozregression
       </a>
     </li>
@@ -903,7 +910,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/mozza/" class="md-nav__link">
+      <a href="../../mozdata/mozza/" class="md-nav__link">
         mozza
       </a>
     </li>
@@ -915,7 +922,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/operational_monitoring/" class="md-nav__link">
+      <a href="../../mozdata/operational_monitoring/" class="md-nav__link">
         operational_monitoring
       </a>
     </li>
@@ -927,7 +934,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_bergamot/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_bergamot/" class="md-nav__link">
         org_mozilla_bergamot
       </a>
     </li>
@@ -939,7 +946,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_connect_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_connect_firefox/" class="md-nav__link">
         org_mozilla_connect_firefox
       </a>
     </li>
@@ -951,7 +958,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_fenix/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fenix/" class="md-nav__link">
         org_mozilla_fenix
       </a>
     </li>
@@ -963,7 +970,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_fenix_nightly/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fenix_nightly/" class="md-nav__link">
         org_mozilla_fenix_nightly
       </a>
     </li>
@@ -975,7 +982,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_fennec_aurora/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_fennec_aurora/" class="md-nav__link">
         org_mozilla_fennec_aurora
       </a>
     </li>
@@ -987,7 +994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox/" class="md-nav__link">
         org_mozilla_firefox
       </a>
     </li>
@@ -999,7 +1006,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_firefox_beta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefox_beta/" class="md-nav__link">
         org_mozilla_firefox_beta
       </a>
     </li>
@@ -1011,7 +1018,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_firefoxreality/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_firefoxreality/" class="md-nav__link">
         org_mozilla_firefoxreality
       </a>
     </li>
@@ -1023,7 +1030,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_ios_fennec/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_fennec/" class="md-nav__link">
         org_mozilla_ios_fennec
       </a>
     </li>
@@ -1035,7 +1042,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_ios_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefox/" class="md-nav__link">
         org_mozilla_ios_firefox
       </a>
     </li>
@@ -1047,7 +1054,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_ios_firefoxbeta/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_firefoxbeta/" class="md-nav__link">
         org_mozilla_ios_firefoxbeta
       </a>
     </li>
@@ -1059,7 +1066,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_ios_focus/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_focus/" class="md-nav__link">
         org_mozilla_ios_focus
       </a>
     </li>
@@ -1071,7 +1078,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_ios_klar/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_klar/" class="md-nav__link">
         org_mozilla_ios_klar
       </a>
     </li>
@@ -1083,7 +1090,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_ios_lockbox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_ios_lockbox/" class="md-nav__link">
         org_mozilla_ios_lockbox
       </a>
     </li>
@@ -1095,7 +1102,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_mozregression/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_mozregression/" class="md-nav__link">
         org_mozilla_mozregression
       </a>
     </li>
@@ -1107,7 +1114,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_reference_browser/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_reference_browser/" class="md-nav__link">
         org_mozilla_reference_browser
       </a>
     </li>
@@ -1119,7 +1126,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_tv_firefox/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_tv_firefox/" class="md-nav__link">
         org_mozilla_tv_firefox
       </a>
     </li>
@@ -1131,7 +1138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/org_mozilla_vrbrowser/" class="md-nav__link">
+      <a href="../../mozdata/org_mozilla_vrbrowser/" class="md-nav__link">
         org_mozilla_vrbrowser
       </a>
     </li>
@@ -1143,7 +1150,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/pocket/" class="md-nav__link">
+      <a href="../../mozdata/pocket/" class="md-nav__link">
         pocket
       </a>
     </li>
@@ -1155,7 +1162,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/reference_browser/" class="md-nav__link">
+      <a href="../../mozdata/reference_browser/" class="md-nav__link">
         reference_browser
       </a>
     </li>
@@ -1167,7 +1174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/regrets_reporter/" class="md-nav__link">
+      <a href="../../mozdata/regrets_reporter/" class="md-nav__link">
         regrets_reporter
       </a>
     </li>
@@ -1179,7 +1186,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/search/" class="md-nav__link">
+      <a href="../../mozdata/search/" class="md-nav__link">
         search
       </a>
     </li>
@@ -1191,7 +1198,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/static/" class="md-nav__link">
+      <a href="../../mozdata/static/" class="md-nav__link">
         static
       </a>
     </li>
@@ -1203,7 +1210,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/stripe/" class="md-nav__link">
+      <a href="../../mozdata/stripe/" class="md-nav__link">
         stripe
       </a>
     </li>
@@ -1215,7 +1222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/subscription_platform/" class="md-nav__link">
+      <a href="../../mozdata/subscription_platform/" class="md-nav__link">
         subscription_platform
       </a>
     </li>
@@ -1227,7 +1234,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/telemetry/" class="md-nav__link">
+      <a href="../../mozdata/telemetry/" class="md-nav__link">
         telemetry
       </a>
     </li>
@@ -1239,7 +1246,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/udf/" class="md-nav__link">
+      <a href="../../mozdata/udf/" class="md-nav__link">
         udf
       </a>
     </li>
@@ -1251,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/udf_js/" class="md-nav__link">
+      <a href="../../mozdata/udf_js/" class="md-nav__link">
         udf_js
       </a>
     </li>
@@ -1263,7 +1270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/udf_js_lib/" class="md-nav__link">
+      <a href="../../mozdata/udf_js_lib/" class="md-nav__link">
         udf_js_lib
       </a>
     </li>
@@ -1275,7 +1282,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/udf_legacy/" class="md-nav__link">
+      <a href="../../mozdata/udf_legacy/" class="md-nav__link">
         udf_legacy
       </a>
     </li>
@@ -1287,7 +1294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozdata/webpagetest/" class="md-nav__link">
+      <a href="../../mozdata/webpagetest/" class="md-nav__link">
         webpagetest
       </a>
     </li>
@@ -1312,12 +1319,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
       <label class="md-nav__link" for="__nav_4">
         UDFs
@@ -1333,12 +1342,14 @@
             
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_1" type="checkbox" id="__nav_4_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_1" type="checkbox" id="__nav_4_1" checked>
       
       <label class="md-nav__link" for="__nav_4_1">
         Mozfun
@@ -1356,7 +1367,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         mozfun
       </a>
     </li>
@@ -1368,7 +1379,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/bits28/" class="md-nav__link">
+      <a href="../bits28/" class="md-nav__link">
         bits28
       </a>
     </li>
@@ -1378,11 +1389,54 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="/mozfun/bytes/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Bytes
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Bytes
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#extract_bits-udf" class="md-nav__link">
+    extract_bits (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
+    bit_pos_to_byte_pos (UDF)
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1392,7 +1446,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/event_analysis/" class="md-nav__link">
+      <a href="../event_analysis/" class="md-nav__link">
         event_analysis
       </a>
     </li>
@@ -1404,7 +1458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/glean/" class="md-nav__link">
+      <a href="../glean/" class="md-nav__link">
         glean
       </a>
     </li>
@@ -1416,7 +1470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/hist/" class="md-nav__link">
+      <a href="../hist/" class="md-nav__link">
         hist
       </a>
     </li>
@@ -1428,7 +1482,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/json/" class="md-nav__link">
+      <a href="../json/" class="md-nav__link">
         json
       </a>
     </li>
@@ -1440,7 +1494,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/map/" class="md-nav__link">
+      <a href="../map/" class="md-nav__link">
         map
       </a>
     </li>
@@ -1452,7 +1506,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/norm/" class="md-nav__link">
+      <a href="../norm/" class="md-nav__link">
         norm
       </a>
     </li>
@@ -1464,7 +1518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/mozfun/stats/" class="md-nav__link">
+      <a href="../stats/" class="md-nav__link">
         stats
       </a>
     </li>
@@ -1512,7 +1566,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/bqetl/" class="md-nav__link">
+      <a href="../../bqetl/" class="md-nav__link">
         bqetl CLI
       </a>
     </li>
@@ -1532,11 +1586,75 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#extract_bits-udf" class="md-nav__link">
+    extract_bits (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bit_pos_to_byte_pos-udf" class="md-nav__link">
+    bit_pos_to_byte_pos (UDF)
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
-  <h1>404 - Not found</h1>
+                
+                
+                  <h1>Bytes</h1>
+                
+                <h2 id="extract_bits-udf">extract_bits (UDF)</h2>
+<p>Extract bits from a byte array. Roughly matches substr
+with three arguments:
+  b: bytes - The byte string we need to extract from
+  start: int - The position of the first bit we want to extract.
+    Can be negative to start from the end of the byte array.
+    One-indexed, like substring.
+  length: int - The number of bits we want to extract</p>
+<p>The return byte array will have CEIL(length/8) bytes. The bits of
+interest will start at the beginning of the byte string. In other words,
+the byte array will have trailing 0s for any non-relevant fields.</p>
+<p>Examples:
+bytes.extract_bits(b'\x0F\xF0', 5, 8) = b'\xFF'
+bytes.extract_bits(b'\x0C\xC0', -12, 8) = b'\xCC'</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bytes/extract_bits">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bytes/extract_bits/metadata.yaml">Edit</a></p>
+<h2 id="bit_pos_to_byte_pos-udf">bit_pos_to_byte_pos (UDF)</h2>
+<p>Given a bit position, get the byte that bit appears in.
+1-indexed (to match substr), and accepts negative values.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bytes/bit_pos_to_byte_pos">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bytes/bit_pos_to_byte_pos/metadata.yaml">Edit</a></p>
+                
+              
+              
+                
+
 
               
             </article>
@@ -1547,6 +1665,41 @@
       
         
 <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../bits28/" class="md-footer__link md-footer__link--prev" aria-label="Previous: bits28" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              bits28
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../event_analysis/" class="md-footer__link md-footer__link--next" aria-label="Next: event_analysis" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              event_analysis
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -1567,10 +1720,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "/", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "/assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
     
     
-      <script src="/assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ddd52ceb.min.js"></script>
       
     
   </body>

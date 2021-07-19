@@ -165,7 +165,7 @@ def import_(
             warnings.filterwarnings("ignore", module="google.auth._default")
             job_config = bigquery.LoadJobConfig(
                 clustering_fields=["created"],
-                ignore_unknown_values=False,
+                ignore_unknown_values=True,
                 schema=filtered_schema.filtered,
                 source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
                 time_partitioning=bigquery.TimePartitioning(field="created"),

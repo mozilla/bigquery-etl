@@ -413,6 +413,12 @@ class Operator(Token):
     pattern = re.compile(r"<<|>>|>=|<=|<>|!=|.")
 
 
+class ConcatenationOperator(Token):
+    """Concatenation operator."""
+
+    pattern = re.compile(r"\|\|")
+
+
 class FieldAccessOperator(Operator):
     """Operator for field access.
 
@@ -438,6 +444,7 @@ BIGQUERY_TOKEN_PRIORITY = [
     AngleBracketKeyword,
     SpaceBeforeBracketKeyword,
     ReservedKeyword,
+    ConcatenationOperator,
     Literal,
     Identifier,
     OpeningBracket,

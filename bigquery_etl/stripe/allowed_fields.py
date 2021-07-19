@@ -3,7 +3,7 @@
 import re
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Tuple, Type
+from typing import Any, Tuple, Type, List
 
 import click
 import stripe
@@ -89,6 +89,18 @@ class FilteredSchema:
         """Format stripe object for BigQuery, and validate against original schema."""
         return self._format_helper(row, self.allowed, self.root, (self.type,))
 
+    def _hash_kv_userid(self, arr: List[dict], key_name: str) -> List[dict]:
+        """Hash a userid key if it exists in a key-value list."""
+        res = []
+        for field in arr:
+            key, value = field[key_name], field["value"]
+            if key == "userid":
+                # hash fxa uid before it reaches BigQuery
+                key = "fxa_uid"
+                value = sha256(value.encode("UTF-8")).hexdigest()
+            res.append({key_name: key, "value": value})
+        return res
+
     def _format_helper(
         self,
         obj: Any,
@@ -97,12 +109,16 @@ class FilteredSchema:
         path: Tuple[str, ...],
         is_list_item: bool = False,
     ) -> Any:
-        if path[-1] in ("metadata", "custom_fields"):
-            if "userid" in obj:
-                # hash fxa uid before it reaches BigQuery
-                obj["fxa_uid"] = sha256(obj.pop("userid").encode("UTF-8")).hexdigest()
+        if path[-1] == "metadata":
             # format metadata as a key-value list
-            obj = [{"key": key, "value": value} for key, value in obj.items()]
+            obj = self._hash_kv_userid(
+                [{"key": key, "value": value} for key, value in obj.items()], "key"
+            )
+        elif path[-1] == "custom_fields":
+            # NOTE: We treat the custom field like metadata, but does the
+            # invoice custom field contain the userid?
+            # https://stripe.com/docs/api/invoices/create#create_invoice-custom_fields
+            obj = self._hash_kv_userid(obj, "name")
         if isinstance(obj, list):
             # enforce schema
             if field.mode != "REPEATED":

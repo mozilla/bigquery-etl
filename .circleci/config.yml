@@ -34,7 +34,16 @@ jobs:
           command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
       - run:
           name: PyTest with linters
-          command: PATH="venv/bin:$PATH" script/entrypoint
+          # yamllint disable rule:line-length
+          command: |
+            if [ -n "$CIRCLE_PR_NUMBER" ]; then
+              echo "Cannot pass creds to forked PRs," \
+                "so skipping routine and SQL tests"
+              PATH="venv/bin:$PATH" script/entrypoint -m "not (routine or sql or integration or java)"
+            else
+              PATH="venv/bin:$PATH" script/entrypoint
+            fi
+          # yamllint enable rule:line-length
       - save_cache:
           paths:
             - venv/
@@ -341,6 +350,7 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *skip_forked_pr
       - *restore_venv_cache
       - *build
       - *restore_mvn_cache

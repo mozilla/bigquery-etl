@@ -12,12 +12,6 @@ fields:
   name: video_encrypted_play_time_ms
   type: INTEGER
 - mode: NULLABLE
-  name: client_id_1
-  type: STRING
-- mode: NULLABLE
-  name: submission_date_1
-  type: DATE
-- mode: NULLABLE
   name: activity_segments_v1
   type: STRING
 - mode: NULLABLE

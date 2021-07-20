@@ -40,12 +40,16 @@ all_features AS (
     {% endfor %}
 )
 SELECT
+    client_id,
+    submission_date,
     {% for source in sources %}
         {% for measure in source.measures %}
-            {% if measure.min_version %}
-                IF ('{{ measure.min_version }}' < app_version, COALESCE({{ measure.name }}, CAST(0 AS {{ measure.type }})), NULL) AS {{ measure.name }},
-            {% else %}
-                {{ measure.name }},
+            {% if measure.name != "client_id" and measure.name != "submission_date" %}
+                {% if measure.min_version %}
+                    IF ('{{ measure.min_version }}' < app_version, COALESCE({{ measure.name }}, CAST(0 AS {{ measure.type }})), NULL) AS {{ measure.name }},
+                {% else %}
+                    {{ measure.name }},
+                {% endif %}
             {% endif %}
         {% endfor %}
     {% endfor %}

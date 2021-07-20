@@ -1,3 +1,4 @@
+"""Feature usage table generation."""
 import click
 import os
 import shutil
@@ -89,6 +90,7 @@ def feature_usage():
 )
 @click.pass_context
 def generate(ctx, project, dataset, destination_table, write_dir):
+    """Generate the feature usage table."""
     generate_query(project, dataset, destination_table, write_dir)
     generate_view(project, dataset, destination_table, write_dir)
     generate_metadata(project, dataset, destination_table, write_dir)

@@ -243,6 +243,28 @@ with DAG(
         dag=dag,
     )
 
+    telemetry_derived__feature_usage__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__feature_usage__v2",
+        destination_table="feature_usage_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="loines@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "cdowhygelund@mozilla.com",
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "loines@mozilla.com",
+            "shong@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
     telemetry_derived__firefox_desktop_usage__v1 = bigquery_etl_query(
         task_id="telemetry_derived__firefox_desktop_usage__v1",
         destination_table="firefox_desktop_usage_v1",
@@ -402,6 +424,39 @@ with DAG(
 
     telemetry_derived__events_1pct__v1.set_upstream(wait_for_bq_main_events)
     telemetry_derived__events_1pct__v1.set_upstream(wait_for_event_events)
+
+    telemetry_derived__feature_usage__v2.set_upstream(wait_for_bq_main_events)
+    wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__feature_usage__v2.set_upstream(wait_for_copy_deduplicate_all)
+    telemetry_derived__feature_usage__v2.set_upstream(wait_for_event_events)
+    wait_for_telemetry_derived__addons__v2 = ExternalTaskCompletedSensor(
+        task_id="wait_for_telemetry_derived__addons__v2",
+        external_dag_id="bqetl_addons",
+        external_task_id="telemetry_derived__addons__v2",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__feature_usage__v2.set_upstream(
+        wait_for_telemetry_derived__addons__v2
+    )
+
+    telemetry_derived__feature_usage__v2.set_upstream(
+        telemetry_derived__clients_last_seen__v1
+    )
+
+    telemetry_derived__feature_usage__v2.set_upstream(telemetry_derived__main_1pct__v1)
 
     telemetry_derived__firefox_desktop_usage__v1.set_upstream(
         firefox_desktop_exact_mau28_by_dimensions_v2

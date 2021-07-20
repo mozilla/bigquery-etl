@@ -1,4 +1,5 @@
-CREATE OR REPLACE `moz-fx-data-shared-prod.telemetry.feature_usage`
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.telemetry.feature_usage`
 AS
 SELECT
   *

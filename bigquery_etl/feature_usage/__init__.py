@@ -37,7 +37,7 @@ def generate_view(project, dataset, destination_table, write_dir):
 
     sql = reformat(
         f"""
-        CREATE OR REPLACE `{project}.{view_dataset}.{view_name}` AS
+        CREATE OR REPLACE VIEW `{project}.{view_dataset}.{view_name}` AS
         SELECT
             *
         FROM
@@ -45,7 +45,9 @@ def generate_view(project, dataset, destination_table, write_dir):
     """
     )
 
-    write_sql(write_dir / project, f"{project}.{view_dataset}.{view_name}", "view.sql", sql)
+    write_sql(
+        write_dir / project, f"{project}.{view_dataset}.{view_name}", "view.sql", sql
+    )
 
 
 def generate_metadata(project, dataset, destination_table, write_dir):
@@ -90,3 +92,4 @@ def generate(ctx, project, dataset, destination_table, write_dir):
     generate_query(project, dataset, destination_table, write_dir)
     generate_view(project, dataset, destination_table, write_dir)
     generate_metadata(project, dataset, destination_table, write_dir)
+    ctx.invoke(update, name=f"{dataset}.{destination_table}", project_id=project)

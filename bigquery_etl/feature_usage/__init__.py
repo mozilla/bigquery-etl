@@ -1,15 +1,15 @@
+import click
 import os
-from argparse import ArgumentParser
-from pathlib import Path
-
 import shutil
 import yaml
+
+from pathlib import Path
 
 from bigquery_etl.cli.query import update
 from bigquery_etl.util.common import render, write_sql
 from bigquery_etl.format_sql.formatter import reformat
 
-FILE_PATH = os.path.dirname(__file__)
+FILE_PATH = Path(os.path.dirname(__file__))
 BASE_DIR = Path(FILE_PATH).parent.parent
 TEMPLATE_CONFIG = FILE_PATH / "template.yaml"
 
@@ -55,40 +55,41 @@ def generate_metadata(project, dataset, destination_table, write_dir):
     )
 
 
-def main():
-    """Generate Query directories."""
-    parser = ArgumentParser(description=main.__doc__)
-    parser.add_argument(
-        "--project",
-        help="Which project the queries should be written to.",
-        default="moz-fx-data-shared-prod",
-    )
-    parser.add_argument(
-        "--dataset",
-        help="Which dataset the queries should be written to.",
-        default="telemetry_derived",
-    )
-    parser.add_argument(
-        "--destination_table",
-        "--destination-table",
-        help="Name of the destination table.",
-        default="feature_usage_v2",
-    )
-    parser.add_argument(
-        "--path",
-        help="Where query directories will be searched for.",
-        default="bigquery_etl/feature_usage/templates",
-    )
-    parser.add_argument(
-        "--write-dir",
-        help="The location to write to. Defaults to sql/.",
-        default=BASE_DIR / "sql",
-    )
-    args = parser.parse_args()
-    generate_query(args.project, args.path, args.dataset, args.write_dir)
-    generate_view(args.project, args.path, args.dataset, args.write_dir)
-    generate_metadata(args.project, args.path, args.dataset, args.write_dir)
+@click.group(help="Commands for generating the desktop feature usage table.")
+def feature_usage():
+    """Create the CLI group for the feature usage table."""
+    pass
 
 
-if __name__ == "__main__":
-    main()
+@feature_usage.command("generate")
+@click.option(
+    "--project",
+    help="Which project the queries should be written to.",
+    default="moz-fx-data-shared-prod",
+)
+@click.option(
+    "--dataset",
+    help="Which dataset the queries should be written to.",
+    default="telemetry_derived",
+)
+@click.option(
+    "--destination_table",
+    "--destination-table",
+    help="Name of the destination table.",
+    default="feature_usage_v2",
+)
+@click.option(
+    "--path",
+    help="Where query directories will be searched for.",
+    default="bigquery_etl/feature_usage/templates",
+)
+@click.option(
+    "--write-dir",
+    help="The location to write to. Defaults to sql/.",
+    default=BASE_DIR / "sql",
+)
+@click.pass_context
+def generate(ctx, project, dataset, destination_table, path, write_dir):
+    generate_query(project, path, dataset, write_dir)
+    generate_view(project, path, dataset, write_dir)
+    generate_metadata(project, path, dataset, write_dir)

@@ -1,0 +1,41 @@
+sources:
+  - name: main
+    ref: telemetry.main_1pct
+    group_by: ["submission_date", "client_id"]
+    filters:
+      - sql: DATE(submission_timestamp) = @submission_date
+      - sql: sample_id = 0
+      - sql: normalized_channel = 'release'
+    measures:
+      - name: app_version
+        sql: app_version
+        min_version: 42
+        type: STRING
+      - name: is_headless
+        sql: LOGICAL_OR(COALESCE(environment.system.gfx.headless, FALSE))
+        min_version: 72
+        type: BOOL
+      - name: video_encrypted_play_time_ms
+        sql: |-
+          SUM(
+            CAST(
+              JSON_EXTRACT_SCALAR(
+                payload.processes.content.histograms.video_encrypted_play_time_ms,
+                '$.sum'
+              ) AS int64
+            )
+          ),
+        min_version: 70
+        type: INT64
+  - name: user_type
+    ref: telemetry.clients_last_seen
+    filters:
+      - sql: submission_date = @submission_date
+      - sql: sample_id = 0
+      - sql: normalized_channel = 'release'
+      - sql: days_since_seen = 0
+    measures:
+      - name: activity_segments_v1
+        sql: activity_segments_v1
+        min_version: null
+        type: STRING

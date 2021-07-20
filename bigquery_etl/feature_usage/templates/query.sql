@@ -10,13 +10,19 @@ WITH
     FROM
         {{ source.ref }}
     WHERE
-        {% for filter in filters %}
+        {% for filter in source.filters %}
             {% if loop.first %}
                 {{ filter.sql }}
             {% else %}
                 AND {{ filter.sql }}
             {% endif %}
         {% endfor %}
+    {% if source.group_by %}
+    GROUP BY
+        {% for field in source.group_by %}
+        {{ field }} {% if not loop.last %},{% endif %}
+        {% endfor %}
+    {% endif %}
 ),
 {% endfor %}
 all_features AS (
@@ -30,16 +36,16 @@ all_features AS (
             LEFT JOIN
                 {{ source.name }}
             USING (client_id, submission_date)
-        {% endfor %}
+        {% endif %}
     {% endfor %}
 )
 SELECT
     {% for source in sources %}
         {% for measure in source.measures %}
             {% if measure.min_version %}
-                IF ('{{ measure.min_version }}' < app_version, COALESCE({{ measure.name }}, CAST(0 AS {{ measure.type }})), NULL)
+                IF ('{{ measure.min_version }}' < app_version, COALESCE({{ measure.name }}, CAST(0 AS {{ measure.type }})), NULL) AS {{ measure.name }},
             {% else %}
-                {{ measure.name }}
+                {{ measure.name }},
             {% endif %}
         {% endfor %}
     {% endfor %}

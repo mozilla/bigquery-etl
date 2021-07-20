@@ -847,6 +847,7 @@ def update(
         )
         sys.exit(1)
     query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    print(query_files)
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
     tmp_tables = {}
 

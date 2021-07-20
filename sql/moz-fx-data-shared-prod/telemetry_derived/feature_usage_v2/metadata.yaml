@@ -5,10 +5,10 @@ description: |-
   For more information see
   https://bugzilla.mozilla.org/show_bug.cgi?id=1720218
 owners:
-  - loines@mozilla.com
-  - shong@mozilla.com
-  - cdowhygelund@mozilla.com
-  - ascholtz@mozilla.com
+- loines@mozilla.com
+- shong@mozilla.com
+- cdowhygelund@mozilla.com
+- ascholtz@mozilla.com
 labels:
   incremental: true
   application: firefox
@@ -17,9 +17,10 @@ scheduling:
   dag_name: bqetl_main_summary
   date_partition_parameter: null
   parameters:
-    - submission_date:DATE:{{ds}}
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     field: submission_date
     type: day
     require_partition_filter: false
+  clustering: null

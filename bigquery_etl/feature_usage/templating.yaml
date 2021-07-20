@@ -7,16 +7,18 @@ sources:
       - sql: sample_id = 0
       - sql: normalized_channel = 'release'
     measures:
-      - name: app_version
-        sql: app_version
-        min_version: 42
+      - name: client_id
+        sql: client_id
         type: STRING
+      - name: submission_date
+        sql: DATE(submission_timestamp)
+        type: DATE
       - name: is_headless
         sql: LOGICAL_OR(COALESCE(environment.system.gfx.headless, FALSE))
         min_version: 72
         type: BOOL
       - name: video_encrypted_play_time_ms
-        sql: |-
+        sql: >
           SUM(
             CAST(
               JSON_EXTRACT_SCALAR(
@@ -24,7 +26,7 @@ sources:
                 '$.sum'
               ) AS int64
             )
-          ),
+          )
         min_version: 70
         type: INT64
   - name: user_type
@@ -35,7 +37,16 @@ sources:
       - sql: normalized_channel = 'release'
       - sql: days_since_seen = 0
     measures:
+      - name: client_id
+        sql: client_id
+        type: STRING
+      - name: submission_date
+        sql: submission_date
+        type: DATE
       - name: activity_segments_v1
         sql: activity_segments_v1
-        min_version: null
+        type: STRING
+      - name: app_version
+        sql: app_version
+        min_version: 42
         type: STRING

@@ -3,40 +3,41 @@ import os
 import shutil
 import yaml
 
+from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
 from bigquery_etl.cli.query import update
-from bigquery_etl.util.common import render, write_sql
+from bigquery_etl.util.common import write_sql
 from bigquery_etl.format_sql.formatter import reformat
 
 FILE_PATH = Path(os.path.dirname(__file__))
 BASE_DIR = Path(FILE_PATH).parent.parent
-TEMPLATE_CONFIG = FILE_PATH / "template.yaml"
+TEMPLATE_CONFIG = FILE_PATH / "templating.yaml"
 
 
 def generate_query(project, dataset, destination_table, write_dir):
     """Generate feature usage table query."""
     with open(TEMPLATE_CONFIG, "r") as f:
-        render_kwargs = yaml.load(f) or {}
+        render_kwargs = yaml.safe_load(f) or {}
+    env = Environment(loader=FileSystemLoader(str(FILE_PATH / "templates")))
+    template = env.get_template("query.sql")
+
     write_sql(
         write_dir / project,
         f"{project}.{dataset}.{destination_table}",
         "query.sql",
-        render(
-            "query.sql",
-            template_folder=FILE_PATH / "templates",
-            **render_kwargs,
-            init=False,
-        ),
+        reformat(template.render(**render_kwargs)),
     )
 
 
 def generate_view(project, dataset, destination_table, write_dir):
     """Generate feature usage table view."""
     view_name = destination_table.split("_v")[0]
+    view_dataset = dataset.split("_derived")[0]
+
     sql = reformat(
         f"""
-        CREATE OR REPLACE `{project}.{dataset}.{view_name}` AS
+        CREATE OR REPLACE `{project}.{view_dataset}.{view_name}` AS
         SELECT
             *
         FROM
@@ -44,7 +45,7 @@ def generate_view(project, dataset, destination_table, write_dir):
     """
     )
 
-    write_sql(write_dir / project, f"{project}.{dataset}.{view_name}", "view.sql", sql)
+    write_sql(write_dir / project, f"{project}.{view_dataset}.{view_name}", "view.sql", sql)
 
 
 def generate_metadata(project, dataset, destination_table, write_dir):
@@ -79,17 +80,13 @@ def feature_usage():
     default="feature_usage_v2",
 )
 @click.option(
-    "--path",
-    help="Where query directories will be searched for.",
-    default="bigquery_etl/feature_usage/templates",
-)
-@click.option(
     "--write-dir",
     help="The location to write to. Defaults to sql/.",
     default=BASE_DIR / "sql",
+    type=click.Path(file_okay=True),
 )
 @click.pass_context
-def generate(ctx, project, dataset, destination_table, path, write_dir):
-    generate_query(project, path, dataset, write_dir)
-    generate_view(project, path, dataset, write_dir)
-    generate_metadata(project, path, dataset, write_dir)
+def generate(ctx, project, dataset, destination_table, write_dir):
+    generate_query(project, dataset, destination_table, write_dir)
+    generate_view(project, dataset, destination_table, write_dir)
+    generate_metadata(project, dataset, destination_table, write_dir)

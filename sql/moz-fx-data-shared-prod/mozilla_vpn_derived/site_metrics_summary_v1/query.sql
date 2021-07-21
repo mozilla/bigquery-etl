@@ -90,7 +90,7 @@ base_table AS (
     UNNEST(hits)
   WHERE
     `date` IS NOT NULL
-    AND `date` = CURRENT_DATE - 1
+    AND `date` = @date
 ),
 sessions_table AS (
   SELECT

@@ -548,3 +548,17 @@ bqetl_app_store_connect:
     start_date: "2021-01-15"
     retries: 2
     retry_delay: 30m
+
+bqetl_experimenter_experiments_import:
+  schedule_interval: "*/10 * * * *"
+  description: |
+    Imports experiments from the Experimenter V4 and V6 API.
+
+    Imported experiment data is used for experiment monitoring in
+    [Grafana](https://grafana.telemetry.mozilla.org/d/XspgvdxZz/experiment-enrollment).
+  default_args:
+    owner: ascholtz@mozilla.com
+    start_date: "2020-10-09"
+    retries: 0
+    email:
+      - ascholtz@mozilla.com

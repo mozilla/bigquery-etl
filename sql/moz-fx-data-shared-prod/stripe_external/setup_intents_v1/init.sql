@@ -10,7 +10,7 @@ WITH events AS (
     created AS event_timestamp,
     `data`.setup_intent.*,
   FROM
-    `moz-fx-data-shared-prod`.stripe_external.events_v1
+    events_v1
   WHERE
     `data`.setup_intent IS NOT NULL
   UNION ALL

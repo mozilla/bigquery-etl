@@ -6,7 +6,7 @@
   normalized_os: iOS
   sample_id: 1
   client_info:
-    app_display_version: "31.0"
+    app_display_version: "35.0"
     client_id: beta_ios
     os_version: "13.0"
     locale: en-US

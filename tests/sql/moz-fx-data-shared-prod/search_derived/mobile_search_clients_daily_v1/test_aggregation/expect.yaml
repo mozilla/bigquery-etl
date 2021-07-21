@@ -235,9 +235,9 @@
   client_id: release_ios
   os: iOS
   os_version: "13.0"
-  app_version: "31.0"
-  app_name: Firefox iOS
-  normalized_app_name: Firefox iOS
+  app_version: "35.0"
+  app_name: Fennec
+  normalized_app_name: Fennec
   channel: release
   country: US
   locale: en-US
@@ -253,6 +253,11 @@
   engine: engine2
   source: suggestion
   search_count: 2
+- <<: *ios_base
+  default_search_engine: engine2
+  engine: engine2
+  source: organic.none
+  organic: 7
 - <<: *ios_base
   client_id: beta_ios
   channel: beta

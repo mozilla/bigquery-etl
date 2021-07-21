@@ -1,0 +1,23 @@
+friendly_name: Adspend
+description: >
+  Import detailed adspend iProspect CSV data from
+  moz-fx-data-marketing-prod-iprospect storage bucket.
+  Import iProspect data from
+  moz-fx-data-marketing-prod.iprospect.adspend_raw_v1.
+
+  See https://mozilla-hub.atlassian.net/browse/DS-1643
+labels:
+  incremental: true
+owners:
+  - ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_iprospect
+  arguments: ["--date", "{{ ds }}"]
+  referenced_tables:
+    - ['moz-fx-data-marketing-prod', 'iprospect', 'adspend_raw_v1']
+
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false

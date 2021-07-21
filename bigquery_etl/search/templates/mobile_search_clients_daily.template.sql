@@ -308,11 +308,14 @@ combined_search_clients AS (
   FROM
     glean_flattened_searches
   WHERE
-    -- iOS organic counts are incorrect as of 2021-05-04
+    -- iOS organic counts are incorrect until version 34.0
     -- https://github.com/mozilla-mobile/firefox-ios/issues/8412
-    NOT STARTS_WITH(source, 'organic.')
-    OR source IS NULL
-    OR app_name != 'Firefox iOS'
+    NOT (
+      STARTS_WITH(source, 'organic.')
+      AND source IS NOT NULL
+      AND app_name = 'Fennec'
+      AND mozfun.norm.truncate_version(app_version, 'major') < 34
+    )
 ),
 unfiltered_search_clients AS (
   SELECT

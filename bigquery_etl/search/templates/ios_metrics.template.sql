@@ -1,4 +1,4 @@
--- metrics for {{ app_name }} {{ channel }}
+-- metrics for Firefox iOS {{ channel }}
 metrics_{{ namespace }} AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,

@@ -250,7 +250,7 @@ metrics_org_mozilla_firefox AS (
   FROM
     org_mozilla_firefox.metrics AS org_mozilla_firefox_metrics
 ),
--- metrics for Fennec release
+-- metrics for Firefox iOS release
 metrics_org_mozilla_ios_firefox AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -280,7 +280,7 @@ metrics_org_mozilla_ios_firefox AS (
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
--- metrics for Fennec beta
+-- metrics for Firefox iOS beta
 metrics_org_mozilla_ios_firefoxbeta AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -310,7 +310,7 @@ metrics_org_mozilla_ios_firefoxbeta AS (
   WHERE
     mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
--- metrics for Fennec nightly
+-- metrics for Firefox iOS nightly
 metrics_org_mozilla_ios_fennec AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -604,11 +604,14 @@ combined_search_clients AS (
   FROM
     glean_flattened_searches
   WHERE
-    -- iOS organic counts are incorrect as of 2021-05-04
+    -- iOS organic counts are incorrect until version 34.0
     -- https://github.com/mozilla-mobile/firefox-ios/issues/8412
-    NOT STARTS_WITH(source, 'organic.')
-    OR source IS NULL
-    OR app_name != 'Firefox iOS'
+    NOT (
+      STARTS_WITH(source, 'organic.')
+      AND source IS NOT NULL
+      AND app_name = 'Fennec'
+      AND mozfun.norm.truncate_version(app_version, 'major') < 34
+    )
 ),
 unfiltered_search_clients AS (
   SELECT

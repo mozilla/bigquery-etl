@@ -7,5 +7,5 @@ labels:
   application: mozilla_vpn
   schedule: daily
 scheduling:
-  dag_name: bqetl_mozilla_vpn
+  dag_name: bqetl_subplat
   referenced_tables: []

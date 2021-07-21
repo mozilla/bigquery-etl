@@ -6,7 +6,7 @@ labels:
   application: stripe
   schedule: daily
 scheduling:
-  dag_name: bqetl_stripe
+  dag_name: bqetl_subplat
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter:

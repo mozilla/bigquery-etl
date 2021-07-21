@@ -7,8 +7,8 @@ gcsfs==2021.7.0
 gcloud==0.18.3
 gitpython==3.1.18
 google-api-core==1.31.0  # transitive dep that needs dependabot updates
-google-cloud-bigquery==2.20.0
-google-cloud-storage==1.40.0
+google-cloud-bigquery==2.22.0
+google-cloud-storage==1.41.0
 googleapis-common-protos==1.53.0  # transitive dep that needs dependabot updates
 importlib-metadata==4.6.1  # python 3.7 backwards compat
 Jinja2==3.0.1
@@ -28,7 +28,7 @@ pytest==6.2.4
 PyYAML==5.4.1
 smart_open==5.1.0
 sqlparse==0.4.1
-stripe==2.59.0
+stripe==2.60.0
 typing==3.7.4.3
 ujson==4.0.2
 yamllint==1.26.1

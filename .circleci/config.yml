@@ -290,6 +290,21 @@ jobs:
             PATH="venv/bin:$PATH" ./script/generate_sql \
               --sql-dir /tmp/workspace/generated-sql/sql/ \
               --target-project moz-fx-data-shared-prod
+
+            # generate all of the relevant incremental SQL for GLAM
+            products=(
+              "org_mozilla_fenix_glam_nightly"
+              "org_mozilla_fenix_glam_beta"
+              "org_mozilla_fenix_glam_release"
+            )
+            for product in $products; do
+              PATH="venv/bin:$PATH" \
+              STAGE="incremental" \
+              DST_PROJECT="moz-fx-data-glam-prod-fca7" \
+              PRODUCT="$product" \
+              ./script/glam/generate_glean_sql
+            done
+
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

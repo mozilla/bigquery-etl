@@ -10,7 +10,7 @@ WITH events AS (
     created AS event_timestamp,
     `data`.invoice.*,
   FROM
-    `moz-fx-data-shared-prod`.stripe_external.events_v1
+    events_v1
   WHERE
     `data`.invoice IS NOT NULL
   UNION ALL
@@ -18,7 +18,7 @@ WITH events AS (
     created AS event_timestamp,
     *,
   FROM
-    `moz-fx-data-shared-prod`.stripe_external.initial_invoices_v1
+    initial_invoices_v1
 )
 SELECT
   id,

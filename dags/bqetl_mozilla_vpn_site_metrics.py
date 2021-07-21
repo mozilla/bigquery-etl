@@ -87,7 +87,7 @@ with DAG(
 
     wait_for_mozilla_vpn_derived__all_subscriptions__v1 = ExternalTaskCompletedSensor(
         task_id="wait_for_mozilla_vpn_derived__all_subscriptions__v1",
-        external_dag_id="bqetl_mozilla_vpn",
+        external_dag_id="bqetl_subplat",
         external_task_id="mozilla_vpn_derived__all_subscriptions__v1",
         execution_delta=datetime.timedelta(seconds=47700),
         check_existence=True,

@@ -9,7 +9,7 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_mozilla_vpn
+  dag_name: bqetl_subplat
   arguments:
     [
       "--date",

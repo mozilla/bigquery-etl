@@ -105,6 +105,27 @@ fenix_metrics AS (
 ios_metrics AS (
   {{ ios_metrics }}
 ),
+-- iOS organic counts are incorrect until version 34.0
+-- https://github.com/mozilla-mobile/firefox-ios/issues/8412
+ios_organic_filtered AS (
+  SELECT
+    * REPLACE (
+      IF(
+        mozfun.norm.truncate_version(app_version, 'major') >= 34,
+        search_in_content,
+        ARRAY(
+          SELECT AS STRUCT
+            *
+          FROM
+            UNNEST(search_in_content)
+          WHERE
+            NOT REGEXP_CONTAINS(key, '\\.organic\\.')
+        )
+      ) AS search_in_content
+    ),
+  FROM
+    ios_metrics
+),
 --  older fenix clients don't send locale in the metrics ping
 fenix_client_locales AS (
   SELECT
@@ -137,7 +158,7 @@ glean_metrics AS (
   SELECT
     *
   FROM
-    ios_metrics
+    ios_organic_filtered
 ),
 glean_combined_searches AS (
   SELECT
@@ -307,15 +328,6 @@ combined_search_clients AS (
     total_uri_count,
   FROM
     glean_flattened_searches
-  WHERE
-    -- iOS organic counts are incorrect until version 34.0
-    -- https://github.com/mozilla-mobile/firefox-ios/issues/8412
-    NOT (
-      STARTS_WITH(source, 'organic.')
-      AND source IS NOT NULL
-      AND app_name = 'Fennec'
-      AND mozfun.norm.truncate_version(app_version, 'major') < 34
-    )
 ),
 unfiltered_search_clients AS (
   SELECT

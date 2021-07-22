@@ -1,5 +1,6 @@
 ---
-- client_id: core
+- &base
+  client_id: core
   submission_timestamp: 2019-12-01 22:09:03.243074 UTC
   default_search:
   distribution_id:
@@ -17,3 +18,7 @@
   searches:
     - key: engine1.actionbar
       value: "1"
+- <<: *base  # should be ignored
+  metadata:
+    uri:
+      app_version: "28.0"

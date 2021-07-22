@@ -176,6 +176,10 @@ event:
         name:
         value:
       customer:
+      customer_address:
+        country:
+        postal_code:
+        state:
       customer_tax_exempt:
       customer_tax_ids:
         type:

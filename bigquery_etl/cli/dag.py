@@ -7,7 +7,7 @@ from pathlib import Path
 import click
 import yaml
 
-from ..cli.utils import is_valid_dir, is_valid_file
+from ..cli.common import is_valid_dir, is_valid_file
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..query_scheduling.dag import Dag
 from ..query_scheduling.dag_collection import DagCollection

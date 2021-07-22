@@ -43,7 +43,8 @@ python -m bigquery_etl.view.generate_stable_views \
 # Fill in definitions for generated Glean ETL
 ./script/bqetl glean_usage generate --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
 
-# generate all of the relevant incremental SQL for GLAM
+# Generate all of the relevant incremental SQL for GLAM. This completely ignores
+# the TARGET_PROJECT variable, which is not useful in this scope.
 products="
     org_mozilla_fenix_glam_nightly
     org_mozilla_fenix_glam_beta

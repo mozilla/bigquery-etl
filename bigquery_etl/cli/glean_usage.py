@@ -4,7 +4,7 @@ from multiprocessing.pool import ThreadPool
 from pathlib import Path
 import click
 
-from ..cli.utils import (
+from ..cli.common import (
     is_valid_project,
     table_matches_patterns,
 )

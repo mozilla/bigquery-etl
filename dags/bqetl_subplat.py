@@ -492,7 +492,7 @@ with DAG(
         + [
             "--date={{ ds }}",
             "--api-key={{ var.value.stripe_api_key }}",
-            "--table-moz-fx-data-shared-prod.stripe_external.events_v1",
+            "--table=moz-fx-data-shared-prod.stripe_external.events_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="dthorn@mozilla.com",

@@ -292,11 +292,12 @@ jobs:
               --target-project moz-fx-data-shared-prod
 
             # generate all of the relevant incremental SQL for GLAM
-            products=(
-              "org_mozilla_fenix_glam_nightly"
-              "org_mozilla_fenix_glam_beta"
-              "org_mozilla_fenix_glam_release"
-            )
+            products="
+              org_mozilla_fenix_glam_nightly
+              org_mozilla_fenix_glam_beta
+              org_mozilla_fenix_glam_release
+            "
+
             for product in $products; do
               PATH="venv/bin:$PATH" \
               STAGE="incremental" \

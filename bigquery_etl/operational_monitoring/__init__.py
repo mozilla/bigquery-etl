@@ -1,19 +1,17 @@
 """Generate and run the Operational Monitoring Queries."""
+import json
+import logging
 import os
 import re
 import time
-import json
-import click
-import logging
-
-from datetime import datetime, date
-from pathlib import Path
+from datetime import date, datetime
 from multiprocessing.pool import ThreadPool
+from pathlib import Path
 
-from google.cloud import storage, bigquery
+import click
+from google.cloud import bigquery, storage
 
 from bigquery_etl.util.common import render, write_sql
-
 
 QUERY_FILENAME = "query.sql"
 INIT_FILENAME = "init.sql"
@@ -26,7 +24,7 @@ DEFAULT_DATASET = "operational_monitoring_derived"
 
 def _download_json_file(project, bucket, filename):
     blob = bucket.get_blob(filename)
-    return json.loads(blob.download_as_string()), blob.updated
+    return json.loads(blob.download_as_bytes()), blob.updated
 
 
 def _get_name_and_sql(query, reference_content, item_type):

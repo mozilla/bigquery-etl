@@ -43,22 +43,5 @@ python -m bigquery_etl.view.generate_stable_views \
 # Fill in definitions for generated Glean ETL
 ./script/bqetl glean_usage generate --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
 
-# Generate all of the relevant incremental SQL for GLAM. This completely ignores
-# the TARGET_PROJECT variable, which is not useful in this scope.
-products="
-    org_mozilla_fenix_glam_nightly
-    org_mozilla_fenix_glam_beta
-    org_mozilla_fenix_glam_release
-"
-
-for product in $products; do
-    PATH="venv/bin:$PATH" \
-    SQL_DIR="${SQL_DIR}" \
-    STAGE="incremental" \
-    DST_PROJECT="moz-fx-data-glam-prod-fca7" \
-    PRODUCT="$product" \
-    ./script/glam/generate_glean_sql
-done
-
 # Record dependencies in yaml files
 ./script/bqetl dependency record --skip-existing "${SQL_DIR}"

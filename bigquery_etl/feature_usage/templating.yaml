@@ -1,3 +1,41 @@
+# This config file defines the feature usage metrics that will be used to
+# generate the SQL query for telemetry_derived.feature_usage_v2.
+#
+# The general structure of this config file is as follows:
+#   sources:
+#     - name: <source_name>
+#       ref: <dataset>.<table>  # corresponds to BQ table identifier
+#       filters:              # optional, SQL filter statements
+#         - sql: <SQL snippet>
+#       group_by:             # optional, names of fields to GROUP BY
+#         - <field_name>
+#       measures:             # metric definitions
+#         - name: <metric_name>
+#           sql: <SQL expression>
+#           vetted: <true|false>
+#           min_version: <number>   # optional, FF min version
+#           type: <BOOL|INT64|...>  # optional, BQ type of the metric result
+#         - ...
+#     - name: <another_source>
+#       ...
+#
+# `sources` define which tables need to be queried from to compute specific
+# metrics. Each source has a set of `measures` which define the feature usage
+# metrics. For each measure the `sql` expression needs to be defined, and
+# optionally a `min_version` (= browser version which introduces feature), a
+# `type` and whether the metric is `vetted`.
+#
+# After adding new metrics, run `./bqetl feature_usage generate` to re-generate
+# the SQL query for `telemetry_derived.feature_usage_v2`.
+# Run `./bqetl query schema deploy telemetry_derived.feature_usage_v2` to
+# update the schema of the BigQuery destination table. This requires GCP
+# credentials.
+#
+# New metrics will not be automatically backfilled for previous dates. For
+# performing a backfill, after changes have been approved and merged, run:
+#   ./bqetl query backfill telemetry_derived.feature_usage_v2 \
+#       --start_date=<YYYY-MM-DD> \  # replace with date range
+#       --end_date=<YYYY-MM-DD>
 sources:
   ### User Type ###
   - name: user_type

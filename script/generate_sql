@@ -53,6 +53,7 @@ products="
 
 for product in $products; do
     PATH="venv/bin:$PATH" \
+    SQL_DIR="${SQL_DIR}" \
     STAGE="incremental" \
     DST_PROJECT="moz-fx-data-glam-prod-fca7" \
     PRODUCT="$product" \

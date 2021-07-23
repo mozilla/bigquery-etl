@@ -39,14 +39,42 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
-    iprospect__detail_export__v1 = gke_command(
-        task_id="iprospect__detail_export__v1",
+    iprospect__adspend__v1 = gke_command(
+        task_id="iprospect__adspend__v1",
         command=[
             "python",
-            "sql/moz-fx-data-marketing-prod/iprospect/detail_export_v1/query.py",
+            "sql/moz-fx-data-marketing-prod/iprospect/adspend_v1/query.py",
         ]
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com"],
     )
+
+    iprospect__adspend_meta__v1 = bigquery_etl_query(
+        task_id="iprospect__adspend_meta__v1",
+        destination_table="adspend_meta_v1",
+        dataset_id="iprospect",
+        project_id="moz-fx-data-marketing-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        dag=dag,
+    )
+
+    iprospect__adspend_raw__v1 = gke_command(
+        task_id="iprospect__adspend_raw__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-marketing-prod/iprospect/adspend_raw_v1/query.py",
+        ]
+        + ["--date", "{{ ds }}"],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com"],
+    )
+
+    iprospect__adspend__v1.set_upstream(iprospect__adspend_raw__v1)
+
+    iprospect__adspend_meta__v1.set_upstream(iprospect__adspend_raw__v1)

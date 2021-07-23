@@ -761,6 +761,12 @@
     ]
   },
   {
+    "name": "payment_settings",
+    "type": "RECORD",
+    "fields": [
+    ]
+  },
+  {
     "name": "pending_invoice_item_interval",
     "type": "RECORD",
     "fields": [

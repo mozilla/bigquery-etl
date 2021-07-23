@@ -1,0 +1,21 @@
+friendly_name: Adspend Raw
+description: >
+  Import detailed ad spend iProspect CSV data from
+  moz-fx-data-marketing-prod-iprospect storage bucket.
+
+  Each partition represents CSV data that was uploaded
+  for that date.
+
+  See https://mozilla-hub.atlassian.net/browse/DS-1643
+labels:
+  incremental: true
+owners:
+  - ascholtz@mozilla.com
+scheduling:
+  dag_name: bqetl_iprospect
+  arguments: ["--date", "{{ ds }}"]
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: false

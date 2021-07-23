@@ -7,7 +7,8 @@ function write_scalars {
     local dataset=$2
     local table=$3
     local dst_project=$4
-    local directory="sql/${dst_project}/glam_etl/${product}__clients_daily_scalar_aggregates_${table}"
+    local sql_dir=$5
+    local directory="${sql_dir}/${dst_project}/glam_etl/${product}__clients_daily_scalar_aggregates_${table}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
         --source-table "$dataset.$table" \
@@ -24,7 +25,8 @@ function write_histograms {
     local dataset=$2
     local table=$3
     local dst_project=$4
-    local directory="sql/${dst_project}/glam_etl/${product}__clients_daily_histogram_aggregates_${table}"
+    local sql_dir=$5
+    local directory="${sql_dir}/${dst_project}/glam_etl/${product}__clients_daily_histogram_aggregates_${table}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
         --source-table "$dataset.$table" \
@@ -40,6 +42,7 @@ function write_clients_daily_aggregates {
     local product=$1
     local src_project=$2
     local dst_project=$3
+    local sql_dir=$4
 
     local dataset="${product}_stable"
     local qualified="$src_project:$dataset"
@@ -62,8 +65,8 @@ function write_clients_daily_aggregates {
     )
     # generate all of the schemas in parallel
     for table in $tables; do
-        write_scalars "$product" "$dataset" "$table" "$dst_project" &
-        write_histograms "$product" "$dataset" "$table" "$dst_project" &
+        write_scalars "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &
+        write_histograms "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &
     done
 
     # wait for all of the processes before continuing
@@ -77,20 +80,34 @@ src_project=${SRC_PROJECT:-moz-fx-data-shared-prod}
 # We may also define the PROJECT as the destination project for backwards
 # compatibility.
 dst_project=${DST_PROJECT:-${PROJECT:-glam-fenix-dev}}
+sql_dir=${SQL_DIR:-sql}
+# also remove trailing slash
+sql_dir=${sql_dir%/}
+
 product=${PRODUCT?PRODUCT must be defined}
 stage=${STAGE?$error}
 
 # ensure the sql directory exists
-mkdir -p sql/$dst_project/glam_etl
+mkdir -p $sql_dir/$dst_project/glam_etl
 
 if [[ $stage == "daily" ]]; then
-    write_clients_daily_aggregates "$product" "$src_project" "$dst_project"
-    python3 -m bigquery_etl.glam.generate --project "$dst_project" --prefix "${product}" --daily-view-only
+    write_clients_daily_aggregates "$product" "$src_project" "$dst_project" "$sql_dir"
+    python3 -m bigquery_etl.glam.generate \
+        --sql-root "$sql_dir" \
+        --project "$dst_project" \
+        --prefix "${product}" \
+        --daily-view-only
 elif [[ $stage == "incremental" ]]; then
-    python3 -m bigquery_etl.glam.generate --project "$dst_project" --prefix "${product}"
+    python3 -m bigquery_etl.glam.generate \
+        --sql-root "$sql_dir" \
+        --project "$dst_project" \
+        --prefix "${product}"
 elif [[ $stage == "all" ]]; then
-    write_clients_daily_aggregates "$product" "$src_project" "$dst_project"
-    python3 -m bigquery_etl.glam.generate --project "$dst_project" --prefix "${product}"
+    write_clients_daily_aggregates "$product" "$src_project" "$dst_project" "$sql_dir"
+    python3 -m bigquery_etl.glam.generate \
+        --sql-root "$sql_dir" \
+        --project "$dst_project" \
+        --prefix "${product}"
 else
     echo "$error"
     exit 1

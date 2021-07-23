@@ -1,82 +1,79 @@
-WITH ga_sessions_union AS (
+CREATE TEMP FUNCTION udf_ga_sessions(ga_sessions ANY TYPE, site STRING) AS (
+  STRUCT(
+    CONCAT(ga_sessions.fullVisitorId, ga_sessions.visitId) AS visit_identifier,
+    ga_sessions.device.deviceCategory AS device_category,
+    ga_sessions.device.operatingSystem AS operating_system,
+    ga_sessions.device.browser,
+    ga_sessions.device.language,
+    ga_sessions.geoNetwork.country,
+    ga_sessions.trafficSource.source,
+    ga_sessions.trafficSource.medium,
+    ga_sessions.trafficSource.campaign,
+    ga_sessions.trafficSource.adcontent AS content,
+    site,
+    ga_sessions.totals.visits,
+    ARRAY(
+      SELECT AS STRUCT
+        type AS hit_type,
+        eventInfo.eventCategory AS hit_event_category,
+        eventInfo.eventAction AS hit_event_action,
+        eventInfo.eventLabel AS hit_event_label,
+        IF(
+          site = "vpn.mozilla.org",
+          STRUCT(
+            CAST(NULL AS STRING) AS source_param,
+            eventInfo.eventLabel LIKE "%Subscribe%" AS subscribe_intent,
+            eventInfo.eventLabel LIKE "%Join%" AS join_waitlist_intent,
+            eventInfo.eventLabel LIKE "%Submit waitlist form%" AS join_waitlist_success,
+            eventInfo.eventLabel LIKE "%Sign in%" AS sign_in_intent,
+            eventInfo.eventLabel LIKE "%Download%" AS download_intent,
+            eventInfo.eventLabel LIKE "%Download installer%" AS download_installer_intent
+          ),
+          STRUCT(
+            REGEXP_EXTRACT(page.pagePath, "[?&]source=((?:whatsnew|welcome)[^&]+)") AS source_param,
+            eventInfo.eventAction = "cta: fxa-vpn"
+            AND (
+              eventInfo.eventLabel = "Try Mozilla VPN"
+              OR eventInfo.eventLabel LIKE "Get Mozilla VPN %"
+            ) AS subscribe_intent,
+            eventInfo.eventAction = "cta: button"
+            AND eventInfo.eventLabel = "Join the VPN Waitlist" AS join_waitlist_intent,
+            eventInfo.eventAction = "newsletter subscription"
+            AND eventInfo.eventLabel = "guardian-vpn-waitlist" AS join_waitlist_success,
+            eventInfo.eventAction = "cta: fxa-vpn"
+            AND eventInfo.eventLabel = "VPN Sign In" AS sign_in_intent,
+                -- Downloading clients does not happen on mozilla.org
+            FALSE AS download_intent,
+            FALSE AS download_installer_intent
+          )
+        ).*
+      FROM
+        UNNEST(ga_sessions.hits)
+      WHERE
+        site = "vpn.mozilla.org"
+        OR (site = "mozilla.org" AND page.pagePath LIKE "%/products/vpn/%")
+    ) AS hits
+  )
+);
+
+WITH ga_sessions AS (
   SELECT
-    ga_sessions.* REPLACE (SAFE.PARSE_DATE("%Y%m%d", _TABLE_SUFFIX) AS `date`),
-    "mozilla.org" AS site,
+    -- keep date out of UDF to preserve suffix pruning
+    SAFE.PARSE_DATE("%Y%m%d", _TABLE_SUFFIX) AS `date`,
+    udf_ga_sessions(ga_sessions, "mozilla.org").*,
   FROM
     `moz-fx-data-marketing-prod.65789850.ga_sessions_*` AS ga_sessions
   UNION ALL
   SELECT
-    ga_sessions.* REPLACE (SAFE.PARSE_DATE("%Y%m%d", _TABLE_SUFFIX) AS `date`),
-    "vpn.mozilla.org" AS site,
+    -- keep date out of UDF to preserve suffix pruning
+    SAFE.PARSE_DATE("%Y%m%d", _TABLE_SUFFIX) AS `date`,
+    udf_ga_sessions(ga_sessions, "vpn.mozilla.org").*,
   FROM
     `moz-fx-data-marketing-prod.220432379.ga_sessions_*` AS ga_sessions
 ),
-ga_sessions_hits AS (
-  SELECT
-    `date`,
-    CONCAT(fullVisitorId, visitId) AS visit_identifier,
-    device.deviceCategory AS device_category,
-    device.operatingSystem AS operating_system,
-    device.browser,
-    device.language,
-    geoNetwork.country,
-    trafficSource.source,
-    trafficSource.medium,
-    trafficSource.campaign,
-    trafficSource.adcontent AS content,
-    site,
-    totals.visits,
-    hits.type AS hit_type,
-    hits.eventInfo.eventCategory AS hit_event_category,
-    hits.eventInfo.eventAction AS hit_event_action,
-    hits.eventInfo.eventLabel AS hit_event_label,
-    IF(
-      site = "vpn.mozilla.org",
-      STRUCT(
-        CAST(NULL AS STRING) AS source_param,
-        hits.eventInfo.eventLabel LIKE "%Subscribe%" AS subscribe_intent,
-        hits.eventInfo.eventLabel LIKE "%Join%" AS join_waitlist_intent,
-        hits.eventInfo.eventLabel LIKE "%Submit waitlist form%" AS join_waitlist_success,
-        hits.eventInfo.eventLabel LIKE "%Sign in%" AS sign_in_intent,
-        hits.eventInfo.eventLabel LIKE "%Download%" AS download_intent,
-        hits.eventInfo.eventLabel LIKE "%Download installer%" AS download_installer_intent
-      ),
-      STRUCT(
-        REGEXP_EXTRACT(
-          hits.page.pagePath,
-          "[?&]source=((?:whatsnew|welcome)[^&]+)"
-        ) AS source_param,
-        hits.eventInfo.eventAction = "cta: fxa-vpn"
-        AND (
-          hits.eventInfo.eventLabel = "Try Mozilla VPN"
-          OR hits.eventInfo.eventLabel LIKE "Get Mozilla VPN %"
-        ) AS subscribe_intent,
-        hits.eventInfo.eventAction = "cta: button"
-        AND hits.eventInfo.eventLabel = "Join the VPN Waitlist" AS join_waitlist_intent,
-        hits.eventInfo.eventAction = "newsletter subscription"
-        AND hits.eventInfo.eventLabel = "guardian-vpn-waitlist" AS join_waitlist_success,
-        hits.eventInfo.eventAction = "cta: fxa-vpn"
-        AND hits.eventInfo.eventLabel = "VPN Sign In" AS sign_in_intent,
-        -- Downloading clients does not happen on mozilla.org
-        FALSE AS download_intent,
-        FALSE AS download_installer_intent
-      )
-    ).*
-  FROM
-    ga_sessions_union
-  CROSS JOIN
-    UNNEST(hits) AS hits
-  WHERE
-    `date` IS NOT NULL
-    AND `date` = @date
-    AND (
-      site = "vpn.mozilla.org"
-      OR (site = "mozilla.org" AND hits.page.pagePath LIKE "%/products/vpn/%")
-    )
-),
 base_table AS (
   SELECT
-    * EXCEPT (source_param, campaign, content, medium, source),
+    * EXCEPT (source_param, campaign, content, medium, source, hits),
     IF(
       source_param IS NOT NULL,
       STRUCT(
@@ -88,7 +85,12 @@ base_table AS (
       STRUCT(campaign, content, medium, source)
     ).*,
   FROM
-    ga_sessions_hits
+    ga_sessions
+  CROSS JOIN
+    UNNEST(hits)
+  WHERE
+    `date` IS NOT NULL
+    AND `date` = @date
 ),
 sessions_table AS (
   SELECT

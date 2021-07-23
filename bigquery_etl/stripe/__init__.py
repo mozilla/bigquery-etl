@@ -22,8 +22,9 @@ class StripeResourceType(click.ParamType):
 
     def convert(self, value, param, ctx):
         """Get a listable stripe resource type by name."""
-        if not isinstance(value, str):
-            self.fail(f"{value!r} is not a string")
+        if isinstance(value, type) and issubclass(value, ListableAPIResource):
+            return value
+
         if value.islower():
             value = value.capitalize()
         try:
@@ -133,7 +134,7 @@ def schema(resource: Type[ListableAPIResource]):
     type=StripeResourceType(),
     help="Type of stripe resource to import",
 )
-def import_(
+def stripe_import(
     api_key: Optional[str],
     date: Optional[datetime],
     before_date: Optional[datetime],

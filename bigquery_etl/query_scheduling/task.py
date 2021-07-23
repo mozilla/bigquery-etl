@@ -117,11 +117,6 @@ EXTERNAL_TASKS = {
         task_id="copy_deduplicate_all",
         schedule_interval="0 1 * * *",
     ): ["*_stable.*"],
-    TaskRef(
-        dag_name="stripe",
-        task_id="stripe_import_events",
-        schedule_interval="daily",
-    ): ["stripe_external.events_v1"],
 }
 
 

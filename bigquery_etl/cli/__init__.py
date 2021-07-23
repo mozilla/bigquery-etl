@@ -16,6 +16,7 @@ from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.view import view
 from ..dependency import dependency
+from ..feature_usage import feature_usage
 from ..glam.cli import glam
 from ..operational_monitoring import operational_monitoring
 from ..stripe import stripe_
@@ -38,6 +39,7 @@ def cli(prog_name=None):
         "view": view,
         "alchemer": alchemer_,
         "opmon": operational_monitoring,
+        "feature_usage": feature_usage,
         "apple": apple,
     }
 

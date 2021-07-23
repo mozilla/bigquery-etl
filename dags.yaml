@@ -107,17 +107,16 @@ bqetl_fxa_events:
     retries: 1
     retry_delay: 10m
 
-bqetl_mozilla_vpn:
+bqetl_subplat:
   schedule_interval: 45 1 * * *
   description: |
-    Daily extracts from the Mozilla VPN operational DB to BigQuery
-    as well as derived tables based on that data.
+    Daily imports for Subscription Platform data from Stripe and the Mozilla VPN
+    operational DB as well as derived tables based on that data.
 
-    Depends on `bqetl_fxa_events`, so is scheduled to run a bit
-    after that one.
+    Depends on `bqetl_fxa_events`, so is scheduled to run a bit after that.
   default_args:
     owner: dthorn@mozilla.com
-    start_date: "2020-10-08"
+    start_date: "2021-07-20"
     email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
     retries: 2
     retry_delay: 30m
@@ -303,21 +302,6 @@ bqetl_fenix_event_rollup:
     email: ["frank@mozilla.com"]
     retries: 2
     retry_delay: 30m
-
-bqetl_stripe:
-  schedule_interval: 30 1 * * *
-  description: |
-    Daily derived tables on top of data imported from Stripe.
-
-    Depends on the `stripe` DAG which starts at midnight UTC, and FxA logs;
-    we allow 1 hour 30 minutes for FxA logs to be delivered before this
-    is scheduled to start.
-  default_args:
-    owner: dthorn@mozilla.com
-    start_date: "2020-10-05"
-    email: ["telemetry-alerts@mozilla.com", "dthorn@mozilla.com"]
-    retries: 2
-    retry_delay: 5m
 
 bqetl_org_mozilla_fenix_derived:
   schedule_interval: 0 2 * * *

@@ -33,19 +33,6 @@ stripe_customers AS (
   FROM
     mozdata.stripe.customers
 ),
-paypal_country AS (
-  SELECT
-    fxa_uid,
-    plan_id,
-    ARRAY_AGG(source_country ORDER BY event_timestamp DESC LIMIT 1)[OFFSET(0)] AS country,
-  FROM
-    `moz-fx-data-shared-prod`.stripe_external.fxa_pay_setup_complete_v1
-  WHERE
-    LOWER(payment_provider) = "paypal"
-  GROUP BY
-    fxa_uid,
-    plan_id
-),
 stripe_charges AS (
   SELECT
     id AS charge_id,
@@ -59,11 +46,9 @@ stripe_invoice_lines AS (
   SELECT
     lines.subscription AS subscription_id,
     IF(
-      -- see https://bugzilla.mozilla.org/show_bug.cgi?id=1712027#c1
-      -- for why presence of "paypalTransactionId" alone is insufficient
-      "paypalTransactionId" IN (SELECT key FROM UNNEST(invoices_v1.metadata))
-      OR (invoices_v1.charge IS NULL AND invoices_v1.status = "paid"),
-      STRUCT("Paypal" AS provider, paypal_country.country),
+      "paypalTransactionId" IN (SELECT key FROM UNNEST(invoices_v1.metadata)),
+      -- FxA copies paypal billing agreement location to customer_address
+      STRUCT("Paypal" AS provider, invoices_v1.customer_address.country),
       ("Stripe", stripe_charges.country)
     ).*,
     invoices_v1.event_timestamp,
@@ -79,11 +64,6 @@ stripe_invoice_lines AS (
     stripe_charges
   ON
     invoices_v1.charge = stripe_charges.charge_id
-  LEFT JOIN
-    paypal_country
-  ON
-    stripe_customers.fxa_uid = paypal_country.fxa_uid
-    AND lines.plan.id = paypal_country.plan_id
 ),
 stripe_subscription_provider_country AS (
   SELECT

@@ -1,0 +1,1123 @@
+# This config file defines the feature usage metrics that will be used to
+# generate the SQL query for telemetry_derived.feature_usage_v2.
+#
+# The general structure of this config file is as follows:
+#   sources:
+#     - name: <source_name>
+#       ref: <dataset>.<table>  # corresponds to BQ table identifier
+#       filters:              # optional, SQL filter statements
+#         - sql: <SQL snippet>
+#       group_by:             # optional, names of fields to GROUP BY
+#         - <field_name>
+#       measures:             # metric definitions
+#         - name: <metric_name>
+#           sql: <SQL expression>
+#           vetted: <true|false>
+#           min_version: <number>   # optional, FF min version
+#           type: <BOOL|INT64|...>  # optional, BQ type of the metric result
+#         - ...
+#     - name: <another_source>
+#       ...
+#
+# `sources` define which tables need to be queried from to compute specific
+# metrics. Each source has a set of `measures` which define the feature usage
+# metrics. For each measure the `sql` expression needs to be defined, and
+# optionally a `min_version` (= browser version which introduces feature), a
+# `type` and whether the metric is `vetted`.
+#
+# After adding new metrics, run `./bqetl feature_usage generate` to re-generate
+# the SQL query for `telemetry_derived.feature_usage_v2`.
+# Run `./bqetl query schema deploy telemetry_derived.feature_usage_v2` to
+# update the schema of the BigQuery destination table. This requires GCP
+# credentials.
+#
+# New metrics will not be automatically backfilled for previous dates. For
+# performing a backfill, after changes have been approved and merged, run:
+#   ./bqetl query backfill telemetry_derived.feature_usage_v2 \
+#       --start_date=<YYYY-MM-DD> \  # replace with date range
+#       --end_date=<YYYY-MM-DD>
+sources:
+  ### User Type ###
+  - name: user_type
+    ref: telemetry.clients_last_seen
+    filters:
+      - sql: submission_date = @submission_date
+      - sql: sample_id = 0
+      - sql: normalized_channel = 'release'
+      - sql: days_since_seen = 0
+    measures:
+      - name: client_id
+        sql: client_id
+      - name: submission_date
+        sql: submission_date
+      - name: activity_segments_v1
+        sql: activity_segments_v1
+        vetted: true
+      - name: is_allweek_regular_v1
+        sql: is_allweek_regular_v1
+        vetted: true
+      - name: is_weekday_regular_v1
+        sql: is_weekday_regular_v1
+        vetted: true
+      - name: is_core_active_v1
+        sql: is_core_active_v1
+        vetted: true
+      - name: days_since_first_seen
+        sql: days_since_first_seen
+        vetted: true
+      - name: days_since_seen
+        sql: days_since_seen
+        vetted: true
+      - name: new_profile_7_day_activated_v1
+        sql: new_profile_7_day_activated_v1
+        vetted: true
+      - name: new_profile_14_day_activated_v1
+        sql: new_profile_14_day_activated_v1
+        vetted: true
+      - name: new_profile_21_day_activated_v1
+        sql: new_profile_21_day_activated_v1
+        vetted: true
+      - name: first_seen_date
+        sql: first_seen_date
+        vetted: true
+      - name: days_since_created_profile
+        sql: days_since_created_profile
+        vetted: true
+      - name: profile_creation_date
+        sql: profile_creation_date
+        vetted: true
+      - name: country
+        sql: country
+        vetted: true
+      - name: scalar_parent_os_environment_is_taskbar_pinned
+        sql: scalar_parent_os_environment_is_taskbar_pinned
+        vetted: true
+        min_version: 88
+        type: BOOL
+      - name: scalar_parent_os_environment_launched_via_desktop
+        sql: scalar_parent_os_environment_launched_via_desktop
+        vetted: true
+        min_version: 88
+        type: BOOL
+      - name: scalar_parent_os_environment_launched_via_other
+        sql: scalar_parent_os_environment_launched_via_other
+        vetted: true
+        min_version: 88
+        type: BOOL
+      - name: scalar_parent_os_environment_launched_via_taskbar
+        sql: scalar_parent_os_environment_launched_via_taskbar
+        vetted: true
+        min_version: 88
+        type: BOOL
+      - name: scalar_parent_os_environment_launched_via_start_menu
+        sql: scalar_parent_os_environment_launched_via_start_menu
+        vetted: true
+        min_version: 88
+        type: BOOL
+      - name: scalar_parent_os_environment_launched_via_other_shortcut
+        sql: scalar_parent_os_environment_launched_via_other_shortcut
+        vetted: true
+        min_version: 88
+        type: BOOL
+      - name: os
+        sql: os
+        vetted: true
+        min_version: 42
+        type: STRING
+      - name: normalized_os_version
+        sql: normalized_os_version
+        vetted: true
+        min_version: 42
+        type: STRING
+      - name: app_version
+        sql: app_version
+        vetted: true
+        min_version: 42
+        type: STRING
+      - name: attributed
+        sql: >
+          (attribution.campaign IS NOT NULL) OR
+          (attribution.source IS NOT NULL)
+        vetted: true
+      - name: is_default_browser
+        sql: is_default_browser
+        vetted: true
+        min_version: 44
+        type: BOOL
+      - name: sync_count_desktop_mean
+        sql: sync_count_desktop_mean
+        vetted: true
+        min_version: 46
+        type: FLOAT64
+      - name: sync_count_mobile_mean
+        sql: sync_count_mobile_mean
+        vetted: true
+        min_version: 46
+        type: FLOAT64
+      - name: active_hours_sum
+        sql: active_hours_sum
+        vetted: true
+        min_version: 56
+        type: FLOAT64
+      - name: scalar_parent_browser_engagement_total_uri_count_sum
+        sql: subsession_hours_sum
+        vetted: true
+        min_version: 50
+        type: NUMERIC
+      - name: ad_clicks_count_all
+        sql: ad_clicks_count_all
+        vetted: true
+        min_version: 65
+        type: INT64
+      - name: scalar_parent_browser_engagement_tab_open_event_count_sum
+        sql: scalar_parent_browser_engagement_tab_open_event_count_sum
+        vetted: true
+        min_version: 50
+        type: INT64
+      - name: scalar_parent_browser_engagement_window_open_event_count_sum
+        sql: scalar_parent_browser_engagement_window_open_event_count_sum
+        vetted: true
+        min_version: 50
+        type: INT64
+      - name: scalar_parent_browser_engagement_unique_domains_count_max
+        sql: scalar_parent_browser_engagement_unique_domains_count_max
+        vetted: true
+        min_version: 50
+        type: INT64
+      - name: scalar_parent_browser_engagement_unique_domains_count_mean
+        sql: scalar_parent_browser_engagement_unique_domains_count_mean
+        vetted: true
+        min_version: 50
+        type: INT64
+      - name: scalar_parent_browser_engagement_max_concurrent_tab_count_max
+        sql: scalar_parent_browser_engagement_max_concurrent_tab_count_max
+        vetted: true
+        min_version: 50
+        type: INT64
+      - name: scalar_parent_browser_engagement_max_concurrent_window_count_max
+        sql: scalar_parent_browser_engagement_max_concurrent_window_count_max
+        vetted: true
+        min_version: 50
+        type: INT64
+      - name: search_count_abouthome
+        sql: search_count_abouthome
+        vetted: true
+        min_version: 86
+        type: INT64
+      - name: search_count_all
+        sql: search_count_all
+        vetted: true
+        min_version: 43
+        type: INT64
+      - name: search_count_contextmenu
+        sql: search_count_contextmenu
+        vetted: true
+        min_version: 86
+        type: INT64
+      - name: search_count_newtab
+        sql: search_count_newtab
+        vetted: true
+        min_version: 86
+        type: INT64
+      - name: search_count_organic
+        sql: search_count_organic
+        vetted: true
+        min_version: 86
+        type: INT64
+      - name: search_count_searchbar
+        sql: search_count_searchbar
+        vetted: true
+        min_version: 86
+        type: INT64
+      - name: search_count_system
+        sql: search_count_system
+        vetted: true
+        min_version: 86
+        type: INT64
+      - name: search_count_tagged_follow_on
+        sql: search_count_tagged_follow_on
+        vetted: true
+        min_version: 86
+        type: INT64
+      - name: search_count_tagged_sap
+        sql: search_count_tagged_sap
+        vetted: true
+        min_version: 86
+        type: INT64
+      - name: search_count_urlbar
+        sql: search_count_urlbar
+        vetted: true
+        min_version: 86
+        type: INT64
+      - name: search_with_ads_count_all
+        sql: search_with_ads_count_all
+        vetted: true
+        min_version: 64
+        type: INT64
+  ### Main ###
+  - name: main
+    ref: telemetry.main_1pct
+    group_by: ["submission_date", "client_id"]
+    filters:
+      - sql: DATE(submission_timestamp) = @submission_date
+      - sql: sample_id = 0
+      - sql: normalized_channel = 'release'
+    measures:
+      - name: client_id
+        sql: client_id
+      - name: subsample_id
+        sql: MOD(ABS(FARM_FINGERPRINT(client_id)), 100)
+      - name: submission_date
+        sql: DATE(submission_timestamp)
+      - name: is_headless
+        sql: LOGICAL_OR(COALESCE(environment.system.gfx.headless, FALSE))
+        vetted: true
+        min_version: 72
+        type: BOOL
+      - name: video_play_time_ms
+        sql: >
+          SUM(
+            CAST(
+              JSON_EXTRACT_SCALAR(
+                payload.processes.content.histograms.video_play_time_ms,
+                '$.sum'
+              ) AS int64
+            )
+          )
+        vetted: true
+        min_version: 70
+        type: INT64
+      - name: video_encrypted_play_time_ms
+        sql: >
+          SUM(
+            CAST(
+              JSON_EXTRACT_SCALAR(
+                payload.processes.content.histograms.video_encrypted_play_time_ms,
+                '$.sum'
+              ) AS int64
+            )
+          )
+        vetted: true
+        min_version: 82
+        type: INT64
+      - name: pdf_viewer_time_to_view_ms_content
+        sql: >
+          SUM(
+            CAST(
+              JSON_EXTRACT_SCALAR(
+                payload.processes.content.histograms.pdf_viewer_time_to_view_ms,
+                '$.sum'
+              ) AS int64
+            )
+          )
+        vetted: true
+        min_version: 38
+        type: INT64
+      - name: pip_window_open_duration
+        sql: >
+          SUM(
+            CAST(
+              JSON_EXTRACT_SCALAR(
+                payload.histograms.fx_picture_in_picture_window_open_duration,
+                '$.sum'
+              ) AS int64
+            )
+          )
+        vetted: true
+        min_version: 69
+        type: INT64
+      - name: video_play_time_ms_count
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(
+                  mozfun.hist.extract(payload.processes.content.histograms.video_play_time_ms).values
+                )
+            )
+          )
+        vetted: true
+        min_version: 72
+        type: INT64
+      - name: video_encrypted_play_time_ms_count
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(
+                  mozfun.hist.extract(
+                    payload.processes.content.histograms.video_encrypted_play_time_ms
+                  ).values
+                )
+            )
+          )
+        vetted: true
+        min_version: 70
+        type: INT64
+      - name: pdf_viewer_time_to_view_ms_content_count
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(
+                  mozfun.hist.extract(
+                    payload.processes.content.histograms.pdf_viewer_time_to_view_ms
+                  ).values
+                )
+            )
+          )
+        vetted: true
+        min_version: 38
+        type: INT64
+      - name: pip_window_open_duration_count
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(
+                  mozfun.hist.extract(
+                    payload.histograms.fx_picture_in_picture_window_open_duration
+                  ).values
+                )
+            )
+          )
+        vetted: true
+        min_version: 69
+        type: INT64
+      - name: pdf_viewer_doc_size_kb
+        sql: >
+          SUM(
+            CAST(
+              JSON_EXTRACT_SCALAR(
+                payload.histograms.pdf_viewer_document_size_kb,
+                '$.sum'
+              ) AS int64
+            )
+          )
+        vetted: true
+        min_version: 38
+        type: INT64
+      - name: pdf_viewer_doc_size_kb_content
+        sql: >
+          SUM(
+            CAST(
+              JSON_EXTRACT_SCALAR(
+                payload.processes.content.histograms.pdf_viewer_document_size_kb,
+                '$.sum'
+              ) AS int64
+            )
+          )
+        vetted: true
+        min_version: 38
+        type: INT64
+      - name: pdf_viewer_doc_size_kb_count
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(mozfun.hist.extract(payload.histograms.pdf_viewer_document_size_kb).values)
+            )
+          )
+        vetted: true
+        min_version: 38
+        type: INT64
+      - name: pdf_viewer_doc_size_kb_content_count
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(
+                  mozfun.hist.extract(
+                    payload.processes.content.histograms.pdf_viewer_document_size_kb
+                  ).values
+                )
+            )
+          )
+        vetted: true
+        min_version: 38
+        type: INT64
+      - name: sync_signed_in
+        sql: COUNTIF(environment.services.account_enabled) > 0
+        vetted: true
+        min_version: 44
+        type: BOOL
+      - name: ccards_saved
+        sql: >
+          COUNTIF(
+            payload.processes.parent.scalars.formautofill_credit_cards_autofill_profiles_count
+            IS NOT NULL
+          ) > 0
+        vetted: true
+        min_version: 81
+        type: BOOL
+      - name: pbm_used
+        sql: >
+          COUNTIF(
+            payload.processes.parent.scalars.dom_parentprocess_private_window_used
+          ) > 0
+        vetted: true
+        min_version: 64
+        type: BOOL
+      - name: unique_sidebars_accessed_count
+        sql: >
+          SUM(
+            ARRAY_LENGTH(payload.processes.parent.keyed_scalars.sidebar_opened)
+          )
+        vetted: true
+        min_version: 81
+        type: INT64
+      - name: sidebars_accessed_total
+        sql: >
+          SUM(
+            (SELECT SUM(value)
+            FROM UNNEST(payload.processes.parent.keyed_scalars.sidebar_opened))
+          )
+        vetted: true
+        min_version: 81
+        type: INT64
+      - name: unique_history_urlbar_indices_picked_count
+        sql: >
+          SUM(
+            ARRAY_LENGTH(payload.processes.parent.keyed_scalars.urlbar_picked_history)
+          )
+        vetted: true
+        min_version: 84
+        type: INT64
+      - name: history_urlbar_picked_total
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(payload.processes.parent.keyed_scalars.urlbar_picked_history)
+            )
+          )
+        vetted: true
+        min_version: 84
+        type: INT64
+      - name: unique_remotetab_indices_picked_count
+        sql: >
+          SUM(
+            ARRAY_LENGTH(payload.processes.parent.keyed_scalars.urlbar_picked_remotetab)
+          )
+        vetted: true
+        min_version: 84
+        type: INT64
+      - name: remotetab_picked_total
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(payload.processes.parent.keyed_scalars.urlbar_picked_remotetab)
+            )
+          )
+        vetted: true
+        min_version: 84
+        type: INT64
+      - name: uris_from_newtab
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(
+                  payload.processes.parent.keyed_scalars.browser_engagement_navigation_about_newtab
+                )
+            )
+          )
+        vetted: true
+        min_version: 52
+        type: INT64
+      - name: uris_from_searchbar
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(payload.processes.parent.keyed_scalars.browser_engagement_navigation_searchbar)
+            )
+          )
+        vetted: true
+        min_version: 52
+        type: INT64
+      - name: uris_from_urlbar
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(payload.processes.parent.keyed_scalars.browser_engagement_navigation_urlbar)
+            )
+          )
+        vetted: true
+        min_version: 52
+        type: INT64
+      - name: nav_history_urlbar
+        sql: >
+          SUM(
+            mozfun.map.get_key(
+              mozfun.hist.extract(payload.histograms.fx_urlbar_selected_result_type_2).values,
+              2
+            )
+          )
+        vetted: true
+        min_version: 78
+        type: INT64
+      - name: nav_autocomplete_urlbar
+        sql: >
+          SUM(
+            mozfun.map.get_key(
+              mozfun.hist.extract(payload.histograms.fx_urlbar_selected_result_type_2).values,
+              0
+            )
+          )
+        vetted: true
+        min_version: 78
+        type: INT64
+      - name: nav_visiturl_urlbar
+        sql: >
+          SUM(
+            mozfun.map.get_key(
+              mozfun.hist.extract(payload.histograms.fx_urlbar_selected_result_type_2).values,
+              8
+            )
+          )
+        vetted: true
+        min_version: 78
+        type: INT64
+      - name: nav_searchsuggestion_urlbar
+        sql: >
+          SUM(
+            mozfun.map.get_key(
+              mozfun.hist.extract(payload.histograms.fx_urlbar_selected_result_type_2).values,
+              5
+            )
+          )
+        vetted: true
+        min_version: 78
+        type: INT64
+      - name: nav_topsite_urlbar
+        sql: >
+          SUM(
+            mozfun.map.get_key(
+              mozfun.hist.extract(payload.histograms.fx_urlbar_selected_result_type_2).values,
+              13
+            )
+          )
+        vetted: true
+        min_version: 78
+        type: INT64
+      - name: num_passwords_saved
+        sql: >
+          MAX(
+            CAST(
+              JSON_EXTRACT_SCALAR(
+                payload.histograms.pwmgr_num_saved_passwords,
+                '$.sum'
+              )
+              AS int64
+            )
+          )
+        vetted: true
+        min_version: 38
+        type: INT64
+      - name: unique_preferences_accessed_count
+        sql: >
+          SUM(
+            ARRAY_LENGTH(
+              payload.processes.parent.keyed_scalars.browser_ui_interaction_preferences_pane_general
+            )
+          )
+        vetted: false
+        min_version: 79
+        type: INT64
+      - name: preferences_accessed_total
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(
+                  payload.processes.parent.keyed_scalars.browser_ui_interaction_preferences_pane_general
+                )
+            )
+          )
+        vetted: false
+        min_version: 79
+        type: INT64
+      - name: unique_bookmarks_bar_accessed_count
+        sql: >
+          SUM(
+            ARRAY_LENGTH(payload.processes.parent.keyed_scalars.browser_ui_interaction_bookmarks_bar)
+          )
+        vetted: false
+        min_version: 79
+        type: INT64
+      - name: bookmarks_bar_accessed_total
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(payload.processes.parent.keyed_scalars.browser_ui_interaction_bookmarks_bar)
+            )
+          )
+        vetted: false
+        min_version: 79
+        type: INT64
+      - name: unique_keyboard_shortcut_count
+        sql: >
+          SUM(
+            ARRAY_LENGTH(payload.processes.parent.keyed_scalars.browser_ui_interaction_keyboard)
+          )
+        vetted: false
+        min_version: 79
+        type: INT64
+      - name: keyboard_shortcut_total
+        sql: >
+          SUM(
+            (
+              SELECT
+                SUM(value)
+              FROM
+                UNNEST(payload.processes.parent.keyed_scalars.browser_ui_interaction_keyboard)
+            )
+          )
+        vetted: false
+        min_version: 79
+        type: INT64
+  ### Events ###
+  - name: events
+    ref: telemetry.events
+    group_by: ["submission_date", "client_id"]
+    filters:
+      - sql: submission_date = @submission_date
+      - sql: sample_id = 0
+      - sql: normalized_channel = 'release'
+    measures:
+      - name: client_id
+        sql: client_id
+      - name: submission_date
+        sql: submission_date
+      - name: pip_count
+        sql: >
+          COUNTIF(
+            event_category = 'pictureinpicture' AND event_method = 'create'
+          )
+        vetted: true
+        min_version: 70
+        type: INT64
+      - name: viewed_protection_report_count
+        sql: >
+          COUNTIF(
+            event_category = 'security.ui.protections'
+            AND event_object = 'protection_report'
+          )
+        vetted: true
+        min_version: 70
+        type: INT64
+      - name: etp_toggle_off
+        sql: >
+          COUNTIF(
+            event_category = 'security.ui.protectionspopup'
+            AND event_object = 'etp_toggle_off'
+          )
+        vetted: true
+        min_version: 70
+        type: INT64
+      - name: etp_toggle_on
+        sql: >
+          COUNTIF(
+            event_category = 'security.ui.protectionspopup'
+            AND event_object = 'etp_toggle_on'
+          )
+        vetted: true
+        min_version: 70
+        type: INT64
+      - name: protections_popup
+        sql: >
+          COUNTIF(
+            event_category = 'security.ui.protectionspopup'
+            AND event_object = 'protections_popup'
+          )
+        vetted: true
+        min_version: 70
+        type: INT64
+      - name: ccard_filled
+        sql: >
+          COUNTIF(
+            event_category = 'creditcard'
+            AND event_object = 'cc_form'
+            AND event_method = 'filled'
+          )
+        vetted: true
+        min_version: 81
+        type: INT64
+      - name: ccard_saved
+        sql: >
+          COUNTIF(
+            event_category = 'creditcard'
+            AND event_object = 'capture_doorhanger'
+            AND event_method = 'save'
+          )
+        vetted: true
+        min_version: 81
+        type: INT64
+      - name: installed_extension
+        sql: >
+          COUNTIF(
+            event_method = 'install'
+            AND event_category = 'addonsManager'
+            AND event_object = 'extension'
+          )
+        vetted: true
+        min_version: 67
+        type: INT64
+      - name: installed_theme
+        sql: >
+          COUNTIF(
+            event_method = 'install'
+            AND event_category = 'addonsManager'
+            AND event_object = 'theme'
+          )
+        vetted: true
+        min_version: 67
+        type: INT64
+      - name: installed_l10n
+        sql: >
+          COUNTIF(
+            event_method = 'install'
+            AND event_category = 'addonsManager'
+            AND event_object IN ('dictionary', 'locale')
+          )
+        vetted: true
+        min_version: 67
+        type: INT64
+      - name: used_stored_pw
+        sql: >
+          COUNTIF(event_method = 'saved_login_used')
+        vetted: true
+        min_version: 78
+        type: INT64
+      - name: password_filled
+        sql: >
+          COUNTIF(
+            event_category = 'pwmgr'
+            AND event_object IN
+            ('form_login', 'form_password', 'auth_login', 'prompt_login')
+          )
+        vetted: true
+        min_version: 78
+        type: INT64
+      - name: password_saved
+        sql: >
+          COUNTIF(
+            event_category = 'pwmgr'
+            AND event_method = 'doorhanger_submitted'
+            AND event_object = 'save'
+          )
+        vetted: true
+        min_version: 80
+        type: INT64
+      - name: pwmgr_opened
+        sql: >
+          COUNTIF(event_category = 'pwmgr' AND event_method = 'open_management')
+        vetted: true
+        min_version: 68
+        type: INT64
+      - name: pwmgr_copy_or_show_info
+        sql: >
+          COUNTIF(
+            event_category = 'pwmgr'
+            AND event_method IN ('copy', 'show')
+          )
+        vetted: true
+        min_version: 78
+        type: INT64
+      - name: pwmgr_interacted_breach
+        sql: >
+          COUNTIF(
+            event_category = 'pwmgr'
+            AND event_method IN ('dismiss_breach_alert', 'learn_more_breach')
+          )
+        vetted: true
+        min_version: 71
+        type: INT64
+      - name: generated_password
+        sql: >
+          COUNTIF(
+            event_object = 'generatedpassword'
+            AND event_method = 'autocomplete_field'
+          )
+        vetted: true
+        min_version: 69
+        type: INT64
+      - name: fxa_connect
+        sql: COUNTIF(event_category = 'fxa' AND event_method = 'connect')
+        vetted: true
+        min_version: 72
+        type: INT64
+      - name: normandy_enrolled
+        sql: >
+          COUNTIF(
+            event_category = 'normandy'
+            AND event_object IN (
+              "preference_study",
+              "addon_study",
+              "preference_rollout",
+              "addon_rollout"
+            )
+          )
+        vetted: true
+        min_version: 67
+        type: INT64
+      - name: downloads
+        sql: COUNTIF(event_category = 'downloads')
+        vetted: true
+        min_version: 79
+        type: INT64
+      - name: pdf_downloads
+        sql: >
+          COUNTIF(event_category = 'downloads' AND event_string_value = 'pdf')
+        vetted: true
+        min_version: 79
+        type: INT64
+      - name: image_downloads
+        sql: >
+          COUNTIF(
+            event_category = 'downloads'
+            AND event_string_value IN ('jpg', 'jpeg', 'png', 'gif')
+          )
+        vetted: true
+        min_version: 79
+        type: INT64
+      - name: media_downloads
+        sql: >
+          COUNTIF(
+            event_category = 'downloads'
+            AND event_string_value IN ('mp4', 'mp3', 'wav', 'mov')
+          )
+        vetted: true
+        min_version: 79
+        type: INT64
+      - name: msoffice_downloads
+        sql: >
+          COUNTIF(
+            event_category = 'downloads'
+            AND event_string_value IN
+            ('xlsx', 'docx', 'pptx', 'xls', 'ppt', 'doc')
+          )
+        vetted: true
+        min_version: 79
+        type: INT64
+      - name: newtab_click
+        sql: >
+          COUNTIF(
+            event_category = 'activity_stream' AND event_object IN ('CLICK')
+          )
+        vetted: false
+        min_version: 60
+        type: INT64
+      - name: bookmark_added_from_newtab
+        sql: >
+          COUNTIF(
+            event_category = 'activity_stream'
+            AND event_object IN ('BOOKMARK_ADD')
+          )
+        vetted: false
+        min_version: 60
+        type: INT64
+      - name: saved_to_pocket_from_newtab
+        sql: >
+          COUNTIF(
+            event_category = 'activity_stream'
+            AND event_object IN ('SAVE_TO_POCKET')
+          )
+        vetted: false
+        min_version: 60
+        type: INT64
+      - name: newtab_prefs_opened
+        sql: >
+          COUNTIF(
+            event_category = 'activity_stream'
+            AND event_object IN ('OPEN_NEWTAB_PREFS')
+          )
+        vetted: false
+        min_version: 60
+        type: INT64
+  ### Activity Stream Events ###
+  - name: activity_stream_events
+    ref: activity_stream.events
+    group_by: ["submission_date", "client_id"]
+    filters:
+      - sql: DATE(submission_timestamp) = @submission_date
+      - sql: sample_id = 0
+      - sql: normalized_channel = 'release'
+    measures:
+      - name: client_id
+        sql: client_id
+      - name: submission_date
+        sql: DATE(submission_timestamp)
+      - name: activitystream_reported_3rdparty_abouthome
+        sql: >
+          LOGICAL_OR(
+            CASE
+            WHEN
+              event = 'PAGE_TAKEOVER_DATA'
+              AND page = 'about:home'
+            THEN
+              TRUE
+            ELSE
+              FALSE
+            END
+          )
+        vetted: false
+      - name: activitystream_reported_3rdparty_aboutnewtab
+        sql: >
+          LOGICAL_OR(
+            CASE
+            WHEN
+              event = 'PAGE_TAKEOVER_DATA'
+              AND page = 'about:newtab'
+            THEN
+              TRUE
+            ELSE
+              FALSE
+            END
+          )
+        vetted: false
+      - name: activitystream_reported_3rdparty_both
+        sql: >
+          LOGICAL_OR(
+            CASE
+            WHEN
+              event = 'PAGE_TAKEOVER_DATA'
+              AND page = 'both'
+            THEN
+              TRUE
+            ELSE
+              FALSE
+            END
+          )
+        vetted: false
+      - name: activitystream_topsite_clicks
+        sql: COUNTIF(event = 'CLICK' AND source = 'TOP_SITES')
+        vetted: false
+      - name: activitystream_highlight_clicks
+        sql: COUNTIF(event = 'CLICK' AND source = 'HIGHLIGHTS')
+        vetted: false
+      - name: activitystream_pocket_clicks
+        sql: COUNTIF(event = 'CLICK' AND source = 'CARDGRID')
+        vetted: false
+  ### Activity Stream Sessions ###
+  - name: activity_stream_sessions
+    ref: activity_stream.sessions
+    group_by: ["submission_date", "client_id"]
+    filters:
+      - sql: DATE(submission_timestamp) = @submission_date
+      - sql: sample_id = 0
+      - sql: normalized_channel = 'release'
+    measures:
+      - name: client_id
+        sql: client_id
+      - name: submission_date
+        sql: DATE(submission_timestamp)
+      - name: activitystream_reported_newtab_search_off
+        sql: MAX(user_prefs & 1 = 0)
+        vetted: false
+      - name: activitystream_reported_topsites_off
+        sql: MAX(user_prefs & 2 = 0)
+        vetted: false
+      - name: activitystream_reported_pocket_off
+        sql: MAX(user_prefs & 4 = 0)
+        vetted: false
+      - name: activitystream_reported_highlights_off
+        sql: MAX(user_prefs & 8 = 0)
+        vetted: false
+      - name: activitystream_reported_sponsored_topsites_off
+        sql: MAX(user_prefs & 256 = 0)
+        vetted: false
+      - name: activitystream_sessions_abouthome
+        sql: COUNTIF(page = 'about:home')
+        vetted: false
+      - name: activitystream_sessions_newtab
+        sql: COUNTIF(page = 'about:newtab')
+        vetted: false
+      - name: activitystream_sessions_both
+        sql: COUNTIF(page IN ('about:newtab', 'about:home'))
+        vetted: false
+  ### Addons ###
+  - name: addons
+    ref: telemetry.addons
+    group_by: ["submission_date", "client_id"]
+    filters:
+      - sql: submission_date = @submission_date
+      - sql: sample_id = 0
+      - sql: normalized_channel = 'release'
+    measures:
+      - name: client_id
+        sql: client_id
+      - name: submission_date
+        sql: submission_date
+      - name: num_addblockers
+        sql: >
+          SUM(
+            CASE
+            WHEN
+              addon_id IN (
+                'uBlock0@raymondhill.net',                /* uBlock Origin */
+                '{d10d0bf8-f5b5-c8b4-a8b2-2b9879e08c5d}', /* Adblock Plus */
+                'jid1-NIfFY2CA8fy1tg@jetpack',            /* Adblock */
+                '{73a6fe31-595d-460b-a920-fcc0f8843232}', /* NoScript */
+                'firefox@ghostery.com',                   /* Ghostery */
+                'adblockultimate@adblockultimate.net', /* AdBlocker Ultimate */
+                'jid1-MnnxcxisBPnSXQ@jetpack'             /* Privacy Badger */
+              )
+            THEN
+              1
+            ELSE
+              0
+            END
+          )
+        vetted: true
+      - name: has_notes_extension
+        sql: LOGICAL_OR(COALESCE(addon_id = 'notes@mozilla.com', FALSE))
+        vetted: true
+      - name: has_facebook_container_extension
+        sql: >
+          LOGICAL_OR(
+            COALESCE(addon_id = '@contain-facebook', FALSE)
+          )
+        vetted: true
+      - name: has_multiaccount_container_extension
+        sql: >
+          LOGICAL_OR(
+            COALESCE(addon_id = '@testpilot-containers', FALSE)
+          )
+        vetted: true
+      - name: has_private_relay_extension
+        sql: >
+          LOGICAL_OR(
+            COALESCE(addon_id = 'private-relay@firefox.com', FALSE)
+          )
+        vetted: true

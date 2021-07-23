@@ -48034,17 +48034,16 @@ fields:
           name: blocklist_mlbf_generation_time
           type: STRING
         - description: 'Keep track of the timestamp of the most recent stash of the
-            addons blocklist. Only meaningful when mlbf_enabled and mlbf_stashes are
-            true. The value is a datetime string in UTC format, or "Missing Date"
-            when unavailable.
+            addons blocklist. Only meaningful when mlbf_enabled is true. The value
+            is a datetime string in UTC format, or "Missing Date" when unavailable.
 
             '
           mode: NULLABLE
           name: blocklist_mlbf_stash_time_newest
           type: STRING
         - description: 'Keep track of the timestamp of the oldest stash of the addons
-            blocklist. Only meaningful when mlbf_enabled and mlbf_stashes are true.
-            The value is a datetime string in UTC format, or "Missing Date" when unavailable.
+            blocklist. Only meaningful when mlbf_enabled is true. The value is a datetime
+            string in UTC format, or "Missing Date" when unavailable.
 
             '
           mode: NULLABLE

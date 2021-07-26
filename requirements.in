@@ -7,14 +7,14 @@ gcsfs==2021.7.0
 gcloud==0.18.3
 gitpython==3.1.18
 google-api-core==1.31.0  # transitive dep that needs dependabot updates
-google-cloud-bigquery==2.22.0
+google-cloud-bigquery==2.22.1
 google-cloud-storage==1.41.1
 googleapis-common-protos==1.53.0  # transitive dep that needs dependabot updates
 importlib-metadata==4.6.1  # python 3.7 backwards compat
 Jinja2==3.0.1
 jsonschema==3.2.0
 mozilla-schema-generator==0.4.0
-pandas==1.3.0
+pandas==1.3.1
 pip-tools==6.2.0
 pre-commit==2.13.0
 pyarrow==4.0.1

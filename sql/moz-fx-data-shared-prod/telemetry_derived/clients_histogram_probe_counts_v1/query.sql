@@ -25,12 +25,15 @@ SELECT
   metric_type,
   key,
   process,
+  first_bucket,
+  max(last_bucket) as last_bucket,
+  max(num_buckets),
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,
   mozfun.glam.histogram_fill_buckets_dirichlet(
     mozfun.map.sum(ARRAY_AGG(record)),
-    mozfun.glam.histogram_buckets_cast_string_array(udf_get_buckets(first_bucket, last_bucket, num_buckets, metric_type)),
+    mozfun.glam.histogram_buckets_cast_string_array(udf_get_buckets(first_bucket, max(last_bucket), max(num_buckets), metric_type)),
     CAST(ROUND(SUM(record.value)) AS INT64)
   ) AS aggregates
 FROM clients_histogram_bucket_counts_v1
@@ -44,6 +47,4 @@ GROUP BY
   key,
   process,
   client_agg_type,
-  first_bucket,
-  last_bucket,
-  num_buckets
+  first_bucket

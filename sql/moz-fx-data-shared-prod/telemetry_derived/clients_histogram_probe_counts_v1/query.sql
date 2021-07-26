@@ -27,7 +27,7 @@ SELECT
   process,
   first_bucket,
   max(last_bucket) as last_bucket,
-  max(num_buckets),
+  max(num_buckets) as num_buckets,
   agg_type AS client_agg_type,
   'histogram' AS agg_type,
   CAST(ROUND(SUM(record.value)) AS INT64) AS total_users,

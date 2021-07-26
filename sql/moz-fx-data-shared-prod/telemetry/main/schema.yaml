@@ -19290,6 +19290,10 @@ fields:
       mode: NULLABLE
       name: use_counter2_documentquerycommandsupportedorenabledreadonly_page
       type: STRING
+    - description: How long (sec) a tab had been unloaded until it was reloaded.
+      mode: NULLABLE
+      name: tab_unload_to_reload
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -48642,6 +48646,19 @@ fields:
             '
           mode: NULLABLE
           name: dom_contentprocess_build_id_mismatch_false_positive
+          type: INTEGER
+        - description: 'The count of tab reload events by the user after unloaded.
+
+            '
+          mode: NULLABLE
+          name: browser_engagement_tab_reload_count
+          type: INTEGER
+        - description: 'The count of tab unload events by TabUnloader due to a low-memory
+            situation.
+
+            '
+          mode: NULLABLE
+          name: browser_engagement_tab_unload_count
           type: INTEGER
         mode: NULLABLE
         name: scalars

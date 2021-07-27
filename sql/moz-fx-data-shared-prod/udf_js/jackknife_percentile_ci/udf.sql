@@ -10,7 +10,7 @@ and a histogram struct as the second.
 */
 CREATE OR REPLACE FUNCTION udf_js.jackknife_percentile_ci(
   percentile FLOAT64,
-  histogram STRUCT<values ARRAY<STRUCT<key INT64, value FLOAT64>>>
+  histogram STRUCT<VALUES ARRAY<STRUCT<key INT64, value FLOAT64>>>
 )
 RETURNS STRUCT<low FLOAT64, high FLOAT64, percentile FLOAT64> DETERMINISTIC
 LANGUAGE js

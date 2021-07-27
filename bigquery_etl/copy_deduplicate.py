@@ -275,7 +275,7 @@ def _copy_join_parts(client, stable_table, query_jobs, temp_dataset):
             copy_job.result()
 
             logging.info(f"Copied {len(query_jobs)} results to populate {stable_table}")
-            for job in query_jobs:
+            for job in query_jobs + [copy_job_1, copy_job_2]:
                 client.delete_table(job.destination)
             logging.info(f"Deleted {len(query_jobs)} temporary tables")
 

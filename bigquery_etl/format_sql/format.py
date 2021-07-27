@@ -141,6 +141,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/udf_js/jackknife_mean_ci.sql",
     "sql/moz-fx-data-shared-prod/udf_js/jackknife_ratio_ci.sql",
     "sql/moz-fx-data-shared-prod/udf_js/jackknife_sum_ci.sql",
+    "sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci/udf.sql",
     "sql/moz-fx-data-shared-prod/udf_js/json_extract_events.sql",
     "sql/moz-fx-data-shared-prod/udf_js/json_extract_histogram.sql",
     "sql/moz-fx-data-shared-prod/udf_js/json_extract_keyed_histogram.sql",

@@ -235,7 +235,7 @@ def _run_deduplication_query(client, sql, stable_table, job_config, num_retries)
     return stable_table, query_job
 
 
-def _copy_join_parts(client, stable_table, query_jobs):
+def _copy_join_parts(client, stable_table, query_jobs, temp_dataset):
     total_bytes = sum(query.total_bytes_processed for query in query_jobs)
     if query_jobs[0].dry_run:
         api_repr = json.dumps(query_jobs[0].to_api_repr())
@@ -254,8 +254,26 @@ def _copy_join_parts(client, stable_table, query_jobs):
             job_config = bigquery.CopyJobConfig(
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
             )
-            copy_job = client.copy_table(sources, stable_table, job_config=job_config)
+
+            # workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1722546
+            # split copy_table() jobs
+            tmp_table_1 = temp_dataset.temp_table()
+            copy_job_1 = client.copy_table(
+                sources[: len(sources) // 2], tmp_table_1, job_config=job_config
+            )
+            copy_job_1.result()
+
+            tmp_table_2 = temp_dataset.temp_table()
+            copy_job_2 = client.copy_table(
+                sources[len(sources) // 2 :], tmp_table_2, job_config=job_config
+            )
+            copy_job_2.result()
+
+            copy_job = client.copy_table(
+                [tmp_table_1, tmp_table_2], stable_table, job_config=job_config
+            )
             copy_job.result()
+
             logging.info(f"Copied {len(query_jobs)} results to populate {stable_table}")
             for job in query_jobs:
                 client.delete_table(job.destination)
@@ -335,7 +353,12 @@ def main():
         # preserve query_jobs order so results stay sorted by stable_table for groupby
         results = pool.starmap(client_q.with_client, query_jobs, chunksize=1)
         copy_jobs = [
-            (_copy_join_parts, stable_table, [query_job for _, query_job in group])
+            (
+                _copy_join_parts,
+                stable_table,
+                [query_job for _, query_job in group],
+                args.temp_dataset,
+            )
             for stable_table, group in groupby(results, key=lambda result: result[0])
         ]
         pool.starmap(client_q.with_client, copy_jobs, chunksize=1)

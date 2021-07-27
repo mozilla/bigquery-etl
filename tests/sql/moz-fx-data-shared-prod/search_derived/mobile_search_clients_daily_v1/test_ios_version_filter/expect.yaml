@@ -1,0 +1,36 @@
+---
+- &base
+  submission_date: "2019-12-01"
+  client_id: glean
+  search_count: 0
+  organic: 0
+  tagged_sap: 0
+  tagged_follow_on: 0
+  ad_click: 0
+  ad_click_organic: 0
+  search_with_ads: 0
+  unknown: 0
+  locale: en-US
+  app_version: "30.0"
+  app_name: Fennec
+  normalized_app_name: Fennec
+  channel: release
+  country: US
+  os: iOS
+  os_version: "13"
+  profile_creation_date: 18201
+  profile_age_in_days: 30
+  sample_id: 1
+  experiments: []
+- <<: *base
+  client_id: glean2
+  app_version: "35.0"
+  source: organic.none
+  engine: engine2
+  organic: 3
+- <<: *base
+  client_id: core
+  app_version: "27.0"
+  source: actionbar
+  engine: engine1
+  search_count: 1

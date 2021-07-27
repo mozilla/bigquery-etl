@@ -1,0 +1,24 @@
+---
+- &base
+  client_id: core
+  submission_timestamp: 2019-12-01 22:09:03.243074 UTC
+  default_search:
+  distribution_id:
+  normalized_channel: release
+  locale: en-US
+  metadata:
+    uri:
+      app_version: "27.0"
+  normalized_app_name: Fennec
+  normalized_country_code: US
+  normalized_os: iOS
+  normalized_os_version: "13"
+  profile_date: "18201"
+  sample_id: "1"
+  searches:
+    - key: engine1.actionbar
+      value: "1"
+- <<: *base  # should be ignored
+  metadata:
+    uri:
+      app_version: "28.0"

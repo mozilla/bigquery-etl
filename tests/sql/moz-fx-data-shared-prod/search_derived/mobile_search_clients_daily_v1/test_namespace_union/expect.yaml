@@ -33,27 +33,27 @@
   app_name: Fenix
   normalized_app_name: Fenix
   channel: release
-#- <<: *base
-#  os: iOS
-#  os_version: "13.0"
-#  client_id: b
-#  app_version: "31.0"
-#  app_name: Firefox iOS
-#  normalized_app_name: Firefox iOS
-#  channel: release
-#- <<: *base
-#  os: iOS
-#  os_version: "13.0"
-#  client_id: b
-#  app_version: "31.0"
-#  app_name: Firefox iOS
-#  normalized_app_name: Firefox iOS
-#  channel: beta
-#- <<: *base
-#  os: iOS
-#  os_version: "13.0"
-#  client_id: b
-#  app_version: "31.0"
-#  app_name: Firefox iOS
-#  normalized_app_name: Firefox iOS
-#  channel: nightly
+- <<: *base
+  os: iOS
+  os_version: "13.0"
+  client_id: b
+  app_version: "31.0"
+  app_name: Fennec
+  normalized_app_name: Fennec
+  channel: release
+- <<: *base
+  os: iOS
+  os_version: "13.0"
+  client_id: b
+  app_version: "31.0"
+  app_name: Fennec
+  normalized_app_name: Fennec
+  channel: beta
+- <<: *base
+  os: iOS
+  os_version: "13.0"
+  client_id: b
+  app_version: "31.0"
+  app_name: Fennec
+  normalized_app_name: Fennec
+  channel: nightly

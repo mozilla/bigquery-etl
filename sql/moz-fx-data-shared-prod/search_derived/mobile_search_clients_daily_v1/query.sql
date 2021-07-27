@@ -68,6 +68,12 @@ WITH core_flattened_searches AS (
       -- Add a null search to pings that have no searches
       IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
     ) AS searches
+  WHERE
+    NOT (  -- Filter out newer versions of Firefox iOS in favour of Glean pings
+      normalized_os = 'iOS'
+      AND normalized_app_name = 'Fennec'
+      AND mozfun.norm.truncate_version(metadata.uri.app_version, 'major') >= 28
+    )
 ),
 -- baseline for Firefox Preview beta
 baseline_org_mozilla_fenix AS (
@@ -250,8 +256,9 @@ metrics_org_mozilla_ios_firefox AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Firefox iOS' AS app_name,
-    'Firefox iOS' AS normalized_app_name,
+    'Fennec' AS app_name,
+    -- Fennec is used to be consistent with core pings
+    'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'release' AS channel,
     normalized_os AS os,
@@ -270,6 +277,8 @@ metrics_org_mozilla_ios_firefox AS (
     client_info.locale,
   FROM
     org_mozilla_ios_firefox.metrics AS org_mozilla_ios_firefox_metrics
+  WHERE
+    mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
 -- metrics for Firefox iOS beta
 metrics_org_mozilla_ios_firefoxbeta AS (
@@ -277,8 +286,9 @@ metrics_org_mozilla_ios_firefoxbeta AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Firefox iOS' AS app_name,
-    'Firefox iOS' AS normalized_app_name,
+    'Fennec' AS app_name,
+    -- Fennec is used to be consistent with core pings
+    'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'beta' AS channel,
     normalized_os AS os,
@@ -297,6 +307,8 @@ metrics_org_mozilla_ios_firefoxbeta AS (
     client_info.locale,
   FROM
     org_mozilla_ios_firefoxbeta.metrics AS org_mozilla_ios_firefoxbeta_metrics
+  WHERE
+    mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
 -- metrics for Firefox iOS nightly
 metrics_org_mozilla_ios_fennec AS (
@@ -304,8 +316,9 @@ metrics_org_mozilla_ios_fennec AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     normalized_country_code AS country,
-    'Firefox iOS' AS app_name,
-    'Firefox iOS' AS normalized_app_name,
+    'Fennec' AS app_name,
+    -- Fennec is used to be consistent with core pings
+    'Fennec' AS normalized_app_name,
     client_info.app_display_version AS app_version,
     'nightly' AS channel,
     normalized_os AS os,
@@ -324,6 +337,8 @@ metrics_org_mozilla_ios_fennec AS (
     client_info.locale,
   FROM
     org_mozilla_ios_fennec.metrics AS org_mozilla_ios_fennec_metrics
+  WHERE
+    mozfun.norm.truncate_version(client_info.app_display_version, 'major') >= 28
 ),
 fenix_baseline AS (
   SELECT
@@ -393,6 +408,27 @@ ios_metrics AS (
   FROM
     metrics_org_mozilla_ios_fennec
 ),
+-- iOS organic counts are incorrect until version 34.0
+-- https://github.com/mozilla-mobile/firefox-ios/issues/8412
+ios_organic_filtered AS (
+  SELECT
+    * REPLACE (
+      IF(
+        mozfun.norm.truncate_version(app_version, 'major') >= 34,
+        search_in_content,
+        ARRAY(
+          SELECT AS STRUCT
+            *
+          FROM
+            UNNEST(search_in_content)
+          WHERE
+            NOT REGEXP_CONTAINS(key, '\\.organic\\.')
+        )
+      ) AS search_in_content
+    ),
+  FROM
+    ios_metrics
+),
 --  older fenix clients don't send locale in the metrics ping
 fenix_client_locales AS (
   SELECT
@@ -421,6 +457,11 @@ glean_metrics AS (
     *
   FROM
     fenix_metrics_with_locale
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_organic_filtered
 ),
 glean_combined_searches AS (
   SELECT
@@ -583,12 +624,6 @@ combined_search_clients AS (
     total_uri_count,
   FROM
     glean_flattened_searches
-  WHERE
-    -- iOS organic counts are incorrect as of 2021-05-04
-    -- https://github.com/mozilla-mobile/firefox-ios/issues/8412
-    NOT STARTS_WITH(source, 'organic.')
-    OR source IS NULL
-    OR app_name != 'Firefox iOS'
 ),
 unfiltered_search_clients AS (
   SELECT

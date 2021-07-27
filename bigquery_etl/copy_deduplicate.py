@@ -269,8 +269,13 @@ def _copy_join_parts(client, stable_table, query_jobs, temp_dataset):
             )
             copy_job_2.result()
 
+            intermediate_sources = [
+                f"{sql_table_id(job.destination)}${partition_id}"
+                for job in (copy_job_1, copy_job_2)
+            ]
+
             copy_job = client.copy_table(
-                [tmp_table_1, tmp_table_2], stable_table, job_config=job_config
+                intermediate_sources, stable_table, job_config=job_config
             )
             copy_job.result()
 

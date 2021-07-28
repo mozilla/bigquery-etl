@@ -811,6 +811,30 @@ fields:
       mode: NULLABLE
       name: inactive_tabs_tray_open_recently_closed_tab
       type: INTEGER
+    - description: 'Counts the number of times a user sees the
+
+        Jump Back In section on the homepage
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_jump_back_in_section_view
+      type: INTEGER
+    - description: 'Counts the number of times a user taps the
+
+        Show All button in the Jump Back In section.
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_jump_back_in_show_all
+      type: INTEGER
+    - description: 'Counts the number of times a user taps to open an
+
+        existing tab from the Jump Back In section
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_jump_back_in_tab_opened
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

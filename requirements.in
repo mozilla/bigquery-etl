@@ -5,7 +5,7 @@ cattrs==1.7.1
 click==8.0.1
 gcsfs==2021.7.0
 gcloud==0.18.3
-gitpython==3.1.18
+gitpython==3.1.20
 google-api-core==1.31.0  # transitive dep that needs dependabot updates
 google-cloud-bigquery==2.22.1
 google-cloud-storage==1.41.1

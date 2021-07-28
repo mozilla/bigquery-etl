@@ -201,9 +201,9 @@ gitdb==4.0.7 \
     --hash=sha256:6c4cc71933456991da20917998acbe6cf4fb41eeaab7d6d67fbc05ecd4c865b0 \
     --hash=sha256:96bf5c08b157a666fec41129e6d327235284cca4c81e92109260f353ba138005
     # via gitpython
-gitpython==3.1.18 \
-    --hash=sha256:b838a895977b45ab6f0cc926a9045c8d1c44e2b653c1fcc39fe91f42c6e8f05b \
-    --hash=sha256:fce760879cd2aebd2991b3542876dc5c4a909b30c9d69dfc488e504a8db37ee8
+gitpython==3.1.20 \
+    --hash=sha256:b1e1c269deab1b08ce65403cf14e10d2ef1f6c89e33ea7c5e5bb0222ea593b8a \
+    --hash=sha256:df0e072a200703a65387b0cfdf0466e3bab729c0458cf6b7349d0e9877636519
     # via
     #   -r requirements.in
     #   mozilla-schema-generator
@@ -917,6 +917,7 @@ typing-extensions==3.7.4.3 \
     --hash=sha256:dafc7639cde7f1b6e1acc0f457842a83e722ccca8eef5270af2d74792619a89f
     # via
     #   aiohttp
+    #   gitpython
     #   mypy
 ujson==4.0.2 \
     --hash=sha256:0190d26c0e990c17ad072ec8593647218fe1c675d11089cd3d1440175b568967 \

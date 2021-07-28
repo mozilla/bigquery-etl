@@ -11,7 +11,7 @@ from typing import Set
 import click
 from google.cloud import bigquery
 
-from ..cli.common import is_authenticated
+from ..cli.utils import is_authenticated
 from ..dryrun import SKIP, DryRun
 
 

@@ -66,25 +66,27 @@ class TestView:
             assert view.is_valid()
 
     @pytest.mark.java
-    def test_view_invalid(self):
-        view = View.create("moz-fx-data-test-project", "test", "simple_view", "sql")
-        assert view.is_valid()
+    def test_view_invalid(self, runner):
+        with runner.isolated_filesystem():
+            view = View.create("moz-fx-data-test-project", "test", "simple_view", "sql")
+            assert view.is_valid()
 
-        view.path.write_text("CREATE OR REPLACE VIEW test.simple_view AS SELECT 1")
-        assert view.is_valid() is False
+            view.path.write_text("CREATE OR REPLACE VIEW test.simple_view AS SELECT 1")
+            assert view.is_valid() is False
 
-        view.path.write_text("SELECT 1")
-        assert view.is_valid() is False
+            view.path.write_text("SELECT 1")
+            assert view.is_valid() is False
 
-        view.path.write_text(
-            "CREATE OR REPLACE VIEW `moz-fx-data-test-project.foo.bar` AS SELECT 1"
-        )
-        assert view.is_valid() is False
+            view.path.write_text(
+                "CREATE OR REPLACE VIEW `moz-fx-data-test-project.foo.bar` AS SELECT 1"
+            )
+            assert view.is_valid() is False
 
     @pytest.mark.java
-    def test_view_do_not_publish_invalid(self):
-        view = View.create("moz-fx-data-test-project", "test", "simple_view", "sql")
-        assert view.is_valid()
-        view.path.write_text("SELECT 1")
-        assert view.is_valid() is False
-        assert view.publish() is False
+    def test_view_do_not_publish_invalid(self, runner):
+        with runner.isolated_filesystem():
+            view = View.create("moz-fx-data-test-project", "test", "simple_view", "sql")
+            assert view.is_valid()
+            view.path.write_text("SELECT 1")
+            assert view.is_valid() is False
+            assert view.publish() is False

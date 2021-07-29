@@ -5,7 +5,7 @@ import yaml
 from click.testing import CliRunner
 
 from bigquery_etl.cli.query import (
-    paths_matching_name_pattern,
+    _queries_matching_name_pattern,
     create,
     info,
     schedule,
@@ -285,7 +285,7 @@ class TestQuery:
             assert "telemetry_derived.query_v2" in result.output
             assert "telemetry_derived.query_v1" not in result.output
 
-    def testpaths_matching_name_pattern(self, runner):
+    def test_queries_matching_name_pattern(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
             with open(
@@ -311,10 +311,10 @@ class TestQuery:
             ) as f:
                 f.write("SELECT 1")
 
-            assert len(paths_matching_name_pattern("*", "sql/", None)) == 4
+            assert len(_queries_matching_name_pattern("*", "sql/", None)) == 4
             assert (
                 len(
-                    paths_matching_name_pattern(
+                    _queries_matching_name_pattern(
                         "*.sql", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
@@ -322,7 +322,7 @@ class TestQuery:
             )
             assert (
                 len(
-                    paths_matching_name_pattern(
+                    _queries_matching_name_pattern(
                         "test", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
@@ -330,7 +330,7 @@ class TestQuery:
             )
             assert (
                 len(
-                    paths_matching_name_pattern(
+                    _queries_matching_name_pattern(
                         "foo_derived", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
@@ -338,16 +338,16 @@ class TestQuery:
             )
             assert (
                 len(
-                    paths_matching_name_pattern(
+                    _queries_matching_name_pattern(
                         "foo_derived*", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
                 == 1
             )
-            assert len(paths_matching_name_pattern("*query*", "sql/", None)) == 4
+            assert len(_queries_matching_name_pattern("*query*", "sql/", None)) == 4
             assert (
                 len(
-                    paths_matching_name_pattern(
+                    _queries_matching_name_pattern(
                         "foo_derived.query_v2", "sql/", "moz-fx-data-shared-prod"
                     )
                 )
@@ -356,7 +356,7 @@ class TestQuery:
 
             assert (
                 len(
-                    paths_matching_name_pattern(
+                    _queries_matching_name_pattern(
                         "telemetry_derived.query_v1", "sql/", "moz-fx-data-test-project"
                     )
                 )
@@ -365,7 +365,7 @@ class TestQuery:
 
             assert (
                 len(
-                    paths_matching_name_pattern(
+                    _queries_matching_name_pattern(
                         "moz-fx-data-test-project.telemetry_derived.query_v1",
                         "sql/",
                         None,
@@ -376,7 +376,7 @@ class TestQuery:
 
             assert (
                 len(
-                    paths_matching_name_pattern(
+                    _queries_matching_name_pattern(
                         "moz-fx-data-test-project.telemetry_derived.*", "sql/", None
                     )
                 )

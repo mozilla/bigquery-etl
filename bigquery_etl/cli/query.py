@@ -5,7 +5,7 @@ import re
 import string
 import sys
 from datetime import date, timedelta
-from fnmatch import fnmatchcase
+
 from functools import partial
 from multiprocessing.pool import Pool
 from pathlib import Path
@@ -16,7 +16,15 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..cli.format import format
-from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
+from ..cli.utils import (
+    is_authenticated,
+    is_valid_project,
+    sql_dir_option,
+    use_cloud_function_option,
+    paths_matching_name_pattern,
+    project_id_option,
+    respect_dryrun_skip_option,
+)
 from ..dependency import get_dependency_graph
 from ..dryrun import SKIP, DryRun
 from ..format_sql.formatter import reformat
@@ -31,78 +39,7 @@ from ..util.common import random_str
 from .dryrun import dryrun
 
 QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
-SQL_FILE_RE = re.compile(
-    r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+_v[0-9]+)/"
-    r"(?:query\.sql|part1\.sql|script\.sql)$"
-)
 VERSION_RE = re.compile(r"_v[0-9]+")
-
-
-def _queries_matching_name_pattern(pattern, sql_path, project_id):
-    """Return paths to queries matching the name pattern."""
-    sql_path = Path(sql_path)
-    if project_id is not None:
-        sql_path = sql_path / project_id
-
-    all_sql_files = Path(sql_path).rglob("*.sql")
-    sql_files = []
-
-    for sql_file in all_sql_files:
-        match = SQL_FILE_RE.match(str(sql_file))
-        if match:
-            project = match.group(1)
-            dataset = match.group(2)
-            table = match.group(3)
-            query_name = f"{project}.{dataset}.{table}"
-            if fnmatchcase(query_name, f"*{pattern}"):
-                sql_files.append(sql_file)
-            elif project_id and fnmatchcase(query_name, f"{project_id}.{pattern}"):
-                sql_files.append(sql_file)
-
-    return sql_files
-
-
-sql_dir_option = click.option(
-    "--sql_dir",
-    help="Path to directory which contains queries.",
-    type=click.Path(file_okay=False),
-    default="sql",
-    callback=is_valid_dir,
-)
-
-use_cloud_function_option = click.option(
-    "--use_cloud_function",
-    "--use-cloud-function",
-    help=(
-        "Use the Cloud Function for dry running SQL, if set to `True`. "
-        "The Cloud Function can only access tables in shared-prod. "
-        "If set to `False`, use active GCP credentials for the dry run."
-    ),
-    type=bool,
-    default=True,
-)
-
-
-def respect_dryrun_skip_option(default=True):
-    """Generate a respect_dryrun_skip option."""
-    flags = {True: "--respect-dryrun-skip", False: "--ignore-dryrun-skip"}
-    return click.option(
-        f"{flags[True]}/{flags[False]}",
-        help="Respect or ignore dry run SKIP configuration. "
-        f"Default is {flags[default]}.",
-        default=default,
-    )
-
-
-def project_id_option(default=None):
-    """Generate a project-id option, with optional default."""
-    return click.option(
-        "--project-id",
-        "--project_id",
-        help="GCP project ID",
-        default=default,
-        callback=is_valid_project,
-    )
 
 
 @click.group(help="Commands for managing queries.")
@@ -315,7 +252,7 @@ def create(name, sql_dir, project_id, owner, init):
 )
 def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
     """CLI command for scheduling a query."""
-    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
     if query_files == []:
         click.echo(f"Name doesn't refer to any queries: {name}", err=True)
@@ -413,7 +350,7 @@ def info(name, sql_dir, project_id, cost, last_updated):
     if name is None:
         name = "*.*"
 
-    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
     for query_file in query_files:
         query_file_path = Path(query_file)
@@ -619,7 +556,7 @@ def backfill(
         )
         sys.exit(1)
 
-    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     dates = [start_date + timedelta(i) for i in range((end_date - start_date).days + 1)]
 
     for query_file in query_files:
@@ -709,7 +646,7 @@ def validate(
     if name is None:
         name = "*.*"
 
-    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     dataset_dirs = set()
     for query in query_files:
         project = query.parent.parent.parent.name
@@ -755,7 +692,7 @@ def initialize(name, sql_dir, project_id, dry_run):
         # allow name to be a path
         query_files = [Path(name)]
     else:
-        query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+        query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
     for query_file in query_files:
         init_files = Path(query_file.parent).rglob("init.sql")
@@ -846,7 +783,7 @@ def update(
             "and check that the project is set correctly."
         )
         sys.exit(1)
-    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
     tmp_tables = {}
 
@@ -886,7 +823,7 @@ def update(
                 dependencies = [
                     p
                     for k, refs in dependency_graph.items()
-                    for p in _queries_matching_name_pattern(k, sql_dir, project_id)
+                    for p in paths_matching_name_pattern(k, sql_dir, project_id)
                     if identifier in refs
                 ]
 
@@ -934,7 +871,7 @@ def _update_query_schema(
         for derived_from in metadata.schema.derived_from:
             parent_queries = [
                 query
-                for query in _queries_matching_name_pattern(
+                for query in paths_matching_name_pattern(
                     ".".join(derived_from.table), sql_dir, project_id
                 )
             ]
@@ -1112,7 +1049,7 @@ def deploy(
         sys.exit(1)
     client = bigquery.Client()
 
-    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
     for query_file in query_files:
         if respect_dryrun_skip and str(query_file) in SKIP:
@@ -1203,7 +1140,7 @@ def deploy(
 @respect_dryrun_skip_option(default=True)
 def validate_schema(name, sql_dir, project_id, use_cloud_function, respect_dryrun_skip):
     """Validate the defined query schema against the query and destination table."""
-    query_files = _queries_matching_name_pattern(name, sql_dir, project_id)
+    query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
     def _validate_schema(query_file_path):
         return (

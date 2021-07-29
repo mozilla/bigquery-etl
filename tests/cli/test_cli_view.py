@@ -14,6 +14,7 @@ class TestPublish:
         (tmp_path / "view.sql").write_text("SELECT 42 as test")
         result = runner.invoke(view, ["publish", tmp_path.as_posix(), "--dry-run"])
         assert result.exit_code == 1
+        assert "does not appear to be a CREATE OR REPLACE VIEW" in result.output
 
     def test_publish_valid_view(self, runner, tmp_path):
         # In order to be agnostic with respect to individual projects in GCP,
@@ -27,3 +28,4 @@ class TestPublish:
         )
         result = runner.invoke(view, ["publish", tmp_path.as_posix(), "--dry-run"])
         assert result.exit_code == 1
+        assert "Not found" in result.exc_info[1].message

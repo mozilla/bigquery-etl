@@ -4,8 +4,4 @@
 
 cd "$(dirname "$0")/.."
 
-./bqetl bootstrap
-./bqetl view validate "$@"
-
-wait
-trap - EXIT
+exec ./bqetl view validate "$@"

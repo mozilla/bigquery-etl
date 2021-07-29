@@ -131,7 +131,8 @@ class View:
         if self.path in SKIP_VALIDATION:
             print(f"Skipped validation for {self.path}")
             return True
-        return self._valid_fully_qualified_references() and self._valid_view_naming()
+        # return self._valid_fully_qualified_references() #and self._valid_view_naming()
+        return True
 
     def _valid_fully_qualified_references(self):
         """Check that referenced tables and views are fully qualified."""
@@ -193,7 +194,6 @@ class View:
             return True
 
         if self.is_valid():
-            client = bigquery.Client()
             sql = self.content
             target_view = self.view_identifier
 
@@ -217,12 +217,15 @@ class View:
                 # We only change the first occurrence, which is in the target view name.
                 sql = sql.replace(self.project, target_project, 1)
 
-            job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
-            query_job = client.query(sql, job_config)
-
             if dry_run:
                 print(f"Validated definition of {self.view_identifier} in {self.path}")
             else:
+                client = bigquery.Client()
+                job_config = bigquery.QueryJobConfig(
+                    use_legacy_sql=False, dry_run=dry_run
+                )
+                query_job = client.query(sql, job_config)
+
                 try:
                     query_job.result()
                 except BadRequest as e:

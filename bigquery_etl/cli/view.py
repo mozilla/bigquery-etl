@@ -10,7 +10,7 @@ from multiprocessing.pool import Pool
 
 from ..view import View
 from .dryrun import dryrun
-from ..cli.utils import (
+from ..cli.common import (
     sql_dir_option,
     use_cloud_function_option,
     parallelism_option,
@@ -141,7 +141,7 @@ def _view_is_valid(view):
     ./bqetl view publish
 
     # Publish a specific view
-    ./bqetl view publish telemetry.clients_daily
+    ./bqetl view validate telemetry.clients_daily
     """
 )
 @click.argument("name", required=False)

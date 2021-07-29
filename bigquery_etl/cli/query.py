@@ -16,7 +16,7 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..cli.format import format
-from ..cli.utils import (
+from ..cli.common import (
     is_authenticated,
     is_valid_project,
     sql_dir_option,

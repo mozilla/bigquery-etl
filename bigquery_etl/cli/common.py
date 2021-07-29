@@ -124,7 +124,6 @@ parallelism_option = click.option(
     help="Number of threads for parallel processing",
 )
 
-
 def project_id_option(default=None):
     """Generate a project-id option, with optional default."""
     return click.option(

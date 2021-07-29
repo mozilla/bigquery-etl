@@ -1,9 +1,7 @@
 """bigquery-etl CLI view command."""
-import click
 import functools
+import click
 import logging
-import re
-import string
 import sys
 
 from multiprocessing.pool import Pool
@@ -18,58 +16,12 @@ from ..cli.common import (
     project_id_option,
     respect_dryrun_skip_option,
 )
-from ..metadata.parse_metadata import Metadata, METADATA_FILE
-
-VIEW_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)")
 
 
 @click.group(help="Commands for managing views.")
 def view():
     """Create the CLI group for the view command."""
     pass
-
-
-@view.command(
-    help="""Create a new view with name
-    <dataset>.<view_name>, for example: telemetry_derived.asn_aggregates.
-    Use the `--project_id` option to change the project the view is added to;
-    default is `moz-fx-data-shared-prod`.
-
-    Examples:
-
-    \b
-    ./bqetl view create telemetry_derived.deviations \\
-      --owner=example@mozilla.com
-    """,
-)
-@click.argument("name")
-@sql_dir_option
-@project_id_option("moz-fx-data-shared-prod")
-@click.option(
-    "--owner",
-    "-o",
-    help="Owner of the query (email address)",
-    default="example@mozilla.com",
-)
-def create(name, sql_dir, project_id, owner):
-    """Create a new view."""
-    # with dataset metadata
-    try:
-        match = VIEW_NAME_RE.match(name)
-        name = match.group("name")
-        dataset = match.group("dataset")
-    except AttributeError:
-        click.echo("New views must be named like: <dataset>.<view>")
-        sys.exit(1)
-
-    view = View.create(project_id, dataset, name, sql_dir)
-    metadata = Metadata(
-        friendly_name=string.capwords(name.replace("_", " ")),
-        description="Please provide a description for the view",
-        owners=[owner],
-    )
-    metadata.write(view.path.parent / METADATA_FILE)
-    click.echo(f"Created new view {view.path}")
 
 
 @view.command(

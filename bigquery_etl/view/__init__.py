@@ -1,16 +1,14 @@
 """Represents a SQL view."""
 
+from bigquery_etl.view.publish_views import VIEWS_TO_SKIP
 import attr
 import sqlparse
-import string
 import time
 
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 from pathlib import Path
 
-from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.metadata.parse_metadata import DatasetMetadata, DATASET_METADATA_FILE
 from bigquery_etl.util import extract_from_query_path
 from bigquery_etl.schema import Schema
 
@@ -81,43 +79,6 @@ class View:
         """Return whether the view is user-facing."""
         return not self.dataset.endswith(NON_USER_FACING_DATASET_SUFFIXES)
 
-    @classmethod
-    def create(cls, project, dataset, name, sql_dir, base_table=None):
-        """
-        Create a new empty view from a template.
-
-        Use `base_table` in view definition, if provided.
-        """
-        path = Path(sql_dir) / project / dataset / name / "view.sql"
-        dataset_path = path.parent.parent
-
-        if not dataset_path.exists():
-            # create new dataset with dataset metadata
-            path.parent.mkdir(parents=True)
-            dataset_metadata = DatasetMetadata(
-                friendly_name=string.capwords(dataset),
-                description="Please provide a dataset description.",
-                dataset_base_acl="view",
-                user_facing=True,
-            )
-            dataset_metadata.write(dataset_path / DATASET_METADATA_FILE)
-        else:
-            path.parent.mkdir(parents=True)
-
-        if not base_table:
-            base_table = f"{project}.{dataset}_derived.{name}_v1"
-
-        path.write_text(
-            reformat(
-                f"""
-                CREATE OR REPLACE VIEW `{project}.{dataset}.{name}` AS
-                SELECT * FROM `{base_table}`
-                """
-            )
-            + "\n"
-        )
-        return cls(path, name, dataset, project)
-
     def is_valid(self):
         """Validate the SQL view definition."""
         if self.path in SKIP_VALIDATION:
@@ -180,7 +141,7 @@ class View:
 
         If `target_project` is set, it will replace the project ID in the view definition.
         """
-        if self.path in SKIP_PUBLISHING:
+        if self.path in VIEWS_TO_SKIP:
             print(f"Skipping {self.path}")
             return True
 

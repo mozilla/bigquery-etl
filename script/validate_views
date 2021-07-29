@@ -4,5 +4,4 @@
 
 cd "$(dirname "$0")/.."
 
-./bqetl bootstrap
-./bqetl view validate "$@"
+exec python3 -m bigquery_etl.view.validate_views "$@"

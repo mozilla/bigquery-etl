@@ -27,8 +27,6 @@ SKIP_VALIDATION = {
     "sql/moz-fx-data-shared-prod/telemetry/clients_daily_scalar_aggregates_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/clients_histogram_aggregates_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/clients_probe_processes/view.sql",
-    # tests
-    "sql/moz-fx-data-test-project/test/simple_view/view.sql",
 }
 
 # skip publishing these views
@@ -40,8 +38,6 @@ SKIP_PUBLISHING = {
     # Dataset glam-fenix-dev:glam_etl was not found
     # TODO: this should be removed if views are to be automatically deployed
     *[str(path) for path in Path("sql/glam-fenix-dev").glob("glam_etl/**/view.sql")],
-    # tests
-    "sql/moz-fx-data-test-project/test/simple_view/view.sql",
 }
 
 # suffixes of datasets with non-user-facing views
@@ -62,11 +58,7 @@ class View:
     dataset: str = attr.ib()
     project: str = attr.ib()
 
-    @path.validator
-    def validate_path(self, attribute, value):
-        """Check that the view path is valid."""
-        if not Path(self.path).exists():
-            raise ValueError(f"View file does not exist: {self.path}")
+    # todo: validators
 
     @property
     def content(self):
@@ -110,7 +102,7 @@ class View:
             )
             dataset_metadata.write(dataset_path / DATASET_METADATA_FILE)
         else:
-            path.parent.mkdir(parents=True, exist_ok=True)
+            path.parent.mkdir(parents=True)
 
         if not base_table:
             base_table = f"{project}.{dataset}_derived.{name}_v1"

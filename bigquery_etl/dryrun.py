@@ -200,8 +200,6 @@ SKIP = {
     # Query too complex
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql",
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/init.sql",
-    # Tests
-    "sql/moz-fx-data-test-project/test/simple_view/view.sql",
 }
 
 

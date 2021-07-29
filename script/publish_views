@@ -4,8 +4,4 @@
 
 cd "$(dirname "$0")/.."
 
-./bqetl bootstrap
-./bqetl view publish "$@"
-
-wait
-trap - EXIT
+exec python3 -m bigquery_etl.view.publish_views "$@"

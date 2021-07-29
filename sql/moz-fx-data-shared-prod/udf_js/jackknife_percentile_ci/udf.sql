@@ -15,13 +15,13 @@ CREATE OR REPLACE FUNCTION udf_js.jackknife_percentile_ci(
 RETURNS STRUCT<low FLOAT64, high FLOAT64, percentile FLOAT64> DETERMINISTIC
 LANGUAGE js
 AS
-  """
+"""
   function computePercentile(percentile, histogram) {
     if (percentile < 0 || percentile > 100) {
       throw "percentile must be a value between 0 and 100";
     }
     let values = histogram.map(bucket => parseFloat(bucket.value));
-    let total = values.reduce((a, b) => a + b);
+    let total = values.reduce((a, b) => a + b, 0);
     let normalized = values.map(value => value / total);
     // Find the index into the cumulative distribution function that corresponds
     // to the percentile. This undershoots the true value of the percentile.
@@ -36,6 +36,10 @@ AS
     }
     // NOTE: we do not perform geometric or linear interpolation, but this would
     // be the place to implement it.
+    if (histogram.length == 0) {
+      return null;
+    }
+    
     return histogram[index].key;
   }
 
@@ -98,7 +102,7 @@ AS
       "percentile": fullDataPercentile
     };
   }
-  
+
   return percentile_with_ci(percentile, histogram);
   """;
 

@@ -10,7 +10,7 @@ and a histogram struct as the second.
 */
 CREATE OR REPLACE FUNCTION udf_js.jackknife_percentile_ci(
   percentile FLOAT64,
-  histogram STRUCT<values ARRAY<STRUCT<key INT64, value FLOAT64>>>
+  histogram STRUCT<values ARRAY<STRUCT<key INT64, value INT64>>>
 )
 RETURNS STRUCT<low FLOAT64, high FLOAT64, percentile FLOAT64> DETERMINISTIC
 LANGUAGE js
@@ -20,7 +20,7 @@ AS
     if (percentile < 0 || percentile > 100) {
       throw "percentile must be a value between 0 and 100";
     }
-    let values = histogram.map(bucket => bucket.value);
+    let values = histogram.map(bucket => parseFloat(bucket.value));
     let total = values.reduce((a, b) => a + b);
     let normalized = values.map(value => value / total);
     // Find the index into the cumulative distribution function that corresponds
@@ -76,20 +76,18 @@ AS
 
   function getMeanErrorsPercentile(percentile, histogram, fullDataPercentile) {
     var jk_percentiles = [];
-
     histogram.values.forEach((bucket, i) => {
       var histCopy = JSON.parse(JSON.stringify(histogram.values));
       histCopy[i].value--;
       jk_percentiles.push(computePercentile(percentile, histCopy));
     });
-
     return jk_percentiles.map(x => Math.pow(x - fullDataPercentile, 2));
   }
 
   function percentile_with_ci(percentile, histogram) {
     var fullDataPercentile = parseFloat(computePercentile(percentile, histogram.values));
     var meanErrors = getMeanErrorsPercentile(percentile, histogram, fullDataPercentile);
-    var count = histogram.values.reduce((acc, curr) => acc + curr.value, 0);
+    var count = histogram.values.reduce((acc, curr) => acc + parseFloat(curr.value), 0);
     var std_err = Math.sqrt((count - 1) * array_avg(meanErrors));
     var z_score = Math.sqrt(2.0) * erfinv(0.90);
     var hi = fullDataPercentile + (z_score * std_err);
@@ -100,6 +98,7 @@ AS
       "percentile": fullDataPercentile
     };
   }
+  
   return percentile_with_ci(percentile, histogram);
   """;
 
@@ -110,7 +109,7 @@ WITH jackknife AS (
       10.0,
       STRUCT(
         [
-          STRUCT(1 AS key, 3.0 AS value),
+          STRUCT(1 AS key, 3 AS value),
           STRUCT(2, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
@@ -122,7 +121,7 @@ WITH jackknife AS (
       20.0,
       STRUCT(
         [
-          STRUCT(1 AS key, 3.0 AS value),
+          STRUCT(1 AS key, 3 AS value),
           STRUCT(2, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
@@ -134,7 +133,7 @@ WITH jackknife AS (
       30.0,
       STRUCT(
         [
-          STRUCT(1 AS key, 3.0 AS value),
+          STRUCT(1 AS key, 3 AS value),
           STRUCT(2, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
@@ -146,7 +145,7 @@ WITH jackknife AS (
       40.0,
       STRUCT(
         [
-          STRUCT(1 AS key, 3.0 AS value),
+          STRUCT(1 AS key, 3 AS value),
           STRUCT(2, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
@@ -158,7 +157,7 @@ WITH jackknife AS (
       50.0,
       STRUCT(
         [
-          STRUCT(1 AS key, 3.0 AS value),
+          STRUCT(1 AS key, 3 AS value),
           STRUCT(2, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
@@ -170,7 +169,7 @@ WITH jackknife AS (
       60.0,
       STRUCT(
         [
-          STRUCT(1 AS key, 3.0 AS value),
+          STRUCT(1 AS key, 3 AS value),
           STRUCT(2, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
@@ -182,7 +181,7 @@ WITH jackknife AS (
       70.0,
       STRUCT(
         [
-          STRUCT(1 AS key, 3.0 AS value),
+          STRUCT(1 AS key, 3 AS value),
           STRUCT(2, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
@@ -194,7 +193,7 @@ WITH jackknife AS (
       80.0,
       STRUCT(
         [
-          STRUCT(1 AS key, 3.0 AS value),
+          STRUCT(1 AS key, 3 AS value),
           STRUCT(2, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
@@ -206,7 +205,7 @@ WITH jackknife AS (
       90.0,
       STRUCT(
         [
-          STRUCT(1 AS key, 3.0 AS value),
+          STRUCT(1 AS key, 3 AS value),
           STRUCT(2, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),

@@ -59,6 +59,10 @@ percentiles AS (
     metric_type,
     key,
     process,
+    -- empty columns to match clients_histogram_probe_counts_v1 schema
+    NULL AS first_bucket,
+    NULL AS last_bucket,
+    NULL AS num_buckets,
     agg_type AS client_agg_type,
     'percentiles' AS agg_type,
     SUM(user_count) AS total_users,

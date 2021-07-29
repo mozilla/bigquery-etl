@@ -206,6 +206,10 @@ SELECT
   metric_type,
   key,
   process,
+  -- empty columns to match clients_histogram_probe_counts_v1 schema
+  NULL AS first_bucket,
+  NULL AS last_bucket,
+  NULL AS num_buckets,
   client_agg_type,
   agg_type,
   SUM(user_count) AS total_users,

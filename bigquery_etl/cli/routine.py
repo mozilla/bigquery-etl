@@ -14,7 +14,7 @@ import pytest
 import yaml
 
 from ..cli.format import format
-from ..cli.utils import is_authenticated, is_valid_dir, is_valid_project
+from ..cli.common import is_authenticated, is_valid_dir, is_valid_project
 from ..docs import validate_docs
 from ..format_sql.formatter import reformat
 from ..routine import publish_routines

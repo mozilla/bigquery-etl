@@ -1,0 +1,4 @@
+---
+description: Calculate a confidence interval using a jackknife
+  resampling technique for a given percentile of a histogram.
+friendly_name: Jackknife Percentile CI

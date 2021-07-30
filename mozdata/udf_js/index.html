@@ -1364,6 +1364,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#jackknife_percentile_ci" class="md-nav__link">
+    jackknife_percentile_ci
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#jackknife_ratio_ci" class="md-nav__link">
     jackknife_ratio_ci
   </a>
@@ -1753,6 +1760,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#jackknife_percentile_ci" class="md-nav__link">
+    jackknife_percentile_ci
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#jackknife_ratio_ci" class="md-nav__link">
     jackknife_ratio_ci
   </a>
@@ -1857,6 +1871,13 @@
 <li>Friendly name: Jackknife Mean Ci</li>
 </ul>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/jackknife_mean_ci">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/jackknife_mean_ci/metadata.yaml">Metadata File</a> </p>
+<hr />
+<h2 id="jackknife_percentile_ci"><a href="#jackknife_percentile_ci">jackknife_percentile_ci</a></h2>
+<p>Calculate a confidence interval using a jackknife resampling technique for a given percentile of a histogram.</p>
+<ul>
+<li>Friendly name: Jackknife Percentile CI</li>
+</ul>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="jackknife_ratio_ci"><a href="#jackknife_ratio_ci">jackknife_ratio_ci</a></h2>
 <p>Calculates a confidence interval using a jackknife resampling technique for the weighted mean of an array of ratios for various buckets; see https://en.wikipedia.org/wiki/Jackknife_resampling  Users must specify the number of expected buckets as the first parameter to guard against the case where empty buckets lead to an array with missing elements. Usage generally involves first calculating an aggregate per bucket, then aggregating over buckets, passing ARRAY_AGG(metric) to this function. Example:  WITH bucketed AS (   SELECT     submission_date, SUM(active_days_in_week) AS active_days_in_week,     SUM(wau) AS wau FROM     mytable   GROUP BY     submission_date,     bucket_id ) SELECT   submission_date,   udf_js.jackknife_ratio_ci(20, ARRAY_AGG(STRUCT(CAST(active_days_in_week AS float64), CAST(wau as FLOAT64)))) AS intensity FROM   bucketed GROUP BY submission_date</p>

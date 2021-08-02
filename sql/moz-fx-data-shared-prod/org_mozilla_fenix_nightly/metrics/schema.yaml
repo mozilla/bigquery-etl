@@ -406,6 +406,24 @@ fields:
       mode: NULLABLE
       name: preferences_voice_search_enabled
       type: BOOLEAN
+    - description: 'Whether or not Firefox is the Android Autofill provider for this
+        user.
+
+        provider.
+
+        '
+      mode: NULLABLE
+      name: android_autofill_enabled
+      type: BOOLEAN
+    - description: 'Whether or not Android Autofill is supported by the device and
+        is
+
+        supported for this user.
+
+        '
+      mode: NULLABLE
+      name: android_autofill_supported
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

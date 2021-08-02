@@ -19294,6 +19294,16 @@ fields:
       mode: NULLABLE
       name: tab_unload_to_reload
       type: STRING
+    - description: An enumerated count of the number of content processes, collected
+        every five minutes.
+      mode: NULLABLE
+      name: content_process_precise_count
+      type: STRING
+    - description: The enumerated maximum number of content processes, submitted when
+        a new maximum is reached.
+      mode: NULLABLE
+      name: content_process_precise_max
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

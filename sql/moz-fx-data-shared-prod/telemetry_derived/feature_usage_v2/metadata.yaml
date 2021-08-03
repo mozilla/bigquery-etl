@@ -14,7 +14,7 @@ labels:
   application: firefox
   schedule: daily
 scheduling:
-  dag_name: bqetl_main_summary
+  dag_name: bqetl_feature_usage
 bigquery:
   time_partitioning:
     field: submission_date

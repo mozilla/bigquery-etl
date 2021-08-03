@@ -562,3 +562,20 @@ bqetl_experimenter_experiments_import:
     retries: 0
     email:
       - ascholtz@mozilla.com
+
+bqetl_feature_usage:
+  schedule_interval: 0 5 * * *
+  description: |
+    Daily aggregation of browser features usages from `main` pings,
+    `event` pings and addon data.
+
+    Depends on `bqetl_addons` and `bqetl_main_summary`, so is scheduled after.
+  default_args:
+    owner: ascholtz@mozilla.com
+    start_date: "2021-01-01"
+    email:
+      - "telemetry-alerts@mozilla.com"
+      - "ascholtz@mozilla.com"
+      - "loines@mozilla.com"
+    retries: 2
+    retry_delay: 30m

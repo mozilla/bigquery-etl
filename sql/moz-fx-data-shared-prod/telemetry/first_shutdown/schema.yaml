@@ -19313,6 +19313,12 @@ fields:
       mode: NULLABLE
       name: content_process_precise_max
       type: STRING
+    - description: The counter of each referrer policy which has been computed for
+        a referrer. The buckets (0-8) are for same-site requests and buckets (9-17)
+        are for cross-site requests. Note that the index matches to the order in ReferrerPolicy.webidl
+      mode: NULLABLE
+      name: referrer_policy_count
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

@@ -128,7 +128,7 @@ class View:
 
     def is_valid(self):
         """Validate the SQL view definition."""
-        if self.path in SKIP_VALIDATION:
+        if any(str(self.path).endswith(p) for p in SKIP_VALIDATION):
             print(f"Skipped validation for {self.path}")
             return True
         return self._valid_fully_qualified_references() and self._valid_view_naming()
@@ -188,7 +188,7 @@ class View:
 
         If `target_project` is set, it will replace the project ID in the view definition.
         """
-        if self.path in SKIP_PUBLISHING:
+        if any(str(self.path).endswith(p) for p in SKIP_PUBLISHING):
             print(f"Skipping {self.path}")
             return True
 

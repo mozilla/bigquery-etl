@@ -1,5 +1,7 @@
 """bigquery-etl CLI view command."""
+import functools
 import click
+import logging
 import sys
 
 from multiprocessing.pool import Pool
@@ -22,7 +24,6 @@ def view():
     pass
 
 
-
 @view.command(
     help="""Validate a view.
     Checks formatting, naming, references and dry runs the view.
@@ -34,7 +35,7 @@ def view():
 )
 @click.argument("name", required=False)
 @sql_dir_option
-@project_id_option()
+@project_id_option(default=None)
 @use_cloud_function_option
 @click.option(
     "--validate_schemas",
@@ -58,7 +59,7 @@ def validate(
 ):
     """Validate the view definition."""
     view_files = paths_matching_name_pattern(
-        name, sql_dir, project_id, files=("*view.sql")
+        name, sql_dir, project_id, files=("view.sql",)
     )
     views = [View.from_file(f) for f in view_files]
 
@@ -84,7 +85,8 @@ def _view_is_valid(view):
     return view.is_valid()
 
 
-@view.command(help="""Publish views.
+@view.command(
+    help="""Publish views.
     Examples:
 
     # Publish all views
@@ -92,10 +94,11 @@ def _view_is_valid(view):
 
     # Publish a specific view
     ./bqetl view validate telemetry.clients_daily
-    """)
+    """
+)
 @click.argument("name", required=False)
 @sql_dir_option
-@project_id_option()
+@project_id_option(default=None)
 @click.option(
     "--target-project",
     help=(
@@ -122,20 +125,38 @@ def _view_is_valid(view):
         " but not telemetry_derived)."
     ),
 )
-def publish(name, sql_dir, project_id, target_project, log_level, parallelism, dry_run, user_facing_only):
+def publish(
+    name,
+    sql_dir,
+    project_id,
+    target_project,
+    log_level,
+    parallelism,
+    dry_run,
+    user_facing_only,
+):
     """Publish views."""
+    # set log level
+    try:
+        logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")
+    except ValueError as e:
+        click.error(f"argument --log-level: {e}")
+
     view_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=("view.sql",)
     )
-    
+
     views = [View.from_file(f) for f in view_files]
+    views = [v for v in views if not user_facing_only or v.is_user_facing]
 
     with Pool(parallelism) as p:
-        result = p.map(_publish_view, views, chunksize=1)
+        publish_view = functools.partial(_publish_view, target_project, dry_run)
+        result = p.map(publish_view, views, chunksize=1)
     if not all(result):
         sys.exit(1)
 
     click.echo("All have been published.")
 
-def _publish_view(view):
-    view.publish()
+
+def _publish_view(target_project, dry_run, view):
+    view.publish(target_project, dry_run)

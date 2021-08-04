@@ -956,8 +956,8 @@ wheel==0.36.2 \
     --hash=sha256:78b5b185f0e5763c26ca1e324373aadd49182ca90e825f7853f4b2509215dc0e \
     --hash=sha256:e11eefd162658ea59a60a0f6c7d493a7190ea4b9a85e335b33489d9f17e0245e
     # via pip-tools
-yamllint==1.26.1 \
-    --hash=sha256:87d9462b3ed7e9dfa19caa177f7a77cd9888b3dc4044447d6ae0ab233bcd1324
+yamllint==1.26.2 \
+    --hash=sha256:0b08a96750248fdf21f1e8193cb7787554ef75ed57b27f621cd6b3bf09af11a1
     # via -r requirements.in
 yarl==1.6.3 \
     --hash=sha256:00d7ad91b6583602eb9c1d085a2cf281ada267e9a197e8b7cae487dadbfa293e \

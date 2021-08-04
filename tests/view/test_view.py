@@ -62,16 +62,16 @@ class TestView:
     @pytest.mark.java
     def test_view_valid(self, runner):
         with runner.isolated_filesystem():
-            view = View.create("moz-fx-data-test-project", "test", "simple_view", "sql")
+            view = View.create("moz-fx-data-test-project", "test", "view", "sql")
             assert view.is_valid()
 
     @pytest.mark.java
     def test_view_invalid(self, runner):
         with runner.isolated_filesystem():
-            view = View.create("moz-fx-data-test-project", "test", "simple_view", "sql")
+            view = View.create("moz-fx-data-test-project", "test", "view", "sql")
             assert view.is_valid()
 
-            view.path.write_text("CREATE OR REPLACE VIEW test.simple_view AS SELECT 1")
+            view.path.write_text("CREATE OR REPLACE VIEW test.view AS SELECT 1")
             assert view.is_valid() is False
 
             view.path.write_text("SELECT 1")
@@ -85,7 +85,7 @@ class TestView:
     @pytest.mark.java
     def test_view_do_not_publish_invalid(self, runner):
         with runner.isolated_filesystem():
-            view = View.create("moz-fx-data-test-project", "test", "simple_view", "sql")
+            view = View.create("moz-fx-data-test-project", "test", "view", "sql")
             assert view.is_valid()
             view.path.write_text("SELECT 1")
             assert view.is_valid() is False

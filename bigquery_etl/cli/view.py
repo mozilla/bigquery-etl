@@ -6,7 +6,7 @@ import re
 import string
 import sys
 
-from multiprocessing.pool import Pool
+from multiprocessing.pool import Pool, ThreadPool
 
 from ..view import View
 from .dryrun import dryrun
@@ -197,9 +197,10 @@ def publish(
     views = [View.from_file(f) for f in view_files]
     views = [v for v in views if not user_facing_only or v.is_user_facing]
 
-    with Pool(parallelism) as p:
+    with ThreadPool(parallelism) as p:
         publish_view = functools.partial(_publish_view, target_project, dry_run)
         result = p.map(publish_view, views, chunksize=1)
+
     if not all(result):
         sys.exit(1)
 
@@ -207,4 +208,4 @@ def publish(
 
 
 def _publish_view(target_project, dry_run, view):
-    view.publish(target_project, dry_run)
+    return view.publish(target_project, dry_run)

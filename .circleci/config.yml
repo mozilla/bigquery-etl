@@ -244,9 +244,7 @@ jobs:
       - *java_deps
       - run:
           name: Validate views
-          command: |
-            ./bqetl bootstrap
-            ./bqetl view validate
+          command: PATH="venv/bin:$PATH" script/bqetl view validate
   docs:
     docker: *docker
     steps:

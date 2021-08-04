@@ -1,12 +1,16 @@
 """Represents a SQL view."""
 
+from bigquery_etl.view.publish_views import VIEWS_TO_SKIP
 import attr
 import sqlparse
+import time
 
+from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 from pathlib import Path
 
 from bigquery_etl.util import extract_from_query_path
+from bigquery_etl.schema import Schema
 
 
 # skip validation for these views
@@ -54,6 +58,7 @@ class View:
 
     # todo: validators
 
+    @property
     def content(self):
         """Return the view SQL."""
         return Path(self.path).read_text()
@@ -63,6 +68,16 @@ class View:
         """View from SQL file."""
         project, dataset, name = extract_from_query_path(path)
         return cls(path=str(path), name=name, dataset=dataset, project=project)
+
+    @property
+    def view_identifier(self):
+        """Return full view identifier: `<project>.<dataset>.<name>`."""
+        return f"{self.project}.{self.dataset}.{self.name}"
+
+    @property
+    def is_user_facing(self):
+        """Return whether the view is user-facing."""
+        return not self.dataset.endswith(NON_USER_FACING_DATASET_SUFFIXES)
 
     def is_valid(self):
         """Validate the SQL view definition."""
@@ -75,7 +90,7 @@ class View:
         """Check that referenced tables and views are fully qualified."""
         from bigquery_etl.dependency import extract_table_references
 
-        for table in extract_table_references(self.content()):
+        for table in extract_table_references(self.content):
             if len(table.split(".")) < 3:
                 print(f"{self.path} ERROR\n{table} missing project_id qualifier")
                 return False
@@ -83,7 +98,7 @@ class View:
 
     def _valid_view_naming(self):
         """Validate that the created view naming matches the directory structure."""
-        parsed = sqlparse.parse(self.content())[0]
+        parsed = sqlparse.parse(self.content)[0]
         tokens = [
             t
             for t in parsed.tokens
@@ -120,6 +135,69 @@ class View:
             return False
         return True
 
-    def publish(self):
-        """Publish this view to BigQuery."""
-        client = bigquery.Client()
+    def publish(self, target_project=None, dry_run=False):
+        """
+        Publish this view to BigQuery.
+
+        If `target_project` is set, it will replace the project ID in the view definition.
+        """
+        if self.path in VIEWS_TO_SKIP:
+            print(f"Skipping {self.path}")
+            return True
+
+        if self.is_valid():
+            client = bigquery.Client()
+            sql = self.content
+            target_view = self.view_identifier
+
+            if target_project:
+                if self.project != "moz-fx-data-shared-prod":
+                    print(f"Skipping {self.path} because --target-project is set")
+                    return True
+
+                # target_view must be a fully-qualified BigQuery Standard SQL table
+                # identifier, which is of the form f"{project_id}.{dataset_id}.{table_id}".
+                # dataset_id and table_id may not contain "." or "`". Each component may be
+                # a backtick (`) quoted identifier, or the whole thing may be a backtick
+                # quoted identifier, but not both.
+                # Project IDs must contain 6-63 lowercase letters, digits, or dashes. Some
+                # project IDs also include domain name separated by a colon. IDs must start
+                # with a letter and may not end with a dash. For more information see also
+                # https://github.com/mozilla/bigquery-etl/pull/1427#issuecomment-707376291
+                target_view = self.view_identifier.replace(
+                    self.project, target_project, 1
+                )
+                # We only change the first occurrence, which is in the target view name.
+                sql = sql.replace(self.project, target_project, 1)
+
+            job_config = bigquery.QueryJobConfig(use_legacy_sql=False, dry_run=dry_run)
+            query_job = client.query(sql, job_config)
+
+            if dry_run:
+                print(f"Validated definition of {self.view_identifier} in {self.path}")
+            else:
+                try:
+                    query_job.result()
+                except BadRequest as e:
+                    if "Invalid snapshot time" in e.message:
+                        # This occasionally happens due to dependent views being
+                        # published concurrently; we wait briefly and give it one
+                        # extra try in this situation.
+                        time.sleep(1)
+                        client.query(sql, job_config).result()
+                    else:
+                        raise
+
+                try:
+                    view_schema = Schema.from_schema_file(
+                        Path(self.path).parent / "schema.yaml"
+                    )
+                    view_schema.deploy(target_view)
+                except Exception as e:
+                    print(f"Could not update field descriptions for {target_view}: {e}")
+                print(f"Published view {target_view}")
+        else:
+            print(f"Error publishing {self.path}. Invalid view definition.")
+            return False
+
+        return True

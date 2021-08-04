@@ -4,5 +4,4 @@
 
 cd "$(dirname "$0")/.."
 
-./bqetl bootstrap
-./bqetl view validate "$@"
+./script/bqetl view validate "$@"

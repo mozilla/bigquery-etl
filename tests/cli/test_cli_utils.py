@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from click.exceptions import BadParameter
 
-from bigquery_etl.cli.common import (
+from bigquery_etl.cli.utils import (
     is_authenticated,
     is_valid_dir,
     is_valid_file,

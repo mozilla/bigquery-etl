@@ -11,6 +11,9 @@ fields:
 - name: completed_login
   type: BOOLEAN
   mode: NULLABLE
+- name: new_fxa_account
+  type: BOOLEAN
+  mode: NULLABLE
 - name: registered_user
   type: BOOLEAN
   mode: NULLABLE

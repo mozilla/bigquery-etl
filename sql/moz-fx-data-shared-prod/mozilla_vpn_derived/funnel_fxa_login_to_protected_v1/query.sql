@@ -22,6 +22,7 @@ completed_login AS (
   SELECT
     fxa_uid,
     MIN(flow_completed) AS first_completed_login,
+    MIN(registration_completed) <= MIN(flow_completed) AS new_fxa_account,
   FROM
     login_flows_v1
   LEFT JOIN
@@ -73,6 +74,7 @@ SELECT
   fxa_login.fxa_uid,
   DATE(first_fxa_login) AS start_date,
   (completed_login.fxa_uid IS NOT NULL) AS completed_login,
+  new_fxa_account,
   (registered_user.fxa_uid IS NOT NULL) AS registered_user,
   (paid_for_subscription.fxa_uid IS NOT NULL) AS paid_for_subscription,
   (registered_device.fxa_uid IS NOT NULL) AS registered_device,

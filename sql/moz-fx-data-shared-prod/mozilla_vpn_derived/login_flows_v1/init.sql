@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS
     flow_id STRING,
     flow_started TIMESTAMP,
     flow_completed TIMESTAMP,
+    login_completed TIMESTAMP,
+    reg_completed TIMESTAMP,
     fxa_uids ARRAY<STRING>,
     viewed_email_first_page BOOL
   )

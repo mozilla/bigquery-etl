@@ -5,12 +5,8 @@ WITH base AS (
     MIN(
       IF(event_type IN ("fxa_login - complete", "fxa_reg - complete"), `timestamp`, NULL)
     ) AS flow_completed,
-    MIN(
-      IF(event_type IN ("fxa_login - complete"), `timestamp`, NULL)
-    ) AS login_completed,
-    MIN(
-      IF(event_type IN ("fxa_reg - complete"), `timestamp`, NULL)
-    ) AS reg_completed,
+    MIN(IF(event_type IN ("fxa_login - complete"), `timestamp`, NULL)) AS login_completed,
+    MIN(IF(event_type IN ("fxa_reg - complete"), `timestamp`, NULL)) AS reg_completed,
     ARRAY_AGG(
       DISTINCT IF(
         event_type IN ("fxa_login - complete", "fxa_reg - complete"),
@@ -35,9 +31,9 @@ WITH base AS (
 SELECT
   flow_id,
   MIN(flow_started) AS flow_started,
+  MIN(flow_completed) AS flow_completed,
   MIN(login_completed) AS login_completed,
   MIN(reg_completed) AS reg_completed,
-  MIN(flow_completed) AS flow_completed,
   ARRAY_AGG(DISTINCT fxa_uid IGNORE NULLS) AS fxa_uids,
   LOGICAL_OR(viewed_email_first_page) AS viewed_email_first_page,
 FROM

@@ -192,7 +192,9 @@ class View:
             print(f"Skipping {self.path}")
             return True
 
-        if self.is_valid():
+        # avoid checking references since Jenkins might throw and exception:
+        # https://github.com/mozilla/bigquery-etl/issues/2246
+        if self._valid_view_naming():
             client = bigquery.Client()
             sql = self.content
             target_view = self.view_identifier

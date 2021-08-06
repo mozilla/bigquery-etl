@@ -192,7 +192,7 @@ class View:
             print(f"Skipping {self.path}")
             return True
 
-        # avoid checking references since Jenkins might throw and exception:
+        # avoid checking references since Jenkins might throw an exception:
         # https://github.com/mozilla/bigquery-etl/issues/2246
         if self._valid_view_naming():
             client = bigquery.Client()

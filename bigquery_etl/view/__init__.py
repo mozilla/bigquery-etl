@@ -194,7 +194,10 @@ class View:
 
         # avoid checking references since Jenkins might throw an exception:
         # https://github.com/mozilla/bigquery-etl/issues/2246
-        if self._valid_view_naming():
+        if (
+            any(str(self.path).endswith(p) for p in SKIP_VALIDATION)
+            or self._valid_view_naming()
+        ):
             client = bigquery.Client()
             sql = self.content
             target_view = self.view_identifier

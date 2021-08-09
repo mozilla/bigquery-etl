@@ -35,6 +35,10 @@ CREATE OR REPLACE FUNCTION udf.normalize_search_engine(engine STRING) AS (
     STARTS_WITH(LOWER(engine), 'ebay')
   THEN
     'Ebay'
+  WHEN
+    STARTS_WITH(LOWER(engine), 'baidu')
+  THEN
+    'Baidu'
   ELSE
     'Other'
   END

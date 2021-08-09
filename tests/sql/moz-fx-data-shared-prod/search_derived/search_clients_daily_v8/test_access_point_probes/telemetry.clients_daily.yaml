@@ -1,0 +1,154 @@
+---
+- &base
+  submission_date: '2017-01-01'
+  client_id: a
+  country: US
+  profile_creation_date: '2019-09-06 00:00:00'
+  experiments: []
+  scalar_parent_urlbar_searchmode_bookmarkmenu_sum: []
+  scalar_parent_urlbar_searchmode_handoff_sum: []
+  scalar_parent_urlbar_searchmode_keywordoffer_sum: []
+  scalar_parent_urlbar_searchmode_oneoff_sum: []
+  scalar_parent_urlbar_searchmode_other_sum: []
+  scalar_parent_urlbar_searchmode_shortcut_sum: []
+  scalar_parent_urlbar_searchmode_tabmenu_sum: []
+  scalar_parent_urlbar_searchmode_tabtosearch_sum: []
+  scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum: []
+  scalar_parent_urlbar_searchmode_topsites_newtab_sum: []
+  scalar_parent_urlbar_searchmode_topsites_urlbar_sum: []
+  scalar_parent_urlbar_searchmode_touchbar_sum: []
+  scalar_parent_urlbar_searchmode_typed_sum: []
+- <<: *base
+  client_id: b
+  # should be ignored other than searchbar sap
+  search_counts:
+    - source: searchbar
+      engine: engine1
+      count: 1
+    - source: 'in-content:sap:code'
+      engine: engine2
+      count: 2
+    - source: 'in-content:sap-follow-on:code'
+      engine: engine2
+      count: 3
+    - source: 'in-content:organic:none'
+      engine: engine2
+      count: 4
+  ad_clicks:
+    - key: engine1
+      value: 2
+    - key: 'engine1:organic.none'
+      value: 3
+  search_with_ads:
+    - key: 'engine1:sap.code'
+      value: 3
+  # in-content
+  search_content_urlbar_sum:
+    - key: 'engine3:tagged:code1'
+      value: 4
+    - key: 'engine3:organic:none'
+      value: 3
+    - key: 'engine4:tagged-follow-on:code2'
+      value: 5
+  search_content_urlbar_searchmode_sum:
+    - key: 'engine5:tagged:code1'
+      value: 1
+  search_content_contextmenu_sum:
+    - key: 'engine5:tagged:code1'
+      value: 2
+  search_content_about_home_sum:
+    - key: 'engine5:tagged:code1'
+      value: 3
+  search_content_about_newtab_sum:
+    - key: 'engine5:tagged:code1'
+      value: 4
+  search_content_searchbar_sum:
+    - key: 'engine5:tagged:code1'
+      value: 5
+  search_content_system_sum:
+    - key: 'engine5:tagged:code1'
+      value: 6
+  search_content_webextension_sum:
+    - key: 'engine5:tagged:code1'
+      value: 7
+  search_content_tabhistory_sum:
+    - key: 'engine5:tagged:code1'
+      value: 8
+  search_content_reload_sum:
+    - key: 'engine5:tagged:code1'
+      value: 9
+  search_content_unknown_sum:
+    - key: 'engine5:tagged:code1'
+      value: 10
+  # search with ads
+  search_withads_urlbar_sum:
+    - key: 'engine6:tagged'
+      value: 1
+    - key: 'engine6:organic'
+      value: 2
+  search_withads_urlbar_searchmode_sum:
+    - key: 'engine6:tagged'
+      value: 12
+  search_withads_contextmenu_sum:
+    - key: 'engine6:tagged'
+      value: 13
+  search_withads_about_home_sum:
+    - key: 'engine6:tagged'
+      value: 14
+  search_withads_about_newtab_sum:
+    - key: 'engine6:tagged'
+      value: 15
+  search_withads_searchbar_sum:
+    - key: 'engine6:tagged'
+      value: 16
+  search_withads_system_sum:
+    - key: 'engine6:tagged'
+      value: 17
+  search_withads_webextension_sum:
+    - key: 'engine6:tagged'
+      value: 18
+  search_withads_tabhistory_sum:
+    - key: 'engine6:tagged'
+      value: 19
+  search_withads_reload_sum:
+    - key: 'engine6:tagged'
+      value: 20
+  search_withads_unknown_sum:
+    - key: 'engine6:tagged'
+      value: 21
+  # ad click
+  search_adclicks_urlbar_sum:
+    - key: 'engine7:tagged'
+      value: 3
+    - key: 'engine7:organic'
+      value: 4
+  search_adclicks_urlbar_searchmode_sum:
+    - key: 'engine7:tagged'
+      value: 22
+  search_adclicks_contextmenu_sum:
+    - key: 'engine7:tagged'
+      value: 23
+  search_adclicks_about_home_sum:
+    - key: 'engine7:tagged'
+      value: 24
+  search_adclicks_about_newtab_sum:
+    - key: 'engine7:tagged'
+      value: 25
+  search_adclicks_searchbar_sum:
+    - key: 'engine7:tagged'
+      value: 26
+  search_adclicks_system_sum:
+    - key: 'engine7:tagged'
+      value: 27
+  search_adclicks_webextension_sum:
+    - key: 'engine7:tagged'
+      value: 28
+  search_adclicks_tabhistory_sum:
+    - key: 'engine7:tagged'
+      value: 29
+  search_adclicks_reload_sum:
+    - key: 'engine7:tagged'
+      value: 30
+  search_adclicks_unknown_sum:
+    - key: 'engine7:tagged'
+      value: 31

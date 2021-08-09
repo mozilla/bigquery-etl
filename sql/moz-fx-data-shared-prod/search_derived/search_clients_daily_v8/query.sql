@@ -12,6 +12,17 @@ CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
   )
 );
 
+-- For newer search probes that are based on access point
+CREATE TEMP FUNCTION add_access_point(entries ARRAY<STRUCT<key STRING, value INT64>>, access_point STRING) AS (
+  ARRAY(
+    SELECT AS STRUCT
+      CONCAT(key, '.', access_point) AS key,
+      value,
+    FROM
+      UNNEST(entries)
+  )
+);
+
 WITH combined_access_point AS (
   SELECT
     *,

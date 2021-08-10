@@ -370,7 +370,7 @@ jobs:
             git clone --single-branch --branch main \
                           git@github.com:mozilla/private-bigquery-etl.git \
                           ~/private-bigquery-etl
-            rsync --archive --ignore-existing ~/private-bigquery-etl/sql/ sql/
+            rsync --archive ~/private-bigquery-etl/sql/ sql/
       - run:
           name: Generate SQL content
           command: |

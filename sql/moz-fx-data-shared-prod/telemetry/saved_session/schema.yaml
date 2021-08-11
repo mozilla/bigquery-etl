@@ -19310,6 +19310,134 @@ fields:
       mode: NULLABLE
       name: referrer_policy_count
       type: STRING
+    - description: Whether a document uses the feBlend SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feblend_document
+      type: STRING
+    - description: Whether a page uses the feBlend SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feblend_page
+      type: STRING
+    - description: Whether a document uses the feColorMatrix SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fecolormatrix_document
+      type: STRING
+    - description: Whether a page uses the feColorMatrix SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fecolormatrix_page
+      type: STRING
+    - description: Whether a document uses the feComponentTransfer SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fecomponenttransfer_document
+      type: STRING
+    - description: Whether a page uses the feComponentTransfer SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fecomponenttransfer_page
+      type: STRING
+    - description: Whether a document uses the feComposite SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fecomposite_document
+      type: STRING
+    - description: Whether a page uses the feComposite SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fecomposite_page
+      type: STRING
+    - description: Whether a document uses the feConvolveMatrix SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feconvolvematrix_document
+      type: STRING
+    - description: Whether a page uses the feConvolveMatrix SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feconvolvematrix_page
+      type: STRING
+    - description: Whether a document uses the feDiffuseLighting SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fediffuselighting_document
+      type: STRING
+    - description: Whether a page uses the feDiffuseLighting SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fediffuselighting_page
+      type: STRING
+    - description: Whether a document uses the feDisplacementMap SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fedisplacementmap_document
+      type: STRING
+    - description: Whether a page uses the feDisplacementMap SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fedisplacementmap_page
+      type: STRING
+    - description: Whether a document uses the feFlood SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feflood_document
+      type: STRING
+    - description: Whether a page uses the feFlood SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feflood_page
+      type: STRING
+    - description: Whether a document uses the feGaussianBlur SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fegaussianblur_document
+      type: STRING
+    - description: Whether a page uses the feGaussianBlur SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fegaussianblur_page
+      type: STRING
+    - description: Whether a document uses the feImage SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feimage_document
+      type: STRING
+    - description: Whether a page uses the feImage SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feimage_page
+      type: STRING
+    - description: Whether a document uses the feMerge SVG filter.
+      mode: NULLABLE
+      name: use_counter2_femerge_document
+      type: STRING
+    - description: Whether a page uses the feMerge SVG filter.
+      mode: NULLABLE
+      name: use_counter2_femerge_page
+      type: STRING
+    - description: Whether a document uses the feMorphology SVG filter.
+      mode: NULLABLE
+      name: use_counter2_femorphology_document
+      type: STRING
+    - description: Whether a page uses the feMorphology SVG filter.
+      mode: NULLABLE
+      name: use_counter2_femorphology_page
+      type: STRING
+    - description: Whether a document uses the feOffset SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feoffset_document
+      type: STRING
+    - description: Whether a page uses the feOffset SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feoffset_page
+      type: STRING
+    - description: Whether a document uses the feSpecularLighting SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fespecularlighting_document
+      type: STRING
+    - description: Whether a page uses the feSpecularLighting SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fespecularlighting_page
+      type: STRING
+    - description: Whether a document uses the feTile SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fetile_document
+      type: STRING
+    - description: Whether a page uses the feTile SVG filter.
+      mode: NULLABLE
+      name: use_counter2_fetile_page
+      type: STRING
+    - description: Whether a document uses the feTurbulence SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feturbulence_document
+      type: STRING
+    - description: Whether a page uses the feTurbulence SVG filter.
+      mode: NULLABLE
+      name: use_counter2_feturbulence_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -22248,6 +22376,20 @@ fields:
         type: STRING
       mode: REPEATED
       name: https_rr_waiting_time
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Total time spent playing visible video in milliseconds. This
+          reports the total play time for a video element whenever the decoder stops.
+          (eg. pausing media, encountering an error, changing to a new resource, page
+          goes to the bf-cached or page gets discarded)
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: video_visible_play_time_ms
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms
@@ -39755,6 +39897,134 @@ fields:
           mode: NULLABLE
           name: use_counter2_documentquerycommandsupportedorenabledreadonly_page
           type: STRING
+        - description: Whether a document uses the feBlend SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feblend_document
+          type: STRING
+        - description: Whether a page uses the feBlend SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feblend_page
+          type: STRING
+        - description: Whether a document uses the feColorMatrix SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fecolormatrix_document
+          type: STRING
+        - description: Whether a page uses the feColorMatrix SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fecolormatrix_page
+          type: STRING
+        - description: Whether a document uses the feComponentTransfer SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fecomponenttransfer_document
+          type: STRING
+        - description: Whether a page uses the feComponentTransfer SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fecomponenttransfer_page
+          type: STRING
+        - description: Whether a document uses the feComposite SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fecomposite_document
+          type: STRING
+        - description: Whether a page uses the feComposite SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fecomposite_page
+          type: STRING
+        - description: Whether a document uses the feConvolveMatrix SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feconvolvematrix_document
+          type: STRING
+        - description: Whether a page uses the feConvolveMatrix SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feconvolvematrix_page
+          type: STRING
+        - description: Whether a document uses the feDiffuseLighting SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fediffuselighting_document
+          type: STRING
+        - description: Whether a page uses the feDiffuseLighting SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fediffuselighting_page
+          type: STRING
+        - description: Whether a document uses the feDisplacementMap SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fedisplacementmap_document
+          type: STRING
+        - description: Whether a page uses the feDisplacementMap SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fedisplacementmap_page
+          type: STRING
+        - description: Whether a document uses the feFlood SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feflood_document
+          type: STRING
+        - description: Whether a page uses the feFlood SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feflood_page
+          type: STRING
+        - description: Whether a document uses the feGaussianBlur SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fegaussianblur_document
+          type: STRING
+        - description: Whether a page uses the feGaussianBlur SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fegaussianblur_page
+          type: STRING
+        - description: Whether a document uses the feImage SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feimage_document
+          type: STRING
+        - description: Whether a page uses the feImage SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feimage_page
+          type: STRING
+        - description: Whether a document uses the feMerge SVG filter.
+          mode: NULLABLE
+          name: use_counter2_femerge_document
+          type: STRING
+        - description: Whether a page uses the feMerge SVG filter.
+          mode: NULLABLE
+          name: use_counter2_femerge_page
+          type: STRING
+        - description: Whether a document uses the feMorphology SVG filter.
+          mode: NULLABLE
+          name: use_counter2_femorphology_document
+          type: STRING
+        - description: Whether a page uses the feMorphology SVG filter.
+          mode: NULLABLE
+          name: use_counter2_femorphology_page
+          type: STRING
+        - description: Whether a document uses the feOffset SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feoffset_document
+          type: STRING
+        - description: Whether a page uses the feOffset SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feoffset_page
+          type: STRING
+        - description: Whether a document uses the feSpecularLighting SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fespecularlighting_document
+          type: STRING
+        - description: Whether a page uses the feSpecularLighting SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fespecularlighting_page
+          type: STRING
+        - description: Whether a document uses the feTile SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fetile_document
+          type: STRING
+        - description: Whether a page uses the feTile SVG filter.
+          mode: NULLABLE
+          name: use_counter2_fetile_page
+          type: STRING
+        - description: Whether a document uses the feTurbulence SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feturbulence_document
+          type: STRING
+        - description: Whether a page uses the feTurbulence SVG filter.
+          mode: NULLABLE
+          name: use_counter2_feturbulence_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -41880,6 +42150,20 @@ fields:
             type: STRING
           mode: REPEATED
           name: http3_upload_time_gt_100m
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Total time spent playing visible video in milliseconds. This
+              reports the total play time for a video element whenever the decoder
+              stops. (eg. pausing media, encountering an error, changing to a new
+              resource, page goes to the bf-cached or page gets discarded)
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: video_visible_play_time_ms
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms

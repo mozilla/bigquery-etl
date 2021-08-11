@@ -20,7 +20,7 @@ WITH stripe_subscriptions AS (
     cancel_at,
     cancel_at_period_end,
     ended_at,
-    COALESCE(ended_at, CURRENT_TIMESTAMP) AS end_date,
+    COALESCE(ended_at, TIMESTAMP(CURRENT_DATE)) AS end_date,
   FROM
     mozdata.stripe.subscriptions
   WHERE
@@ -170,6 +170,8 @@ fxa_subscriptions AS (
       "-",
       (plan_amount / 100)
     ) AS pricing_plan,
+    -- Stripe default billing grace period is 1 day and Paypal is billed by Stripe
+    INTERVAL 1 DAY AS billing_grace_period,
   FROM
     stripe_subscriptions
   JOIN -- exclude subscriptions to non-vpn products
@@ -240,6 +242,8 @@ apple_iap_subscriptions AS (
     CAST(NULL AS STRING) AS product_id,
     "Mozilla VPN" AS product_name,
     CONCAT(interval_count, "-", `interval`, "-", "apple") AS pricing_plan,
+    -- Apple bills recurring subscriptions before they end
+    INTERVAL 0 DAY AS billing_grace_period,
   FROM
     mozdata.mozilla_vpn.subscriptions
   CROSS JOIN
@@ -272,6 +276,18 @@ SELECT
     utm_medium,
     utm_source
   ).*,
+  mozfun.norm.diff_months(
+    start => DATETIME(subscription_start_date, plan_interval_timezone),
+    `end` => DATETIME(end_date, plan_interval_timezone),
+    grace_period => billing_grace_period,
+    inclusive => FALSE
+  ) AS months_retained,
+  mozfun.norm.diff_months(
+    start => DATETIME(subscription_start_date, plan_interval_timezone),
+    `end` => DATETIME(TIMESTAMP(CURRENT_DATE), plan_interval_timezone),
+    grace_period => billing_grace_period,
+    inclusive => FALSE
+  ) AS current_months_since_subscription_start,
 FROM
   vpn_subscriptions
 WHERE

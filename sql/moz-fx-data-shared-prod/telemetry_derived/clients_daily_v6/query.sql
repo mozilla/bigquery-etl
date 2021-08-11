@@ -378,6 +378,39 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.devtools_accessibility_select_accessible_for_node AS scalar_parent_devtools_accessibility_select_accessible_for_node,
     payload.processes.parent.keyed_scalars.telemetry_event_counts AS scalar_parent_telemetry_event_counts,
     payload.processes.content.keyed_scalars.telemetry_event_counts AS scalar_content_telemetry_event_counts,
+    payload.processes.parent.keyed_scalars.browser_search_content_urlbar,
+    payload.processes.parent.keyed_scalars.browser_search_content_urlbar_searchmode,
+    payload.processes.parent.keyed_scalars.browser_search_content_contextmenu,
+    payload.processes.parent.keyed_scalars.browser_search_content_about_home,
+    payload.processes.parent.keyed_scalars.browser_search_content_about_newtab,
+    payload.processes.parent.keyed_scalars.browser_search_content_searchbar,
+    payload.processes.parent.keyed_scalars.browser_search_content_system,
+    payload.processes.parent.keyed_scalars.browser_search_content_webextension,
+    payload.processes.parent.keyed_scalars.browser_search_content_tabhistory,
+    payload.processes.parent.keyed_scalars.browser_search_content_reload,
+    payload.processes.parent.keyed_scalars.browser_search_content_unknown,
+    payload.processes.parent.keyed_scalars.browser_search_withads_urlbar,
+    payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_searchmode,
+    payload.processes.parent.keyed_scalars.browser_search_withads_contextmenu,
+    payload.processes.parent.keyed_scalars.browser_search_withads_about_home,
+    payload.processes.parent.keyed_scalars.browser_search_withads_about_newtab,
+    payload.processes.parent.keyed_scalars.browser_search_withads_searchbar,
+    payload.processes.parent.keyed_scalars.browser_search_withads_system,
+    payload.processes.parent.keyed_scalars.browser_search_withads_webextension,
+    payload.processes.parent.keyed_scalars.browser_search_withads_tabhistory,
+    payload.processes.parent.keyed_scalars.browser_search_withads_reload,
+    payload.processes.parent.keyed_scalars.browser_search_withads_unknown,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_searchmode,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_contextmenu,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_about_home,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_about_newtab,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_searchbar,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_system,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_webextension,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_tabhistory,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_reload,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_unknown,
     count_histograms[OFFSET(0)].histogram AS histogram_parent_devtools_aboutdebugging_opened_count,
     count_histograms[
       OFFSET(1)
@@ -909,11 +942,56 @@ aggregates AS (
     ) AS fxa_configured,
     SUM(scalar_parent_contentblocking_trackers_blocked_count) AS trackers_blocked_sum,
     MIN(submission_timestamp) AS submission_timestamp_min,
-    SUM(
-      (SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_ad_clicks))
+    -- prioritize access point based probes
+    COALESCE(
+      SUM(
+        (
+          SELECT
+            SUM(value)
+          FROM
+            UNNEST(
+              ARRAY_CONCAT(
+                browser_search_adclicks_urlbar,
+                browser_search_adclicks_urlbar_searchmode,
+                browser_search_adclicks_contextmenu,
+                browser_search_adclicks_about_home,
+                browser_search_adclicks_about_newtab,
+                browser_search_adclicks_searchbar,
+                browser_search_adclicks_system,
+                browser_search_adclicks_webextension,
+                browser_search_adclicks_tabhistory,
+                browser_search_adclicks_reload,
+                browser_search_adclicks_unknown
+              )
+            )
+        )
+      ),
+      SUM((SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_ad_clicks)))
     ) AS ad_clicks_count_all,
-    SUM(
-      (SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_with_ads))
+    COALESCE(
+      SUM(
+        (
+          SELECT
+            SUM(value)
+          FROM
+            UNNEST(
+              ARRAY_CONCAT(
+                browser_search_withads_urlbar,
+                browser_search_withads_urlbar_searchmode,
+                browser_search_withads_contextmenu,
+                browser_search_withads_about_home,
+                browser_search_withads_about_newtab,
+                browser_search_withads_searchbar,
+                browser_search_withads_system,
+                browser_search_withads_webextension,
+                browser_search_withads_tabhistory,
+                browser_search_withads_reload,
+                browser_search_withads_unknown
+              )
+            )
+        )
+      ),
+      SUM((SELECT SUM(value) FROM UNNEST(scalar_parent_browser_search_with_ads)))
     ) AS search_with_ads_count_all,
     [
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_telemetry_event_counts) AS agg),
@@ -949,7 +1027,40 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_unknown)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_urlbar_picked_visiturl)),
       STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_search_with_ads)),
-      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_search_ad_clicks))
+      STRUCT(ARRAY_CONCAT_AGG(scalar_parent_browser_search_ad_clicks)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_searchmode)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_contextmenu)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_about_home)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_about_newtab)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_searchbar)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_system)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_webextension)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_tabhistory)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_reload)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_unknown)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_searchmode)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_contextmenu)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_about_home)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_about_newtab)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_searchbar)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_system)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_webextension)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_tabhistory)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_reload)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_unknown)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_searchmode)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_contextmenu)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_about_home)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_about_newtab)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_searchbar)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_system)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_webextension)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_tabhistory)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_reload)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_unknown))
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(
@@ -1012,5 +1123,38 @@ SELECT
   map_sum_aggregates[OFFSET(31)].map AS scalar_parent_urlbar_picked_visiturl_sum,
   map_sum_aggregates[OFFSET(32)].map AS search_with_ads,
   map_sum_aggregates[OFFSET(33)].map AS ad_clicks,
+  map_sum_aggregates[OFFSET(34)].map AS search_content_urlbar_sum,
+  map_sum_aggregates[OFFSET(35)].map AS search_content_urlbar_searchmode_sum,
+  map_sum_aggregates[OFFSET(36)].map AS search_content_contextmenu_sum,
+  map_sum_aggregates[OFFSET(37)].map AS search_content_about_home_sum,
+  map_sum_aggregates[OFFSET(38)].map AS search_content_about_newtab_sum,
+  map_sum_aggregates[OFFSET(39)].map AS search_content_searchbar_sum,
+  map_sum_aggregates[OFFSET(40)].map AS search_content_system_sum,
+  map_sum_aggregates[OFFSET(41)].map AS search_content_webextension_sum,
+  map_sum_aggregates[OFFSET(42)].map AS search_content_tabhistory_sum,
+  map_sum_aggregates[OFFSET(43)].map AS search_content_reload_sum,
+  map_sum_aggregates[OFFSET(44)].map AS search_content_unknown_sum,
+  map_sum_aggregates[OFFSET(45)].map AS search_withads_urlbar_sum,
+  map_sum_aggregates[OFFSET(46)].map AS search_withads_urlbar_searchmode_sum,
+  map_sum_aggregates[OFFSET(47)].map AS search_withads_contextmenu_sum,
+  map_sum_aggregates[OFFSET(48)].map AS search_withads_about_home_sum,
+  map_sum_aggregates[OFFSET(49)].map AS search_withads_about_newtab_sum,
+  map_sum_aggregates[OFFSET(50)].map AS search_withads_searchbar_sum,
+  map_sum_aggregates[OFFSET(51)].map AS search_withads_system_sum,
+  map_sum_aggregates[OFFSET(52)].map AS search_withads_webextension_sum,
+  map_sum_aggregates[OFFSET(53)].map AS search_withads_tabhistory_sum,
+  map_sum_aggregates[OFFSET(54)].map AS search_withads_reload_sum,
+  map_sum_aggregates[OFFSET(55)].map AS search_withads_unknown_sum,
+  map_sum_aggregates[OFFSET(56)].map AS search_adclicks_urlbar_sum,
+  map_sum_aggregates[OFFSET(57)].map AS search_adclicks_urlbar_searchmode_sum,
+  map_sum_aggregates[OFFSET(58)].map AS search_adclicks_contextmenu_sum,
+  map_sum_aggregates[OFFSET(59)].map AS search_adclicks_about_home_sum,
+  map_sum_aggregates[OFFSET(60)].map AS search_adclicks_about_newtab_sum,
+  map_sum_aggregates[OFFSET(61)].map AS search_adclicks_searchbar_sum,
+  map_sum_aggregates[OFFSET(62)].map AS search_adclicks_system_sum,
+  map_sum_aggregates[OFFSET(63)].map AS search_adclicks_webextension_sum,
+  map_sum_aggregates[OFFSET(64)].map AS search_adclicks_tabhistory_sum,
+  map_sum_aggregates[OFFSET(65)].map AS search_adclicks_reload_sum,
+  map_sum_aggregates[OFFSET(66)].map AS search_adclicks_unknown_sum,
 FROM
   udf_aggregates

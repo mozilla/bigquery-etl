@@ -56,7 +56,7 @@ WITH
         STRUCT(SAFE_CAST(index.key AS INT64) AS key,
           index.value AS value) ) ) AS count_picked_by_index
   FROM
-    temp
+    combined_urlbar_picked
   CROSS JOIN
     UNNEST(urlbar_picked) AS urlbar_picked
   CROSS JOIN

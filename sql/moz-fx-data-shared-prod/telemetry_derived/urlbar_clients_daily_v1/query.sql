@@ -1,5 +1,5 @@
 WITH
-  temp AS (
+  combined_urlbar_picked AS (
   SELECT
     submission_date,
     client_id,
@@ -40,10 +40,10 @@ WITH
     STRUCT("visiturl" AS type,
       scalar_parent_urlbar_picked_visiturl_sum AS index) ] AS urlbar_picked
   FROM
-    mozdata.telemetry.clients_daily
+   telemetry.clients_daily
   WHERE
     submission_date = @submission_date ),
-  temp_picked AS (
+  count_picked AS (
   SELECT
     submission_date,
     client_id,
@@ -63,7 +63,7 @@ WITH
     UNNEST(index) AS index
   GROUP BY
     submission_date,
-    client_id ),
+    client_id )
 SELECT
   submission_date,
   client_id,
@@ -73,12 +73,12 @@ SELECT
   locale,
   count_picked_total,
   count_picked_by_type,
-  count_picked_by_index
-  urlbar_picked
+  count_picked_by_index,
+  urlbar_picked,
 FROM
-  temp
+  combined_urlbar_picked
 FULL OUTER JOIN
-  temp_picked
+  count_picked
 USING
   (submission_date,
     client_id)

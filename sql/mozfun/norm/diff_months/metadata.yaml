@@ -1,0 +1,16 @@
+---
+friendly_name: Normalized Difference in Months
+description: >
+  Determine the number of whole months after grace period between start and end.
+  Month is dependent on timezone, so start and end must both be datetimes, or
+  both be dates, in the correct timezone. Grace period can be used to account
+  for billing delay, usually 1 day, and is counted after months. When inclusive
+  is FALSE, start and end are not included in whole months.
+
+  For example, diff_months(start => '2021-01-01', end => '2021-03-01',
+  grace_period => INTERVAL 0 day, inclusive => FALSE) returns 1, because start
+  plus two months plus grace period is not less than end. Changing inclusive to
+  TRUE returns 2, because start plus two months plus grace period is less than
+  or equal to end. diff_months(start => '2021-01-01', end => '2021-03-02
+  00:00:00.000001', grace_period => INTERVAL 1 DAY, inclusive => FALSE) returns
+  2, because start plus two months plus grace period is less than end.

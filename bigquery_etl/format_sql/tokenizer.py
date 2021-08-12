@@ -410,7 +410,7 @@ class StatementSeparator(Token):
 class Operator(Token):
     """Operator."""
 
-    pattern = re.compile(r"<<|>>|>=|<=|<>|!=|.")
+    pattern = re.compile(r"<<|>>|>=|<=|=>|<>|!=|.")
 
 
 class ConcatenationOperator(Token):

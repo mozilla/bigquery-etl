@@ -10,15 +10,13 @@ CREATE TABLE IF NOT EXISTS
     metrics ARRAY<
       STRUCT<
         name STRING,
-        histograms ARRAY<
-          STRUCT<
-            bucket_count INT64,
-            sum INT64,
-            histogram_type INT64,
-            `range` ARRAY<INT64>,
-            VALUES
-              ARRAY<STRUCT<key INT64, value INT64>>
-          >
+        histogram STRUCT<
+          bucket_count INT64,
+          sum INT64,
+          histogram_type INT64,
+          `range` ARRAY<INT64>,
+          VALUES
+            ARRAY<STRUCT<key STRING, value INT64>>
         >
       >
     >)
@@ -27,5 +25,5 @@ CLUSTER BY
     build_id
 OPTIONS (
     require_partition_filter = TRUE,
-    partition_expiration_days = 7
+    partition_expiration_days = 5
 )

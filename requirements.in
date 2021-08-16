@@ -1,6 +1,6 @@
 attrs==21.2.0
 authlib==0.15.4
-cattrs==1.7.1
+cattrs==1.8.0
 click==8.0.1
 gcsfs==2021.7.0
 gcloud==0.18.3

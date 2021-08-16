@@ -1,22 +1,21 @@
 """Generate and run the Operational Monitoring Queries."""
+import json
+import logging
 import os
 import re
 import time
-import json
-import click
-import logging
-
-from datetime import datetime, date
-from pathlib import Path
+from datetime import date, datetime
 from multiprocessing.pool import ThreadPool
+from pathlib import Path
 
-from google.cloud import storage, bigquery
+import click
+from google.cloud import bigquery, storage
 
 from bigquery_etl.util.common import render, write_sql
 
-
 QUERY_FILENAME = "query.sql"
 INIT_FILENAME = "init.sql"
+VIEW_FILENAME = "view.sql"
 BUCKET_NAME = "operational_monitoring"
 PROJECTS_FOLDER = "projects/"
 OUTPUT_DIR = "sql/moz-fx-data-shared-prod/"
@@ -26,7 +25,7 @@ DEFAULT_DATASET = "operational_monitoring_derived"
 
 def _download_json_file(project, bucket, filename):
     blob = bucket.get_blob(filename)
-    return json.loads(blob.download_as_string()), blob.updated
+    return json.loads(blob.download_as_bytes()), blob.updated
 
 
 def _get_name_and_sql(query, reference_content, item_type):
@@ -36,8 +35,7 @@ def _get_name_and_sql(query, reference_content, item_type):
     ]
 
 
-def _write_sql(project, dataset, slug, kwargs, init):
-    basename = INIT_FILENAME if init else QUERY_FILENAME
+def _write_sql(project, dataset, slug, kwargs, basename, init):
     write_sql(
         OUTPUT_DIR,
         f"{project}.{dataset}.{slug}",
@@ -102,8 +100,8 @@ def _generate_sql(project, dataset):
         om_project, project_last_modified = _download_json_file(
             project, bucket, blob.name
         )
-        slug = om_project["slug"]
-        render_kwargs.update({"slug": slug, "branches": om_project["branches"]})
+        slug = _bq_normalize_name(om_project["slug"])
+        render_kwargs.update({"branches": om_project["branches"]})
         if _query_up_to_date(dataset, slug, INIT_FILENAME, project_last_modified):
             logging.info(
                 f"Queries for {slug} are up to date and will not be regenerated"
@@ -117,18 +115,33 @@ def _generate_sql(project, dataset):
                     "source": query["source"],
                     "dimensions": _get_name_and_sql(query, dimensions, "dimensions"),
                     "probes": _get_name_and_sql(query, probes, "probes"),
+                    "slug": om_project["slug"],
                 }
             )
+            _write_sql(
+                project, dataset, slug, render_kwargs, QUERY_FILENAME, init=False
+            )
 
-            _write_sql(project, dataset, slug, render_kwargs, init=True)
-            _write_sql(project, dataset, slug, render_kwargs, init=False)
+            # Init and view files need the normalized slug
+            render_kwargs.update({"slug": slug})
+            _write_sql(project, dataset, slug, render_kwargs, INIT_FILENAME, init=True)
+            _write_sql(project, dataset, slug, render_kwargs, VIEW_FILENAME, init=False)
 
 
 def _run_project_sql(bq_client, project, dataset, submission_date, slug):
     normalized_slug = _bq_normalize_name(slug)
-    destination_table = f"{project}.{dataset}.{normalized_slug}"
-    init_sql_path = Path(os.path.join(OUTPUT_DIR, dataset, slug, INIT_FILENAME))
-    sql_path = Path(os.path.join(OUTPUT_DIR, dataset, slug, QUERY_FILENAME))
+    date_partition = str(submission_date).replace("-", "")
+    destination_table = f"{project}.{dataset}.{normalized_slug}${date_partition}"
+    print("destination_table", destination_table)
+    init_sql_path = Path(
+        os.path.join(OUTPUT_DIR, dataset, normalized_slug, INIT_FILENAME)
+    )
+    query_sql_path = Path(
+        os.path.join(OUTPUT_DIR, dataset, normalized_slug, QUERY_FILENAME)
+    )
+    view_sql_path = Path(
+        os.path.join(OUTPUT_DIR, dataset, normalized_slug, VIEW_FILENAME)
+    )
 
     query_config = bigquery.QueryJobConfig(
         query_parameters=[
@@ -141,13 +154,13 @@ def _run_project_sql(bq_client, project, dataset, submission_date, slug):
         destination=destination_table,
         default_dataset=f"{project}.{dataset}",
         time_partitioning=bigquery.TimePartitioning(field="submission_date"),
-        write_disposition="WRITE_APPEND",
+        write_disposition="WRITE_TRUNCATE",
         use_query_cache=True,
         allow_large_results=True,
     )
     init_query_text = init_sql_path.read_text()
-    query_text = sql_path.read_text()
-    view_text = _get_view_text(project, normalized_slug)
+    query_text = query_sql_path.read_text()
+    view_text = view_sql_path.read_text()
 
     # Wait for init to complete before running queries
     init_query_job = bq_client.query(init_query_text)

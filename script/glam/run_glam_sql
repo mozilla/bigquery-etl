@@ -167,7 +167,7 @@ function run_desktop_sql {
         run_init "clients_histogram_aggregates_v1"
         run_query "clients_histogram_aggregates_new_v1"
         run_partitioned_query "clients_histogram_aggregates_v1" \
-            true "submission_date" "sample_id,app_version,channel"
+            true 1 "submission_date" "sample_id,app_version,channel"
     fi
 
     run_partitioned_query "clients_histogram_bucket_counts_v1" 10 false
@@ -318,7 +318,7 @@ function main {
     if $reset; then
         bq rm -r -f "$DATASET"
     fi
-    if ! bq ls "${PROJECT}:${DATASET}" &> /dev/null; then
+    if ! bq ls "${DST_PROJECT}:${DATASET}" &> /dev/null; then
         bq mk "$DATASET"
     fi
 

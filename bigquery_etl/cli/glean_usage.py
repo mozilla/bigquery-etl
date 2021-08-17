@@ -9,6 +9,7 @@ from ..cli.utils import (
     table_matches_patterns,
 )
 from ..glean_usage import (
+    app_name_ping_views,
     baseline_clients_daily,
     baseline_clients_first_seen,
     baseline_clients_last_seen,
@@ -18,6 +19,7 @@ from ..glean_usage.common import list_baseline_tables, get_app_info
 
 # list of methods for generating queries
 GLEAN_TABLES = [
+    app_name_ping_views.GleanAppPingViews(),
     baseline_clients_daily.BaselineClientsDailyTable(),
     baseline_clients_first_seen.BaselineClientsFirstSeenTable(),
     baseline_clients_last_seen.BaselineClientsLastSeenTable(),

@@ -59,6 +59,9 @@ def render(sql_filename, format=True, template_folder="glean_usage", **kwargs) -
         rendered = reformat(rendered)
     return rendered
 
+def get_table_dir(output_dir, full_table_id):
+    """Returns the output directory for a given table id"""
+    return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
 
 def write_sql(output_dir, full_table_id, basename, sql):
     """Write out a query to a location based on the table ID.
@@ -68,7 +71,7 @@ def write_sql(output_dir, full_table_id, basename, sql):
     :param basename:      The name to give the written file (like query.sql)
     :param sql:           The query content to write out
     """
-    d = Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+    d = get_table_dir(output_dir, full_table_id)
     d.mkdir(parents=True, exist_ok=True)
     target = d / basename
     logging.info(f"Writing {target}")

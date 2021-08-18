@@ -1,7 +1,8 @@
 /*
-
 Return normalized engine name for recognized engines
 
+This is a stub implementation for use with tests in this repo
+Real implementation is in private-bigquery-etl
 */
 CREATE OR REPLACE FUNCTION udf.normalize_search_engine(engine STRING) AS (
   CASE
@@ -10,31 +11,17 @@ CREATE OR REPLACE FUNCTION udf.normalize_search_engine(engine STRING) AS (
   THEN
     NULL
   WHEN
-    STARTS_WITH(LOWER(engine), 'google')
+    STARTS_WITH(LOWER(engine), 'engine1')
   THEN
-    'Google'
+    'Engine1'
   WHEN
-    STARTS_WITH(LOWER(engine), 'ddg')
-    OR STARTS_WITH(LOWER(engine), 'duckduckgo')
+    STARTS_WITH(LOWER(engine), 'engine2')
   THEN
-    'DuckDuckGo'
+    'Engine2'
   WHEN
-    STARTS_WITH(LOWER(engine), 'bing')
+    STARTS_WITH(LOWER(engine), 'engine3')
   THEN
-    'Bing'
-  WHEN
-    STARTS_WITH(LOWER(engine), 'yandex')
-    OR STARTS_WITH(LOWER(engine), 'yasearch')
-  THEN
-    'Yandex'
-  WHEN
-    STARTS_WITH(LOWER(engine), 'amazon')
-  THEN
-    'Amazon'
-  WHEN
-    STARTS_WITH(LOWER(engine), 'ebay')
-  THEN
-    'Ebay'
+    'Engine3'
   ELSE
     'Other'
   END
@@ -42,9 +29,8 @@ CREATE OR REPLACE FUNCTION udf.normalize_search_engine(engine STRING) AS (
 
 -- Test
 SELECT
-  assert.equals('Google', udf.normalize_search_engine('google')),
-  assert.equals('Google', udf.normalize_search_engine('Google-abc')),
-  assert.equals('Other', udf.normalize_search_engine('not-bing')),
-  assert.equals('Other', udf.normalize_search_engine('other-Google')),
+  assert.equals('Engine1', udf.normalize_search_engine('engine1')),
+  assert.equals('Engine2', udf.normalize_search_engine('Engine2-abc')),
+  assert.equals('Other', udf.normalize_search_engine('not-Engine1')),
   assert.equals('Other', udf.normalize_search_engine('engine')),
   assert.null(udf.normalize_search_engine(NULL))

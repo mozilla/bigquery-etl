@@ -285,7 +285,6 @@ jobs:
           command: |
             mkdir -p /tmp/workspace/generated-sql
             cp -r sql/ /tmp/workspace/generated-sql/sql
-            ./bqetl bootstrap
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" ./script/generate_sql \
               --sql-dir /tmp/workspace/generated-sql/sql/ \
@@ -370,13 +369,12 @@ jobs:
             git clone --single-branch --branch main \
                           git@github.com:mozilla/private-bigquery-etl.git \
                           ~/private-bigquery-etl
-            rsync --archive --ignore-existing ~/private-bigquery-etl/sql/ sql/
+            rsync --archive ~/private-bigquery-etl/sql/ sql/
       - run:
           name: Generate SQL content
           command: |
             mkdir -p /tmp/workspace/private-generated-sql
             cp -r sql/ /tmp/workspace/private-generated-sql/sql
-            ./bqetl bootstrap
             # Don't depend on dry run for PRs
             PATH="venv/bin:$PATH" ./script/generate_sql \
               --sql-dir /tmp/workspace/private-generated-sql/sql/ \

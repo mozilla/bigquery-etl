@@ -11,12 +11,24 @@ if [ "$PWD" != "$SCRIPT_PATH" ]; then
     exit 1
 fi
 
+if ! command -v python3 &> /dev/null; then
+    echo "Please install python (version 3.8 or greater)"
+    exit 1
+fi
+
 if [ "$CMD" == "bootstrap" ]; then
     if [ -d "venv" ]; then
         echo 'venv subdirectory already exists, execute "rm -rf venv" and re-run this command if you want to recreate it'
+        exit 1
     else
-        virtualenv -p python3 venv
+        python3 -m venv venv
     fi
+
+    # set this so we don't attempt to recompile pandas and numpy on more recent versions of Mac
+    # may be unnecessary once Mac OS X 11 wheels become commonplace
+    # see e.g. https://github.com/scipy/scipy/issues/13102#issuecomment-788160041
+    export SYSTEM_VERSION_COMPAT=1
+
     venv/bin/pip install -r requirements.txt
     venv/bin/pip install -e .
     echo "bqetl configured! It should now be ready for use."

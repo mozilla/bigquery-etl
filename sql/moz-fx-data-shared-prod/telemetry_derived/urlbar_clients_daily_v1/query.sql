@@ -38,7 +38,7 @@ WITH
     STRUCT("unknown" AS type,
       scalar_parent_urlbar_picked_unknown_sum AS index),
     STRUCT("visiturl" AS type,
-      scalar_parent_urlbar_picked_visiturl_sum AS index) ] AS urlbar_picked
+      scalar_parent_urlbar_picked_visiturl_sum AS index) ] AS urlbar_picked_by_type_by_index
   FROM
    telemetry.clients_daily
   WHERE
@@ -52,11 +52,11 @@ WITH
           index.value AS value) ) ) AS count_picked_by_type,
     mozfun.map.sum( ARRAY_AGG(
         STRUCT(IF(SAFE_CAST(index.key AS INT64) < 0, SAFE_CAST(index.key AS INT64), SAFE_CAST(index.key AS INT64) + 1) AS key,
-          index.value AS value) ) ) AS count_picked_by_index
+          index.value AS value) ) ) AS count_picked_by_position
   FROM
     combined_urlbar_picked
   CROSS JOIN
-    UNNEST(urlbar_picked) AS urlbar_picked
+    UNNEST(urlbar_picked_by_type_by_index) AS urlbar_picked
   CROSS JOIN
     UNNEST(index) AS index
   GROUP BY
@@ -71,8 +71,8 @@ SELECT
   locale,
   count_picked_total,
   count_picked_by_type,
-  count_picked_by_index,
-  urlbar_picked,
+  count_picked_by_position,
+  urlbar_picked_by_type_by_index,
 FROM
   combined_urlbar_picked
 FULL OUTER JOIN

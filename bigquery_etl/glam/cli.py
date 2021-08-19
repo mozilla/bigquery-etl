@@ -190,7 +190,7 @@ def update_schemas(project, dataset, src_dataset):
     for path in sql_root.glob("*"):
         print(f"fetching schema for {path.name}")
         # we can update the schema with the development version of the schema
-        schema = get_schema(f"{src_dataset}.{path.name}", project)
+        schema = dict(fields=get_schema(f"{src_dataset}.{path.name}", project))
         with (path / "schema.yaml").open("w") as fp:
             yaml.dump(schema, fp)
 

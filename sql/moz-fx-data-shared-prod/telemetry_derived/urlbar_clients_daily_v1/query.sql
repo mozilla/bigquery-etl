@@ -51,9 +51,7 @@ WITH
     mozfun.map.sum( ARRAY_AGG( STRUCT(type AS key,
           index.value AS value) ) ) AS count_picked_by_type,
     mozfun.map.sum( ARRAY_AGG(
-        -- TODO: decide whether convert to 1-based index for consistency
-        -- STRUCT(SAFE_CAST(index.key as INT64) + 1 AS key, index.value AS value)
-        STRUCT(SAFE_CAST(index.key AS INT64) AS key,
+        STRUCT(IF(SAFE_CAST(index.key AS INT64) < 0, SAFE_CAST(index.key AS INT64), SAFE_CAST(index.key AS INT64) + 1) AS key,
           index.value AS value) ) ) AS count_picked_by_index
   FROM
     combined_urlbar_picked

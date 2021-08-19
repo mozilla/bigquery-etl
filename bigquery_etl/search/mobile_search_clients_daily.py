@@ -24,9 +24,9 @@ APP_CHANNEL_TUPLES = [
     ("org_mozilla_fennec_aurora",   "Fenix",            "nightly",   "android"),  # noqa E241 E501
     ("org_mozilla_firefox_beta",    "Fenix",            "beta",      "android"),  # noqa E241 E501
     ("org_mozilla_firefox",         "Fenix",            "release",   "android"),  # noqa E241 E501
-    ("org_mozilla_ios_firefox",     "Firefox iOS",      "release",   "ios"),  # noqa E241 E501
-    ("org_mozilla_ios_firefoxbeta", "Firefox iOS",      "beta",      "ios"),  # noqa E241 E501
-    ("org_mozilla_ios_fennec",      "Firefox iOS",      "nightly",   "ios"),  # noqa E241 E501
+    ("org_mozilla_ios_firefox",     "Fennec",           "release",   "ios"),  # noqa E241 E501
+    ("org_mozilla_ios_firefoxbeta", "Fennec",           "beta",      "ios"),  # noqa E241 E501
+    ("org_mozilla_ios_fennec",      "Fennec",           "nightly",   "ios"),  # noqa E241 E501
 ]
 # fmt: on
 

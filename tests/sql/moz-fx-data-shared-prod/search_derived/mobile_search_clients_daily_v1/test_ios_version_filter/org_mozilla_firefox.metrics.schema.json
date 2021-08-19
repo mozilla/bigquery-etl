@@ -1,0 +1,190 @@
+[
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "android_sdk_version"
+      },
+      {
+        "type": "STRING",
+        "name": "app_display_version"
+      },
+      {
+        "type": "STRING",
+        "name": "client_id"
+      },
+      {
+        "type": "STRING",
+        "name": "first_run_date"
+      }
+    ],
+    "type": "RECORD",
+    "name": "client_info"
+  },
+  {
+    "fields": [
+      {
+        "fields": [
+          {
+            "fields": [
+              {
+                "type": "STRING",
+                "name": "key"
+              },
+              {
+                "type": "INTEGER",
+                "name": "value"
+              }
+            ],
+            "type": "RECORD",
+            "name": "metrics_search_count",
+            "mode": "REPEATED"
+          },
+          {
+            "description": "Records clicks of adverts on SERP pages.\nThe key format is \u2018<provider-name>\u2019.\n",
+            "fields": [
+              {
+                "mode": "NULLABLE",
+                "name": "key",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "value",
+                "type": "INTEGER"
+              }
+            ],
+            "mode": "REPEATED",
+            "name": "browser_search_ad_clicks",
+            "type": "RECORD"
+          },
+          {
+            "description": "Records the type of interaction a user has on SERP pages.\n",
+            "fields": [
+              {
+                "mode": "NULLABLE",
+                "name": "key",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "value",
+                "type": "INTEGER"
+              }
+            ],
+            "mode": "REPEATED",
+            "name": "browser_search_in_content",
+            "type": "RECORD"
+          },
+          {
+            "description": "Records counts of SERP pages with adverts displayed.\nThe key format is \u2018<provider-name>\u2019.\n",
+            "fields": [
+              {
+                "mode": "NULLABLE",
+                "name": "key",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "value",
+                "type": "INTEGER"
+              }
+            ],
+            "mode": "REPEATED",
+            "name": "browser_search_with_ads",
+            "type": "RECORD"
+          }
+        ],
+        "type": "RECORD",
+        "name": "labeled_counter"
+      },
+      {
+        "fields": [
+          {
+            "type": "STRING",
+            "name": "search_default_engine_code"
+          },
+          {
+            "type": "STRING",
+            "name": "search_default_engine_submission_url"
+          }
+        ],
+        "type": "RECORD",
+        "name": "string"
+      },
+      {
+        "fields": [
+          {
+            "type": "INTEGER",
+            "name": "events_total_uri_count"
+          }
+        ],
+        "type": "RECORD",
+        "name": "counter"
+      }
+    ],
+    "type": "RECORD",
+    "name": "metrics"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_channel"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_country_code"
+  },
+  {
+    "type": "STRING",
+    "name": "normalized_os"
+  },
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "end_time"
+      },
+      {
+        "fields": [
+          {
+            "name": "key",
+            "type": "STRING"
+          },
+          {
+            "fields": [
+              {
+                "name": "branch",
+                "type": "STRING"
+              },
+              {
+                "fields": [
+                  {
+                    "name": "type",
+                    "type": "STRING"
+                  }
+                ],
+                "name": "extra",
+                "type": "RECORD"
+              }
+            ],
+            "name": "value",
+            "type": "RECORD"
+          }
+        ],
+        "mode": "REPEATED",
+        "name": "experiments",
+        "type": "RECORD"
+      }
+    ],
+    "type": "RECORD",
+    "name": "ping_info"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp"
+  }
+]

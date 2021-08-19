@@ -88,6 +88,12 @@ WITH core_flattened_searches AS (
       -- Add a null search to pings that have no searches
       IF(ARRAY_LENGTH(searches) = 0, null_search(), searches)
     ) AS searches
+  WHERE
+    NOT (  -- Filter out newer versions of Firefox iOS in favour of Glean pings
+      normalized_os = 'iOS'
+      AND normalized_app_name = 'Fennec'
+      AND mozfun.norm.truncate_version(metadata.uri.app_version, 'major') >= 28
+    )
 ),
 {{ baseline_and_metrics_by_namespace }}
 fenix_baseline AS (
@@ -98,6 +104,27 @@ fenix_metrics AS (
 ),
 ios_metrics AS (
   {{ ios_metrics }}
+),
+-- iOS organic counts are incorrect until version 34.0
+-- https://github.com/mozilla-mobile/firefox-ios/issues/8412
+ios_organic_filtered AS (
+  SELECT
+    * REPLACE (
+      IF(
+        mozfun.norm.truncate_version(app_version, 'major') >= 34,
+        search_in_content,
+        ARRAY(
+          SELECT AS STRUCT
+            *
+          FROM
+            UNNEST(search_in_content)
+          WHERE
+            NOT REGEXP_CONTAINS(key, '\\.organic\\.')
+        )
+      ) AS search_in_content
+    ),
+  FROM
+    ios_metrics
 ),
 --  older fenix clients don't send locale in the metrics ping
 fenix_client_locales AS (
@@ -127,6 +154,11 @@ glean_metrics AS (
     *
   FROM
     fenix_metrics_with_locale
+  UNION ALL
+  SELECT
+    *
+  FROM
+    ios_organic_filtered
 ),
 glean_combined_searches AS (
   SELECT
@@ -296,12 +328,6 @@ combined_search_clients AS (
     total_uri_count,
   FROM
     glean_flattened_searches
-  WHERE
-    -- iOS organic counts are incorrect as of 2021-05-04
-    -- https://github.com/mozilla-mobile/firefox-ios/issues/8412
-    NOT STARTS_WITH(source, 'organic.')
-    OR source IS NULL
-    OR app_name != 'Firefox iOS'
 ),
 unfiltered_search_clients AS (
   SELECT

@@ -1,0 +1,34 @@
+---
+- &base
+  submission_timestamp: 2019-12-01 09:13:09.842719 UTC
+  ping_info:
+    end_time: 2019-12-01T04:13-05:00
+  normalized_channel: release
+  normalized_os: iOS
+  sample_id: 1
+  client_info:
+    app_display_version: "30.0"
+    client_id: glean
+    os_version: "13"
+    locale: en-US
+    first_run_date: 2019-11-01-05:00
+  normalized_country_code: US
+  metrics:
+    labeled_counter:
+      search_in_content:
+        - key: engine2.organic.none
+          value: "3"
+- <<: *base  # should be ignored
+  client_info:
+    app_display_version: "27.0"
+    client_id: glean
+    os_version: "13"
+    locale: en-US
+    first_run_date: 2019-11-01-05:00
+- <<: *base  # organic counts should be ignored
+  client_info:
+    app_display_version: "35.0"
+    client_id: glean2
+    os_version: "13"
+    locale: en-US
+    first_run_date: 2019-11-01-05:00

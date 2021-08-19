@@ -500,18 +500,6 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=300),
     )
 
-    stripe_external__fxa_pay_setup_complete__v1 = bigquery_etl_query(
-        task_id="stripe_external__fxa_pay_setup_complete__v1",
-        destination_table="fxa_pay_setup_complete_v1",
-        dataset_id="stripe_external",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
-        depends_on_past=False,
-        dag=dag,
-    )
-
     stripe_external__invoices__v1 = bigquery_etl_query(
         task_id="stripe_external__invoices__v1",
         destination_table="invoices_v1",
@@ -644,10 +632,6 @@ with DAG(
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         stripe_external__charges__v1
-    )
-
-    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
-        stripe_external__fxa_pay_setup_complete__v1
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(

@@ -1,0 +1,20 @@
+[
+  {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "client_id"
+      },
+      {
+        "type": "STRING",
+        "name": "locale"
+      }
+    ],
+    "type": "RECORD",
+    "name": "client_info"
+  },
+  {
+    "type": "TIMESTAMP",
+    "name": "submission_timestamp"
+  }
+]

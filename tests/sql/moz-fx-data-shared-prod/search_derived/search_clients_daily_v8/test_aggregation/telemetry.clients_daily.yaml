@@ -39,10 +39,10 @@
   ad_clicks:
     - key: engine1
       value: 2
-    - key: 'engine1:organic'
+    - key: 'engine1:organic.none'
       value: 3
   search_with_ads:
-    - key: engine1
+    - key: 'engine1:sap.code'
       value: 3
 - <<: *base
   client_id: c

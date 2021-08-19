@@ -32,6 +32,9 @@ fields:
 - name: canceled_at
   type: TIMESTAMP
   mode: NULLABLE
+- name: canceled_for_customer_at
+  type: STRING
+  mode: NULLABLE
 - name: cancel_at
   type: TIMESTAMP
   mode: NULLABLE
@@ -107,6 +110,9 @@ fields:
 - name: pricing_plan
   type: STRING
   mode: NULLABLE
+- name: billing_grace_period
+  type: INTERVAL
+  mode: NULLABLE
 - name: normalized_acquisition_channel
   type: STRING
   mode: NULLABLE
@@ -124,4 +130,10 @@ fields:
   mode: NULLABLE
 - name: website_channel_group
   type: STRING
+  mode: NULLABLE
+- name: months_retained
+  type: INTEGER
+  mode: NULLABLE
+- name: current_months_since_subscription_start
+  type: INTEGER
   mode: NULLABLE

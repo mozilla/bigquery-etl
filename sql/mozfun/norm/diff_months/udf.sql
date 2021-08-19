@@ -1,32 +1,37 @@
-CREATE OR REPLACE FUNCTION norm.subscription_months_renewed(
+CREATE OR REPLACE FUNCTION norm.diff_months(
   start DATETIME,
   `end` DATETIME,
-  grace_days INT64
+  grace_period INTERVAL,
+  inclusive BOOLEAN
 ) AS (
   (
     SELECT
-      IFNULL(MAX(months_renewed), 0)
+      IFNULL(MAX(months), 0)
     FROM
-      UNNEST([DATETIME_DIFF(`end`, start, MONTH)]) AS total_months,
-      UNNEST(GENERATE_ARRAY(total_months - 2, total_months)) AS months_renewed
+      UNNEST([DATETIME_DIFF(`end`, start, MONTH)]) AS diff,
+      UNNEST(GENERATE_ARRAY(diff - 2, diff)) AS months
     WHERE
-      -- only return 0 via fallback
-      months_renewed > 0
-      -- don't count renewals that end within the grace period for payment
-      AND DATETIME_ADD(
-        DATETIME_ADD(start, INTERVAL months_renewed MONTH),
-        INTERVAL grace_days DAY
-      ) < `end`
-      AND start < DATETIME_SUB(
-        DATETIME_SUB(`end`, INTERVAL months_renewed MONTH),
-        INTERVAL grace_days DAY
+      -- return 0 via IFNULL
+      months > 0
+      -- don't count partial months
+      AND IF(
+        inclusive,
+        -- compare in both directions to handle end of month correctly
+        start + INTERVAL months MONTH + grace_period <= `end`
+        AND start <= `end` - INTERVAL months MONTH - grace_period,
+        -- exclusive
+        start + INTERVAL months MONTH + grace_period < `end`
+        AND start < `end` - INTERVAL months MONTH - grace_period
       )
   )
 );
 
 -- Tests
 SELECT
-  assert.equals(expected, norm.subscription_months_renewed(start, `end`, 2))
+  assert.equals(
+    expected,
+    norm.diff_months(start, `end`, grace_period => INTERVAL 2 DAY, inclusive => FALSE)
+  )
 FROM
   UNNEST(
     ARRAY<STRUCT<start DATETIME, `end` DATETIME, expected INT64>>[

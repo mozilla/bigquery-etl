@@ -4,4 +4,4 @@
 
 cd "$(dirname "$0")/.."
 
-exec python3 -m bigquery_etl.view.publish_views "$@"
+./script/bqetl view publish "$@"

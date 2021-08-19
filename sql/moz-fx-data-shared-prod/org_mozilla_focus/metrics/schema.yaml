@@ -295,6 +295,14 @@ fields:
       mode: NULLABLE
       name: glean_validation_foreground_count
       type: INTEGER
+    - description: 'A counter that indicates how many times a user has clicked
+
+        the whats new button from settings screen.
+
+        '
+      mode: NULLABLE
+      name: settings_screen_whats_new_tapped
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

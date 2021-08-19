@@ -15,7 +15,7 @@ CREATE OR REPLACE VIEW
   `{full_view_id}`
 AS
 SELECT
-  * 
+  *
 FROM
   `{target}`
 """
@@ -28,7 +28,7 @@ description: |-
   This is a pointer to the main view to the stable ping table
   for the release channel of the Glean application "{app_name}"
   ({underlying_view_id}).
-  
+
   It is used by Looker.
 """
 
@@ -74,7 +74,6 @@ class GleanAppPingViews(GleanTable):
                     full_view_id,
                     "view.sql",
                     VIEW_QUERY_TEMPLATE.format(
-                        ping_name=ping_name,
                         full_view_id=full_view_id,
                         target=underlying_view_id,
                     ),
@@ -84,13 +83,16 @@ class GleanAppPingViews(GleanTable):
                     full_view_id,
                     "metadata.yaml",
                     VIEW_METADATA_TEMPLATE.format(
+                        ping_name=ping_name,
                         app_name=release_app["canonical_app_name"],
                         underlying_view_id=underlying_view_id,
                     ),
                 )
 
-                # we create a schema to the original view created for the stable tables here
-                # (this assumes that command was called)
+                # we create a schema to the original view created for the
+                # stable tables here (this assumes that they have been or
+                # will be generated, which should be the case for a full
+                # run of the sql generation logic)
                 original_schema_file = (
                     get_table_dir(output_dir, underlying_view_id) / "schema.yaml"
                 )

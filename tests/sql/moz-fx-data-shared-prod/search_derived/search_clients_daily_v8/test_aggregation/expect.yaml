@@ -55,12 +55,12 @@
 - <<: *base
   client_id: b
   engine: engine1
-  source: 'ad-click:organic'
+  source: 'ad-click:organic.none'
   ad_click_organic: 3
 - <<: *base
   client_id: b
   engine: engine1
-  source: 'search-with-ads:'
+  source: 'search-with-ads:sap.code'
   search_with_ads: 3
 - <<: *base
   client_id: c

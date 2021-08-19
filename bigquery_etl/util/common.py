@@ -59,9 +59,11 @@ def render(sql_filename, format=True, template_folder="glean_usage", **kwargs) -
         rendered = reformat(rendered)
     return rendered
 
+
 def get_table_dir(output_dir, full_table_id):
-    """Returns the output directory for a given table id"""
+    """Return the output directory for a given table id."""
     return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-2:])))
+
 
 def write_sql(output_dir, full_table_id, basename, sql):
     """Write out a query to a location based on the table ID.

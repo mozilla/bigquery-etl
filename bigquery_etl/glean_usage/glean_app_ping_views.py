@@ -93,7 +93,7 @@ class GleanAppPingViews(GleanTable):
                 # stable tables here (this assumes that they have been or
                 # will be generated, which should be the case for a full
                 # run of the sql generation logic)
-                original_schema_file = (
+                original_schema_file = os.path.abspath(
                     get_table_dir(output_dir, underlying_view_id) / "schema.yaml"
                 )
                 schema_link = get_table_dir(output_dir, full_view_id) / "schema.yaml"

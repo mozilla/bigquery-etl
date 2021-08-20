@@ -4,11 +4,15 @@ This document records interesting code that we've deleted for the sake of discov
 
 ## 2021-08 Remove amplitude views
 
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2279)
+- [DAG removal PR](https://github.com/mozilla/telemetry-airflow/pull/1328)
 
+We no longer send data to Amplitude, so these views and scripts were
+no longer being used.
 
 ## 2021-05 attitudes_daily
 
-- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2003);
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2003)
 - [DAG removal PR](https://github.com/mozilla/telemetry-airflow/pull/1299)
 - [Bug 1707965](https://bugzilla.mozilla.org/show_bug.cgi?id=)
 

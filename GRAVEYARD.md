@@ -2,6 +2,10 @@
 
 This document records interesting code that we've deleted for the sake of discoverability for the future.
 
+## 2021-08 Remove amplitude views
+
+
+
 ## 2021-05 attitudes_daily
 
 - [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2003);

@@ -72,7 +72,7 @@ SELECT
   count_picked_total,
   count_picked_by_type,
   count_picked_by_position,
-  urlbar_picked_by_type_by_index,
+  urlbar_picked_by_type_by_position,
 FROM
   combined_urlbar_picked
 FULL OUTER JOIN

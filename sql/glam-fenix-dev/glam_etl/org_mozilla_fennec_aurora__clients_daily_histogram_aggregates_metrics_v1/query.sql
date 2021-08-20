@@ -435,6 +435,21 @@ histograms AS (
         metrics.timing_distribution.perf_startup_home_fragment_on_view_created.values
       ),
       (
+        "performance_clone_deserialize_items",
+        "custom_distribution",
+        metrics.custom_distribution.performance_clone_deserialize_items.values
+      ),
+      (
+        "performance_clone_deserialize_size",
+        "memory_distribution",
+        metrics.memory_distribution.performance_clone_deserialize_size.values
+      ),
+      (
+        "performance_clone_deserialize_time",
+        "timing_distribution",
+        metrics.timing_distribution.performance_clone_deserialize_time.values
+      ),
+      (
         "performance_interaction_keypress_present_latency",
         "timing_distribution",
         metrics.timing_distribution.performance_interaction_keypress_present_latency.values

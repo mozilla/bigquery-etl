@@ -1,3 +1,14 @@
+CREATE TEMP FUNCTION oneIndex(x ANY TYPE) AS (
+  CAST(IF(SAFE_CAST(x AS INT64) < 0, SAFE_CAST(x AS INT64), SAFE_CAST(x AS INT64) + 1) AS STRING)
+);
+CREATE TEMP FUNCTION oneIndexStruct(x STRUCT<k STRING, v INT64>) AS (
+  STRUCT(oneIndex(x.k) AS key, x.v as value)
+);
+CREATE TEMP FUNCTION oneIndexArray(x ARRAY<STRUCT<k STRING, v INT64>>) AS (
+  ARRAY(SELECT oneIndexStruct(e) FROM UNNEST(x) as e)
+);
+
+
 WITH
   combined_urlbar_picked AS (
   SELECT
@@ -7,38 +18,38 @@ WITH
     app_version,
     normalized_channel,
     locale,
-    [ STRUCT("autofill" AS type,
-      scalar_parent_urlbar_picked_autofill_sum AS index),
+[ STRUCT("autofill" AS type,
+      oneIndexArray(scalar_parent_urlbar_picked_autofill_sum) AS position),
     STRUCT("bookmark" AS type,
-      scalar_parent_urlbar_picked_bookmark_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_bookmark_sum) AS position),
     STRUCT("dynamic" AS type,
-      scalar_parent_urlbar_picked_dynamic_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_dynamic_sum) AS position),
     STRUCT("extension" AS type,
-      scalar_parent_urlbar_picked_extension_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_extension_sum) AS position),
     STRUCT("formhistory" AS type,
-      scalar_parent_urlbar_picked_formhistory_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_formhistory_sum) AS position),
     STRUCT("history" AS type,
-      scalar_parent_urlbar_picked_history_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_history_sum) AS position),
     STRUCT("keyword" AS type,
-      scalar_parent_urlbar_picked_keyword_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_keyword_sum) AS position),
     STRUCT("remotetab" AS type,
-      scalar_parent_urlbar_picked_remotetab_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_remotetab_sum) AS position),
     STRUCT("searchengine" AS type,
-      scalar_parent_urlbar_picked_searchengine_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_searchengine_sum) AS position),
     STRUCT("searchsuggestion" AS type,
-      scalar_parent_urlbar_picked_searchsuggestion_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_searchsuggestion_sum) AS position),
     STRUCT("switchtab" AS type,
-      scalar_parent_urlbar_picked_switchtab_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_switchtab_sum) AS position),
     STRUCT("tabtosearch" AS type,
-      scalar_parent_urlbar_picked_tabtosearch_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_tabtosearch_sum) AS position),
     STRUCT("tip" AS type,
-      scalar_parent_urlbar_picked_tip_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_tip_sum) AS position),
     STRUCT("topsite" AS type,
-      scalar_parent_urlbar_picked_topsite_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_topsite_sum) AS position),
     STRUCT("unknown" AS type,
-      scalar_parent_urlbar_picked_unknown_sum AS index),
+      oneIndexArray(scalar_parent_urlbar_picked_unknown_sum) AS position),
     STRUCT("visiturl" AS type,
-      scalar_parent_urlbar_picked_visiturl_sum AS index) ] AS urlbar_picked_by_type_by_index
+      oneIndexArray(scalar_parent_urlbar_picked_visiturl_sum) AS position) ] AS urlbar_picked_by_type_by_position
   FROM
    telemetry.clients_daily
   WHERE
@@ -47,18 +58,18 @@ WITH
   SELECT
     submission_date,
     client_id,
-    COALESCE(SUM(index.value), 0) as count_picked_total,
+     COALESCE(SUM(position.value), 0) as count_picked_total,
     mozfun.map.sum( ARRAY_AGG( STRUCT(type AS key,
-          index.value AS value) ) ) AS count_picked_by_type,
+          position.value AS value) ) ) AS count_picked_by_type,
     mozfun.map.sum( ARRAY_AGG(
-        STRUCT(IF(SAFE_CAST(index.key AS INT64) < 0, SAFE_CAST(index.key AS INT64), SAFE_CAST(index.key AS INT64) + 1) AS key,
-          index.value AS value) ) ) AS count_picked_by_position
+        STRUCT( oneIndex(position.key) AS key,
+          position.value AS value) ) ) AS count_picked_by_position
   FROM
     combined_urlbar_picked
   CROSS JOIN
-    UNNEST(urlbar_picked_by_type_by_index) AS urlbar_picked
+    UNNEST(urlbar_picked_by_type_by_position) AS urlbar_picked
   CROSS JOIN
-    UNNEST(index) AS index
+    UNNEST(position) AS position
   GROUP BY
     submission_date,
     client_id )

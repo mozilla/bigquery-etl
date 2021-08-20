@@ -823,7 +823,9 @@ def update(
                 dependencies = [
                     p
                     for k, refs in dependency_graph.items()
-                    for p in paths_matching_name_pattern(k, sql_dir, project_id)
+                    for p in paths_matching_name_pattern(
+                        k, sql_dir, project_id, files=("query.sql",)
+                    )
                     if identifier in refs
                 ]
 

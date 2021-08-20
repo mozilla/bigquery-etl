@@ -1,0 +1,11 @@
+---
+friendly_name: Urlbar Clients Daily
+description: Daily per-client metrics related to urlbar usage
+owners:
+  - tbrooks@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_urlbar

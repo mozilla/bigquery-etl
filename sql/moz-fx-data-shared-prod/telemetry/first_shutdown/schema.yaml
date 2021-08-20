@@ -48994,6 +48994,34 @@ fields:
           mode: NULLABLE
           name: startup_first_run_is_from_dmg
           type: BOOLEAN
+        - description: 'The count of new screenshots created using the drag handles
+            to draw the box size and position.
+
+            '
+          mode: NULLABLE
+          name: screenshots_custom
+          type: INTEGER
+        - description: 'The count of new screenshots created using the highlighter
+            to select element bounds.
+
+            '
+          mode: NULLABLE
+          name: screenshots_element
+          type: INTEGER
+        - description: 'The count of new screenshots created by capturing the full,
+            scrolled page.
+
+            '
+          mode: NULLABLE
+          name: screenshots_full_page
+          type: INTEGER
+        - description: 'The count of new screenshots created using just the viewport,
+            no scrolling.
+
+            '
+          mode: NULLABLE
+          name: screenshots_visible
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

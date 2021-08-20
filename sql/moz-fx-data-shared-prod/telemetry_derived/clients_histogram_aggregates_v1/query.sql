@@ -3,7 +3,6 @@ CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
     first_bucket INT64,
     last_bucket INT64,
     num_buckets INT64,
-    latest_version INT64,
     metric STRING,
     metric_type STRING,
     key STRING,
@@ -25,7 +24,6 @@ CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
         first_bucket,
         last_bucket,
         num_buckets,
-        latest_version,
         metric,
         metric_type,
         key,
@@ -37,7 +35,6 @@ CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
         first_bucket,
         last_bucket,
         num_buckets,
-        latest_version,
         metric,
         metric_type,
         key,
@@ -48,7 +45,6 @@ CREATE TEMP FUNCTION udf_merged_user_data(old_aggs ANY TYPE, new_aggs ANY TYPE)
         first_bucket,
         last_bucket,
         num_buckets,
-        latest_version,
         metric,
         metric_type,
         key,
@@ -96,10 +92,22 @@ merged AS
     COALESCE(old_data.app_build_id, new_data.app_build_id) AS app_build_id,
     COALESCE(old_data.channel, new_data.channel) AS channel,
     old_data.histogram_aggregates AS old_aggs,
-    new_data.histogram_aggregates AS new_aggs
+    ARRAY(
+    SELECT AS STRUCT
+      first_bucket,
+      last_bucket,
+      num_buckets,
+      metric,
+      metric_type,
+      key,
+      process,
+      agg_type,
+      aggregates
+    FROM UNNEST(new_data.histogram_aggregates)
+    ) AS new_aggs
   FROM clients_histogram_aggregates_old AS old_data
-    FULL OUTER JOIN clients_histogram_aggregates_new AS new_data
-    ON new_data.join_key = old_data.join_key)
+  FULL OUTER JOIN clients_histogram_aggregates_new AS new_data
+  ON new_data.join_key = old_data.join_key)
 
 SELECT
   @submission_date AS submission_date,

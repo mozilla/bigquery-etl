@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS
       first_bucket INT64,
       last_bucket INT64,
       num_buckets INT64,
-      latest_version INT64,
       metric STRING,
       metric_type STRING,
       key STRING,

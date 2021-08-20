@@ -224,9 +224,9 @@ google-auth-oauthlib==0.4.4 \
     --hash=sha256:09832c6e75032f93818edf1affe4746121d640c625a5bef9b5c96af676e98eee \
     --hash=sha256:0e92aacacfb94978de3b7972cf4b0f204c3cd206f74ddd0dc0b31e91164e6317
     # via gcsfs
-google-cloud-bigquery==2.24.0 \
-    --hash=sha256:1d5a48933556b511d13793d626d955812c38184f56342e7e910845bccc4899a9 \
-    --hash=sha256:44a3ae2732d820ea4295e8b1c1bde50206ca078de2016cec2059f00362b6826b
+google-cloud-bigquery==2.24.1 \
+    --hash=sha256:8111d23e2af87a96c0646a82a83f62d694b6c8829e7881eb4e437b754471649f \
+    --hash=sha256:f9d118a0e408d213f00eb3b5bfb07027a79a6604b078dae86276f6c4938a9c9a
     # via -r requirements.in
 google-cloud-core==1.6.0 \
     --hash=sha256:40d9c2da2d03549b5ac3dcccf289d4f15e6d1210044c6381ce45c92913e62904 \
@@ -849,9 +849,9 @@ six==1.15.0 \
     #   protobuf
     #   python-dateutil
     #   virtualenv
-smart_open==5.1.0 \
-    --hash=sha256:2059b07f530c8c9e2158e4e1575309aacb74bd813da2325c1f348015d04f3bd6 \
-    --hash=sha256:e4dc1350b240ef0759e343e4e2f361bfd4e5477bb2619866e97f80240652e92e
+smart_open==5.2.0 \
+    --hash=sha256:308f439ed01a8c7a97727c354e80d1786acadd2ae1cdd190fc787bb1f48c1245 \
+    --hash=sha256:c670c977cd4c66e91097fc3cda57ceec09f1d660019225b6bd870523c02ef516
     # via -r requirements.in
 smmap==4.0.0 \
     --hash=sha256:7e65386bd122d45405ddf795637b7f7d2b532e7e401d46bbe3fb49b9986d5182 \

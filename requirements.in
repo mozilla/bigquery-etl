@@ -24,7 +24,7 @@ pytest-pydocstyle==2.2.0
 pytest-xdist==2.3.0
 pytest==6.2.4
 PyYAML==5.4.1
-smart_open==5.1.0
+smart_open==5.2.0
 sqlparse==0.4.1
 stripe==2.60.0
 typing==3.7.4.3

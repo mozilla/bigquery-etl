@@ -259,6 +259,12 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 schema = json.load(tar.extractfile(tarinfo.name))  # type: ignore
                 bq_schema = {}
 
+                # Schemas without pipeline metadata (like glean/glean)
+                # do not have corresponding BQ tables, so we skip them here.
+                pipeline_meta = schema.get("mozPipelineMetadata", None)
+                if pipeline_meta is None:
+                    continue
+
                 try:
                     bq_schema_file = tar.extractfile(
                         tarinfo.name.replace(".schema.json", ".bq")
@@ -267,9 +273,6 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 except KeyError as e:
                     print(f"Cannot get Bigquery schema for {tarinfo.name}: {e}")
 
-                pipeline_meta = schema.get("mozPipelineMetadata", None)
-                if pipeline_meta is None:
-                    continue
                 schemas.append(
                     SchemaFile(
                         schema=bq_schema,

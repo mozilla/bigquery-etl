@@ -57,6 +57,34 @@ unlabeled_metrics AS (
         SUM(CAST(metrics.boolean.addons_has_installed_addons AS INT64))
       ),
       (
+        'android_autofill_enabled',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.android_autofill_enabled AS INT64))
+      ),
+      (
+        'android_autofill_enabled',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.android_autofill_enabled AS INT64))
+      ),
+      (
+        'android_autofill_supported',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.android_autofill_supported AS INT64))
+      ),
+      (
+        'android_autofill_supported',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.android_autofill_supported AS INT64))
+      ),
+      (
         'avif_aom_decode_error',
         'quantity',
         '',

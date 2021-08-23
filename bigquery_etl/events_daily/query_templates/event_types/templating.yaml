@@ -1,8 +1,18 @@
+# fenix release channel
 org_mozilla_firefox:
-  app_id: org_mozilla_firefox
+  base_dataset: org_mozilla_firefox_derived
+  view_dataset: org_mozilla_firefox
+# fenix-wide dataset (currently only covers release channel)
+fenix:
+  base_dataset: org_mozilla_firefox_derived
+  view_dataset: fenix
+# Firefox telemetry (non-Glean)
 telemetry:
-  app_id: telemetry # For legacy telemetry, treat the namespace as app_id
+  base_dataset: telemetry_derived
+  view_dataset: telemetry
 messaging_system:
-  app_id: messaging_system
+  base_dataset: messaging_system_derived
+  view_dataset: messaging_system
 firefox_accounts:
-  app_id: firefox_accounts
+  base_dataset: firefox_accounts_derived
+  view_dataset: firefox_accounts

@@ -180,6 +180,7 @@ clients_summary AS (
     environment.settings.update.channel AS update_channel,
     environment.settings.update.enabled AS update_enabled,
     environment.settings.update.auto_download AS update_auto_download,
+    environment.settings.update.background AS update_background,
     IF(
       environment.settings.attribution IS NOT NULL,
       STRUCT(
@@ -931,6 +932,9 @@ aggregates AS (
     mozfun.stats.mode_last(
       ARRAY_AGG(update_enabled ORDER BY submission_timestamp)
     ) AS update_enabled,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(update_enabled ORDER BY submission_timestamp)
+    ) AS update_background,
     mozfun.stats.mode_last(ARRAY_AGG(vendor ORDER BY submission_timestamp)) AS vendor,
     SUM(web_notification_shown) AS web_notification_shown_sum,
     mozfun.stats.mode_last(

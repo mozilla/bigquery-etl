@@ -1630,3 +1630,6 @@ fields:
   mode: REPEATED
   name: search_adclicks_unknown_sum
   type: RECORD
+- mode: NULLABLE
+  name: update_background
+  type: BOOLEAN

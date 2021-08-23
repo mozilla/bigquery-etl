@@ -19446,6 +19446,10 @@ fields:
       mode: NULLABLE
       name: use_counter2_css_property_content_visibility_page
       type: STRING
+    - description: Time (ms) for spawning a service worker in the remote content process.
+      mode: NULLABLE
+      name: service_worker_launch_time_2
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -22398,6 +22402,54 @@ fields:
         type: STRING
       mode: REPEATED
       name: video_visible_play_time_ms
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Time (in ms) measured between when the fetch handler finished
+          executing and when we reset the network channel.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: service_worker_fetch_event_channel_reset_ms_2
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Time (in ms) measured between when the fetch event is dispatched
+          by the Service Worker and before we execute the event listeners.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: service_worker_fetch_event_dispatch_ms_2
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Time (in ms) measured between when the respondWith promise resolves
+          and when we provide the response through the intercepted channel.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: service_worker_fetch_event_finish_synthesized_response_ms_2
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Time delta (ms) between when a network request is intercepted
+          in the parent process and the service worker provides a response.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: service_worker_fetch_interception_duration_ms_2
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms
@@ -40041,6 +40093,11 @@ fields:
           mode: NULLABLE
           name: use_counter2_css_property_content_visibility_page
           type: STRING
+        - description: Time (ms) for spawning a service worker in the remote content
+            process.
+          mode: NULLABLE
+          name: service_worker_launch_time_2
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -42180,6 +42237,54 @@ fields:
             type: STRING
           mode: REPEATED
           name: video_visible_play_time_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Time (in ms) measured between when the fetch handler finished
+              executing and when we reset the network channel.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: service_worker_fetch_event_channel_reset_ms_2
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Time (in ms) measured between when the fetch event is dispatched
+              by the Service Worker and before we execute the event listeners.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: service_worker_fetch_event_dispatch_ms_2
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Time (in ms) measured between when the respondWith promise
+              resolves and when we provide the response through the intercepted channel.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: service_worker_fetch_event_finish_synthesized_response_ms_2
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Time delta (ms) between when a network request is intercepted
+              in the parent process and the service worker provides a response.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: service_worker_fetch_interception_duration_ms_2
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms

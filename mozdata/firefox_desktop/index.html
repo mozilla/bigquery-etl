@@ -1782,12 +1782,15 @@
                   <h1>firefox_desktop</h1>
                 
                 <h2 id="baseline"><a href="#baseline">baseline</a></h2>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application &#34;Firefox for Desktop&#34;
-(moz-fx-data-shared-prod.firefox_desktop.baseline).</p>
-<p>It is used by Looker.</p>
+<p>A historical view of pings sent for the
+<code>firefox-desktop/baseline</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <ul>
-<li>Friendly name: App-specific view for Glean ping "baseline"</li>
+<li>Friendly name: Historical Pings for <code>firefox-desktop/baseline</code></li>
 </ul>
 <table>
 <caption>Referenced Tables</caption>
@@ -1798,8 +1801,8 @@ for the release channel of the Glean application &#34;Firefox for Desktop&#34;
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop>firefox_desktop</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/baseline>baseline</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable>firefox_desktop_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable/baseline_v1>baseline_v1</a></td>
         </tr>   
 </table>
 
@@ -1898,12 +1901,15 @@ windows for each submission date based on baseline pings.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/baseline_clients_last_seen">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/baseline_clients_last_seen/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/baseline_clients_last_seen/view.sql">View Definition</a> </p>
 <hr />
 <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application &#34;Firefox for Desktop&#34;
-(moz-fx-data-shared-prod.firefox_desktop.deletion_request).</p>
-<p>It is used by Looker.</p>
+<p>A historical view of pings sent for the
+<code>firefox-desktop/deletion-request</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <ul>
-<li>Friendly name: App-specific view for Glean ping "deletion-request"</li>
+<li>Friendly name: Historical Pings for <code>firefox-desktop/deletion-request</code></li>
 </ul>
 <table>
 <caption>Referenced Tables</caption>
@@ -1914,20 +1920,23 @@ for the release channel of the Glean application &#34;Firefox for Desktop&#34;
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop>firefox_desktop</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/deletion_request>deletion_request</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable>firefox_desktop_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable/deletion_request_v1>deletion_request_v1</a></td>
         </tr>   
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/deletion_request">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/deletion_request/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/deletion_request/view.sql">View Definition</a> </p>
 <hr />
 <h2 id="events"><a href="#events">events</a></h2>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application &#34;Firefox for Desktop&#34;
-(moz-fx-data-shared-prod.firefox_desktop.events).</p>
-<p>It is used by Looker.</p>
+<p>A historical view of pings sent for the
+<code>firefox-desktop/events</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <ul>
-<li>Friendly name: App-specific view for Glean ping "events"</li>
+<li>Friendly name: Historical Pings for <code>firefox-desktop/events</code></li>
 </ul>
 <table>
 <caption>Referenced Tables</caption>
@@ -1938,8 +1947,8 @@ for the release channel of the Glean application &#34;Firefox for Desktop&#34;
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop>firefox_desktop</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/events>events</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable>firefox_desktop_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable/events_v1>events_v1</a></td>
         </tr>   
 </table>
 
@@ -1963,12 +1972,15 @@ for the release channel of the Glean application &#34;Firefox for Desktop&#34;
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/events_unnested">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/events_unnested/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/events_unnested/view.sql">View Definition</a> </p>
 <hr />
 <h2 id="fog_validation"><a href="#fog_validation">fog_validation</a></h2>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application &#34;Firefox for Desktop&#34;
-(moz-fx-data-shared-prod.firefox_desktop.fog_validation).</p>
-<p>It is used by Looker.</p>
+<p>A historical view of pings sent for the
+<code>firefox-desktop/fog-validation</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <ul>
-<li>Friendly name: App-specific view for Glean ping "fog-validation"</li>
+<li>Friendly name: Historical Pings for <code>firefox-desktop/fog-validation</code></li>
 </ul>
 <table>
 <caption>Referenced Tables</caption>
@@ -1979,20 +1991,23 @@ for the release channel of the Glean application &#34;Firefox for Desktop&#34;
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop>firefox_desktop</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/fog_validation>fog_validation</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable>firefox_desktop_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable/fog_validation_v1>fog_validation_v1</a></td>
         </tr>   
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/fog_validation">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/fog_validation/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/fog_validation/view.sql">View Definition</a> </p>
 <hr />
 <h2 id="metrics"><a href="#metrics">metrics</a></h2>
-<p>This is a pointer to the main view to the stable ping table
-for the release channel of the Glean application &#34;Firefox for Desktop&#34;
-(moz-fx-data-shared-prod.firefox_desktop.metrics).</p>
-<p>It is used by Looker.</p>
+<p>A historical view of pings sent for the
+<code>firefox-desktop/metrics</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <ul>
-<li>Friendly name: App-specific view for Glean ping "metrics"</li>
+<li>Friendly name: Historical Pings for <code>firefox-desktop/metrics</code></li>
 </ul>
 <table>
 <caption>Referenced Tables</caption>
@@ -2003,8 +2018,8 @@ for the release channel of the Glean application &#34;Firefox for Desktop&#34;
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop>firefox_desktop</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop/metrics>metrics</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable>firefox_desktop_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/firefox_desktop_stable/metrics_v1>metrics_v1</a></td>
         </tr>   
 </table>
 

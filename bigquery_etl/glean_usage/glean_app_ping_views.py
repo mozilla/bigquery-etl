@@ -57,8 +57,11 @@ class GleanAppPingViews(GleanTable):
             (r for r in GleanPing.get_repos() if r["name"] == release_app["v1_name"])
         )
 
-        # app name is the same as the app id for the release channel: do nothing
-        if repo["app_id"] == release_app["app_name"]:
+        # app name is the same as the bq_dataset_family for the release channel: do nothing
+        if (
+            repo["app_id"] == release_app["app_name"]
+            or release_app["bq_dataset_family"] == release_app["app_name"]
+        ):
             return
 
         p = GleanPing(repo)

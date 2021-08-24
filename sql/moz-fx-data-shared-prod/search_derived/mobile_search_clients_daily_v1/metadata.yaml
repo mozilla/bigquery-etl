@@ -7,7 +7,7 @@ description: |
 
   Exposed to users as `search.mobile_search_clients_engines_sources_daily`.
 owners:
-  - bewu@mozilla.com
+  - akomar@mozilla.com
 labels:
   schedule: daily
 scheduling:

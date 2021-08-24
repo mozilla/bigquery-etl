@@ -5,4 +5,4 @@ description: |
   searches from each (client_id, engine, source) combination,
   partitioned by day.
 owners:
-  - bewu@mozilla.com
+  - akomar@mozilla.com

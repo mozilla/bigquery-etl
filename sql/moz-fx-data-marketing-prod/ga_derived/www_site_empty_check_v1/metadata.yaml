@@ -4,7 +4,7 @@ labels:
   incremental: true
   schedule: daily
 owners:
-  - bewu@mozilla.com
+  - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_google_analytics_derived
   destination_table: null

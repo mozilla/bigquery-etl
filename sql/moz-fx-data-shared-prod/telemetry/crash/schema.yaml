@@ -1388,6 +1388,11 @@ fields:
       mode: NULLABLE
       name: profiler_child_shutdown_phase
       type: STRING
+    - description: <boolean>, Set to 1 if this crash was intercepted via the Windows
+        Error Reporting runtime exception module.
+      mode: NULLABLE
+      name: windows_error_reporting
+      type: STRING
     mode: NULLABLE
     name: metadata
     type: RECORD

@@ -10,7 +10,6 @@ description: |-
     - normalized_channel
 owners:
   - akomar@mozilla.com
-  - rharter@mozilla.com
   - tbrooks@mozilla.com
 labels:
   schedule: daily

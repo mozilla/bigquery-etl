@@ -7,7 +7,7 @@ description: >
   by users in the top [10, 20, 30] percent of the (ad clicks, search with
   ads, sap, active hours) distribution?"
 owners:
-  - bmiroglio@mozilla.com
+  - nobody@mozilla.com
 labels:
   schedule: daily
 scheduling:

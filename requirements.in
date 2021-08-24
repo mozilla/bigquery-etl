@@ -29,4 +29,4 @@ sqlparse==0.4.1
 stripe==2.60.0
 typing==3.7.4.3
 ujson==4.1.0
-yamllint==1.26.2
+yamllint==1.26.3

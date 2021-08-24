@@ -8,12 +8,10 @@ WITH website_base AS (
   SELECT
     `date`,
     mozfun.norm.vpn_attribution(
-      NULL, -- provider
-      NULL, -- referrer
-      campaign,
-      content,
-      medium,
-      source
+      utm_campaign => campaign,
+      utm_content => content,
+      utm_medium => medium,
+      utm_source => source
     ).*,
     sessions,
     subscribe_intent_goal,
@@ -85,7 +83,6 @@ subscriptions AS (
     DATE(subscription_start_date) = @date
     AND product_name = "Mozilla VPN"
     AND provider LIKE "FxA %"
-    AND normalized_acquisition_channel LIKE "Website%"
   GROUP BY
     `date`,
     normalized_medium,

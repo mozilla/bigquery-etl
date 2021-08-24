@@ -59,7 +59,16 @@ fields:
 - name: user_registration_date
   type: TIMESTAMP
   mode: NULLABLE
-- name: referrer
+- name: entrypoint_experiment
+  type: STRING
+  mode: NULLABLE
+- name: entrypoint_variation
+  type: STRING
+  mode: NULLABLE
+- name: utm_campaign
+  type: STRING
+  mode: NULLABLE
+- name: utm_content
   type: STRING
   mode: NULLABLE
 - name: utm_medium
@@ -68,16 +77,7 @@ fields:
 - name: utm_source
   type: STRING
   mode: NULLABLE
-- name: utm_content
-  type: STRING
-  mode: NULLABLE
-- name: utm_campaign
-  type: STRING
-  mode: NULLABLE
-- name: attribution_category
-  type: STRING
-  mode: NULLABLE
-- name: coarse_attribution_category
+- name: utm_term
   type: STRING
   mode: NULLABLE
 - name: provider

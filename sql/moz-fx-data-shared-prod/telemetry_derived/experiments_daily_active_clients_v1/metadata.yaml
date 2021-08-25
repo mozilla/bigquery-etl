@@ -2,7 +2,7 @@ friendly_name: Experiments Daily Active Clients
 description: |
   A daily number of active clients per experiment, partitioned by day.
 owners:
-- nobody@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: experiments
   schedule: daily

@@ -40,7 +40,7 @@ WITH base AS (
   SELECT
     *
   FROM
-    login_flows_v1
+    fxa_attribution_v1
 )
 SELECT
   flow_id,

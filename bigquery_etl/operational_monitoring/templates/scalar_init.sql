@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  `{{gcp_project}}.{{dataset}}.{{slug}}` (
+  `{{gcp_project}}.{{dataset}}.{{slug}}_scalar` (
     submission_date DATE,
     client_id STRING,
     build_id STRING,
@@ -10,14 +10,8 @@ CREATE TABLE IF NOT EXISTS
     metrics ARRAY<
       STRUCT<
         name STRING,
-        histogram STRUCT<
-          bucket_count INT64,
-          sum INT64,
-          histogram_type INT64,
-          `range` ARRAY<INT64>,
-          VALUES
-            ARRAY<STRUCT<key STRING, value INT64>>
-        >
+        agg_type STRING,
+        value INT64
       >
     >)
 PARTITION BY submission_date

@@ -3,6 +3,7 @@ version: 2.1
 
 orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
+  docker: circleci/docker@1.5
 
 jobs:
   build:
@@ -317,9 +318,7 @@ jobs:
               && git push \
               || echo "Skipping push since it looks like there were no changes"
   deploy:
-    docker:
-      # bash required for step: Determine docker image name
-      - image: relud/docker-bash
+    executor: docker/docker
     steps:
       - checkout
       - setup_remote_docker:
@@ -331,20 +330,22 @@ jobs:
           command: |
             rm -rf sql/
             cp -r /tmp/workspace/generated-sql/sql sql
-      - run:
-          name: Determine docker image name
-          command:
-            # yamllint disable-line rule:line-length
-            echo 'IMAGE="${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}:${CIRCLE_TAG:-latest}"' > $BASH_ENV
-      - run:
-          name: Build docker image
-          command: docker build . --pull --tag "$IMAGE"
-      - run:
-          name: Deploy to Dockerhub
-          command: |
-           echo "${DOCKER_PASS:?}" | \
-            docker login -u "${DOCKER_USER:?}" --password-stdin
-            docker push "$IMAGE"
+      - when:
+          condition: &deploy-condition
+            or:
+              - equal: [main, << pipeline.git.branch >>]
+              - << pipeline.git.tag >>
+          steps:
+            - docker/check:
+                docker-password: DOCKER_PASS
+                docker-username: DOCKER_USER
+      - docker/build: &public-image
+          image: ${CIRCLE_PROJECT_USERNAME+$CIRCLE_PROJECT_USERNAME/}${CIRCLE_PROJECT_REPONAME:-bigquery-etl}
+          tag: ${CIRCLE_TAG:-latest}
+      - when:
+          condition: *deploy-condition
+          steps:
+            - docker/push: *public-image
   private-generate-sql:
     docker: *docker
     steps:
@@ -419,13 +420,17 @@ jobs:
           command: |
             rm -rf sql/
             cp -r /tmp/workspace/private-generated-sql/sql sql
-      - gcp-gcr/gcr-auth
-      - gcp-gcr/build-image:
+      - when:
+          condition: *deploy-condition
+          steps:
+            - gcp-gcr/gcr-auth
+      - gcp-gcr/build-image: &private-image
           image: bigquery-etl
           tag: ${CIRCLE_TAG:-latest}
-      - gcp-gcr/push-image:
-          image: bigquery-etl
-          tag: ${CIRCLE_TAG:-latest}
+      - when:
+          condition: *deploy-condition
+          steps:
+            - gcp-gcr/push-image: *private-image
   manual-trigger-required-for-fork:
     docker: *docker
     steps:
@@ -496,11 +501,6 @@ workflows:
             # webhooks used in Ops logic. For details, see:
             # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
             - deploy-to-private-gcr
-          filters:
-            branches:
-              only: main
-            tags:
-              only: /.*/
       # The following "private" jobs are basically clones of the public jobs
       # for generate-sql, deploy, and push-generated-sql, except that they pull
       # in some additional content from an internal Mozilla repository for
@@ -523,8 +523,3 @@ workflows:
             - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
-          filters:
-            branches:
-              only: main
-            tags:
-              only: /.*/

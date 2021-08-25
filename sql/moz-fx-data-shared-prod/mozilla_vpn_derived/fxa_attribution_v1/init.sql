@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS
-  login_flows_v1(
+  fxa_attribution_v1(
     flow_id STRING,
     flow_started TIMESTAMP,
     fxa_uids ARRAY<STRING>,

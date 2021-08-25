@@ -709,6 +709,26 @@ fields:
       mode: NULLABLE
       name: metrics_credit_cards_saved_count
       type: INTEGER
+    - description: 'A counter that indicates the number of times that a user
+
+        has clicked on a recently saved bookmark from the home
+
+        screen.
+
+        '
+      mode: NULLABLE
+      name: recent_bookmarks_bookmark_clicked
+      type: INTEGER
+    - description: 'A counter that indicates the number of times that a user
+
+        has clicked the show all button for recently saved bookmarks
+
+        on the home screen.
+
+        '
+      mode: NULLABLE
+      name: recent_bookmarks_show_all_bookmarks
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

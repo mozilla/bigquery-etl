@@ -835,6 +835,70 @@ fields:
       mode: NULLABLE
       name: firefox_home_page_jump_back_in_tab_opened
       type: INTEGER
+    - description: 'The number of times a user is shown the second screen, the
+
+        Sync Screen, from the onboarding process.
+
+        '
+      mode: NULLABLE
+      name: onboarding_sync_screen
+      type: INTEGER
+    - description: 'The number of times a user taps on the start browsing button
+
+        in onboarding''s second screen, the Sync Screen.
+
+        '
+      mode: NULLABLE
+      name: onboarding_sync_screen_browse
+      type: INTEGER
+    - description: 'The number of times a user taps on the sign up button in
+
+        onboarding''s second screen, the Sync Screen.
+
+        '
+      mode: NULLABLE
+      name: onboarding_sync_screen_sign_up
+      type: INTEGER
+    - description: 'The number of times a user is shown the first screen, the
+
+        welcome screen, from the onboarding process.
+
+        '
+      mode: NULLABLE
+      name: onboarding_welcome_screen
+      type: INTEGER
+    - description: 'The number of times a user taps on the close button in
+
+        onboarding''s first screen, the welcome screen.
+
+        '
+      mode: NULLABLE
+      name: onboarding_welcome_screen_close
+      type: INTEGER
+    - description: 'The number of times a user taps on the next button in
+
+        onboarding''s first screen, the welcome screen.
+
+        '
+      mode: NULLABLE
+      name: onboarding_welcome_screen_next
+      type: INTEGER
+    - description: 'The number of times a user taps on the Sign In button in
+
+        onboarding''s first screen, the welcome screen.
+
+        '
+      mode: NULLABLE
+      name: onboarding_welcome_screen_sign_in
+      type: INTEGER
+    - description: 'The number of times a user taps the sign up button in
+
+        onboarding''s first screen, the welcome screen.
+
+        '
+      mode: NULLABLE
+      name: onboarding_welcome_screen_sign_up
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

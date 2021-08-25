@@ -339,12 +339,18 @@ jobs:
       - run:
           name: Build docker image
           command: docker build . --pull --tag "$IMAGE"
-      - run:
-          name: Deploy to Dockerhub
-          command: |
-           echo "${DOCKER_PASS:?}" | \
-            docker login -u "${DOCKER_USER:?}" --password-stdin
-            docker push "$IMAGE"
+      - when:
+          condition:
+            or:
+              - equal: [main, << pipeline.git.branch >>]
+              - << pipeline.git.tag >>
+          steps:
+            - run:
+                name: Deploy to Dockerhub
+                command: |
+                  echo "${DOCKER_PASS:?}" | \
+                  docker login -u "${DOCKER_USER:?}" --password-stdin
+                  docker push "$IMAGE"
   private-generate-sql:
     docker: *docker
     steps:
@@ -423,9 +429,15 @@ jobs:
       - gcp-gcr/build-image:
           image: bigquery-etl
           tag: ${CIRCLE_TAG:-latest}
-      - gcp-gcr/push-image:
-          image: bigquery-etl
-          tag: ${CIRCLE_TAG:-latest}
+      - when:
+          condition:
+            or:
+              - equal: [main, << pipeline.git.branch >>]
+              - << pipeline.git.tag >>
+          steps:
+            - gcp-gcr/push-image:
+                image: bigquery-etl
+                tag: ${CIRCLE_TAG:-latest}
   manual-trigger-required-for-fork:
     docker: *docker
     steps:
@@ -496,11 +508,6 @@ workflows:
             # webhooks used in Ops logic. For details, see:
             # https://bugzilla.mozilla.org/show_bug.cgi?id=1715628#c0
             - deploy-to-private-gcr
-          filters:
-            branches:
-              only: main
-            tags:
-              only: /.*/
       # The following "private" jobs are basically clones of the public jobs
       # for generate-sql, deploy, and push-generated-sql, except that they pull
       # in some additional content from an internal Mozilla repository for
@@ -523,8 +530,3 @@ workflows:
             - private-generate-sql
             # can't run in parallel because CIRCLE_BUILD_NUM is same
             - build
-          filters:
-            branches:
-              only: main
-            tags:
-              only: /.*/

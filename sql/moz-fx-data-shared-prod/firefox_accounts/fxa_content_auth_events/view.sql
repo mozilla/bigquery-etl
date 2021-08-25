@@ -56,9 +56,20 @@ SELECT
   REPLACE(JSON_EXTRACT(user_properties, '$.utm_source'), "\"", "") AS utm_source,
   REPLACE(JSON_EXTRACT(user_properties, '$.utm_medium'), "\"", "") AS utm_medium,
   REPLACE(JSON_EXTRACT(user_properties, '$.utm_campaign'), "\"", "") AS utm_campaign,
+  REPLACE(JSON_EXTRACT(user_properties, '$.utm_content'), "\"", "") AS utm_content,
   REPLACE(JSON_EXTRACT(user_properties, '$.ua_version'), "\"", "") AS ua_version,
   REPLACE(JSON_EXTRACT(user_properties, '$.ua_browser'), "\"", "") AS ua_browser,
   REPLACE(JSON_EXTRACT(user_properties, '$.entrypoint'), "\"", "") AS entrypoint,
+  REPLACE(
+    JSON_EXTRACT(user_properties, '$.entrypoint_experiment'),
+    "\"",
+    ""
+  ) AS entrypoint_experiment,
+  REPLACE(
+    JSON_EXTRACT(user_properties, '$.entrypoint_variation'),
+    "\"",
+    ""
+  ) AS entrypoint_variation,
   REPLACE(JSON_EXTRACT(user_properties, '$.flow_id'), "\"", "") AS flow_id,
   REPLACE(JSON_EXTRACT(event_properties, '$.service'), "\"", "") AS service,
   REPLACE(JSON_EXTRACT(event_properties, '$.email_type'), "\"", "") AS email_type,

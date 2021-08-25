@@ -42,18 +42,6 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
-    mozilla_vpn_derived__active_subscriptions__v1 = bigquery_etl_query(
-        task_id="mozilla_vpn_derived__active_subscriptions__v1",
-        destination_table="active_subscriptions_v1",
-        dataset_id="mozilla_vpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
     mozilla_vpn_derived__add_device_events__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__add_device_events__v1",
         destination_table="add_device_events_v1",
@@ -102,6 +90,19 @@ with DAG(
         dag=dag,
     )
 
+    mozilla_vpn_derived__fxa_attribution__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__fxa_attribution__v1",
+        destination_table="fxa_attribution_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
     mozilla_vpn_derived__login_flows__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__login_flows__v1",
         destination_table="login_flows_v1",
@@ -115,18 +116,6 @@ with DAG(
         dag=dag,
     )
 
-    mozilla_vpn_derived__new_subscriptions__v1 = bigquery_etl_query(
-        task_id="mozilla_vpn_derived__new_subscriptions__v1",
-        destination_table="new_subscriptions_v1",
-        dataset_id="mozilla_vpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        dag=dag,
-    )
-
     mozilla_vpn_derived__protected__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__protected__v1",
         destination_table="protected_v1",
@@ -137,18 +126,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{ds}}"],
-        dag=dag,
-    )
-
-    mozilla_vpn_derived__retention_by_subscription__v1 = bigquery_etl_query(
-        task_id="mozilla_vpn_derived__retention_by_subscription__v1",
-        destination_table="retention_by_subscription_v1",
-        dataset_id="mozilla_vpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
         dag=dag,
     )
 
@@ -604,10 +581,6 @@ with DAG(
         dag=dag,
     )
 
-    mozilla_vpn_derived__active_subscriptions__v1.set_upstream(
-        mozilla_vpn_derived__all_subscriptions__v1
-    )
-
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__subscriptions__v1
     )
@@ -672,7 +645,7 @@ with DAG(
         )
     )
 
-    mozilla_vpn_derived__login_flows__v1.set_upstream(
+    mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_auth_events__v1
     )
     wait_for_firefox_accounts_derived__fxa_content_events__v1 = (
@@ -687,16 +660,19 @@ with DAG(
         )
     )
 
-    mozilla_vpn_derived__login_flows__v1.set_upstream(
+    mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_content_events__v1
     )
 
-    mozilla_vpn_derived__new_subscriptions__v1.set_upstream(
-        mozilla_vpn_derived__all_subscriptions__v1
+    mozilla_vpn_derived__fxa_attribution__v1.set_upstream(
+        mozilla_vpn_derived__login_flows__v1
     )
 
-    mozilla_vpn_derived__retention_by_subscription__v1.set_upstream(
-        mozilla_vpn_derived__all_subscriptions__v1
+    mozilla_vpn_derived__login_flows__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_auth_events__v1
+    )
+    mozilla_vpn_derived__login_flows__v1.set_upstream(
+        wait_for_firefox_accounts_derived__fxa_content_events__v1
     )
 
     mozilla_vpn_derived__subscriptions__v1.set_upstream(

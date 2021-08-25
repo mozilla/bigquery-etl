@@ -1,6 +1,6 @@
-friendly_name: New Mozilla VPN Subscriptions
+friendly_name: Mozilla VPN FxA Attribution
 description: >
-  New Mozilla VPN subscriptions by date
+  Attribution for FxA flow ids for Mozilla VPN, and associated FxA user ids
 owners:
   - dthorn@mozilla.com
 labels:
@@ -11,3 +11,5 @@ scheduling:
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter: null
+  parameters:
+    - "date:DATE:{{ds}}"

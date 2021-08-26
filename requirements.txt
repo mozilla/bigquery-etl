@@ -411,9 +411,9 @@ mccabe==0.6.1 \
     --hash=sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42 \
     --hash=sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f
     # via flake8
-mozilla-schema-generator==0.4.1 \
-    --hash=sha256:8ee3664362b1398d4e0d1aa296b2ff6f09a756395c4854ad14c4fe65c245de2b \
-    --hash=sha256:fa27a8d9d51f255eb9cb658b8241f9a8e15d66a91d3e428f31162f59586ba550
+mozilla-schema-generator==0.4.2 \
+    --hash=sha256:a03d352c7192ea33c4f21e27d7a9e90a5e7a9de35c1f758d6fa3a7925eee2ee6 \
+    --hash=sha256:f203d19615d393a9dab8fa8734ce4800bd387da5f3abd67cfcc2f0aa7ae3db46
     # via -r requirements.in
 multidict==5.1.0 \
     --hash=sha256:018132dbd8688c7a69ad89c4a3f39ea2f9f33302ebe567a879da8f4ca73f0d0a \

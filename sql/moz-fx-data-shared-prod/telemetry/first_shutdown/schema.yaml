@@ -19459,6 +19459,38 @@ fields:
       mode: NULLABLE
       name: service_worker_launch_time_2
       type: STRING
+    - description: AVIF alpha plane
+      mode: NULLABLE
+      name: avif_alpha
+      type: STRING
+    - description: AVIF CICP colour primaries
+      mode: NULLABLE
+      name: avif_cicp_cp
+      type: STRING
+    - description: AVIF CICP matrix coefficients
+      mode: NULLABLE
+      name: avif_cicp_mc
+      type: STRING
+    - description: AVIF CICP transfer characteristics
+      mode: NULLABLE
+      name: avif_cicp_tc
+      type: STRING
+    - description: AVIF colour information type
+      mode: NULLABLE
+      name: avif_colr
+      type: STRING
+    - description: AVIF spatial extents (image size)
+      mode: NULLABLE
+      name: avif_ispe
+      type: STRING
+    - description: AVIF pixel information (bits per channel)
+      mode: NULLABLE
+      name: avif_pixi
+      type: STRING
+    - description: AVIF image decode speed (Kbytes/sec)
+      mode: NULLABLE
+      name: image_decode_speed_avif
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40106,6 +40138,38 @@ fields:
             process.
           mode: NULLABLE
           name: service_worker_launch_time_2
+          type: STRING
+        - description: AVIF alpha plane
+          mode: NULLABLE
+          name: avif_alpha
+          type: STRING
+        - description: AVIF CICP colour primaries
+          mode: NULLABLE
+          name: avif_cicp_cp
+          type: STRING
+        - description: AVIF CICP matrix coefficients
+          mode: NULLABLE
+          name: avif_cicp_mc
+          type: STRING
+        - description: AVIF CICP transfer characteristics
+          mode: NULLABLE
+          name: avif_cicp_tc
+          type: STRING
+        - description: AVIF colour information type
+          mode: NULLABLE
+          name: avif_colr
+          type: STRING
+        - description: AVIF spatial extents (image size)
+          mode: NULLABLE
+          name: avif_ispe
+          type: STRING
+        - description: AVIF pixel information (bits per channel)
+          mode: NULLABLE
+          name: avif_pixi
+          type: STRING
+        - description: AVIF image decode speed (Kbytes/sec)
+          mode: NULLABLE
+          name: image_decode_speed_avif
           type: STRING
         mode: NULLABLE
         name: histograms

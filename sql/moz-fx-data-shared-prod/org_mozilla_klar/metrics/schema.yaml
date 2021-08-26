@@ -303,6 +303,30 @@ fields:
       mode: NULLABLE
       name: settings_screen_whats_new_tapped
       type: INTEGER
+    - description: 'A counter that indicates how many times a user has added
+
+        a website to the autocomplete list.
+
+        '
+      mode: NULLABLE
+      name: settings_screen_autocomplete_domain_added
+      type: INTEGER
+    - description: 'A counter that indicates how many times a user has added
+
+        a website to shortcuts.
+
+        '
+      mode: NULLABLE
+      name: shortcuts_shortcut_added_counter
+      type: INTEGER
+    - description: 'A counter that indicates how many times a user has opened
+
+        a website from a shortcut in the home screen.
+
+        '
+      mode: NULLABLE
+      name: shortcuts_shortcut_opened_counter
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -481,6 +505,23 @@ fields:
       mode: REPEATED
       name: browser_search_with_ads
       type: RECORD
+    - description: 'A counter that indicates how many times a user has removed
+
+        a website from shortcuts.
+
+        It also indicates the screen it was removed from, home or browser.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: shortcuts_shortcut_removed_counter
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -623,6 +664,18 @@ fields:
       type: STRING
     mode: REPEATED
     name: text
+    type: RECORD
+  - fields:
+    - description: 'The number of shortcuts the user has on home screen,
+
+        0, 1, 2, 3 or 4 (maximum)
+
+        '
+      mode: NULLABLE
+      name: shortcuts_shortcuts_on_home_number
+      type: INTEGER
+    mode: NULLABLE
+    name: quantity
     type: RECORD
   mode: NULLABLE
   name: metrics

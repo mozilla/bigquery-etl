@@ -456,6 +456,22 @@ clients_summary AS (
       environment.settings.user_prefs,
       'browser.search.region'
     ) AS user_pref_browser_search_region,
+    mozfun.map.get_key(
+      environment.settings.user_prefs,
+      'browser.search.suggest.enabled'
+    ) AS user_pref_browser_search_suggest_enabled,
+    mozfun.map.get_key(
+      environment.settings.user_prefs,
+      'browser.search.widget.inNavBar'
+    ) AS user_pref_browser_widget_in_navbar,
+    mozfun.map.get_key(
+      environment.settings.user_prefs,
+      'browser.urlbar.suggest.searches'
+    ) AS user_pref_browser_urlbar_suggest_searches,
+    mozfun.map.get_key(
+      environment.settings.user_prefs,
+      'browser.urlbar.showSearchSuggestionsFirst'
+    ) AS user_pref_browser_urlbar_show_search_suggestions_first,
   FROM
     base
   LEFT JOIN
@@ -1068,8 +1084,24 @@ aggregates AS (
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(
-      ARRAY_AGG(user_pref_browser_search_region)
+      ARRAY_AGG(user_pref_browser_search_region ORDER BY submission_timestamp)
     ) AS user_pref_browser_search_region,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(user_pref_browser_search_suggest_enabled ORDER BY submission_timestamp)
+    ) AS user_pref_browser_search_suggest_enabled,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(user_pref_browser_widget_in_navbar ORDER BY submission_timestamp)
+    ) AS user_pref_browser_widget_in_navbar,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(user_pref_browser_urlbar_suggest_searches ORDER BY submission_timestamp)
+    ) AS user_pref_browser_urlbar_suggest_searches,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(
+        user_pref_browser_urlbar_show_search_suggestions_first
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS user_pref_browser_urlbar_show_search_suggestions_first,
   FROM
     clients_summary
   GROUP BY

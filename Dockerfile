@@ -9,7 +9,7 @@ COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
 # download java dependencies in separate stage because it requires maven
-FROM python:${PYTHON_VERSION}-slim
+FROM python@sha256:2e3ccafe2607a9bfee9f838727bc2270acb40245acdd7c57d48c49d52ccf84f4
 # man is directory removed in upstream debian:buster-slim, but needed by jdk install
 RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy maven
 WORKDIR /app

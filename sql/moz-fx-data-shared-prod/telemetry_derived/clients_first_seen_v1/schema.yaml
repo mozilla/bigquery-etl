@@ -1379,3 +1379,15 @@ fields:
 - mode: NULLABLE
   name: update_background
   type: BOOLEAN
+- mode: NULLABLE
+  name: user_pref_browser_search_suggest_enabled
+  type: STRING
+- mode: NULLABLE
+  name: user_pref_browser_widget_in_navbar
+  type: STRING
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_suggest_searches
+  type: STRING
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_show_search_suggestions_first
+  type: STRING

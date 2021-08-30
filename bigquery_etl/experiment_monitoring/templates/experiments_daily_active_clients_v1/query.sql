@@ -1,3 +1,4 @@
+-- Generated via ./bqetl experiment_monitoring generate
 WITH
 {% for app_dataset in applications %}
   {% if app_dataset == "telemetry" %}

@@ -5,6 +5,8 @@ queries:
     per_app: false
   experiment_search_aggregates_v1:
     per_app: false
+  experiment_enrollment_aggregates_v1:
+    per_app: false
   experiment_events_live_v1:
     per_app: true
     start_date: '2021-04-25'

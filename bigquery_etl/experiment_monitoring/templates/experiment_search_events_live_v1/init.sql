@@ -92,7 +92,7 @@ IF
     `moz-fx-data-shared-prod.{{ dataset }}_live.metrics_v1`
   {% endif %}
   LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment
+    UNNEST(environment.experiments) AS experiment
   CROSS JOIN
     -- Max. number of entries is around 10
     UNNEST(GENERATE_ARRAY(0, 50)) AS i

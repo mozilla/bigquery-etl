@@ -18,15 +18,15 @@ Depends on `bqetl_search`, so is scheduled after that DAG.
 
 #### Owner
 
-bmiroglio@mozilla.com
+jklukas@mozilla.com
 """
 
 
 default_args = {
-    "owner": "bmiroglio@mozilla.com",
+    "owner": "jklukas@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "bmiroglio@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -46,8 +46,8 @@ with DAG(
         destination_table="addon_aggregates_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bmiroglio@mozilla.com",
-        email=["bmiroglio@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -58,8 +58,8 @@ with DAG(
         destination_table="addon_names_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bmiroglio@mozilla.com",
-        email=["bmiroglio@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -71,8 +71,8 @@ with DAG(
         destination_table="addons_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bmiroglio@mozilla.com",
-        email=["bmiroglio@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -83,8 +83,8 @@ with DAG(
         destination_table="addons_daily_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bmiroglio@mozilla.com",
-        email=["bmiroglio@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

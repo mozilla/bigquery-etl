@@ -1,7 +1,7 @@
 friendly_name: Experiment Events Live
 description: |-
   Materialized view of experimentation related events
-  coming from legacy telemetry clients.
+  coming from telemetry.
 owners:
 - ascholtz@mozilla.com
 labels:

@@ -1,6 +1,5 @@
 """Experiment monitoring materialized view generation."""
 import os
-import shutil
 from pathlib import Path
 
 import click
@@ -31,6 +30,7 @@ def generate_queries(project, path, write_dir):
         metadata_template = env.get_template("metadata.yaml")
 
         args["destination_table"] = query
+        args["search_metrics"] = template_config["search_metrics"]
 
         if args["per_app"]:
             # generate a separate query for each application dataset

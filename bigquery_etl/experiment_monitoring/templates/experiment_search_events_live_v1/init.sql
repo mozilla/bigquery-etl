@@ -20,7 +20,7 @@ IF
     ) AS window_end,
     -- Concatenating an element with value = 0 ensures that the count values are not null even if the array is empty
     -- Materialized views don't support COALESCE or IFNULL
-    {% for metric_name, metric in metrics[dataset].items() %}
+    {% for metric_name, metric in search_metrics[dataset].items() %}
       {% if dataset == "telemetry" and metric_name == "search_count" %}
       SUM(
         IF(

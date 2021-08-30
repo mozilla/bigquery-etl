@@ -17,7 +17,7 @@ SELECT
   disqualification_count,
   exposure_count
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.experiment_events_live_v1`
+  `moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.experiment_events_live_v1`
 WHERE
   window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
 UNION ALL
@@ -77,7 +77,7 @@ SELECT
   disqualification_count,
   exposure_count
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.experiment_events_live_v1`
+  `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.experiment_events_live_v1`
 WHERE
   window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
 UNION ALL
@@ -117,7 +117,7 @@ SELECT
   disqualification_count,
   exposure_count
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.experiment_events_live_v1`
+  `moz-fx-data-shared-prod.org_mozilla_ios_fennec_derived.experiment_events_live_v1`
 WHERE
   window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
 UNION ALL
@@ -137,7 +137,7 @@ SELECT
   disqualification_count,
   exposure_count
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_ios_fennec_derived.experiment_events_live_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.experiment_events_live_v1`
 WHERE
   window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
 UNION ALL

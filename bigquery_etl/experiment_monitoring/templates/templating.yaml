@@ -1,6 +1,8 @@
 queries:
   experiments_daily_active_clients_v1:
     per_app: false
+  experiment_enrollment_aggregates_live_v1:
+    per_app: false  
   experiment_events_live_v1:
     per_app: true
     start_date: '2021-04-25'

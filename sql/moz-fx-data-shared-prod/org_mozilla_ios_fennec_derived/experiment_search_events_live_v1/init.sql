@@ -24,7 +24,7 @@ IF
     SUM(0) AS search_with_ads_count,
     SUM(
       CAST(
-        ARRAY_CONCAT(metrics.labeled_counter.metrics_search_counts, [('', 0)])[
+        ARRAY_CONCAT(metrics.labeled_counter.search_counts, [('', 0)])[
           SAFE_OFFSET(i)
         ].value AS INT64
       )

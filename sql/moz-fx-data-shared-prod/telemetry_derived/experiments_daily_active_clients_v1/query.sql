@@ -1,3 +1,4 @@
+-- Generated via ./bqetl experiment_monitoring generate
 WITH org_mozilla_firefox_beta AS (
   SELECT DISTINCT
     DATE(submission_timestamp) AS submission_date,

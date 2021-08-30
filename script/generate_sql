@@ -45,3 +45,5 @@ python -m bigquery_etl.view.generate_stable_views \
 
 # Record dependencies in yaml files
 ./script/bqetl dependency record --skip-existing "${SQL_DIR}"
+
+./script/bqetl events_daily generate --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"

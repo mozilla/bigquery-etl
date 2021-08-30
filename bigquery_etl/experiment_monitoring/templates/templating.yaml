@@ -1,4 +1,6 @@
 queries:
+  experiments_daily_active_clients_v1:
+    per_app: false
   experiment_events_live_v1:
     per_app: true
     start_date: '2021-04-25'
@@ -36,10 +38,15 @@ queries:
         ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
         search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
         search_count: metrics.labeled_counter.metrics_search_count
+      org_mozilla_ios_fennec:
+        ad_clicks_count: null
+        search_with_ads_count: null
+        search_count: metrics.labeled_counter.metrics_search_counts
 applications:
   - org_mozilla_firefox_beta
   - org_mozilla_fenix
   - org_mozilla_firefox
   - org_mozilla_ios_firefox
   - org_mozilla_ios_firefoxbeta
+  - org_mozilla_ios_fennec
   - telemetry

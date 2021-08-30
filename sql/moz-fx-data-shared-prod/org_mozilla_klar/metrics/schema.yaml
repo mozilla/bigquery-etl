@@ -221,6 +221,46 @@ fields:
       mode: NULLABLE
       name: glean_error_preinit_tasks_timeout
       type: BOOLEAN
+    - description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
+
+        '
+      mode: NULLABLE
+      name: tracking_protection_has_advertising_blocked
+      type: BOOLEAN
+    - description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
+
+        '
+      mode: NULLABLE
+      name: tracking_protection_has_analytics_blocked
+      type: BOOLEAN
+    - description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
+
+        '
+      mode: NULLABLE
+      name: tracking_protection_has_content_blocked
+      type: BOOLEAN
+    - description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
+
+        '
+      mode: NULLABLE
+      name: tracking_protection_has_ever_changed_etp
+      type: BOOLEAN
+    - description: 'The user has changed the setting for enhanced tracking protection
+
+        at least once.
+
+        '
+      mode: NULLABLE
+      name: tracking_protection_has_social_blocked
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -326,6 +366,14 @@ fields:
         '
       mode: NULLABLE
       name: shortcuts_shortcut_opened_counter
+      type: INTEGER
+    - description: 'A counter that indicates how many times a user has opened
+
+        the tracking protection settings panel from the toolbar.
+
+        '
+      mode: NULLABLE
+      name: tracking_protection_toolbar_shield_clicked
       type: INTEGER
     mode: NULLABLE
     name: counter

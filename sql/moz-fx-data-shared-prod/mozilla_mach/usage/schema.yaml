@@ -243,6 +243,10 @@ fields:
       mode: NULLABLE
       name: mach_system_vscode_terminal
       type: BOOLEAN
+    - description: True if there is an instance of vscode running.
+      mode: NULLABLE
+      name: mach_system_vscode_running
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

@@ -5,9 +5,41 @@ queries:
   experiment_search_events_live_v1:
     per_app: true
     start_date: '2021-04-25'
+    # override default Glean metrics for specific applications
+    # defaults are
+    #  ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
+    #  search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
+    #  search_count: metrics.labeled_counter.metrics_search_count
+    #    (custom SQL will be used for telemetry for search_count)
+    metrics:
+      telemetry:
+        ad_clicks_count: payload.processes.parent.keyed_scalars.browser_search_ad_clicks
+        search_with_ads_count: payload.processes.parent.keyed_scalars.browser_search_with_ads
+        search_count: payload.keyed_histograms.search_counts
+      org_mozilla_ios_firefox:
+        ad_clicks_count: null
+        search_with_ads_count: null
+        search_count: metrics.labeled_counter.search_counts
+      org_mozilla_ios_firefoxbeta:
+        ad_clicks_count: null
+        search_with_ads_count: null
+        search_count: metrics.labeled_counter.search_counts
+      org_mozilla_firefox_beta:
+        ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
+        search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
+        search_count: metrics.labeled_counter.metrics_search_count
+      org_mozilla_fenix:
+        ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
+        search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
+        search_count: metrics.labeled_counter.metrics_search_count
+      org_mozilla_firefox:
+        ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
+        search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
+        search_count: metrics.labeled_counter.metrics_search_count
 applications:
   - org_mozilla_firefox_beta
   - org_mozilla_fenix
   - org_mozilla_firefox
   - org_mozilla_ios_firefox
+  - org_mozilla_ios_firefoxbeta
   - telemetry

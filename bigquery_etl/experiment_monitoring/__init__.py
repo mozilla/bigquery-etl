@@ -20,25 +20,47 @@ def generate_queries(project, path, write_dir):
         template_config = yaml.safe_load(f) or {}
 
     for query, args in template_config["queries"].items():
+        template_query_dir = FILE_PATH / "templates" / query
         env = Environment(
-            loader=FileSystemLoader(FILE_PATH / "templates" / query),
+            loader=FileSystemLoader(template_query_dir),
             keep_trailing_newline=True,
         )
-        init_template = env.get_template("init.sql")
+        sql_templates = list(template_query_dir.glob("*.sql"))
+        sql_template_file = sql_templates[0].name
+        sql_template = env.get_template(sql_template_file)
         metadata_template = env.get_template("metadata.yaml")
 
-        for dataset in template_config["applications"]:
-            args["destination_table"] = query
-            args["dataset"] = dataset
+        args["destination_table"] = query
+
+        if args["per_app"]:
+            # generate a separate query for each application dataset
+            for dataset in template_config["applications"]:
+                args["dataset"] = dataset
+
+                write_sql(
+                    write_dir / project,
+                    f"{project}.{dataset}_derived.{query}",
+                    sql_template_file,
+                    reformat(sql_template.render(**args)),
+                )
+
+                write_path = Path(write_dir) / project / (dataset + "_derived") / query
+                (write_path / "metadata.yaml").write_text(
+                    metadata_template.render(**args)
+                )
+        else:
+            # generate a single query that UNIONs application datasets
+            # these queries are written to `telemetry`
+            args["applications"] = template_config["applications"]
 
             write_sql(
                 write_dir / project,
-                f"{project}.{dataset}_derived.{query}",
-                "init.sql",
-                reformat(init_template.render(**args)),
+                f"{project}.telemetry_derived.{query}",
+                sql_template_file,
+                reformat(sql_template.render(**args)),
             )
 
-            write_path = Path(write_dir) / project / (dataset + "_derived") / query
+            write_path = Path(write_dir) / project / "telemetry_derived" / query
             (write_path / "metadata.yaml").write_text(metadata_template.render(**args))
 
 

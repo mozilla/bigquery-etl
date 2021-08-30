@@ -1,10 +1,12 @@
+-- Generated via ./bqetl experiment_monitoring generate
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS telemetry_derived.experiment_events_live_v1
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  WITH desktop_live AS (
+  -- Non-Glean apps might use Normandy and Nimbus for experimentation
+  WITH experiment_events AS (
     SELECT
       submission_timestamp AS timestamp,
       event.f2_ AS event_method,
@@ -62,7 +64,7 @@ IF
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
     COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count
   FROM
-    desktop_live
+    experiment_events
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.

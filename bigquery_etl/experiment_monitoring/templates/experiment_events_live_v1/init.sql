@@ -1,17 +1,18 @@
 -- Generated via ./bqetl experiment_monitoring generate
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS org_mozilla_ios_firefoxbeta_derived.experiment_events_live_v1
+  NOT EXISTS {{ dataset }}_derived.{{ destination_table }}
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
+  {% if dataset != "telemetry" %}
   -- Glean apps use Nimbus for experimentation
   WITH all_events AS (
     SELECT
       submission_timestamp,
       events
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_live.events_v1`
+      `moz-fx-data-shared-prod.{{ dataset }}_live.events_v1`
   ),
   experiment_events AS (
     SELECT
@@ -33,6 +34,43 @@ IF
       AND CAST(event.extra[safe_offset(i)].key AS STRING) = 'branch'
       AND CAST(event.extra[safe_offset(j)].key AS STRING) = 'experiment'
   )
+  {% else %}
+  -- Non-Glean apps might use Normandy and Nimbus for experimentation
+  WITH experiment_events AS (
+    SELECT
+      submission_timestamp AS timestamp,
+      event.f2_ AS event_method,
+      event.f3_ AS `type`,
+      event.f4_ AS experiment,
+      IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch
+    FROM
+      `moz-fx-data-shared-prod.{{ dataset }}_live.event_v4`
+    CROSS JOIN
+      UNNEST(
+        ARRAY_CONCAT(
+          payload.events.parent,
+          payload.events.content,
+          payload.events.dynamic,
+          payload.events.extension,
+          payload.events.gpu
+        )
+      ) AS event
+    CROSS JOIN
+      UNNEST(event.f5_) AS event_map_value
+    WHERE
+      event.f1_ = 'normandy'
+      AND (
+        (event_map_value.key = 'branch' AND event.f3_ = 'preference_study')
+        OR (
+          (event.f3_ = 'addon_study' OR event.f3_ = 'preference_rollout')
+          AND event_map_value.key = 'enrollmentId'
+        )
+        OR event.f3_ = 'nimbus_experiment'
+        OR event.f2_ = 'enrollFailed'
+        OR event.f2_ = 'unenrollFailed'
+      )
+  )
+  {% endif %}
   SELECT
     date(`timestamp`) AS submission_date,
     `type`,
@@ -61,7 +99,7 @@ IF
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('2021-04-25')
+    timestamp > TIMESTAMP('{{ start_date }}')
   GROUP BY
     submission_date,
     `type`,

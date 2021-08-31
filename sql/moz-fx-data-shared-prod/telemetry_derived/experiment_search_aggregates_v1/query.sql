@@ -1,4 +1,161 @@
-WITH desktop AS (
+-- Generated via ./bqetl experiment_monitoring generate
+WITH org_mozilla_firefox_beta AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS value
+      )
+    ) AS ad_clicks_count,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_with_ads) AS value
+      )
+    ) AS search_with_ads_count,
+    SUM(
+      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.metrics_search_count) AS value)
+    ) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
+org_mozilla_fenix AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS value
+      )
+    ) AS ad_clicks_count,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_with_ads) AS value
+      )
+    ) AS search_with_ads_count,
+    SUM(
+      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.metrics_search_count) AS value)
+    ) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
+org_mozilla_firefox AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS value
+      )
+    ) AS ad_clicks_count,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_with_ads) AS value
+      )
+    ) AS search_with_ads_count,
+    SUM(
+      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.metrics_search_count) AS value)
+    ) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
+org_mozilla_ios_firefox AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(0) AS ad_clicks_count,
+    SUM(0) AS search_with_ads_count,
+    SUM(
+      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.search_counts) AS value)
+    ) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
+org_mozilla_ios_firefoxbeta AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(0) AS ad_clicks_count,
+    SUM(0) AS search_with_ads_count,
+    SUM(
+      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.search_counts) AS value)
+    ) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
+org_mozilla_ios_fennec AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(0) AS ad_clicks_count,
+    SUM(0) AS search_with_ads_count,
+    SUM(
+      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.search_counts) AS value)
+    ) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
+telemetry AS (
   SELECT
     submission_timestamp,
     unnested_experiments.key AS experiment,
@@ -38,173 +195,41 @@ WITH desktop AS (
     experiment,
     branch
 ),
-fenix AS (
-  SELECT
-    submission_timestamp,
-    experiment.key AS experiment,
-    experiment.value.branch AS branch,
-    SUM(
-      (
-        SELECT
-          SUM(value.value)
-        FROM
-          UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS value
-      )
-    ) AS ad_clicks_count,
-    SUM(
-      (
-        SELECT
-          SUM(value.value)
-        FROM
-          UNNEST(metrics.labeled_counter.browser_search_with_ads) AS value
-      )
-    ) AS search_with_ads_count,
-    SUM(
-      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.metrics_search_count) AS value)
-    ) AS search_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
-  LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment
-  GROUP BY
-    submission_timestamp,
-    experiment,
-    branch
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    experiment.key AS experiment,
-    experiment.value.branch AS branch,
-    SUM(
-      (
-        SELECT
-          SUM(value.value)
-        FROM
-          UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS value
-      )
-    ) AS ad_clicks_count,
-    SUM(
-      (
-        SELECT
-          SUM(value.value)
-        FROM
-          UNNEST(metrics.labeled_counter.browser_search_with_ads) AS value
-      )
-    ) AS search_with_ads_count,
-    SUM(
-      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.metrics_search_count) AS value)
-    ) AS search_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
-  LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment
-  GROUP BY
-    submission_timestamp,
-    experiment,
-    branch
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    experiment.key AS experiment,
-    experiment.value.branch AS branch,
-    SUM(
-      (
-        SELECT
-          SUM(value.value)
-        FROM
-          UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS value
-      )
-    ) AS ad_clicks_count,
-    SUM(
-      (
-        SELECT
-          SUM(value.value)
-        FROM
-          UNNEST(metrics.labeled_counter.browser_search_with_ads) AS value
-      )
-    ) AS search_with_ads_count,
-    SUM(
-      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.metrics_search_count) AS value)
-    ) AS search_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.metrics_v1`
-  LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment
-  GROUP BY
-    submission_timestamp,
-    experiment,
-    branch
-),
-ios AS (
-  SELECT
-    submission_timestamp,
-    experiment.key AS experiment,
-    experiment.value.branch AS branch,
-    SUM(0) AS ad_clicks_count,
-    SUM(0) AS search_with_ads_count,
-    SUM(
-      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.search_counts) AS value)
-    ) AS search_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
-  LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment
-  GROUP BY
-    submission_timestamp,
-    experiment,
-    branch
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    experiment.key AS experiment,
-    experiment.value.branch AS branch,
-    SUM(0) AS ad_clicks_count,
-    SUM(0) AS search_with_ads_count,
-    SUM(
-      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.search_counts) AS value)
-    ) AS search_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.metrics_v1`
-  LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment
-  GROUP BY
-    submission_timestamp,
-    experiment,
-    branch
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    experiment.key AS experiment,
-    experiment.value.branch AS branch,
-    SUM(0) AS ad_clicks_count,
-    SUM(0) AS search_with_ads_count,
-    SUM(
-      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.search_counts) AS value)
-    ) AS search_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.metrics_v1`
-  LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment
-  GROUP BY
-    submission_timestamp,
-    experiment,
-    branch
-),
 all_events AS (
   SELECT
     *
   FROM
-    desktop
+    org_mozilla_firefox_beta
   UNION ALL
   SELECT
     *
   FROM
-    fenix
+    org_mozilla_fenix
   UNION ALL
   SELECT
     *
   FROM
-    ios
+    org_mozilla_firefox
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_ios_firefox
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_ios_firefoxbeta
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_ios_fennec
+  UNION ALL
+  SELECT
+    *
+  FROM
+    telemetry
 )
 SELECT
   experiment,

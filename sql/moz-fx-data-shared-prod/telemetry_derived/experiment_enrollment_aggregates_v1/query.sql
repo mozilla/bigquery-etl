@@ -1,4 +1,89 @@
-WITH desktop_all_events AS (
+-- Generated via ./bqetl experiment_monitoring generate
+WITH org_mozilla_firefox_beta AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
+org_mozilla_fenix AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
+org_mozilla_firefox AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
+org_mozilla_ios_firefox AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefox.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
+org_mozilla_ios_firefoxbeta AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
+org_mozilla_ios_fennec AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_ios_fennec.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
+desktop_all_events AS (
   SELECT
     *
   FROM
@@ -8,7 +93,8 @@ WITH desktop_all_events AS (
     *
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.main_events_v1`
-), desktop AS (
+),
+telemetry AS (
   SELECT
     timestamp,
     event_object AS `type`,
@@ -18,102 +104,44 @@ WITH desktop_all_events AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.events_live`
   WHERE
-    event_category = 'normandy' AND
-    submission_date = @submission_date
-),
-fenix_all_events AS (
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix.events`
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.events`
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox_beta.events`
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.events`
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_firefox.events`
-),
-ios_all_events AS (
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox.events`
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.events`
-  UNION ALL
-  SELECT
-    submission_timestamp,
-    events
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_fennec.events`
-),
-fenix AS (
-  SELECT
-    submission_timestamp AS `timestamp`,
-    event.category AS `type`,
-    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
-    mozfun.map.get_key(event.extra, 'branch') AS branch,
-    event.name AS event_method
-  FROM
-    fenix_all_events,
-    UNNEST(events) AS event
-  WHERE
-    event.category = 'nimbus_events' AND
-    DATE(submission_timestamp) = @submission_date
-),
-ios AS (
-  SELECT
-    submission_timestamp AS `timestamp`,
-    event.category AS `type`,
-    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
-    mozfun.map.get_key(event.extra, 'branch') AS branch,
-    event.name AS event_method
-  FROM
-    ios_all_events,
-    UNNEST(events) AS event
-  WHERE
-    event.category = 'nimbus_events' AND
-    DATE(submission_timestamp) = @submission_date
+    event_category = 'normandy'
+    AND submission_date = @submission_date
 ),
 all_events AS (
   SELECT
     *
   FROM
-    desktop
+    org_mozilla_firefox_beta
   UNION ALL
   SELECT
     *
   FROM
-    fenix
+    org_mozilla_fenix
   UNION ALL
   SELECT
     *
   FROM
-    ios
+    org_mozilla_firefox
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_ios_firefox
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_ios_firefoxbeta
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_ios_fennec
+  UNION ALL
+  SELECT
+    *
+  FROM
+    telemetry
 )
 SELECT
   `type`,

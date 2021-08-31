@@ -195,6 +195,68 @@ telemetry AS (
     experiment,
     branch
 ),
+org_mozilla_klar AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS value
+      )
+    ) AS ad_clicks_count,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_with_ads) AS value
+      )
+    ) AS search_with_ads_count,
+    SUM(0) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_klar_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
+org_mozilla_focus AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_ad_clicks) AS value
+      )
+    ) AS ad_clicks_count,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_with_ads) AS value
+      )
+    ) AS search_with_ads_count,
+    SUM(0) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
 all_events AS (
   SELECT
     *
@@ -230,6 +292,16 @@ all_events AS (
     *
   FROM
     telemetry
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_klar
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_focus
 )
 SELECT
   experiment,

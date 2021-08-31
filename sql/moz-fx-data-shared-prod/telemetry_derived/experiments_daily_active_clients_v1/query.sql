@@ -75,6 +75,28 @@ telemetry AS (
     telemetry.clients_daily
   CROSS JOIN
     UNNEST(experiments) AS e
+),
+org_mozilla_klar AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_klar.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
+),
+org_mozilla_focus AS (
+  SELECT DISTINCT
+    DATE(submission_timestamp) AS submission_date,
+    e.key AS experiment_id,
+    e.value.branch AS branch,
+    client_info.client_id
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus.baseline`
+  CROSS JOIN
+    UNNEST(ping_info.experiments) AS e
 )
 SELECT
   submission_date,
@@ -117,6 +139,16 @@ FROM
       *
     FROM
       telemetry
+    UNION ALL
+    SELECT
+      *
+    FROM
+      org_mozilla_klar
+    UNION ALL
+    SELECT
+      *
+    FROM
+      org_mozilla_focus
   )
 WHERE
   submission_date = @submission_date

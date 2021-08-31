@@ -1,6 +1,5 @@
 """Generate query directories."""
 import os
-from argparse import ArgumentParser
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional

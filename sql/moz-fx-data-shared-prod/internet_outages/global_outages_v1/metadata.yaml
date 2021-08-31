@@ -56,7 +56,6 @@ description: |-
     Further, proxy and VPN usage can create geo-attribution errors.
 owners:
 - aplacitelli@mozilla.com
-- sguha@mozilla.com
 labels:
   incremental: true
   review_bugs:

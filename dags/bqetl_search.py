@@ -76,11 +76,11 @@ with DAG(
         destination_table="search_metric_contribution_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bmiroglio@mozilla.com",
+        owner="jklukas@mozilla.com",
         email=[
             "bewu@mozilla.com",
-            "bmiroglio@mozilla.com",
             "frank@mozilla.com",
+            "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",

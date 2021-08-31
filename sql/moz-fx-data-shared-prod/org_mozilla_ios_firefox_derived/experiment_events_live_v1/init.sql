@@ -1,23 +1,19 @@
--- This and the following materialized view need to be kept in sync:
--- - org_mozilla_firefox_beta_derived.experiment_events_live_v1
--- - org_mozilla_ios_derived.experiment_events_live_v1
--- - org_mozilla_firefox_derived.experiment_events_live_v1
--- - org_mozilla_ios_firefox_derived.experiment_events_live_v1
--- - org_mozilla_ios_firefoxbeta_derived.experiment_events_live_v1
+-- Generated via ./bqetl experiment_monitoring generate
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS org_mozilla_ios_firefox_derived.experiment_events_live_v1
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  WITH ios_all_events AS (
+  -- Glean apps use Nimbus for experimentation
+  WITH all_events AS (
     SELECT
       submission_timestamp,
       events
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.events_v1`
   ),
-  ios AS (
+  experiment_events AS (
     SELECT
       submission_timestamp AS `timestamp`,
       event.category AS `type`,
@@ -25,9 +21,9 @@ IF
       CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
       event.name AS event_method
     FROM
-      ios_all_events,
+      all_events,
       UNNEST(events) AS event,
-            -- Workaround for https://issuetracker.google.com/issues/182829918
+      -- Workaround for https://issuetracker.google.com/issues/182829918
       -- To prevent having the branch name set to the experiment slug,
       -- the number of generated array indices needs to be different.
       UNNEST(GENERATE_ARRAY(0, 50)) AS i,
@@ -61,7 +57,7 @@ IF
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
     COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count
   FROM
-    ios
+    experiment_events
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.

@@ -10,12 +10,14 @@ from .._version import __version__
 from ..cli.alchemer import alchemer as alchemer_
 from ..cli.dag import dag
 from ..cli.dryrun import dryrun
+from ..cli.events_daily import events_daily
 from ..cli.format import format
 from ..cli.glean_usage import glean_usage
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.view import view
 from ..dependency import dependency
+from ..experiment_monitoring import experiment_monitoring
 from ..feature_usage import feature_usage
 from ..glam.cli import glam
 from ..operational_monitoring import operational_monitoring
@@ -30,6 +32,7 @@ def cli(prog_name=None):
         "dag": dag,
         "dependency": dependency,
         "dryrun": dryrun,
+        "events_daily": events_daily,
         "format": format,
         "routine": routine,
         "mozfun": mozfun,
@@ -41,6 +44,7 @@ def cli(prog_name=None):
         "opmon": operational_monitoring,
         "feature_usage": feature_usage,
         "apple": apple,
+        "experiment_monitoring": experiment_monitoring,
     }
 
     @click.group(commands=commands)

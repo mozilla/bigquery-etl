@@ -16,15 +16,19 @@ Daily aggregation of metrics related to urlbar usage.
 
 #### Owner
 
-tbrooks@mozilla.com
+akomar@mozilla.com
 """
 
 
 default_args = {
-    "owner": "tbrooks@mozilla.com",
-    "start_date": datetime.datetime(2021, 1, 1, 0, 0),
+    "owner": "akomar@mozilla.com",
+    "start_date": datetime.datetime(2021, 8, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "tbrooks@mozilla.com"],
+    "email": [
+        "telemetry-alerts@mozilla.com",
+        "akomar@mozilla.com",
+        "tbrooks@mozilla.com",
+    ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -44,8 +48,12 @@ with DAG(
         destination_table="urlbar_clients_daily_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="tbrooks@mozilla.com",
-        email=["tbrooks@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "tbrooks@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

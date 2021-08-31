@@ -575,10 +575,11 @@ bqetl_urlbar:
   description: |
     Daily aggregation of metrics related to urlbar usage.
   default_args:
-    owner: tbrooks@mozilla.com
+    owner: akomar@mozilla.com
     start_date: "2021-08-01"
     email:
       - "telemetry-alerts@mozilla.com"
+      - "akomar@mozilla.com"
       - "tbrooks@mozilla.com"
     retries: 2
     retry_delay: 30m

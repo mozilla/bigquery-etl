@@ -7,7 +7,7 @@ description: |
   Exposed to users as view `search.search_clients_last_seen` and used
   as the basis for LTV calculations.
 owners:
-  - frank@mozilla.com
+  - akomar@mozilla.com
 labels:
   schedule: daily
 scheduling:

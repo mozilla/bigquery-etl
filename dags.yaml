@@ -178,7 +178,7 @@ bqetl_search:
     owner: akomar@mozilla.com
     start_date: "2018-11-27"
     email:
-      ["telemetry-alerts@mozilla.com", "akomar@mozilla.com", "frank@mozilla.com"]
+      ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"]
     retries: 2
     retry_delay: 30m
 

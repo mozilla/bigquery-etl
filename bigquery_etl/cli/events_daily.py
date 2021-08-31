@@ -1,13 +1,8 @@
 """bigquery-etl CLI events_daily command."""
 import click
 
-from ..cli.utils import (
-    is_valid_project,
-    table_matches_patterns,
-)
-from ..events_daily.generate_queries import (
-    generate_queries,
-)
+from ..cli.utils import is_valid_project
+from ..events_daily.generate_queries import generate_queries
 
 
 @click.group(

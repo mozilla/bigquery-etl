@@ -12,15 +12,19 @@ Built from bigquery-etl repo, [`dags/bqetl_search.py`](https://github.com/mozill
 
 #### Owner
 
-bewu@mozilla.com
+akomar@mozilla.com
 """
 
 
 default_args = {
-    "owner": "bewu@mozilla.com",
+    "owner": "akomar@mozilla.com",
     "start_date": datetime.datetime(2018, 11, 27, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "bewu@mozilla.com", "frank@mozilla.com"],
+    "email": [
+        "telemetry-alerts@mozilla.com",
+        "akomar@mozilla.com",
+        "frank@mozilla.com",
+    ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -43,7 +47,6 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "bewu@mozilla.com",
             "frank@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -60,7 +63,6 @@ with DAG(
         owner="akomar@mozilla.com",
         email=[
             "akomar@mozilla.com",
-            "bewu@mozilla.com",
             "frank@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -75,7 +77,11 @@ with DAG(
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
-        email=["bewu@mozilla.com", "frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "frank@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -86,11 +92,11 @@ with DAG(
         destination_table="search_metric_contribution_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
+        owner="bmiroglio@mozilla.com",
         email=[
-            "bewu@mozilla.com",
+            "akomar@mozilla.com",
+            "bmiroglio@mozilla.com",
             "frank@mozilla.com",
-            "jklukas@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",

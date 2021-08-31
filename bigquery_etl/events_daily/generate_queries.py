@@ -1,6 +1,5 @@
 """Generate query directories."""
 import os
-from argparse import ArgumentParser
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
@@ -122,44 +121,6 @@ def get_query_dirs(path):
 
 def generate_queries(project, path, dataset, write_dir):
     """Generate queries at the path for project."""
-    write_path = write_dir / project
+    write_path = Path(write_dir) / project
     for query_dir in get_query_dirs(path):
         query_dir.generate(write_path, dataset)
-
-
-def main():
-    """Generate Query directories."""
-    parser = ArgumentParser(description=main.__doc__)
-    parser.add_argument(
-        "--project",
-        help="Which project the queries should be written to.",
-        default="moz-fx-data-shared-prod",
-        required=False,
-    )
-    parser.add_argument(
-        "--path",
-        help="Where query directories will be searched for.",
-        default="bigquery_etl/events_daily/query_templates",
-        required=False,
-    )
-    parser.add_argument(
-        "--dataset",
-        help=(
-            "The dataset to run this for. "
-            "If none selected, runs on all in the configuration yaml file."
-        ),
-        default=None,
-        required=False,
-    )
-    parser.add_argument(
-        "--write-dir",
-        help="The location to write to. Defaults to sql/.",
-        default=BASE_DIR / "sql",
-        required=False,
-    )
-    args = parser.parse_args()
-    generate_queries(args.project, args.path, args.dataset, args.write_dir)
-
-
-if __name__ == "__main__":
-    main()

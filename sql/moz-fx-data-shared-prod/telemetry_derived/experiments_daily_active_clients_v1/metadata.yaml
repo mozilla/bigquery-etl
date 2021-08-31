@@ -2,7 +2,7 @@ friendly_name: Experiments Daily Active Clients
 description: |
   A daily number of active clients per experiment, partitioned by day.
 owners:
-- ssuh@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: experiments
   schedule: daily
@@ -22,8 +22,6 @@ bigquery:
 references:
   query.sql:
   - moz-fx-data-shared-prod.org_mozilla_fenix.baseline
-  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline
-  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline
   - moz-fx-data-shared-prod.org_mozilla_firefox.baseline
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline

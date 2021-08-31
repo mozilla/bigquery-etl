@@ -1,7 +1,7 @@
 friendly_name: Experiment Search Events Live
 description: |-
   Materialized view of experimentation related search events
-  coming from Firefox for iOS clients.
+  coming from org_mozilla_ios_firefox clients.
 owners:
 - ascholtz@mozilla.com
 labels:

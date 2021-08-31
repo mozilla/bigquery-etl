@@ -1,7 +1,7 @@
 friendly_name: Experiment Events Live
 description: |-
   Materialized view of experimentation related events
-  coming from Firefox for iOS clients.
+  coming from org_mozilla_ios_fennec.
 owners:
 - ascholtz@mozilla.com
 labels:

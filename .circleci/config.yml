@@ -218,6 +218,9 @@ jobs:
       - *build
       # Additional query generation commands may be added here in the future.
       - run:
+          name: Generate events_daily Queries
+          command: PATH="venv/bin:$PATH" script/bqetl events_daily generate
+      - run:
           name: Generate example glean usage queries
           command: PATH="venv/bin:$PATH" script/update_example_glean_usage
       - run:

@@ -85,7 +85,7 @@ IF
   FROM
     `moz-fx-data-shared-prod.telemetry_live.main_v4`
   LEFT JOIN
-    UNNEST(ping_info.experiments) AS experiment
+    UNNEST(environment.experiments) AS experiment
   CROSS JOIN
     -- Max. number of entries is around 10
     UNNEST(GENERATE_ARRAY(0, 50)) AS i

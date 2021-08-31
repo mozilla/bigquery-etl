@@ -18,7 +18,7 @@ WITH combined_urlbar_picked AS (
     app_version,
     normalized_channel,
     locale,
-    SAFE_CAST(user_pref_browser_search_region AS BOOL) AS search_region,
+    user_pref_browser_search_region AS search_region,
     SAFE_CAST(user_pref_browser_search_suggest_enabled AS BOOL) AS suggest_enabled,
     SAFE_CAST(user_pref_browser_widget_in_navbar AS BOOL) AS in_navbar,
     SAFE_CAST(user_pref_browser_urlbar_suggest_searches AS BOOL) AS suggest_searches,

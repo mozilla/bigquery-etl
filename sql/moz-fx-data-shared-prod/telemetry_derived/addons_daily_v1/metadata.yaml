@@ -2,7 +2,7 @@
 friendly_name: Addons Daily
 description: A daily aggregate of addon usages, partitioned by day
 owners:
-  - bmiroglio@mozilla.com
+  - jklukas@mozilla.com
 labels:
   application: addons
   schedule: daily

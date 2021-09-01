@@ -1,7 +1,7 @@
 {{ header }}
 
 CREATE OR REPLACE VIEW
-  `{{gcp_project}}.operational_monitoring.{{slug}}`
+  `{{gcp_project}}.operational_monitoring.{{slug}}_histogram`
 AS
 WITH normalized AS (
     SELECT
@@ -29,7 +29,7 @@ WITH normalized AS (
                 1.0
             )
         ) AS histogram
-        FROM `{{gcp_project}}.{{dataset}}.{{slug}}`
+        FROM `{{gcp_project}}.{{dataset}}.{{slug}}_histogram`
         CROSS JOIN UNNEST(metrics)
         WHERE
             PARSE_DATE('%Y%m%d', CAST(build_id AS STRING)) > DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)

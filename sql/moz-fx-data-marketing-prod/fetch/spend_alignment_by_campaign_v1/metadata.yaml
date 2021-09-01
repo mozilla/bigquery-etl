@@ -7,5 +7,4 @@ labels:
 owners:
   - bewu@mozilla.com
 scheduling:
-  dag_name: bqetl_marketing_fetch
   date_partition_parameter: null

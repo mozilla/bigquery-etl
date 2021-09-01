@@ -4,7 +4,7 @@ description: |-
   Counts of various error measures aggregated across each unique
   set of dimensions.
 owners:
-  - bewu@mozilla.com
+  - wlachance@mozilla.com
 labels:
   incremental: true
 scheduling:

@@ -561,3 +561,17 @@ bqetl_feature_usage:
       - "loines@mozilla.com"
     retries: 2
     retry_delay: 30m
+
+bqetl_urlbar:
+  schedule_interval: 0 3 * * *
+  description: |
+    Daily aggregation of metrics related to urlbar usage.
+  default_args:
+    owner: akomar@mozilla.com
+    start_date: "2021-08-01"
+    email:
+      - "telemetry-alerts@mozilla.com"
+      - "akomar@mozilla.com"
+      - "tbrooks@mozilla.com"
+    retries: 2
+    retry_delay: 30m

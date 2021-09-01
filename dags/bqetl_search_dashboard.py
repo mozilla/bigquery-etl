@@ -12,15 +12,15 @@ Built from bigquery-etl repo, [`dags/bqetl_search_dashboard.py`](https://github.
 
 #### Owner
 
-bewu@mozilla.com
+akomar@mozilla.com
 """
 
 
 default_args = {
-    "owner": "bewu@mozilla.com",
+    "owner": "akomar@mozilla.com",
     "start_date": datetime.datetime(2020, 12, 14, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "bewu@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -41,7 +41,11 @@ with DAG(
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="xluo@mozilla.com",
-        email=["bewu@mozilla.com", "telemetry-alerts@mozilla.com", "xluo@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "xluo@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -53,7 +57,11 @@ with DAG(
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="xluo@mozilla.com",
-        email=["bewu@mozilla.com", "telemetry-alerts@mozilla.com", "xluo@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "xluo@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -66,7 +74,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="mmccorquodale@mozilla.com",
         email=[
-            "bewu@mozilla.com",
+            "akomar@mozilla.com",
             "mmccorquodale@mozilla.com",
             "telemetry-alerts@mozilla.com",
             "xluo@mozilla.com",

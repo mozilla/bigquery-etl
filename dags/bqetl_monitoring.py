@@ -120,8 +120,8 @@ with DAG(
         ]
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="bewu@mozilla.com",
-        email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com"],
     )
 
     monitoring_derived__structured_missing_columns__v1 = gke_command(
@@ -141,8 +141,8 @@ with DAG(
         destination_table="telemetry_distinct_docids_v1",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bewu@mozilla.com",
-        email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

@@ -2,11 +2,10 @@
 bqetl_error_aggregates:
   schedule_interval: 3h
   default_args:
-    owner: bewu@mozilla.com
+    owner: wlachance@mozilla.com
     email:
       [
         "telemetry-alerts@mozilla.com",
-        "bewu@mozilla.com",
         "wlachance@mozilla.com",
       ]
     start_date: "2019-11-01"
@@ -80,9 +79,9 @@ bqetl_nondesktop:
 bqetl_mobile_search:
   schedule_interval: 0 2 * * *
   default_args:
-    owner: bewu@mozilla.com
+    owner: akomar@mozilla.com
     start_date: "2019-07-25"
-    email: ["telemetry-alerts@mozilla.com", "bewu@mozilla.com"]
+    email: ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"]
     retries: 1
     retry_delay: 5m
 
@@ -176,10 +175,10 @@ bqetl_activity_stream:
 bqetl_search:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: bewu@mozilla.com
+    owner: akomar@mozilla.com
     start_date: "2018-11-27"
     email:
-      ["telemetry-alerts@mozilla.com", "bewu@mozilla.com", "frank@mozilla.com"]
+      ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -325,8 +324,10 @@ bqetl_google_analytics_derived:
     The GA export runs at 15:00 UTC, so there's an effective 2-day delay
     for user activity to appear in these tables.
   default_args:
-    owner: bewu@mozilla.com
-    email: ["bewu@mozilla.com"]
+    owner: ascholtz@mozilla.com
+    email:
+      - ascholtz@mozilla.com
+      - telemetry-alerts@mozilla.com
     start_date: "2020-10-31"
     retries: 2
     retry_delay: 30m
@@ -352,15 +353,6 @@ bqetl_event_rollup:
     retries: 2
     retry_delay: 30m
 
-bqetl_marketing_fetch:
-  schedule_interval: 0 1 * * 1
-  default_args:
-    owner: bewu@mozilla.com
-    email: ["bewu@mozilla.com"]
-    start_date: "2020-11-30"
-    retries: 2
-    retry_delay: 30m
-
 bqetl_iprospect:
   schedule_interval: 0 4 * * *
   description: |
@@ -378,10 +370,10 @@ bqetl_search_dashboard:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - bewu@mozilla.com
+      - akomar@mozilla.com
     email_on_failure: true
     email_on_retry: true
-    owner: bewu@mozilla.com
+    owner: akomar@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: "2020-12-14"
@@ -505,12 +497,12 @@ bqetl_ctxsvc_derived:
   default_args:
     depends_on_past: false
     email:
-      - bewu@mozilla.com
+      - jklukas@mozilla.com
       - telemetry-alerts@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: bewu@mozilla.com
+    owner: jklukas@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2021-05-01'
@@ -567,5 +559,19 @@ bqetl_feature_usage:
       - "telemetry-alerts@mozilla.com"
       - "ascholtz@mozilla.com"
       - "loines@mozilla.com"
+    retries: 2
+    retry_delay: 30m
+
+bqetl_urlbar:
+  schedule_interval: 0 3 * * *
+  description: |
+    Daily aggregation of metrics related to urlbar usage.
+  default_args:
+    owner: akomar@mozilla.com
+    start_date: "2021-08-01"
+    email:
+      - "telemetry-alerts@mozilla.com"
+      - "akomar@mozilla.com"
+      - "tbrooks@mozilla.com"
     retries: 2
     retry_delay: 30m

@@ -15,15 +15,15 @@ Built from bigquery-etl repo, [`dags/bqetl_ctxsvc_derived.py`](https://github.co
 Contextual services derived tables
 #### Owner
 
-bewu@mozilla.com
+jklukas@mozilla.com
 """
 
 
 default_args = {
-    "owner": "bewu@mozilla.com",
+    "owner": "jklukas@mozilla.com",
     "start_date": datetime.datetime(2021, 5, 1, 0, 0),
     "end_date": None,
-    "email": ["bewu@mozilla.com", "telemetry-alerts@mozilla.com"],
+    "email": ["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -43,8 +43,8 @@ with DAG(
         destination_table="event_aggregates_v1",
         dataset_id="contextual_services_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bewu@mozilla.com",
-        email=["bewu@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="jklukas@mozilla.com",
+        email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

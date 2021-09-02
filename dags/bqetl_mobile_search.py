@@ -12,15 +12,15 @@ Built from bigquery-etl repo, [`dags/bqetl_mobile_search.py`](https://github.com
 
 #### Owner
 
-bewu@mozilla.com
+akomar@mozilla.com
 """
 
 
 default_args = {
-    "owner": "bewu@mozilla.com",
+    "owner": "akomar@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 25, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "bewu@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -40,8 +40,8 @@ with DAG(
         destination_table="mobile_search_aggregates_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bewu@mozilla.com",
-        email=["bewu@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -52,8 +52,8 @@ with DAG(
         destination_table="mobile_search_clients_daily_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bewu@mozilla.com",
-        email=["bewu@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -64,8 +64,8 @@ with DAG(
         destination_table="mobile_search_clients_last_seen_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="bewu@mozilla.com",
-        email=["bewu@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,

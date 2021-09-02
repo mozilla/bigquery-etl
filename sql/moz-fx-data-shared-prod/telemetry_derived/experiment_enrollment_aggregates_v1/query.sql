@@ -107,6 +107,34 @@ telemetry AS (
     event_category = 'normandy'
     AND submission_date = @submission_date
 ),
+org_mozilla_klar AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_klar.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
+org_mozilla_focus AS (
+  SELECT
+    submission_timestamp AS `timestamp`,
+    event.category AS `type`,
+    mozfun.map.get_key(event.extra, 'experiment') AS experiment,
+    mozfun.map.get_key(event.extra, 'branch') AS branch,
+    event.name AS event_method
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_focus.events`,
+    UNNEST(events) AS event
+  WHERE
+    event.category = 'nimbus_events'
+    AND DATE(submission_timestamp) = @submission_date
+),
 all_events AS (
   SELECT
     *
@@ -142,6 +170,16 @@ all_events AS (
     *
   FROM
     telemetry
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_klar
+  UNION ALL
+  SELECT
+    *
+  FROM
+    org_mozilla_focus
 )
 SELECT
   `type`,

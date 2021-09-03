@@ -1464,6 +1464,97 @@ fields:
       mode: REPEATED
       name: perf_startup_startup_type
       type: RECORD
+    - description: 'AVIF alpha plane.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_alpha
+      type: RECORD
+    - description: 'AVIF CICP colour primaries.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_cicp_cp
+      type: RECORD
+    - description: 'AVIF CICP transfer characteristics.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_cicp_mc
+      type: RECORD
+    - description: 'AVIF CICP transfer characteristics.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_cicp_tc
+      type: RECORD
+    - description: 'AVIF colour information type.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_colr
+      type: RECORD
+    - description: 'AVIF spatial extents (image size).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_ispe
+      type: RECORD
+    - description: 'AVIF pixel information (bits per channel).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: avif_pixi
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD

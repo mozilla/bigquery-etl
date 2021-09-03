@@ -261,6 +261,18 @@ fields:
       mode: NULLABLE
       name: tracking_protection_has_social_blocked
       type: BOOLEAN
+    - description: 'If Fenix is installed on the users''s device.
+
+        '
+      mode: NULLABLE
+      name: mozilla_products_has_fenix_installed
+      type: BOOLEAN
+    - description: 'Fenix is the default browser on user''s device
+
+        '
+      mode: NULLABLE
+      name: mozilla_products_is_fenix_default_browser
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

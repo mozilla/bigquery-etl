@@ -19482,6 +19482,18 @@ fields:
       mode: NULLABLE
       name: image_decode_speed_avif
       type: STRING
+    - description: 'Firefox: Time from request to Merino endpoint to response (ms)'
+      mode: NULLABLE
+      name: fx_urlbar_merino_latency_ms
+      type: STRING
+    - description: Whether a document triggers the blob fallback for an SVG filter.
+      mode: NULLABLE
+      name: use_counter2_wrfilterfallback_document
+      type: STRING
+    - description: Whether a page triggers the blob fallback for an SVG filter.
+      mode: NULLABLE
+      name: use_counter2_wrfilterfallback_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40162,6 +40174,14 @@ fields:
           mode: NULLABLE
           name: image_decode_speed_avif
           type: STRING
+        - description: Whether a document triggers the blob fallback for an SVG filter.
+          mode: NULLABLE
+          name: use_counter2_wrfilterfallback_document
+          type: STRING
+        - description: Whether a page triggers the blob fallback for an SVG filter.
+          mode: NULLABLE
+          name: use_counter2_wrfilterfallback_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -49181,6 +49201,16 @@ fields:
             '
           mode: NULLABLE
           name: screenshots_visible
+          type: INTEGER
+        - description: 'On macOS, all browser windows can be closed without exiting
+            Firefox. If there is an update pending in that case, and we can install
+            it silently, we restart automatically in order to do so. This probe counts
+            the number of times the browser restarts to silently install a pending
+            update.
+
+            '
+          mode: NULLABLE
+          name: update_no_window_auto_restarts
           type: INTEGER
         mode: NULLABLE
         name: scalars

@@ -224,9 +224,9 @@ google-auth-oauthlib==0.4.4 \
     --hash=sha256:09832c6e75032f93818edf1affe4746121d640c625a5bef9b5c96af676e98eee \
     --hash=sha256:0e92aacacfb94978de3b7972cf4b0f204c3cd206f74ddd0dc0b31e91164e6317
     # via gcsfs
-google-cloud-bigquery==2.25.1 \
-    --hash=sha256:5ecf7c802cc6cf9cd79e79924616d8b7d35ba026f3313a4d90b8b4a28c72d93d \
-    --hash=sha256:f7b9bcd94cabe66523475993c2442aa5b9ed709ffcf5e734bbbb6a604ae120df
+google-cloud-bigquery==2.26.0 \
+    --hash=sha256:15ca1f9c8165b584c2d593620354cd3b17c007e87cfd1abd1eebd2c08eb5d109 \
+    --hash=sha256:8431da4c3f9b6a5aca1b811ef64e452d53536160b26252e4d132969ef3e4f173
     # via -r requirements.in
 google-cloud-core==1.6.0 \
     --hash=sha256:40d9c2da2d03549b5ac3dcccf289d4f15e6d1210044c6381ce45c92913e62904 \

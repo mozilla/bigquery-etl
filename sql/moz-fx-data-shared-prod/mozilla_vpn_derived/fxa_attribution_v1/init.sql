@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS
     flow_started TIMESTAMP,
     fxa_uids ARRAY<STRING>,
     attribution STRUCT<
+      `timestamp` TIMESTAMP,
       entrypoint_experiment STRING,
       entrypoint_variation STRING,
       utm_campaign STRING,

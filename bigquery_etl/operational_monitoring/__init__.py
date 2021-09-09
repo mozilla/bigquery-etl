@@ -72,14 +72,16 @@ def _query_up_to_date(dataset, slug, basename, project_last_modified):
 
 
 def _write_sql_for_data_type(
-    query, project, dataset, slug, render_kwargs, probes, data_type
+    query, project, dataset, om_project, render_kwargs, probes, data_type
 ):
-    normalized_slug = _bq_normalize_name(slug)
+    normalized_slug = _bq_normalize_name(om_project["slug"])
     render_kwargs.update(
         {
             "source": query["source"],
             "probes": _get_name_and_sql(query, probes, "probes", data_type),
-            "slug": slug,
+            "slug": om_project["slug"],
+            "channel": om_project["channel"],
+            "pref": om_project.get("boolean_pref"),
         }
     )
     _write_sql(
@@ -134,7 +136,7 @@ def _generate_sql(project, dataset):
             project, bucket, blob.name
         )
         normalized_slug = _bq_normalize_name(om_project["slug"])
-        render_kwargs.update({"branches": om_project["branches"]})
+        render_kwargs.update({"branches": om_project.get("branches", [])})
         if _query_up_to_date(
             dataset, normalized_slug, INIT_FILENAME, project_last_modified
         ):
@@ -153,7 +155,7 @@ def _generate_sql(project, dataset):
                     query,
                     project,
                     dataset,
-                    om_project["slug"],
+                    om_project,
                     render_kwargs,
                     probes,
                     data_type,

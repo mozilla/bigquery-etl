@@ -19,7 +19,7 @@ For some functionality Java JDK 8+ is also required, and maven is needed for dow
 Install and set up the GCP command line tools:
 
 * (For Mozilla Employees or Contributors not in Data Engineering) Set up GCP command line tools, [as described on docs.telemetry.mozilla.org](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool). Note that some functionality (e.g. writing UDFs or backfilling queries) may not be allowed.
-* (For Data Engineering) In addition to setting up the command line tools, you will want to log in to `shared-prod` if making changes to production systems. Run `gcloud auth login --project=moz-fx-data-shared-prod` and `gcloud auth application-default login` (if you have not run it previously).
+* (For Data Engineering) In addition to setting up the command line tools, you will want to log in to `shared-prod` if making changes to production systems. Run `gcloud auth login --update-adc --project=moz-fx-data-shared-prod` (if you have not run it previously).
 
 Install the [virtualenv](https://virtualenv.pypa.io/en/latest/) Python environment management tool
 ```bash

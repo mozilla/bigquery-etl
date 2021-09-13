@@ -25,7 +25,7 @@ pytest-xdist==2.3.0
 pytest==6.2.5
 PyYAML==5.4.1
 smart_open==5.2.1
-sqlparse==0.4.1
+sqlparse==0.4.2
 stripe==2.60.0
 typing==3.7.4.3
 ujson==4.1.0

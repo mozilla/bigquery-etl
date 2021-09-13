@@ -22495,6 +22495,18 @@ fields:
       mode: REPEATED
       name: service_worker_fetch_interception_duration_ms_2
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Users action on blocked download, keyed by verdict type (0=Number
+          of blocked downloads, 1=Confirm block, 2=Confirm unblock)
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: downloads_user_action_on_blocked_download
+      type: RECORD
     mode: NULLABLE
     name: keyed_histograms
     type: RECORD
@@ -46500,6 +46512,21 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: browser_search_withads_tabhistory
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Collection of javascript modules that created a Sqlite.jsm
+              transaction taking too long and timing out. This can be used to identify
+              and optimize those modules transactions.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: mozstorage_sqlitejsm_transaction_timeout
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

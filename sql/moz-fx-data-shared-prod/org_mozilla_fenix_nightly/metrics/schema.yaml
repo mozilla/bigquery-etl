@@ -729,6 +729,23 @@ fields:
       mode: NULLABLE
       name: recent_bookmarks_show_all_bookmarks
       type: INTEGER
+    - description: 'A counter of the number of credit cards that have been deleted
+        by
+
+        the user.
+
+        '
+      mode: NULLABLE
+      name: credit_cards_deleted
+      type: INTEGER
+    - description: 'A counter of the number of credit cards that have been saved
+
+        manually by the user.
+
+        '
+      mode: NULLABLE
+      name: credit_cards_saved
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

@@ -1,6 +1,6 @@
-friendly_name: Mlhackweek Search
+friendly_name: mlhackweek-search
 description: |-
-  Views on data from mlhackweek_search
+  User-facing views related to document namespace mlhackweek-search; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/mlhackweek-search
 dataset_base_acl: view
 user_facing: true
 labels: {}

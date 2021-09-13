@@ -48,7 +48,7 @@ website AS (
   FROM
     website_base
   WHERE
-    `date` = @date
+    `date` >= '2020-07-01'
   GROUP BY
     `date`,
     normalized_medium,
@@ -80,7 +80,7 @@ subscriptions AS (
   FROM
     all_subscriptions_v1
   WHERE
-    DATE(subscription_start_date) = @date
+    DATE(subscription_start_date) >= '2020-07-01'
     AND product_name = "Mozilla VPN"
     AND provider LIKE "FxA %"
   GROUP BY

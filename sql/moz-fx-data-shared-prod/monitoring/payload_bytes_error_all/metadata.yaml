@@ -1,0 +1,9 @@
+---
+friendly_name: All Errors
+description: |-
+  A view on top of the `payload_bytes_error.*` tables that includes all
+  fields except the payload.
+
+  This view is useful for overall monitoring of pipeline errors.
+
+  Clustering fields: `submission_timestamp`

@@ -1,0 +1,15 @@
+---
+friendly_name: Stub Installer Pipeline Family Errors
+description: |-
+  A view on top of the `payload_bytes_error.stub_installer` table that includes all
+  fields except the payload.
+
+  This view is useful for overall monitoring of pipeline errors.
+
+  Clustering fields: `submission_timestamp`
+labels:
+  authorized: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

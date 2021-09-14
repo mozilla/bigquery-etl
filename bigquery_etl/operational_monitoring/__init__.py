@@ -134,7 +134,22 @@ def _generate_sql(project, dataset):
             project, bucket, blob.name
         )
         normalized_slug = _bq_normalize_name(om_project["slug"])
-        render_kwargs.update({"branches": om_project["branches"]})
+        boolean_pref = om_project.get("boolean_pref")
+        branches = om_project.get("branches", [])
+
+        # Branches should not be defined if a boolean pref is defined
+        # since the branches are inferred to be either "enabled" and "disabled"
+        assert not (
+            branches and boolean_pref
+        ), "`branches` should not be defined if `boolean_pref` is defined"
+
+        render_kwargs.update(
+            {
+                "branches": branches,
+                "channel": om_project["channel"],
+                "pref": boolean_pref,
+            }
+        )
         if _query_up_to_date(
             dataset, normalized_slug, INIT_FILENAME, project_last_modified
         ):

@@ -8,6 +8,9 @@ WITH merged_probes AS (
     {% for dimension in dimensions %}
       CAST({{ dimension.sql }} AS STRING) AS {{ dimension.name }},
     {% endfor %}
+
+    -- If a pref is defined, treat it as a rollout with an enabled and disabled branch
+    -- otherwise use the branches from the experiment based on the slug
     {% if pref %}
     CASE
       WHEN SAFE_CAST({{pref}} as BOOLEAN) THEN 'enabled'
@@ -91,6 +94,8 @@ merged_histograms AS (
   CROSS JOIN
     UNNEST(metrics)
   WHERE branch IN (
+    -- If branches are not defined, assume it's a rollout
+    -- and fall back to branches labeled as enabled/disabled
     {% if branches %}
     {% for branch in branches %}
       "{{ branch }}"

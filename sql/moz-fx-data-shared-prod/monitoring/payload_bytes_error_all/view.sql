@@ -4,33 +4,21 @@ AS
 -- payload_bytes_error.structured is restricted from most users,
 -- so we have to reference an authorized view.
 SELECT
-'structured' AS pipeline_family,
-*
+  'structured' AS pipeline_family,
+  *
 FROM
-`moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
+  `moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
 UNION ALL
 -- All other error tables are accessible, but we need to exclude
 -- the payload field to match the schema of the authorized view above.
 SELECT
-  'contextual_services' AS pipeline_family,
-  * EXCEPT(payload)
-FROM
-  `moz-fx-data-shared-prod.payload_bytes_error.contextual_services`
-UNION ALL
-SELECT
   'stub_installer' AS pipeline_family,
-  * EXCEPT(payload)
+  * EXCEPT (payload)
 FROM
   `moz-fx-data-shared-prod.payload_bytes_error.stub_installer`
 UNION ALL
 SELECT
   'telemetry' AS pipeline_family,
-  * EXCEPT(payload)
+  * EXCEPT (payload)
 FROM
   `moz-fx-data-shared-prod.payload_bytes_error.telemetry`
-UNION ALL
-SELECT
-  'tls_error_reports' AS pipeline_family,
-  * EXCEPT(payload)
-FROM
-  `moz-fx-data-shared-prod.payload_bytes_error.tls_error_reports`

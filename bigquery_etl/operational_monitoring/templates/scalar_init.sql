@@ -7,13 +7,10 @@ CREATE TABLE IF NOT EXISTS
     {% for dimension in dimensions %}
       {{ dimension.name }} STRING,
     {% endfor %}
-    metrics ARRAY<
-      STRUCT<
-        name STRING,
-        agg_type STRING,
-        value INT64
-      >
-    >)
+    name STRING,
+    agg_type STRING,
+    value FLOAT64
+  )
 PARTITION BY submission_date
 CLUSTER BY
     build_id

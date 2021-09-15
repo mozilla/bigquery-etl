@@ -91,16 +91,22 @@ standardized_country AS (
 ),
 attribution AS (
   SELECT
+    fxa_uid,
+    ARRAY_AGG(attribution ORDER BY attribution.timestamp LIMIT 1)[OFFSET(0)].*,
+  FROM
+    `moz-fx-data-shared-prod`.mozilla_vpn_derived.fxa_attribution_v1
+  CROSS JOIN
+    UNNEST(fxa_uids) AS fxa_uid
+  WHERE
+    attribution IS NOT NULL
+  GROUP BY
+    fxa_uid
+),
+users AS (
+  SELECT
     id AS user_id,
     fxa_uid,
     created_at AS user_registration_date,
-    attribution.entrypoint_experiment,
-    attribution.entrypoint_variation,
-    attribution.utm_campaign,
-    attribution.utm_content,
-    attribution.utm_medium,
-    attribution.utm_source,
-    attribution.utm_term,
   FROM
     mozdata.mozilla_vpn.users
 ),
@@ -191,6 +197,10 @@ fxa_subscriptions AS (
   USING
     (customer_id)
   LEFT JOIN
+    users
+  USING
+    (fxa_uid)
+  LEFT JOIN
     attribution
   USING
     (fxa_uid)
@@ -249,9 +259,13 @@ apple_iap_subscriptions AS (
   CROSS JOIN
     UNNEST(apple_receipt.active_periods)
   LEFT JOIN
-    attribution
+    users
   USING
     (user_id)
+  LEFT JOIN
+    attribution
+  USING
+    (fxa_uid)
   WHERE
     apple_receipt.environment = "Production"
 ),

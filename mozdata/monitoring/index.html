@@ -929,6 +929,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#payload_bytes_error_all" class="md-nav__link">
+    payload_bytes_error_all
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#payload_bytes_error_structured" class="md-nav__link">
+    payload_bytes_error_structured
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#schema_error_counts" class="md-nav__link">
     schema_error_counts
   </a>
@@ -1800,6 +1814,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#payload_bytes_error_all" class="md-nav__link">
+    payload_bytes_error_all
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#payload_bytes_error_structured" class="md-nav__link">
+    payload_bytes_error_structured
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#schema_error_counts" class="md-nav__link">
     schema_error_counts
   </a>
@@ -1978,6 +2006,62 @@
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/document_sample_nonprod">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/document_sample_nonprod/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/document_sample_nonprod/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="payload_bytes_error_all"><a href="#payload_bytes_error_all">payload_bytes_error_all</a></h2>
+<p>A view on top of the <code>payload_bytes_error.*</code> tables that includes all
+fields except the payload.</p>
+<p>This view is useful for overall monitoring of pipeline errors.</p>
+<p>Clustering fields: <code>submission_timestamp</code></p>
+<ul>
+<li>Friendly name: All Errors</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring>monitoring</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured>payload_bytes_error_structured</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_error>payload_bytes_error</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_error/stub_installer>stub_installer</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_error>payload_bytes_error</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_error/telemetry>telemetry</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_all">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_all/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_all/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="payload_bytes_error_structured"><a href="#payload_bytes_error_structured">payload_bytes_error_structured</a></h2>
+<p>A view on top of the <code>payload_bytes_error.structured</code> table that includes all
+fields except the payload.</p>
+<p>This view is useful for overall monitoring of pipeline errors.</p>
+<p>Clustering fields: <code>submission_timestamp</code></p>
+<ul>
+<li>Friendly name: Structured Pipeline Family Errors</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_error>payload_bytes_error</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_error/structured>structured</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured/view.sql">View Definition</a> </p>
 <hr />
 <h2 id="schema_error_counts"><a href="#schema_error_counts">schema_error_counts</a></h2>
 <table>

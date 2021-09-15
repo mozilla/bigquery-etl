@@ -13,4 +13,3 @@ scheduling:
   date_partition_parameter: null
   parameters:
     - "date:DATE:{{ds}}"
-  referenced_tables: []

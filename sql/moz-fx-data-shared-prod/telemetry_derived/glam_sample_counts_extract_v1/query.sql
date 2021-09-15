@@ -1,18 +1,3 @@
-WITH deduped AS (
-  SELECT
-    *,
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        os,
-        app_version,
-        app_build_id,
-        channel
-      ORDER BY
-        total_sample DESC
-    ) AS rank
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1`
-)
 SELECT
   CASE
   WHEN
@@ -36,6 +21,4 @@ SELECT
   key,
   total_sample
 FROM
-  deduped
-WHERE
-  rank = 1;
+  `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1`

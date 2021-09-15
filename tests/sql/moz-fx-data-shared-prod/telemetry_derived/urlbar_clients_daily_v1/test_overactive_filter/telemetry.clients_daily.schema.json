@@ -55,6 +55,16 @@
     "type": "BOOLEAN"
   },
   {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_suggest_quicksuggest",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_suggest_quicksuggest_sponsored",
+    "type": "BOOLEAN"
+  },
+  {
     "fields": [
       {
         "mode": "NULLABLE",

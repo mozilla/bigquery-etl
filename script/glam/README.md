@@ -48,15 +48,24 @@ GENERATE_ONLY=true script/glam/test/test_glean_org_mozilla_fenix_glam_nightly
 The script `test_glean_all_fenix` is the same script, but using the full set of
 all Firefox for Android document types. `diff_glean_all_fenix_incremental`
 generates the set of SQL and generates a diff between two revisions of the
-repository. 
+repository.
+
+After generating and updating the schemas for the tables, it is helpful to
+commit the changes into source control to make it easier to distinguish changes
+between revisions of the codebase. Only commit the subset of queries that are
+representative, since there would be too much duplication otherwise.
 
 ## Adding a new glean application
 
 Adding a new Glean application currently requires a few depedencies:
 
-1. In the configuration (currently located in `bigquery_etl.glam.generate`), add a new entry for the application id
-2. Define a `build_date_udf` that accepts a build id and returns a datetime. This is required as part of visualizing data for GLAM. See `mozfun.glam.build_hour_to_datetime` for an example.
-3. Test the SQL using `run_glam_sql`, either directly or by writing a script for automating parts in the `test/` directory.
+1. In the configuration (currently located in `bigquery_etl.glam.generate`), add
+   a new entry for the application id
+2. Define a `build_date_udf` that accepts a build id and returns a datetime.
+   This is required as part of visualizing data for GLAM. See
+   `mozfun.glam.build_hour_to_datetime` for an example.
+3. Test the SQL using `run_glam_sql`, either directly or by writing a script for
+   automating parts in the `test/` directory.
 4. Add the new application to the `dags/glam_fenix` DAG in `telemetry-airflow`.
 
 ### Logical app ids

@@ -10,7 +10,7 @@ and a histogram struct as the second.
 */
 CREATE OR REPLACE FUNCTION udf_js.jackknife_percentile_ci(
   percentile FLOAT64,
-  histogram STRUCT<values ARRAY<STRUCT<key INT64, value FLOAT64>>>
+  histogram STRUCT<values ARRAY<STRUCT<key FLOAT64, value FLOAT64>>>
 )
 RETURNS STRUCT<low FLOAT64, high FLOAT64, percentile FLOAT64> DETERMINISTIC
 LANGUAGE js
@@ -114,7 +114,7 @@ WITH jackknife AS (
       STRUCT(
         [
           STRUCT(1 AS key, 3.0 AS value),
-          STRUCT(2, 2),
+          STRUCT(2.0, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
           STRUCT(6, 2)
@@ -126,7 +126,7 @@ WITH jackknife AS (
       STRUCT(
         [
           STRUCT(1 AS key, 3.0 AS value),
-          STRUCT(2, 2),
+          STRUCT(2.0, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
           STRUCT(6, 2)
@@ -138,7 +138,7 @@ WITH jackknife AS (
       STRUCT(
         [
           STRUCT(1 AS key, 3.0 AS value),
-          STRUCT(2, 2),
+          STRUCT(2.0, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
           STRUCT(6, 2)
@@ -150,7 +150,7 @@ WITH jackknife AS (
       STRUCT(
         [
           STRUCT(1 AS key, 3.0 AS value),
-          STRUCT(2, 2),
+          STRUCT(2.0, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
           STRUCT(6, 2)
@@ -162,7 +162,7 @@ WITH jackknife AS (
       STRUCT(
         [
           STRUCT(1 AS key, 3.0 AS value),
-          STRUCT(2, 2),
+          STRUCT(2.0, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
           STRUCT(6, 2)
@@ -174,7 +174,7 @@ WITH jackknife AS (
       STRUCT(
         [
           STRUCT(1 AS key, 3.0 AS value),
-          STRUCT(2, 2),
+          STRUCT(2.0, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
           STRUCT(6, 2)
@@ -186,7 +186,7 @@ WITH jackknife AS (
       STRUCT(
         [
           STRUCT(1 AS key, 3.0 AS value),
-          STRUCT(2, 2),
+          STRUCT(2.0, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
           STRUCT(6, 2)
@@ -198,7 +198,7 @@ WITH jackknife AS (
       STRUCT(
         [
           STRUCT(1 AS key, 3.0 AS value),
-          STRUCT(2, 2),
+          STRUCT(2.0, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
           STRUCT(6, 2)
@@ -210,7 +210,7 @@ WITH jackknife AS (
       STRUCT(
         [
           STRUCT(1 AS key, 3.0 AS value),
-          STRUCT(2, 2),
+          STRUCT(2.0, 2),
           STRUCT(4, 1),
           STRUCT(5, 1),
           STRUCT(6, 2)

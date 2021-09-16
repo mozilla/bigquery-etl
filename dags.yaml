@@ -296,9 +296,9 @@ bqetl_deletion_request_volume:
 bqetl_fenix_event_rollup:
   schedule_interval: 0 2 * * *
   default_args:
-    owner: frank@mozilla.com
+    owner: wlachance@mozilla.com
     start_date: "2020-09-09"
-    email: ["frank@mozilla.com"]
+    email: ["wlachance@mozilla.com"]
     retries: 2
     retry_delay: 30m
 
@@ -347,9 +347,9 @@ bqetl_monitoring:
 bqetl_event_rollup:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: frank@mozilla.com
+    owner: wlachance@mozilla.com
     start_date: "2020-11-03"
-    email: ["frank@mozilla.com"]
+    email: ["wlachance@mozilla.com"]
     retries: 2
     retry_delay: 30m
 

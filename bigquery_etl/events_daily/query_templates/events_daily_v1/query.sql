@@ -42,7 +42,7 @@ WITH sample AS (
     )
     AND client_id IS NOT NULL
     {% if app_id == "telemetry" %}
-    -- filter out overactive client crashing the telemetry query
+    -- filter out overactive clients: they distort the data and can cause the job to fail: https://bugzilla.mozilla.org/show_bug.cgi?id=1730190
     AND client_event_count < 3000000
     {% endif %}
 ),

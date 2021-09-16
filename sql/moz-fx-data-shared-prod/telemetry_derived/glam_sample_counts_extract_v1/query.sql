@@ -22,3 +22,6 @@ SELECT
   total_sample
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.glam_sample_counts_v1`
+WHERE
+  app_version IS NOT NULL
+  AND total_sample > 100

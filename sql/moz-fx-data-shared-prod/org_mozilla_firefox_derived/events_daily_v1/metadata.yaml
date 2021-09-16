@@ -5,6 +5,7 @@ friendly_name: 'org_mozilla_firefox Events Daily'
 description: >
   Packed event representation with one-row per-client
 owners:
+  - wlachance@mozilla.com
   - akomar@mozilla.com
 labels:
   application: org_mozilla_firefox

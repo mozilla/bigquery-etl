@@ -8,6 +8,7 @@ description: >
   This table stores all of history, partitioned by
   submission_date.
 owners:
+  - wlachance@mozilla.com
   - akomar@mozilla.com
 labels:
   application: telemetry

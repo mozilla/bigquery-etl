@@ -5,6 +5,7 @@ friendly_name: 'messaging_system Events Daily'
 description: >
   Packed event representation with one-row per-client
 owners:
+  - wlachance@mozilla.com
   - akomar@mozilla.com
 labels:
   application: messaging_system

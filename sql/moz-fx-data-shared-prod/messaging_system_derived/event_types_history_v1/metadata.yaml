@@ -8,7 +8,7 @@ description: >
   This table stores all of history, partitioned by
   submission_date.
 owners:
-  - frank@mozilla.com
+  - akomar@mozilla.com
 labels:
   application: messaging_system
   incremental: true

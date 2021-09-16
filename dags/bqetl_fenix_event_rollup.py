@@ -12,15 +12,15 @@ Built from bigquery-etl repo, [`dags/bqetl_fenix_event_rollup.py`](https://githu
 
 #### Owner
 
-frank@mozilla.com
+akomar@mozilla.com
 """
 
 
 default_args = {
-    "owner": "frank@mozilla.com",
+    "owner": "akomar@mozilla.com",
     "start_date": datetime.datetime(2020, 9, 9, 0, 0),
     "end_date": None,
-    "email": ["frank@mozilla.com"],
+    "email": ["akomar@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -40,8 +40,8 @@ with DAG(
         destination_table="event_types_v1",
         dataset_id="org_mozilla_firefox_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -53,8 +53,8 @@ with DAG(
         destination_table="event_types_history_v1",
         dataset_id="org_mozilla_firefox_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -65,8 +65,8 @@ with DAG(
         destination_table="events_daily_v1",
         dataset_id="org_mozilla_firefox_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="akomar@mozilla.com",
+        email=["akomar@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,

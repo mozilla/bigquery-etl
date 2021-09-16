@@ -6,7 +6,7 @@ description: >
   This table stores all of history, partitioned by
   submission_date.
 owners:
-  - frank@mozilla.com
+  - akomar@mozilla.com
 labels:
   application: {{ app_id }}
   incremental: true

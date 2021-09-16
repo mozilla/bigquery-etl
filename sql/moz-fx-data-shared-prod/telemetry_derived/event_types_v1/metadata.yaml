@@ -5,7 +5,7 @@ friendly_name: telemetry Event Types
 description: >
   A materialized view of the most recent day of event_types data
 owners:
-  - frank@mozilla.com
+  - akomar@mozilla.com
 labels:
   application: telemetry
   incremental: false

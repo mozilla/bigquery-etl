@@ -5,7 +5,7 @@ friendly_name: org_mozilla_firefox Event Types
 description: >
   A materialized view of the most recent day of event_types data
 owners:
-  - frank@mozilla.com
+  - akomar@mozilla.com
 labels:
   application: org_mozilla_firefox
   incremental: false

@@ -27,7 +27,7 @@ error_counts AS (
     error_type,
     COUNT(*) AS error_count
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_error.structured`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
   WHERE
     submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL 28 * 24 HOUR)
   GROUP BY

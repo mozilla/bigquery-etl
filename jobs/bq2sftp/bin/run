@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -eo pipefail
+
+echo >&2 'Writing $KNOWN_HOSTS to ~/.ssh/known_hosts'
+mkdir ~/.ssh
+echo ${KNOWN_HOSTS} >> ~/.ssh/known_hosts
+
+# Move to the parent of the bin/ directory
+cd "$(dirname $(dirname $0))"
+
+query="SELECT * FROM \`${SRC_TABLE}\`"
+if [ -n "${SUBMISSION_DATE}" ]; then
+  query="${query} WHERE submission_date = '${SUBMISSION_DATE}'"
+fi
+
+echo "Testing query: ${query}"
+bq query --nouse_legacy_sql --max_rows=0 "${query}"
+echo "Query succeeded"
+
+echo >&2 "Piping query to sftp ${SFTP_HOST}:${SFTP_PORT}"
+bq query --nouse_legacy_sql --format=csv --max_rows=100000000 "${query}" \
+    | gzip \
+    | curl -T - \
+           "sftp://${SFTP_USERNAME}:${SFTP_PASSWORD}@${SFTP_HOST}:${SFTP_PORT}/${DST_PATH}"
+echo >&2 "Successfully piped output to SFTP server"

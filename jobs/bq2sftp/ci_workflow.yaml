@@ -1,0 +1,13 @@
+job-bq2sftp:
+  jobs:
+    - build-job-bq2sftp
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/bq2sftp/
+        path: jobs/bq2sftp/
+        image: bq2sftp_docker_etl
+        requires:
+          - build-job-bq2sftp
+        filters:
+          branches:
+            only: main

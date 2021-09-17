@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.search_terms.quicksuggest_impression`
+  `moz-fx-data-shared-prod.search_terms.suggest_impression_sanitized`
 AS
 SELECT
   * REPLACE(mozfun.norm.metadata(metadata) AS metadata)

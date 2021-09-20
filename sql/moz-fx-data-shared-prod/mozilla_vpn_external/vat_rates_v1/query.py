@@ -22,16 +22,17 @@ job_config = bigquery.QueryJobConfig(
 )
 
 # Use credentials that include a google drive scope
-credentials, _ = google.auth.default(
+credentials, project = google.auth.default(
     scopes=[
         "https://www.googleapis.com/auth/drive",
         "https://www.googleapis.com/auth/bigquery",
     ]
 )
-client = bigquery.Client(credentials=credentials, project="moz-fx-data-shared-prod")
+client = bigquery.Client(credentials=credentials, project=project)
 
 query = client.query(
-    """CREATE OR REPLACE TABLE mozilla_vpn_external.vat_rates_v1
+    """CREATE OR REPLACE TABLE
+  `moz-fx-data-shared-prod`.mozilla_vpn_external.vat_rates_v1
 AS
 SELECT
   * REPLACE (

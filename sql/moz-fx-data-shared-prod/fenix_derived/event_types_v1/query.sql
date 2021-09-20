@@ -2,6 +2,6 @@
 SELECT
   * EXCEPT (submission_date)
 FROM
-  org_mozilla_firefox_derived.event_types_history_v1
+  fenix_derived.event_types_history_v1
 WHERE
   submission_date = @submission_date

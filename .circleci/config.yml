@@ -53,9 +53,12 @@ jobs:
     docker: *docker
     steps:
       - checkout
+      - *restore_venv_cache
       - run:
           name: Verify that SQL is correctly formatted
-          command: script/format_sql --check $(git ls-tree -d HEAD --name-only)
+          command: |
+            PATH="venv/bin:$PATH" script/bqetl format --check \
+            $(git ls-tree -d HEAD --name-only)
   verify-requirements:
     docker: *docker
     steps:

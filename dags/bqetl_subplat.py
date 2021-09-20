@@ -582,6 +582,10 @@ with DAG(
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
+        mozilla_vpn_derived__fxa_attribution__v1
+    )
+
+    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__subscriptions__v1
     )
 

@@ -452,26 +452,35 @@ clients_summary AS (
     count_histograms[OFFSET(27)].histogram AS histogram_parent_devtools_webaudioeditor_opened_count,
     count_histograms[OFFSET(28)].histogram AS histogram_parent_devtools_webconsole_opened_count,
     count_histograms[OFFSET(29)].histogram AS histogram_parent_devtools_webide_opened_count,
-    mozfun.map.get_key(
-      environment.settings.user_prefs,
-      'browser.search.region'
-    ) AS user_pref_browser_search_region,
-    mozfun.map.get_key(
-      environment.settings.user_prefs,
-      'browser.search.suggest.enabled'
-    ) AS user_pref_browser_search_suggest_enabled,
-    mozfun.map.get_key(
-      environment.settings.user_prefs,
-      'browser.search.widget.inNavBar'
-    ) AS user_pref_browser_widget_in_navbar,
-    mozfun.map.get_key(
-      environment.settings.user_prefs,
-      'browser.urlbar.suggest.searches'
-    ) AS user_pref_browser_urlbar_suggest_searches,
-    mozfun.map.get_key(
-      environment.settings.user_prefs,
-      'browser.urlbar.showSearchSuggestionsFirst'
-    ) AS user_pref_browser_urlbar_show_search_suggestions_first,
+    -- Select out some individual userPrefs values; note that prefs are only available in
+    -- the environment based on registration in DEFAULT_ENVIRONMENT_PREFS; see
+    -- https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/app/TelemetryEnvironment.jsm
+    (
+      SELECT AS STRUCT
+        ARRAY_AGG(IF(key = 'browser.search.region', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_browser_search_region,
+        ARRAY_AGG(IF(key = 'browser.search.suggest.enabled', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_browser_search_suggest_enabled,
+        ARRAY_AGG(IF(key = 'browser.search.widget.inNavBar', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_browser_widget_in_navbar,
+        ARRAY_AGG(IF(key = 'browser.urlbar.suggest.searches', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_browser_urlbar_suggest_searches,
+        ARRAY_AGG(IF(key = 'browser.urlbar.showSearchSuggestionsFirst', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_browser_urlbar_show_search_suggestions_first,
+        ARRAY_AGG(IF(key = 'browser.urlbar.suggest.quicksuggest', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_browser_urlbar_suggest_quicksuggest,
+        ARRAY_AGG(
+          IF(key = 'browser.urlbar.suggest.quicksuggest.sponsored', value, NULL) IGNORE NULLS
+        )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_suggest_quicksuggest_sponsored,
+      FROM
+        UNNEST(environment.settings.user_prefs)
+    ).*
   FROM
     base
   LEFT JOIN
@@ -1102,6 +1111,16 @@ aggregates AS (
           submission_timestamp
       )
     ) AS user_pref_browser_urlbar_show_search_suggestions_first,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(user_pref_browser_urlbar_suggest_quicksuggest ORDER BY submission_timestamp)
+    ) AS user_pref_browser_urlbar_suggest_quicksuggest,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(
+        user_pref_browser_urlbar_suggest_quicksuggest_sponsored
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS user_pref_browser_urlbar_suggest_quicksuggest_sponsored,
   FROM
     clients_summary
   GROUP BY

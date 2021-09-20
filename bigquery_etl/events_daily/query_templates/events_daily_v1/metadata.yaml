@@ -3,7 +3,8 @@ friendly_name: '{{ app_id }} Events Daily'
 description: >
   Packed event representation with one-row per-client
 owners:
-  - frank@mozilla.com
+  - wlachance@mozilla.com
+  - akomar@mozilla.com
 labels:
   application: {{ app_id }}
   schedule: daily

@@ -1431,3 +1431,9 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_urlbar_show_search_suggestions_first
   type: STRING
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_suggest_quicksuggest
+  type: STRING
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
+  type: STRING

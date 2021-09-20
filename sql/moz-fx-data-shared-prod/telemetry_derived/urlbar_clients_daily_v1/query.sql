@@ -1,5 +1,5 @@
 CREATE TEMP FUNCTION one_index(x ANY TYPE) AS (
-  CAST(IF(SAFE_CAST(x AS INT64) < 0, SAFE_CAST(x AS INT64), SAFE_CAST(x AS INT64) + 1) AS STRING)
+  IF(SAFE_CAST(x AS INT64) < 0, SAFE_CAST(x AS INT64), SAFE_CAST(x AS INT64) + 1)
 );
 
 CREATE TEMP FUNCTION one_index_struct(record STRUCT<k STRING, v INT64>) AS (
@@ -46,6 +46,10 @@ WITH combined_urlbar_picked AS (
     SAFE_CAST(
       user_pref_browser_urlbar_show_search_suggestions_first AS BOOL
     ) AS show_search_suggestions_first,
+    SAFE_CAST(user_pref_browser_urlbar_suggest_quicksuggest AS BOOL) AS suggest_quicksuggest,
+    SAFE_CAST(
+      user_pref_browser_urlbar_suggest_quicksuggest_sponsored AS BOOL
+    ) AS suggest_quicksuggest_sponsored,
     [
       STRUCT(
         "autofill" AS type,
@@ -152,6 +156,8 @@ SELECT
   in_navbar,
   suggest_searches,
   show_search_suggestions_first,
+  suggest_quicksuggest,
+  suggest_quicksuggest_sponsored,
   count_picked_total,
   count_picked_by_type,
   count_picked_by_position,

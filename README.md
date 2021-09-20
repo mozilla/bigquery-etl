@@ -100,19 +100,18 @@ Documentation of all `bqetl` commands including usage examples can be found in t
 
 Running some commands, for example to create or query tables, will [require access to Mozilla's GCP Account](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
 
-Formatting SQL
----
+## Formatting SQL
 
 We enforce consistent SQL formatting as part of CI. After adding or changing a
-query, use `script/format_sql` to apply formatting rules.
+query, use `./bqetl format` to apply formatting rules.
 
-Directories and files passed as arguments to `script/format_sql` will be
+Directories and files passed as arguments to `./bqetl format` will be
 formatted in place, with directories recursively searched for files with a
 `.sql` extension, e.g.:
 
 ```bash
 $ echo 'SELECT 1,2,3' > test.sql
-$ script/format_sql test.sql
+$ ./bqetl format test.sql
 modified test.sql
 1 file(s) modified
 $ cat test.sql
@@ -126,7 +125,7 @@ If no arguments are specified the script will read from stdin and write to
 stdout, e.g.:
 
 ```bash
-$ echo 'SELECT 1,2,3' | script/format_sql
+$ echo 'SELECT 1,2,3' | ./bqetl format
 SELECT
   1,
   2,

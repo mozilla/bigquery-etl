@@ -17,13 +17,22 @@ WITH sample AS (
       UNNEST(e.events) AS event
     {% else %}
     SELECT
+      {% if app_id == "telemetry" %}
+      *,
+      COUNT(*) OVER (PARTITION BY submission_date, client_id) AS client_event_count
+      {% else %}
       *
+      {% endif %}
     FROM
       {{ source_table }}
     {% endif %}
 ), events AS (
   SELECT
+    {% if app_id == "telemetry" %}
+    * EXCEPT (client_event_count)
+    {% else %}
     *
+    {% endif %}
   FROM
     sample
   WHERE
@@ -32,6 +41,10 @@ WITH sample AS (
       OR (@submission_date IS NULL AND submission_date >= '{{ start_date }}')
     )
     AND client_id IS NOT NULL
+    {% if app_id == "telemetry" %}
+    -- filter out overactive clients: they distort the data and can cause the job to fail: https://bugzilla.mozilla.org/show_bug.cgi?id=1730190
+    AND client_event_count < 3000000
+    {% endif %}
 ),
 joined AS (
   SELECT

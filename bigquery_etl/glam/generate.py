@@ -146,11 +146,7 @@ def main():
                     "description": "The number of users to filter the data on.",
                 },
             },
-            "required": [
-                "build_date_udf", 
-                "filter_version", 
-                "num_versions_to_keep",
-                "total_users"],
+            "required": ["build_date_udf", "filter_version", "num_versions_to_keep","total_users"],
         },
     }
     config = {
@@ -158,19 +154,19 @@ def main():
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
+            "total_users" : 10,
         },
         "org_mozilla_fenix_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
+            "total_users" : 10,
         },
         "org_mozilla_fenix_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users":10,
+            "total_users" :10,
         },
     }
     validate(instance=config, schema=config_schema)

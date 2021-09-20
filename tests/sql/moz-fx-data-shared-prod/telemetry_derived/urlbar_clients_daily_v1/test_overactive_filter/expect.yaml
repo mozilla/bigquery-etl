@@ -22,18 +22,18 @@
     - key: "searchengine"
       value: 5
   count_picked_by_position:
-    - key: "1"
+    - key: 1
       value: 10
-    - key: "2"
+    - key: 2
       value: 10
   urlbar_picked_by_type_by_position:
     - type: "autofill"
       position:
-        - key: "1"
+        - key: 1
           value: 5
     - type: "bookmark"
       position:
-        - key: "1"
+        - key: 1
           value: 5
     - type: "dynamic"
       position: []
@@ -43,7 +43,7 @@
       position: []
     - type: "history"
       position:
-        - key: "2"
+        - key: 2
           value: 5
     - type: "keyword"
       position: []
@@ -51,7 +51,7 @@
       position: []
     - type: "searchengine"
       position:
-        - key: "2"
+        - key: 2
           value: 5
     - type: "searchsuggestion"
       position: []
@@ -80,18 +80,18 @@
     - key: "searchengine"
       value: 5
   count_picked_by_position:
-    - key: "1"
+    - key: 1
       value: 11
-    - key: "2"
+    - key: 2
       value: 10
   urlbar_picked_by_type_by_position:
     - type: "autofill"
       position:
-        - key: "1"
+        - key: 1
           value: 6
     - type: "bookmark"
       position:
-        - key: "1"
+        - key: 1
           value: 5
     - type: "dynamic"
       position: []
@@ -101,7 +101,7 @@
       position: []
     - type: "history"
       position:
-        - key: "2"
+        - key: 2
           value: 5
     - type: "keyword"
       position: []
@@ -109,7 +109,7 @@
       position: []
     - type: "searchengine"
       position:
-        - key: "2"
+        - key: 2
           value: 5
     - type: "searchsuggestion"
       position: []

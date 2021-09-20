@@ -10,7 +10,7 @@ WITH combined AS (
     release_channel,
     position,
   FROM
-    contextual_services_stable.quicksuggest_impression_v1
+    contextual_services.quicksuggest_impression
   UNION ALL
   SELECT
     context_id,
@@ -23,7 +23,7 @@ WITH combined AS (
     release_channel,
     position,
   FROM
-    contextual_services_stable.quicksuggest_click_v1
+    contextual_services.quicksuggest_click
   UNION ALL
   SELECT
     context_id,
@@ -36,7 +36,7 @@ WITH combined AS (
     release_channel,
     position,
   FROM
-    contextual_services_stable.topsites_impression_v1
+    contextual_services.topsites_impression
   UNION ALL
   SELECT
     context_id,
@@ -49,7 +49,7 @@ WITH combined AS (
     release_channel,
     position,
   FROM
-    contextual_services_stable.topsites_click_v1
+    contextual_services.topsites_click
 ),
 with_event_count AS (
   SELECT

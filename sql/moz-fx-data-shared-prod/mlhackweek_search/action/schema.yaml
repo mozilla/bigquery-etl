@@ -209,6 +209,12 @@ fields:
       mode: NULLABLE
       name: search_url_select_timestamp
       type: STRING
+    - description: 'Timestamp of selection action
+
+        '
+      mode: NULLABLE
+      name: search_meta_url_select_timestamp
+      type: STRING
     mode: NULLABLE
     name: datetime
     type: RECORD
@@ -282,6 +288,19 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: glean_error_invalid_value
+      type: RECORD
+    - description: 'Search result position in list of results
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: search_meta_position
       type: RECORD
     mode: NULLABLE
     name: labeled_counter
@@ -392,6 +411,73 @@ fields:
       mode: REPEATED
       name: search_unselected_url
       type: RECORD
+    - description: 'Search result hostname (domain)
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: search_meta_hostname
+      type: RECORD
+    - description: 'Search result starting text (e.g. ''x days ago'', ''1 of 20'')
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: search_meta_preamble
+      type: RECORD
+    - description: 'Initial text of search result
+
+        Search result short description
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: search_meta_short_description
+      type: RECORD
+    - description: 'Search result title
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: search_meta_title
+      type: RECORD
+    - description: 'Search result url
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: search_meta_url
+      type: RECORD
     mode: NULLABLE
     name: labeled_string
     type: RECORD
@@ -462,6 +548,24 @@ fields:
       mode: NULLABLE
       name: search_url
       type: STRING
+    - description: 'Search engine used
+
+        '
+      mode: NULLABLE
+      name: search_meta_search_engine
+      type: STRING
+    - description: 'Submitted search text
+
+        '
+      mode: NULLABLE
+      name: search_meta_search_text
+      type: STRING
+    - description: 'Session id
+
+        '
+      mode: NULLABLE
+      name: search_meta_session_id
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD
@@ -503,6 +607,23 @@ fields:
       type: STRING
     mode: REPEATED
     name: url
+    type: RECORD
+  - fields:
+    - description: 'Indicates whether the URL was selected by user
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: BOOLEAN
+      mode: REPEATED
+      name: search_meta_selected
+      type: RECORD
+    mode: NULLABLE
+    name: labeled_boolean
     type: RECORD
   mode: NULLABLE
   name: metrics

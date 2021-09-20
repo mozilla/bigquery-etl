@@ -283,6 +283,18 @@ fields:
       mode: NULLABLE
       name: tracking_protection_enabled
       type: BOOLEAN
+    - description: 'If Focus is installed on the users''s device.
+
+        '
+      mode: NULLABLE
+      name: installed_mozilla_products_focus
+      type: BOOLEAN
+    - description: 'If Klar is installed on the users''s device.
+
+        '
+      mode: NULLABLE
+      name: installed_mozilla_products_klar
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

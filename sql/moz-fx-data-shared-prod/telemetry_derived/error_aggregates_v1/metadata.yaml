@@ -9,12 +9,6 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_error_aggregates
-  # manually depend on previous day's stable tables, because live tables are
-  # used instead of the current day's stable table partitions
-  depends_on:
-    - dag_name: copy_deduplicate
-      task_id: copy_deduplicate_all
-      execution_delta: 24h
-    - dag_name: copy_deduplicate
-      task_id: copy_deduplicate_main_ping
-      execution_delta: 24h
+  # This dag runs more frequently than upstream tables, so it can't depend on
+  # them directly, which is fine because it also queries live tables.
+  referenced_tables: []

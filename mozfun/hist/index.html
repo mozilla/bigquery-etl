@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -1262,6 +1262,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/search_terms/" class="md-nav__link">
+        search_terms
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/static/" class="md-nav__link">
         static
       </a>
@@ -1524,15 +1536,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#extract-udf" class="md-nav__link">
-    extract (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mean-udf" class="md-nav__link">
-    mean (UDF)
+  <a href="#string_to_json-udf" class="md-nav__link">
+    string_to_json (UDF)
   </a>
   
 </li>
@@ -1545,15 +1550,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#merge-udf" class="md-nav__link">
-    merge (UDF)
+  <a href="#extract-udf" class="md-nav__link">
+    extract (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#string_to_json-udf" class="md-nav__link">
-    string_to_json (UDF)
+  <a href="#merge-udf" class="md-nav__link">
+    merge (UDF)
   </a>
   
 </li>
@@ -1568,6 +1573,13 @@
         <li class="md-nav__item">
   <a href="#threshold_count-udf" class="md-nav__link">
     threshold_count (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mean-udf" class="md-nav__link">
+    mean (UDF)
   </a>
   
 </li>
@@ -1708,15 +1720,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#extract-udf" class="md-nav__link">
-    extract (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mean-udf" class="md-nav__link">
-    mean (UDF)
+  <a href="#string_to_json-udf" class="md-nav__link">
+    string_to_json (UDF)
   </a>
   
 </li>
@@ -1729,15 +1734,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#merge-udf" class="md-nav__link">
-    merge (UDF)
+  <a href="#extract-udf" class="md-nav__link">
+    extract (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#string_to_json-udf" class="md-nav__link">
-    string_to_json (UDF)
+  <a href="#merge-udf" class="md-nav__link">
+    merge (UDF)
   </a>
   
 </li>
@@ -1752,6 +1757,13 @@
         <li class="md-nav__item">
   <a href="#threshold_count-udf" class="md-nav__link">
     threshold_count (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mean-udf" class="md-nav__link">
+    mean (UDF)
   </a>
   
 </li>
@@ -1771,6 +1783,12 @@
                 
                 <h1 id="hist">hist</h1>
 <p>Functions for working with string encodings of histograms from desktop telemetry.</p>
+<h2 id="string_to_json-udf">string_to_json (UDF)</h2>
+<p>Convert a histogram string (in JSON or compact format) to a full histogram JSON blob.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/string_to_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/string_to_json/metadata.yaml">Edit</a></p>
+<h2 id="normalize-udf">normalize (UDF)</h2>
+<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/normalize">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/normalize/metadata.yaml">Edit</a></p>
 <h2 id="extract-udf">extract (UDF)</h2>
 <p>Return a parsed struct from a string-encoded histogram.</p>
 <p>We support a variety of compact encodings as well as the classic JSON
@@ -1799,14 +1817,6 @@ formed, which gives us some flexibility.</p>
 -- 5
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/extract">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/extract/metadata.yaml">Edit</a></p>
-<h2 id="mean-udf">mean (UDF)</h2>
-<p>Given histogram h, return floor(mean) of the measurements in the bucket.
-That is, the histogram sum divided by the number of measurements taken.</p>
-<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/mean">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/mean/metadata.yaml">Edit</a></p>
-<h2 id="normalize-udf">normalize (UDF)</h2>
-<p>Normalize a histogram. Set sum to 1, and normalize to 1 the histogram bucket counts.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/normalize">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/normalize/metadata.yaml">Edit</a></p>
 <h2 id="merge-udf">merge (UDF)</h2>
 <p>Merge an array of histograms into a single histogram.</p>
 <ul>
@@ -1815,9 +1825,6 @@ That is, the histogram sum divided by the number of measurements taken.</p>
 <li>Other fields will take the mode_last</li>
 </ul>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/merge">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/merge/metadata.yaml">Edit</a></p>
-<h2 id="string_to_json-udf">string_to_json (UDF)</h2>
-<p>Convert a histogram string (in JSON or compact format) to a full histogram JSON blob.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/string_to_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/string_to_json/metadata.yaml">Edit</a></p>
 <h2 id="percentiles-udf">percentiles (UDF)</h2>
 <p>Given histogram and list of percentiles,calculate what those percentiles are for the histogram. If the histogram is empty, returns NULL.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/percentiles">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/percentiles/metadata.yaml">Edit</a></p>
@@ -1829,6 +1836,11 @@ not be counted for a threshold of 2. Use threshold that are not bucket
 boundaries with caution.</p>
 <p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/threshold_count">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/threshold_count/metadata.yaml">Edit</a></p>
+<h2 id="mean-udf">mean (UDF)</h2>
+<p>Given histogram h, return floor(mean) of the measurements in the bucket.
+That is, the histogram sum divided by the number of measurements taken.</p>
+<p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L292-L307</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/mean">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/mean/metadata.yaml">Edit</a></p>
                 
               
               
@@ -1899,10 +1911,10 @@ boundaries with caution.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>

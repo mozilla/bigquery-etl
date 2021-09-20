@@ -2615,15 +2615,18 @@ Options:
 <h3 id="format"><code>format</code></h3>
 <p>Format SQL files.</p>
 <p><strong>Usage</strong></p>
-<pre><code class="language-bash">$ ./bqetl format [OPTIONS] [path]
+<pre><code class="language-bash">$ ./bqetl format [OPTIONS] [paths]
 
 </code></pre>
 <p><strong>Examples</strong></p>
-<pre><code class="language-bash"># Format all SQL files
-./bqetl format
-
-# Format a specific file
+<pre><code class="language-bash"># Format a specific file
 ./bqetl format sql/moz-fx-data-shared-prod/telemetry/core/view.sql
+
+# Format all SQL files in `sql/`
+./bqetl format sql
+
+# Format standard in (will write to standard out)
+echo 'SELECT 1,2,3' | ./bqetl format
 </code></pre>
 <h3 id="routine"><code>routine</code></h3>
 <p>Commands for managing routines for internal use.</p>

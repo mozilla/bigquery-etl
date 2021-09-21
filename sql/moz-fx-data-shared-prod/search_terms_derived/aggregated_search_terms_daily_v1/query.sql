@@ -1,6 +1,6 @@
 SELECT
   DATE(submission_timestamp) AS submission_date,
-  search_query,
+  search_query AS search_terms,
   COUNT(*) AS impressions,
   COUNTIF(is_clicked) AS clicks,
   COUNT(DISTINCT context_id) AS client_days

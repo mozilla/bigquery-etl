@@ -1,4 +1,4 @@
-friendly_name: Search Queries Daily
+friendly_name: Aggregated Search Terms Daily
 description: |-
   Impression, click and client counts for search queries logged via
   Contextual Services Suggest Impression Pings

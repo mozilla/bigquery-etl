@@ -43,12 +43,12 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
-    search_terms_derived__search_queries_daily__v1 = bigquery_etl_query(
-        task_id="search_terms_derived__search_queries_daily__v1",
-        destination_table="search_queries_daily_v1",
+    search_terms_derived__aggregated_search_terms_daily__v1 = bigquery_etl_query(
+        task_id="search_terms_derived__aggregated_search_terms_daily__v1",
+        destination_table="aggregated_search_terms_daily_v1",
         dataset_id="search_terms_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="jklukas@mozilla.com",
+        owner="rburwei@mozilla.com",
         email=[
             "jklukas@mozilla.com",
             "rburwei@mozilla.com",
@@ -69,6 +69,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    search_terms_derived__search_queries_daily__v1.set_upstream(
+    search_terms_derived__aggregated_search_terms_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

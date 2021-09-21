@@ -1,8 +1,11 @@
+---
 friendly_name: Search Queries Daily
 description: |-
-  Impression, click and client counts for search queries logged via Contextual Services Suggest Impression Pings
+  Impression, click and client counts for search queries logged via
+  Contextual Services Suggest Impression Pings
+owners:
+  - jklukas@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:search-terms/aggregated
-

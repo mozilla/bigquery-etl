@@ -1,5 +1,5 @@
-CREATE IF NOT EXISTS
-  search_terms_derived.suggest_impression_aggregated.search_queries_daily_v1
+CREATE TABLE IF NOT EXISTS
+  `moz-fx-data-shared-prod.search_terms_derived.search_queries_daily_v1`
 PARTITION BY
   submission_date
 OPTIONS
@@ -11,4 +11,5 @@ SELECT
   CAST(NULL AS INT64) AS impressions,
   CAST(NULL AS INT64) AS clicks,
   CAST(NULL AS INT64) AS client_days,
-
+WHERE
+  FALSE

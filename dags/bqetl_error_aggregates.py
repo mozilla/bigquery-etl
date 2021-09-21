@@ -46,28 +46,3 @@ with DAG(
         depends_on_past=False,
         dag=dag,
     )
-
-    wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(days=1),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    telemetry_derived__error_aggregates__v1.set_upstream(wait_for_copy_deduplicate_all)
-    wait_for_copy_deduplicate_main_ping = ExternalTaskCompletedSensor(
-        task_id="wait_for_copy_deduplicate_main_ping",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_main_ping",
-        execution_delta=datetime.timedelta(days=1),
-        check_existence=True,
-        mode="reschedule",
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    telemetry_derived__error_aggregates__v1.set_upstream(
-        wait_for_copy_deduplicate_main_ping
-    )

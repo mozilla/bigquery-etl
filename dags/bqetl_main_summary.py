@@ -376,6 +376,10 @@ with DAG(
         telemetry_derived__clients_daily_event__v1
     )
 
+    telemetry_derived__clients_daily_joined__v1.set_upstream(
+        telemetry_derived__clients_last_seen__v1
+    )
+
     telemetry_derived__clients_first_seen__v1.set_upstream(
         telemetry_derived__clients_daily__v6
     )

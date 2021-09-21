@@ -1660,3 +1660,9 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
   type: STRING
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+- mode: NULLABLE
+  name: second_seen_date
+  type: DATE

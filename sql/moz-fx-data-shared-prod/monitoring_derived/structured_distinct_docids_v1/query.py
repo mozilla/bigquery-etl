@@ -60,8 +60,7 @@ GROUP BY
   submission_date
 """
 
-# restricted access
-EXCLUDED_NAMESPACES = {"xfocsp_error_report", "contextual_services"}
+EXCLUDED_NAMESPACES = {"xfocsp_error_report"}  # restricted access
 
 
 def get_docid_counts(date, project, destination_dataset, destination_table):

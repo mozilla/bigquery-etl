@@ -41,4 +41,4 @@
     - key: "0"
       value: 6
     - key: "1"
-      value: 10001 # 1 over the threshold
+      value: 10001  # 1 over the threshold

@@ -9,7 +9,7 @@ labels:
 scheduling:
   dag_name: bqetl_deletion_request_volume
   referenced_tables:
-     - ['moz-fx-data-shared-prod',
+    - ['moz-fx-data-shared-prod',
        'monitoring',
        'payload_bytes_decoded_structured']
     - ['moz-fx-data-shared-prod',

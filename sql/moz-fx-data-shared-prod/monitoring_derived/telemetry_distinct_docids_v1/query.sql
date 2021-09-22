@@ -1,10 +1,11 @@
 WITH decoded_counts AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    _TABLE_SUFFIX AS doc_type,
+    -- We sub '-' for '_' for historical continuity
+    REPLACE(metadata.document_type, '-', '_') AS doc_type,
     COUNT(DISTINCT(document_id)) AS decoded,
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_decoded.telemetry_telemetry__*`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_telemetry`
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY

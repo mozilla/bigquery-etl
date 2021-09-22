@@ -929,6 +929,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#payload_bytes_decoded_all" class="md-nav__link">
+    payload_bytes_decoded_all
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#payload_bytes_decoded_structured" class="md-nav__link">
+    payload_bytes_decoded_structured
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#payload_bytes_decoded_stub_installer" class="md-nav__link">
+    payload_bytes_decoded_stub_installer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#payload_bytes_decoded_telemetry" class="md-nav__link">
+    payload_bytes_decoded_telemetry
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#payload_bytes_error_all" class="md-nav__link">
     payload_bytes_error_all
   </a>
@@ -1826,6 +1854,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#payload_bytes_decoded_all" class="md-nav__link">
+    payload_bytes_decoded_all
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#payload_bytes_decoded_structured" class="md-nav__link">
+    payload_bytes_decoded_structured
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#payload_bytes_decoded_stub_installer" class="md-nav__link">
+    payload_bytes_decoded_stub_installer
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#payload_bytes_decoded_telemetry" class="md-nav__link">
+    payload_bytes_decoded_telemetry
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#payload_bytes_error_all" class="md-nav__link">
     payload_bytes_error_all
   </a>
@@ -2018,6 +2074,110 @@
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/document_sample_nonprod">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/document_sample_nonprod/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/document_sample_nonprod/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="payload_bytes_decoded_all"><a href="#payload_bytes_decoded_all">payload_bytes_decoded_all</a></h2>
+<p>A view on top of the <code>payload_bytes_decoded.*</code> tables that includes all
+fields except the payload.</p>
+<p>This view is useful for overall pipeline monitoring.</p>
+<p>Clustering fields: <code>submission_timestamp</code></p>
+<ul>
+<li>Friendly name: All Decoded Tables</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring>monitoring</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured>payload_bytes_decoded_structured</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring>monitoring</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer>payload_bytes_decoded_stub_installer</a></td>
+        </tr><tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring>monitoring</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_telemetry>payload_bytes_decoded_telemetry</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_all">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_all/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_all/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="payload_bytes_decoded_structured"><a href="#payload_bytes_decoded_structured">payload_bytes_decoded_structured</a></h2>
+<p>A view on top of the <code>payload_bytes_decoded.structured_*</code> tables that
+includes all fields except the payload.</p>
+<p>This view is useful for overall pipeline monitoring.</p>
+<p>Clustering fields: <code>submission_timestamp</code></p>
+<ul>
+<li>Friendly name: Structured Pipeline Family Decoded</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_decoded>payload_bytes_decoded</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_decoded/structured_*>structured_*</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="payload_bytes_decoded_stub_installer"><a href="#payload_bytes_decoded_stub_installer">payload_bytes_decoded_stub_installer</a></h2>
+<p>A view on top of the <code>payload_bytes_decoded.stub_installer_*</code> tables that
+includes all fields except the payload.</p>
+<p>This view is useful for overall pipeline monitoring.</p>
+<p>Clustering fields: <code>submission_timestamp</code></p>
+<ul>
+<li>Friendly name: Stub Installer Pipeline Family Decoded</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_decoded>payload_bytes_decoded</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_decoded/stub_installer_*>stub_installer_*</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="payload_bytes_decoded_telemetry"><a href="#payload_bytes_decoded_telemetry">payload_bytes_decoded_telemetry</a></h2>
+<p>A view on top of the <code>payload_bytes_decoded.telemetry_*</code> tables that
+includes all fields except the payload.</p>
+<p>This view is useful for overall pipeline monitoring.</p>
+<p>Clustering fields: <code>submission_timestamp</code></p>
+<ul>
+<li>Friendly name: Telemetry Pipeline Family Decoded</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_decoded>payload_bytes_decoded</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/payload_bytes_decoded/telemetry_*>telemetry_*</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_telemetry">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_telemetry/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_telemetry/view.sql">View Definition</a> </p>
 <hr />
 <h2 id="payload_bytes_error_all"><a href="#payload_bytes_error_all">payload_bytes_error_all</a></h2>
 <p>A view on top of the <code>payload_bytes_error.*</code> tables that includes all

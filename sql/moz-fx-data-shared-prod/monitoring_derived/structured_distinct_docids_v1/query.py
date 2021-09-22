@@ -13,21 +13,20 @@ WITH decoded AS (
   SELECT
     * EXCEPT (metadata),  -- Some tables have different field order in metadata
     metadata.header.x_source_tags,
-    _TABLE_SUFFIX,
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_decoded.structured_*`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_structured`
   UNION ALL
   SELECT
     * EXCEPT (metadata),
     metadata.header.x_source_tags,
-    _TABLE_SUFFIX,
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_decoded.stub_installer_*`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_stub_installer`
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,
-  SPLIT(_TABLE_SUFFIX, '__')[OFFSET(0)] AS namespace,
-  SPLIT(_TABLE_SUFFIX, '__')[OFFSET(1)] AS doc_type,
+  -- We sub '-' for '_' for historical continuity
+  REPLACE(namespace, '-', '_') AS namespace,
+  doc_type,
   COUNT(DISTINCT(document_id)) AS docid_count,
 FROM
   decoded
@@ -151,5 +150,8 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     get_docid_counts(
-        args.date, args.project, args.destination_dataset, args.destination_table,
+        args.date,
+        args.project,
+        args.destination_dataset,
+        args.destination_table,
     )

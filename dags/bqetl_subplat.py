@@ -288,6 +288,22 @@ with DAG(
         dag=dag,
     )
 
+    mozilla_vpn_derived__vat_rates__v1 = gke_command(
+        task_id="mozilla_vpn_derived__vat_rates__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/vat_rates_v1/query.py",
+        ]
+        + [],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        gcp_conn_id="google_cloud_airflow_gke",
+        gke_location="us-west1",
+        gke_cluster_name="workloads-prod-v1",
+        retry_delay=datetime.timedelta(seconds=300),
+    )
+
     mozilla_vpn_derived__waitlist__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__waitlist__v1",
         destination_table="waitlist_v1",
@@ -343,22 +359,6 @@ with DAG(
             "external_database_query:STRING:SELECT * FROM users WHERE DATE(updated_at) = DATE '{{ds}}'"
         ],
         dag=dag,
-    )
-
-    mozilla_vpn_external__vat_rates__v1 = gke_command(
-        task_id="mozilla_vpn_external__vat_rates__v1",
-        command=[
-            "python",
-            "sql/moz-fx-data-shared-prod/mozilla_vpn_external/vat_rates_v1/query.py",
-        ]
-        + [],
-        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="dthorn@mozilla.com",
-        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
-        gcp_conn_id="google_cloud_airflow_gke",
-        gke_location="us-west1",
-        gke_cluster_name="workloads-prod-v1",
-        retry_delay=datetime.timedelta(seconds=300),
     )
 
     mozilla_vpn_external__waitlist__v1 = bigquery_etl_query(

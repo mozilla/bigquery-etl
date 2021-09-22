@@ -32,7 +32,7 @@ client = bigquery.Client(credentials=credentials, project=project)
 
 query = client.query(
     """CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod`.mozilla_vpn_external.vat_rates_v1
+  `moz-fx-data-shared-prod`.mozilla_vpn_derived.vat_rates_v1
 AS
 SELECT
   * REPLACE (

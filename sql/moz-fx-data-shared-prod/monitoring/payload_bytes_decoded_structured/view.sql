@@ -2,9 +2,19 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_structured`
 AS
 SELECT
-  * EXCEPT (payload),
-  SPLIT(_TABLE_SUFFIX, '__')[OFFSET(0)] AS namespace,
-  SPLIT(_TABLE_SUFFIX, '__')[OFFSET(1)] AS doc_type,
-  REGEXP_EXTRACT(_TABLE_SUFFIX, r"^.*_v(.*)$") AS doc_version
+  'structured' AS pipeline_family,
+  * EXCEPT (payload) REPLACE(
+    -- We normalize the order of metadata fields to be consistent across
+    -- pipeline families, allowing UNION ALL queries.
+    STRUCT(
+      metadata.document_namespace,
+      metadata.document_type,
+      metadata.document_version,
+      metadata.geo,
+      metadata.header,
+      metadata.isp,
+      metadata.uri
+    ) AS metadata
+  )
 FROM
   `moz-fx-data-shared-prod.payload_bytes_decoded.structured_*`

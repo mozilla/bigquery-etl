@@ -1,0 +1,10 @@
+friendly_name: Fenix Derived
+description: |-
+  Derived data based on pings from Firefox for Android (all channels)
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

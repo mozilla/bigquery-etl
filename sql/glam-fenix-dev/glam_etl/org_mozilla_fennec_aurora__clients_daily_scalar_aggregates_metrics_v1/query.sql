@@ -239,6 +239,41 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.credit_cards_delete_card AS INT64))
       ),
       (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.credit_cards_deleted AS INT64))
+      ),
+      (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.credit_cards_deleted) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.credit_cards_deleted AS INT64))
+      ),
+      (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.credit_cards_deleted AS INT64))
+      ),
+      (
+        'credit_cards_deleted',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.credit_cards_deleted AS INT64))
+      ),
+      (
         'credit_cards_manual_save',
         'counter',
         '',
@@ -272,6 +307,41 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.credit_cards_manual_save AS INT64))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.credit_cards_saved AS INT64))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.credit_cards_saved) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.credit_cards_saved AS INT64))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.credit_cards_saved AS INT64))
+      ),
+      (
+        'credit_cards_saved',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.credit_cards_saved AS INT64))
       ),
       (
         'engine_kill_background_age',
@@ -1613,6 +1683,76 @@ unlabeled_metrics AS (
         '',
         'true',
         SUM(CAST(metrics.boolean.preferences_voice_search_enabled AS INT64))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.recent_bookmarks_bookmark_clicked AS INT64))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.recent_bookmarks_bookmark_clicked) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.recent_bookmarks_bookmark_clicked AS INT64))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.recent_bookmarks_bookmark_clicked AS INT64))
+      ),
+      (
+        'recent_bookmarks_bookmark_clicked',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.recent_bookmarks_bookmark_clicked AS INT64))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.recent_bookmarks_show_all_bookmarks AS INT64))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.recent_bookmarks_show_all_bookmarks) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.recent_bookmarks_show_all_bookmarks AS INT64))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.recent_bookmarks_show_all_bookmarks AS INT64))
+      ),
+      (
+        'recent_bookmarks_show_all_bookmarks',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.recent_bookmarks_show_all_bookmarks AS INT64))
       )
     ] AS scalar_aggregates
   FROM
@@ -1636,9 +1776,16 @@ grouped_labeled_metrics AS (
     app_build_id,
     channel,
     ARRAY<STRUCT<name STRING, type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
+      ('avif_alpha', 'labeled_counter', metrics.labeled_counter.avif_alpha),
       ('avif_bit_depth', 'labeled_counter', metrics.labeled_counter.avif_bit_depth),
+      ('avif_cicp_cp', 'labeled_counter', metrics.labeled_counter.avif_cicp_cp),
+      ('avif_cicp_mc', 'labeled_counter', metrics.labeled_counter.avif_cicp_mc),
+      ('avif_cicp_tc', 'labeled_counter', metrics.labeled_counter.avif_cicp_tc),
+      ('avif_colr', 'labeled_counter', metrics.labeled_counter.avif_colr),
       ('avif_decode_result', 'labeled_counter', metrics.labeled_counter.avif_decode_result),
       ('avif_decoder', 'labeled_counter', metrics.labeled_counter.avif_decoder),
+      ('avif_ispe', 'labeled_counter', metrics.labeled_counter.avif_ispe),
+      ('avif_pixi', 'labeled_counter', metrics.labeled_counter.avif_pixi),
       ('avif_yuv_color_space', 'labeled_counter', metrics.labeled_counter.avif_yuv_color_space),
       (
         'browser_search_ad_clicks',

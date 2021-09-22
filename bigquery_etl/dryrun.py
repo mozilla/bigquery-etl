@@ -113,7 +113,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/search_terms/suggest_impression_sanitized/view.sql",
+    *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
     "sql/moz-fx-data-shared-prod/stripe_external/charges_v1/init.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/payouts_v1/init.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/subscriptions_v1/init.sql",

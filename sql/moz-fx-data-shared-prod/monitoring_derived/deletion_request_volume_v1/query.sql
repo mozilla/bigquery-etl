@@ -8,7 +8,7 @@ FROM
 WHERE
   DATE(submission_timestamp) < CURRENT_DATE
   AND (@submission_date IS NULL OR @submission_date = DATE(submission_timestamp))
-  AND document_type = 'deletion_request'
+  AND doc_type = 'deletion_request'
 GROUP BY
   submission_date,
   dataset_id

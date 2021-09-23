@@ -1,7 +1,6 @@
 SELECT
   search_query AS query,
   block_id,
-  position,
   COUNT(*) AS impressions,
   COUNTIF(is_clicked) AS clicks,
 FROM

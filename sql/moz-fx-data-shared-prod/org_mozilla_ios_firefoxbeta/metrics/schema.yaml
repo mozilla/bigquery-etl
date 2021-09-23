@@ -911,6 +911,14 @@ fields:
       mode: NULLABLE
       name: onboarding_welcome_screen_sign_up
       type: INTEGER
+    - description: 'Record the number of times a user pulls down
+
+        on a page to reload.
+
+        '
+      mode: NULLABLE
+      name: tabs_pull_to_refresh
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

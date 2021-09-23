@@ -13,19 +13,21 @@ WITH decoded AS (
   SELECT
     * EXCEPT (metadata),  -- Some tables have different field order in metadata
     metadata.header.x_source_tags,
+    metadata.document_namespace,
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_structured`
   UNION ALL
   SELECT
     * EXCEPT (metadata),
     metadata.header.x_source_tags,
+    metadata.document_namespace,
   FROM
     `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_stub_installer`
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,
   -- We sub '-' for '_' for historical continuity
-  REPLACE(namespace, '-', '_') AS namespace,
+  REPLACE(document_namespace, '-', '_') AS namespace,
   doc_type,
   COUNT(DISTINCT(document_id)) AS docid_count,
 FROM

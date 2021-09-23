@@ -16,4 +16,4 @@ SELECT
     IFNULL(geo_subdivision2, '??') AS geo_subdivision2
   )
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+  `moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1`

@@ -12,9 +12,6 @@ RUN groupadd --gid ${USER_ID} ${GROUP_ID} && \
 
 WORKDIR ${HOME}
 
-# RUN mkdir ${HOME}/.ssh
-# COPY known_hosts .ssh/
-
 COPY . .
 
 # Drop root and change ownership of the application folder to the user

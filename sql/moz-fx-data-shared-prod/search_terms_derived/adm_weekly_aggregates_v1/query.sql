@@ -11,8 +11,7 @@ WHERE
   AND DATE_SUB(@submission_date, INTERVAL 6 DAY)
 GROUP BY
   query,
-  block_id,
-  position
+  block_id
 HAVING
   -- This filter matches aggregated_search_terms_daily, but may change; see
   -- https://bugzilla.mozilla.org/show_bug.cgi?id=1729524

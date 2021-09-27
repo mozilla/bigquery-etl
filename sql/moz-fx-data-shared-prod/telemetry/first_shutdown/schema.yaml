@@ -19511,6 +19511,19 @@ fields:
       mode: NULLABLE
       name: use_counter2_css_property_backdrop_filter_page
       type: STRING
+    - description: Does CRLite and OCSP fetching agree when a certificate is revoked?
+      mode: NULLABLE
+      name: crlite_vs_ocsp_result
+      type: STRING
+    - description: Whether the budget was increased due to taking too long or approaching
+        the incremental limit
+      mode: NULLABLE
+      name: gc_budget_was_increased
+      type: STRING
+    - description: Whether a GC slice took 1.5 times or 5ms more than its budget
+      mode: NULLABLE
+      name: gc_slice_was_long
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40218,6 +40231,15 @@ fields:
         - description: Whether a page used the CSS property backdrop-filter
           mode: NULLABLE
           name: use_counter2_css_property_backdrop_filter_page
+          type: STRING
+        - description: Whether the budget was increased due to taking too long or
+            approaching the incremental limit
+          mode: NULLABLE
+          name: gc_budget_was_increased
+          type: STRING
+        - description: Whether a GC slice took 1.5 times or 5ms more than its budget
+          mode: NULLABLE
+          name: gc_slice_was_long
           type: STRING
         mode: NULLABLE
         name: histograms

@@ -59,10 +59,10 @@ with DAG(
         dag=dag,
     )
 
-    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskCompletedSensor(
-        task_id="wait_for_telemetry_derived__clients_daily__v6",
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskCompletedSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
         external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily__v6",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -70,5 +70,5 @@ with DAG(
     )
 
     telemetry_derived__urlbar_clients_daily__v1.set_upstream(
-        wait_for_telemetry_derived__clients_daily__v6
+        wait_for_telemetry_derived__clients_daily_joined__v1
     )

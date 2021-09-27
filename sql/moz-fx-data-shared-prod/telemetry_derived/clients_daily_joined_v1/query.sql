@@ -10,13 +10,21 @@ WITH first_seen AS (
   WHERE
     days_since_seen = 0
     AND submission_date = @submission_date
+),
+daily_events AS (
+  SELECT
+    *
+  FROM
+    telemetry_derived.clients_daily_event_v1
+  WHERE
+    submission_date = @submission_date
 )
 SELECT
   *
 FROM
   telemetry_derived.clients_daily_v6 AS cd
 LEFT JOIN
-  telemetry_derived.clients_daily_event_v1 AS cde
+  daily_events
 USING
   (submission_date, sample_id, client_id)
 LEFT JOIN
@@ -25,4 +33,3 @@ USING
   (submission_date, sample_id, client_id)
 WHERE
   cd.submission_date = @submission_date
-  AND cde.submission_date = @submission_date

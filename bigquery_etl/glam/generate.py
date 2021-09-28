@@ -140,8 +140,18 @@ def main():
                     "minimum": 1,
                     "description": "The number of versions to keep.",
                 },
+                "total_users": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "The number of users to filter the data on.",
+                },
             },
-            "required": ["build_date_udf", "filter_version", "num_versions_to_keep"],
+            "required": [
+                "build_date_udf",
+                "filter_version",
+                "num_versions_to_keep",
+                "total_users",
+            ],
         },
     }
     config = {
@@ -149,16 +159,19 @@ def main():
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
+            "total_users": 10,
         },
         "org_mozilla_fenix_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
+            "total_users": 10,
         },
         "org_mozilla_fenix_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
+            "total_users": 10,
         },
     }
     validate(instance=config, schema=config_schema)
@@ -245,7 +258,9 @@ def main():
         table("histogram_percentiles_v1"),
         view("view_probe_counts_v1"),
         view("view_user_counts_v1", **models.user_counts()),
+        view("view_sample_counts_v1", **models.sample_counts()),
         table("extract_user_counts_v1", **config[args.prefix]),
+        table("extract_sample_counts_v1", **config[args.prefix]),
         table("extract_probe_counts_v1", **config[args.prefix]),
     ]
 

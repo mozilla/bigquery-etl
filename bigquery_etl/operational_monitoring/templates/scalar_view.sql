@@ -16,8 +16,6 @@ SELECT
     ELSE SUM(value)
   END AS value
 FROM `{{gcp_project}}.{{dataset}}.{{slug}}_scalar`
-CROSS JOIN
-  UNNEST(metrics)
 WHERE
   PARSE_DATE('%Y%m%d', CAST(build_id AS STRING)) > DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
   AND DATE(submission_date) = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)

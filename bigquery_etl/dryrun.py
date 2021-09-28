@@ -68,6 +68,9 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_telemetry/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql",
@@ -113,6 +116,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
+    *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
     "sql/moz-fx-data-shared-prod/stripe_external/charges_v1/init.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/payouts_v1/init.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/subscriptions_v1/init.sql",
@@ -130,9 +134,11 @@ SKIP = {
     "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_summary_v1/query.sql",
     "sql/moz-fx-data-bq-performance/release_criteria/stale_tests_v1/query.sql",
     "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_v1/query.sql",
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/contextual_services/**/*.sql", recursive=True
+    ),
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql",
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/contextual_services/event_aggregates/view.sql",
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

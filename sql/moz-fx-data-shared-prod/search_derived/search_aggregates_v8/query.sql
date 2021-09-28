@@ -13,6 +13,7 @@ SELECT
   os,
   os_version,
   is_default_browser,
+  channel,
   COUNT(*) AS client_count,
   SUM(organic) AS organic,
   SUM(tagged_sap) AS tagged_sap,
@@ -42,4 +43,5 @@ GROUP BY
   default_private_search_engine,
   os,
   os_version,
-  is_default_browser
+  is_default_browser,
+  channel

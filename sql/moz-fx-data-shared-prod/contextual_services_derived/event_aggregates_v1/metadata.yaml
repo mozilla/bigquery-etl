@@ -2,9 +2,13 @@ friendly_name: Contextual Services Event Aggregates
 description: |-
   Aggregated event and user counts for topsites and quicksuggest
 owners:
-- jklukas@mozilla.com
+  - jklukas@mozilla.com
 labels:
   incremental: true
   schedule: daily
 scheduling:
   dag_name: bqetl_ctxsvc_derived
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:contextual-services

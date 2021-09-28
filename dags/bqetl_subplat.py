@@ -187,12 +187,8 @@ with DAG(
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_intercept_q3_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="amiyaguchi@mozilla.com",
-        email=[
-            "amiyaguchi@mozilla.com",
-            "dthorn@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     mozilla_vpn_derived__survey_market_fit__v1 = gke_command(
@@ -214,12 +210,8 @@ with DAG(
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_market_fit_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="amiyaguchi@mozilla.com",
-        email=[
-            "amiyaguchi@mozilla.com",
-            "dthorn@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     mozilla_vpn_derived__survey_product_quality__v1 = gke_command(
@@ -241,12 +233,8 @@ with DAG(
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_product_quality_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="amiyaguchi@mozilla.com",
-        email=[
-            "amiyaguchi@mozilla.com",
-            "dthorn@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     mozilla_vpn_derived__survey_recommend__v1 = gke_command(
@@ -268,12 +256,8 @@ with DAG(
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_recommend_v1",
         ],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="amiyaguchi@mozilla.com",
-        email=[
-            "amiyaguchi@mozilla.com",
-            "dthorn@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
     mozilla_vpn_derived__users__v1 = bigquery_etl_query(

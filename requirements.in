@@ -2,7 +2,7 @@ attrs==21.2.0
 authlib==0.15.4
 cattrs==1.8.0
 click==8.0.1
-gcsfs==2021.8.1
+gcsfs==2021.9.0
 gcloud==0.18.3
 gitpython==3.1.24
 google-api-core==1.31.2  # transitive dep that needs dependabot updates

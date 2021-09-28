@@ -6,6 +6,8 @@ SELECT
   COUNT(DISTINCT context_id) AS client_days
 FROM
   `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
+WHERE
+  DATE(submission_timestamp) = @submission_date
 GROUP BY
   submission_date,
   search_query

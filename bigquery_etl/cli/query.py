@@ -489,7 +489,7 @@ def _backfill_query(
 )
 @click.argument("name")
 @sql_dir_option
-@project_id_option()
+@project_id_option(required=True)
 @click.option(
     "--start_date",
     "--start-date",

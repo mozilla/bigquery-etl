@@ -12,6 +12,7 @@ WITH sample AS (
           normalized_channel,
           normalized_os,
           normalized_os_version,
+          client_info.client_id as client_id,
           {% for property in user_properties %}
           client_info.{{property.src}} as {{property.src}},
           {% endfor %}

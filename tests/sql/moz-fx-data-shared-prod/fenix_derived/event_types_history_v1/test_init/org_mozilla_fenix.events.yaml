@@ -1,7 +1,7 @@
 -
-  submission_timestamp: '2020-01-02 00:00:00'
+  submission_timestamp: '2020-01-02 00:00:02'
   ping_info:
-    parsed_start_time: '2020-01-02 00:00:00'
+    parsed_start_time: '2020-01-02 00:00:02'
   events:
     -
       timestamp: 1000

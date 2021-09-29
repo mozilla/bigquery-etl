@@ -237,15 +237,6 @@ bqetl_experiments_daily:
     retries: 2
     retry_delay: 30m
 
-bqetl_document_sample:
-  schedule_interval: daily
-  default_args:
-    owner: amiyaguchi@mozilla.com
-    start_date: "2020-02-17"
-    email: ["telemetry-alerts@mozilla.com", "amiyaguchi@mozilla.com"]
-    retries: 2
-    retry_delay: 30m
-
 bqetl_asn_aggregates:
   schedule_interval: 0 2 * * *
   description: The DAG schedules ASN aggregates queries.

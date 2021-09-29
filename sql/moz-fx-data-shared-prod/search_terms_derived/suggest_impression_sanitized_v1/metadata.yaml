@@ -1,0 +1,27 @@
+---
+friendly_name: Sanitized Firefox Suggest Impressions with Search Terms
+owners:
+- jklukas@mozilla.com
+labels:
+  incremental: true
+description: |-
+  A sanitized variant of historical Firefox Suggest impression pings
+  containing search terms.
+
+  This table allows removal of PII and slightly longer retention than
+  the underlying ping table.
+scheduling:
+  dag_name: bqetl_search_terms_daily
+bigquery:
+  time_partitioning:
+    field: submission_timestamp
+    type: day
+    require_partition_filter: true
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/sanitized

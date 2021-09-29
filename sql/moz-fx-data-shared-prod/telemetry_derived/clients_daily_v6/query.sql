@@ -958,7 +958,7 @@ aggregates AS (
       ARRAY_AGG(update_enabled ORDER BY submission_timestamp)
     ) AS update_enabled,
     mozfun.stats.mode_last(
-      ARRAY_AGG(update_enabled ORDER BY submission_timestamp)
+      ARRAY_AGG(update_background ORDER BY submission_timestamp)
     ) AS update_background,
     mozfun.stats.mode_last(ARRAY_AGG(vendor ORDER BY submission_timestamp)) AS vendor,
     SUM(web_notification_shown) AS web_notification_shown_sum,

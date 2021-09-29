@@ -29,8 +29,8 @@ WITH decoded AS (
 SELECT
   DATE(submission_timestamp) AS submission_date,
   -- We sub '-' for '_' for historical continuity
-  REPLACE(document_namespace, '-', '_') AS namespace,
-  REPLACE(document_type, '-', '_') AS doc_type,
+  LOWER(REGEXP_REPLACE(REPLACE(document_namespace, '-', '_'), r"[^_\w]", "")) AS namespace,
+  LOWER(REGEXP_REPLACE(REPLACE(document_type,      '-', '_'), r"[^_\w]", "")) AS doc_type,
   COUNT(DISTINCT(document_id)) AS docid_count,
 FROM
   decoded
@@ -64,7 +64,8 @@ GROUP BY
   submission_date
 """
 
-EXCLUDED_NAMESPACES = {"xfocsp_error_report"}  # restricted access
+# Restricted access
+EXCLUDED_NAMESPACES = {"regrets_reporter", "contextual_services"}
 
 
 def get_docid_counts(date, project, destination_dataset, destination_table):

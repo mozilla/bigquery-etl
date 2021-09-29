@@ -1,7 +1,7 @@
 How to Run Tests
 ===
 
-This repository uses `pytest`:
+This repository uses `pytest` and the project `bigquery-etl-integration-test`:
 
 ```
 # create a venv
@@ -24,7 +24,7 @@ mvn dependency:copy-dependencies
 
 # run integration tests with 4 workers in parallel
 gcloud auth application-default login # or set GOOGLE_APPLICATION_CREDENTIALS
-export GOOGLE_PROJECT_ID="bigquery-etl-integration-test"
+gcloud config set project bigquery-etl-integration-test # or set GOOGLE_PROJECT_ID
 ./venv/bin/pytest -m integration -n 4
 ```
 

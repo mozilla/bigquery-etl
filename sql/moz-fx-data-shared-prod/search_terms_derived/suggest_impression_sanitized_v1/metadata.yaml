@@ -1,7 +1,7 @@
 ---
 friendly_name: Sanitized Firefox Suggest Impressions with Search Terms
 owners:
-- jklukas@mozilla.com
+  - jklukas@mozilla.com
 labels:
   incremental: true
 description: |-

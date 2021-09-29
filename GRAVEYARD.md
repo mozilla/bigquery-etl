@@ -2,6 +2,14 @@
 
 This document records interesting code that we've deleted for the sake of discoverability for the future.
 
+## 2021-09 Remove document sampling queries
+
+- [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2389)
+- [Bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1731777)
+
+We've removed the CI task from mozilla-pipeline-schemas that used this
+document sample, so there is no further need for the ETL to support it.
+
 ## 2021-08 Remove amplitude views
 
 - [Removal PR](https://github.com/mozilla/bigquery-etl/pull/2279)

@@ -24,7 +24,8 @@ mvn dependency:copy-dependencies
 
 # run integration tests with 4 workers in parallel
 gcloud auth application-default login # or set GOOGLE_APPLICATION_CREDENTIALS
-export GOOGLE_PROJECT_ID="bigquery-etl-integration-test"
+export GOOGLE_PROJECT_ID=bigquery-etl-integration-test
+gcloud config set project $GOOGLE_PROJECT_ID
 ./venv/bin/pytest -m integration -n 4
 ```
 

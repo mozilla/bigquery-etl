@@ -30,7 +30,7 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Merge pull-request
 1. Backfill data
     * Option 1: via Airflow interface
-    * Option 2: `./bqetl query backfill <dataset>.<table>_<version>`
+    * Option 2: `./bqetl query backfill --project-id <project id> <dataset>.<table>_<version>`
 
 ## Update an existing query
 

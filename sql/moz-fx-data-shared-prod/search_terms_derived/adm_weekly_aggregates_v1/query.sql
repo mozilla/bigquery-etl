@@ -1,6 +1,6 @@
 SELECT
   DATE(submission_timestamp) AS submission_date,
-  search_query AS query,
+  LOWER(search_query) AS query,
   block_id,
   COUNT(*) AS impressions,
   COUNTIF(is_clicked) AS clicks,

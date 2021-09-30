@@ -49318,6 +49318,14 @@ fields:
           mode: NULLABLE
           name: update_no_window_auto_restarts
           type: INTEGER
+        - description: 'Recorded on every run of a Firefox install on macOS, with
+            a boolean value indicating whether Firefox is being run directly from
+            .dmg without installing, or not.
+
+            '
+          mode: NULLABLE
+          name: startup_is_run_from_dmg
+          type: BOOLEAN
         mode: NULLABLE
         name: scalars
         type: RECORD

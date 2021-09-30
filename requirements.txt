@@ -365,9 +365,9 @@ jinja2==3.0.1 \
     --hash=sha256:1f06f2da51e7b56b8f238affdd6b4e2c61e39598a378cc49345bc1bd42a978a4 \
     --hash=sha256:703f484b47a6af502e743c9122595cc812b0271f661722403114f71a79d0f5a4
     # via -r requirements.in
-jsonschema==3.2.0 \
-    --hash=sha256:4e5b3cf8216f577bee9ce139cbe72eca3ea4f292ec60928ff24758ce626cd163 \
-    --hash=sha256:c8a85b28d377cc7737e46e2d9f2b4f44ee3c0e1deac6bf46ddefc7187d30797a
+jsonschema==4.0.0 \
+    --hash=sha256:bc51325b929171791c42ebc1c70b9713eb134d3bb8ebd5474c8b659b15be6d86 \
+    --hash=sha256:c773028c649441ab980015b5b622f4cd5134cf563daaf0235ca4b73cc3734f20
     # via
     #   -r requirements.in
     #   mozilla-schema-generator
@@ -848,7 +848,6 @@ six==1.15.0 \
     #   google-cloud-storage
     #   google-resumable-media
     #   grpcio
-    #   jsonschema
     #   oauth2client
     #   protobuf
     #   python-dateutil
@@ -1038,6 +1037,5 @@ setuptools==56.0.0 \
     # via
     #   google-api-core
     #   google-auth
-    #   jsonschema
     #   pip-tools
     #   yamllint

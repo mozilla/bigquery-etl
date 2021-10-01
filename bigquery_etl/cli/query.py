@@ -5,7 +5,6 @@ import re
 import string
 import sys
 from datetime import date, timedelta
-
 from functools import partial
 from multiprocessing.pool import Pool
 from pathlib import Path
@@ -19,11 +18,11 @@ from ..cli.format import format
 from ..cli.utils import (
     is_authenticated,
     is_valid_project,
-    sql_dir_option,
-    use_cloud_function_option,
     paths_matching_name_pattern,
     project_id_option,
     respect_dryrun_skip_option,
+    sql_dir_option,
+    use_cloud_function_option,
 )
 from ..dependency import get_dependency_graph
 from ..dryrun import SKIP, DryRun
@@ -650,7 +649,7 @@ def validate(
     dataset_dirs = set()
     for query in query_files:
         project = query.parent.parent.parent.name
-        ctx.invoke(format, path=str(query))
+        ctx.invoke(format, paths=[str(query)])
         ctx.invoke(
             dryrun,
             paths=[str(query)],

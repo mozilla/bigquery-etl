@@ -1,5 +1,6 @@
 """bigquery-etl CLI UDF command."""
 
+import copy
 import os
 import re
 import shutil
@@ -9,7 +10,6 @@ from fnmatch import fnmatchcase
 from pathlib import Path
 
 import click
-import copy
 import pytest
 import yaml
 
@@ -365,7 +365,7 @@ def validate(ctx, name, sql_dir, project_id):
 
     validate_docs.validate(project_dirs(project_id))
     for routine_file in routine_files:
-        ctx.invoke(format, path=str(routine_file.parent))
+        ctx.invoke(format, paths=[str(routine_file.parent)])
         pytest.main([str(routine_file.parent)])
 
 

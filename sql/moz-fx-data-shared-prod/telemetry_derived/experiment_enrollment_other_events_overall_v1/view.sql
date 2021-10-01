@@ -20,11 +20,12 @@ SELECT
   window_start AS `time`,
   experiment,
   branch,
-  event.event AS event,
-  SUM(event.count) AS value
+  e.event AS event,
+  SUM(e.count) AS value
 FROM
-  pivot,
-  UNNEST(events) AS event
+  pivot
+CROSS JOIN
+  UNNEST(events) AS e
 GROUP BY
   1,
   2,

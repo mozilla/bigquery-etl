@@ -10,6 +10,28 @@ WITH all_events AS (
     org_mozilla_firefox.events e
   CROSS JOIN
     UNNEST(e.events) AS event
+  UNION ALL
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+    category,
+    name AS event,
+    extra,
+  FROM
+    org_mozilla_firefox_beta.events e
+  CROSS JOIN
+    UNNEST(e.events) AS event
+  UNION ALL
+  SELECT
+    DATE(submission_timestamp) AS submission_date,
+    SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+    category,
+    name AS event,
+    extra,
+  FROM
+    org_mozilla_fenix.events e
+  CROSS JOIN
+    UNNEST(e.events) AS event
 ),
 current_events AS (
   SELECT
@@ -23,7 +45,7 @@ event_types AS (
   SELECT
     *
   FROM
-    org_mozilla_firefox_derived.event_types_history_v1
+    fenix_derived.event_types_history_v1
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
 ),

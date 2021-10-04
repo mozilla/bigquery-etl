@@ -5,4 +5,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_firefox_derived.event_types_v1`
+  `moz-fx-data-shared-prod.fenix_derived.event_types_v1`

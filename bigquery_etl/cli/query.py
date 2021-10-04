@@ -1119,6 +1119,20 @@ def deploy(
             click.echo(f"No schema file found for {query_file}")
 
 
+def _validate_schema_from_path(
+    query_file_path, use_cloud_function=True, respect_dryrun_skip=True
+):
+    """Dry Runs and validates a query schema from its path."""
+    return (
+        DryRun(
+            query_file_path,
+            use_cloud_function=use_cloud_function,
+            respect_skip=respect_dryrun_skip,
+        ).validate_schema(),
+        query_file_path,
+    )
+
+
 @schema.command(
     help="""Validate the query schema
 
@@ -1143,15 +1157,11 @@ def validate_schema(name, sql_dir, project_id, use_cloud_function, respect_dryru
     """Validate the defined query schema against the query and destination table."""
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
 
-    def _validate_schema(query_file_path):
-        return (
-            DryRun(
-                query_file_path,
-                use_cloud_function=use_cloud_function,
-                respect_skip=respect_dryrun_skip,
-            ).validate_schema(),
-            query_file_path,
-        )
+    _validate_schema = partial(
+        _validate_schema_from_path,
+        use_cloud_function=use_cloud_function,
+        respect_dryrun_skip=respect_dryrun_skip,
+    )
 
     with Pool(8) as p:
         result = p.map(_validate_schema, query_files, chunksize=1)

@@ -1,5 +1,5 @@
 SELECT
-  DATE(submission_timestamp) AS submission_date,
+  @submission_date AS submission_date,
   LOWER(search_query) AS query,
   block_id,
   COUNT(*) AS impressions,
@@ -11,6 +11,5 @@ WHERE
   BETWEEN DATE_SUB(@submission_date, INTERVAL 6 DAY)
   AND @submission_date
 GROUP BY
-  submission_date,
   query,
   block_id

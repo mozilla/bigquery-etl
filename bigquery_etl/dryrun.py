@@ -344,7 +344,7 @@ class DryRun:
                     ),
                 }
         except Exception as e:
-            print(f"{self.sqlfile:59} ERROR\n", e)
+            print(f"{self.sqlfile!s:59} ERROR\n", e)
             return None
 
     def get_referenced_tables(self):
@@ -459,20 +459,20 @@ class DryRun:
             return False
 
         if self.dry_run_result["valid"]:
-            print(f"{self.sqlfile:59} OK")
+            print(f"{self.sqlfile!s:59} OK")
         elif self.get_error() == Errors.READ_ONLY:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
-            print(f"{self.sqlfile:59} OK")
+            print(f"{self.sqlfile!s:59} OK")
         elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
             # With strip_dml flag, some queries require a partition filter
             # (submission_date, submission_timestamp, etc.) to run
             # We mark these requests as valid and add a date filter
             # in get_referenced_table()
-            print(f"{self.sqlfile:59} OK but DATE FILTER NEEDED")
+            print(f"{self.sqlfile!s:59} OK but DATE FILTER NEEDED")
         else:
-            print(f"{self.sqlfile:59} ERROR\n", self.dry_run_result["errors"])
+            print(f"{self.sqlfile!s:59} ERROR\n", self.dry_run_result["errors"])
             return False
 
         return True

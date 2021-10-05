@@ -254,3 +254,4 @@ class GleanTable:
                 write_sql(output_dir, table, "query.sql", query_sql)
                 write_sql(output_dir, table, "metadata.yaml", metadata)
                 write_sql(output_dir, view, "view.sql", view_sql)
+                write_dataset_metadata(output_dir, table)

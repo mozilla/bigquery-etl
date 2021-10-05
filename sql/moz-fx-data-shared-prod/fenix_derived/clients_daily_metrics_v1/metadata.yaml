@@ -1,5 +1,0 @@
----
-# Generated via bigquery_etl.glean_usage
-friendly_name : 'Clients Daily Metrics' description : >Daily per - client aggregates
-ON
-  top OF metrics pings owners : -ascholtz @mozilla.com

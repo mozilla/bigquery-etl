@@ -2,12 +2,14 @@
 
 import os
 from pathlib import Path
+
 import yaml
 
 from bigquery_etl.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "clients_daily_metrics_v1"
 PREFIX = "clients_daily_metrics"
+
 
 class ClientsDailyMetrics(GleanTable):
     """Represents generated clients_daily_metrics table."""
@@ -20,6 +22,9 @@ class ClientsDailyMetrics(GleanTable):
         self.per_app_id_enabled = False
         self.cross_channel_template = None
 
-        with open(Path(os.path.dirname(__file__)) / "templates" / "metrics_templating.yaml", "r") as f:
+        with open(
+            Path(os.path.dirname(__file__)) / "templates" / "metrics_templating.yaml",
+            "r",
+        ) as f:
             metrics_config = yaml.safe_load(f) or {}
             self.custom_render_kwargs = {"metrics": metrics_config}

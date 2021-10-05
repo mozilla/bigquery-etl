@@ -3,16 +3,15 @@
 import logging
 import os
 import re
-import requests
-from jinja2 import TemplateNotFound
 from pathlib import Path
 
-from jinja2 import Environment, PackageLoader
+import requests
+from jinja2 import Environment, PackageLoader, TemplateNotFound
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.util import standard_args  # noqa E402
-from bigquery_etl.util.common import render, write_sql
 from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
+from bigquery_etl.util.common import render, write_sql
 from bigquery_etl.view import generate_stable_views
 
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
@@ -241,12 +240,17 @@ class GleanTable:
             query_filename = f"{target_view_name}.query.sql"
             query_sql = render(query_filename, **render_kwargs)
             view_sql = render(f"{target_view_name}.view.sql", **render_kwargs)
-            metadata = render(f"{self.target_table_id[:-3]}.metadata.yaml", **render_kwargs)
+            metadata = render(
+                f"{self.target_table_id[:-3]}.metadata.yaml", **render_kwargs
+            )
             table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
             if not (referenced_table_exists(query_sql)):
-                logging.info("Skipping query for table which doesn't exist:" f" {self.target_table_id}")
+                logging.info(
+                    "Skipping query for table which doesn't exist:"
+                    f" {self.target_table_id}"
+                )
                 return
 
             if output_dir:

@@ -15,19 +15,21 @@ from ..glean_usage import (
     baseline_clients_last_seen,
     events_unnested,
     clients_daily_metrics,
-    clients_last_seen_metrics
+    clients_last_seen_metrics,
+    clients_last_seen_joined,
 )
 from ..glean_usage.common import list_baseline_tables, get_app_info
 
 # list of methods for generating queries
 GLEAN_TABLES = [
-    # glean_app_ping_views.GleanAppPingViews(),
-    # baseline_clients_daily.BaselineClientsDailyTable(),
-    # baseline_clients_first_seen.BaselineClientsFirstSeenTable(),
-    # baseline_clients_last_seen.BaselineClientsLastSeenTable(),
-    # events_unnested.EventsUnnestedTable(),
+    glean_app_ping_views.GleanAppPingViews(),
+    baseline_clients_daily.BaselineClientsDailyTable(),
+    baseline_clients_first_seen.BaselineClientsFirstSeenTable(),
+    baseline_clients_last_seen.BaselineClientsLastSeenTable(),
+    events_unnested.EventsUnnestedTable(),
     clients_daily_metrics.ClientsDailyMetrics(),
     clients_last_seen_metrics.ClientsLastSeenMetrics(),
+    clients_last_seen_joined.ClientsLastSeenJoined(),
 ]
 
 

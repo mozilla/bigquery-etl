@@ -1,0 +1,19 @@
+fenix:
+  uri_count:
+    sql: "SUM(metrics.counter.events_normal_and_private_uri_count)"
+    counter: true
+  is_default_browser:
+    sql: "LOGICAL_OR(metrics.boolean.metrics_default_browser)"
+firefox_ios:
+  uri_count:
+    sql: "SUM(CAST(NULL AS int64)) AS uri_count"
+    counter: true
+  is_default_browser:
+    sql: "LOGICAL_OR(metrics.counter.app_opened_as_default_browser > 0)"
+focus_ios:
+  uri_count:
+    sql: "SUM(CAST(NULL AS int64)) AS uri_count"
+    counter: true
+  is_default_browser:
+    sql: "LOGICAL_OR(CAST(NULL AS boolean)) AS is_default_browser"
+

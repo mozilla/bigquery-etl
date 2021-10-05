@@ -219,18 +219,38 @@ class GleanTable:
             target_view=f"{target_dataset}.{target_view_name}",
             datasets=datasets,
             table=target_view_name,
+            target_table=f"{target_dataset}_derived.{self.target_table_id}",
             app_name=app_info[0]["app_name"],
         )
+        render_kwargs.update(self.custom_render_kwargs)
 
-        sql = render(self.cross_channel_template, **render_kwargs)
-        view = f"{project_id}.{target_dataset}.{target_view_name}"
+        if self.cross_channel_template:
+            sql = render(self.cross_channel_template, **render_kwargs)
+            view = f"{project_id}.{target_dataset}.{target_view_name}"
 
-        if output_dir:
-            write_dataset_metadata(output_dir, view)
+            if output_dir:
+                write_dataset_metadata(output_dir, view)
 
-        if not (referenced_table_exists(sql)):
-            logging.info("Skipping view for table which doesn't exist:" f" {view}")
-            return
+            if not (referenced_table_exists(sql)):
+                logging.info("Skipping view for table which doesn't exist:" f" {view}")
+                return
 
-        if output_dir:
-            write_sql(output_dir, view, "view.sql", sql)
+            if output_dir:
+                write_sql(output_dir, view, "view.sql", sql)
+        else:
+            query_filename = f"{target_view_name}.query.sql"
+            query_sql = render(query_filename, **render_kwargs)
+            view_sql = render(f"{target_view_name}.view.sql", **render_kwargs)
+            metadata = render(f"{self.target_table_id[:-3]}.metadata.yaml", **render_kwargs)
+            table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
+            view = f"{project_id}.{target_dataset}.{target_view_name}"
+
+            if not (referenced_table_exists(query_sql)):
+                logging.info("Skipping query for table which doesn't exist:" f" {self.target_table_id}")
+                return
+
+            if output_dir:
+                write_dataset_metadata(output_dir, table)
+                write_sql(output_dir, table, "query.sql", query_sql)
+                write_sql(output_dir, table, "metadata.yaml", metadata)
+                write_sql(output_dir, view, "view.sql", view_sql)

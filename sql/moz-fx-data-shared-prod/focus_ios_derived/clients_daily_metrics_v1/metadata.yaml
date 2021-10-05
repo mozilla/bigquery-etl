@@ -1,0 +1,11 @@
+friendly_name: 'Clients Daily Metrics'
+description: >
+  Daily per-client aggregates on top of metrics pings
+owners:
+  - ascholtz@mozilla.com
+labels:
+  application: fenix
+  schedule: daily
+  incremental: true
+scheduling:
+  dag_name: bqetl_focus_ios

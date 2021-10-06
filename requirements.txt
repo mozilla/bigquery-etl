@@ -182,16 +182,16 @@ flake8==3.9.1 \
     --hash=sha256:1aa8990be1e689d96c745c5682b687ea49f2e05a443aff1f8251092b0014e378 \
     --hash=sha256:3b9f848952dddccf635be78098ca75010f073bfe14d2c6bda867154bea728d2a
     # via pytest-flake8
-fsspec==2021.09.0 \
-    --hash=sha256:b5bbe7846c571597e013a917483d561d712ef1e8a13b71629ea8a24c6ffbc3e9 \
-    --hash=sha256:fbddcce8dd2bf7ae348b6930b67a572ba36aa7b1d2a02b122f969e7e9819dd9a
+fsspec==2021.10.0 \
+    --hash=sha256:7760d6b2f35739697d694c724be3500b19e6b33af65b139306be98bb1d1ebcdd \
+    --hash=sha256:9505afbf8cee22cf12a29742e23ad79ad132b3423632ec3a3bf9034ce3911138
     # via gcsfs
 gcloud==0.18.3 \
     --hash=sha256:0af2dec59fce20561752f86e42d981c6a255e306a6c5e5d1fa3d358a8857e4fb
     # via -r requirements.in
-gcsfs==2021.9.0 \
-    --hash=sha256:1bbe49a018f800b22793c285d38c4aba2f43066f92ec0a71507ba66af1d46d98 \
-    --hash=sha256:6f964d2eeb896254fd1947f3258782d98b71095b3674dd5bd35e9226765baff2
+gcsfs==2021.10.0 \
+    --hash=sha256:0efae21d7b7cb4c7a09edd2ac6bb21cd8aea92941c111f2f0afcb5a88604a807 \
+    --hash=sha256:f69b6606856d0a89b3cc71a30e01dc55beb63036e3813e34506be61116ce772a
     # via -r requirements.in
 gitdb==4.0.7 \
     --hash=sha256:6c4cc71933456991da20917998acbe6cf4fb41eeaab7d6d67fbc05ecd4c865b0 \
@@ -224,9 +224,9 @@ google-auth-oauthlib==0.4.4 \
     --hash=sha256:09832c6e75032f93818edf1affe4746121d640c625a5bef9b5c96af676e98eee \
     --hash=sha256:0e92aacacfb94978de3b7972cf4b0f204c3cd206f74ddd0dc0b31e91164e6317
     # via gcsfs
-google-cloud-bigquery==2.27.1 \
-    --hash=sha256:556826c79177bfc77933154e3e61e7a328b5e898947b4f2cc8c83b107ea91224 \
-    --hash=sha256:e2bd974c4f7658517d28ed9534ee762d0c09b0b116520fe30e9fafa9d19b695a
+google-cloud-bigquery==2.28.0 \
+    --hash=sha256:8b7958c5aa2a432fbdb6beaef0a7c598892b74c12e029bd43fe97d668eb798e6 \
+    --hash=sha256:ae99046b0a4cb3715d203658d277903a79faf3f15a3d68813d0dfa41b54891c5
     # via -r requirements.in
 google-cloud-core==1.6.0 \
     --hash=sha256:40d9c2da2d03549b5ac3dcccf289d4f15e6d1210044c6381ce45c92913e62904 \
@@ -234,9 +234,9 @@ google-cloud-core==1.6.0 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-storage==1.42.2 \
-    --hash=sha256:3483174fa3915e9026c8c51c341a1e251063fa3879b9e6706fcece2e2188fcf3 \
-    --hash=sha256:b9d1b7f6af6eac4d7694fb5e39555ff9ccef3d784501599e7a5e9cd76b79d95d
+google-cloud-storage==1.42.3 \
+    --hash=sha256:71ee3a0dcf2c139f034a054181cd7658f1ec8f12837d2769c450a8a00fcd4c6d \
+    --hash=sha256:7754d4dcaa45975514b404ece0da2bb4292acbc67ca559a69e12a19d54fcdb06
     # via -r requirements.in
 google-crc32c==1.1.2 \
     --hash=sha256:0ae3cf54e0d4d83c8af1afe96fc0970fbf32f1b29275f3bfd44ce25c4b622a2b \
@@ -361,9 +361,9 @@ isort==5.8.0 \
     --hash=sha256:0a943902919f65c5684ac4e0154b1ad4fac6dcaa5d9f3426b732f1c8b5419be6 \
     --hash=sha256:2bb1680aad211e3c9944dbce1d4ba09a989f04e238296c87fe2139faa26d655d
     # via pytest-isort
-jinja2==3.0.1 \
-    --hash=sha256:1f06f2da51e7b56b8f238affdd6b4e2c61e39598a378cc49345bc1bd42a978a4 \
-    --hash=sha256:703f484b47a6af502e743c9122595cc812b0271f661722403114f71a79d0f5a4
+jinja2==3.0.2 \
+    --hash=sha256:827a0e32839ab1600d4eb1c4c33ec5a8edfbc5cb42dafa13b81f182f97784b45 \
+    --hash=sha256:8569982d3f0889eed11dd620c706d39b60c36d6d25843961f33f77fb6bc6b20c
     # via -r requirements.in
 jsonschema==4.0.1 \
     --hash=sha256:48f4e74f8bec0c2f75e9fcfffa264e78342873e1b57e2cfeae54864cc5e9e4dd \

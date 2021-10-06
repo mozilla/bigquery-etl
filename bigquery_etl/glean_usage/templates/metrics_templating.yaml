@@ -1,3 +1,8 @@
+# This file specifies metrics for metrics_clients_daily and
+# metrics_clients_last_seen tables per application. 
+#
+# Metrics can't be removed from this file once they got propagated
+# to BigQuery tables.
 fenix:
   uri_count:
     sql: "SUM(metrics.counter.events_normal_and_private_uri_count)"
@@ -16,4 +21,3 @@ focus_ios:
     counter: true
   is_default_browser:
     sql: "LOGICAL_OR(CAST(NULL AS boolean)) AS is_default_browser"
-

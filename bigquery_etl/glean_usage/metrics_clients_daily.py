@@ -1,4 +1,4 @@
-"""Generate and run clients_daily_metrics queries for Glean apps."""
+"""Generate and run metrics_clients_daily queries for Glean apps."""
 
 import os
 from pathlib import Path
@@ -7,15 +7,15 @@ import yaml
 
 from bigquery_etl.glean_usage.common import GleanTable
 
-TARGET_TABLE_ID = "clients_daily_metrics_v1"
-PREFIX = "clients_daily_metrics"
+TARGET_TABLE_ID = "metrics_clients_daily_v1"
+PREFIX = "metrics_clients_daily"
 
 
-class ClientsDailyMetrics(GleanTable):
-    """Represents generated clients_daily_metrics table."""
+class MetricsClientsDaily(GleanTable):
+    """Represents generated metrics_clients_daily table."""
 
     def __init__(self):
-        """Initialize clients_daily_metrics table."""
+        """Initialize metrics_clients_daily table."""
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
         self.no_init = True

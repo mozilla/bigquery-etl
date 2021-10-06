@@ -14,7 +14,7 @@
     {% endfor -%}
     {% endif -%}
   FROM
-    `{{ dataset }}.metrics` m
+    `{{ dataset }}.metrics` AS m
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY

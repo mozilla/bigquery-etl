@@ -1,4 +1,4 @@
-"""Generate and run clients_last_seen_metrics queries for Glean apps."""
+"""Generate and run metrics_clients_last_seen queries for Glean apps."""
 
 import os
 from pathlib import Path
@@ -7,15 +7,15 @@ import yaml
 
 from bigquery_etl.glean_usage.common import GleanTable
 
-TARGET_TABLE_ID = "clients_last_seen_metrics_v1"
-PREFIX = "clients_last_seen_metrics"
+TARGET_TABLE_ID = "metrics_clients_last_seen_v1"
+PREFIX = "metrics_clients_last_seen"
 
 
-class ClientsLastSeenMetrics(GleanTable):
-    """Represents generated clients_last_seen_metrics table."""
+class MetricsClientsLastSeen(GleanTable):
+    """Represents generated metrics_clients_last_seen table."""
 
     def __init__(self):
-        """Initialize clients_last_seen_metrics table."""
+        """Initialize metrics_clients_last_seen table."""
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
         self.no_init = True

@@ -1,10 +1,6 @@
-# fenix release channel
-org_mozilla_firefox:
-  base_dataset: org_mozilla_firefox_derived
-  view_dataset: org_mozilla_firefox
-# fenix-wide dataset (currently only covers release channel)
+# fenix union dataset (all channels)
 fenix:
-  base_dataset: org_mozilla_firefox_derived
+  base_dataset: fenix_derived
   view_dataset: fenix
 # Firefox telemetry (non-Glean)
 telemetry:

@@ -1,5 +1,5 @@
 ---
-friendly_name: '{{ app_id }} Event Types History'
+friendly_name: '{{ name }} Event Types History'
 description: >
   Retrieve the set of [events, event_properties]
   and record them in a table.
@@ -9,7 +9,7 @@ owners:
   - wlachance@mozilla.com
   - akomar@mozilla.com
 labels:
-  application: {{ app_id }}
+  application: {{ dataset }}
   incremental: true
   schedule: daily
 scheduling:

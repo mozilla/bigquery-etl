@@ -65,6 +65,11 @@
     "type": "BOOLEAN"
   },
   {
+    "mode": "NULLABLE",
+    "name": "user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice",
+    "type": "STRING"
+  },
+  {
     "fields": [
       {
         "mode": "NULLABLE",

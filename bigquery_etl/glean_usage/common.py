@@ -241,7 +241,9 @@ class GleanTable:
             query_sql = render(query_filename, **render_kwargs)
             view_sql = render(f"{target_view_name}.view.sql", **render_kwargs)
             metadata = render(
-                f"{self.target_table_id[:-3]}.metadata.yaml", **render_kwargs
+                f"{self.target_table_id[:-3]}.metadata.yaml",
+                format=False,
+                **render_kwargs,
             )
             table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
             view = f"{project_id}.{target_dataset}.{target_view_name}"

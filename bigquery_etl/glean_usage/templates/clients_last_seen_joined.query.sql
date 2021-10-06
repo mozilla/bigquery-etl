@@ -6,11 +6,11 @@ WITH baseline AS (
   WHERE 
     submission_date = @submission_date
 ),
-metics AS (
+metrics AS (
   SELECT 
     * 
   FROM 
-    `{{ project_id }}.{{ app_name }}.clients_last_seen_metrics`
+    `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
   WHERE 
     submission_date = DATE_ADD(@submission_date, INTERVAL 1 DAY)
 )

@@ -12,7 +12,7 @@ WITH
   SELECT
     *
   FROM
-    `{{ project_id }}.{{ app_name }}.clients_metrics_daily` AS m
+    `{{ project_id }}.{{ app_name }}.metrics_clients_daily` AS m
   WHERE
     submission_date = @submission_date
 )
@@ -25,8 +25,10 @@ SELECT
     _current.days_sent_metrics_ping_bits) AS days_sent_metrics_ping_bits,
   {% if app_name in metrics -%}
   {% for metric in metrics[app_name] -%}
+    {# For counters, we're assuming that they don't represent a "dimension" that we'd
+       want to persist on days the client isn't active #}
     {% if metric.counter %}
-    COALESCE(_current.{{metric}}, NULL) AS metric,
+    _current.{{metric}} AS metric,
     {% else %}
     COALESCE(_current.{{metric}}, _previous.{{metric}}) AS metric,
     {% endif %}

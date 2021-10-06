@@ -138,6 +138,10 @@ SKIP = {
     ),
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql",
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/contextual_services_derived/*_per_minute_*/*.sql",
+        recursive=True,
+    ),
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

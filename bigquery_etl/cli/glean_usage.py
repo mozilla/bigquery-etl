@@ -14,6 +14,9 @@ from ..glean_usage import (
     baseline_clients_first_seen,
     baseline_clients_last_seen,
     events_unnested,
+    metrics_clients_daily,
+    metrics_clients_last_seen,
+    clients_last_seen_joined,
 )
 from ..glean_usage.common import list_baseline_tables, get_app_info
 
@@ -24,6 +27,9 @@ GLEAN_TABLES = [
     baseline_clients_first_seen.BaselineClientsFirstSeenTable(),
     baseline_clients_last_seen.BaselineClientsLastSeenTable(),
     events_unnested.EventsUnnestedTable(),
+    metrics_clients_daily.MetricsClientsDaily(),
+    metrics_clients_last_seen.MetricsClientsLastSeen(),
+    clients_last_seen_joined.ClientsLastSeenJoined(),
 ]
 
 

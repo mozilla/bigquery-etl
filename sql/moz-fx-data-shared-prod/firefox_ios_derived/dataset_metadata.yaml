@@ -1,8 +1,8 @@
 friendly_name: Firefox Ios Derived
 description: |-
-  Views on data from firefox_ios_derived
-dataset_base_acl: view
-user_facing: true
+  Derived data for firefox_ios_derived
+dataset_base_acl: derived
+user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

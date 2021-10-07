@@ -1,8 +1,8 @@
 friendly_name: Reference Browser Derived
 description: |-
-  Views on data from reference_browser_derived
-dataset_base_acl: view
-user_facing: true
+  Derived data for reference_browser_derived
+dataset_base_acl: derived
+user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

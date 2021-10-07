@@ -1,8 +1,8 @@
 friendly_name: Klar Ios Derived
 description: |-
-  Views on data from klar_ios_derived
-dataset_base_acl: view
-user_facing: true
+  Derived data for klar_ios_derived
+dataset_base_acl: derived
+user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

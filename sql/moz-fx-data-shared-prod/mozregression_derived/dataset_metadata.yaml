@@ -1,8 +1,8 @@
 friendly_name: Mozregression Derived
 description: |-
-  Views on data from mozregression_derived
-dataset_base_acl: view
-user_facing: true
+  Derived data for mozregression_derived
+dataset_base_acl: derived
+user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer

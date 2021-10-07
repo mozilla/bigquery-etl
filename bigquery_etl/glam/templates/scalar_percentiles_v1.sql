@@ -24,7 +24,7 @@ percentiles AS (
         agg_type AS client_agg_type,
         'percentiles' AS agg_type,
         COUNT(DISTINCT(client_id)) AS total_users,
-        APPROX_QUANTILES(value, 100) AS aggregates
+        APPROX_QUANTILES(value, 1000) AS aggregates
     FROM
         all_combos
     GROUP BY
@@ -33,6 +33,6 @@ percentiles AS (
         client_agg_type
 )
 SELECT
-  * REPLACE (mozfun.glam.map_from_array_offsets([5.0, 25.0, 50.0, 75.0, 95.0], aggregates) AS aggregates)
+  * REPLACE (mozfun.glam.map_from_array_offsets_precise([5.0, 25.0, 50.0, 75.0, 95.0, 99.0, 99.9], aggregates) AS aggregates)
 FROM
   percentiles

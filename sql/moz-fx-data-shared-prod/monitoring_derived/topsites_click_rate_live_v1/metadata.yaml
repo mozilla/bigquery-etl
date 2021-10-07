@@ -1,4 +1,4 @@
-friendly_name: Count of Topsites Impression Pings Per Minute
+friendly_name: Topsites Click Rate Live
 description: |-
   Used to visualize telemetry rates in Grafana as a cross check for
   operational monitoring of the Contile service.

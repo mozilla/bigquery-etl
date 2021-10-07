@@ -17,7 +17,7 @@ from bigquery_etl.view import generate_stable_views
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
-def write_dataset_metadata(output_dir, full_table_id):
+def write_dataset_metadata(output_dir, full_table_id, public_facing_only=True):
     """
     Add dataset_metadata.yaml to public facing datasets.
 
@@ -30,7 +30,7 @@ def write_dataset_metadata(output_dir, full_table_id):
     public_facing = all(
         [postfix not in d.parent.name for postfix in ("_derived", "_stable")]
     )
-    if public_facing and not target.exists():
+    if (not public_facing_only or public_facing) and not target.exists():
         env = Environment(loader=PackageLoader("bigquery_etl", "glean_usage/templates"))
         dataset_metadata = env.get_template("dataset_metadata.yaml")
         rendered = dataset_metadata.render(
@@ -256,8 +256,8 @@ class GleanTable:
                 return
 
             if output_dir:
-                write_dataset_metadata(output_dir, table)
+
                 write_sql(output_dir, table, "query.sql", query_sql)
                 write_sql(output_dir, table, "metadata.yaml", metadata)
                 write_sql(output_dir, view, "view.sql", view_sql)
-                write_dataset_metadata(output_dir, table)
+                write_dataset_metadata(output_dir, table, public_facing_only=False)

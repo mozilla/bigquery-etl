@@ -8,3 +8,11 @@ description: |-
   it is only represented in the metrics-based table.
 owners:
   - ascholtz@mozilla.com
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+  clustering:
+    fields:
+      - sample_id

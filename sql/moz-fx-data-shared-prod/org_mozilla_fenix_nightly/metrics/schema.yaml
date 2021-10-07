@@ -780,6 +780,24 @@ fields:
       mode: NULLABLE
       name: credit_cards_saved
       type: INTEGER
+    - description: 'The total number of login records which failed to migrate
+
+        '
+      mode: NULLABLE
+      name: logins_store_migration_num_failed
+      type: INTEGER
+    - description: 'The total number of login records processed by the migration
+
+        '
+      mode: NULLABLE
+      name: logins_store_migration_num_processed
+      type: INTEGER
+    - description: 'The total number of login records successfully migrated
+
+        '
+      mode: NULLABLE
+      name: logins_store_migration_num_succeeded
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -1642,6 +1660,9 @@ fields:
       type: STRING
     - mode: REPEATED
       name: preferences_theme
+      type: STRING
+    - mode: REPEATED
+      name: logins_store_migration_errors
       type: STRING
     mode: NULLABLE
     name: string_list
@@ -5991,6 +6012,19 @@ fields:
         type: INTEGER
       mode: NULLABLE
       name: engine_kill_foreground_age
+      type: RECORD
+    - description: 'How long the migration tool
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: logins_store_migration_total_duration
       type: RECORD
     mode: NULLABLE
     name: timespan

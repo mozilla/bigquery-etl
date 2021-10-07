@@ -6,6 +6,11 @@
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     sample_id,
+    {% if app_name == "fenix" -%}
+    mozfun.norm.fenix_app_info("{{ dataset }}", client_info.app_build).channel AS normalized_channel,
+    {% else -%}
+    "{{ channel }}" AS normalized_channel,
+    {% endif -%}
     COUNT(*) AS n_metrics_ping,
     1 AS days_sent_metrics_ping_bits,
     {% if app_name in metrics -%}
@@ -20,5 +25,6 @@
   GROUP BY
     submission_date,
     client_id,
-    sample_id  
+    sample_id,
+    normalized_channel
 {% endfor -%}

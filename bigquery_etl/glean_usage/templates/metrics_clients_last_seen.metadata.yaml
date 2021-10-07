@@ -18,4 +18,5 @@ bigquery:
     require_partition_filter: true
   clustering:
     fields:
+      - normalized_channel
       - sample_id

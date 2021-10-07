@@ -49,6 +49,10 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v1/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql",
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/monitoring_derived/*_rate_live_v1/*.sql",
+        recursive=True,
+    ),
     "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql",
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql",  # noqa E501
@@ -138,10 +142,6 @@ SKIP = {
     ),
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql",
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
-    *glob.glob(
-        "sql/moz-fx-data-shared-prod/contextual_services_derived/*_per_minute_*/*.sql",
-        recursive=True,
-    ),
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501

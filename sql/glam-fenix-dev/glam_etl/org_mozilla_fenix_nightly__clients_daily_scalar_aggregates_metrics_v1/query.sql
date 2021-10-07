@@ -344,6 +344,76 @@ unlabeled_metrics AS (
         sum(CAST(metrics.counter.credit_cards_saved AS INT64))
       ),
       (
+        'customize_home_jump_back_in',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_jump_back_in AS INT64))
+      ),
+      (
+        'customize_home_jump_back_in',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_jump_back_in AS INT64))
+      ),
+      (
+        'customize_home_most_visited_sites',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_most_visited_sites AS INT64))
+      ),
+      (
+        'customize_home_most_visited_sites',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_most_visited_sites AS INT64))
+      ),
+      (
+        'customize_home_pocket',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_pocket AS INT64))
+      ),
+      (
+        'customize_home_pocket',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_pocket AS INT64))
+      ),
+      (
+        'customize_home_recently_saved',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_recently_saved AS INT64))
+      ),
+      (
+        'customize_home_recently_saved',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_recently_saved AS INT64))
+      ),
+      (
+        'customize_home_recently_visited',
+        'boolean',
+        '',
+        'false',
+        SUM(CAST(NOT metrics.boolean.customize_home_recently_visited AS INT64))
+      ),
+      (
+        'customize_home_recently_visited',
+        'boolean',
+        '',
+        'true',
+        SUM(CAST(metrics.boolean.customize_home_recently_visited AS INT64))
+      ),
+      (
         'engine_kill_background_age',
         'timespan',
         '',
@@ -920,6 +990,150 @@ unlabeled_metrics AS (
         '',
         'sum',
         sum(CAST(metrics.counter.glean_validation_foreground_count AS INT64))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.logins_store_migration_num_failed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.logins_store_migration_num_failed) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.logins_store_migration_num_failed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.logins_store_migration_num_failed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_failed',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.logins_store_migration_num_failed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.logins_store_migration_num_processed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.logins_store_migration_num_processed) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.logins_store_migration_num_processed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.logins_store_migration_num_processed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_processed',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.logins_store_migration_num_processed AS INT64))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.logins_store_migration_num_succeeded AS INT64))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.logins_store_migration_num_succeeded) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.logins_store_migration_num_succeeded AS INT64))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.logins_store_migration_num_succeeded AS INT64))
+      ),
+      (
+        'logins_store_migration_num_succeeded',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.logins_store_migration_num_succeeded AS INT64))
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'avg',
+        avg(CAST(metrics.timespan.logins_store_migration_total_duration.value AS INT64))
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'count',
+        IF(
+          MIN(metrics.timespan.logins_store_migration_total_duration.value) IS NULL,
+          NULL,
+          COUNT(*)
+        )
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'max',
+        max(CAST(metrics.timespan.logins_store_migration_total_duration.value AS INT64))
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'min',
+        min(CAST(metrics.timespan.logins_store_migration_total_duration.value AS INT64))
+      ),
+      (
+        'logins_store_migration_total_duration',
+        'timespan',
+        '',
+        'sum',
+        sum(CAST(metrics.timespan.logins_store_migration_total_duration.value AS INT64))
       ),
       (
         'logins_store_read_query_count',

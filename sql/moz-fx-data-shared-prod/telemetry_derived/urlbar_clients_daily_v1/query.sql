@@ -159,6 +159,7 @@ SELECT
   show_search_suggestions_first,
   suggest_quicksuggest,
   suggest_quicksuggest_sponsored,
+  quicksuggest_onboarding_dialog_choice,
   count_picked_total,
   count_picked_by_type,
   count_picked_by_position,

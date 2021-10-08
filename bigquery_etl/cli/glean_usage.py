@@ -31,6 +31,7 @@ GLEAN_TABLES = [
     metrics_clients_last_seen.MetricsClientsLastSeen(),
     clients_last_seen_joined.ClientsLastSeenJoined(),
 ]
+SKIP_APPS = ["mlhackweek_search"]
 
 
 @click.group(
@@ -101,7 +102,7 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
     if app_name:
         app_info = {name: info for name, info in app_info.items() if name == app_name}
 
-    app_info = app_info.values()
+    app_info = [info for name, info in app_info.items() if name not in SKIP_APPS]
 
     for table in GLEAN_TABLES:
         with ThreadPool(parallelism) as pool:

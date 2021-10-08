@@ -19524,6 +19524,10 @@ fields:
       mode: NULLABLE
       name: gc_slice_was_long
       type: STRING
+    - description: ISOBMFF brand pattern used to identify MP4 in media sniffer
+      mode: NULLABLE
+      name: media_sniffer_mp4_brand_pattern
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40240,6 +40244,10 @@ fields:
         - description: Whether a GC slice took 1.5 times or 5ms more than its budget
           mode: NULLABLE
           name: gc_slice_was_long
+          type: STRING
+        - description: ISOBMFF brand pattern used to identify MP4 in media sniffer
+          mode: NULLABLE
+          name: media_sniffer_mp4_brand_pattern
           type: STRING
         mode: NULLABLE
         name: histograms

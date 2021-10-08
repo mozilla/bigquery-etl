@@ -387,6 +387,20 @@ fields:
       mode: NULLABLE
       name: tracking_protection_toolbar_shield_clicked
       type: INTEGER
+    - description: 'Records count of URIs visited by the user in the current session,
+
+        including page reloads.
+
+        It does not include background page requests and URIs from embedded pages
+
+        but may be incremented without user interaction by website scripts
+
+        that programmatically redirect to a new location.
+
+        '
+      mode: NULLABLE
+      name: browser_total_uri_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

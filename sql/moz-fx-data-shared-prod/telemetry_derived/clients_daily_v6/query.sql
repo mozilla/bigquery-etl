@@ -478,6 +478,9 @@ clients_summary AS (
         ARRAY_AGG(
           IF(key = 'browser.urlbar.suggest.quicksuggest.sponsored', value, NULL) IGNORE NULLS
         )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_suggest_quicksuggest_sponsored,
+        ARRAY_AGG(
+          IF(key = 'browser.urlbar.quicksuggest.onboardingDialogChoice', value, NULL) IGNORE NULLS
+        )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice,
       FROM
         UNNEST(environment.settings.user_prefs)
     ).*
@@ -1111,16 +1114,21 @@ aggregates AS (
           submission_timestamp
       )
     ) AS user_pref_browser_urlbar_show_search_suggestions_first,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(user_pref_browser_urlbar_suggest_quicksuggest ORDER BY submission_timestamp)
-    ) AS user_pref_browser_urlbar_suggest_quicksuggest,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(
-        user_pref_browser_urlbar_suggest_quicksuggest_sponsored
-        ORDER BY
-          submission_timestamp
-      )
-    ) AS user_pref_browser_urlbar_suggest_quicksuggest_sponsored,
+    -- We use last seen value rather than mode_last for all Firefox Suggest-related
+    -- pref values to ensure all values represent the same ping.
+    ARRAY_AGG(user_pref_browser_urlbar_suggest_quicksuggest ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS user_pref_browser_urlbar_suggest_quicksuggest,
+    ARRAY_AGG(
+      user_pref_browser_urlbar_suggest_quicksuggest_sponsored
+      ORDER BY
+        submission_timestamp DESC
+    )[OFFSET(0)] AS user_pref_browser_urlbar_suggest_quicksuggest_sponsored,
+    ARRAY_AGG(
+      user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
+      ORDER BY
+        submission_timestamp DESC
+    )[OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice,
   FROM
     clients_summary
   GROUP BY

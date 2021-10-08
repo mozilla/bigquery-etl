@@ -16,7 +16,8 @@ metrics AS (
 )
 SELECT 
   baseline.submission_date, 
-  * EXCEPT(submission_date) 
+  baseline.normalized_channel,
+  * EXCEPT(submission_date, normalized_channel) 
 FROM
   baseline 
 LEFT JOIN metrics

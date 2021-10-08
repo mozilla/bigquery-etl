@@ -20,7 +20,7 @@ SELECT
   DATE(@submission_date) AS submission_date,
   client_id,
   sample_id,
-  normalized_channel,
+  _current.normalized_channel,
   _current.n_metrics_ping,
   udf.combine_adjacent_days_28_bits(_previous.days_sent_metrics_ping_bits,
     _current.days_sent_metrics_ping_bits) AS days_sent_metrics_ping_bits,

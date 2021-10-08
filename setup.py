@@ -20,6 +20,7 @@ setup(
     package_data={
         "bigquery_etl": [
             "query_scheduling/templates/*.j2",
+            "glean_usage/templates/*",
             "alchemer/*.json",
             "stripe/*.json",
             "stripe/*.yaml",

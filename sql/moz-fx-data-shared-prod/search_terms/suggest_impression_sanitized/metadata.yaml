@@ -1,9 +1,9 @@
 ---
-friendly_name: Firefox Suggest Impressions with Sanitized Search Terms
+friendly_name: Sanitized Firefox Suggest Impressions with Search Terms
 description: |-
-  A historical view of pings sent for the
+  A sanitized historical view of pings sent for the
   `contextual-services/quicksuggest-impression`
-  document type, including sanitized search terms fields.
+  document type, including search terms fields.
 
   Note that `quicksuggest-impression` pings with search terms excluded
   are presented separately under the `contextual_services` dataset.

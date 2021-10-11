@@ -1,10 +1,7 @@
 friendly_name: Revenue Derived
 description: |-
   Derived tables related to Mozilla revenue work
-dataset_base_acl: derived
+dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []

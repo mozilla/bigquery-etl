@@ -14,6 +14,9 @@ from ..glean_usage import (
     baseline_clients_first_seen,
     baseline_clients_last_seen,
     events_unnested,
+    metrics_clients_daily,
+    metrics_clients_last_seen,
+    clients_last_seen_joined,
 )
 from ..glean_usage.common import list_baseline_tables, get_app_info
 
@@ -24,7 +27,11 @@ GLEAN_TABLES = [
     baseline_clients_first_seen.BaselineClientsFirstSeenTable(),
     baseline_clients_last_seen.BaselineClientsLastSeenTable(),
     events_unnested.EventsUnnestedTable(),
+    metrics_clients_daily.MetricsClientsDaily(),
+    metrics_clients_last_seen.MetricsClientsLastSeen(),
+    clients_last_seen_joined.ClientsLastSeenJoined(),
 ]
+SKIP_APPS = ["mlhackweek_search"]
 
 
 @click.group(
@@ -95,7 +102,7 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
     if app_name:
         app_info = {name: info for name, info in app_info.items() if name == app_name}
 
-    app_info = app_info.values()
+    app_info = [info for name, info in app_info.items() if name not in SKIP_APPS]
 
     for table in GLEAN_TABLES:
         with ThreadPool(parallelism) as pool:

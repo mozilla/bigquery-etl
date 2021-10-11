@@ -49,6 +49,10 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v1/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql",
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/monitoring*/*_rate_live*/*.sql",
+        recursive=True,
+    ),
     "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql",
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql",  # noqa E501

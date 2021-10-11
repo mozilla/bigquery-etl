@@ -3,22 +3,21 @@
 import logging
 import os
 import re
-import requests
-from jinja2 import TemplateNotFound
 from pathlib import Path
 
-from jinja2 import Environment, PackageLoader
+import requests
+from jinja2 import Environment, PackageLoader, TemplateNotFound
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.util import standard_args  # noqa E402
-from bigquery_etl.util.common import render, write_sql
 from bigquery_etl.util.bigquery_id import sql_table_id  # noqa E402
+from bigquery_etl.util.common import render, write_sql
 from bigquery_etl.view import generate_stable_views
 
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
-def write_dataset_metadata(output_dir, full_table_id):
+def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
     """
     Add dataset_metadata.yaml to public facing datasets.
 
@@ -31,9 +30,12 @@ def write_dataset_metadata(output_dir, full_table_id):
     public_facing = all(
         [postfix not in d.parent.name for postfix in ("_derived", "_stable")]
     )
-    if public_facing and not target.exists():
+    if (derived_dataset_metadata or public_facing) and not target.exists():
         env = Environment(loader=PackageLoader("bigquery_etl", "glean_usage/templates"))
-        dataset_metadata = env.get_template("dataset_metadata.yaml")
+        if derived_dataset_metadata:
+            dataset_metadata = env.get_template("derived_dataset_metadata.yaml")
+        else:
+            dataset_metadata = env.get_template("dataset_metadata.yaml")
         rendered = dataset_metadata.render(
             {
                 "friendly_name": " ".join(
@@ -219,18 +221,46 @@ class GleanTable:
             target_view=f"{target_dataset}.{target_view_name}",
             datasets=datasets,
             table=target_view_name,
+            target_table=f"{target_dataset}_derived.{self.target_table_id}",
             app_name=app_info[0]["app_name"],
         )
+        render_kwargs.update(self.custom_render_kwargs)
 
-        sql = render(self.cross_channel_template, **render_kwargs)
-        view = f"{project_id}.{target_dataset}.{target_view_name}"
+        if self.cross_channel_template:
+            sql = render(self.cross_channel_template, **render_kwargs)
+            view = f"{project_id}.{target_dataset}.{target_view_name}"
 
-        if output_dir:
-            write_dataset_metadata(output_dir, view)
+            if output_dir:
+                write_dataset_metadata(output_dir, view)
 
-        if not (referenced_table_exists(sql)):
-            logging.info("Skipping view for table which doesn't exist:" f" {view}")
-            return
+            if not (referenced_table_exists(sql)):
+                logging.info("Skipping view for table which doesn't exist:" f" {view}")
+                return
 
-        if output_dir:
-            write_sql(output_dir, view, "view.sql", sql)
+            if output_dir:
+                write_sql(output_dir, view, "view.sql", sql)
+        else:
+            query_filename = f"{target_view_name}.query.sql"
+            query_sql = render(query_filename, **render_kwargs)
+            view_sql = render(f"{target_view_name}.view.sql", **render_kwargs)
+            metadata = render(
+                f"{self.target_table_id[:-3]}.metadata.yaml",
+                format=False,
+                **render_kwargs,
+            )
+            table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
+            view = f"{project_id}.{target_dataset}.{target_view_name}"
+
+            if not (referenced_table_exists(query_sql)):
+                logging.info(
+                    "Skipping query for table which doesn't exist:"
+                    f" {self.target_table_id}"
+                )
+                return
+
+            if output_dir:
+                write_sql(output_dir, table, "query.sql", query_sql)
+                write_sql(output_dir, table, "metadata.yaml", metadata)
+                write_sql(output_dir, view, "view.sql", view_sql)
+                write_dataset_metadata(output_dir, view)
+                write_dataset_metadata(output_dir, table, derived_dataset_metadata=True)

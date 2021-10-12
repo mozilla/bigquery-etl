@@ -566,9 +566,9 @@ pep517==0.10.0 \
     --hash=sha256:ac59f3f6b9726a49e15a649474539442cf76e0697e39df4869d25e68e880931b \
     --hash=sha256:eba39d201ef937584ad3343df3581069085bacc95454c80188291d5b3ac7a249
     # via pip-tools
-pip-tools==6.3.0 \
-    --hash=sha256:1835a1848bdfb22b2b6e5d10d630844ff5ee15e24b6c3bf92319c76f205d347f \
-    --hash=sha256:f5119d08558d4b44f5d3be6c433a5710050282d5aeecb1bfa392e86963827548
+pip-tools==6.4.0 \
+    --hash=sha256:65553a15b1ba34be5e43889345062e38fb9b219ffa23b084ca0d4c4039b6f53b \
+    --hash=sha256:bb2c3272bc229b4a6d25230ebe255823aba1aa466a0d698c48ab7eb5ab7efdc9
     # via -r requirements.in
 pluggy==0.13.1 \
     --hash=sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0 \
@@ -1027,9 +1027,9 @@ yarl==1.6.3 \
     # via aiohttp
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==21.1 \
-    --hash=sha256:a810bf07c3723a28621c29abe8e34429fa082c337f89aea9a795865416b66d3e \
-    --hash=sha256:ea9f2668484893e90149fd5a6124e04651ffedd67203a8aaf030d31406b937a4
+pip==21.3 \
+    --hash=sha256:4a1de8f97884ecfc10b48fe61c234f7e7dcf4490a37217011ad9369d899ad5a6 \
+    --hash=sha256:741a61baab1dbce2d8ca415effa48a2b6a964564f81a9f4f1fce4c433346c034
     # via pip-tools
 setuptools==56.0.0 \
     --hash=sha256:08a1c0f99455307c48690f00d5c2ac2c1ccfab04df00454fef854ec145b81302 \

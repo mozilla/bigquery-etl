@@ -79,6 +79,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_distinct_docids_v1/query.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
+    "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/customers_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/plans_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/products_v1/query.sql",

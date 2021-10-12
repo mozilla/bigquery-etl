@@ -365,9 +365,9 @@ jinja2==3.0.2 \
     --hash=sha256:827a0e32839ab1600d4eb1c4c33ec5a8edfbc5cb42dafa13b81f182f97784b45 \
     --hash=sha256:8569982d3f0889eed11dd620c706d39b60c36d6d25843961f33f77fb6bc6b20c
     # via -r requirements.in
-jsonschema==4.0.1 \
-    --hash=sha256:48f4e74f8bec0c2f75e9fcfffa264e78342873e1b57e2cfeae54864cc5e9e4dd \
-    --hash=sha256:9938802041347f2c62cad2aef59e9a0826cd34584f3609db950efacb4dbf6518
+jsonschema==4.1.0 \
+    --hash=sha256:2b3cca28580511d44326f0e7fc582eab3cbe31aabd1a1c2cfa74a399796ffd84 \
+    --hash=sha256:9dd7c33b4a96138dc37bb86b3610d3b12d30d96433d4d73435ca3025804154a8
     # via
     #   -r requirements.in
     #   mozilla-schema-generator

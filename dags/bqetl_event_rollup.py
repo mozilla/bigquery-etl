@@ -264,6 +264,10 @@ with DAG(
         mozilla_vpn_derived__event_types_history__v1
     )
 
+    mozilla_vpn_derived__event_types_history__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     mozilla_vpn_derived__events_daily__v1.set_upstream(
         mozilla_vpn_derived__event_types__v1
     )

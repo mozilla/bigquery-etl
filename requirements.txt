@@ -138,9 +138,9 @@ chardet==4.0.0 \
     # via
     #   aiohttp
     #   requests
-click==8.0.1 \
-    --hash=sha256:8c04c11192119b1ef78ea049e0a6f0463e4c48ef00a30160c704337586f3ad7a \
-    --hash=sha256:fba402a4a47334742d782209a7c79bc448911afe1149d07bdabdf480b3e2f4b6
+click==8.0.3 \
+    --hash=sha256:353f466495adaeb40b6b5f592f9f91cb22372351c84caeb068132442a4518ef3 \
+    --hash=sha256:410e932b050f5eed773c4cda94de75971c89cdb3155a72a0831139a79e5ecb5b
     # via
     #   -r requirements.in
     #   black
@@ -224,9 +224,9 @@ google-auth-oauthlib==0.4.4 \
     --hash=sha256:09832c6e75032f93818edf1affe4746121d640c625a5bef9b5c96af676e98eee \
     --hash=sha256:0e92aacacfb94978de3b7972cf4b0f204c3cd206f74ddd0dc0b31e91164e6317
     # via gcsfs
-google-cloud-bigquery==2.28.0 \
-    --hash=sha256:8b7958c5aa2a432fbdb6beaef0a7c598892b74c12e029bd43fe97d668eb798e6 \
-    --hash=sha256:ae99046b0a4cb3715d203658d277903a79faf3f15a3d68813d0dfa41b54891c5
+google-cloud-bigquery==2.28.1 \
+    --hash=sha256:0e2353d97e5292dc8ce54447b712fb9e89496e714b5cacfc3d536614d1c461dc \
+    --hash=sha256:910d9a44aa684cb91782c55e2c60cd4d059eb4b4f405002280b9da307ee76afe
     # via -r requirements.in
 google-cloud-core==1.6.0 \
     --hash=sha256:40d9c2da2d03549b5ac3dcccf289d4f15e6d1210044c6381ce45c92913e62904 \
@@ -365,9 +365,9 @@ jinja2==3.0.2 \
     --hash=sha256:827a0e32839ab1600d4eb1c4c33ec5a8edfbc5cb42dafa13b81f182f97784b45 \
     --hash=sha256:8569982d3f0889eed11dd620c706d39b60c36d6d25843961f33f77fb6bc6b20c
     # via -r requirements.in
-jsonschema==4.0.1 \
-    --hash=sha256:48f4e74f8bec0c2f75e9fcfffa264e78342873e1b57e2cfeae54864cc5e9e4dd \
-    --hash=sha256:9938802041347f2c62cad2aef59e9a0826cd34584f3609db950efacb4dbf6518
+jsonschema==4.1.0 \
+    --hash=sha256:2b3cca28580511d44326f0e7fc582eab3cbe31aabd1a1c2cfa74a399796ffd84 \
+    --hash=sha256:9dd7c33b4a96138dc37bb86b3610d3b12d30d96433d4d73435ca3025804154a8
     # via
     #   -r requirements.in
     #   mozilla-schema-generator
@@ -566,9 +566,9 @@ pep517==0.10.0 \
     --hash=sha256:ac59f3f6b9726a49e15a649474539442cf76e0697e39df4869d25e68e880931b \
     --hash=sha256:eba39d201ef937584ad3343df3581069085bacc95454c80188291d5b3ac7a249
     # via pip-tools
-pip-tools==6.3.0 \
-    --hash=sha256:1835a1848bdfb22b2b6e5d10d630844ff5ee15e24b6c3bf92319c76f205d347f \
-    --hash=sha256:f5119d08558d4b44f5d3be6c433a5710050282d5aeecb1bfa392e86963827548
+pip-tools==6.4.0 \
+    --hash=sha256:65553a15b1ba34be5e43889345062e38fb9b219ffa23b084ca0d4c4039b6f53b \
+    --hash=sha256:bb2c3272bc229b4a6d25230ebe255823aba1aa466a0d698c48ab7eb5ab7efdc9
     # via -r requirements.in
 pluggy==0.13.1 \
     --hash=sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0 \
@@ -868,9 +868,9 @@ sqlparse==0.4.2 \
     --hash=sha256:0c00730c74263a94e5a9919ade150dfc3b19c574389985446148402998287dae \
     --hash=sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d
     # via -r requirements.in
-stripe==2.60.0 \
-    --hash=sha256:0050763cb67df6745973bd9757f7a765bed1b82b5d5261fb8908cfc6ec9e5200 \
-    --hash=sha256:8966b7793014380f60c6f121ba333d6f333a55818edaf79c8d70464ce0a7a808
+stripe==2.61.0 \
+    --hash=sha256:5c6016362031a585d4f1138aff6e99c4c6d70b22b152b91fb6202d36bd8ac8c2 \
+    --hash=sha256:8131addd3512a22c4c539dda2d869a8f488e06f1b02d1f3a5f0f4848fc56184e
     # via -r requirements.in
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \
@@ -1027,9 +1027,9 @@ yarl==1.6.3 \
     # via aiohttp
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==21.1 \
-    --hash=sha256:a810bf07c3723a28621c29abe8e34429fa082c337f89aea9a795865416b66d3e \
-    --hash=sha256:ea9f2668484893e90149fd5a6124e04651ffedd67203a8aaf030d31406b937a4
+pip==21.3 \
+    --hash=sha256:4a1de8f97884ecfc10b48fe61c234f7e7dcf4490a37217011ad9369d899ad5a6 \
+    --hash=sha256:741a61baab1dbce2d8ca415effa48a2b6a964564f81a9f4f1fce4c433346c034
     # via pip-tools
 setuptools==56.0.0 \
     --hash=sha256:08a1c0f99455307c48690f00d5c2ac2c1ccfab04df00454fef854ec145b81302 \

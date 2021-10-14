@@ -78,6 +78,33 @@ with DAG(
         dag=dag,
     )
 
+    mozilla_vpn_derived__exchange_rates__v1 = gke_command(
+        task_id="mozilla_vpn_derived__exchange_rates__v1",
+        command=[
+            "python",
+            "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/exchange_rates_v1/query.py",
+        ]
+        + [
+            "--start-date",
+            "{{ ds }}",
+            "--end-date",
+            "{{ ds }}",
+            "--table",
+            "moz-fx-data-shared-prod.mozilla_vpn_derived.exchange_rates_v1",
+            "--base-currency",
+            "EUR",
+            "--base-currency",
+            "CHF",
+        ],
+        docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="dthorn@mozilla.com",
+        email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        gcp_conn_id="google_cloud_airflow_gke",
+        gke_location="us-west1",
+        gke_cluster_name="workloads-prod-v1",
+        retry_delay=datetime.timedelta(seconds=300),
+    )
+
     mozilla_vpn_derived__funnel_fxa_login_to_protected__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__funnel_fxa_login_to_protected__v1",
         destination_table="funnel_fxa_login_to_protected_v1",

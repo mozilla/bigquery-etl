@@ -4,6 +4,9 @@ description: |-
   operational monitoring of the Contile service.
 owners:
   - jklukas@mozilla.com
+labels:
+  materialized_view: true
+  authorized: true
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

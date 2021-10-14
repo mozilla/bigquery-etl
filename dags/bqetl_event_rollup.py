@@ -121,6 +121,43 @@ with DAG(
         dag=dag,
     )
 
+    mozilla_vpn_derived__event_types__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__event_types__v1",
+        destination_table="event_types_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__event_types_history__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__event_types_history__v1",
+        destination_table="event_types_history_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__events_daily__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__events_daily__v1",
+        destination_table="events_daily_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     telemetry_derived__event_types__v1 = bigquery_etl_query(
         task_id="telemetry_derived__event_types__v1",
         destination_table="event_types_v1",
@@ -221,6 +258,18 @@ with DAG(
 
     messaging_system_derived__events_daily__v1.set_upstream(
         messaging_system_derived__event_types__v1
+    )
+
+    mozilla_vpn_derived__event_types__v1.set_upstream(
+        mozilla_vpn_derived__event_types_history__v1
+    )
+
+    mozilla_vpn_derived__event_types_history__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    mozilla_vpn_derived__events_daily__v1.set_upstream(
+        mozilla_vpn_derived__event_types__v1
     )
 
     telemetry_derived__event_types__v1.set_upstream(

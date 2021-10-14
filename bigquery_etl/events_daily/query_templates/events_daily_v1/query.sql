@@ -23,7 +23,7 @@ WITH sample AS (
               UNNEST(ping_info.experiments)
           ) AS experiments
         FROM
-          {{ glean_app_id }}.events e
+          {{ glean_app_id }}.{{ events_table_name }} e
         CROSS JOIN
           UNNEST(e.events) AS event
         {% if not loop.last %}

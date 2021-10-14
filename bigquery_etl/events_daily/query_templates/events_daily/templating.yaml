@@ -12,3 +12,6 @@ messaging_system:
 firefox_accounts:
   base_dataset: firefox_accounts_derived
   view_dataset: firefox_accounts
+mozilla_vpn:
+  base_dataset: mozilla_vpn_derived
+  view_dataset: mozilla_vpn

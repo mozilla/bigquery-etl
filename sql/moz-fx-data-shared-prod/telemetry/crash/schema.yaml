@@ -1393,6 +1393,11 @@ fields:
       mode: NULLABLE
       name: windows_error_reporting
       type: STRING
+    - description: How long the user had been inactive in seconds if the user was
+        inactive at crash. The value is not set if the user state was active.
+      mode: NULLABLE
+      name: last_interaction_duration
+      type: STRING
     mode: NULLABLE
     name: metadata
     type: RECORD

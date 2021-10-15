@@ -935,6 +935,14 @@ fields:
       mode: NULLABLE
       name: firefox_home_page_customize_homepage_button
       type: INTEGER
+    - description: 'This counts the number of times a user has tapped the search
+
+        icon for grouped tabs in the tab tray.
+
+        '
+      mode: NULLABLE
+      name: tabs_grouped_tab_search
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

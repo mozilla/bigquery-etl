@@ -9660,10 +9660,7 @@ fields:
       mode: NULLABLE
       name: video_mft_output_null_samples
       type: STRING
-    - description: Total time spent playing video in milliseconds. This reports the
-        total play time for a video element whenever the decoder stops. (eg. pausing
-        media, encountering an error, changing to a new resource, page goes to the
-        bf-cached or page gets discarded)
+    - description: Total time spent playing video in milliseconds.
       mode: NULLABLE
       name: video_play_time_ms
       type: STRING
@@ -19519,6 +19516,10 @@ fields:
       mode: NULLABLE
       name: media_sniffer_mp4_brand_pattern
       type: STRING
+    - description: If and why prefetches are used/unused.
+      mode: NULLABLE
+      name: predictor_prefetch_use_status
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -22462,10 +22463,7 @@ fields:
       - mode: NULLABLE
         name: key
         type: STRING
-      - description: Total time spent playing visible video in milliseconds. This
-          reports the total play time for a video element whenever the decoder stops.
-          (eg. pausing media, encountering an error, changing to a new resource, page
-          goes to the bf-cached or page gets discarded)
+      - description: Total time spent playing visible video in milliseconds.
         mode: NULLABLE
         name: value
         type: STRING
@@ -22531,6 +22529,43 @@ fields:
         type: STRING
       mode: REPEATED
       name: downloads_user_action_on_blocked_download
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Percentage of time spent playing media with an audible audio
+          track, regardless of the volume. Keyed by audio-only or video presence.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: audible_play_time_percent
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Total time spent playing media in milliseconds, keyed by its
+          content (Audio and video, audio only, video only, audio and video but audio
+          inaudible, audio and video but audio muted).
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: media_play_time_ms
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Percentage of time spent playing media that has an audio track,
+          with the audio muted. Keyed by audio-only or video presence.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: muted_play_time_percent
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms
@@ -30360,10 +30395,7 @@ fields:
           mode: NULLABLE
           name: video_mft_output_null_samples
           type: STRING
-        - description: Total time spent playing video in milliseconds. This reports
-            the total play time for a video element whenever the decoder stops. (eg.
-            pausing media, encountering an error, changing to a new resource, page
-            goes to the bf-cached or page gets discarded)
+        - description: Total time spent playing video in milliseconds.
           mode: NULLABLE
           name: video_play_time_ms
           type: STRING
@@ -42370,10 +42402,7 @@ fields:
           - mode: NULLABLE
             name: key
             type: STRING
-          - description: Total time spent playing visible video in milliseconds. This
-              reports the total play time for a video element whenever the decoder
-              stops. (eg. pausing media, encountering an error, changing to a new
-              resource, page goes to the bf-cached or page gets discarded)
+          - description: Total time spent playing visible video in milliseconds.
             mode: NULLABLE
             name: value
             type: STRING
@@ -42427,6 +42456,43 @@ fields:
             type: STRING
           mode: REPEATED
           name: service_worker_fetch_interception_duration_ms_2
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Percentage of time spent playing media with an audible audio
+              track, regardless of the volume. Keyed by audio-only or video presence.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: audible_play_time_percent
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Total time spent playing media in milliseconds, keyed by
+              its content (Audio and video, audio only, video only, audio and video
+              but audio inaudible, audio and video but audio muted).
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: media_play_time_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Percentage of time spent playing media that has an audio
+              track, with the audio muted. Keyed by audio-only or video presence.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: muted_play_time_percent
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms

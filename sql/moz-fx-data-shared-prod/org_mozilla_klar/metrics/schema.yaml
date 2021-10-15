@@ -716,6 +716,13 @@ fields:
       mode: NULLABLE
       name: ping_reason
       type: STRING
+    - description: 'A string that indicates the theme. Can be one of LIGHT, DARK,
+        or FOLLOW DEVICE. Default is FOLLOW DEVICE.
+
+        '
+      mode: NULLABLE
+      name: preferences_user_theme
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

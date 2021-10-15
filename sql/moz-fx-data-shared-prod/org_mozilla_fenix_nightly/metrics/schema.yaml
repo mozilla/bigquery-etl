@@ -458,6 +458,22 @@ fields:
       mode: NULLABLE
       name: customize_home_recently_visited
       type: BOOLEAN
+    - description: 'True if the Proton default theme is enabled.
+
+        '
+      mode: NULLABLE
+      name: browser_ui_proton_enabled
+      type: BOOLEAN
+    - description: 'True if we failed to register with the idle service. Absent otherwise.
+
+        Means IPC probably isn''t working well.
+
+        Child-process data will likely be absent, or incomplete.
+
+        '
+      mode: NULLABLE
+      name: fog_failed_idle_registration
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -797,6 +813,14 @@ fields:
         '
       mode: NULLABLE
       name: logins_store_migration_num_succeeded
+      type: INTEGER
+    - description: 'The number of times the ipc buffer failed to be replayed in the
+
+        parent process.
+
+        '
+      mode: NULLABLE
+      name: fog_ipc_replay_failures
       type: INTEGER
     mode: NULLABLE
     name: counter
@@ -5453,6 +5477,84 @@ fields:
       mode: NULLABLE
       name: performance_clone_deserialize_time
       type: RECORD
+    - description: 'The length of time between asking the child processes for their
+
+        IPC buffers and all of them being received by the parent.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: fog_ipc_flush_durations
+      type: RECORD
+    - description: 'The time to build a Gecko display list.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: paint_build_displaylist_time
+      type: RECORD
     mode: NULLABLE
     name: timing_distribution
     type: RECORD
@@ -5967,6 +6069,27 @@ fields:
       mode: NULLABLE
       name: performance_clone_deserialize_size
       type: RECORD
+    - description: 'The number and size of the IPC buffers being received over FOG
+        IPC.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: fog_ipc_buffer_sizes
+      type: RECORD
     mode: NULLABLE
     name: memory_distribution
     type: RECORD
@@ -6025,6 +6148,19 @@ fields:
         type: INTEGER
       mode: NULLABLE
       name: logins_store_migration_total_duration
+      type: RECORD
+    - description: 'Time the FOG initialization takes.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: fog_initialization
       type: RECORD
     mode: NULLABLE
     name: timespan

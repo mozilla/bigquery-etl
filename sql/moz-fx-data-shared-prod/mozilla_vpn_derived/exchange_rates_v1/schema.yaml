@@ -1,0 +1,16 @@
+fields:
+- mode: REQUIRED
+  name: date
+  type: DATE
+- mode: REQUIRED
+  name: base_currency
+  type: STRING
+- mode: REQUIRED
+  name: quote_currency
+  type: STRING
+- mode: REQUIRED
+  name: price_type
+  type: STRING
+- mode: REQUIRED
+  name: price
+  type: NUMERIC

@@ -9,7 +9,7 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
-    "unknown" AS provider
+    'unknown' AS provider,
   FROM
     contextual_services.quicksuggest_impression
   UNION ALL
@@ -23,7 +23,7 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
-    "unknown" AS provider
+    'unknown' AS provider,
   FROM
     contextual_services.quicksuggest_click
   UNION ALL
@@ -37,7 +37,15 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
-    CASE WHEN reporting_url IS NULL THEN "remote settings" ELSE "contile" END AS provider
+    CASE
+    WHEN
+      reporting_url IS NULL
+    THEN
+      'remote settings'
+    ELSE
+      'contile'
+    END
+    AS provider,
   FROM
     contextual_services.topsites_impression
   UNION ALL
@@ -51,7 +59,15 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
-    CASE WHEN reporting_url IS NULL THEN "remote settings" ELSE "contile" END AS provider
+    CASE
+    WHEN
+      reporting_url IS NULL
+    THEN
+      'remote settings'
+    ELSE
+      'contile'
+    END
+    AS provider,
   FROM
     contextual_services.topsites_click
 ),

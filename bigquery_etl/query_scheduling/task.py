@@ -168,6 +168,7 @@ class Task:
     retries: Optional[int] = attr.ib(None)
     email_on_retry: Optional[bool] = attr.ib(None)
     gcp_conn_id: Optional[str] = attr.ib(None)
+    gke_project_id: Optional[str] = attr.ib(None)
     gke_location: Optional[str] = attr.ib(None)
     gke_cluster_name: Optional[str] = attr.ib(None)
 

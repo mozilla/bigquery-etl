@@ -347,6 +347,20 @@ fields:
       mode: NULLABLE
       name: tracking_protection_toolbar_shield_clicked
       type: INTEGER
+    - description: 'Records count of URIs visited by the user in the current session,
+
+        including page reloads.
+
+        It does not include background page requests and URIs from embedded pages
+
+        but may be incremented without user interaction by website scripts
+
+        that programmatically redirect to a new location.
+
+        '
+      mode: NULLABLE
+      name: browser_total_uri_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -552,6 +566,13 @@ fields:
         '
       mode: NULLABLE
       name: ping_reason
+      type: STRING
+    - description: 'A string that indicates the theme. Can be one of "Light", "Dark",
+        or "Follow device". Default is "Follow device".
+
+        '
+      mode: NULLABLE
+      name: preferences_user_theme
       type: STRING
     mode: NULLABLE
     name: string

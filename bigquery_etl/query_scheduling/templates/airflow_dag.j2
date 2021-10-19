@@ -79,6 +79,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {%+ if task.gcp_conn_id != None -%}
             gcp_conn_id={{ task.gcp_conn_id | format_repr }},
             {%+ endif -%}
+            {%+ if task.gke_project_id != None -%}
+            gke_project_id={{ task.gke_project_id | format_repr }},
+            {%+ endif -%}
             {%+ if task.gke_location != None -%}
             gke_location={{ task.gke_location | format_repr }},
             {%+ endif -%}

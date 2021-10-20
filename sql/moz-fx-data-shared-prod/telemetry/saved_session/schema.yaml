@@ -49428,6 +49428,13 @@ fields:
           mode: NULLABLE
           name: startup_is_run_from_dmg
           type: BOOLEAN
+        - description: 'Measures user retention of the Global Privacy Control. 0 =
+            never enabled, 1 = enabled, 2 = disabled (but was enabled)
+
+            '
+          mode: NULLABLE
+          name: security_global_privacy_control_enabled
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

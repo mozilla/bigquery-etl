@@ -2,7 +2,7 @@
 - &base
   submission_date: "2020-01-01"
   source: suggest
-  provider: unknown
+  provider: merino
   event_type: impression
   country: US
   subdivision1: AZ

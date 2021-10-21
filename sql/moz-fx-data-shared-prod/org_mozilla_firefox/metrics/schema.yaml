@@ -322,6 +322,7 @@ fields:
       name: metrics_start_reason_process_error
       type: BOOLEAN
     - description: 'Whether or not the user has enabled bookmark search suggestions
+
         default: true
 
         '
@@ -329,6 +330,7 @@ fields:
       name: preferences_bookmarks_suggestion
       type: BOOLEAN
     - description: 'Whether or not the user has enabled browsing history suggestions.
+
         default: true
 
         '
@@ -336,6 +338,7 @@ fields:
       name: preferences_browsing_history_suggestion
       type: BOOLEAN
     - description: 'Whether or not the user has enabled clipboard search suggestions.
+
         default: true
 
         '
@@ -343,6 +346,7 @@ fields:
       name: preferences_clipboard_suggestions_enabled
       type: BOOLEAN
     - description: 'Whether or not the user has the open links in apps feature enabled.
+
         default: false
 
         '
@@ -364,43 +368,53 @@ fields:
       mode: NULLABLE
       name: preferences_private_search_suggestions
       type: BOOLEAN
-    - description: 'Whether or not the user has remote debugging enabled default:
-        false
+    - description: 'Whether or not the user has remote debugging enabled
+
+        default: false
 
         '
       mode: NULLABLE
       name: preferences_remote_debugging_enabled
       type: BOOLEAN
-    - description: 'Whether or not the user has enabled search shortcuts. default:
-        true
+    - description: 'Whether or not the user has enabled search shortcuts.
+
+        default: true
 
         '
       mode: NULLABLE
       name: preferences_search_shortcuts_enabled
       type: BOOLEAN
-    - description: 'Whether or not the user has search suggestions enabled default:
-        true
+    - description: 'Whether or not the user has search suggestions enabled
+
+        default: true
 
         '
       mode: NULLABLE
       name: preferences_search_suggestions_enabled
       type: BOOLEAN
-    - description: 'Whether or not the user is signed into FxA default: false
+    - description: 'Whether or not the user is signed into FxA
+
+        default: false
 
         '
       mode: NULLABLE
       name: preferences_signed_in_sync
       type: BOOLEAN
     - description: 'Whether or not the user has telemetry enabled. Note we should
-        never receive a "false" value for this since telemetry would not send in that
-        case. default: true
+
+        never receive a "false" value for this since telemetry would
+
+        not send in that case.
+
+        default: true
 
         '
       mode: NULLABLE
       name: preferences_telemetry_enabled
       type: BOOLEAN
-    - description: 'Whether or not the user has enabled the voice search button. default:
-        true
+    - description: 'Whether or not the user has enabled the voice search button.
+
+        default: true
 
         '
       mode: NULLABLE
@@ -424,15 +438,17 @@ fields:
       mode: NULLABLE
       name: android_autofill_supported
       type: BOOLEAN
-    - description: 'An indication of whether the Jump back in section is enabled to
-        be displayed
+    - description: 'An indication of whether the Jump back
+
+        in section is enabled to be displayed
 
         '
       mode: NULLABLE
       name: customize_home_jump_back_in
       type: BOOLEAN
-    - description: 'An indication of whether the most visited sites are enabled to
-        be displayed
+    - description: 'An indication of whether the most visited sites
+
+        are enabled to be displayed
 
         '
       mode: NULLABLE
@@ -444,15 +460,17 @@ fields:
       mode: NULLABLE
       name: customize_home_pocket
       type: BOOLEAN
-    - description: 'An indication of whether the recently saved section is enabled
-        to be displayed
+    - description: 'An indication of whether the recently
+
+        saved section is enabled to be displayed
 
         '
       mode: NULLABLE
       name: customize_home_recently_saved
       type: BOOLEAN
-    - description: 'An indication of whether the Recently visited section is enabled
-        to be displayed
+    - description: 'An indication of whether the Recently
+
+        visited section is enabled to be displayed
 
         '
       mode: NULLABLE
@@ -473,6 +491,14 @@ fields:
         '
       mode: NULLABLE
       name: fog_failed_idle_registration
+      type: BOOLEAN
+    - description: 'Whether or not the user has the inactive tabs feature enabled.
+
+        default: true
+
+        '
+      mode: NULLABLE
+      name: preferences_inactive_tabs_enabled
       type: BOOLEAN
     mode: NULLABLE
     name: boolean
@@ -821,6 +847,18 @@ fields:
         '
       mode: NULLABLE
       name: fog_ipc_replay_failures
+      type: INTEGER
+    - description: 'A counter that indicates how many INACTIVE tabs a user has closed.
+
+        '
+      mode: NULLABLE
+      name: tabs_tray_close_inactive_tab
+      type: INTEGER
+    - description: 'A counter that indicates how many INACTIVE tabs a user has opened.
+
+        '
+      mode: NULLABLE
+      name: tabs_tray_open_inactive_tab
       type: INTEGER
     mode: NULLABLE
     name: counter
@@ -1933,21 +1971,27 @@ fields:
       name: gfx_feature_webrender
       type: STRING
     - description: 'What type of enhanced tracking protection the user has enabled.
-        "standard," "strict," "custom," or "" (if disabled) default: "standard"
+
+        "standard," "strict," "custom," or "" (if disabled)
+
+        default: "standard"
 
         '
       mode: NULLABLE
       name: preferences_enhanced_tracking_protection
       type: STRING
-    - description: 'The position of the toolbar default: bottom (defaults to top if
-        the user has accessibility services)
+    - description: 'The position of the toolbar
+
+        default: bottom (defaults to top if the user has accessibility services)
 
         '
       mode: NULLABLE
       name: preferences_toolbar_position_setting
       type: STRING
     - description: 'The theme the user has enabled. "light," "dark," "system," or
-        "battery" default: "system" for API 28+, else "light"
+        "battery"
+
+        default: "system" for API 28+, else "light"
 
         '
       mode: NULLABLE
@@ -4225,8 +4269,12 @@ fields:
       name: places_manager_write_query_time
       type: RECORD
     - description: 'How long it took to query the device for the StorageStats that
-        contain the file size information. The docs say it may be expensive so we
-        want to ensure it''s not too expensive.  This value is only available on Android
+        contain the
+
+        file size information. The docs say it may be expensive so we want to
+
+        ensure it''s not too expensive.  This value is only available on Android
+
         8+.
 
         '
@@ -5937,10 +5985,17 @@ fields:
       name: glean_upload_discarded_exceeding_pings_size
       type: RECORD
     - description: 'The size of the app''s APK and related files as installed: this
-        is expected to be larger than download size. This is the output of [StorageStats.getAppBytes](https://developer.android.com/reference/android/app/usage/StorageStats#getAppBytes())
-        so see that for details. This value is only available on Android 8+. A similar
-        value may be available on the Google Play dashboard: we can use this value
-        to see if that value is reliable enough.
+        is expected
+
+        to be larger than download size. This is the output of
+
+        [StorageStats.getAppBytes](https://developer.android.com/reference/android/app/usage/StorageStats#getAppBytes())
+
+        so see that for details. This value is only available on Android 8+. A
+
+        similar value may be available on the Google Play dashboard: we can use
+
+        this value to see if that value is reliable enough.
 
         '
       fields:
@@ -5961,7 +6016,9 @@ fields:
       name: storage_stats_app_bytes
       type: RECORD
     - description: 'The size of all cached data in the app. This is the output of
+
         [StorageStats.getCacheBytes](https://developer.android.com/reference/android/app/usage/StorageStats#getCacheBytes())
+
         so see that for details. This value is only available on Android 8+.
 
         '
@@ -5983,9 +6040,13 @@ fields:
       name: storage_stats_cache_bytes
       type: RECORD
     - description: 'The size of all data minus `cache_bytes`. This is the output of
+
         [StorageStats.getDataBytes](https://developer.android.com/reference/android/app/usage/StorageStats#getDataBytes())
+
         except we subtract the value of `cache_bytes` so the cache is not measured
+
         redundantly; see that method for details. This value is only available on
+
         Android 8+.
 
         '

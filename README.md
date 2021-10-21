@@ -14,7 +14,8 @@ Quick Start
 
 Ensure Python 3.8+ is available on your machine (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python.)
 
-For some functionality Java JDK 8+ is also required, and maven is needed for downloading jar dependencies. If you don't already have a JDK and maven installed, consider using [jenv](https://www.jenv.be/) and the `jenv enable-plugin maven` command.
+For some functionality Java JDK 8+ is also required (e.g. [AdoptOpenJDK](https://adoptium.net/?variant=openjdk8)) with `$JAVA_HOME` set, and maven is needed for downloading jar dependencies. If you don't already have a JDK and maven installed, consider using [jenv](https://www.jenv.be/) and the `jenv enable-plugin maven` command.
+The [Rosetta 2 terminal](https://support.apple.com/en-ca/HT211861) is also suggested for installing the above requirements on Apple Silicon (M1).
 
 Install and set up the GCP command line tools:
 

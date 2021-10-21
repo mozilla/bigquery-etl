@@ -67,9 +67,9 @@ attrs==21.2.0 \
     #   jsonschema
     #   pytest
     #   pytest-mypy
-authlib==0.15.4 \
-    --hash=sha256:37df3a2554bc6fe0da3cc6848c44fac2ae40634a7f8fc72543947f4330b26464 \
-    --hash=sha256:d9fe5edb59801b16583faa86f88d798d99d952979b9616d5c735b9170b41ae2c
+authlib==0.15.5 \
+    --hash=sha256:b83cf6360c8e92b0e9df0d1f32d675790bcc4e3c03977499b1eed24dcdef4252 \
+    --hash=sha256:ecf4a7a9f2508c0bb07e93a752dd3c495cfaffc20e864ef0ffc95e3f40d2abaf
     # via -r requirements.in
 black==21.4b2 \
     --hash=sha256:bff7067d8bc25eb21dcfdbc8c72f2baafd9ec6de4663241a52fb904b304d391f \
@@ -367,9 +367,9 @@ jinja2==3.0.2 \
     --hash=sha256:827a0e32839ab1600d4eb1c4c33ec5a8edfbc5cb42dafa13b81f182f97784b45 \
     --hash=sha256:8569982d3f0889eed11dd620c706d39b60c36d6d25843961f33f77fb6bc6b20c
     # via -r requirements.in
-jsonschema==4.1.0 \
-    --hash=sha256:2b3cca28580511d44326f0e7fc582eab3cbe31aabd1a1c2cfa74a399796ffd84 \
-    --hash=sha256:9dd7c33b4a96138dc37bb86b3610d3b12d30d96433d4d73435ca3025804154a8
+jsonschema==4.1.1 \
+    --hash=sha256:2a5ea0da054a759732ca60f19171fccf32649b1b4a5734e5988fec0087860910 \
+    --hash=sha256:da833824a1dc3bd840a89474deb3b59dc88180757b52a6f0cc0744be959364a7
     # via
     #   -r requirements.in
     #   mozilla-schema-generator

@@ -9,7 +9,15 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
-    'unknown' AS provider,
+    CASE
+    WHEN
+      request_id IS NULL
+    THEN
+      'remote settings'
+    ELSE
+      'merino'
+    END
+    AS provider,
   FROM
     contextual_services.quicksuggest_impression
   UNION ALL
@@ -23,7 +31,15 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
-    'unknown' AS provider,
+    CASE
+    WHEN
+      request_id IS NULL
+    THEN
+      'remote settings'
+    ELSE
+      'merino'
+    END
+    AS provider,
   FROM
     contextual_services.quicksuggest_click
   UNION ALL

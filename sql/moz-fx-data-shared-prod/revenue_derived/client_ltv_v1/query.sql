@@ -64,7 +64,7 @@ past_year_revenue AS (
     ) AS country,
     SUM(revenue_paid_to_mozilla) AS revenue
   FROM
-    `dp2-prod`.revenue.revenue_data
+    `moz-fx-data-shared-prod`.revenue_syndicate.revenue_data
   WHERE
    -- Filter to data before the current month, and 12 months ago from the 1st of the current month
     DATE(month_year)

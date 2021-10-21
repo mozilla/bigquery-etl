@@ -94,6 +94,13 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
         only_tables=[only] if only else None,
         table_filter=table_filter,
     )
+    # filter out skipped apps
+    baseline_tables = [
+        baseline_table
+        for baseline_table in baseline_tables
+        if baseline_table.split(".")[1]
+        not in [f"{skipped_app}_stable" for skipped_app in SKIP_APPS]
+    ]
 
     output_dir = Path(output_dir) / project_id
 

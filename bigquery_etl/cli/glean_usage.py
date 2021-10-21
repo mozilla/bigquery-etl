@@ -128,13 +128,14 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
         for table in GLEAN_TABLES
     ]
 
-    # Parameters to generate per-app_id datasets consist of the function to be called
+    # Parameters to generate per-app datasets consist of the function to be called
     # and app_info
     generate_per_app = [
         (
             partial(table.generate_per_app, project_id, output_dir=output_dir),
-            app_info[0],
+            info,
         )
+        for info in app_info
         for table in GLEAN_TABLES
     ]
 

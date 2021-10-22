@@ -1,0 +1,7 @@
+description: >
+  Used to parse `data` field from firestore export of fxa dataset
+  iap_google_raw. The content is documented at
+  https://developer.android.com/google/play/billing/subscriptions
+  and
+  https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions
+friendly_name: Parse Android Receipt from IAP

@@ -19520,6 +19520,30 @@ fields:
       mode: NULLABLE
       name: predictor_prefetch_use_status
       type: STRING
+    - description: Whether a document called Element.setHTML
+      mode: NULLABLE
+      name: use_counter2_element_sethtml_document
+      type: STRING
+    - description: Whether a page called Element.setHTML
+      mode: NULLABLE
+      name: use_counter2_element_sethtml_page
+      type: STRING
+    - description: Whether a document called Sanitizer.sanitize
+      mode: NULLABLE
+      name: use_counter2_sanitizer_sanitize_document
+      type: STRING
+    - description: Whether a page called Sanitizer.sanitize
+      mode: NULLABLE
+      name: use_counter2_sanitizer_sanitize_page
+      type: STRING
+    - description: Whether a document called Sanitizer.sanitizeFor
+      mode: NULLABLE
+      name: use_counter2_sanitizer_sanitizefor_document
+      type: STRING
+    - description: Whether a page called Sanitizer.sanitizeFor
+      mode: NULLABLE
+      name: use_counter2_sanitizer_sanitizefor_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40272,6 +40296,30 @@ fields:
           mode: NULLABLE
           name: media_sniffer_mp4_brand_pattern
           type: STRING
+        - description: Whether a document called Element.setHTML
+          mode: NULLABLE
+          name: use_counter2_element_sethtml_document
+          type: STRING
+        - description: Whether a page called Element.setHTML
+          mode: NULLABLE
+          name: use_counter2_element_sethtml_page
+          type: STRING
+        - description: Whether a document called Sanitizer.sanitize
+          mode: NULLABLE
+          name: use_counter2_sanitizer_sanitize_document
+          type: STRING
+        - description: Whether a page called Sanitizer.sanitize
+          mode: NULLABLE
+          name: use_counter2_sanitizer_sanitize_page
+          type: STRING
+        - description: Whether a document called Sanitizer.sanitizeFor
+          mode: NULLABLE
+          name: use_counter2_sanitizer_sanitizefor_document
+          type: STRING
+        - description: Whether a page called Sanitizer.sanitizeFor
+          mode: NULLABLE
+          name: use_counter2_sanitizer_sanitizefor_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -46708,6 +46756,62 @@ fields:
             type: BOOLEAN
           mode: REPEATED
           name: media_video_hardware_decoding_support
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'The count URI loads triggered in a subsession from the urlbar
+              via handoff, broken down by the originating action.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: browser_engagement_navigation_urlbar_handoff
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'The count URI loads triggered in a subsession from the urlbar
+              via handoff, broken down by the originating action.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: browser_search_adclicks_urlbar_handoff
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'The count URI loads triggered in a subsession from the urlbar
+              via handoff, broken down by the originating action.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: browser_search_content_urlbar_handoff
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'The count URI loads triggered in a subsession from the urlbar
+              via handoff, broken down by the originating action.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: browser_search_withads_urlbar_handoff
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

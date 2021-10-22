@@ -35,7 +35,7 @@ parser.add_argument(
     required=True,
 )
 parser.add_argument("--quote-currency", default="USD")
-parser.add_argument("--price", default="bid", choices=["bid", "ask", "midpoint"])
+parser.add_argument("--price", default="mid", choices=["bid", "ask", "mid"])
 args = parser.parse_args()
 
 quotes = set()

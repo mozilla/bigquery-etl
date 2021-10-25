@@ -167,7 +167,10 @@ desktop AS (
     os AS normalized_os,
     subsession_hours_sum AS durations,
     submission_date,
-    scalar_parent_browser_engagement_total_uri_count_sum AS uri_count,
+    COALESCE(
+      scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum,
+      scalar_parent_browser_engagement_total_uri_count_sum
+    ) AS uri_count,
     is_default_browser,
     ad_clicks_count_all AS ad_clicks,
     search_count_organic AS organic_search_count,

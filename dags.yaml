@@ -584,3 +584,17 @@ bqetl_urlbar:
       - "tbrooks@mozilla.com"
     retries: 2
     retry_delay: 30m
+
+bqetl_unified:
+  schedule_interval: 0 3 * * *
+  description: |
+    Schedule queries that unify metrics across all products.
+  default_args:
+    owner: ascholtz@mozilla.com
+    start_date: "2021-10-12"
+    email:
+      - "telemetry-alerts@mozilla.com"
+      - "ascholtz@mozilla.com"
+      - "loines@mozilla.com"
+    retries: 2
+    retry_delay: 30m

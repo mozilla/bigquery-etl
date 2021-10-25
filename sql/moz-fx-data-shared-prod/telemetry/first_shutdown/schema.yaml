@@ -19553,6 +19553,14 @@ fields:
       mode: NULLABLE
       name: use_counter2_sanitizer_sanitizefor_page
       type: STRING
+    - description: Whether a document called Sanitizer.constructor
+      mode: NULLABLE
+      name: use_counter2_sanitizer_constructor_document
+      type: STRING
+    - description: Whether a page called Sanitizer.constructor
+      mode: NULLABLE
+      name: use_counter2_sanitizer_constructor_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40329,6 +40337,14 @@ fields:
           mode: NULLABLE
           name: use_counter2_sanitizer_sanitizefor_page
           type: STRING
+        - description: Whether a document called Sanitizer.constructor
+          mode: NULLABLE
+          name: use_counter2_sanitizer_constructor_document
+          type: STRING
+        - description: Whether a page called Sanitizer.constructor
+          mode: NULLABLE
+          name: use_counter2_sanitizer_constructor_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -49548,6 +49564,13 @@ fields:
           mode: NULLABLE
           name: security_global_privacy_control_enabled
           type: INTEGER
+        - description: 'An identifier to identify users for Contextual Services user
+            interaction pings.
+
+            '
+          mode: NULLABLE
+          name: deletion_request_context_id
+          type: STRING
         mode: NULLABLE
         name: scalars
         type: RECORD

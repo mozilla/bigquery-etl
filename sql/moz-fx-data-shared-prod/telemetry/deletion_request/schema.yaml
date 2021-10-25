@@ -224,6 +224,13 @@ fields:
           mode: NULLABLE
           name: deletion_request_ecosystem_client_id
           type: STRING
+        - description: 'An identifier to identify users for Contextual Services user
+            interaction pings.
+
+            '
+          mode: NULLABLE
+          name: deletion_request_context_id
+          type: STRING
         mode: NULLABLE
         name: scalars
         type: RECORD
@@ -255,6 +262,13 @@ fields:
           '
         mode: NULLABLE
         name: deletion_request_ecosystem_client_id
+        type: STRING
+      - description: 'An identifier to identify users for Contextual Services user
+          interaction pings.
+
+          '
+        mode: NULLABLE
+        name: deletion_request_context_id
         type: STRING
       mode: NULLABLE
       name: parent

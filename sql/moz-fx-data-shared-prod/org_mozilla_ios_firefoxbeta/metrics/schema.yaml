@@ -295,6 +295,14 @@ fields:
       mode: NULLABLE
       name: installed_mozilla_products_klar
       type: BOOLEAN
+    - description: 'True if the device support device owner authentication
+
+        with either biometrics or a passcode.
+
+        '
+      mode: NULLABLE
+      name: device_authentication
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

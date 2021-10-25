@@ -328,7 +328,7 @@ android_iap_periods AS (
     start_time,
     end_time,
     DIV(price_amount_micros, 10000) AS plan_amount,
-    price_currency_code AS plan_currency,
+    LOWER(price_currency_code) AS plan_currency,
     STRING(user_cancellation_time) AS canceled_for_customer_at,
     package_name AS product_id,
     sku AS plan_id,

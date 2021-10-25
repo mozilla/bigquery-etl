@@ -321,6 +321,7 @@ clients_summary AS (
     payload.processes.parent.scalars.browser_engagement_unfiltered_uri_count AS scalar_parent_browser_engagement_unfiltered_uri_count,
     payload.processes.parent.scalars.browser_engagement_unique_domains_count AS scalar_parent_browser_engagement_unique_domains_count,
     payload.processes.parent.scalars.browser_engagement_window_open_event_count AS scalar_parent_browser_engagement_window_open_event_count,
+    payload.processes.parent.scalars.browser_engagement_total_uri_count_normal_and_private_mode AS scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode,
     payload.processes.parent.scalars.contentblocking_trackers_blocked_count AS scalar_parent_contentblocking_trackers_blocked_count,
     payload.processes.parent.scalars.devtools_accessibility_node_inspected_count AS scalar_parent_devtools_accessibility_node_inspected_count,
     payload.processes.parent.scalars.devtools_accessibility_opened_count AS scalar_parent_devtools_accessibility_opened_count,
@@ -873,6 +874,9 @@ aggregates AS (
     SUM(
       scalar_parent_browser_engagement_window_open_event_count
     ) AS scalar_parent_browser_engagement_window_open_event_count_sum,
+    SUM(
+      scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode
+    ) AS scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum,
     SUM(
       scalar_parent_devtools_accessibility_node_inspected_count
     ) AS scalar_parent_devtools_accessibility_node_inspected_count_sum,

@@ -2758,6 +2758,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#unified_metrics" class="md-nav__link">
+    unified_metrics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#uninstall" class="md-nav__link">
     uninstall
   </a>
@@ -4446,6 +4453,13 @@
         <li class="md-nav__item">
   <a href="#uitour_tag" class="md-nav__link">
     uitour_tag
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unified_metrics" class="md-nav__link">
+    unified_metrics
   </a>
   
 </li>
@@ -8461,6 +8475,35 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/uitour_tag">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/uitour_tag/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/uitour_tag/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="unified_metrics"><a href="#unified_metrics">unified_metrics</a></h2>
+<p>Unified view on common browser metrics across all products.</p>
+<p>Proposal:
+https://docs.google.com/document/d/1s_9pmDXKjfFpvW31jqnWyaWOE9tmO9_88Jt7inGVGys</p>
+<ul>
+<li>Friendly name: Unified Metrics</li>
+<li>
+<p>Owners: </p>
+<ul>
+<li><a href="mailto:loines@mozilla.com">loines@mozilla.com</a> </li>
+</ul>
+</li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_derived>telemetry_derived</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry_derived/unified_metrics_v1>unified_metrics_v1</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/unified_metrics">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/unified_metrics/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/telemetry/unified_metrics/view.sql">View Definition</a> </p>
 <hr />
 <h2 id="uninstall"><a href="#uninstall">uninstall</a></h2>
 <p>A historical view of pings sent for the

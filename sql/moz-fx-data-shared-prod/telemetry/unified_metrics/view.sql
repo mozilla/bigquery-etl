@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.unified_metrics`
+  `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`

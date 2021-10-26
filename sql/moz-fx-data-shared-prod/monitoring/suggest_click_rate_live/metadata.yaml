@@ -1,0 +1,10 @@
+---
+friendly_name: Live `quicksuggest-click` Ping Count Per Minute
+description: |-
+  A live view of submissions intended for operational monitoring use cases.
+labels:
+  authorized: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

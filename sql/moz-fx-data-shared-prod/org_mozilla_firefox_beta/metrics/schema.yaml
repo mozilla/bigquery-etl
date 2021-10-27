@@ -860,6 +860,12 @@ fields:
       mode: NULLABLE
       name: tabs_tray_open_inactive_tab
       type: INTEGER
+    - description: 'Total CPU time used by all processes in ms.
+
+        '
+      mode: NULLABLE
+      name: power_total_cpu_time_ms
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

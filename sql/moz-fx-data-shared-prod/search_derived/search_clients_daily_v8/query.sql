@@ -246,6 +246,9 @@ counted AS (
     scalar_parent_urlbar_searchmode_touchbar_sum,
     scalar_parent_urlbar_searchmode_typed_sum,
     profile_age_in_days,
+    CAST(
+      NULL AS STRING
+    ) AS normalized_engine, -- https://github.com/mozilla/bigquery-etl/issues/2462
     SUM(IF(type = 'organic', count, 0)) OVER w1 AS organic,
     SUM(IF(type = 'tagged-sap', count, 0)) OVER w1 AS tagged_sap,
     SUM(IF(type = 'tagged-follow-on', count, 0)) OVER w1 AS tagged_follow_on,

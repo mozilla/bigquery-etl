@@ -23,7 +23,7 @@ pytest-mypy==0.8.1
 pytest-pydocstyle==2.2.0
 pytest-xdist==2.4.0
 pytest==6.2.5
-PyYAML==5.4.1
+PyYAML==6.0
 smart_open==5.2.1
 sqlparse==0.4.2
 stripe==2.61.0

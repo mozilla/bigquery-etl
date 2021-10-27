@@ -139,6 +139,7 @@ SOURCES = (
     [
         DESKTOP_SRC,
         IMPRESSION_SRC,
+        CONTEXTUAL_SERVICES_SRC,
         CFR_SRC,
         FXA_HMAC_SRC,
         FXA_SRC,

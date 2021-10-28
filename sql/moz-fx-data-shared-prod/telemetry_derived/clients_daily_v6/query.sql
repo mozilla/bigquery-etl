@@ -413,6 +413,9 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.browser_search_adclicks_tabhistory,
     payload.processes.parent.keyed_scalars.browser_search_adclicks_reload,
     payload.processes.parent.keyed_scalars.browser_search_adclicks_unknown,
+    payload.processes.parent.keyed_scalars.browser_search_content_urlbar_handoff,
+    payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_handoff,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_handoff,
     count_histograms[OFFSET(0)].histogram AS histogram_parent_devtools_aboutdebugging_opened_count,
     count_histograms[
       OFFSET(1)
@@ -997,7 +1000,8 @@ aggregates AS (
                 browser_search_adclicks_webextension,
                 browser_search_adclicks_tabhistory,
                 browser_search_adclicks_reload,
-                browser_search_adclicks_unknown
+                browser_search_adclicks_unknown,
+                browser_search_adclicks_urlbar_handoff
               )
             )
         )
@@ -1022,7 +1026,8 @@ aggregates AS (
                 browser_search_withads_webextension,
                 browser_search_withads_tabhistory,
                 browser_search_withads_reload,
-                browser_search_withads_unknown
+                browser_search_withads_unknown,
+                browser_search_withads_urlbar_handoff
               )
             )
         )
@@ -1096,7 +1101,10 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_webextension)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_tabhistory)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_reload)),
-      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_unknown))
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_unknown)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_handoff)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_handoff)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_handoff))
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(
@@ -1223,5 +1231,8 @@ SELECT
   map_sum_aggregates[OFFSET(64)].map AS search_adclicks_tabhistory_sum,
   map_sum_aggregates[OFFSET(65)].map AS search_adclicks_reload_sum,
   map_sum_aggregates[OFFSET(66)].map AS search_adclicks_unknown_sum,
+  map_sum_aggregates[OFFSET(67)].map AS search_content_urlbar_handoff_sum,
+  map_sum_aggregates[OFFSET(68)].map AS search_withads_urlbar_handoff_sum,
+  map_sum_aggregates[OFFSET(69)].map AS search_adclicks_urlbar_handoff_sum,
 FROM
   udf_aggregates

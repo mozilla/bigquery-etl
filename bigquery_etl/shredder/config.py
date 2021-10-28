@@ -98,7 +98,7 @@ CFR_SRC = DeleteSource(
 )
 CONTEXTUAL_SERVICES_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
-    field="payload.scalars.parent.deletion_request_context_id"
+    field="payload.scalars.parent.deletion_request_context_id",
 )
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts_derived.fxa_delete_events_v1", field="hmac_user_id"

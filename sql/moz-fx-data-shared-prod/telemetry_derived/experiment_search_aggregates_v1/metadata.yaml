@@ -29,5 +29,7 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.metrics_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_focus_stable.metrics_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_klar_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_klar_stable.metrics_v1
   - moz-fx-data-shared-prod.telemetry_stable.main_v4

@@ -723,6 +723,10 @@ fields:
       mode: NULLABLE
       name: preferences_user_theme
       type: STRING
+    - description: Used to identify the source the app was installed from.
+      mode: NULLABLE
+      name: browser_install_source
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

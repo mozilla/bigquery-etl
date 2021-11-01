@@ -951,6 +951,12 @@ fields:
       mode: NULLABLE
       name: tabs_grouped_tab_search
       type: INTEGER
+    - description: 'The number of times a user sees the Firefox Homepage
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_firefox_homepage_view
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

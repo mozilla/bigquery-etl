@@ -20,3 +20,5 @@ bigquery:
 references:
   query.sql:
   - org_mozilla_focus.metrics
+  - org_mozilla_focus_beta.metrics
+  - org_mozilla_focus_nightly.metrics

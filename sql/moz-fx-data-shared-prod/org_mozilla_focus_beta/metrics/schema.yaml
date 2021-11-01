@@ -221,6 +221,18 @@ fields:
       mode: NULLABLE
       name: glean_error_preinit_tasks_timeout
       type: BOOLEAN
+    - description: 'If Fenix is installed on the users''s device.
+
+        '
+      mode: NULLABLE
+      name: mozilla_products_has_fenix_installed
+      type: BOOLEAN
+    - description: 'Fenix is the default browser on user''s device
+
+        '
+      mode: NULLABLE
+      name: mozilla_products_is_fenix_default_browser
+      type: BOOLEAN
     - description: 'The user has changed the setting for enhanced tracking protection
 
         at least once.
@@ -261,22 +273,24 @@ fields:
       mode: NULLABLE
       name: tracking_protection_has_social_blocked
       type: BOOLEAN
-    - description: 'If Fenix is installed on the users''s device.
-
-        '
-      mode: NULLABLE
-      name: mozilla_products_has_fenix_installed
-      type: BOOLEAN
-    - description: 'Fenix is the default browser on user''s device
-
-        '
-      mode: NULLABLE
-      name: mozilla_products_is_fenix_default_browser
-      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
   - fields:
+    - description: 'Records count of URIs visited by the user in the current session,
+
+        including page reloads.
+
+        It does not include background page requests and URIs from embedded pages
+
+        but may be incremented without user interaction by website scripts
+
+        that programmatically redirect to a new location.
+
+        '
+      mode: NULLABLE
+      name: browser_total_uri_count
+      type: INTEGER
     - description: 'The number of times we encountered an IO error
 
         when writing a pending ping to disk.
@@ -347,14 +361,6 @@ fields:
       mode: NULLABLE
       name: glean_validation_foreground_count
       type: INTEGER
-    - description: 'A counter that indicates how many times a user has clicked
-
-        the whats new button from settings screen.
-
-        '
-      mode: NULLABLE
-      name: settings_screen_whats_new_tapped
-      type: INTEGER
     - description: 'A counter that indicates how many times a user has added
 
         a website to the autocomplete list.
@@ -362,6 +368,14 @@ fields:
         '
       mode: NULLABLE
       name: settings_screen_autocomplete_domain_added
+      type: INTEGER
+    - description: 'A counter that indicates how many times a user has clicked
+
+        the whats new button from settings screen.
+
+        '
+      mode: NULLABLE
+      name: settings_screen_whats_new_tapped
       type: INTEGER
     - description: 'A counter that indicates how many times a user has added
 
@@ -387,20 +401,6 @@ fields:
       mode: NULLABLE
       name: tracking_protection_toolbar_shield_clicked
       type: INTEGER
-    - description: 'Records count of URIs visited by the user in the current session,
-
-        including page reloads.
-
-        It does not include background page requests and URIs from embedded pages
-
-        but may be incremented without user interaction by website scripts
-
-        that programmatically redirect to a new location.
-
-        '
-      mode: NULLABLE
-      name: browser_total_uri_count
-      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -425,6 +425,49 @@ fields:
     name: jwe
     type: RECORD
   - fields:
+    - description: 'Records clicks of adverts on SERP pages.
+
+        The key format is `<provider-name>`.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_ad_clicks
+      type: RECORD
+    - description: 'Records the type of interaction a user has on SERP pages.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_in_content
+      type: RECORD
+    - description: 'Records counts of SERP pages with adverts displayed.
+
+        The key format is `<provider-name>`.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: browser_search_with_ads
+      type: RECORD
     - description: 'Counts the number of crashes that occur in the application. This
         measures only the counts of each crash in association with the labeled type
         of the crash. The labels correspond to the types of crashes handled by lib-crash.
@@ -535,49 +578,6 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: glean_validation_pings_submitted
-      type: RECORD
-    - description: 'Records clicks of adverts on SERP pages.
-
-        The key format is `<provider-name>`.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_ad_clicks
-      type: RECORD
-    - description: 'Records the type of interaction a user has on SERP pages.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_in_content
-      type: RECORD
-    - description: 'Records counts of SERP pages with adverts displayed.
-
-        The key format is `<provider-name>`.
-
-        '
-      fields:
-      - mode: NULLABLE
-        name: key
-        type: STRING
-      - mode: NULLABLE
-        name: value
-        type: INTEGER
-      mode: REPEATED
-      name: browser_search_with_ads
       type: RECORD
     - description: 'A counter that indicates how many times a user has removed
 
@@ -692,11 +692,27 @@ fields:
     name: memory_distribution
     type: RECORD
   - fields:
+    - description: 'The number of shortcuts the user has on home screen,
+
+        0, 1, 2, 3 or 4 (maximum)
+
+        '
+      mode: NULLABLE
+      name: shortcuts_shortcuts_on_home_number
+      type: INTEGER
+    mode: NULLABLE
+    name: quantity
+    type: RECORD
+  - fields:
     - description: 'A string containing the default search engine name.
 
         '
       mode: NULLABLE
       name: browser_default_search_engine
+      type: STRING
+    - description: Used to identify the source the app was installed from.
+      mode: NULLABLE
+      name: browser_install_source
       type: STRING
     - description: 'The locale that differs from the system locale if a user
 
@@ -723,22 +739,8 @@ fields:
       mode: NULLABLE
       name: preferences_user_theme
       type: STRING
-    - description: Used to identify the source the app was installed from.
-      mode: NULLABLE
-      name: browser_install_source
-      type: STRING
     mode: NULLABLE
     name: string
-    type: RECORD
-  - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: STRING
-    mode: REPEATED
-    name: url
     type: RECORD
   - fields:
     - mode: NULLABLE
@@ -751,16 +753,14 @@ fields:
     name: text
     type: RECORD
   - fields:
-    - description: 'The number of shortcuts the user has on home screen,
-
-        0, 1, 2, 3 or 4 (maximum)
-
-        '
-      mode: NULLABLE
-      name: shortcuts_shortcuts_on_home_number
-      type: INTEGER
-    mode: NULLABLE
-    name: quantity
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: STRING
+    mode: REPEATED
+    name: url
     type: RECORD
   mode: NULLABLE
   name: metrics

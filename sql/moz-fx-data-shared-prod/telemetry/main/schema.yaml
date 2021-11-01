@@ -19552,6 +19552,11 @@ fields:
       mode: NULLABLE
       name: use_counter2_sanitizer_constructor_page
       type: STRING
+    - description: Reports if a Firefox succeeded or failed in fetching the GMP update.xml
+        from balrog, and which method was used to verify the download.
+      mode: NULLABLE
+      name: media_gmp_update_xml_fetch_result
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD

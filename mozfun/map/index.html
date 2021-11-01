@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.5">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.cdeb8541.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a57b2b03.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -1213,6 +1213,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_focus_beta/" class="md-nav__link">
+        org_mozilla_focus_beta
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozdata/org_mozilla_focus_nightly/" class="md-nav__link">
+        org_mozilla_focus_nightly
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../mozdata/org_mozilla_ios_fennec/" class="md-nav__link">
         org_mozilla_ios_fennec
       </a>
@@ -1774,15 +1802,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_key_with_null-udf" class="md-nav__link">
-    get_key_with_null (UDF)
+  <a href="#get_key-udf" class="md-nav__link">
+    get_key (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_key-udf" class="md-nav__link">
-    get_key (UDF)
+  <a href="#get_key_with_null-udf" class="md-nav__link">
+    get_key_with_null (UDF)
   </a>
   
 </li>
@@ -1927,15 +1955,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_key_with_null-udf" class="md-nav__link">
-    get_key_with_null (UDF)
+  <a href="#get_key-udf" class="md-nav__link">
+    get_key (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_key-udf" class="md-nav__link">
-    get_key (UDF)
+  <a href="#get_key_with_null-udf" class="md-nav__link">
+    get_key_with_null (UDF)
   </a>
   
 </li>
@@ -1965,6 +1993,12 @@
 <h2 id="sum-udf">sum (UDF)</h2>
 <p>Return the sum of values by key in an array of map entries. The expected schema for entries is ARRAY<STRUCT\<key ANY TYPE, value ANY TYPE>>, where the type for value must be supported by SUM, which allows numeric data types INT64, NUMERIC, and FLOAT64.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/sum">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/sum/metadata.yaml">Edit</a></p>
+<h2 id="get_key-udf">get_key (UDF)</h2>
+<p>Fetch the value associated with a given key from an array of key/value
+structs.</p>
+<p>Because map types aren't available in BigQuery, we model maps as arrays
+of structs instead, and this function provides map-like access to such fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/get_key">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/get_key/metadata.yaml">Edit</a></p>
 <h2 id="get_key_with_null-udf">get_key_with_null (UDF)</h2>
 <p>Fetch the value associated with a given key from an array of
 key/value structs.</p>
@@ -1972,12 +2006,6 @@ key/value structs.</p>
 of structs instead, and this function provides map-like access to such fields.
 This version matches NULL keys as well.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/get_key_with_null">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/get_key_with_null/metadata.yaml">Edit</a></p>
-<h2 id="get_key-udf">get_key (UDF)</h2>
-<p>Fetch the value associated with a given key from an array of key/value
-structs.</p>
-<p>Because map types aren't available in BigQuery, we model maps as arrays
-of structs instead, and this function provides map-like access to such fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/get_key">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/get_key/metadata.yaml">Edit</a></p>
 <h2 id="mode_last-udf">mode_last (UDF)</h2>
 <p>Combine entries from multiple maps, determine the value for each key using mozfun.stats.mode_last.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/map/mode_last">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/map/mode_last/metadata.yaml">Edit</a></p>
@@ -2053,10 +2081,10 @@ of structs instead, and this function provides map-like access to such fields.</
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.8397ff9e.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.1e84347e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
       
     
   </body>

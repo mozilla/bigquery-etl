@@ -611,6 +611,9 @@ fields:
   name: search_count_organic
   type: INTEGER
 - mode: NULLABLE
+  name: search_count_urlbar_handoff
+  type: INTEGER
+- mode: NULLABLE
   name: session_restored_mean
   type: FLOAT
 - mode: NULLABLE
@@ -1122,6 +1125,16 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
+  name: search_content_urlbar_handoff_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
   name: search_content_urlbar_searchmode_sum
   type: RECORD
 - fields:
@@ -1232,6 +1245,16 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
+  name: search_withads_urlbar_handoff_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
   name: search_withads_urlbar_searchmode_sum
   type: RECORD
 - fields:
@@ -1333,6 +1356,16 @@ fields:
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_adclicks_urlbar_handoff_sum
   type: RECORD
 - fields:
   - mode: NULLABLE

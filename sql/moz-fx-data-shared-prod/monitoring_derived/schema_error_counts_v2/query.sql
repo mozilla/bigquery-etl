@@ -7,7 +7,7 @@ WITH extracted AS (
     document_version,
     error_message
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_error.*`
+    monitoring.payload_bytes_error_all
   WHERE
     date(submission_timestamp) = @submission_date
     AND exception_class = 'org.everit.json.schema.ValidationException'

@@ -185,6 +185,14 @@ distribution_metadata AS (
           100 AS range_max,
           20 AS bucket_count,
           "linear" AS histogram_type
+        ),
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "performance_clone_deserialize_items" AS metric,
+          1 AS range_min,
+          2147483646 AS range_max,
+          50 AS bucket_count,
+          "exponential" AS histogram_type
         )
       ]
     )

@@ -1,21 +1,26 @@
 WITH all_events AS (
   {% if glean %}
-    SELECT
-      DATE(submission_timestamp) AS submission_date,
-      SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
-      category,
-      name AS event,
-      extra,
-    FROM
-      {{ app_id }}.events e
-    CROSS JOIN
-      UNNEST(e.events) AS event
-    {% else %}
-    SELECT
-      *
-    FROM
-      {{ source_table }}
-    {% endif %}
+    {% for glean_app_id in glean_app_ids %}
+      SELECT
+        DATE(submission_timestamp) AS submission_date,
+        SAFE.TIMESTAMP_ADD(ping_info.parsed_start_time, INTERVAL timestamp MILLISECOND) AS timestamp,
+        category,
+        name AS event,
+        extra,
+      FROM
+        {{ glean_app_id }}.{{ events_table_name }} e
+      CROSS JOIN
+        UNNEST(e.events) AS event
+      {% if not loop.last %}
+        UNION ALL
+      {% endif %}
+    {% endfor %}
+  {% else %}
+      SELECT
+        *
+      FROM
+        {{ source_table }}
+  {% endif %}
 ),
 current_events AS (
   SELECT
@@ -29,7 +34,7 @@ event_types AS (
   SELECT
     *
   FROM
-    {{ app_id }}_derived.event_types_history_v1
+    {{ dataset }}_derived.event_types_history_v1
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
 ),

@@ -1,5 +1,5 @@
 CREATE OR REPLACE TABLE
-  {{ app_id }}_derived.events_daily_v1
+  {{ dataset }}_derived.events_daily_v1
 PARTITION BY
   submission_date
 CLUSTER BY

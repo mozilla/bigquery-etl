@@ -20,7 +20,7 @@ SELECT
 FROM
     `{{ dataset }}.{{ prefix }}__view_probe_counts_v1`
 WHERE
-    total_users > 10
+    total_users > {{ total_users }}
 GROUP BY
     channel,
     app_version,

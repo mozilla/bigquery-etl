@@ -1,11 +1,12 @@
 ---
-friendly_name: '{{ app_id }} Events Daily'
+friendly_name: '{{ name }} Events Daily'
 description: >
   Packed event representation with one-row per-client
 owners:
-  - frank@mozilla.com
+  - wlachance@mozilla.com
+  - akomar@mozilla.com
 labels:
-  application: {{ app_id }}
+  application: {{ dataset }}
   schedule: daily
   incremental: true
 scheduling:
@@ -13,7 +14,7 @@ scheduling:
   referenced_tables: [
     [
       'moz-fx-data-shared-prod',
-      '{{ app_id }}_derived',
+      '{{ dataset }}_derived',
       'event_types_v1'
     ],
   ]

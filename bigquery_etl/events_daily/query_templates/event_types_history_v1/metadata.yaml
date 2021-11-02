@@ -1,14 +1,15 @@
 ---
-friendly_name: '{{ app_id }} Event Types History'
+friendly_name: '{{ name }} Event Types History'
 description: >
   Retrieve the set of [events, event_properties]
   and record them in a table.
   This table stores all of history, partitioned by
   submission_date.
 owners:
-  - frank@mozilla.com
+  - wlachance@mozilla.com
+  - akomar@mozilla.com
 labels:
-  application: {{ app_id }}
+  application: {{ dataset }}
   incremental: true
   schedule: daily
 scheduling:

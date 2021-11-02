@@ -1,0 +1,50 @@
+---
+- submission_timestamp: "2020-01-03 01:00:00"
+  client_info:
+    client_id: client-beta-1
+  events:
+    - category: first_category
+      name: first_event
+      timestamp: "1"
+      extra:
+        - key: first_property
+          value: first_property_value_1
+    - category: second_category
+      name: second_event
+      timestamp: "2"
+      extra:
+        - key: second_property
+          value: second_property_value_1
+        - key: third_property
+          value: third_property_value_1
+- submission_timestamp: "2020-01-03 00:00:00"
+  client_info:
+    client_id: client-beta-1
+  events:
+    - category: first_category
+      name: first_event
+      timestamp: "3"
+      extra: []
+- submission_timestamp: "2020-01-03 00:00:00"
+  client_info:
+    client_id: client-beta-2
+  ping_info:
+    experiments:
+      key: fake-experiment
+      value:
+        branch: fake-experiment-branch
+        extra:
+          type: fake-type
+  events:
+    - category: first_category
+      name: first_event
+      timestamp: "3"
+      extra:
+        - key: first_property
+          value: first_property_value_3
+        - key: second_property
+          value: second_property_value_1
+    - category: new_category
+      name: new_event_no_props
+      timestamp: "4"
+      extra: []

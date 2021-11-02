@@ -10,7 +10,7 @@ WITH extracted AS (
     document_version,
     error_message
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_error.*`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_all`
   WHERE
     submission_timestamp < TIMESTAMP_TRUNC(current_timestamp, day)
     AND submission_timestamp > TIMESTAMP_SUB(

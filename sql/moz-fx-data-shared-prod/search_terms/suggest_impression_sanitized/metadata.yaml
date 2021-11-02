@@ -1,0 +1,19 @@
+---
+friendly_name: Sanitized Firefox Suggest Impressions with Search Terms
+description: |-
+  A sanitized historical view of pings sent for the
+  `contextual-services/quicksuggest-impression`
+  document type, including search terms fields.
+
+  Note that `quicksuggest-impression` pings with search terms excluded
+  are presented separately under the `contextual_services` dataset.
+
+  This view is guaranteed to contain only complete days
+  (per `submission_timestamp`)
+  and to contain only one row per distinct `document_id` within a given date.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/sanitized

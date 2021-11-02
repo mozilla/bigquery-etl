@@ -1,4 +1,5 @@
 """Generate and run the Operational Monitoring Queries."""
+import glob
 import json
 import logging
 import os
@@ -13,7 +14,7 @@ from google.cloud import bigquery, storage
 
 from bigquery_etl.util.common import render, write_sql
 
-QUERY_FILENAME = "{}_query.sql"
+QUERY_FILENAME = "{}_query{}.sql"
 INIT_FILENAME = "{}_init.sql"
 VIEW_FILENAME = "{}_view.sql"
 BUCKET_NAME = "operational_monitoring"
@@ -38,13 +39,16 @@ def _get_name_and_sql(query, reference_content, item_type, filter_type=None):
     ]
 
 
-def _write_sql(project, dataset, slug, kwargs, basename, init):
+def _write_sql(
+    project, dataset, slug, kwargs, template_filename, output_filename=None, init=False
+):
+    output_filename = output_filename or template_filename
     write_sql(
         OUTPUT_DIR,
         f"{project}.{dataset}.{slug}",
-        basename,
+        output_filename,
         render(
-            basename,
+            template_filename,
             template_folder="operational_monitoring",
             **kwargs,
             init=init,
@@ -72,24 +76,36 @@ def _query_up_to_date(dataset, slug, basename, project_last_modified):
 
 
 def _write_sql_for_data_type(
-    query, project, dataset, slug, render_kwargs, probes, data_type
+    query_id, query, project, dataset, slug, render_kwargs, probes, data_type
 ):
+    probes = _get_name_and_sql(query, probes, "probes", data_type)
+    if len(probes) == 0:
+        # There are no probes for this data source + data type combo
+        return
+
     normalized_slug = _bq_normalize_name(slug)
     render_kwargs.update(
         {
             "source": query["source"],
-            "probes": _get_name_and_sql(query, probes, "probes", data_type),
+            "probes": probes,
             "slug": slug,
         }
     )
+
     _write_sql(
         project,
         dataset,
         normalized_slug,
         render_kwargs,
-        QUERY_FILENAME.format(data_type),
-        init=False,
+        QUERY_FILENAME.format(data_type, ""),
+        QUERY_FILENAME.format(data_type, query_id),
     )
+
+    if query_id > 0:
+        # We only need to write the view/init files for the first query
+        # (query_id == 0). The same view/table will be reused for subsequent
+        # queries coming from a different data source.
+        return
 
     # Init and view files need the normalized slug
     render_kwargs.update({"slug": normalized_slug})
@@ -107,7 +123,6 @@ def _write_sql_for_data_type(
         normalized_slug,
         render_kwargs,
         VIEW_FILENAME.format(data_type),
-        init=False,
     )
 
 
@@ -159,12 +174,13 @@ def _generate_sql(project, dataset):
             continue
 
         # Iterating over each dataset to query for a given project.
-        for query in om_project["analysis"]:
+        for query_id, query in enumerate(om_project["analysis"]):
             render_kwargs.update(
                 {"dimensions": _get_name_and_sql(query, dimensions, "dimensions")}
             )
             for data_type in DATA_TYPES:
                 _write_sql_for_data_type(
+                    query_id,
                     query,
                     project,
                     dataset,
@@ -185,7 +201,7 @@ def _run_sql_for_data_type(
     )
     query_sql_path = Path(
         os.path.join(
-            OUTPUT_DIR, dataset, normalized_slug, QUERY_FILENAME.format(data_type)
+            OUTPUT_DIR, dataset, normalized_slug, QUERY_FILENAME.format(data_type, "*")
         )
     )
     view_sql_path = Path(
@@ -194,7 +210,6 @@ def _run_sql_for_data_type(
         )
     )
     init_query_text = init_sql_path.read_text()
-    query_text = query_sql_path.read_text()
     view_text = view_sql_path.read_text()
 
     # Wait for init to complete before running queries
@@ -202,21 +217,28 @@ def _run_sql_for_data_type(
     view_query_job = bq_client.query(view_text)
     results = init_query_job.result()
 
-    query_job = bq_client.query(query_text, job_config=query_config)
+    query_files = glob.glob(str(query_sql_path))
+    for file_id, query_file in enumerate(query_files):
+        query_text = Path(query_file).read_text()
+        if file_id > 0:
+            # All subsequent files should append their output to the existing table
+            query_config.write_disposition = "WRITE_APPEND"
 
-    # Periodically print so airflow gke operator doesn't think task is dead
-    elapsed = 0
-    while not query_job.done():
-        time.sleep(10)
-        elapsed += 10
-        if elapsed % 200 == 10:
-            print("Waiting on query...")
+        query_job = bq_client.query(query_text, job_config=query_config)
 
-    print(f"Total elapsed: approximately {elapsed} seconds")
-    results = query_job.result()
+        # Periodically print so airflow gke operator doesn't think task is dead
+        elapsed = 0
+        while not query_job.done():
+            time.sleep(10)
+            elapsed += 10
+            if elapsed % 200 == 10:
+                print("Waiting on query...")
 
-    print(f"Query job {query_job.job_id} finished")
-    print(f"{results.total_rows} rows in {query_config.destination}")
+        print(f"Total elapsed: approximately {elapsed} seconds")
+        results = query_job.result()
+
+        print(f"Query job {query_job.job_id} finished")
+        print(f"{results.total_rows} rows in {query_config.destination}")
 
     # Add a view once the derived table is generated.
     view_query_job.result()
@@ -236,7 +258,6 @@ def _run_project_sql(bq_client, project, dataset, submission_date, slug):
         clustering_fields=["build_id"],
         default_dataset=f"{project}.{dataset}",
         time_partitioning=bigquery.TimePartitioning(field="submission_date"),
-        write_disposition="WRITE_TRUNCATE",
         use_query_cache=True,
         allow_large_results=True,
     )
@@ -246,6 +267,7 @@ def _run_project_sql(bq_client, project, dataset, submission_date, slug):
             f"{project}.{dataset}.{normalized_slug}_{data_type}${date_partition}"
         )
         query_config.destination = destination_table
+        query_config.write_disposition = "WRITE_TRUNCATE"
 
         _run_sql_for_data_type(
             bq_client, project, dataset, normalized_slug, query_config, data_type

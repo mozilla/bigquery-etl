@@ -1,0 +1,18 @@
+friendly_name: Aggregated Search Terms Daily
+description: |-
+  Impression, click and client counts for search queries logged via
+  Contextual Services Suggest Impression Pings
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/aggregated
+owners:
+  - rburwei@mozilla.com
+  - jklukas@mozilla.com
+bigquery:
+  time_partitioning:
+    field: submission_date
+    type: day
+    require_partition_filter: true
+scheduling:
+  dag_name: bqetl_search_terms_daily

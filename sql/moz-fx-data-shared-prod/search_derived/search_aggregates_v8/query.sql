@@ -13,6 +13,10 @@ SELECT
   os,
   os_version,
   is_default_browser,
+  channel,
+  CAST(
+    NULL AS STRING
+  ) AS normalized_engine, -- See https://github.com/mozilla/bigquery-etl/issues/2462
   COUNT(*) AS client_count,
   SUM(organic) AS organic,
   SUM(tagged_sap) AS tagged_sap,
@@ -42,4 +46,5 @@ GROUP BY
   default_private_search_engine,
   os,
   os_version,
-  is_default_browser
+  is_default_browser,
+  channel

@@ -56,16 +56,15 @@ with DAG(
         dag=dag,
     )
 
-    wait_for_external_task1 = ExternalTaskCompletedSensor(
-        task_id="wait_for_external_task1",
+    wait_for_task1 = ExternalTaskCompletedSensor(
+        task_id="wait_for_task1",
         external_dag_id="external",
         external_task_id="task1",
         check_existence=True,
         mode="reschedule",
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-        dag=dag,
     )
 
-    test__no_metadata_query__v1.set_upstream(wait_for_external_task1)
+    test__no_metadata_query__v1.set_upstream(wait_for_task1)
 
-    test__non_incremental_query__v1.set_upstream(wait_for_external_task1)
+    test__non_incremental_query__v1.set_upstream(wait_for_task1)

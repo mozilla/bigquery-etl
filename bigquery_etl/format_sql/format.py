@@ -4,7 +4,6 @@ import glob
 import os
 import os.path
 import sys
-from argparse import ArgumentParser
 
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 
@@ -93,37 +92,10 @@ SKIP = {
     "stored_procedures/safe_crc32_uuid.sql",
 }
 
-parser = ArgumentParser(description=__doc__)
-parser.add_argument(
-    "paths",
-    metavar="PATH",
-    nargs="*",
-    help="file or directory to format;"
-    " if not specified read from stdin and write to stdout;"
-    " recursively search directories for .sql files",
-)
-parser.add_argument(
-    "--check",
-    action="store_true",
-    help="do not write changes, just return status;"
-    " return code 0 indicates nothing would change;"
-    " return code 1 indicates some files would be reformatted",
-)
-
-
-def main():
-    """Format SQL files."""
-    args = parser.parse_args()
-    format(args.paths, args.check)
-
 
 def format(paths, check=False):
     """Format SQL files."""
     if not paths:
-        if sys.stdin.isatty():
-            parser.print_help()
-            print("Error: must specify PATH or provide input via stdin")
-            sys.exit(255)
         query = sys.stdin.read()
         formatted = reformat(query, trailing_newline=True)
         if not check:
@@ -179,7 +151,3 @@ def format(paths, check=False):
         )
         if check and reformatted:
             sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()

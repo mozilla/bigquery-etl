@@ -1,0 +1,13 @@
+friendly_name: Suggest Click Rate Live
+description: |-
+  Used to visualize telemetry rates in Grafana as a cross check for
+  operational monitoring of the Merino service.
+owners:
+  - jklukas@mozilla.com
+labels:
+  materialized_view: true
+  authorized: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

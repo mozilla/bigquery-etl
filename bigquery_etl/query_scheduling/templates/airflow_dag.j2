@@ -76,6 +76,18 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             priority_weight={{ task.priority }},
             {%+ endif -%}
     {% endif -%}
+            {%+ if task.gcp_conn_id != None -%}
+            gcp_conn_id={{ task.gcp_conn_id | format_repr }},
+            {%+ endif -%}
+            {%+ if task.gke_project_id != None -%}
+            gke_project_id={{ task.gke_project_id | format_repr }},
+            {%+ endif -%}
+            {%+ if task.gke_location != None -%}
+            gke_location={{ task.gke_location | format_repr }},
+            {%+ endif -%}
+            {%+ if task.gke_cluster_name != None -%}
+            gke_cluster_name={{ task.gke_cluster_name | format_repr }},
+            {%+ endif -%}
             {%+ if task.retry_delay != None -%}
             retry_delay={{ task.retry_delay | format_timedelta | format_repr }},
             {%+ endif -%}
@@ -93,8 +105,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
 {% set wait_for_seen = [] -%}
 {% for task in tasks | sort(attribute='task_name') %}
-    {% for dependency in task.dependencies | sort(attribute='task_id') -%}
-    {% if dependency.dag_name == name -%}
+    {% for dependency in (task.dependencies + task.depends_on) | sort(attribute='task_id') -%}
+    {% if dependency.dag_name == name and dependency not in task.depends_on -%}
     {% if dependency.task_id != task.task_name %}
     {{ task.task_name }}.set_upstream({{ dependency.task_id }})
     {% endif -%}
@@ -104,8 +116,8 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         task_id='wait_for_{{ dependency.task_id }}',
         external_dag_id='{{ dependency.dag_name }}',
         external_task_id='{{ dependency.task_id }}',
-        {% if dependency.execution_delta -%}
-        execution_delta={{ dependency.execution_delta | format_timedelta | format_repr }},
+        {% if dependency.get_execution_delta(schedule_interval) -%}
+        execution_delta={{ dependency.get_execution_delta(schedule_interval) | format_timedelta | format_repr }},
         {% endif -%}
         check_existence=True,
         mode='reschedule',
@@ -117,25 +129,4 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {{ task.task_name }}.set_upstream(wait_for_{{ dependency.task_id }})
     {% endif -%}
     {% endfor -%}
-
-
-    {% for task_ref in task.depends_on | sort(attribute='task_id') -%}
-    {% if (task_ref.dag_name, task_ref.task_id) not in wait_for_seen -%}
-    wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }} = ExternalTaskCompletedSensor(
-        task_id="wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }}",
-        external_dag_id="{{ task_ref.dag_name }}",
-        external_task_id="{{ task_ref.task_id }}",
-        {% if task_ref.execution_delta -%}
-        execution_delta={{ task_ref.execution_delta | format_timedelta | format_repr }},
-        {% endif -%}
-        check_existence=True,
-        mode='reschedule',
-        pool='DATA_ENG_EXTERNALTASKSENSOR',
-        dag=dag,
-    )
-    {{ wait_for_seen.append((task_ref.dag_name, task_ref.task_id)) or "" }}
-    {%+ endif -%}
-
-    {{ task.task_name }}.set_upstream(wait_for_{{ task_ref.dag_name }}_{{ task_ref.task_id }})
-    {%+ endfor -%}
 {% endfor -%}

@@ -115,6 +115,7 @@ SELECT
     -- 0x1FFFFF = mozfun.bits28.from_string('0000000111111111111111111111')
     AND BIT_COUNT(days_seen_bits & 0x1FFFFF) >= 12
   ) AS new_profile_21_day_activated_v1,
+  first_seen_date AS first_run_date,  -- required by Looker for client_count views
   * EXCEPT (
     active_experiment_id,
     scalar_parent_dom_contentprocess_troubled_due_to_memory_sum,

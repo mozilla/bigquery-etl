@@ -40,7 +40,6 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql",
     "sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/deletion_request_volume_v1/query.sql",
-    "sql/moz-fx-data-shared-prod/monitoring_derived/document_sample_nonprod_v1/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v1/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v2/query.sql",
     "sql/moz-fx-data-shared-prod/monitoring/schema_error_counts_v1/view.sql",
@@ -50,6 +49,10 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v1/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql",
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/monitoring*/*_rate_live*/*.sql",
+        recursive=True,
+    ),
     "sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql",
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql",  # noqa E501
@@ -68,11 +71,15 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_structured/view.sql",
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_stub_installer/view.sql",  # noqa E501
+    "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_decoded_telemetry/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql",
     "sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_distinct_docids_v1/query.sql",
     "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql",
+    "sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/customers_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/plans_v1/query.sql",
     "sql/moz-fx-data-shared-prod/stripe_derived/products_v1/query.sql",
@@ -113,6 +120,7 @@ SKIP = {
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql",
     "sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql",
+    *glob.glob("sql/moz-fx-data-shared-prod/search_terms*/**/*.sql", recursive=True),
     "sql/moz-fx-data-shared-prod/stripe_external/charges_v1/init.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/payouts_v1/init.sql",
     "sql/moz-fx-data-shared-prod/stripe_external/subscriptions_v1/init.sql",
@@ -130,9 +138,11 @@ SKIP = {
     "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_summary_v1/query.sql",
     "sql/moz-fx-data-bq-performance/release_criteria/stale_tests_v1/query.sql",
     "sql/moz-fx-data-bq-performance/release_criteria/release_criteria_v1/query.sql",
+    *glob.glob(
+        "sql/moz-fx-data-shared-prod/contextual_services/**/*.sql", recursive=True
+    ),
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql",
     "sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql",
-    "sql/moz-fx-data-shared-prod/contextual_services/event_aggregates/view.sql",
     # Materialized views
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql",  # noqa E501
     "sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql",  # noqa E501
@@ -339,7 +349,7 @@ class DryRun:
                     ),
                 }
         except Exception as e:
-            print(f"{self.sqlfile:59} ERROR\n", e)
+            print(f"{self.sqlfile!s:59} ERROR\n", e)
             return None
 
     def get_referenced_tables(self):
@@ -454,20 +464,20 @@ class DryRun:
             return False
 
         if self.dry_run_result["valid"]:
-            print(f"{self.sqlfile:59} OK")
+            print(f"{self.sqlfile!s:59} OK")
         elif self.get_error() == Errors.READ_ONLY:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
-            print(f"{self.sqlfile:59} OK")
+            print(f"{self.sqlfile!s:59} OK")
         elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
             # With strip_dml flag, some queries require a partition filter
             # (submission_date, submission_timestamp, etc.) to run
             # We mark these requests as valid and add a date filter
             # in get_referenced_table()
-            print(f"{self.sqlfile:59} OK but DATE FILTER NEEDED")
+            print(f"{self.sqlfile!s:59} OK but DATE FILTER NEEDED")
         else:
-            print(f"{self.sqlfile:59} ERROR\n", self.dry_run_result["errors"])
+            print(f"{self.sqlfile!s:59} ERROR\n", self.dry_run_result["errors"])
             return False
 
         return True

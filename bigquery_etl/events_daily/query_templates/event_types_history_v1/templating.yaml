@@ -1,26 +1,43 @@
-org_mozilla_firefox_derived:
+fenix_derived:
+  name: Firefox for Android
+  dataset: fenix
+  events_table_name: events
   glean: True
-  app_id: org_mozilla_firefox
+  glean_app_ids: [ org_mozilla_firefox, org_mozilla_firefox_beta, org_mozilla_fenix ]
   start_date: 2020-01-01
   skipped_properties:
     - time_ms
   max_property_values: 1000
   dag_name: bqetl_fenix_event_rollup
 telemetry_derived:
-  app_id: telemetry
+  name: Firefox
+  dataset: telemetry
   source_table: telemetry_derived.deanonymized_events
   start_date: 2020-01-01
   max_property_values: 1000
   dag_name: bqetl_event_rollup
 messaging_system_derived:
-  app_id: messaging_system
+  name: Firefox Messaging System
+  dataset: messaging_system
   source_table: messaging_system_derived.normalized_onboarding_events
   start_date: 2020-01-01
   max_property_values: 1000
   dag_name: bqetl_event_rollup
 firefox_accounts_derived:
-  app_id: firefox_accounts
+  name: Firefox Accounts
+  dataset: firefox_accounts
   source_table: firefox_accounts_derived.funnel_events_source_v1
   start_date: 2020-01-01
+  max_property_values: 1000
+  dag_name: bqetl_event_rollup
+mozilla_vpn_derived:
+  name: Mozilla VPN
+  dataset: mozilla_vpn
+  events_table_name: main
+  glean: True
+  glean_app_ids: [ mozillavpn ]
+  start_date: 2021-10-01
+  skipped_properties:
+    - time_ms
   max_property_values: 1000
   dag_name: bqetl_event_rollup

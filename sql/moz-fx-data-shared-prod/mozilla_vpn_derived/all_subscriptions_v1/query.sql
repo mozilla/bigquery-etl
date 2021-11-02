@@ -269,6 +269,195 @@ apple_iap_subscriptions AS (
   WHERE
     apple_receipt.environment = "Production"
 ),
+android_iap_events AS (
+  SELECT
+    document_id,
+    NULLIF(`timestamp`, "1970-01-01 00:00:00") AS event_timestamp,
+    mozfun.iap.parse_android_receipt(`data`).*
+  FROM
+    `moz-fx-fxa-prod-0712.firestore_export.iap_google_raw_changelog`
+),
+android_iap_aggregates AS (
+  SELECT
+    document_id,
+    MIN(event_timestamp) AS created,
+    ANY_VALUE(user_id) AS fxa_uid,
+    ARRAY_CONCAT(
+      ARRAY_CONCAT_AGG(IF(event_timestamp >= expiry_time, [expiry_time], [])),
+      [MAX(expiry_time)]
+    ) AS end_times,
+    ARRAY_CONCAT(
+      [MIN(start_time)],
+      ARRAY_CONCAT_AGG(IF(event_timestamp < expiry_time, [event_timestamp], []))
+    ) AS start_times,
+    ARRAY_AGG(
+      STRUCT(
+        auto_renewing,
+        country_code,
+        package_name,
+        payment_state,
+        price_amount_micros,
+        price_currency_code,
+        sku,
+        user_cancellation_time,
+        event_timestamp
+      )
+      ORDER BY
+        event_timestamp DESC
+      LIMIT
+        1
+    )[OFFSET(0)].*,
+  FROM
+    android_iap_events
+  WHERE
+    form_of_payment = "GOOGLE_PLAY"
+    AND package_name = "org.mozilla.firefox.vpn"
+  GROUP BY
+    document_id
+),
+android_iap_periods AS (
+  SELECT
+    IF(
+      active_dates_offset > 0,
+      document_id || "-" || active_dates_offset,
+      document_id
+    ) AS subscription_id,
+    fxa_uid,
+    created,
+    event_timestamp,
+    start_time,
+    end_time,
+    DIV(price_amount_micros, 10000) AS plan_amount,
+    LOWER(price_currency_code) AS plan_currency,
+    STRING(user_cancellation_time) AS canceled_for_customer_at,
+    package_name AS product_id,
+    sku AS plan_id,
+    LOWER(country_code) AS country,
+    (
+      CASE
+      WHEN
+        ENDS_WITH(sku, ".1_month_subscription")
+        OR ENDS_WITH(sku, ".monthly")
+      THEN
+        STRUCT("month" AS plan_interval, 1 AS plan_interval_count)
+      WHEN
+        ENDS_WITH(sku, ".6_month_subscription")
+      THEN
+        ("month", 6)
+      WHEN
+        ENDS_WITH(sku, ".12_month_subscription")
+      THEN
+        ("year", 1)
+      WHEN
+        ENDS_WITH(sku, ".1_day_subscription")
+      THEN
+        -- only used for testing
+        ("day", 1)
+      END
+    ).*,
+    auto_renewing,
+    payment_state,
+  FROM
+    android_iap_aggregates
+  LEFT JOIN
+    UNNEST(
+      ARRAY(
+        SELECT AS STRUCT
+          (
+            SELECT
+              MIN(end_time)
+            FROM
+              UNNEST(end_times) AS end_time
+            WHERE
+              end_time > start_time
+          ) AS end_time,
+          MIN(start_time) AS start_time,
+        FROM
+          UNNEST(start_times) AS start_time
+        GROUP BY
+          end_time
+      )
+    )
+    WITH OFFSET AS active_dates_offset
+),
+android_iap_subscriptions AS (
+  SELECT
+    user_id,
+    fxa_uid AS customer_id,
+    subscription_id,
+    plan_id,
+    CAST(NULL AS STRING) AS status,
+    event_timestamp,
+    TIMESTAMP(
+      MIN(start_time) OVER (
+        PARTITION BY
+          fxa_uid
+        ROWS BETWEEN
+          UNBOUNDED PRECEDING
+          AND UNBOUNDED FOLLOWING
+      )
+    ) AS customer_start_date,
+    start_time AS subscription_start_date,
+    created,
+    CAST(NULL AS TIMESTAMP) AS trial_end,
+    CAST(NULL AS TIMESTAMP) AS canceled_at,
+    canceled_for_customer_at,
+    CAST(NULL AS TIMESTAMP) AS cancel_at,
+    CAST(NULL AS BOOL) AS cancel_at_period_end,
+    IF(end_time < TIMESTAMP(CURRENT_DATE), end_time, NULL) AS ended_at,
+    LEAST(end_time, TIMESTAMP(CURRENT_DATE)) AS end_date,
+    fxa_uid,
+    country,
+    country_name,
+    user_registration_date,
+    entrypoint_experiment,
+    entrypoint_variation,
+    utm_campaign,
+    utm_content,
+    utm_medium,
+    utm_source,
+    utm_term,
+    "Google Play" AS provider,
+    plan_amount,
+    CAST(NULL AS STRING) AS billing_scheme,
+    plan_currency,
+    plan_interval,
+    plan_interval_count,
+    "Etc/UTC" AS plan_interval_timezone,
+    product_id,
+    "Mozilla VPN" AS product_name,
+    CONCAT(
+      plan_interval_count,
+      "-",
+      plan_interval,
+      "-",
+      plan_currency,
+      "-",
+      (plan_amount / 100)
+    ) AS pricing_plan,
+    IF(
+      -- in billing grace period
+      auto_renewing
+      AND payment_state = 0,
+      -- grace period lasts from event_timestamp to end_time
+      end_time - event_timestamp,
+      INTERVAL 0 DAY
+    ) AS billing_grace_period,
+  FROM
+    android_iap_periods
+  LEFT JOIN
+    standardized_country
+  USING
+    (country)
+  LEFT JOIN
+    users
+  USING
+    (fxa_uid)
+  LEFT JOIN
+    attribution
+  USING
+    (fxa_uid)
+),
 vpn_subscriptions AS (
   SELECT
     *
@@ -279,6 +468,11 @@ vpn_subscriptions AS (
     *
   FROM
     apple_iap_subscriptions
+  UNION ALL
+  SELECT
+    *
+  FROM
+    android_iap_subscriptions
 )
 SELECT
   *,

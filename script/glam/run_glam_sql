@@ -284,10 +284,14 @@ function run_glean_sql {
         pids+=($!)
         run_view "${product}__view_user_counts_v1" &
         pids+=($!)
+        run_view "${product}__view_sample_counts_v1" &
+        pids+=($!)
         wait_pids "${pids[@]}"
 
         pids=()
         run_query "${product}__extract_user_counts_v1" &
+        pids+=($!)
+        run_query "${product}__extract_sample_counts_v1" &
         pids+=($!)
         run_query "${product}__extract_probe_counts_v1" &
         pids+=($!)

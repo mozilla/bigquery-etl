@@ -6,7 +6,8 @@ description: |-
   "driver" here, defining all the dimensions like geo, etc. We then do a
   left join on clients_daily_event_v1 to pull in activity measures based on
   event pings. A given client will appear in this table on a given only if
-  we received a main ping from that client on that day.
+  we received a main ping from that client on that day. The first_seen_date
+  and second_seen_date is added to each client from clients_last_seen.
 owners:
 - jklukas@mozilla.com
 labels:

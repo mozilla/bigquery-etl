@@ -1,0 +1,8 @@
+friendly_name: Search Terms Derived
+# yamllint disable rule:line-length
+description: |-
+  Derived tables on top of search terms data
+dataset_base_acl: derived_restricted
+user_facing: false
+labels: {}
+workgroup_access: []

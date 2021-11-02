@@ -14,17 +14,14 @@ Quick Start
 
 Ensure Python 3.8+ is available on your machine (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python.)
 
-For some functionality Java JDK 8+ is also required, and maven is needed for downloading jar dependencies. If you don't already have a JDK and maven installed, consider using [jenv](https://www.jenv.be/) and the `jenv enable-plugin maven` command.
+For some functionality Java JDK 11+ is also required (e.g. [AdoptOpenJDK](https://adoptium.net/?variant=openjdk11)) with `$JAVA_HOME` set, and maven is needed for downloading jar dependencies.
+Maven is available from your package manager in most Linux distributions and from [homebrew](https://brew.sh/) on mac, or you can install yourself by [downloading a binary](https://maven.apache.org/download.cgi) and following maven's [install instructions](https://maven.apache.org/install.html).
+The [Rosetta 2 terminal](https://support.apple.com/en-ca/HT211861) is also suggested for installing the above requirements on Apple Silicon (M1).
 
 Install and set up the GCP command line tools:
 
 * (For Mozilla Employees or Contributors not in Data Engineering) Set up GCP command line tools, [as described on docs.telemetry.mozilla.org](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool). Note that some functionality (e.g. writing UDFs or backfilling queries) may not be allowed.
 * (For Data Engineering) In addition to setting up the command line tools, you will want to log in to `shared-prod` if making changes to production systems. Run `gcloud auth login --update-adc --project=moz-fx-data-shared-prod` (if you have not run it previously).
-
-Install the [virtualenv](https://virtualenv.pypa.io/en/latest/) Python environment management tool
-```bash
-pip install virtualenv
-```
 
 Clone the repository
 ```bash
@@ -100,19 +97,18 @@ Documentation of all `bqetl` commands including usage examples can be found in t
 
 Running some commands, for example to create or query tables, will [require access to Mozilla's GCP Account](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#bigquery-access-request).
 
-Formatting SQL
----
+## Formatting SQL
 
 We enforce consistent SQL formatting as part of CI. After adding or changing a
-query, use `script/format_sql` to apply formatting rules.
+query, use `./bqetl format` to apply formatting rules.
 
-Directories and files passed as arguments to `script/format_sql` will be
+Directories and files passed as arguments to `./bqetl format` will be
 formatted in place, with directories recursively searched for files with a
 `.sql` extension, e.g.:
 
 ```bash
 $ echo 'SELECT 1,2,3' > test.sql
-$ script/format_sql test.sql
+$ ./bqetl format test.sql
 modified test.sql
 1 file(s) modified
 $ cat test.sql
@@ -126,7 +122,7 @@ If no arguments are specified the script will read from stdin and write to
 stdout, e.g.:
 
 ```bash
-$ echo 'SELECT 1,2,3' | script/format_sql
+$ echo 'SELECT 1,2,3' | ./bqetl format
 SELECT
   1,
   2,

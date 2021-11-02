@@ -12,15 +12,15 @@ Built from bigquery-etl repo, [`dags/bqetl_event_rollup.py`](https://github.com/
 
 #### Owner
 
-frank@mozilla.com
+wlachance@mozilla.com
 """
 
 
 default_args = {
-    "owner": "frank@mozilla.com",
+    "owner": "wlachance@mozilla.com",
     "start_date": datetime.datetime(2020, 11, 3, 0, 0),
     "end_date": None,
-    "email": ["frank@mozilla.com"],
+    "email": ["wlachance@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -40,8 +40,8 @@ with DAG(
         destination_table="event_types_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -53,8 +53,8 @@ with DAG(
         destination_table="event_types_history_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -65,8 +65,8 @@ with DAG(
         destination_table="events_daily_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -77,8 +77,8 @@ with DAG(
         destination_table="funnel_events_source_v1",
         dataset_id="firefox_accounts_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -89,8 +89,8 @@ with DAG(
         destination_table="event_types_v1",
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -102,8 +102,8 @@ with DAG(
         destination_table="event_types_history_v1",
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -114,8 +114,45 @@ with DAG(
         destination_table="events_daily_v1",
         dataset_id="messaging_system_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__event_types__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__event_types__v1",
+        destination_table="event_types_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__event_types_history__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__event_types_history__v1",
+        destination_table="event_types_history_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        dag=dag,
+    )
+
+    mozilla_vpn_derived__events_daily__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__events_daily__v1",
+        destination_table="events_daily_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -126,8 +163,8 @@ with DAG(
         destination_table="event_types_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -139,8 +176,8 @@ with DAG(
         destination_table="event_types_history_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -151,8 +188,8 @@ with DAG(
         destination_table="events_daily_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -221,6 +258,18 @@ with DAG(
 
     messaging_system_derived__events_daily__v1.set_upstream(
         messaging_system_derived__event_types__v1
+    )
+
+    mozilla_vpn_derived__event_types__v1.set_upstream(
+        mozilla_vpn_derived__event_types_history__v1
+    )
+
+    mozilla_vpn_derived__event_types_history__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    mozilla_vpn_derived__events_daily__v1.set_upstream(
+        mozilla_vpn_derived__event_types__v1
     )
 
     telemetry_derived__event_types__v1.set_upstream(

@@ -9,10 +9,10 @@ queries:
     per_app: false
   experiment_events_live_v1:
     per_app: true
-    start_date: '2021-08-30'
+    start_date: '2021-10-25'
   experiment_search_events_live_v1:
     per_app: true
-    start_date: '2021-08-30'
+    start_date: '2021-10-25'
 search_metrics:
   telemetry:
     ad_clicks_count: payload.processes.parent.keyed_scalars.browser_search_ad_clicks
@@ -50,6 +50,14 @@ search_metrics:
     ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
     search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
     search_count: null
+  org_mozilla_ios_klar:
+    ad_clicks_count: null
+    search_with_ads_count: null
+    search_count: null
+  org_mozilla_ios_focus:
+    ad_clicks_count: null
+    search_with_ads_count: null
+    search_count: null
 applications:
   - org_mozilla_firefox_beta
   - org_mozilla_fenix
@@ -60,3 +68,5 @@ applications:
   - telemetry
   - org_mozilla_klar
   - org_mozilla_focus
+  - org_mozilla_ios_klar
+  - org_mozilla_ios_focus

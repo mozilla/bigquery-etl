@@ -125,7 +125,7 @@ parallelism_option = click.option(
 )
 
 
-def project_id_option(default=None):
+def project_id_option(default=None, required=False):
     """Generate a project-id option, with optional default."""
     return click.option(
         "--project-id",
@@ -133,6 +133,7 @@ def project_id_option(default=None):
         help="GCP project ID",
         default=default,
         callback=is_valid_project,
+        required=required,
     )
 
 

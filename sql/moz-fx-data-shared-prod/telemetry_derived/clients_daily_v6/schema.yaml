@@ -1651,3 +1651,9 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_urlbar_suggest_quicksuggest_sponsored
   type: STRING
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
+  type: STRING
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
+  type: INTEGER

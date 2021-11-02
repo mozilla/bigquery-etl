@@ -1,0 +1,78 @@
+- category: beta_event_category
+  event: beta_event
+  event_properties:
+  - index: 1
+    key: first_property
+    value:
+    - index: 1
+      key: first_property_value_1
+      value: "\x01"
+  first_timestamp: '2020-01-02T00:00:02+00:00'
+  index: "\x02"
+  numeric_index: 2
+  submission_date: '2020-01-02'
+- category: first_category
+  event: first_event
+  event_properties:
+  - index: 1
+    key: first_property
+    value:
+    - index: 1
+      key: first_property_value_1
+      value: "\x01"
+    - index: 2
+      key: first_property_value_2
+      value: "\x02"
+  - index: 2
+    key: second_property
+    value:
+    - index: 1
+      key: second_property_value_1
+      value: "\x01"
+  first_timestamp: '2020-01-02T00:00:01+00:00'
+  index: "\x01"
+  numeric_index: 1
+  submission_date: '2020-01-02'
+- category: first_category
+  event: third_event
+  event_properties: []
+  first_timestamp: '2020-01-02T00:00:04+00:00'
+  index: "\x05"
+  numeric_index: 5
+  submission_date: '2020-01-02'
+- category: nightly_event_category
+  event: nightly_event
+  event_properties:
+  - index: 1
+    key: first_property
+    value:
+    - index: 1
+      key: first_property_value_1
+      value: "\x01"
+  first_timestamp: '2020-01-02T00:00:03+00:00'
+  index: "\x04"
+  numeric_index: 4
+  submission_date: '2020-01-02'
+- category: second_category
+  event: second_event
+  event_properties:
+  - index: 1
+    key: second_property
+    value:
+    - index: 1
+      key: second_property_value_1
+      value: "\x01"
+    - index: 2
+      key: second_property_value_2
+      value: "\x02"
+  first_timestamp: '2020-01-02T00:00:02+00:00'
+  index: "\x03"
+  numeric_index: 3
+  submission_date: '2020-01-02'
+- category: third_category
+  event: fourth_event
+  event_properties: []
+  first_timestamp: '2020-01-02T00:00:05+00:00'
+  index: "\x06"
+  numeric_index: 6
+  submission_date: '2020-01-02'

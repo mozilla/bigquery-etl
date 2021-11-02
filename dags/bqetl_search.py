@@ -41,7 +41,11 @@ with DAG(
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "anicholson@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -65,7 +69,11 @@ with DAG(
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "anicholson@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -91,10 +99,10 @@ with DAG(
         search_derived__search_clients_daily__v8
     )
 
-    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskCompletedSensor(
-        task_id="wait_for_telemetry_derived__clients_daily__v6",
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskCompletedSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
         external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily__v6",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -102,7 +110,7 @@ with DAG(
     )
 
     search_derived__search_clients_daily__v8.set_upstream(
-        wait_for_telemetry_derived__clients_daily__v6
+        wait_for_telemetry_derived__clients_daily_joined__v1
     )
 
     search_derived__search_clients_last_seen__v1.set_upstream(

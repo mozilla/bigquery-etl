@@ -12,15 +12,15 @@ Built from bigquery-etl repo, [`dags/bqetl_fenix_event_rollup.py`](https://githu
 
 #### Owner
 
-frank@mozilla.com
+wlachance@mozilla.com
 """
 
 
 default_args = {
-    "owner": "frank@mozilla.com",
+    "owner": "wlachance@mozilla.com",
     "start_date": datetime.datetime(2020, 9, 9, 0, 0),
     "end_date": None,
-    "email": ["frank@mozilla.com"],
+    "email": ["wlachance@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -35,46 +35,44 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
-    org_mozilla_firefox_derived__event_types__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_derived__event_types__v1",
+    fenix_derived__event_types__v1 = bigquery_etl_query(
+        task_id="fenix_derived__event_types__v1",
         destination_table="event_types_v1",
-        dataset_id="org_mozilla_firefox_derived",
+        dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         dag=dag,
     )
 
-    org_mozilla_firefox_derived__event_types_history__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_derived__event_types_history__v1",
+    fenix_derived__event_types_history__v1 = bigquery_etl_query(
+        task_id="fenix_derived__event_types_history__v1",
         destination_table="event_types_history_v1",
-        dataset_id="org_mozilla_firefox_derived",
+        dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
     )
 
-    org_mozilla_firefox_derived__events_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_derived__events_daily__v1",
+    fenix_derived__events_daily__v1 = bigquery_etl_query(
+        task_id="fenix_derived__events_daily__v1",
         destination_table="events_daily_v1",
-        dataset_id="org_mozilla_firefox_derived",
+        dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com"],
+        owner="wlachance@mozilla.com",
+        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
     )
 
-    org_mozilla_firefox_derived__event_types__v1.set_upstream(
-        org_mozilla_firefox_derived__event_types_history__v1
-    )
+    fenix_derived__event_types__v1.set_upstream(fenix_derived__event_types_history__v1)
 
     wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_all",
@@ -86,10 +84,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    org_mozilla_firefox_derived__event_types_history__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
+    fenix_derived__event_types_history__v1.set_upstream(wait_for_copy_deduplicate_all)
 
-    org_mozilla_firefox_derived__events_daily__v1.set_upstream(
-        org_mozilla_firefox_derived__event_types__v1
-    )
+    fenix_derived__events_daily__v1.set_upstream(fenix_derived__event_types__v1)

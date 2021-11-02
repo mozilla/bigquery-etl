@@ -47,6 +47,7 @@ with DAG(
         email=["jklukas@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
         dag=dag,
     )
 
@@ -62,4 +63,18 @@ with DAG(
 
     contextual_services_derived__event_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+    wait_for_search_terms_derived__suggest_impression_sanitized__v1 = (
+        ExternalTaskCompletedSensor(
+            task_id="wait_for_search_terms_derived__suggest_impression_sanitized__v1",
+            external_dag_id="bqetl_search_terms_daily",
+            external_task_id="search_terms_derived__suggest_impression_sanitized__v1",
+            check_existence=True,
+            mode="reschedule",
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
+    contextual_services_derived__event_aggregates__v1.set_upstream(
+        wait_for_search_terms_derived__suggest_impression_sanitized__v1
     )

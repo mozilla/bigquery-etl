@@ -1,0 +1,27 @@
+-
+  submission_timestamp: '2020-01-02 00:00:02'
+  ping_info:
+    parsed_start_time: '2020-01-02 00:00:02'
+  events:
+    -
+      timestamp: 1000
+      name: first_event
+      category: first_category
+      extra:
+        -
+          key: first_property
+          value: first_property_value_1
+        -
+          key: time_ms
+          value: "1000"
+    -
+      timestamp: 1000
+      name: nightly_event
+      category: nightly_event_category
+      extra:
+        -
+          key: first_property
+          value: first_property_value_1
+        -
+          key: time_ms
+          value: "1000"

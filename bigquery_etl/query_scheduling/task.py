@@ -83,6 +83,18 @@ class TaskRef:
         if value is not None and not is_schedule_interval(value):
             raise ValueError(f"Invalid schedule_interval {value}.")
 
+    def get_execution_delta(self, schedule_interval):
+        """Determine execution_delta, via schedule_interval if necessary."""
+        if self.execution_delta is not None:
+            return self.execution_delta
+        elif self.schedule_interval is not None and schedule_interval is not None:
+            execution_delta = schedule_interval_delta(
+                self.schedule_interval, schedule_interval
+            )
+            if execution_delta != "0s":
+                return execution_delta
+        return None
+
 
 # Know tasks in telemetry-airflow, like stable table tasks
 # https://github.com/mozilla/telemetry-airflow/blob/main/dags/copy_deduplicate.py
@@ -155,6 +167,10 @@ class Task:
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
     email_on_retry: Optional[bool] = attr.ib(None)
+    gcp_conn_id: Optional[str] = attr.ib(None)
+    gke_project_id: Optional[str] = attr.ib(None)
+    gke_location: Optional[str] = attr.ib(None)
+    gke_cluster_name: Optional[str] = attr.ib(None)
 
     @owner.validator
     def validate_owner(self, attribute, value):
@@ -356,60 +372,31 @@ class Task:
         """Perfom a dry_run to get upstream dependencies."""
         dependencies = []
 
+        def _duplicate_dependency(task):
+            return any(
+                d.dag_name == task.dag_name and d.task_id == task.task_id
+                for d in self.depends_on + dependencies
+            )
+
         for table in self._get_referenced_tables():
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
-            task_schedule_interval = dag_collection.dag_by_name(
-                self.dag_name
-            ).schedule_interval
 
             if upstream_task is not None:
-                # ensure there are no duplicate dependencies
-                # manual dependency definitions overwrite automatically detected ones
-                if not any(
-                    d.dag_name == upstream_task.dag_name
-                    and d.task_id == upstream_task.task_name
-                    for d in self.depends_on
-                ):
-                    upstream_schedule_interval = dag_collection.dag_by_name(
+                task = TaskRef(
+                    dag_name=upstream_task.dag_name,
+                    task_id=upstream_task.task_name,
+                    schedule_interval=dag_collection.dag_by_name(
                         upstream_task.dag_name
-                    ).schedule_interval
-
-                    execution_delta = schedule_interval_delta(
-                        upstream_schedule_interval, task_schedule_interval
-                    )
-
-                    if execution_delta == "0s":
-                        execution_delta = None
-
-                    dependencies.append(
-                        TaskRef(
-                            dag_name=upstream_task.dag_name,
-                            task_id=upstream_task.task_name,
-                            execution_delta=execution_delta,
-                        )
-                    )
+                    ).schedule_interval,
+                )
+                if not _duplicate_dependency(task):
+                    dependencies.append(task)
             else:
                 # see if there are some static dependencies
                 for task, patterns in EXTERNAL_TASKS.items():
                     if any(fnmatchcase(f"{table[1]}.{table[2]}", p) for p in patterns):
-                        # ensure there are no duplicate dependencies
-                        # manual dependency definitions overwrite automatically detected
-                        if not any(
-                            d.dag_name == task.dag_name and d.task_id == task.task_id
-                            for d in self.depends_on + dependencies
-                        ):
-                            execution_delta = schedule_interval_delta(
-                                task.schedule_interval, task_schedule_interval
-                            )
-
-                            if execution_delta:
-                                dependencies.append(
-                                    TaskRef(
-                                        dag_name=task.dag_name,
-                                        task_id=task.task_id,
-                                        execution_delta=execution_delta,
-                                    )
-                                )
+                        if not _duplicate_dependency(task):
+                            dependencies.append(task)
                         break  # stop after the first match
 
         self.dependencies = dependencies

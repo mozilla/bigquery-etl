@@ -1,0 +1,15 @@
+---
+friendly_name: VAT Rates
+description: >
+  Import VAT rates from Google Sheets.
+owners:
+  - dthorn@mozilla.com
+labels:
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  retry_delay: 5m
+  gke_cluster_name: workloads-prod-v1
+  gke_location: us-west1
+  gcp_conn_id: google_cloud_airflow_gke
+  gke_project_id: moz-fx-data-airflow-gke-prod

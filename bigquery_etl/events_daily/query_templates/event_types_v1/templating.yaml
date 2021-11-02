@@ -1,12 +1,20 @@
-org_mozilla_firefox_derived:
-  app_id: org_mozilla_firefox
+fenix_derived:
+  name: Firefox for Android
+  dataset: fenix
   dag_name: bqetl_fenix_event_rollup
 telemetry_derived:
-  app_id: telemetry
+  name: Firefox
+  dataset: telemetry
   dag_name: bqetl_event_rollup
 messaging_system_derived:
-  app_id: messaging_system
+  name: Firefox Messaging System
+  dataset: messaging_system
   dag_name: bqetl_event_rollup
 firefox_accounts_derived:
-  app_id: firefox_accounts
+  name: Firefox Accounts
+  dataset: firefox_accounts
+  dag_name: bqetl_event_rollup
+mozilla_vpn_derived:
+  name: Mozilla VPN
+  dataset: mozilla_vpn
   dag_name: bqetl_event_rollup

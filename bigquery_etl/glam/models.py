@@ -181,3 +181,25 @@ def user_counts(**kwargs):
         attribute_combinations=compute_datacube_groupings(cubed_attributes),
         **kwargs,
     )
+
+
+def sample_counts(**kwargs):
+    """Variables for sample counts."""
+    attributes = [
+        "ping_type",
+        "os",
+        "app_version",
+        "app_build_id",
+        "channel",
+        "key",
+        "metric",
+        "value",
+    ]
+    fixed_attributes = ["app_version", "channel", "metric", "value", "key"]
+    cubed_attributes = [x for x in attributes if x not in fixed_attributes]
+    return dict(
+        attributes=",".join(attributes),
+        cubed_attributes=cubed_attributes,
+        attribute_combinations=compute_datacube_groupings(cubed_attributes),
+        **kwargs,
+    )

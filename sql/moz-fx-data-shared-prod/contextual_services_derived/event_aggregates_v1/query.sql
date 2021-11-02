@@ -9,8 +9,17 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
+    CASE
+    WHEN
+      request_id IS NULL
+    THEN
+      'remote settings'
+    ELSE
+      'merino'
+    END
+    AS provider,
   FROM
-    contextual_services_stable.quicksuggest_impression_v1
+    contextual_services.quicksuggest_impression
   UNION ALL
   SELECT
     context_id,
@@ -22,8 +31,17 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
+    CASE
+    WHEN
+      request_id IS NULL
+    THEN
+      'remote settings'
+    ELSE
+      'merino'
+    END
+    AS provider,
   FROM
-    contextual_services_stable.quicksuggest_click_v1
+    contextual_services.quicksuggest_click
   UNION ALL
   SELECT
     context_id,
@@ -35,8 +53,17 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
+    CASE
+    WHEN
+      reporting_url IS NULL
+    THEN
+      'remote settings'
+    ELSE
+      'contile'
+    END
+    AS provider,
   FROM
-    contextual_services_stable.topsites_impression_v1
+    contextual_services.topsites_impression
   UNION ALL
   SELECT
     context_id,
@@ -48,8 +75,17 @@ WITH combined AS (
     advertiser,
     release_channel,
     position,
+    CASE
+    WHEN
+      reporting_url IS NULL
+    THEN
+      'remote settings'
+    ELSE
+      'contile'
+    END
+    AS provider,
   FROM
-    contextual_services_stable.topsites_click_v1
+    contextual_services.topsites_click
 ),
 with_event_count AS (
   SELECT
@@ -83,4 +119,5 @@ GROUP BY
   subdivision1,
   advertiser,
   release_channel,
-  position
+  position,
+  provider

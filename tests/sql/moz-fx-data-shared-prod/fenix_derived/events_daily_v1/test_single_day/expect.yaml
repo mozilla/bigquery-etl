@@ -1,0 +1,30 @@
+- client_id: client-1
+  events: "\"\x01\x01,\x01\x01\x02,\"\"\x01,"
+  experiments: []
+  submission_date: '2020-01-03'
+- client_id: client-2
+  events: "\x01\x03\x01,\x04,"
+  experiments:
+  - key: fake-experiment
+    value: fake-experiment-branch
+  submission_date: '2020-01-03'
+- client_id: client-beta-1
+  events: "\"\x01\x01,\x01\x01\x02,\"\"\x01,"
+  experiments: []
+  submission_date: '2020-01-03'
+- client_id: client-beta-2
+  events: "\x01\x03\x01,\x04,"
+  experiments:
+  - key: fake-experiment
+    value: fake-experiment-branch
+  submission_date: '2020-01-03'
+- client_id: client-nightly-1
+  events: "\"\x01\x01,\x01\x01\x02,\"\"\x01,"
+  experiments: []
+  submission_date: '2020-01-03'
+- client_id: client-nightly-2
+  events: "\x01\x03\x01,\x04,"
+  experiments:
+  - key: fake-experiment
+    value: fake-experiment-branch
+  submission_date: '2020-01-03'

@@ -13,21 +13,24 @@ WITH decoded AS (
   SELECT
     * EXCEPT (metadata),  -- Some tables have different field order in metadata
     metadata.header.x_source_tags,
-    _TABLE_SUFFIX,
+    metadata.document_namespace,
+    metadata.document_type,
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_decoded.structured_*`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_structured`
   UNION ALL
   SELECT
     * EXCEPT (metadata),
     metadata.header.x_source_tags,
-    _TABLE_SUFFIX,
+    metadata.document_namespace,
+    metadata.document_type,
   FROM
-    `moz-fx-data-shared-prod.payload_bytes_decoded.stub_installer_*`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_decoded_stub_installer`
 )
 SELECT
   DATE(submission_timestamp) AS submission_date,
-  SPLIT(_TABLE_SUFFIX, '__')[OFFSET(0)] AS namespace,
-  SPLIT(_TABLE_SUFFIX, '__')[OFFSET(1)] AS doc_type,
+  -- We sub '-' for '_' for historical continuity
+  LOWER(REGEXP_REPLACE(REPLACE(document_namespace, '-', '_'), r"[^_\w]", "")) AS namespace,
+  LOWER(REGEXP_REPLACE(REPLACE(document_type,      '-', '_'), r"[^_\w]", "")) AS doc_type,
   COUNT(DISTINCT(document_id)) AS docid_count,
 FROM
   decoded
@@ -61,7 +64,8 @@ GROUP BY
   submission_date
 """
 
-EXCLUDED_NAMESPACES = {"xfocsp_error_report"}  # restricted access
+# Restricted access
+EXCLUDED_NAMESPACES = {"regrets_reporter", "contextual_services"}
 
 
 def get_docid_counts(date, project, destination_dataset, destination_table):
@@ -151,5 +155,8 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     get_docid_counts(
-        args.date, args.project, args.destination_dataset, args.destination_table,
+        args.date,
+        args.project,
+        args.destination_dataset,
+        args.destination_table,
     )

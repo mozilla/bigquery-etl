@@ -1,17 +1,19 @@
 ---
-friendly_name: {{ app_id }} Event Types
+friendly_name: {{ name }} Event Types
 description: >
   A materialized view of the most recent day of event_types data
 owners:
-  - frank@mozilla.com
+  - wlachance@mozilla.com
+  - akomar@mozilla.com
 labels:
-  application: {{ app_id }}
+  application: {{ dataset }}
   incremental: false
   schedule: daily
 scheduling:
   dag_name: {{ dag_name }}
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
-  referenced_tables: [['moz-fx-data-shared-prod', '{{ app_id }}_derived',
+  referenced_tables: [['moz-fx-data-shared-prod',
+                       '{{ dataset }}_derived',
                        'event_types_history_v1']]
 

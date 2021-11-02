@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from functools import partial
 from io import BytesIO
 from itertools import groupby
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import Pool
 from pathlib import Path
 import re
 
@@ -345,7 +345,7 @@ def main():
         last for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
     ]
 
-    with ThreadPool(args.parallelism) as pool:
+    with Pool(args.parallelism) as pool:
         pool.map(
             partial(
                 write_view_if_not_exists,
@@ -353,7 +353,6 @@ def main():
                 Path(args.sql_dir),
             ),
             schemas,
-            chunksize=1,
         )
         pool.map(
             partial(
@@ -362,7 +361,6 @@ def main():
                 Path(args.sql_dir),
             ),
             one_schema_per_dataset,
-            chunksize=1,
         )
 
 

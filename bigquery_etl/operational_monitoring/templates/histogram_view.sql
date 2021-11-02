@@ -43,7 +43,7 @@ WITH normalized AS (
         branch,
         probe)
 
--- Cast histograms to have INT64 keys
+-- Cast histograms to have FLOAT64 keys
 -- so we can use the histogram jackknife percentile function.
 SELECT
     client_id,
@@ -59,11 +59,11 @@ SELECT
         histogram_type INT64,
         `range` ARRAY<INT64>,
         VALUES
-        ARRAY<STRUCT<key INT64, value FLOAT64>
+        ARRAY<STRUCT<key FLOAT64, value FLOAT64>
     >>(histogram.bucket_count,
         histogram.sum,
         histogram.histogram_type,
         histogram.range,
-        ARRAY(SELECT AS STRUCT CAST(keyval.key AS INT64), keyval.value FROM UNNEST(histogram.values) keyval)
+        ARRAY(SELECT AS STRUCT CAST(keyval.key AS FLOAT64), keyval.value FROM UNNEST(histogram.values) keyval)
     ) AS histogram
 FROM normalized

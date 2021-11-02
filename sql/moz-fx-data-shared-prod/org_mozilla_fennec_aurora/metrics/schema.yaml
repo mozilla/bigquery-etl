@@ -500,6 +500,13 @@ fields:
       mode: NULLABLE
       name: preferences_inactive_tabs_enabled
       type: BOOLEAN
+    - description: 'A metric indicating whether or not the user has studies enabled
+        default: true
+
+        '
+      mode: NULLABLE
+      name: preferences_studies_enabled
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD

@@ -351,7 +351,12 @@ bqetl_iprospect:
   depends_on_past: false
   default_args:
     owner: ascholtz@mozilla.com
-    email: ["ascholtz@mozilla.com"]
+    email:
+      [
+        "ascholtz@mozilla.com",
+        "echo@mozilla.com",
+        "shong@mozilla.com"
+      ]
     start_date: "2021-04-19"
     retries: 2
     retry_delay: 30m

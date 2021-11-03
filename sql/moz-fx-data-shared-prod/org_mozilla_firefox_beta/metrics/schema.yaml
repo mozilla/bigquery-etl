@@ -507,6 +507,20 @@ fields:
       mode: NULLABLE
       name: preferences_studies_enabled
       type: BOOLEAN
+    - description: 'Is search term group in tabs tray on?
+
+        '
+      mode: NULLABLE
+      name: preferences_search_term_groups_enabled
+      type: BOOLEAN
+    - description: 'An indication of whether the recent tabs /
+
+        Jump Back In section is visible on the homepage.
+
+        '
+      mode: NULLABLE
+      name: recent_tabs_section_visible
+      type: BOOLEAN
     mode: NULLABLE
     name: boolean
     type: RECORD
@@ -1739,6 +1753,12 @@ fields:
       mode: NULLABLE
       name: avif_dav1d_decode_error
       type: INTEGER
+    - description: 'How many inactive tabs does the user have.
+
+        '
+      mode: NULLABLE
+      name: metrics_inactive_tabs_count
+      type: INTEGER
     mode: NULLABLE
     name: quantity
     type: RECORD
@@ -2034,6 +2054,12 @@ fields:
         '
       mode: NULLABLE
       name: geckoview_validation_version
+      type: STRING
+    - description: 'Used to identify the source the app was installed from.
+
+        '
+      mode: NULLABLE
+      name: metrics_install_source
       type: STRING
     mode: NULLABLE
     name: string

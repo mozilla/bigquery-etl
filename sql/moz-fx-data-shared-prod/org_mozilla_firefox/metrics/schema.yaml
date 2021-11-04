@@ -1759,6 +1759,14 @@ fields:
       mode: NULLABLE
       name: metrics_inactive_tabs_count
       type: INTEGER
+    - description: 'The number of bookmarked items appearing in the
+
+        Recently Saved section on the home page.
+
+        '
+      mode: NULLABLE
+      name: recent_bookmarks_recent_bookmarks_count
+      type: INTEGER
     mode: NULLABLE
     name: quantity
     type: RECORD

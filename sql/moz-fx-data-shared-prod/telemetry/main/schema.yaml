@@ -9599,6 +9599,9 @@ fields:
       name: video_h264_sps_max_num_ref_frames
       type: STRING
     - description: Total time spent playing video while element is hidden, in milliseconds.
+        This reports the total hidden play time for a video element whenever the decoder
+        stops. (eg. pausing media, encountering an error, changing to a new resource,
+        page goes to the bf-cached or page gets discarded)
       mode: NULLABLE
       name: video_hidden_play_time_ms
       type: STRING
@@ -21402,7 +21405,9 @@ fields:
           element is hidden (simulated, even when feature is not enabled). Keyed by
           audio presence and by height ranges (boundaries: 240. 480, 576, 720, 1080,
           2160), e.g.: ''V,0<h<=240'', ''AV,h>2160''; and ''All'' will accumulate
-          all percentages.'
+          all percentages. This is reported whenever the decoder stops. (eg. pausing
+          media, encountering an error, changing to a new resource, page goes to the
+          bf-cached or page gets discarded)'
         mode: NULLABLE
         name: value
         type: STRING
@@ -21416,7 +21421,9 @@ fields:
       - description: 'Average interval between video keyframes in played videos, in
           milliseconds. Keyed by audio presence and by height ranges (boundaries:
           240. 480, 576, 720, 1080, 2160), e.g.: ''V,0<h<=240'', ''AV,h>2160''; and
-          ''All'' will accumulate all percentages.'
+          ''All'' will accumulate all percentages. This is reported whenever the decoder
+          stops. (eg. pausing media, encountering an error, changing to a new resource,
+          page goes to the bf-cached or page gets discarded)'
         mode: NULLABLE
         name: value
         type: STRING
@@ -30090,7 +30097,9 @@ fields:
           name: video_h264_sps_max_num_ref_frames
           type: STRING
         - description: Total time spent playing video while element is hidden, in
-            milliseconds.
+            milliseconds. This reports the total hidden play time for a video element
+            whenever the decoder stops. (eg. pausing media, encountering an error,
+            changing to a new resource, page goes to the bf-cached or page gets discarded)
           mode: NULLABLE
           name: video_hidden_play_time_ms
           type: STRING
@@ -39368,14 +39377,25 @@ fields:
           name: script_loaded_with_version
           type: STRING
         - description: Total time spent playing Clearkey encrypted video in milliseconds.
+            This reports the total play time for a video lement playing Clearkey encrypted
+            content whenever the decoder stops. (eg. pausing media, encountering an
+            error, changing to a new resource, page goes to the bf-cached or page
+            gets discarded)
           mode: NULLABLE
           name: video_clearkey_play_time_ms
           type: STRING
-        - description: Total time spent playing encrypted video in milliseconds.
+        - description: Total time spent playing encrypted video in milliseconds. This
+            reports the total play time for a video element playing encrypted content
+            whenever the decoder stops. (eg. pausing media, encountering an error,
+            changing to a new resource, page goes to the bf-cached or page gets discarded)
           mode: NULLABLE
           name: video_encrypted_play_time_ms
           type: STRING
         - description: Total time spent playing Widevine encrypted video in milliseconds.
+            This reports the total play time for a video element playing Widevine
+            encrypted content whenever the decoder stops. (eg. pausing media, encountering
+            an error, changing to a new resource, page goes to the bf-cached or page
+            gets discarded)
           mode: NULLABLE
           name: video_widevine_play_time_ms
           type: STRING
@@ -41784,7 +41804,9 @@ fields:
               while element is hidden (simulated, even when feature is not enabled).
               Keyed by audio presence and by height ranges (boundaries: 240. 480,
               576, 720, 1080, 2160), e.g.: ''V,0<h<=240'', ''AV,h>2160''; and ''All''
-              will accumulate all percentages.'
+              will accumulate all percentages. This is reported whenever the decoder
+              stops. (eg. pausing media, encountering an error, changing to a new
+              resource, page goes to the bf-cached or page gets discarded)'
             mode: NULLABLE
             name: value
             type: STRING
@@ -41798,7 +41820,9 @@ fields:
           - description: 'Average interval between video keyframes in played videos,
               in milliseconds. Keyed by audio presence and by height ranges (boundaries:
               240. 480, 576, 720, 1080, 2160), e.g.: ''V,0<h<=240'', ''AV,h>2160'';
-              and ''All'' will accumulate all percentages.'
+              and ''All'' will accumulate all percentages. This is reported whenever
+              the decoder stops. (eg. pausing media, encountering an error, changing
+              to a new resource, page goes to the bf-cached or page gets discarded)'
             mode: NULLABLE
             name: value
             type: STRING

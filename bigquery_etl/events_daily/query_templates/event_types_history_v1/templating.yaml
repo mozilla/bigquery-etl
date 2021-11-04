@@ -7,7 +7,7 @@ fenix_derived:
   start_date: 2020-01-01
   skipped_properties:
     - time_ms
-  max_property_values: 5000
+  max_property_values: 1000
   dag_name: bqetl_fenix_event_rollup
 telemetry_derived:
   name: Firefox
@@ -21,14 +21,14 @@ messaging_system_derived:
   dataset: messaging_system
   source_table: messaging_system_derived.normalized_onboarding_events
   start_date: 2020-01-01
-  max_property_values: 5000
+  max_property_values: 1000
   dag_name: bqetl_event_rollup
 firefox_accounts_derived:
   name: Firefox Accounts
   dataset: firefox_accounts
   source_table: firefox_accounts_derived.funnel_events_source_v1
   start_date: 2020-01-01
-  max_property_values: 5000
+  max_property_values: 1000
   dag_name: bqetl_event_rollup
 mozilla_vpn_derived:
   name: Mozilla VPN
@@ -39,5 +39,5 @@ mozilla_vpn_derived:
   start_date: 2021-10-01
   skipped_properties:
     - time_ms
-  max_property_values: 5000
+  max_property_values: 1000
   dag_name: bqetl_event_rollup

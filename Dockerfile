@@ -5,7 +5,8 @@ ARG PYTHON_VERSION=3.8
 # has updated coreutils that require a newer linux kernel than provided by CircleCI, per
 # https://forums.docker.com/t/multiple-projects-stopped-building-on-docker-hub-operation-not-permitted/92570/6
 # and https://forums.docker.com/t/multiple-projects-stopped-building-on-docker-hub-operation-not-permitted/92570/11
-FROM python:${PYTHON_VERSION}-slim-buster AS base
+# --platform=linux/amd64 added for Apple Silicon support
+FROM --platform=linux/amd64 python:${PYTHON_VERSION}-slim-buster AS base
 WORKDIR /app
 
 # build typed-ast in separate stage because it requires gcc and libc-dev

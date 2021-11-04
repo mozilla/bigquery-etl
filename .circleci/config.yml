@@ -5,6 +5,11 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.13.0
   docker: circleci/docker@1.5
 
+executors:
+  custom-ubuntu-executor:
+    machine:
+      image: ubuntu-2004:202111-02
+
 jobs:
   build:
     docker: &docker
@@ -361,11 +366,9 @@ jobs:
               || echo "Skipping push since it looks like there were no changes"
 
   deploy:
-    executor: docker/docker
+    executor: custom-ubuntu-executor
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - *attach_generated_sql
       - *copy_generated_sql
       - when:
@@ -450,7 +453,7 @@ jobs:
               || echo "Skipping push since it looks like there were no changes"
           # yamllint enable rule:line-length
   deploy-to-private-gcr:
-    executor: gcp-gcr/default
+    executor: custom-ubuntu-executor
     steps:
       - checkout
       - *attach_generated_sql

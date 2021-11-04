@@ -80,6 +80,9 @@
   search_content_unknown_sum:
     - key: 'engine5:tagged:code1'
       value: 10
+  search_content_urlbar_handoff_sum:
+    - key: 'engine5:tagged:code1'
+      value: 11
   # search with ads
   search_withads_urlbar_sum:
     - key: 'engine6:tagged'
@@ -116,6 +119,9 @@
   search_withads_unknown_sum:
     - key: 'engine6:tagged'
       value: 21
+  search_withads_urlbar_handoff_sum:
+    - key: 'engine6:tagged'
+      value: 22
   # ad click
   search_adclicks_urlbar_sum:
     - key: 'engine7:tagged'
@@ -152,3 +158,6 @@
   search_adclicks_unknown_sum:
     - key: 'engine7:tagged'
       value: 31
+  search_adclicks_urlbar_handoff_sum:
+    - key: 'engine7:tagged'
+      value: 32

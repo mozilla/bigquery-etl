@@ -6,7 +6,7 @@ gcsfs==2021.10.1
 gcloud==0.18.3
 gitpython==3.1.24
 google-api-core==1.31.3  # transitive dep that needs dependabot updates
-google-cloud-bigquery==2.29.0
+google-cloud-bigquery==2.30.0
 google-cloud-storage==1.42.3
 googleapis-common-protos==1.53.0  # transitive dep that needs dependabot updates
 Jinja2==3.0.2

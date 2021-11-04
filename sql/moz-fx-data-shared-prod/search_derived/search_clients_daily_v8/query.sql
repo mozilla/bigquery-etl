@@ -25,6 +25,7 @@ WITH combined_access_point AS (
     *,
     ARRAY_CONCAT(
       add_access_point(search_content_urlbar_sum, 'urlbar'),
+      add_access_point(search_content_urlbar_handoff_sum, 'urlbar_handoff'),
       add_access_point(search_content_urlbar_searchmode_sum, 'urlbar_searchmode'),
       add_access_point(search_content_contextmenu_sum, 'contextmenu'),
       add_access_point(search_content_about_home_sum, 'about_home'),
@@ -38,6 +39,7 @@ WITH combined_access_point AS (
     ) AS in_content_with_sap,
     ARRAY_CONCAT(
       add_access_point(search_withads_urlbar_sum, 'urlbar'),
+      add_access_point(search_withads_urlbar_handoff_sum, 'urlbar_handoff'),
       add_access_point(search_withads_urlbar_searchmode_sum, 'urlbar_searchmode'),
       add_access_point(search_withads_contextmenu_sum, 'contextmenu'),
       add_access_point(search_withads_about_home_sum, 'about_home'),
@@ -51,6 +53,7 @@ WITH combined_access_point AS (
     ) AS search_with_ads_with_sap,
     ARRAY_CONCAT(
       add_access_point(search_adclicks_urlbar_sum, 'urlbar'),
+      add_access_point(search_adclicks_urlbar_handoff_sum, 'urlbar_handoff'),
       add_access_point(search_adclicks_urlbar_searchmode_sum, 'urlbar_searchmode'),
       add_access_point(search_adclicks_contextmenu_sum, 'contextmenu'),
       add_access_point(search_adclicks_about_home_sum, 'about_home'),
@@ -87,7 +90,8 @@ augmented AS (
                 'activitystream',
                 'webextension',
                 'alias',
-                'urlbar-searchmode'
+                'urlbar-searchmode',
+                'urlbar-handoff'
               )
               OR element.source IS NULL
             )

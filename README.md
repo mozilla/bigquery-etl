@@ -1,7 +1,6 @@
 [![CircleCI](https://circleci.com/gh/mozilla/bigquery-etl.svg?style=shield&circle-token=742fb1108f7e6e5a28c11d43b21f62605037f5a4)](https://circleci.com/gh/mozilla/bigquery-etl)
 
-BigQuery ETL
-===
+# BigQuery ETL
 
 This repository contains Mozilla Data Team's
 - Derived ETL jobs that do not require a custom container
@@ -9,59 +8,65 @@ This repository contains Mozilla Data Team's
 - Airflow DAGs for scheduled bigquery-etl queries
 - Tools for query & UDF deployment, management and scheduling
 
-Quick Start
----
 
-Ensure Python 3.8+ is available on your machine (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python.)
+## Quick Start
 
-For some functionality Java JDK 11+ is also required (e.g. [AdoptOpenJDK](https://adoptium.net/?variant=openjdk11)) with `$JAVA_HOME` set, and maven is needed for downloading jar dependencies.
-Maven is available from your package manager in most Linux distributions and from [homebrew](https://brew.sh/) on mac, or you can install yourself by [downloading a binary](https://maven.apache.org/download.cgi) and following maven's [install instructions](https://maven.apache.org/install.html).
-The [Rosetta 2 terminal](https://support.apple.com/en-ca/HT211861) is also suggested for installing the above requirements on Apple Silicon (M1).
+> Apple Silicon (M1) user suggestion
+>
+> Enable [Rosetta mode](https://support.apple.com/en-ca/HT211861) for your terminal _**BEFORE**_ installing below tools using your terminal. It'll save you a lot of headaches.
 
-Install and set up the GCP command line tools:
+### Pre-requisites
+- **Homebrew** (not required, but useful for Mac) - Follow the instructions [here](https://brew.sh/) to install homebrew on your Mac.
+- **Python 3.8+** - (see [this guide](https://docs.python-guide.org/starting/install3/osx/) for instructions if you're on a mac and haven't installed anything other than the default system Python).
+- **Java JDK 11+** - (required for some functionality, e.g. [AdoptOpenJDK](https://adoptium.net/?variant=openjdk11)) with `$JAVA_HOME` set.
+- **Maven** - (needed for downloading jar dependencies). Available via your package manager in most Linux distributions and from [homebrew](https://brew.sh/) on mac, or you can install yourself by [downloading a binary](https://maven.apache.org/download.cgi) and following maven's [install instructions](https://maven.apache.org/install.html).
 
-* (For Mozilla Employees or Contributors not in Data Engineering) Set up GCP command line tools, [as described on docs.telemetry.mozilla.org](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool). Note that some functionality (e.g. writing UDFs or backfilling queries) may not be allowed.
-* (For Data Engineering) In addition to setting up the command line tools, you will want to log in to `shared-prod` if making changes to production systems. Run `gcloud auth login --update-adc --project=moz-fx-data-shared-prod` (if you have not run it previously).
+### GCP CLI tools
 
-Clone the repository
+- **For Mozilla Employees or Contributors (not in Data Engineering)** - Set up GCP command line tools, [as described on docs.telemetry.mozilla.org](https://docs.telemetry.mozilla.org/cookbooks/bigquery/access.html#using-the-bq-command-line-tool). Note that some functionality (e.g. writing UDFs or backfilling queries) may not be allowed.
+- **For Data Engineering** - In addition to setting up the command line tools, you will want to log in to `shared-prod` if making changes to production systems. Run `gcloud auth login --update-adc --project=moz-fx-data-shared-prod` (if you have not run it previously).
+
+### Installing bqetl library
+
+1. Clone the repository
 ```bash
 git clone git@github.com:mozilla/bigquery-etl.git
 cd bigquery-etl
 ```
 
-Install the `bqetl` command line tool
+2. Install the `bqetl` command line tool
 ```bash
 ./bqetl bootstrap
 ```
 
-Install standard pre-commit hooks
+3. Install standard pre-commit hooks
 ```bash
 venv/bin/pre-commit install
 ```
 
-Optionally, download java dependencies
+4. Optionally, download java dependencies
 ```bash
 mvn dependency:copy-dependencies
 venv/bin/pip-sync requirements.txt java-requirements.txt
 ```
 
 Finally, if you are using Visual Studio Code, you may also wish to use our recommended defaults:
-
 ```bash
 cp .vscode/settings.json.default .vscode/settings.json
 ```
 
 And you should now be set up to start working in the repo! The easiest way to do this is for many tasks is to use `bqetl`, which is described below.
 
-
-The `bqetl` CLI
 ---
+&nbsp;
+
+# The `bqetl` CLI
 
 The `bqetl` command-line tool aims to simplify working with the bigquery-etl repository by supporting
 common workflows, such as creating, validating and scheduling queries or adding new UDFs.
 
 
-### Usage
+## Usage
 
 The CLI groups commands into different groups:
 

@@ -19,10 +19,13 @@ fi
 
 if [ "$#" = 0 ]; then
     # Default to 8 workers because most of the tests are io-bound
-    exec pytest --black --flake8 --mypy-ignore-missing-imports --pydocstyle -n 8 --profile
+    # When using pytest-xdist, total worker initialization time scales
+    # linearly to the number of workers. 8 workers seems to bring the best
+    # performance. See https://github.com/pytest-dev/pytest-xdist/issues/346
+    exec pytest --black --flake8 --mypy-ignore-missing-imports --pydocstyle -n 8
 elif [ "${1:0:1}" = - ]; then
     # First argument is a flag, assume intended executable is pytest
-    exec pytest "$@"
+    exec pytest "$@" -n 8
 elif [ "$1" = "query" ]; then
     # For an invocation like:
     #     query [options] FILE

@@ -35,16 +35,14 @@ jobs:
           command: PATH="venv/bin:$PATH" yamllint -c .yamllint.yaml .
       - run:
           name: PyTest with linters
-          # yamllint disable rule:line-length
+          # integration and java tests are run in a separate `integration` step;
+          # SQL and routine tests are split out into a separate `test-sql` test
+          # since those tests take the longest to run and running those tests
+          # in parallel speeds up CI
           command: |
-            if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              echo "Cannot pass creds to forked PRs," \
-                "so skipping routine and SQL tests"
-              PATH="venv/bin:$PATH" script/entrypoint -m "not (routine or sql or integration or java)"
-            else
-              PATH="venv/bin:$PATH" script/entrypoint
-            fi
-          # yamllint enable rule:line-length
+            PATH="venv/bin:$PATH" script/entrypoint --black --flake8 \
+              --mypy-ignore-missing-imports --pydocstyle \
+              -m "not (routine or sql or integration or java)"
       - save_cache:
           paths:
             - venv/
@@ -75,6 +73,21 @@ jobs:
             pip-compile --quiet --allow-unsafe --generate-hashes \
               java-requirements.in
             git diff --exit-code requirements.txt java-requirements.txt
+  test-sql:
+    docker: *docker
+    steps:
+      - checkout
+      - *restore_venv_cache
+      - *build
+      - run:
+          name: Run SQL tests
+          command: |
+            if [ -n "$CIRCLE_PR_NUMBER" ]; then
+              echo "Cannot pass creds to forked PRs," \
+                "so skipping routine and SQL tests"
+            else
+              PATH="venv/bin:$PATH" script/entrypoint -m "routine or sql"
+            fi
   dry-run-sql:
     docker: *docker
     steps:
@@ -475,6 +488,8 @@ workflows:
           context: data-eng-circleci-tests
       - verify-format-sql
       - verify-requirements
+      - test-sql:
+          context: data-eng-circleci-tests
       - dry-run-sql
       - validate-metadata
       - integration

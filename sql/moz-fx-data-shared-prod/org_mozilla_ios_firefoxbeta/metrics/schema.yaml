@@ -957,6 +957,52 @@ fields:
       mode: NULLABLE
       name: firefox_home_page_firefox_homepage_view
       type: INTEGER
+    - description: 'The total number of login records which failed to migrate
+
+        '
+      mode: NULLABLE
+      name: logins_store_migration_num_failed
+      type: INTEGER
+    - description: 'The total number of login records processed by the migration
+
+        '
+      mode: NULLABLE
+      name: logins_store_migration_num_processed
+      type: INTEGER
+    - description: 'The total number of login records successfully migrated
+
+        '
+      mode: NULLABLE
+      name: logins_store_migration_num_succeeded
+      type: INTEGER
+    - description: 'The total number of read operations performed on the logins store.
+        The count only includes operations triggered by the application, not e.g.
+        incidental reads performed as part of a sync. It is intended to be used together
+        with `read_query_error_count` to measure the overall error rate of read operations
+        on the logins store.
+
+        '
+      mode: NULLABLE
+      name: logins_store_read_query_count
+      type: INTEGER
+    - description: 'The number of times the login store was unlocked. It is intended
+        to be used together with `unlock_error_count` to measure the overall error
+        rate of unlocking the logins store.
+
+        '
+      mode: NULLABLE
+      name: logins_store_unlock_count
+      type: INTEGER
+    - description: 'The total number of write operations performed on the logins store.
+        The count only includes operations triggered by the application, not e.g.
+        incidental writes performed as part of a sync. It is intended to be used together
+        with `write_query_error_count` to measure the overall error rate of write
+        operations on the logins store.
+
+        '
+      mode: NULLABLE
+      name: logins_store_write_query_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -1385,6 +1431,53 @@ fields:
       mode: REPEATED
       name: browser_search_with_ads
       type: RECORD
+    - description: 'The total number of errors encountered during read operations
+        on the logins store, labeled by type. It is intended to be used together with
+        `read_query_count` to measure the overall error rate of read operations on
+        the logins store.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: logins_store_read_query_error_count
+      type: RECORD
+    - description: 'The number of errors encountered when unlocking the logins store,
+        labeled by type. It is intended to be used together with `unlock_count` to
+        measure the overall error rate of unlocking the logins store.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: logins_store_unlock_error_count
+      type: RECORD
+    - description: 'The total number of errors encountered during write operations
+        on the logins store, labeled by type. It is intended to be used together with
+        `write_query_count` to measure the overall error rate of write operations
+        on the logins store.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: logins_store_write_query_error_count
+      type: RECORD
     mode: NULLABLE
     name: labeled_counter
     type: RECORD
@@ -1619,6 +1712,151 @@ fields:
       type: STRING
     mode: REPEATED
     name: text
+    type: RECORD
+  - fields:
+    - mode: REPEATED
+      name: logins_store_migration_errors
+      type: STRING
+    mode: NULLABLE
+    name: string_list
+    type: RECORD
+  - fields:
+    - description: 'How long the migration tool
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: NULLABLE
+      name: logins_store_migration_total_duration
+      type: RECORD
+    mode: NULLABLE
+    name: timespan
+    type: RECORD
+  - fields:
+    - description: 'The time taken to execute a read query on the logins store (such
+        as listing all logins, or finding a specific login by id).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: logins_store_read_query_time
+      type: RECORD
+    - description: 'The time taken to open the logins store on startup, or after locking
+        it due to user inactivity.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: logins_store_unlock_time
+      type: RECORD
+    - description: 'The time taken to execute a write query on the logins store (such
+        as adding, updating, or deleting a login record).
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: bucket_count
+        type: INTEGER
+      - mode: NULLABLE
+        name: histogram_type
+        type: STRING
+      - mode: NULLABLE
+        name: overflow
+        type: INTEGER
+      - mode: REPEATED
+        name: range
+        type: FLOAT
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - mode: NULLABLE
+        name: time_unit
+        type: STRING
+      - mode: NULLABLE
+        name: underflow
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: logins_store_write_query_time
+      type: RECORD
+    mode: NULLABLE
+    name: timing_distribution
     type: RECORD
   mode: NULLABLE
   name: metrics

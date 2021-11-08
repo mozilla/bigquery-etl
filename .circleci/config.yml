@@ -42,7 +42,8 @@ jobs:
           command: |
             PATH="venv/bin:$PATH" script/entrypoint --black --flake8 \
               --mypy-ignore-missing-imports --pydocstyle \
-              -m "not (routine or sql or integration or java)"
+              -m "not (routine or sql or integration or java)" \
+              -n 8
       - save_cache:
           paths:
             - venv/
@@ -86,7 +87,7 @@ jobs:
               echo "Cannot pass creds to forked PRs," \
                 "so skipping routine and SQL tests"
             else
-              PATH="venv/bin:$PATH" script/entrypoint -m "routine or sql"
+              PATH="venv/bin:$PATH" script/entrypoint -m "routine or sql" -n 8
             fi
   dry-run-sql:
     docker: *docker
@@ -161,10 +162,12 @@ jobs:
           # GOOGLE_APPLICATION_CREDENTIALS
           # and use a file in that location for credentials if present;
           # See https://cloud.google.com/docs/authentication/production
+          # yamllint disable rule:line-length
           command: |
             export GOOGLE_APPLICATION_CREDENTIALS="/tmp/gcp.json"
             echo "$GCLOUD_SERVICE_KEY" > "$GOOGLE_APPLICATION_CREDENTIALS"
-            PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java'
+            PATH="venv/bin:$PATH" script/entrypoint -m 'integration or java' -n 8
+          # yamllint enable rule:line-length
       - save_cache:
           paths:
             - ~/.m2

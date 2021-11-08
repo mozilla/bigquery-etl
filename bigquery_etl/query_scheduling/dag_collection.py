@@ -2,7 +2,7 @@
 
 from functools import partial
 from itertools import groupby
-from multiprocessing.pool import ThreadPool
+from multiprocessing import set_start_method, get_context
 from operator import attrgetter
 from pathlib import Path
 
@@ -110,8 +110,16 @@ class DagCollection:
 
     def to_airflow_dags(self, output_dir, dag_to_generate=None):
         """Write DAG representation as Airflow dags to file."""
+        # https://pythonspeed.com/articles/python-multiprocessing/
+        # when running tests on CI that call this function, we need
+        # to create a custom pool to prevent processes from getting stuck
+        try:
+            set_start_method("spawn")
+        except Exception:
+            pass
+        to_airflow_dag = partial(self.dag_to_airflow, output_dir)
         if dag_to_generate is None:
-            with ThreadPool(8) as p:
-                p.map(partial(self.dag_to_airflow, output_dir), self.dags, chunksize=1)
+            with get_context("spawn").Pool(8) as p:
+                p.map(to_airflow_dag, self.dags)
         else:
             self.dag_to_airflow(output_dir, self.dag_by_name(dag_to_generate))

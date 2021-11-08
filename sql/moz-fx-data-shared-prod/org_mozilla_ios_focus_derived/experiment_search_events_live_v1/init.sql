@@ -1,7 +1,7 @@
 -- Generated via ./bqetl experiment_monitoring generate
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_klar_derived.experiment_search_events_live_v1`
+  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.experiment_search_events_live_v1`
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
@@ -20,23 +20,11 @@ IF
     ) AS window_end,
     -- Concatenating an element with value = 0 ensures that the count values are not null even if the array is empty
     -- Materialized views don't support COALESCE or IFNULL
-    SUM(
-      CAST(
-        ARRAY_CONCAT(metrics.labeled_counter.browser_search_ad_clicks, [('', 0)])[
-          SAFE_OFFSET(i)
-        ].value AS INT64
-      )
-    ) AS ad_clicks_count,
-    SUM(
-      CAST(
-        ARRAY_CONCAT(metrics.labeled_counter.browser_search_with_ads, [('', 0)])[
-          SAFE_OFFSET(i)
-        ].value AS INT64
-      )
-    ) AS search_with_ads_count,
+    SUM(0) AS ad_clicks_count,
+    SUM(0) AS search_with_ads_count,
     SUM(0) AS search_count,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_klar_live.metrics_v1`
+    `moz-fx-data-shared-prod.org_mozilla_ios_focus_live.metrics_v1`
   LEFT JOIN
     UNNEST(ping_info.experiments) AS experiment
   CROSS JOIN

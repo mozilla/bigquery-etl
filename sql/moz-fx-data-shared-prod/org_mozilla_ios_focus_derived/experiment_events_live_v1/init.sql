@@ -1,7 +1,7 @@
 -- Generated via ./bqetl experiment_monitoring generate
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS org_mozilla_firefox_derived.experiment_events_live_v1
+  NOT EXISTS org_mozilla_ios_focus_derived.experiment_events_live_v1
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
@@ -11,7 +11,7 @@ IF
       submission_timestamp,
       events
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_firefox_live.events_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_focus_live.events_v1`
   ),
   experiment_events AS (
     SELECT

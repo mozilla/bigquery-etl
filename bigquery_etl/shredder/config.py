@@ -81,6 +81,7 @@ CFR_ID = f"COALESCE({CLIENT_ID}, {IMPRESSION_ID})"
 FXA_USER_ID = "jsonPayload.fields.user_id"
 # these must be in the same order as SYNC_SRCS
 SYNC_IDS = ("SUBSTR(payload.device_id, 0, 32)", "payload.uid")
+CONTEXT_ID = "context_id"
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -94,6 +95,10 @@ CFR_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4`,"
     f" UNNEST([{CLIENT_ID}, {IMPRESSION_SRC.field}]) AS `_",
     field="_",
+)
+CONTEXTUAL_SERVICES_SRC = DeleteSource(
+    table="telemetry_stable.deletion_request_v4",
+    field="payload.scalars.parent.deletion_request_context_id",
 )
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts_derived.fxa_delete_events_v1", field="hmac_user_id"
@@ -134,6 +139,7 @@ SOURCES = (
     [
         DESKTOP_SRC,
         IMPRESSION_SRC,
+        CONTEXTUAL_SERVICES_SRC,
         CFR_SRC,
         FXA_HMAC_SRC,
         FXA_SRC,
@@ -151,6 +157,7 @@ impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 cfr_id_target = partial(DeleteTarget, field=CFR_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
+context_id_target = partial(DeleteTarget, field=CONTEXT_ID)
 
 DELETE_TARGETS = {
     client_id_target(
@@ -267,6 +274,21 @@ DELETE_TARGETS = {
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_last_seen_v1"
     ): FXA_SRC,
+    context_id_target(
+        table="contextual_services_stable.topsites_click_v1"
+    ): CONTEXTUAL_SERVICES_SRC,
+    context_id_target(
+        table="contextual_services_stable.topsites_impression_v1"
+    ): CONTEXTUAL_SERVICES_SRC,
+    context_id_target(
+        table="contextual_services_stable.quicksuggest_click_v1"
+    ): CONTEXTUAL_SERVICES_SRC,
+    context_id_target(
+        table="contextual_services_stable.quicksuggest_impression_v1"
+    ): CONTEXTUAL_SERVICES_SRC,
+    context_id_target(
+        table="contextual_services_derived.suggest_impression_sanitized_v1"
+    ): CONTEXTUAL_SERVICES_SRC,
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",

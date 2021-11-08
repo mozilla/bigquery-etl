@@ -24,7 +24,7 @@ default_args = {
     "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2021, 4, 19, 0, 0),
     "end_date": None,
-    "email": ["ascholtz@mozilla.com"],
+    "email": ["ascholtz@mozilla.com", "echo@mozilla.com", "shong@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -48,7 +48,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com", "echo@mozilla.com", "shong@mozilla.com"],
     )
 
     iprospect__adspend_meta__v1 = bigquery_etl_query(
@@ -57,7 +57,7 @@ with DAG(
         dataset_id="iprospect",
         project_id="moz-fx-data-marketing-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com", "echo@mozilla.com", "shong@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,
@@ -72,7 +72,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         docker_image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com", "echo@mozilla.com", "shong@mozilla.com"],
     )
 
     iprospect__adspend__v1.set_upstream(iprospect__adspend_raw__v1)

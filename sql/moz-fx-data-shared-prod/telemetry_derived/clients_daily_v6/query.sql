@@ -413,6 +413,14 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.browser_search_adclicks_tabhistory,
     payload.processes.parent.keyed_scalars.browser_search_adclicks_reload,
     payload.processes.parent.keyed_scalars.browser_search_adclicks_unknown,
+    payload.processes.parent.keyed_scalars.browser_search_content_urlbar_handoff,
+    payload.processes.parent.keyed_scalars.browser_search_withads_urlbar_handoff,
+    payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar_handoff,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_click,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_impression,
+    payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help,
+    payload.processes.parent.keyed_scalars.contextual_services_topsites_click,
+    payload.processes.parent.keyed_scalars.contextual_services_topsites_impression,
     count_histograms[OFFSET(0)].histogram AS histogram_parent_devtools_aboutdebugging_opened_count,
     count_histograms[
       OFFSET(1)
@@ -482,6 +490,9 @@ clients_summary AS (
         ARRAY_AGG(
           IF(key = 'browser.urlbar.quicksuggest.onboardingDialogChoice', value, NULL) IGNORE NULLS
         )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice,
+        ARRAY_AGG(IF(key = 'browser.newtabpage.enabled', value, NULL) IGNORE NULLS)[
+          SAFE_OFFSET(0)
+        ] AS user_pref_browser_newtabpage_enabled,
       FROM
         UNNEST(environment.settings.user_prefs)
     ).*
@@ -997,7 +1008,8 @@ aggregates AS (
                 browser_search_adclicks_webextension,
                 browser_search_adclicks_tabhistory,
                 browser_search_adclicks_reload,
-                browser_search_adclicks_unknown
+                browser_search_adclicks_unknown,
+                browser_search_adclicks_urlbar_handoff
               )
             )
         )
@@ -1022,7 +1034,8 @@ aggregates AS (
                 browser_search_withads_webextension,
                 browser_search_withads_tabhistory,
                 browser_search_withads_reload,
-                browser_search_withads_unknown
+                browser_search_withads_unknown,
+                browser_search_withads_urlbar_handoff
               )
             )
         )
@@ -1096,7 +1109,15 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_webextension)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_tabhistory)),
       STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_reload)),
-      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_unknown))
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_unknown)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_content_urlbar_handoff)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_withads_urlbar_handoff)),
+      STRUCT(ARRAY_CONCAT_AGG(browser_search_adclicks_urlbar_handoff)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_click)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_impression)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_quicksuggest_help)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_click)),
+      STRUCT(ARRAY_CONCAT_AGG(contextual_services_topsites_impression))
     ] AS map_sum_aggregates,
     udf.search_counts_map_sum(ARRAY_CONCAT_AGG(search_counts)) AS search_counts,
     mozfun.stats.mode_last(
@@ -1118,6 +1139,9 @@ aggregates AS (
           submission_timestamp
       )
     ) AS user_pref_browser_urlbar_show_search_suggestions_first,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(user_pref_browser_newtabpage_enabled ORDER BY submission_timestamp)
+    ) AS user_pref_browser_newtabpage_enabled,
     -- We use last seen value rather than mode_last for all Firefox Suggest-related
     -- pref values to ensure all values represent the same ping.
     ARRAY_AGG(user_pref_browser_urlbar_suggest_quicksuggest ORDER BY submission_timestamp DESC)[
@@ -1223,5 +1247,13 @@ SELECT
   map_sum_aggregates[OFFSET(64)].map AS search_adclicks_tabhistory_sum,
   map_sum_aggregates[OFFSET(65)].map AS search_adclicks_reload_sum,
   map_sum_aggregates[OFFSET(66)].map AS search_adclicks_unknown_sum,
+  map_sum_aggregates[OFFSET(67)].map AS search_content_urlbar_handoff_sum,
+  map_sum_aggregates[OFFSET(68)].map AS search_withads_urlbar_handoff_sum,
+  map_sum_aggregates[OFFSET(69)].map AS search_adclicks_urlbar_handoff_sum,
+  map_sum_aggregates[OFFSET(70)].map AS contextual_services_quicksuggest_click_sum,
+  map_sum_aggregates[OFFSET(71)].map AS contextual_services_quicksuggest_impression_sum,
+  map_sum_aggregates[OFFSET(72)].map AS contextual_services_quicksuggest_help_sum,
+  map_sum_aggregates[OFFSET(73)].map AS contextual_services_topsites_click_sum,
+  map_sum_aggregates[OFFSET(74)].map AS contextual_services_topsites_impression_sum,
 FROM
   udf_aggregates

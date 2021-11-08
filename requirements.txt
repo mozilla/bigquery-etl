@@ -941,6 +941,7 @@ typing-extensions==3.7.4.3 \
     --hash=sha256:dafc7639cde7f1b6e1acc0f457842a83e722ccca8eef5270af2d74792619a89f
     # via
     #   aiohttp
+    #   gitpython
     #   mypy
 ujson==4.2.0 \
     --hash=sha256:0076de81aadc287f025525969bbc1272703be92933e988e5663a76ec5863628f \

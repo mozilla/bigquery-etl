@@ -9,6 +9,7 @@ google-api-core==1.31.3  # transitive dep that needs dependabot updates
 google-cloud-bigquery==2.30.1
 google-cloud-storage==1.42.3
 googleapis-common-protos==1.53.0  # transitive dep that needs dependabot updates
+importlib_resources>=1.4.0  # jsonschema dep for python<3.9
 Jinja2==3.0.2
 jsonschema==4.2.1
 mozilla-schema-generator==0.5.1

@@ -173,6 +173,24 @@ def main():
             "num_versions_to_keep": 3,
             "total_users": 10,
         },
+        "firefox_desktop_glam_nightly": {
+            "build_date_udf": "mozfun.glam.build_hour_to_datetime",
+            "filter_version": True,
+            "num_versions_to_keep": 3,
+            "total_users": 10,
+        },
+        "firefox_desktop_glam_beta": {
+            "build_date_udf": "mozfun.glam.build_hour_to_datetime",
+            "filter_version": True,
+            "num_versions_to_keep": 3,
+            "total_users": 10,
+        },
+        "firefox_desktop_glam_release": {
+            "build_date_udf": "mozfun.glam.build_hour_to_datetime",
+            "filter_version": True,
+            "num_versions_to_keep": 3,
+            "total_users": 10,
+        },
     }
     validate(instance=config, schema=config_schema)
 

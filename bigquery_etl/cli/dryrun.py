@@ -5,10 +5,11 @@ import glob
 import os
 import re
 import sys
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import Pool
 from typing import Set
 
 import click
+from functools import partial
 from google.cloud import bigquery
 
 from ..cli.utils import is_authenticated
@@ -96,19 +97,26 @@ def dryrun(paths, use_cloud_function, validate_schemas, respect_skip, project):
             sys.exit(1)
         client = bigquery.Client(project=project)
 
-    def sql_file_valid(sqlfile):
-        """Dry run the SQL file."""
-        result = DryRun(
-            sqlfile,
-            use_cloud_function=use_cloud_function,
-            client=client,
-            respect_skip=respect_skip,
-        )
-        if validate_schemas:
-            return result.validate_schema()
-        return result.is_valid()
+    sql_file_valid = partial(
+        _sql_file_valid, use_cloud_function, client, respect_skip, validate_schemas
+    )
 
-    with ThreadPool(8) as p:
+    with Pool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
     if not all(result):
         sys.exit(1)
+
+
+def _sql_file_valid(
+    use_cloud_function, client, respect_skip, validate_schemas, sqlfile
+):
+    """Dry run the SQL file."""
+    result = DryRun(
+        sqlfile,
+        use_cloud_function=use_cloud_function,
+        client=client,
+        respect_skip=respect_skip,
+    )
+    if validate_schemas:
+        return result.validate_schema()
+    return result.is_valid()

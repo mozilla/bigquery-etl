@@ -26,8 +26,7 @@ done
 ./script/generate_all_views --target-project "${TARGET_PROJECT}" --sql-dir "${SQL_DIR}"
 ./script/publish_views --target-project "${TARGET_PROJECT}" "${SQL_DIR}"
 
-# We additionally make sure we have identical view definitions in moz-fx-data-derived-datasets and mozdata
+# We additionally make sure we have identical view definitions in mozdata
 if [[ "$TARGET_PROJECT" == "moz-fx-data-shared-prod" ]]; then
-    ./script/publish_views --user-facing-only --target-project moz-fx-data-derived-datasets "${SQL_DIR}"
     ./script/publish_views --user-facing-only --target-project mozdata "${SQL_DIR}"
 fi

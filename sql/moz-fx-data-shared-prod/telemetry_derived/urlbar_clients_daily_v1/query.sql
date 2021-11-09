@@ -51,7 +51,7 @@ WITH combined_urlbar_picked AS (
       user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored AS BOOL
     ) AS suggest_quicksuggest_nonsponsored,
     SAFE_CAST(
-    user_pref_browser_urlbar_suggest_quicksuggest_sponsored AS BOOL
+      user_pref_browser_urlbar_suggest_quicksuggest_sponsored AS BOOL
     ) AS suggest_quicksuggest_sponsored,
     user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice AS quicksuggest_onboarding_dialog_choice,
     user_pref_browser_urlbar_quicksuggest_data_collection_enabled AS quicksuggest_data_collection_enabled,

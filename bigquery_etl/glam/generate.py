@@ -159,19 +159,19 @@ def main():
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
+            "total_users": 800,
         },
         "org_mozilla_fenix_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
+            "total_users": 2000,
         },
         "org_mozilla_fenix_glam_release": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
             "filter_version": True,
             "num_versions_to_keep": 3,
-            "total_users": 10,
+            "total_users": 90000,
         },
     }
     validate(instance=config, schema=config_schema)

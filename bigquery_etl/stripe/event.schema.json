@@ -6872,6 +6872,10 @@
             "type": "STRING"
           },
           {
+            "name": "tax_code",
+            "type": "STRING"
+          },
+          {
             "name": "type",
             "type": "STRING"
           },

@@ -20,7 +20,13 @@ SELECT
                   TRIM(t)
                 FROM
                   UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
-              ) AS parsed_x_source_tags
+              ) AS parsed_x_source_tags,
+              ARRAY(
+                SELECT
+                  TRIM(t)
+                FROM
+                  UNNEST(SPLIT(metadata.header.x_lb_tags, ',')) t
+              ) AS parsed_x_lb_tags
           ) AS header,
           -- Limit the geo info we present to the country level;
           -- https://bugzilla.mozilla.org/show_bug.cgi?id=1654078#c45

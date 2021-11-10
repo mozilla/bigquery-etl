@@ -23,12 +23,10 @@ CREATE OR REPLACE FUNCTION norm.metadata(metadata ANY TYPE) AS (
               FROM
                 UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
             ) AS parsed_x_source_tags,
-            ARRAY(
-              SELECT
-                TRIM(t)
-              FROM
-                UNNEST(SPLIT(metadata.header.x_lb_tags, ',')) t
-            ) AS parsed_x_lb_tags
+            STRUCT(
+              TRIM(SPLIT(metadata.header.x_lb_tags, ',')[SAFE_OFFSET(0)]) AS tls_version,
+              TRIM(SPLIT(metadata.header.x_lb_tags, ',')[SAFE_OFFSET(1)]) AS tls_cipher_hex
+            ) AS parsed_x_lb_tags,
         ) AS header
       )
   )
@@ -52,7 +50,10 @@ SELECT
   assert.equals(TIMESTAMP '2019-11-21 22:06:06', example.header.parsed_date),
   assert.equals('automation, performance-test', example.header.x_source_tags),
   assert.array_equals(['automation', 'performance-test'], example.header.parsed_x_source_tags),
-  assert.array_equals(['TLSv1.3', '009C'], example.header.parsed_x_lb_tags)
+  assert.struct_equals(
+    STRUCT('TLSv1.3' AS tls_version, '009C' AS tls_cipher_text),
+    example.header.parsed_x_lb_tags
+  )
 FROM
   example;
 
@@ -91,7 +92,8 @@ SELECT
       )
     ).header.parsed_x_source_tags
   ),
-  assert.array_empty(
+  assert.struct_equals(
+    STRUCT(CAST(NULL AS STRING) AS tls_version, CAST(NULL AS STRING) AS tls_cipher_text),
     norm.metadata(
       STRUCT(
         STRUCT(

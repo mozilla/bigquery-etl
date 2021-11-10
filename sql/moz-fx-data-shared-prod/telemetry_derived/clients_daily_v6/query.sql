@@ -484,6 +484,7 @@ clients_summary AS (
         ARRAY_AGG(IF(key = 'browser.urlbar.suggest.quicksuggest', value, NULL) IGNORE NULLS)[
           SAFE_OFFSET(0)
         ] AS user_pref_browser_urlbar_suggest_quicksuggest,
+        -- Rename of browser.urlbar.suggest.quicksuggest.nonsponsored; see bug 1737374
         ARRAY_AGG(
           IF(key = 'browser.urlbar.suggest.quicksuggest.nonsponsored', value, NULL) IGNORE NULLS
         )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored,
@@ -493,6 +494,7 @@ clients_summary AS (
         ARRAY_AGG(
           IF(key = 'browser.urlbar.quicksuggest.onboardingDialogChoice', value, NULL) IGNORE NULLS
         )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice,
+        -- New pref for Firefox Suggest introduced in bug 1737374
         ARRAY_AGG(
           IF(key = 'browser.urlbar.quicksuggest.dataCollection.enabled', value, NULL) IGNORE NULLS
         )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_data_collection_enabled,

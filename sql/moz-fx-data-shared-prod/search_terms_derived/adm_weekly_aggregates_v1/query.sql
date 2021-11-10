@@ -10,6 +10,8 @@ WHERE
   DATE(submission_timestamp)
   BETWEEN DATE_SUB(@submission_date, INTERVAL 6 DAY)
   AND @submission_date
+  AND LENGTH(search_query) > 0
+  AND normalized_channel = 'release'
 GROUP BY
   query,
   block_id

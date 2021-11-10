@@ -112,7 +112,7 @@ def validate(
     views = [View.from_file(f) for f in view_files]
 
     with Pool(parallelism) as p:
-        result = p.map(_view_is_valid, views, chunksize=1)
+        result = p.map(_view_is_valid, views)
     if not all(result):
         sys.exit(1)
 

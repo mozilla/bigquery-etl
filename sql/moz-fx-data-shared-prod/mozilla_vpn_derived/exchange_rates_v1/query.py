@@ -28,14 +28,21 @@ parser.add_argument("--start-date", required=True)
 parser.add_argument("--end-date", required=True)
 parser.add_argument("--table", required=True)
 parser.add_argument(
+    "--write-disposition",
+    choices=[
+        bigquery.WriteDisposition.WRITE_EMPTY,
+        bigquery.WriteDisposition.WRITE_TRUNCATE,
+        bigquery.WriteDisposition.WRITE_APPEND,
+    ],
+)
+parser.add_argument(
+    "--base-currencies",
     "--base-currency",
-    action="append",
-    default=[],
-    dest="base_currencies",
+    nargs="+",
     required=True,
 )
 parser.add_argument("--quote-currency", default="USD")
-parser.add_argument("--price", default="bid", choices=["bid", "ask", "midpoint"])
+parser.add_argument("--price", default="mid", choices=["bid", "ask", "mid"])
 args = parser.parse_args()
 
 quotes = set()
@@ -94,6 +101,12 @@ else:
     if args.start_date == args.end_date and "$" not in table:
         table = f"{table}${args.start_date.replace('-', '')}"
     print(f"writing to {table}")
+    write_disposition = args.write_disposition
+    if write_disposition is None:
+        if "$" in table:
+            write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+        else:
+            write_disposition = bigquery.WriteDisposition.WRITE_EMPTY
     job_config = bigquery.LoadJobConfig(
         create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
         schema=[
@@ -106,11 +119,7 @@ else:
         time_partitioning=bigquery.TimePartitioning(
             bigquery.TimePartitioningType.DAY, "date"
         ),
-        write_disposition=(
-            bigquery.WriteDisposition.WRITE_TRUNCATE
-            if "$" in table
-            else bigquery.WriteDisposition.WRITE_EMPTY
-        ),
+        write_disposition=write_disposition,
     )
     client = bigquery.Client()
     job = client.load_table_from_json(json_rows, table, job_config=job_config)

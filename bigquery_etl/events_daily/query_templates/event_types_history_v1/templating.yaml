@@ -14,7 +14,7 @@ telemetry_derived:
   dataset: telemetry
   source_table: telemetry_derived.deanonymized_events
   start_date: 2020-01-01
-  max_property_values: 1000
+  max_property_values: 5000
   dag_name: bqetl_event_rollup
 messaging_system_derived:
   name: Firefox Messaging System

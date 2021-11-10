@@ -50,6 +50,7 @@ NON_USER_FACING_DATASET_SUFFIXES = (
     "_external",
     "_bi",
     "_restricted",
+    "glam_etl",
 )
 
 

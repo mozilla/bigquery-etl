@@ -64,6 +64,10 @@ fields:
       mode: NULLABLE
       name: x_foxsec_ip_reputation
       type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
     - mode: NULLABLE
       name: parsed_date
       type: TIMESTAMP
@@ -19485,7 +19489,7 @@ fields:
       mode: NULLABLE
       name: image_decode_speed_avif
       type: STRING
-    - description: 'Firefox: Time from request to Merino endpoint to response (ms)'
+    - description: 'Firefox: Latency of the Merino source for quick suggest (ms)'
       mode: NULLABLE
       name: fx_urlbar_merino_latency_ms
       type: STRING
@@ -19570,6 +19574,21 @@ fields:
     - description: Whether a page used the CSS property color-scheme
       mode: NULLABLE
       name: use_counter2_css_property_color_scheme_page
+      type: STRING
+    - description: 'Firefox: Records whether each Merino fetch was successful or not.
+        ''success'' (0): The fetch completed without any error before the timeout
+        elapsed. ''timeout'' (1): The timeout elapsed before the fetch completed or
+        otherwise failed. ''network_error'' (2): The fetch failed due to a network
+        error before the timeout elapsed. e.g., the user''s network or the Merino
+        server was down. ''http_error'' (3): The fetch completed before the timeout
+        elapsed but the server returned an error.'
+      mode: NULLABLE
+      name: fx_urlbar_merino_response
+      type: STRING
+    - description: 'Firefox: Latency of the remote settings source for quick suggest
+        (ms)'
+      mode: NULLABLE
+      name: fx_urlbar_quick_suggest_remote_settings_latency_ms
       type: STRING
     mode: NULLABLE
     name: histograms

@@ -1547,3 +1547,9 @@ fields:
   mode: REPEATED
   name: contextual_services_topsites_impression_sum
   type: RECORD
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored
+  type: STRING
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_quicksuggest_data_collection_enabled
+  type: STRING

@@ -106,6 +106,10 @@ fields:
       mode: NULLABLE
       name: x_telemetry_agent
       type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
     - mode: NULLABLE
       name: parsed_date
       type: TIMESTAMP

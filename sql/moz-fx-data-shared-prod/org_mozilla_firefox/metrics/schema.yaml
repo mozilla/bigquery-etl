@@ -157,6 +157,10 @@ fields:
       mode: NULLABLE
       name: x_foxsec_ip_reputation
       type: STRING
+    - description: X-LB-Tags HTTP header
+      mode: NULLABLE
+      name: x_lb_tags
+      type: STRING
     - mode: NULLABLE
       name: parsed_date
       type: TIMESTAMP
@@ -1754,6 +1758,8 @@ fields:
       name: avif_dav1d_decode_error
       type: INTEGER
     - description: 'How many inactive tabs does the user have.
+
+        Value will be 0 if the feature is disabled.
 
         '
       mode: NULLABLE

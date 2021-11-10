@@ -467,6 +467,7 @@ event:
         value:
       name:
       statement_descriptor:
+      tax_code:
       type:
       updated:
     setup_intent:

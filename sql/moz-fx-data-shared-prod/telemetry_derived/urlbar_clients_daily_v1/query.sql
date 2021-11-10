@@ -48,9 +48,13 @@ WITH combined_urlbar_picked AS (
     ) AS show_search_suggestions_first,
     SAFE_CAST(user_pref_browser_urlbar_suggest_quicksuggest AS BOOL) AS suggest_quicksuggest,
     SAFE_CAST(
+      user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored AS BOOL
+    ) AS suggest_quicksuggest_nonsponsored,
+    SAFE_CAST(
       user_pref_browser_urlbar_suggest_quicksuggest_sponsored AS BOOL
     ) AS suggest_quicksuggest_sponsored,
     user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice AS quicksuggest_onboarding_dialog_choice,
+    user_pref_browser_urlbar_quicksuggest_data_collection_enabled AS quicksuggest_data_collection_enabled,
     [
       STRUCT(
         "autofill" AS type,
@@ -158,8 +162,10 @@ SELECT
   suggest_searches,
   show_search_suggestions_first,
   suggest_quicksuggest,
+  suggest_quicksuggest_nonsponsored,
   suggest_quicksuggest_sponsored,
   quicksuggest_onboarding_dialog_choice,
+  quicksuggest_data_collection_enabled,
   count_picked_total,
   count_picked_by_type,
   count_picked_by_position,

@@ -1,0 +1,27 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "Value",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "Description",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "DTLS_OK",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "Recommended",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "Reference",
+    "type": "STRING"
+  }
+]

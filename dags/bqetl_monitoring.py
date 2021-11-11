@@ -136,6 +136,18 @@ with DAG(
         email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
     )
 
+    monitoring_derived__suggest_impression_rate__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__suggest_impression_rate__v1",
+        destination_table="suggest_impression_rate_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="aplacitelli@mozilla.com",
+        email=["aplacitelli@mozilla.com", "ascholtz@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     monitoring_derived__telemetry_distinct_docids__v1 = bigquery_etl_query(
         task_id="monitoring_derived__telemetry_distinct_docids__v1",
         destination_table="telemetry_distinct_docids_v1",
@@ -207,6 +219,10 @@ with DAG(
     )
 
     monitoring_derived__structured_missing_columns__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__suggest_impression_rate__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

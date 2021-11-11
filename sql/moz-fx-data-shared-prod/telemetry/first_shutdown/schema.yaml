@@ -46854,6 +46854,20 @@ fields:
           mode: REPEATED
           name: browser_search_withads_urlbar_handoff
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Records the items interacted with in the More From Mozilla
+              section of preferences. See https://firefox-source-docs.mozilla.org/browser/BrowserUsageTelemetry.html
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: browser_ui_interaction_preferences_pane_more_from_mozilla
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD

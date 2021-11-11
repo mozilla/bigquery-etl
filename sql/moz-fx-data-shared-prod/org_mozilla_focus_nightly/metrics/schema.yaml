@@ -766,6 +766,28 @@ fields:
     mode: REPEATED
     name: url
     type: RECORD
+  - fields:
+    - description: Number of opened tabs when the app has been send to background.
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: tab_count_app_backgrounded
+      type: RECORD
+    mode: NULLABLE
+    name: custom_distribution
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

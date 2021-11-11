@@ -1713,6 +1713,18 @@ fields:
       mode: NULLABLE
       name: metrics_install_source
       type: STRING
+    - description: 'What opening screen preference the user has selected
+
+        under "Customize Home".
+
+        "homepage," "last tab," or "homepage after 4 hours"
+
+        default: "homepage after 4 hours"
+
+        '
+      mode: NULLABLE
+      name: customize_home_opening_screen
+      type: STRING
     mode: NULLABLE
     name: string
     type: RECORD

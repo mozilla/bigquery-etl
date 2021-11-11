@@ -15,4 +15,6 @@ bigquery:
     field: submission_date
     type: day
     require_partition_filter: true
-  clustering: null
+  clustering:
+    fields:
+    - normalized_channel

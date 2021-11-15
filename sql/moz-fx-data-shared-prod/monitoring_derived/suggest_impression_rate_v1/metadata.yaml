@@ -5,7 +5,6 @@ description: |-
 owners:
   - aplacitelli@mozilla.com
 labels:
-  authorized: true
   incremental: true
   schedule: daily
 scheduling:

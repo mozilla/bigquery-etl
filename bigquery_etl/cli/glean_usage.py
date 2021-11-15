@@ -1,6 +1,6 @@
 """bigquery-etl CLI glean_usage command."""
 from functools import partial
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import Pool
 from pathlib import Path
 import click
 
@@ -94,6 +94,13 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
         only_tables=[only] if only else None,
         table_filter=table_filter,
     )
+    # filter out skipped apps
+    baseline_tables = [
+        baseline_table
+        for baseline_table in baseline_tables
+        if baseline_table.split(".")[1]
+        not in [f"{skipped_app}_stable" for skipped_app in SKIP_APPS]
+    ]
 
     output_dir = Path(output_dir) / project_id
 
@@ -104,19 +111,38 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
 
     app_info = [info for name, info in app_info.items() if name not in SKIP_APPS]
 
-    for table in GLEAN_TABLES:
-        with ThreadPool(parallelism) as pool:
-            pool.map(
-                partial(
-                    table.generate_per_app_id,
-                    project_id,
-                    output_dir=output_dir,
-                ),
-                baseline_tables,
-            )
+    # Prepare parameters so that generation of all Glean datasets can be done in parallel
 
-        with ThreadPool(parallelism) as pool:
-            pool.map(
-                partial(table.generate_per_app, project_id, output_dir=output_dir),
-                app_info,
-            )
+    # Parameters to generate per-app_id datasets consist of the function to be called
+    # and baseline tables
+    generate_per_app_id = [
+        (
+            partial(
+                table.generate_per_app_id,
+                project_id,
+                output_dir=output_dir,
+            ),
+            baseline_table,
+        )
+        for baseline_table in baseline_tables
+        for table in GLEAN_TABLES
+    ]
+
+    # Parameters to generate per-app datasets consist of the function to be called
+    # and app_info
+    generate_per_app = [
+        (
+            partial(table.generate_per_app, project_id, output_dir=output_dir),
+            info,
+        )
+        for info in app_info
+        for table in GLEAN_TABLES
+    ]
+
+    with Pool(parallelism) as pool:
+        pool.starmap(run_generate, generate_per_app_id + generate_per_app)
+
+
+def run_generate(func, params):
+    """Use in `generate()` for generating glean datasets in parallel."""
+    func(params)

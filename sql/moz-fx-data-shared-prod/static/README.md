@@ -15,5 +15,4 @@ ETL and analysis:
 ```
 ./script/publish_static --project-id mozdata
 ./script/publish_static --project-id moz-fx-data-shared-prod
-./script/publish_static --project-id moz-fx-data-derived-datasets
 ```

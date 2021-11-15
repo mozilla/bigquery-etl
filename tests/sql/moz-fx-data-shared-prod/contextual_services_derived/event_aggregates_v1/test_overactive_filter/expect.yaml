@@ -2,6 +2,7 @@
 - &base
   submission_date: "2020-01-01"
   source: suggest
+  provider: merino
   event_type: impression
   country: US
   subdivision1: AZ
@@ -12,6 +13,7 @@
   user_count: 2
 - <<: *base
   source: topsites
+  provider: contile
   event_type: impression
   event_count: 52
   user_count: 2
@@ -22,6 +24,7 @@
   user_count: 1
 - <<: *base
   source: topsites
+  provider: contile
   event_type: click
   event_count: 1
   user_count: 1

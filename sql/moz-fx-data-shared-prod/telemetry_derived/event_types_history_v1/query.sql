@@ -184,7 +184,7 @@ all_event_property_value_indices AS (
     new_event_property_value_indices
   WHERE
     -- Doesn't remove historical event_property values
-    event_property_value_index <= 1000
+    event_property_value_index <= 5000
   UNION ALL
   SELECT
     category,

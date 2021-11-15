@@ -108,7 +108,7 @@ per_event_property AS (
   USING
     (category, event, event_property)
   WHERE
-    event_property_value_index <= 1000
+    event_property_value_index <= 5000
   GROUP BY
     category,
     event,

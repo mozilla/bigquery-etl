@@ -753,6 +753,9 @@ fields:
   mode: NULLABLE
   name: search_count_organic
   type: INTEGER
+- mode: NULLABLE
+  name: search_count_urlbar_handoff
+  type: INTEGER
 - description: null
   mode: NULLABLE
   name: session_restored_mean
@@ -1327,6 +1330,16 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
+  name: search_content_urlbar_handoff_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
   name: search_content_urlbar_searchmode_sum
   type: RECORD
 - fields:
@@ -1437,6 +1450,16 @@ fields:
     name: value
     type: INTEGER
   mode: REPEATED
+  name: search_withads_urlbar_handoff_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
   name: search_withads_urlbar_searchmode_sum
   type: RECORD
 - fields:
@@ -1538,6 +1561,16 @@ fields:
     type: INTEGER
   mode: REPEATED
   name: search_adclicks_urlbar_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: search_adclicks_urlbar_handoff_sum
   type: RECORD
 - fields:
   - mode: NULLABLE
@@ -1668,4 +1701,66 @@ fields:
   type: DATE
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice
+  type: STRING
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
+  type: INTEGER
+- mode: NULLABLE
+  name: user_pref_browser_newtabpage_enabled
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: contextual_services_quicksuggest_click_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: contextual_services_quicksuggest_impression_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: contextual_services_quicksuggest_help_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: contextual_services_topsites_click_sum
+  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
+  mode: REPEATED
+  name: contextual_services_topsites_impression_sum
+  type: RECORD
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored
+  type: STRING
+- mode: NULLABLE
+  name: user_pref_browser_urlbar_quicksuggest_data_collection_enabled
   type: STRING

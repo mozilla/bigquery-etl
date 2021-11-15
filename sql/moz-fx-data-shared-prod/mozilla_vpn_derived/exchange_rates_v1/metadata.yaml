@@ -1,0 +1,32 @@
+---
+friendly_name: Exchange Rates
+description: >
+  Import exchange rates from Oanda.
+owners:
+  - dthorn@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  retry_delay: 5m
+  gke_cluster_name: workloads-prod-v1
+  gke_location: us-west1
+  gcp_conn_id: google_cloud_airflow_gke
+  gke_project_id: moz-fx-data-airflow-gke-prod
+  arguments:
+    [
+      "--start-date",
+      "{{ ds }}",
+      "--end-date",
+      "{{ ds }}",
+      "--table",
+      "moz-fx-data-shared-prod.mozilla_vpn_derived.exchange_rates_v1",
+      "--base-currencies",
+      "EUR",
+      "CHF",
+      "GBP",
+      "CAD",
+      "SGD",
+      "NZD",
+    ]

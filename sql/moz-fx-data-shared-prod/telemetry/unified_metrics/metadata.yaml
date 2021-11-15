@@ -1,0 +1,8 @@
+friendly_name: Unified Metrics
+description: |-
+  Unified view on common browser metrics across all products.
+
+  Proposal:
+  https://docs.google.com/document/d/1s_9pmDXKjfFpvW31jqnWyaWOE9tmO9_88Jt7inGVGys
+owners:
+- loines@mozilla.com

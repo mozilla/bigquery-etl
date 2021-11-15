@@ -98,6 +98,11 @@
   engine: engine5
   source: 'in-content:tagged:code1.unknown'
   tagged_sap: 10
+- <<: *base
+  client_id: b
+  engine: engine5
+  source: 'in-content:tagged:code1.urlbar_handoff'
+  tagged_sap: 11
 # search with ads
 - <<: *base
   client_id: b
@@ -159,6 +164,11 @@
   engine: engine6
   source: 'search-with-ads:tagged.unknown'
   search_with_ads: 21
+- <<: *base
+  client_id: b
+  engine: engine6
+  source: 'search-with-ads:tagged.urlbar_handoff'
+  search_with_ads: 22
 # ad click
 - <<: *base
   client_id: b
@@ -220,3 +230,8 @@
   engine: engine7
   source: 'ad-click:tagged.unknown'
   ad_click: 31
+- <<: *base
+  client_id: b
+  engine: engine7
+  source: 'ad-click:tagged.urlbar_handoff'
+  ad_click: 32

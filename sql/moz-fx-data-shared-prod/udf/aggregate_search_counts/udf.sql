@@ -9,6 +9,7 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
       COALESCE(SUM(IF(source = "searchbar", count, 0)), 0) AS search_count_searchbar,
       COALESCE(SUM(IF(source = "system", count, 0)), 0) AS search_count_system,
       COALESCE(SUM(IF(source = "urlbar", count, 0)), 0) AS search_count_urlbar,
+      COALESCE(SUM(IF(source = "urlbar-handoff", count, 0)), 0) AS search_count_urlbar_handoff,
       COALESCE(SUM(IF(source = "webextension", count, 0)), 0) AS search_count_webextension,
       COALESCE(SUM(IF(source = "alias", count, 0)), 0) AS search_count_alias,
       COALESCE(
@@ -21,6 +22,7 @@ CREATE OR REPLACE FUNCTION udf.aggregate_search_counts(
             source IN (
               'searchbar',
               'urlbar',
+              'urlbar-handoff',
               'abouthome',
               'newtab',
               'contextmenu',
@@ -71,10 +73,11 @@ SELECT
       0 AS search_count_searchbar,
       0 AS search_count_system,
       0 AS search_count_urlbar,
+      3 AS search_count_urlbar_handoff,
       0 AS search_count_webextension,
       0 AS search_count_alias,
       0 AS search_count_urlbar_searchmode,
-      6 AS search_count_all,
+      9 AS search_count_all,
       0 AS search_count_tagged_sap,
       0 AS search_count_tagged_follow_on,
       0 AS search_count_organic
@@ -84,7 +87,8 @@ SELECT
         STRUCT('foo' AS engine, 'abouthome' AS source, 3 AS count),
         STRUCT('foo' AS engine, 'abouthome' AS source, 2 AS count),
         STRUCT('foo' AS engine, 'contextmenu' AS source, 1 AS count),
-        STRUCT('foo' AS engine, 'contextmenu' AS source, NULL AS count)
+        STRUCT('foo' AS engine, 'contextmenu' AS source, NULL AS count),
+        STRUCT('foo' AS engine, 'urlbar-handoff' AS source, 3 AS count)
       ]
     )
   ),
@@ -97,6 +101,7 @@ SELECT
       0 AS search_count_searchbar,
       0 AS search_count_system,
       0 AS search_count_urlbar,
+      0 AS search_count_urlbar_handoff,
       0 AS search_count_webextension,
       0 AS search_count_alias,
       0 AS search_count_urlbar_searchmode,

@@ -43382,6 +43382,13 @@ fields:
           mode: NULLABLE
           name: idb_failure_unknown_objectstore_non_empty_database
           type: INTEGER
+        - description: 'How many times a PDF that sends Content-Disposition: attachment
+            is opened.
+
+            '
+          mode: NULLABLE
+          name: pdf_viewer_is_attachment
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD
@@ -49601,6 +49608,13 @@ fields:
           mode: NULLABLE
           name: deletion_request_context_id
           type: STRING
+        - description: 'How many times a PDF that sends Content-Disposition: attachment
+            is opened.
+
+            '
+          mode: NULLABLE
+          name: pdf_viewer_is_attachment
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

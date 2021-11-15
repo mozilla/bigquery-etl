@@ -24,6 +24,6 @@ SELECT
   event.name AS event_name,
   event.extra AS event_extra,
 FROM
-  `moz-fx-data-shared-prod.mozillavpn.main` AS e
+  `moz-fx-data-shared-prod.mozilla_vpn.main` AS e
 CROSS JOIN
   UNNEST(e.events) AS event

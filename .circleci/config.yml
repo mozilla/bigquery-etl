@@ -170,6 +170,22 @@ jobs:
           command: docker run app:build make lint
 
 
+  build-job-quicksuggest-2-bq:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/quicksuggest-2-bq/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/quicksuggest-2-bq/
+      - run:
+          name: Test Code
+          command: docker run app:build pytest --flake8 --black
+
 workflows:
   docker-etl:
     jobs:
@@ -279,3 +295,17 @@ workflows:
             branches:
               only: main
 
+
+  job-quicksuggest-2-bq:
+    jobs:
+      - build-job-quicksuggest-2-bq
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/quicksuggest-2-bq/
+          path: jobs/quicksuggest-2-bq/
+          image: quicksuggest-2-bq_docker_etl
+          requires:
+            - build-job-quicksuggest-2-bq
+          filters:
+            branches:
+              only: main

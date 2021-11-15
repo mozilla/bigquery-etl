@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS
   `moz-fx-data-shared-prod.monitoring_derived.suggest_impression_rate_v1`
 PARTITION BY
-  DATE(submission_minute) AS
+  DATE(submission_minute)
+AS
 SELECT
   TIMESTAMP_TRUNC(submission_timestamp, minute) AS submission_minute,
   COUNT(*) AS n,

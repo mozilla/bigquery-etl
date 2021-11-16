@@ -1,10 +1,11 @@
 friendly_name: regrets-reporter-ucs Derived
+# yamllint disable rule:line-length
 description: |-
   Derived tables related to document namespace regrets-reporter-ucs, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
-dataset_base_acl: derived
+dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:regrets-reporter

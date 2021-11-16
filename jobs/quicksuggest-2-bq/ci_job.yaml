@@ -13,3 +13,6 @@ build-job-quicksuggest-2-bq:
     - run:
         name: Test Code
         command: docker run app:build pytest --flake8 --black
+    - run:
+        name: Lint Code
+        command: docker run app:build flake8

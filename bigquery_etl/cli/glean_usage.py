@@ -31,7 +31,7 @@ GLEAN_TABLES = [
     metrics_clients_last_seen.MetricsClientsLastSeen(),
     clients_last_seen_joined.ClientsLastSeenJoined(),
 ]
-SKIP_APPS = ["mlhackweek_search"]
+SKIP_APPS = ["mlhackweek_search", "regrets_reporter"]
 
 
 @click.group(

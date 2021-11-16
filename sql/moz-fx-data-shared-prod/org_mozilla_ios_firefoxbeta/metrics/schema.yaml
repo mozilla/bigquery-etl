@@ -1007,6 +1007,12 @@ fields:
       mode: NULLABLE
       name: logins_store_write_query_count
       type: INTEGER
+    - description: 'Record the number of URI''s visited by the user.
+
+        '
+      mode: NULLABLE
+      name: tabs_normal_and_private_uri_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -1481,6 +1487,153 @@ fields:
         type: INTEGER
       mode: REPEATED
       name: logins_store_write_query_error_count
+      type: RECORD
+    - description: 'The number of times a user sees the Firefox Homepage,
+
+        with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: firefox_home_page_firefox_homepage_origin
+      type: RECORD
+    - description: 'Counts the number of times a user taps to open an
+
+        existing group from the Jump Back In section,
+
+        with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: firefox_home_page_jump_back_in_group_open_origin
+      type: RECORD
+    - description: 'Counts the number of times a user taps the
+
+        Show All button in the Jump Back In section,
+
+        with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: firefox_home_page_jump_back_in_show_all_origin
+      type: RECORD
+    - description: 'Counts the number of times a user taps to open an
+
+        existing tab from the Jump Back In section,
+
+        with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: firefox_home_page_jump_back_in_tab_opened_origin
+      type: RECORD
+    - description: 'Counts the number of times a bookmarked item in
+
+        the Recently Saved section is tapped,
+
+        with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: firefox_home_page_recently_saved_bookmark_origin
+      type: RECORD
+    - description: 'Counts the number of times a reading list
+
+        item in the Recently Saved section is tapped,
+
+        with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: firefox_home_page_recently_saved_read_origin
+      type: RECORD
+    - description: 'Counts the number of times a user taps the Show All
+
+        button of the Recently Saved Section,
+
+        with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: firefox_home_page_recently_saved_show_all_origin
+      type: RECORD
+    - description: 'Records when a user opens Pocket article from
+
+        Firefox Home Pocket feed, with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: pocket_open_story_origin
+      type: RECORD
+    - description: 'Records an event when user taps on top site tile,
+
+        with a home page origin.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: INTEGER
+      mode: REPEATED
+      name: top_site_pressed_tile_origin
       type: RECORD
     mode: NULLABLE
     name: labeled_counter

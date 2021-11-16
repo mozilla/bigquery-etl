@@ -1,0 +1,10 @@
+friendly_name: regrets-reporter-ucs
+description: |-
+  User-facing views related to document namespace regrets-reporter-ucs; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/regrets-reporter-ucs
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

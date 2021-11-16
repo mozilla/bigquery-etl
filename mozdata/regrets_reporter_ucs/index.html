@@ -18,7 +18,7 @@
     
     
       
-        <title>search_terms - BigQuery ETL</title>
+        <title>regrets_reporter_ucs - BigQuery ETL</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#aggregated_search_terms_daily" class="md-skip">
+        <a href="#deletion_request" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              search_terms
+              regrets_reporter_ucs
             
           </span>
         </div>
@@ -1439,11 +1439,63 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../regrets_reporter_ucs/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          regrets_reporter_ucs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         regrets_reporter_ucs
       </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deletion_request" class="md-nav__link">
+    deletion_request
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#main_events" class="md-nav__link">
+    main_events
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#video_index" class="md-nav__link">
+    video_index
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1467,56 +1519,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          search_terms
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../search_terms/" class="md-nav__link">
         search_terms
       </a>
-      
-        
-
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#aggregated_search_terms_daily" class="md-nav__link">
-    aggregated_search_terms_daily
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#suggest_impression_sanitized" class="md-nav__link">
-    suggest_impression_sanitized
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1942,15 +1949,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#aggregated_search_terms_daily" class="md-nav__link">
-    aggregated_search_terms_daily
+  <a href="#deletion_request" class="md-nav__link">
+    deletion_request
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#suggest_impression_sanitized" class="md-nav__link">
-    suggest_impression_sanitized
+  <a href="#main_events" class="md-nav__link">
+    main_events
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#video_index" class="md-nav__link">
+    video_index
   </a>
   
 </li>
@@ -1968,53 +1982,18 @@
               
                 
                 
-                  <h1>search_terms</h1>
+                  <h1>regrets_reporter_ucs</h1>
                 
-                <h2 id="aggregated_search_terms_daily"><a href="#aggregated_search_terms_daily">aggregated_search_terms_daily</a></h2>
-<p>Impression, click and client counts for search queries logged via
-Contextual Services Suggest Impression Pings</p>
-<ul>
-<li>Friendly name: Aggregated Search Terms Daily</li>
-<li>
-<p>Owners: </p>
-<ul>
-<li>
-<p><a href="mailto:rburwei@mozilla.com">rburwei@mozilla.com</a> </p>
-</li>
-<li>
-<p><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a> </p>
-</li>
-</ul>
-</li>
-</ul>
-<table>
-<caption>Referenced Tables</caption>
-    <tr>
-        <th>Project</th>
-        <th>Dataset</th>
-        <th>Table</th>
-    </tr>
-<tr>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived>search_terms_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived/aggregated_search_terms_daily_v1>aggregated_search_terms_daily_v1</a></td>
-        </tr>   
-</table>
-
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/aggregated_search_terms_daily">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/aggregated_search_terms_daily/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/aggregated_search_terms_daily/view.sql">View Definition</a> </p>
-<hr />
-<h2 id="suggest_impression_sanitized"><a href="#suggest_impression_sanitized">suggest_impression_sanitized</a></h2>
-<p>A sanitized historical view of pings sent for the
-<code>contextual-services/quicksuggest-impression</code>
-document type, including search terms fields.</p>
-<p>Note that <code>quicksuggest-impression</code> pings with search terms excluded
-are presented separately under the <code>contextual_services</code> dataset.</p>
+                <h2 id="deletion_request"><a href="#deletion_request">deletion_request</a></h2>
+<p>A historical view of pings sent for the
+<code>regrets-reporter-ucs/deletion-request</code>
+document type.</p>
 <p>This view is guaranteed to contain only complete days
 (per <code>submission_timestamp</code>)
 and to contain only one row per distinct <code>document_id</code> within a given date.</p>
 <p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
 <ul>
-<li>Friendly name: Sanitized Firefox Suggest Impressions with Search Terms</li>
+<li>Friendly name: Historical Pings for <code>regrets-reporter-ucs/deletion-request</code></li>
 </ul>
 <table>
 <caption>Referenced Tables</caption>
@@ -2025,12 +2004,66 @@ and to contain only one row per distinct <code>document_id</code> within a given
     </tr>
 <tr>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived>search_terms_derived</a></td>
-        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v1>suggest_impression_sanitized_v1</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable>regrets_reporter_ucs_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable/deletion_request_v1>deletion_request_v1</a></td>
         </tr>   
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/suggest_impression_sanitized">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/suggest_impression_sanitized/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/search_terms/suggest_impression_sanitized/view.sql">View Definition</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/deletion_request/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="main_events"><a href="#main_events">main_events</a></h2>
+<p>A historical view of pings sent for the
+<code>regrets-reporter-ucs/main-events</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<ul>
+<li>Friendly name: Historical Pings for <code>regrets-reporter-ucs/main-events</code></li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable>regrets_reporter_ucs_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable/main_events_v1>main_events_v1</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="video_index"><a href="#video_index">video_index</a></h2>
+<p>A historical view of pings sent for the
+<code>regrets-reporter-ucs/video-index</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<ul>
+<li>Friendly name: Historical Pings for <code>regrets-reporter-ucs/video-index</code></li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable>regrets_reporter_ucs_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable/video_index_v1>video_index_v1</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_index">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_index/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_index/view.sql">View Definition</a> </p>
 <hr />
                 
                   
@@ -2053,7 +2086,7 @@ and to contain only one row per distinct <code>document_id</code> within a given
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../search/" class="md-footer__link md-footer__link--prev" aria-label="Previous: search" rel="prev">
+        <a href="../regrets_reporter/" class="md-footer__link md-footer__link--prev" aria-label="Previous: regrets_reporter" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -2062,20 +2095,20 @@ and to contain only one row per distinct <code>document_id</code> within a given
               <span class="md-footer__direction">
                 Previous
               </span>
-              search
+              regrets_reporter
             </div>
           </div>
         </a>
       
       
         
-        <a href="../static/" class="md-footer__link md-footer__link--next" aria-label="Next: static" rel="next">
+        <a href="../search/" class="md-footer__link md-footer__link--next" aria-label="Next: search" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              static
+              search
             </div>
           </div>
           <div class="md-footer__button md-icon">

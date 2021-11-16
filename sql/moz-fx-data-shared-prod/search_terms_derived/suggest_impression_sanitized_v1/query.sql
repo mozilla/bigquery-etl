@@ -1,5 +1,6 @@
 SELECT
   * REPLACE (
+    TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
     (
       SELECT AS STRUCT
         metadata.* REPLACE (

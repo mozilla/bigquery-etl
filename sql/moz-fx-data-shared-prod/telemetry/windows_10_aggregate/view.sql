@@ -8,19 +8,17 @@ WITH
     windows_build_number AS build_number,
     CAST(windows_ubr AS STRING) AS ubr,
     CASE
-    WHEN windows_build_number <= 10240 THEN '1507'
-    WHEN windows_build_number <= 10586 THEN '1511'
-    WHEN windows_build_number <= 14393 THEN '1607'
-    WHEN windows_build_number <= 15063 THEN '1703'
-    WHEN windows_build_number <= 16299 THEN '1709'
-    WHEN windows_build_number <= 17134 THEN '1803'
-    WHEN windows_build_number <= 17763 THEN '1809'
-    WHEN windows_build_number <= 18362 THEN '1903'
-    WHEN windows_build_number <= 18363 THEN '1909'
-    WHEN windows_build_number <= 19041 THEN '2004'
-    WHEN windows_build_number <= 19042 THEN '20H2'
-    WHEN windows_build_number <= 19043 THEN '21H1'
-    WHEN windows_build_number > 19043 THEN 'Insider'
+    WHEN windows_build_number <= 17134 THEN 'Win10 <1809'
+    WHEN windows_build_number <= 17763 THEN 'Win10 1809'
+    WHEN windows_build_number <= 18362 THEN 'Win10 1903'
+    WHEN windows_build_number <= 18363 THEN 'Win10 1909'
+    WHEN windows_build_number <= 19041 THEN 'Win10 2004'
+    WHEN windows_build_number <= 19042 THEN 'Win10 20H2'
+    WHEN windows_build_number <= 19043 THEN 'Win10 21H1'
+    WHEN windows_build_number <= 19044 THEN 'Win10 21H2'
+    WHEN windows_build_number < 22000 THEN 'Win10 Insider'
+    WHEN windows_build_number = 22000 THEN 'Win11 21H2'
+    WHEN windows_build_number > 22000 THEN 'Win11 Insider'
     ELSE NULL
     END AS build_group,
     SPLIT(app_version, ".")[OFFSET(0)] AS ff_build_version,

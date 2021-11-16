@@ -5,6 +5,8 @@ AS
 SELECT
   TIMESTAMP_TRUNC(submission_timestamp, minute) AS submission_minute,
   COUNT(*) AS n,
+  COUNT(reporting_url) AS n_contile,
+  COUNTIF(reporting_url IS NULL) AS n_remotesettings,
 FROM
   `moz-fx-data-shared-prod.contextual_services_live.topsites_impression_v1`
 WHERE

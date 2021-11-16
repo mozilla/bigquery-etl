@@ -31,6 +31,11 @@ GLEAN_TABLES = [
     metrics_clients_last_seen.MetricsClientsLastSeen(),
     clients_last_seen_joined.ClientsLastSeenJoined(),
 ]
+
+# * mlhackweek_search was an experiment that we don't want to generate tables
+# for
+# * regrets_reporter currently refers to two applications, skip the glean
+# one to avoid confusion: https://github.com/mozilla/bigquery-etl/issues/2499
 SKIP_APPS = ["mlhackweek_search", "regrets_reporter"]
 
 

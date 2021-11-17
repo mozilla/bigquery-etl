@@ -17,7 +17,7 @@ SAMPLE_SUGGESTION = {
         "sample d",
         "sample da",
         "sample dat",
-    ]
+    ],
 }
 
 
@@ -25,27 +25,13 @@ SAMPLE_SUGGESTION = {
 def mocked_kinto_client(mocker: MockerFixture):
     session = mocker.MagicMock()
 
-    mock_server_info = {
-        "capabilities": {
-            "attachments": {
-                "base_url": "discarded"
-            }
-        }
-    }
+    mock_server_info = {"capabilities": {"attachments": {"base_url": "discarded"}}}
 
     mock_records = [
-        {
-            "type": "data",
-            "id": 2802,
-            "attachment": {
-                "location": "discarded/again"
-            }
-        }
+        {"type": "data", "id": 2802, "attachment": {"location": "discarded/again"}}
     ]
 
-    mock_attachment = [
-        SAMPLE_SUGGESTION
-    ]
+    mock_attachment = [SAMPLE_SUGGESTION]
 
     class MockResponse:
         status_code = 200
@@ -55,9 +41,9 @@ def mocked_kinto_client(mocker: MockerFixture):
 
     client = kinto_http.Client(session=session, bucket="mybucket")
 
-    mocker.patch.object(client, 'server_info', return_value=mock_server_info)
-    mocker.patch.object(client, 'get_records', return_value=mock_records)
-    mocker.patch('requests.Session.get', return_value=MockResponse())
+    mocker.patch.object(client, "server_info", return_value=mock_server_info)
+    mocker.patch.object(client, "get_records", return_value=mock_records)
+    mocker.patch("requests.Session.get", return_value=MockResponse())
 
     yield client
 

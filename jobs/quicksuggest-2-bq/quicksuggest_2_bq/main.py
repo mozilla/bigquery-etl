@@ -15,7 +15,7 @@ from typing import Dict, List
 
 
 @dataclass
-class KintoSuggestion():
+class KintoSuggestion:
     """Class that holds information about a Suggestion returned by Kinto."""
 
     # By being explicit about the fields we expect and not
@@ -82,17 +82,19 @@ def download_suggestions(client: kinto_http.Client) -> Dict[int, KintoSuggestion
 
 
 def store_suggestions(
-    date: datetime.datetime,
+    today: datetime.date,
     destination_project: str,
     destination_table_id: str,
-    kinto_suggestions: Dict[int, KintoSuggestion]
+    kinto_suggestions: Dict[int, KintoSuggestion],
 ):
     """Get records, download attachments and return the suggestions."""
+
+    today_as_iso = today.isoformat()
 
     # Turn the suggestions into dicts and augment them with
     # an insertion date.
     suggestions = [
-        {**asdict(suggestion), "insert_date": date.date().isoformat()}
+        {**asdict(suggestion), "submission_date": today_as_iso}
         for suggestion in kinto_suggestions.values()
     ]
 
@@ -101,7 +103,7 @@ def store_suggestions(
     job_config = bigquery.LoadJobConfig(
         create_disposition="CREATE_IF_NEEDED",
         schema=[
-            bigquery.SchemaField("insert_date", "DATE"),
+            bigquery.SchemaField("submission_date", "DATE"),
             bigquery.SchemaField("advertiser", "STRING"),
             bigquery.SchemaField("click_url", "STRING"),
             bigquery.SchemaField("iab_category", "STRING"),
@@ -113,7 +115,7 @@ def store_suggestions(
             bigquery.SchemaField("url", "STRING"),
         ],
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-        write_disposition="WRITE_APPEND",
+        write_disposition="WRITE_TRUNCATE",
     )
 
     load_job = client.load_table_from_json(
@@ -124,10 +126,14 @@ def store_suggestions(
     )
 
     try:
+        # Catch the exception so that we can print the errors
+        # in case of failure.
         load_job.result()
-    except BadRequest:
+    except BadRequest as ex:
         for e in load_job.errors:
             logging.error(f"ERROR: {e['message']}")
+        # Re-raise the exception to make the job fail.
+        raise ex
 
     stored_table = client.get_table(destination_table_id)
     logging.info(f"Loaded {stored_table.num_rows} rows.")
@@ -135,48 +141,41 @@ def store_suggestions(
 
 @click.command()
 @click.option(
-    "--date",
-    type=click.DateTime(formats=["%Y-%m-%d"]),
-    required=True,
-    help="date for which to store the results"
-)
-@click.option(
     "--destination-project",
     required=True,
     type=str,
-    help="the GCP project to use for writing data to"
+    help="the GCP project to use for writing data to",
 )
 @click.option(
     "--destination-table-id",
     required=True,
     type=str,
-    help="the table id to append data to, e.g. `projectid.dataset.table`"
+    help="the table id to append data to, e.g. `projectid.dataset.table`",
 )
 @click.option(
     "--kinto-server",
     default="https://firefox.settings.services.mozilla.com",
     type=str,
-    help="the Kinto server to fetch the data from"
+    help="the Kinto server to fetch the data from",
 )
 @click.option(
     "--kinto-bucket",
     default="main",
     type=str,
-    help="the Kinto bucket to fetch the data from"
+    help="the Kinto bucket to fetch the data from",
 )
 @click.option(
     "--kinto-collection",
     default="quicksuggest",
     type=str,
-    help="the Kinto server to fetch the data from"
+    help="the Kinto server to fetch the data from",
 )
 def main(
-    date,
     destination_project,
     destination_table_id,
     kinto_server,
     kinto_bucket,
-    kinto_collection
+    kinto_collection,
 ):
     kinto_client = kinto_http.Client(
         server_url=kinto_server,
@@ -195,10 +194,10 @@ def main(
     logging.info(f"Downloaded {len(kinto_suggestions.keys())} suggestions")
 
     store_suggestions(
-        date,
+        datetime.date.today(),
         destination_project,
         destination_table_id,
-        kinto_suggestions
+        kinto_suggestions,
     )
 
 

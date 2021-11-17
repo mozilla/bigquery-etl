@@ -38,7 +38,6 @@ WITH client_counts AS (
     AND app_version IS NOT NULL
 )
 SELECT
-  channel,
   app_version,
   os,
   app_build_id,

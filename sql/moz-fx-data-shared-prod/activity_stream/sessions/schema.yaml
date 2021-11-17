@@ -83,6 +83,16 @@ fields:
     - mode: REPEATED
       name: parsed_x_source_tags
       type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: tls_version
+        type: STRING
+      - mode: NULLABLE
+        name: tls_cipher_hex
+        type: STRING
+      mode: NULLABLE
+      name: parsed_x_lb_tags
+      type: RECORD
     mode: NULLABLE
     name: header
     type: RECORD

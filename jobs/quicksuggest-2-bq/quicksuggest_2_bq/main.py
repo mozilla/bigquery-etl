@@ -3,11 +3,13 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import click
+import datetime
 import kinto_http
 import logging
 import requests
 
 from dataclasses import asdict, dataclass
+from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 from typing import Dict, List
 
@@ -80,7 +82,8 @@ def download_suggestions(client: kinto_http.Client) -> Dict[int, KintoSuggestion
 
 
 def store_suggestions(
-    date: str,
+    date: datetime.datetime,
+    destination_project: str,
     destination_table_id: str,
     kinto_suggestions: Dict[int, KintoSuggestion]
 ):
@@ -89,12 +92,47 @@ def store_suggestions(
     # Turn the suggestions into dicts and augment them with
     # an insertion date.
     suggestions = [
-        {**asdict(suggestion), "insert_date": date}
+        {**asdict(suggestion), "insert_date": date.date().isoformat()}
         for suggestion in kinto_suggestions.values()
     ]
 
-    client = bigquery.Client()
+    client = bigquery.Client(project=destination_project)
 
+    job_config = bigquery.LoadJobConfig(
+        create_disposition="CREATE_IF_NEEDED",
+        schema=[
+            bigquery.SchemaField("insert_date", "DATE"),
+            bigquery.SchemaField("advertiser", "STRING"),
+            bigquery.SchemaField("click_url", "STRING"),
+            bigquery.SchemaField("iab_category", "STRING"),
+            bigquery.SchemaField("icon", "STRING"),
+            bigquery.SchemaField("impression_url", "STRING"),
+            bigquery.SchemaField("id", "INTEGER"),
+            bigquery.SchemaField("keywords", "STRING", "REPEATED"),
+            bigquery.SchemaField("title", "STRING"),
+            bigquery.SchemaField("url", "STRING"),
+        ],
+        source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+        write_disposition="WRITE_APPEND",
+    )
+
+    load_job = client.load_table_from_json(
+        suggestions,
+        destination_table_id,
+        location="US",
+        job_config=job_config,
+    )
+
+    try:
+        load_job.result()
+    except BadRequest:
+        for e in load_job.errors:
+            logging.error(f"ERROR: {e['message']}")
+
+    stored_table = client.get_table(destination_table_id)
+    logging.info(f"Loaded {stored_table.num_rows} rows.")
+
+    """
     # This assumes the table was already created and the fields in the
     # suggestions match the schema of the table.
     errors = client.insert_rows_json(destination_table_id, suggestions)
@@ -107,6 +145,7 @@ def store_suggestions(
         )
     else:
         logging.error(f"Encountered errors while appending rows: {errors}")
+    """
 
 
 @click.command()
@@ -115,6 +154,12 @@ def store_suggestions(
     type=click.DateTime(formats=["%Y-%m-%d"]),
     required=True,
     help="date for which to store the results"
+)
+@click.option(
+    "--destination-project",
+    required=True,
+    type=str,
+    help="the GCP project to use for writing data to"
 )
 @click.option(
     "--destination-table-id",
@@ -142,6 +187,7 @@ def store_suggestions(
 )
 def main(
     date,
+    destination_project,
     destination_table_id,
     kinto_server,
     kinto_bucket,
@@ -163,7 +209,12 @@ def main(
 
     logging.info(f"Downloaded {len(kinto_suggestions.keys())} suggestions")
 
-    store_suggestions(date, destination_table_id, kinto_suggestions)
+    store_suggestions(
+        date,
+        destination_project,
+        destination_table_id,
+        kinto_suggestions
+    )
 
 
 if __name__ == "__main__":

@@ -254,6 +254,33 @@ sources:
         vetted: true
         min_version: 64
         type: INT64
+      - name: newtabpage_disabled
+        sql: SAFE_CAST(user_pref_browser_newtabpage_enabled AS BOOL)
+        type: BOOL
+      - name: num_topsites_new_tab_impressions_sponsored
+        sql: >
+          (
+            SELECT
+              SUM(
+                IF(SPLIT(key, '_')[SAFE_OFFSET(0)] = 'newtab', value, 0)
+              )
+            FROM
+              UNNEST(contextual_services_topsites_impression_sum)
+          )
+        min_version: 87
+        type: INT64
+      - name: num_new_tab_topsites_clicks_sponsored
+        sql: >
+          (
+            SELECT
+              SUM(
+                IF(SPLIT(key, '_')[SAFE_OFFSET(0)] = 'newtab', value, 0)
+              )
+            FROM
+              UNNEST(contextual_services_topsites_click_sum)
+          )
+        min_version: 87
+        type: INT64
   ### Main ###
   - name: main
     ref: telemetry.main_1pct
@@ -1029,6 +1056,38 @@ sources:
       - name: activitystream_pocket_clicks
         sql: COUNTIF(event = 'CLICK' AND source = 'CARDGRID')
         vetted: false
+      - name: activitystream_sponsored_pocket_clicks
+        sql: >
+              COUNTIF(
+                event = 'CLICK'
+                AND source = 'CARDGRID'
+                AND JSON_EXTRACT_SCALAR(value, '$.card_type') = 'spoc'
+              )
+        vetted: false
+      - name: activitystream_sponsored_topsite_clicks
+        sql: >
+              COUNTIF(
+                event = 'CLICK'
+                AND source = 'TOP_SITES'
+                AND JSON_EXTRACT_SCALAR(value, '$.card_type') = 'spoc'
+              )
+        vetted: false
+      - name: activitystream_organic_pocket_clicks
+        sql: >
+              COUNTIF(
+                event = 'CLICK'
+                AND source = 'CARDGRID'
+                AND JSON_EXTRACT_SCALAR(value, '$.card_type') = 'organic'
+              )
+        vetted: false
+      - name: activitystream_organic_topsite_clicks
+        sql: >
+              COUNTIF(
+                event = 'CLICK'
+                AND source = 'TOP_SITES'
+                AND JSON_EXTRACT_SCALAR(value, '$.card_type') = 'organic'
+              )
+        vetted: false
   ### Activity Stream Sessions ###
   - name: activity_stream_sessions
     ref: activity_stream.sessions
@@ -1053,6 +1112,9 @@ sources:
         vetted: false
       - name: activitystream_reported_highlights_off
         sql: MAX(user_prefs & 8 = 0)
+        vetted: false
+      - name: activitystream_reported_sponsored_topstories_off
+        sql: MAX(user_prefs & 32 = 0)
         vetted: false
       - name: activitystream_reported_sponsored_topsites_off
         sql: MAX(user_prefs & 256 = 0)

@@ -1,7 +1,7 @@
 import kinto_http
 import pytest
 
-from quicksuggest_2_bq.main import KintoSuggestion, download_suggestions
+from quicksuggest2bq.main import KintoSuggestion, download_suggestions
 from pytest_mock.plugin import MockerFixture
 
 SAMPLE_SUGGESTION = {

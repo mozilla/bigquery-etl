@@ -6,13 +6,12 @@ referenced BigQuery table.
 
 ## Usage
 
-Import data to BigQuery by running `python3 quicksuggest_2_bq/main.py`:
+Import data to BigQuery by running `python3 quicksuggest2bq/main.py`:
 
 ```
 Usage: main.py [OPTIONS]
 
 Options:
-  --date [%Y-%m-%d]            date for which to store the results  [required]
   --destination-project TEXT   the GCP project to use for writing data to
                                [required]
 
@@ -42,6 +41,6 @@ pytest --black --flake8
 or
 
 ```sh
-flake8 quicksuggest_2_bq/ tests/
-black --diff quicksuggest_2_bq/ tests/
+flake8 quicksuggest2bq/ tests/
+black --diff quicksuggest2bq/ tests/
 ```

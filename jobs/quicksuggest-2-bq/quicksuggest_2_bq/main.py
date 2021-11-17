@@ -132,21 +132,6 @@ def store_suggestions(
     stored_table = client.get_table(destination_table_id)
     logging.info(f"Loaded {stored_table.num_rows} rows.")
 
-    """
-    # This assumes the table was already created and the fields in the
-    # suggestions match the schema of the table.
-    errors = client.insert_rows_json(destination_table_id, suggestions)
-    if not errors:
-        logging.info(
-            (
-                f"Added {len(suggestions)} suggestions to {destination_table_id}"
-                f" for {date}"
-            )
-        )
-    else:
-        logging.error(f"Encountered errors while appending rows: {errors}")
-    """
-
 
 @click.command()
 @click.option(

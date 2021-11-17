@@ -11,5 +11,8 @@ FROM
   `moz-fx-data-shared-prod.contextual_services_live.topsites_click_v1`
 WHERE
   DATE(submission_timestamp) > '2010-01-01'
+AND
+  -- filter out the non-adM advertisers: Yandex
+  advertiser NOT IN ('O=45:A', 'yandex')
 GROUP BY
   1

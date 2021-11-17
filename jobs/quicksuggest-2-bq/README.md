@@ -1,26 +1,28 @@
-# Python Template Job
+# Quicksuggest Remote Settings import
 
-This is an example of a dockerized Python job.
+This dockerized Python job reads and parses Quicksuggest (Firefox Suggest)
+suggestions from Remote Settings (Kinto server) and appends them to the
+referenced BigQuery table.
 
 ## Usage
 
-This script is intended to be run in a docker container.
-Build the docker image with:
+Import data to BigQuery by running `python3 quicksuggest_2_bq/main.py`:
 
-```sh
-docker build -t python-template-job .
 ```
+Usage: main.py [OPTIONS]
 
-To run locally, install dependencies with:
+Options:
+  --date [%Y-%m-%d]            date for which to store the results  [required]
+  --destination-project TEXT   the GCP project to use for writing data to
+                               [required]
 
-```sh
-pip install -r requirements.txt
-```
+  --destination-table-id TEXT  the table id to append data to, e.g.
+                               `projectid.dataset.table`  [required]
 
-Run the script with 
-
-```sh   
-python3 -m python_template_job.main
+  --kinto-server TEXT          the Kinto server to fetch the data from
+  --kinto-bucket TEXT          the Kinto bucket to fetch the data from
+  --kinto-collection TEXT      the Kinto server to fetch the data from
+  --help                       Show this message and exit.
 ```
 
 ## Development

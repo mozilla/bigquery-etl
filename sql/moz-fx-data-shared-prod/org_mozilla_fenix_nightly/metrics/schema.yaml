@@ -891,6 +891,12 @@ fields:
       mode: NULLABLE
       name: power_total_cpu_time_ms
       type: INTEGER
+    - description: 'The number of times the home screen was displayed to the user.
+
+        '
+      mode: NULLABLE
+      name: home_screen_home_screen_view_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD
@@ -6012,7 +6018,10 @@ fields:
       mode: NULLABLE
       name: avif_dav1d_decode_error
       type: INTEGER
-    - description: 'How many inactive tabs does the user have.
+    - description: 'How many inactive tabs does the user have, checked when the user
+        opens
+
+        the tabs tray.
 
         Value will be 0 if the feature is disabled.
 

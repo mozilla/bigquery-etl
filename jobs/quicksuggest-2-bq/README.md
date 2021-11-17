@@ -42,6 +42,6 @@ pytest --black --flake8
 or
 
 ```sh
-flake8 python_template_job/ tests/
-black --diff python_template_job/ tests/
+flake8 quicksuggest_2_bq/ tests/
+black --diff quicksuggest_2_bq/ tests/
 ```

@@ -20,7 +20,11 @@ SELECT
                   TRIM(t)
                 FROM
                   UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
-              ) AS parsed_x_source_tags
+              ) AS parsed_x_source_tags,
+              STRUCT(
+                TRIM(SPLIT(metadata.header.x_lb_tags, ',')[SAFE_OFFSET(0)]) AS tls_version,
+                TRIM(SPLIT(metadata.header.x_lb_tags, ',')[SAFE_OFFSET(1)]) AS tls_cipher_hex
+              ) AS parsed_x_lb_tags
           ) AS header,
           -- Limit the geo info we present to the country level;
           -- https://bugzilla.mozilla.org/show_bug.cgi?id=1654078#c45

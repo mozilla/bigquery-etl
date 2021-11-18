@@ -7,7 +7,7 @@ gcloud==0.18.3
 gitpython==3.1.24
 google-api-core==1.31.3  # transitive dep that needs dependabot updates
 google-cloud-bigquery==2.30.1
-google-cloud-storage==1.42.3
+google-cloud-storage==1.43.0
 googleapis-common-protos==1.53.0  # transitive dep that needs dependabot updates
 importlib-resources>=1.4.0  # jsonschema dep for python<3.9
 Jinja2==3.0.3
@@ -27,7 +27,7 @@ pytest==6.2.5
 PyYAML==6.0
 smart_open==5.2.1
 sqlparse==0.4.2
-stripe==2.62.0
+stripe==2.63.0
 typing==3.7.4.3
 ujson==4.2.0
 yamllint==1.26.3

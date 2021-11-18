@@ -1823,6 +1823,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#fenix_app_info-udf" class="md-nav__link">
+    fenix_app_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#glean_ping_info-udf" class="md-nav__link">
     glean_ping_info (UDF)
   </a>
@@ -1837,13 +1844,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#truncate_version-udf" class="md-nav__link">
-    truncate_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#product_info-udf" class="md-nav__link">
     product_info (UDF)
   </a>
@@ -1851,8 +1851,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fenix_app_info-udf" class="md-nav__link">
-    fenix_app_info (UDF)
+  <a href="#metadata-udf" class="md-nav__link">
+    metadata (UDF)
   </a>
   
 </li>
@@ -1865,8 +1865,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#metadata-udf" class="md-nav__link">
-    metadata (UDF)
+  <a href="#truncate_version-udf" class="md-nav__link">
+    truncate_version (UDF)
   </a>
   
 </li>
@@ -1983,6 +1983,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#fenix_app_info-udf" class="md-nav__link">
+    fenix_app_info (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#glean_ping_info-udf" class="md-nav__link">
     glean_ping_info (UDF)
   </a>
@@ -1997,13 +2004,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#truncate_version-udf" class="md-nav__link">
-    truncate_version (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#product_info-udf" class="md-nav__link">
     product_info (UDF)
   </a>
@@ -2011,8 +2011,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fenix_app_info-udf" class="md-nav__link">
-    fenix_app_info (UDF)
+  <a href="#metadata-udf" class="md-nav__link">
+    metadata (UDF)
   </a>
   
 </li>
@@ -2025,8 +2025,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#metadata-udf" class="md-nav__link">
-    metadata (UDF)
+  <a href="#truncate_version-udf" class="md-nav__link">
+    truncate_version (UDF)
   </a>
   
 </li>
@@ -2046,27 +2046,89 @@
                 
                 <h1 id="norm">norm</h1>
 <p>Functions for normalizing data.</p>
+<h2 id="fenix_app_info-udf">fenix_app_info (UDF)</h2>
+<p>Returns canonical, human-understandable identification info for Fenix sources.</p>
+<p>The Glean telemetry library for Android by design routes pings based
+on the Play Store appId value of the published application.
+As of August 2020, there have been 5 separate Play Store appId
+ values associated with different builds of Fenix,
+ each corresponding to different datasets in BigQuery,
+and the mapping of appId to logical app names
+(Firefox vs. Firefox Preview) and channel names
+ (nightly, beta, or release) has changed over time; see the
+<a href="&lt;https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0">spreadsheet of naming history for Mozilla's mobile browsers</a>.&gt;</p>
+<p>This function is intended as the source of truth for how to map a
+specific ping in BigQuery to a logical app names and channel.
+It should be expected that the output of this function may evolve
+over time. If we rename a product or channel, we may choose to
+update the values here so that analyses consistently get the new name.</p>
+<p>The first argument (<code>app_id</code>) can be fairly fuzzy; it is tolerant
+of actual Google Play Store appId values like 'org.mozilla.firefox_beta'
+(mix of periods and underscores) as well as BigQuery dataset names
+with suffixes like 'org_mozilla_firefox_beta_stable'.</p>
+<p>The second argument (<code>app_build_id</code>) should be the value
+in client_info.app_build.</p>
+<p>The function returns a <code>STRUCT</code> that contains the logical <code>app_name</code>
+and <code>channel</code> as well as the Play Store <code>app_id</code> in the canonical
+form which would appear in Play Store URLs.</p>
+<p>Note that the naming of Fenix applications changed on 2020-07-03,
+so to get a continuous view of the pings associated with a logical
+app channel, you may need to union together tables from multiple
+BigQuery datasets. To see data for all Fenix channels together, it
+is necessary to union together tables from all 5 datasets.
+For basic usage information, consider using
+<code>telemetry.fenix_clients_last_seen</code> which already handles the
+union. Otherwise, see the example below as a template for how
+construct a custom union.</p>
+<p>Mapping of channels to datasets:</p>
+<ul>
+<li>release: <code>org_mozilla_firefox</code></li>
+<li>beta: <code>org_mozilla_firefox_beta</code> (current) and <code>org_mozilla_fenix</code></li>
+<li>nightly: <code>org_mozilla_fenix</code> (current), <code>org_mozilla_fennec_aurora</code>,
+and <code>org_mozilla_fenix_nightly</code></li>
+</ul>
+<pre><code class="language-sql">-- Example of a query over all Fenix builds advertised as &quot;Firefox Beta&quot;
+CREATE TEMP FUNCTION extract_fields(app_id STRING, m ANY TYPE) AS (
+  (
+    SELECT AS STRUCT
+      m.submission_timestamp,
+      m.metrics.string.geckoview_version,
+      mozfun.norm.fenix_app_info(app_id, m.client_info.app_build).*
+  )
+);
+
+WITH base AS (
+  SELECT
+    extract_fields('org_mozilla_firefox_beta', m).*
+  FROM
+    org_mozilla_firefox_beta.metrics AS m
+  UNION ALL
+  SELECT
+    extract_fields('org_mozilla_fenix', m).*
+  FROM
+    org_mozilla_fenix.metrics AS m
+)
+SELECT
+  DATE(submission_timestamp) AS submission_date,
+  geckoview_version,
+  COUNT(*)
+FROM
+  base
+WHERE
+  app_name = 'Fenix'  -- excludes 'Firefox Preview'
+  AND channel = 'beta'
+  AND DATE(submission_timestamp) = '2020-08-01'
+GROUP BY
+  submission_date,
+  geckoview_version
+</code></pre>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_app_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_app_info/metadata.yaml">Edit</a></p>
 <h2 id="glean_ping_info-udf">glean_ping_info (UDF)</h2>
 <p>Accepts a glean ping_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_ping_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_ping_info/metadata.yaml">Edit</a></p>
 <h2 id="glean_baseline_client_info-udf">glean_baseline_client_info (UDF)</h2>
 <p>Accepts a glean client_info struct as input and returns a modified struct that includes a few parsed or normalized variants of the input fields.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/glean_baseline_client_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/glean_baseline_client_info/metadata.yaml">Edit</a></p>
-<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
-<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
-either the major or minor version. The return value is <code>NUMERIC</code>,
-which means that you can sort the results without fear (e.g. 100
-will be categorized as greater than 80, which isn't the case when
-sorting lexigraphically).</p>
-<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
-"minor" or <code>5</code> if the parameter is major.</p>
-<p>If the version is only a major and/or minor version, then it will be left
-unchanged (for example "10" would stay as <code>10</code> when run through this
-function, no matter what the arguments).</p>
-<p>This is useful for grouping Linux and Mac operating system versions inside
-aggregate datasets or queries where there may be many different patch
-releases in the field.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
 <h2 id="product_info-udf">product_info (UDF)</h2>
 <p>Returns a normalized <code>app_name</code> and <code>canonical_app_name</code>
 for a product based on <code>legacy_app_name</code> and <code>normalized_os</code> values.
@@ -2292,83 +2354,9 @@ which have thrown away the raw <code>app_name</code> value from legacy pings.</p
 </tr>
 </tbody>
 </table>
-<h2 id="fenix_app_info-udf">fenix_app_info (UDF)</h2>
-<p>Returns canonical, human-understandable identification info for Fenix sources.</p>
-<p>The Glean telemetry library for Android by design routes pings based
-on the Play Store appId value of the published application.
-As of August 2020, there have been 5 separate Play Store appId
- values associated with different builds of Fenix,
- each corresponding to different datasets in BigQuery,
-and the mapping of appId to logical app names
-(Firefox vs. Firefox Preview) and channel names
- (nightly, beta, or release) has changed over time; see the
-<a href="&lt;https://docs.google.com/spreadsheets/d/18PzkzZxdpFl23__-CIO735NumYDqu7jHpqllo0sBbPA/edit#gid=0">spreadsheet of naming history for Mozilla's mobile browsers</a>.&gt;</p>
-<p>This function is intended as the source of truth for how to map a
-specific ping in BigQuery to a logical app names and channel.
-It should be expected that the output of this function may evolve
-over time. If we rename a product or channel, we may choose to
-update the values here so that analyses consistently get the new name.</p>
-<p>The first argument (<code>app_id</code>) can be fairly fuzzy; it is tolerant
-of actual Google Play Store appId values like 'org.mozilla.firefox_beta'
-(mix of periods and underscores) as well as BigQuery dataset names
-with suffixes like 'org_mozilla_firefox_beta_stable'.</p>
-<p>The second argument (<code>app_build_id</code>) should be the value
-in client_info.app_build.</p>
-<p>The function returns a <code>STRUCT</code> that contains the logical <code>app_name</code>
-and <code>channel</code> as well as the Play Store <code>app_id</code> in the canonical
-form which would appear in Play Store URLs.</p>
-<p>Note that the naming of Fenix applications changed on 2020-07-03,
-so to get a continuous view of the pings associated with a logical
-app channel, you may need to union together tables from multiple
-BigQuery datasets. To see data for all Fenix channels together, it
-is necessary to union together tables from all 5 datasets.
-For basic usage information, consider using
-<code>telemetry.fenix_clients_last_seen</code> which already handles the
-union. Otherwise, see the example below as a template for how
-construct a custom union.</p>
-<p>Mapping of channels to datasets:</p>
-<ul>
-<li>release: <code>org_mozilla_firefox</code></li>
-<li>beta: <code>org_mozilla_firefox_beta</code> (current) and <code>org_mozilla_fenix</code></li>
-<li>nightly: <code>org_mozilla_fenix</code> (current), <code>org_mozilla_fennec_aurora</code>,
-and <code>org_mozilla_fenix_nightly</code></li>
-</ul>
-<pre><code class="language-sql">-- Example of a query over all Fenix builds advertised as &quot;Firefox Beta&quot;
-CREATE TEMP FUNCTION extract_fields(app_id STRING, m ANY TYPE) AS (
-  (
-    SELECT AS STRUCT
-      m.submission_timestamp,
-      m.metrics.string.geckoview_version,
-      mozfun.norm.fenix_app_info(app_id, m.client_info.app_build).*
-  )
-);
-
-WITH base AS (
-  SELECT
-    extract_fields('org_mozilla_firefox_beta', m).*
-  FROM
-    org_mozilla_firefox_beta.metrics AS m
-  UNION ALL
-  SELECT
-    extract_fields('org_mozilla_fenix', m).*
-  FROM
-    org_mozilla_fenix.metrics AS m
-)
-SELECT
-  DATE(submission_timestamp) AS submission_date,
-  geckoview_version,
-  COUNT(*)
-FROM
-  base
-WHERE
-  app_name = 'Fenix'  -- excludes 'Firefox Preview'
-  AND channel = 'beta'
-  AND DATE(submission_timestamp) = '2020-08-01'
-GROUP BY
-  submission_date,
-  geckoview_version
-</code></pre>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/fenix_app_info">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/fenix_app_info/metadata.yaml">Edit</a></p>
+<h2 id="metadata-udf">metadata (UDF)</h2>
+<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
 <h2 id="os-udf">os (UDF)</h2>
 <p>Normalize an operating system string to one of the three major desktop
 platforms, one of the two major mobile platforms, or "Other".</p>
@@ -2376,9 +2364,21 @@ platforms, one of the two major mobile platforms, or "Other".</p>
 <a href="&lt;https://github.com/mozilla/gcp-ingestion/blob/a6928fb089f1652856147c4605df715f327edfcd/ingestion-beam/src/main/java/com/mozilla/telemetry/transforms/NormalizeAttributes.java#L52-L74">logic used in the data pipeline</a>&gt;
   to populate <code>normalized_os</code>.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/os/metadata.yaml">Edit</a></p>
-<h2 id="metadata-udf">metadata (UDF)</h2>
-<p>Accepts a pipeline metadata struct as input and returns a modified struct that includes a few parsed or normalized variants of the input metadata fields.</p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/metadata">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/metadata/metadata.yaml">Edit</a></p>
+<h2 id="truncate_version-udf">truncate_version (UDF)</h2>
+<p>Truncates a version string like <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> to
+either the major or minor version. The return value is <code>NUMERIC</code>,
+which means that you can sort the results without fear (e.g. 100
+will be categorized as greater than 80, which isn't the case when
+sorting lexigraphically).</p>
+<p>For example, "5.1.0" would be translated to <code>5.1</code> if the parameter is
+"minor" or <code>5</code> if the parameter is major.</p>
+<p>If the version is only a major and/or minor version, then it will be left
+unchanged (for example "10" would stay as <code>10</code> when run through this
+function, no matter what the arguments).</p>
+<p>This is useful for grouping Linux and Mac operating system versions inside
+aggregate datasets or queries where there may be many different patch
+releases in the field.</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
                 
               
               

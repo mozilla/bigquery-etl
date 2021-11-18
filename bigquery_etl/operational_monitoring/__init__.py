@@ -25,6 +25,9 @@ DEFAULT_DATASET = "operational_monitoring_derived"
 
 DATA_TYPES = {"histogram", "scalar"}
 
+# This is a mapping of project slug to metadata.
+om_projects = {}
+
 
 def _download_json_file(project, bucket, filename):
     blob = bucket.get_blob(filename)
@@ -157,14 +160,24 @@ def _generate_sql(project, dataset):
         assert not (
             branches and boolean_pref
         ), "`branches` should not be defined if `boolean_pref` is defined"
-
         render_kwargs.update(
             {
                 "branches": branches,
                 "channel": om_project["channel"],
                 "pref": boolean_pref,
+                "xaxis": om_project.get("xaxis"),
+                "start_date": om_project.get("start_date"),
             }
         )
+
+        # Add xaxis metadata to be used to decide whether the entire table is replaced
+        # Or just a partition.
+        #
+        # Note: there is a subtle design here in which date partitions are replaced
+        # if the data is for a build over build analysis but the entire table is
+        # replaced if it's a submission date analysis.
+        om_projects[normalized_slug] = {"xaxis": om_project["xaxis"]}
+
         if _query_up_to_date(
             dataset, normalized_slug, INIT_FILENAME, project_last_modified
         ):
@@ -263,9 +276,11 @@ def _run_project_sql(bq_client, project, dataset, submission_date, slug):
     )
 
     for data_type in DATA_TYPES:
-        destination_table = (
-            f"{project}.{dataset}.{normalized_slug}_{data_type}${date_partition}"
-        )
+        destination_table = f"{project}.{dataset}.{normalized_slug}_{data_type}"
+
+        if om_projects[normalized_slug]["xaxis"] == "build_id":
+            destination_table += f"${date_partition}"
+
         query_config.destination = destination_table
         query_config.write_disposition = "WRITE_TRUNCATE"
 

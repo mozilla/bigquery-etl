@@ -9670,6 +9670,9 @@ fields:
       name: video_h264_sps_max_num_ref_frames
       type: STRING
     - description: Total time spent playing video while element is hidden, in milliseconds.
+        This reports the total hidden play time for a video element whenever the decoder
+        stops. (eg. pausing media, encountering an error, changing to a new resource,
+        page goes to the bf-cached or page gets discarded)
       mode: NULLABLE
       name: video_hidden_play_time_ms
       type: STRING
@@ -21467,7 +21470,9 @@ fields:
           element is hidden (simulated, even when feature is not enabled). Keyed by
           audio presence and by height ranges (boundaries: 240. 480, 576, 720, 1080,
           2160), e.g.: ''V,0<h<=240'', ''AV,h>2160''; and ''All'' will accumulate
-          all percentages.'
+          all percentages. This is reported whenever the decoder stops. (eg. pausing
+          media, encountering an error, changing to a new resource, page goes to the
+          bf-cached or page gets discarded)'
         mode: NULLABLE
         name: value
         type: STRING
@@ -21481,7 +21486,9 @@ fields:
       - description: 'Average interval between video keyframes in played videos, in
           milliseconds. Keyed by audio presence and by height ranges (boundaries:
           240. 480, 576, 720, 1080, 2160), e.g.: ''V,0<h<=240'', ''AV,h>2160''; and
-          ''All'' will accumulate all percentages.'
+          ''All'' will accumulate all percentages. This is reported whenever the decoder
+          stops. (eg. pausing media, encountering an error, changing to a new resource,
+          page goes to the bf-cached or page gets discarded)'
         mode: NULLABLE
         name: value
         type: STRING
@@ -30443,7 +30450,9 @@ fields:
           name: video_h264_sps_max_num_ref_frames
           type: STRING
         - description: Total time spent playing video while element is hidden, in
-            milliseconds.
+            milliseconds. This reports the total hidden play time for a video element
+            whenever the decoder stops. (eg. pausing media, encountering an error,
+            changing to a new resource, page goes to the bf-cached or page gets discarded)
           mode: NULLABLE
           name: video_hidden_play_time_ms
           type: STRING
@@ -39406,14 +39415,25 @@ fields:
           name: script_loaded_with_version
           type: STRING
         - description: Total time spent playing Clearkey encrypted video in milliseconds.
+            This reports the total play time for a video lement playing Clearkey encrypted
+            content whenever the decoder stops. (eg. pausing media, encountering an
+            error, changing to a new resource, page goes to the bf-cached or page
+            gets discarded)
           mode: NULLABLE
           name: video_clearkey_play_time_ms
           type: STRING
-        - description: Total time spent playing encrypted video in milliseconds.
+        - description: Total time spent playing encrypted video in milliseconds. This
+            reports the total play time for a video element playing encrypted content
+            whenever the decoder stops. (eg. pausing media, encountering an error,
+            changing to a new resource, page goes to the bf-cached or page gets discarded)
           mode: NULLABLE
           name: video_encrypted_play_time_ms
           type: STRING
         - description: Total time spent playing Widevine encrypted video in milliseconds.
+            This reports the total play time for a video element playing Widevine
+            encrypted content whenever the decoder stops. (eg. pausing media, encountering
+            an error, changing to a new resource, page goes to the bf-cached or page
+            gets discarded)
           mode: NULLABLE
           name: video_widevine_play_time_ms
           type: STRING
@@ -41884,7 +41904,9 @@ fields:
               while element is hidden (simulated, even when feature is not enabled).
               Keyed by audio presence and by height ranges (boundaries: 240. 480,
               576, 720, 1080, 2160), e.g.: ''V,0<h<=240'', ''AV,h>2160''; and ''All''
-              will accumulate all percentages.'
+              will accumulate all percentages. This is reported whenever the decoder
+              stops. (eg. pausing media, encountering an error, changing to a new
+              resource, page goes to the bf-cached or page gets discarded)'
             mode: NULLABLE
             name: value
             type: STRING
@@ -41898,7 +41920,9 @@ fields:
           - description: 'Average interval between video keyframes in played videos,
               in milliseconds. Keyed by audio presence and by height ranges (boundaries:
               240. 480, 576, 720, 1080, 2160), e.g.: ''V,0<h<=240'', ''AV,h>2160'';
-              and ''All'' will accumulate all percentages.'
+              and ''All'' will accumulate all percentages. This is reported whenever
+              the decoder stops. (eg. pausing media, encountering an error, changing
+              to a new resource, page goes to the bf-cached or page gets discarded)'
             mode: NULLABLE
             name: value
             type: STRING
@@ -50100,6 +50124,181 @@ fields:
           mode: REPEATED
           name: https_rr_waiting_time
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'DNS: lookup algorithm; Keyed by TRR domain'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_lookup_disposition3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: DNS check for TRR was blocked by blacklist; Keyed by TRR
+              domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_blacklisted3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Resolve success rate when in TRR-first and called TRR-disabled
+              (fall-back mode); Keyed by TRR domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_disabled3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: TRR-first mode distribution. 0=Worked, 1=fell back fine after
+              TRR fail, 2=native worked, 3=both failed; Keyed by TRR domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_first4
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: HTTP version used by DoH endpoint
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_http_version2
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Time for a completed TRR resolution (msec); Keyed by TRR
+              domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_lookup_time3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: TRR managed to verify NS entry; Keyed by TRR domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_ns_verfified3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: How often TRR (Trusted Recursive Resolver) requests are fine,
+              time-out or error. Keyed by TRR domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_success3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time a connection was in the zero rtt state, it is keyed
+              by the zero rtt outcome.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_0rtt_state_duration
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP3: the number of PTOs.'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_counts_pto
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP3: the number of spurious retransmissions.'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_late_ack
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP3: spurious retransmissions ratio (spurios_retransmission
+              / packet sent * 10000).'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_late_ack_ratio
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP3: the number of received/sent packets.'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_received_sent_dgrams
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP transaction upload time (ms) (keys: uses_http3_10_50
+              (load size 10M to 50M), uses_http3_50_100 (load size 50M to 100M), supports_http3_10_50,
+              supports_http3_50_100)'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_upload_time_10m_100m
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP transaction upload time for resources larger than 100M
+              (ms) (keys: uses_http3, supports_http3)'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_upload_time_gt_100m
+          type: RECORD
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -50186,6 +50385,181 @@ fields:
             type: STRING
           mode: REPEATED
           name: https_rr_waiting_time
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'DNS: lookup algorithm; Keyed by TRR domain'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_lookup_disposition3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: DNS check for TRR was blocked by blacklist; Keyed by TRR
+              domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_blacklisted3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Resolve success rate when in TRR-first and called TRR-disabled
+              (fall-back mode); Keyed by TRR domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_disabled3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: TRR-first mode distribution. 0=Worked, 1=fell back fine after
+              TRR fail, 2=native worked, 3=both failed; Keyed by TRR domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_first4
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: HTTP version used by DoH endpoint
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_http_version2
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Time for a completed TRR resolution (msec); Keyed by TRR
+              domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_lookup_time3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: TRR managed to verify NS entry; Keyed by TRR domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_ns_verfified3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: How often TRR (Trusted Recursive Resolver) requests are fine,
+              time-out or error. Keyed by TRR domain
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: dns_trr_success3
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time a connection was in the zero rtt state, it is keyed
+              by the zero rtt outcome.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_0rtt_state_duration
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP3: the number of PTOs.'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_counts_pto
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP3: the number of spurious retransmissions.'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_late_ack
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP3: spurious retransmissions ratio (spurios_retransmission
+              / packet sent * 10000).'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_late_ack_ratio
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP3: the number of received/sent packets.'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_received_sent_dgrams
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP transaction upload time (ms) (keys: uses_http3_10_50
+              (load size 10M to 50M), uses_http3_50_100 (load size 50M to 100M), supports_http3_10_50,
+              supports_http3_50_100)'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_upload_time_10m_100m
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'HTTP transaction upload time for resources larger than 100M
+              (ms) (keys: uses_http3, supports_http3)'
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: http3_upload_time_gt_100m
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms
@@ -50284,6 +50658,27 @@ fields:
             '
           mode: NULLABLE
           name: telemetry_profile_directory_scans
+          type: INTEGER
+        - description: 'Hom many KB has been transfer over a captive portal during
+            a subsession.
+
+            '
+          mode: NULLABLE
+          name: networking_data_transferred_captive_portal
+          type: INTEGER
+        - description: 'Number of http connections transfer over a captive portal
+            during a subsession.
+
+            '
+          mode: NULLABLE
+          name: networking_http_connections_captive_portal
+          type: INTEGER
+        - description: 'Number of http transactions transfer over a captive portal
+            during a subsession.
+
+            '
+          mode: NULLABLE
+          name: networking_http_transactions_captive_portal
           type: INTEGER
         mode: NULLABLE
         name: scalars

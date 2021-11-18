@@ -12,6 +12,7 @@ from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.events_daily import events_daily
 from ..cli.format import format
+from ..cli.generate import generate
 from ..cli.glean_usage import glean_usage
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
@@ -34,6 +35,7 @@ def cli(prog_name=None):
         "dryrun": dryrun,
         "events_daily": events_daily,
         "format": format,
+        "generate": generate,
         "routine": routine,
         "mozfun": mozfun,
         "stripe": stripe_,

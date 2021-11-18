@@ -3,6 +3,8 @@ friendly_name: Remote Settings Suggestions
 description: >
   A table containing the suggestions importend from Remote Settings,
   from the same list powering Quicksuggest.
+  
+  Populated by the `quicksuggest2bq` scheduled task in telemetry-airflow.
 owners:
   - aplacitelli@mozilla.com
 workgroup_access:

@@ -1,0 +1,18 @@
+build-job-quicksuggest2bq:
+  docker:
+    - image: docker:stable-git
+  steps:
+    - checkout
+    - compare-branch:
+        pattern: ^jobs/quicksuggest2bq/
+    - setup_remote_docker:
+        version: 19.03.13
+    - run:
+        name: Build Docker image
+        command: docker build -t app:build jobs/quicksuggest2bq/
+    - run:
+        name: Test Code
+        command: docker run app:build pytest --flake8 --black
+    - run:
+        name: Lint Code
+        command: docker run app:build flake8

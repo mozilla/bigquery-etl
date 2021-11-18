@@ -1,0 +1,13 @@
+job-quicksuggest2bq:
+  jobs:
+    - build-job-quicksuggest2bq
+    - gcp-gcr/build-and-push-image:
+        context: data-eng-airflow-gcr
+        docker-context: jobs/quicksuggest2bq/
+        path: jobs/quicksuggest2bq/
+        image: quicksuggest2bq_docker_etl
+        requires:
+          - build-job-quicksuggest2bq
+        filters:
+          branches:
+            only: main

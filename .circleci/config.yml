@@ -170,6 +170,26 @@ jobs:
           command: docker run app:build make lint
 
 
+  build-job-quicksuggest2bq:
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - compare-branch:
+          pattern: ^jobs/quicksuggest2bq/
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build Docker image
+          command: docker build -t app:build jobs/quicksuggest2bq/
+      - run:
+          name: Test Code
+          command: docker run app:build pytest --flake8 --black
+      - run:
+          name: Lint Code
+          command: docker run app:build flake8
+
+
 workflows:
   docker-etl:
     jobs:
@@ -275,6 +295,21 @@ workflows:
           image: play-store-export
           requires:
             - build-play-store-export
+          filters:
+            branches:
+              only: main
+
+
+  job-quicksuggest2bq:
+    jobs:
+      - build-job-quicksuggest2bq
+      - gcp-gcr/build-and-push-image:
+          context: data-eng-airflow-gcr
+          docker-context: jobs/quicksuggest2bq/
+          path: jobs/quicksuggest2bq/
+          image: quicksuggest2bq_docker_etl
+          requires:
+            - build-job-quicksuggest2bq
           filters:
             branches:
               only: main

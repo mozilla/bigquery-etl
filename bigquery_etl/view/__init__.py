@@ -29,6 +29,8 @@ SKIP_VALIDATION = {
     "sql/moz-fx-data-shared-prod/telemetry/clients_probe_processes/view.sql",
     # tests
     "sql/moz-fx-data-test-project/test/simple_view/view.sql",
+    # Access Denied
+    "sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql",  # noqa E501
 }
 
 # skip publishing these views

@@ -1,41 +1,16 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_cumulative_population_estimate_v1`
 AS
-WITH all_branches AS (
-  -- We need to determine all available branches for this experiment
-  SELECT DISTINCT
-    branch,
-    experiment
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
-),
-non_null_branches AS (
-  -- We need to determine if the experiment is a rollout. Rollouts do not have any branches,
-  -- so unlike other experiments, null branches cannot be ignored.
-  -- To determine if an experiment is a rollout, we can simply determine the number of non-null
-  -- branches. If that number is 0, then we have a rollout.
+WITH branches AS (
   SELECT
-    experiment,
-    COUNTIF(branch IS NOT NULL) AS non_null_count
+    normandy_slug AS experiment,
+    COALESCE(branch.slug, 'null') AS branch
   FROM
-    all_branches
-  GROUP BY
-    experiment
-),
-branches AS (
-  SELECT
-    experiment,
-    IF(
-      all_branches.branch IS NULL,
-      IF(non_null_count = 0, 'null', all_branches.branch),
-      all_branches.branch
-    ) AS branch
-  FROM
-    all_branches
+    `moz-fx-data-experiments.monitoring.experimenter_experiments_v1`
   LEFT JOIN
-    non_null_branches
-  USING
-    (experiment)
+    UNNEST(branches) AS branch
+  WHERE
+    normandy_slug IS NOT NULL
 ),
 branches_per_window AS (
   -- Each branch should have cumulative values for each window, even if there have been

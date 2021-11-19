@@ -1486,6 +1486,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#regret_details" class="md-nav__link">
+    regret_details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#video_data" class="md-nav__link">
+    video_data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#video_index" class="md-nav__link">
     video_index
   </a>
@@ -1963,6 +1977,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#regret_details" class="md-nav__link">
+    regret_details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#video_data" class="md-nav__link">
+    video_data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#video_index" class="md-nav__link">
     video_index
   </a>
@@ -2037,6 +2065,60 @@ and to contain only one row per distinct <code>document_id</code> within a given
 </table>
 
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/main_events/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="regret_details"><a href="#regret_details">regret_details</a></h2>
+<p>A historical view of pings sent for the
+<code>regrets-reporter-ucs/regret-details</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<ul>
+<li>Friendly name: Historical Pings for <code>regrets-reporter-ucs/regret-details</code></li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable>regrets_reporter_ucs_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable/regret_details_v1>regret_details_v1</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/regret_details">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/regret_details/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/regret_details/view.sql">View Definition</a> </p>
+<hr />
+<h2 id="video_data"><a href="#video_data">video_data</a></h2>
+<p>A historical view of pings sent for the
+<code>regrets-reporter-ucs/video-data</code>
+document type.</p>
+<p>This view is guaranteed to contain only complete days
+(per <code>submission_timestamp</code>)
+and to contain only one row per distinct <code>document_id</code> within a given date.</p>
+<p>Clustering fields: <code>normalized_channel</code>, <code>sample_id</code></p>
+<ul>
+<li>Friendly name: Historical Pings for <code>regrets-reporter-ucs/video-data</code></li>
+</ul>
+<table>
+<caption>Referenced Tables</caption>
+    <tr>
+        <th>Project</th>
+        <th>Dataset</th>
+        <th>Table</th>
+    </tr>
+<tr>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable>regrets_reporter_ucs_stable</a></td>
+        <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs_stable/video_data_v1>video_data_v1</a></td>
+        </tr>   
+</table>
+
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_data">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_data/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/regrets_reporter_ucs/video_data/view.sql">View Definition</a> </p>
 <hr />
 <h2 id="video_index"><a href="#video_index">video_index</a></h2>
 <p>A historical view of pings sent for the

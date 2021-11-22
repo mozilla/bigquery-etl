@@ -9,9 +9,9 @@ skip_daily=${SKIP_DAILY:-false}
 generate_only=${GENERATE_ONLY:-false}
 # NOTE: there are three app_ids that we must look at for historical context. For
 # the purpose of this script, it is sufficient to look only at what is currently
-# "fenix nightly". We must have at least one table scalar/histogram tables for
+# "firefox desktop". We must have at least one table scalar/histogram tables for
 # each of the referenced tables in the view. We'll keep all pings for
-# org_mozilla_fenix, and only the metrics ping for the others.
+# firefox_desktop, and only the metrics ping for the others.
 app_ids=(
     "firefox_desktop"
 )

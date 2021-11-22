@@ -11,7 +11,7 @@ WITH extracted AS (
 )
 SELECT
   * EXCEPT (app_build_id, channel),
-  `alekhya-test-1-322715.udf.build_seconds_to_hour`(app_build_id) AS app_build_id,
+  `mozfun.glam.build_seconds_to_hour`(app_build_id) AS app_build_id,
   "*" AS channel
 FROM
   extracted

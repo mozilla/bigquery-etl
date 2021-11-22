@@ -1781,6 +1781,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#merge-udf" class="md-nav__link">
+    merge (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract-udf" class="md-nav__link">
     extract (UDF)
   </a>
@@ -1790,13 +1797,6 @@
         <li class="md-nav__item">
   <a href="#threshold_count-udf" class="md-nav__link">
     threshold_count (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#merge-udf" class="md-nav__link">
-    merge (UDF)
   </a>
   
 </li>
@@ -1983,6 +1983,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#merge-udf" class="md-nav__link">
+    merge (UDF)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#extract-udf" class="md-nav__link">
     extract (UDF)
   </a>
@@ -1992,13 +1999,6 @@
         <li class="md-nav__item">
   <a href="#threshold_count-udf" class="md-nav__link">
     threshold_count (UDF)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#merge-udf" class="md-nav__link">
-    merge (UDF)
   </a>
   
 </li>
@@ -2046,6 +2046,14 @@
                 
                 <h1 id="hist">hist</h1>
 <p>Functions for working with string encodings of histograms from desktop telemetry.</p>
+<h2 id="merge-udf">merge (UDF)</h2>
+<p>Merge an array of histograms into a single histogram.</p>
+<ul>
+<li>The histogram values will be summed per-bucket</li>
+<li>The count will be summed</li>
+<li>Other fields will take the mode_last</li>
+</ul>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/merge">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/merge/metadata.yaml">Edit</a></p>
 <h2 id="extract-udf">extract (UDF)</h2>
 <p>Return a parsed struct from a string-encoded histogram.</p>
 <p>We support a variety of compact encodings as well as the classic JSON
@@ -2082,14 +2090,6 @@ not be counted for a threshold of 2. Use threshold that are not bucket
 boundaries with caution.</p>
 <p><a href="https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239">https://github.com/mozilla/telemetry-batch-view/blob/ea0733c/src/main/scala/com/mozilla/telemetry/utils/MainPing.scala#L213-L239</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/threshold_count">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/threshold_count/metadata.yaml">Edit</a></p>
-<h2 id="merge-udf">merge (UDF)</h2>
-<p>Merge an array of histograms into a single histogram.</p>
-<ul>
-<li>The histogram values will be summed per-bucket</li>
-<li>The count will be summed</li>
-<li>Other fields will take the mode_last</li>
-</ul>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/merge">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/merge/metadata.yaml">Edit</a></p>
 <h2 id="percentiles-udf">percentiles (UDF)</h2>
 <p>Given histogram and list of percentiles,calculate what those percentiles are for the histogram. If the histogram is empty, returns NULL.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/hist/percentiles">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/hist/percentiles/metadata.yaml">Edit</a></p>

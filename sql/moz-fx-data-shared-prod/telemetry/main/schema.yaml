@@ -49616,6 +49616,14 @@ fields:
           mode: NULLABLE
           name: pdf_viewer_is_attachment
           type: INTEGER
+        - description: 'Records if a client is opted into dFPI in standard ETP mode
+            as part of the rollout experiment. 0: opted out, 1: opted in, 2: not part
+            of the experiment
+
+            '
+          mode: NULLABLE
+          name: privacy_dfpi_rollout_enabled_by_default
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

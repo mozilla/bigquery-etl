@@ -6,6 +6,7 @@ AS
 SELECT
   TIMESTAMP_TRUNC(submission_timestamp, minute) AS submission_minute,
   COUNT(*) AS n,
+  COUNT(request_id) AS n_merino,
 FROM
   -- For this initialization query, we select from the sanitized table, which contains
   -- 15 days of history rather than just 2.

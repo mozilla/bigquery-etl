@@ -1,0 +1,5 @@
+---
+description: |
+  Returns a custom build id generated from the build seconds of a FOG build.
+friendly_name: Format FOG builds into a custom build id representing
+ build hour

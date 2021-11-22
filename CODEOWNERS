@@ -1,0 +1,6 @@
+# These datasets are subject to the additional change control procedures
+# described in https://docs.google.com/document/d/1TTJi4ht7NuzX6BPG_KTr6omaZg70cEpxe9xlpfnHj9k/
+/sql/moz-fx-data-shared-prod/contextual_services @whd @jasonthomas
+/sql/moz-fx-data-shared-prod/contextual_services_derived @whd @jasonthomas
+/sql/moz-fx-data-shared-prod/search_terms @whd @jasonthomas
+/sql/moz-fx-data-shared-prod/search_terms_derived @whd @jasonthomas

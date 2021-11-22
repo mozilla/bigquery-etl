@@ -1,0 +1,32 @@
+[
+  {
+    "mode": "NULLABLE",
+    "description": "Hex value assigned to the TLS cipher, in format like \"0x00,0x84\"; note some values are ranges or contain wildcards",
+    "name": "value",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "description": "Human-readable name of the TLS cipher",
+    "name": "description",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "description": "Any TLS cipher suite that is specified for use with DTLS MUST define limits on the use of the associated AEAD function that preserves margins for both confidentiality and integrity, as specified in [RFC-ietf-tls-dtls13-43]",
+    "name": "dtls_ok",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "description": "Whether the TLS cipher is recommended by the IETF. If an item is not marked as \"recommended\", it does not necessarily mean that it is flawed; rather, it indicates that the item either has not been through the IETF consensus process, has limited applicability, or is intended only for specific use cases",
+    "name": "recommended",
+    "type": "BOOLEAN"
+  },
+  {
+    "mode": "NULLABLE",
+    "description": "RFCs or associated reference material for the TLS cipher",
+    "name": "reference",
+    "type": "STRING"
+  }
+]

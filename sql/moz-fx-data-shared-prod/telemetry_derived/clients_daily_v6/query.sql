@@ -484,12 +484,20 @@ clients_summary AS (
         ARRAY_AGG(IF(key = 'browser.urlbar.suggest.quicksuggest', value, NULL) IGNORE NULLS)[
           SAFE_OFFSET(0)
         ] AS user_pref_browser_urlbar_suggest_quicksuggest,
+        -- Rename of browser.urlbar.suggest.quicksuggest.nonsponsored; see bug 1737374
+        ARRAY_AGG(
+          IF(key = 'browser.urlbar.suggest.quicksuggest.nonsponsored', value, NULL) IGNORE NULLS
+        )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored,
         ARRAY_AGG(
           IF(key = 'browser.urlbar.suggest.quicksuggest.sponsored', value, NULL) IGNORE NULLS
         )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_suggest_quicksuggest_sponsored,
         ARRAY_AGG(
           IF(key = 'browser.urlbar.quicksuggest.onboardingDialogChoice', value, NULL) IGNORE NULLS
         )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice,
+        -- New pref for Firefox Suggest introduced in bug 1737374
+        ARRAY_AGG(
+          IF(key = 'browser.urlbar.quicksuggest.dataCollection.enabled', value, NULL) IGNORE NULLS
+        )[SAFE_OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_data_collection_enabled,
         ARRAY_AGG(IF(key = 'browser.newtabpage.enabled', value, NULL) IGNORE NULLS)[
           SAFE_OFFSET(0)
         ] AS user_pref_browser_newtabpage_enabled,
@@ -1148,6 +1156,11 @@ aggregates AS (
       OFFSET(0)
     ] AS user_pref_browser_urlbar_suggest_quicksuggest,
     ARRAY_AGG(
+      user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored
+      ORDER BY
+        submission_timestamp DESC
+    )[OFFSET(0)] AS user_pref_browser_urlbar_suggest_quicksuggest_nonsponsored,
+    ARRAY_AGG(
       user_pref_browser_urlbar_suggest_quicksuggest_sponsored
       ORDER BY
         submission_timestamp DESC
@@ -1157,6 +1170,11 @@ aggregates AS (
       ORDER BY
         submission_timestamp DESC
     )[OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_onboarding_dialog_choice,
+    ARRAY_AGG(
+      user_pref_browser_urlbar_quicksuggest_data_collection_enabled
+      ORDER BY
+        submission_timestamp DESC
+    )[OFFSET(0)] AS user_pref_browser_urlbar_quicksuggest_data_collection_enabled,
   FROM
     clients_summary
   GROUP BY

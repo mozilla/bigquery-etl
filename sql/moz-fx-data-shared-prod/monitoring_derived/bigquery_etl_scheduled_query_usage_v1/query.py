@@ -9,7 +9,6 @@ from google.cloud import bigquery
 
 DEFAULT_PROJECTS = [
     "moz-fx-data-shared-prod",
-    "moz-fx-data-derived-datasets",
     "moz-fx-data-experiments",
 ]
 

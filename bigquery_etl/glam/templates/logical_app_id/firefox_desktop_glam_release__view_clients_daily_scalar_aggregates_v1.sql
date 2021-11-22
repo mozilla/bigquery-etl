@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW
   `{{ project }}`.glam_etl.firefox_desktop_glam_release__view_clients_daily_scalar_aggregates_v1
+
 AS
 WITH extracted AS (
   SELECT

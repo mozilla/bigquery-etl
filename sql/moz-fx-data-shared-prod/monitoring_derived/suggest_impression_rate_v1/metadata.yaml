@@ -1,0 +1,19 @@
+friendly_name: Suggest Impression Rate Stable
+description: |-
+  Used to visualize telemetry rates in Grafana as a cross check for
+  operational monitoring of the Merino service.
+owners:
+  - aplacitelli@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_monitoring
+  referenced_tables:
+    - ['moz-fx-data-shared-prod',
+       'contextual_services_stable',
+       'quicksuggest_impression_v1']
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

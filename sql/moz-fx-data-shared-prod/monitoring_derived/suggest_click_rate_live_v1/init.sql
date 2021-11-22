@@ -5,6 +5,7 @@ AS
 SELECT
   TIMESTAMP_TRUNC(submission_timestamp, minute) AS submission_minute,
   COUNT(*) AS n,
+  COUNT(request_id) AS n_merino,
 FROM
   `moz-fx-data-shared-prod.contextual_services_live.quicksuggest_click_v1`
 WHERE

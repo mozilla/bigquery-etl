@@ -107,7 +107,7 @@ class TemplatedDir:
     def get_args(self) -> dict:
         """Get all arguments for templating, per-dataset."""
         with open(self.path / "templating.yaml", "r") as f:
-            return yaml.load(f) or {}
+            return yaml.safe_load(f) or {}
 
 
 def get_query_dirs(path):

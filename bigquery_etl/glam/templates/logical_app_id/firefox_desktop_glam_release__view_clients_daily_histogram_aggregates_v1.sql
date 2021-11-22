@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `{{ project }}`.glam_etl.firefox_desktop_glam_nightly__view_clients_daily_histogram_aggregates_v1
+  `{{ project }}`.glam_etl.firefox_desktop_glam_release__view_clients_daily_histogram_aggregates_v1
 AS
 WITH extracted AS (
   SELECT

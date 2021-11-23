@@ -1,0 +1,57 @@
+- submission_timestamp: "2021-01-01 12:00:00"
+  request_id: rid1
+  search_query: null
+  advertiser: shoe store
+  block_id: bid1
+  context_id: cid1
+  sample_id: null
+  is_clicked: false
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: OH
+  normalized_os: Windows
+  normalized_os_version: 11.0
+  release_channel: nightly
+  position: "1"
+  reporting_url: "url1"
+  scenario: "online"
+- submission_timestamp: "2021-01-01 12:03:00"
+  request_id: null
+  search_query: "new gui"
+  advertiser: awesome guitar store
+  block_id: bid2
+  context_id: cid2
+  sample_id: null
+  is_clicked: true
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: AK
+  normalized_os: Windows
+  normalized_os_version: 11.0
+  release_channel: nightly
+  position: "2"
+  reporting_url: "url2"
+  scenario: "online"
+- submission_timestamp: "2021-01-01 12:07:00"
+  request_id: rid7
+  search_query: null
+  advertiser: null
+  block_id: bid7
+  context_id: cid7
+  sample_id: null
+  is_clicked: false
+  locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: AZ
+  normalized_os: macOS
+  normalized_os_version: 10.9
+  release_channel: beta
+  position: "7"
+  reporting_url: "url7"
+  scenario: "online"

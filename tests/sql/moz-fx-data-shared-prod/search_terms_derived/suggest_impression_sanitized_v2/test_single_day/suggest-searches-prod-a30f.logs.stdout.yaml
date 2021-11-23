@@ -1,0 +1,24 @@
+- timestamp: "2021-01-01 12:00:01.456789"
+  jsonpayload:
+    type: web.suggest.request
+    fields:
+      rid: rid1
+      query: "shoes for "
+      country: US
+      region: none
+      dma: none
+      form_factor: desktop
+      browser: none
+      os_family: windows
+- timestamp: "2021-01-01 12:07:00.223"
+  jsonpayload:
+    type: web.suggest.request
+    fields:
+      rid: rid7
+      query: "this is an odd query that won't be allowed"
+      country: US
+      region: none
+      dma: none
+      form_factor: desktop
+      browser: none
+      os_family: macos

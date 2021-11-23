@@ -10,7 +10,9 @@ a separate project.
 */
 WITH impressions AS (
   SELECT
-    submission_timestamp,
+    -- This should already be truncated to second level per CONSVC-1364
+    -- but we reapply truncation to be explicit about granularity.
+    TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
     request_id,
     search_query AS telemetry_query,
     advertiser,
@@ -30,7 +32,7 @@ WITH impressions AS (
   FROM
     `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
   WHERE
-    DATE(submission_timestamp) = @submission_timestamp
+    DATE(submission_timestamp) = @submission_date
 ),
 merino_logs AS (
   SELECT
@@ -48,7 +50,7 @@ merino_logs AS (
   FROM
     `suggest-searches-prod-a30f.logs.stdout`
   WHERE
-    DATE(timestamp) = @submission_timestamp
+    DATE(timestamp) = @submission_date
     AND jsonPayload.type = "web.suggest.request"
 ),
 allowed_queries AS (

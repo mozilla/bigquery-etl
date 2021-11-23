@@ -1753,11 +1753,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#extract_event_counts-udf" class="md-nav__link">
-    extract_event_counts (UDF)
+  <a href="#extract_event_counts_with_properties-udf" class="md-nav__link">
+    extract_event_counts_with_properties (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="extract_event_counts (UDF)">
+    <nav class="md-nav" aria-label="extract_event_counts_with_properties (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1774,17 +1774,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#caveats" class="md-nav__link">
+    Caveats
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#extract_event_counts_with_properties-udf" class="md-nav__link">
-    extract_event_counts_with_properties (UDF)
+  <a href="#extract_event_counts-udf" class="md-nav__link">
+    extract_event_counts (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="extract_event_counts_with_properties (UDF)">
+    <nav class="md-nav" aria-label="extract_event_counts (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1797,13 +1804,6 @@
           <li class="md-nav__item">
   <a href="#example_1" class="md-nav__link">
     Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#caveats" class="md-nav__link">
-    Caveats
   </a>
   
 </li>
@@ -2062,11 +2062,11 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#extract_event_counts-udf" class="md-nav__link">
-    extract_event_counts (UDF)
+  <a href="#extract_event_counts_with_properties-udf" class="md-nav__link">
+    extract_event_counts_with_properties (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="extract_event_counts (UDF)">
+    <nav class="md-nav" aria-label="extract_event_counts_with_properties (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2083,17 +2083,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#caveats" class="md-nav__link">
+    Caveats
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#extract_event_counts_with_properties-udf" class="md-nav__link">
-    extract_event_counts_with_properties (UDF)
+  <a href="#extract_event_counts-udf" class="md-nav__link">
+    extract_event_counts (UDF)
   </a>
   
-    <nav class="md-nav" aria-label="extract_event_counts_with_properties (UDF)">
+    <nav class="md-nav" aria-label="extract_event_counts (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2106,13 +2113,6 @@
           <li class="md-nav__item">
   <a href="#example_1" class="md-nav__link">
     Example
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#caveats" class="md-nav__link">
-    Caveats
   </a>
   
 </li>
@@ -2218,25 +2218,10 @@ knows what that action's representation is (using the compressed mapping from 1.
 create a regex string that checks for the presence of that event. The view makes this
 transparent, and allows users to simply query a boolean field representing the presence
 of that event on that day.</p>
-<h2 id="extract_event_counts-udf">extract_event_counts (UDF)</h2>
-<p>Extract the events and their counts from an events string.
-This function explicitly ignores event properties, and retrieves just the counts of the top-level events.</p>
-<h3 id="usage">Usage</h3>
-<pre><code>extract_event_counts(
-    events STRING
-)
-</code></pre>
-<p><code>events</code> - A comma-separated events string,
-where each event is represented as a string
-of unicode chars.</p>
-<h3 id="example">Example</h3>
-<p>See <a href="https://sql.telemetry.mozilla.org/dashboard/fenix-events">this dashboard</a>
-for example usage.
-<a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/extract_event_counts">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/extract_event_counts/metadata.yaml">Edit</a></p>
 <h2 id="extract_event_counts_with_properties-udf">extract_event_counts_with_properties (UDF)</h2>
 <p>Extract events with event properties and their associated counts.
 Also extracts raw events and their counts. This allows for querying with and without properties in the same dashboard.</p>
-<h3 id="usage_1">Usage</h3>
+<h3 id="usage">Usage</h3>
 <pre><code>extract_event_counts_with_properties(
     events STRING
 )
@@ -2244,7 +2229,7 @@ Also extracts raw events and their counts. This allows for querying with and wit
 <p><code>events</code> - A comma-separated events string,
 where each event is represented as a string
 of unicode chars.</p>
-<h3 id="example_1">Example</h3>
+<h3 id="example">Example</h3>
 <p>See <a href="https://sql.telemetry.mozilla.org/queries/75082">this query</a>
 for example usage.</p>
 <h3 id="caveats">Caveats</h3>
@@ -2253,6 +2238,21 @@ and for all events without their properties.</p>
 <p>This allows us to include both total counts for an event (with any
 property value), and events that don't have properties.
 <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/extract_event_counts_with_properties">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/extract_event_counts_with_properties/metadata.yaml">Edit</a></p>
+<h2 id="extract_event_counts-udf">extract_event_counts (UDF)</h2>
+<p>Extract the events and their counts from an events string.
+This function explicitly ignores event properties, and retrieves just the counts of the top-level events.</p>
+<h3 id="usage_1">Usage</h3>
+<pre><code>extract_event_counts(
+    events STRING
+)
+</code></pre>
+<p><code>events</code> - A comma-separated events string,
+where each event is represented as a string
+of unicode chars.</p>
+<h3 id="example_1">Example</h3>
+<p>See <a href="https://sql.telemetry.mozilla.org/dashboard/fenix-events">this dashboard</a>
+for example usage.
+<a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/event_analysis/extract_event_counts">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/event_analysis/extract_event_counts/metadata.yaml">Edit</a></p>
 <h2 id="create_events_view-stored-procedure">create_events_view (Stored Procedure)</h2>
 <p>Create a view that queries the <code>events_daily</code> table. This view currently supports both funnels and event counts.
 Funnels are created as a struct, with each step in the funnel as a boolean column in the struct, indicating whether the user completed that step on that day.

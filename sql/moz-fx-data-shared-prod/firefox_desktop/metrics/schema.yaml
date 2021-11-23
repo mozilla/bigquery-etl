@@ -711,6 +711,17 @@ fields:
     mode: REPEATED
     name: text
     type: RECORD
+  - fields:
+    - description: 'browser.link.open_newwindow.restriction preference value, that
+        is one of 0, 1, or 2, where 2 is desktop default
+
+        '
+      mode: NULLABLE
+      name: browser_link_open_newwindow_restriction
+      type: INTEGER
+    mode: NULLABLE
+    name: quantity
+    type: RECORD
   mode: NULLABLE
   name: metrics
   type: RECORD

@@ -49633,6 +49633,13 @@ fields:
           mode: NULLABLE
           name: privacy_dfpi_rollout_enabled_by_default
           type: INTEGER
+        - description: 'The maximum number of content processes, submitted when a
+            new maximum is reached.  Replaces CONTENT_PROCESS_MAX and CONTENT_PROCESS_PRECISE_MAX.
+
+            '
+          mode: NULLABLE
+          name: content_process_max_precise
+          type: INTEGER
         mode: NULLABLE
         name: scalars
         type: RECORD

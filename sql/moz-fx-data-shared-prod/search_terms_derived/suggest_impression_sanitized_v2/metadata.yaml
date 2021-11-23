@@ -1,0 +1,29 @@
+---
+friendly_name: Sanitized Firefox Suggest Impressions with Search Terms
+description: |-
+  Firefox Suggest impression pings joined with sanitized search query data
+  captured in logs from the backend Merino service.
+
+  This table allows removal of PII and slightly longer retention than
+  the underlying ping table.
+
+  Fulfills https://mozilla-hub.atlassian.net/browse/ROAD-85
+owners:
+  - jklukas@mozilla.com
+labels:
+  incremental: true
+bigquery:
+  time_partitioning:
+    field: submission_timestamp
+    type: day
+    require_partition_filter: true
+  clustering:
+    fields:
+      - normalized_channel
+      - sample_id
+  # Not yet implemented; currently defined in init.sql
+  # # partition_expiration_days: 15
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:search-terms/sanitized

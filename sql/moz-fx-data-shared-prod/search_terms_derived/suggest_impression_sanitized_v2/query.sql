@@ -2,7 +2,7 @@
 
 This query is run in a standalone project and is scheduled separately from our
 normal Airflow infrastructure, but is codified here for discoverability and for
-making use of the testing harness here.
+making use of the SQL test harness.
 
 Note that we need to fully qualify all table references since this runs from
 a separate project.
@@ -29,6 +29,8 @@ WITH impressions AS (
     position,
     reporting_url,
     scenario,
+    -- Truncate to just Firefox major version
+    SPLIT(version, '.')[SAFE_OFFSET(0)] AS version,
   FROM
     `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
   WHERE
@@ -39,14 +41,16 @@ merino_logs AS (
     TIMESTAMP_TRUNC(timestamp, SECOND) AS merino_timestamp,
     jsonPayload.fields.rid AS request_id,
     jsonPayload.fields.query,
+    -- Merino currently injects 'none' for missing geo fields.
     NULLIF(jsonPayload.fields.country, 'none') AS merino_country,
     NULLIF(jsonPayload.fields.region, 'none') AS merino_region,
     NULLIF(jsonPayload.fields.dma, 'none') AS merino_dma,
     -- -- We are not propagating city-level data to sanitized table.
     -- NULLIF(jsonPayload.fields.city, 'none') AS merino_city,
-    NULLIF(jsonPayload.fields.form_factor, 'none') AS merino_form_factor,
-    NULLIF(jsonPayload.fields.browser, 'none') AS merino_browser,
-    NULLIF(jsonPayload.fields.os_family, 'none') AS merino_os_family,
+    jsonPayload.fields.form_factor AS merino_form_factor,
+    jsonPayload.fields.browser AS merino_browser,
+    jsonPayload.fields.os_family AS merino_os_family,
+    -- merino_version will be added once implemented in Merino logging code
   FROM
     `suggest-searches-prod-a30f.logs.stdout`
   WHERE
@@ -55,7 +59,9 @@ merino_logs AS (
 ),
 allowed_queries AS (
   SELECT
-    query
+    -- Each keyword should only appear once, but we add DISTINCT for protection
+    -- in downstream joins in case the suggestions file has errors.
+    DISTINCT query
   FROM
     `moz-fx-data-shared-prod.search_terms_derived.remotesettings_suggestions_v1`
   CROSS JOIN

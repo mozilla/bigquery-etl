@@ -8,7 +8,7 @@
       region: none
       dma: none
       form_factor: desktop
-      browser: none
+      browser: firefox(96)
       os_family: windows
 - timestamp: "2021-01-01 12:07:00.223"
   jsonpayload:
@@ -20,5 +20,5 @@
       region: none
       dma: none
       form_factor: desktop
-      browser: none
+      browser: firefox(96)
       os_family: macos

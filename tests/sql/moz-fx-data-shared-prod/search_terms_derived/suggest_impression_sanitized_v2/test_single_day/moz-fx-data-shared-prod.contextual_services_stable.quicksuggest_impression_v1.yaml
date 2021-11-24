@@ -17,6 +17,7 @@
   position: "1"
   reporting_url: "url1"
   scenario: "online"
+  version: "94.0.2"
 - submission_timestamp: "2021-01-01 12:03:00"
   request_id: null
   search_query: "new gui"
@@ -36,6 +37,7 @@
   position: "2"
   reporting_url: "url2"
   scenario: "online"
+  version: "94.0.2"
 - submission_timestamp: "2021-01-01 12:07:00"
   request_id: rid7
   search_query: null
@@ -55,3 +57,4 @@
   position: "7"
   reporting_url: "url7"
   scenario: "online"
+  version: "94.0.2"

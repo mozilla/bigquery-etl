@@ -9,6 +9,7 @@ owners:
 - shong@mozilla.com
 - cdowhygelund@mozilla.com
 - ascholtz@mozilla.com
+- anicholson@mozilla.com
 labels:
   incremental: true
   application: firefox

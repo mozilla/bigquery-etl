@@ -22643,6 +22643,45 @@ fields:
       mode: REPEATED
       name: muted_play_time_percent
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: When in TRR-first mode, if TRR was skipped and native failed,
+          it lists the reason we may have skipped TRR, keyed by the provider. Does
+          not include requests that intentionally skip TRR.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: trr_relevant_skip_reason_native_failed
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: When in TRR-first mode, if TRR was skipped and native succeeded,
+          it lists the reason we may have skipped TRR, keyed by the provider. Does
+          not include requests that intentionally skip TRR.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: trr_relevant_skip_reason_native_success
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: When in TRR-first mode, it lists the reason we may have skipped
+          TRR, keyed by the provider. Does not include requests that intentionally
+          skip TRR.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: trr_relevant_skip_reason_trr_first
+      type: RECORD
     mode: NULLABLE
     name: keyed_histograms
     type: RECORD
@@ -50290,6 +50329,45 @@ fields:
           mode: REPEATED
           name: http3_upload_time_gt_100m
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, if TRR was skipped and native failed,
+              it lists the reason we may have skipped TRR, keyed by the provider.
+              Does not include requests that intentionally skip TRR.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_relevant_skip_reason_native_failed
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, if TRR was skipped and native succeeded,
+              it lists the reason we may have skipped TRR, keyed by the provider.
+              Does not include requests that intentionally skip TRR.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_relevant_skip_reason_native_success
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, it lists the reason we may have skipped
+              TRR, keyed by the provider. Does not include requests that intentionally
+              skip TRR.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_relevant_skip_reason_trr_first
+          type: RECORD
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -50551,6 +50629,45 @@ fields:
             type: STRING
           mode: REPEATED
           name: http3_upload_time_gt_100m
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, if TRR was skipped and native failed,
+              it lists the reason we may have skipped TRR, keyed by the provider.
+              Does not include requests that intentionally skip TRR.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_relevant_skip_reason_native_failed
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, if TRR was skipped and native succeeded,
+              it lists the reason we may have skipped TRR, keyed by the provider.
+              Does not include requests that intentionally skip TRR.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_relevant_skip_reason_native_success
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, it lists the reason we may have skipped
+              TRR, keyed by the provider. Does not include requests that intentionally
+              skip TRR.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_relevant_skip_reason_trr_first
           type: RECORD
         mode: NULLABLE
         name: keyed_histograms

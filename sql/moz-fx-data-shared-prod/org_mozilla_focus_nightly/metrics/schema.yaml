@@ -415,6 +415,38 @@ fields:
       mode: NULLABLE
       name: tracking_protection_toolbar_shield_clicked
       type: INTEGER
+    - description: 'A counter that indicates how many times a user has added
+
+        a website to the autocomplete list.
+
+        '
+      mode: NULLABLE
+      name: autocomplete_domain_added
+      type: INTEGER
+    - description: 'A counter that indicates how many times a user has removed
+
+        a website from the autocomplete list.
+
+        '
+      mode: NULLABLE
+      name: autocomplete_domain_removed
+      type: INTEGER
+    - description: 'A counter that indicates how many times a user has reordered
+
+        the autocomplete list.
+
+        '
+      mode: NULLABLE
+      name: autocomplete_list_order_changed
+      type: INTEGER
+    - description: 'A counter that indicates how many times a user has tapped
+
+        the report site issue from browser menu
+
+        '
+      mode: NULLABLE
+      name: browser_report_site_issue_counter
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

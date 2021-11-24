@@ -3,7 +3,23 @@
 CREATE OR REPLACE VIEW
   `{{gcp_project}}.operational_monitoring.{{slug}}_histogram`
 AS
-WITH normalized AS (
+WITH valid_builds AS (
+    SELECT build_id
+    FROM `{{gcp_project}}.{{dataset}}.{{slug}}_histogram`
+    WHERE {% include 'where_clause.sql' %}
+    GROUP BY 1
+    HAVING COUNT(DISTINCT client_id) >= {{user_count_threshold}}
+),
+
+filtered_histograms AS (
+    SELECT *
+    FROM valid_builds
+    INNER JOIN `{{gcp_project}}.{{dataset}}.{{slug}}_histogram`
+    USING (build_id)
+    WHERE {% include 'where_clause.sql' %}
+),
+
+normalized AS (
     SELECT
         client_id,
         {% if xaxis == "submission_date" %}
@@ -33,23 +49,8 @@ WITH normalized AS (
                 1.0
             )
         ) AS histogram
-        FROM `{{gcp_project}}.{{dataset}}.{{slug}}_histogram`
+        FROM filtered_histograms
         CROSS JOIN UNNEST(metrics)
-        WHERE
-          {% if xaxis == "submission_date" %}
-            {% if start_date %}
-            DATE(submission_date) >= "{{start_date}}"
-            {% else %}
-            DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
-            {% endif %}
-          {% else %}
-            {% if start_date %}
-            PARSE_DATE('%Y%m%d', CAST(build_id AS STRING)) >= "{{start_date}}"
-            {% else %}
-            PARSE_DATE('%Y%m%d', CAST(build_id AS STRING)) > DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
-            {% endif %}
-            AND DATE(submission_date) = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
-          {% endif %}
         GROUP BY
         client_id,
         {% if xaxis == "submission_date" %}

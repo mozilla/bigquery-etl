@@ -53,6 +53,19 @@ WITH user_type AS (
     search_count_tagged_sap AS search_count_tagged_sap,
     search_count_urlbar AS search_count_urlbar,
     search_with_ads_count_all AS search_with_ads_count_all,
+    SAFE_CAST(user_pref_browser_newtabpage_enabled AS BOOL) AS newtabpage_disabled,
+    (
+      SELECT
+        SUM(IF(SPLIT(key, '_')[SAFE_OFFSET(0)] = 'newtab', value, 0))
+      FROM
+        UNNEST(contextual_services_topsites_impression_sum)
+    ) AS num_topsites_new_tab_impressions_sponsored,
+    (
+      SELECT
+        SUM(IF(SPLIT(key, '_')[SAFE_OFFSET(0)] = 'newtab', value, 0))
+      FROM
+        UNNEST(contextual_services_topsites_click_sum)
+    ) AS num_new_tab_topsites_clicks_sponsored,
   FROM
     telemetry.clients_last_seen
   WHERE
@@ -459,6 +472,26 @@ activity_stream_events AS (
     COUNTIF(event = 'CLICK' AND source = 'TOP_SITES') AS activitystream_topsite_clicks,
     COUNTIF(event = 'CLICK' AND source = 'HIGHLIGHTS') AS activitystream_highlight_clicks,
     COUNTIF(event = 'CLICK' AND source = 'CARDGRID') AS activitystream_pocket_clicks,
+    COUNTIF(
+      event = 'CLICK'
+      AND source = 'CARDGRID'
+      AND JSON_EXTRACT_SCALAR(value, '$.card_type') = 'spoc'
+    ) AS activitystream_sponsored_pocket_clicks,
+    COUNTIF(
+      event = 'CLICK'
+      AND source = 'TOP_SITES'
+      AND JSON_EXTRACT_SCALAR(value, '$.card_type') = 'spoc'
+    ) AS activitystream_sponsored_topsite_clicks,
+    COUNTIF(
+      event = 'CLICK'
+      AND source = 'CARDGRID'
+      AND JSON_EXTRACT_SCALAR(value, '$.card_type') = 'organic'
+    ) AS activitystream_organic_pocket_clicks,
+    COUNTIF(
+      event = 'CLICK'
+      AND source = 'TOP_SITES'
+      AND JSON_EXTRACT_SCALAR(value, '$.card_type') = 'organic'
+    ) AS activitystream_organic_topsite_clicks,
   FROM
     activity_stream.events
   WHERE
@@ -477,6 +510,7 @@ activity_stream_sessions AS (
     MAX(user_prefs & 2 = 0) AS activitystream_reported_topsites_off,
     MAX(user_prefs & 4 = 0) AS activitystream_reported_pocket_off,
     MAX(user_prefs & 8 = 0) AS activitystream_reported_highlights_off,
+    MAX(user_prefs & 32 = 0) AS activitystream_reported_sponsored_topstories_off,
     MAX(user_prefs & 256 = 0) AS activitystream_reported_sponsored_topsites_off,
     COUNTIF(page = 'about:home') AS activitystream_sessions_abouthome,
     COUNTIF(page = 'about:newtab') AS activitystream_sessions_newtab,
@@ -714,6 +748,17 @@ SELECT
     COALESCE(search_with_ads_count_all, CAST(0 AS INT64)),
     NULL
   ) AS search_with_ads_count_all,
+  newtabpage_disabled,
+  IF(
+    '87' < app_version,
+    COALESCE(num_topsites_new_tab_impressions_sponsored, CAST(0 AS INT64)),
+    NULL
+  ) AS num_topsites_new_tab_impressions_sponsored,
+  IF(
+    '87' < app_version,
+    COALESCE(num_new_tab_topsites_clicks_sponsored, CAST(0 AS INT64)),
+    NULL
+  ) AS num_new_tab_topsites_clicks_sponsored,
   subsample_id,
   IF('72' < app_version, COALESCE(is_headless, CAST(0 AS BOOL)), NULL) AS is_headless,
   IF(
@@ -946,10 +991,15 @@ SELECT
   activitystream_topsite_clicks,
   activitystream_highlight_clicks,
   activitystream_pocket_clicks,
+  activitystream_sponsored_pocket_clicks,
+  activitystream_sponsored_topsite_clicks,
+  activitystream_organic_pocket_clicks,
+  activitystream_organic_topsite_clicks,
   activitystream_reported_newtab_search_off,
   activitystream_reported_topsites_off,
   activitystream_reported_pocket_off,
   activitystream_reported_highlights_off,
+  activitystream_reported_sponsored_topstories_off,
   activitystream_reported_sponsored_topsites_off,
   activitystream_sessions_abouthome,
   activitystream_sessions_newtab,

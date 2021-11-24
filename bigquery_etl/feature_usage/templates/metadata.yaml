@@ -9,12 +9,13 @@ owners:
   - shong@mozilla.com
   - cdowhygelund@mozilla.com
   - ascholtz@mozilla.com
+  - anicholson@mozilla.com
 labels:
   incremental: true
   application: firefox
   schedule: daily
 scheduling:
-  dag_name: bqetl_main_summary
+  dag_name: bqetl_feature_usage
 bigquery:
   time_partitioning:
     field: submission_date

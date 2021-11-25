@@ -55,6 +55,10 @@ CREATE TEMP FUNCTION null_search() AS (
   [STRUCT<key STRING, value INT64>(NULL, 0)]
 );
 
+CREATE TEMP FUNCTION extract_ios_provider(list ARRAY<STRUCT<key STRING, value INT64>>) AS (
+  ARRAY(SELECT STRUCT(SPLIT(key, '-')[SAFE_OFFSET(1)] AS key, value AS value) FROM UNNEST(list))
+);
+
 WITH core_flattened_searches AS (
   SELECT
     *,
@@ -267,9 +271,9 @@ metrics_org_mozilla_ios_firefox AS (
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.search_counts AS search_count,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_ad_clicks,
+    extract_ios_provider(metrics.labeled_counter.browser_search_ad_clicks) AS search_ad_clicks,
     metrics.labeled_counter.search_in_content AS search_in_content,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_with_ads,
+    extract_ios_provider(metrics.labeled_counter.browser_search_with_ads) AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
@@ -297,9 +301,9 @@ metrics_org_mozilla_ios_firefoxbeta AS (
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.search_counts AS search_count,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_ad_clicks,
+    extract_ios_provider(metrics.labeled_counter.browser_search_ad_clicks) AS search_ad_clicks,
     metrics.labeled_counter.search_in_content AS search_in_content,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_with_ads,
+    extract_ios_provider(metrics.labeled_counter.browser_search_with_ads) AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
@@ -327,9 +331,9 @@ metrics_org_mozilla_ios_fennec AS (
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.search_counts AS search_count,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_ad_clicks,
+    extract_ios_provider(metrics.labeled_counter.browser_search_ad_clicks) AS search_ad_clicks,
     metrics.labeled_counter.search_in_content AS search_in_content,
-    ARRAY<STRUCT<key STRING, value INT64>>[] AS search_with_ads,
+    extract_ios_provider(metrics.labeled_counter.browser_search_with_ads) AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,

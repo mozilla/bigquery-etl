@@ -6,8 +6,6 @@ command = """
     mv apache-maven-3.6.3 maven
     export PATH=$PWD/maven/bin:$PATH
     mvn dependency:copy-dependencies
-    # Install docs deps
-    pip install mkdocs mkdocs-material markdown-include mkdocs-awesome-pages-plugin
     # Generate SQL
     mkdir sql-output
     cp -r sql/ sql-output/sql

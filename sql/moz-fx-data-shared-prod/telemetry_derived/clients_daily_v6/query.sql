@@ -375,6 +375,8 @@ clients_summary AS (
     payload.processes.content.scalars.webrtc_nicer_turn_401s AS scalar_content_webrtc_nicer_turn_401s,
     payload.processes.content.scalars.webrtc_nicer_turn_403s AS scalar_content_webrtc_nicer_turn_403s,
     payload.processes.content.scalars.webrtc_nicer_turn_438s AS scalar_content_webrtc_nicer_turn_438s,
+    payload.processes.parent.scalars.a11y_hcm_foreground AS scalar_a11y_hcm_foreground,
+    payload.processes.parent.scalars.a11y_hcm_background AS scalar_a11y_hcm_background,
     payload.processes.parent.keyed_scalars.browser_search_ad_clicks AS scalar_parent_browser_search_ad_clicks,
     payload.processes.parent.keyed_scalars.browser_search_with_ads AS scalar_parent_browser_search_with_ads,
     payload.processes.parent.keyed_scalars.devtools_accessibility_select_accessible_for_node AS scalar_parent_devtools_accessibility_select_accessible_for_node,
@@ -421,6 +423,7 @@ clients_summary AS (
     payload.processes.parent.keyed_scalars.contextual_services_quicksuggest_help,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_click,
     payload.processes.parent.keyed_scalars.contextual_services_topsites_impression,
+    payload.processes.parent.keyed_scalars.a11y_theme,
     count_histograms[OFFSET(0)].histogram AS histogram_parent_devtools_aboutdebugging_opened_count,
     count_histograms[
       OFFSET(1)
@@ -869,6 +872,13 @@ aggregates AS (
     mozfun.stats.mode_last(
       ARRAY_AGG(scalar_parent_aushelper_websense_reg_version ORDER BY submission_timestamp)
     ) AS scalar_parent_aushelper_websense_reg_version,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(scalar_a11y_hcm_foreground ORDER BY submission_timestamp)
+    ) AS scalar_a11y_hcm_foreground,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(scalar_a11y_hcm_background ORDER BY submission_timestamp)
+    ) AS scalar_a11y_hcm_background,
+    mozfun.map.mode_last(ARRAY_CONCAT_AGG(a11y_theme ORDER BY submission_timestamp)) AS a11y_theme,
     MAX(
       scalar_parent_browser_engagement_max_concurrent_tab_count
     ) AS scalar_parent_browser_engagement_max_concurrent_tab_count_max,

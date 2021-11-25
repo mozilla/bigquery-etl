@@ -1764,3 +1764,19 @@ fields:
 - mode: NULLABLE
   name: user_pref_browser_urlbar_quicksuggest_data_collection_enabled
   type: STRING
+- mode: NULLABLE
+  name: scalar_a11y_hcm_foreground
+  type: INTEGER
+- mode: NULLABLE
+  name: scalar_a11y_hcm_background
+  type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: BOOLEAN
+  mode: REPEATED
+  name: a11y_theme
+  type: RECORD

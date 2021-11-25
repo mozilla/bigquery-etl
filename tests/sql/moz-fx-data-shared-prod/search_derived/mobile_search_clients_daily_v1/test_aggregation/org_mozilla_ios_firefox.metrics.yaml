@@ -26,6 +26,12 @@
       search_in_content:
         - key: engine2.organic.none
           value: "3"
+      browser_search_with_ads:
+        - key: provider-engine10
+          value: 10
+      browser_search_ad_clicks:
+        - key: provider-engine11
+          value: 2
 - <<: *base
   metrics:
     string:
@@ -34,3 +40,9 @@
       search_in_content:
         - key: engine2.organic.none
           value: "4"
+      browser_search_with_ads:
+        - key: provider-engine10
+          value: 12
+      browser_search_ad_clicks:
+        - key: provider-engine11
+          value: 3

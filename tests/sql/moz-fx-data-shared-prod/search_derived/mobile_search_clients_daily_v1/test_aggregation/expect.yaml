@@ -259,14 +259,48 @@
   source: organic.none
   organic: 7
 - <<: *ios_base
+  default_search_engine: engine2
+  engine: engine10
+  source: search-with-ads
+  search_with_ads: 22
+- <<: *ios_base
+  default_search_engine: engine2
+  engine: engine11
+  source: ad-click
+  ad_click: 5
+- <<: *ios_base
   client_id: beta_ios
   channel: beta
   engine: engine2
   source: in-content.sap.code
   tagged_sap: 2
 - <<: *ios_base
+  client_id: beta_ios
+  channel: beta
+  engine: engine9
+  source: ad-click
+  ad_click: 4
+- <<: *ios_base
+  client_id: beta_ios
+  channel: beta
+  engine: engine8
+  source: search-with-ads
+  search_with_ads: 15
+- <<: *ios_base
   client_id: nightly_ios
   channel: nightly
   engine: engine2
   source: in-content.sap-follow-on.code
   tagged_follow_on: 1
+- <<: *ios_base
+  client_id: nightly_ios
+  channel: nightly
+  engine: engine6
+  source: search-with-ads
+  search_with_ads: 11
+- <<: *ios_base
+  client_id: nightly_ios
+  channel: nightly
+  engine: engine7
+  source: ad-click
+  ad_click: 6

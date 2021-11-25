@@ -1,2 +1,30 @@
 ---
-[]
+- submission_timestamp: 2019-12-01 09:13:09.842719 UTC
+  ping_info:
+    end_time: 2019-12-01T04:13-05:00
+  normalized_channel: release
+  normalized_os: iOS
+  sample_id: 1
+  client_info:
+    app_display_version: "68.2.1"
+    client_id: release_ios
+    os_version: "35.0"
+    locale: en-US
+    first_run_date: 2015-06-20-05:00
+  normalized_country_code: US
+  metrics:
+    string:
+      search_default_engine: engine2
+    labeled_counter:
+      search_counts:
+        - key: engine1
+          value: 10001
+      search_in_content:
+        - key: engine2.organic.none
+          value: 20000
+      browser_search_with_ads:
+        - key: provider-engine10
+          value: 30000
+      browser_search_ad_clicks:
+        - key: provider-engine11
+          value: 40000

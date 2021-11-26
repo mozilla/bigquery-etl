@@ -285,7 +285,7 @@ jobs:
             PATH="venv/bin:$PATH" script/generate_docs \
                --output_dir=generated_docs/
             cd generated_docs/
-            PATH="venv/bin:$PATH" mkdocs gh-deploy \
+            PATH="../venv/bin:$PATH" mkdocs gh-deploy \
               -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
   generate-sql:
     docker: *docker

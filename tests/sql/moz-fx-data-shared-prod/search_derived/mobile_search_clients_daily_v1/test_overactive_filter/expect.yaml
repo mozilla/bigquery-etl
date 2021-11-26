@@ -85,3 +85,35 @@
   os_version: '29'
   profile_creation_date: 18201
   profile_age_in_days: 30
+- <<: *base
+  client_id: release_ios
+  channel: release
+  locale: en-US
+  country: US
+  os: iOS
+  os_version: "35.0"
+  default_search_engine: engine2
+- <<: *base
+  client_id: release_ios
+  channel: release
+  locale: en-US
+  country: US
+  os: iOS
+  os_version: "35.0"
+  default_search_engine: engine2
+- <<: *base
+  client_id: release_ios
+  channel: release
+  locale: en-US
+  country: US
+  os: iOS
+  os_version: "35.0"
+  default_search_engine: engine2
+- <<: *base
+  client_id: release_ios
+  channel: release
+  locale: en-US
+  country: US
+  os: iOS
+  os_version: "35.0"
+  default_search_engine: engine2

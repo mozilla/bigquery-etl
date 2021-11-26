@@ -60,6 +60,40 @@
             "mode": "REPEATED",
             "name": "search_in_content",
             "type": "RECORD"
+          },
+          {
+            "fields": [
+              {
+                "mode": "NULLABLE",
+                "name": "key",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "value",
+                "type": "INTEGER"
+              }
+            ],
+            "mode": "REPEATED",
+            "name": "browser_search_ad_clicks",
+            "type": "RECORD"
+          },
+          {
+            "fields": [
+              {
+                "mode": "NULLABLE",
+                "name": "key",
+                "type": "STRING"
+              },
+              {
+                "mode": "NULLABLE",
+                "name": "value",
+                "type": "INTEGER"
+              }
+            ],
+            "mode": "REPEATED",
+            "name": "browser_search_with_ads",
+            "type": "RECORD"
           }
         ],
         "type": "RECORD",

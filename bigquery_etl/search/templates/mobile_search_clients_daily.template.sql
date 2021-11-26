@@ -75,6 +75,19 @@ CREATE TEMP FUNCTION null_search() AS (
   [STRUCT<key STRING, value INT64>(NULL, 0)]
 );
 
+
+CREATE TEMP FUNCTION extract_ios_provider(list ARRAY<STRUCT<key STRING, value INT64>>) AS (
+    ARRAY(
+        SELECT
+            STRUCT(
+                SPLIT(key, '-')[SAFE_OFFSET(1)] as key,
+                value as value
+            )
+        FROM
+            UNNEST(list)
+    )
+);
+
 WITH core_flattened_searches AS (
   SELECT
     *,

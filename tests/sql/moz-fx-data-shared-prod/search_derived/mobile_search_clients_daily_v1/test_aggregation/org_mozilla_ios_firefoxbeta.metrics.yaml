@@ -17,3 +17,9 @@
       search_in_content:
         - key: engine2.in-content.sap.code
           value: "2"
+      browser_search_with_ads:
+        - key: provider-engine8
+          value: 15
+      browser_search_ad_clicks:
+        - key: provider-engine9
+          value: 4

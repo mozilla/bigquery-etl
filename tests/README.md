@@ -1,1 +1,1 @@
-For information on how to run tests, see https://mozilla.github.io/bigquery-etl/cookbooks/testing.html
+For information on how to run tests, see https://mozilla.github.io/bigquery-etl/cookbooks/testing/

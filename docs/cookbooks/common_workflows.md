@@ -44,6 +44,48 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Deploy schema changes by running `./bqetl query schema deploy <dataset>.<table>_<version>`
 1. Merge pull-request
 
+## Formatting SQL
+
+We enforce consistent SQL formatting as part of CI. After adding or changing a
+query, use `./bqetl format` to apply formatting rules.
+
+Directories and files passed as arguments to `./bqetl format` will be
+formatted in place, with directories recursively searched for files with a
+`.sql` extension, e.g.:
+
+```bash
+$ echo 'SELECT 1,2,3' > test.sql
+$ ./bqetl format test.sql
+modified test.sql
+1 file(s) modified
+$ cat test.sql
+SELECT
+  1,
+  2,
+  3
+```
+
+If no arguments are specified the script will read from stdin and write to
+stdout, e.g.:
+
+```bash
+$ echo 'SELECT 1,2,3' | ./bqetl format
+SELECT
+  1,
+  2,
+  3
+```
+
+To turn off sql formatting for a block of SQL, wrap it in `format:off` and
+`format:on` comments, like this:
+
+```sql
+SELECT
+  -- format:off
+  submission_date, sample_id, client_id
+  -- format:on
+```
+
 ## Add a new field to clients_daily
 
 Adding a new field to `clients_daily` also means that field has to propagate to several
@@ -112,7 +154,47 @@ The same steps as creating a new UDF apply for creating stored procedures, excep
 1. Open a PR
 1. PR gets reviews, approved and merged
 
+## Creating a new BigQuery Dataset
+
+To provision a new BigQuery dataset for holding tables, you'll need to
+create a `dataset_metadata.yaml` which will cause the dataset to be
+automatically deployed a few hours after merging. Changes to existing
+datasets may trigger manual operator approval (such as changing access policies).
+
+The `bqetl query create` command will automatically generate a skeleton
+`dataset_metadata.yaml` file if the query name contains a dataset that
+is not yet defined.
+
+See example with commentary for `telemetry_derived`:
+
+```yaml
+friendly_name: Telemetry Derived
+description: |-
+  Derived data based on pings from legacy Firefox telemetry, plus many other
+  general-purpose derived tables
+labels: {}
+
+# Base ACL should can be:
+#   "derived" for `_derived` datasets that contain concrete tables
+#   "view" for user-facing datasets containing virtual views
+dataset_base_acl: derived
+
+# Datasets with user-facing set to true will be created both in shared-prod
+# and in mozdata; this should be false for all `_derived` datasets
+user_facing: false
+
+# Most datasets can have mozilla-confidential access like below,
+# but some datasets will be defined with more restricted access
+# or with additional access for services.
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+```
+
 ## Publishing data
+
+See also the reference for [Public Data](../reference/public_data.md).
 
 1. Get a data review by following the [data publishing process](https://wiki.mozilla.org/Data_Publishing#Dataset_Publishing_Process_2)
 1. Update the `metadata.yaml` file of the query to be published
@@ -124,3 +206,42 @@ The same steps as creating a new UDF apply for creating stored procedures, excep
 1. Open a PR
 1. PR gets reviewed, approved and merged
     * Once, ETL is running a view will get automatically published to `moz-fx-data-shared-prod` referencing the public dataset
+
+## Adding new Python requirements
+
+When adding a new library to the Python requirements, first add the library to
+the requirements and then add any meta-dependencies into constraints.
+Constraints are discovered by installing requirements into a fresh virtual
+environment. A dependency should be added to either `requirements.txt` or
+`constraints.txt`, but not both.
+
+```bash
+# Create a python virtual environment (not necessary if you have already
+# run `./bqetl bootstrap`)
+python3 -m venv venv/
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# If not installed:
+pip install pip-tools
+
+# Add the dependency to requirements.in e.g. Jinja2.
+echo Jinja2==2.11.1 >> requirements.in
+
+# Compile hashes for new dependencies.
+pip-compile --generate-hashes requirements.in
+
+# Deactivate the python virtual environment.
+deactivate
+```
+
+## Making a pull request from a fork
+
+When opening a pull-request to merge a fork, the `manual-trigger-required-for-fork` CI task will
+fail and some integration test tasks will be skipped. A user with repository write permissions
+will have to run the [Push to upstream workflow](https://github.com/mozilla/bigquery-etl/actions/workflows/push-to-upstream.yml)
+and provide the `<username>:<branch>` of the fork as parameter. The parameter will also show up
+in the logs of the `manual-trigger-required-for-fork` CI task together with more detailed instructions.
+Once the workflow has been executed, the CI tasks, including the integration tests, of the PR will be
+executed.

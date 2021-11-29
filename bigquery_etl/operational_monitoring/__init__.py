@@ -25,6 +25,10 @@ DEFAULT_DATASET = "operational_monitoring_derived"
 
 DATA_TYPES = {"histogram", "scalar"}
 
+# See https://github.com/mozilla/glam/issues/1575#issuecomment-946880387
+# for reference of where these numbers come from.
+USERS_PER_BUILD_THRESHOLDS = {"nightly": 375, "beta": 9000, "release": 625000}
+
 # This is a mapping of project slug to metadata.
 om_projects = {}
 
@@ -154,6 +158,7 @@ def _generate_sql(project, dataset):
         normalized_slug = _bq_normalize_name(om_project["slug"])
         boolean_pref = om_project.get("boolean_pref")
         branches = om_project.get("branches", [])
+        channel = om_project.get("channel")
 
         # Branches should not be defined if a boolean pref is defined
         # since the branches are inferred to be either "enabled" and "disabled"
@@ -163,7 +168,8 @@ def _generate_sql(project, dataset):
         render_kwargs.update(
             {
                 "branches": branches,
-                "channel": om_project["channel"],
+                "channel": channel,
+                "user_count_threshold": USERS_PER_BUILD_THRESHOLDS[channel],
                 "pref": boolean_pref,
                 "xaxis": om_project.get("xaxis"),
                 "start_date": om_project.get("start_date"),

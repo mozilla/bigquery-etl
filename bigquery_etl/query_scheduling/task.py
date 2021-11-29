@@ -203,14 +203,24 @@ class Task:
             )
 
     @task_name.validator
-    def validate_task_name(self, attribute, value):
+    def _validate_task_name(self, attribute, value):
         """Validate the task name."""
         if value is not None:
-            if len(value) < 1 or len(value) > 62:
-                raise ValueError(
-                    f"Invalid task name {value}. "
-                    + "The task name has to be 1 to 62 characters long."
-                )
+            Task.validate_task_name(value)
+
+    @staticmethod
+    def validate_task_name(task_name):
+        """Validate the task name."""
+        if len(task_name) < 1 or len(task_name) > 62:
+            raise ValueError(
+                f"Invalid task name {task_name}. "
+                + "The task name has to be 1 to 62 characters long "
+                + f"(actual length: {len(task_name)})."
+            )
+
+    @staticmethod
+    def generate_task_name(dataset, table, version):
+        return f"{dataset}__{table}__{version}"
 
     @retry_delay.validator
     def validate_retry_delay(self, attribute, value):
@@ -231,8 +241,8 @@ class Task:
             self.version = query_file_re.group(4)
 
             if self.task_name is None:
-                self.task_name = f"{self.dataset}__{self.table}__{self.version}"
-                self.validate_task_name(None, self.task_name)
+                self.task_name = Task.generate_task_name(self.dataset, self.table, self.version)
+                Task.validate_task_name(self.task_name)
 
             if self.destination_table == DEFAULT_DESTINATION_TABLE_STR:
                 self.destination_table = f"{self.table}_{self.version}"

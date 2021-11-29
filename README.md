@@ -95,6 +95,9 @@ Options:
   -p, --path DIRECTORY  Path to directory in which query should be created
   -o, --owner TEXT      Owner of the query (email address)
   -i, --init            Create an init.sql file to initialize the table
+  --task_name, --task-name TEXT   Custom name for the Airflow task. By default
+                                  the task name is a combination of the
+                                  dataset and table name.
   --help                Show this message and exit.
 ```
 

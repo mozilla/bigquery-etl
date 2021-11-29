@@ -222,6 +222,40 @@ fields:
       mode: NULLABLE
       name: glean_validation_metrics_ping_count
       type: INTEGER
+    - description: 'The number of five-second intervals (''ticks'') the user was considered
+
+        ''active''.
+
+
+        ''active'' means keyboard or mouse interaction with the application.
+
+        It doesn''t take into account whether or not the window has focus or is in
+
+        the foreground, only if it is receiving these interaction events.
+
+
+        Migrated from Telemetry''s `browser.engagement.active_ticks`.
+
+        '
+      mode: NULLABLE
+      name: browser_engagement_active_ticks
+      type: INTEGER
+    - description: 'The number of total non-unique http(s) URIs visited, including
+        page
+
+        reloads, after the session has been restored. URIs on minimized or
+
+        background tabs may also be counted. Private browsing uris are included.
+
+
+        Migrated from Telemetry''s
+
+        `browser.engagement.total_uri_count_normal_and_private_mode`.
+
+        '
+      mode: NULLABLE
+      name: browser_engagement_uri_count
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

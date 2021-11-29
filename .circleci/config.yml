@@ -276,11 +276,6 @@ jobs:
       - *java_deps
       - attach_workspace:
           at: /tmp/workspace
-      - run:
-          name: Install dependencies
-          command: >
-            pip install mkdocs mkdocs-material markdown-include
-            mkdocs-awesome-pages-plugin
       - add_ssh_keys:
           fingerprints: "ab:b5:f7:55:92:0a:72:c4:63:0e:57:be:cd:66:32:53"
       - run:
@@ -290,7 +285,7 @@ jobs:
             PATH="venv/bin:$PATH" script/generate_docs \
                --output_dir=generated_docs/
             cd generated_docs/
-            mkdocs gh-deploy \
+            PATH="../venv/bin:$PATH" mkdocs gh-deploy \
               -m "[ci skip] Deployed {sha} with MkDocs version: {version}"
   generate-sql:
     docker: *docker

@@ -4,7 +4,11 @@ AS
 
 SELECT
   client_id,
+  {% if xaxis == "submission_date" %}
+  submission_date,
+  {% else %}
   build_id,
+  {% endif %}
   {% for dimension in dimensions %}
     {{ dimension.name }},
   {% endfor %}
@@ -17,11 +21,27 @@ SELECT
   END AS value
 FROM `{{gcp_project}}.{{dataset}}.{{slug}}_scalar`
 WHERE
-  PARSE_DATE('%Y%m%d', CAST(build_id AS STRING)) > DATE_SUB(CURRENT_DATE(), INTERVAL 90 DAY)
-  AND DATE(submission_date) = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+  {% if xaxis == "submission_date" %}
+    {% if start_date %}
+    DATE(submission_date) >= "{{start_date}}"
+    {% else %}
+    DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+    {% endif %}
+  {% else %}
+    {% if start_date %}
+    PARSE_DATE('%Y%m%d', CAST(build_id AS STRING)) >= "{{start_date}}"
+    {% else %}
+    PARSE_DATE('%Y%m%d', CAST(build_id AS STRING)) > DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+    {% endif %}
+    AND DATE(submission_date) = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+  {% endif %}
 GROUP BY
   client_id,
+  {% if xaxis == "submission_date" %}
+  submission_date,
+  {% else %}
   build_id,
+  {% endif %}
   cores_count,
   os,
   branch,

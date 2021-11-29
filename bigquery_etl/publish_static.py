@@ -38,6 +38,7 @@ def _load_table(
     job_config = bigquery.LoadJobConfig(
         source_format=bigquery.SourceFormat.CSV,
         skip_leading_rows=1,
+        allow_quoted_newlines=True,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
     with open(data_file_path, "rb") as data_file:

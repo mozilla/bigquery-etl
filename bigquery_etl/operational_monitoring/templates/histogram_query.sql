@@ -2,7 +2,11 @@
 
 WITH merged_probes AS (
   SELECT
+    {% if xaxis == "submission_date" %}
+    DATE(submission_timestamp) AS submission_date,
+    {% else %}
     @submission_date AS submission_date,
+    {% endif %}
     client_id,
     SAFE.SUBSTR(application.build_id, 0, 8) AS build_id,
     {% for dimension in dimensions %}

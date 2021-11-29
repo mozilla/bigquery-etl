@@ -14,7 +14,11 @@ CREATE TABLE IF NOT EXISTS
 PARTITION BY submission_date
 CLUSTER BY
     build_id
-OPTIONS (
-    require_partition_filter = TRUE,
+OPTIONS
+  (require_partition_filter = TRUE,
+    {% if xaxis == "submission_date" %}
+    partition_expiration_days = NULL
+    {% else %}
     partition_expiration_days = 5
-)
+    {% endif %}
+  )

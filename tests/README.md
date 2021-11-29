@@ -68,6 +68,13 @@ SELECT
   udf_example(NULL);
 ```
 
+If the udf references a static library on GCS, it must be uploaded into the
+testing bucket for tests to pass.
+
+```bash
+gsutil rsync -d udf_js/lib gs://moz-fx-data-circleci-tests-bigquery-etl/
+```
+
 [SQL dialect prefix]: https://cloud.google.com/bigquery/docs/reference/standard-sql/enabling-standard-sql#sql-prefix
 
 How to Configure a Generated Test

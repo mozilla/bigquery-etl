@@ -1213,6 +1213,46 @@ fields:
       mode: NULLABLE
       name: performance_clone_deserialize_items
       type: RECORD
+    - description: 'The distribution of search term tab group sizes. Rather than reporting
+
+        individual sizes directly as integers, it is currently desired to
+
+        report the sizes according to certain size ranges.
+
+        The "buckets" for reporting group sizes will be mapped as follows:
+
+        * 2 tabs -> 1
+
+        * 3-5 tabs -> 2
+
+        * 6-10 tabs -> 3
+
+        * 11+ tabs -> 4
+
+        Where the reported number will be 1, 2, 3, or 4, accordingly.
+
+        As an example, say a user has three groups of sizes 3, 6, and 15. The
+
+        app will report 2, 3, and 4 when this metric is tracked.
+
+        '
+      fields:
+      - mode: NULLABLE
+        name: sum
+        type: INTEGER
+      - fields:
+        - mode: NULLABLE
+          name: key
+          type: STRING
+        - mode: NULLABLE
+          name: value
+          type: INTEGER
+        mode: REPEATED
+        name: values
+        type: RECORD
+      mode: NULLABLE
+      name: search_terms_group_size_distribution
+      type: RECORD
     mode: NULLABLE
     name: custom_distribution
     type: RECORD

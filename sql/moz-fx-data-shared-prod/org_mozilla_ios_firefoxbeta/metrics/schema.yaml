@@ -1023,6 +1023,30 @@ fields:
       mode: NULLABLE
       name: tabs_normal_and_private_uri_count
       type: INTEGER
+    - description: 'Counts the number of times a user taps to open an
+
+        existing tab from the History Highlights section
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_history_highlights_item_opened
+      type: INTEGER
+    - description: 'Counts the number of times a user taps the
+
+        Show All button in the History section
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_history_highlights_show_all
+      type: INTEGER
+    - description: 'Counts the number of times a user sees the
+
+        History Highlights section on the homepage
+
+        '
+      mode: NULLABLE
+      name: firefox_home_page_history_highlights_view
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

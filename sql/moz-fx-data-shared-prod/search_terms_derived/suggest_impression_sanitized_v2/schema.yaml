@@ -33,7 +33,7 @@ fields:
   name: normalized_os_version
   type: STRING
 - mode: NULLABLE
-  name: release_channel
+  name: normalized_channel
   type: STRING
 - mode: NULLABLE
   name: position

@@ -25,7 +25,7 @@ WITH impressions AS (
     metadata.geo.subdivision1 AS region,
     normalized_os,
     normalized_os_version,
-    release_channel,
+    release_channel AS normalized_channel,
     position,
     reporting_url,
     scenario,

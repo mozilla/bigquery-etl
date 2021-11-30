@@ -22,7 +22,7 @@ bigquery:
       - normalized_channel
       - sample_id
   # Not yet implemented
-  # # partition_expiration_days: 15
+  # # partition_expiration_days: 14
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

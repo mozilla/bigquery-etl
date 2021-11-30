@@ -119,6 +119,8 @@ SELECT
   REPLACE(JSON_EXTRACT(event_properties, '$.email_sender'), "\"", "") AS email_sender,
   REPLACE(JSON_EXTRACT(event_properties, '$.email_service'), "\"", "") AS email_service,
   REPLACE(JSON_EXTRACT(event_properties, '$.email_template'), "\"", "") AS email_template,
-  REPLACE(JSON_EXTRACT(event_properties, '$.email_version'), "\"", "") AS email_version
+  REPLACE(JSON_EXTRACT(event_properties, '$.email_version'), "\"", "") AS email_version,
+  REPLACE(JSON_EXTRACT(event_properties, '$.plan_id'), "\"", "") AS plan_id,
+  REPLACE(JSON_EXTRACT(event_properties, '$.product_id'), "\"", "") AS product_id,
 FROM
   unioned

@@ -21,7 +21,7 @@ bigquery:
     fields:
       - normalized_channel
       - sample_id
-  # Not yet implemented; currently defined in init.sql
+  # Not yet implemented
   # # partition_expiration_days: 15
 workgroup_access:
   - role: roles/bigquery.dataViewer

@@ -28,7 +28,15 @@ from ..dependency import get_dependency_graph
 from ..dryrun import SKIP, DryRun
 from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
-from ..metadata.parse_metadata import METADATA_FILE, DatasetMetadata, Metadata
+from ..metadata.parse_metadata import (
+    METADATA_FILE,
+    DatasetMetadata,
+    Metadata,
+    BigQueryMetadata,
+    PartitionMetadata,
+    ClusteringMetadata,
+    PartitionType,
+)
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..run_query import run
@@ -163,6 +171,10 @@ def create(name, sql_dir, project_id, owner, init):
         description="Please provide a description for the query",
         owners=[owner],
         labels={"incremental": True},
+        bigquery=BigQueryMetadata(
+            time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
+            clustering=ClusteringMetadata(fields=[]),
+        ),
     )
     metadata.write(metadata_file)
 

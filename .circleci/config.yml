@@ -73,7 +73,8 @@ jobs:
             pip-compile --quiet --allow-unsafe --generate-hashes
             pip-compile --quiet --allow-unsafe --generate-hashes \
               java-requirements.in
-            git diff --exit-code requirements.txt java-requirements.txt
+            git diff --exit-code -G '^ *[^# ]' -- requirements.txt \
+              java-requirements.txt
   test-sql:
     docker: *docker
     steps:

@@ -13,7 +13,7 @@
       
       
       <link rel="icon" href="../../favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.1">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
     
     
       
@@ -1665,15 +1665,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
   </a>
   
 </li>
@@ -2054,15 +2054,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#range-udf" class="md-nav__link">
-    range (UDF)
+  <a href="#to_dates-udf" class="md-nav__link">
+    to_dates (UDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#to_dates-udf" class="md-nav__link">
-    to_dates (UDF)
+  <a href="#range-udf" class="md-nav__link">
+    range (UDF)
   </a>
   
 </li>
@@ -2131,6 +2131,11 @@ the number of bits to consider, counting right from the bit at
 <p>See detailed docs for the bits28 suite of functions:
 <a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/active_in_range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/active_in_range/metadata.yaml">Edit</a></p>
+<h2 id="to_dates-udf">to_dates (UDF)</h2>
+<p>Convert a bit pattern into an array of the dates is represents.</p>
+<p>See detailed docs for the bits28 suite of functions:
+<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 <h2 id="range-udf">range (UDF)</h2>
 <p>Return an INT64 representing a range of bits from a source bit pattern.</p>
 <p>The start_offset must be zero or a negative number indicating an offset from
@@ -2149,11 +2154,6 @@ WHERE
   submission_date &gt; '2020-01-01'
 </code></pre>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/range">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/range/metadata.yaml">Edit</a></p>
-<h2 id="to_dates-udf">to_dates (UDF)</h2>
-<p>Convert a bit pattern into an array of the dates is represents.</p>
-<p>See detailed docs for the bits28 suite of functions:
-<a href="https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference">https://docs.telemetry.mozilla.org/cookbooks/clients_last_seen_bits.html#udf-reference</a></p>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/bits28/to_dates">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/bits28/to_dates/metadata.yaml">Edit</a></p>
 <h2 id="days_since_seen-udf">days_since_seen (UDF)</h2>
 <p>Return the position of the rightmost set bit in an INT64 bit pattern.</p>
 <p>To determine this position, we take a bitwise AND of the bit pattern and
@@ -2257,7 +2257,7 @@ the individual bits.</p>
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.01824240.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a87c2adc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.ff0eccb3.min.js"></script>
       
     
   </body>

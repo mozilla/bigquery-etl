@@ -1,0 +1,2879 @@
+{
+  "baseline": {
+    "history": [
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-06 18:46:02",
+          "last": "2019-11-06 18:46:02"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "1f06101e4db4a2eff1b437f15f2f95456141e75a",
+          "last": "1f06101e4db4a2eff1b437f15f2f95456141e75a"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 20,
+          "last": 20
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/1f06101e4db4a2eff1b437f15f2f95456141e75a/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:01:39",
+          "last": "2019-11-28 12:01:39"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "f8c2677ea95cc5578c855fcc0308cb7af05dbf16",
+          "last": "f8c2677ea95cc5578c855fcc0308cb7af05dbf16"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 19,
+          "last": 19
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/f8c2677ea95cc5578c855fcc0308cb7af05dbf16/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:01:39",
+          "last": "2019-11-28 12:01:39"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "e9da1aaeffbc73f69161dd9e9486cac6a77df722",
+          "last": "e9da1aaeffbc73f69161dd9e9486cac6a77df722"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 18,
+          "last": 18
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/e9da1aaeffbc73f69161dd9e9486cac6a77df722/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:12:11",
+          "last": "2019-11-28 12:12:11"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "f359ef547f1b42544224ea47080371cf358afcaa",
+          "last": "f359ef547f1b42544224ea47080371cf358afcaa"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 17,
+          "last": 17
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/f359ef547f1b42544224ea47080371cf358afcaa/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-29 10:12:48",
+          "last": "2019-11-29 10:12:48"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "b91edaa1afda128e5c9be88a94e26598f65ace54",
+          "last": "b91edaa1afda128e5c9be88a94e26598f65ace54"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 16,
+          "last": 16
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/b91edaa1afda128e5c9be88a94e26598f65ace54/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-29 10:12:48",
+          "last": "2019-11-29 10:12:48"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "5cdaedf87135133410d5811ae0f8baf7b47a5015",
+          "last": "5cdaedf87135133410d5811ae0f8baf7b47a5015"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 15,
+          "last": 15
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/5cdaedf87135133410d5811ae0f8baf7b47a5015/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-12-13 10:50:30",
+          "last": "2019-12-13 10:50:30"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "cc4bc7952c8c80043659959f0a533668657ce783",
+          "last": "cc4bc7952c8c80043659959f0a533668657ce783"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 14,
+          "last": 14
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/cc4bc7952c8c80043659959f0a533668657ce783/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-02-11 15:10:10",
+          "last": "2020-02-11 15:10:10"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "2e3f59be19cd122d722f1ef8d37bca26fa896deb",
+          "last": "2e3f59be19cd122d722f1ef8d37bca26fa896deb"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 13,
+          "last": 13
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/2e3f59be19cd122d722f1ef8d37bca26fa896deb/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-02-11 15:14:09",
+          "last": "2020-02-11 15:14:09"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "a80604fa1c312c49244fb416bf190ccf0f5c1536",
+          "last": "a80604fa1c312c49244fb416bf190ccf0f5c1536"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, when\ngoing to background, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n"
+        },
+        "reflog-index": {
+          "first": 12,
+          "last": 12
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/a80604fa1c312c49244fb416bf190ccf0f5c1536/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2020-02-13 09:31:28",
+          "last": "2020-02-13 09:31:28"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "bf161b20b412c54b099a524250897c0dd8f65d0e",
+          "last": "bf161b20b412c54b099a524250897c0dd8f65d0e"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, when\ngoing to background, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n"
+        },
+        "reflog-index": {
+          "first": 11,
+          "last": 11
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/bf161b20b412c54b099a524250897c0dd8f65d0e/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2020-04-03 12:42:29",
+          "last": "2020-04-03 12:42:29"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "fa18d68d32c9c42e9db87464a220e02e6a99f83a",
+          "last": "fa18d68d32c9c42e9db87464a220e02e6a99f83a"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, when\ngoing to background, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n"
+        },
+        "reflog-index": {
+          "first": 10,
+          "last": 10
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/fa18d68d32c9c42e9db87464a220e02e6a99f83a/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2020-04-14 14:03:06",
+          "last": "2020-04-14 14:03:06"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "c070eca2413f6740d4e21eca3c5ccef595fa7cea",
+          "last": "c070eca2413f6740d4e21eca3c5ccef595fa7cea"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, when\ngoing to background, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "foreground": "The ping was submitted when the application went to foreground, which\nincludes when the application starts.\n\nThe `glean.baseline.duration` metric is never sent in these pings.\n"
+        },
+        "reflog-index": {
+          "first": 9,
+          "last": 9
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/c070eca2413f6740d4e21eca3c5ccef595fa7cea/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2020-04-14 14:44:13",
+          "last": "2020-04-14 14:44:13"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "98a59bcb535ecfe73e50d0da4788aca6484da966",
+          "last": "98a59bcb535ecfe73e50d0da4788aca6484da966"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, when\ngoing to background, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "foreground": "The ping was submitted when the application went to foreground, which\nincludes when the application starts.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n"
+        },
+        "reflog-index": {
+          "first": 8,
+          "last": 8
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/98a59bcb535ecfe73e50d0da4788aca6484da966/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2020-06-30 14:17:36",
+          "last": "2020-06-30 14:17:36"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library itself, and not explicitly set by the application or included in the application's `metrics.yaml` file. The `baseline` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "a259debf8250d74732d1442ffb0ddd3068234a9b",
+          "last": "a259debf8250d74732d1442ffb0ddd3068234a9b"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, when\ngoing to background, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "foreground": "The ping was submitted when the application went to foreground, which\nincludes when the application starts.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n"
+        },
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/a259debf8250d74732d1442ffb0ddd3068234a9b/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2020-07-27 22:38:27",
+          "last": "2020-07-27 22:38:27"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library\nitself, and not explicitly set by the application or included in the\napplication's `metrics.yaml` file.\nThe `baseline` ping is automatically sent when the application is moved to\nthe background.\n",
+        "git-commits": {
+          "first": "657909f47c1a00b662a47cf875cffc37f9ece775",
+          "last": "657909f47c1a00b662a47cf875cffc37f9ece775"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, when\ngoing to background, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "foreground": "The ping was submitted when the application went to foreground, which\nincludes when the application starts.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n"
+        },
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/657909f47c1a00b662a47cf875cffc37f9ece775/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2020-10-27 11:33:59",
+          "last": "2020-10-27 11:33:59"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library\nitself, and not explicitly set by the application or included in the\napplication's `metrics.yaml` file.\nThe `baseline` ping is automatically sent when the application is moved to\nthe background.\n",
+        "git-commits": {
+          "first": "b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8",
+          "last": "b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, when\ngoing to background, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "foreground": "The ping was submitted when the application went to foreground, which\nincludes when the application starts.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n"
+        },
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2021-01-26 17:23:03",
+          "last": "2021-01-26 17:23:03"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library\nitself, and not explicitly set by the application or included in the\napplication's `metrics.yaml` file.\nThe `baseline` ping is automatically sent when the application is moved to\nthe background.\n",
+        "git-commits": {
+          "first": "9442337687333147137d9e66e1b0e922eb2694e7",
+          "last": "9442337687333147137d9e66e1b0e922eb2694e7"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "active": "The ping was submitted when the application became active again, which\nincludes when the application starts.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, before\nbecoming inactive, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "inactive": "The ping was submitted before becoming inactive.\n"
+        },
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/9442337687333147137d9e66e1b0e922eb2694e7/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2021-01-26 17:23:03",
+          "last": "2021-01-26 17:23:03"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library\nitself, and not explicitly set by the application or included in the\napplication's `metrics.yaml` file.\nThe `baseline` ping is automatically sent when the application is moved to\nthe background.\n",
+        "git-commits": {
+          "first": "a11f6c0259616590634009f1d60ca79f9a2ab311",
+          "last": "a11f6c0259616590634009f1d60ca79f9a2ab311"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "active": "The ping was submitted when the application became active again, which\nincludes when the application starts.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, before\nbecoming inactive, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "inactive": "The ping was submitted before becoming inactive.\n"
+        },
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/a11f6c0259616590634009f1d60ca79f9a2ab311/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2021-01-27 13:29:17",
+          "last": "2021-01-27 13:29:17"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library\nitself, and not explicitly set by the application or included in the\napplication's `metrics.yaml` file.\nThe `baseline` ping is automatically sent when the application is moved to\nthe background.\n",
+        "git-commits": {
+          "first": "86a3eab28e46bd5fb991434ce65a60671ac7c82f",
+          "last": "86a3eab28e46bd5fb991434ce65a60671ac7c82f"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "active": "The ping was submitted when the application became active again, which\nincludes when the application starts. In earlier versions, this was called\n`foreground`.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, before\nbecoming inactive, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "inactive": "The ping was submitted when becoming inactive. In earlier versions, this\nwas called `background`.\n"
+        },
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/86a3eab28e46bd5fb991434ce65a60671ac7c82f/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2021-04-13 15:49:17",
+          "last": "2021-04-13 15:49:17"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library\nitself, and not explicitly set by the application or included in the\napplication's `metrics.yaml` file.\nThe `baseline` ping is automatically sent when the application is moved to\nthe background.\n",
+        "git-commits": {
+          "first": "f22b3e19e018bb8de799801eb1436d79d3fd6bcd",
+          "last": "f22b3e19e018bb8de799801eb1436d79d3fd6bcd"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "active": "The ping was submitted when the application became active again, which\nincludes when the application starts. In earlier versions, this was called\n`foreground`.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, before\nbecoming inactive, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "inactive": "The ping was submitted when becoming inactive. In earlier versions, this\nwas called `background`.\n"
+        },
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/f22b3e19e018bb8de799801eb1436d79d3fd6bcd/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2021-04-29 14:24:12",
+          "last": "2021-04-29 14:24:12"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library\nitself, and not explicitly set by the application or included in the\napplication's `metrics.yaml` file.\nThe `baseline` ping is automatically sent when the application is moved to\nthe background.\n",
+        "git-commits": {
+          "first": "95685448ba4df12c9202cd9f34a12198df3cb5c6",
+          "last": "95685448ba4df12c9202cd9f34a12198df3cb5c6"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "active": "The ping was submitted when the application became active again, which\nincludes when the application starts. In earlier versions, this was called\n`foreground`.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, before\nbecoming inactive, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "inactive": "The ping was submitted when becoming inactive. In earlier versions, this\nwas called `background`.\n"
+        },
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/95685448ba4df12c9202cd9f34a12198df3cb5c6/glean-core/pings.yaml#L12"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1599877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1599877#c25"
+        ],
+        "dates": {
+          "first": "2021-11-22 13:19:13",
+          "last": "2021-11-22 13:19:13"
+        },
+        "description": "This ping is intended to provide metrics that are managed by the library\nitself, and not explicitly set by the application or included in the\napplication's `metrics.yaml` file.\nThe `baseline` ping is automatically sent when the application is moved to\nthe background.\n",
+        "git-commits": {
+          "first": "792da654f54bc10800a45dbffca872da1c91c148",
+          "last": "792da654f54bc10800a45dbffca872da1c91c148"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "active": "The ping was submitted when the application became active again, which\nincludes when the application starts. In earlier versions, this was called\n`foreground`.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "dirty_startup": "The ping was submitted at startup, because the application process was\nkilled before the Glean SDK had the chance to generate this ping, before\nbecoming inactive, in the last session.\n\n*Note*: this ping will not contain the `glean.baseline.duration` metric.\n",
+          "inactive": "The ping was submitted when becoming inactive. In earlier versions, this\nwas called `background`.\n"
+        },
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/792da654f54bc10800a45dbffca872da1c91c148/glean-core/pings.yaml#L12"
+      }
+    ],
+    "in-source": true,
+    "name": "baseline"
+  },
+  "deletion-request": {
+    "history": [
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/1587095#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:01:39",
+          "last": "2019-11-28 12:01:39"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla.\n",
+        "git-commits": {
+          "first": "f8c2677ea95cc5578c855fcc0308cb7af05dbf16",
+          "last": "f8c2677ea95cc5578c855fcc0308cb7af05dbf16"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 19,
+          "last": 19
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/f8c2677ea95cc5578c855fcc0308cb7af05dbf16/glean-core/pings.yaml#L58"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/1587095#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:01:39",
+          "last": "2019-11-28 12:01:39"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla.\n",
+        "git-commits": {
+          "first": "e9da1aaeffbc73f69161dd9e9486cac6a77df722",
+          "last": "e9da1aaeffbc73f69161dd9e9486cac6a77df722"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 18,
+          "last": 18
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/e9da1aaeffbc73f69161dd9e9486cac6a77df722/glean-core/pings.yaml#L58"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/1587095#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:12:11",
+          "last": "2019-11-28 12:12:11"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla.\n",
+        "git-commits": {
+          "first": "f359ef547f1b42544224ea47080371cf358afcaa",
+          "last": "f359ef547f1b42544224ea47080371cf358afcaa"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 17,
+          "last": 17
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/f359ef547f1b42544224ea47080371cf358afcaa/glean-core/pings.yaml#L58"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/1587095#c3"
+        ],
+        "dates": {
+          "first": "2019-11-29 10:12:48",
+          "last": "2019-11-29 10:12:48"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "b91edaa1afda128e5c9be88a94e26598f65ace54",
+          "last": "b91edaa1afda128e5c9be88a94e26598f65ace54"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 16,
+          "last": 16
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/b91edaa1afda128e5c9be88a94e26598f65ace54/glean-core/pings.yaml#L58"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2019-11-29 10:12:48",
+          "last": "2019-11-29 10:12:48"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "5cdaedf87135133410d5811ae0f8baf7b47a5015",
+          "last": "5cdaedf87135133410d5811ae0f8baf7b47a5015"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 15,
+          "last": 15
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/5cdaedf87135133410d5811ae0f8baf7b47a5015/glean-core/pings.yaml#L58"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2019-12-13 10:50:30",
+          "last": "2019-12-13 10:50:30"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "cc4bc7952c8c80043659959f0a533668657ce783",
+          "last": "cc4bc7952c8c80043659959f0a533668657ce783"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 14,
+          "last": 14
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/cc4bc7952c8c80043659959f0a533668657ce783/glean-core/pings.yaml#L58"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2020-02-11 15:10:10",
+          "last": "2020-02-11 15:10:10"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "2e3f59be19cd122d722f1ef8d37bca26fa896deb",
+          "last": "2e3f59be19cd122d722f1ef8d37bca26fa896deb"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 13,
+          "last": 13
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/2e3f59be19cd122d722f1ef8d37bca26fa896deb/glean-core/pings.yaml#L76"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2020-02-11 15:14:09",
+          "last": "2020-02-11 15:14:09"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "a80604fa1c312c49244fb416bf190ccf0f5c1536",
+          "last": "a80604fa1c312c49244fb416bf190ccf0f5c1536"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 12,
+          "last": 12
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/a80604fa1c312c49244fb416bf190ccf0f5c1536/glean-core/pings.yaml#L86"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2020-02-13 09:31:28",
+          "last": "2020-02-13 09:31:28"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "bf161b20b412c54b099a524250897c0dd8f65d0e",
+          "last": "bf161b20b412c54b099a524250897c0dd8f65d0e"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 11,
+          "last": 11
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/bf161b20b412c54b099a524250897c0dd8f65d0e/glean-core/pings.yaml#L87"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2020-04-03 12:42:29",
+          "last": "2020-04-03 12:42:29"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "fa18d68d32c9c42e9db87464a220e02e6a99f83a",
+          "last": "fa18d68d32c9c42e9db87464a220e02e6a99f83a"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 10,
+          "last": 10
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/fa18d68d32c9c42e9db87464a220e02e6a99f83a/glean-core/pings.yaml#L96"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2020-04-14 14:03:06",
+          "last": "2020-04-14 14:03:06"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "c070eca2413f6740d4e21eca3c5ccef595fa7cea",
+          "last": "c070eca2413f6740d4e21eca3c5ccef595fa7cea"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 9,
+          "last": 9
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/c070eca2413f6740d4e21eca3c5ccef595fa7cea/glean-core/pings.yaml#L101"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2020-04-14 14:44:13",
+          "last": "2020-04-14 14:44:13"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "98a59bcb535ecfe73e50d0da4788aca6484da966",
+          "last": "98a59bcb535ecfe73e50d0da4788aca6484da966"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 8,
+          "last": 8
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/98a59bcb535ecfe73e50d0da4788aca6484da966/glean-core/pings.yaml#L101"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2020-06-30 14:17:36",
+          "last": "2020-06-30 14:17:36"
+        },
+        "description": "This ping is submitted when a user opts out of sending technical and interaction data to Mozilla. This ping is intended to communicate to the Data Pipeline that the user wishes to have their reported Telemetry data deleted. As such it attempts to send itself at the moment the user opts out of data collection.\n",
+        "git-commits": {
+          "first": "a259debf8250d74732d1442ffb0ddd3068234a9b",
+          "last": "a259debf8250d74732d1442ffb0ddd3068234a9b"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/a259debf8250d74732d1442ffb0ddd3068234a9b/glean-core/pings.yaml#L102"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2020-07-27 22:38:27",
+          "last": "2020-07-27 22:38:27"
+        },
+        "description": "This ping is submitted when a user opts out of\nsending technical and interaction data to Mozilla.\nThis ping is intended to communicate to the Data Pipeline\nthat the user wishes to have their reported Telemetry data deleted.\nAs such it attempts to send itself at the moment the user\nopts out of data collection.\n",
+        "git-commits": {
+          "first": "657909f47c1a00b662a47cf875cffc37f9ece775",
+          "last": "657909f47c1a00b662a47cf875cffc37f9ece775"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/657909f47c1a00b662a47cf875cffc37f9ece775/glean-core/pings.yaml#L102"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2020-10-27 11:33:59",
+          "last": "2020-10-27 11:33:59"
+        },
+        "description": "This ping is submitted when a user opts out of\nsending technical and interaction data to Mozilla.\nThis ping is intended to communicate to the Data Pipeline\nthat the user wishes to have their reported Telemetry data deleted.\nAs such it attempts to send itself at the moment the user\nopts out of data collection.\n",
+        "git-commits": {
+          "first": "b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8",
+          "last": "b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8/glean-core/pings.yaml#L102"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2021-01-26 17:23:03",
+          "last": "2021-01-26 17:23:03"
+        },
+        "description": "This ping is submitted when a user opts out of\nsending technical and interaction data to Mozilla.\nThis ping is intended to communicate to the Data Pipeline\nthat the user wishes to have their reported Telemetry data deleted.\nAs such it attempts to send itself at the moment the user\nopts out of data collection.\n",
+        "git-commits": {
+          "first": "9442337687333147137d9e66e1b0e922eb2694e7",
+          "last": "9442337687333147137d9e66e1b0e922eb2694e7"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/9442337687333147137d9e66e1b0e922eb2694e7/glean-core/pings.yaml#L102"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2021-01-26 17:23:03",
+          "last": "2021-01-26 17:23:03"
+        },
+        "description": "This ping is submitted when a user opts out of\nsending technical and interaction data to Mozilla.\nThis ping is intended to communicate to the Data Pipeline\nthat the user wishes to have their reported Telemetry data deleted.\nAs such it attempts to send itself at the moment the user\nopts out of data collection.\n",
+        "git-commits": {
+          "first": "a11f6c0259616590634009f1d60ca79f9a2ab311",
+          "last": "a11f6c0259616590634009f1d60ca79f9a2ab311"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/a11f6c0259616590634009f1d60ca79f9a2ab311/glean-core/pings.yaml#L102"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2021-01-27 13:29:17",
+          "last": "2021-01-27 13:29:17"
+        },
+        "description": "This ping is submitted when a user opts out of\nsending technical and interaction data to Mozilla.\nThis ping is intended to communicate to the Data Pipeline\nthat the user wishes to have their reported Telemetry data deleted.\nAs such it attempts to send itself at the moment the user\nopts out of data collection.\n",
+        "git-commits": {
+          "first": "86a3eab28e46bd5fb991434ce65a60671ac7c82f",
+          "last": "86a3eab28e46bd5fb991434ce65a60671ac7c82f"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/86a3eab28e46bd5fb991434ce65a60671ac7c82f/glean-core/pings.yaml#L105"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6"
+        ],
+        "dates": {
+          "first": "2021-04-13 15:49:17",
+          "last": "2021-04-13 15:49:17"
+        },
+        "description": "This ping is submitted when a user opts out of\nsending technical and interaction data to Mozilla.\nThis ping is intended to communicate to the Data Pipeline\nthat the user wishes to have their reported Telemetry data deleted.\nAs such it attempts to send itself at the moment the user\nopts out of data collection.\n",
+        "git-commits": {
+          "first": "f22b3e19e018bb8de799801eb1436d79d3fd6bcd",
+          "last": "f22b3e19e018bb8de799801eb1436d79d3fd6bcd"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/f22b3e19e018bb8de799801eb1436d79d3fd6bcd/glean-core/pings.yaml#L105"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095",
+          "https://bugzilla.mozilla.org/1702622"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1702622#c2"
+        ],
+        "dates": {
+          "first": "2021-04-29 14:24:12",
+          "last": "2021-04-29 14:24:12"
+        },
+        "description": "This ping is submitted when a user opts out of\nsending technical and interaction data to Mozilla.\nThis ping is intended to communicate to the Data Pipeline\nthat the user wishes to have their reported Telemetry data deleted.\nAs such it attempts to send itself at the moment the user\nopts out of data collection.\n",
+        "git-commits": {
+          "first": "95685448ba4df12c9202cd9f34a12198df3cb5c6",
+          "last": "95685448ba4df12c9202cd9f34a12198df3cb5c6"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "at_init": "The ping was submitted at startup.\nGlean discovered that between the last time it was run and this time,\nupload of data has been disabled.\n",
+          "set_upload_enabled": "The ping was submitted between Glean init and Glean shutdown.\nGlean was told after init but before shutdown that upload has changed\nfrom enabled to disabled."
+        },
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/95685448ba4df12c9202cd9f34a12198df3cb5c6/glean-core/pings.yaml#L105"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1587095",
+          "https://bugzilla.mozilla.org/1702622"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1587095#c6",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1702622#c2"
+        ],
+        "dates": {
+          "first": "2021-11-22 13:19:13",
+          "last": "2021-11-22 13:19:13"
+        },
+        "description": "This ping is submitted when a user opts out of\nsending technical and interaction data to Mozilla.\nThis ping is intended to communicate to the Data Pipeline\nthat the user wishes to have their reported Telemetry data deleted.\nAs such it attempts to send itself at the moment the user\nopts out of data collection.\n",
+        "git-commits": {
+          "first": "792da654f54bc10800a45dbffca872da1c91c148",
+          "last": "792da654f54bc10800a45dbffca872da1c91c148"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "at_init": "The ping was submitted at startup.\nGlean discovered that between the last time it was run and this time,\nupload of data has been disabled.\n",
+          "set_upload_enabled": "The ping was submitted between Glean init and Glean shutdown.\nGlean was told after init but before shutdown that upload has changed\nfrom enabled to disabled."
+        },
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": true,
+        "source_url": "https://github.com/mozilla/glean/blob/792da654f54bc10800a45dbffca872da1c91c148/glean-core/pings.yaml#L105"
+      }
+    ],
+    "in-source": true,
+    "name": "deletion-request"
+  },
+  "events": {
+    "history": [
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-06 18:46:02",
+          "last": "2019-11-06 18:46:02"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "1f06101e4db4a2eff1b437f15f2f95456141e75a",
+          "last": "1f06101e4db4a2eff1b437f15f2f95456141e75a"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 20,
+          "last": 20
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/1f06101e4db4a2eff1b437f15f2f95456141e75a/glean-core/pings.yaml#L45"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:01:39",
+          "last": "2019-11-28 12:01:39"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "f8c2677ea95cc5578c855fcc0308cb7af05dbf16",
+          "last": "f8c2677ea95cc5578c855fcc0308cb7af05dbf16"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 19,
+          "last": 19
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/f8c2677ea95cc5578c855fcc0308cb7af05dbf16/glean-core/pings.yaml#L45"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:01:39",
+          "last": "2019-11-28 12:01:39"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "e9da1aaeffbc73f69161dd9e9486cac6a77df722",
+          "last": "e9da1aaeffbc73f69161dd9e9486cac6a77df722"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 18,
+          "last": 18
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/e9da1aaeffbc73f69161dd9e9486cac6a77df722/glean-core/pings.yaml#L45"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:12:11",
+          "last": "2019-11-28 12:12:11"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "f359ef547f1b42544224ea47080371cf358afcaa",
+          "last": "f359ef547f1b42544224ea47080371cf358afcaa"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 17,
+          "last": 17
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/f359ef547f1b42544224ea47080371cf358afcaa/glean-core/pings.yaml#L45"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-29 10:12:48",
+          "last": "2019-11-29 10:12:48"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "b91edaa1afda128e5c9be88a94e26598f65ace54",
+          "last": "b91edaa1afda128e5c9be88a94e26598f65ace54"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 16,
+          "last": 16
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/b91edaa1afda128e5c9be88a94e26598f65ace54/glean-core/pings.yaml#L45"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-29 10:12:48",
+          "last": "2019-11-29 10:12:48"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "5cdaedf87135133410d5811ae0f8baf7b47a5015",
+          "last": "5cdaedf87135133410d5811ae0f8baf7b47a5015"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 15,
+          "last": 15
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/5cdaedf87135133410d5811ae0f8baf7b47a5015/glean-core/pings.yaml#L45"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-12-13 10:50:30",
+          "last": "2019-12-13 10:50:30"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "cc4bc7952c8c80043659959f0a533668657ce783",
+          "last": "cc4bc7952c8c80043659959f0a533668657ce783"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 14,
+          "last": 14
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/cc4bc7952c8c80043659959f0a533668657ce783/glean-core/pings.yaml#L45"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-02-11 15:10:10",
+          "last": "2020-02-11 15:10:10"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "2e3f59be19cd122d722f1ef8d37bca26fa896deb",
+          "last": "2e3f59be19cd122d722f1ef8d37bca26fa896deb"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 13,
+          "last": 13
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/2e3f59be19cd122d722f1ef8d37bca26fa896deb/glean-core/pings.yaml#L63"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-02-11 15:14:09",
+          "last": "2020-02-11 15:14:09"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "a80604fa1c312c49244fb416bf190ccf0f5c1536",
+          "last": "a80604fa1c312c49244fb416bf190ccf0f5c1536"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 12,
+          "last": 12
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/a80604fa1c312c49244fb416bf190ccf0f5c1536/glean-core/pings.yaml#L73"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-02-13 09:31:28",
+          "last": "2020-02-13 09:31:28"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "bf161b20b412c54b099a524250897c0dd8f65d0e",
+          "last": "bf161b20b412c54b099a524250897c0dd8f65d0e"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 11,
+          "last": 11
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/bf161b20b412c54b099a524250897c0dd8f65d0e/glean-core/pings.yaml#L74"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-04-03 12:42:29",
+          "last": "2020-04-03 12:42:29"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "fa18d68d32c9c42e9db87464a220e02e6a99f83a",
+          "last": "fa18d68d32c9c42e9db87464a220e02e6a99f83a"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 10,
+          "last": 10
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/fa18d68d32c9c42e9db87464a220e02e6a99f83a/glean-core/pings.yaml#L74"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-04-14 14:03:06",
+          "last": "2020-04-14 14:03:06"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "c070eca2413f6740d4e21eca3c5ccef595fa7cea",
+          "last": "c070eca2413f6740d4e21eca3c5ccef595fa7cea"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 9,
+          "last": 9
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/c070eca2413f6740d4e21eca3c5ccef595fa7cea/glean-core/pings.yaml#L79"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-04-14 14:44:13",
+          "last": "2020-04-14 14:44:13"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "98a59bcb535ecfe73e50d0da4788aca6484da966",
+          "last": "98a59bcb535ecfe73e50d0da4788aca6484da966"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 8,
+          "last": 8
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/98a59bcb535ecfe73e50d0da4788aca6484da966/glean-core/pings.yaml#L79"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-06-30 14:17:36",
+          "last": "2020-06-30 14:17:36"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric information. The `events` ping is automatically sent when the application is moved to the background.\n",
+        "git-commits": {
+          "first": "a259debf8250d74732d1442ffb0ddd3068234a9b",
+          "last": "a259debf8250d74732d1442ffb0ddd3068234a9b"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/a259debf8250d74732d1442ffb0ddd3068234a9b/glean-core/pings.yaml#L80"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-07-27 22:38:27",
+          "last": "2020-07-27 22:38:27"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric\ninformation. The `events` ping is automatically sent when the application is\nmoved to the background.\n",
+        "git-commits": {
+          "first": "657909f47c1a00b662a47cf875cffc37f9ece775",
+          "last": "657909f47c1a00b662a47cf875cffc37f9ece775"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/657909f47c1a00b662a47cf875cffc37f9ece775/glean-core/pings.yaml#L80"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2020-10-27 11:33:59",
+          "last": "2020-10-27 11:33:59"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric\ninformation. The `events` ping is automatically sent when the application is\nmoved to the background.\n",
+        "git-commits": {
+          "first": "b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8",
+          "last": "b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8/glean-core/pings.yaml#L80"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2021-01-26 17:23:03",
+          "last": "2021-01-26 17:23:03"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric\ninformation. The `events` ping is automatically sent when the application is\nmoved to the background.\n",
+        "git-commits": {
+          "first": "9442337687333147137d9e66e1b0e922eb2694e7",
+          "last": "9442337687333147137d9e66e1b0e922eb2694e7"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "background": "The ping was submitted before going to background.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/9442337687333147137d9e66e1b0e922eb2694e7/glean-core/pings.yaml#L80"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2021-01-26 17:23:03",
+          "last": "2021-01-26 17:23:03"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric\ninformation. The `events` ping is automatically sent when the application\nbecomes inactive.\n",
+        "git-commits": {
+          "first": "a11f6c0259616590634009f1d60ca79f9a2ab311",
+          "last": "a11f6c0259616590634009f1d60ca79f9a2ab311"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "inactive": "The ping was submitted before becoming inactive.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/a11f6c0259616590634009f1d60ca79f9a2ab311/glean-core/pings.yaml#L80"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2021-01-27 13:29:17",
+          "last": "2021-01-27 13:29:17"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric\ninformation. The `events` ping is automatically sent when the application\nbecomes inactive.\n",
+        "git-commits": {
+          "first": "86a3eab28e46bd5fb991434ce65a60671ac7c82f",
+          "last": "86a3eab28e46bd5fb991434ce65a60671ac7c82f"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "inactive": "The ping was submitted when becoming inactive. In earlier versions, this\nwas called `background`.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/86a3eab28e46bd5fb991434ce65a60671ac7c82f/glean-core/pings.yaml#L82"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2021-04-13 15:49:17",
+          "last": "2021-04-13 15:49:17"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric\ninformation. The `events` ping is automatically sent when the application\nbecomes inactive.\n",
+        "git-commits": {
+          "first": "f22b3e19e018bb8de799801eb1436d79d3fd6bcd",
+          "last": "f22b3e19e018bb8de799801eb1436d79d3fd6bcd"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "inactive": "The ping was submitted when becoming inactive. In earlier versions, this\nwas called `background`.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/f22b3e19e018bb8de799801eb1436d79d3fd6bcd/glean-core/pings.yaml#L82"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2021-04-29 14:24:12",
+          "last": "2021-04-29 14:24:12"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric\ninformation. The `events` ping is automatically sent when the application\nbecomes inactive.\n",
+        "git-commits": {
+          "first": "95685448ba4df12c9202cd9f34a12198df3cb5c6",
+          "last": "95685448ba4df12c9202cd9f34a12198df3cb5c6"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "inactive": "The ping was submitted when becoming inactive. In earlier versions, this\nwas called `background`.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/95685448ba4df12c9202cd9f34a12198df3cb5c6/glean-core/pings.yaml#L82"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2021-11-22 13:19:13",
+          "last": "2021-11-22 13:19:13"
+        },
+        "description": "The events ping's purpose is to transport all of the event metric\ninformation. The `events` ping is automatically sent when the application\nbecomes inactive.\n",
+        "git-commits": {
+          "first": "792da654f54bc10800a45dbffca872da1c91c148",
+          "last": "792da654f54bc10800a45dbffca872da1c91c148"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "inactive": "The ping was submitted when becoming inactive. In earlier versions, this\nwas called `background`.\n",
+          "max_capacity": "The maximum number of events was reached (default 500 events).\n",
+          "startup": "The ping was submitted at startup. The events ping is always sent if there\nare any pending events at startup, because event timestamps can not be\nmixed across runs of the application.\n"
+        },
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/792da654f54bc10800a45dbffca872da1c91c148/glean-core/pings.yaml#L82"
+      }
+    ],
+    "in-source": true,
+    "name": "events"
+  },
+  "metrics": {
+    "history": [
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-06 18:46:02",
+          "last": "2019-11-06 18:46:02"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "1f06101e4db4a2eff1b437f15f2f95456141e75a",
+          "last": "1f06101e4db4a2eff1b437f15f2f95456141e75a"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 20,
+          "last": 20
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/1f06101e4db4a2eff1b437f15f2f95456141e75a/glean-core/pings.yaml#L27"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:01:39",
+          "last": "2019-11-28 12:01:39"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "f8c2677ea95cc5578c855fcc0308cb7af05dbf16",
+          "last": "f8c2677ea95cc5578c855fcc0308cb7af05dbf16"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 19,
+          "last": 19
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/f8c2677ea95cc5578c855fcc0308cb7af05dbf16/glean-core/pings.yaml#L27"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:01:39",
+          "last": "2019-11-28 12:01:39"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "e9da1aaeffbc73f69161dd9e9486cac6a77df722",
+          "last": "e9da1aaeffbc73f69161dd9e9486cac6a77df722"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 18,
+          "last": 18
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/e9da1aaeffbc73f69161dd9e9486cac6a77df722/glean-core/pings.yaml#L27"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-28 12:12:11",
+          "last": "2019-11-28 12:12:11"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "f359ef547f1b42544224ea47080371cf358afcaa",
+          "last": "f359ef547f1b42544224ea47080371cf358afcaa"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 17,
+          "last": 17
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/f359ef547f1b42544224ea47080371cf358afcaa/glean-core/pings.yaml#L27"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-29 10:12:48",
+          "last": "2019-11-29 10:12:48"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "b91edaa1afda128e5c9be88a94e26598f65ace54",
+          "last": "b91edaa1afda128e5c9be88a94e26598f65ace54"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 16,
+          "last": 16
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/b91edaa1afda128e5c9be88a94e26598f65ace54/glean-core/pings.yaml#L27"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-11-29 10:12:48",
+          "last": "2019-11-29 10:12:48"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "5cdaedf87135133410d5811ae0f8baf7b47a5015",
+          "last": "5cdaedf87135133410d5811ae0f8baf7b47a5015"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 15,
+          "last": 15
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/5cdaedf87135133410d5811ae0f8baf7b47a5015/glean-core/pings.yaml#L27"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-12-13 10:50:30",
+          "last": "2019-12-13 10:50:30"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "cc4bc7952c8c80043659959f0a533668657ce783",
+          "last": "cc4bc7952c8c80043659959f0a533668657ce783"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 14,
+          "last": 14
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/cc4bc7952c8c80043659959f0a533668657ce783/glean-core/pings.yaml#L27"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2020-02-11 15:10:10",
+          "last": "2020-02-11 15:10:10"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "2e3f59be19cd122d722f1ef8d37bca26fa896deb",
+          "last": "2e3f59be19cd122d722f1ef8d37bca26fa896deb"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 13,
+          "last": 13
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/2e3f59be19cd122d722f1ef8d37bca26fa896deb/glean-core/pings.yaml#L27"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2020-02-11 15:14:09",
+          "last": "2020-02-11 15:14:09"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "a80604fa1c312c49244fb416bf190ccf0f5c1536",
+          "last": "a80604fa1c312c49244fb416bf190ccf0f5c1536"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 12,
+          "last": 12
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/a80604fa1c312c49244fb416bf190ccf0f5c1536/glean-core/pings.yaml#L37"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2020-02-13 09:31:28",
+          "last": "2020-02-13 09:31:28"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "bf161b20b412c54b099a524250897c0dd8f65d0e",
+          "last": "bf161b20b412c54b099a524250897c0dd8f65d0e"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 11,
+          "last": 11
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/bf161b20b412c54b099a524250897c0dd8f65d0e/glean-core/pings.yaml#L38"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2020-04-03 12:42:29",
+          "last": "2020-04-03 12:42:29"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "fa18d68d32c9c42e9db87464a220e02e6a99f83a",
+          "last": "fa18d68d32c9c42e9db87464a220e02e6a99f83a"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 10,
+          "last": 10
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/fa18d68d32c9c42e9db87464a220e02e6a99f83a/glean-core/pings.yaml#L38"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2020-04-14 14:03:06",
+          "last": "2020-04-14 14:03:06"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "c070eca2413f6740d4e21eca3c5ccef595fa7cea",
+          "last": "c070eca2413f6740d4e21eca3c5ccef595fa7cea"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 9,
+          "last": 9
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/c070eca2413f6740d4e21eca3c5ccef595fa7cea/glean-core/pings.yaml#L43"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2020-04-14 14:44:13",
+          "last": "2020-04-14 14:44:13"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "98a59bcb535ecfe73e50d0da4788aca6484da966",
+          "last": "98a59bcb535ecfe73e50d0da4788aca6484da966"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 8,
+          "last": 8
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/98a59bcb535ecfe73e50d0da4788aca6484da966/glean-core/pings.yaml#L43"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2020-06-30 14:17:36",
+          "last": "2020-06-30 14:17:36"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly set by the application or are included in the application's `metrics.yaml` file (except events). The reported data is tied to the ping's *measurement window*, which is the time between the collection of two `metrics` ping. Ideally, this window is expected to be about 24 hours, given that the collection is scheduled daily at 4AM. Data in the `ping_info` section of the ping can be used to infer the length of this window.\n",
+        "git-commits": {
+          "first": "a259debf8250d74732d1442ffb0ddd3068234a9b",
+          "last": "a259debf8250d74732d1442ffb0ddd3068234a9b"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/a259debf8250d74732d1442ffb0ddd3068234a9b/glean-core/pings.yaml#L44"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2020-07-27 22:38:27",
+          "last": "2020-07-27 22:38:27"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly\nset by the application or are included in the application's `metrics.yaml`\nfile (except events).\nThe reported data is tied to the ping's *measurement window*, which is the\ntime between the collection of two `metrics` ping. Ideally, this window is\nexpected to be about 24 hours, given that the collection is scheduled daily\nat 4AM. Data in the `ping_info` section of the ping can be used to infer the\nlength of this window.\n",
+        "git-commits": {
+          "first": "657909f47c1a00b662a47cf875cffc37f9ece775",
+          "last": "657909f47c1a00b662a47cf875cffc37f9ece775"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/657909f47c1a00b662a47cf875cffc37f9ece775/glean-core/pings.yaml#L44"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2020-10-27 11:33:59",
+          "last": "2020-10-27 11:33:59"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly\nset by the application or are included in the application's `metrics.yaml`\nfile (except events).\nThe reported data is tied to the ping's *measurement window*, which is the\ntime between the collection of two `metrics` ping. Ideally, this window is\nexpected to be about 24 hours, given that the collection is scheduled daily\nat 4AM. Data in the `ping_info` section of the ping can be used to infer the\nlength of this window.\n",
+        "git-commits": {
+          "first": "b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8",
+          "last": "b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/b26dc61eb1eb6f255a46ade78ae51d7ce1da77b8/glean-core/pings.yaml#L44"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2021-01-26 17:23:03",
+          "last": "2021-01-26 17:23:03"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly\nset by the application or are included in the application's `metrics.yaml`\nfile (except events).\nThe reported data is tied to the ping's *measurement window*, which is the\ntime between the collection of two `metrics` ping. Ideally, this window is\nexpected to be about 24 hours, given that the collection is scheduled daily\nat 4AM. Data in the `ping_info` section of the ping can be used to infer the\nlength of this window.\n",
+        "git-commits": {
+          "first": "9442337687333147137d9e66e1b0e922eb2694e7",
+          "last": "9442337687333147137d9e66e1b0e922eb2694e7"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/9442337687333147137d9e66e1b0e922eb2694e7/glean-core/pings.yaml#L44"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2021-01-26 17:23:03",
+          "last": "2021-01-26 17:23:03"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly\nset by the application or are included in the application's `metrics.yaml`\nfile (except events).\nThe reported data is tied to the ping's *measurement window*, which is the\ntime between the collection of two `metrics` ping. Ideally, this window is\nexpected to be about 24 hours, given that the collection is scheduled daily\nat 4AM. Data in the `ping_info` section of the ping can be used to infer the\nlength of this window.\n",
+        "git-commits": {
+          "first": "a11f6c0259616590634009f1d60ca79f9a2ab311",
+          "last": "a11f6c0259616590634009f1d60ca79f9a2ab311"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/a11f6c0259616590634009f1d60ca79f9a2ab311/glean-core/pings.yaml#L44"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2021-01-27 13:29:17",
+          "last": "2021-01-27 13:29:17"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly\nset by the application or are included in the application's `metrics.yaml`\nfile (except events).\nThe reported data is tied to the ping's *measurement window*, which is the\ntime between the collection of two `metrics` ping. Ideally, this window is\nexpected to be about 24 hours, given that the collection is scheduled daily\nat 4AM. Data in the `ping_info` section of the ping can be used to infer the\nlength of this window.\n",
+        "git-commits": {
+          "first": "86a3eab28e46bd5fb991434ce65a60671ac7c82f",
+          "last": "86a3eab28e46bd5fb991434ce65a60671ac7c82f"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/86a3eab28e46bd5fb991434ce65a60671ac7c82f/glean-core/pings.yaml#L46"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2021-04-13 15:49:17",
+          "last": "2021-04-13 15:49:17"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly\nset by the application or are included in the application's `metrics.yaml`\nfile (except events).\nThe reported data is tied to the ping's *measurement window*, which is the\ntime between the collection of two `metrics` ping. Ideally, this window is\nexpected to be about 24 hours, given that the collection is scheduled daily\nat 4AM. Data in the `ping_info` section of the ping can be used to infer the\nlength of this window.\n",
+        "git-commits": {
+          "first": "f22b3e19e018bb8de799801eb1436d79d3fd6bcd",
+          "last": "f22b3e19e018bb8de799801eb1436d79d3fd6bcd"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/f22b3e19e018bb8de799801eb1436d79d3fd6bcd/glean-core/pings.yaml#L46"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2021-04-29 14:24:12",
+          "last": "2021-04-29 14:24:12"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly\nset by the application or are included in the application's `metrics.yaml`\nfile (except events).\nThe reported data is tied to the ping's *measurement window*, which is the\ntime between the collection of two `metrics` ping. Ideally, this window is\nexpected to be about 24 hours, given that the collection is scheduled daily\nat 4AM. Data in the `ping_info` section of the ping can be used to infer the\nlength of this window.\n",
+        "git-commits": {
+          "first": "95685448ba4df12c9202cd9f34a12198df3cb5c6",
+          "last": "95685448ba4df12c9202cd9f34a12198df3cb5c6"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/95685448ba4df12c9202cd9f34a12198df3cb5c6/glean-core/pings.yaml#L46"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1557048#c13"
+        ],
+        "dates": {
+          "first": "2021-11-22 13:19:13",
+          "last": "2021-11-22 13:19:13"
+        },
+        "description": "The `metrics` ping is intended for all of the metrics that are explicitly\nset by the application or are included in the application's `metrics.yaml`\nfile (except events).\nThe reported data is tied to the ping's *measurement window*, which is the\ntime between the collection of two `metrics` ping. Ideally, this window is\nexpected to be about 24 hours, given that the collection is scheduled daily\nat 4AM. Data in the `ping_info` section of the ping can be used to infer the\nlength of this window.\n",
+        "git-commits": {
+          "first": "792da654f54bc10800a45dbffca872da1c91c148",
+          "last": "792da654f54bc10800a45dbffca872da1c91c148"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reasons": {
+          "overdue": "The last ping wasn't submitted on the current calendar day, but it's after\n4am, so this ping submitted immediately\n",
+          "reschedule": "A ping was just submitted. This ping was rescheduled for the next calendar\nday at 4am.\n",
+          "today": "The last ping wasn't submitted on the current calendar day, but it is\nstill before 4am, so schedule to send this ping on the current calendar\nday at 4am.\n",
+          "tomorrow": "The last ping was already submitted on the current calendar day, so\nschedule this ping for the next calendar day at 4am.\n",
+          "upgrade": "This ping was submitted at startup because the application was just\nupgraded.\n"
+        },
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/glean/blob/792da654f54bc10800a45dbffca872da1c91c148/glean-core/pings.yaml#L46"
+      }
+    ],
+    "in-source": true,
+    "name": "metrics"
+  }
+}

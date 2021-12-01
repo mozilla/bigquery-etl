@@ -1,0 +1,2128 @@
+{
+  "logins_store.key_regenerated_corrupt": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/4554"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla/application-services/issues/4582"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-11-02 13:35:37",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The encryption key was regenerated because it didn't match the encrypted data\n",
+        "disabled": false,
+        "expires": "2022-04-18",
+        "extra_keys": {},
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a3c6d433e13f2999dc67291ea7b1181128a19460",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/a3c6d433e13f2999dc67291ea7b1181128a19460/components/logins/android/metrics.yaml#L37",
+        "type": "event",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.key_regenerated_corrupt",
+    "type": "event"
+  },
+  "logins_store.key_regenerated_lost": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/4554"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla/application-services/issues/4582"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-11-02 13:35:37",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The encryption key was regenerated because it was lost\n",
+        "disabled": false,
+        "expires": "2022-04-18",
+        "extra_keys": {},
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a3c6d433e13f2999dc67291ea7b1181128a19460",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/a3c6d433e13f2999dc67291ea7b1181128a19460/components/logins/android/metrics.yaml#L23",
+        "type": "event",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.key_regenerated_lost",
+    "type": "event"
+  },
+  "logins_store.key_regenerated_other": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/4554"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla/application-services/issues/4582"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-11-02 13:35:37",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The encryption key was regenerated for an unknown reason\n",
+        "disabled": false,
+        "expires": "2022-04-18",
+        "extra_keys": {},
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a3c6d433e13f2999dc67291ea7b1181128a19460",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/a3c6d433e13f2999dc67291ea7b1181128a19460/components/logins/android/metrics.yaml#L52",
+        "type": "event",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.key_regenerated_other",
+    "type": "event"
+  },
+  "logins_store.migration_errors": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/4064",
+          "https://github.com/mozilla/application-services/issues/4102"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla/application-services/issues/4467"
+        ],
+        "data_sensitivity": [
+          "technical",
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-09-15 21:35:21",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "Errors discovered in the migration.\n",
+        "disabled": false,
+        "expires": "2022-06-30",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b838770268b1ff3ad44b016c692a28e331d755a9",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/b838770268b1ff3ad44b016c692a28e331d755a9/components/logins/android/metrics.yaml#L184",
+        "type": "string_list",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.migration_errors",
+    "type": "string_list"
+  },
+  "logins_store.migration_num_failed": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/4064",
+          "https://github.com/mozilla/application-services/issues/4102"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla/application-services/issues/4467"
+        ],
+        "data_sensitivity": [
+          "technical",
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-09-15 21:35:21",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of login records which failed to migrate\n",
+        "disabled": false,
+        "expires": "2022-06-30",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b838770268b1ff3ad44b016c692a28e331d755a9",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/b838770268b1ff3ad44b016c692a28e331d755a9/components/logins/android/metrics.yaml#L150",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.migration_num_failed",
+    "type": "counter"
+  },
+  "logins_store.migration_num_processed": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/4064",
+          "https://github.com/mozilla/application-services/issues/4102"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla/application-services/issues/4467"
+        ],
+        "data_sensitivity": [
+          "technical",
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-09-15 21:35:21",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of login records processed by the migration\n",
+        "disabled": false,
+        "expires": "2022-06-30",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b838770268b1ff3ad44b016c692a28e331d755a9",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/b838770268b1ff3ad44b016c692a28e331d755a9/components/logins/android/metrics.yaml#L118",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.migration_num_processed",
+    "type": "counter"
+  },
+  "logins_store.migration_num_succeeded": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/4064",
+          "https://github.com/mozilla/application-services/issues/4102"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla/application-services/issues/4467"
+        ],
+        "data_sensitivity": [
+          "technical",
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-09-15 21:35:21",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of login records successfully migrated\n",
+        "disabled": false,
+        "expires": "2022-06-30",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b838770268b1ff3ad44b016c692a28e331d755a9",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/b838770268b1ff3ad44b016c692a28e331d755a9/components/logins/android/metrics.yaml#L134",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.migration_num_succeeded",
+    "type": "counter"
+  },
+  "logins_store.migration_total_duration": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/4064",
+          "https://github.com/mozilla/application-services/issues/4102"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla/application-services/issues/4467"
+        ],
+        "data_sensitivity": [
+          "technical",
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-09-15 21:35:21",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "How long the migration tool\n",
+        "disabled": false,
+        "expires": "2022-06-30",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b838770268b1ff3ad44b016c692a28e331d755a9",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/b838770268b1ff3ad44b016c692a28e331d755a9/components/logins/android/metrics.yaml#L166",
+        "time_unit": "millisecond",
+        "type": "timespan",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.migration_total_duration",
+    "type": "timespan"
+  },
+  "logins_store.read_query_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895"
+        ],
+        "dates": {
+          "first": "2019-12-12 03:09:33",
+          "last": "2019-12-12 03:09:33"
+        },
+        "description": "The total number of read operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental reads performed as part of a sync. It is intended to be used together with `read_query_error_count` to measure the  overall error rate of read operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf",
+          "last": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4e5f237b1306fc5b0b861fa2d0db27fd982589bf/components/logins/android/metrics.yaml#L56",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-06-29 01:31:27"
+        },
+        "description": "The total number of read operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental reads performed as part of a sync. It is intended to be used together with `read_query_error_count` to measure the  overall error rate of read operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "4ca7025fb7513d99200ec69c3851acf6e32cf5df"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/logins/android/metrics.yaml#L58",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-07-17 04:04:35",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The total number of read operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental reads performed as part of a sync. It is intended to be used together with `read_query_error_count` to measure the overall error rate of read operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "07fe1123c66c23562caa20be6277f65801c4cb2b",
+          "last": "07fe1123c66c23562caa20be6277f65801c4cb2b"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/07fe1123c66c23562caa20be6277f65801c4cb2b/components/logins/android/metrics.yaml#L64",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The total number of read operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental reads performed as part of a sync. It is intended to be used together with `read_query_error_count` to measure the overall error rate of read operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/logins/android/metrics.yaml#L68",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of read operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental reads performed as part of a sync. It is intended to be used together with `read_query_error_count` to measure the overall error rate of read operations on the logins store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/logins/android/metrics.yaml#L71",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.read_query_count",
+    "type": "counter"
+  },
+  "logins_store.read_query_error_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895"
+        ],
+        "dates": {
+          "first": "2019-12-12 03:09:33",
+          "last": "2019-12-12 03:09:33"
+        },
+        "description": "The total number of errors encountered during read operations on the logins store, labeled by type. It is intended to be used together with `read_query_count` to measure the overall error rate of read operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf",
+          "last": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf"
+        },
+        "labels": [
+          "interrupted",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4e5f237b1306fc5b0b861fa2d0db27fd982589bf/components/logins/android/metrics.yaml#L71",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The total number of errors encountered during read operations on the logins store, labeled by type. It is intended to be used together with `read_query_count` to measure the overall error rate of read operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "07fe1123c66c23562caa20be6277f65801c4cb2b"
+        },
+        "labels": [
+          "interrupted",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/logins/android/metrics.yaml#L74",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The total number of errors encountered during read operations on the logins store, labeled by type. It is intended to be used together with `read_query_count` to measure the overall error rate of read operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "labels": [
+          "interrupted",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/logins/android/metrics.yaml#L87",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of errors encountered during read operations on the logins store, labeled by type. It is intended to be used together with `read_query_count` to measure the overall error rate of read operations on the logins store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "labels": [
+          "interrupted",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/logins/android/metrics.yaml#L92",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.read_query_error_count",
+    "type": "labeled_counter"
+  },
+  "logins_store.read_query_time": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895"
+        ],
+        "dates": {
+          "first": "2019-12-12 03:09:33",
+          "last": "2019-12-12 03:09:33"
+        },
+        "description": "The time taken to execute a read query on the logins store (such as listing all logins, or finding a specific login by id).\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf",
+          "last": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4e5f237b1306fc5b0b861fa2d0db27fd982589bf/components/logins/android/metrics.yaml#L140",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The time taken to execute a read query on the logins store (such as listing all logins, or finding a specific login by id).\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "07fe1123c66c23562caa20be6277f65801c4cb2b"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/logins/android/metrics.yaml#L147",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The time taken to execute a read query on the logins store (such as listing all logins, or finding a specific login by id).\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/logins/android/metrics.yaml#L173",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "logins_store.read_query_time",
+    "type": "timing_distribution"
+  },
+  "logins_store.unlock_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895"
+        ],
+        "dates": {
+          "first": "2019-12-12 03:09:33",
+          "last": "2019-12-12 03:09:33"
+        },
+        "description": "The number of times the login store was unlocked. It is intended to be used together with `unlock_error_count` to measure the overall  error rate of unlocking the logins store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf",
+          "last": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4e5f237b1306fc5b0b861fa2d0db27fd982589bf/components/logins/android/metrics.yaml#L24",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-06-29 01:31:27"
+        },
+        "description": "The number of times the login store was unlocked. It is intended to be used together with `unlock_error_count` to measure the overall  error rate of unlocking the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "4ca7025fb7513d99200ec69c3851acf6e32cf5df"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/logins/android/metrics.yaml#L24",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-07-17 04:04:35",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The number of times the login store was unlocked. It is intended to be used together with `unlock_error_count` to measure the overall error rate of unlocking the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "07fe1123c66c23562caa20be6277f65801c4cb2b",
+          "last": "07fe1123c66c23562caa20be6277f65801c4cb2b"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/07fe1123c66c23562caa20be6277f65801c4cb2b/components/logins/android/metrics.yaml#L29",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The number of times the login store was unlocked. It is intended to be used together with `unlock_error_count` to measure the overall error rate of unlocking the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/logins/android/metrics.yaml#L29",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-02-26 00:05:40"
+        },
+        "description": "The number of times the login store was unlocked. It is intended to be used together with `unlock_error_count` to measure the overall error rate of unlocking the logins store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "1379aab17f898f951068833fd92be7f9dc24c6db"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/logins/android/metrics.yaml#L28",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "logins_store.unlock_count",
+    "type": "counter"
+  },
+  "logins_store.unlock_error_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895"
+        ],
+        "dates": {
+          "first": "2019-12-12 03:09:33",
+          "last": "2019-12-12 03:09:33"
+        },
+        "description": "The number of errors encountered when unlocking the logins store, labeled by type. It is intended to be used together with `unlock_count` to measure the overall error rate of unlocking the logins store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf",
+          "last": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf"
+        },
+        "labels": [
+          "invalid_key",
+          "mismatched_lock",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4e5f237b1306fc5b0b861fa2d0db27fd982589bf/components/logins/android/metrics.yaml#L38",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The number of errors encountered when unlocking the logins store, labeled by type. It is intended to be used together with `unlock_count` to measure the overall error rate of unlocking the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "07fe1123c66c23562caa20be6277f65801c4cb2b"
+        },
+        "labels": [
+          "invalid_key",
+          "mismatched_lock",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/logins/android/metrics.yaml#L39",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The number of errors encountered when unlocking the logins store, labeled by type. It is intended to be used together with `unlock_count` to measure the overall error rate of unlocking the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "labels": [
+          "invalid_key",
+          "mismatched_lock",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/logins/android/metrics.yaml#L46",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-02-26 00:05:40"
+        },
+        "description": "The number of errors encountered when unlocking the logins store, labeled by type. It is intended to be used together with `unlock_count` to measure the overall error rate of unlocking the logins store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "1379aab17f898f951068833fd92be7f9dc24c6db"
+        },
+        "labels": [
+          "invalid_key",
+          "mismatched_lock",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/logins/android/metrics.yaml#L47",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "logins_store.unlock_error_count",
+    "type": "labeled_counter"
+  },
+  "logins_store.unlock_time": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895"
+        ],
+        "dates": {
+          "first": "2019-12-12 03:09:33",
+          "last": "2019-12-12 03:09:33"
+        },
+        "description": "The time taken to open the logins store on startup, or after locking it due to user inactivity.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf",
+          "last": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4e5f237b1306fc5b0b861fa2d0db27fd982589bf/components/logins/android/metrics.yaml#L128",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The time taken to open the logins store on startup, or after locking it due to user inactivity.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "07fe1123c66c23562caa20be6277f65801c4cb2b"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/logins/android/metrics.yaml#L134",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The time taken to open the logins store on startup, or after locking it due to user inactivity.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/logins/android/metrics.yaml#L157",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "logins_store.unlock_time",
+    "type": "timing_distribution"
+  },
+  "logins_store.write_query_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895"
+        ],
+        "dates": {
+          "first": "2019-12-12 03:09:33",
+          "last": "2019-12-12 03:09:33"
+        },
+        "description": "The total number of write operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental writes performed as part of a sync. It is intended to be used together with `write_query_error_count` to measure the  overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf",
+          "last": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4e5f237b1306fc5b0b861fa2d0db27fd982589bf/components/logins/android/metrics.yaml#L88",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-06-29 01:31:27"
+        },
+        "description": "The total number of write operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental writes performed as part of a sync. It is intended to be used together with `write_query_error_count` to measure the  overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "4ca7025fb7513d99200ec69c3851acf6e32cf5df"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/logins/android/metrics.yaml#L92",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-07-17 04:04:35",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The total number of write operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental writes performed as part of a sync. It is intended to be used together with `write_query_error_count` to measure the overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "07fe1123c66c23562caa20be6277f65801c4cb2b",
+          "last": "07fe1123c66c23562caa20be6277f65801c4cb2b"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/07fe1123c66c23562caa20be6277f65801c4cb2b/components/logins/android/metrics.yaml#L100",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The total number of write operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental writes performed as part of a sync. It is intended to be used together with `write_query_error_count` to measure the overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/logins/android/metrics.yaml#L108",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of write operations performed on the logins store. The count only includes operations triggered by the application, not e.g. incidental writes performed as part of a sync. It is intended to be used together with `write_query_error_count` to measure the overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/logins/android/metrics.yaml#L115",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.write_query_count",
+    "type": "counter"
+  },
+  "logins_store.write_query_error_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895"
+        ],
+        "dates": {
+          "first": "2019-12-12 03:09:33",
+          "last": "2019-12-12 03:09:33"
+        },
+        "description": "The total number of errors encountered during write operations on the logins store, labeled by type. It is intended to be used together with `write_query_count` to measure the overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf",
+          "last": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf"
+        },
+        "labels": [
+          "no_such_record",
+          "id_collision",
+          "interrupted",
+          "invalid_record",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4e5f237b1306fc5b0b861fa2d0db27fd982589bf/components/logins/android/metrics.yaml#L103",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The total number of errors encountered during write operations on the logins store, labeled by type. It is intended to be used together with `write_query_count` to measure the overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "07fe1123c66c23562caa20be6277f65801c4cb2b"
+        },
+        "labels": [
+          "no_such_record",
+          "id_collision",
+          "interrupted",
+          "invalid_record",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/logins/android/metrics.yaml#L108",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The total number of errors encountered during write operations on the logins store, labeled by type. It is intended to be used together with `write_query_count` to measure the overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "labels": [
+          "no_such_record",
+          "id_collision",
+          "interrupted",
+          "invalid_record",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/logins/android/metrics.yaml#L127",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-02-26 00:05:40"
+        },
+        "description": "The total number of errors encountered during write operations on the logins store, labeled by type. It is intended to be used together with `write_query_count` to measure the overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "1379aab17f898f951068833fd92be7f9dc24c6db"
+        },
+        "labels": [
+          "no_such_record",
+          "id_collision",
+          "interrupted",
+          "invalid_record",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/logins/android/metrics.yaml#L136",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-08-18 05:30:07",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of errors encountered during write operations on the logins store, labeled by type. It is intended to be used together with `write_query_count` to measure the overall error rate of write operations on the logins store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4051d2285a0c0cd970761a168213b46d5eb319c6",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "labels": [
+          "no_such_record",
+          "interrupted",
+          "invalid_record",
+          "storage_error"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 2,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4051d2285a0c0cd970761a168213b46d5eb319c6/components/logins/android/metrics.yaml#L92",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_store.write_query_error_count",
+    "type": "labeled_counter"
+  },
+  "logins_store.write_query_time": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895"
+        ],
+        "dates": {
+          "first": "2019-12-12 03:09:33",
+          "last": "2019-12-12 03:09:33"
+        },
+        "description": "The time taken to execute a write query on the logins store (such as adding, updating, or deleting a login record).\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf",
+          "last": "4e5f237b1306fc5b0b861fa2d0db27fd982589bf"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4e5f237b1306fc5b0b861fa2d0db27fd982589bf/components/logins/android/metrics.yaml#L153",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The time taken to execute a write query on the logins store (such as adding, updating, or deleting a login record).\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "07fe1123c66c23562caa20be6277f65801c4cb2b"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/logins/android/metrics.yaml#L161",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2225"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597895",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The time taken to execute a write query on the logins store (such as adding, updating, or deleting a login record).\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/logins/android/metrics.yaml#L189",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "logins_store.write_query_time",
+    "type": "timing_distribution"
+  }
+}

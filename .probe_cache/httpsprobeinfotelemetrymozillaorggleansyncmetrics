@@ -1,0 +1,4483 @@
+{
+  "addresses_sync.failure_reason": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records why the addresses sync failed: either due to an authentication error, unexpected exception, or other error. The error strings are truncated and sanitized to omit PII, like URLs and file system paths.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "addresses-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L751",
+        "type": "labeled_string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "addresses_sync.failure_reason",
+    "type": "labeled_string"
+  },
+  "addresses_sync.finished_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the addresses sync finished. This includes the time to download, apply, and upload all records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "addresses-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L669",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "addresses_sync.finished_at",
+    "type": "datetime"
+  },
+  "addresses_sync.incoming": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records incoming addresses record counts. `applied` is the number of incoming records that were successfully stored or updated in the local database. `failed_to_apply` is the number of records that were ignored due to errors. `reconciled` is the number of merged records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "addresses-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L687",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "addresses_sync.incoming",
+    "type": "labeled_counter"
+  },
+  "addresses_sync.outgoing": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records outgoing addresses record counts. `uploaded` is the number of records that were successfully sent to the server. `failed_to_upload` is the number of records that weren't uploaded, and will be retried on the next sync.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "addresses-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L710",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "addresses_sync.outgoing",
+    "type": "labeled_counter"
+  },
+  "addresses_sync.outgoing_batches": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records. The Sync server has a hard limit on the number of records (and request body bytes) on the number of records that can fit into a single batch, and large syncs may require multiple batches.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "addresses-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L732",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "addresses_sync.outgoing_batches",
+    "type": "counter"
+  },
+  "addresses_sync.started_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the addresses sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "addresses-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L652",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "addresses_sync.started_at",
+    "type": "datetime"
+  },
+  "addresses_sync.uid": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "addresses-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L636",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "addresses_sync.uid",
+    "type": "string"
+  },
+  "bookmarks_sync.failure_reason": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records bookmark sync failure reasons.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L231",
+        "type": "labeled_string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records bookmark sync failure reasons.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L231",
+        "type": "labeled_string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records bookmark sync failure reasons.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L448",
+        "type": "labeled_string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "bookmarks_sync.failure_reason",
+    "type": "labeled_string"
+  },
+  "bookmarks_sync.finished_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records when the bookmark sync finished.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L167",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records when the bookmark sync finished.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L167",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the bookmark sync finished.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L376",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "bookmarks_sync.finished_at",
+    "type": "datetime"
+  },
+  "bookmarks_sync.incoming": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records incoming bookmark record counts.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L182",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records incoming bookmark record counts.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L182",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records incoming bookmark record counts.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L393",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "bookmarks_sync.incoming",
+    "type": "labeled_counter"
+  },
+  "bookmarks_sync.outgoing": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records outgoing bookmark record counts.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L200",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records outgoing bookmark record counts.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L200",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records outgoing bookmark record counts.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L413",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "bookmarks_sync.outgoing",
+    "type": "labeled_counter"
+  },
+  "bookmarks_sync.outgoing_batches": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L217",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L217",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L432",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "bookmarks_sync.outgoing_batches",
+    "type": "counter"
+  },
+  "bookmarks_sync.remote_tree_problems": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records counts for structure problems and divergences in the remote bookmarks tree. These are documented in https://github.com/mozilla/dogear/blob/fbade15f2a4f11215e30b8f428a0a8df3defeaec/src/tree.rs#L1273-L1294.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "labels": [
+          "orphans",
+          "misparented_roots",
+          "multiple_parents_by_children",
+          "missing_parent_guids",
+          "non_folder_parent_guids",
+          "parent_child_disagreements",
+          "missing_children"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L249",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records counts for structure problems and divergences in the remote bookmarks tree. These are documented in https://github.com/mozilla/dogear/blob/fbade15f2a4f11215e30b8f428a0a8df3defeaec/src/tree.rs#L1273-L1294.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "orphans",
+          "misparented_roots",
+          "multiple_parents_by_children",
+          "missing_parent_guids",
+          "non_folder_parent_guids",
+          "parent_child_disagreements",
+          "missing_children"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L249",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records counts for structure problems and divergences in the remote bookmarks tree. These are documented in https://github.com/mozilla/dogear/blob/fbade15f2a4f11215e30b8f428a0a8df3defeaec/src/tree.rs#L1273-L1294.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "orphans",
+          "misparented_roots",
+          "multiple_parents_by_children",
+          "missing_parent_guids",
+          "non_folder_parent_guids",
+          "parent_child_disagreements",
+          "missing_children"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L468",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "bookmarks_sync.remote_tree_problems",
+    "type": "labeled_counter"
+  },
+  "bookmarks_sync.started_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records when the bookmark sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L152",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records when the bookmark sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L152",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the bookmark sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L359",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "bookmarks_sync.started_at",
+    "type": "datetime"
+  },
+  "bookmarks_sync.uid": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L138",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L138",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "bookmarks-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L343",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "bookmarks_sync.uid",
+    "type": "string"
+  },
+  "creditcards_sync.failure_reason": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records why the credit cards sync failed: either due to an authentication error, unexpected exception, or other error. The error strings are truncated and sanitized to omit PII, like URLs and file system paths.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "creditcards-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L612",
+        "type": "labeled_string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "creditcards_sync.failure_reason",
+    "type": "labeled_string"
+  },
+  "creditcards_sync.finished_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the credit cards sync finished. This includes the time to download, apply, and upload all records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "creditcards-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L530",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "creditcards_sync.finished_at",
+    "type": "datetime"
+  },
+  "creditcards_sync.incoming": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records incoming credit cards record counts. `applied` is the number of incoming records that were successfully stored or updated in the local database. `failed_to_apply` is the number of records that were ignored due to errors. `reconciled` is the number of merged records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "creditcards-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L548",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "creditcards_sync.incoming",
+    "type": "labeled_counter"
+  },
+  "creditcards_sync.outgoing": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records outgoing credit cards record counts. `uploaded` is the number of records that were successfully sent to the server. `failed_to_upload` is the number of records that weren't uploaded, and will be retried on the next sync.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "creditcards-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L571",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "creditcards_sync.outgoing",
+    "type": "labeled_counter"
+  },
+  "creditcards_sync.outgoing_batches": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records. The Sync server has a hard limit on the number of records (and request body bytes) on the number of records that can fit into a single batch, and large syncs may require multiple batches.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "creditcards-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L593",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "creditcards_sync.outgoing_batches",
+    "type": "counter"
+  },
+  "creditcards_sync.started_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the credit cards sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "creditcards-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L513",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "creditcards_sync.started_at",
+    "type": "datetime"
+  },
+  "creditcards_sync.uid": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "creditcards-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L497",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "creditcards_sync.uid",
+    "type": "string"
+  },
+  "fxa_tab.received": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/pull/3308",
+          "https://github.com/mozilla-mobile/android-components/pull/7618"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1652902"
+        ],
+        "dates": {
+          "first": "2020-08-20 02:20:23",
+          "last": "2021-05-28 17:48:46"
+        },
+        "description": "Recorded when a tab is received.  Also sent by desktop - see also the docs at https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/sync-ping.html\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "flow_id": {
+            "description": "A guid, unique for the URL being sent but common for all target devices.\n"
+          },
+          "reason": {
+            "description": "The reason we discovered the tab. Will be one of 'push', 'push-missed' or 'poll'.\n"
+          },
+          "stream_id": {
+            "description": "A guid, unique for both the URL being sent and the target device.\n"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "427c720642170d1d21d2afdea22a185134705b13",
+          "last": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 0
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/427c720642170d1d21d2afdea22a185134705b13/components/support/sync-telemetry/metrics.yaml#L521",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "_generate_enums": [
+          [
+            "allowed_extra_keys_with_types",
+            "Extra"
+          ]
+        ],
+        "bugs": [
+          "https://github.com/mozilla/application-services/pull/3308",
+          "https://github.com/mozilla-mobile/android-components/pull/7618"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1652902"
+        ],
+        "dates": {
+          "first": "2021-06-08 09:31:46",
+          "last": "2021-06-08 09:31:46"
+        },
+        "description": "Recorded when a tab is received.  Also sent by desktop - see also the docs at https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/sync-ping.html\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "flow_id": {
+            "description": "A guid, unique for the URL being sent but common for all target devices.\n",
+            "type": "string"
+          },
+          "reason": {
+            "description": "The reason we discovered the tab. Will be one of 'push', 'push-missed' or 'poll'.\n",
+            "type": "string"
+          },
+          "stream_id": {
+            "description": "A guid, unique for both the URL being sent and the target device.\n",
+            "type": "string"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "56d7ae26b91eda7662f285f20529f5968f865dbc",
+          "last": "56d7ae26b91eda7662f285f20529f5968f865dbc"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/56d7ae26b91eda7662f285f20529f5968f865dbc/components/support/sync-telemetry/metrics.yaml#L942",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/pull/3308",
+          "https://github.com/mozilla-mobile/android-components/pull/7618"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1652902"
+        ],
+        "dates": {
+          "first": "2021-06-08 15:54:42",
+          "last": "2021-06-08 15:54:42"
+        },
+        "description": "Recorded when a tab is received.  Also sent by desktop - see also the docs at https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/sync-ping.html\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "flow_id": {
+            "description": "A guid, unique for the URL being sent but common for all target devices.\n"
+          },
+          "reason": {
+            "description": "The reason we discovered the tab. Will be one of 'push', 'push-missed' or 'poll'.\n"
+          },
+          "stream_id": {
+            "description": "A guid, unique for both the URL being sent and the target device.\n"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "da560053e8b17d67b82328a76c49d75bc3811e44",
+          "last": "da560053e8b17d67b82328a76c49d75bc3811e44"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/da560053e8b17d67b82328a76c49d75bc3811e44/components/support/sync-telemetry/metrics.yaml#L940",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "_generate_enums": [
+          [
+            "allowed_extra_keys_with_types",
+            "Extra"
+          ]
+        ],
+        "bugs": [
+          "https://github.com/mozilla/application-services/pull/3308",
+          "https://github.com/mozilla-mobile/android-components/pull/7618"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1652902"
+        ],
+        "dates": {
+          "first": "2021-06-14 15:48:35",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Recorded when a tab is received.  Also sent by desktop - see also the docs at https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/sync-ping.html\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "flow_id": {
+            "description": "A guid, unique for the URL being sent but common for all target devices.\n",
+            "type": "string"
+          },
+          "reason": {
+            "description": "The reason we discovered the tab. Will be one of 'push', 'push-missed' or 'poll'.\n",
+            "type": "string"
+          },
+          "stream_id": {
+            "description": "A guid, unique for both the URL being sent and the target device.\n",
+            "type": "string"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "fb93702b562f3ec7d11773bea2ed3036ff3d6d44",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/fb93702b562f3ec7d11773bea2ed3036ff3d6d44/components/support/sync-telemetry/metrics.yaml#L942",
+        "type": "event",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "fxa_tab.received",
+    "type": "event"
+  },
+  "fxa_tab.sent": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/pull/3308",
+          "https://github.com/mozilla-mobile/android-components/pull/7618"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1652902"
+        ],
+        "dates": {
+          "first": "2020-08-20 02:20:23",
+          "last": "2021-05-28 17:48:46"
+        },
+        "description": "Recorded when a tab is sent. Also sent by desktop - see also the docs at https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/sync-ping.html\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "flow_id": {
+            "description": "A guid, unique for the URL being sent but common for all target devices. The value is randomly generated so can not identify details about the user or tab.\n"
+          },
+          "stream_id": {
+            "description": "A guid, unique for both the URL being sent and the target device. The value is randomly generated so can not identify details about the user or tab.\n"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "427c720642170d1d21d2afdea22a185134705b13",
+          "last": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 0
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/427c720642170d1d21d2afdea22a185134705b13/components/support/sync-telemetry/metrics.yaml#L495",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "_generate_enums": [
+          [
+            "allowed_extra_keys_with_types",
+            "Extra"
+          ]
+        ],
+        "bugs": [
+          "https://github.com/mozilla/application-services/pull/3308",
+          "https://github.com/mozilla-mobile/android-components/pull/7618"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1652902"
+        ],
+        "dates": {
+          "first": "2021-06-08 09:31:46",
+          "last": "2021-06-08 09:31:46"
+        },
+        "description": "Recorded when a tab is sent. Also sent by desktop - see also the docs at https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/sync-ping.html\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "flow_id": {
+            "description": "A guid, unique for the URL being sent but common for all target devices. The value is randomly generated so can not identify details about the user or tab.\n",
+            "type": "string"
+          },
+          "stream_id": {
+            "description": "A guid, unique for both the URL being sent and the target device. The value is randomly generated so can not identify details about the user or tab.\n",
+            "type": "string"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "56d7ae26b91eda7662f285f20529f5968f865dbc",
+          "last": "56d7ae26b91eda7662f285f20529f5968f865dbc"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/56d7ae26b91eda7662f285f20529f5968f865dbc/components/support/sync-telemetry/metrics.yaml#L914",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/pull/3308",
+          "https://github.com/mozilla-mobile/android-components/pull/7618"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1652902"
+        ],
+        "dates": {
+          "first": "2021-06-08 15:54:42",
+          "last": "2021-06-08 15:54:42"
+        },
+        "description": "Recorded when a tab is sent. Also sent by desktop - see also the docs at https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/sync-ping.html\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "flow_id": {
+            "description": "A guid, unique for the URL being sent but common for all target devices. The value is randomly generated so can not identify details about the user or tab.\n"
+          },
+          "stream_id": {
+            "description": "A guid, unique for both the URL being sent and the target device. The value is randomly generated so can not identify details about the user or tab.\n"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "da560053e8b17d67b82328a76c49d75bc3811e44",
+          "last": "da560053e8b17d67b82328a76c49d75bc3811e44"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/da560053e8b17d67b82328a76c49d75bc3811e44/components/support/sync-telemetry/metrics.yaml#L914",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "_generate_enums": [
+          [
+            "allowed_extra_keys_with_types",
+            "Extra"
+          ]
+        ],
+        "bugs": [
+          "https://github.com/mozilla/application-services/pull/3308",
+          "https://github.com/mozilla-mobile/android-components/pull/7618"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1652902"
+        ],
+        "dates": {
+          "first": "2021-06-14 15:48:35",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Recorded when a tab is sent. Also sent by desktop - see also the docs at https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/data/sync-ping.html\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "flow_id": {
+            "description": "A guid, unique for the URL being sent but common for all target devices. The value is randomly generated so can not identify details about the user or tab.\n",
+            "type": "string"
+          },
+          "stream_id": {
+            "description": "A guid, unique for both the URL being sent and the target device. The value is randomly generated so can not identify details about the user or tab.\n",
+            "type": "string"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "fb93702b562f3ec7d11773bea2ed3036ff3d6d44",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/fb93702b562f3ec7d11773bea2ed3036ff3d6d44/components/support/sync-telemetry/metrics.yaml#L914",
+        "type": "event",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "fxa_tab.sent",
+    "type": "event"
+  },
+  "history_sync.failure_reason": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records why the history sync failed: either due to an authentication error, unexpected exception, or other error. The error strings are truncated and sanitized to omit PII, like URLs and file system paths.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L116",
+        "type": "labeled_string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records why the history sync failed: either due to an authentication error, unexpected exception, or other error. The error strings are truncated and sanitized to omit PII, like URLs and file system paths.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L116",
+        "type": "labeled_string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records why the history sync failed: either due to an authentication error, unexpected exception, or other error. The error strings are truncated and sanitized to omit PII, like URLs and file system paths.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L179",
+        "type": "labeled_string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "history_sync.failure_reason",
+    "type": "labeled_string"
+  },
+  "history_sync.finished_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records when the history sync finished. This includes the time to download, apply, and upload all records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L41",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records when the history sync finished. This includes the time to download, apply, and upload all records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L41",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the history sync finished. This includes the time to download, apply, and upload all records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L96",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "history_sync.finished_at",
+    "type": "datetime"
+  },
+  "history_sync.incoming": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records incoming history record counts. `applied` is the number of incoming history pages that were successfully stored or updated in the local database. `failed_to_apply` is the number of pages that were ignored due to errors. `reconciled` is the number of pages with new visits locally and remotely, and had their visits merged.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L57",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records incoming history record counts. `applied` is the number of incoming history pages that were successfully stored or updated in the local database. `failed_to_apply` is the number of pages that were ignored due to errors. `reconciled` is the number of pages with new visits locally and remotely, and had their visits merged.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L57",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records incoming history record counts. `applied` is the number of incoming history pages that were successfully stored or updated in the local database. `failed_to_apply` is the number of pages that were ignored due to errors. `reconciled` is the number of pages with new visits locally and remotely, and had their visits merged.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L114",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "history_sync.incoming",
+    "type": "labeled_counter"
+  },
+  "history_sync.outgoing": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records outgoing history record counts. `uploaded` is the number of records that were successfully sent to the server. `failed_to_upload` is the number of records that weren't uploaded, and will be retried on the next sync.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L79",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records outgoing history record counts. `uploaded` is the number of records that were successfully sent to the server. `failed_to_upload` is the number of records that weren't uploaded, and will be retried on the next sync.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L79",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records outgoing history record counts. `uploaded` is the number of records that were successfully sent to the server. `failed_to_upload` is the number of records that weren't uploaded, and will be retried on the next sync.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L138",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "history_sync.outgoing",
+    "type": "labeled_counter"
+  },
+  "history_sync.outgoing_batches": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records. The Sync server has a hard limit on the number of records (and request body bytes) on the number of records that can fit into a single batch, and large syncs may require multiple batches.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L99",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records. The Sync server has a hard limit on the number of records (and request body bytes) on the number of records that can fit into a single batch, and large syncs may require multiple batches.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L99",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records. The Sync server has a hard limit on the number of records (and request body bytes) on the number of records that can fit into a single batch, and large syncs may require multiple batches.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L160",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "history_sync.outgoing_batches",
+    "type": "counter"
+  },
+  "history_sync.started_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "Records when the history sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L26",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records when the history sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L26",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the history sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L79",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "history_sync.started_at",
+    "type": "datetime"
+  },
+  "history_sync.uid": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/metrics.yaml#L12",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 2
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/metrics.yaml#L12",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "history-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L63",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "history_sync.uid",
+    "type": "string"
+  },
+  "logins_sync.failure_reason": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records why the passwords sync failed: either due to an authentication error, unexpected exception, or other error. The error strings are truncated and sanitized to omit PII, like usernames and passwords.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 2
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/metrics.yaml#L242",
+        "type": "labeled_string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records why the passwords sync failed: either due to an authentication error, unexpected exception, or other error. The error strings are truncated and sanitized to omit PII, like usernames and passwords.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L319",
+        "type": "labeled_string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_sync.failure_reason",
+    "type": "labeled_string"
+  },
+  "logins_sync.finished_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records when the passwords sync finished. This includes the time to download, apply, and upload all records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 2
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/metrics.yaml#L167",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the passwords sync finished. This includes the time to download, apply, and upload all records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L236",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_sync.finished_at",
+    "type": "datetime"
+  },
+  "logins_sync.incoming": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records incoming passwords record counts. `applied` is the number of incoming passwords entries that were successfully stored or updated in the local database. `failed_to_apply` is the number of entries that were ignored due to errors. `reconciled` is the number of entries with changes both locally and remotely that were merged.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 2
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/metrics.yaml#L183",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records incoming passwords record counts. `applied` is the number of incoming passwords entries that were successfully stored or updated in the local database. `failed_to_apply` is the number of entries that were ignored due to errors. `reconciled` is the number of entries with changes both locally and remotely that were merged.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L254",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_sync.incoming",
+    "type": "labeled_counter"
+  },
+  "logins_sync.outgoing": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records outgoing passwords record counts. `uploaded` is the number of records that were successfully sent to the server. `failed_to_upload` is the number of records that weren't uploaded, and will be retried on the next sync.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 2
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/metrics.yaml#L205",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records outgoing passwords record counts. `uploaded` is the number of records that were successfully sent to the server. `failed_to_upload` is the number of records that weren't uploaded, and will be retried on the next sync.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L278",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_sync.outgoing",
+    "type": "labeled_counter"
+  },
+  "logins_sync.outgoing_batches": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records. The Sync server has a hard limit on the number of records (and request body bytes) on the number of records that can fit into a single batch, and large syncs may require multiple batches.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 2
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/metrics.yaml#L225",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records. The Sync server has a hard limit on the number of records (and request body bytes) on the number of records that can fit into a single batch, and large syncs may require multiple batches.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L300",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_sync.outgoing_batches",
+    "type": "counter"
+  },
+  "logins_sync.started_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records when the passwords sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 2
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/metrics.yaml#L152",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the passwords sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L219",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_sync.started_at",
+    "type": "datetime"
+  },
+  "logins_sync.uid": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 2
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/metrics.yaml#L138",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "logins-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L203",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "logins_sync.uid",
+    "type": "string"
+  },
+  "sync.failure_reason": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2020-04-13 19:42:10",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Records a global sync failure: either due to an authentication error, unexpected exception, or other error that caused the sync to fail. Error strings are truncated and sanitized to omit PII, like URLs and file system paths.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "879b8e35ad08ea8aa8fd58c485323cff132f8344",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 2
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/879b8e35ad08ea8aa8fd58c485323cff132f8344/components/support/sync-telemetry/metrics.yaml#L27",
+        "type": "labeled_string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records a global sync failure: either due to an authentication error, unexpected exception, or other error that caused the sync to fail. Error strings are truncated and sanitized to omit PII, like URLs and file system paths.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L33",
+        "type": "labeled_string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "sync.failure_reason",
+    "type": "labeled_string"
+  },
+  "sync.sync_uuid": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/5371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5386#pullrequestreview-392363687"
+        ],
+        "dates": {
+          "first": "2020-04-13 19:42:10",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Unique identifier for this sync, used to correlate together individual pings for data types that were synchronized together (history, bookmarks, logins). If a data type is synchronized by itself via the legacy 'sync' API (as opposed to the Sync Manager), then this field will not be set on the corresponding ping.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "879b8e35ad08ea8aa8fd58c485323cff132f8344",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 2
+        },
+        "send_in_pings": [
+          "bookmarks-sync",
+          "history-sync",
+          "logins-sync",
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/879b8e35ad08ea8aa8fd58c485323cff132f8344/components/support/sync-telemetry/metrics.yaml#L8",
+        "type": "uuid",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/5371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5386#pullrequestreview-392363687"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Unique identifier for this sync, used to correlate together individual pings for data types that were synchronized together (history, bookmarks, logins). If a data type is synchronized by itself via the legacy 'sync' API (as opposed to the Sync Manager), then this field will not be set on the corresponding ping.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 0
+        },
+        "send_in_pings": [
+          "bookmarks-sync",
+          "history-sync",
+          "logins-sync",
+          "sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/support/sync-telemetry/metrics.yaml#L9",
+        "type": "uuid",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "sync.sync_uuid",
+    "type": "uuid"
+  },
+  "tabs_sync.failure_reason": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records why the tabs sync failed: either due to an authentication error, unexpected exception, or other error. The error strings are truncated and sanitized to omit PII, like URLs and file system paths.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "other",
+          "unexpected",
+          "auth"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "tabs-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L890",
+        "type": "labeled_string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "tabs_sync.failure_reason",
+    "type": "labeled_string"
+  },
+  "tabs_sync.finished_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the tabs sync finished. This includes the time to download, apply, and upload all records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "tabs-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L808",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "tabs_sync.finished_at",
+    "type": "datetime"
+  },
+  "tabs_sync.incoming": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records incoming tabs record counts. `applied` is the number of incoming records that were successfully stored or updated in the local database. `failed_to_apply` is the number of records that were ignored due to errors. `reconciled` is the number of merged records.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "applied",
+          "failed_to_apply",
+          "reconciled"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "tabs-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L826",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "tabs_sync.incoming",
+    "type": "labeled_counter"
+  },
+  "tabs_sync.outgoing": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records outgoing tabs record counts. `uploaded` is the number of records that were successfully sent to the server. `failed_to_upload` is the number of records that weren't uploaded, and will be retried on the next sync.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "uploaded",
+          "failed_to_upload"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "tabs-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L849",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "tabs_sync.outgoing",
+    "type": "labeled_counter"
+  },
+  "tabs_sync.outgoing_batches": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records the number of batches needed to upload all outgoing records. The Sync server has a hard limit on the number of records (and request body bytes) on the number of records that can fit into a single batch, and large syncs may require multiple batches.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "tabs-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L871",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "tabs_sync.outgoing_batches",
+    "type": "counter"
+  },
+  "tabs_sync.started_at": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Records when the tabs sync started.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "tabs-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L791",
+        "time_unit": "millisecond",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "tabs_sync.started_at",
+    "type": "datetime"
+  },
+  "tabs_sync.uid": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "The user's hashed Firefox Account ID.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "tabs-sync"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/metrics.yaml#L775",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "tabs_sync.uid",
+    "type": "string"
+  }
+}

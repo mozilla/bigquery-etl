@@ -56,6 +56,8 @@ EXPECT = [
             {"key": "50", "value": 4.0},
             {"key": "75", "value": 8.0},
             {"key": "95", "value": 8.0},
+            {"key": "99", "value": 8.0},
+            {"key": "99.9", "value": 8.0},
         ],
         "app_build_id": "*",
         "app_version": 84,

@@ -1,0 +1,504 @@
+{
+  "nimbus_events.disqualification": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://jira.mozilla.com/browse/SDK-126"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/9168#issuecomment-743461975"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-03-26 17:25:33",
+          "last": "2021-03-26 17:25:33"
+        },
+        "description": "Recorded when a user becomes ineligible to continue receiving the treatment for an enrolled experiment, for reasons such as the user opting out of the experiment or no longer matching targeting for the experiment.\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "branch": {
+            "description": "The branch slug/identifier that was randomly chosen"
+          },
+          "enrollment_id": {
+            "description": "A unique identifier generated at enrollment time"
+          },
+          "experiment": {
+            "description": "The slug/unique identifier of the experiment"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "f6238a785a3796b3910f13ff526891d113c2afab",
+          "last": "f6238a785a3796b3910f13ff526891d113c2afab"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "tlong@mozilla.com",
+          "telemetry-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/f6238a785a3796b3910f13ff526891d113c2afab/components/nimbus/metrics.yaml#L60",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "_generate_enums": [
+          [
+            "allowed_extra_keys_with_types",
+            "Extra"
+          ]
+        ],
+        "bugs": [
+          "https://jira.mozilla.com/browse/SDK-126"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/9168#issuecomment-743461975"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-07-26 01:09:11",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "Recorded when a user becomes ineligible to continue receiving the treatment for an enrolled experiment, for reasons such as the user opting out of the experiment or no longer matching targeting for the experiment.\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "branch": {
+            "description": "The branch slug/identifier that was randomly chosen",
+            "type": "string"
+          },
+          "enrollment_id": {
+            "description": "A unique identifier generated at enrollment time",
+            "type": "string"
+          },
+          "experiment": {
+            "description": "The slug/unique identifier of the experiment",
+            "type": "string"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "c40fd3a12bcca135d54b3b4cf1ed7c2864f785a6",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "tlong@mozilla.com",
+          "telemetry-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/c40fd3a12bcca135d54b3b4cf1ed7c2864f785a6/components/nimbus/metrics.yaml#L66",
+        "type": "event",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "nimbus_events.disqualification",
+    "type": "event"
+  },
+  "nimbus_events.enrollment": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://jira.mozilla.com/browse/SDK-61"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/9168#issuecomment-743461975"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-03-26 17:25:33",
+          "last": "2021-03-26 17:25:33"
+        },
+        "description": "Recorded when a user has met the conditions and is first bucketed into an experiment (i.e. targeting matched and they were randomized into a bucket and branch of the experiment). Expected a maximum of once per experiment per user.\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "branch": {
+            "description": "The branch slug/identifier that was randomly chosen"
+          },
+          "enrollment_id": {
+            "description": "A unique identifier generated at enrollment time"
+          },
+          "experiment": {
+            "description": "The slug/unique identifier of the experiment"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "f6238a785a3796b3910f13ff526891d113c2afab",
+          "last": "f6238a785a3796b3910f13ff526891d113c2afab"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "tlong@mozilla.com",
+          "telemetry-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/f6238a785a3796b3910f13ff526891d113c2afab/components/nimbus/metrics.yaml#L13",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "_generate_enums": [
+          [
+            "allowed_extra_keys_with_types",
+            "Extra"
+          ]
+        ],
+        "bugs": [
+          "https://jira.mozilla.com/browse/SDK-61"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/9168#issuecomment-743461975"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-07-26 01:09:11",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "Recorded when a user has met the conditions and is first bucketed into an experiment (i.e. targeting matched and they were randomized into a bucket and branch of the experiment). Expected a maximum of once per experiment per user.\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "branch": {
+            "description": "The branch slug/identifier that was randomly chosen",
+            "type": "string"
+          },
+          "enrollment_id": {
+            "description": "A unique identifier generated at enrollment time",
+            "type": "string"
+          },
+          "experiment": {
+            "description": "The slug/unique identifier of the experiment",
+            "type": "string"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "c40fd3a12bcca135d54b3b4cf1ed7c2864f785a6",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "tlong@mozilla.com",
+          "telemetry-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/c40fd3a12bcca135d54b3b4cf1ed7c2864f785a6/components/nimbus/metrics.yaml#L13",
+        "type": "event",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "nimbus_events.enrollment",
+    "type": "event"
+  },
+  "nimbus_events.exposure": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://jira.mozilla.com/browse/SDK-65"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/9168#issuecomment-743461975"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-03-26 17:25:33",
+          "last": "2021-03-26 17:25:33"
+        },
+        "description": "Recorded when a user actually observes an experimental treatment, or would have observed an experimental treatment if they had been in a branch that would have shown one.\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "branch": {
+            "description": "The branch slug/identifier that was randomly chosen"
+          },
+          "enrollment_id": {
+            "description": "A unique identifier generated at enrollment time"
+          },
+          "experiment": {
+            "description": "The slug/unique identifier of the experiment"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "f6238a785a3796b3910f13ff526891d113c2afab",
+          "last": "f6238a785a3796b3910f13ff526891d113c2afab"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "tlong@mozilla.com, telemetry-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/f6238a785a3796b3910f13ff526891d113c2afab/components/nimbus/metrics.yaml#L84",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "_generate_enums": [
+          [
+            "allowed_extra_keys_with_types",
+            "Extra"
+          ]
+        ],
+        "bugs": [
+          "https://jira.mozilla.com/browse/SDK-65"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/9168#issuecomment-743461975"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-07-26 01:09:11",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "Recorded when a user actually observes an experimental treatment, or would have observed an experimental treatment if they had been in a branch that would have shown one.\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "branch": {
+            "description": "The branch slug/identifier that was randomly chosen",
+            "type": "string"
+          },
+          "enrollment_id": {
+            "description": "A unique identifier generated at enrollment time",
+            "type": "string"
+          },
+          "experiment": {
+            "description": "The slug/unique identifier of the experiment",
+            "type": "string"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "c40fd3a12bcca135d54b3b4cf1ed7c2864f785a6",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "tlong@mozilla.com, telemetry-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/c40fd3a12bcca135d54b3b4cf1ed7c2864f785a6/components/nimbus/metrics.yaml#L93",
+        "type": "event",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "nimbus_events.exposure",
+    "type": "event"
+  },
+  "nimbus_events.unenrollment": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://jira.mozilla.com/browse/SDK-126"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/9168#issuecomment-743461975"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-03-26 17:25:33",
+          "last": "2021-03-26 17:25:33"
+        },
+        "description": "Recorded when either telemetry is disabled, or the experiment has run for its designed duration (i.e. it is no longer present in the Nimbus Remote Settings collection)\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "branch": {
+            "description": "The branch slug/identifier that was randomly chosen"
+          },
+          "enrollment_id": {
+            "description": "A unique identifier generated at enrollment time"
+          },
+          "experiment": {
+            "description": "The slug/unique identifier of the experiment"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "f6238a785a3796b3910f13ff526891d113c2afab",
+          "last": "f6238a785a3796b3910f13ff526891d113c2afab"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "tlong@mozilla.com",
+          "telemetry-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/f6238a785a3796b3910f13ff526891d113c2afab/components/nimbus/metrics.yaml#L37",
+        "type": "event",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "_generate_enums": [
+          [
+            "allowed_extra_keys_with_types",
+            "Extra"
+          ]
+        ],
+        "bugs": [
+          "https://jira.mozilla.com/browse/SDK-126"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/9168#issuecomment-743461975"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-07-26 01:09:11",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "Recorded when either telemetry is disabled, or the experiment has run for its designed duration (i.e. it is no longer present in the Nimbus Remote Settings collection)\n",
+        "disabled": false,
+        "expires": "never",
+        "extra_keys": {
+          "branch": {
+            "description": "The branch slug/identifier that was randomly chosen",
+            "type": "string"
+          },
+          "enrollment_id": {
+            "description": "A unique identifier generated at enrollment time",
+            "type": "string"
+          },
+          "experiment": {
+            "description": "The slug/unique identifier of the experiment",
+            "type": "string"
+          }
+        },
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "c40fd3a12bcca135d54b3b4cf1ed7c2864f785a6",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "tlong@mozilla.com",
+          "telemetry-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "events"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/c40fd3a12bcca135d54b3b4cf1ed7c2864f785a6/components/nimbus/metrics.yaml#L40",
+        "type": "event",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "nimbus_events.unenrollment",
+    "type": "event"
+  }
+}

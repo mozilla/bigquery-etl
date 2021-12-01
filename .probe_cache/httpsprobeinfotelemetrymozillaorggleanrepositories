@@ -1,0 +1,1199 @@
+[
+  {
+    "app_id": "glean-core",
+    "branch": "main",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "Modern cross-platform telemetry (core library)",
+    "library_names": [
+      "glean-core"
+    ],
+    "metrics_file_paths": [
+      "glean-core/metrics.yaml"
+    ],
+    "name": "glean-core",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "glean-core/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/glean"
+  },
+  {
+    "app_id": "glean-android",
+    "branch": "main",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "Modern cross-platform telemetry (Android-specific)",
+    "library_names": [
+      "org.mozilla.components:service-glean"
+    ],
+    "metrics_file_paths": [
+      "glean-core/android/metrics.yaml"
+    ],
+    "name": "glean-android",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/glean"
+  },
+  {
+    "app_id": "lib-crash",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "A generic crash reporter component that can report crashes to multiple services",
+    "library_names": [
+      "org.mozilla.components:lib-crash"
+    ],
+    "metrics_file_paths": [
+      "components/lib/crash/metrics.yaml"
+    ],
+    "name": "lib-crash",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com",
+      "android-components-team@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/android-components"
+  },
+  {
+    "app_id": "sync",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "Sync telemetry helper functionality",
+    "library_names": [
+      "org.mozilla.components:support-sync-telemetry"
+    ],
+    "metrics_file_paths": [
+      "components/support/sync-telemetry/metrics.yaml"
+    ],
+    "name": "sync",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "lina@mozilla.com",
+      "grisha@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "components/support/sync-telemetry/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/android-components"
+  },
+  {
+    "app_id": "engine-gecko",
+    "branch": "release",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "GeckoView metrics",
+    "library_names": [
+      "org.mozilla.components:browser-engine-gecko"
+    ],
+    "metrics_file_paths": [
+      "toolkit/components/telemetry/geckoview/streaming/metrics.yaml"
+    ],
+    "name": "engine-gecko",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com",
+      "android-components-team@mozilla.com",
+      "geckoview-team@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/gecko-dev"
+  },
+  {
+    "app_id": "engine-gecko-beta",
+    "branch": "beta",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "GeckoView metrics",
+    "library_names": [
+      "org.mozilla.components:browser-engine-gecko-beta"
+    ],
+    "metrics_file_paths": [
+      "toolkit/components/telemetry/geckoview/streaming/metrics.yaml"
+    ],
+    "name": "engine-gecko-beta",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com",
+      "android-components-team@mozilla.com",
+      "geckoview-team@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/gecko-dev"
+  },
+  {
+    "app_id": "engine-gecko-nightly",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "GeckoView metrics",
+    "library_names": [
+      "org.mozilla.components:browser-engine-gecko-nightly"
+    ],
+    "metrics_file_paths": [
+      "toolkit/components/telemetry/geckoview/streaming/metrics.yaml"
+    ],
+    "name": "engine-gecko-nightly",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com",
+      "android-components-team@mozilla.com",
+      "geckoview-team@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/gecko-dev"
+  },
+  {
+    "app_id": "logins-store",
+    "branch": "main",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "A collection of Android libraries to build browsers or browser-like applications",
+    "library_names": [
+      "org.mozilla.appservices:logins"
+    ],
+    "metrics_file_paths": [
+      "components/logins/android/metrics.yaml"
+    ],
+    "name": "logins-store",
+    "notification_emails": [
+      "rfkelly@mozilla.com",
+      "lina@mozilla.com",
+      "sync-team@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/application-services"
+  },
+  {
+    "app_id": "support-migration",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "Helper code to migrate from a Fennec-based (Firefox for Android) app to an Android Components based app",
+    "library_names": [
+      "org.mozilla.components:support-migration"
+    ],
+    "metrics_file_paths": [
+      "components/support/migration/metrics.yaml"
+    ],
+    "name": "support-migration",
+    "notification_emails": [
+      "dthorn@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "components/support/migration/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/android-components"
+  },
+  {
+    "app_id": "android-places",
+    "branch": "main",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "A collection of Android libraries to build browsers or browser-like applications",
+    "library_names": [
+      "org.mozilla.components:places"
+    ],
+    "metrics_file_paths": [
+      "components/places/android/metrics.yaml"
+    ],
+    "name": "android-places",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "sync-team@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/application-services"
+  },
+  {
+    "app_id": "glean-js",
+    "branch": "main",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "Modern cross-platform telemetry (Javascript library)",
+    "library_names": [
+      "glean-js"
+    ],
+    "metrics_file_paths": [
+      "glean/src/metrics.yaml"
+    ],
+    "name": "glean-js",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com",
+      "brizental@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "glean/src/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/glean.js"
+  },
+  {
+    "app_id": "nimbus",
+    "branch": "main",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "Rapid experimentation platform",
+    "library_names": [
+      "nimbus"
+    ],
+    "metrics_file_paths": [
+      "components/nimbus/metrics.yaml"
+    ],
+    "name": "nimbus",
+    "notification_emails": [
+      "tlong@mozilla.com",
+      "sync-team@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/application-services"
+  },
+  {
+    "app_id": "gecko",
+    "dependencies": [],
+    "deprecated": false,
+    "description": "The browser engine developed by Mozilla",
+    "library_names": [
+      "gecko"
+    ],
+    "metrics_file_paths": [
+      "browser/base/content/metrics.yaml",
+      "gfx/metrics.yaml",
+      "toolkit/components/glean/metrics.yaml",
+      "toolkit/components/processtools/metrics.yaml"
+    ],
+    "name": "gecko",
+    "notification_emails": [
+      "chutten@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "toolkit/components/glean/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/gecko-dev"
+  },
+  {
+    "app_id": "firefox-desktop",
+    "dependencies": [
+      "gecko",
+      "glean-core",
+      "org.mozilla.components:service-glean"
+    ],
+    "deprecated": false,
+    "description": "The desktop version of Firefox",
+    "metrics_file_paths": [
+      "browser/components/metrics.yaml",
+      "browser/modules/metrics.yaml"
+    ],
+    "name": "firefox-desktop",
+    "notification_emails": [
+      "chutten@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/gecko-dev"
+  },
+  {
+    "app_id": "firefox-desktop-background-update",
+    "dependencies": [
+      "glean-core"
+    ],
+    "deprecated": false,
+    "description": "Firefox Desktop's background update task. This is considered a separate application because it has its own client id and sends its own version of the standard pings.",
+    "metrics_file_paths": [
+      "toolkit/mozapps/update/metrics.yaml"
+    ],
+    "name": "firefox-desktop-background-update",
+    "notification_emails": [
+      "chutten@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "toolkit/mozapps/update/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/gecko-dev"
+  },
+  {
+    "app_id": "org-mozilla-firefox",
+    "channel": "release",
+    "dependencies": [
+      "gecko",
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash",
+      "org.mozilla.components:support-sync-telemetry",
+      "org.mozilla.appservices:logins",
+      "org.mozilla.components:support-migration",
+      "org.mozilla.components:places",
+      "nimbus",
+      "org.mozilla.components:browser-engine-gecko"
+    ],
+    "deprecated": false,
+    "description": "Release channel of Firefox for Android.",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-android-release",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/fenix"
+  },
+  {
+    "app_id": "org-mozilla-firefox-beta",
+    "channel": "beta",
+    "dependencies": [
+      "gecko",
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash",
+      "org.mozilla.components:support-sync-telemetry",
+      "org.mozilla.appservices:logins",
+      "org.mozilla.components:support-migration",
+      "org.mozilla.components:places",
+      "nimbus",
+      "org.mozilla.components:browser-engine-gecko-beta"
+    ],
+    "deprecated": false,
+    "description": "Beta channel of Firefox for Android.",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-android-beta",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/fenix"
+  },
+  {
+    "app_id": "org-mozilla-fenix",
+    "channel": "nightly",
+    "dependencies": [
+      "gecko",
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash",
+      "org.mozilla.components:support-sync-telemetry",
+      "org.mozilla.appservices:logins",
+      "org.mozilla.components:support-migration",
+      "org.mozilla.components:places",
+      "nimbus",
+      "org.mozilla.components:browser-engine-gecko-beta"
+    ],
+    "deprecated": false,
+    "description": "Nightly channel of Firefox for Android. Prior to June 2020, this app_id was used for the beta channel of Firefox Preview.",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "fenix",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/fenix"
+  },
+  {
+    "app_id": "org-mozilla-fenix-nightly",
+    "channel": "nightly",
+    "dependencies": [
+      "gecko",
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash",
+      "org.mozilla.components:support-sync-telemetry",
+      "org.mozilla.appservices:logins",
+      "org.mozilla.components:support-migration",
+      "org.mozilla.components:places",
+      "nimbus",
+      "org.mozilla.components:browser-engine-gecko-nightly"
+    ],
+    "deprecated": true,
+    "description": "Nightly channel of Firefox Preview.",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "fenix-nightly",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/fenix"
+  },
+  {
+    "app_id": "org-mozilla-fennec-aurora",
+    "channel": "nightly",
+    "dependencies": [
+      "gecko",
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash",
+      "org.mozilla.components:support-sync-telemetry",
+      "org.mozilla.appservices:logins",
+      "org.mozilla.components:support-migration",
+      "org.mozilla.components:places",
+      "nimbus",
+      "org.mozilla.components:browser-engine-gecko-beta"
+    ],
+    "deprecated": true,
+    "description": "Nightly channel of Firefox for Android users migrated to Fenix; delisted in June 2020.",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-android-nightly",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/fenix"
+  },
+  {
+    "app_id": "org-mozilla-ios-firefox",
+    "branch": "main",
+    "channel": "release",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "nimbus",
+      "org.mozilla.appservices:logins"
+    ],
+    "deprecated": false,
+    "description": "Release channel of Firefox for iOS.",
+    "metrics_file_paths": [
+      "Client/metrics.yaml"
+    ],
+    "name": "firefox-ios-release",
+    "notification_emails": [
+      "tlong@mozilla.com",
+      "dthorn@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/firefox-ios"
+  },
+  {
+    "app_id": "org-mozilla-ios-firefoxbeta",
+    "branch": "main",
+    "channel": "beta",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "nimbus",
+      "org.mozilla.appservices:logins"
+    ],
+    "deprecated": false,
+    "description": "Beta channel of Firefox for iOS.",
+    "metrics_file_paths": [
+      "Client/metrics.yaml"
+    ],
+    "name": "firefox-ios-beta",
+    "notification_emails": [
+      "tlong@mozilla.com",
+      "dthorn@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/firefox-ios"
+  },
+  {
+    "app_id": "org-mozilla-ios-fennec",
+    "branch": "main",
+    "channel": "nightly",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "nimbus",
+      "org.mozilla.appservices:logins"
+    ],
+    "deprecated": false,
+    "description": "Nightly channel of Firefox for iOS.",
+    "metrics_file_paths": [
+      "Client/metrics.yaml"
+    ],
+    "name": "firefox-ios-dev",
+    "notification_emails": [
+      "tlong@mozilla.com",
+      "dthorn@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/firefox-ios"
+  },
+  {
+    "app_id": "org-mozilla-reference-browser",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash"
+    ],
+    "deprecated": false,
+    "description": "A full-featured browser reference implementation using Mozilla Android Components",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "reference-browser",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": true,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/reference-browser"
+  },
+  {
+    "app_id": "org-mozilla-tv-firefox",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean"
+    ],
+    "deprecated": true,
+    "description": "Firefox for Amazon's Fire TV",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-for-fire-tv",
+    "notification_emails": [
+      "dthorn@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/firefox-tv"
+  },
+  {
+    "app_id": "org-mozilla-vrbrowser",
+    "branch": "main",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:support-sync-telemetry"
+    ],
+    "deprecated": false,
+    "description": "A fast and secure browser for standalone virtual-reality and augmented-reality headsets",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-reality",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "mdroettboom@mozilla.com",
+      "dmu@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/MozillaReality/FirefoxReality"
+  },
+  {
+    "app_id": "mozilla-lockbox",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:support-sync-telemetry"
+    ],
+    "deprecated": true,
+    "description": "Firefox's Lockwise app for Android",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "lockwise-android",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "lockwise-dev@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-lockwise/lockwise-android"
+  },
+  {
+    "app_id": "org-mozilla-ios-lockbox",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean"
+    ],
+    "deprecated": true,
+    "description": "Firefox's Lockwise app for iOS",
+    "metrics_file_paths": [],
+    "name": "lockwise-ios",
+    "notification_emails": [
+      "dthorn@mozilla.com",
+      "tlong@mozilla.com",
+      "lockwise-dev@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-lockwise/lockwise-ios"
+  },
+  {
+    "app_id": "org-mozilla-mozregression",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean"
+    ],
+    "deprecated": false,
+    "description": "Regression range finder for Mozilla nightly builds",
+    "metrics_file_paths": [
+      "mozregression/metrics.yaml"
+    ],
+    "name": "mozregression",
+    "notification_emails": [
+      "wlachance@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "mozregression/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/mozregression"
+  },
+  {
+    "app_id": "burnham",
+    "branch": "main",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean"
+    ],
+    "deprecated": false,
+    "description": "Automated end-to-end testing for Mozilla's Glean telemetry",
+    "metrics_file_paths": [
+      "application/src/burnham/config/metrics.yaml"
+    ],
+    "name": "burnham",
+    "notification_emails": [
+      "rpierzina@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "application/src/burnham/config/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [
+      "application/src/burnham/config/tags.yaml"
+    ],
+    "url": "https://github.com/mozilla/burnham"
+  },
+  {
+    "app_id": "mozphab",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean"
+    ],
+    "deprecated": false,
+    "description": "Phabricator review submission/management tool",
+    "metrics_file_paths": [
+      "mozphab/metrics.yaml"
+    ],
+    "name": "mozphab",
+    "notification_emails": [
+      "zeid@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "mozphab/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-conduit/review"
+  },
+  {
+    "app_id": "org-mozilla-connect-firefox",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean"
+    ],
+    "deprecated": true,
+    "description": "Firefox for Amazon's Echo Show",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-for-echo-show",
+    "notification_emails": [
+      "tlong@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/firefox-echo-show"
+  },
+  {
+    "app_id": "org-mozilla-firefoxreality",
+    "dependencies": [
+      "glean-core"
+    ],
+    "deprecated": false,
+    "description": "Firefox Reality for PC-connected VR platforms",
+    "metrics_file_paths": [
+      "Source/FirefoxRealityUnity/metrics.yaml"
+    ],
+    "name": "firefox-reality-pc",
+    "notification_emails": [
+      "dmu@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "Source/FirefoxRealityUnity/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/MozillaReality/FirefoxRealityPC"
+  },
+  {
+    "app_id": "mozilla-mach",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean"
+    ],
+    "deprecated": false,
+    "description": "Mach build telemetry",
+    "metrics_file_paths": [
+      "python/mach/metrics.yaml"
+    ],
+    "name": "mach",
+    "notification_emails": [
+      "mhentges@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "python/mach/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/gecko-dev"
+  },
+  {
+    "app_id": "org-mozilla-ios-focus",
+    "branch": "main",
+    "dependencies": [
+      "glean-core",
+      "nimbus"
+    ],
+    "deprecated": false,
+    "description": "Firefox Focus on iOS. Klar is the sibling application",
+    "metrics_file_paths": [
+      "Blockzilla/metrics.yaml"
+    ],
+    "name": "firefox-focus-ios",
+    "notification_emails": [
+      "sarentz@mozilla.com",
+      "tlong@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "retention_days": 720,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/focus-ios"
+  },
+  {
+    "app_id": "org-mozilla-ios-klar",
+    "branch": "main",
+    "dependencies": [
+      "glean-core",
+      "nimbus"
+    ],
+    "deprecated": false,
+    "description": "Firefox Klar on iOS. Focus is the sibling application",
+    "metrics_file_paths": [
+      "Blockzilla/metrics.yaml"
+    ],
+    "name": "firefox-klar-ios",
+    "notification_emails": [
+      "sarentz@mozilla.com",
+      "tlong@mozilla.com"
+    ],
+    "ping_file_paths": [],
+    "prototype": false,
+    "retention_days": 720,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/focus-ios"
+  },
+  {
+    "app_id": "org-mozilla-focus",
+    "branch": "main",
+    "channel": "release",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash",
+      "nimbus"
+    ],
+    "deprecated": false,
+    "description": "Release channel of Focus for Android.",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-focus-android",
+    "notification_emails": [
+      "jalmeida@mozilla.com",
+      "tlong@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "retention_days": 180,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/focus-android"
+  },
+  {
+    "app_id": "org-mozilla-focus-beta",
+    "branch": "main",
+    "channel": "beta",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash",
+      "nimbus"
+    ],
+    "deprecated": false,
+    "description": "Beta channel of Focus for Android.",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-focus-android-beta",
+    "notification_emails": [
+      "jalmeida@mozilla.com",
+      "tlong@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "retention_days": 180,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/focus-android"
+  },
+  {
+    "app_id": "org-mozilla-focus-nightly",
+    "branch": "main",
+    "channel": "nightly",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash",
+      "nimbus"
+    ],
+    "deprecated": false,
+    "description": "Nightly channel of Focus for Android.",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-focus-android-nightly",
+    "notification_emails": [
+      "jalmeida@mozilla.com",
+      "tlong@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "retention_days": 180,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/focus-android"
+  },
+  {
+    "app_id": "org-mozilla-klar",
+    "branch": "main",
+    "dependencies": [
+      "glean-core",
+      "org.mozilla.components:service-glean",
+      "org.mozilla.components:lib-crash",
+      "nimbus"
+    ],
+    "deprecated": false,
+    "description": "Firefox Klar on Android. Focus is the sibling application",
+    "metrics_file_paths": [
+      "app/metrics.yaml"
+    ],
+    "name": "firefox-klar-android",
+    "notification_emails": [
+      "jalmeida@mozilla.com",
+      "tlong@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "app/pings.yaml"
+    ],
+    "prototype": false,
+    "retention_days": 180,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/focus-android"
+  },
+  {
+    "app_id": "org-mozilla-bergamot",
+    "branch": "main",
+    "dependencies": [
+      "glean-js"
+    ],
+    "deprecated": false,
+    "description": "Web extension for on-device machine translation",
+    "metrics_file_paths": [
+      "src/core/ts/background-scripts/background.js/telemetry/metrics.yaml"
+    ],
+    "name": "bergamot",
+    "notification_emails": [
+      "epavlov@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "src/core/ts/background-scripts/background.js/telemetry/pings.yaml"
+    ],
+    "prototype": false,
+    "retention_days": 180,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-extensions/bergamot-browser-extension"
+  },
+  {
+    "app_id": "rally-debug",
+    "branch": "master",
+    "dependencies": [
+      "glean-js"
+    ],
+    "deprecated": true,
+    "description": "Rally Core Add-on debug ingestion",
+    "encryption": {
+      "use_jwk": true
+    },
+    "metrics_file_paths": [
+      "metrics.yaml"
+    ],
+    "name": "rally-debug",
+    "notification_emails": [
+      "than@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "pings.yaml"
+    ],
+    "prototype": true,
+    "retention_days": 180,
+    "skip_documentation": true,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-rally/rally-core-addon"
+  },
+  {
+    "app_id": "rally-core",
+    "branch": "master",
+    "dependencies": [
+      "glean-js"
+    ],
+    "deprecated": false,
+    "description": "The Rally Core Add-on orchestrates the installation\nand the lifecycle of [Rally](https://rally.mozilla.org/)\nstudies.\n",
+    "encryption": {
+      "use_jwk": true
+    },
+    "metrics_file_paths": [
+      "metrics.yaml"
+    ],
+    "name": "rally-core",
+    "notification_emails": [
+      "than@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": true,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-rally/rally-core-addon"
+  },
+  {
+    "app_id": "mozillavpn",
+    "branch": "main",
+    "channel": "release",
+    "dependencies": [
+      "glean-js"
+    ],
+    "deprecated": false,
+    "description": "Mozilla VPN is a VPN client application. The first\nMozilla premium service.\n",
+    "metrics_file_paths": [
+      "glean/metrics.yaml"
+    ],
+    "name": "mozilla-vpn",
+    "notification_emails": [
+      "vpn@mozilla.com",
+      "amarchesini@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "glean/pings.yaml"
+    ],
+    "prototype": false,
+    "retention_days": 180,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-mobile/mozilla-vpn-client"
+  },
+  {
+    "app_id": "rally-study-zero-one",
+    "branch": "master",
+    "dependencies": [
+      "glean-js"
+    ],
+    "deprecated": false,
+    "description": "This is an exploratory study on what sites people\nuse and how long they use them, for the Rally\nplatform. It is implemented as a cross-browser\nWebExtension.\n",
+    "encryption": {
+      "use_jwk": true
+    },
+    "metrics_file_paths": [
+      "metrics.yaml"
+    ],
+    "name": "rally-study-zero-one",
+    "notification_emails": [
+      "than@mozilla.com",
+      "hulmer@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": true,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla-rally/rally-study-01"
+  },
+  {
+    "app_id": "mlhackweek-search",
+    "branch": "main",
+    "dependencies": [
+      "glean-core"
+    ],
+    "deprecated": false,
+    "description": "This application collects search terms and results to build a data set\nfor a Data Org Hack Week.\n",
+    "metrics_file_paths": [
+      "searchapp/mysite/searchranking/glean_config/metrics.yaml"
+    ],
+    "name": "mlhackweek-search",
+    "notification_emails": [
+      "gleonard@mozilla.com"
+    ],
+    "ping_file_paths": [
+      "searchapp/mysite/searchranking/glean_config/pings.yaml"
+    ],
+    "prototype": false,
+    "skip_documentation": true,
+    "tag_file_paths": [],
+    "url": "https://github.com/mozilla/mlhackweek2021"
+  },
+  {
+    "app_id": "regrets-reporter-ucs",
+    "branch": "main",
+    "dependencies": [
+      "glean-js"
+    ],
+    "deprecated": false,
+    "description": "The RegretsReporter extension gives you a way to easily report bad or\nunwanted YouTube recommended videos to control your YouTube\nexperience and power Mozilla\u2019s research into YouTube\u2019s recommendation\nalgorithm.\n",
+    "metrics_file_paths": [
+      "metrics.yaml"
+    ],
+    "name": "regrets-reporter-ucs",
+    "notification_emails": [
+      "jessed@mozillafoundation.org",
+      "brandi@mozillafoundation.org"
+    ],
+    "ping_file_paths": [
+      "pings.yaml"
+    ],
+    "prototype": true,
+    "retention_days": 365,
+    "skip_documentation": false,
+    "tag_file_paths": [],
+    "url": "https://github.com/jmccrosky/playing/"
+  }
+]

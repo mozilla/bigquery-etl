@@ -1,0 +1,42 @@
+{
+  "gecko": {
+    "name": "gecko",
+    "type": "dependency"
+  },
+  "glean-core": {
+    "name": "glean-core",
+    "type": "dependency"
+  },
+  "nimbus": {
+    "name": "nimbus",
+    "type": "dependency"
+  },
+  "org.mozilla.appservices:logins": {
+    "name": "org.mozilla.appservices:logins",
+    "type": "dependency"
+  },
+  "org.mozilla.components:browser-engine-gecko-beta": {
+    "name": "org.mozilla.components:browser-engine-gecko-beta",
+    "type": "dependency"
+  },
+  "org.mozilla.components:lib-crash": {
+    "name": "org.mozilla.components:lib-crash",
+    "type": "dependency"
+  },
+  "org.mozilla.components:places": {
+    "name": "org.mozilla.components:places",
+    "type": "dependency"
+  },
+  "org.mozilla.components:service-glean": {
+    "name": "org.mozilla.components:service-glean",
+    "type": "dependency"
+  },
+  "org.mozilla.components:support-migration": {
+    "name": "org.mozilla.components:support-migration",
+    "type": "dependency"
+  },
+  "org.mozilla.components:support-sync-telemetry": {
+    "name": "org.mozilla.components:support-sync-telemetry",
+    "type": "dependency"
+  }
+}

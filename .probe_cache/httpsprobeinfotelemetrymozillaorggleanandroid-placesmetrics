@@ -1,0 +1,1192 @@
+{
+  "places_manager.read_query_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621"
+        ],
+        "dates": {
+          "first": "2020-01-14 20:39:16",
+          "last": "2020-01-14 20:39:16"
+        },
+        "description": "The total number of read operations performed on the places store. The count only includes operations triggered by the application, not e.g. incidental reads performed as part of a sync. It is intended to be used together with `read_query_error_count` to measure the overall error rate of read operations on the places store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb",
+          "last": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb/components/places/android/metrics.yaml#L18",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The total number of read operations performed on the places store. The count only includes operations triggered by the application, not e.g. incidental reads performed as part of a sync. It is intended to be used together with `read_query_error_count` to measure the overall error rate of read operations on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "e6b1d7ada8e79791ca15da9e27b4d77a477275d0"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 2
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/places/android/metrics.yaml#L18",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The total number of read operations performed on the places store. The count only includes operations triggered by the application, not e.g. incidental reads performed as part of a sync. It is intended to be used together with `read_query_error_count` to measure the overall error rate of read operations on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/places/android/metrics.yaml#L22",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of read operations performed on the places store. The count only includes operations triggered by the application, not e.g. incidental reads performed as part of a sync. It is intended to be used together with `read_query_error_count` to measure the overall error rate of read operations on the places store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/places/android/metrics.yaml#L22",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "places_manager.read_query_count",
+    "type": "counter"
+  },
+  "places_manager.read_query_error_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621"
+        ],
+        "dates": {
+          "first": "2020-01-14 20:39:16",
+          "last": "2020-01-14 20:39:16"
+        },
+        "description": "The total number of errors encountered during read operations on the places store, labeled by type. It is intended to be used together with `read_query_count` to measure the overall error rate of read operations on the places store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb",
+          "last": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb"
+        },
+        "labels": [
+          "url_parse_failed",
+          "operation_interrupted"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb/components/places/android/metrics.yaml#L34",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The total number of errors encountered during read operations on the places store, labeled by type. It is intended to be used together with `read_query_count` to measure the overall error rate of read operations on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "e6b1d7ada8e79791ca15da9e27b4d77a477275d0"
+        },
+        "labels": [
+          "url_parse_failed",
+          "operation_interrupted"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 2
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/places/android/metrics.yaml#L35",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The total number of errors encountered during read operations on the places store, labeled by type. It is intended to be used together with `read_query_count` to measure the overall error rate of read operations on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "labels": [
+          "url_parse_failed",
+          "operation_interrupted"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/places/android/metrics.yaml#L42",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of errors encountered during read operations on the places store, labeled by type. It is intended to be used together with `read_query_count` to measure the overall error rate of read operations on the places store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "labels": [
+          "url_parse_failed",
+          "operation_interrupted"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/places/android/metrics.yaml#L44",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "places_manager.read_query_error_count",
+    "type": "labeled_counter"
+  },
+  "places_manager.read_query_time": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621"
+        ],
+        "dates": {
+          "first": "2020-01-14 20:39:16",
+          "last": "2020-01-14 20:39:16"
+        },
+        "description": "The time taken to execute a read query on the places store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb",
+          "last": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb/components/places/android/metrics.yaml#L90",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The time taken to execute a read query on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "e6b1d7ada8e79791ca15da9e27b4d77a477275d0"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 2
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/places/android/metrics.yaml#L94",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The time taken to execute a read query on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/places/android/metrics.yaml#L110",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "places_manager.read_query_time",
+    "type": "timing_distribution"
+  },
+  "places_manager.scan_query_time": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621"
+        ],
+        "dates": {
+          "first": "2020-01-14 20:39:16",
+          "last": "2020-01-14 20:39:16"
+        },
+        "description": "The time taken to execute a scan query on the places store. This metric is for queries that we expect to be costly e.g. getBookmarksTree(guid, recursive=True).\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb",
+          "last": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb/components/places/android/metrics.yaml#L103",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The time taken to execute a scan query on the places store. This metric is for queries that we expect to be costly e.g. getBookmarksTree(guid, recursive=True).\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "e6b1d7ada8e79791ca15da9e27b4d77a477275d0"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 2
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/places/android/metrics.yaml#L108",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The time taken to execute a scan query on the places store. This metric is for queries that we expect to be costly e.g. getBookmarksTree(guid, recursive=True).\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/places/android/metrics.yaml#L126",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "places_manager.scan_query_time",
+    "type": "timing_distribution"
+  },
+  "places_manager.write_query_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621"
+        ],
+        "dates": {
+          "first": "2020-01-14 20:39:16",
+          "last": "2020-01-14 20:39:16"
+        },
+        "description": "The total number of write operations performed on the places store. The count only includes operations triggered by the application, not e.g. incidental writes performed as part of a sync. It is intended to be used together with `write_query_error_count` to measure the overall error rate of write operations on the places store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb",
+          "last": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb/components/places/android/metrics.yaml#L52",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The total number of write operations performed on the places store. The count only includes operations triggered by the application, not e.g. incidental writes performed as part of a sync. It is intended to be used together with `write_query_error_count` to measure the overall error rate of write operations on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "e6b1d7ada8e79791ca15da9e27b4d77a477275d0"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 2
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/places/android/metrics.yaml#L54",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The total number of write operations performed on the places store. The count only includes operations triggered by the application, not e.g. incidental writes performed as part of a sync. It is intended to be used together with `write_query_error_count` to measure the overall error rate of write operations on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/places/android/metrics.yaml#L64",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of write operations performed on the places store. The count only includes operations triggered by the application, not e.g. incidental writes performed as part of a sync. It is intended to be used together with `write_query_error_count` to measure the overall error rate of write operations on the places store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/places/android/metrics.yaml#L68",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "places_manager.write_query_count",
+    "type": "counter"
+  },
+  "places_manager.write_query_error_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621"
+        ],
+        "dates": {
+          "first": "2020-01-14 20:39:16",
+          "last": "2020-01-14 20:39:16"
+        },
+        "description": "The total number of errors encountered during write operations on the places store, labeled by type. It is intended to be used together with `write_query_count` to measure the overall error rate of write operations on the places store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb",
+          "last": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb"
+        },
+        "labels": [
+          "url_parse_failed",
+          "invalid_bookmark_update",
+          "invalid_parent",
+          "unknown_bookmark_item",
+          "url_too_long",
+          "cannot_update_root"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb/components/places/android/metrics.yaml#L68",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The total number of errors encountered during write operations on the places store, labeled by type. It is intended to be used together with `write_query_count` to measure the overall error rate of write operations on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "e6b1d7ada8e79791ca15da9e27b4d77a477275d0"
+        },
+        "labels": [
+          "url_parse_failed",
+          "invalid_bookmark_update",
+          "invalid_parent",
+          "unknown_bookmark_item",
+          "url_too_long",
+          "cannot_update_root"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 2
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/places/android/metrics.yaml#L71",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The total number of errors encountered during write operations on the places store, labeled by type. It is intended to be used together with `write_query_count` to measure the overall error rate of write operations on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "labels": [
+          "url_parse_failed",
+          "invalid_bookmark_update",
+          "invalid_parent",
+          "unknown_bookmark_item",
+          "url_too_long",
+          "cannot_update_root"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/places/android/metrics.yaml#L84",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694316"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2021-02-26 00:05:40",
+          "last": "2021-11-26 18:18:04"
+        },
+        "description": "The total number of errors encountered during write operations on the places store, labeled by type. It is intended to be used together with `write_query_count` to measure the overall error rate of write operations on the places store.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1379aab17f898f951068833fd92be7f9dc24c6db",
+          "last": "d53cfa891d05178b7752dc91dc0ec67bf40e3a2c"
+        },
+        "labels": [
+          "url_parse_failed",
+          "invalid_bookmark_update",
+          "invalid_parent",
+          "unknown_bookmark_item",
+          "url_too_long",
+          "cannot_update_root"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mhammond@mozilla.com",
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/1379aab17f898f951068833fd92be7f9dc24c6db/components/places/android/metrics.yaml#L90",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "places_manager.write_query_error_count",
+    "type": "labeled_counter"
+  },
+  "places_manager.write_query_time": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621"
+        ],
+        "dates": {
+          "first": "2020-01-14 20:39:16",
+          "last": "2020-01-14 20:39:16"
+        },
+        "description": "The time taken to execute a write query on the places store.\n",
+        "disabled": false,
+        "expires": "2020-07-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb",
+          "last": "10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/10f77ccc98790c4c5ddac2a7ceb5c9decd301fbb/components/places/android/metrics.yaml#L117",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "dates": {
+          "first": "2020-06-29 01:31:27",
+          "last": "2020-07-17 04:04:35"
+        },
+        "description": "The time taken to execute a write query on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "4ca7025fb7513d99200ec69c3851acf6e32cf5df",
+          "last": "e6b1d7ada8e79791ca15da9e27b4d77a477275d0"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 2
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/4ca7025fb7513d99200ec69c3851acf6e32cf5df/components/places/android/metrics.yaml#L123",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://github.com/mozilla/application-services/issues/2300",
+          "https://github.com/mozilla/application-services/issues/2299"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1607621",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1649044"
+        ],
+        "data_sensitivity": [
+          "interaction"
+        ],
+        "dates": {
+          "first": "2020-08-26 08:27:49",
+          "last": "2020-08-26 08:27:49"
+        },
+        "description": "The time taken to execute a write query on the places store.\n",
+        "disabled": false,
+        "expires": "2021-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "9018a6aed6179dc8a218136a998e26986f2cb375",
+          "last": "9018a6aed6179dc8a218136a998e26986f2cb375"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "synced-client-integrations@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/application-services/blob/9018a6aed6179dc8a218136a998e26986f2cb375/components/places/android/metrics.yaml#L144",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "places_manager.write_query_time",
+    "type": "timing_distribution"
+  }
+}

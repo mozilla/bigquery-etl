@@ -1,0 +1,669 @@
+{
+  "browser.ui.proton_enabled": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1715129"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1715129#c3"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-06-08 16:09:22",
+          "last": "2021-06-08 16:09:22"
+        },
+        "description": "True if the Proton default theme is enabled.\n",
+        "disabled": false,
+        "expires": "92",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "529c78906ff42eb8f3b3e296c6937706c9940cd5",
+          "last": "529c78906ff42eb8f3b3e296c6937706c9940cd5"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "mconley@mozilla.com",
+          "bwinton@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/529c78906ff42eb8f3b3e296c6937706c9940cd5/browser/base/content/metrics.yaml#L9",
+        "type": "boolean",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "browser.ui.proton_enabled",
+    "type": "boolean"
+  },
+  "fog.failed_idle_registration": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694739"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694739#c5"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-03-08 15:27:42",
+          "last": "2021-11-29 17:26:15"
+        },
+        "description": "True if we failed to register with the idle service. Absent otherwise.\nMeans IPC probably isn't working well.\nChild-process data will likely be absent, or incomplete.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "46ce205f7e005ee268f9ca6dc0d8c3ad7b65327c",
+          "last": "4c184ca81b28f1ccffbfd08f465709b95bcb4aa1"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "chutten@mozilla.com",
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/46ce205f7e005ee268f9ca6dc0d8c3ad7b65327c/toolkit/components/glean/metrics.yaml#L34",
+        "type": "boolean",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "fog.failed_idle_registration",
+    "type": "boolean"
+  },
+  "fog.initialization": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1662123"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1662123#c3"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2020-09-28 10:09:28",
+          "last": "2021-11-29 17:26:15"
+        },
+        "description": "Time the FOG initialization takes.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "c503da69cea9b4b7aab78b369ca520f98261ef3b",
+          "last": "4c184ca81b28f1ccffbfd08f465709b95bcb4aa1"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "jrediger@mozilla.com",
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 18,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/c503da69cea9b4b7aab78b369ca520f98261ef3b/toolkit/components/glean/metrics.yaml#L18",
+        "time_unit": "nanosecond",
+        "type": "timespan",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "fog.initialization",
+    "type": "timespan"
+  },
+  "fog.ipc.buffer_sizes": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694739"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694739#c5"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-03-08 15:27:42",
+          "last": "2021-11-29 17:26:15"
+        },
+        "description": "The number and size of the IPC buffers being received over FOG IPC.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "46ce205f7e005ee268f9ca6dc0d8c3ad7b65327c",
+          "last": "4c184ca81b28f1ccffbfd08f465709b95bcb4aa1"
+        },
+        "lifetime": "ping",
+        "memory_unit": "byte",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "chutten@mozilla.com",
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/46ce205f7e005ee268f9ca6dc0d8c3ad7b65327c/toolkit/components/glean/metrics.yaml#L69",
+        "type": "memory_distribution",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "fog.ipc.buffer_sizes",
+    "type": "memory_distribution"
+  },
+  "fog.ipc.flush_durations": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694739"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1694739#c5"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-03-08 15:27:42",
+          "last": "2021-11-29 17:26:15"
+        },
+        "description": "The length of time between asking the child processes for their\nIPC buffers and all of them being received by the parent.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "46ce205f7e005ee268f9ca6dc0d8c3ad7b65327c",
+          "last": "4c184ca81b28f1ccffbfd08f465709b95bcb4aa1"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "chutten@mozilla.com",
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/46ce205f7e005ee268f9ca6dc0d8c3ad7b65327c/toolkit/components/glean/metrics.yaml#L85",
+        "time_unit": "microsecond",
+        "type": "timing_distribution",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "fog.ipc.flush_durations",
+    "type": "timing_distribution"
+  },
+  "fog.ipc.replay_failures": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1664461"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1664461"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2020-10-09 22:43:28",
+          "last": "2021-11-29 17:26:15"
+        },
+        "description": "The number of times the ipc buffer failed to be replayed in the\nparent process.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "03e8e462e57934e88620d88f24232ed6df7434d4",
+          "last": "4c184ca81b28f1ccffbfd08f465709b95bcb4aa1"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "chutten@mozilla.com",
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 13,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/03e8e462e57934e88620d88f24232ed6df7434d4/toolkit/components/glean/metrics.yaml#L35",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "fog.ipc.replay_failures",
+    "type": "counter"
+  },
+  "fog_validation.legacy_telemetry_client_id": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1674233"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1674233#c4"
+        ],
+        "data_sensitivity": [
+          "technical",
+          "highly_sensitive"
+        ],
+        "dates": {
+          "first": "2020-11-09 10:51:14",
+          "last": "2021-03-08 18:27:53"
+        },
+        "description": "The Telemetry client_id. To be sent only in the \"fog-validation\" ping.",
+        "disabled": false,
+        "expires": "89",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "38d25d61a7868d78a89ccfaa5c7cf49503be4fd5",
+          "last": "a0ff87ac01050201b8339871c1465ef43172e016"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "chutten@mozilla.com",
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 12,
+          "last": 3
+        },
+        "send_in_pings": [
+          "fog-validation"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/38d25d61a7868d78a89ccfaa5c7cf49503be4fd5/toolkit/components/glean/metrics.yaml#L52",
+        "type": "uuid",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "fog_validation.legacy_telemetry_client_id",
+    "type": "uuid"
+  },
+  "fog_validation.os_version": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1679835"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1679835#c3"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2020-12-04 12:04:51",
+          "last": "2021-03-08 18:27:53"
+        },
+        "description": "The version of the OS running Firefox, as detected by Gecko. To be sent only in the \"fog-validation\" ping.",
+        "disabled": false,
+        "expires": "89",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "732d9030af5170f6d7cbba4f57661d13eb0d7b07",
+          "last": "a0ff87ac01050201b8339871c1465ef43172e016"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "aplacitelli@mozilla.com",
+          "chutten@mozilla.com",
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 9,
+          "last": 3
+        },
+        "send_in_pings": [
+          "fog-validation"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/732d9030af5170f6d7cbba4f57661d13eb0d7b07/toolkit/components/glean/metrics.yaml#L72",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "fog_validation.os_version",
+    "type": "string"
+  },
+  "fog_validation.profile_disk_is_ssd": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1675877"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1675877#c7"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-01-12 20:45:09",
+          "last": "2021-03-08 18:27:53"
+        },
+        "description": "True iff the type of the disk the current Firefox profile is stored on is an SSD. (Windows only).",
+        "disabled": false,
+        "expires": "89",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "078aa47127d569eb6e83344a5798f4b2a40f470b",
+          "last": "a0ff87ac01050201b8339871c1465ef43172e016"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "chutten@mozilla.com",
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 8,
+          "last": 3
+        },
+        "send_in_pings": [
+          "fog-validation"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/078aa47127d569eb6e83344a5798f4b2a40f470b/toolkit/components/glean/metrics.yaml#L92",
+        "type": "boolean",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "fog_validation.profile_disk_is_ssd",
+    "type": "boolean"
+  },
+  "geckoview.validation.build_id": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1611240",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1687219",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1732928"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1611240#c2"
+        ],
+        "dates": {
+          "first": "2021-10-22 08:53:29",
+          "last": "2021-11-29 17:26:15"
+        },
+        "description": "The Buildid of the Gecko engine, example: 20200205124310 Mirror of `geckoview.build_id` for validation of migrated data.\n",
+        "disabled": false,
+        "expires": "98",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "6bc7261a9b9c183997f0b35c4db38d46e22db647",
+          "last": "4c184ca81b28f1ccffbfd08f465709b95bcb4aa1"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "jrediger@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/6bc7261a9b9c183997f0b35c4db38d46e22db647/gfx/metrics.yaml#L47",
+        "telemetry_mirror": "GECKO_BUILD_ID",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "geckoview.validation.build_id",
+    "type": "string"
+  },
+  "geckoview.validation.version": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1611240",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1687219",
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1732928"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1611240#c2"
+        ],
+        "dates": {
+          "first": "2021-10-22 08:53:29",
+          "last": "2021-11-29 17:26:15"
+        },
+        "description": "The version of the Gecko engine, example: 74.0a1 Mirror of `geckoview.version` for validation of migrated data.\n",
+        "disabled": false,
+        "expires": "98",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "6bc7261a9b9c183997f0b35c4db38d46e22db647",
+          "last": "4c184ca81b28f1ccffbfd08f465709b95bcb4aa1"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "jrediger@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/6bc7261a9b9c183997f0b35c4db38d46e22db647/gfx/metrics.yaml#L30",
+        "telemetry_mirror": "GECKO_VERSION",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "geckoview.validation.version",
+    "type": "string"
+  },
+  "paint.build_displaylist_time": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1728423"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1728423"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-09-01 19:48:13",
+          "last": "2021-11-29 17:26:15"
+        },
+        "description": "The time to build a Gecko display list.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "8ebf4981f1c90dee280ede8796926812a7cb435c",
+          "last": "4c184ca81b28f1ccffbfd08f465709b95bcb4aa1"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "gfx-telemetry-alerts@mozilla.com",
+          "mwoodrow@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/8ebf4981f1c90dee280ede8796926812a7cb435c/gfx/metrics.yaml#L13",
+        "telemetry_mirror": "PAINT_BUILD_DISPLAYLIST_TIME",
+        "time_unit": "nanosecond",
+        "type": "timing_distribution",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "paint.build_displaylist_time",
+    "type": "timing_distribution"
+  },
+  "power.total_cpu_time_ms": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1736040"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1736040"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2021-10-25 18:27:24",
+          "last": "2021-11-29 17:26:15"
+        },
+        "description": "Total CPU time used by all processes in ms.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "bcdfb763fc9bd402fbba4a468e978d66cf65f48a",
+          "last": "4c184ca81b28f1ccffbfd08f465709b95bcb4aa1"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "florian@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/bcdfb763fc9bd402fbba4a468e978d66cf65f48a/toolkit/components/processtools/metrics.yaml#L13",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "power.total_cpu_time_ms",
+    "type": "counter"
+  }
+}

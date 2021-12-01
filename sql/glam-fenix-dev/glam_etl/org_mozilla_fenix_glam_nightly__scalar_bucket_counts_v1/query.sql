@@ -123,6 +123,18 @@ all_combos AS (
   CROSS JOIN
     static_combos combo
 ),
+build_ids AS (
+  SELECT
+    app_build_id,
+    channel,
+  FROM
+    all_combos
+  GROUP BY
+    1,
+    2
+  HAVING
+    COUNT(DISTINCT client_id) > 800
+),
 bucketed_booleans AS (
   SELECT
     client_id,
@@ -137,6 +149,10 @@ bucketed_booleans AS (
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates,
   FROM
     all_combos
+  INNER JOIN
+    build_ids
+  USING
+    (app_build_id, channel)
 ),
 log_min_max AS (
   SELECT

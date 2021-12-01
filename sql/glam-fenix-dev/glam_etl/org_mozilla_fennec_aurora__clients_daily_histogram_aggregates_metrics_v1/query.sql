@@ -40,6 +40,16 @@ histograms AS (
         metrics.timing_distribution.engine_tab_kill_foreground_age.values
       ),
       (
+        "fog_ipc_buffer_sizes",
+        "memory_distribution",
+        metrics.memory_distribution.fog_ipc_buffer_sizes.values
+      ),
+      (
+        "fog_ipc_flush_durations",
+        "timing_distribution",
+        metrics.timing_distribution.fog_ipc_flush_durations.values
+      ),
+      (
         "geckoview_content_process_lifetime",
         "timing_distribution",
         metrics.timing_distribution.geckoview_content_process_lifetime.values
@@ -335,6 +345,11 @@ histograms AS (
         metrics.timing_distribution.network_tls_handshake.values
       ),
       (
+        "paint_build_displaylist_time",
+        "timing_distribution",
+        metrics.timing_distribution.paint_build_displaylist_time.values
+      ),
+      (
         "perf_awesomebar_bookmark_suggestions",
         "timing_distribution",
         metrics.timing_distribution.perf_awesomebar_bookmark_suggestions.values
@@ -583,6 +598,11 @@ histograms AS (
         "places_manager_write_query_time",
         "timing_distribution",
         metrics.timing_distribution.places_manager_write_query_time.values
+      ),
+      (
+        "search_terms_group_size_distribution",
+        "custom_distribution",
+        metrics.custom_distribution.search_terms_group_size_distribution.values
       ),
       (
         "storage_stats_app_bytes",

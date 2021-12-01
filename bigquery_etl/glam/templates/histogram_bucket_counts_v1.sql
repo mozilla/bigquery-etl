@@ -10,6 +10,18 @@ WITH
         attribute_combinations
     )
 }},
+build_ids AS (
+  SELECT
+    app_build_id,
+    channel,
+  FROM
+    all_combos
+  GROUP BY
+    1,
+    2
+  HAVING
+      COUNT(DISTINCT client_id) > {{ minimum_client_count }}
+),
 normalized_histograms AS (
   SELECT
     {{ attributes }},
@@ -21,6 +33,10 @@ normalized_histograms AS (
     )AS histogram_aggregates
   FROM
     all_combos
+  INNER JOIN
+    build_ids
+  USING
+    (app_build_id, channel)
 ),
 unnested AS (
   SELECT

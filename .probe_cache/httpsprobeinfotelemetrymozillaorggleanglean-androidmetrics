@@ -1,0 +1,1969 @@
+{
+  "android_sdk_version": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1525606
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1525606#c14"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The optional Android specific SDK version of the software running on this hardware device.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L73",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1525606"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1525606#c14"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-10-04 17:30:42"
+        },
+        "description": "The optional Android specific SDK version of the software running on this hardware device.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 17
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L74",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1525606"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1525606#c14"
+        ],
+        "dates": {
+          "first": "2019-10-28 10:18:55",
+          "last": "2019-12-13 16:08:53"
+        },
+        "description": "The optional Android specific SDK version of the software running on this\nhardware device.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "e58e1cb0ec915b09830faf039a04e77cd6d13643",
+          "last": "757a6d0d45e06a898ddce20aab2433d606710254"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 16,
+          "last": 7
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/e58e1cb0ec915b09830faf039a04e77cd6d13643/glean-core/android/metrics.yaml#L75",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1525606"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1525606#c14"
+        ],
+        "dates": {
+          "first": "2019-12-13 16:08:53",
+          "last": "2019-12-13 16:08:53"
+        },
+        "description": "The optional Android specific SDK version of the software running on this\nhardware device.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d79ff3ddca65e1d37c77641e92e8a275e252dd7a",
+          "last": "d79ff3ddca65e1d37c77641e92e8a275e252dd7a"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/d79ff3ddca65e1d37c77641e92e8a275e252dd7a/glean-core/android/metrics.yaml#L13",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1525606"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1525606#c14"
+        ],
+        "dates": {
+          "first": "2019-12-31 22:03:31",
+          "last": "2020-01-08 15:40:47"
+        },
+        "description": "The optional Android specific SDK version of the software running on this\nhardware device.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "58c62d9c1ee52f45828e5bb1f03372a546ebb575",
+          "last": "0a989dd3a07040ebe05795a03fad62da065b52fd"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 4
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/58c62d9c1ee52f45828e5bb1f03372a546ebb575/glean-core/android/metrics.yaml#L13",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1525606"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1525606#c14"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2020-07-21 23:14:26",
+          "last": "2021-11-22 13:19:13"
+        },
+        "description": "The optional Android specific SDK version of the software running on this\nhardware device.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "678459233982815917eea9a053537232724a91df",
+          "last": "792da654f54bc10800a45dbffca872da1c91c148"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 0
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/678459233982815917eea9a053537232724a91df/glean-core/android/metrics.yaml#L13",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "android_sdk_version",
+    "type": "string"
+  },
+  "app_build": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1508305
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The build identifier generated by the CI system (e.g. \"1234/A\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L148",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1508305"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The build identifier generated by the CI system (e.g. \"1234/A\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L149",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "app_build",
+    "type": "string"
+  },
+  "app_channel": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1520741
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1520741#c18"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The channel the application is being distributed on.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L178",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1520741"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1520741#c18"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The channel the application is being distributed on.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L179",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "app_channel",
+    "type": "string"
+  },
+  "app_display_version": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1508305
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1508305#c9"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The user visible version string (e.g. \"1.0.3\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L163",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1508305"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1508305#c9"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The user visible version string (e.g. \"1.0.3\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L164",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "app_display_version",
+    "type": "string"
+  },
+  "architecture": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1497894
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The architecture of the device, (e.g. \"arm\", \"x86\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L118",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1497894"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The architecture of the device, (e.g. \"arm\", \"x86\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L119",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "architecture",
+    "type": "string"
+  },
+  "client_id": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1497894
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "A UUID uniquely identifying the client.",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "user",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L133",
+        "type": "uuid",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1497894"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "A UUID uniquely identifying the client.",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "user",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L134",
+        "type": "uuid",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "client_id",
+    "type": "uuid"
+  },
+  "device_manufacturer": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1522552
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The manufacturer of the device the application is running on.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L88",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1522552"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The manufacturer of the device the application is running on.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L89",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "device_manufacturer",
+    "type": "string"
+  },
+  "device_model": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1522552
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The model of the device the application is running on.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L103",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1522552"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The model of the device the application is running on.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L104",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "device_model",
+    "type": "string"
+  },
+  "first_run_date": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1525045
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1525045#c18"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The date of the first run of the application.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "user",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L193",
+        "time_unit": "day",
+        "type": "datetime",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1525045"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1525045#c18"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The date of the first run of the application.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "user",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L194",
+        "time_unit": "day",
+        "type": "datetime",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "first_run_date",
+    "type": "datetime"
+  },
+  "glean.baseline.duration": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "1497894, 1519120"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The duration of the last foreground session.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "baseline"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L12",
+        "time_unit": "second",
+        "type": "timespan",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1497894",
+          "https://bugzilla.mozilla.org/1519120"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The duration of the last foreground session.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "baseline"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L12",
+        "time_unit": "second",
+        "type": "timespan",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "glean.baseline.duration",
+    "type": "timespan"
+  },
+  "glean.baseline.locale": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1512938,
+          1525540
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The locale of the application (e.g. \"es-ES\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "baseline"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L26",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1512938",
+          "https://bugzilla.mozilla.org/1525540"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The locale of the application (e.g. \"es-ES\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "baseline"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L27",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "glean.baseline.locale",
+    "type": "string"
+  },
+  "glean.core.migration.successful": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1582099
+        ],
+        "data_reviews": [
+          "TODOs"
+        ],
+        "dates": {
+          "first": "2019-10-02 16:20:30",
+          "last": "2019-10-02 16:20:30"
+        },
+        "description": "Reports `true` if the client was successfully migrated from the Android-specific implementation of the Glean SDK to the cross-platform one.",
+        "disabled": false,
+        "expires": "2020-03-01",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "f9bb17cbdce389f14c88dce8eb1fb95f7197c7f4",
+          "last": "f9bb17cbdce389f14c88dce8eb1fb95f7197c7f4"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com",
+          "aplacitelli@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 20,
+          "last": 20
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/f9bb17cbdce389f14c88dce8eb1fb95f7197c7f4/glean-core/android/metrics.yaml#L245",
+        "type": "boolean",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1582099
+        ],
+        "data_reviews": [
+          "TODOs"
+        ],
+        "dates": {
+          "first": "2019-10-02 16:21:03",
+          "last": "2019-10-02 16:21:03"
+        },
+        "description": "Reports `true` if the client was successfully migrated from the Android-specific implementation of the Glean SDK to the cross-platform one.",
+        "disabled": false,
+        "expires": "2020-03-31",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "51bc8ec7287b52e41c30ed02315092f3fffb53c6",
+          "last": "51bc8ec7287b52e41c30ed02315092f3fffb53c6"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com",
+          "aplacitelli@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 19,
+          "last": 19
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/51bc8ec7287b52e41c30ed02315092f3fffb53c6/glean-core/android/metrics.yaml#L245",
+        "type": "boolean",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1582099
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1582099#c4"
+        ],
+        "dates": {
+          "first": "2019-10-02 16:23:16",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "Reports `true` if the client was successfully migrated from the Android-specific implementation of the Glean SDK to the cross-platform one.",
+        "disabled": false,
+        "expires": "2020-03-31",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "669d43171d0d40fc73266ecfad4b136622999804",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com",
+          "aplacitelli@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 18,
+          "last": 18
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/669d43171d0d40fc73266ecfad4b136622999804/glean-core/android/metrics.yaml#L245",
+        "type": "boolean",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1582099"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1582099#c4"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-12-31 22:03:31"
+        },
+        "description": "Reports `true` if the client was successfully migrated from the Android-specific implementation of the Glean SDK to the cross-platform one.",
+        "disabled": false,
+        "expires": "2020-03-31",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "58c62d9c1ee52f45828e5bb1f03372a546ebb575"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com",
+          "aplacitelli@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L246",
+        "type": "boolean",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "glean.core.migration.successful",
+    "type": "boolean"
+  },
+  "glean.error.invalid_label": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1499761
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1499761#c5"
+        ],
+        "dates": {
+          "first": "2019-07-29 21:53:28",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "Counts the number of times a metric was set with an invalid label. The labels are the `category.name` identifier of the metric.",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "58d78512765921217c7e7e026fc385915871bd29",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "labels": null,
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 22,
+          "last": 18
+        },
+        "send_in_pings": [
+          "all_pings"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/58d78512765921217c7e7e026fc385915871bd29/glean-core/android/metrics.yaml#L225",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1499761"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1499761#c5"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "Counts the number of times a metric was set with an invalid label. The labels are the `category.name` identifier of the metric.",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "labels": null,
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [
+          "COMMON_PREFIX"
+        ],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "all_pings"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L228",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "glean.error.invalid_label",
+    "type": "labeled_counter"
+  },
+  "glean.error.invalid_value": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1499761
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1499761#c5"
+        ],
+        "dates": {
+          "first": "2019-07-29 21:53:28",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "Counts the number of times a metric was set to an invalid value. The labels are the `category.name` identifier of the metric.",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "58d78512765921217c7e7e026fc385915871bd29",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "labels": null,
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 22,
+          "last": 18
+        },
+        "send_in_pings": [
+          "all_pings"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/58d78512765921217c7e7e026fc385915871bd29/glean-core/android/metrics.yaml#L210",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1499761"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1499761#c5"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "Counts the number of times a metric was set to an invalid value. The labels are the `category.name` identifier of the metric.",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "labels": null,
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [
+          "COMMON_PREFIX"
+        ],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "all_pings"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L211",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "glean.error.invalid_value",
+    "type": "labeled_counter"
+  },
+  "glean.error.preinit_tasks_timeout": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1575848"
+        ],
+        "data_reviews": [
+          "TBD"
+        ],
+        "dates": {
+          "first": "2019-11-01 14:23:23",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "Set to true if the tasks that are queued prior to Glean initialization time out.",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b5aca0406a48ce988b24c15f4bf4cba79e474d48",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 15,
+          "last": 15
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b5aca0406a48ce988b24c15f4bf4cba79e474d48/glean-core/android/metrics.yaml#L247",
+        "type": "boolean",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1575848"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1575848#c5"
+        ],
+        "dates": {
+          "first": "2019-11-06 18:46:02",
+          "last": "2019-12-11 13:43:15"
+        },
+        "description": "Set to true if the tasks that are queued prior to Glean initialization time out.",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1f06101e4db4a2eff1b437f15f2f95456141e75a",
+          "last": "9f667c7b9900203cc1d8a6290cebd0d0d5ef3c99"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 14,
+          "last": 8
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/1f06101e4db4a2eff1b437f15f2f95456141e75a/glean-core/android/metrics.yaml#L30",
+        "type": "boolean",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "glean.error.preinit_tasks_timeout",
+    "type": "boolean"
+  },
+  "glean.validation.app_forceclosed_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1600340"
+        ],
+        "data_reviews": [
+          "TODO"
+        ],
+        "dates": {
+          "first": "2019-11-29 16:47:12",
+          "last": "2019-11-29 16:47:12"
+        },
+        "description": "This metric counts how many times a dirty bit was detected when starting the Glean SDK, on Android. This dirty bit is set to `true` when Android's lifecycle `ON_START` is hit and flipped back to false on `ON_STOP`. When is force-closed, we might not get the `ON_STOP` and so the value would stay `true`. Next time Glean starts, it would increment this counter.",
+        "disabled": false,
+        "expires": "2019-12-31",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "1338a1dbbd3021e17b35bc848859c4daff6e0803",
+          "last": "1338a1dbbd3021e17b35bc848859c4daff6e0803"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com",
+          "aplacitelli@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 12,
+          "last": 12
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/1338a1dbbd3021e17b35bc848859c4daff6e0803/glean-core/android/metrics.yaml#L90",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1600340"
+        ],
+        "data_reviews": [
+          "TODO"
+        ],
+        "dates": {
+          "first": "2019-12-02 10:50:23",
+          "last": "2019-12-02 11:02:58"
+        },
+        "description": "This metric counts how many times a dirty bit was detected when starting the Glean SDK, on Android. This dirty bit is set to `true` when Android's lifecycle `ON_START` is hit and flipped back to false on `ON_STOP`. When an application is force-closed, it might not get the `ON_STOP` and so the value would stay `true`. The next time Glean starts, it will increment this counter.",
+        "disabled": false,
+        "expires": "2019-12-31",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d9e70a2e0ec73c61b41d3fdf71921661691d47c7",
+          "last": "6f7301f47bfa85cdf33485e56f136e91fba11499"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com",
+          "aplacitelli@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 11,
+          "last": 10
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/d9e70a2e0ec73c61b41d3fdf71921661691d47c7/glean-core/android/metrics.yaml#L90",
+        "type": "counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1600340"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1600340#c3"
+        ],
+        "dates": {
+          "first": "2019-12-02 14:59:00",
+          "last": "2019-12-13 16:08:53"
+        },
+        "description": "This metric counts how many times a dirty bit was detected when starting the Glean SDK, on Android. This dirty bit is set to `true` when Android's lifecycle `ON_START` is hit and flipped back to false on `ON_STOP`. When an application is force-closed, it might not get the `ON_STOP` and so the value would stay `true`. The next time Glean starts, it will increment this counter.",
+        "disabled": false,
+        "expires": "2019-12-31",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "ef8f22ba56c0fb3ac336d4d6b17e376b4d5706dd",
+          "last": "d79ff3ddca65e1d37c77641e92e8a275e252dd7a"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com",
+          "aplacitelli@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 9,
+          "last": 6
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/ef8f22ba56c0fb3ac336d4d6b17e376b4d5706dd/glean-core/android/metrics.yaml#L90",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "glean.validation.app_forceclosed_count",
+    "type": "counter"
+  },
+  "glean.validation.baseline_ping_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597980"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597980#c3"
+        ],
+        "dates": {
+          "first": "2019-11-20 16:02:22",
+          "last": "2019-12-02 14:59:00"
+        },
+        "description": "The number of baseline pings sent during the lifetime of this metrics ping.",
+        "disabled": false,
+        "expires": "2019-12-20",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a85946032f381baae86bc9af8f8bc57a2d4e9f33",
+          "last": "ef8f22ba56c0fb3ac336d4d6b17e376b4d5706dd"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com",
+          "mdroettboom@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 13,
+          "last": 9
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/a85946032f381baae86bc9af8f8bc57a2d4e9f33/glean-core/android/metrics.yaml#L60",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "glean.validation.baseline_ping_count",
+    "type": "counter"
+  },
+  "glean.validation.metrics_ping_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597980"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1597980#c3"
+        ],
+        "dates": {
+          "first": "2019-11-20 16:02:22",
+          "last": "2019-12-02 14:59:00"
+        },
+        "description": "The number of metrics pings sent during the lifetime of this baseline ping.",
+        "disabled": false,
+        "expires": "2019-12-20",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a85946032f381baae86bc9af8f8bc57a2d4e9f33",
+          "last": "ef8f22ba56c0fb3ac336d4d6b17e376b4d5706dd"
+        },
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "glean-team@mozilla.com",
+          "mdroettboom@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 13,
+          "last": 9
+        },
+        "send_in_pings": [
+          "baseline"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/a85946032f381baae86bc9af8f8bc57a2d4e9f33/glean-core/android/metrics.yaml#L74",
+        "type": "counter",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "glean.validation.metrics_ping_count",
+    "type": "counter"
+  },
+  "os": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1497894
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The name of the operating system.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L43",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1497894"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The name of the operating system.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L44",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "os",
+    "type": "string"
+  },
+  "os_version": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1497894
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-05-09 13:05:57",
+          "last": "2019-10-02 16:23:16"
+        },
+        "description": "The user-visible version of the operating system (e.g. \"1.2.3\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "240c9e58f4b378fd30309187147c2fba951c726e",
+          "last": "669d43171d0d40fc73266ecfad4b136622999804"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 24,
+          "last": 18
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/240c9e58f4b378fd30309187147c2fba951c726e/glean-core/android/metrics.yaml#L58",
+        "type": "string",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": true,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1497894"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1512938#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 17:30:42",
+          "last": "2019-11-01 14:23:23"
+        },
+        "description": "The user-visible version of the operating system (e.g. \"1.2.3\").\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "b42e09bd7aeccb1d8d19f21a3872be44e33c5739",
+          "last": "b5aca0406a48ce988b24c15f4bf4cba79e474d48"
+        },
+        "lifetime": "application",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "telemetry-client-dev@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 17,
+          "last": 15
+        },
+        "send_in_pings": [
+          "glean_client_info"
+        ],
+        "source_url": "https://github.com/mozilla/glean/blob/b42e09bd7aeccb1d8d19f21a3872be44e33c5739/glean-core/android/metrics.yaml#L59",
+        "type": "string",
+        "version": 0
+      }
+    ],
+    "in-source": false,
+    "name": "os_version",
+    "type": "string"
+  }
+}

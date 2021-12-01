@@ -33,6 +33,18 @@ all_combos AS (
   CROSS JOIN
     static_combos combo
 ),
+build_ids AS (
+  SELECT
+    app_build_id,
+    channel,
+  FROM
+    all_combos
+  GROUP BY
+    1,
+    2
+  HAVING
+    COUNT(DISTINCT client_id) > 800
+),
 normalized_histograms AS (
   SELECT
     ping_type,
@@ -52,6 +64,10 @@ normalized_histograms AS (
     ) AS histogram_aggregates
   FROM
     all_combos
+  INNER JOIN
+    build_ids
+  USING
+    (app_build_id, channel)
 ),
 unnested AS (
   SELECT
@@ -82,6 +98,14 @@ distribution_metadata AS (
   FROM
     UNNEST(
       [
+        STRUCT(
+          "custom_distribution" AS metric_type,
+          "search_terms_group_size_distribution" AS metric,
+          1 AS range_min,
+          4 AS range_max,
+          5 AS bucket_count,
+          "linear" AS histogram_type
+        ),
         STRUCT(
           "custom_distribution" AS metric_type,
           "geckoview_document_site_origins" AS metric,

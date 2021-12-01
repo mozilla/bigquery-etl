@@ -1,0 +1,289 @@
+{
+  "crash_metrics.crash_count": {
+    "history": [
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          1553935
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1553935#c3"
+        ],
+        "dates": {
+          "first": "2019-07-15 18:39:34",
+          "last": "2019-07-15 18:39:34"
+        },
+        "description": "Counts the number of crashes that occur in the application.  This measures only the counts of each crash in association with the labeled type of the crash. The labels correspond to the types of crashes handled by lib-crash.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "824550a9844330304b0bd4b5be44a4053838d807",
+          "last": "824550a9844330304b0bd4b5be44a4053838d807"
+        },
+        "labels": [
+          "uncaught_exception",
+          "native_code_crash"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "android-components-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/824550a9844330304b0bd4b5be44a4053838d807/components/lib/crash/metrics.yaml#L12",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1553935"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1553935#c3"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2019-10-04 16:20:33"
+        },
+        "description": "Counts the number of crashes that occur in the application.  This measures only the counts of each crash in association with the labeled type of the crash. The labels correspond to the types of crashes handled by lib-crash.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70"
+        },
+        "labels": [
+          "uncaught_exception",
+          "native_code_crash"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "android-components-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/lib/crash/metrics.yaml#L12",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1553935"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1553935#c3"
+        ],
+        "dates": {
+          "first": "2019-10-09 19:49:06",
+          "last": "2019-10-09 19:49:06"
+        },
+        "description": "Counts the number of crashes that occur in the application.  This measures only the counts of each crash in association with the labeled type of the crash. The labels correspond to the types of crashes handled by lib-crash.\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "bc41897a3073614637fcc3bab2f7bfec8a2f81b9",
+          "last": "bc41897a3073614637fcc3bab2f7bfec8a2f81b9"
+        },
+        "labels": [
+          "uncaught_exception",
+          "caught_exception",
+          "native_code_crash"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "android-components-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/bc41897a3073614637fcc3bab2f7bfec8a2f81b9/components/lib/crash/metrics.yaml#L12",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1553935",
+          "https://github.com/mozilla-mobile/android-components/issues/5175"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1553935#c3",
+          "https://github.com/mozilla-mobile/android-components/pull/5700#pullrequestreview-347721248"
+        ],
+        "dates": {
+          "first": "2020-01-24 15:42:26",
+          "last": "2020-01-24 15:42:26"
+        },
+        "description": "Counts the number of crashes that occur in the application.  This measures only the counts of each crash in association with the labeled type of the crash. The labels correspond to the types of crashes handled by lib-crash.\nDeprecated: `native_code_crash` replaced by `fatal_native_code_crash` and `nonfatal_native_code_crash`\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "a5ca9434ee3f58f245863985308a9c430bf9d5ee",
+          "last": "a5ca9434ee3f58f245863985308a9c430bf9d5ee"
+        },
+        "labels": [
+          "uncaught_exception",
+          "caught_exception",
+          "fatal_native_code_crash",
+          "nonfatal_native_code_crash"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "android-components-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a5ca9434ee3f58f245863985308a9c430bf9d5ee/components/lib/crash/metrics.yaml#L12",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1553935",
+          "https://github.com/mozilla-mobile/android-components/issues/5175"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1553935#c3",
+          "https://github.com/mozilla-mobile/android-components/pull/5700#pullrequestreview-347721248"
+        ],
+        "dates": {
+          "first": "2020-05-11 12:25:30",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "Counts the number of crashes that occur in the application. This measures only the counts of each crash in association with the labeled type of the crash. The labels correspond to the types of crashes handled by lib-crash.\nDeprecated: `native_code_crash` replaced by `fatal_native_code_crash` and `nonfatal_native_code_crash`\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "321215304df372c25225da1073c563c7f6e2c41e",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "labels": [
+          "uncaught_exception",
+          "caught_exception",
+          "fatal_native_code_crash",
+          "nonfatal_native_code_crash"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "android-components-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/321215304df372c25225da1073c563c7f6e2c41e/components/lib/crash/metrics.yaml#L13",
+        "type": "labeled_counter",
+        "version": 0
+      },
+      {
+        "_config": {
+          "allow_reserved": false,
+          "do_not_disable_expired": true
+        },
+        "bugs": [
+          "https://bugzilla.mozilla.org/1553935",
+          "https://github.com/mozilla-mobile/android-components/issues/5175"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1553935#c3",
+          "https://github.com/mozilla-mobile/android-components/pull/5700#pullrequestreview-347721248"
+        ],
+        "data_sensitivity": [
+          "technical"
+        ],
+        "dates": {
+          "first": "2020-08-10 12:51:50",
+          "last": "2021-11-29 22:41:47"
+        },
+        "description": "Counts the number of crashes that occur in the application. This measures only the counts of each crash in association with the labeled type of the crash. The labels correspond to the types of crashes handled by lib-crash.\nDeprecated: `native_code_crash` replaced by `fatal_native_code_crash` and `nonfatal_native_code_crash`\n",
+        "disabled": false,
+        "expires": "never",
+        "gecko_datapoint": "",
+        "git-commits": {
+          "first": "92ca723bba524c20b4227f7d87ab515a9ee01049",
+          "last": "687041cb46f11b95c0a26a823f1cb41a31692217"
+        },
+        "labels": [
+          "uncaught_exception",
+          "caught_exception",
+          "fatal_native_code_crash",
+          "nonfatal_native_code_crash"
+        ],
+        "lifetime": "ping",
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "android-components-team@mozilla.com"
+        ],
+        "reflog-index": {
+          "first": 1,
+          "last": 0
+        },
+        "send_in_pings": [
+          "metrics"
+        ],
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/92ca723bba524c20b4227f7d87ab515a9ee01049/components/lib/crash/metrics.yaml#L13",
+        "type": "labeled_counter",
+        "version": 0
+      }
+    ],
+    "in-source": true,
+    "name": "crash_metrics.crash_count",
+    "type": "labeled_counter"
+  }
+}

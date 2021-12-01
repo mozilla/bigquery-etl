@@ -957,6 +957,7 @@ def _update_query_schema(
                 field=table.time_partitioning.field,
                 partition_type=table.time_partitioning.type_.lower(),
                 required=table.time_partitioning.require_partition_filter,
+                expiration=table.time_partitioning.expiration_ms,
             )
             click.echo(f"Partitioning metadata added to {metadata_file_path}")
 
@@ -1108,6 +1109,7 @@ def deploy(
                         require_partition_filter=(
                             metadata.bigquery.time_partitioning.require_partition_filter
                         ),
+                        expiration_ms=metadata.bigquery.time_partitioning.expiration_ms,
                     )
 
                 if metadata.bigquery and metadata.bigquery.clustering:

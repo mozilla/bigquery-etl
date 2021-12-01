@@ -60,7 +60,15 @@ class PartitionMetadata:
     field: str
     type: PartitionType
     require_partition_filter: bool = attr.ib(True)
-    expiration_ms: Optional[int] = attr.ib(None)
+    expiration_days: Optional[float] = attr.ib(None)
+
+    @property
+    def expiration_ms(self) -> Optional[float]:
+        """Convert partition expiration from days to milliseconds."""
+        if self.expiration_days is None:
+            return None
+
+        return int(self.expiration_days * 86400000)
 
 
 @attr.s(auto_attribs=True)
@@ -312,7 +320,7 @@ class Metadata:
         return self.labels.get("review_bugs", None)
 
     def set_bigquery_partitioning(
-        self, field, partition_type, required, expiration=None
+        self, field, partition_type, required, expiration_days=None
     ):
         """Update the BigQuery partitioning metadata."""
         clustering = None
@@ -324,7 +332,7 @@ class Metadata:
                 field=field,
                 type=PartitionType(partition_type),
                 require_partition_filter=required,
-                expiration_ms=expiration,
+                expiration_days=expiration_days,
             ),
             clustering=clustering,
         )

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
 
 TEST_DIR = Path(__file__).parent.parent
 
@@ -151,3 +151,23 @@ class TestParseMetadata(object):
         assert Metadata.is_metadata_file("foo/bar/invalid.yaml") is False
         assert Metadata.is_metadata_file("metadata.yaml")
         assert Metadata.is_metadata_file("some/path/to/metadata.yaml")
+
+    def test_set_bigquery_partitioning(self):
+        metadata = Metadata.of_table(
+            "test",
+            "non_incremental_query",
+            "v1",
+            TEST_DIR / "data" / "test_sql" / "moz-fx-data-test-project",
+        )
+        metadata.set_bigquery_partitioning(
+            field="submission_date",
+            partition_type=PartitionType.DAY,
+            required=True,
+            expiration_days=2,
+        )
+
+        assert metadata.bigquery.time_partitioning.field == "submission_date"
+        assert metadata.bigquery.time_partitioning.type == PartitionType.DAY
+        assert metadata.bigquery.time_partitioning.require_partition_filter
+        assert metadata.bigquery.time_partitioning.expiration_days == 2
+        assert metadata.bigquery.time_partitioning.expiration_ms == 2 * 86400000

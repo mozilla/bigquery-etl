@@ -793,6 +793,12 @@ fields:
         mode: NULLABLE
         name: vendor
         type: STRING
+      - description: Whether or not the system is Windows 10 or 11 in S Mode. S Mode
+          existed prior to us being able to query it, so this is unreliable on Windows
+          versions prior to 1810.
+        mode: NULLABLE
+        name: is_windows_s_mode
+        type: BOOLEAN
       mode: NULLABLE
       name: cpu
       type: RECORD

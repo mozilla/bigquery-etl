@@ -59,7 +59,8 @@ class PartitionMetadata:
 
     field: str
     type: PartitionType
-    require_partition_filter: bool = attr.ib(False)
+    require_partition_filter: bool = attr.ib(True)
+    expiration_ms: Optional[int] = attr.ib(None)
 
 
 @attr.s(auto_attribs=True)
@@ -310,7 +311,9 @@ class Metadata:
         """Return the bug ID of the data review bug in bugzilla."""
         return self.labels.get("review_bugs", None)
 
-    def set_bigquery_partitioning(self, field, partition_type, required):
+    def set_bigquery_partitioning(
+        self, field, partition_type, required, expiration=None
+    ):
         """Update the BigQuery partitioning metadata."""
         clustering = None
         if self.bigquery and self.bigquery.clustering:
@@ -321,6 +324,7 @@ class Metadata:
                 field=field,
                 type=PartitionType(partition_type),
                 require_partition_filter=required,
+                expiration_ms=expiration,
             ),
             clustering=clustering,
         )

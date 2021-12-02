@@ -907,6 +907,25 @@ fields:
       mode: NULLABLE
       name: home_screen_home_screen_view_count
       type: INTEGER
+    - description: 'The number of times we failed to flush all non-parent-process
+        data,
+
+        throwing even partial results into the trash.
+
+        If this number is high, we might consider writing custom `MozPromise`-
+
+        handling code instead of using `MozPromise::All`.
+
+        '
+      mode: NULLABLE
+      name: fog_ipc_flush_failures
+      type: INTEGER
+    - description: 'Total GPU time used by all processes in ms.
+
+        '
+      mode: NULLABLE
+      name: power_total_gpu_time_ms
+      type: INTEGER
     mode: NULLABLE
     name: counter
     type: RECORD

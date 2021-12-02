@@ -2,6 +2,7 @@
 
 from itertools import product
 from pathlib import Path
+from uuid import uuid4
 
 import yaml
 
@@ -12,13 +13,14 @@ SUBMISSION_DATE = "2020-10-01"
 APP_BUILD_ID = "2020100100"
 OS = "Android"
 PING_TYPE = "metrics"
-
+MININUM_CLIENT_COUNT = 900
 # See the scalar_bucket_counts minimal example for more details on the
 # preconditions.
-CLIENTS_HISTOGRAM_AGGREGATES = [
-    {
+CLIENTS_HISTOGRAM_AGGREGATES = []
+for i in range(MININUM_CLIENT_COUNT):
+    data = {
         "sample_id": 1,
-        "client_id": UUID,
+        "client_id": str(uuid4()),
         "ping_type": PING_TYPE,
         "os": OS,
         "app_version": 84,
@@ -37,7 +39,7 @@ CLIENTS_HISTOGRAM_AGGREGATES = [
             }
         ],
     }
-]
+    CLIENTS_HISTOGRAM_AGGREGATES.append(data)
 
 BASE_ROW = {
     "agg_type": "summed_histogram",

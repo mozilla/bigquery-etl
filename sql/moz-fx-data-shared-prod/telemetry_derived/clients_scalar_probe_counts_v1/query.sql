@@ -162,10 +162,6 @@ bucketed_booleans AS (
     udf_boolean_buckets(scalar_aggregates) AS scalar_aggregates
   FROM
     user_aggregates
-  INNER JOIN
-    build_ids
-  USING
-    (app_build_id, channel)
 ),
 bucketed_scalars AS (
   SELECT
@@ -223,7 +219,7 @@ valid_booleans_scalars AS (
     build_ids
   USING
     (app_build_id, channel)
-),
+), 
 clients_scalar_bucket_counts AS (
   SELECT
     os,

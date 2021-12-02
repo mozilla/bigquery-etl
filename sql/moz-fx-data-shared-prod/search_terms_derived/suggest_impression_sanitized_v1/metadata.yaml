@@ -18,12 +18,11 @@ bigquery:
     field: submission_timestamp
     type: day
     require_partition_filter: true
+    expiration_days: 15
   clustering:
     fields:
       - normalized_channel
       - sample_id
-  # Not yet implemented; currently defined in init.sql
-  # # partition_expiration_days: 15
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

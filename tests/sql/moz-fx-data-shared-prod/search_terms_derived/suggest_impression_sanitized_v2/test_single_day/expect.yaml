@@ -13,7 +13,7 @@
   normalized_os_version: 11.0
   position: 1
   region: OH
-  release_channel: nightly
+  normalized_channel: nightly
   reporting_url: url1
   sanitized_query: "shoes for "
   scenario: online
@@ -29,7 +29,7 @@
   normalized_os_version: 11.0
   position: 2
   region: AK
-  release_channel: nightly
+  normalized_channel: nightly
   reporting_url: url2
   sanitized_query: "new gui"
   scenario: online
@@ -49,7 +49,7 @@
   normalized_os_version: 10.9
   position: 7
   region: AZ
-  release_channel: beta
+  normalized_channel: beta
   reporting_url: url7
   sanitized_query: <disallowed>
   scenario: online

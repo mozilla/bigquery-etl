@@ -83,9 +83,9 @@ cachetools==4.2.2 \
     --hash=sha256:2cc0b89715337ab6dbba85b5b50effe2b0c74e035d83ee8ed637cf52f12ae001 \
     --hash=sha256:61b5ed1e22a0924aed1d23b478f37e8d52549ff8a961de2909c69bf950020cff
     # via google-auth
-cattrs==1.8.0 \
-    --hash=sha256:5c121ab06a7cac494813c228721a7feb5a6423b17316eeaebf13f5a03e5b0d53 \
-    --hash=sha256:901fb2040529ae8fc9d93f48a2cdf7de3e983312ffb2a164ffa4e9847f253af1
+cattrs==1.9.0 \
+    --hash=sha256:1ef33f089e0a494e8d1b487508356f055c865b1955b125c00c991a4358543c80 \
+    --hash=sha256:8eca49962b1bfc09c24d442aa55688be88efe5c24aeef89d3be135614b95c678
     # via -r requirements.in
 certifi==2020.12.5 \
     --hash=sha256:1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c \
@@ -233,9 +233,9 @@ google-auth-oauthlib==0.4.4 \
     --hash=sha256:09832c6e75032f93818edf1affe4746121d640c625a5bef9b5c96af676e98eee \
     --hash=sha256:0e92aacacfb94978de3b7972cf4b0f204c3cd206f74ddd0dc0b31e91164e6317
     # via gcsfs
-google-cloud-bigquery==2.30.1 \
-    --hash=sha256:4e3b5e3dcc475d5a601d84872ac0b63e059540be2251b1c4165c51106d572855 \
-    --hash=sha256:c62d601aa0f62388e1909d11de40db7597b02fb8602ccb7f21a3ac2a0997495b
+google-cloud-bigquery==2.31.0 \
+    --hash=sha256:d8cb58e50d8688cbcc1ca0562c7801f8524af3a8553f5d24f1d7353ce3a6c143 \
+    --hash=sha256:ff66d7d1f64795a855784706c3baa52d18fa0cd1cc4f0a150cf74268abb53ac0
     # via -r requirements.in
 google-cloud-core==1.6.0 \
     --hash=sha256:40d9c2da2d03549b5ac3dcccf289d4f15e6d1210044c6381ce45c92913e62904 \
@@ -459,9 +459,9 @@ mkdocs-awesome-pages-plugin==2.6.1 \
     --hash=sha256:43994aedadca881088e5d6bb420140a73ce517ca3e070972715f93b086c9c497 \
     --hash=sha256:8f2f803a3d4a2cd2e290644b1b8c54cf2ae942db9ce91021c2ba858a991a3a8a
     # via -r requirements.in
-mkdocs-material==8.0.3 \
-    --hash=sha256:2daef25b9916ef134e561e2890777865dd399ada067eff130b5e28ea9be09d1b \
-    --hash=sha256:f3a109551e1611b76d8a8691107c65fbfef74682d2824d6b2d47c0b9faa55070
+mkdocs-material==8.0.4 \
+    --hash=sha256:88e863ff3614c1acc25ec5d2c1a6f9787326f2025d7d28170a68d0bf85d1c2da \
+    --hash=sha256:9a2a638c05e48c58786e5be558c0ea8995d8fa20138f1ed22bee48eb08528a36
     # via -r requirements.in
 mkdocs-material-extensions==1.0.3 \
     --hash=sha256:a82b70e533ce060b2a5d9eb2bc2e1be201cf61f901f93704b4acf6e3d5983a44 \

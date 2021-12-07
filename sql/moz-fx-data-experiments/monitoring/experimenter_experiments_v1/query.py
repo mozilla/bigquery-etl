@@ -145,7 +145,9 @@ class ExperimentV6:
         converter = cattr.Converter()
         converter.register_structure_hook(
             datetime.datetime,
-            lambda num, _: datetime.datetime.fromisoformat(num.replace("Z", "+00:00")),
+            lambda num, _: pytz.utc.localize(
+                datetime.datetime.fromisoformat(num.replace("Z", "+00:00"))
+            ),
         )
         return converter.structure(d, cls)
 
@@ -174,7 +176,11 @@ class ExperimentV6:
 def fetch(url):
     for _ in range(2):
         try:
-            return requests.get(url, timeout=30).json()
+            return requests.get(
+                url,
+                timeout=30,
+                headers={"user-agent": "https://github.com/mozilla/bigquery-etl"},
+            ).json()
         except Exception as e:
             last_exception = e
             time.sleep(1)
@@ -241,9 +247,7 @@ def main():
         bigquery.SchemaField("channel", "STRING"),
     )
 
-    job_config = bigquery.LoadJobConfig(
-        write_disposition="WRITE_TRUNCATE"
-    )
+    job_config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE")
     job_config.schema = bq_schema
 
     converter = cattr.Converter()

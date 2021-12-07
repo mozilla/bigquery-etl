@@ -22679,6 +22679,55 @@ fields:
       mode: REPEATED
       name: trr_relevant_skip_reason_trr_first
       type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: Number of times we attempted TRR for a successful lookup in TRR-first
+          mode. Keyed by provider.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: trr_attempt_count
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: When in TRR-first mode, if TRR failed once and retried unsuccessfully,
+          it lists the reason for the first failure, keyed by the provider.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: trr_skip_reason_retry_failed
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: When in TRR-first mode, if TRR failed once and was successfully
+          retried, it lists the reason for the first failure, keyed by the provider.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: trr_skip_reason_retry_success
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: When in TRR-first mode, it lists the reason we may have skipped
+          TRR. The key is like `<provider>|<skip reason of first attempt>` or just
+          `<provider>` used when there was no second attempt.
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: trr_skip_reason_strict_mode
+      type: RECORD
     mode: NULLABLE
     name: keyed_histograms
     type: RECORD
@@ -42629,6 +42678,36 @@ fields:
           mode: REPEATED
           name: muted_play_time_percent
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: The time between navigationStart and the first contentful
+              paint of a foreground http or https root content document, in milliseconds.
+              The contentful paint timestamp is taken during display list building
+              and does not include rasterization or compositing of that paint. This
+              is collected only on page load where the main document uses HTTP3. It
+              is keyed based on whether a "priority" header has been received.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: h3p_perf_first_contentful_paint_ms
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Time in milliseconds from navigationStart to loadEventStart
+              for the foreground http or https root content document. This is collected
+              only on page load where the main document uses HTTP3. It is keyed based
+              on whether a "priority" header has been received.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: h3p_perf_page_load_time_ms
+          type: RECORD
         mode: NULLABLE
         name: keyed_histograms
         type: RECORD
@@ -46921,6 +47000,20 @@ fields:
           mode: REPEATED
           name: browser_ui_interaction_preferences_pane_more_from_mozilla
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Number of times we cycled the TRR connection during a subsession.
+              Keyed by TRR provider URL.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: networking_trr_connection_cycle_count
+          type: RECORD
         mode: NULLABLE
         name: keyed_scalars
         type: RECORD
@@ -50365,6 +50458,55 @@ fields:
           mode: REPEATED
           name: trr_relevant_skip_reason_trr_first
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Number of times we attempted TRR for a successful lookup
+              in TRR-first mode. Keyed by provider.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_attempt_count
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, if TRR failed once and retried unsuccessfully,
+              it lists the reason for the first failure, keyed by the provider.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_skip_reason_retry_failed
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, if TRR failed once and was successfully
+              retried, it lists the reason for the first failure, keyed by the provider.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_skip_reason_retry_success
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, it lists the reason we may have skipped
+              TRR. The key is like `<provider>|<skip reason of first attempt>` or
+              just `<provider>` used when there was no second attempt.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_skip_reason_strict_mode
+          type: RECORD
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -50666,6 +50808,55 @@ fields:
           mode: REPEATED
           name: trr_relevant_skip_reason_trr_first
           type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: Number of times we attempted TRR for a successful lookup
+              in TRR-first mode. Keyed by provider.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_attempt_count
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, if TRR failed once and retried unsuccessfully,
+              it lists the reason for the first failure, keyed by the provider.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_skip_reason_retry_failed
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, if TRR failed once and was successfully
+              retried, it lists the reason for the first failure, keyed by the provider.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_skip_reason_retry_success
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: When in TRR-first mode, it lists the reason we may have skipped
+              TRR. The key is like `<provider>|<skip reason of first attempt>` or
+              just `<provider>` used when there was no second attempt.
+            mode: NULLABLE
+            name: value
+            type: STRING
+          mode: REPEATED
+          name: trr_skip_reason_strict_mode
+          type: RECORD
         mode: NULLABLE
         name: keyed_histograms
         type: RECORD
@@ -50715,6 +50906,20 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: telemetry_keyed_scalars_unknown_keys
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Number of times we cycled the TRR connection during a subsession.
+              Keyed by TRR provider URL.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: networking_trr_connection_cycle_count
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

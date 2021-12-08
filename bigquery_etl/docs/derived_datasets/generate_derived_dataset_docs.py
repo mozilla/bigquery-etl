@@ -9,6 +9,7 @@ from bigquery_etl.dependency import extract_table_references
 
 VIEW_FILE = "view.sql"
 METADATA_FILE = "metadata.yaml"
+README_FILE = "README.md"
 NON_USER_FACING_DATASET_SUFFIXES = (
     "_derived",
     "_external",
@@ -28,6 +29,12 @@ def _get_metadata(table_path):
             except yaml.YAMLError as error:
                 print(error)
     return metadata
+
+
+def _get_readme_content(table_path):
+    readme_file = table_path / README_FILE
+    if readme_file.exists():
+        return readme_file.read_text()
 
 
 def _get_referenced_tables_from_view(table_path):
@@ -71,8 +78,11 @@ def _iter_table_markdown(table_paths, template):
                 "Metadata File"
             ] = f"{SOURCE_URL}/{str(table_path / METADATA_FILE)}"
 
+        readme_content = _get_readme_content(table_path)
+
         output = template.render(
             metadata=metadata,
+            readme_content=readme_content,
             table_name=table_path.name,
             source_urls=source_urls,
             referenced_tables=referenced_tables,
@@ -84,7 +94,7 @@ def _iter_table_markdown(table_paths, template):
 
 def generate_derived_dataset_docs(out_dir, project_dir):
     """Generate documentation for derived datasets."""
-    output_path = Path(out_dir) / "datasets"
+    output_path = Path(out_dir) / "mozdata"
     project_path = Path(project_dir)
 
     # get a list of all user-facing datasets

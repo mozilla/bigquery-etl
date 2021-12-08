@@ -45,6 +45,21 @@ with DAG(
 ) as dag:
     docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
 
+    export_public_data_json_client_probe_processes__v1 = GKEPodOperator(
+        task_id="export_public_data_json_client_probe_processes__v1",
+        name="export_public_data_json_client_probe_processes__v1",
+        arguments=["script/publish_public_data_json"]
+        + [
+            "--query_file=sql/moz-fx-data-shared-prod/telemetry_derived/client_probe_processes_v1/query.sql"
+        ]
+        + ["--destination_table=client_probe_processes${{ds_nodash}}"]
+        + ["--dataset_id=telemetry_derived"]
+        + ["--project_id=moz-fx-data-shared-prod"]
+        + ["--parameter=submission_date:DATE:{{ds}}"],
+        image=docker_image,
+        dag=dag,
+    )
+
     export_public_data_json_mozregression_aggregates__v1 = GKEPodOperator(
         task_id="export_public_data_json_mozregression_aggregates__v1",
         name="export_public_data_json_mozregression_aggregates__v1",
@@ -73,6 +88,21 @@ with DAG(
         + ["--parameter=submission_date:DATE:{{ds}}"],
         image=docker_image,
         dag=dag,
+    )
+
+    wait_for_client_probe_processes__v1 = ExternalTaskCompletedSensor(
+        task_id="wait_for_client_probe_processes__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="client_probe_processes__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        failed_states=[State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED],
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    export_public_data_json_client_probe_processes__v1.set_upstream(
+        wait_for_client_probe_processes__v1
     )
 
     wait_for_mozregression_aggregates__v1 = ExternalTaskCompletedSensor(
@@ -114,6 +144,7 @@ with DAG(
 
     public_data_gcs_metadata.set_upstream(
         [
+            export_public_data_json_client_probe_processes__v1,
             export_public_data_json_mozregression_aggregates__v1,
             export_public_data_json_telemetry_derived__ssl_ratios__v1,
         ]

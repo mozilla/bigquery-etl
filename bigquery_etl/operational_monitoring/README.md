@@ -78,7 +78,7 @@ Below is the description of each field in the project definition and its allowab
 * `name`: Name that will be used as the generated Looker dashboard title
 * `slug`: The slug associated with the rollout that is being monitored
 * `channel`: `release`, `beta`, or `nightly`. The channel the rollout is running in
-* `boolean_pref`: A sql snippet that results in a boolean representing whether a user is included in the rollout or not (note: this will soon be deprecated in favour of using the slug directly to check)
+* `boolean_pref`: A sql snippet that results in a boolean representing whether a user is included in the rollout or not (note: if this is not included, the slug is used to check instead)
 * `xaxis`: `submission_date` or `build_id`. specifies the type of monitoring desired as described above.
 * `start_date`: `yyyy-mm-dd`, specifies the oldest submission date or build id to be processed (where build id is cast to date). If not set, defaults to the previous 30 days.
 * `analysis`: An array of objects with the fields `source`, `dimensions`, and `probes` where each object represents data that will be pulled out from a different sourc.

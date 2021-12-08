@@ -10,7 +10,7 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 
 1. Run `./bqetl query create <dataset>.<table>_<version>`
     * Specify the desired destination dataset and table name for `<dataset>.<table>_<version>`
-    * Directories and files are generated automatically 
+    * Directories and files are generated automatically
 1. Open `query.sql` file that has been created in `sql/moz-fx-data-shared-prod/<dataset>/<table>_<version>/` to write the query
 1. [Optional] Run `./bqetl query schema update <dataset>.<table>_<version>` to generate the `schema.yaml` file
     * Optionally add column descriptions to `schema.yaml`
@@ -19,7 +19,7 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
     * Add BigQuery information such as table partitioning or clustering
         * See [clients_daily_v6](https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml) for reference
 1. Run `./bqetl query validate <dataset>.<table>_<version>` to dry run and format the query
-1. To schedule the query, first select a DAG from the `./bqetl dag info` list or create a new DAG `./bqetl dag create <bqetl_new_dag>` 
+1. To schedule the query, first select a DAG from the `./bqetl dag info` list or create a new DAG `./bqetl dag create <bqetl_new_dag>`
 1. Run `./bqetl query schedule <dataset>.<table>_<version> --dag <bqetl_dag>` to schedule the query
 1. Run `./bqetl dag generate <bqetl_dag>` to update the DAG file
 1. Create a pull request
@@ -199,7 +199,7 @@ See also the reference for [Public Data](../reference/public_data.md).
 1. Get a data review by following the [data publishing process](https://wiki.mozilla.org/Data_Publishing#Dataset_Publishing_Process_2)
 1. Update the `metadata.yaml` file of the query to be published
     * Set `public_bigquery: true` and optionally `public_json: true`
-    * Specify the `review_bugs`    
+    * Specify the `review_bugs`
 1. If an internal dataset already exists, move it to `mozilla-public-data`
 1. If an `init.sql` file exists for the query, change the destination project for the created table to `mozilla-public-data`
 1. Run `./bqetl dag generate bqetl_public_public_data_json` to update the DAG
@@ -245,3 +245,11 @@ and provide the `<username>:<branch>` of the fork as parameter. The parameter wi
 in the logs of the `manual-trigger-required-for-fork` CI task together with more detailed instructions.
 Once the workflow has been executed, the CI tasks, including the integration tests, of the PR will be
 executed.
+
+## Building the Documentation
+
+The [repository documentation](https://mozilla.github.io/bigquery-etl/) is built using [MkDocs](https://www.mkdocs.org/).
+To generate and check the docs locally:
+1. Run `script/generate_docs --output_dir generated_docs`
+2. Navigate to the `generated_docs` directory
+3. Run `mkdocs serve` to start a local `mkdocs` server.

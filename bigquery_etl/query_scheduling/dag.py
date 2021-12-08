@@ -117,6 +117,7 @@ class Dag:
     default_args: DagDefaultArgs
     tasks: List[Task] = attr.ib([])
     description: str = attr.ib("")
+    tags: List[str] = attr.ib([])
 
     @name.validator
     def validate_dag_name(self, attribute, value):

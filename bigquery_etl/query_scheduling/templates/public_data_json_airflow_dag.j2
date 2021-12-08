@@ -31,7 +31,10 @@ default_args = {{
     format_attr("retry_delay", "format_timedelta")
 }}
 
-with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs) as dag:
+tags = {{ tags }}
+
+
+with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md = docs, tags = tags) as dag:
     docker_image = "gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest"
 {% for task in tasks | sort(attribute='task_name') %}
     {{ task.task_name }} = GKEPodOperator(

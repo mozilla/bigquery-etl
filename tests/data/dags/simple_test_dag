@@ -28,8 +28,14 @@ default_args = {
     "retries": 2,
 }
 
+tags = []
+
 with DAG(
-    "bqetl_test_dag", default_args=default_args, schedule_interval="@daily", doc_md=docs
+    "bqetl_test_dag",
+    default_args=default_args,
+    schedule_interval="@daily",
+    doc_md=docs,
+    tags=tags,
 ) as dag:
 
     test__non_incremental_query__v1 = bigquery_etl_query(

@@ -1901,6 +1901,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#building-the-documentation" class="md-nav__link">
+    Building the Documentation
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2165,6 +2172,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#building-the-documentation" class="md-nav__link">
+    Building the Documentation
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2186,7 +2200,7 @@
 <ol>
 <li>Run <code>./bqetl query create &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code><ul>
 <li>Specify the desired destination dataset and table name for <code>&lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code></li>
-<li>Directories and files are generated automatically </li>
+<li>Directories and files are generated automatically</li>
 </ul>
 </li>
 <li>Open <code>query.sql</code> file that has been created in <code>sql/moz-fx-data-shared-prod/&lt;dataset&gt;/&lt;table&gt;_&lt;version&gt;/</code> to write the query</li>
@@ -2203,7 +2217,7 @@
 </ul>
 </li>
 <li>Run <code>./bqetl query validate &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt;</code> to dry run and format the query</li>
-<li>To schedule the query, first select a DAG from the <code>./bqetl dag info</code> list or create a new DAG <code>./bqetl dag create &lt;bqetl_new_dag&gt;</code> </li>
+<li>To schedule the query, first select a DAG from the <code>./bqetl dag info</code> list or create a new DAG <code>./bqetl dag create &lt;bqetl_new_dag&gt;</code></li>
 <li>Run <code>./bqetl query schedule &lt;dataset&gt;.&lt;table&gt;_&lt;version&gt; --dag &lt;bqetl_dag&gt;</code> to schedule the query</li>
 <li>Run <code>./bqetl dag generate &lt;bqetl_dag&gt;</code> to update the DAG file</li>
 <li>Create a pull request<ul>
@@ -2377,7 +2391,7 @@ workgroup_access:
 <li>Get a data review by following the <a href="https://wiki.mozilla.org/Data_Publishing#Dataset_Publishing_Process_2">data publishing process</a></li>
 <li>Update the <code>metadata.yaml</code> file of the query to be published<ul>
 <li>Set <code>public_bigquery: true</code> and optionally <code>public_json: true</code></li>
-<li>Specify the <code>review_bugs</code>    </li>
+<li>Specify the <code>review_bugs</code></li>
 </ul>
 </li>
 <li>If an internal dataset already exists, move it to <code>mozilla-public-data</code></li>
@@ -2422,6 +2436,12 @@ and provide the <code>&lt;username&gt;:&lt;branch&gt;</code> of the fork as para
 in the logs of the <code>manual-trigger-required-for-fork</code> CI task together with more detailed instructions.
 Once the workflow has been executed, the CI tasks, including the integration tests, of the PR will be
 executed.</p>
+<h2 id="building-the-documentation">Building the Documentation</h2>
+<p>The <a href="https://mozilla.github.io/bigquery-etl/">repository documentation</a> is built using <a href="https://www.mkdocs.org/">MkDocs</a>.
+To generate and check the docs locally:
+1. Run <code>script/generate_docs --output_dir generated_docs</code>
+2. Navigate to the <code>generated_docs</code> directory
+3. Run <code>mkdocs serve</code> to start a local <code>mkdocs</code> server.</p>
 
               
             </article>

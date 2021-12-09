@@ -13,19 +13,29 @@ WITH merged_probes AS (
       CAST({{ dimension.sql }} AS STRING) AS {{ dimension.name }},
     {% endfor %}
 
-    -- If a pref is defined, treat it as a rollout with an enabled and disabled branch
-    -- otherwise use the branches from the experiment based on the slug
+    -- If a pref is defined, treat it as a rollout with an enabled and disabled branch.
+    -- If branches are provided, use those instead.
+    -- If neither a pref or branches are available, use the slug and treat it as a rollout
+    -- where those with the slug have the feature enabled and those without do not.
     {% if pref %}
     CASE
       WHEN SAFE_CAST({{pref}} as BOOLEAN) THEN 'enabled'
       WHEN NOT SAFE_CAST({{pref}} as BOOLEAN) THEN 'disabled'
     END
     AS branch,
-    {% else %}
+    {% elif branches %}
     mozfun.map.get_key(
       environment.experiments,
       "{{slug}}"
     ).branch AS branch,
+    {% else %}
+      CASE WHEN
+        mozfun.map.get_key(
+          environment.experiments,
+          "{{slug}}"
+        ).branch IS NULL THEN 'disabled'
+      ELSE 'enabled'
+      END AS branch,
     {% endif %}
     ARRAY<
       STRUCT<

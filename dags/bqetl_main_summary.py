@@ -45,6 +45,24 @@ with DAG(
     doc_md=docs,
 ) as dag:
 
+    client_probe_processes__v1 = bigquery_etl_query(
+        task_id="client_probe_processes__v1",
+        destination_table="client_probe_processes_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wlachance@mozilla.com",
+        email=[
+            "dthorn@mozilla.com",
+            "frank@mozilla.com",
+            "jklukas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wlachance@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        dag=dag,
+    )
+
     firefox_desktop_exact_mau28_by_client_count_dimensions = bigquery_etl_query(
         task_id="firefox_desktop_exact_mau28_by_client_count_dimensions",
         destination_table="firefox_desktop_exact_mau28_by_client_count_dimensions_v1",

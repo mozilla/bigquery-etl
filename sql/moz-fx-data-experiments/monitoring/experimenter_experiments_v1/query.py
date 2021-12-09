@@ -145,9 +145,9 @@ class ExperimentV6:
         converter = cattr.Converter()
         converter.register_structure_hook(
             datetime.datetime,
-            lambda num, _: pytz.utc.localize(
-                datetime.datetime.fromisoformat(num.replace("Z", "+00:00"))
-            ),
+            lambda num, _: datetime.datetime.fromisoformat(
+                num.replace("Z", "+00:00")
+            ).astimezone(pytz.utc),
         )
         return converter.structure(d, cls)
 

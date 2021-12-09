@@ -2090,10 +2090,10 @@
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod>amo_prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau_v2>amo_stats_dau_v2</a></td>
-        </tr>   
+        </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau/view.sql">View Definition</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="amo_stats_dau_v2"><a href="#amo_stats_dau_v2">amo_stats_dau_v2</a></h2>
 <p>Daily user statistics to power addons.mozilla.org stats pages.
@@ -2105,13 +2105,13 @@ and provides all the information needed to populate the various
 <li>Friendly name: AMO Stats DAU</li>
 <li>Schedule: daily</li>
 <li>
-<p>Owners: </p>
+<p>Owners:</p>
 <ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a> </li>
+<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
 </ul>
 </li>
 </ul>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau_v2">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau_v2/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau/view.sql">View Definition</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau_v2">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_dau_v2/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="amo_stats_installs"><a href="#amo_stats_installs">amo_stats_installs</a></h2>
 <table>
@@ -2125,10 +2125,10 @@ and provides all the information needed to populate the various
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod>moz-fx-data-shared-prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod>amo_prod</a></td>
         <td><a href=https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs_v3>amo_stats_installs_v3</a></td>
-        </tr>   
+        </tr>
 </table>
 
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs/view.sql">View Definition</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs/view.sql">View Definition</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="amo_stats_installs_v3"><a href="#amo_stats_installs_v3">amo_stats_installs_v3</a></h2>
 <p>Daily install statistics to power addons.mozilla.org stats pages. See bug 1654330. Note that this table uses a hashed_addon_id defined as <code>TO_HEX(SHA256(addon_id))</code> because the underlying event pings have limitations on length of properties attached to events and addon_id values are sometimes too long. The AMO stats application looks up records in this table based on the hashed_addon_id.</p>
@@ -2136,13 +2136,13 @@ and provides all the information needed to populate the various
 <li>Friendly name: AMO Stats DAU</li>
 <li>Schedule: daily</li>
 <li>
-<p>Owners: </p>
+<p>Owners:</p>
 <ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a> </li>
+<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
 </ul>
 </li>
 </ul>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs_v3">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs_v3/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs/view.sql">View Definition</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs_v3">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs_v3/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="desktop_addons_by_client_v1"><a href="#desktop_addons_by_client_v1">desktop_addons_by_client_v1</a></h2>
 <p>Clients_daily-like table that records only the dimensions and addon info necessary to power daily the amo_stats_dau_v2 query.</p>
@@ -2150,13 +2150,13 @@ and provides all the information needed to populate the various
 <li>Friendly name: Desktop addons by client</li>
 <li>Schedule: daily</li>
 <li>
-<p>Owners: </p>
+<p>Owners:</p>
 <ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a> </li>
+<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
 </ul>
 </li>
 </ul>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/desktop_addons_by_client_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/desktop_addons_by_client_v1/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs/view.sql">View Definition</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/desktop_addons_by_client_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/desktop_addons_by_client_v1/metadata.yaml">Metadata File</a> </p>
 <hr />
 <h2 id="fenix_addons_by_client_v1"><a href="#fenix_addons_by_client_v1">fenix_addons_by_client_v1</a></h2>
 <p>Clients_daily-like table on top of the various Firefox for Android channels that records only the dimensions and addon info necessary to power the daily amo_stats_dau_v2 query.</p>
@@ -2164,13 +2164,13 @@ and provides all the information needed to populate the various
 <li>Friendly name: Fenix addons by client</li>
 <li>Schedule: daily</li>
 <li>
-<p>Owners: </p>
+<p>Owners:</p>
 <ul>
-<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a> </li>
+<li><a href="mailto:jklukas@mozilla.com">jklukas@mozilla.com</a></li>
 </ul>
 </li>
 </ul>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/fenix_addons_by_client_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/fenix_addons_by_client_v1/metadata.yaml">Metadata File</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/amo_stats_installs/view.sql">View Definition</a> </p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/fenix_addons_by_client_v1">Source Directory</a>  | <a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/moz-fx-data-shared-prod/amo_prod/fenix_addons_by_client_v1/metadata.yaml">Metadata File</a> </p>
 <hr />
 
               

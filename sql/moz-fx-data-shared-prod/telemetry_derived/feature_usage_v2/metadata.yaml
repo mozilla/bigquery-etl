@@ -21,4 +21,5 @@ bigquery:
     field: submission_date
     type: day
     require_partition_filter: false
+    expiration_days: null
   clustering: null

@@ -13,15 +13,19 @@
 {% endif -%}
 
 {% if metadata.owners -%}
-* Owners: 
+* Owners:
 {% for email in metadata.owners -%}
 {% filter indent(width=4) %}
-- [{{email}}](mailto:{{email}}) 
+- [{{email}}](mailto:{{email}})
 {% endfilter %}
 {%- endfor %}
 {% endif %}
 
+{% if readme_content -%}
 
+{{ readme_content }}
+
+{% endif %}
 {% if referenced_tables -%}
 <table>
 <caption>Referenced Tables</caption>
@@ -36,7 +40,7 @@
   		<td><a href={{ project_url + "/" + table.project_id+ "/" + table.dataset_id }}>{{ table.dataset_id }}</a></td>
         <td><a href={{ project_url + "/" + table.project_id + "/" + table.dataset_id + "/" + table.table_id }}>{{ table.table_id }}</a></td>
         </tr>
-{%- endfor %}	
+{%- endfor %}
 </table>
 {% endif %}
 

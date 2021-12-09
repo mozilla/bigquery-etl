@@ -58,7 +58,7 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wlachance@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
         dag=dag,
     )

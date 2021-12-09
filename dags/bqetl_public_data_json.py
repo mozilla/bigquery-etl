@@ -52,10 +52,9 @@ with DAG(
         + [
             "--query_file=sql/moz-fx-data-shared-prod/telemetry_derived/client_probe_processes_v1/query.sql"
         ]
-        + ["--destination_table=client_probe_processes${{ds_nodash}}"]
+        + ["--destination_table=client_probe_processes"]
         + ["--dataset_id=telemetry_derived"]
-        + ["--project_id=moz-fx-data-shared-prod"]
-        + ["--parameter=submission_date:DATE:{{ds}}"],
+        + ["--project_id=moz-fx-data-shared-prod"],
         image=docker_image,
         dag=dag,
     )

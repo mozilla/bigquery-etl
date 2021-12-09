@@ -52,6 +52,7 @@ WITH user_type AS (
     search_count_tagged_follow_on AS search_count_tagged_follow_on,
     search_count_tagged_sap AS search_count_tagged_sap,
     search_count_urlbar AS search_count_urlbar,
+    search_count_urlbar_handoff AS search_count_urlbar_handoff,
     search_with_ads_count_all AS search_with_ads_count_all,
     SAFE_CAST(user_pref_browser_newtabpage_enabled AS BOOL) AS newtabpage_disabled,
     (
@@ -743,6 +744,11 @@ SELECT
     COALESCE(search_count_urlbar, CAST(0 AS INT64)),
     NULL
   ) AS search_count_urlbar,
+  IF(
+    '94' < app_version,
+    COALESCE(search_count_urlbar_handoff, CAST(0 AS INT64)),
+    NULL
+  ) AS search_count_urlbar_handoff,
   IF(
     '64' < app_version,
     COALESCE(search_with_ads_count_all, CAST(0 AS INT64)),

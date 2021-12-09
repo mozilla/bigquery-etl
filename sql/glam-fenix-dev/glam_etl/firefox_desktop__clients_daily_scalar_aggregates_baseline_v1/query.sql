@@ -17,6 +17,7 @@ WITH extracted AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL
+    AND SAFE_CAST(client_info.app_build AS DATE) IS NOT NULL
 ),
 unlabeled_metrics AS (
   SELECT
@@ -28,6 +29,76 @@ unlabeled_metrics AS (
     app_build_id,
     channel,
     ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>[
+      (
+        'browser_engagement_active_ticks',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.browser_engagement_active_ticks AS INT64))
+      ),
+      (
+        'browser_engagement_active_ticks',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.browser_engagement_active_ticks) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'browser_engagement_active_ticks',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.browser_engagement_active_ticks AS INT64))
+      ),
+      (
+        'browser_engagement_active_ticks',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.browser_engagement_active_ticks AS INT64))
+      ),
+      (
+        'browser_engagement_active_ticks',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.browser_engagement_active_ticks AS INT64))
+      ),
+      (
+        'browser_engagement_uri_count',
+        'counter',
+        '',
+        'avg',
+        avg(CAST(metrics.counter.browser_engagement_uri_count AS INT64))
+      ),
+      (
+        'browser_engagement_uri_count',
+        'counter',
+        '',
+        'count',
+        IF(MIN(metrics.counter.browser_engagement_uri_count) IS NULL, NULL, COUNT(*))
+      ),
+      (
+        'browser_engagement_uri_count',
+        'counter',
+        '',
+        'max',
+        max(CAST(metrics.counter.browser_engagement_uri_count AS INT64))
+      ),
+      (
+        'browser_engagement_uri_count',
+        'counter',
+        '',
+        'min',
+        min(CAST(metrics.counter.browser_engagement_uri_count AS INT64))
+      ),
+      (
+        'browser_engagement_uri_count',
+        'counter',
+        '',
+        'sum',
+        sum(CAST(metrics.counter.browser_engagement_uri_count AS INT64))
+      ),
       (
         'glean_baseline_duration',
         'timespan',

@@ -17,6 +17,7 @@ WITH extracted AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL
+    AND SAFE_CAST(client_info.app_build AS DATE) IS NOT NULL
 ),
 unlabeled_metrics AS (
   SELECT

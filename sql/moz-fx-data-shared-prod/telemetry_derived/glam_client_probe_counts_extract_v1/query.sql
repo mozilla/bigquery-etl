@@ -19,7 +19,6 @@ FROM
 WHERE
   channel = @channel
   AND app_version IS NOT NULL
-  AND total_users > 100
 GROUP BY
   channel,
   app_version,

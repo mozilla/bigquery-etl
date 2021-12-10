@@ -1,0 +1,6 @@
+{
+  "glean-core": {
+    "name": "glean-core",
+    "type": "dependency"
+  }
+}

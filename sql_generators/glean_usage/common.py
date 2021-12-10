@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 import requests
-from jinja2 import Environment, PackageLoader, TemplateNotFound
+from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.util import standard_args  # noqa E402
@@ -15,7 +15,7 @@ from bigquery_etl.util.common import render, write_sql
 from bigquery_etl.view import generate_stable_views
 
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
-
+PATH = Path(os.path.dirname(__file__))
 
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
     """
@@ -31,7 +31,7 @@ def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=F
         [postfix not in d.parent.name for postfix in ("_derived", "_stable")]
     )
     if (derived_dataset_metadata or public_facing) and not target.exists():
-        env = Environment(loader=PackageLoader("bigquery_etl", "glean_usage/templates"))
+        env = Environment(loader=FileSystemLoader(PATH / "templates"))
         if derived_dataset_metadata:
             dataset_metadata = env.get_template("derived_dataset_metadata.yaml")
         else:
@@ -170,15 +170,15 @@ class GleanTable:
         render_kwargs.update(self.custom_render_kwargs)
         render_kwargs.update(tables)
 
-        query_sql = render(query_filename, **render_kwargs)
-        view_sql = render(view_filename, **render_kwargs)
-        view_metadata = render(view_metadata_filename, format=False, **render_kwargs)
+        query_sql = render(query_filename, template_folder=PATH, **render_kwargs)
+        view_sql = render(view_filename, template_folder=PATH, **render_kwargs)
+        view_metadata = render(view_metadata_filename, template_folder=PATH, format=False, **render_kwargs)
 
         if not self.no_init:
             try:
-                init_sql = render(init_filename, **render_kwargs)
+                init_sql = render(init_filename, template_folder=PATH, **render_kwargs)
             except TemplateNotFound:
-                init_sql = render(query_filename, init=True, **render_kwargs)
+                init_sql = render(query_filename, template_folder=PATH, init=True, **render_kwargs)
 
         if not (referenced_table_exists(view_sql)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
@@ -227,7 +227,7 @@ class GleanTable:
         render_kwargs.update(self.custom_render_kwargs)
 
         if self.cross_channel_template:
-            sql = render(self.cross_channel_template, **render_kwargs)
+            sql = render(self.cross_channel_template, template_folder=PATH, **render_kwargs)
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
             if output_dir:
@@ -241,10 +241,11 @@ class GleanTable:
                 write_sql(output_dir, view, "view.sql", sql)
         else:
             query_filename = f"{target_view_name}.query.sql"
-            query_sql = render(query_filename, **render_kwargs)
-            view_sql = render(f"{target_view_name}.view.sql", **render_kwargs)
+            query_sql = render(query_filename, template_folder=PATH, **render_kwargs)
+            view_sql = render(f"{target_view_name}.view.sql", template_folder=PATH, **render_kwargs)
             metadata = render(
                 f"{self.target_table_id[:-3]}.metadata.yaml",
+                template_folder=PATH,
                 format=False,
                 **render_kwargs,
             )

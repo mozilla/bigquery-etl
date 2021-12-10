@@ -1,0 +1,18 @@
+{
+  "glean-core": {
+    "name": "glean-core",
+    "type": "dependency"
+  },
+  "nimbus": {
+    "name": "nimbus",
+    "type": "dependency"
+  },
+  "org.mozilla.appservices:logins": {
+    "name": "org.mozilla.appservices:logins",
+    "type": "dependency"
+  },
+  "org.mozilla.components:service-glean": {
+    "name": "org.mozilla.components:service-glean",
+    "type": "dependency"
+  }
+}

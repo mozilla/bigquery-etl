@@ -1,24 +1,30 @@
+"""GLEAN Usage."""
+
 """bigquery-etl CLI glean_usage command."""
 from functools import partial
-from multiprocessing.pool import Pool
 from pathlib import Path
+from pathos.multiprocessing import ProcessingPool
 import click
+import os
+import sys
 
-from ..cli.utils import (
+file_dir = os.path.dirname(__file__)
+sys.path.append(file_dir)
+
+from bigquery_etl.cli.utils import (
     is_valid_project,
     table_matches_patterns,
 )
-from ..glean_usage import (
-    glean_app_ping_views,
-    baseline_clients_daily,
-    baseline_clients_first_seen,
-    baseline_clients_last_seen,
-    events_unnested,
-    metrics_clients_daily,
-    metrics_clients_last_seen,
-    clients_last_seen_joined,
-)
-from ..glean_usage.common import list_baseline_tables, get_app_info
+
+import glean_app_ping_views
+import baseline_clients_daily
+import baseline_clients_first_seen
+import baseline_clients_last_seen
+import events_unnested
+import metrics_clients_daily
+import metrics_clients_last_seen
+import clients_last_seen_joined
+from common import list_baseline_tables, get_app_info
 
 # list of methods for generating queries
 GLEAN_TABLES = [
@@ -38,17 +44,7 @@ GLEAN_TABLES = [
 # one to avoid confusion: https://github.com/mozilla/bigquery-etl/issues/2499
 SKIP_APPS = ["mlhackweek_search", "regrets_reporter"]
 
-
-@click.group(
-    help="Commands for managing ETL about usage of Glean apps. "
-    "(baseline_clients_daily, etc.)"
-)
-def glean_usage():
-    """Create the CLI group for the glean_usage command."""
-    pass
-
-
-@glean_usage.command()
+@click.command()
 @click.option(
     "--project-id",
     "--project_id",
@@ -144,10 +140,6 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
         for table in GLEAN_TABLES
     ]
 
-    with Pool(parallelism) as pool:
-        pool.starmap(run_generate, generate_per_app_id + generate_per_app)
+    with ProcessingPool(parallelism) as pool:
+        pool.map(lambda f: f[0](f[1]), generate_per_app_id + generate_per_app)
 
-
-def run_generate(func, params):
-    """Use in `generate()` for generating glean datasets in parallel."""
-    func(params)

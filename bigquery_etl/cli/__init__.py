@@ -12,7 +12,6 @@ from ..cli.dag import dag
 from ..cli.dryrun import dryrun
 from ..cli.format import format
 from ..cli.generate import generate
-from ..cli.glean_usage import glean_usage
 from ..cli.query import query
 from ..cli.routine import mozfun, routine
 from ..cli.view import view
@@ -36,7 +35,6 @@ def cli(prog_name=None):
         "mozfun": mozfun,
         "stripe": stripe_,
         "glam": glam,
-        "glean_usage": glean_usage,
         "view": view,
         "alchemer": alchemer_,
         "opmon": operational_monitoring,

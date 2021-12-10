@@ -1,5 +1,5 @@
 """Generating and run baseline_clients_daily queries for Glean apps."""
-from bigquery_etl.glean_usage.common import GleanTable
+from common import GleanTable
 
 BASELINE_DAILY_TABLE_ID = "baseline_clients_daily_v1"
 PREFIX = "daily"

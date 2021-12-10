@@ -1,0 +1,132 @@
+{
+  "session-end": {
+    "history": [
+      {
+        "bugs": [
+          "https://github.com/MozillaReality/FirefoxReality/issues/2230"
+        ],
+        "data_reviews": [
+          "https://github.com/MozillaReality/FirefoxReality/pull/2241#issuecomment-557740258"
+        ],
+        "dates": {
+          "first": "2019-11-25 10:53:04",
+          "last": "2019-11-25 10:53:04"
+        },
+        "description": "This ping is sent at the end of a session (when Firefox Reality switches to the background). We usually send search and UI control metrics at the end of a session.\n",
+        "git-commits": {
+          "first": "87543c362a47810d149eb109b6a82e6b06c19aa4",
+          "last": "87543c362a47810d149eb109b6a82e6b06c19aa4"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "fxr-telemetry@mozilla.com",
+          "dmu@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/MozillaReality/FirefoxReality/blob/87543c362a47810d149eb109b6a82e6b06c19aa4/app/pings.yaml#L7"
+      },
+      {
+        "bugs": [
+          "https://github.com/MozillaReality/FirefoxReality/issues/2230"
+        ],
+        "data_reviews": [
+          "https://github.com/MozillaReality/FirefoxReality/pull/2241#issuecomment-557740258"
+        ],
+        "dates": {
+          "first": "2020-03-26 23:12:37",
+          "last": "2020-03-26 23:12:37"
+        },
+        "description": "This ping is sent at the end of a session (when Firefox Reality switches to the background). We usually send search and UI control metrics at the end of a session.\n",
+        "git-commits": {
+          "first": "3db73db963838d3980c52b00368f8c483fdba6b1",
+          "last": "3db73db963838d3980c52b00368f8c483fdba6b1"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "fxr-telemetry@mozilla.com",
+          "dmu@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/MozillaReality/FirefoxReality/blob/3db73db963838d3980c52b00368f8c483fdba6b1/app/pings.yaml#L7"
+      },
+      {
+        "bugs": [
+          "https://github.com/MozillaReality/FirefoxReality/issues/2230"
+        ],
+        "data_reviews": [
+          "https://github.com/MozillaReality/FirefoxReality/pull/2241#issuecomment-557740258"
+        ],
+        "dates": {
+          "first": "2020-06-12 17:02:14",
+          "last": "2020-06-12 17:02:14"
+        },
+        "description": "This ping is sent at the end of a session (when Firefox Reality switches to the background). We usually send search and UI control metrics at the end of a session.\n",
+        "git-commits": {
+          "first": "f9f8606372e64b04c417256452f24ea335fd5808",
+          "last": "f9f8606372e64b04c417256452f24ea335fd5808"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "fxr-telemetry@mozilla.com",
+          "dmu@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/MozillaReality/FirefoxReality/blob/f9f8606372e64b04c417256452f24ea335fd5808/app/pings.yaml#L8"
+      },
+      {
+        "bugs": [
+          "https://github.com/MozillaReality/FirefoxReality/issues/2230"
+        ],
+        "data_reviews": [
+          "https://github.com/MozillaReality/FirefoxReality/pull/2241#issuecomment-557740258"
+        ],
+        "dates": {
+          "first": "2021-12-02 11:28:03",
+          "last": "2021-12-02 11:28:03"
+        },
+        "description": "This ping is sent at the end of a session (when Firefox Reality switches to the background). We usually send search and UI control metrics at the end of a session.\n",
+        "git-commits": {
+          "first": "bc6f43f64e241ebe737778f8327c2dd6375ed507",
+          "last": "bc6f43f64e241ebe737778f8327c2dd6375ed507"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "fxr-telemetry@mozilla.com",
+          "dmu@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/MozillaReality/FirefoxReality/blob/bc6f43f64e241ebe737778f8327c2dd6375ed507/app/pings.yaml#L8"
+      }
+    ],
+    "in-source": true,
+    "name": "session-end"
+  }
+}

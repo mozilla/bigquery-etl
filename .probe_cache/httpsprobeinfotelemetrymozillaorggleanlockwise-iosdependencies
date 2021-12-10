@@ -1,0 +1,10 @@
+{
+  "glean-core": {
+    "name": "glean-core",
+    "type": "dependency"
+  },
+  "org.mozilla.components:service-glean": {
+    "name": "org.mozilla.components:service-glean",
+    "type": "dependency"
+  }
+}

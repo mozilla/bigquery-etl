@@ -1,0 +1,10 @@
+{
+  "glean-core": {
+    "name": "glean-core",
+    "type": "dependency"
+  },
+  "nimbus": {
+    "name": "nimbus",
+    "type": "dependency"
+  }
+}

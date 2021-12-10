@@ -1,0 +1,1094 @@
+{
+  "addresses-sync": {
+    "history": [
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-05-28 17:48:46"
+        },
+        "description": "A ping sent for every Addresses engine sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/pings.yaml#L78"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "dates": {
+          "first": "2021-12-13 00:22:15",
+          "last": "2021-12-13 00:22:15"
+        },
+        "description": "A ping sent for every Addresses engine sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "e18be9f02525adc6f2b1901991a4412a803ee6ce",
+          "last": "e18be9f02525adc6f2b1901991a4412a803ee6ce"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/e18be9f02525adc6f2b1901991a4412a803ee6ce/components/support/sync-telemetry/pings.yaml#L78"
+      }
+    ],
+    "in-source": true,
+    "name": "addresses-sync"
+  },
+  "bookmarks-sync": {
+    "history": [
+      {
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "A ping sent for every bookmarks sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/pings.yaml#L18"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2019-10-04 16:20:33"
+        },
+        "description": "A ping sent for every bookmarks sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/pings.yaml#L18"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-12-13 13:17:52",
+          "last": "2019-12-13 13:17:52"
+        },
+        "description": "A ping sent for every bookmarks sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "2a68cfb42ccf0e9ff8b0f08a533a840313b050f0",
+          "last": "2a68cfb42ccf0e9ff8b0f08a533a840313b050f0"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/2a68cfb42ccf0e9ff8b0f08a533a840313b050f0/components/support/sync-telemetry/pings.yaml#L18"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2019-12-19 20:13:19"
+        },
+        "description": "A ping sent for every bookmarks sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/pings.yaml#L18"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2020-04-13 19:42:10",
+          "last": "2020-04-13 19:42:10"
+        },
+        "description": "A ping sent for every bookmarks sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "879b8e35ad08ea8aa8fd58c485323cff132f8344",
+          "last": "879b8e35ad08ea8aa8fd58c485323cff132f8344"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/879b8e35ad08ea8aa8fd58c485323cff132f8344/components/support/sync-telemetry/pings.yaml#L35"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2020-05-11 12:25:30",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "A ping sent for every bookmarks sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "321215304df372c25225da1073c563c7f6e2c41e",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/321215304df372c25225da1073c563c7f6e2c41e/components/support/sync-telemetry/pings.yaml#L43"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2021-03-29 14:27:14",
+          "last": "2021-03-29 14:27:14"
+        },
+        "description": "A ping sent for every bookmarks sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "19fb560697aff5dde6d437d42209474f52a34f1b",
+          "last": "19fb560697aff5dde6d437d42209474f52a34f1b"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/19fb560697aff5dde6d437d42209474f52a34f1b/components/support/sync-telemetry/pings.yaml#L43"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-05-28 17:48:46"
+        },
+        "description": "A ping sent for every bookmarks sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/pings.yaml#L43"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2021-12-13 00:22:15",
+          "last": "2021-12-13 00:22:15"
+        },
+        "description": "A ping sent for every bookmarks sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "e18be9f02525adc6f2b1901991a4412a803ee6ce",
+          "last": "e18be9f02525adc6f2b1901991a4412a803ee6ce"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/e18be9f02525adc6f2b1901991a4412a803ee6ce/components/support/sync-telemetry/pings.yaml#L43"
+      }
+    ],
+    "in-source": true,
+    "name": "bookmarks-sync"
+  },
+  "creditcards-sync": {
+    "history": [
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-05-28 17:48:46"
+        },
+        "description": "A ping sent for every Credit Cards engine sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/pings.yaml#L66"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "dates": {
+          "first": "2021-12-13 00:22:15",
+          "last": "2021-12-13 00:22:15"
+        },
+        "description": "A ping sent for every Credit Cards engine sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "e18be9f02525adc6f2b1901991a4412a803ee6ce",
+          "last": "e18be9f02525adc6f2b1901991a4412a803ee6ce"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/e18be9f02525adc6f2b1901991a4412a803ee6ce/components/support/sync-telemetry/pings.yaml#L66"
+      }
+    ],
+    "in-source": true,
+    "name": "creditcards-sync"
+  },
+  "history-sync": {
+    "history": [
+      {
+        "bugs": [
+          3092
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-09-27 19:39:17",
+          "last": "2019-09-27 19:39:17"
+        },
+        "description": "A ping sent for every history sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03",
+          "last": "eff8affcd32e9c6c39e5a94c7772544a58d3ba03"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 7,
+          "last": 7
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/eff8affcd32e9c6c39e5a94c7772544a58d3ba03/components/support/sync-telemetry/pings.yaml#L7"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-10-04 16:20:33",
+          "last": "2019-10-04 16:20:33"
+        },
+        "description": "A ping sent for every history sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70",
+          "last": "d2da5ba9dc77f78639624fb0e2411ff5e75f0f70"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 6,
+          "last": 6
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/d2da5ba9dc77f78639624fb0e2411ff5e75f0f70/components/support/sync-telemetry/pings.yaml#L7"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-12-13 13:17:52",
+          "last": "2019-12-13 13:17:52"
+        },
+        "description": "A ping sent for every history sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "2a68cfb42ccf0e9ff8b0f08a533a840313b050f0",
+          "last": "2a68cfb42ccf0e9ff8b0f08a533a840313b050f0"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 5,
+          "last": 5
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/2a68cfb42ccf0e9ff8b0f08a533a840313b050f0/components/support/sync-telemetry/pings.yaml#L7"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2019-12-19 20:13:19"
+        },
+        "description": "A ping sent for every history sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/pings.yaml#L7"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2020-04-13 19:42:10",
+          "last": "2020-04-13 19:42:10"
+        },
+        "description": "A ping sent for every history sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "879b8e35ad08ea8aa8fd58c485323cff132f8344",
+          "last": "879b8e35ad08ea8aa8fd58c485323cff132f8344"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/879b8e35ad08ea8aa8fd58c485323cff132f8344/components/support/sync-telemetry/pings.yaml#L24"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2020-05-11 12:25:30",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "A ping sent for every history sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "321215304df372c25225da1073c563c7f6e2c41e",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/321215304df372c25225da1073c563c7f6e2c41e/components/support/sync-telemetry/pings.yaml#L32"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2021-03-29 14:27:14",
+          "last": "2021-03-29 14:27:14"
+        },
+        "description": "A ping sent for every history sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "19fb560697aff5dde6d437d42209474f52a34f1b",
+          "last": "19fb560697aff5dde6d437d42209474f52a34f1b"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/19fb560697aff5dde6d437d42209474f52a34f1b/components/support/sync-telemetry/pings.yaml#L32"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-05-28 17:48:46"
+        },
+        "description": "A ping sent for every history sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/pings.yaml#L32"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/3092"
+        ],
+        "dates": {
+          "first": "2021-12-13 00:22:15",
+          "last": "2021-12-13 00:22:15"
+        },
+        "description": "A ping sent for every history sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "e18be9f02525adc6f2b1901991a4412a803ee6ce",
+          "last": "e18be9f02525adc6f2b1901991a4412a803ee6ce"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/e18be9f02525adc6f2b1901991a4412a803ee6ce/components/support/sync-telemetry/pings.yaml#L32"
+      }
+    ],
+    "in-source": true,
+    "name": "history-sync"
+  },
+  "logins-sync": {
+    "history": [
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2019-12-19 20:13:19",
+          "last": "2019-12-19 20:13:19"
+        },
+        "description": "A ping sent for every logins/passwords sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa",
+          "last": "52ffb8549dc25553b6f8ff8004e2e2be1dc888fa"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 4,
+          "last": 4
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/52ffb8549dc25553b6f8ff8004e2e2be1dc888fa/components/support/sync-telemetry/pings.yaml#L29"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2020-04-13 19:42:10",
+          "last": "2020-04-13 19:42:10"
+        },
+        "description": "A ping sent for every logins/passwords sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "879b8e35ad08ea8aa8fd58c485323cff132f8344",
+          "last": "879b8e35ad08ea8aa8fd58c485323cff132f8344"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/879b8e35ad08ea8aa8fd58c485323cff132f8344/components/support/sync-telemetry/pings.yaml#L46"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2020-05-11 12:25:30",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "A ping sent for every logins/passwords sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "321215304df372c25225da1073c563c7f6e2c41e",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/321215304df372c25225da1073c563c7f6e2c41e/components/support/sync-telemetry/pings.yaml#L54"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2021-03-29 14:27:14",
+          "last": "2021-03-29 14:27:14"
+        },
+        "description": "A ping sent for every logins/passwords sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "19fb560697aff5dde6d437d42209474f52a34f1b",
+          "last": "19fb560697aff5dde6d437d42209474f52a34f1b"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/19fb560697aff5dde6d437d42209474f52a34f1b/components/support/sync-telemetry/pings.yaml#L54"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-05-28 17:48:46"
+        },
+        "description": "A ping sent for every logins/passwords sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/pings.yaml#L54"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/4556"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5294"
+        ],
+        "dates": {
+          "first": "2021-12-13 00:22:15",
+          "last": "2021-12-13 00:22:15"
+        },
+        "description": "A ping sent for every logins/passwords sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "e18be9f02525adc6f2b1901991a4412a803ee6ce",
+          "last": "e18be9f02525adc6f2b1901991a4412a803ee6ce"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/e18be9f02525adc6f2b1901991a4412a803ee6ce/components/support/sync-telemetry/pings.yaml#L54"
+      }
+    ],
+    "in-source": true,
+    "name": "logins-sync"
+  },
+  "sync": {
+    "history": [
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/5371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5386#pullrequestreview-392363687"
+        ],
+        "dates": {
+          "first": "2020-04-13 19:42:10",
+          "last": "2020-04-13 19:42:10"
+        },
+        "description": "A summary ping, sent every time a sync is performed. During each Sync one or more data types could be synchronized, depending on which data types user configured to sync. Alongside with 'sync' ping one or more individual data type specific pings will be sent. For example, if history and bookmarks data types are configured to be synchronized, the following pings will be sent: 'sync', 'history-sync' and 'bookmarks-sync'. Alternatively, if only history is configured to be synchronized then 'sync' and 'history-sync' pings will be sent. In case of a \"global failure\" where none of the data type syncs could even start, e.g. device is offline, only the 'sync' ping will be sent. This ping doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "879b8e35ad08ea8aa8fd58c485323cff132f8344",
+          "last": "879b8e35ad08ea8aa8fd58c485323cff132f8344"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 3,
+          "last": 3
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/879b8e35ad08ea8aa8fd58c485323cff132f8344/components/support/sync-telemetry/pings.yaml#L7"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/5371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5386#pullrequestreview-392363687"
+        ],
+        "dates": {
+          "first": "2020-05-11 12:25:30",
+          "last": "2020-05-11 12:25:30"
+        },
+        "description": "A summary ping, sent every time a sync is performed. During each Sync one or more data types could be synchronized, depending on which data types user configured to sync. Alongside with 'sync' ping one or more individual data type specific pings will be sent. For example, if history and bookmarks data types are configured to be synchronized, the following pings will be sent: 'sync', 'history-sync' and 'bookmarks-sync'. Alternatively, if only history is configured to be synchronized then 'sync' and 'history-sync' pings will be sent. In case of a \"global failure\" where none of the data type syncs could even start, e.g. device is offline, only the 'sync' ping will be sent. This ping doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "321215304df372c25225da1073c563c7f6e2c41e",
+          "last": "321215304df372c25225da1073c563c7f6e2c41e"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 2,
+          "last": 2
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/321215304df372c25225da1073c563c7f6e2c41e/components/support/sync-telemetry/pings.yaml#L8"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/5371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5386#pullrequestreview-392363687"
+        ],
+        "dates": {
+          "first": "2021-03-29 14:27:14",
+          "last": "2021-03-29 14:27:14"
+        },
+        "description": "A summary ping, sent every time a sync is performed. During each Sync one or more data types could be synchronized, depending on which data types user configured to sync. Alongside with 'sync' ping one or more individual data type specific pings will be sent. For example, if history and bookmarks data types are configured to be synchronized, the following pings will be sent: 'sync', 'history-sync' and 'bookmarks-sync'. Alternatively, if only history is configured to be synchronized then 'sync' and 'history-sync' pings will be sent. In case of a \"global failure\" where none of the data type syncs could even start, e.g. device is offline, only the 'sync' ping will be sent. This ping doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "19fb560697aff5dde6d437d42209474f52a34f1b",
+          "last": "19fb560697aff5dde6d437d42209474f52a34f1b"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/19fb560697aff5dde6d437d42209474f52a34f1b/components/support/sync-telemetry/pings.yaml#L8"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/5371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5386#pullrequestreview-392363687"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-05-28 17:48:46"
+        },
+        "description": "A summary ping, sent every time a sync is performed. During each Sync one or more data types could be synchronized, depending on which data types user configured to sync. Alongside with 'sync' ping one or more individual data type specific pings will be sent. For example, if history and bookmarks data types are configured to be synchronized, the following pings will be sent: 'sync', 'history-sync' and 'bookmarks-sync'. Alternatively, if only history is configured to be synchronized then 'sync' and 'history-sync' pings will be sent. In case of a \"global failure\" where none of the data type syncs could even start, e.g. device is offline, only the 'sync' ping will be sent. This ping doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/pings.yaml#L8"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/5371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/5386#pullrequestreview-392363687"
+        ],
+        "dates": {
+          "first": "2021-12-13 00:22:15",
+          "last": "2021-12-13 00:22:15"
+        },
+        "description": "A summary ping, sent every time a sync is performed. During each Sync one or more data types could be synchronized, depending on which data types user configured to sync. Alongside with 'sync' ping one or more individual data type specific pings will be sent. For example, if history and bookmarks data types are configured to be synchronized, the following pings will be sent: 'sync', 'history-sync' and 'bookmarks-sync'. Alternatively, if only history is configured to be synchronized then 'sync' and 'history-sync' pings will be sent. In case of a \"global failure\" where none of the data type syncs could even start, e.g. device is offline, only the 'sync' ping will be sent. This ping doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "e18be9f02525adc6f2b1901991a4412a803ee6ce",
+          "last": "e18be9f02525adc6f2b1901991a4412a803ee6ce"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/e18be9f02525adc6f2b1901991a4412a803ee6ce/components/support/sync-telemetry/pings.yaml#L8"
+      }
+    ],
+    "in-source": true,
+    "name": "sync"
+  },
+  "tabs-sync": {
+    "history": [
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "dates": {
+          "first": "2021-05-28 17:48:46",
+          "last": "2021-05-28 17:48:46"
+        },
+        "description": "A ping sent for every Tabs engine sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8",
+          "last": "a9ef23786813a54b789fcebd4c6e93dbaa81a9c8"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/a9ef23786813a54b789fcebd4c6e93dbaa81a9c8/components/support/sync-telemetry/pings.yaml#L90"
+      },
+      {
+        "bugs": [
+          "https://github.com/mozilla-mobile/android-components/issues/10371"
+        ],
+        "data_reviews": [
+          "https://github.com/mozilla-mobile/android-components/pull/10372#issuecomment-850378481"
+        ],
+        "dates": {
+          "first": "2021-12-13 00:22:15",
+          "last": "2021-12-13 00:22:15"
+        },
+        "description": "A ping sent for every Tabs engine sync. It doesn't include the `client_id` because it reports a hashed version of the user's Firefox Account ID.\n",
+        "git-commits": {
+          "first": "e18be9f02525adc6f2b1901991a4412a803ee6ce",
+          "last": "e18be9f02525adc6f2b1901991a4412a803ee6ce"
+        },
+        "include_client_id": false,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "sync-core@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla-mobile/android-components/blob/e18be9f02525adc6f2b1901991a4412a803ee6ce/components/support/sync-telemetry/pings.yaml#L90"
+      }
+    ],
+    "in-source": true,
+    "name": "tabs-sync"
+  }
+}

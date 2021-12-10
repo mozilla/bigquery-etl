@@ -1,0 +1,101 @@
+{
+  "usage": {
+    "history": [
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1291053"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1291053#c34"
+        ],
+        "dates": {
+          "first": "2020-09-09 23:51:57",
+          "last": "2020-09-09 23:51:57"
+        },
+        "description": "Sent when the mach invocation is completed (regardless of result). Contains information about the mach invocation that was made, its result, and some details about the current environment and hardware.\n",
+        "git-commits": {
+          "first": "565f11ba0a9f4febcc981b3e97eba3ce11a2262a",
+          "last": "565f11ba0a9f4febcc981b3e97eba3ce11a2262a"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "build-telemetry@mozilla.com",
+          "mhentges@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 1,
+          "last": 1
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/565f11ba0a9f4febcc981b3e97eba3ce11a2262a/python/mach/pings.yaml#L7"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1291053"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1291053#c34"
+        ],
+        "dates": {
+          "first": "2020-09-15 21:15:20",
+          "last": "2020-09-15 21:15:20"
+        },
+        "description": "Sent when the mach invocation is completed (regardless of result). Contains information about the mach invocation that was made, its result, and some details about the current environment and hardware.\n",
+        "git-commits": {
+          "first": "648ccad85b2319984db72a8d173e2f1857103330",
+          "last": "648ccad85b2319984db72a8d173e2f1857103330"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "build-telemetry@mozilla.com",
+          "mhentges@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/648ccad85b2319984db72a8d173e2f1857103330/python/mach/pings.yaml#L10"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1291053"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1291053#c34"
+        ],
+        "dates": {
+          "first": "2021-12-12 18:02:07",
+          "last": "2021-12-12 18:02:07"
+        },
+        "description": "Sent when the mach invocation is completed (regardless of result). Contains information about the mach invocation that was made, its result, and some details about the current environment and hardware.\n",
+        "git-commits": {
+          "first": "4646b826a25d3825cf209db890862b45fa09ffc3",
+          "last": "4646b826a25d3825cf209db890862b45fa09ffc3"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "build-telemetry@mozilla.com",
+          "mhentges@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/gecko-dev/blob/4646b826a25d3825cf209db890862b45fa09ffc3/python/mach/pings.yaml#L10"
+      }
+    ],
+    "in-source": true,
+    "name": "usage"
+  }
+}

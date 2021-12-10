@@ -106,10 +106,18 @@ BigQuery-ETL has some facilities in it to automatically add your query to [telem
 Before scheduling your query, you'll need to find an [Airflow DAG](https://airflow.apache.org/docs/apache-airflow/stable/concepts.html#dags) to run it off of. In some cases, one may already exist that makes sense to use for your dataset -- look in `dags.yaml` at the root or run `./bqetl dag info`. In this particular case, there's no DAG that really makes sense -- so we'll create a new one:
 
 ```bash
-./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01
+./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01 --tag impact/tier3
 ```
 
 Most of the options above should be self-explanatory. We use a schedule interval of "0 4 \* \* \*" (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL.
+
+### Impact/priority tag
+We follow the same tiers as the ones defined for automation/treeherder. This is to maintain a level of consistency across different systems to ensure common language and understanding across teams. Valid tier tags include:
+
+- **impact/tier_1**: Highest priority/impact/critical DAG. A job with this tag implies that many downstream processes are impacted and affects Mozilla’s (many users across different teams and departments) ability to make decisions. A bug ticket must be created and the issue needs to be resolved as soon as possible.
+- **impact/tier_2**:  Job of increased importance and impact, however, not critical and only limited impact on other processes. One team or group of people is affected and the pipeline does not generate any business critical metrics. A bug ticket must be created and should be addressed within a few working days.
+- **impact/tier_3**: No impact on other processes and is not used to generate any metrics used by business users or to make any decisions. A bug ticket should be created and it’s up to the job owner to fix this issue in whatever time frame they deem to be reasonable.
+
 
 ## Scheduling your query
 

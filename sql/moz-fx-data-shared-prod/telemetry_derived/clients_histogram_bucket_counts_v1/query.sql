@@ -44,33 +44,6 @@ static_combos AS (
     '*' AS os,
     '*' AS app_build_id
 ),
-build_ids AS (
-  SELECT
-    app_build_id,
-    channel,
-  FROM
-    filtered_data
-  GROUP BY
-    1,
-    2
-  HAVING
-    CASE
-    WHEN
-      channel = 'release'
-    THEN
-      COUNT(DISTINCT client_id) > 625000
-    WHEN
-      channel = 'beta'
-    THEN
-      COUNT(DISTINCT client_id) > 9000
-    WHEN
-      channel = 'nightly'
-    THEN
-      COUNT(DISTINCT client_id) > 375
-    ELSE
-      COUNT(DISTINCT client_id) > 100
-    END
-),
 all_combos AS (
   SELECT
     * EXCEPT (os, app_build_id),
@@ -78,10 +51,6 @@ all_combos AS (
     COALESCE(combo.app_build_id, table.app_build_id) AS app_build_id
   FROM
     filtered_data table
-  INNER JOIN
-    build_ids
-  USING
-    (app_build_id, channel)
   CROSS JOIN
     static_combos combo
 ),

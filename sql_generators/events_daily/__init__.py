@@ -1,4 +1,5 @@
 """Generate query directories."""
+import click
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -8,6 +9,7 @@ import yaml
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat
+from bigquery_etl.cli.utils import is_valid_project
 
 TEMPLATED_FILES = {
     "init.sql",
@@ -118,9 +120,34 @@ def get_query_dirs(path):
             dir_path = Path(directory)
             yield TemplatedDir(dir_path.name, dir_path)
 
-
-def generate_queries(project, path, dataset, write_dir):
+@click.command()
+@click.option(
+    "--project-id",
+    "--project_id",
+    help="GCP project ID",
+    default="moz-fx-data-shared-prod",
+    callback=is_valid_project,
+)
+@click.option(
+    "--path",
+    help="Where query directories will be searched for",
+    default="sql_generators/events_daily/templates",
+)
+@click.option(
+    "--dataset",
+    help="The dataset to run this for. "
+    "If none selected, runs on all in the configuration yaml file.",
+    default=None,
+)
+@click.option(
+    "--output-dir",
+    "--output_dir",
+    help="Output directory generated SQL is written to",
+    type=click.Path(file_okay=False),
+    default="sql",
+)
+def generate(project_id, path, dataset, output_dir):
     """Generate queries at the path for project."""
-    write_path = Path(write_dir) / project
+    write_path = Path(output_dir) / project_id
     for query_dir in get_query_dirs(path):
         query_dir.generate(write_path, dataset)

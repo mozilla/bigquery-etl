@@ -19597,6 +19597,16 @@ fields:
       mode: NULLABLE
       name: fx_urlbar_quick_suggest_remote_settings_latency_ms
       type: STRING
+    - description: The sampled number of simultaneous running ServiceWorkers handling
+        Fetch in a session, sampled every minute
+      mode: NULLABLE
+      name: service_worker_fetch_running
+      type: STRING
+    - description: Time (ms) for spawning a service worker in an isolated content
+        process.
+      mode: NULLABLE
+      name: service_worker_isolated_launch_time
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -22727,6 +22737,18 @@ fields:
         type: STRING
       mode: REPEATED
       name: trr_skip_reason_strict_mode
+      type: RECORD
+    - fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - description: The sampled number of simultaneous running ServiceWorkers in
+          a session, sampled once each minute
+        mode: NULLABLE
+        name: value
+        type: STRING
+      mode: REPEATED
+      name: service_worker_running
       type: RECORD
     mode: NULLABLE
     name: keyed_histograms
@@ -40460,6 +40482,11 @@ fields:
           mode: NULLABLE
           name: use_counter2_css_property_color_scheme_page
           type: STRING
+        - description: Time (ms) for spawning a service worker in an isolated content
+            process.
+          mode: NULLABLE
+          name: service_worker_isolated_launch_time
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -47013,6 +47040,34 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: networking_trr_connection_cycle_count
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Count how many registrations occur. File bugs in Core::DOM
+              in case of a Telemetry regression.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: serviceworker_registrations
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'The maximum number of simultaneous running ServiceWorkers
+              in a session.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: serviceworker_running_max
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

@@ -1,3 +1,5 @@
+"""GLEAN Usage."""
+
 """bigquery-etl CLI glean_usage command."""
 import click
 import os

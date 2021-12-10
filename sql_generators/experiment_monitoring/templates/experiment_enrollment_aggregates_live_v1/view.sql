@@ -1,4 +1,4 @@
--- Generated via ./bqetl experiment_monitoring generate
+-- Generated via ./bqetl generate experiment_monitoring
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v1`
 AS

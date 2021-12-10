@@ -64,15 +64,7 @@ def generate_queries(project, path, write_dir):
             (write_path / "metadata.yaml").write_text(metadata_template.render(**args))
 
 
-@click.group(
-    help="Commands for generating the experiment monitoring materialized views."
-)
-def experiment_monitoring():
-    """Create the CLI group for the experiment monitoring views."""
-    pass
-
-
-@experiment_monitoring.command("generate")
+@click.command("generate")
 @click.option(
     "--project",
     help="Which project the queries should be written to.",
@@ -81,15 +73,15 @@ def experiment_monitoring():
 @click.option(
     "--path",
     help="Where query directories will be searched for.",
-    default="bigquery_etl/experiment_monitoring/templates",
+    default="sql_generators/experiment_monitoring/templates",
     required=False,
     type=click.Path(file_okay=False),
 )
 @click.option(
     "--write-dir",
     help="The location to write to. Defaults to sql/.",
-    default=BASE_DIR / "sql",
-    type=click.Path(file_okay=True),
+    default=Path("sql"),
+    type=click.Path(file_okay=False),
 )
 def generate(project, path, write_dir):
     """Generate the experiment monitoring views."""

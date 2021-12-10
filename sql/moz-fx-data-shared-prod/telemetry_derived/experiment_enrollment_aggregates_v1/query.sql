@@ -1,4 +1,4 @@
--- Generated via ./bqetl experiment_monitoring generate
+-- Generated via ./bqetl generate experiment_monitoring
 WITH org_mozilla_firefox_beta AS (
   SELECT
     submission_timestamp AS `timestamp`,

@@ -80,13 +80,12 @@ def generate_metadata(project, dataset, destination_table, write_dir):
     "--output-dir",
     "--output_dir",
     help="The location to write to. Defaults to sql/.",
-    default="sql",
+    default=Path("sql"),
     type=click.Path(file_okay=False),
 )
 @click.pass_context
 def generate(ctx, project, dataset, destination_table, output_dir):
     """Generate the feature usage table."""
-    output_dir = Path(output_dir)
     generate_query(project, dataset, destination_table, output_dir)
     generate_view(project, dataset, destination_table, output_dir)
     generate_metadata(project, dataset, destination_table, output_dir)

@@ -1,7 +1,7 @@
--- Generated via bigquery_etl.feature_usage
+-- Generated via ./bqetl generate feature_usage
 -- Don't edit this file directly.
--- To add new metrics, please update bigquery_etl/feature_usage/templating.yaml
--- and run `./bqetl feature_usage generate`.
+-- To add new metrics, please update sql_generators/feature_usage/templating.yaml
+-- and run `./bqetl generate feature_usage`.
 
 WITH
 {% for source in sources %}

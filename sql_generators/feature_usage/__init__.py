@@ -59,13 +59,7 @@ def generate_metadata(project, dataset, destination_table, write_dir):
     )
 
 
-@click.group(help="Commands for generating the desktop feature usage table.")
-def feature_usage():
-    """Create the CLI group for the feature usage table."""
-    pass
-
-
-@feature_usage.command("generate")
+@click.command("generate")
 @click.option(
     "--project",
     help="Which project the queries should be written to.",
@@ -83,15 +77,17 @@ def feature_usage():
     default="feature_usage_v2",
 )
 @click.option(
-    "--write-dir",
+    "--output-dir",
+    "--output_dir",
     help="The location to write to. Defaults to sql/.",
-    default=BASE_DIR / "sql",
-    type=click.Path(file_okay=True),
+    default="sql",
+    type=click.Path(file_okay=False),
 )
 @click.pass_context
-def generate(ctx, project, dataset, destination_table, write_dir):
+def generate(ctx, project, dataset, destination_table, output_dir):
     """Generate the feature usage table."""
-    generate_query(project, dataset, destination_table, write_dir)
-    generate_view(project, dataset, destination_table, write_dir)
-    generate_metadata(project, dataset, destination_table, write_dir)
+    output_dir = Path(output_dir)
+    generate_query(project, dataset, destination_table, output_dir)
+    generate_view(project, dataset, destination_table, output_dir)
+    generate_metadata(project, dataset, destination_table, output_dir)
     ctx.invoke(update, name=f"{dataset}.{destination_table}", project_id=project)

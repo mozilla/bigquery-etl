@@ -401,49 +401,47 @@ fields:
 - mode: NULLABLE
   name: activitystream_sessions_both
   type: INTEGER
-- mode: NULLABLE
+- description: 'Whether the newtabpage is disabled or not.
+
+    Based on the browser.newtabpage.enabled pref'
+  mode: NULLABLE
   name: newtabpage_disabled
   type: BOOLEAN
-  description: |-
-    Whether the newtabpage is disabled or not.
-    Based on the browser.newtabpage.enabled pref
-- mode: NULLABLE
+- description: Total number of sponsored topsite impressions on the new tab page.
+  mode: NULLABLE
   name: num_topsites_new_tab_impressions_sponsored
   type: INTEGER
-  description: |-
-    Total number of sponsored topsite impressions on the new tab page.
-- mode: NULLABLE
+- description: Total number of sponsored topsite clicks on the new tab page.
+  mode: NULLABLE
   name: num_new_tab_topsites_clicks_sponsored
   type: INTEGER
-  description: |-
-    Total number of sponsored topsite clicks on the new tab page.
-- mode: NULLABLE
+- description: 'Total number of sponsored pocket clicks
+
+    reported from activity stream events.'
+  mode: NULLABLE
   name: activitystream_sponsored_pocket_clicks
   type: INTEGER
-  description: |-
-    Total number of sponsored pocket clicks
-    reported from activity stream events.
-- mode: NULLABLE
+- description: 'Total number of sponsored topsite clicks
+
+    reported from activity stream events.'
+  mode: NULLABLE
   name: activitystream_sponsored_topsite_clicks
   type: INTEGER
-  description: |-
-    Total number of sponsored topsite clicks
-    reported from activity stream events.
-- mode: NULLABLE
+- description: 'Total number of organic topsite clicks
+
+    reported from activity stream events.'
+  mode: NULLABLE
   name: activitystream_organic_pocket_clicks
   type: INTEGER
-  description: |-
-    Total number of organic topsite clicks
-    reported from activity stream events.
-- mode: NULLABLE
+- description: 'Total number of organic topsite clicks
+
+    reported from activity stream events.'
+  mode: NULLABLE
   name: activitystream_organic_topsite_clicks
   type: INTEGER
-  description: |-
-    Total number of organic topsite clicks
-    reported from activity stream events.
-- mode: NULLABLE
+- description: 'Whether or not sponsored topstories is off. Based on the
+
+    browser.newtabpage.activity-stream.showSponsored pref'
+  mode: NULLABLE
   name: activitystream_reported_sponsored_topstories_off
   type: BOOLEAN
-  description: |-
-    Whether or not sponsored topstories is off. Based on the
-    browser.newtabpage.activity-stream.showSponsored pref

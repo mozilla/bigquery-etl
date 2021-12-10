@@ -1,4 +1,4 @@
--- Generated via ./bqetl experiment_monitoring generate
+-- Generated via ./bqetl generate experiment_monitoring
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_fenix_derived.experiment_search_events_live_v1`

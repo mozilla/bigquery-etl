@@ -1,4 +1,4 @@
--- Generated via ./bqetl experiment_monitoring generate
+-- Generated via ./bqetl generate experiment_monitoring
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS `moz-fx-data-shared-prod.{{ dataset }}_derived.{{ destination_table }}`

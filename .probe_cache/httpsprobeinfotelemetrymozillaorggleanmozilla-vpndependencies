@@ -1,0 +1,6 @@
+{
+  "glean-js": {
+    "name": "glean-js",
+    "type": "dependency"
+  }
+}

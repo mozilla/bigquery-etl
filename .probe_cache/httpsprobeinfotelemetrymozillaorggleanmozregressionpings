@@ -1,0 +1,68 @@
+{
+  "usage": {
+    "history": [
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1581647"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1581647#c9"
+        ],
+        "dates": {
+          "first": "2020-04-08 14:58:59",
+          "last": "2020-04-08 14:58:59"
+        },
+        "description": "A ping to record usage of mozregression. The purpose of this data gathering is only to improve mozregression itself by understanding the scope of its environment and usage, and will not be broadly shared except in aggregated form. Although not a consumer product, mozregression strives to follow Mozilla's general guidelines on [lean data practices](https://www.mozilla.org/en-US/about/policy/lean-data/) and is also subject to Mozilla's [privacy policy](https://www.mozilla.org/en-US/privacy/websites/).\n",
+        "git-commits": {
+          "first": "ad72896e1bd294685544dd593fd0c19b7fe9a231",
+          "last": "ad72896e1bd294685544dd593fd0c19b7fe9a231"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "wlachance@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/mozregression/blob/ad72896e1bd294685544dd593fd0c19b7fe9a231/mozregression/pings.yaml#L4"
+      },
+      {
+        "bugs": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1581647"
+        ],
+        "data_reviews": [
+          "https://bugzilla.mozilla.org/show_bug.cgi?id=1581647#c9"
+        ],
+        "dates": {
+          "first": "2021-12-05 13:44:10",
+          "last": "2021-12-05 13:44:10"
+        },
+        "description": "A ping to record usage of mozregression. The purpose of this data gathering is only to improve mozregression itself by understanding the scope of its environment and usage, and will not be broadly shared except in aggregated form. Although not a consumer product, mozregression strives to follow Mozilla's general guidelines on [lean data practices](https://www.mozilla.org/en-US/about/policy/lean-data/) and is also subject to Mozilla's [privacy policy](https://www.mozilla.org/en-US/privacy/websites/).\n",
+        "git-commits": {
+          "first": "ad85ca7646bf44b2f2312a5cc45d25616f727d73",
+          "last": "ad85ca7646bf44b2f2312a5cc45d25616f727d73"
+        },
+        "include_client_id": true,
+        "metadata": {},
+        "no_lint": [],
+        "notification_emails": [
+          "wlachance@mozilla.com"
+        ],
+        "reasons": {},
+        "reflog-index": {
+          "first": 0,
+          "last": 0
+        },
+        "send_if_empty": false,
+        "source_url": "https://github.com/mozilla/mozregression/blob/ad85ca7646bf44b2f2312a5cc45d25616f727d73/mozregression/pings.yaml#L4"
+      }
+    ],
+    "in-source": true,
+    "name": "usage"
+  }
+}

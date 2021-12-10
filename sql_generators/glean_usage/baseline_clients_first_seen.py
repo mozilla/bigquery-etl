@@ -1,6 +1,6 @@
 """Generate and run baseline_clients_first_seen queries for Glean apps."""
 
-from bigquery_etl.glean_usage.common import GleanTable
+from common import GleanTable
 
 TARGET_TABLE_ID = "baseline_clients_first_seen_v1"
 PREFIX = "first_seen"

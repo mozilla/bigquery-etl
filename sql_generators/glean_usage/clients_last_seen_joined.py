@@ -1,6 +1,6 @@
 """Generate and run clients_last_seen_joined queries for Glean apps."""
 
-from bigquery_etl.glean_usage.common import GleanTable
+from common import GleanTable
 
 TARGET_TABLE_ID = "clients_last_seen_joined_v1"
 PREFIX = "clients_last_seen_joined"

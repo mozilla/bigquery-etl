@@ -11,14 +11,13 @@ SUBMISSION_DATE = "2020-10-01"
 APP_BUILD_ID = "2020100100"
 OS = "Android"
 PING_TYPE = "metrics"
-MINIMUM_CLIENT_COUNT = 900
+
 # Testing precondition: ping_type, os, and app_build_id must not be "*". See
 # models.py under the scalar_bucket_counts parameters to see that sets fields
 # are used in the static combinations. If these are set to "*", then they will
 # be double counted...
-CLIENTS_SCALAR_AGGREGATES = []
-for i in range(MINIMUM_CLIENT_COUNT):
-    data = {
+CLIENTS_SCALAR_AGGREGATES = [
+    {
         "client_id": str(uuid4()),
         "ping_type": PING_TYPE,
         "os": OS,
@@ -34,9 +33,25 @@ for i in range(MINIMUM_CLIENT_COUNT):
                 "value": 4.0,
             },
         ],
-    }
-    CLIENTS_SCALAR_AGGREGATES.append(data)
-
+    },
+    {
+        "client_id": str(uuid4()),
+        "ping_type": PING_TYPE,
+        "os": OS,
+        "app_version": 84,
+        "app_build_id": APP_BUILD_ID,
+        "channel": "*",
+        "scalar_aggregates": [
+            {
+                "metric": "places_manager_write_query_count",
+                "metric_type": "counter",
+                "key": "",
+                "agg_type": "count",
+                "value": 8.0,
+            },
+        ],
+    },
+]
 
 # we must generate the set of combinations. Each one of these have the same
 # values though.

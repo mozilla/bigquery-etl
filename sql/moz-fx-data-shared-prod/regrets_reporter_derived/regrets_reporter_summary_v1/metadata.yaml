@@ -1,0 +1,24 @@
+friendly_name: Regrets Reporter Summary
+description: |
+  Measure usage of the regrets reporter addon
+  See https://github.com/mozilla/bigquery-etl/issues/2572
+owners:
+- kignasiak@mozilla.com
+labels: {}
+scheduling:
+  dag_name: bqetl_regrets_reporter_summary
+  task_name: regrets_reporter_summary__v1
+bigquery:
+  time_partitioning:
+    field: date
+    type: day
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - browser
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

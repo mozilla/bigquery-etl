@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Generate mobile search clients_daily query.
 
@@ -10,6 +9,7 @@ python -m bigquery_etl.search.mobile_search_clients_daily \
 > sql/moz-fx-data-shared-prod/\
 search_derived/mobile_search_clients_daily_v1/query.sql
 """
+import click
 from pathlib import Path
 from typing import List
 
@@ -36,7 +36,8 @@ def union_statements(statements: List[str]):
     return "\nUNION ALL\n".join(statements)
 
 
-def main():
+@click.command()
+def generate():
     """Generate mobile search clients daily query and print to stdout."""
     base_dir = Path(__file__).parent
 
@@ -88,7 +89,3 @@ def main():
     )
 
     print(reformat(search_query))
-
-
-if __name__ == "__main__":
-    main()

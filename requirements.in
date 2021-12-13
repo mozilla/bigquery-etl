@@ -26,7 +26,7 @@ pytest-flake8==1.0.7
 pytest-isort==2.0.0
 pytest-mypy==0.8.1
 pytest-pydocstyle==2.2.0
-pytest-xdist==2.4.0
+pytest-xdist==2.5.0
 pytest==6.2.5
 PyYAML==6.0
 smart_open==5.2.1

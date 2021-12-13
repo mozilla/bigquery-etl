@@ -15,3 +15,4 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:mozilla-confidential
+      - workgroup:search-terms/sanitized-writer

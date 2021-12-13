@@ -53,6 +53,7 @@ jobs:
     steps:
       - checkout
       - *restore_venv_cache
+      - *build
       - run:
           name: Verify that SQL is correctly formatted
           command: |

@@ -17,6 +17,7 @@ from bigquery_etl.view import generate_stable_views
 APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 PATH = Path(os.path.dirname(__file__))
 
+
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
     """
     Add dataset_metadata.yaml to public facing datasets.
@@ -172,13 +173,17 @@ class GleanTable:
 
         query_sql = render(query_filename, template_folder=PATH, **render_kwargs)
         view_sql = render(view_filename, template_folder=PATH, **render_kwargs)
-        view_metadata = render(view_metadata_filename, template_folder=PATH, format=False, **render_kwargs)
+        view_metadata = render(
+            view_metadata_filename, template_folder=PATH, format=False, **render_kwargs
+        )
 
         if not self.no_init:
             try:
                 init_sql = render(init_filename, template_folder=PATH, **render_kwargs)
             except TemplateNotFound:
-                init_sql = render(query_filename, template_folder=PATH, init=True, **render_kwargs)
+                init_sql = render(
+                    query_filename, template_folder=PATH, init=True, **render_kwargs
+                )
 
         if not (referenced_table_exists(view_sql)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
@@ -227,7 +232,9 @@ class GleanTable:
         render_kwargs.update(self.custom_render_kwargs)
 
         if self.cross_channel_template:
-            sql = render(self.cross_channel_template, template_folder=PATH, **render_kwargs)
+            sql = render(
+                self.cross_channel_template, template_folder=PATH, **render_kwargs
+            )
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
             if output_dir:
@@ -242,7 +249,9 @@ class GleanTable:
         else:
             query_filename = f"{target_view_name}.query.sql"
             query_sql = render(query_filename, template_folder=PATH, **render_kwargs)
-            view_sql = render(f"{target_view_name}.view.sql", template_folder=PATH, **render_kwargs)
+            view_sql = render(
+                f"{target_view_name}.view.sql", template_folder=PATH, **render_kwargs
+            )
             metadata = render(
                 f"{self.target_table_id[:-3]}.metadata.yaml",
                 template_folder=PATH,

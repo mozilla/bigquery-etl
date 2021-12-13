@@ -44,6 +44,7 @@ GLEAN_TABLES = [
 # one to avoid confusion: https://github.com/mozilla/bigquery-etl/issues/2499
 SKIP_APPS = ["mlhackweek_search", "regrets_reporter"]
 
+
 @click.command()
 @click.option(
     "--project-id",
@@ -142,4 +143,3 @@ def generate(project_id, output_dir, parallelism, exclude, only, app_name):
 
     with ProcessingPool(parallelism) as pool:
         pool.map(lambda f: f[0](f[1]), generate_per_app_id + generate_per_app)
-

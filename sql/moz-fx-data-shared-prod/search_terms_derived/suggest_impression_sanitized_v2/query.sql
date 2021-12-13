@@ -1,89 +1,47 @@
 /*
 
-This query is run in a standalone project and is scheduled separately from our
-normal Airflow infrastructure, but is codified here for discoverability and for
-making use of the SQL test harness.
+This query simply copies data from a table in the restricted suggest-searches-prod
+project to shared-prod, but throws an error on empty input in order to signal an
+upstream delay or error.
 
-Note that we need to fully qualify all table references since this runs from
-a separate project.
+In order to produce the error, it includes aggregations and join steps.
 
 */
-WITH impressions AS (
+WITH sanitized_impressions AS (
   SELECT
-    -- This should already be truncated to second level per CONSVC-1364
-    -- but we reapply truncation to be explicit about granularity.
-    TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
-    request_id,
-    search_query AS telemetry_query,
-    advertiser,
-    block_id,
-    context_id,
-    sample_id,
-    is_clicked,
-    locale,
-    metadata.geo.country,
-    metadata.geo.subdivision1 AS region,
-    normalized_os,
-    normalized_os_version,
-    release_channel AS normalized_channel,
-    position,
-    reporting_url,
-    scenario,
-    -- Truncate to just Firefox major version
-    SPLIT(version, '.')[SAFE_OFFSET(0)] AS version,
+    *
   FROM
-    `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
+    `suggest-searches-prod-a30f.sanitized.suggest_impression_sanitized_v2`
   WHERE
     DATE(submission_timestamp) = @submission_date
 ),
-merino_logs AS (
+sanitized_impressions_count AS (
   SELECT
-    TIMESTAMP_TRUNC(timestamp, SECOND) AS merino_timestamp,
-    jsonPayload.fields.rid AS request_id,
-    jsonPayload.fields.query,
-    -- Merino currently injects 'none' for missing geo fields.
-    NULLIF(jsonPayload.fields.country, 'none') AS merino_country,
-    NULLIF(jsonPayload.fields.region, 'none') AS merino_region,
-    NULLIF(jsonPayload.fields.dma, 'none') AS merino_dma,
-    -- -- We are not propagating city-level data to sanitized table.
-    -- NULLIF(jsonPayload.fields.city, 'none') AS merino_city,
-    jsonPayload.fields.form_factor AS merino_form_factor,
-    jsonPayload.fields.browser AS merino_browser,
-    jsonPayload.fields.os_family AS merino_os_family,
-    -- merino_version will be added once implemented in Merino logging code
+    COUNT(*) AS _n
   FROM
-    `suggest-searches-prod-a30f.logs.stdout`
-  WHERE
-    DATE(timestamp) = @submission_date
-    AND jsonPayload.type = "web.suggest.request"
+    sanitized_impressions
 ),
-allowed_queries AS (
+-- We perform a LEFT JOIN on TRUE as a workaround to attach the count to every
+-- row from the impressions table; the LEFT JOIN has the important property that
+-- if the input impressions partition is empty, we will still get a single row of
+-- output, which allows us to raise an error in the WHERE clause.
+validated_impressions AS (
   SELECT
-    -- Each keyword should only appear once, but we add DISTINCT for protection
-    -- in downstream joins in case the suggestions file has errors.
-    DISTINCT query
+    * EXCEPT (_n),
   FROM
-    `moz-fx-data-shared-prod.search_terms_derived.remotesettings_suggestions_v1`
-  CROSS JOIN
-    UNNEST(keywords) AS query
-),
-merino_sanitized AS (
-  SELECT
-    IF(allowed_queries.query IS NOT NULL, query, '<disallowed>') AS sanitized_query,
-    merino_logs.* EXCEPT (query)
-  FROM
-    merino_logs
+    sanitized_impressions_count
   LEFT JOIN
-    allowed_queries
-  USING
-    (query)
+    sanitized_impressions
+  ON
+    TRUE
+  WHERE
+    IF(
+      _n < 1,
+      ERROR("Source table is not yet populated; retry later or investigate upstream issues"),
+      TRUE
+    )
 )
 SELECT
-  * EXCEPT (request_id, sanitized_query, telemetry_query),
-  COALESCE(sanitized_query, telemetry_query) AS sanitized_query,
+  *
 FROM
-  impressions
-LEFT JOIN
-  merino_sanitized
-USING
-  (request_id)
+  validated_impressions

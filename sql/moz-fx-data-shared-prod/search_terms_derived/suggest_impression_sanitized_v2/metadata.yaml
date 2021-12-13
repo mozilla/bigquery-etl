@@ -12,6 +12,9 @@ owners:
   - jklukas@mozilla.com
 labels:
   incremental: true
+scheduling:
+  dag_name: bqetl_search_terms_daily
+  referenced_tables: []
 bigquery:
   time_partitioning:
     field: submission_timestamp

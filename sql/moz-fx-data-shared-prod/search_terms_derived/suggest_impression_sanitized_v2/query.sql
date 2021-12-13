@@ -37,7 +37,9 @@ validated_impressions AS (
   WHERE
     IF(
       _n < 1,
-      ERROR("The source partition of suggest-searches-prod-a30f.sanitized.suggest_impression_sanitized_v2 is empty; retry later or investigate upstream issues"),
+      ERROR(
+        "The source partition of suggest-searches-prod-a30f.sanitized.suggest_impression_sanitized_v2 is empty; retry later or investigate upstream issues"
+      ),
       TRUE
     )
 )

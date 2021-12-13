@@ -12,15 +12,19 @@ Built from bigquery-etl repo, [`dags/bqetl_mobile_search.py`](https://github.com
 
 #### Owner
 
-akomar@mozilla.com
+anicholson@mozilla.com
 """
 
 
 default_args = {
-    "owner": "akomar@mozilla.com",
+    "owner": "anicholson@mozilla.com",
     "start_date": datetime.datetime(2019, 7, 25, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"],
+    "email": [
+        "telemetry-alerts@mozilla.com",
+        "anicholson@mozilla.com",
+        "akomar@mozilla.com",
+    ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=300),
     "email_on_failure": True,
@@ -41,7 +45,11 @@ with DAG(
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "anicholson@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -53,7 +61,11 @@ with DAG(
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "anicholson@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         dag=dag,
@@ -65,7 +77,11 @@ with DAG(
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "akomar@mozilla.com",
+            "anicholson@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=True,
         dag=dag,

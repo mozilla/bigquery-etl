@@ -79,9 +79,12 @@ bqetl_nondesktop:
 bqetl_mobile_search:
   schedule_interval: 0 2 * * *
   default_args:
-    owner: akomar@mozilla.com
+    owner: anicholson@mozilla.com
     start_date: "2019-07-25"
-    email: ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"]
+    email:
+      - "telemetry-alerts@mozilla.com"
+      - "anicholson@mozilla.com"
+      - "akomar@mozilla.com"
     retries: 1
     retry_delay: 5m
 
@@ -175,10 +178,12 @@ bqetl_activity_stream:
 bqetl_search:
   schedule_interval: 0 3 * * *
   default_args:
-    owner: akomar@mozilla.com
+    owner: anicholson@mozilla.com
     start_date: "2018-11-27"
     email:
-      ["telemetry-alerts@mozilla.com", "akomar@mozilla.com"]
+      - "telemetry-alerts@mozilla.com"
+      - "anicholson@mozilla.com"
+      - "akomar@mozilla.com"
     retries: 2
     retry_delay: 30m
 
@@ -581,10 +586,11 @@ bqetl_urlbar:
   description: |
     Daily aggregation of metrics related to urlbar usage.
   default_args:
-    owner: akomar@mozilla.com
+    owner: anicholson@mozilla.com
     start_date: "2021-08-01"
     email:
       - "telemetry-alerts@mozilla.com"
+      - "anicholson@mozilla.com"
       - "akomar@mozilla.com"
       - "tbrooks@mozilla.com"
     retries: 2

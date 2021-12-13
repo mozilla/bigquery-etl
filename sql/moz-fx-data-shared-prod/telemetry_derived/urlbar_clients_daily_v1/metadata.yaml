@@ -2,7 +2,7 @@ friendly_name: Urlbar Clients Daily
 description: |-
   Daily per-client metrics related to urlbar usage
 owners:
-- akomar@mozilla.com
+- anicholson@mozilla.com
 - tbrooks@mozilla.com
 labels:
   application: firefox

@@ -249,6 +249,11 @@ sources:
         vetted: true
         min_version: 86
         type: INT64
+      - name: search_count_urlbar_handoff
+        sql: search_count_urlbar_handoff
+        vetted: true
+        min_version: 94
+        type: INT64
       - name: search_with_ads_count_all
         sql: search_with_ads_count_all
         vetted: true

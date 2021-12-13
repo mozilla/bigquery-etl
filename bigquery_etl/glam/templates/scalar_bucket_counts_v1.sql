@@ -22,17 +22,6 @@ bucketed_booleans AS (
   FROM
     all_combos
 ),
-build_ids AS (
-  SELECT
-    app_build_id,
-    channel,
-  FROM
-    all_combos
-  GROUP BY
-    1,
-    2
-  HAVING
-      COUNT(DISTINCT client_id) > {{ minimum_client_count }}),
 log_min_max AS (
   SELECT
     metric,
@@ -103,14 +92,6 @@ booleans_and_scalars AS (
     bucket
   FROM
     bucketed_scalars
-),
-valid_booleans_scalars AS (
-  SELECT *
-  FROM booleans_and_scalars
-  INNER JOIN
-    build_ids
-  USING
-    (app_build_id, channel)
 )
 SELECT
   {{ attributes }},
@@ -124,7 +105,7 @@ SELECT
   -- we could rely on count(*) because there is one row per client and bucket
   COUNT(DISTINCT client_id) AS count
 FROM
-  valid_booleans_scalars
+  booleans_and_scalars
 GROUP BY
   {{ attributes }},
   {{ aggregate_attributes }},

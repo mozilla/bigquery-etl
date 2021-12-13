@@ -1,0 +1,47 @@
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+- mode: NULLABLE
+  name: ping_type
+  type: STRING
+- mode: NULLABLE
+  name: os
+  type: STRING
+- mode: NULLABLE
+  name: app_version
+  type: INTEGER
+- mode: NULLABLE
+  name: app_build_id
+  type: STRING
+- mode: NULLABLE
+  name: channel
+  type: STRING
+- fields:
+  - mode: NULLABLE
+    name: metric
+    type: STRING
+  - mode: NULLABLE
+    name: metric_type
+    type: STRING
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: agg_type
+    type: STRING
+  - fields:
+    - mode: NULLABLE
+      name: key
+      type: STRING
+    - mode: NULLABLE
+      name: value
+      type: INTEGER
+    mode: REPEATED
+    name: value
+    type: RECORD
+  mode: REPEATED
+  name: histogram_aggregates
+  type: RECORD

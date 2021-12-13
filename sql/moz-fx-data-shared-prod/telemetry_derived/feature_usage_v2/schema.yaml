@@ -147,6 +147,9 @@ fields:
   name: search_count_urlbar
   type: INTEGER
 - mode: NULLABLE
+  name: search_count_urlbar_handoff
+  type: INTEGER
+- mode: NULLABLE
   name: search_with_ads_count_all
   type: INTEGER
 - mode: NULLABLE

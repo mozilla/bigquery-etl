@@ -4,7 +4,6 @@ description: |-
 owners:
 - wlachance@mozilla.com
 labels:
-  incremental: true
   public_json: true
   public_bigquery: true
   review_bugs:
@@ -12,4 +11,5 @@ labels:
 scheduling:
   dag_name: bqetl_main_summary
   task_name: client_probe_processes__v1
+  date_partition_parameter: null
 bigquery: null

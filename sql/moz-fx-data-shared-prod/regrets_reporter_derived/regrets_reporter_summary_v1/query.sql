@@ -13,7 +13,7 @@ WITH base_t AS (
     `moz-fx-data-shared-prod.regrets_reporter_ucs_live.main_events_v1`,
     UNNEST(events) e
   WHERE
-    submission_timestamp >= "2021-12-2"
+    submission_timestamp >= @submission_date
   GROUP BY
     metrics.string.metadata_installation_id,
     DATE(submission_timestamp)
@@ -89,7 +89,7 @@ new_user_base_t AS (
     `moz-fx-data-shared-prod.regrets_reporter_ucs_live.main_events_v1`,
     UNNEST(events) e
   WHERE
-    submission_timestamp >= "2021-12-2"
+    submission_timestamp >= @submission_date
   GROUP BY
     installation_id
 ),

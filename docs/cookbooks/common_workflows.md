@@ -250,6 +250,7 @@ executed.
 
 The [repository documentation](https://mozilla.github.io/bigquery-etl/) is built using [MkDocs](https://www.mkdocs.org/).
 To generate and check the docs locally:
+
 1. Run `script/generate_docs --output_dir generated_docs`
-2. Navigate to the `generated_docs` directory
-3. Run `mkdocs serve` to start a local `mkdocs` server.
+1. Navigate to the `generated_docs` directory
+1. Run `mkdocs serve` to start a local `mkdocs` server.

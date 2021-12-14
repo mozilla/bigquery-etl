@@ -4,7 +4,10 @@ description: |
   See https://github.com/mozilla/bigquery-etl/issues/2572
 owners:
 - kignasiak@mozilla.com
-labels: {}
+labels:
+  incremental: true
+  public_bigquery: false
+  public_json: false
 scheduling:
   dag_name: bqetl_regrets_reporter_summary
   task_name: regrets_reporter_summary__v1

@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from bigquery_etl.events_daily.generate_queries import TemplatedDir, get_query_dirs
+from generate_queries import TemplatedDir, get_query_dirs
 
 BASE_DIR = Path(os.path.dirname(__file__)).parent
 

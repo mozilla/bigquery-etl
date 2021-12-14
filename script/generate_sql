@@ -41,7 +41,7 @@ python -m bigquery_etl.view.generate_stable_views \
     --parallelism=20
 
 # Fill in definitions for generated Glean ETL
-./script/bqetl glean_usage generate --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
+./script/bqetl generate glean_usage --project-id "${TARGET_PROJECT}" --output-dir "${SQL_DIR}"
 
 # Record dependencies in yaml files
 ./script/bqetl dependency record --skip-existing "${SQL_DIR}"

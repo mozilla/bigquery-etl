@@ -7,7 +7,7 @@ bqetl_events:
     email: ['example@mozilla.org']
     retries: 2
   tags:
-    - impact/tier3
+    - impact/tier_3
 bqetl_core:
   schedule_interval: '* 1 * * *'
   default_args:
@@ -16,4 +16,4 @@ bqetl_core:
     email: ['example@mozilla.org']
     retries: 4
   tags:
-    - impact/tier3
+    - impact/tier_3

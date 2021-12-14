@@ -92,6 +92,23 @@ with DAG(
         dag=dag,
     )
 
+    search_terms_derived__suggest_impression_sanitized__v2 = bigquery_etl_query(
+        task_id="search_terms_derived__suggest_impression_sanitized__v2",
+        destination_table="suggest_impression_sanitized_v2",
+        dataset_id="search_terms_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jklukas@mozilla.com",
+        email=[
+            "jklukas@mozilla.com",
+            "rburwei@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+        dag=dag,
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskCompletedSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",

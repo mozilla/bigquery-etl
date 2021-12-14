@@ -41,3 +41,4 @@ nav:
       - Incremental queries: reference/incremental.md
       - Scheduling: reference/scheduling.md
       - Public data: reference/public_data.md
+      - Airflow Tags: reference/airflow_tags.md

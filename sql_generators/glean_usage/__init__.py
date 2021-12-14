@@ -1,30 +1,25 @@
-"""GLEAN Usage."""
-
 """bigquery-etl CLI glean_usage command."""
-from functools import partial
-from pathlib import Path
-from pathos.multiprocessing import ProcessingPool
 import click
 import os
 import sys
+from functools import partial
+from pathlib import Path
+from pathos.multiprocessing import ProcessingPool
+
+from bigquery_etl.cli.utils import is_valid_project, table_matches_patterns
 
 file_dir = os.path.dirname(__file__)
 sys.path.append(file_dir)
 
-from bigquery_etl.cli.utils import (
-    is_valid_project,
-    table_matches_patterns,
-)
-
-import glean_app_ping_views
-import baseline_clients_daily
-import baseline_clients_first_seen
-import baseline_clients_last_seen
-import events_unnested
-import metrics_clients_daily
-import metrics_clients_last_seen
-import clients_last_seen_joined
-from common import list_baseline_tables, get_app_info
+import baseline_clients_daily  # noqa: E402
+import baseline_clients_first_seen  # noqa: E402
+import baseline_clients_last_seen  # noqa: E402
+import clients_last_seen_joined  # noqa: E402
+import events_unnested  # noqa: E402
+import glean_app_ping_views  # noqa: E402
+import metrics_clients_daily  # noqa: E402
+import metrics_clients_last_seen  # noqa: E402
+from common import get_app_info, list_baseline_tables  # noqa: E402
 
 # list of methods for generating queries
 GLEAN_TABLES = [

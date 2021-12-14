@@ -10,12 +10,12 @@ from bigquery_etl.format_sql.formatter import reformat  # noqa E402
 SKIP = {
     # files that existed before we started to enforce this script
     *glob.glob("bigquery_etl/glam/templates/*.sql"),
-    *glob.glob("bigquery_etl/events_daily/query_templates/**/*.sql"),
-    *glob.glob("bigquery_etl/glean_usage/templates/*.sql"),
-    *glob.glob("bigquery_etl/search/templates/*.sql"),
+    *glob.glob("sql_generators/events_daily/templates/**/*.sql"),
+    *glob.glob("sql_generators/glean_usage/templates/*.sql"),
+    *glob.glob("sql_generators/search/templates/*.sql"),
     *glob.glob("bigquery_etl/operational_monitoring/templates/*.sql"),
-    *glob.glob("bigquery_etl/experiment_monitoring/templates/**/*.sql"),
-    *glob.glob("bigquery_etl/feature_usage/templates/*.sql"),
+    *glob.glob("sql_generators/experiment_monitoring/templates/**/*.sql"),
+    *glob.glob("sql_generators/feature_usage/templates/*.sql"),
     "sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql",
     "sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql",

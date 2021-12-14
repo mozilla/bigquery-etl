@@ -1,4 +1,4 @@
--- Created by hand (rather than via ./bqetl glean_usage generate)
+-- Created by hand (rather than via ./bqetl generate glean_usage)
 -- because the VPN doesn't have an events ping (just a "main" one,
 -- in which there are events)
 CREATE OR REPLACE VIEW

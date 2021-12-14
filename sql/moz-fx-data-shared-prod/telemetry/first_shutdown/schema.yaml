@@ -19616,6 +19616,14 @@ fields:
       mode: NULLABLE
       name: service_worker_isolated_launch_time
       type: STRING
+    - description: Whether a document used OffscreenCanvasToBlob
+      mode: NULLABLE
+      name: use_counter2_deprecated_offscreen_canvas_to_blob_document
+      type: STRING
+    - description: Whether a page used OffscreenCanvasToBlob
+      mode: NULLABLE
+      name: use_counter2_deprecated_offscreen_canvas_to_blob_page
+      type: STRING
     mode: NULLABLE
     name: histograms
     type: RECORD
@@ -40496,6 +40504,14 @@ fields:
           mode: NULLABLE
           name: service_worker_isolated_launch_time
           type: STRING
+        - description: Whether a document used OffscreenCanvasToBlob
+          mode: NULLABLE
+          name: use_counter2_deprecated_offscreen_canvas_to_blob_document
+          type: STRING
+        - description: Whether a page used OffscreenCanvasToBlob
+          mode: NULLABLE
+          name: use_counter2_deprecated_offscreen_canvas_to_blob_page
+          type: STRING
         mode: NULLABLE
         name: histograms
         type: RECORD
@@ -47077,6 +47093,69 @@ fields:
             type: INTEGER
           mode: REPEATED
           name: serviceworker_running_max
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Records counts for when Firefox was invoked (i.e., was already
+              running and was not launched) to handle a file type or protocol with
+              `-osint -url ...`.  The result is split into keys which represent the
+              file extension: currently, the set of file types Firefox registers to
+              handle, namely ".avif", ".htm", ".html", ".pdf", ".shtml", ".xht", ".xhtml",
+              ".svg", ".webp", and the set of protocol schemes that Firefox registers
+              to handle, namely "about", "http", "https", "mailto".  If Firefox was
+              invoked to handle a file type or protocol it does not register to handle
+              by default, the count is recorded as ".<other extension>" or "<other
+              protocol>", respectively (neither of which are valid extension or protocol
+              identifiers).
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: os_environment_invoked_to_handle
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Records whether Firefox was the default handler for particular
+              file types or protocols.  The result is split into keys which represent
+              the file extension: currently, a subset of the file types Firefox registers
+              to handle, namely ".pdf".  In the future, more file types may be recorded,
+              and/or a subset of the protocol schemes that Firefox registers to may
+              be recorded.
+
+              '
+            mode: NULLABLE
+            name: value
+            type: BOOLEAN
+          mode: REPEATED
+          name: os_environment_is_default_handler
+          type: RECORD
+        - fields:
+          - mode: NULLABLE
+            name: key
+            type: STRING
+          - description: 'Records counts for when Firefox was launched afresh (i.e.,
+              was not already running) to handle a file type or protocol with `-osint
+              -url ...`.  The result is split into keys which represent the file extension:
+              currently, the set of file types Firefox registers to handle, namely
+              ".avif", ".htm", ".html", ".pdf", ".shtml", ".xht", ".xhtml", ".svg",
+              ".webp", and the set of protocol schemes that Firefox registers to handle,
+              namely "about", "http", "https", "mailto".  If Firefox was launched
+              to handle a file type or protocol it does not register to handle by
+              default, the count is recorded as ".<other extension>" or "<other protocol>",
+              respectively (neither of which are valid extension or protocol identifiers).
+
+              '
+            mode: NULLABLE
+            name: value
+            type: INTEGER
+          mode: REPEATED
+          name: os_environment_launched_to_handle
           type: RECORD
         mode: NULLABLE
         name: keyed_scalars

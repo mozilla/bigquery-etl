@@ -111,7 +111,7 @@ Before scheduling your query, you'll need to find an [Airflow DAG](https://airfl
 
 Most of the options above should be self-explanatory. We use a schedule interval of "0 4 \* \* \*" (4am UTC daily) instead of "daily" (12am UTC daily) to make sure this isn't competing for slots with desktop and mobile product ETL.
 
-For a list of valid tags and their descriptions check [here](../reference/airflow_tags.md).
+The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see [Airflow Tags](../reference/airflow_tags.md).
 
 ## Scheduling your query
 
